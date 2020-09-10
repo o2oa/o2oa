@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.workcompleted;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -30,8 +31,8 @@ class ActionListCountWithApplication extends BaseAction {
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<WorkCompleted> root = cq.from(WorkCompleted.class);
 			Predicate p = cb.equal(root.get(WorkCompleted_.creatorPerson), effectivePerson.getDistinguishedName());
-			cq.select(root.get(WorkCompleted_.application)).where(p).distinct(true);
-			for (String str : em.createQuery(cq).getResultList()) {
+			cq.select(root.get(WorkCompleted_.application)).where(p);
+			for (String str : em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList())) {
 				NameValueCountPair o = new NameValueCountPair();
 				o.setValue(str);
 				o.setName(this.getApplicationName(business, effectivePerson, str));

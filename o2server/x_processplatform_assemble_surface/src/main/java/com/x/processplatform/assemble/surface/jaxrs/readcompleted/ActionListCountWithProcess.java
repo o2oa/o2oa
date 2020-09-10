@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.readcompleted;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -52,8 +53,8 @@ class ActionListCountWithProcess extends BaseAction {
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
 		p = cb.and(p, cb.equal(root.get(ReadCompleted_.application), application.getId()));
-		cq.select(root.get(ReadCompleted_.process)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(ReadCompleted_.process)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		for (String str : os) {
 			NameValueCountPair o = new NameValueCountPair();
 			Process process = business.process().pick(str);
