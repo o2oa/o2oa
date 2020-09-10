@@ -83,11 +83,11 @@ MWF.xApplication.AppMarketV2.RecommendContent.Recommend= new Class({
     },
     loadItems: function(data){
         debugger;
-        var recommendWidth = this.content.topRecommendContent.clientWidth;
-        var recommendLeftWidth = (recommendWidth - 80-10)*0.65;
-        var recommendRightWidth = (recommendWidth - 80-10)*0.35;
-        this.content.leftCoverNode.setStyle("width",recommendLeftWidth+"px");
-        this.content.rightCoverNode.setStyle("width",recommendRightWidth+"px");
+        //var recommendWidth = this.content.topRecommendContent.clientWidth;
+        //var recommendLeftWidth = (recommendWidth - 80-10)*0.65;
+        //var recommendRightWidth = (recommendWidth - 80-10)*0.35;
+        //this.content.leftCoverNode.setStyle("width",recommendLeftWidth+"px");
+        //this.content.rightCoverNode.setStyle("width",recommendRightWidth+"px");
         data.each(function(d, i){
             this.loadItem(d, i);
         }.bind(this));
