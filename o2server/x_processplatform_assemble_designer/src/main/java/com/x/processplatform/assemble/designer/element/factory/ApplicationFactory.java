@@ -57,25 +57,7 @@ public class ApplicationFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	// /* 如果是isManager列示所有应用，如果不是则判断权限 */
-	// public List<String> listApplicationCategoryWithPerson(EffectivePerson
-	// effectivePerson) throws Exception {
-	// EntityManager em = this.entityManagerContainer().get(Application.class);
-	// CriteriaBuilder cb = em.getCriteriaBuilder();
-	// CriteriaQuery<String> cq = cb.createQuery(String.class);
-	// Root<Application> root = cq.from(Application.class);
-	// cq.select(root.get(Application_.applicationCategory)).distinct(true);
-	// if (!effectivePerson.isManager()) {
-	// Predicate p = cb.isMember(effectivePerson.getDistinguishedName(),
-	// root.get(Application_.controllerList));
-	// p = cb.or(p, cb.equal(root.get(Application_.creatorPerson),
-	// effectivePerson.getDistinguishedName()));
-	// cq.where(p);
-	// }
-	// return em.createQuery(cq).getResultList();
-	// }
-
-	/* 如果是isManager列示所有应用，如果不是则判断权限 */
+	// 如果是isManager列示所有应用，如果不是则判断权限
 	public Long countWithPersonWithApplicationCategory(EffectivePerson effectivePerson, String applicationCategory)
 			throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Application.class);
@@ -88,8 +70,8 @@ public class ApplicationFactory extends AbstractFactory {
 					cb.or(cb.isMember(effectivePerson.getDistinguishedName(), root.get(Application_.controllerList)),
 							cb.equal(root.get(Application_.creatorPerson), effectivePerson.getDistinguishedName())));
 		}
-		cq.select(root.get(Application_.id)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(Application_.id)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		return new Long(list.size());
 	}
 

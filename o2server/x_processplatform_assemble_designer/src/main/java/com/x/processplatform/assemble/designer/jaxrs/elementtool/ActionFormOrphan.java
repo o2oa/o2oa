@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.designer.jaxrs.elementtool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -47,8 +48,8 @@ class ActionFormOrphan extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Form> root = cq.from(Form.class);
 		Predicate p = cb.not(root.get(Form_.application).in(applicationIds));
-		cq.select(root.get(Form_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Form_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	private List<String> listOrphanFormField(Business business, List<String> formIds) throws Exception {
@@ -57,8 +58,8 @@ class ActionFormOrphan extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<FormField> root = cq.from(FormField.class);
 		Predicate p = cb.not(root.get(FormField_.form).in(formIds));
-		cq.select(root.get(FormField_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(FormField_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public static class WoForm extends Form {

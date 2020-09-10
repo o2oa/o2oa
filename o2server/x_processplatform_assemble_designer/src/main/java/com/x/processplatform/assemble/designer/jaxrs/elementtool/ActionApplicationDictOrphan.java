@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.designer.jaxrs.elementtool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -49,8 +50,8 @@ class ActionApplicationDictOrphan extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ApplicationDict> root = cq.from(ApplicationDict.class);
 		Predicate p = cb.not(root.get(ApplicationDict_.application).in(applicationIds));
-		cq.select(root.get(ApplicationDict_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(ApplicationDict_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	private List<String> listOrphanApplicationDictItem(Business business, List<String> applicationDictIds)
@@ -60,8 +61,8 @@ class ActionApplicationDictOrphan extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ApplicationDictItem> root = cq.from(ApplicationDictItem.class);
 		Predicate p = cb.not(root.get(ApplicationDictItem_.bundle).in(applicationDictIds));
-		cq.select(root.get(ApplicationDictItem_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(ApplicationDictItem_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public static class WoApplicationDict extends ApplicationDict {
