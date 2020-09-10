@@ -316,7 +316,13 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         }.bind(this), failure, key);
     },
     _getItem: function(callback, failure, id, async){
-        if (callback) callback.apply(this, [id]);
+        if( typeOf(id) === "string" ){
+            this.orgAction.getIdentity(function(json){
+               if (callback) callback.apply(this, [json]);
+            }.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
+        }else{
+            if (callback) callback.apply(this, [id]);
+        }
         //this.orgAction.getIdentity(function(json){
         //    if (callback) callback.apply(this, [json]);
         //}.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
