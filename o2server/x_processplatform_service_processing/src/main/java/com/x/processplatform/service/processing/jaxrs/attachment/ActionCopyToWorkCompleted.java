@@ -1,5 +1,9 @@
 package com.x.processplatform.service.processing.jaxrs.attachment;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,10 +24,6 @@ import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.service.processing.ThisApplication;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 /**
  * 
  * @author zhour 复制指定的附件到work,仅拷贝内容,并清除其他附带的信息
@@ -40,7 +40,8 @@ class ActionCopyToWorkCompleted extends BaseAction {
 		String executorSeed = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			WorkCompleted work = emc.fetch(workCompletedId, WorkCompleted.class, ListTools.toList(WorkCompleted.job_FIELDNAME));
+			WorkCompleted work = emc.fetch(workCompletedId, WorkCompleted.class,
+					ListTools.toList(WorkCompleted.job_FIELDNAME));
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}

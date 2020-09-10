@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.process;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -98,8 +99,8 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 							cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL)));
 		}
 
-		cq.select(root.get(Process_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Process_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public static class Wo extends Process {
