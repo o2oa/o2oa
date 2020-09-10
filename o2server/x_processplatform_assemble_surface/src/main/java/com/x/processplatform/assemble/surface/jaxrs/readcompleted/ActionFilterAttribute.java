@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.readcompleted;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -115,8 +116,8 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(ReadCompleted_.application)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(ReadCompleted_.application)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -143,8 +144,8 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(ReadCompleted_.process)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(ReadCompleted_.process)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -171,8 +172,8 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(ReadCompleted_.creatorUnit)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(ReadCompleted_.creatorUnit)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -193,8 +194,8 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(ReadCompleted_.activityName)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(ReadCompleted_.activityName)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : list) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -215,8 +216,9 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(ReadCompleted_.completedTimeMonth)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(ReadCompleted_.completedTimeMonth)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
+		;
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : list) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -237,8 +239,9 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(ReadCompleted_.startTimeMonth)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(ReadCompleted_.startTimeMonth)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
+		;
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : list) {
 			if (StringUtils.isNotEmpty(str)) {

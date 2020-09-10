@@ -19,6 +19,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -31,12 +37,6 @@ import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.content.TaskCompletedProperties.PrevTask;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Route;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 /**
  * 没有多值字段
@@ -111,18 +111,18 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 			this.processingType = PROCESSINGTYPE_TASK;
 		}
 		switch (this.processingType) {
-			case PROCESSINGTYPE_APPENDTASK:
-			case PROCESSINGTYPE_BEAPPENDEDTASK:
-			case PROCESSINGTYPE_REROUTE:
-			case PROCESSINGTYPE_RETRACT:
-			case PROCESSINGTYPE_ROLLBACK:
-			case PROCESSINGTYPE_EMPOWER:
-			case PROCESSINGTYPE_RESET:
-				this.joinInquire = false;
-				break;
-			default:
-				this.joinInquire = true;
-				break;
+		case PROCESSINGTYPE_APPENDTASK:
+		case PROCESSINGTYPE_BEAPPENDEDTASK:
+		case PROCESSINGTYPE_REROUTE:
+		case PROCESSINGTYPE_RETRACT:
+		case PROCESSINGTYPE_ROLLBACK:
+		case PROCESSINGTYPE_EMPOWER:
+		case PROCESSINGTYPE_RESET:
+			this.joinInquire = false;
+			break;
+		default:
+			this.joinInquire = true;
+			break;
 		}
 
 		if (StringTools.utf8Length(this.getProperties().getTitle()) > length_255B) {
@@ -343,6 +343,10 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 			this.properties = new TaskCompletedProperties();
 		}
 		return this.properties;
+	}
+
+	public void setProperties(TaskCompletedProperties properties) {
+		this.properties = properties;
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -1484,10 +1488,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setEmpowerFromIdentity(String empowerFromIdentity) {
 		this.empowerFromIdentity = empowerFromIdentity;
-	}
-
-	public void setProperties(TaskCompletedProperties properties) {
-		this.properties = properties;
 	}
 
 	public String getProcessingType() {

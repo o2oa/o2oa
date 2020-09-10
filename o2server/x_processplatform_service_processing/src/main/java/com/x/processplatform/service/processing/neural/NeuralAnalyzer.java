@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.neural;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -143,8 +144,8 @@ public class NeuralAnalyzer {
 		Root<FormField> root = cq.from(FormField.class);
 		Predicate p = root.get(FormField_.form).in(formIds);
 		p = cb.and(p, cb.equal(root.get(FormField_.dataType), "number"));
-		cq.select(root.get(FormField_.name)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(FormField_.name)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	private List<TaskCompleted> listTaskCompleted(Business business, String activity, String person) throws Exception {

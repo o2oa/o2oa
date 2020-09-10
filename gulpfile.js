@@ -527,12 +527,13 @@ function build_concat_basework() {
         'o2web/source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
+        'o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
         'o2web/source/x_desktop/js/base_work_end.js',
         'o2web/source/x_desktop/js/base.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
     return gulp.src(src)
-        .pipe(concat('bask_work.js'))
+        .pipe(concat('base_work.js'))
         .pipe(gulp.dest(dest))
         .pipe(uglify())
         .pipe(rename({ extname: '.min.js' }))

@@ -156,6 +156,8 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (this.json.unitValue) {
             this.json.unitValue.each(function(v){ if (v) values.push(v)});
         }
+        var simple = this.json.storeRange === "simple";
+
         if (this.json.dutyValue) {
             var dutys = JSON.decode(this.json.dutyValue);
             var par;
@@ -167,7 +169,9 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                     //var code = "return this.org.getDepartmentDuty({\"name\": \""+duty.name+"\", \"departmentName\": \""+par+"\"})";
                     var d = this.form.Macro.exec(code, this);
                     if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
-                    d.each(function(dd){if (dd) values.push(dd);});
+                    d.each(function(dd){
+                        if (dd) values.push(MWF.org.parseOrgData(dd,true,simple));
+                    });
 
                     // code = "return this.org.getCompanyDuty({\"name\": \""+duty.name+"\", \"compName\": \""+par+"\"})";
                     // d = this.form.Macro.exec(code, this);
@@ -183,7 +187,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                 if (fdd){
                     if (typeOf(fdd)==="string"){
                         var data;
-                        this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = json.data }.bind(this), null, fdd, false);
+                        this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data,true, simple); }.bind(this), null, fdd, false);
                         values.push(data);
                     }else{
                         values.push(fdd);
@@ -625,11 +629,12 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
     },
     addData: function(value){
         if (!value) return false;
+        var simple = this.json.storeRange === "simple";
         value.each(function(v){
             var vtype = typeOf(v);
             if (vtype==="string"){
                 var data;
-                this.getOrgAction()[this.getValueMethod(v)](function(json){ data = json.data }.bind(this), null, v, false);
+                this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, v, false);
                 if (data) this.combox.addNewValue(this.getDataText(data), data);
             }
             if (vtype==="object"){
@@ -788,13 +793,16 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         var values = [];
         var comboxValues = [];
         var type = typeOf(value);
+
+        var simple = this.json.storeRange === "simple";
+
         if (type==="array"){
             value.each(function(v){
                 var data=null;
                 var vtype = typeOf(v);
                 if (vtype==="string"){
                     var error = (this.json.isInput) ? function(){ comboxValues.push(v); } : null;
-                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = json.data }.bind(this), error, v, false);
+                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple) }.bind(this), error, v, false);
                 }
                 if (vtype==="object") data = v;
                 if (data){
@@ -806,7 +814,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (type==="string"){
             var vData;
             var error = (this.json.isInput) ? function(){ comboxValues.push(value); } : null;
-            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = json.data }.bind(this), error, value, false);
+            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true, simple) }.bind(this), error, value, false);
             if (vData){
                 values.push(vData);
                 comboxValues.push({"text": this.getDataText(vData),"value": vData});

@@ -30,7 +30,7 @@ MWF.xApplication.Meeting.MeetingView = new Class({
         this.userName = layout.desktop.session.user.distinguishedName;
         this.userId = layout.desktop.session.user.id;
         this.userIdentity = [];
-        layout.desktop.session.user.identityList.each( function( i ){
+        ( layout.desktop.session.user.identityList || [] ).each( function( i ){
             this.userIdentity.push( i.distinguishedName )
         }.bind(this));
 
