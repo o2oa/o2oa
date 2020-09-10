@@ -10,11 +10,15 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
@@ -58,16 +62,44 @@ public class Route extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
-	/* 以上为 JpaObject 默认字段 */
-
 	public void onPersist() throws Exception {
-		/* 如果脚本为空，添加默认返回true 的脚本 */
+		// 如果脚本为空，添加默认返回true 的脚本
 		if (StringUtils.isEmpty(script) && StringUtils.isEmpty(scriptText)) {
 			this.scriptText = "return true;";
 		}
 	}
 
-	/* 更新运行方法 */
+	@PostLoad
+	public void postLoad() {
+		this.asyncSupported = this.getProperties().getAsyncSupported();
+	}
+
+	public Route() {
+		this.properties = new RouteProperties();
+	}
+
+	public RouteProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new RouteProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(RouteProperties properties) {
+		this.properties = properties;
+	}
+
+	public Boolean getAsyncSupported() {
+		return asyncSupported;
+	}
+
+	public void setAsyncSupported(Boolean asyncSupported) {
+		this.asyncSupported = asyncSupported;
+		this.getProperties().setAsyncSupported(asyncSupported);
+	}
+
+	@Transient
+	private Boolean asyncSupported;
 
 	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("名称.")
@@ -269,6 +301,14 @@ public class Route extends SliceJpaObject {
 	@FieldDescribe("版本编码.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + edition_FIELDNAME)
 	private String edition;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private RouteProperties properties;
 
 	public String getAppendTaskIdentityType() {
 		return appendTaskIdentityType;

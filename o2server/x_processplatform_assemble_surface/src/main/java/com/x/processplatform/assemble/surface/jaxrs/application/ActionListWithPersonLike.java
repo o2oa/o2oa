@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -66,7 +67,6 @@ class ActionListWithPersonLike extends BaseAction {
 
 	private List<String> listFromApplication(Business business, EffectivePerson effectivePerson, List<String> roles,
 			List<String> identities, List<String> units) throws Exception {
-		List<String> list = new ArrayList<>();
 		EntityManager em = business.entityManagerContainer().get(Application.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -85,8 +85,8 @@ class ActionListWithPersonLike extends BaseAction {
 			}
 			cq.where(p);
 		}
-		list = em.createQuery(cq.select(root.get(Application_.id)).distinct(true)).getResultList();
-		return list;
+		return em.createQuery(cq.select(root.get(Application_.id))).getResultList().stream().distinct()
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -116,7 +116,7 @@ class ActionListWithPersonLike extends BaseAction {
 				p = cb.or(p, root.get(Process_.startableUnitList).in(units));
 			}
 		}
-		cq.select(root.get(Process_.application)).distinct(true).where(p);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Process_.application)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 }

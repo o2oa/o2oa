@@ -442,7 +442,7 @@
 	  "height": "44px",
 	  "float": "right",
 	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat left center",
-	  "background-size" : "32px 32px"
+	  "background-size" : "16px 16px"
 	},
 
 	"selectorItemTextNode": {

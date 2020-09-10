@@ -17,6 +17,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Delay;
 import com.x.processplatform.core.entity.element.DelayMode;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -30,6 +31,8 @@ public class DelayProcessor extends AbstractDelayProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Delay delay) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.delayArrive(aeiObjects.getWork().getActivityToken(), delay));
 		return aeiObjects.getWork();
 	}
 
@@ -39,6 +42,8 @@ public class DelayProcessor extends AbstractDelayProcessor {
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Delay delay) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.delayExecute(aeiObjects.getWork().getActivityToken(), delay));
 		List<Work> results = new ArrayList<>();
 		Date limit = null;
 		if (null != delay.getDelayMode() && Objects.equals(DelayMode.until, delay.getDelayMode())) {
@@ -116,6 +121,8 @@ public class DelayProcessor extends AbstractDelayProcessor {
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Delay delay) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.delayInquire(aeiObjects.getWork().getActivityToken(), delay));
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;

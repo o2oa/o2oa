@@ -13,6 +13,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
+
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -22,11 +27,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -150,6 +150,10 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 			this.properties = new ReviewProperties();
 		}
 		return this.properties;
+	}
+
+	public void setProperties(ReviewProperties properties) {
+		this.properties = properties;
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -954,10 +958,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 
 	public static String getStringvalue01Fieldname() {
 		return stringValue01_FIELDNAME;
-	}
-
-	public void setProperties(ReviewProperties properties) {
-		this.properties = properties;
 	}
 
 }

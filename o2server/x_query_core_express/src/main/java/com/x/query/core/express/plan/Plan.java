@@ -105,19 +105,19 @@ public abstract class Plan extends GsonPropertyObject {
 				for (SelectEntry en : orderList) {
 					o1 = r1.find(en.column);
 					o2 = r2.find(en.column);
-					if(BooleanUtils.isTrue(en.numberOrder)){
-						if(StringUtils.isEmpty(o1.toString())){
+					if (BooleanUtils.isTrue(en.numberOrder)) {
+						if (StringUtils.isEmpty(o1.toString())) {
 							c1 = Double.MAX_VALUE;
-						}else{
+						} else {
 							try {
 								c1 = Double.parseDouble(o1.toString());
 							} catch (Exception e) {
 								c1 = Double.MAX_VALUE;
 							}
 						}
-						if(StringUtils.isEmpty(o2.toString())){
+						if (StringUtils.isEmpty(o2.toString())) {
 							c2 = Double.MAX_VALUE;
-						}else{
+						} else {
 							try {
 								c2 = Double.parseDouble(o2.toString());
 							} catch (Exception e) {
@@ -129,7 +129,7 @@ public abstract class Plan extends GsonPropertyObject {
 						} else {
 							comp = c2.compareTo(c1);
 						}
-					}else if (null == o1 && null == o2) {
+					} else if (null == o1 && null == o2) {
 						comp = 0;
 					} else if (null == o1) {
 						comp = -1;
@@ -515,48 +515,48 @@ public abstract class Plan extends GsonPropertyObject {
 		for (Tuple o : list) {
 			row = table.get(Objects.toString(o.get(0)));
 			switch (ItemPrimitiveType.valueOf(Objects.toString(o.get(1)))) {
+			case s:
+				switch (ItemStringValueType.valueOf(Objects.toString(o.get(2)))) {
 				case s:
-					switch (ItemStringValueType.valueOf(Objects.toString(o.get(2)))) {
-						case s:
-							if (null != o.get(3)) {
-								if ((null != o.get(4)) && StringUtils.isNotEmpty(Objects.toString(o.get(4)))) {
-									row.put(selectEntry.getColumn(), Objects.toString(o.get(4)));
-								} else {
-									row.put(selectEntry.getColumn(), Objects.toString(o.get(3)));
-								}
-							}
-							break;
-						case d:
-							if (null != o.get(5)) {
-								row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(5)));
-							}
-							break;
-						case t:
-							if (null != o.get(6)) {
-								row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(6)));
-							}
-							break;
-						case dt:
-							if (null != o.get(7)) {
-								row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(7)));
-							}
-							break;
-						default:
-							break;
+					if (null != o.get(3)) {
+						if ((null != o.get(4)) && StringUtils.isNotEmpty(Objects.toString(o.get(4)))) {
+							row.put(selectEntry.getColumn(), Objects.toString(o.get(4)));
+						} else {
+							row.put(selectEntry.getColumn(), Objects.toString(o.get(3)));
+						}
 					}
 					break;
-				case b:
-					if (null != o.get(8)) {
-						row.put(selectEntry.getColumn(), (Boolean) o.get(8));
+				case d:
+					if (null != o.get(5)) {
+						row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(5)));
 					}
 					break;
-				case n:
-					if (null != o.get(9)) {
-						row.put(selectEntry.getColumn(), (Number) o.get(9));
+				case t:
+					if (null != o.get(6)) {
+						row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(6)));
+					}
+					break;
+				case dt:
+					if (null != o.get(7)) {
+						row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(7)));
 					}
 					break;
 				default:
 					break;
+				}
+				break;
+			case b:
+				if (null != o.get(8)) {
+					row.put(selectEntry.getColumn(), (Boolean) o.get(8));
+				}
+				break;
+			case n:
+				if (null != o.get(9)) {
+					row.put(selectEntry.getColumn(), (Number) o.get(9));
+				}
+				break;
+			default:
+				break;
 			}
 		}
 	}

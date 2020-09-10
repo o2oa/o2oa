@@ -33,6 +33,7 @@ import com.x.base.core.entity.annotation.IdReference;
 import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.WorkLogProperties;
 
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -103,6 +104,10 @@ public class Form extends SliceJpaObject {
 			this.properties = new FormProperties();
 		}
 		return this.properties;
+	}
+	
+	public void setProperties(FormProperties properties) {
+		this.properties = properties;
 	}
 
 	public String getDataOrMobileData() {
@@ -194,7 +199,7 @@ public class Form extends SliceJpaObject {
 	public static final String data_FIELDNAME = "data";
 	@FieldDescribe("文本内容.")
 	@Lob
-@Basic(fetch = FetchType.EAGER)
+	@Basic(fetch = FetchType.EAGER)
 //	@Persistent(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -203,8 +208,8 @@ public class Form extends SliceJpaObject {
 	public static final String mobileData_FIELDNAME = "mobileData";
 	@FieldDescribe("移动端文本内容.")
 	@Lob
-	 @Basic(fetch = FetchType.EAGER)
-	//@Persistent(fetch = FetchType.EAGER)
+	@Basic(fetch = FetchType.EAGER)
+	// @Persistent(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String mobileData;
@@ -305,10 +310,6 @@ public class Form extends SliceJpaObject {
 
 	public void setHasMobile(Boolean hasMobile) {
 		this.hasMobile = hasMobile;
-	}
-
-	public void setProperties(FormProperties properties) {
-		this.properties = properties;
 	}
 
 }

@@ -16,6 +16,7 @@ import com.x.base.core.project.script.ScriptFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Choice;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -29,16 +30,21 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Choice choice) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.choiceArrive(aeiObjects.getWork().getActivityToken(), choice));
 		return aeiObjects.getWork();
 	}
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Choice choice) throws Exception {
-//nothing
+		// nothing
 	}
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Choice choice) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.choiceExecute(aeiObjects.getWork().getActivityToken(), choice));
 		List<Work> results = new ArrayList<>();
 		results.add(aeiObjects.getWork());
 		return results;
@@ -46,23 +52,22 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Choice choice) throws Exception {
-//nothing
+		// nothing
 	}
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Choice choice) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.choiceInquire(aeiObjects.getWork().getActivityToken(), choice));
 		List<Route> results = new ArrayList<>();
-		/* 多条路由进行判断 */
+		// 多条路由进行判断
 		for (Route o : aeiObjects.getRoutes()) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_ROUTE, o);
 			Object objectValue = aeiObjects.business().element()
 					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE)
 					.eval(scriptContext);
-//			if (BooleanUtils.toBoolean(StringUtils.trimToNull(Objects.toString(obj))) == true) {
-//				results.add(o);
-//				break;
-//			}
 			if (BooleanUtils.isTrue(ScriptFactory.asBoolean(objectValue))) {
 				results.add(o);
 				break;

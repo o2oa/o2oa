@@ -410,6 +410,8 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
     //},
     addColumn: function(){
 
+        debugger;
+
         MWF.require("MWF.widget.UUID", function(){
             var id = (new MWF.widget.UUID).id;
             var json = {
@@ -1329,6 +1331,7 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if( this.view.defaultColumnJson ){
             this.json = Object.merge( this.json, Object.clone(this.view.defaultColumnJson) );
             if (callback) callback(this.json);
+            return;
         }
         var url = this.view.path+"column.json";
         MWF.getJSON(url, {
@@ -1343,7 +1346,7 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
             "onRequestFailure": function(xhr){
                 this.view.designer.notice(xhr.responseText, "error");
             }.bind(this)
-        });
+        }, false);
     },
     setCustomStyles : function(){
         var viewStyles = this.view.json.data.viewStyles;

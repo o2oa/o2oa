@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.ListTools;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronExpression;
+
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.ListTools;
 
 /**
  * @author Zhou Rui
@@ -48,14 +48,15 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static final Boolean DEFAULT_DELETEAPPLICATIONINUSE = false;
 
-	public final static Boolean DEFAULT_UPDATEDATAPROJECTIONENABLE = false;
+	public static final Boolean DEFAULT_UPDATEDATAPROJECTIONENABLE = false;
+
+	public static final Boolean DEFAULT_PROCESSINGSIGNALPERSISTENABLE = false;
 
 	public static ProcessPlatform defaultInstance() {
 		return new ProcessPlatform();
 	}
 
 	public ProcessPlatform() {
-
 		this.maintenanceIdentity = "";
 		this.formVersionCount = DEFAULT_FORMVERSIONCOUNT;
 		this.processVersionCount = DEFAULT_PROCESSVERSIONCOUNT;
@@ -72,7 +73,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.touchDetained = new TouchDetained();
 		this.deleteDraft = new DeleteDraft();
 		this.passExpired = new PassExpired();
-
+		this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
 	}
 
 	public Integer getExecutorCount() {
@@ -165,6 +166,16 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("事件扩充.")
 	private ExtensionEvents extensionEvents;
 
+	@FieldDescribe("是否保存工作处理信号内容,默认false.")
+	private Boolean processingSignalPersistEnable;
+
+	public Boolean getProcessingSignalPersistEnable() {
+		if (processingSignalPersistEnable == null) {
+			this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
+		}
+		return processingSignalPersistEnable;
+	}
+
 	public ExtensionEvents getExtensionEvents() {
 		if (null == extensionEvents) {
 			this.extensionEvents = new ExtensionEvents();
@@ -224,9 +235,9 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = false;
+		public static final Boolean DEFAULT_ENABLE = false;
 
-		public final static String DEFAULT_CRON = "30 0/10 8-18 * * ?";
+		public static final String DEFAULT_CRON = "30 0/10 8-18 * * ?";
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -262,9 +273,9 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public static final Boolean DEFAULT_ENABLE = true;
 
-		public final static String DEFAULT_CRON = "45 0/15 8-18 * * ?";
+		public static final String DEFAULT_CRON = "45 0/15 8-18 * * ?";
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -293,9 +304,9 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public static final Boolean DEFAULT_ENABLE = true;
 
-		public final static String DEFAULT_CRON = "5 0/5 * * * ?";
+		public static final String DEFAULT_CRON = "5 0/5 * * * ?";
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -324,11 +335,11 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = false;
+		public static final Boolean DEFAULT_ENABLE = false;
 
-		public final static String DEFAULT_CRON = "30 30 6 * * ?";
+		public static final String DEFAULT_CRON = "30 30 6 * * ?";
 
-		public final static Integer DEFAULT_THRESHOLDDAYS = 365 * 2;
+		public static final Integer DEFAULT_THRESHOLDDAYS = 365 * 2;
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -364,11 +375,11 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
-		public final static String DEFAULT_CRON = "30 30 12 * * ?";
+		public static final String DEFAULT_CRON = "30 30 12 * * ?";
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public static final Boolean DEFAULT_ENABLE = true;
 
-		public final static Integer DEFAULT_THRESHOLDMINUTES = 60 * 24;
+		public static final Integer DEFAULT_THRESHOLDMINUTES = 60 * 24;
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -404,11 +415,11 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
-		public final static String DEFAULT_CRON = "0 0 20 * * ?";
+		public static final String DEFAULT_CRON = "0 0 20 * * ?";
 
-		public final static Boolean DEFAULT_ENABLE = false;
+		public static final Boolean DEFAULT_ENABLE = false;
 
-		public final static Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 60;
+		public static final Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 60;
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -444,9 +455,9 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
-		public final static String DEFAULT_CRON = "5 5 8-18 * * ?";
+		public static final String DEFAULT_CRON = "5 5 8-18 * * ?";
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public static final Boolean DEFAULT_ENABLE = true;
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -474,15 +485,15 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
-		public final static String DEFAULT_CRON = "0 0 4 * * ?";
+		public static final String DEFAULT_CRON = "0 0 4 * * ?";
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public static final Boolean DEFAULT_ENABLE = true;
 
-		public final static Integer DEFAULT_TASKTHRESHOLDMINUTES = 60 * 24 * 10;
+		public static final Integer DEFAULT_TASKTHRESHOLDMINUTES = 60 * 24 * 10;
 
-		public final static Integer DEFAULT_READTHRESHOLDMINUTES = 60 * 24 * 10;
+		public static final Integer DEFAULT_READTHRESHOLDMINUTES = 60 * 24 * 10;
 
-		public final static Integer DEFAULT_WORKTHRESHOLDMINUTES = 60 * 24 * 10;
+		public static final Integer DEFAULT_WORKTHRESHOLDMINUTES = 60 * 24 * 10;
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -535,9 +546,9 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
-		public final static Integer DEFAULT_INTERVALMINUTES = 10;
+		public static final Integer DEFAULT_INTERVALMINUTES = 10;
 
-		public final static Integer DEFAULT_COUNT = 3;
+		public static final Integer DEFAULT_COUNT = 3;
 
 		@FieldDescribe("提醒间隔(分钟)")
 		private Integer intervalMinutes = DEFAULT_INTERVALMINUTES;
@@ -564,10 +575,6 @@ public class ProcessPlatform extends ConfigObject {
 	}
 
 	public static class ExtensionEvents {
-
-		// public static ExtensionEvents defaultInstance() {
-		// return new ExtensionEvents();
-		// }
 
 		@FieldDescribe("工作附件上传.")
 		private WorkExtensionEvents workAttachmentUploadEvents = new WorkExtensionEvents();

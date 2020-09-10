@@ -17,7 +17,7 @@ class ActionTest1 extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		CallableAction action = new CallableAction();
-		ProcessPlatformExecutorFactory.get(unique).submit(action).get();
+		ProcessPlatformExecutorFactory.get(unique).submit(action);
 		return result;
 	}
 
@@ -26,9 +26,11 @@ class ActionTest1 extends BaseAction {
 	}
 
 	public class CallableAction implements Callable<String> {
+
 		public String call() throws Exception {
-			ThisApplication.context().applications().getQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("test", "test1"), unique);
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Callable start!" + unique);
+			Thread.sleep(5000);
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Callable start, again!" + unique);
 			return "";
 		}
 	};

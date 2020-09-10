@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.taskcompleted;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -135,8 +136,8 @@ class ActionFilterAttribute extends BaseAction {
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
 		p = cb.and(p,
 				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
-		cq.select(root.get(TaskCompleted_.application)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.application)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -165,8 +166,8 @@ class ActionFilterAttribute extends BaseAction {
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
 		p = cb.and(p,
 				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
-		cq.select(root.get(TaskCompleted_.process)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.process)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -195,8 +196,8 @@ class ActionFilterAttribute extends BaseAction {
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
 		p = cb.and(p,
 				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
-		cq.select(root.get(TaskCompleted_.creatorUnit)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.creatorUnit)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -219,8 +220,8 @@ class ActionFilterAttribute extends BaseAction {
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
 		p = cb.and(p,
 				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
-		cq.select(root.get(TaskCompleted_.activityName)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.activityName)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -243,8 +244,8 @@ class ActionFilterAttribute extends BaseAction {
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
 		p = cb.and(p,
 				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
-		cq.select(root.get(TaskCompleted_.startTimeMonth)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.startTimeMonth)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -267,8 +268,8 @@ class ActionFilterAttribute extends BaseAction {
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
 		p = cb.and(p,
 				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
-		cq.select(root.get(TaskCompleted_.completedTimeMonth)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.completedTimeMonth)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -292,8 +293,8 @@ class ActionFilterAttribute extends BaseAction {
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
 		p = cb.and(p,
 				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
-		cq.select(root.get(TaskCompleted_.completed)).where(p).distinct(true);
-		List<Boolean> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.completed)).where(p);
+		List<Boolean> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (Boolean value : os) {
 			NameValueCountPair o = new NameValueCountPair();
