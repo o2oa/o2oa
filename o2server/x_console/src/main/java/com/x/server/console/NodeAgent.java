@@ -152,7 +152,7 @@ public class NodeAgent extends Thread {
 							logger.info("文件名path:" + tempFile.getAbsolutePath() + File.separator + filename);
 							File file = new File(tempFile.getAbsolutePath() + File.separator + filename);
 
-							filename = filename.substring(0, filename.lastIndexOf("."));
+							filename = filename.substring(0, filename.indexOf("."));
 							// uninstall
 							boolean result = this.customWarUninstall(filename);
 
@@ -162,41 +162,25 @@ public class NodeAgent extends Thread {
 
 						matcher = redeploy_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
-							String strCommand = commandObject.getCommand();
-							strCommand = strCommand.trim();
-							strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
+							String strCommand = commandObject.getCommand().trim();
+							strCommand = StringUtils.substringAfter(strCommand, ":");
 							logger.info("收接到命令:" + strCommand);
 							String filename = dis.readUTF();
-							File tempFile = null;
-							switch (strCommand) {
-							case "storeWar":
-								tempFile = Config.dir_store();
-								break;
-							case "storeJar":
-								tempFile = Config.dir_store_jars();
-								break;
-							case "customWar":
-								tempFile = Config.dir_custom();
-								break;
-							case "customJar":
-								tempFile = Config.dir_custom_jars();
-								break;
+
+							byte[] bytes;
+							try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+								byte[] onceBytes = new byte[1024];
+								int length = 0;
+								while ((length = dis.read(onceBytes, 0, onceBytes.length)) != -1) {
+									bos.write(onceBytes, 0, length);
+									bos.flush();
+								}
+								bytes = bos.toByteArray();
 							}
-							FileTools.forceMkdir(tempFile);
-							logger.info("文件名path:" + tempFile.getAbsolutePath() + File.separator + filename);
-							File file = new File(tempFile.getAbsolutePath() + File.separator + filename);
-							fos = new FileOutputStream(file);
-							byte[] bytes = new byte[1024];
-							int length = 0;
-							while ((length = dis.read(bytes, 0, bytes.length)) != -1) {
-								fos.write(bytes, 0, length);
-								fos.flush();
-							}
-							fos.close();
-							bytes = FileUtils.readFileToByteArray(file);
-							filename = filename.substring(0, filename.lastIndexOf("."));
+
+							filename = filename.substring(0, filename.indexOf("."));
 							// 部署
-							String result = this.redeploy(filename, bytes, true);
+							String result = this.redeploy(strCommand, filename, bytes, true);
 							logger.info("部署:" + result);
 							continue;
 
@@ -405,11 +389,11 @@ public class NodeAgent extends Thread {
 		return result;
 	}
 
-	private String redeploy(String name, byte[] bytes, boolean rebootApp) {
+	private String redeploy(String type, String name, byte[] bytes, boolean rebootApp) {
 		String result = "success";
 		try {
 			logger.print("redeploy:{}.", name);
-			switch (this.type(name)) {
+			switch (type) {
 			case "storeWar":
 				storeWar(name, bytes);
 				break;
@@ -421,6 +405,9 @@ public class NodeAgent extends Thread {
 				break;
 			case "customJar":
 				customJar(name, bytes, rebootApp);
+				break;
+			case "customZip":
+				customZip(name, bytes, rebootApp);
 				break;
 			}
 		} catch (Exception e) {
@@ -634,35 +621,40 @@ public class NodeAgent extends Thread {
 	private void customJar(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
 		File jar = new File(Config.dir_custom_jars(true), simpleName + ".jar");
 		FileUtils.writeByteArrayToFile(jar, bytes, false);
-		List<String> contexts = new ArrayList<>();
-		boolean isStartApplication = false;
-		for (String s : Config.dir_custom().list(new WildcardFileFilter("*.war"))) {
-			contexts.add("/" + FilenameUtils.getBaseName(s));
-		}
-		if (Servers.applicationServerIsRunning()) {
-			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
-			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
-			for (Handler handler : hanlderList.getHandlers()) {
-				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
-					QuickStartWebApp app = (QuickStartWebApp) handler;
-					if (contexts.contains(app.getContextPath())) {
-						app.stop();
-						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
-						Thread.sleep(3000);
-						app.start();
-						isStartApplication = true;
-					}
-				}
-			}
+		/*if (rebootApp) {
+			Servers.stopApplicationServer();
+			Thread.sleep(3000);
+			Servers.startApplicationServer();
+		}*/
+	}
 
-			if (rebootApp) {
-				if (!isStartApplication) {
-					Servers.stopApplicationServer();
-					Thread.sleep(1000);
-					Servers.startApplicationServer();
+	private void customZip(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
+		logger.print("start deploy customZip app {} ", simpleName);
+		File tempFile = new File(Config.base(), "local/temp/redeploy");
+		FileTools.forceMkdir(tempFile);
+		FileUtils.cleanDirectory(tempFile);
+
+		File zipFile = new File(tempFile.getAbsolutePath(), simpleName+".zip");
+		FileUtils.writeByteArrayToFile(zipFile, bytes);
+		File dist = Config.dir_custom(true);
+		List<String> subs = new ArrayList<>();
+		JarTools.unjar(zipFile, subs, dist, false);
+
+		FileUtils.cleanDirectory(tempFile);
+
+		/*if (rebootApp) {
+			Servers.stopApplicationServer();
+			int i = 0;
+			while (i++<6){
+				try {
+					if(Servers.applicationServerIsRunning()){
+						Thread.sleep(2000);
+					}
+				} catch (Exception e) {
 				}
 			}
-		}
+			Servers.startApplicationServer();
+		}*/
 	}
 
 	private List<ClassInfo> listModuleDependencyWith(String name) throws Exception {
