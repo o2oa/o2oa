@@ -15,6 +15,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DingdingAttendanceFactory extends AbstractFactory {
 
@@ -315,8 +316,8 @@ public class DingdingAttendanceFactory extends AbstractFactory {
         CriteriaQuery<String> query = cb.createQuery(String.class);
         Root<AttendanceDingtalkDetail> root = query.from(AttendanceDingtalkDetail.class);
         Predicate p = cb.between(root.get(AttendanceDingtalkDetail_.userCheckTime), startTime.getTime(), endTime.getTime());
-        query.select(root.get(AttendanceDingtalkDetail_.o2Unit)).where(p).distinct(true);
-        return em.createQuery(query).getResultList();
+        query.select(root.get(AttendanceDingtalkDetail_.o2Unit)).where(p);
+        return em.createQuery(query).getResultList().stream().distinct().collect(Collectors.toList());
     }
 
 
@@ -608,8 +609,8 @@ public class DingdingAttendanceFactory extends AbstractFactory {
         CriteriaQuery<String> query = cb.createQuery(String.class);
         Root<AttendanceQywxDetail> root = query.from(AttendanceQywxDetail.class);
         Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), startTime, endTime);
-        query.select(root.get(AttendanceQywxDetail_.o2Unit)).where(p).distinct(true);
-        return em.createQuery(query).getResultList();
+        query.select(root.get(AttendanceQywxDetail_.o2Unit)).where(p);
+        return em.createQuery(query).getResultList().stream().distinct().collect(Collectors.toList());
     }
 
     /**
