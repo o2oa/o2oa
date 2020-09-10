@@ -282,7 +282,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             if (layout.mobile) {
                 _openApplicationMobile(appNames, options, statusObj);
             } else {
-                _openApplicationPC(appNames, options, statusObj);
+                return _openApplicationPC(appNames, options, statusObj);
                 // var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
                 //
                 // if (layout.app.$openWithSelf) {
