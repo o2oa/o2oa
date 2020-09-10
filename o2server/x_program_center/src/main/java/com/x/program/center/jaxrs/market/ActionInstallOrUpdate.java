@@ -126,9 +126,12 @@ class ActionInstallOrUpdate extends BaseAction {
 					WrapModule module = this.convertToWrapIn(jsonElement, WrapModule.class);
 					this.installModule(module);
 					installData.setWrapModule(module);
-
-				}
-				if(file.getName().toLowerCase().endsWith(".zip")){
+				}else if(file.getName().toLowerCase().endsWith(".app.zip")){
+					logger.print("开始安装自定义应用：{}", file.getName());
+					this.installCustomApp(file.getName(), FileUtils.readFileToByteArray(file));
+					installData.setCustomApp(file.getName());
+					logger.print("完成自定义应用安装：{}", file.getName());
+				}else if(file.getName().toLowerCase().endsWith(".zip")){
 					logger.print("开始安装静态资源");
 					try {
 						Business.dispatch(false, file.getName(), "", FileUtils.readFileToByteArray(file));
@@ -136,12 +139,6 @@ class ActionInstallOrUpdate extends BaseAction {
 					} catch (Exception e) {
 						logger.print("模块安装成功但静态资源安装失败:{}",e.getMessage());
 					}
-				}
-				if(file.getName().toLowerCase().endsWith(".war")){
-					logger.print("开始安装自定义应用：{}", file.getName());
-					this.installCustomApp(file.getName(), FileUtils.readFileToByteArray(file));
-					installData.setCustomApp(file.getName());
-					logger.print("完成自定义应用安装：{}", file.getName());
 				}
 			}
 		}
@@ -245,7 +242,7 @@ class ActionInstallOrUpdate extends BaseAction {
 					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 						Map<String, Object> commandObject = new HashMap<>();
-						commandObject.put("command", "redeploy:customWar");
+						commandObject.put("command", "redeploy:customZip");
 						commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
 
 						dos.writeUTF(XGsonBuilder.toJson(commandObject));
