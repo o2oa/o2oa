@@ -21,6 +21,7 @@ import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -34,7 +35,9 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Begin begin) throws Exception {
-		/* 创建创建者的review */
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.beginArrive(aeiObjects.getWork().getActivityToken(), begin));
+		// 创建创建者的review
 		String person = this.business().organization().person().get(aeiObjects.getWork().getCreatorPerson());
 		if (StringUtils.isNotEmpty(person)) {
 			aeiObjects.createReview(new Review(aeiObjects.getWork(), person));
@@ -49,11 +52,13 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Begin begin) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.beginExecute(aeiObjects.getWork().getActivityToken(), begin));
 		List<Work> list = new ArrayList<>();
-		/** 如果是再次进入begin节点那么就不需要设置开始时间 */
+		// 如果是再次进入begin节点那么就不需要设置开始时间
 		if (aeiObjects.getWork().getStartTime() == null) {
 			aeiObjects.getWork().setStartTime(new Date());
-			/** 计算过期时间 */
+			// 计算过期时间
 			this.calculateExpire(aeiObjects);
 		}
 		list.add(aeiObjects.getWork());
@@ -72,6 +77,8 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Begin begin) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.beginInquire(aeiObjects.getWork().getActivityToken(), begin));
 		List<Route> list = new ArrayList<>();
 		Route o = aeiObjects.getRoutes().get(0);
 		list.add(o);
@@ -83,21 +90,20 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	}
 
 	private void calculateExpire(AeiObjects aeiObjects) throws Exception {
-		if (aeiObjects.getActivityProcessingConfigurator().getCalculateExpire()) {
-			if (null != aeiObjects.getProcess().getExpireType()) {
-				switch (aeiObjects.getProcess().getExpireType()) {
-				case never:
-					this.expireNever(aeiObjects);
-					break;
-				case appoint:
-					this.expireAppoint(aeiObjects);
-					break;
-				case script:
-					this.expireScript(aeiObjects);
-					break;
-				default:
-					break;
-				}
+		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCalculateExpire())
+				&& (null != aeiObjects.getProcess().getExpireType())) {
+			switch (aeiObjects.getProcess().getExpireType()) {
+			case never:
+				this.expireNever(aeiObjects);
+				break;
+			case appoint:
+				this.expireAppoint(aeiObjects);
+				break;
+			case script:
+				this.expireScript(aeiObjects);
+				break;
+			default:
+				break;
 			}
 		}
 	}

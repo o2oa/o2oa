@@ -16,7 +16,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
+import com.x.attendance.assemble.control.service.AttendanceEmployeeConfigServiceAdv;
+import com.x.attendance.assemble.control.service.UserManagerService;
 import com.x.attendance.entity.AttendanceDetail;
+import com.x.attendance.entity.AttendanceEmployeeConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -31,6 +34,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class ActionListNextWithFilter extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionListNextWithFilter.class);
+	private UserManagerService userManagerService = new UserManagerService();
+	protected AttendanceEmployeeConfigServiceAdv attendanceEmployeeConfigServiceAdv = new AttendanceEmployeeConfigServiceAdv();
 
 	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id,
 			Integer count, JsonElement jsonElement) throws Exception {
@@ -47,6 +52,9 @@ public class ActionListNextWithFilter extends BaseAction {
 		AttendanceScheduleSetting scheduleSetting_top = null;
 		AttendanceScheduleSetting scheduleSetting = null;
 		Boolean check = true;
+		
+		List<String> unUnitNameList = new ArrayList<String>();
+		List<String> personNameList = new ArrayList<String>();
 
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
@@ -111,10 +119,14 @@ public class ActionListNextWithFilter extends BaseAction {
 				}
 
 				if (check ) {
+					unUnitNameList = getUnUnitNameList();
+					personNameList = getUnPersonNameList();
 					// 从数据库中查询符合条件的一页数据对象
-					detailList = business.getAttendanceDetailFactory().listIdsNextWithFilter(id, count, sequence, wrapIn);
+					//detailList = business.getAttendanceDetailFactory().listIdsNextWithFilter(id, count, sequence, wrapIn);
+					detailList = business.getAttendanceDetailFactory().listIdsNextWithFilterUn(id, count, sequence, wrapIn,unUnitNameList,personNameList);
 					// 从数据库中查询符合条件的对象总数
-					total = business.getAttendanceDetailFactory().getCountWithFilter(wrapIn);
+					//total = business.getAttendanceDetailFactory().getCountWithFilter(wrapIn);
+					total = business.getAttendanceDetailFactory().getCountWithFilterUn(wrapIn,unUnitNameList,personNameList);
 					// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 					wraps = Wo.copier.copy(detailList);
 				}
@@ -191,6 +203,58 @@ public class ActionListNextWithFilter extends BaseAction {
 
 		public static WrapCopier<AttendanceDetail, Wo> copier = WrapCopierFactory.wo(AttendanceDetail.class, Wo.class,
 				null, JpaObject.FieldsInvisible);
+	}
+	
+	/**
+	 * 获取不需要考勤的组织
+	 * @return
+	 * @throws Exception 
+	 */
+	protected  List<String> getUnUnitNameList() throws Exception {
+		List<String> unUnitNameList = new ArrayList<String>();
+
+		List<AttendanceEmployeeConfig> attendanceEmployeeConfigs = attendanceEmployeeConfigServiceAdv.listByConfigType("NOTREQUIRED");
+
+		if(ListTools.isNotEmpty(attendanceEmployeeConfigs)){
+			for (AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigs) {
+				String unitName = attendanceEmployeeConfig.getUnitName();
+				String employeeName = attendanceEmployeeConfig.getEmployeeName();
+
+				if(StringUtils.isEmpty(employeeName) && StringUtils.isNotEmpty(unitName)){
+					unUnitNameList.add(unitName);
+					List<String> tempUnitNameList = userManagerService.listSubUnitNameWithParent(unitName);
+					if(ListTools.isNotEmpty(tempUnitNameList)){
+						for(String tempUnit:tempUnitNameList){
+							if(!ListTools.contains(unUnitNameList, tempUnit)){
+								unUnitNameList.add(tempUnit);
+							}
+						}
+					}
+				}
+			} 
+		}
+		return unUnitNameList;
+	}
+	
+	/**
+	 * 获取不需要考勤的人员
+	 * @return
+	 * @throws Exception 
+	 */
+	protected  List<String> getUnPersonNameList() throws Exception {
+		List<String> personNameList = new ArrayList<String>();
+		List<AttendanceEmployeeConfig> attendanceEmployeeConfigs = attendanceEmployeeConfigServiceAdv.listByConfigType("NOTREQUIRED");
+
+		if(ListTools.isNotEmpty(attendanceEmployeeConfigs)){
+			for (AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigs) {
+				String employeeName = attendanceEmployeeConfig.getEmployeeName();
+
+				if(StringUtils.isNotEmpty(employeeName) && !ListTools.contains(personNameList, employeeName)){
+					personNameList.add(employeeName);
+				}
+			}
+		}
+		return personNameList;
 	}
 
 }

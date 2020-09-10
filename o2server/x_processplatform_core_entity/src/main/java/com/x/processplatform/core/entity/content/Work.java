@@ -97,8 +97,8 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	public void postLoad() {
 		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getTitle())) {
 			this.title = this.getProperties().getTitle();
-			this.splitValueList = this.getProperties().getSplitValueList();
 		}
+		this.splitValueList = this.getProperties().getSplitValueList();
 	}
 
 	/* 更新运行方法 */
@@ -127,6 +127,10 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			this.properties = new WorkProperties();
 		}
 		return this.properties;
+	}
+
+	public void setProperties(WorkProperties properties) {
+		this.properties = properties;
 	}
 
 	public void setTitle(String title) {
@@ -848,14 +852,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.form = form;
 	}
 
-	// public Integer getErrorRetry() {
-	// return errorRetry;
-	// }
-	//
-	// public void setErrorRetry(Integer errorRetry) {
-	// this.errorRetry = errorRetry;
-	// }
-
 	public String getDestinationRoute() {
 		return destinationRoute;
 	}
@@ -1274,10 +1270,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public void setWorkCreateType(String workCreateType) {
 		this.workCreateType = workCreateType;
-	}
-
-	public void setProperties(WorkProperties properties) {
-		this.properties = properties;
 	}
 
 	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {

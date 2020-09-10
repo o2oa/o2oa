@@ -1,6 +1,7 @@
 package com.x.query.assemble.surface.jaxrs.query;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -77,7 +78,7 @@ class ActionListWithPerson extends BaseAction {
 				p = cb.or(p, root.get(Query_.availableUnitList).in(units));
 			}
 		}
-		cq.select(root.get(Query_.id)).distinct(true).where(p);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Query_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 }

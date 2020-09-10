@@ -148,4 +148,4 @@ if [ -d ${current_dir}/local/update ]; then
 		sudo rm -Rf ${current_dir}/local/update
 	fi
 fi
-sudo setsid ${current_dir}/jvm/raspberrypi/bin/java -javaagent:${current_dir}/console.jar -server -Xms1g -Xmx1g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
+sudo setsid ${current_dir}/jvm/raspberrypi/bin/java -javaagent:${current_dir}/console.jar -server -Xms1g -Xmx2g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar

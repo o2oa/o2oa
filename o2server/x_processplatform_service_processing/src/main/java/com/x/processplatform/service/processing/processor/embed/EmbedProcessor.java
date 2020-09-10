@@ -20,6 +20,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.EmbedCreatorType;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WrapScriptObject;
@@ -35,6 +36,8 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Embed embed) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.embedArrive(aeiObjects.getWork().getActivityToken(), embed));
 		return aeiObjects.getWork();
 	}
 
@@ -44,6 +47,8 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Embed embed) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.embedExecute(aeiObjects.getWork().getActivityToken(), embed));
 		AssginData assginData = new AssginData();
 		String targetApplication = embed.getTargetApplication();
 		String targetProcess = embed.getTargetProcess();
@@ -107,7 +112,9 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception {
-		/** 驱动上个环节新产生的work */
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.embedInquire(aeiObjects.getWork().getActivityToken(), embed));
+		// 驱动上个环节新产生的work
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;

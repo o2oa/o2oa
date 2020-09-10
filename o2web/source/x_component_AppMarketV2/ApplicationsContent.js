@@ -158,6 +158,11 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         
         var categorydiv = new Element("span",{"text":d,"class":"o2_appmarket_appcategory"}).inject(categorysdiv);
         categorydiv.store("data",d);
+        if (_self.content.querydata["category"]){
+            if ((_self.content.querydata["category"]=="" && d=="全部")||(_self.content.querydata["category"]==d)){
+                categorydiv.removeClass("o2_appmarket_appcategory").addClass("mainColor_color").addClass("o2_appmarket_appcategory_current");
+            }
+        }
         categorydiv.addEvents({
             "mouseover":function(){
                 debugger;
@@ -187,13 +192,13 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         //this.content.appCategory_count.empty();
         //new Element("div",{"text":this.content.currentcategory.name+"("+this.content.currentcategory.count+")"}).inject(this.content.appCategory_count);        
         var appsdiv = this.content.appList;
-        var appsdivwidth= appsdiv.clientWidth-80;
+        var appsdivwidth= appsdiv.clientWidth-40;
         //appwidth = (appsdivwidth-200)/7;
-        rowappnum = parseInt(appsdivwidth/285);
-        rowappmargin = (appsdivwidth/285-rowappnum)  * 285  / (rowappnum-1);
+        rowappnum = parseInt(appsdivwidth/240);
+        rowappmargin = (appsdivwidth/240-rowappnum)  * 240  / (rowappnum-1);
         if (rowappmargin<10){
             rowappnum = rowappnum -1;
-            rowappmargin = (appsdivwidth/285-rowappnum)  * 285  / (rowappnum-1)
+            rowappmargin = (appsdivwidth/240-rowappnum)  * 240  / (rowappnum-1)
         }
         debugger;
         //appsdiv.setStyle("width","calc("+appwidth+"px)");
@@ -210,7 +215,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
        if ((i+1)%rowappnum!=0){
             applicationdiv.setStyle("margin-right",rowappmargin+"px");
        }else{
-            applicationdiv.setStyle("margin-right","40px");
+            applicationdiv.setStyle("margin-right","30px");
        }
        var applicationicon = new Element("div",{"class":"o2_appmarket_application_icon"}).inject(applicationdiv);
        applicationicon.setStyle("background-image", "url(data:image/png;base64,"+d.icon+")");

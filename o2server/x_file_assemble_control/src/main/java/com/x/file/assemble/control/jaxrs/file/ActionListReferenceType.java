@@ -2,6 +2,7 @@ package com.x.file.assemble.control.jaxrs.file;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -9,10 +10,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.google.gson.GsonBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.file.assemble.control.Business;
@@ -45,8 +48,8 @@ class ActionListReferenceType extends BaseAction {
 		CriteriaQuery<ReferenceType> cq = cb.createQuery(ReferenceType.class);
 		Root<File> root = cq.from(File.class);
 		Predicate p = cb.equal(root.get(File_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(File_.referenceType)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(File_.referenceType)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	private Long countWithPersonWithReferenceType(Business business, EffectivePerson effectivePerson,

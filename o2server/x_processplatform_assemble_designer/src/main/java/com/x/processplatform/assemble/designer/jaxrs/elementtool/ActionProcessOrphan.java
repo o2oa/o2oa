@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.designer.jaxrs.elementtool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -88,8 +89,8 @@ class ActionProcessOrphan extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.not(root.get(Process_.application).in(applicationIds));
-		cq.select(root.get(Process_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Process_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	private <T extends JpaObject, W> List<String> listOrphanProcessElement(Business business, List<String> processIds,
@@ -99,8 +100,8 @@ class ActionProcessOrphan extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<T> root = cq.from(copier.getOrigClass());
 		Predicate p = cb.not(root.get(Agent.process_FIELDNAME).in(processIds));
-		cq.select(root.get(JpaObject.id_FIELDNAME)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(JpaObject.id_FIELDNAME)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public static class WoProcess extends Process {

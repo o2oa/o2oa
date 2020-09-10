@@ -85,7 +85,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadSidebarPosition();
                     this.loadViewFilter();
                     this.loadDocumentTempleteSelect();
-                    this.loadScriptIncluder();
+                    // this.loadScriptIncluder();
+                    // this.loadDictionaryIncluder();
                     //this.testRestful();
 //			this.loadScriptInput();
                     //MWF.process.widget.EventsEditor
@@ -1407,7 +1408,6 @@ debugger;
             }.bind(this));
 
             dictionaryNodes.each(function(node){
-                debugger;
                 var data = this.data[node.get("name")];
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "Dictionary",
@@ -1419,6 +1419,7 @@ debugger;
                         if( ids.length > 0 ){
                             // var d = ids[0].data;
                             ids.each( function (id) {
+                                debugger;
                                 var d = id.data;
                                 data.push({
                                     "type" : "dictionary",
@@ -1426,6 +1427,7 @@ debugger;
                                     "alias": d.alias,
                                     "id": d.id,
                                     "appName" : d.appName || d.applicationName,
+                                    "appAlias" : d.appAlias || d.applicationAlias,
                                     "appId": d.appId,
                                     "application": d.application,
                                     "appType" : d.appType
@@ -1481,6 +1483,24 @@ debugger;
 
 
         }.bind(this));
+    },
+    loadDictionaryIncluder : function(){
+        var nodes = this.propertyContent.getElements(".MWFDictionaryIncluder");
+        if (nodes.length){
+            nodes.each(function(node){
+                var name = node.get("name");
+                MWF.xDesktop.requireApp("process.FormDesigner", "widget.DictionaryIncluder", function(){
+                    var dictionaryIncluder = new MWF.xApplication.process.FormDesigner.widget.DictionaryIncluder(node, this.designer, {
+                        "onChange": function(){
+                            var data = dictionaryIncluder.getData();
+                            this.data[name] = data;
+                        }.bind(this)
+                    });
+                    dictionaryIncluder.load(this.data[name])
+                }.bind(this));
+            }.bind(this));
+        }
+
     },
     loadScriptIncluder : function(){
         var nodes = this.propertyContent.getElements(".MWFScriptIncluder");
