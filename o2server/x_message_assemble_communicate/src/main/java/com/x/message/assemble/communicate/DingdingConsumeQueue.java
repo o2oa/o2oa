@@ -57,7 +57,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 					Message messageEntityObject = emc.find(message.getId(), Message.class);
 					if (null != messageEntityObject) {
 						emc.beginTransaction(Message.class);
-						message.setConsumed(true);
+						messageEntityObject.setConsumed(true);
 						emc.commit();
 					}
 				}
