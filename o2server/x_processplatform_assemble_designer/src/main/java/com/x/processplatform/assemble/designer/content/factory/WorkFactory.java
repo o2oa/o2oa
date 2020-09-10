@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.designer.content.factory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -45,7 +46,8 @@ public class WorkFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Work> root = cq.from(Work.class);
 		Predicate p = cb.equal(root.get(Work_.application), applicationId);
-		return em.createQuery(cq.select(root.get(Work_.job)).where(p).distinct(true)).getResultList();
+		return em.createQuery(cq.select(root.get(Work_.job)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
 	}
 
 	public List<String> listJobWithProcess(String processId) throws Exception {
@@ -54,6 +56,7 @@ public class WorkFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Work> root = cq.from(Work.class);
 		Predicate p = cb.equal(root.get(Work_.process), processId);
-		return em.createQuery(cq.select(root.get(Work_.job)).where(p).distinct(true)).getResultList();
+		return em.createQuery(cq.select(root.get(Work_.job)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
 	}
 }
