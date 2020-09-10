@@ -83,9 +83,10 @@ MWF.xApplication.process.FormDesigner.Module.Tree = MWF.FCTree = new Class({
 		if (!this.tree){
 			this.node.empty();
 			this.tree = new MWF.widget.Tree(this.node, {"style":"form"});
+			this.tree.css = Object.clone( this.tree.css );
+			this._setTreeStyles();
 			this._setTreeWidgetStyles();
 			this.tree.load(treeData);
-			this._setTreeStyles();
 		}else{
 			this.tree.reLoad(treeData);
 		}
