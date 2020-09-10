@@ -318,13 +318,10 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.routeSelectorArea.empty();
         //}
         this.selectedRoute = null;
-
-        var flag = true;
-
         //this.task.routeNameList = ["送审核", "送办理", "送公司领导阅"];
         if( !routeList )routeList = this.getRouteDataList();
         //this.task.routeNameList.each(function(route, i){
-        var flag = false;
+        var isSelected = false;
         routeList.each(function(route, i){
             if( route.hiddenScriptText && this.form && this.form.Macro ){
                 if( this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true" )return;
@@ -347,13 +344,10 @@ MWF.xApplication.process.Work.Processor = new Class({
 
             if (routeList.length==1 || route.sole ){ //sole表示优先路由
                 this.selectRoute(routeNode);
-                flag = false;
-            }else{
-                flag = true;
+                isSelected = true;
             }
-
         }.bind(this));
-        if( flag ){
+        if( !isSelected ){
             this.setSize(0);
         }
     },
