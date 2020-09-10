@@ -1451,6 +1451,16 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
             return true;
         }
     },
+    //小程序文件是否支持打开
+    checkMiniProgramFile: function(ext) {
+        var exts = ["doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf"];
+        for(var i = 0; i < exts.length; i++){
+            if(ext === exts[i]){
+                return true;
+            }
+        }
+        return false;
+    },
     downloadAttachment: function (e, node, attachments) {
         if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
             attachments.each(function (att) {
@@ -1459,6 +1469,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": this.json.id });
+                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
+                    wx.miniProgram.navigateTo({ 
+                        url: '../file/download?attId=' + att.data.id + '&type=work&work=' + this.form.businessData.work.id
+                    });
                 } else {
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
@@ -1479,6 +1493,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": this.json.id });
+                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
+                    wx.miniProgram.navigateTo({ 
+                        url: '../file/download?attId=' + att.data.id + '&type=work&workCompleted=' + this.form.businessData.workCompleted.id
+                    });
                 } else {
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
@@ -1502,6 +1520,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": this.json.id });
+                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
+                    wx.miniProgram.navigateTo({ 
+                        url: '../file/download?attId=' + att.data.id + '&type=work&work=' + this.form.businessData.work.id
+                    });
                 } else {
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
@@ -1523,6 +1545,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": this.json.id });
+                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
+                    wx.miniProgram.navigateTo({ 
+                        url: '../file/download?attId=' + att.data.id + '&type=work&workCompleted=' + this.form.businessData.workCompleted.id
+                    });
                 } else {
 
                     if (layout.mobile) {

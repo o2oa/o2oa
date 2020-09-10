@@ -20,5 +20,20 @@
 </head>
 <body style="overflow: auto; margin:0px">
 <div id="layout" style="overflow: auto"></div>
+<script>
+    //动态添加 微信的 jssdk
+    function addWxJsSdk() {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "http://res.wx.qq.com/open/js/jweixin-1.6.0.js";
+        document.body.appendChild(script);
+    }
+    //微信的WeixinJSBridgeReady加载完成后进行判断
+    if (!window.WeixinJSBridge || !WeixinJSBridge.invoke) {
+        document.addEventListener('WeixinJSBridgeReady', addWxJsSdk, false);
+    } else {
+        addWxJsSdk();
+    }
+</script>
 </body>
 </html>
