@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.designer.jaxrs.elementtool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -43,8 +44,8 @@ class ActionScriptOrphan extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Script> root = cq.from(Script.class);
 		Predicate p = cb.not(root.get(Script_.application).in(applicationIds));
-		cq.select(root.get(Script_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Script_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public static class WoScript extends Script {
