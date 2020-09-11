@@ -384,7 +384,7 @@ public class SyncOrganization {
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.equal(root.get(Identity_.person), person.getId());
 		p = cb.and(p, cb.equal(root.get(Identity_.unit), unit.getId()));
-		List<Identity> os = em.createQuery(cq.select(root).where(p).distinct(true)).setMaxResults(1).getResultList();
+		List<Identity> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
 		Identity identity = null;
 		if (os.size() == 0) {
 			identity = this.createIdentity(business, result, person, unit, user);
@@ -520,7 +520,7 @@ public class SyncOrganization {
 		Root<Unit> root = cq.from(Unit.class);
 		Predicate p = cb.notEqual(root.get(Unit_.zhengwuDingdingId), "");
 		p = cb.and(p, cb.isNotNull(root.get(Unit_.zhengwuDingdingId)));
-		List<Unit> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		return os;
 	}
 
@@ -532,7 +532,7 @@ public class SyncOrganization {
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.notEqual(root.get(Person_.zhengwuDingdingId), "");
 		p = cb.and(p, cb.isNotNull(root.get(Person_.zhengwuDingdingId)));
-		List<Person> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		return os;
 	}
 
