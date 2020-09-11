@@ -1,6 +1,7 @@
 package com.x.portal.assemble.designer.factory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -82,8 +83,8 @@ public class TemplatePageFactory extends AbstractFactory {
 			p = cb.isMember(effectivePerson.getDistinguishedName(), root.get(TemplatePage_.controllerList));
 			p = cb.or(p, cb.equal(root.get(TemplatePage_.creatorPerson), effectivePerson.getDistinguishedName()));
 		}
-		cq.select(root.get(TemplatePage_.id)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq.select(root.get(TemplatePage_.id)).where(p)).getResultList();
+		cq.select(root.get(TemplatePage_.id)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		return list;
 	}
 
@@ -98,8 +99,8 @@ public class TemplatePageFactory extends AbstractFactory {
 					cb.or(cb.isMember(effectivePerson.getDistinguishedName(), root.get(TemplatePage_.controllerList)),
 							cb.equal(root.get(TemplatePage_.creatorPerson), effectivePerson.getDistinguishedName())));
 		}
-		cq.select(root.get(TemplatePage_.id)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq.select(root.get(TemplatePage_.id)).where(p)).getResultList();
+		cq.select(root.get(TemplatePage_.id)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		return list;
 	}
 
