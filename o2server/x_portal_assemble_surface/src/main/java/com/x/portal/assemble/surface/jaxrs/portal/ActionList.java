@@ -70,8 +70,8 @@ class ActionList extends BaseAction {
 			who = cb.or(who, root.get(Portal_.availableUnitList).in(units));
 			p = cb.and(p, who);
 		}
-		cq.select(root.get(Portal_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Portal_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public static class Wo extends Portal {
