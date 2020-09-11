@@ -3,6 +3,7 @@ package com.x.mind.assemble.control.factory;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -318,7 +319,7 @@ public class MindBaseInfoFactory extends AbstractFactory {
 				cq.orderBy( cb.asc( root.get( MindBaseInfo_.sequence ) ) );
 			}
 		}
-		return em.createQuery(cq.distinct(true).where(p)).setMaxResults( count ).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults( count ).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**

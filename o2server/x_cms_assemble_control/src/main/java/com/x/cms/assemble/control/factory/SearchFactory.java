@@ -1,6 +1,7 @@
 package com.x.cms.assemble.control.factory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -36,8 +37,8 @@ public class SearchFactory extends AbstractFactory {
 		}else{
 			p = cb.and(p, root.get( Document_.appId ).in( appids ));
 		}
-		cq.distinct(true).select(root.get( Document_.creatorUnitName ) );
-		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList();
+		cq.select(root.get( Document_.creatorUnitName ) );
+		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 //	@MethodDescribe("查询用户可见的指定状态下的文件涉及的顶层组织列表量")
@@ -55,8 +56,8 @@ public class SearchFactory extends AbstractFactory {
 		}else{
 			p = cb.and(p, root.get( Document_.appId ).in( appids ));
 		}
-		cq.distinct(true).select(root.get( Document_.creatorTopUnitName ) );
-		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList();
+		cq.select(root.get( Document_.creatorTopUnitName ) );
+		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	//@MethodDescribe("查询用户可见的指定状态下的文件涉及的栏目ID列表量")
@@ -74,8 +75,8 @@ public class SearchFactory extends AbstractFactory {
 		}else{
 			p = cb.and(p, root.get( Document_.appId ).in( appids ));
 		}
-		cq.distinct(true).select(root.get( Document_.appId ) );
-		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList();
+		cq.select(root.get( Document_.appId ) );
+		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	//@MethodDescribe("查询用户可见的指定状态下的文件涉及的分类ID列表")
@@ -93,8 +94,8 @@ public class SearchFactory extends AbstractFactory {
 		}else{
 			p = cb.and(p, root.get( Document_.appId ).in( appids ));
 		}
-		cq.distinct(true).select(root.get( Document_.categoryId ) );
-		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList();
+		cq.select(root.get( Document_.categoryId ) );
+		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	//@MethodDescribe("根据categoryId查询该应用栏目下的所有文档数量")
