@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -699,8 +700,8 @@ public class OkrWorkBaseInfoFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrWorkBaseInfo_.creatorIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrWorkBaseInfo_.creatorIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrWorkBaseInfo_.creatorIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 查询具体工作部署者身份列表（去重复）
@@ -722,8 +723,8 @@ public class OkrWorkBaseInfoFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrWorkBaseInfo_.deployerIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrWorkBaseInfo_.deployerIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrWorkBaseInfo_.deployerIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 查询具体工作阅知领导身份列表（去重复）
@@ -791,8 +792,8 @@ public class OkrWorkBaseInfoFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrWorkBaseInfo_.responsibilityIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrWorkBaseInfo_.responsibilityIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrWorkBaseInfo_.responsibilityIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**
