@@ -68,7 +68,7 @@ public class UnitDutyFactory extends AbstractFactory {
 				CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 				Root<UnitDuty> root = cq.from(UnitDuty.class);
 				Predicate p = cb.equal(root.get(UnitDuty_.name), name);
-				List<UnitDuty> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				if (os.size() == 1) {
 					o = os.get(0);
 					em.detach(o);

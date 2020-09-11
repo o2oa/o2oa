@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -68,7 +69,7 @@ public class PersonFactory extends AbstractFactory {
 				CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 				Root<Person> root = cq.from(Person.class);
 				Predicate p = cb.equal(root.get(Person_.name), name);
-				List<Person> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				if (os.size() == 1) {
 					o = os.get(0);
 					em.detach(o);
@@ -115,8 +116,8 @@ public class PersonFactory extends AbstractFactory {
 		p = cb.or(p, cb.equal(root.get(Person_.open3Id), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.open4Id), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.open5Id), credential));
-		cq.select(root.get(Person_.id));
-		List<String> list = em.createQuery(cq.where(p).distinct(true)).getResultList();
+		cq.select(root.get(Person_.id)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		if (list.size() == 1) {
 			return list.get(0);
 		}else if(list.size() > 1){

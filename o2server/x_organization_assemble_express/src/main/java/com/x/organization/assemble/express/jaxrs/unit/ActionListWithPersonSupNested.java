@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.unit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -73,7 +74,8 @@ class ActionListWithPersonSupNested extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = root.get(Identity_.person).in(personIds);
-		List<String> os = em.createQuery(cq.select(root.get(Identity_.unit)).where(p).distinct(true)).getResultList();
+		List<String> os = em.createQuery(cq.select(root.get(Identity_.unit)).where(p))
+				.getResultList().stream().distinct().collect(Collectors.toList());
 		List<String> unitIds = new ArrayList<>(os);
 		for (String str : os) {
 			unitIds.addAll(business.unit().listSupNested(str));

@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -102,7 +103,8 @@ class ActionHasRole extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Role> root = cq.from(Role.class);
 		Predicate p = root.get(Role_.groupList).in(groupIds);
-		List<String> os = em.createQuery(cq.select(root.get(Role_.id)).where(p).distinct(true)).getResultList();
+		List<String> os = em.createQuery(cq.select(root.get(Role_.id)).where(p))
+				.getResultList().stream().distinct().collect(Collectors.toList());
 		boolean value = ListTools.containsAny(os,
 				ListTools.extractProperty(roles, JpaObject.id_FIELDNAME, String.class, true, true));
 		wo.setValue(value);

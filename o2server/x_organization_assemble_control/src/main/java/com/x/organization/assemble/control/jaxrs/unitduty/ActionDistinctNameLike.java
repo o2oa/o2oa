@@ -68,8 +68,8 @@ class ActionDistinctNameLike extends BaseAction {
 		Predicate p = cb.like(root.get(UnitDuty_.name), "%" + key + "%", '\\');
 		p = cb.or(p, cb.like(root.get(UnitDuty_.pinyin), key + "%", '\\'));
 		p = cb.or(p, cb.like(root.get(UnitDuty_.pinyinInitial), key + "%", '\\'));
-		cq.select(root.get(UnitDuty_.name)).distinct(true).where(p);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(UnitDuty_.name)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		list = list.stream().filter(o -> {
 			return StringUtils.isNotEmpty(o);
 		}).sorted().collect(Collectors.toList());
