@@ -183,7 +183,7 @@ class ActionLogin extends BaseAction {
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.equal(root.get(Person_.zhengwuDingdingId), userId);
 		cq.select(root).where(p);
-		List<Person> list = em.createQuery(cq.distinct(true)).getResultList();
+		List<Person> list = em.createQuery(cq).getResultList();
 		if (list.size() == 1) {
 			return list.get(0);
 		} else {

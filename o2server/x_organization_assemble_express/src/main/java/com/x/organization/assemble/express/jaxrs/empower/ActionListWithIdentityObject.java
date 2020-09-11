@@ -211,7 +211,7 @@ class ActionListWithIdentityObject extends BaseAction {
 		p = cb.and(p, cb.equal(root.get(Empower_.enable), true));
 		p = cb.and(p, cb.lessThan(root.get(Empower_.startTime), new Date()),
 				cb.greaterThan(root.get(Empower_.completedTime), new Date()));
-		return em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		return em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 }

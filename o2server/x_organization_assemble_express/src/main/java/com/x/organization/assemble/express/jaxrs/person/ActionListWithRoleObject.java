@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.person;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -93,7 +94,8 @@ class ActionListWithRoleObject extends BaseAction {
 		CriteriaQuery<Group> cq = cb.createQuery(Group.class);
 		Root<Group> root = cq.from(Group.class);
 		Predicate p = root.get(Group_.id).in(groupIds);
-		List<Group> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Group> os = em.createQuery(cq.select(root).where(p))
+				.getResultList().stream().distinct().collect(Collectors.toList());
 		List<String> personIds = new ArrayList<>();
 		for (Group o : os) {
 			personIds.addAll(o.getPersonList());

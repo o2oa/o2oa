@@ -101,7 +101,7 @@ class ActionZhengwuDingdingPerson extends BaseAction {
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.isNotEmpty(root.get(Person.zhengwuDingdingId_FIELDNAME));
-		List<Person> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		return os;
 	}
 
@@ -111,7 +111,7 @@ class ActionZhengwuDingdingPerson extends BaseAction {
 		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 		Root<Unit> root = cq.from(Unit.class);
 		Predicate p = cb.isNotEmpty(root.get(Unit.zhengwuDingdingId_FIELDNAME));
-		List<Unit> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		os = os.stream().sorted(Comparator.comparing(Unit::getOrderNumber, Comparator.nullsLast(Integer::compareTo)))
 				.collect(Collectors.toList());
 		return os;

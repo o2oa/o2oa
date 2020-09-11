@@ -76,7 +76,7 @@ class ActionListWithPersonObject extends BaseAction {
 			CriteriaQuery<PersonAttribute> cq = cb.createQuery(PersonAttribute.class);
 			Root<PersonAttribute> root = cq.from(PersonAttribute.class);
 			Predicate p = root.get(PersonAttribute_.person).in(ids);
-			List<PersonAttribute> list = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+			List<PersonAttribute> list = em.createQuery(cq.select(root).where(p)).getResultList();
 			list = business.personAttribute().sort(list);
 			for (PersonAttribute o : list) {
 				wos.add(this.convert(business, o, Wo.class));
