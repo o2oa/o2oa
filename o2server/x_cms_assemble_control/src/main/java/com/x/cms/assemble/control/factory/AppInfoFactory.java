@@ -492,8 +492,8 @@ public class AppInfoFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		Predicate p = cb.isNotNull( root.get(AppInfo_.appType));
-		cq.select(root.get(AppInfo_.appType)).distinct(true);
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(AppInfo_.appType));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 //	public Long countAppInfoWithAppType(String type) throws Exception {
