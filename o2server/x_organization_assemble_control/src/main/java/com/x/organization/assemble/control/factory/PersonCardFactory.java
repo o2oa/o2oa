@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.factory;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -65,7 +66,7 @@ public class PersonCardFactory extends AbstractFactory {
 				CriteriaQuery<PersonCard> cq = cb.createQuery(PersonCard.class);
 				Root<PersonCard> root = cq.from(PersonCard.class);
 				Predicate p = cb.equal(root.get(PersonCard_.name), name);
-				List<PersonCard> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<PersonCard> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				if (os.size() == 1) {
 					o = os.get(0);
 					em.detach(o);
@@ -89,7 +90,7 @@ public class PersonCardFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<PersonCard> root = cq.from(PersonCard.class);
 		Predicate p = cb.equal(root.get(PersonCard_.distinguishedName), distinguishName);
-		cq.select(root.get(PersonCard_.groupType)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(PersonCard_.groupType)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 }

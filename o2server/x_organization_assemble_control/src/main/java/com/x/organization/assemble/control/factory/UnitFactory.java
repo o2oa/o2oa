@@ -67,7 +67,7 @@ public class UnitFactory extends AbstractFactory {
 				CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 				Root<Unit> root = cq.from(Unit.class);
 				Predicate p = cb.equal(root.get(Unit_.name), name);
-				List<Unit> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				if (os.size() == 1) {
 					o = os.get(0);
 					em.detach(o);
@@ -81,7 +81,7 @@ public class UnitFactory extends AbstractFactory {
 				Root<Unit> root = cq.from(Unit.class);
 				Predicate p = cb.and(cb.equal(root.get(Unit_.name), Objects.toString(ListTools.last(list), "")),
 						cb.equal(root.get(Unit_.level), list.size()));
-				List<Unit> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				for (Unit unit : os) {
 					if (StringUtils.equalsIgnoreCase(unit.getLevelName(), flag)) {
 						o = unit;

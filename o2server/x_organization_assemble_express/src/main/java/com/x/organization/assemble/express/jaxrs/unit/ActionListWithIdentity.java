@@ -72,7 +72,7 @@ class ActionListWithIdentity extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = root.get(Identity_.id).in(ids);
-		List<String> unitIds = em.createQuery(cq.select(root.get(Identity_.unit)).where(p).distinct(true))
+		List<String> unitIds = em.createQuery(cq.select(root.get(Identity_.unit)).where(p))
 				.getResultList();
 		Wo wo = new Wo();
 		List<String> list = business.unit().listUnitDistinguishedNameSorted(unitIds);

@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.person;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -95,7 +96,8 @@ class ActionListWithUnitSubDirectLikeObject extends BaseAction {
 		p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", StringTools.SQL_ESCAPE_CHAR));
 		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
 		p = cb.and(p, cb.isMember(root.get(Person_.id), cb.literal(ids)));
-		List<String> list = em.createQuery(cq.select(root.get(Person_.id)).where(p).distinct(true)).getResultList();
+		List<String> list = em.createQuery(cq.select(root.get(Person_.id)).where(p))
+				.getResultList().stream().distinct().collect(Collectors.toList());
 		for (Person o : business.person().pick(list)) {
 			wos.add(this.convert(business, o, Wo.class));
 		}
@@ -110,8 +112,8 @@ class ActionListWithUnitSubDirectLikeObject extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = root.get(Identity_.unit).in(unitIds);
-		List<String> list = em.createQuery(cq.select(root.get(Identity_.person)).where(p).distinct(true))
-				.getResultList();
+		List<String> list = em.createQuery(cq.select(root.get(Identity_.person)).where(p))
+				.getResultList().stream().distinct().collect(Collectors.toList());
 		return list;
 	}
 
