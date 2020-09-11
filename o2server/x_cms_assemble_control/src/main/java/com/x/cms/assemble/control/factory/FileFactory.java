@@ -94,7 +94,7 @@ public class FileFactory extends ElementFactory {
 			CriteriaQuery<File> cq = cb.createQuery(File.class);
 			Root<File> root = cq.from(File.class);
 			Predicate p = cb.equal(root.get(File_.name), flag);
-			List<File> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+			List<File> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 			if (os.size() == 1) {
 				o = os.get(0);
 				em.detach(o);

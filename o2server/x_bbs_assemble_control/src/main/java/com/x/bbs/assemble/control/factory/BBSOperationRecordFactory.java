@@ -2,6 +2,7 @@ package com.x.bbs.assemble.control.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -53,7 +54,7 @@ public class BBSOperationRecordFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<BBSOperationRecord> root = cq.from(BBSOperationRecord.class);
 		Predicate p = cb.isNotNull( root.get(BBSOperationRecord_.id) );
-		cq.distinct(true).select( root.get(BBSOperationRecord_.operatorName) );
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select( root.get(BBSOperationRecord_.operatorName) );
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 }

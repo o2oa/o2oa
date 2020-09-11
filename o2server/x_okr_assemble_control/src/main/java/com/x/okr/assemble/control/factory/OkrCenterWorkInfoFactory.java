@@ -3,6 +3,7 @@ package com.x.okr.assemble.control.factory;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -333,8 +334,8 @@ public class OkrCenterWorkInfoFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrCenterWorkInfo_.creatorIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrCenterWorkInfo_.creatorIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrCenterWorkInfo_.creatorIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 查询中心工作部署者身份列表（去重复）
@@ -356,8 +357,8 @@ public class OkrCenterWorkInfoFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrCenterWorkInfo_.deployerIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrCenterWorkInfo_.deployerIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrCenterWorkInfo_.deployerIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 查询中心工作汇报审核领导身份列表（去重复）
