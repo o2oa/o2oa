@@ -127,7 +127,9 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
 
             if (!this.json.validation) return true;
             if (!this.json.validation.code) return true;
+            this.currentRouteName = routeName;
             var flag = this.form.Macro.exec(this.json.validation.code, this);
+            this.currentRouteName = "";
             if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
             if (flag.toString() != "true") {
                 this.notValidationMode(flag);
