@@ -60,8 +60,8 @@ class ActionDistinctName extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<UnitDuty> root = cq.from(UnitDuty.class);
-		cq.select(root.get(UnitDuty_.name)).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(UnitDuty_.name));
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		list = list.stream().filter(o -> {
 			return StringUtils.isNotEmpty(o);
 		}).sorted().collect(Collectors.toList());

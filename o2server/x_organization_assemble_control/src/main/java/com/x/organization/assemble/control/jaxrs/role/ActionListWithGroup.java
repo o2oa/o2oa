@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.role;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -17,6 +18,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Role;
@@ -69,7 +71,7 @@ class ActionListWithGroup extends BaseAction {
 		CriteriaQuery<Role> cq = cb.createQuery(Role.class);
 		Root<Role> root = cq.from(Role.class);
 		Predicate p = root.get(Role_.groupList).in(groups);
-		List<Role> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Role> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		List<Wo> wos = Wo.copier.copy(os);
 		wos = business.role().sort(wos);
 		return wos;

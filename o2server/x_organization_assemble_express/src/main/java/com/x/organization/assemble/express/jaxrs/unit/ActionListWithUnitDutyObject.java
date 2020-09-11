@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.unit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -87,8 +88,8 @@ class ActionListWithUnitDutyObject extends BaseAction {
 			Root<UnitDuty> root = cq.from(UnitDuty.class);
 			Predicate p = cb.isMember(identity.getId(), root.get(UnitDuty_.identityList));
 			p = cb.and(p, cb.equal(root.get(UnitDuty_.name), wi.getName()));
-			List<String> unitIds = em.createQuery(cq.select(root.get(UnitDuty_.unit)).where(p).distinct(true))
-					.getResultList();
+			List<String> unitIds = em.createQuery(cq.select(root.get(UnitDuty_.unit)).where(p))
+					.getResultList().stream().distinct().collect(Collectors.toList());
 			unitIds = ListTools.trim(unitIds, true, true);
 			for (Unit o : business.unit().pick(unitIds)) {
 				wos.add(this.convert(business, o, Wo.class));
