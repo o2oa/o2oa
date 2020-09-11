@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.queryview;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -71,8 +72,8 @@ public class ActionListAll extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<QueryView> root = cq.from( QueryView.class );
-		cq.select(root.get( QueryView_.appId )).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get( QueryView_.appId ));
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		return list;
 	}
 
@@ -82,8 +83,8 @@ public class ActionListAll extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<QueryView> root = cq.from(QueryView.class);
 		Predicate p = cb.equal( root.get(QueryView_.appId), appId );
-		cq.select(root.get(QueryView_.id)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(QueryView_.id)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		return list;
 	}
 
