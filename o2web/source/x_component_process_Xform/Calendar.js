@@ -42,6 +42,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
         return value;
     },
 	clickSelect: function(){
+	    debugger;
         var _self = this;
         if (!this.calendar){
             MWF.require("MWF.widget.Calendar", function(){
@@ -77,16 +78,45 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
                                 edge: 'leftCenter'
                                 //offset : { y : -25 }
                             });
+                        }else{
+                            var parent = _self.node.getParent();
+                            while( parent ){
+                                var overflow = parent.getStyle("overflow");
+                                var overflowY = parent.getStyle("overflow-y");
+                                if(  overflow === "auto" || overflow === "scroll" || overflowY === "auto" || overflowY === "scroll" ){
+                                    _self.scrollFun = function( e ){
+                                        if (this.container.position ) {
+                                            this.container.position({
+                                                relativeTo: this.node,
+                                                position: 'bottomLeft',
+                                                edge: 'upperLeft',
+                                                allowNegative : true
+                                            });
+                                        }
+                                    }.bind(this);
+                                    _self.scrollParentNode = parent;
+                                    parent.addEvent( "scroll", _self.scrollFun );
+                                    parent = null;
+                                }else{
+                                    parent = parent.getParent();
+                                }
+                            }
                         }
                         _self.fireEvent("show");
                     },
                     "onHide": function(){
                         if (!this.node.getFirst().get("value")) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
+                        if( _self.scrollParentNode && _self.scrollFun ){
+                            _self.scrollParentNode.removeEvent("scroll", _self.scrollFun);
+                        }
                         _self.fireEvent("hide");
                     }.bind(this)
                 };
                 options.baseDate = this.getBaseDate();
                 this.calendar = new MWF.widget.Calendar(this.node.getFirst(), options);
+                if( this.form.json && this.form.json.canlendarStyle && typeOf( this.form.json.canlendarStyle.zIndex ) !== "null" && typeOf( this.form.json.canlendarStyle.zIndex ) !== "undefined" ){
+                    this.calendar.container.setStyle("z-index", this.form.json.canlendarStyle.zIndex );
+                }
                 this.calendar.show();
             }.bind(this));
         }else{
