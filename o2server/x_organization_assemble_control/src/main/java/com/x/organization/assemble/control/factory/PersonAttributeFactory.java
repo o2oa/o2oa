@@ -68,7 +68,7 @@ public class PersonAttributeFactory extends AbstractFactory {
 				CriteriaQuery<PersonAttribute> cq = cb.createQuery(PersonAttribute.class);
 				Root<PersonAttribute> root = cq.from(PersonAttribute.class);
 				Predicate p = cb.equal(root.get(PersonAttribute_.name), name);
-				List<PersonAttribute> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<PersonAttribute> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 				if (os.size() == 1) {
 					o = os.get(0);
 					em.detach(o);

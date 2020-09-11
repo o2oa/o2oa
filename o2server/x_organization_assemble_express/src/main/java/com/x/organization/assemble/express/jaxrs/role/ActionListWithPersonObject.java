@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.role;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -81,7 +82,7 @@ class ActionListWithPersonObject extends BaseAction {
 		Root<Role> root = cq.from(Role.class);
 		Predicate p = root.get(Role_.personList).in(personIds);
 		p = cb.or(p, root.get(Role_.groupList).in(groupIds));
-		List<String> roleIds = em.createQuery(cq.select(root.get(Role_.id)).where(p).distinct(true)).getResultList();
+		List<String> roleIds = em.createQuery(cq.select(root.get(Role_.id)).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		for (Role o : business.role().pick(roleIds)) {
 			wos.add(this.convert(business, o, Wo.class));
 		}

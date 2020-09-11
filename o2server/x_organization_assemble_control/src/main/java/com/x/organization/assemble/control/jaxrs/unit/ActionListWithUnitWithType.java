@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.unit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -114,7 +115,8 @@ class ActionListWithUnitWithType extends BaseAction {
 				CriteriaQuery<String> cq = cb.createQuery(String.class);
 				Root<Unit> root = cq.from(Unit.class);
 				Predicate p = cb.isMember(wi.getType(), root.get(Unit_.typeList));
-				List<String> os = em.createQuery(cq.select(root.get(Unit_.id)).where(p).distinct(true)).getResultList();
+				List<String> os = em.createQuery(cq.select(root.get(Unit_.id)).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
+
 				List<String> referenceUnitIds = new ArrayList<>(os);
 				for (String str : os) {
 					referenceUnitIds.addAll(business.unit().listSupNested(str));
@@ -155,7 +157,7 @@ class ActionListWithUnitWithType extends BaseAction {
 		Root<Unit> root = cq.from(Unit.class);
 		Predicate p = cb.isMember(wi.getType(), root.get(Unit_.typeList));
 		p = cb.and(p, root.get(Unit_.id).in(expendUnitIds));
-		List<String> os = em.createQuery(cq.select(root.get(Unit_.id)).where(p).distinct(true)).getResultList();
+		List<String> os = em.createQuery(cq.select(root.get(Unit_.id)).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		List<String> referenceUnitIds = new ArrayList<String>(os);
 		for (String str : os) {
 			referenceUnitIds.addAll(business.unit().listSupNested(str));
