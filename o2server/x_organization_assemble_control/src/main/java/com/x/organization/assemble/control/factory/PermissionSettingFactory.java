@@ -83,7 +83,7 @@ public class PermissionSettingFactory extends AbstractFactory {
 				CriteriaQuery<PermissionSetting> cq = cb.createQuery(PermissionSetting.class);
 				Root<PermissionSetting> root = cq.from(PermissionSetting.class);
 				Predicate p = cb.equal(root.get(PermissionSetting_.id), name);
-				List<PermissionSetting> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<PermissionSetting> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				if (os.size() == 1) {
 					o = os.get(0);
 					em.detach(o);
@@ -100,14 +100,4 @@ public class PermissionSettingFactory extends AbstractFactory {
 		cq.select(root.get(PermissionSetting_.id)).orderBy(cb.asc(root.get(PermissionSetting_.createTime))); 
 		return em.createQuery(cq).getResultList();
 	}
-	/*
-	public List<String> fetchAllGroupTypeByCreator(String distinguishName) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(PermissionSetting.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<PermissionSetting> root = cq.from(PermissionSetting.class);
-		Predicate p = cb.equal(root.get(PermissionSetting_.distinguishedName), distinguishName);
-		cq.select(root.get(PermissionSetting_.groupType)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
-	}*/
 }

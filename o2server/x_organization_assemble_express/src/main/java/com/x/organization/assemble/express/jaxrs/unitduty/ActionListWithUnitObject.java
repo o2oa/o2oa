@@ -76,7 +76,7 @@ class ActionListWithUnitObject extends BaseAction {
 			CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 			Root<UnitDuty> root = cq.from(UnitDuty.class);
 			Predicate p = root.get(UnitDuty_.unit).in(ids);
-			List<UnitDuty> list = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+			List<UnitDuty> list = em.createQuery(cq.select(root).where(p)).getResultList();
 			list = business.unitDuty().sort(list);
 			for (UnitDuty o : list) {
 				wos.add(this.convert(business, o, Wo.class));
