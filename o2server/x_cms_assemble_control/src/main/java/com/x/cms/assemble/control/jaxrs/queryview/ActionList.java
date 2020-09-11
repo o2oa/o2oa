@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.queryview;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -63,8 +64,8 @@ public class ActionList extends BaseAction {
 			p = cb.or(p, root.get(QueryView_.availableUnitList).in(unitNames));
 			p = cb.or(p, root.get(QueryView_.availableIdentityList).in(identities));
 		}
-		cq.select(root.get(QueryView_.id)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(QueryView_.id)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		return list;
 	}
 
