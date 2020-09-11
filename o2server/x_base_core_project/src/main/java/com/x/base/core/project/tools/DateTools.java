@@ -562,7 +562,7 @@ public class DateTools {
 			calendar.add(Calendar.DAY_OF_MONTH, dayAdjust );
 		}
 		if ((null != hourAdjust) && (hourAdjust != 0)) {
-			calendar.add(Calendar.HOUR_OF_DAY, dayAdjust );
+			calendar.add(Calendar.HOUR_OF_DAY, hourAdjust );
 		}
 		if ((null != minuteAdjust) && (minuteAdjust != 0)) {
 			calendar.add(Calendar.MINUTE, minuteAdjust );
