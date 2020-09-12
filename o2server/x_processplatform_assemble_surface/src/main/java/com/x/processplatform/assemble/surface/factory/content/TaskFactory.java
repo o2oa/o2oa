@@ -122,6 +122,16 @@ public class TaskFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
+	public List<Task> listWithPersonObject(String person) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Task.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
+		Root<Task> root = cq.from(Task.class);
+		Predicate p = cb.equal(root.get(Task_.person), person);
+		cq.select(root).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 	/**
 	 * 统计指定人员所有的待办数量
 	 */

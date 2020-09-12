@@ -12,18 +12,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.TaskCompleted_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.ActivityType;
 
 public class TaskCompletedFactory extends AbstractFactory {
 
@@ -123,6 +118,16 @@ public class TaskCompletedFactory extends AbstractFactory {
 		p = cb.and(p, cb.equal(root.get(TaskCompleted_.person), person));
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
+	}
+
+	public List<TaskCompleted> listWithPersonObject(String person) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<TaskCompleted> cq = cb.createQuery(TaskCompleted.class);
+		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+		Predicate p = cb.equal(root.get(TaskCompleted_.person), person);
+		cq.select(root).where(p);
+		return em.createQuery(cq).getResultList();
 	}
 
 	/**

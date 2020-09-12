@@ -135,6 +135,16 @@ public class ReadFactory extends AbstractFactory {
 		return em.createQuery(cq).getSingleResult();
 	}
 
+	public List<Read> listWithPersonObject(String person) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Read.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Read> cq = cb.createQuery(Read.class);
+		Root<Read> root = cq.from(Read.class);
+		Predicate p = cb.equal(root.get(Read_.person), person);
+		cq.select(root).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 	/**
 	 * 统计指定人员的待阅数量
 	 */
