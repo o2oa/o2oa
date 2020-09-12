@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.input;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -46,7 +47,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<AppInfo> cq = cb.createQuery(AppInfo.class);
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		Predicate p = cb.equal( root.get(AppInfo_.appAlias ), alias);
-		List<AppInfo> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<AppInfo> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		if (os.size() == 1) {
 			return os.get(0);
 		} else {
@@ -63,7 +64,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<AppInfo> cq = cb.createQuery(AppInfo.class);
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		Predicate p = cb.equal(root.get(AppInfo_.appName), name);
-		List<AppInfo> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<AppInfo> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		if (os.size() == 1) {
 			return os.get(0);
 		} else {

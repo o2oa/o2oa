@@ -13,6 +13,13 @@ o2.addReady(function () {
         MWF.require("MWF.xDesktop.Common", null, false);
         MWF.require("MWF.widget.Mask", null, false);
 
+        //修改支持x-token
+        var uri = new URI(window.location.href);
+        var options = uri.get("data");
+        if (options["x-token"]) {
+            Cookie.write("x-token", options["x-token"]);
+        }
+
         layout.mask = new MWF.widget.Mask({ "style": "desktop" });
         layout.mask.load();
 

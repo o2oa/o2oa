@@ -85,8 +85,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadSidebarPosition();
                     this.loadViewFilter();
                     this.loadDocumentTempleteSelect();
-                    this.loadScriptIncluder();
-                    this.loadDictionaryIncluder();
+                    // this.loadScriptIncluder();
+                    // this.loadDictionaryIncluder();
                     //this.testRestful();
 //			this.loadScriptInput();
                     //MWF.process.widget.EventsEditor

@@ -72,7 +72,7 @@ public class RoleFactory extends AbstractFactory {
 				CriteriaQuery<Role> cq = cb.createQuery(Role.class);
 				Root<Role> root = cq.from(Role.class);
 				Predicate p = cb.equal(root.get(Role_.name), name);
-				List<Role> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<Role> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				if (os.size() == 1) {
 					o = os.get(0);
 					em.detach(o);

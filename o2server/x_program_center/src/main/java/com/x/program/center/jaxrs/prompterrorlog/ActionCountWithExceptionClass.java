@@ -47,7 +47,7 @@ class ActionCountWithExceptionClass extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<PromptErrorLog> root = cq.from(PromptErrorLog.class);
 		cq.select(root.get(PromptErrorLog_.exceptionClass));
-		return em.createQuery(cq.distinct(true)).getResultList();
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	private Long count(Business business, String exceptionClass) throws Exception {

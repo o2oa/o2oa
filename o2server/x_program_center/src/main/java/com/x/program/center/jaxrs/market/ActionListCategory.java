@@ -13,6 +13,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class ActionListCategory extends BaseAction {
 
@@ -24,8 +25,8 @@ class ActionListCategory extends BaseAction {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Application> root = cq.from(Application.class);
-			cq.select(root.get(Application_.category)).distinct(true);
-			List<String> categoryList = em.createQuery(cq).getResultList();
+			cq.select(root.get(Application_.category));
+			List<String> categoryList = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 
 			Wo wo = new Wo();
 			wo.setValueList(categoryList);
