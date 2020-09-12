@@ -41,7 +41,7 @@ public class CollectMarket extends BaseAction {
 					Business business = new Business(emc);
 					String token = business.loginCollect();
 					if (StringUtils.isNotEmpty(token)) {
-						logger.info("开始同步应用市场数据=====");
+						logger.info("start sync market data=====");
 						List<Wi> wiList = null;
 						try {
 							ActionResponse response = ConnectionAction
@@ -49,10 +49,10 @@ public class CollectMarket extends BaseAction {
 											ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
 							wiList = response.getDataAsList(Wi.class);
 						} catch (Exception e) {
-							logger.warn("与云服务器连接错误:{}." + e.getMessage());
+							logger.warn("connect o2cloud error:{}." + e.getMessage());
 						}
 						if(wiList!=null && !wiList.isEmpty()){
-							logger.info("将要同步应用数：{}",wiList.size());
+							logger.info("wait sync market app size：{}",wiList.size());
 							emc.beginTransaction(Application.class);
 							emc.beginTransaction(Attachment.class);
 							List<Application> appList = emc.listAll(Application.class);
@@ -105,13 +105,9 @@ public class CollectMarket extends BaseAction {
 							}
 							emc.commit();
 						}
-						logger.info("完成同步应用市场数据=====");
-					} else {
-						logger.debug("无法登录到云服务器.");
+						logger.info("end sync market data=====");
 					}
 				}
-			} else {
-				logger.debug("系统没有启用O2云服务器连接.");
 			}
 		} catch (Exception e) {
 			logger.error(e);
