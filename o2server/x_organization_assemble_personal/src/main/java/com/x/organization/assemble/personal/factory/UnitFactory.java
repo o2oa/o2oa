@@ -68,7 +68,7 @@ public class UnitFactory extends AbstractFactory {
 				CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 				Root<Unit> root = cq.from(Unit.class);
 				Predicate p = cb.equal(root.get(Unit_.name), name);
-				List<Unit> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				if (os.size() == 1) {
 					o = os.get(0);
 					em.detach(o);
@@ -81,7 +81,7 @@ public class UnitFactory extends AbstractFactory {
 				CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 				Root<Unit> root = cq.from(Unit.class);
 				Predicate p = root.get(Unit_.name).in(names);
-				List<Unit> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				os = os.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)))
 						.collect(Collectors.toList());
 				List<String> values = ListTools.extractProperty(os, "name", String.class, false, false);

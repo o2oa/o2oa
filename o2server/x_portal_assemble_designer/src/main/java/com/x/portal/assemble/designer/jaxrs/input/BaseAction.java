@@ -53,7 +53,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<Portal> cq = cb.createQuery(Portal.class);
 		Root<Portal> root = cq.from(Portal.class);
 		Predicate p = cb.equal(root.get(Portal_.alias), alias);
-		List<Portal> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Portal> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		if (os.size() == 1) {
 			return os.get(0);
 		} else {
@@ -70,7 +70,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<Portal> cq = cb.createQuery(Portal.class);
 		Root<Portal> root = cq.from(Portal.class);
 		Predicate p = cb.equal(root.get(Portal_.name), name);
-		List<Portal> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Portal> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		if (os.size() == 1) {
 			return os.get(0);
 		} else {

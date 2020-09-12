@@ -93,7 +93,7 @@ public class GroupFactory extends AbstractFactory {
 				CriteriaQuery<Group> cq = cb.createQuery(Group.class);
 				Root<Group> root = cq.from(Group.class);
 				Predicate p = cb.equal(root.get(Group_.name), name);
-				List<Group> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<Group> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				if (os.size() == 1) {
 					o = os.get(0);
 					em.detach(o);

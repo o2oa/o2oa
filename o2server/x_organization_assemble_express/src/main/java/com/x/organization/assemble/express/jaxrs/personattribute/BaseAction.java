@@ -38,7 +38,7 @@ class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<PersonAttribute> cq = cb.createQuery(PersonAttribute.class);
 		Root<PersonAttribute> root = cq.from(PersonAttribute.class);
 		Predicate p = root.get(PersonAttribute_.id).in(personAttributeIds);
-		List<PersonAttribute> list = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<PersonAttribute> list = em.createQuery(cq.select(root).where(p)).getResultList();
 		list = business.personAttribute().sort(list);
 		List<String> values = ListTools.extractProperty(list, "distinguishedName", String.class, true, true);
 		return values;

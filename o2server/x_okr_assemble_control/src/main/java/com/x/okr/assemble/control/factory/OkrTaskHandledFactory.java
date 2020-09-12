@@ -2,6 +2,7 @@ package com.x.okr.assemble.control.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -126,8 +127,8 @@ public class OkrTaskHandledFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrTaskHandled_.targetIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrTaskHandled_.targetIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrTaskHandled_.targetIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 根据身份名称，从具体工作已办已阅信息中查询与该身份有关的所有信息列表
