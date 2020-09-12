@@ -722,4 +722,40 @@ public class ReadAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "获取指定用户当前所有待阅.", action = ActionManageListWithPerson.class)
+	@GET
+	@Path("list/person/{person}/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListWithPerson(@Suspended final AsyncResponse asyncResponse,
+									 @Context HttpServletRequest request, @JaxrsParameterDescribe("用户") @PathParam("person") String person) {
+		ActionResult<List<ActionManageListWithPerson.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListWithPerson().execute(effectivePerson, person);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "按创建时间查询指定时间段内当前所有待阅.", action = ActionManageListWithDate.class)
+	@GET
+	@Path("list/date/{date}/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListWithDate(@Suspended final AsyncResponse asyncResponse,
+									 @Context HttpServletRequest request, @JaxrsParameterDescribe("日期（如:2020-09-11）") @PathParam("date") String date) {
+		ActionResult<List<ActionManageListWithDate.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListWithDate().execute(effectivePerson, date);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

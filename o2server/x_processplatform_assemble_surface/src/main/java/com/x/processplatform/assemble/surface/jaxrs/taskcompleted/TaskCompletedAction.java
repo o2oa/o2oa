@@ -668,4 +668,23 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "按创建时间查询指定时间段内当前所有已办.", action = ActionManageListWithDateHour.class)
+	@GET
+	@Path("list/date/{date}/hour/{hour}/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListWithDateHour(@Suspended final AsyncResponse asyncResponse,
+									 @Context HttpServletRequest request, @JaxrsParameterDescribe("日期（如:2020-09-11）") @PathParam("date") String date,
+									 @JaxrsParameterDescribe("小时（0-23）") @PathParam("hour") Integer hour) {
+		ActionResult<List<ActionManageListWithDateHour.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListWithDateHour().execute(effectivePerson, date, hour);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
