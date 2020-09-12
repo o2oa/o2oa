@@ -2,6 +2,7 @@ package com.x.okr.assemble.control.factory;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -328,8 +329,8 @@ public class OkrStatisticReportContentFactory extends AbstractFactory {
 		if( endDate != null ){
 			p = cb.and( p, cb.lessThan( root.get(OkrStatisticReportContent_.statisticTime ), endDate));
 		}
-		cq.distinct(true).select( root.get(OkrStatisticReportContent_.statisticTimeFlag ));
-		return em.createQuery( cq.where(p) ).getResultList();
+		cq.select( root.get(OkrStatisticReportContent_.statisticTimeFlag ));
+		return em.createQuery( cq.where(p) ).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 查询统计数据中工作责任者身份列表（去重复）
@@ -351,8 +352,8 @@ public class OkrStatisticReportContentFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrStatisticReportContent_.responsibilityIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrStatisticReportContent_.responsibilityIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrStatisticReportContent_.responsibilityIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 根据身份名称，从工作最新汇报内容统计信息中查询与该身份有关的所有信息列表

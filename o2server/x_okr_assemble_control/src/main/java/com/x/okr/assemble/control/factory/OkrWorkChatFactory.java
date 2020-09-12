@@ -2,6 +2,7 @@ package com.x.okr.assemble.control.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -235,8 +236,8 @@ public class OkrWorkChatFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrWorkChat_.senderIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrWorkChat_.senderIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrWorkChat_.senderIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 查询工作交流信息接收者身份列表（去重复）
@@ -258,8 +259,8 @@ public class OkrWorkChatFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrWorkChat_.targetIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrWorkChat_.targetIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrWorkChat_.targetIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 根据身份名称，从具体工作交流信息中查询与该身份有关的所有信息列表

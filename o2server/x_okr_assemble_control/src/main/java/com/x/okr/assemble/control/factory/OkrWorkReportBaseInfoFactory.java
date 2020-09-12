@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -480,8 +481,8 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.creatorIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrWorkReportBaseInfo_.creatorIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrWorkReportBaseInfo_.creatorIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 查询工作汇报当前处理者身份列表（去重复）
@@ -596,8 +597,8 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.reporterIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrWorkReportBaseInfo_.reporterIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrWorkReportBaseInfo_.reporterIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 查询工作管理者，督办员身份列表（去重复）
@@ -619,8 +620,8 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.workAdminIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrWorkReportBaseInfo_.workAdminIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrWorkReportBaseInfo_.workAdminIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**

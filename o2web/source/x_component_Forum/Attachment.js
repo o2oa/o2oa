@@ -224,12 +224,40 @@ MWF.xApplication.Forum.Attachment = new Class({
         }
         this.fileReplaceNode.click();
     },
+    //小程序文件是否支持打开
+    checkMiniProgramFile: function(ext) {
+        var exts = ["doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf"];
+        for(var i = 0; i < exts.length; i++){
+            if(ext === exts[i]){
+                return true;
+            }
+        }
+        return false;
+    },
     downloadAttachment: function (e, node, attachments) {
         //if( this.app.access.isAnonymousDynamic() ){
         //    this.app.openLoginForm( function(){ this.app.reload() }.bind(this) )
         //}else {
             attachments.each(function (att) {
-                this.actions.getAttachmentStream(att.data.id, this.options.documentId);
+                if (window.o2android && window.o2android.downloadAttachment) {
+                    window.o2android.downloadAttachment(att.data.id);
+                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
+                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": "bbs" });
+                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
+                    wx.miniProgram.navigateTo({ 
+                        url: '../file/download?attId=' + att.data.id + '&type=bbs&subjectId=' + this.options.documentId
+                    });
+                } else {
+                    if (layout.mobile) {
+                        //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
+                        this.actions.getAttachmentUrl(att.data.id, this.options.documentId, function (url) {
+                            var xtoken = Cookie.read("x-token");
+                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
+                        });
+                    } else {
+                        this.actions.getAttachmentStream(att.data.id, this.options.documentId);
+                    }
+                }
             }.bind(this));
         //}
     },
@@ -238,7 +266,26 @@ MWF.xApplication.Forum.Attachment = new Class({
         //    this.app.openLoginForm( function(){ this.app.reload() }.bind(this) )
         //}else{
             attachments.each(function (att) {
-                this.actions.getAttachmentData(att.data.id, this.options.documentId);
+                if (window.o2android && window.o2android.downloadAttachment) {
+                    window.o2android.downloadAttachment(att.data.id);
+                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
+                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": "bbs" });
+                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
+                    wx.miniProgram.navigateTo({ 
+                        url: '../file/download?attId=' + att.data.id + '&type=bbs&subjectId=' + this.options.documentId
+                    });
+                } else {
+                    if (layout.mobile) {
+                        //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
+                        this.actions.getAttachmentUrl(att.data.id, this.options.documentId, function (url) {
+                            var xtoken = Cookie.read("x-token");
+                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
+                        });
+                    } else {
+                        this.actions.getAttachmentData(att.data.id, this.options.documentId);
+                    }
+                }
+                
             }.bind(this));
         //}
     },

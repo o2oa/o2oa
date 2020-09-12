@@ -93,28 +93,13 @@ public class ActionDelete extends BaseAction {
 
 	}
 
-	// private void removeMemberOfJunior(Business business, Identity identity)
-	// throws Exception {
-	// EntityManager em = business.entityManagerContainer().get(Identity.class);
-	// CriteriaBuilder cb = em.getCriteriaBuilder();
-	// CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
-	// Root<Identity> root = cq.from(Identity.class);
-	// Predicate p = cb.isMember(identity.getId(),
-	// root.get(Identity_.juniorList));
-	// List<Identity> os =
-	// em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
-	// for (Identity o : os) {
-	// o.getJuniorList().remove(identity.getId());
-	// }
-	// }
-
 	private void removeMemberOfUnitDuty(Business business, Identity identity) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 		Root<UnitDuty> root = cq.from(UnitDuty.class);
 		Predicate p = cb.isMember(identity.getId(), root.get(UnitDuty_.identityList));
-		List<UnitDuty> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		for (UnitDuty o : os) {
 			o.getIdentityList().remove(identity.getId());
 		}

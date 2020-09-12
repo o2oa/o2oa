@@ -1,6 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -136,7 +137,7 @@ class ActionDelete extends BaseAction {
 		CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 		Root<UnitDuty> root = cq.from(UnitDuty.class);
 		Predicate p = root.get(UnitDuty_.identityList).in(ids);
-		List<UnitDuty> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		for (UnitDuty o : os) {
 			o.getIdentityList().removeAll(ids);
 		}
@@ -149,7 +150,7 @@ class ActionDelete extends BaseAction {
 		Root<Unit> root = cq.from(Unit.class);
 		Predicate p = cb.isMember(person.getId(), root.get(Unit_.controllerList));
 		p = cb.or(cb.isMember(person.getId(), root.get(Unit_.inheritedControllerList)));
-		List<Unit> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		for (Unit o : os) {
 			o.getControllerList().remove(person.getId());
 			o.getInheritedControllerList().remove(person.getId());
@@ -162,7 +163,7 @@ class ActionDelete extends BaseAction {
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.isMember(person.getId(), root.get(Person_.controllerList));
-		List<Person> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		for (Person o : os) {
 			o.getControllerList().remove(person.getId());
 		}
@@ -174,7 +175,7 @@ class ActionDelete extends BaseAction {
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.equal(root.get(Person_.superior), person.getId());
-		List<Person> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		for (Person o : os) {
 			o.setSuperior("");
 		}
