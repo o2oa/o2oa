@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.factory;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -284,8 +285,10 @@ public class AttendanceDetailFactory extends AbstractFactory {
 			}
 		}
 		
-		cq.distinct(true).select( root.get( AttendanceDetail_.empName ) );
-		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
+		/*cq.distinct(true).select( root.get( AttendanceDetail_.empName ) );
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();*/
+		cq.select( root.get( AttendanceDetail_.empName ) ).where(p);
+		return em.createQuery(cq).setMaxResults(20000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	/**
@@ -344,8 +347,8 @@ public class AttendanceDetailFactory extends AbstractFactory {
 			}
 		}
 		
-		cq.distinct(true).select( root.get( AttendanceDetail_.empName ) );
-		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
+		cq.select( root.get( AttendanceDetail_.empName ) ).where(p);
+		return em.createQuery(cq).setMaxResults(20000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	//@MethodDescribe("按指定的开始时间，结束时间列示未被分析的AttendanceDetail信息列表")
@@ -433,11 +436,11 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
-		cq.distinct(true).select( root.get(AttendanceDetail_.unitName ));
+		cq.select( root.get(AttendanceDetail_.unitName ));
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.yearString), year ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.monthString), month ));
-		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	/**
@@ -482,11 +485,11 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
-		cq.distinct(true).select( root.get(AttendanceDetail_.unitName ));
+		cq.select( root.get(AttendanceDetail_.unitName ));
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
-		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	//@MethodDescribe("按指定的统计周期年份，月份列示AttendanceDetail信息中涉及的顶层组织名称列表")
@@ -498,11 +501,11 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
-		cq.distinct(true).select( root.get(AttendanceDetail_.topUnitName ));
+		cq.select( root.get(AttendanceDetail_.topUnitName ));
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.yearString), year ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.monthString), month ));
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	//@MethodDescribe("按指定的统计周期年份，月份列示AttendanceDetail信息中涉及的员工姓名列表")
@@ -514,11 +517,11 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
-		cq.distinct(true).select( root.get(AttendanceDetail_.empName ));
+		cq.select( root.get(AttendanceDetail_.empName ));
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
-		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	//@MethodDescribe("按指定的统计周期年份，月份列示AttendanceDetail信息中涉及的顶层组织名称列表")
@@ -530,11 +533,11 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
-		cq.distinct(true).select( root.get(AttendanceDetail_.topUnitName ));
+		cq.select( root.get(AttendanceDetail_.topUnitName ));
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
-		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	//@MethodDescribe("按指定的统计周期年份，月份列示AttendanceDetail信息中涉及的组织名称列表")
@@ -546,11 +549,11 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
-		cq.distinct(true).select( root.get(AttendanceDetail_.unitName ));
+		cq.select( root.get(AttendanceDetail_.unitName ));
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
-		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	//@MethodDescribe("按指定的统计周期年份，月份列示AttendanceDetail信息中涉及的组织名称列表")
@@ -562,12 +565,12 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
-		cq.distinct(true).select( root.get(AttendanceDetail_.unitName ));
+		cq.select( root.get(AttendanceDetail_.unitName ));
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.empName), employeeName ));
-		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 
@@ -580,10 +583,10 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
-		cq.distinct(true).select( root.get(AttendanceDetail_.id ));
+		cq.select( root.get(AttendanceDetail_.id ));
 		//一般始终为true, id is not null
 		Predicate p = cb.equal( root.get(AttendanceDetail_.batchName), file_id );
-		return em.createQuery(cq.where(p)).getResultList();
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	//@MethodDescribe("按年份月份查询某用户的打卡数据记录列表")
@@ -841,6 +844,131 @@ public class AttendanceDetailFactory extends AbstractFactory {
 	}	
 	
 	/**
+	 * 查询下一页的信息数据(排除不参加考勤的人员)
+	 * @param id
+	 * @param count
+	 * @param sequence
+	 * @param wrapIn
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<AttendanceDetail> listIdsNextWithFilterUn( String id, Integer count, Object sequence, WrapInFilter wrapIn ,List<String> unUnitNameList,List<String> personNameList) throws Exception {
+		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
+		String order = wrapIn.getOrder();//排序方式
+		List<Object> vs = new ArrayList<>();
+		StringBuffer sql_stringBuffer = new StringBuffer();
+		
+		if( order == null || order.isEmpty() ){
+			order = "DESC";
+		}
+		
+		Integer index = 1;
+		sql_stringBuffer.append( "SELECT o FROM "+AttendanceDetail.class.getCanonicalName()+" o where 1=1" );
+
+		if ((null != sequence) ) {
+			sql_stringBuffer.append(" and o.sequence " + (StringUtils.equalsIgnoreCase(order, "DESC") ? "<" : ">") + (" ?" + (index)));
+			vs.add(sequence);
+			index++;
+		}
+		if ((null != wrapIn.getQ_empName()) && (!wrapIn.getQ_empName().isEmpty())) {
+			sql_stringBuffer.append(" and o.empName = ?" + (index));
+			vs.add( wrapIn.getQ_empName() );
+			index++;
+		}
+		if (null != wrapIn.getUnitNames() && wrapIn.getUnitNames().size()>0) {
+			sql_stringBuffer.append(" and o.unitName in ( ?" + (index) + ")");
+			vs.add( wrapIn.getUnitNames() );
+			index++;
+		}
+		if (null != wrapIn.getTopUnitNames() && wrapIn.getTopUnitNames().size() > 0 ) {
+			sql_stringBuffer.append(" and o.topUnitName in ( ?" + (index) + ")");
+			vs.add( wrapIn.getTopUnitNames() );
+			index++;
+		}
+		if ((null != wrapIn.getCycleYear() ) && (!wrapIn.getCycleYear().isEmpty())) {
+			sql_stringBuffer.append(" and o.cycleYear = ?" + (index));
+			vs.add( wrapIn.getCycleYear() );
+			index++;
+		}
+		if ((null != wrapIn.getCycleMonth()) && (!wrapIn.getCycleMonth().isEmpty())) {
+			sql_stringBuffer.append(" and o.cycleMonth = ?" + (index));
+			vs.add( wrapIn.getCycleMonth() );
+			index++;
+		}
+		if ((null != wrapIn.getQ_year() ) && (!wrapIn.getQ_year().isEmpty())) {
+			sql_stringBuffer.append(" and o.yearString = ?" + (index));
+			vs.add( wrapIn.getQ_year() );
+			index++;
+		}
+		if ((null != wrapIn.getQ_month()) && (!wrapIn.getQ_month().isEmpty())) {
+			sql_stringBuffer.append(" and o.monthString = ?" + (index));
+			vs.add( wrapIn.getQ_month() );
+			index++;
+		}
+		if ((null != wrapIn.getQ_date()) && (!wrapIn.getQ_date().isEmpty())) {
+			sql_stringBuffer.append(" and o.recordDateString = ?" + (index));
+			vs.add( wrapIn.getQ_date() );
+			index++;
+		}
+		
+		if ( wrapIn.getRecordStatus() != 999 ) {
+			sql_stringBuffer.append(" and o.recordStatus = ?" + (index));
+			vs.add( wrapIn.getRecordStatus() );
+			index++;
+		}
+		
+		if (wrapIn.getIsAbsent() != null ) {
+			sql_stringBuffer.append(" and o.isAbsent = ?" + (index));
+			vs.add( wrapIn.getIsAbsent() );
+			index++;
+		}
+		
+		if (wrapIn.getIsLate() != null ) {
+			sql_stringBuffer.append(" and o.isLate = ?" + (index));
+			vs.add( wrapIn.getIsLate() );
+			index++;
+		}
+		
+		if (wrapIn.getIsLackOfTime() != null ) {
+			sql_stringBuffer.append(" and o.isLackOfTime = ?" + (index));
+			vs.add( wrapIn.getIsLackOfTime() );
+			index++;
+		}
+		
+		if (wrapIn.getIsLeaveEarlier() != null ) {
+			sql_stringBuffer.append(" and o.isLeaveEarlier = ?" + (index));
+			vs.add( wrapIn.getIsLeaveEarlier() );
+			index++;
+		}
+		
+		if (ListTools.isNotEmpty(unUnitNameList)) {
+			sql_stringBuffer.append(" and o.unitName not in ( ?" + (index) + ")");
+			vs.add( unUnitNameList );
+			index++;
+		}
+		if (ListTools.isNotEmpty(personNameList)) {
+			sql_stringBuffer.append(" and o.empName not in ( ?" + (index) + ")");
+			vs.add( personNameList );
+			index++;
+		}
+		
+		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
+			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
+		}else{
+			sql_stringBuffer.append(" order by o.sequence " + order );
+		}
+		
+		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceDetail.class );
+		//为查询设置所有的参数值
+		for (int i = 0; i < vs.size(); i++) {
+			query.setParameter(i + 1, vs.get(i));
+		}
+		return query.setMaxResults(count).getResultList();
+	}
+	
+	/**
 	 * 查询上一页的文档信息数据
 	 * @param id
 	 * @param count
@@ -1046,6 +1174,110 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		}		
 		return (Long) query.getSingleResult();
 	}
+	
+	/**
+	 * 查询符合的文档信息总数(排除不参加考勤的人员)
+	 * @param wrapIn
+	 * @return
+	 * @throws Exception
+	 */
+	public long getCountWithFilterUn( WrapInFilter wrapIn ,List<String> unUnitNameList,List<String> personNameList) throws Exception {
+		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
+		List<Object> vs = new ArrayList<>();
+		StringBuffer sql_stringBuffer = new StringBuffer();
+		Integer index = 1;
+		
+		sql_stringBuffer.append( "SELECT count(o.id) FROM "+AttendanceDetail.class.getCanonicalName()+" o where 1=1" );
+		
+		if ((null != wrapIn.getQ_empName()) && (!wrapIn.getQ_empName().isEmpty())) {
+			sql_stringBuffer.append(" and o.empName = ?" + (index));
+			vs.add( wrapIn.getQ_empName() );
+			index++;
+		}
+		if (null != wrapIn.getUnitNames() && wrapIn.getUnitNames().size()>0) {
+			sql_stringBuffer.append(" and o.unitName in ( ?" + (index) + ")");
+			vs.add( wrapIn.getUnitNames() );
+			index++;
+		}
+		if (null != wrapIn.getTopUnitNames() && wrapIn.getTopUnitNames().size() > 0 ) {
+			sql_stringBuffer.append(" and o.topUnitName in ( ?" + (index) + ")");
+			vs.add( wrapIn.getTopUnitNames() );
+			index++;
+		}
+		if ((null != wrapIn.getCycleYear() ) && (!wrapIn.getCycleYear().isEmpty())) {
+			sql_stringBuffer.append(" and o.cycleYear = ?" + (index));
+			vs.add( wrapIn.getCycleYear() );
+			index++;
+		}
+		if ((null != wrapIn.getCycleMonth()) && (!wrapIn.getCycleMonth().isEmpty())) {
+			sql_stringBuffer.append(" and o.cycleMonth = ?" + (index));
+			vs.add( wrapIn.getCycleMonth() );
+			index++;
+		}
+		if ((null != wrapIn.getQ_year() ) && (!wrapIn.getQ_year().isEmpty())) {
+			sql_stringBuffer.append(" and o.yearString = ?" + (index));
+			vs.add( wrapIn.getQ_year() );
+			index++;
+		}
+		if ((null != wrapIn.getQ_month()) && (!wrapIn.getQ_month().isEmpty())) {
+			sql_stringBuffer.append(" and o.monthString = ?" + (index));
+			vs.add( wrapIn.getQ_month() );
+			index++;
+		}
+		if ((null != wrapIn.getQ_date()) && (!wrapIn.getQ_date().isEmpty())) {
+			sql_stringBuffer.append(" and o.recordDateString = ?" + (index));
+			vs.add( wrapIn.getQ_date() );
+			index++;
+		}
+		if ( wrapIn.getRecordStatus() != 999 ) {
+			sql_stringBuffer.append(" and o.recordStatus = ?" + (index));
+			vs.add( wrapIn.getIsAbsent() );
+			index++;
+		}
+		
+		if (wrapIn.getIsAbsent() != null ) {
+			sql_stringBuffer.append(" and o.isAbsent = ?" + (index));
+			vs.add( wrapIn.getIsAbsent() );
+			index++;
+		}
+		
+		if (wrapIn.getIsLate() != null ) {
+			sql_stringBuffer.append(" and o.isLate = ?" + (index));
+			vs.add( wrapIn.getIsLate() );
+			index++;
+		}
+		
+		if (wrapIn.getIsLackOfTime() != null ) {
+			sql_stringBuffer.append(" and o.isLackOfTime = ?" + (index));
+			vs.add( wrapIn.getIsLackOfTime() );
+			index++;
+		}
+		
+		if (wrapIn.getIsLeaveEarlier() != null ) {
+			sql_stringBuffer.append(" and o.isLeaveEarlier = ?" + (index));
+			vs.add( wrapIn.getIsLeaveEarlier() );
+			index++;
+		}
+		
+		if (ListTools.isNotEmpty(unUnitNameList)) {
+			sql_stringBuffer.append(" and o.unitName not in ( ?" + (index) + ")");
+			vs.add( unUnitNameList );
+			index++;
+		}
+		if (ListTools.isNotEmpty(personNameList)) {
+			sql_stringBuffer.append(" and o.empName not in ( ?" + (index) + ")");
+			vs.add( personNameList );
+			index++;
+		}
+		
+		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceDetail.class );
+		//为查询设置所有的参数值
+		for (int i = 0; i < vs.size(); i++) {
+			query.setParameter(i + 1, vs.get(i));
+		}		
+		return (Long) query.getSingleResult();
+	}
 
 	public List<String> getByUserAndRecordDate(String employeeName, String recordDateStringFormated)  throws Exception{		
 		if( employeeName == null || employeeName.isEmpty() || recordDateStringFormated == null || recordDateStringFormated.isEmpty() ){
@@ -1075,9 +1307,9 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		List<Selection<?>> selectionList = new ArrayList<Selection<?>>();
 		selectionList.add(root.get(AttendanceDetail_.cycleYear ));
 		selectionList.add(root.get(AttendanceDetail_.cycleMonth ));
-		cq.distinct(true).multiselect(selectionList);
+		cq.multiselect(selectionList);
 		
-		return em.createQuery(cq.where(p)).getResultList();
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	public List<AttendanceCycles> getCyclesFromDetailWithDateSplit( String empName, Date startDate, Date endDate )  throws Exception{
@@ -1093,9 +1325,9 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		List<Selection<?>> selectionList = new ArrayList<Selection<?>>();
 		selectionList.add(root.get(AttendanceDetail_.cycleYear ));
 		selectionList.add(root.get(AttendanceDetail_.cycleMonth ));
-		cq.distinct(true).multiselect(selectionList);
+		cq.multiselect(selectionList);
 		
-		return em.createQuery(cq.where(p)).getResultList();
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	
 	//@MethodDescribe("查询未归档的条卡记录列表，最大2000条")
@@ -1180,7 +1412,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 			);
 			p = cb.and( p, p_or );
 		}
-		cq.distinct(true).select(root.get(AttendanceDetail_.empName));
-		return em.createQuery(cq.where(p)).setMaxResults(100000).getResultList();
+		cq.select(root.get(AttendanceDetail_.empName));
+		return em.createQuery(cq.where(p)).setMaxResults(100000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 }

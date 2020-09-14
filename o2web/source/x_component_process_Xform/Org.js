@@ -93,12 +93,15 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
 
 
     _computeValue: function(){
+        var simple = this.json.storeRange === "simple";
         var values = [];
         if (this.json.identityValue) {
-            this.json.identityValue.each(function(v){ if (v) values.push(v)});
+            this.json.identityValue.each(function(v){
+                if (v) values.push(MWF.org.parseOrgData(v, true, simple))
+            });
         }
         if (this.json.unitValue) {
-            this.json.unitValue.each(function(v){ if (v) values.push(v)});
+            this.json.unitValue.each(function(v){ if (v) values.push(MWF.org.parseOrgData(v, true, simple))});
         }
         if (this.json.dutyValue) {
             var dutys = JSON.decode(this.json.dutyValue);
@@ -109,7 +112,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                     var code = "return this.org.getDuty(\""+duty.name+"\", \""+par+"\")";
                     var d = this.form.Macro.exec(code, this);
                     if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
-                    d.each(function(dd){if (dd) values.push(dd);});
+                    d.each(function(dd){if (dd) values.push(MWF.org.parseOrgData(dd, true, simple));});
                 }.bind(this));
             }
         }
@@ -120,7 +123,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                 if (fdd){
                     if (typeOf(fdd)==="string"){
                         var data;
-                        this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = json.data }.bind(this), null, fdd, false);
+                        this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, fdd, false);
                         values.push(data);
                     }else{
                         values.push(fdd);
@@ -695,15 +698,17 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     },
     addData: function(value){
         if (!value) return false;
+        var simple = this.json.storeRange === "simple";
         value.each(function(v){
             var vtype = typeOf(v);
             if (vtype==="string"){
                 var data;
-                this.getOrgAction()[this.getValueMethod(v)](function(json){ data = json.data }.bind(this), null, v, false);
+                this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, v, false);
                 if (data) this.combox.addNewValue(this.getDataText(data), data);
             }
             if (vtype==="object"){
-                this.combox.addNewValue(this.getDataText(v), v);
+                var d = MWF.org.parseOrgData(v, true, simple);
+                this.combox.addNewValue(this.getDataText(d), d);
             }
         }.bind(this));
     },
@@ -854,33 +859,36 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         var values = [];
         var comboxValues = [];
         var type = typeOf(value);
+        var simple = this.json.storeRange === "simple";
         if (type==="array"){
             value.each(function(v){
                 var data=null;
                 var vtype = typeOf(v);
                 if (vtype==="string"){
                     var error = (this.json.isInput) ? function(){ comboxValues.push(v); } : null;
-                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = json.data }.bind(this), error, v, false);
+                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), error, v, false);
                 }
                 if (vtype==="object") data = v;
                 if (data){
-                    values.push(data);
-                    comboxValues.push({"text": this.getDataText(data),"value": data});
+                    var d = MWF.org.parseOrgData(data, true, simple)
+                    values.push(d);
+                    comboxValues.push({"text": this.getDataText(d),"value": d});
                 }
             }.bind(this));
         }
         if (type==="string"){
             var vData;
             var error = (this.json.isInput) ? function(){ comboxValues.push(value); } : null;
-            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = json.data }.bind(this), error, value, false);
+            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true,simple); }.bind(this), error, value, false);
             if (vData){
                 values.push(vData);
                 comboxValues.push({"text": this.getDataText(vData),"value": vData});
             }
         }
         if (type==="object"){
-            values.push(value);
-            comboxValues.push({"text": this.getDataText(value),"value": value});
+            var v = MWF.org.parseOrgData(value, true, simple)
+            values.push(v);
+            comboxValues.push({"text": this.getDataText(v),"value": v});
         }
 
         this._setBusinessData(values);

@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.unitattribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -84,8 +85,8 @@ class ActionListNameWithUnit extends BaseAction {
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<UnitAttribute> root = cq.from(UnitAttribute.class);
 			Predicate p = root.get(UnitAttribute_.unit).in(ids);
-			List<String> names = em.createQuery(cq.select(root.get(UnitAttribute_.name)).where(p).distinct(true))
-					.getResultList();
+			List<String> names = em.createQuery(cq.select(root.get(UnitAttribute_.name)).where(p))
+					.getResultList().stream().distinct().collect(Collectors.toList());
 			if (!names.isEmpty()) {
 				wo.getNameList().addAll(names);
 			}

@@ -283,7 +283,7 @@ public class Learn {
 		cq.select(root).where(p).orderBy(cb.desc(root.get(InText_.count)));
 		Integer cutoff = MapTools.getInteger(model.getPropertyMap(), Model.PROPERTY_MLP_LEARNINTEXTCUTOFFSIZE,
 				Model.DEFAULT_MLP_LEARNINTEXTCUTOFFSIZE);
-		List<InText> os = em.createQuery(cq.distinct(true)).setMaxResults(cutoff).getResultList();
+		List<InText> os = em.createQuery(cq).setMaxResults(cutoff).getResultList();
 		InTextBag inTextBag = new InTextBag(os);
 		return inTextBag;
 	}

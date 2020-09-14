@@ -1239,11 +1239,24 @@
 
     var _cacheUrls = [
         /jaxrs\/form\/workorworkcompleted\/.+/ig,
+        /jaxrs\/form\/.+/ig,
         //    /jaxrs\/script/ig,
         /jaxrs\/script\/.+\/app\/.+\/imported/ig,
         /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
         /jaxrs\/script\/.+\/application\/.+\/imported/ig,
-        /jaxrs\/page\/.+\/portal\/.+/ig
+        /jaxrs\/page\/.+\/portal\/.+/ig,
+        /jaxrs\/document\/.+/ig,
+        /jaxrs\/applicationdict\/.+/ig,
+        /jaxrs\/custom\/.+/ig,
+        /jaxrs\/definition\/idea.+/ig,
+        /jaxrs\/distribute\/assemble\/source\/.+/ig,
+
+        ///jaxrs\/form\/workorworkcompleted\/.+/ig,
+        //    /jaxrs\/script/ig,
+        // /jaxrs\/script\/.+\/app\/.+\/imported/ig,
+        // /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
+        // /jaxrs\/script\/.+\/application\/.+\/imported/ig,
+        // /jaxrs\/page\/.+\/portal\/.+/ig
         // /jaxrs\/authentication/ig
         // /jaxrs\/statement\/.*\/execute\/page\/.*\/size\/.*/ig
     ];

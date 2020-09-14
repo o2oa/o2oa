@@ -230,8 +230,8 @@ class ActionProcessingNeural extends BaseAction {
 		Root<FormField> root = cq.from(FormField.class);
 		Predicate p = root.get(FormField_.form).in(formIds);
 		p = cb.and(p, cb.equal(root.get(FormField_.dataType), "number"));
-		cq.select(root.get(FormField_.name)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(FormField_.name)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	private List<String> listForm(Business business, Process process) throws Exception {

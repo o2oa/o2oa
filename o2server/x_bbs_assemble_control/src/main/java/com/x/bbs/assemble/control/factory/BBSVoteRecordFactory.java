@@ -2,6 +2,7 @@ package com.x.bbs.assemble.control.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -133,7 +134,7 @@ public class BBSVoteRecordFactory extends AbstractFactory {
 			p = cb.and( p, cb.equal( root.get( BBSVoteRecord_.optionId ), voteOptionId ));
 		}
 		cq.select( root.get( BBSVoteRecord_.votorName ) );
-		return em.createQuery(cq.where(p).distinct(true)).getResultList();
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public List<BBSVoteRecord> listVoteRecordForPage(String subjectId, String voteOptionId, Integer maxRecordCount) throws Exception {

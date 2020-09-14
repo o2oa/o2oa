@@ -2,7 +2,9 @@ package com.x.processplatform.assemble.designer.jaxrs.form;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -12,7 +14,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -22,6 +24,7 @@ import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormField;
+import com.x.processplatform.core.entity.element.FormProperties;
 import com.x.processplatform.core.entity.element.FormVersion;
 
 class ActionEdit extends BaseAction {
@@ -60,11 +63,19 @@ class ActionEdit extends BaseAction {
 			Wi.copier.copy(wi, form);
 			form.setId(id);
 			form.setApplication(application.getId());
-			form.setLastUpdatePerson(effectivePerson.getDistinguishedName());
-			form.setLastUpdateTime(new Date());
+			// FormProperties properties = new FormProperties();
+//			properties.setRelatedFormList(wi.getRelatedFormList());
+//			properties.setMobileRelatedFormList(wi.getMobileRelatedFormList());
+//			properties.setRelatedScriptMap(wi.getRelatedScriptMap());
+//			properties.setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
+			// form.setP!!!roperties(properties);
+			form.getProperties().setRelatedFormList(wi.getRelatedFormList());
+			form.getProperties().setMobileRelatedFormList(wi.getMobileRelatedFormList());
+			form.getProperties().setRelatedScriptMap(wi.getRelatedScriptMap());
+			form.getProperties().setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
 			emc.check(form, CheckPersistType.all);
 			emc.commit();
-			CacheManager.notify(Form.class);
+			ApplicationCache.notify(Form.class);
 			/* 保存历史版本 */
 			ThisApplication.formVersionQueue.send(new FormVersion(form.getId(), jsonElement));
 			Wo wo = new Wo();
@@ -81,11 +92,23 @@ class ActionEdit extends BaseAction {
 
 		private static final long serialVersionUID = 4289841165185269299L;
 
-		static WrapCopier<Wi, Form> copier = WrapCopierFactory.wi(Wi.class, Form.class, null, ListTools.toList(
-				JpaObject.FieldsUnmodifyExcludeId, Form.lastUpdatePerson_FIELDNAME, Form.lastUpdateTime_FIELDNAME));
+		static WrapCopier<Wi, Form> copier = WrapCopierFactory.wi(Wi.class, Form.class, null, ListTools
+				.toList(JpaObject.FieldsUnmodify, Form.lastUpdatePerson_FIELDNAME, Form.lastUpdateTime_FIELDNAME));
 
 		@FieldDescribe("字段")
 		private List<WiFormField> formFieldList = new ArrayList<>();
+
+		@FieldDescribe("关联表单")
+		private List<String> relatedFormList = new ArrayList<>();
+
+		@FieldDescribe("移动端关联表单")
+		private List<String> mobileRelatedFormList = new ArrayList<>();
+
+		@FieldDescribe("关联脚本.")
+		private Map<String, String> relatedScriptMap = new LinkedHashMap<>();
+
+		@FieldDescribe("移动端关联脚本.")
+		private Map<String, String> mobileRelatedScriptMap = new LinkedHashMap<>();
 
 		public List<WiFormField> getFormFieldList() {
 			return formFieldList;
@@ -93,6 +116,38 @@ class ActionEdit extends BaseAction {
 
 		public void setFormFieldList(List<WiFormField> formFieldList) {
 			this.formFieldList = formFieldList;
+		}
+
+		public List<String> getRelatedFormList() {
+			return relatedFormList;
+		}
+
+		public void setRelatedFormList(List<String> relatedFormList) {
+			this.relatedFormList = relatedFormList;
+		}
+
+		public List<String> getMobileRelatedFormList() {
+			return mobileRelatedFormList;
+		}
+
+		public void setMobileRelatedFormList(List<String> mobileRelatedFormList) {
+			this.mobileRelatedFormList = mobileRelatedFormList;
+		}
+
+		public Map<String, String> getRelatedScriptMap() {
+			return relatedScriptMap;
+		}
+
+		public void setRelatedScriptMap(Map<String, String> relatedScriptMap) {
+			this.relatedScriptMap = relatedScriptMap;
+		}
+
+		public Map<String, String> getMobileRelatedScriptMap() {
+			return mobileRelatedScriptMap;
+		}
+
+		public void setMobileRelatedScriptMap(Map<String, String> mobileRelatedScriptMap) {
+			this.mobileRelatedScriptMap = mobileRelatedScriptMap;
 		}
 
 	}

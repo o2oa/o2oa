@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.read;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -104,8 +105,8 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(Read_.application)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Read_.application)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -132,8 +133,8 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(Read_.process)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Read_.process)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -160,8 +161,8 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(Read_.creatorUnit)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Read_.creatorUnit)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -182,8 +183,8 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(Read_.activityName)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(Read_.activityName)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : list) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -204,8 +205,8 @@ class ActionFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
-		cq.select(root.get(Read_.startTimeMonth)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Read_.startTimeMonth)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {

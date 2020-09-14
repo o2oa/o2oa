@@ -246,6 +246,7 @@
 		B1B0103023586B34002BF874 /* CFFileTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1B0102E23586B34002BF874 /* CFFileTableViewCell.xib */; };
 		B1B110E2223622C400775BEF /* O2BioLocalAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B110AB223622C400775BEF /* O2BioLocalAuth.swift */; };
 		B1B110E422363F7200775BEF /* BioAuthLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B110E322363F7200775BEF /* BioAuthLoginViewController.swift */; };
+		B1B1303025021EAC003B99DF /* WorkInfoResData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B1302F25021EAC003B99DF /* WorkInfoResData.swift */; };
 		B1B2148F216073B400D9CA7E /* ScanHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B21459216073B400D9CA7E /* ScanHelper.swift */; };
 		B1B214912160A69E00D9CA7E /* Tuling123API.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B214902160A69E00D9CA7E /* Tuling123API.swift */; };
 		B1B214932160A8A300D9CA7E /* TulingPostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B214922160A8A300D9CA7E /* TulingPostModel.swift */; };
@@ -1414,6 +1415,7 @@
 		B1B0102E23586B34002BF874 /* CFFileTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CFFileTableViewCell.xib; sourceTree = "<group>"; };
 		B1B110AB223622C400775BEF /* O2BioLocalAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = O2BioLocalAuth.swift; sourceTree = "<group>"; };
 		B1B110E322363F7200775BEF /* BioAuthLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioAuthLoginViewController.swift; sourceTree = "<group>"; };
+		B1B1302F25021EAC003B99DF /* WorkInfoResData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkInfoResData.swift; sourceTree = "<group>"; };
 		B1B21459216073B400D9CA7E /* ScanHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHelper.swift; sourceTree = "<group>"; };
 		B1B214902160A69E00D9CA7E /* Tuling123API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuling123API.swift; sourceTree = "<group>"; };
 		B1B214922160A8A300D9CA7E /* TulingPostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TulingPostModel.swift; sourceTree = "<group>"; };
@@ -4111,6 +4113,7 @@
 				E4B888501D9D48F1002E1A46 /* TodoTask.swift */,
 				B1908E1322685E8F00D75632 /* O2WebViewModels.swift */,
 				B1BA42B724133AC40081CED8 /* TaskCreateData.swift */,
+				B1B1302F25021EAC003B99DF /* WorkInfoResData.swift */,
 			);
 			path = m;
 			sourceTree = "<group>";
@@ -5410,6 +5413,7 @@
 				09E02E8C1F16319600579887 /* Haneke.swift in Sources */,
 				B1E95F7B23750CC2004876B7 /* CloudFilePreviewController.swift in Sources */,
 				E4C24C52208D7EDE00E426B0 /* OOContactUnitHeader.swift in Sources */,
+				B1B1303025021EAC003B99DF /* WorkInfoResData.swift in Sources */,
 				B165CD662242093500373B66 /* OOAlertViewController.swift in Sources */,
 				E428AF5D20AC1CD100D964B9 /* OOAttandanceViewModel.swift in Sources */,
 				E4B8886F1D9D48F1002E1A46 /* ContactHomeViewController.swift in Sources */,

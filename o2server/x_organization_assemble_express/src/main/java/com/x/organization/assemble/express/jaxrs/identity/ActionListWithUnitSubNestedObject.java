@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.identity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -79,8 +80,8 @@ class ActionListWithUnitSubNestedObject extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = root.get(Identity_.unit).in(unitIds);
-		List<String> identityIds = em.createQuery(cq.select(root.get(Identity_.id)).where(p).distinct(true))
-				.getResultList();
+		List<String> identityIds = em.createQuery(cq.select(root.get(Identity_.id)).where(p))
+				.getResultList().stream().distinct().collect(Collectors.toList());
 		identityIds = ListTools.trim(identityIds, true, true);
 		List<Identity> list = business.identity().pick(identityIds);
 		for (Identity o : list) {

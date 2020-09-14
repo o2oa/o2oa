@@ -56,13 +56,13 @@
         <activity
             android:name=".app.clouddrive.v2.CloudDiskActivity"
             android:label="@string/title_activity_yunpan"
-            
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity android:name=".app.o2.organization.ContactPickerActivity" />
         <activity android:name=".app.cms.application.CMSPublishDocumentActivity" />
         <activity
             android:name=".app.o2.webview.LocalImageViewActivity"
-            
+
             android:theme="@style/XBPMTheme.fullscreen" />
         <activity android:name=".app.o2.security.DeviceManagerActivity" />
 
@@ -70,7 +70,7 @@
             android:name=".app.o2.launch.LaunchActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            
+
             android:theme="@style/XBPMLauncherTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -92,20 +92,20 @@
             android:name=".app.o2.bind.BindPhoneActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            
+
             android:theme="@style/XBPMClearActivityTheme" />
         <activity
             android:name=".app.o2.login.LoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            
+
             android:theme="@style/XBPMClearActivityTheme"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".app.o2.main.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            
+
             android:theme="@style/XBPMClearActivityTheme" />
         <activity
             android:name=".app.o2.group.GroupActivity"
@@ -190,7 +190,7 @@
         <activity
             android:name=".app.bbs.main.BBSMainActivity"
             android:label="@string/bbs"
-            
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity
             android:name=".app.bbs.section.BBSSectionActivity"
@@ -199,7 +199,7 @@
         <activity
             android:name=".app.bbs.view.BBSWebViewSubjectActivity"
             android:label="@string/title_activity_bbs_view"
-            
+
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".app.bbs.publish.BBSPublishSubjectActivity"
@@ -212,7 +212,7 @@
         <activity
             android:name=".app.cms.index.CMSIndexActivity"
             android:label="@string/cms"
-            
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity
             android:name=".app.cms.application.CMSApplicationActivity"
@@ -225,7 +225,7 @@
         <activity
             android:name=".app.clouddrive.CloudDriveActivity"
             android:label="@string/title_activity_yunpan"
-            
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity
             android:name=".app.clouddrive.viewer.PictureViewActivity"
@@ -234,7 +234,7 @@
         <activity
             android:name=".app.meeting.main.MeetingMainActivity"
             android:label="@string/title_activity_meeting"
-            
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity
             android:name=".app.meeting.room.MeetingRoomChooseActivity"
@@ -258,7 +258,7 @@
         <activity
             android:name=".app.attendance.main.AttendanceMainActivity"
             android:label="@string/attendance_check_in_title"
-            
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity
             android:name=".app.attendance.list.AttendanceListActivity"
@@ -287,14 +287,14 @@
         <activity
             android:name=".app.calendar.CalendarMainActivity"
             android:label="@string/calendar_name"
-            
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity android:name=".app.calendar.CreateEventActivity" />
         <activity android:name=".app.calendar.CreateCalendarActivity" />
         <activity android:name=".app.calendar.CalendarStoreActivity" /> <!-- portal -->
         <activity
             android:name=".app.o2.webview.PortalWebViewActivity"
-            
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" /> <!-- 换肤 -->
         <activity
             android:name=".app.o2.skin.SkinManagerActivity"

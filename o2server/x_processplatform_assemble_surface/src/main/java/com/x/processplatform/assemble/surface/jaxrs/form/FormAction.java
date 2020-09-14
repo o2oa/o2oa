@@ -45,7 +45,6 @@ public class FormAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		/* 修改过的方法 */
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
@@ -65,7 +64,6 @@ public class FormAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		/* 修改过的方法 */
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
@@ -129,8 +127,8 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("{flag}/application/{applicationFlag}/mobile")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithApplicationMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag,
+	public void getWithApplicationMobile(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<ActionGetWithApplicationMobile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -142,4 +140,24 @@ public class FormAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+//	@JaxrsMethodDescribe(value = "V2根据工作或完成工作标识获取表单,合并关联表单和关联脚本输出.", action = V2GetWithWorkOrWorkCompleted.class)
+//	@GET
+//	@Path("v2/workorworkcompleted/{workOrWorkCompleted}")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void V2GetWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+//			@Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("工作或完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
+//		ActionResult<V2GetWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new V2GetWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
+
 }

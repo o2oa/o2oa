@@ -78,7 +78,9 @@
     "###dirAllowed": "允许浏览目录,###",
     "###statEnable": "启用统计,默认启用统计.###",
     "###statExclusions": "统计忽略路径,默认忽略*.gif,*.jpg,*.png,*.ico###",
-    "###cacheControlMaxAge": "服务器max-age缓存时间(秒)###"
+    "###cacheControlMaxAge": "服务器max-age缓存时间(秒)###",
+    "###proxyCenterEnable": "是否启用center服务器代理.###",
+    "###proxyApplicationEnable": "是否启用application服务器代理###"
   },
   "data": {
     "enable": true,

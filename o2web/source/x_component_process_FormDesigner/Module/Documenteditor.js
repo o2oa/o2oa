@@ -109,5 +109,29 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 		this._setNodeProperty();
         if (!this.form.isSubform) this._createIconAction() ;
 		this._setNodeEvent();
+	},
+	_preprocessingModuleData: function(){
+		this.node.clearStyles();
+		this.json.recoveryStyles = Object.clone(this.json.styles);
+		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+				//需要运行时处理
+			}else{
+				this.node.setStyle(key, value);
+				delete this.json.styles[key];
+			}
+		}.bind(this));
+		// var size = this.node.getSize();
+		this.node.empty();
+		//this.node.getFirst().getFirst().empty();
+		//this.node.setStyles(this.css.documentEditorNode);
+
+		this.json.preprocessing = "y";
+	},
+	_recoveryModuleData: function(){
+		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+		this.json.recoveryStyles = null;
+		this.node.empty();
+		this._resetContent();
 	}
 });

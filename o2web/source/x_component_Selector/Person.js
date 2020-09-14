@@ -48,14 +48,25 @@ MWF.xApplication.Selector.Person = new Class({
         this._loadCss(true);
 
         this.container = $(container);
-        this.orgAction = MWF.Actions.get("x_organization_assemble_control");
-        //this.org2Action = MWF.Actions.get("x_organization_assemble_express");
-        this.processAction = MWF.Actions.get("x_processplatform_assemble_surface");
-        this.designerAction = MWF.Actions.get("x_processplatform_assemble_designer");
-        this.portalAction = MWF.Actions.get("x_portal_assemble_surface");
-        this.portalDesignerAction = MWF.Actions.get("x_portal_assemble_designer");
-        this.cmsAction = MWF.Actions.get("x_cms_assemble_control");
-        this.queryAction = MWF.Actions.get("x_query_assemble_designer");
+
+        Object.defineProperties(this, {
+            "orgAction": {"get": function(){return o2.Actions.get("x_organization_assemble_control");}},
+            "processAction": {"get": function(){return o2.Actions.get("x_processplatform_assemble_surface");}},
+            "designerAction": {"get": function(){return o2.Actions.get("x_processplatform_assemble_designer");}},
+            "portalAction": {"get": function(){return o2.Actions.get("x_portal_assemble_surface");}},
+            "portalDesignerAction": {"get": function(){return o2.Actions.get("x_portal_assemble_designer");}},
+            "cmsAction": {"get": function(){return o2.Actions.get("x_cms_assemble_control");}},
+            "queryAction": {"get": function(){return o2.Actions.get("x_query_assemble_designer");}}
+        });
+
+        // this.orgAction = MWF.Actions.get("x_organization_assemble_control");
+        // //this.org2Action = MWF.Actions.get("x_organization_assemble_express");
+        // this.processAction = MWF.Actions.get("x_processplatform_assemble_surface");
+        // this.designerAction = MWF.Actions.get("x_processplatform_assemble_designer");
+        // this.portalAction = MWF.Actions.get("x_portal_assemble_surface");
+        // this.portalDesignerAction = MWF.Actions.get("x_portal_assemble_designer");
+        // this.cmsAction = MWF.Actions.get("x_cms_assemble_control");
+        // this.queryAction = MWF.Actions.get("x_query_assemble_designer");
 
         //this.action = new MWF.xApplication.Selector.Actions.RestActions();
 

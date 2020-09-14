@@ -191,7 +191,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.createExportNode();
         }
     },
-    createViewNode: function(data){
+    createViewNode: function(data, callback){
         this.viewAreaNode.empty();
 
         this.selectedItems = [];
@@ -268,20 +268,20 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                 if (column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
-            this.lookup(data);
+            this.lookup(data, callback);
         }else{
             this.viewJson.selectList.each(function(column){
                 if (column.hideColumn) this.hideColumns.push(column.column);
                 if (!column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
-            this.lookup(data);
+            this.lookup(data, callback);
         }
     },
     isSelectTdHidden :function(){
         if( !this.viewJson.firstTdHidden ){
             return false;
         }
-        if( this.json.select === "single" || this.json.select === "multi"  ){
+        if( this.json.select === "single" || this.json.select === "multi" || this.json.defaultSelectedScript || this.viewJson.defaultSelectedScript ){
             return false;
         }
         if( this.viewJson.select === "single" || this.viewJson.select === "multi"  ){
@@ -391,7 +391,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.currentPage = this.options.defaultPage || 1;
         this.options.defaultPage = null;
     },
-    lookup: function(data){
+    lookup: function(data, callback){
         this.getLookupAction(function(){
             if (this.json.application){
 
@@ -405,6 +405,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                         if( this.noDataTextNode )this.noDataTextNode.destroy();
                         this.loadCurrentPageData( function () {
                             this.fireEvent("postLoad"); //用户配置的事件
+                            if(callback)callback(this);
                         }.bind(this));
                     }else{
                         //this._loadPageNode();
@@ -424,6 +425,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                             this.loadingAreaNode = null;
                         }
                         this.fireEvent("postLoad"); //用户配置的事件
+                        if(callback)callback(this);
                     }
                 }.bind(this));
             }
@@ -1246,12 +1248,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             })
         }
     },
-    setFilter : function( filter ){
+    setFilter : function( filter, callback ){
         if( !filter )filter = [];
         if( typeOf( filter ) === "object" )filter = [ filter ];
         this.json.filter = filter;
         if( this.viewAreaNode ){
-            this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
+            this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null}, callback);
         }
     },
     switchView : function( json ){
@@ -1380,6 +1382,27 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             }
             //}
         }.bind(this));
+
+        //默认选中
+        var defaultSelectedScript = this.view.json.defaultSelectedScript || this.view.viewJson.defaultSelectedScript;
+        if( !this.isSelected && defaultSelectedScript ){
+            // var flag = this.view.json.select || this.view.viewJson.select ||  "none";
+            // if ( flag ==="single" || flag==="multi"){
+            //
+            // }
+            var flag = this.view.Macro.exec( defaultSelectedScript,
+                {"node" : this.node, "data" : this.data, "view": this.view, "row" : this});
+            if( flag ){
+                if( flag === "multi" || flag === "single" ){
+                    this.select( flag );
+                }else if( flag.toString() === "true" ){
+                    var f = this.view.json.select || this.view.viewJson.select ||  "none";
+                    if ( f ==="single" || f==="multi"){
+                        this.select();
+                    }
+                }
+            }
+        }
 
         // Object.each(this.data.data, function(cell, k){
         //     if (this.view.hideColumns.indexOf(k)===-1){
@@ -1587,8 +1610,8 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
     },
 
-    select: function(){
-        var flag = this.view.json.select || this.view.viewJson.select ||  "none";
+    select: function(  force ){
+        var flag = force || this.view.json.select || this.view.viewJson.select ||  "none";
         if (this.isSelected){
             if (flag==="single"){
                 this.unSelectedSingle();

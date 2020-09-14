@@ -14,6 +14,7 @@ import com.x.base.core.project.script.ScriptFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Service;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -29,20 +30,25 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Service service) throws Exception {
-		/** 清空上一次调用值 */
-		aeiObjects.getWork().getProperties().setServiceValue(new LinkedHashMap<String, Object>());
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.serviceArrive(aeiObjects.getWork().getActivityToken(), service));
+		// 清空上一次调用值
+		aeiObjects.getWork().getProperties().setServiceValue(new LinkedHashMap<>());
 		return aeiObjects.getWork();
 	}
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Service service) throws Exception {
-	 // Do nothing
+		// Do nothing
 	}
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Service service) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.parallelExecute(aeiObjects.getWork().getActivityToken(), service));
 		List<Work> results = new ArrayList<>();
-
 		boolean passThrough = false;
 		if (StringUtils.isNotEmpty(service.getScript()) || StringUtils.isNotEmpty(service.getScriptText())) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
@@ -63,11 +69,14 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Service service) throws Exception {
-	// Do nothing
+		// Do nothing
 	}
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Service service) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.parallelInquire(aeiObjects.getWork().getActivityToken(), service));
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;
@@ -75,6 +84,6 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Service service) throws Exception {
-	// Do nothing
+		// Do nothing
 	}
 }

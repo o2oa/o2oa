@@ -267,7 +267,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                         }.bind(this));
                     }.bind(this));
                 }
-                if (callback) callback();
+                // if (callback) callback();
 
             }else{
                 this.selector.orgAction.listIdentityWithDuty(function(json){

@@ -2,6 +2,7 @@ package com.x.organization.assemble.control.jaxrs.unitduty;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -72,7 +73,7 @@ class ActionGet extends BaseAction {
 		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = root.get(Identity_.id).in(wo.getIdentityList());
-		List<Identity> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		List<WoIdentity> wos = WoIdentity.copier.copy(os);
 		for (WoIdentity woIdentity : wos) {
 			this.referencePerson(business, woIdentity);

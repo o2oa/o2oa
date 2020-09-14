@@ -34,6 +34,7 @@ class ActionListPaging extends BaseAction {
 					AppInfo appInfo = emc.find( wo.getAppId(), AppInfo.class );
 					if(appInfo != null){
 						wo.setAppName(appInfo.getAppName());
+						wo.setAppAlias(appInfo.getAppAlias());
 					}
 				} catch (Exception e) {
 				}
@@ -54,12 +55,23 @@ class ActionListPaging extends BaseAction {
 		@FieldDescribe("应用名称.")
 		private String appName;
 
+		@FieldDescribe("应用别名.")
+		private String appAlias;
+
 		public String getAppName() {
 			return appName;
 		}
 
 		public void setAppName(String appName) {
 			this.appName = appName;
+		}
+
+		public String getAppAlias() {
+			return appAlias;
+		}
+
+		public void setAppAlias(String appAlias) {
+			this.appAlias = appAlias;
 		}
 	}
 }

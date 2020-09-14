@@ -2,6 +2,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter;
 
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,7 +118,13 @@ public abstract class SwipeRefreshCommonRecyclerViewAdapter<T> extends RecyclerV
      */
     public void addFooter(View view) {
         footer = view;
-        this.notifyDataSetChanged();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                // 刷新操作
+                notifyDataSetChanged();
+            }
+        });
     }
 
     /**
@@ -125,7 +133,13 @@ public abstract class SwipeRefreshCommonRecyclerViewAdapter<T> extends RecyclerV
      */
     public void removeFooter(View view) {
         footer = null;
-        this.notifyDataSetChanged();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                // 刷新操作
+                notifyDataSetChanged();
+            }
+        });
     }
 
 

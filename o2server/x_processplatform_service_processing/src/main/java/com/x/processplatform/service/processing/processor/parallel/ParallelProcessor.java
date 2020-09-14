@@ -18,6 +18,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -31,6 +32,9 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Parallel parallel) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.parallelArrive(aeiObjects.getWork().getActivityToken(), parallel));
 		logger.info(
 				"parallel arrvie processing, work title:{}, id:{}, actvity name:{}, id:{}, activityToken:{}, process name:{}, id{}.",
 				aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), parallel.getName(), parallel.getId(),
@@ -41,11 +45,14 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Parallel parallel) throws Exception {
-//nothing
+		// nothing
 	}
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Parallel parallel) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.parallelExecute(aeiObjects.getWork().getActivityToken(), parallel));
 		List<Work> results = new ArrayList<>();
 		aeiObjects.getWork().setSplitting(true);
 		aeiObjects.getWork().setSplitToken(StringTools.uniqueToken());
@@ -74,9 +81,6 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 			if (BooleanUtils.isTrue(ScriptFactory.asBoolean(objectValue))) {
 				routes.add(o);
 			}
-//			if (BooleanUtils.toBoolean(StringUtils.trimToNull(Objects.toString(objectValue))) == true) {
-//				routes.add(o);
-//			}
 		}
 
 		for (int i = 0; i < routes.size(); i++) {
@@ -89,7 +93,7 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 				Work work = new Work(aeiObjects.getWork());
 				work.setDestinationRoute(route.getId());
 				work.setDestinationRouteName(route.getName());
-				/* 创建新的Token */
+				// 创建新的Token
 				WorkLog workLog = new WorkLog(mainWorkLog);
 				workLog.setWork(work.getId());
 				aeiObjects.getCreateWorks().add(work);
@@ -102,11 +106,14 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Parallel parallel) throws Exception {
-		//nothing
+		// nothing
 	}
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Parallel parallel) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.parallelInquire(aeiObjects.getWork().getActivityToken(), parallel));
 		List<Route> results = new ArrayList<>();
 		aeiObjects.getRoutes().stream().forEach(o -> {
 			if (StringUtils.equals(o.getId(), aeiObjects.getWork().getDestinationRoute())) {
@@ -125,6 +132,6 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Parallel parallel) throws Exception {
-		//nothing
+		// nothing
 	}
 }

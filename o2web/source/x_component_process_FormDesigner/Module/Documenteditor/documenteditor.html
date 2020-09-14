@@ -13,6 +13,13 @@
 				<td class="editTableTitle">描述:</td>
 				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 			</tr>
+			<tr>
+				<td class="editTableTitle">延时加载:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>是
+					<input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>否
+				</td>
+			</tr>
 		</table>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display:block">

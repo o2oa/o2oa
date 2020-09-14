@@ -92,6 +92,23 @@ public class Attachment extends StorageObject {
 		this.setActivityType(work.getActivityType());
 	}
 
+	public Attachment(WorkCompleted work, String person, String site) {
+		this.setCompleted(true);
+		this.setWork(work.getWork());
+		this.setWorkCompleted(work.getId());
+		this.setPerson(person);
+		this.setLastUpdatePerson(person);
+		this.setSite(site);
+		/** 用于判断目录的值 */
+		this.setWorkCreateTime(work.getStartTime() != null ? work.getStartTime() : new Date());
+		this.setApplication(work.getApplication());
+		this.setProcess(work.getProcess());
+		this.setJob(work.getJob());
+		this.setActivity(work.getActivity());
+		this.setActivityName(work.getActivityName());
+	}
+
+
 	/** 更新运行方法 */
 
 	@Override

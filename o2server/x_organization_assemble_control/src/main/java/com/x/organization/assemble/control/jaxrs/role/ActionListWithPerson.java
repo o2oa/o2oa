@@ -76,7 +76,7 @@ class ActionListWithPerson extends BaseAction {
 		CriteriaQuery<Role> cq = cb.createQuery(Role.class);
 		Root<Role> root = cq.from(Role.class);
 		Predicate p = root.get(Role_.groupList).in(groups);
-		List<Role> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Role> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		return os;
 	}
 
@@ -86,7 +86,7 @@ class ActionListWithPerson extends BaseAction {
 		CriteriaQuery<Role> cq = cb.createQuery(Role.class);
 		Root<Role> root = cq.from(Role.class);
 		Predicate p = cb.isMember(person.getId(), root.get(Role_.personList));
-		List<Role> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Role> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		return os;
 	}
 

@@ -72,4 +72,28 @@ public class DocumentCipherAction extends StandardJaxrsAction{
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "查询某用户是否有阅读文档的权限.", action = ActionQueryPermissionReadDocument.class)
+	@GET
+	@Path("{id}/permission/read/person/{person}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_PermissionReadDocument( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+											@JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("用户") @PathParam("person") String person) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionQueryPermissionReadDocument.Wo> result = new ActionResult<>();
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = new ActionQueryPermissionReadDocument().execute(effectivePerson, id, person);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

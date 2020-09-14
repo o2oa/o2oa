@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -432,8 +433,8 @@ public class Query extends GsonPropertyObject {
 						Root<Item> root = cq.from(Item.class);
 						Predicate p = FilterEntryTools.toPredicate(cb, root, f);
 						p = cb.and(p, root.get(Item_.bundle).in(jobs));
-						cq.select(root.get(Item_.bundle)).distinct(true).where(p);
-						List<String> os = em.createQuery(cq).getResultList();
+						cq.select(root.get(Item_.bundle)).where(p);
+						List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 						/** 不等于在这里单独通过等于处理 */
 						if (Comparison.isNotEquals(f.getComparison())) {
 							os = ListUtils.subtract(jobs, os);
@@ -461,8 +462,8 @@ public class Query extends GsonPropertyObject {
 						Root<Item> root = cq.from(Item.class);
 						Predicate p = FilterEntryTools.toPredicate(cb, root, f);
 						p = cb.and(p, root.get(Item_.bundle).in(jobs));
-						cq.select(root.get(Item_.bundle)).distinct(true).where(p);
-						List<String> os = em.createQuery(cq).getResultList();
+						cq.select(root.get(Item_.bundle)).where(p);
+						List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 						/** 不等于在这里单独通过等于处理 */
 						if (Comparison.isNotEquals(f.getComparison())) {
 							os = ListUtils.subtract(jobs, os);
@@ -493,8 +494,8 @@ public class Query extends GsonPropertyObject {
 				DateRangeEntryTools.toDocumentPredicate(cb, root, this.getDateRangeEntry()));
 		Predicate pw = cb.and(WhereEntryTools.toDocumentPredicate(cb, root, this.getRestrictWhereEntry()),
 				WhereEntryTools.toDocumentPredicate(cb, root, this.getWhereEntry()));
-		cq.select(root.get(Document.id_FIELDNAME)).distinct(true).where(cb.and(pd, pw));
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Document.id_FIELDNAME)).where(cb.and(pd, pw));
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	private Table concreteTable(List<String> docIds) throws Exception {
@@ -579,8 +580,8 @@ public class Query extends GsonPropertyObject {
 			p = cb.and(p, cb.equal(root.get(Item_.path5), paths.length > 5 ? paths[5] : ""));
 			p = cb.and(p, cb.equal(root.get(Item_.path6), paths.length > 6 ? paths[6] : ""));
 			p = cb.and(p, cb.equal(root.get(Item_.path7), paths.length > 7 ? paths[7] : ""));
-			cq.select(root).distinct(true).where(p);
-			List<Item> list = em.createQuery(cq).getResultList();
+			cq.select(root).where(p);
+			List<Item> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 			for (Item o : list) {
 				Row row = table.get(o.getBundle());
 				switch (o.getItemPrimitiveType()) {

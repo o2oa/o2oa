@@ -77,7 +77,7 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class({
                 this.node.setStyle(key, value);
             }
         }.bind(this));
-        this._loadBorderStyle();
+        if (this.form.json["$version"]!=="5.2") this._loadBorderStyle();
     }
 });
 MWF.xApplication.process.Xform.Table$Td = MWF.APPTable$Td =  new Class({

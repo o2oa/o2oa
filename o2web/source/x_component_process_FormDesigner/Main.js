@@ -1373,8 +1373,12 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     checkSubform: function(){
         var pcSubforms = [];
         if (this.pcForm){
+            this.pcForm.data.json.subformList = [];
             this.pcForm.moduleList.each(function(module){
                 if (module.moduleName==="subform"){
+                    if (module.json.subformSelected && module.json.subformSelected!=="none" && module.json.subformType!=="script"){
+                        if (this.pcForm.data.json.subformList.indexOf(module.json.subformSelected) === -1) this.pcForm.data.json.subformList.push(module.json.subformSelected);
+                    }
                     if (module.regetSubformData()){
                         module.subformData.updateTime = "";
                         var moduleNames = module.getConflictFields();
@@ -1386,14 +1390,17 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                             pcSubforms.push(o);
                         }
                     }
-
                 }
             }.bind(this));
         }
         var mobileSubforms = [];
         if (this.mobileForm){
+            this.mobileForm.data.json.subformList = [];
             this.mobileForm.moduleList.each(function(module){
                 if (module.moduleName==="subform"){
+                    if (module.json.subformSelected && module.json.subformSelected!=="none" && module.json.subformType!=="script"){
+                        if (this.mobileForm.data.json.subformList.indexOf(module.json.subformSelected) === -1) this.mobileForm.data.json.subformList.push(module.json.subformSelected);
+                    }
                     if (module.regetSubformData()){
                         module.subformData.updateTime = "";
                         var moduleNames = module.getConflictFields();
@@ -1537,6 +1544,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
             this.isSave = true;
             var fieldList = this.getFieldList();
+            //var subFormList = this.getSubformList();
             this.actions.saveForm(pcData, mobileData, fieldList, function(responseJSON){
                 this.notice(MWF.APPFD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"});
                 if (!this.pcForm.json.name) this.pcForm.treeNode.setText("<"+this.json.type+"> "+this.json.id);

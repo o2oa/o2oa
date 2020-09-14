@@ -324,7 +324,7 @@ class TodoTaskViewController: UITableViewController {
     
     //加载下一页数据
     func loadDataNextByURL() {
-        DDLogDebug("下一页数据   loadDataNextByURL")
+        
         let tv = self.tableView as! ZLBaseTableView
         tv.emptyTitle = self.emptyTexts[AppConfigSettings.shared.taskIndex]
         let todoTask = self.models.last?.sourceObj!

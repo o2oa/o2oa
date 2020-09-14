@@ -728,6 +728,29 @@
           ]
         },
         {
+          "name": "group1",
+          "className": "com.x.query.service.processing.jaxrs.test.ActionGroup2",
+          "description": "执行group.",
+          "type": "GET",
+          "path": "jaxrs/test/group1",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
           "name": "group2",
           "className": "com.x.query.service.processing.jaxrs.test.ActionGroup2",
           "description": "执行group.",

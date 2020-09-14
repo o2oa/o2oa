@@ -1,10 +1,6 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Work = MWF.xApplication.process.Work || {};
 MWF.xDesktop.requireApp("process.Work", "lp."+MWF.language, null, false);
-//兼容快速流转，所以需要判断
-if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
-    MWF.xDesktop.requireApp("process.Xform", "Org", null, false);
-}
 
 MWF.xApplication.process.Work.Processor = new Class({
     Extends: MWF.widget.Common,
@@ -322,13 +318,10 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.routeSelectorArea.empty();
         //}
         this.selectedRoute = null;
-
-        var flag = true;
-
         //this.task.routeNameList = ["送审核", "送办理", "送公司领导阅"];
         if( !routeList )routeList = this.getRouteDataList();
         //this.task.routeNameList.each(function(route, i){
-        var flag = false;
+        var isSelected = false;
         routeList.each(function(route, i){
             if( route.hiddenScriptText && this.form && this.form.Macro ){
                 if( this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true" )return;
@@ -351,13 +344,10 @@ MWF.xApplication.process.Work.Processor = new Class({
 
             if (routeList.length==1 || route.sole ){ //sole表示优先路由
                 this.selectRoute(routeNode);
-                flag = false;
-            }else{
-                flag = true;
+                isSelected = true;
             }
-
         }.bind(this));
-        if( flag ){
+        if( !isSelected ){
             this.setSize(0);
         }
     },
@@ -1673,8 +1663,10 @@ MWF.xApplication.process.Work.Processor = new Class({
 
 });
 
-
+//兼容快速流转，所以需要判断
 if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
+    MWF.xDesktop.requireApp("process.Xform", "Org", null, false);
+
     MWF.xApplication.process.Work.Processor.Org = new Class({
         Implements: [Options, Events],
         options: {
@@ -2662,6 +2654,4 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
     MWF.xApplication.process.Work.Processor.IdentityOptions = new Class({
         Extends : MWF.APPOrg.IdentityOptions
     });
-
-
 }

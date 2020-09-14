@@ -238,6 +238,7 @@ class AttendanceCheckInNewFragment : BaseMVPViewPagerFragment<AttendanceCheckInC
             activity?.let {
                 draw?.setColor(ContextCompat.getColor(it, R.color.disabled))
             }
+            XToast.toastShort(activity, "没有获取到当前用户打卡的信息！")
         }
     }
 

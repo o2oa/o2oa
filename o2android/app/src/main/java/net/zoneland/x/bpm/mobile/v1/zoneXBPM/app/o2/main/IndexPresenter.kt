@@ -8,6 +8,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.ResponseHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.ApplicationEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.realm.RealmDataService
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSDocumentFilter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.HotPictureOutData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.persistence.MyAppListObject
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
@@ -35,12 +36,11 @@ class IndexPresenter : BasePresenterImpl<IndexContract.View>(), IndexContract.Pr
     }
 
     override fun loadNewsList(lastId: String) {
-        val wrapIn = HashMap<String, List<String>>()
         val status = ArrayList<String>()
         status.add("published")
-        wrapIn["statusList"] = status
-        val json = O2SDKManager.instance().gson.toJson(wrapIn)
-
+        val filter = CMSDocumentFilter()
+        filter.statusList = status
+        val json = O2SDKManager.instance().gson.toJson(filter)
         val body = RequestBody.create(MediaType.parse("text/json"), json)
         getCMSAssembleControlService(mView?.getContext())?.let { service ->
             service.filterDocumentList(body, lastId, O2.DEFAULT_PAGE_NUMBER)

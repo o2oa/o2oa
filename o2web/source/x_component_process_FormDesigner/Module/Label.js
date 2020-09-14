@@ -200,6 +200,37 @@ MWF.xApplication.process.FormDesigner.Module.Label = MWF.FCLabel = new Class({
 			this.prefixNode = null;
             this.suffixNode = null;
 		}
-	}
+	},
+    _preprocessingModuleData: function(){
+        this.node.clearStyles();
+        this.json.recoveryStyles = Object.clone(this.json.styles);
+
+        if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+                //需要运行时处理
+            }else{
+                this.node.setStyle(key, value);
+                delete this.json.styles[key];
+            }
+        }.bind(this));
+
+        if (this.json.valueType==="text"){
+            if (!this.json.text){
+                if (this.textNode){
+                    this.textNode.set("text", "");
+                }else{
+                    this.node.set("text", "");
+                }
+            }
+        }else{
+            this.node.set("text", "");
+        }
+        this.json.preprocessing = "y";
+    },
+    _recoveryModuleData: function(){
+        if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+        this.json.recoveryStyles = null;
+        this._setEditStyle_custom("text");
+    }
 
 });

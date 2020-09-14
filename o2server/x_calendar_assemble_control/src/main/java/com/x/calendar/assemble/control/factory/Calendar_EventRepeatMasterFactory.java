@@ -2,6 +2,7 @@ package com.x.calendar.assemble.control.factory;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -179,6 +180,6 @@ public class Calendar_EventRepeatMasterFactory extends AbstractFactory {
 		p = CriteriaBuilderTools.predicate_and( cb, p, permission );
 		cq.select(root.get(Calendar_EventRepeatMaster_.id));
 		
-		return em.createQuery(cq.distinct(true).where(p)).getResultList();
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 }
