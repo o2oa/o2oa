@@ -76,6 +76,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class DocumentVersion {
 			public static final String table = "PP_C_DOCUMENTVERSION";
 		}
+
+		public static class Snap {
+			public static final String table = "PP_C_SNAP";
+		}
 	}
 
 	public static class Element {
