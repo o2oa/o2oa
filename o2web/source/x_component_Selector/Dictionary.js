@@ -30,11 +30,13 @@ MWF.xApplication.Selector.Dictionary = new Class({
                 dictionaryJson.data.each(function (dictionary) {
                     var appName = dictionary.appName || dictionary.applicationName;
                     var appId = dictionary.appId || dictionary.application;
+                    var appAlias = dictionary.appAlias || dictionary.applicationAlias;
                     if (!json[appId]) {
                         json[appId] = {
                             name: appName,
                             applicationName: appName,
                             appName: appName,
+                            appAlias: appAlias,
                             application: appId,
                             appId: appId
                         };
@@ -42,15 +44,22 @@ MWF.xApplication.Selector.Dictionary = new Class({
                     }
                     dictionary.appName = appName;
                     dictionary.appId = appId;
+                    dictionary.appAlias = appAlias;
                     dictionary.appType = type;
                     dictionary.type = "dictionary";
                     json[appId].dictionaryList.push(dictionary)
                 }.bind(this));
                 for (var application in json) {
                     if (json[application].dictionaryList && json[application].dictionaryList.length) {
+                        json[application].dictionaryList.sort(function (a, b) {
+                            return (a.name||"").localeCompare((b.name||""));
+                        });
                         array.push(json[application]);
                     }
                 }
+                array.sort( function (a, b) {
+                    return (a.name||"").localeCompare((b.name||""));
+                });
 
                 if( this.options.appType.length === 1 ){
                     array.each( function (data) {

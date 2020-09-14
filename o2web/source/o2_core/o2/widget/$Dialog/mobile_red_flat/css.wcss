@@ -1,0 +1,95 @@
+{
+	"from": {
+		"width": "1px",
+		"height": "1px",
+		"position": "absolute",
+		"top": $(document.body).getSize().y/2,
+		"left": $(document.body).getSize().x/2,
+		"border-style": "solid",
+		"border-color": "#999",
+		"border-width": "0",
+		"border-radius": "0px",
+		
+		"background-color": "#fff",
+		"box-shadow": "0px 0px 0px #999",
+		"z-index": "99",
+		
+		"padding": "0px",
+	
+		"opacity": 0
+	},
+	"to": {
+		"background-color": "#fff",
+		"border-style": "solid",
+		"border-color": "#999",
+		"border-width": "0",
+		"box-shadow": "0px 0px 0px #999",
+		"z-index": "99",
+		"border-radius": "0px",
+		
+		"font-size": "12px",
+		"height": "60",
+		"padding": "0px",
+		"width": "300",
+		"position": "absolute",
+		"top": "0",
+		"left": "0",
+		"opacity": 1
+	},
+	"mark": {
+		"height": "0",
+		"width": "0",
+		"opacity": 0.3,
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"z-index": "98",
+		"border-style": "none",
+		"border-width": "0",
+		"background-color": "#CCC"
+	},
+  "okButton": {
+	"border" : "0px",
+	"height": "44px",
+	"line-height": "44px",
+	"background-color" : "#f06966",
+	"color": "#FFF",
+	"font-size": "16px",
+	"margin-top" : "10px",
+	"border-radius": "4px",
+	"cursor": "pointer",
+	"text-align" : "center",
+	"width" : "44.7%",
+	"float" : "left"
+  },
+  "cancelButton" : {
+	"border" : "0px",
+	"margin-left" : "4%",
+	"margin-right" : "2.6%",
+	"height": "44px",
+	"line-height": "44px",
+	"margin-top" : "10px",
+	"background-color" : "#d7d7d9",
+	"color": "#333",
+	"font-size": "16px",
+	"border-radius": "4px",
+	"cursor": "pointer",
+	"text-align" : "center",
+	"width" : "44.7%",
+	"float" : "left"
+  },
+	"button": {
+	  "border" : "0px",
+	  "height": "44px",
+	  "line-height": "44px",
+	  "background-color" : "#f06966",
+	  "color": "#FFF",
+	  "font-size": "16px",
+	  "margin-top" : "10px",
+	  "border-radius": "4px",
+	  "cursor": "pointer",
+	  "text-align" : "center",
+	  "width" : "44.7%",
+	  "float" : "left"
+	}
+}

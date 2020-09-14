@@ -71,7 +71,7 @@ public class PersonFactory extends AbstractFactory {
 				CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 				Root<Person> root = cq.from(Person.class);
 				Predicate p = cb.equal(root.get(Person_.name), name);
-				List<Person> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+				List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				if (os.size() == 1) {
 					o = os.get(0);
 					em.detach(o);
@@ -118,7 +118,7 @@ public class PersonFactory extends AbstractFactory {
 			p = cb.or(p, cb.equal(root.get(Person_.qq), value));
 			p = cb.or(p, cb.equal(root.get(Person_.mail), value));
 			p = cb.or(p, cb.equal(root.get(Person_.weixin), value));
-			List<Person> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+			List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
 			if (os.size() == 1) {
 				person = os.get(0);
 			}

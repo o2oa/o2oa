@@ -149,4 +149,4 @@ if [ -d ${current_dir}/local/update ]; then
 		rm -Rf ${current_dir}/local/update
 	fi
 fi
-sudo ${current_dir}/jvm/macos/bin/java -server -Djava.awt.headless=true -Xms2g -Xmx8g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
+sudo ${current_dir}/jvm/macos/bin/java -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Xmx4g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar

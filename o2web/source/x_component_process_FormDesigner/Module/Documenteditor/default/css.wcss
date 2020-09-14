@@ -82,6 +82,12 @@
 		"height": "100%",
 		"border": "0"
 	},
+	"documentEditorNode": {
+		"background": "#f1f1f1",
+		"border": "1px solid #cccccc",
+		"overflow": "hidden",
+		"position": "relative"
+	},
 	"doc_page": {
         "width": "15.6cm",
         "padding": "1.7cm 2.6cm 1.5cm 2.8cm",

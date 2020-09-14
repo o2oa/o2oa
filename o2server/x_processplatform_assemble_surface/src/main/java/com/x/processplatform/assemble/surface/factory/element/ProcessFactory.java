@@ -65,47 +65,7 @@ public class ProcessFactory extends ElementFactory {
 		return o;
 	}
 
-//	private Process pickObject(String flag) throws Exception {
-//		Process o = this.business().entityManagerContainer().flag(flag, Process.class);
-//		if (o != null) {
-//			this.entityManagerContainer().get(Process.class).detach(o);
-//		}
-//		if (null == o) {
-//			EntityManager em = this.entityManagerContainer().get(Process.class);
-//			CriteriaBuilder cb = em.getCriteriaBuilder();
-//			CriteriaQuery<Process> cq = cb.createQuery(Process.class);
-//			Root<Process> root = cq.from(Process.class);
-//			Predicate p = cb.equal(root.get(Process_.name), flag);
-//			List<Process> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
-//			if (os.size() == 1) {
-//				o = os.get(0);
-//				em.detach(o);
-//			}
-//		}
-//		return o;
-//	}
-
-//	public Process pickObject(Application application, String flag) throws Exception {
-//		if (null == application || StringUtils.isEmpty(flag)) {
-//			return null;
-//		}
-//		Process o = null;
-//		String cacheKey = ApplicationCache.concreteCacheKey(Process.class, application.getId(), flag);
-//		Element element = cache.get(cacheKey);
-//		if (null != element) {
-//			if (null != element.getObjectValue()) {
-//				o = (Process) element.getObjectValue();
-//			}
-//		} else {
-//			o = this.restrictProcess(application.getId(), flag);
-//			if (null != o) {
-//				cache.put(new Element(cacheKey, o));
-//			}
-//		}
-//		return o;
-//	}
-
-	/* 获取Application下的所有流程 */
+	// 获取Application下的所有流程
 	public List<String> listWithApplication(Application application) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Process.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -113,8 +73,8 @@ public class ProcessFactory extends ElementFactory {
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.equal(root.get(Process_.application), application.getId());
 		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
-		cq.select(root.get(Process_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Process_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
@@ -139,8 +99,8 @@ public class ProcessFactory extends ElementFactory {
 		}
 		p = cb.and(p, cb.equal(root.get(Process_.application), application.getId()));
 		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
-		cq.select(root.get(Process_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Process_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -53,8 +54,8 @@ public class ActionFilterAttribute extends BaseAction {
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
 		Predicate p = cb.equal(root.get(WorkCompleted_.creatorPerson), effectivePerson.getDistinguishedName());
 		p = cb.and(p, cb.equal(root.get(WorkCompleted_.application), applicationId));
-		cq.select(root.get(WorkCompleted_.process)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(WorkCompleted_.process)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			NameValueCountPair o = new NameValueCountPair();
@@ -80,8 +81,8 @@ public class ActionFilterAttribute extends BaseAction {
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
 		Predicate p = cb.equal(root.get(WorkCompleted_.creatorPerson), effectivePerson.getDistinguishedName());
 		p = cb.and(p, cb.equal(root.get(WorkCompleted_.application), applicationId));
-		cq.select(root.get(WorkCompleted_.startTimeMonth)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(WorkCompleted_.startTimeMonth)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wraps = new ArrayList<>();
 		for (String str : list) {
 			NameValueCountPair o = new NameValueCountPair();
@@ -100,8 +101,8 @@ public class ActionFilterAttribute extends BaseAction {
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
 		Predicate p = cb.equal(root.get(WorkCompleted_.creatorPerson), effectivePerson.getDistinguishedName());
 		p = cb.and(p, cb.equal(root.get(WorkCompleted_.application), applicationId));
-		cq.select(root.get(WorkCompleted_.completedTimeMonth)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(WorkCompleted_.completedTimeMonth)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wraps = new ArrayList<>();
 		for (String str : list) {
 			NameValueCountPair o = new NameValueCountPair();

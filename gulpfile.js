@@ -461,6 +461,7 @@ function build_concat_xform(){
         'o2web/source/' + path + '/Textfield.js',
         'o2web/source/' + path + '/Personfield.js',
         'o2web/source/' + path + '/*.js',
+        'o2web/source/x_component_process_Work/Processor.js',
         '!o2web/source/' + path + '/Office.js'
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
@@ -489,10 +490,59 @@ function build_bundle(){
         .pipe(rename({ extname: '.min.js' }))
         .pipe(gulp.dest(dest))
 }
+
+function build_concat_basework() {
+    var src = [
+        'o2web/source/x_desktop/js/base_work_begin.js',
+        'o2web/source/o2_core/o2/widget/Common.js',
+        'o2web/source/o2_core/o2/widget/Dialog.js',
+        'o2web/source/o2_core/o2/widget/UUID.js',
+        'o2web/source/o2_core/o2/widget/Menu.js',
+        'o2web/source/o2_core/o2/widget/Toolbar.js',
+        'o2web/source/o2_core/o2/xDesktop/Common.js',
+        'o2web/source/o2_core/o2/xDesktop/Actions/RestActions.js',
+        'o2web/source/o2_core/o2/xAction/RestActions.js',
+        'o2web/source/o2_core/o2/xDesktop/Access.js',
+        'o2web/source/o2_core/o2/xDesktop/Dialog.js',
+        'o2web/source/o2_core/o2/xDesktop/Menu.js',
+        'o2web/source/o2_core/o2/xDesktop/UserData.js',
+        'o2web/source/x_component_Template/MPopupForm.js',
+        'o2web/source/o2_core/o2/xDesktop/Authentication.js',
+        'o2web/source/o2_core/o2/xDesktop/Dialog.js',
+        'o2web/source/o2_core/o2/xDesktop/Window.js',
+        'o2web/source/x_component_Common/Main.js',
+        'o2web/source/x_component_process_Work/Main.js',
+        'o2web/source/x_component_Selector/package.js',
+        'o2web/source/x_component_Selector/Person.js',
+        'o2web/source/x_component_Selector/Identity.js',
+        'o2web/source/x_component_Selector/Unit.js',
+        'o2web/source/o2_core/o2/xScript/Actions/UnitActions.js',
+        'o2web/source/o2_core/o2/xScript/Actions/ScriptActions.js',
+        'o2web/source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
+        'o2web/source/o2_core/o2/xScript/Actions/PortalScriptActions.js',
+        'o2web/source/o2_core/o2/xScript/Environment.js',
+        'o2web/source/x_component_Template/MTooltips.js',
+        'o2web/source/x_component_Template/MSelector.js',
+        'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
+        'o2web/source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
+        'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
+        'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
+        'o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
+        'o2web/source/x_desktop/js/base_work_end.js',
+        'o2web/source/x_desktop/js/base.js'
+    ];
+    var dest = 'target/o2server/servers/webServer/x_desktop/js/';
+    return gulp.src(src)
+        .pipe(concat('base_work.js'))
+        .pipe(gulp.dest(dest))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulp.dest(dest));
+}
 // function build_concat(){
 //     return gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform);
 // }
-exports.build_concat = gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform, build_bundle);
+exports.build_concat = gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform, build_bundle, build_concat_basework);
 
 
 function build_web_v_html() {
@@ -584,7 +634,7 @@ function chmod_sh(){
 function chmod_servers(){
     return (shell.task('chmod 777 -R target/o2server/servers'))();
 }
-exports.build_web = gulp.series(build_web_minimize, build_web_move, gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform, build_bundle), build_web_v_html, build_web_v_o2);
+exports.build_web = gulp.series(build_web_minimize, build_web_move, gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform, build_bundle, build_concat_basework), build_web_v_html, build_web_v_o2);
 if (os.platform().indexOf("win")==-1){
     exports.deploy = gulp.series(deploy_server, chmod_jvm, chmod_commons, chmod_sh, chmod_servers);
 }else{

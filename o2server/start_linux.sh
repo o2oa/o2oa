@@ -148,4 +148,4 @@ if [ -d ${current_dir}/local/update ]; then
 		rm -Rf ${current_dir}/local/update
 	fi
 fi
-setsid ${current_dir}/jvm/linux/bin/java -server -Djava.awt.headless=true -Xms2g -Xmx5g -Duser.timezone=GMT+08 -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
+setsid ${current_dir}/jvm/linux/bin/java -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Xmx4g -Duser.timezone=GMT+08 -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar

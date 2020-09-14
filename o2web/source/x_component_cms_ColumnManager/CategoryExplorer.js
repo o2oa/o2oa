@@ -982,11 +982,19 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         }.bind(this),function(xhr, text, error){
             var errorText = error;
             if (xhr) errorText = xhr.responseText;
-            if( errorText.indexOf( "referenced" ) > -1 ){
-                var lp = this.explorer.app.lp.category;
-                var text = lp.deleteFailAsHasDocument.replace(/{title}/g, this.data.name );
-                this.app.notice( text,"error");
+            try{
+                var errorObj = JSON.parse(errorText);
+                if( errorObj.message ){
+                    this.app.notice( errorObj.message,"error");
+                }
+            }catch(e){
+
             }
+            // if( errorText.indexOf( "referenced" ) > -1 ){
+            //     var lp = this.explorer.app.lp.category;
+            //     var text = lp.deleteFailAsHasDocument.replace(/{title}/g, this.data.name );
+            //     this.app.notice( text,"error");
+            // }
         }.bind(this));
     },
     moveCategory: function(e){

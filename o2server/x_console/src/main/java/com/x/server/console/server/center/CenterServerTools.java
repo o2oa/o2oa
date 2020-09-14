@@ -1,11 +1,17 @@
 package com.x.server.console.server.center;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.file.PathUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
@@ -25,14 +31,15 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.JarTools;
+import com.x.base.core.project.tools.PathTools;
 import com.x.server.console.server.JettySeverTools;
 
 public class CenterServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(CenterServerTools.class);
 
-	private static int CENTERSERVER_THREAD_POOL_SIZE_MIN = 50;
-	private static int CENTERSERVER_THREAD_POOL_SIZE_MAX = 500;
+	private static final int CENTERSERVER_THREAD_POOL_SIZE_MIN = 50;
+	private static final int CENTERSERVER_THREAD_POOL_SIZE_MAX = 500;
 
 	public static Server start(CenterServer centerServer) throws Exception {
 
@@ -40,22 +47,24 @@ public class CenterServerTools extends JettySeverTools {
 
 		HandlerList handlers = new HandlerList();
 
-		File war = new File(Config.dir_store(), x_program_center.class.getSimpleName() + ".war");
-		File dir = new File(Config.dir_servers_centerServer_work(true), x_program_center.class.getSimpleName());
-		if (war.exists()) {
+		Path war = Paths.get(Config.dir_store().toString(), x_program_center.class.getSimpleName() + PathTools.DOT_WAR);
+		Path dir = Paths.get(Config.dir_servers_centerServer_work(true).toString(),
+				x_program_center.class.getSimpleName());
+		if (Files.exists(war)) {
 			modified(war, dir);
 			QuickStartWebApp webApp = new QuickStartWebApp();
 			webApp.setAutoPreconfigure(false);
 			webApp.setDisplayName(x_program_center.class.getSimpleName());
 			webApp.setContextPath("/" + x_program_center.class.getSimpleName());
-			webApp.setResourceBase(dir.getAbsolutePath());
-			webApp.setDescriptor(new File(dir, "WEB-INF/web.xml").getAbsolutePath());
+			webApp.setResourceBase(dir.toAbsolutePath().toString());
+			webApp.setDescriptor(dir.resolve(Paths.get(PathTools.WEB_INF_WEB_XML)).toString());
 			webApp.setExtraClasspath(calculateExtraClassPath(x_program_center.class));
-			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
-			webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
-			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
-			/* stat */
-			if (centerServer.getStatEnable()) {
+			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
+					BooleanUtils.toStringTrueFalse(false));
+			webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", BooleanUtils.toStringTrueFalse(true));
+			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
+					BooleanUtils.toStringTrueFalse(false));
+			if (BooleanUtils.isTrue(centerServer.getStatEnable())) {
 				FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
 				statFilterHolder.setInitParameter("exclusions", centerServer.getStatExclusions());
 				webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -63,10 +72,9 @@ public class CenterServerTools extends JettySeverTools {
 				statServletHolder.setInitParameter("sessionStatEnable", "false");
 				webApp.addServlet(statServletHolder, "/druid/*");
 			}
-			/* stat end */
 			handlers.addHandler(webApp);
 		} else {
-			throw new Exception("centerServer war not exist.");
+			throw new IOException("centerServer war not exist.");
 		}
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
@@ -75,7 +83,7 @@ public class CenterServerTools extends JettySeverTools {
 		Server server = new Server(threadPool);
 		server.setAttribute("maxFormContentSize", centerServer.getMaxFormContent() * 1024 * 1024);
 
-		if (centerServer.getSslEnable()) {
+		if (BooleanUtils.isTrue(centerServer.getSslEnable())) {
 			addHttpsConnector(server, centerServer.getPort());
 		} else {
 			addHttpConnector(server, centerServer.getPort());
@@ -106,16 +114,22 @@ public class CenterServerTools extends JettySeverTools {
 		}
 	}
 
-	private static void modified(File war, File dir) throws Exception {
-		File lastModified = new File(dir, "WEB-INF/lastModified");
-		if ((!lastModified.exists()) || lastModified.isDirectory() || (war.lastModified() != NumberUtils
-				.toLong(FileUtils.readFileToString(lastModified, DefaultCharset.charset_utf_8), 0))) {
-			if (dir.exists()) {
-				FileUtils.forceDelete(dir);
+	private static void modified(Path war, Path dir) throws IOException {
+		Path lastModified = Paths.get(dir.toString(), PathTools.WEB_INF_LASTMODIFIED);
+		if ((!Files.exists(lastModified)) || Files.isDirectory(lastModified)
+				|| (Files.getLastModifiedTime(war).toMillis() != NumberUtils
+						.toLong(FileUtils.readFileToString(lastModified.toFile(), DefaultCharset.charset_utf_8), 0))) {
+			logger.print("deploy war:{}.", war.getFileName().toAbsolutePath());
+			if (Files.exists(dir)) {
+				PathUtils.cleanDirectory(dir);
 			}
 			JarTools.unjar(war, "", dir, true);
-			FileUtils.writeStringToFile(lastModified, war.lastModified() + "", DefaultCharset.charset_utf_8, false);
+			if (!Files.exists(lastModified)) {
+				Files.createDirectories(lastModified.getParent());
+				Files.createFile(lastModified);
+			}
+			FileUtils.writeStringToFile(lastModified.toFile(), Files.getLastModifiedTime(war).toMillis() + "",
+					DefaultCharset.charset_utf_8, false);
 		}
 	}
-
 }

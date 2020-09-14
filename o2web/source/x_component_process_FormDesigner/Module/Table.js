@@ -557,7 +557,6 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 	},
 	_preprocessingModuleData: function(){
 		this.node.clearStyles();
-		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
 		this.json.recoveryStyles = Object.clone(this.json.styles);
 
 		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
@@ -573,7 +572,21 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				}
 			}
 		}.bind(this));
+
+		if (this.json.styles && this.json.styles.border){
+			if (!this.table) this.table = this.node.getElement("table");
+			if( this.json.styles["table-layout"] ){
+				this.table.setStyle("table-layout",this.json.styles["table-layout"]);
+			}
+			this.table.setStyle("border-collapse","collapse");
+		}
 		this.json.preprocessing = "y";
+	},
+	_recoveryModuleData: function(){
+		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+		this.json.recoveryStyles = null;
+		if (!this.table) this.table = this.node.getElement("table");
+		this.table.setStyle("border-collapse","separate");
 	}
 	
 });

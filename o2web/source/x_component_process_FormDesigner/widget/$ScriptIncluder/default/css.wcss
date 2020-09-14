@@ -1,0 +1,150 @@
+{
+    "titleNode": {
+        "height": "24px",
+        "background-color": "#eeeeee",
+        "line-height": "24px",
+        "text-align": "center",
+        "border-top": "1px solid #999"
+    },
+    "editorNode": {
+        "border-top": "0px",
+        "overflow": "hidden"
+    },
+    "actionNode":{
+        "height": "30px",
+        "text-align": "center"
+    },
+    "listNode": {
+        "border-top": "1px solid #bbb",
+        "min-height": "60px",
+        "padding-top": "2px",
+        "overflow": "hidden"
+    },
+    "editTableTdValue": {
+        "height": "24px",
+        "line-height": "24px",
+        "border-bottom": "1px dashed #CCC"
+    },
+    "decisionNameInput": {
+        "color": "#666",
+        "width": "90%",
+        "border-top": "1px solid #AAA",
+        "border-left": "1px solid #AAA",
+        "border-bottom": "1px solid #CCC",
+        "border-right": "1px solid #CCC"
+    },
+    "valueInput":{
+        "color": "#666",
+        "width": "90%",
+        "border-top": "1px solid #AAA",
+        "border-left": "1px solid #AAA",
+        "border-bottom": "1px solid #CCC",
+        "border-right": "1px solid #CCC"
+    },
+    "promptInput": {
+        "color": "#666",
+        "width": "90%",
+        "border-top": "1px solid #AAA",
+        "border-left": "1px solid #AAA",
+        "border-bottom": "1px solid #CCC",
+        "border-right": "1px solid #CCC"
+    },
+    "valueSelect": {
+        "color": "#666",
+        "width": "auto",
+        "border-top": "1px solid #AAA",
+        "border-left": "1px solid #AAA",
+        "border-bottom": "1px solid #CCC",
+        "border-right": "1px solid #CCC"
+    },
+    "titleTd": {
+        "width": "60px",
+        "font-weight": "bold",
+        "font-size": "12px",
+        "height": "24px",
+        "line-height": "24px"
+    },
+    "actionAreaNode": {
+        "width": "110px",
+        "height": "22px",
+        "margin": "auto",
+        "margin-top": "4px"
+    },
+    "addAction": {
+        "width": "50px",
+        "height": "20px",
+        "line-height": "20px",
+        "float": "left",
+        "cursor": "pointer",
+        "border-radius": "3px",
+        "border": "1px solid #999",
+        "background-color": "#798795",
+        "color": "#FFF"
+    },
+    "modifyAction": {
+        "width": "50px",
+        "height": "20px",
+        "line-height": "20px",
+        "float": "right",
+        "cursor": "pointer",
+        "border-radius": "3px",
+        "border": "1px solid #999",
+        "background-color": "#798795",
+        "color": "#FFF"
+    },
+    "modifyAction_disabled": {
+        "width": "50px",
+        "height": "20px",
+        "line-height": "20px",
+        "float": "right",
+        "cursor": "pointer",
+        "border-radius": "3px",
+        "border": "1px solid #999",
+        "background-color": "#d1dee9",
+        "color": "#999"
+    },
+    "errorNode": {
+        "height": "24px",
+        "background-color": "#fbe8e8",
+        "color": "#FF0000"
+    },
+    "errorTextNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "background": "url("+"../x_component_process_FormDesigner/widget/$ValidationEditor/default/icon/error.png) no-repeat 5px center",
+        "padding-left": "30px"
+    },
+    "scriptNode" : {
+        "padding-left" : "5px",
+        "padding-top" : "5px"
+    },
+    "itemNode": {
+        "cursor": "pointer",
+        "height": "auto",
+        "margin": "2px 4px",
+        "background-color": "#fff",
+        "border": "1px solid #ddd"
+    },
+    "itemNode_current": {
+        "cursor": "pointer",
+        "height": "auto",
+        "margin": "2px 4px",
+        "background-color": "#eee",
+        "border": "1px solid #bbb"
+    },
+    "itemDeleteNode": {
+        "width": "20px",
+        "height": "24px",
+        "float": "right",
+        "background": "url("+"../x_component_process_FormDesigner/widget/$ValidationEditor/default/icon/delete1.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+    "itemContentNode": {
+        "padding": "5px",
+        "margin-right": "20px",
+        "height": "auto",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+    }
+}

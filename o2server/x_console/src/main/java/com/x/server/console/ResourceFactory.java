@@ -14,6 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.lang3.BooleanUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.util.RolloverFileOutputStream;
 
@@ -30,6 +31,7 @@ import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.ExternalDataSource;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.server.console.node.EventQueueExecutor;
@@ -43,16 +45,18 @@ public class ResourceFactory {
 	private static Logger logger = LoggerFactory.getLogger(ResourceFactory.class);
 
 	public static void bind() throws Exception {
-		try (ScanResult sr = new ClassGraph().enableAnnotationInfo().scan()) {
+		try (ScanResult sr = new ClassGraph()
+				.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, true, true, true)).enableAnnotationInfo()
+				.scan()) {
 			node(sr);
 			containerEntities(sr);
 			containerEntityNames(sr);
 			stroageContainerEntityNames(sr);
 		}
-		if (Config.logLevel().audit().enable()) {
+		if (BooleanUtils.isTrue(Config.logLevel().audit().enable())) {
 			auditLog();
 		}
-		if (Config.externalDataSources().enable()) {
+		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
 		} else {
 			internal();
@@ -114,7 +118,7 @@ public class ResourceFactory {
 			/* 增加校验 */
 			dataSource.setTestConnectionOnCheckin(true);
 			dataSource.setAcquireIncrement(0);
-			if (ds.getStatEnable()) {
+			if (BooleanUtils.isTrue(ds.getStatEnable())) {
 				dataSource.setFilters(ds.getStatFilter());
 				Properties properties = new Properties();
 				// property name="connectionProperties" value="druid.stat.slowSqlMillis=5000
@@ -136,7 +140,7 @@ public class ResourceFactory {
 		for (Entry<String, DataServer> entry : Config.nodes().dataServers().entrySet()) {
 			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
 			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort()
-					+ "/X;DEFAULT_LOCK_TIMEOUT=" + entry.getValue().getLockTimeout() + ";JMX="
+					+ "/X;LOCK_MODE=0;DEFAULT_LOCK_TIMEOUT=" + entry.getValue().getLockTimeout() + ";JMX="
 					+ (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
 					+ (entry.getValue().getCacheSize() * 1024);
 			dataSource.setJdbcUrl(url);
@@ -166,7 +170,7 @@ public class ResourceFactory {
 			BasicDataSource dataSource = new BasicDataSource();
 
 			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort()
-					+ "/X;DEFAULT_LOCK_TIMEOUT=" + entry.getValue().getLockTimeout() + ";JMX="
+					+ "/X;LOCK_MODE=0;DEFAULT_LOCK_TIMEOUT=" + entry.getValue().getLockTimeout() + ";JMX="
 					+ (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
 					+ (entry.getValue().getCacheSize() * 1024);
 			dataSource.setDriverClassName(SlicePropertiesBuilder.driver_h2);
@@ -191,7 +195,7 @@ public class ResourceFactory {
 		for (Entry<String, DataServer> entry : Config.nodes().dataServers().entrySet()) {
 			DruidDataSource dataSource = new DruidDataSource();
 			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort()
-					+ "/X;DEFAULT_LOCK_TIMEOUT=" + entry.getValue().getLockTimeout() + ";JMX="
+					+ "/X;LOCK_MODE=0;DEFAULT_LOCK_TIMEOUT=" + entry.getValue().getLockTimeout() + ";JMX="
 					+ (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
 					+ (entry.getValue().getCacheSize() * 1024);
 			dataSource.setDriverClassName(SlicePropertiesBuilder.driver_h2);
@@ -250,7 +254,6 @@ public class ResourceFactory {
 	private static void processPlatformExecutors() throws Exception {
 		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
 		for (int i = 0; i < Config.processPlatform().getExecutorCount(); i++) {
-			// services[i] = Executors.newSingleThreadExecutor();
 			services[i] = Executors.newFixedThreadPool(1);
 		}
 

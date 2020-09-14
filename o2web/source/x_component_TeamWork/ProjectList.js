@@ -655,7 +655,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 this.currentListType = "list";
                 this.menuSettingList.setStyle("background-image","url(../x_component_TeamWork/$ProjectList/default/icon/icon_liebiao_click.png)");
                 this.menuSettingBlock.setStyle("background-image","url(../x_component_TeamWork/$ProjectList/default/icon/icon_tubiao.png)");
-                this.openItem()
+                this.openItem({type:this.currentNavi})
             }.bind(this),
             mouseover:function(){
                 //this.app.showTips(this.menuSettingList,{_html:"<div style=''> "+this.lp.content.listTip+" </div>"},{axis:"y",position : { x : "auto", y : "top" }});
@@ -667,7 +667,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 this.currentListType = "block";
                 this.menuSettingList.setStyle("background-image","url(../x_component_TeamWork/$ProjectList/default/icon/icon_liebiao.png)");
                 this.menuSettingBlock.setStyle("background-image","url(../x_component_TeamWork/$ProjectList/default/icon/icon_tubiao_click.png)");
-                this.openItem()
+                this.openItem({type:this.currentNavi})
             }.bind(this),
             mouseover:function(){
                 //this.app.showTips(this.menuSettingList,{_html:"<div style=''> "+this.lp.content.blockTip+" </div>"},{axis:"y",position : { x : "auto", y : "top" }});

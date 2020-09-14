@@ -811,6 +811,24 @@ MWF.xScript.PageEnvironment = function (ev) {
         scriptAction.getScriptByName( application, name, includedScripts, function(json){
             if (json.data){
                 includedScripts.push( key );
+
+                //名称、别名、id
+                json.data.importedList.each( function ( flag ) {
+                    if( type === "portal" ){
+                        includedScripts.push( type + "-" + json.data.portal + "-" + flag );
+                        if( json.data.portalName )includedScripts.push( type + "-" + json.data.portalName + "-" + flag );
+                        if( json.data.portalAlias )includedScripts.push( type + "-" + json.data.portalAlias + "-" + flag );
+                    }else if( type === "cms" ){
+                        includedScripts.push( type + "-" + json.data.appId + "-" + flag );
+                        if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
+                        if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
+                    }else if( type === "process" ){
+                        includedScripts.push( type + "-" + json.data.application + "-" + flag );
+                        if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
+                        if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
+                    }
+                });
+
                 includedScripts = includedScripts.concat(json.data.importedList);
                 MWF.Macro.exec(json.data.text, this);
                 if (callback) callback.apply(this);
@@ -1341,7 +1359,164 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
     var type = typeOf(data);
     if (type==="object" || type==="array") define.apply(this);
 };
-var dictLoaded = {};
+
+if( !MWF.xScript.dictLoaded )MWF.xScript.dictLoaded = {};
+
+MWF.xScript.addDictToCache = function ( options, path, json ) {
+    if( !path )path = "root";
+    if( path.indexOf("root") !== 0 )path = "root." + path ;
+
+    var type = options.appType || "process";
+    var enableAnonymous = options.enableAnonymous || false;
+
+    var appFlagList = [];
+    if( options.application )appFlagList.push( options.application );
+    if( options.appId )appFlagList.push( options.appId );
+    if( options.appName )appFlagList.push( options.appName );
+    if( options.appAlias )appFlagList.push( options.appAlias );
+
+    var dictFlagList = [];
+    if( options.id )dictFlagList.push( options.id );
+    if( options.name )dictFlagList.push( options.name );
+    if( options.alias )dictFlagList.push( options.alias );
+
+    var cache = {};
+    cache[path] = json;
+
+    for( var i=0; i<appFlagList.length; i++ ){
+        for( var j=0; j<dictFlagList.length; j++ ){
+            var k = dictFlagList[j] + type + appFlagList[i] + enableAnonymous;
+            if( !MWF.xScript.dictLoaded[k] ){
+                MWF.xScript.dictLoaded[k] = cache; //指向同一个对象
+                // MWF.xScript.dictLoaded[k][path] = json; //指向不同的对象
+            }else if( i===0 && j===0 ){
+                MWF.xScript.setDictToCache( k, path ,json );
+                var arr = path.split(/\./g);
+                var p;
+                var cache = MWF.xScript.dictLoaded[k];
+                for( var l=0 ; l<arr.length; l++ ){
+                    p = l === 0 ? arr[0] : ( p + "." + arr[l] );
+                    if( cache[ p ] )break;
+                }
+                if( p ){
+                    var mathP = p+".";
+                    Object.keys( cache ).each( function( path, idx){
+                        if( path.indexOf( mathP ) === 0 )delete cache[path];
+                    })
+                }
+            }
+        }
+    }
+};
+
+MWF.xScript.getMatchedDict = function(key, path){
+    if( !path )path = "root";
+    if( path.indexOf("root") !== 0 )path = "root." + path ;
+
+    var arr = path.split(/\./g);
+    if( MWF.xScript.dictLoaded[key] ){
+        var dicts = MWF.xScript.dictLoaded[key];
+        var list = Array.clone(arr);
+        var p;
+        var dict;
+        for( var i=0 ; i<arr.length; i++ ){
+            p = i === 0 ? arr[0] : ( p + "." + arr[i] );
+            list.shift();
+            if( dicts[ p ] ){
+                dict = dicts[ p ];
+                break;
+            }
+        }
+        return {
+            dict : dict,
+            unmatchedPathList : list
+        }
+    }
+    return {
+        dict : null,
+        unmatchedPathList : list
+    }
+};
+
+MWF.xScript.insertDictToCache = function(key, path, json){
+    if( MWF.xScript.dictLoaded[key] ){
+        var matchedDict = MWF.xScript.getMatchedDict( key, path );
+        var dict = matchedDict.dict;
+        var list = matchedDict.unmatchedPathList;
+        if( !dict ){
+            MWF.xScript.dictLoaded[key][path] = json;
+        }else{
+            for( var j=0; j<list.length-1; j++ ){
+                if( !dict[ list[j] ] ){
+                    dict[ list[j] ] = {};
+                }
+                dict = dict[ list[j] ];
+            }
+            var lastPath = list[list.length-1];
+            if( !dict[lastPath] ){
+                dict[lastPath] = json;
+            }else if( typeOf( dict[lastPath] ) === "array" ){
+                dict[lastPath].push( json );
+            }
+        }
+    }else{
+        MWF.xScript.dictLoaded[key] = {};
+        MWF.xScript.dictLoaded[key][path] = json;
+    }
+};
+
+
+MWF.xScript.setDictToCache = function(key, path, json){
+    if( MWF.xScript.dictLoaded[key] ){
+        var matchedDict = MWF.xScript.getMatchedDict( key, path );
+        var dict = matchedDict.dict;
+        var list = matchedDict.unmatchedPathList;
+        if( !dict ){
+            MWF.xScript.dictLoaded[key][path] = json;
+        }else{
+            for( var j=0; j<list.length-1; j++ ){
+                if( !dict[ list[j] ] ){
+                    dict[ list[j] ] = {};
+                }
+                dict = dict[ list[j] ];
+            }
+            dict[list[list.length-1]] = json;
+        }
+    }else{
+        MWF.xScript.dictLoaded[key] = {};
+        MWF.xScript.dictLoaded[key][path] = json;
+    }
+};
+
+MWF.xScript.getDictFromCache = function( key, path ){
+    var matchedDict = MWF.xScript.getMatchedDict( key, path );
+    var dict = matchedDict.dict;
+    var list = matchedDict.unmatchedPathList;
+    if( dict ){
+        for( var j=0; j<list.length; j++ ){
+            dict = dict[ list[j] ];
+            if( !dict )return null;
+        }
+        return dict;
+    }
+    return null;
+};
+
+MWF.xScript.deleteDictToCache = function(key, path){
+    var matchedDict = MWF.xScript.getMatchedDict( key, path );
+    var dict = matchedDict.dict;
+    var list = matchedDict.unmatchedPathList;
+
+    if( dict){
+        for( var j=0; j<list.length-1; j++ ){
+            dict = dict[ list[j] ];
+            if( !dict )return;
+        }
+        delete dict[list[list.length-1]];
+    }
+};
+
+
 MWF.xScript.createDict = function(application){
     //optionsOrName : {
     //  type : "", //默认为process, 可以为  process  cms
@@ -1360,9 +1535,16 @@ MWF.xScript.createDict = function(application){
         var applicationId = options.application || application;
         var enableAnonymous = options.enableAnonymous || false;
 
-        var key = name+type+applicationId+enableAnonymous
-        if (!dictLoaded[key]) dictLoaded[key] = {};
-        this.dictData = dictLoaded[key];
+        var opt = {
+            "appType" : type,
+            "name" : name,
+            "appId" : applicationId,
+            "enableAnonymous" : enableAnonymous
+        };
+
+        var key = name+type+applicationId+enableAnonymous;
+        // if (!dictLoaded[key]) dictLoaded[key] = {};
+        // this.dictData = dictLoaded[key];
 
         //MWF.require("MWF.xScript.Actions.DictActions", null, false);
         if( type == "cms" ){
@@ -1381,29 +1563,31 @@ MWF.xScript.createDict = function(application){
 
         this.get = function(path, success, failure, async, refresh){
             var value = null;
-            if (path){
-                if ( !refresh && this.dictData[path]){
-                    if (success) success(this.dictData[path]);
-                    return this.dictData[path];
+            if (!refresh ){
+                var data = MWF.xScript.getDictFromCache( key, path );
+                if( data ){
+                    if (success) success( data );
+                    return data;
                 }
+            }
+
+            if (path){
 
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
                 action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
                     value = json.data;
-                    this.dictData[path] = value;
+                    // this.dictData[path] = value;
+                    MWF.xScript.addDictToCache(opt, path, value);
                     if (success) success(json.data);
                 }.bind(this), function(xhr, text, error){
                     if (failure) failure(xhr, text, error);
                 }, !!async, false);
             }else{
-                if (this.dictData["root"]){
-                    if (success) success(this.dictData["root"]);
-                    return this.dictData["root"];
-                }
                 action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
                     value = json.data;
-                    this.dictData["root"] = value;
+                    // this.dictData["root"] = value;
+                    MWF.xScript.addDictToCache(opt, path, value);
                     if (success) success(json.data);
                 }.bind(this), function(xhr, text, error){
                     if (failure) failure(xhr, text, error);
@@ -1417,6 +1601,7 @@ MWF.xScript.createDict = function(application){
             var p = encodePath( path );
             //var p = path.replace(/\./g, "/");
             action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                MWF.xScript.setDictToCache(key, path, value);
                 if (success) success(json.data);
             }, function(xhr, text, error){
                 if (failure) failure(xhr, text, error);
@@ -1426,6 +1611,7 @@ MWF.xScript.createDict = function(application){
             var p = encodePath( path );
             //var p = path.replace(/\./g, "/");
             action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                MWF.xScript.insertDictToCache(key, path, value);
                 if (success) success(json.data);
             }, function(xhr, text, error){
                 if (failure) failure(xhr, text, error);
@@ -1435,6 +1621,7 @@ MWF.xScript.createDict = function(application){
             var p = encodePath( path );
             //var p = path.replace(/\./g, "/");
             action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+                MWF.xScript.deleteDictToCache(key, path);
                 if (success) success(json.data);
             }, function(xhr, text, error){
                 if (failure) failure(xhr, text, error);
@@ -1443,3 +1630,106 @@ MWF.xScript.createDict = function(application){
         this.destory = this["delete"];
     }
 };
+
+// var dictLoaded = {};
+// MWF.xScript.createDict = function(application){
+//     //optionsOrName : {
+//     //  type : "", //默认为process, 可以为  process  cms
+//     //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
+//     //  name : "", // 数据字典名称/别名/id
+//     //  enableAnonymous : false //允许在未登录的情况下读取CMS的数据字典
+//     //}
+//     //或者name: "" // 数据字典名称/别名/id
+//     return function(optionsOrName){
+//         var options = optionsOrName;
+//         if( typeOf( options ) == "string" ){
+//             options = { name : options };
+//         }
+//         var name = this.name = options.name;
+//         var type = ( options.type && options.application ) ?  options.type : "process";
+//         var applicationId = options.application || application;
+//         var enableAnonymous = options.enableAnonymous || false;
+//
+//         var key = name+type+applicationId+enableAnonymous
+//         if (!dictLoaded[key]) dictLoaded[key] = {};
+//         this.dictData = dictLoaded[key];
+//
+//         //MWF.require("MWF.xScript.Actions.DictActions", null, false);
+//         if( type == "cms" ){
+//             var action = MWF.Actions.get("x_cms_assemble_control");
+//         }else{
+//             var action = MWF.Actions.get("x_processplatform_assemble_surface");
+//         }
+//
+//         var encodePath = function( path ){
+//             var arr = path.split(/\./g);
+//             var ar = arr.map(function(v){
+//                 return encodeURIComponent(v);
+//             });
+//             return ar.join("/");
+//         };
+//
+//         this.get = function(path, success, failure, async, refresh){
+//             var value = null;
+//             if (path){
+//                 if ( !refresh && this.dictData[path]){
+//                     if (success) success(this.dictData[path]);
+//                     return this.dictData[path];
+//                 }
+//
+//                 var p = encodePath( path );
+//                 //var p = path.replace(/\./g, "/");
+//                 action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
+//                     value = json.data;
+//                     this.dictData[path] = value;
+//                     if (success) success(json.data);
+//                 }.bind(this), function(xhr, text, error){
+//                     if (failure) failure(xhr, text, error);
+//                 }, !!async, false);
+//             }else{
+//                 if (this.dictData["root"]){
+//                     if (success) success(this.dictData["root"]);
+//                     return this.dictData["root"];
+//                 }
+//                 action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
+//                     value = json.data;
+//                     this.dictData["root"] = value;
+//                     if (success) success(json.data);
+//                 }.bind(this), function(xhr, text, error){
+//                     if (failure) failure(xhr, text, error);
+//                 }, !!async);
+//             }
+//
+//             return value;
+//         };
+//
+//         this.set = function(path, value, success, failure){
+//             var p = encodePath( path );
+//             //var p = path.replace(/\./g, "/");
+//             action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+//                 if (success) success(json.data);
+//             }, function(xhr, text, error){
+//                 if (failure) failure(xhr, text, error);
+//             }, false, false);
+//         };
+//         this.add = function(path, value, success, failure){
+//             var p = encodePath( path );
+//             //var p = path.replace(/\./g, "/");
+//             action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+//                 if (success) success(json.data);
+//             }, function(xhr, text, error){
+//                 if (failure) failure(xhr, text, error);
+//             }, false, false);
+//         };
+//         this["delete"] = function(path, success, failure){
+//             var p = encodePath( path );
+//             //var p = path.replace(/\./g, "/");
+//             action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+//                 if (success) success(json.data);
+//             }, function(xhr, text, error){
+//                 if (failure) failure(xhr, text, error);
+//             }, false, false);
+//         };
+//         this.destory = this["delete"];
+//     }
+// };
