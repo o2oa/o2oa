@@ -11,8 +11,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.AppStyle;
+import com.x.base.core.project.config.Cache;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.ClientInit;
 import com.x.base.core.project.config.Collect;
@@ -41,11 +47,6 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
 
 public class CreateConfigSample {
 
@@ -79,6 +80,7 @@ public class CreateConfigSample {
 		classes.add(Vfs.class);
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
+		classes.add(Cache.class);
 
 		Collections.sort(classes, new Comparator<Class<?>>() {
 			public int compare(Class<?> c1, Class<?> c2) {
