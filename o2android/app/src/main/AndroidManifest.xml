@@ -50,19 +50,19 @@
         <activity android:name=".app.VideoPlayerActivity" />
         <activity
             android:name=".app.clouddrive.v2.viewer.BigImageViewActivity"
-            android:screenOrientation="portrait" />
+             />
         <activity android:name=".app.clouddrive.v2.type.CloudDiskFileTypeActivity" />
         <activity android:name=".app.clouddrive.v2.picker.CloudDiskFolderPickerActivity" />
         <activity
             android:name=".app.clouddrive.v2.CloudDiskActivity"
             android:label="@string/title_activity_yunpan"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity android:name=".app.o2.organization.ContactPickerActivity" />
         <activity android:name=".app.cms.application.CMSPublishDocumentActivity" />
         <activity
             android:name=".app.o2.webview.LocalImageViewActivity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMTheme.fullscreen" />
         <activity android:name=".app.o2.security.DeviceManagerActivity" />
 
@@ -70,7 +70,7 @@
             android:name=".app.o2.launch.LaunchActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMLauncherTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -92,29 +92,29 @@
             android:name=".app.o2.bind.BindPhoneActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMClearActivityTheme" />
         <activity
             android:name=".app.o2.login.LoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMClearActivityTheme"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".app.o2.main.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMClearActivityTheme" />
         <activity
             android:name=".app.o2.group.GroupActivity"
             android:label="@string/title_activity_group"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.person.PersonActivity"
             android:label="@string/title_activity_person_info"
-            android:screenOrientation="portrait">
+            >
             <intent-filter>
                 <action android:name="o2_person" />
             </intent-filter>
@@ -122,11 +122,11 @@
         <activity
             android:name=".app.o2.organization.NewOrganizationActivity"
             android:label="@string/title_activity_contact"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.my.MyInfoActivity"
             android:label="@string/title_activity_my_info"
-            android:screenOrientation="portrait">
+            >
             <intent-filter>
                 <action android:name="o2_my_info" />
             </intent-filter>
@@ -134,172 +134,172 @@
         <activity
             android:name=".app.o2.my.ClipAvatarActivity"
             android:label="@string/title_activity_clip_avatar"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.security.AccountSecurityActivity"
             android:label="@string/title_activity_account_security"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.notice.NoticeSettingActivity"
             android:label="@string/title_activity_notice_setting"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.notice.NoticeSettingHelpActivity"
             android:label="@string/title_activity_notice_setting"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.about.AboutActivity"
             android:label="@string/app_about"
-            android:screenOrientation="portrait" /> <!-- 扫描二维码 -->
+             /> <!-- 扫描二维码 -->
         <activity
             android:name=".utils.zxing.activity.CaptureActivity"
             android:label="@string/str_scan_title"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.scanlogin.ScanLoginActivity"
             android:label="@string/scan_login_confirm_title"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.process.StartProcessActivity"
             android:label="@string/title_activity_start_process"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.webview.TaskWebViewActivity"
             android:label="@string/title_activity_work_web_view"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.process.TaskListActivity"
             android:label="@string/title_activity_task_list"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.process.TaskCompletedListActivity"
             android:label="@string/title_activity_task_complete"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.process.TaskCompletedSearchActivity"
             android:label="@string/title_activity_task_complete"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.process.ReadListActivity"
             android:label="@string/title_activity_read_list"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.process.ReadCompletedListActivity"
             android:label="@string/title_activity_read_complete"
-            android:screenOrientation="portrait" /> <!-- bbs -->
+             /> <!-- bbs -->
         <activity
             android:name=".app.bbs.main.BBSMainActivity"
             android:label="@string/bbs"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity
             android:name=".app.bbs.section.BBSSectionActivity"
             android:label="@string/title_activity_bbs_section"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.bbs.view.BBSWebViewSubjectActivity"
             android:label="@string/title_activity_bbs_view"
-            android:screenOrientation="portrait"
+
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".app.bbs.publish.BBSPublishSubjectActivity"
             android:label="@string/title_activity_bbs_publish_subject"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.bbs.reply.BBSReplyActivity"
             android:label="@string/title_activity_bbs_reply"
-            android:screenOrientation="portrait" /> <!-- cms -->
+             /> <!-- cms -->
         <activity
             android:name=".app.cms.index.CMSIndexActivity"
             android:label="@string/cms"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity
             android:name=".app.cms.application.CMSApplicationActivity"
             android:label="@string/title_cms_application"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.cms.view.CMSWebViewActivity"
             android:label="@string/title_cms_view"
-            android:screenOrientation="portrait" /> <!-- cloud drive -->
+             /> <!-- cloud drive -->
         <activity
             android:name=".app.clouddrive.CloudDriveActivity"
             android:label="@string/title_activity_yunpan"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity
             android:name=".app.clouddrive.viewer.PictureViewActivity"
             android:label="@string/title_activity_picture_viewer"
-            android:screenOrientation="portrait" /> <!-- meeting -->
+             /> <!-- meeting -->
         <activity
             android:name=".app.meeting.main.MeetingMainActivity"
             android:label="@string/title_activity_meeting"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity
             android:name=".app.meeting.room.MeetingRoomChooseActivity"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.meeting.apply.MeetingApplyActivity"
             android:label="@string/title_activity_meeting_create_form"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.meeting.edit.MeetingEditActivity"
             android:label="@string/title_activity_meeting_edit_form"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.meeting.invited.MeetingDetailInfoActivity"
             android:label="@string/meeting_detail"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.meeting.reserve.MeetingRoomDetailActivity"
             android:label="@string/meeting_detail"
-            android:screenOrientation="portrait" /> <!-- attendance -->
+             /> <!-- attendance -->
         <activity
             android:name=".app.attendance.main.AttendanceMainActivity"
             android:label="@string/attendance_check_in_title"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity
             android:name=".app.attendance.list.AttendanceListActivity"
             android:label="@string/title_activity_attendance"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.attendance.appeal.AttendanceAppealActivity"
             android:label="@string/title_activity_attendance_appeal"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.attendance.approval.AttendanceAppealApprovalActivity"
             android:label="@string/title_activity_attendance_appeal_approval"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.attendance.setting.AttendanceLocationSettingActivity"
             android:label="@string/title_activity_attendance_location_setting"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".app.o2.main.MyAppActivity"
             android:label="所有应用"
-            android:screenOrientation="portrait" /> <!-- ai -->
+             /> <!-- ai -->
         <activity
             android:name=".app.o2.ai.O2AIActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" /> <!-- calendar -->
+             /> <!-- calendar -->
         <activity
             android:name=".app.calendar.CalendarMainActivity"
             android:label="@string/calendar_name"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
         <activity android:name=".app.calendar.CreateEventActivity" />
         <activity android:name=".app.calendar.CreateCalendarActivity" />
         <activity android:name=".app.calendar.CalendarStoreActivity" /> <!-- portal -->
         <activity
             android:name=".app.o2.webview.PortalWebViewActivity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/XBPMTheme.NoActionBar.Transparent" /> <!-- 换肤 -->
         <activity
             android:name=".app.o2.skin.SkinManagerActivity"
             android:label="@string/skin_manager"
-            android:screenOrientation="portrait" />
+             />
         <activity android:name=".app.o2.skin.SkinShowActivity" />
 
         <!-- 蓝牙相关 -->

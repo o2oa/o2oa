@@ -24,7 +24,13 @@ class AttendanceCheckInPresenter : BasePresenterImpl<AttendanceCheckInContract.V
             service.listMyRecords().subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .o2Subscribe {
-                        onNext { mView?.myRecords(it.data) }
+                        onNext {
+                            if (it.data != null) {
+                                mView?.myRecords(it.data)
+                            } else {
+                                mView?.myRecords(null)
+                            }
+                        }
                         onError { e, _ ->
                             XLog.error("", e)
                             mView?.myRecords(null)
@@ -42,7 +48,7 @@ class AttendanceCheckInPresenter : BasePresenterImpl<AttendanceCheckInContract.V
         getAttendanceAssembleControlService(mView?.getContext())?.let { service ->
             service.findAttendanceDetailMobileByPage(body, 1, 100)
                     .subscribeOn(Schedulers.io())
-                    .flatMap { response->
+                    .flatMap { response ->
                         val list = response.data
                         val retList = list?.sortedByDescending { it.signTime } ?: ArrayList()
                         Observable.just(retList)

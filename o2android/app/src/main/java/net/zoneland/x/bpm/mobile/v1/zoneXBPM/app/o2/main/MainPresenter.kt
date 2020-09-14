@@ -46,10 +46,17 @@ class MainPresenter : BasePresenterImpl<MainContract.View>(), MainContract.Prese
                                 O2SDKManager.instance().prefs().edit {
                                     putString(O2.PRE_ATTENDANCE_VERSION_KEY, "1");
                                 }
+                            }else {
+                                O2SDKManager.instance().prefs().edit {
+                                    putString(O2.PRE_ATTENDANCE_VERSION_KEY, "0");
+                                }
                             }
                         }
                         onError { e, _ ->
                             XLog.error("", e)
+                            O2SDKManager.instance().prefs().edit {
+                                putString(O2.PRE_ATTENDANCE_VERSION_KEY, "0");
+                            }
                         }
                     }
         }
