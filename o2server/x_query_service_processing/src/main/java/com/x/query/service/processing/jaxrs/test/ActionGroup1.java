@@ -16,27 +16,27 @@ import com.x.base.core.project.utils.time.ClockStamp;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.Work_;
 
-class ActionGroup2 extends BaseAction {
+class ActionGroup1 extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGroup2.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionGroup1.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ClockStamp.INIT("创建测试distinct代码.", "");
-			job(emc);
+
 			return new ActionResult<>();
 		}
 	}
 
-	private void job(EntityManagerContainer emc) throws Exception {
-		ClockStamp.STAMP("执行work的job distinct{}.", "开始");
+	private void id(EntityManagerContainer emc) throws Exception {
+		ClockStamp.STAMP("执行work的id distinct{}.", "开始");
 		EntityManager em = emc.get(Work.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Work> root = cq.from(Work.class);
 		cq.select(root.get(Work_.id)).distinct(true);
 		em.createQuery(cq).getResultList();
-		ClockStamp.STAMP("执行work的job distinct{}.", "结束");
+		ClockStamp.STAMP("执行work的id distinct{}.", "结束");
 	}
 
 	public static class Wo extends WrapBoolean {

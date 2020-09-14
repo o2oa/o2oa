@@ -2,6 +2,7 @@ package com.x.okr.assemble.control.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -198,9 +199,9 @@ public class OkrTaskFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrTask> root = cq.from( OkrTask.class);
-		cq.distinct(true).select( root.get( OkrTask_.targetIdentity ));
+		cq.select( root.get( OkrTask_.targetIdentity ));
 		Predicate p = root.get( OkrTask_.dynamicObjectType ).in( taskTypeList );
-		return em.createQuery(cq.where(p)).getResultList();
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**
@@ -349,8 +350,8 @@ public class OkrTaskFactory extends AbstractFactory {
 		if( identities_error != null && identities_error.size() > 0 ){
 			p = cb.and( p, cb.not(root.get( OkrTask_.targetIdentity ).in( identities_error )) );
 		}
-		cq.distinct(true).select(root.get( OkrTask_.targetIdentity ));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get( OkrTask_.targetIdentity ));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 	/**
 	 * 根据身份名称，从具体工作待办待阅信息中查询与该身份有关的所有信息列表
