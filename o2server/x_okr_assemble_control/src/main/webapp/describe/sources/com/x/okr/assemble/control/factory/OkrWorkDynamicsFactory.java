@@ -2,6 +2,7 @@ package com.x.okr.assemble.control.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -320,8 +321,8 @@ public class OkrWorkDynamicsFactory extends AbstractFactory {
 		if (identities_error != null && identities_error.size() > 0) {
 			p = cb.and(p, cb.not(root.get(OkrWorkDynamics_.targetIdentity).in(identities_error)));
 		}
-		cq.distinct(true).select(root.get(OkrWorkDynamics_.targetIdentity));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(OkrWorkDynamics_.targetIdentity));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**
