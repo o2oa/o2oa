@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.config.Cache.Redis;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 
@@ -62,10 +64,14 @@ public class CacheRedisImpl implements Cache {
 
 	@Override
 	public Optional<Object> get(CacheCategory category, CacheKey key) throws Exception {
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(
-				jedis.get(concrete(category, key).getBytes(StandardCharsets.UTF_8)));
-				ObjectInputStream ois = new ObjectInputStream(bais)) {
-			return Optional.ofNullable(ois.readObject());
+		byte[] bytes = jedis.get(concrete(category, key).getBytes(StandardCharsets.UTF_8));
+		if ((null != bytes) && bytes.length > 0) {
+			try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+					ObjectInputStream ois = new ObjectInputStream(bais)) {
+				return Optional.ofNullable(ois.readObject());
+			}
+		} else {
+			return Optional.empty();
 		}
 	}
 
