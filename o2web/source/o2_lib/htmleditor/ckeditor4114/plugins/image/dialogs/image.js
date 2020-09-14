@@ -3,6 +3,20 @@
  For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 (function () {
+    function setupCheckbox(b) {
+        debugger;
+        var c = this instanceof CKEDITOR.ui.dialog.checkbox;
+        b.hasAttribute(this.id) && (b = b.getAttribute(this.id), c ? this.setValue(checboxOptions[this.id]["true"] == b.toLowerCase()) : this.setValue(b))
+    }
+
+    function commitCheckbox(b) {
+        return true;
+        // var c = "" === this.getValue(), a = this instanceof CKEDITOR.ui.dialog.checkbox, d = this.getValue();
+        // c ? b.removeAttribute(this.att || this.id) : a ? b.setAttribute(this.id, checboxOptions[this.id][d]) : b.setAttribute(this.att || this.id, d)
+    }
+
+    var checboxOptions = {base64enable: {"true": "yes", "false": "no"}};
+
     var v = function (d, l) {
         function v() {
             var a = arguments, b = this.getContentElement("advanced", "txtdlgGenStyle");
@@ -221,25 +235,55 @@
                         onClick: function (e) {
                             //var fileNode = document.getElementById("fckLocalFileUpload");
                             //fileNode.click();
-                            MWF.require("MWF.widget.Upload", function(){
-                                var action =  new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
-                                var dialogElement = CKEDITOR.currentImageDialog._.element.$;
-                                var contentElement = dialogElement.getElement(".cke_dialog_body").getParent();
-                                var upload = new MWF.widget.Upload(contentElement, {
-                                    "data": null,
-                                    "parameter": {"reference" : d.config.reference, "referencetype": d.config.referenceType, "scale" : 800 },
-                                    "action": action,
-                                    "method": "uploadImageByScale",
-                                    "onEvery": function(json){
-                                        var id = json.data ? json.data.id : json.id;
-                                        var src = MWF.xDesktop.getImageSrc( id );
-                                        MWF.xDesktop.uploadedImageId = id;
-                                        var txtUrlElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtUrl");
-                                        txtUrlElement.setValue( src );
-                                    }.bind(this)
-                                });
-                                upload.load();
-                            }.bind(this));
+                            var base64enable = CKEDITOR.currentImageDialog.getContentElement("info", "base64enable");
+                            if( base64enable && base64enable.getValue() ){
+                                var fileNode = document.getElementById("fckLocalFileUpload");
+                                if( !fileNode ){
+                                    fileNode = new Element("input", {
+                                        "id" : "fckLocalFileUpload",
+                                        "type" : "file",
+                                        "accept":"image/*",
+                                        "styles" : {"display":"none"}
+                                    }).inject(document.body);
+                                    fileNode.addEvent("change", function(event){
+                                        var file= fileNode.files[0];
+                                        if(!/image\/\w+/.test(file.type)){           //判断获取的是否为图片文件
+                                            MWF.xDesktop.notice("请确保文件为图像文件","error");
+                                            return false;
+                                        }
+                                        var reader=new FileReader();
+                                        reader.readAsDataURL(file);
+                                        reader.onload = function(e){
+                                            var txtUrlElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtUrl");
+                                            txtUrlElement.setValue( this.result );
+                                        }
+
+                                    }.bind( this ));
+                                    fileNode.click();
+                                }else{
+                                    fileNode.click();
+                                }
+                            }else{
+                                MWF.require("MWF.widget.Upload", function(){
+                                    var action =  new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
+                                    var dialogElement = CKEDITOR.currentImageDialog._.element.$;
+                                    var contentElement = dialogElement.getElement(".cke_dialog_body").getParent();
+                                    var upload = new MWF.widget.Upload(contentElement, {
+                                        "data": null,
+                                        "parameter": {"reference" : d.config.reference, "referencetype": d.config.referenceType, "scale" : 800 },
+                                        "action": action,
+                                        "method": "uploadImageByScale",
+                                        "onEvery": function(json){
+                                            var id = json.data ? json.data.id : json.id;
+                                            var src = MWF.xDesktop.getImageSrc( id );
+                                            MWF.xDesktop.uploadedImageId = id;
+                                            var txtUrlElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtUrl");
+                                            txtUrlElement.setValue( src );
+                                        }.bind(this)
+                                    });
+                                    upload.load();
+                                }.bind(this));
+                            }
                         },
                         onLoad: function () {
                             //var fileNode = document.getElementById("fckLocalFileUpload");
@@ -307,7 +351,18 @@
                             });
                         }
                     }]
-                },  {
+                }, {
+                    type: "hbox",
+                    widths: ["100%"],
+                    children: [{
+                        id: "base64enable",
+                        type: "checkbox",
+                        requiredContent: "img{src}",
+                        label: "存为Base64编码",
+                        setup: setupCheckbox,
+                        commit: commitCheckbox
+                    }]
+                }, {
                     id: "txtAlt",
                     type: "text",
                     label: d.lang.image.alt,

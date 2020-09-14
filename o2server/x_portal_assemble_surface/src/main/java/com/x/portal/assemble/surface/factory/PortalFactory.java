@@ -19,6 +19,7 @@ import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PortalFactory extends AbstractFactory {
 
@@ -47,8 +48,8 @@ public class PortalFactory extends AbstractFactory {
 			p = cb.or(p, root.get(Portal_.availableIdentityList).in(identities));
 			p = cb.or(p, root.get(Portal_.availableUnitList).in(units));
 		}
-		cq.select(root.get(Portal_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Portal_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public boolean visible(EffectivePerson effectivePerson, Portal portal) throws Exception {

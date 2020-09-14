@@ -15,7 +15,9 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
@@ -31,6 +33,7 @@ import com.x.base.core.entity.annotation.IdReference;
 import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.WorkLogProperties;
 
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -90,6 +93,21 @@ public class Form extends SliceJpaObject {
 
 	public void onPersist() throws Exception {
 		// nothing
+	}
+
+	public Form() {
+		this.properties = new FormProperties();
+	}
+
+	public FormProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new FormProperties();
+		}
+		return this.properties;
+	}
+	
+	public void setProperties(FormProperties properties) {
+		this.properties = properties;
 	}
 
 	public String getDataOrMobileData() {
@@ -182,7 +200,7 @@ public class Form extends SliceJpaObject {
 	@FieldDescribe("文本内容.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	// @Persistent(fetch = FetchType.EAGER)
+//	@Persistent(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
@@ -191,6 +209,7 @@ public class Form extends SliceJpaObject {
 	@FieldDescribe("移动端文本内容.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
+	// @Persistent(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String mobileData;
@@ -199,6 +218,15 @@ public class Form extends SliceJpaObject {
 	@FieldDescribe("是否有移动端内容.")
 	@Column(name = ColumnNamePrefix + hasMobile_FIELDNAME)
 	private Boolean hasMobile;
+
+	public static final String properties_FIELDNAME = "properties";
+	// @Basic(fetch = FetchType.EAGER)
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private FormProperties properties;
 
 	public void setCategory(String category) {
 		this.category = category;

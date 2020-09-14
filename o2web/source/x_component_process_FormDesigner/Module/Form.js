@@ -894,6 +894,18 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		debugger;
 		var data = this._copyFormJson(this.data);
 
+		if (data.json.styleConfig && data.json.styleConfig.extendFile){
+			var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/" + this.json.styleConfig.extendFile;
+			MWF.getJSON(stylesUrl, function (responseJSON) {
+					if (responseJSON && responseJSON.form) {
+						data.json = Object.merge(data.json, responseJSON.form);
+					}
+					if (callback) callback();
+				}.bind(this), false
+			);
+		}
+		data.json["$version"] = "5.2";
+
 		this._recoveryModuleData();
 
 		//@todo 预先整理表单样式

@@ -1,12 +1,14 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.x.base.core.project.tools.BaseTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -176,6 +178,7 @@ public class Token extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_TOKEN);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+        BaseTools.executeSyncFile(Config.PATH_CONFIG_TOKEN);
 	}
 
 	public boolean isInitialManager(String name) {

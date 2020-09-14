@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.person;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -84,8 +85,8 @@ class ActionListWithPersonAttributeObject extends BaseAction {
 		Root<PersonAttribute> root = cq.from(PersonAttribute.class);
 		Predicate p = cb.equal(root.get(PersonAttribute_.name), wi.getName());
 		p = cb.and(p, cb.isMember(wi.getAttribute(), root.get(PersonAttribute_.attributeList)));
-		List<String> personIds = em.createQuery(cq.select(root.get(PersonAttribute_.person)).where(p).distinct(true))
-				.getResultList();
+		List<String> personIds = em.createQuery(cq.select(root.get(PersonAttribute_.person)).where(p))
+				.getResultList().stream().distinct().collect(Collectors.toList());
 		personIds = ListTools.trim(personIds, true, true);
 		for (Person o : business.person().pick(personIds)) {
 			wos.add(this.convert(business, o, Wo.class));

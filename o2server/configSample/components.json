@@ -81,8 +81,8 @@
       "dentyList": []
     },
     {
-      "name": "AppMarket",
-      "path": "AppMarket",
+      "name": "AppMarketV2",
+      "path": "AppMarketV2",
       "title": "应用市场",
       "iconPath": "appicon.png",
       "orderNumber": 8.0,

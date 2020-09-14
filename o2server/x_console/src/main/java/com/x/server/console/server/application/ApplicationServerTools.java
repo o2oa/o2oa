@@ -3,8 +3,9 @@ package com.x.server.console.server.application;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -22,6 +23,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -69,9 +71,11 @@ import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.PathTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.server.console.server.JettySeverTools;
 
@@ -83,8 +87,8 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(ApplicationServerTools.class);
 
-	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 50;
-	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 500;
+	private static final int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 50;
+	private static final int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 500;
 
 	private static final List<String> OFFICIAL_MODULE_SORTED_TEMPLATE = ListTools.toList(
 			x_general_assemble_control.class.getName(), x_organization_assemble_authentication.class.getName(),
@@ -111,76 +115,12 @@ public class ApplicationServerTools extends JettySeverTools {
 
 		HandlerList handlers = new HandlerList();
 
-		logger.print("start to deploy official module, size:{}.", officialClassInfos.size());
+		logger.print("start to deploy official module: {}, custom module: {}.", officialClassInfos.size(),
+				customNames.size());
 
-		for (ClassInfo info : officialClassInfos) {
-			Class<?> clz = Class.forName(info.getName());
-			/* 检查store目录是否存在war文件 */
-			File war = new File(Config.dir_store(), info.getSimpleName() + ".war");
-			File dir = new File(Config.dir_servers_applicationServer_work(), info.getSimpleName());
-			if (war.exists()) {
-				modified(war, dir);
-				QuickStartWebApp webApp = new QuickStartWebApp();
-				webApp.setAutoPreconfigure(false);
-				webApp.setDisplayName(clz.getSimpleName());
-				webApp.setContextPath("/" + clz.getSimpleName());
-				webApp.setResourceBase(dir.getAbsolutePath());
-				webApp.setDescriptor(new File(dir, "WEB-INF/web.xml").getAbsolutePath());
-				webApp.setExtraClasspath(calculateExtraClassPath(clz));
-				// webApp.getMimeTypes().addMimeMapping("wcss", "application/json");
-				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
-				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
-				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
-				/* stat */
-				if (applicationServer.getStatEnable()) {
-					FilterHolder holder = new FilterHolder(new WebStatFilter());
-					holder.setInitParameter("exclusions", applicationServer.getStatExclusions());
-					webApp.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
-					webApp.addServlet(StatViewServlet.class, "/druid/*");
-				}
-				/* stat end */
-				handlers.addHandler(webApp);
-			} else if (dir.exists()) {
-				FileUtils.forceDelete(dir);
-			}
-		}
+		deployOfficial(applicationServer, handlers, officialClassInfos);
 
-		logger.print("start to deploy custom module, size:{}.", customNames.size());
-
-		for (String name : customNames) {
-			File war = new File(Config.dir_custom(), name + ".war");
-			File dir = new File(Config.dir_servers_applicationServer_work(), name);
-			if (war.exists()) {
-				modified(war, dir);
-				String className = contextParamProject(dir);
-				URLClassLoader classLoader = new URLClassLoader(
-						new URL[] { new File(dir, "WEB-INF/classes").toURI().toURL() });
-				Class<?> cls = classLoader.loadClass(className);
-				QuickStartWebApp webApp = new QuickStartWebApp();
-				webApp.setAutoPreconfigure(false);
-				webApp.setDisplayName(name);
-				webApp.setContextPath("/" + name);
-				webApp.setResourceBase(dir.getAbsolutePath());
-				webApp.setDescriptor(dir + "/WEB-INF/web.xml");
-				webApp.setExtraClasspath(calculateExtraClassPath(cls));
-				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
-				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
-				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
-				/* stat */
-				if (BooleanUtils.isTrue(applicationServer.getStatEnable())) {
-					FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-					statFilterHolder.setInitParameter("exclusions", applicationServer.getStatExclusions());
-					webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
-					ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
-					statServletHolder.setInitParameter("sessionStatEnable", "false");
-					webApp.addServlet(statServletHolder, "/druid/*");
-				}
-				/* stat end */
-				handlers.addHandler(webApp);
-			} else if (dir.exists()) {
-				FileUtils.forceDelete(dir);
-			}
-		}
+		deployCustom(applicationServer, handlers, customNames);
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setMinThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MIN);
@@ -211,8 +151,90 @@ public class ApplicationServerTools extends JettySeverTools {
 		return server;
 	}
 
+	private static void deployCustom(ApplicationServer applicationServer, HandlerList handlers,
+			List<String> customNames) {
+		customNames.parallelStream().forEach(name -> {
+			try {
+				Path war = Paths.get(Config.dir_custom().toString(), name + PathTools.DOT_WAR);
+				Path dir = Paths.get(Config.dir_servers_applicationServer_work().toString(), name);
+				if (Files.exists(war)) {
+					modified(war, dir);
+					String className = contextParamProject(dir);
+					Class<?> cls = ClassLoaderTools.urlClassLoader(false, false, false, false, false,
+							Paths.get(dir.toString(), PathTools.WEB_INF_CLASSES)).loadClass(className);
+					QuickStartWebApp webApp = new QuickStartWebApp();
+					webApp.setAutoPreconfigure(false);
+					webApp.setDisplayName(name);
+					webApp.setContextPath("/" + name);
+					webApp.setResourceBase(dir.toAbsolutePath().toString());
+					webApp.setDescriptor(dir.resolve(Paths.get(PathTools.WEB_INF_WEB_XML)).toString());
+					webApp.setExtraClasspath(calculateExtraClassPath(cls));
+					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
+							BooleanUtils.toStringTrueFalse(false));
+					webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled",
+							BooleanUtils.toStringTrueFalse(true));
+					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
+							BooleanUtils.toStringTrueFalse(false));
+					if (BooleanUtils.isTrue(applicationServer.getStatEnable())) {
+						FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
+						statFilterHolder.setInitParameter("exclusions", applicationServer.getStatExclusions());
+						webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
+						ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
+						statServletHolder.setInitParameter("sessionStatEnable", BooleanUtils.toStringTrueFalse(false));
+						webApp.addServlet(statServletHolder, "/druid/*");
+					}
+					handlers.addHandler(webApp);
+				} else if (Files.exists(dir)) {
+					PathUtils.cleanDirectory(dir);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private static void deployOfficial(ApplicationServer applicationServer, HandlerList handlers,
+			List<ClassInfo> officialClassInfos) {
+		officialClassInfos.parallelStream().forEach(info -> {
+			try {
+				Class<?> clz = Class.forName(info.getName());
+				Path war = Paths.get(Config.dir_store().toString(), info.getSimpleName() + PathTools.DOT_WAR);
+				Path dir = Paths.get(Config.dir_servers_applicationServer_work().toString(), info.getSimpleName());
+				if (Files.exists(war)) {
+					modified(war, dir);
+					QuickStartWebApp webApp = new QuickStartWebApp();
+					webApp.setAutoPreconfigure(false);
+					webApp.setDisplayName(clz.getSimpleName());
+					webApp.setContextPath("/" + clz.getSimpleName());
+					webApp.setResourceBase(dir.toAbsolutePath().toString());
+					webApp.setDescriptor(dir.resolve(Paths.get(PathTools.WEB_INF_WEB_XML)).toString());
+					webApp.setExtraClasspath(calculateExtraClassPath(clz));
+					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
+							BooleanUtils.toStringTrueFalse(false));
+					webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled",
+							BooleanUtils.toStringTrueFalse(true));
+					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
+							BooleanUtils.toStringTrueFalse(false));
+					if (BooleanUtils.isTrue(applicationServer.getStatEnable())) {
+						FilterHolder holder = new FilterHolder(new WebStatFilter());
+						holder.setInitParameter("exclusions", applicationServer.getStatExclusions());
+						webApp.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
+						webApp.addServlet(StatViewServlet.class, "/druid/*");
+					}
+					handlers.addHandler(webApp);
+				} else if (Files.exists(dir)) {
+					PathUtils.cleanDirectory(dir);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
 	private static List<ClassInfo> listOfficial() throws Exception {
-		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
+		try (ScanResult scanResult = new ClassGraph()
+				.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, true, false, false)).enableAnnotationInfo()
+				.scan()) {
 			List<ClassInfo> list = new ArrayList<>();
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
@@ -259,7 +281,7 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static List<String> listCustom() throws Exception {
 		List<String> list = new ArrayList<>();
-		for (String str : Config.dir_custom(true).list(new WildcardFileFilter("*.war"))) {
+		for (String str : Config.dir_custom(true).list(new WildcardFileFilter("*" + PathTools.DOT_WAR))) {
 			list.add(FilenameUtils.getBaseName(str));
 		}
 		list = ListTools.includesExcludesWildcard(list, Config.currentNode().getApplication().getIncludes(),
@@ -267,11 +289,11 @@ public class ApplicationServerTools extends JettySeverTools {
 		return list;
 	}
 
-	private static String contextParamProject(File dir) throws Exception {
+	private static String contextParamProject(Path dir) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder
-				.parse(new ByteArrayInputStream(FileUtils.readFileToByteArray(new File(dir, "WEB-INF/web.xml"))));
+		Document doc = builder.parse(
+				new ByteArrayInputStream(Files.readAllBytes(Paths.get(dir.toString(), PathTools.WEB_INF_WEB_XML))));
 		XPathFactory xPathfactory = XPathFactory.newInstance();
 		XPath xpath = xPathfactory.newXPath();
 		XPathExpression expr = xpath.compile("web-app/context-param[param-name='project']/param-value");
@@ -282,9 +304,7 @@ public class ApplicationServerTools extends JettySeverTools {
 	private static void cleanWorkDirectory(List<ClassInfo> officialClassInfos, List<String> customNames)
 			throws Exception {
 		List<String> names = new ArrayList<>();
-		for (ClassInfo o : officialClassInfos) {
-			names.add(o.getSimpleName());
-		}
+		officialClassInfos.stream().map(ClassInfo::getSimpleName).forEach(names::add);
 		names.addAll(customNames);
 		for (String str : Config.dir_servers_applicationServer_work(true).list()) {
 			if (!names.contains(str)) {
@@ -293,15 +313,22 @@ public class ApplicationServerTools extends JettySeverTools {
 		}
 	}
 
-	private static void modified(File war, File dir) throws IOException {
-		File lastModified = new File(dir, "WEB-INF/lastModified");
-		if ((!lastModified.exists()) || lastModified.isDirectory() || (war.lastModified() != NumberUtils
-				.toLong(FileUtils.readFileToString(lastModified, DefaultCharset.charset_utf_8), 0))) {
-			if (dir.exists()) {
-				FileUtils.forceDelete(dir);
+	private static void modified(Path war, Path dir) throws IOException {
+		Path lastModified = Paths.get(dir.toString(), PathTools.WEB_INF_LASTMODIFIED);
+		if ((!Files.exists(lastModified)) || Files.isDirectory(lastModified)
+				|| (Files.getLastModifiedTime(war).toMillis() != NumberUtils
+						.toLong(FileUtils.readFileToString(lastModified.toFile(), DefaultCharset.charset_utf_8), 0))) {
+			logger.print("deploy war:{}.", war.getFileName().toAbsolutePath());
+			if (Files.exists(dir)) {
+				PathUtils.cleanDirectory(dir);
 			}
 			JarTools.unjar(war, "", dir, true);
-			FileUtils.writeStringToFile(lastModified, war.lastModified() + "", DefaultCharset.charset_utf_8, false);
+			if (!Files.exists(lastModified)) {
+				Files.createDirectories(lastModified.getParent());
+				Files.createFile(lastModified);
+			}
+			FileUtils.writeStringToFile(lastModified.toFile(), Files.getLastModifiedTime(war).toMillis() + "",
+					DefaultCharset.charset_utf_8, false);
 		}
 	}
 }

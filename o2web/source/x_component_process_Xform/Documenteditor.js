@@ -38,6 +38,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     load: function(){
+        if (!this.json.isDelay){
+            this.active();
+        }
+    },
+    active: function(){
         this._loadModuleEvents();
         if (this.fireEvent("queryLoad")){
             this.fireEvent("beforeLoad");
@@ -62,7 +67,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this._loadStyles();
 
             this._afterLoaded();
-
         }
     },
 
@@ -2811,7 +2815,11 @@ debugger;
 
         if (!this.json.validation) return true;
         if (!this.json.validation.code) return true;
+
+        this.currentRouteName = routeName;
         var flag = this.form.Macro.exec(this.json.validation.code, this);
+        this.currentRouteName = "";
+
         if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
         if (flag.toString()!="true"){
             this.notValidationMode(flag);

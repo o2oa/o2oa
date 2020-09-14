@@ -26,6 +26,7 @@ import com.x.base.core.project.config.WebServer;
 import com.x.base.core.project.config.WebServers;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.program.center.ThisApplication;
 
 import io.github.classgraph.ClassGraph;
@@ -172,7 +173,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null == assembles) {
 			synchronized (BaseAction.class) {
 				if (null == assembles) {
-					try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
+					try (ScanResult scanResult = new ClassGraph()
+							.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false, false, false))
+							.enableAnnotationInfo().scan()) {
 						assembles = new CopyOnWriteArrayList<Class<?>>();
 						List<ClassInfo> list = new ArrayList<>();
 						list.addAll(scanResult.getClassesWithAnnotation(Module.class.getName()));

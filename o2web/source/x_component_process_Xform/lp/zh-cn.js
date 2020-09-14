@@ -17,6 +17,7 @@ MWF.xApplication.process.Xform.LP = {
     "arrivedActivitys": "到达活动",
     "arrivedUsers": "到达处理人",
     "replace": "代",
+    "next_etc": "等{count}人",
 
     "processStarted": "文件已启动",
     "processStartedMessage": "您启动了一个新的工作：",

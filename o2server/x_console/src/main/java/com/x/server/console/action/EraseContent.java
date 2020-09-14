@@ -26,6 +26,7 @@ import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 
@@ -58,32 +59,43 @@ public abstract class EraseContent {
 	}
 
 	protected void run() throws Exception {
-		logger.print("erase {} content data: start at {}.", name, DateTools.format(start));
-		this.classNames = ListUtils.intersection(this.classNames,
-				(List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
-		StorageMappings storageMappings = Config.storageMappings();
-		File persistence = new File(Config.dir_local_temp_classes(),
-				DateTools.compact(this.start) + "_eraseContent.xml");
-		PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames);
-		for (int i = 0; i < classNames.size(); i++) {
-			Class<? extends JpaObject> cls = (Class<? extends JpaObject>) Class.forName(classNames.get(i));
-			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-					persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
-			EntityManager em = emf.createEntityManager();
-
-			if (DataItem.class.isAssignableFrom(cls)) {
-				Long total = this.estimateItemCount(em, cls);
-				logger.print("erase {} content data:{}, total {}.", name, cls.getName(), total);
-				this.eraseItem(cls, em, total);
-			} else {
-				Long total = this.estimateCount(em, cls);
-				logger.print("erase {} content data:{}, total {}.", name, cls.getName(), total);
-				this.erase(cls, em, storageMappings, total);
+		new Thread(() -> {
+			try {
+				Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false, false, false, false,
+						false, Config.dir_local_temp_classes().toPath()));
+				logger.print("erase {} content data: start at {}.", name, DateTools.format(start));
+				this.classNames = ListUtils.intersection(this.classNames,
+						(List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
+				StorageMappings storageMappings = Config.storageMappings();
+				File persistence = new File(Config.dir_local_temp_classes(),
+						DateTools.compact(this.start) + "_eraseContent.xml");
+				PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames);
+				for (int i = 0; i < classNames.size(); i++) {
+					Class<? extends JpaObject> cls = (Class<? extends JpaObject>) Thread.currentThread()
+							.getContextClassLoader().loadClass(classNames.get(i));
+					EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
+							persistence.getName(),
+							PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
+					EntityManager em = emf.createEntityManager();
+					if (DataItem.class.isAssignableFrom(cls)) {
+						Long total = this.estimateItemCount(em, cls);
+						logger.print("erase {} content data:{}, total {}.", name, cls.getName(), total);
+						this.eraseItem(cls, em, total);
+					} else {
+						Long total = this.estimateCount(em, cls);
+						logger.print("erase {} content data:{}, total {}.", name, cls.getName(), total);
+						this.erase(cls, em, storageMappings, total);
+					}
+					em.close();
+					emf.close();
+				}
+				Date end = new Date();
+				logger.print("erase {} content data: completed at {}, elapsed {} ms.", name, DateTools.format(end),
+						(end.getTime() - start.getTime()));
+			} catch (Exception e) {
+				logger.error(e);
 			}
-		}
-		Date end = new Date();
-		logger.print("erase {} content data: completed at {}, elapsed {} ms.", name, DateTools.format(end),
-				(end.getTime() - start.getTime()));
+		}, "eraseContentThread").start();
 	}
 
 	private <T extends JpaObject> long estimateCount(EntityManager em, Class<T> cls) {
@@ -108,7 +120,6 @@ public abstract class EraseContent {
 		Long count = 0L;
 		List<T> list = null;
 		ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
-
 		do {
 			if (ListTools.isNotEmpty(list)) {
 				em.getTransaction().begin();

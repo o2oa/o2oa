@@ -26,8 +26,7 @@ public class ProcessFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.equal(root.get(Process_.application), application);
-		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
-				cb.isNull(root.get(Process_.editionEnable))));
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
 		cq.select(root.get(Process_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
@@ -38,8 +37,7 @@ public class ProcessFactory extends AbstractFactory {
 		CriteriaQuery<Process> cq = cb.createQuery(Process.class);
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.equal(root.get(Process_.application), application);
-		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
-				cb.isNull(root.get(Process_.editionEnable))));
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
 		cq.select(root).where(p);
 		return em.createQuery(cq).getResultList();
 	}
@@ -74,7 +72,6 @@ public class ProcessFactory extends AbstractFactory {
 		Predicate p = cb.equal(root.get(Process_.application), application);
 		p = cb.and(p, cb.isNotNull(root.get(Process_.edition)));
 		p = cb.and(p, cb.notEqual(root.get(Process_.edition), ""));
-
 		Subquery<Process> subquery = cq.subquery(Process.class);
 		Root<Process> subRoot = subquery.from(Process.class);
 		Predicate subP = cb.conjunction();
@@ -82,9 +79,8 @@ public class ProcessFactory extends AbstractFactory {
 		subP = cb.and(subP, cb.isTrue(subRoot.get(Process_.editionEnable)));
 		subquery.select(subRoot).where(subP);
 		p = cb.and(p, cb.not(cb.exists(subquery)));
-
-		cq.distinct(true).select(root.get(Process_.edition)).where(p);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(Process_.edition)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public Process getEnabledProcess(String application, String edition) throws Exception {
@@ -97,7 +93,7 @@ public class ProcessFactory extends AbstractFactory {
 		p = cb.and(p, cb.isTrue(root.get(Process_.editionEnable)));
 		cq.select(root).where(p).orderBy(cb.desc(root.get(Process_.editionNumber)));
 		List<Process> list = em.createQuery(cq).getResultList();
-		if(list!=null && !list.isEmpty()){
+		if (list != null && !list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;
@@ -110,16 +106,16 @@ public class ProcessFactory extends AbstractFactory {
 	}
 
 	public Double getMaxEditionNumber(String application, String edition) throws Exception {
-		if (StringUtils.isNotEmpty(edition)){
+		if (StringUtils.isNotEmpty(edition)) {
 			EntityManager em = this.entityManagerContainer().get(Process.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<Double> cq = cb.createQuery(Double.class);
 			Root<Process> root = cq.from(Process.class);
 			Predicate p = cb.equal(root.get(Process_.application), application);
-			p = cb.and(p,cb.equal(root.get(Process_.edition), edition));
+			p = cb.and(p, cb.equal(root.get(Process_.edition), edition));
 			cq.select(cb.max(root.get(Process_.editionNumber))).where(p);
 			Double max = em.createQuery(cq).getSingleResult();
-			if(max == null || max < 1.0){
+			if (max == null || max < 1.0) {
 				max = 1.0;
 			}
 			return max;

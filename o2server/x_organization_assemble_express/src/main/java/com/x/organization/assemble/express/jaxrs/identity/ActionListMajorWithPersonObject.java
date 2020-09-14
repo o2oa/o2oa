@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.identity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -80,8 +81,8 @@ class ActionListMajorWithPersonObject extends BaseAction {
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = root.get(Identity_.person).in(personIds);
 		p = cb.and(p, cb.equal(root.get(Identity_.major), true));
-		List<String> identityIds = em.createQuery(cq.select(root.get(Identity_.id)).where(p).distinct(true))
-				.getResultList();
+		List<String> identityIds = em.createQuery(cq.select(root.get(Identity_.id)).where(p))
+				.getResultList().stream().distinct().collect(Collectors.toList());
 		List<Identity> list = business.identity().pick(identityIds);
 		for (Identity o : list) {
 			if (ListTools.contains(personMajorIds, o.getId())) {

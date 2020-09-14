@@ -2,6 +2,7 @@ package com.x.okr.assemble.control.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -78,7 +79,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.workId));
+		cq.select(root.get(OkrWorkPerson_.workId));
 
 		/**
 		 * 获取的时候过滤条件： 1、如果当前身份是创建者或者部署者的，那么，草稿也要取，如果当前身份不是创建者或者部署者，那么草稿不要去
@@ -114,7 +115,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 
 		p = cb.and(p, cb.or(p_creator_or_depoloyer, p_watcher));
 
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**
@@ -136,12 +137,12 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.workId));
+		cq.select(root.get(OkrWorkPerson_.workId));
 		Predicate p = cb.equal(root.get(OkrWorkPerson_.employeeIdentity), userIdentity);
 		if (centerId != null && !centerId.isEmpty()) {
 			p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.centerId), centerId));
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	// @MethodDescribe( "根据用户姓名和处理者身份，列示有权限访问的所有具体工作Id列表" )
@@ -158,11 +159,11 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.workId));
+		cq.select(root.get(OkrWorkPerson_.workId));
 		Predicate p = cb.isNotNull(root.get(OkrWorkPerson_.workId));
 		p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.employeeName), name));
 		p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.processIdentity), processIdentity));
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	// @MethodDescribe( "根据用户姓名和处理者身份，列示有权限访问的所有具体工作Id列表" )
@@ -180,7 +181,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.workId));
+		cq.select(root.get(OkrWorkPerson_.workId));
 
 		Predicate p = cb.isNotNull(root.get(OkrWorkPerson_.workId));
 
@@ -194,7 +195,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.processIdentity), processIdentity));
 		p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.status), "正常"));
 
-		return em.createQuery(cq.where(p)).setMaxResults(200).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(200).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	// @MethodDescribe( "根据用户姓名，列示有权限访问的所有中心工作Id列表" )
@@ -207,12 +208,12 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.centerId));
+		cq.select(root.get(OkrWorkPerson_.centerId));
 		Predicate p = cb.equal(root.get(OkrWorkPerson_.employeeName), name);
 		if (statuses != null && statuses.size() > 0) {
 			p = cb.and(p, root.get(OkrWorkPerson_.status).in(statuses));
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	// @MethodDescribe( "根据用户姓名和处理者身份，列示有权限访问的所有中心工作Id列表" )
@@ -230,13 +231,13 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.centerId));
+		cq.select(root.get(OkrWorkPerson_.centerId));
 		Predicate p = cb.equal(root.get(OkrWorkPerson_.employeeName), name);
 		p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.processIdentity), processIdentity));
 		if (statuses != null && statuses.size() > 0) {
 			p = cb.and(p, root.get(OkrWorkPerson_.status).in(statuses));
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	// @MethodDescribe( "根据用户身份和处理者身份，列示有权限访问的所有中心工作Id列表" )
@@ -254,13 +255,13 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.centerId));
+		cq.select(root.get(OkrWorkPerson_.centerId));
 		Predicate p = cb.equal(root.get(OkrWorkPerson_.employeeIdentity), identity);
 		p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.processIdentity), processIdentity));
 		if (statuses != null && statuses.size() > 0) {
 			p = cb.and(p, root.get(OkrWorkPerson_.status).in(statuses));
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	// @MethodDescribe( "根据组织名称，列示有权限访问的所有中心工作Id列表" )
@@ -273,12 +274,12 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.centerId));
+		cq.select(root.get(OkrWorkPerson_.centerId));
 		Predicate p = cb.equal(root.get(OkrWorkPerson_.unitName), name);
 		if (statuses != null && statuses.size() > 0) {
 			p = cb.and(p, root.get(OkrWorkPerson_.status).in(statuses));
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	// @MethodDescribe( "根据组织列表，列示有权限访问的所有中心工作Id列表" )
@@ -291,12 +292,12 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.centerId));
+		cq.select(root.get(OkrWorkPerson_.centerId));
 		Predicate p = root.get(OkrWorkPerson_.unitName).in(names);
 		if (statuses != null && statuses.size() > 0) {
 			p = cb.and(p, root.get(OkrWorkPerson_.status).in(statuses));
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	// @MethodDescribe( "根据顶层组织名称，列示有权限访问的所有中心工作Id列表" )
@@ -309,12 +310,12 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.centerId));
+		cq.select(root.get(OkrWorkPerson_.centerId));
 		Predicate p = cb.equal(root.get(OkrWorkPerson_.topUnitName), name);
 		if (statuses != null && statuses.size() > 0) {
 			p = cb.and(p, root.get(OkrWorkPerson_.status).in(statuses));
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**
@@ -336,12 +337,12 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.employeeIdentity));
+		cq.select(root.get(OkrWorkPerson_.employeeIdentity));
 		Predicate p = cb.equal(root.get(OkrWorkPerson_.centerId), centerId);
 		if (identity != null && !identity.isEmpty()) {
 			p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.processIdentity), identity));
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(2000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(2000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	// @MethodDescribe( "根据顶层组织列表，列示有权限访问的所有中心工作Id列表" )
@@ -355,12 +356,12 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.centerId));
+		cq.select(root.get(OkrWorkPerson_.centerId));
 		Predicate p = root.get(OkrWorkPerson_.topUnitName).in(names);
 		if (statuses != null && statuses.size() > 0) {
 			p = cb.and(p, root.get(OkrWorkPerson_.status).in(statuses));
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**
@@ -380,7 +381,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.employeeName));
+		cq.select(root.get(OkrWorkPerson_.employeeName));
 		Predicate p = cb.equal(root.get(OkrWorkPerson_.workId), workId);
 		if (identity != null && !identity.isEmpty()) {
 			p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.processIdentity), identity));
@@ -388,7 +389,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		if (statuses != null && statuses.size() > 0) {
 			p = cb.and(p, root.get(OkrWorkPerson_.status).in(statuses));
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(100).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(100).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**
@@ -480,7 +481,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.workId));
+		cq.select(root.get(OkrWorkPerson_.workId));
 		Predicate p = cb.equal(root.get(OkrWorkPerson_.employeeIdentity), employeeIdentity);
 		p = cb.and(p, cb.isNotNull(root.get(OkrWorkPerson_.workId)));
 		if (centerId != null && !centerId.isEmpty()) {
@@ -495,7 +496,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		if (statuses != null && statuses.size() > 0) {
 			p = cb.and(p, root.get(OkrWorkPerson_.status).in(statuses));
 		}
-		return em.createQuery(cq.where(p)).getResultList();
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**
@@ -1059,15 +1060,15 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.employeeIdentity));
-		return em.createQuery(cq).setMaxResults(10000).getResultList();
+		cq.select(root.get(OkrWorkPerson_.employeeIdentity));
+		return em.createQuery(cq).setMaxResults(10000).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**
 	 * 根据工作类别和登录身份来查询用户可以访问到的所有中心工作数量
-	 * 
-	 * @param workTypeName
+	 * @param workTypeNames
 	 * @param loginIdentity
+	 * @param processIdentity
 	 * @return
 	 * @throws Exception
 	 */
@@ -1087,8 +1088,8 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		if (processIdentity != null && !processIdentity.isEmpty()) {
 			p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.processIdentity), processIdentity));
 		}
-		cq.distinct(true).select(root.get(OkrWorkPerson_.centerId));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(OkrWorkPerson_.centerId));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public List<String> listByAuthorizeRecordIds(List<String> authorizeRecordIds, List<String> statuses)
@@ -1388,8 +1389,8 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		if (identities_error != null && identities_error.size() > 0) {
 			p = cb.and(p, cb.not(root.get(OkrWorkPerson_.employeeIdentity).in(identities_error)));
 		}
-		cq.distinct(true).select(root.get(OkrWorkPerson_.employeeIdentity));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(OkrWorkPerson_.employeeIdentity));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**
@@ -1425,7 +1426,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
 		Predicate p = cb.equal( root.get(OkrWorkPerson_.workId), workId);
-		cq.distinct(true).select(root.get(OkrWorkPerson_.employeeIdentity));
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(OkrWorkPerson_.employeeIdentity));
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 }

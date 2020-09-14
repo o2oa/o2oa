@@ -1,25 +1,26 @@
 o2.widget = o2.widget || {};
 o2.widget.Upload = new Class({
     Extends: o2.widget.Common,
-	Implements: [Options, Events],
-	options: {
-		"data": null,
+    Implements: [Options, Events],
+    options: {
+        "data": null,
         "parameter": null,
         "action": null,
+        "accept" : "*/*",
         "method": "",
         "style": "default",
         "multiple": true
-	},
+    },
 
-	initialize: function(container, options){
-		this.setOptions(options);
-		this.path = o2.session.path+"/widget/$Upload/";
-		this.cssPath = o2.session.path+"/widget/$Upload/"+this.options.style+"/css.wcss";
-		this._loadCss();
-		this.container = $(container);
+    initialize: function(container, options){
+        this.setOptions(options);
+        this.path = o2.session.path+"/widget/$Upload/";
+        this.cssPath = o2.session.path+"/widget/$Upload/"+this.options.style+"/css.wcss";
+        this._loadCss();
+        this.container = $(container);
 
-		this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(this.options.action).action : this.options.action;
-	},
+        this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(this.options.action).action : this.options.action;
+    },
     load: function(){
         if (FormData.expiredIE){
             this.doUpload_InputFile();
@@ -42,7 +43,7 @@ o2.widget.Upload = new Class({
     formData_CreateUploadArea: function(){
         if (!this.uploadFileAreaNode){
             this.uploadFileAreaNode = new Element("div");
-            var html = "<input name=\"file\" "+((this.options.multiple) ? "multiple": "")+" type=\"file\" accept=\"*/*\"/>";
+            var html = "<input name=\"file\" "+((this.options.multiple) ? "multiple": "")+"  accept=\""+ this.options.accept +"\"/>";
             this.uploadFileAreaNode.set("html", html);
             this.fileUploadNode = this.uploadFileAreaNode.getFirst();
 

@@ -85,6 +85,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadSidebarPosition();
                     this.loadViewFilter();
                     this.loadDocumentTempleteSelect();
+                    // this.loadScriptIncluder();
+                    // this.loadDictionaryIncluder();
                     //this.testRestful();
 //			this.loadScriptInput();
                     //MWF.process.widget.EventsEditor
@@ -1244,6 +1246,8 @@ debugger;
         var processFileNodes = this.propertyContent.getElements(".MWFProcessImageFileSelect");
         var scriptNodes = this.propertyContent.getElements(".MWFScriptSelect");
         var formStyleNodes = this.propertyContent.getElements(".MWFFormStyleSelect");
+        var dictionaryNodes = this.propertyContent.getElements(".MWFDictionarySelect");
+
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             personIdentityNodes.each(function(node){
@@ -1315,8 +1319,8 @@ debugger;
             scriptNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "Script",
-                    "count": 1,
-                    "names": [this.data[node.get("name")]],
+                    "count": node.dataset["count"] || 1,
+                    "names": (!node.dataset["count"] || node.dataset["count"].toInt()==1) ? [this.data[node.get("name")]] : this.data[node.get("name")],
                     "onChange": function(ids){
                         this.saveScriptSelectItem(node, ids);
                     }.bind(this)
@@ -1403,6 +1407,40 @@ debugger;
                 }
             }.bind(this));
 
+            dictionaryNodes.each(function(node){
+                var data = this.data[node.get("name")];
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "Dictionary",
+                    "count": 0,
+                    "names": typeOf(data)==="array" ? data : [data],
+                    "onChange": function(ids){
+                        var data = [];
+                        var name = node.get("name");
+                        if( ids.length > 0 ){
+                            // var d = ids[0].data;
+                            ids.each( function (id) {
+                                debugger;
+                                var d = id.data;
+                                data.push({
+                                    "type" : "dictionary",
+                                    "name": d.name,
+                                    "alias": d.alias,
+                                    "id": d.id,
+                                    "appName" : d.appName || d.applicationName,
+                                    "appAlias" : d.appAlias || d.applicationAlias,
+                                    "appId": d.appId,
+                                    "application": d.application,
+                                    "appType" : d.appType
+                                })
+                            });
+                        }
+                        var oldValue = this.data[name];
+                        this.data[name] = data;
+                        this.changeData(name, node, oldValue);
+                    }.bind(this)
+                });
+            }.bind(this));
+
             fileNodes.each(function(node){
                 var d = this.data[node.get("name")];
                 var data = d || {};
@@ -1446,6 +1484,42 @@ debugger;
 
         }.bind(this));
     },
+    loadDictionaryIncluder : function(){
+        var nodes = this.propertyContent.getElements(".MWFDictionaryIncluder");
+        if (nodes.length){
+            nodes.each(function(node){
+                var name = node.get("name");
+                MWF.xDesktop.requireApp("process.FormDesigner", "widget.DictionaryIncluder", function(){
+                    var dictionaryIncluder = new MWF.xApplication.process.FormDesigner.widget.DictionaryIncluder(node, this.designer, {
+                        "onChange": function(){
+                            var data = dictionaryIncluder.getData();
+                            this.data[name] = data;
+                        }.bind(this)
+                    });
+                    dictionaryIncluder.load(this.data[name])
+                }.bind(this));
+            }.bind(this));
+        }
+
+    },
+    loadScriptIncluder : function(){
+        var nodes = this.propertyContent.getElements(".MWFScriptIncluder");
+        if (nodes.length){
+            nodes.each(function(node){
+                var name = node.get("name");
+                MWF.xDesktop.requireApp("process.FormDesigner", "widget.ScriptIncluder", function(){
+                    var scriptIncluder = new MWF.xApplication.process.FormDesigner.widget.ScriptIncluder(node, this.designer, {
+                        "onChange": function(){
+                            var data = scriptIncluder.getData();
+                            this.data[name] = data;
+                        }.bind(this)
+                    });
+                    scriptIncluder.load(this.data[name])
+                }.bind(this));
+            }.bind(this));
+        }
+
+    },
     saveFileItem: function(node, ids){
         if (ids[0]){
             var file = ids[0].data;
@@ -1476,27 +1550,49 @@ debugger;
 
     },
     saveScriptSelectItem: function(node, ids){
-	    debugger;
-        if (ids[0]){
-            var script = ids[0].data;
-            var data = {
-                "type" : "script",
-                "name": script.name,
-                "alias": script.alias,
-                "id": script.id,
-                "appName" : script.appName || script.applicationName,
-                "appId": script.appId,
-                "application": script.application
-            };
+        var count = (node.dataset["count"] || 1).toInt();
+        if (count==1){
+            if (ids[0]){
+                var script = ids[0].data;
+                var data = {
+                    "appType": script.appType,
+                    "type" : "script",
+                    "name": script.name,
+                    "alias": script.alias,
+                    "id": script.id,
+                    "appName" : script.appName || script.applicationName,
+                    "appId": script.appId,
+                    "application": script.application
+                };
 
+                var name = node.get("name");
+                var oldValue = this.data[name];
+                this.data[name] = data;
+
+                // this.changeJsonDate(name, data );
+                this.changeData(name, node, oldValue);
+            }else{
+                // this.data[node.get("name")] = null;
+            }
+        }else{
+            var scriptValues = [];
+            ids.each(function(s){
+                var scriptValue = {
+                    "appType": s.data.appType,
+                    "type" : "script",
+                    "name": s.data.name,
+                    "alias": s.data.alias,
+                    "id": s.data.id,
+                    "appName" : s.data.appName || s.data.applicationName,
+                    "appId": s.data.appId,
+                    "application": s.data.application
+                }
+                scriptValues.push(scriptValue);
+            }.bind(this));
             var name = node.get("name");
             var oldValue = this.data[name];
-            this.data[name] = data;
-
-            // this.changeJsonDate(name, data );
+            this.data[name] = scriptValues;
             this.changeData(name, node, oldValue);
-        }else{
-            // this.data[node.get("name")] = null;
         }
     },
     removeDutyItem: function(node, item){

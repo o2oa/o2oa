@@ -33,6 +33,12 @@ public class ThisApplication {
 
 	public static final SyncEmbedQueue syncEmbedQueue = new SyncEmbedQueue();
 
+	private static ProcessingToProcessingSignalStack processingToProcessingSignalStack = new ProcessingToProcessingSignalStack();
+
+	public static ProcessingToProcessingSignalStack getProcessingToProcessingSignalStack() {
+		return processingToProcessingSignalStack;
+	}
+
 	public static Context context() {
 		return context;
 	}
@@ -69,6 +75,7 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.processPlatform().getUrge().getEnable())) {
 				context.schedule(Urge.class, Config.processPlatform().getUrge().getCron());
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

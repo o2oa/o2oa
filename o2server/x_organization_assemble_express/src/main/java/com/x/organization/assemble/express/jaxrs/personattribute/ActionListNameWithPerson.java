@@ -87,8 +87,8 @@ class ActionListNameWithPerson extends BaseAction {
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<PersonAttribute> root = cq.from(PersonAttribute.class);
 			Predicate p = root.get(PersonAttribute_.person).in(ids);
-			List<String> names = em.createQuery(cq.select(root.get(PersonAttribute_.name)).where(p).distinct(true))
-					.getResultList();
+			List<String> names = em.createQuery(cq.select(root.get(PersonAttribute_.name)).where(p))
+					.getResultList().stream().distinct().collect(Collectors.toList());
 			names = names.stream().sorted().collect(Collectors.toList());
 			wo.getNameList().addAll(names);
 		}
