@@ -255,7 +255,7 @@ class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInCont
     private fun drawCheckInWorkplaceCircle() {
         if (myLocation != null) {
             calNearestWorkplace()
-            if (checkInPosition != null) {
+            if (checkInPosition != null && activity != null) {
                 val llCircle = LatLng(checkInPosition!!.latitude.toDouble(), checkInPosition!!.longitude.toDouble())
                 val ooCircle = CircleOptions()
                         .center(llCircle)

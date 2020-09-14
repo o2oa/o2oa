@@ -17,6 +17,7 @@ object O2AIContract {
          */
         fun speak(message:String, id:String)
         fun finishAI()
+        fun showTips(message: String)
     }
     interface Presenter: BasePresenter<View>{
 

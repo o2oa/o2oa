@@ -13,6 +13,7 @@ import okhttp3.RequestBody
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by fancyLou on 15/05/2018.
@@ -63,6 +64,7 @@ class O2AIPresenter : BasePresenterImpl<O2AIContract.View>(), O2AIContract.Prese
 
         if (utteranceId.startsWith(next_key_listen_command)) {
             mView?.beginListen()
+            showTips()
         } else {
             when(status){
                 STATUS_TOP->{
@@ -92,6 +94,7 @@ class O2AIPresenter : BasePresenterImpl<O2AIContract.View>(), O2AIContract.Prese
         }
         if (utteranceId.startsWith(next_key_listen_command)) {
             mView?.beginListen()
+            showTips()
         } else {
             XLog.info("logic is not over , keep speaking.....")
         }
@@ -106,6 +109,24 @@ class O2AIPresenter : BasePresenterImpl<O2AIContract.View>(), O2AIContract.Prese
         currentTaskList.clear()
     }
 
+    private fun showTips() {
+        when(status) {
+            STATUS_TOP -> {
+                mView?.showTips("可以使用如下命令：${loadTaskCommand()?.joinToString{it}} , ${loadStopCommand()?.joinToString { it }}")
+            }
+            STATUS_TASK -> {
+                if (currentTaskList.isNotEmpty()) {
+                    val task = currentTaskList[currentTaskIndex]
+                    val routeList = task.routeNameList.joinToString(separator = "或" )
+                    val ignore = loadIgnoreCommand()?.joinToString { it }
+                    val neural = loadTaskNeuralCommand()?.joinToString { it }
+                    mView?.showTips("可以使用如下命令：$routeList, $ignore, $neural")
+                }else {
+                    mView?.showTips("可以使用如下命令：${loadStopCommand()?.joinToString { it }}")
+                }
+            }
+        }
+    }
 
 
     private fun logicTop(result: String) {
@@ -289,17 +310,19 @@ class O2AIPresenter : BasePresenterImpl<O2AIContract.View>(), O2AIContract.Prese
                     .o2Subscribe {
                         onNext { response->
                             val data = response.data
-                            if (data!=null && data.isNotEmpty()) {
+                            val properties = data.properties
+                            if (properties != null) {
                                 var text = ""
                                 val fromActivityName = ArrayList<String>()
+                                if (properties.nextManualList.isNotEmpty()) {
+                                    properties.nextManualList.map {
+                                        fromActivityName.add(it.activityName)
+                                    }
+                                }
                                 val people = ArrayList<String>()
-                                data.map {
-                                    fromActivityName.add(it.fromActivityName)
-                                    val tasklist = it.taskList
-                                    if (tasklist!=null && tasklist.isNotEmpty()){
-                                        tasklist.map {
-                                            people.add(it.person.split("@")[0])
-                                        }
+                                if (properties.nextManualTaskIdentityList.isNotEmpty()) {
+                                    properties.nextManualTaskIdentityList.map {
+                                        people.add(it.substring(0, it.indexOf("@")))
                                     }
                                 }
                                 if (fromActivityName.isNotEmpty()){
@@ -354,9 +377,9 @@ class O2AIPresenter : BasePresenterImpl<O2AIContract.View>(), O2AIContract.Prese
     private fun isInIgnoreCommand(result: String): Boolean =
             (loadIgnoreCommand()?.any { result.trim() == it } == true)
 
-    private fun isInTaskCommand(result: String): Boolean =
-            (loadTaskCommand()?.any { result.trim() == it } == true)
-
+    private fun isInTaskCommand(result: String): Boolean  {
+        return (loadTaskCommand()?.any { result.trim() == it } == true) || (loadTaskMistakeCommand()?.any{result.trim() == it} == true)
+    }
     private fun isInTaskNeuralCommand(result: String): Boolean =
             (loadTaskNeuralCommand()?.any { it == result.trim() } == true)
 
@@ -372,6 +395,9 @@ class O2AIPresenter : BasePresenterImpl<O2AIContract.View>(), O2AIContract.Prese
 
     private fun loadTaskCommand(): Array<String>? =
             mView?.getContext()?.resources?.getStringArray(R.array.ai_command_task)
+
+    private fun loadTaskMistakeCommand(): Array<String>? =
+            mView?.getContext()?.resources?.getStringArray(R.array.ai_command_task_mistake)
 
     private fun loadTaskNeuralCommand(): Array<String>? =
             mView?.getContext()?.resources?.getStringArray(R.array.ai_command_task_neural)

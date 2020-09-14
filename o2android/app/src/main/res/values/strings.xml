@@ -605,14 +605,16 @@
         <item>下一个</item>
         <item>继续下一个工作</item>
         <item>继续</item>
+        <item>下一个工作</item>
+        <item>不处理</item>
+        <item>忽略</item>
     </string-array>
     <string-array name="ai_command_task">
-        <item>TASK</item>
-        <item>WORK</item>
         <item>待办</item>
         <item>工作</item>
         <item>我的待办</item>
         <item>我的工作</item>
+        <item>查找工作</item>
         <item>查看我的工作</item>
         <item>查看我的待办</item>
         <item>查看一下我的待办</item>
@@ -622,8 +624,16 @@
         <item>处理工作</item>
         <item>处理待办</item>
     </string-array>
+    <string-array name="ai_command_task_mistake">
+        <item>代办</item>
+        <item>我的代办</item>
+        <item>查看我的代办</item>
+        <item>查看一下我的代办</item>
+        <item>查一下我的代办</item>
+        <item>处理代办</item>
+    </string-array>
+
     <string-array name="ai_command_task_neural">
-        <item>NEURAL</item>
         <item>你来处理</item>
         <item>你帮我处理</item>
         <item>你看着办</item>
