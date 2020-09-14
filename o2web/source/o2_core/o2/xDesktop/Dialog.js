@@ -174,7 +174,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
             if (layout.desktop.currentApp) content = layout.desktop.currentApp.content;
             this.containerDrag = new Drag.Move(this.node, {
                 "handle": this.title,
-                "container": this.options.container || this.markNode || content,
+                "container": this.options.positionNode || this.options.container || this.markNode || content,
                 "snap": 5
             });
         }
