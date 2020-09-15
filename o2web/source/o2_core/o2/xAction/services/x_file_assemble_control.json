@@ -14,6 +14,9 @@
   "getAttachmentStream": {"uri": "/jaxrs/attachment/{id}/download/stream"},
   "updateAttachmentData": {"uri": "/jaxrs/attachment/{id}/update", "method": "PUT", "enctype": "formData", "progress": true},
 
+  "getAttachmentData2": {"uri": "/jaxrs/attachment2/{id}/download"},
+  "getAttachmentStream2": {"uri": "/jaxrs/attachment2/{id}/download/stream"},
+
   "addFolder": {"uri": "/jaxrs/folder", "method": "POST"},
   "listFolderTop": {"uri": "/jaxrs/folder/list/top"},
   "listTopFolder": {"uri": "/jaxrs/folder/list/top"},
