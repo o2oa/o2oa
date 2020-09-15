@@ -8,7 +8,7 @@ MWF.xApplication.Profile.Main = new Class({
         "name": "Profile",
         "icon": "icon.png",
         "width": "1100",
-        "height": "768",
+        "height": "820",
         "isResize": false,
         "isMax": false,
         "mvcStyle": "style.css",
@@ -122,7 +122,10 @@ MWF.xApplication.Profile.Main = new Class({
         this.officePhoneInputNode = inputs[2];
         this.weixinInputNode = inputs[3];
         this.qqInputNode = inputs[4];
-        this.signatureInputNode = this.tab.pages[0].contentNode.getElement("textarea").addEvent("focus",function(){
+        this.ipAddressInputNode = inputs[5];
+
+        this.signatureInputNode = this.tab.pages[0].contentNode.getElement("textarea");
+        this.signatureInputNode.addEvent("focus",function(){
             this.addClass("mainColor_border mainColor_color");
         }).addEvent("blur",function(){
             this.removeClass("mainColor_border mainColor_color");
@@ -815,11 +818,27 @@ MWF.xApplication.Profile.Main = new Class({
     },
 
     savePersonInfor: function(){
+        var array = [];
+        var ipAddress = this.ipAddressInputNode.get("value") || "";
+        var ipV4Format = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        var ipV6Format = /^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
+        if( ipAddress.trim() ){
+            ipAddress.split(",").each( function(ip){
+                if(!ip.match(ipV4Format) && !ip.match(ipV6Format))array.push( ip );
+            })
+        }
+        if( array.length > 0 ){
+            this.notice( this.lp.ipAddressIncorrectNotice + array.join(","), "error");
+            return false;
+        }
+
+
         this.personData.officePhone = this.officePhoneInputNode.get("value");
         this.personData.mail = this.mailInputNode.get("value");
         this.personData.mobile = this.mobileInputNode.get("value");
         this.personData.weixin = this.weixinInputNode.get("value");
         this.personData.qq = this.qqInputNode.get("value");
+        this.personData.ipAddress = this.ipAddressInputNode.get("value");
         this.personData.signature = this.signatureInputNode.get("value");
         this.action.updatePerson(this.personData, function(){
             this.notice(this.lp.saveInforOk, "success");
