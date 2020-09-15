@@ -49,6 +49,7 @@ MWF.xApplication.Org.PersonExplorer = new Class({
             "weibo": "",
             "mobile": "",
             "name": "",
+            "ipAddress" : "",
             "controllerList": [],
             "woPersonAttributeList":[],
             "woIdentityList": [],
@@ -692,6 +693,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         var n = this.editContentNode.getElement(".infor_birthday");
         if (n) n.set("text", this.data.birthday || "");
 
+        var n = this.editContentNode.getElement(".infor_ipAddress");
+        if (n) n.set("text", this.data.ipAddress || "");
+
         this.editContentNode.getElements("td.inforTitle").setStyles(this.style.baseInforTitleNode);
         this.editContentNode.getElements("td.inforContent").setStyles(this.style.baseInforContentNode);
         this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
@@ -715,6 +719,8 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             "<td class='inforTitle'>"+this.explorer.app.lp.personOfficePhone+":</td><td class='inforContent infor_officePhone'>"+(this.data.officePhone || "")+"</td></tr>";
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personBoardDate+":</td><td class='inforContent infor_boardDate'>"+(this.data.boardDate || "")+"</td>" +
             "<td class='inforTitle'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
+            "<td class='inforTitle'></td></tr>";
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
@@ -829,6 +835,11 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             });
         }.bind(this));
 
+        tdContents[12].setStyles(this.style.baseInforContentNode_edit).empty();
+        this.ipAddressInputNode = new Element("input", {"styles": this.style.inputNode, "placeHolder": this.explorer.app.lp.ipAddressPlaceHolder, }).inject(tdContents[12]);
+        this.ipAddressInputNode.set("value", (this.data.ipAddress));
+
+
 
         var _self = this;
         this.editContentNode.getElements("input").addEvents({
@@ -857,6 +868,21 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor, "error", this.explorer.propertyContentNode);
             return false;
         }
+
+        var array = [];
+        var ipAddress = this.ipAddressInputNode.get("value") || "";
+        var ipV4Format = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        var ipV6Format = /^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
+        if( ipAddress.trim() ){
+            ipAddress.split(",").each( function(ip){
+                if(!ip.match(ipV4Format) && !ip.match(ipV6Format))array.push( ip );
+            })
+        }
+        if( array.length > 0 ){
+            this.explorer.app.notice( this.explorer.app.lp.ipAddressIncorrectNotice + array.join(","), "error", this.explorer.propertyContentNode);
+            return false;
+        }
+
         //this.data.genderType = gender;
         if (!this.uniqueInputNode.get("value")) this.data.unique = this.employeeInputNode.get("value");
         this.content.propertyContentScrollNode.mask({
@@ -896,6 +922,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         data.officePhone = this.officePhoneInputNode.get("value");
         data.boardDate = this.boardDateInputNode.get("value");
         data.birthday = this.birthdayInputNode.get("value");
+        data.ipAddress = this.ipAddressInputNode.get("value");
 
         var tdContents = this.editContentNode.getElements("td.inforContent");
         var radios = tdContents[4].getElements("input");
@@ -947,6 +974,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             tdContents[9].setStyles(this.style.baseInforContentNode).set("text", this.data.officePhone || "");
             tdContents[10].setStyles(this.style.baseInforContentNode).set("text", this.data.boardDate || "");
             tdContents[11].setStyles(this.style.baseInforContentNode).set("text", this.data.birthday || "");
+            tdContents[12].setStyles(this.style.baseInforContentNode).set("text", this.data.ipAddress || "");
 
             this.mode = "read";
 

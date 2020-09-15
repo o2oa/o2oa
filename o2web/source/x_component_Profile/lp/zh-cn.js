@@ -33,6 +33,9 @@ MWF.xApplication.Profile.LP = {
     "signature": "个人签名",
     "saveInfor": "保存个人信息",
     "saveInforOk": "保存个人信息成功",
+    "ipAddress" : "登录IP",
+    "ipAddressPlaceHolder" : "如果不为空，匹配的ip地址才能登录，用,分隔多值",
+    "ipAddressIncorrectNotice" : "IP地址格式不正确：",
 
     "passwordRule" : "密码规则",
     "oldPassword": "原密码",
