@@ -19,7 +19,14 @@ MWF.xApplication.Homepage.FileContent  = new Class({
         }.bind(this));
     },
     openFile: function(e){
-        layout.openApplication(e, "File");
+        //应用市场中的云文件，门户id为95135369-ab35-47ba-a9ce-845f26ff9efb
+        o2.Actions.load("x_portal_assemble_surface").PortalAction.get("95135369-ab35-47ba-a9ce-845f26ff9efb", function () {
+            layout.openApplication(e, "portal.Portal", {
+                portalId : "95135369-ab35-47ba-a9ce-845f26ff9efb"
+            });
+        }, function(){
+            layout.openApplication(e, "File");
+        })
     },
     setContentSize: function(){
         var total = this.container.getSize().y;
@@ -74,16 +81,44 @@ MWF.xApplication.Homepage.FileContent.File = new Class({
         }
     },
     loadItemsRes: function(){
-        o2.Actions.load("x_file_assemble_control").AttachmentAction.listTop(function(json){
-            if (json.data && json.data.length){
-                this.getIconJson(function(){
-                    this.loadItems(json.data);
-                }.bind(this));
-            }else{
-                 this.emptyLoadContent();
-            }
-            this.fireEvent("load");
+        var items = [];
+        o2.Actions.load("x_file_assemble_control").Attachment2Action.listTop(function(json2){
+            o2.Actions.load("x_file_assemble_control").AttachmentAction.listTop(function(json){
+                if( json2.data && json2.data.length ){
+                    json2.data.map(function (d) {
+                        d.version = "v2"
+                    });
+                    items = items.concat( json2.data );
+                }
+                if( json.data && json.data.length ){
+                    json.data.map(function (d) {
+                        d.version = "v1"
+                    });
+                    items = items.concat( json.data );
+                }
+                if (items.length){
+                    items.sort( function (a, b) {
+                        return Date.parse( b.lastUpdateTime ) - Date.parse( a.lastUpdateTime )
+                    });
+                    this.getIconJson(function(){
+                        this.loadItems(items);
+                    }.bind(this));
+                }else{
+                    this.emptyLoadContent();
+                }
+                this.fireEvent("load");
+            }.bind(this));
         }.bind(this));
+        // o2.Actions.load("x_file_assemble_control").AttachmentAction.listTop(function(json){
+        //     if (json.data && json.data.length){
+        //         this.getIconJson(function(){
+        //             this.loadItems(json.data);
+        //         }.bind(this));
+        //     }else{
+        //          this.emptyLoadContent();
+        //     }
+        //     this.fireEvent("load");
+        // }.bind(this));
     },
     emptyLoadContent: function(){
         this.container.empty();
@@ -144,14 +179,26 @@ MWF.xApplication.Homepage.FileContent.File = new Class({
         });
     },
     openAttachment: function(d){
-        o2.Actions.get("x_file_assemble_control").getFileDownloadUrl(d.id, function(url){
-            window.open(o2.filterUrl(url));
-        });
+        if( d.version === "v2" ){
+            o2.Actions.get("x_file_assemble_control").getFileDownloadUrl2(d.id, function(url){
+                window.open(o2.filterUrl(url));
+            });
+        }else{
+            o2.Actions.get("x_file_assemble_control").getFileDownloadUrl(d.id, function(url){
+                window.open(o2.filterUrl(url));
+            });
+        }
     },
     downloadAttachment: function(d){
-        o2.Actions.get("x_file_assemble_control").getFileUrl(d.id, function(url){
-            window.open(o2.filterUrl(url));
-        });
+        if( d.version === "v2" ) {
+            o2.Actions.get("x_file_assemble_control").getFileUrl2(d.id, function (url) {
+                window.open(o2.filterUrl(url));
+            });
+        }else{
+            o2.Actions.get("x_file_assemble_control").getFileUrl(d.id, function (url) {
+                window.open(o2.filterUrl(url));
+            });
+        }
     },
     open: function(e, d){
         layout.openApplication(e, "Meeting");
