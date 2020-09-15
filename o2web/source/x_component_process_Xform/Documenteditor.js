@@ -1681,7 +1681,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
     _singlePage: function(){
         //if (this.editMode) this._readFiletext();
-        this.zoom(1);
+
+        var scale = this.singlePageZoom || 1;
+        if( this.singlePageZoom && this.singlePageZoom.toInt() != 1 ){
+            this.isScale = true;
+            this.scale = this.singlePageZoom;
+            this.singlePageZoom = null;
+        }
+
+        this.zoom(scale);
         this._checkScale();
 
         var w = this.contentNode.getSize().x;
@@ -1752,6 +1760,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     _doublePage: function(){
         if (this.editMode) this._switchReadOrEditInline();
+
+        if( this.zoomSelectAction ){
+            this.singlePageZoom = ( this.zoomSelectAction.options[this.zoomSelectAction.selectedIndex].value ).toFloat();
+        }
+
         this.zoom(1);
         this.createWaitSplitPage();
         window.setTimeout(function(){
