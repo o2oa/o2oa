@@ -6,8 +6,8 @@ o2.widget.Upload = new Class({
         "data": null,
         "parameter": null,
         "action": null,
-        "accept" : "*/*",
         "method": "",
+        "accept" : "*/*",
         "style": "default",
         "multiple": true
     },
@@ -43,7 +43,7 @@ o2.widget.Upload = new Class({
     formData_CreateUploadArea: function(){
         if (!this.uploadFileAreaNode){
             this.uploadFileAreaNode = new Element("div");
-            var html = "<input name=\"file\" "+((this.options.multiple) ? "multiple": "")+"  accept="+ this.options.accept +"/>";
+            var html = "<input name=\"file\" "+((this.options.multiple) ? "multiple": "")+" type=\"file\" accept=\"" +  this.options.accept  + "\"/>";
             this.uploadFileAreaNode.set("html", html);
             this.fileUploadNode = this.uploadFileAreaNode.getFirst();
 
