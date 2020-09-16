@@ -82,7 +82,7 @@ class ActionHtmlToPdf extends BaseAction {
 			}
 			CacheCategory cacheCategory = new CacheCategory(CacheResultObject.class);
 			String key = StringTools.uniqueToken();
-			CacheKey cacheKey = new CacheKey();
+			CacheKey cacheKey = new CacheKey(key);
 			CacheManager.put(cacheCategory, cacheKey, ro);
 			return key;
 		} catch (Exception e) {
