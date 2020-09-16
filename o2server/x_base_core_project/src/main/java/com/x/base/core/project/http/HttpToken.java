@@ -38,7 +38,7 @@ public class HttpToken {
 
 	public EffectivePerson who(HttpServletRequest request, HttpServletResponse response, String key) throws Exception {
 		EffectivePerson effectivePerson = this.who(this.getToken(request), key);
-		effectivePerson.setRemoteAddress(this.remoteAddress(request));
+		effectivePerson.setRemoteAddress(HttpToken.remoteAddress(request));
 		effectivePerson.setUserAgent(this.userAgent(request));
 		effectivePerson.setUri(request.getRequestURI());
 		// 加入调试标记
@@ -191,7 +191,7 @@ public class HttpToken {
 		request.setAttribute(X_Person, effectivePerson);
 	}
 
-	private String remoteAddress(HttpServletRequest request) {
+	public static String remoteAddress(HttpServletRequest request) {
 		String value = Objects.toString(request.getHeader("X-Forwarded-For"), "");
 		if (StringUtils.isEmpty(value)) {
 			value = Objects.toString(request.getRemoteAddr(), "");
