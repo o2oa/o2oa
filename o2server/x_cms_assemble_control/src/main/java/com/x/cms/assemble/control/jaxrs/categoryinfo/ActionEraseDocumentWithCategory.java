@@ -5,6 +5,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -115,7 +116,7 @@ public class ActionEraseDocumentWithCategory extends BaseAction {
 								}
 							}
 							emc.commit();
-							ApplicationCache.notify( Document.class );
+							CacheManager.notify( Document.class );
 						}
 						count = documentServiceAdv.countByCategoryId( id );
 						logger.info(">>>>已经删除"+queryMaxCount+"个文档，还剩下"+count+"个文档需要删除。");

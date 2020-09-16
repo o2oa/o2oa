@@ -4,6 +4,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -46,8 +47,8 @@ public class ActionPersistPublishCancel extends BaseAction {
 				document.setDocStatus("draft");
 				document.setPublishTime(new Date());
 				document = documentPersistService.refreshDocInfoData( document );
-				
-				ApplicationCache.notify(Document.class);
+
+				CacheManager.notify(Document.class);
 
 				Wo wo = new Wo();
 				wo.setId( document.getId() );

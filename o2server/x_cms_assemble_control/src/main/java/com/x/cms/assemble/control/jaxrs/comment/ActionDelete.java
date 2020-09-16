@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.comment;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.cache.ApplicationCache;
@@ -48,8 +49,8 @@ public class ActionDelete extends BaseAction {
 			try {
 				documentCommentInfoPersistService.delete(flag, effectivePerson );				
 				// 更新缓存
-				ApplicationCache.notify( Document.class );
-				ApplicationCache.notify( DocumentCommentInfo.class );
+				CacheManager.notify( Document.class );
+				CacheManager.notify( DocumentCommentInfo.class );
 				
 				Wo wo = new Wo();
 				wo.setId( documentCommentInfo.getId() );

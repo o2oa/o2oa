@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -68,8 +69,8 @@ public class ActionSaveExtContent extends BaseAction {
 		
 		if( check ){
 			categoryExt = categoryInfoServiceAdv.saveExtContent( wi.getId(), wi.getContent(), effectivePerson );
-			
-			ApplicationCache.notify(CategoryInfo.class);
+
+			CacheManager.notify(CategoryInfo.class);
 
 			new LogService().log(null, effectivePerson.getDistinguishedName(),
 					categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName(), categoryInfo.getId(), "", "",

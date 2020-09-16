@@ -4,6 +4,8 @@ import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -37,8 +39,8 @@ public class ActionPersistBatchModifyData extends BaseAction {
 		if (check) {
 			try {
 				wo = documentPersistService.changeData( wi.getDocIds(), wi.getDataChanges() );
-				
-				ApplicationCache.notify(Document.class);
+
+				CacheManager.notify(Document.class);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在根据ID批量修改数据时发生异常！");
@@ -144,7 +146,7 @@ public class ActionPersistBatchModifyData extends BaseAction {
 		}	
 	}
 
-	public static class Wo {
+	public static class Wo extends GsonPropertyObject {
 		private List<String> errors = null;
 		private Integer total = 0;
 		private Integer error_count = 0;

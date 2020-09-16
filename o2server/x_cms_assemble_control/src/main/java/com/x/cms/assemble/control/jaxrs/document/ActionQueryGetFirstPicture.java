@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -82,7 +83,7 @@ public class ActionQueryGetFirstPicture extends BaseAction {
 		return cacheKey;
 	}
 	
-	public static class Wo{
+	public static class Wo extends GsonPropertyObject {
 		
 		@FieldDescribe("ID")
 		private String id;
