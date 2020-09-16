@@ -30,6 +30,9 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.helpers.MessageFormatter;
 
 public class StringTools {
+
+	// 脚本文本
+	public static final Pattern SCRIPTTEXT_REGEX = Pattern.compile("^\\((.+?)\\)$");
 	public static final Pattern MOBILE_REGEX = Pattern.compile(
 			"(^(\\+)?0{0,2}852\\d{8}$)|(^(\\+)?0{0,2}853\\d{8}$)|(^(\\+)?0{0,2}886\\d{9}$)|(^1(3|4|5|6|7|8|9)\\d{9}$)");
 	/** 中文,英文,数字,-,.· 【】（） */
