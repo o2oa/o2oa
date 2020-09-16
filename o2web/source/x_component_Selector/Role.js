@@ -8,7 +8,8 @@ MWF.xApplication.Selector.Role = new Class({
         "groups": [],
         "roles": [],
         "values": [],
-        "names": []
+        "names": [],
+        "selectType" : "role"
     },
 
     _listItemByKey: function(callback, failure, key){

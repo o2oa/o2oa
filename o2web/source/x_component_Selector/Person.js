@@ -33,9 +33,11 @@ MWF.xApplication.Selector.Person = new Class({
         "injectToBody" : false, //当传入HTML URL的时候是否插入到document.body, false的时候插入到this.container
         "selectSingleItem" : false, //当只有一个候选项的时候，是否默认选中
 
-        "flatCategory" : false, //扁平化展现分类
+        "flatCategory" : false, //扁平化展现分类,
+        "selectType" : "person",
 
         "itemHeight" : 29,
+        "identityItemWidth" : 0, //选项宽度，如果不为0，设置为float:left,
 
         "showEmptyText" : true
     },
@@ -444,6 +446,9 @@ MWF.xApplication.Selector.Person = new Class({
         this.cancelActionNode.addEvent("click", function(){this.fireEvent("cancel"); this.close();}.bind(this));
     },
     loadContent: function( contentNode, isHTML ){
+
+        this.fireEvent("queryLoadContent",[this]);
+
         if( contentNode )this.contentNode = contentNode;
         if( this.options.contentUrl || isHTML ){
             if (this.options.count.toInt()!==1) this.loadSelectedNodeHTML();
@@ -1765,8 +1770,12 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.levelNode = new Element("div", {
             "styles": this.selector.css.selectorItemLevelNode
         }).inject(this.node);
-        var indent = this.selector.options.level1Indent + (this.level-1)*this.selector.options.indent;
-        this.levelNode.setStyle("width", ""+indent+"px");
+
+
+        if( this.selector.options.selectType !== "identity" || this.selector.options.identityItemWidth === 0 ) {
+            var indent = this.selector.options.level1Indent + (this.level - 1) * this.selector.options.indent;
+            this.levelNode.setStyle("width", "" + indent + "px");
+        }
 
         this.iconNode = new Element("div", {
             "styles": this.selector.css.selectorItemIconNode
@@ -1788,6 +1797,13 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.textNode.store("indent", indent);
         var m = this.textNode.getStyle("margin-left").toFloat()+indent;
         this.textNode.setStyle("margin-left", ""+m+"px");
+
+        if( this.selector.options.identityItemWidth && this.selector.options.selectType === "identity"){
+            this.node.setStyles({
+                "float" : "left",
+                "min-width" : this.selector.options.identityItemWidth + "px"
+            })
+        }
 
         if(this.postLoad)this.postLoad();
 
@@ -2324,8 +2340,13 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         this.levelNode = new Element("div", {
             "styles": this.selector.css.selectorItemLevelNode
         }).inject(this.node);
-        var indent = this.selector.options.level1Indent + (this.level-1)*this.selector.options.indent;
-        this.levelNode.setStyle("width", ""+indent+"px");
+
+        if(this.selector.options.selectType !== "identity" || this.selector.options.identityItemWidth === 0 ){
+            var indent = this.selector.options.level1Indent + (this.level - 1) * this.selector.options.indent;
+            this.levelNode.setStyle("width", "" + indent + "px");
+        }else{
+            this.node.setStyle("clear","both");
+        }
 
         this.iconNode = new Element("div", {
             "styles": this.selector.css.selectorItemCategoryIconNode || this.selector.css.selectorItemIconNode
@@ -2379,7 +2400,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         var m = this.textNode.getStyle("margin-left").toFloat()+indent;
         this.textNode.setStyle("margin-left", ""+m+"px");
 
-        this.children = new Element("div", {
+        this.children = new Element("div.children", {
             "styles": this.selector.css.selectorItemCategoryChildrenNode
         }).inject(this.node, "after");
         if (!this.selector.options.expand) this.children.setStyle("display", "none");
@@ -2394,6 +2415,14 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                 var count = subIdList.length;
                 this.childrenHeight = count*this.selector.options.itemHeight;
                 this.children.setStyle("height", ""+this.childrenHeight+"px");
+            }
+
+            if(this.selector.options.identityItemWidth && this.selector.options.selectType === "identity"){
+                var indent = this.level === 0 ? this.selector.options.level1Indent : this.selector.options.indent;
+                this.children.setStyles({
+                    "padding-left": "" + indent + "px",
+                    "overflow" : "hidden"
+                });
             }
 
             if ( !this._hasChild()){

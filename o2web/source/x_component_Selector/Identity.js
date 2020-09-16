@@ -16,7 +16,8 @@ MWF.xApplication.Selector.Identity = new Class({
         "exclude" : [], //排除的可选项
         "resultType" : "", //可以设置成个人，那么结果返回个人
         "expandSubEnable" : true, //是否允许展开下一层,
-        "selectAllEnable" : true //分类是否允许全选下一层
+        "selectAllEnable" : true,  //分类是否允许全选下一层
+        "selectType" : "identity"
     },
     loadSelectItems: function(addToNext){
         debugger;

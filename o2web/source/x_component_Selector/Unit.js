@@ -13,7 +13,8 @@ MWF.xApplication.Selector.Unit = new Class({
         "expand": true,
         "exclude" : [],
         "expandSubEnable" : true, //是否允许展开下一层
-        "selectAllEnable" : true //分类是否允许全选下一层
+        "selectAllEnable" : true, //分类是否允许全选下一层
+        "selectType" : "unit"
     },
 
     loadSelectItems: function(addToNext){
