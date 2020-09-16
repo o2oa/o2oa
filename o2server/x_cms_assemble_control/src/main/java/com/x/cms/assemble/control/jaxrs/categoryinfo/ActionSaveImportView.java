@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -97,9 +98,9 @@ public class ActionSaveImportView extends BaseAction {
 		if( check ){
 			try {
 				categoryInfoServiceAdv.bindImportViewId( categoryInfo, view, wi.getViewAppId() );
-				
-				ApplicationCache.notify(AppInfo.class);
-				ApplicationCache.notify(CategoryInfo.class);
+
+				CacheManager.notify(AppInfo.class);
+				CacheManager.notify(CategoryInfo.class);
 				
 				Wo wo = new Wo();
 				wo.setId(categoryId);

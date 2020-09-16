@@ -4,6 +4,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -32,7 +33,7 @@ public class ActionPersistArchive extends BaseAction {
 			try {
 				modifyDocStatus( id, "archived", effectivePerson.getDistinguishedName() );
 				document.setDocStatus( "archived" );
-				ApplicationCache.notify( Document.class );
+				CacheManager.notify( Document.class );
 			} catch (Exception e) {
 				Exception exception = new ExceptionDocumentInfoProcess( e, "系统将文档状态修改为归档状态时发生异常。Id:" + id );
 				result.error( exception );

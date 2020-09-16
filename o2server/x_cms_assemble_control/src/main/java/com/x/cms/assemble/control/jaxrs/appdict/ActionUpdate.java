@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.appdict;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -36,7 +37,7 @@ class ActionUpdate extends BaseAction {
 			this.update(business, dict, wrapIn.getData());
 			emc.commit();
 			/* 这个Action是更新AppDict需要刷新缓存 */
-			ApplicationCache.notify(AppDict.class);
+			CacheManager.notify(AppDict.class);
 			WrapOutId wrap = new WrapOutId(dict.getId());
 			result.setData(wrap);
 			return result;

@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.document;
 
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -61,7 +62,7 @@ public class ActionPersistTopDocument extends BaseAction {
 					CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  document.getId(),  document.getId(), "刷新文档权限：ID=" +  document.getId() );
 		}
 
-		ApplicationCache.notify( Document.class );
+		CacheManager.notify( Document.class );
 
 		return result;
 	}

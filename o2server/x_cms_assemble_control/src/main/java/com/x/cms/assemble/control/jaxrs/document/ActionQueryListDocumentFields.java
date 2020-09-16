@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.cms.core.entity.Document;
 
@@ -33,7 +34,7 @@ public class ActionQueryListDocumentFields extends BaseAction {
 		}
 	}
 
-	public static class Wo {
+	public static class Wo extends GsonPropertyObject {
 
 		@FieldDescribe( "文档对象可供列表使用的列名." )
 		private List<String> fieldNames = null;

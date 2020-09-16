@@ -5,6 +5,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -78,11 +79,11 @@ public class ActionPersistDeleteDocument extends BaseAction {
 			//删除文档信息
 			emc.remove( document, CheckRemoveType.all );
 			emc.commit();
-			
-			ApplicationCache.notify( Document.class );
-			ApplicationCache.notify( DocumentCommentInfo.class );
+
+			CacheManager.notify( Document.class );
+			CacheManager.notify( DocumentCommentInfo.class );
 			String cacheKey = ApplicationCache.concreteCacheKey( id );
-			ApplicationCache.notify( Item.class, cacheKey );
+			CacheManager.notify( Item.class, cacheKey );
 			
 			new CmsBatchOperationPersistService().addOperation( 
 					CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 

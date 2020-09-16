@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.document;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -116,7 +117,7 @@ public class ActionQueryCountWithFilter extends BaseAction {
 		
 	}
 
-	public static class Wo {
+	public static class Wo extends GsonPropertyObject {
 		
 		@FieldDescribe( "查询到的文档数量" )
 		Long docCount = 0L;

@@ -1,8 +1,9 @@
 package com.x.base.core.project.jaxrs;
 
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 
-public class WoText {
+public class WoText  extends GsonPropertyObject {
 
 	public WoText() {
 	}
