@@ -37,7 +37,7 @@ public class AttendanceStatisticalCycleService {
 	 * @throws Exception
 	 */
 	public Map<String, Map<String, List<AttendanceStatisticalCycle>>> getAllStatisticalCycleMapWithCache(Boolean debugger) throws Exception {
-		CacheKey cacheKey = new CacheKey("map#all");
+		CacheKey cacheKey = new CacheKey(this.getClass(),"map","all");
 		
 		Map<String, Map<String, List<AttendanceStatisticalCycle>>> statisticalCycleMap = null;
 		Optional<?> optional = CacheManager.get(cache_AttendanceStatisticalCycle, cacheKey);
