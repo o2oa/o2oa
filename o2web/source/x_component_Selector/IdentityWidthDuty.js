@@ -16,7 +16,8 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
         "resultType" : "", //可以设置成个人，那么结果返回个人
         "expandSubEnable": true,
         "selectAllEnable" : true, //分类是否允许全选下一层
-        "exclude" : []
+        "exclude" : [],
+        "selectType" : "identity"
     },
     loadSelectItems: function(addToNext){
 
