@@ -4,20 +4,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
 
 import javax.script.Compilable;
 import javax.script.CompiledScript;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.script.SimpleScriptContext;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.tools.StringTools;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
@@ -267,6 +274,24 @@ public class ScriptFactory {
 			}
 		}
 		return list;
+	}
+
+	public static Object evalIfScriptText(String text) throws ScriptException {
+		if (StringUtils.isEmpty(text)) {
+			return text;
+		}
+		Matcher matcher = StringTools.SCRIPTTEXT_REGEX.matcher(text);
+		if (matcher.matches()) {
+			String eval = functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
+			ScriptContext scriptContext = new SimpleScriptContext();
+			return ScriptFactory.scriptEngine.eval(eval, scriptContext);
+		} else {
+			return text;
+		}
+	}
+
+	public static String evalIfScriptTextAsString(String text) throws Exception {
+		return asString(evalIfScriptText(text));
 	}
 
 }

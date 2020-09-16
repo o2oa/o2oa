@@ -7,7 +7,7 @@ import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 
-import com.x.base.core.project.tools.RedisUtil;
+import com.x.base.core.project.tools.RedisTools;
 import redis.clients.jedis.Jedis;
 
 public class CacheRedisNotifyThread extends Thread {
@@ -28,14 +28,14 @@ public class CacheRedisNotifyThread extends Thread {
 //						+ "([\\s\\S]*)$))";
 				String match = "*&*" + new CacheCategory(wi.getClassName()).toString() + "*&*"
 						+ new CacheKey(wi.getKeys()).toString() + "*";
-				Jedis jedis = RedisUtil.getJedis();
+				Jedis jedis = RedisTools.getJedis();
 				if(jedis != null) {
 					Set<String> keys = jedis.keys(match);
 					if (!keys.isEmpty()) {
 						jedis.del(keys.toArray(new String[]{}));
 						jedis.flushDB();
 					}
-					RedisUtil.closeJedis(jedis);
+					RedisTools.closeJedis(jedis);
 				}
 			} catch (InterruptedException ie) {
 				break;

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.x.base.core.project.tools.RedisUtil;
+import com.x.base.core.project.tools.RedisTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.config.Cache.Redis;
@@ -42,7 +42,7 @@ public class CacheRedisImpl implements Cache {
 	public void put(CacheCategory category, CacheKey key, Object o) throws Exception {
 
 		if (null != o) {
-			Jedis jedis = RedisUtil.getJedis();
+			Jedis jedis = RedisTools.getJedis();
 			if(jedis != null) {
 				try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					 ObjectOutputStream oos = new ObjectOutputStream(baos)) {
@@ -50,7 +50,7 @@ public class CacheRedisImpl implements Cache {
 					byte[] bytes = baos.toByteArray();
 					jedis.set(concrete(category, key).getBytes(StandardCharsets.UTF_8), bytes, setParams);
 				}
-				RedisUtil.closeJedis(jedis);
+				RedisTools.closeJedis(jedis);
 			}
 		}
 
@@ -58,10 +58,10 @@ public class CacheRedisImpl implements Cache {
 
 	@Override
 	public Optional<Object> get(CacheCategory category, CacheKey key) throws Exception {
-		Jedis jedis = RedisUtil.getJedis();
+		Jedis jedis = RedisTools.getJedis();
 		if(jedis != null) {
 			byte[] bytes = jedis.get(concrete(category, key).getBytes(StandardCharsets.UTF_8));
-			RedisUtil.closeJedis(jedis);
+			RedisTools.closeJedis(jedis);
 			if ((null != bytes) && bytes.length > 0) {
 				try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 					 ObjectInputStream ois = new ObjectInputStream(bais)) {
@@ -75,7 +75,7 @@ public class CacheRedisImpl implements Cache {
 	@Override
 	public void shutdown() {
 		this.notifyThread.interrupt();
-		RedisUtil.closePool();
+		RedisTools.closePool();
 	}
 
 	@Override
