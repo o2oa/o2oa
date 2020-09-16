@@ -3,6 +3,7 @@ package com.x.cms.assemble.control.jaxrs.document;
 import com.google.gson.Gson;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -391,7 +392,7 @@ public class ActionPersistImportDataExcel extends BaseAction {
 		}
 	}
 
-	public static class Wo {
+	public static class Wo extends GsonPropertyObject {
 		private List<List<String>> errors = null;
 		private Integer total = 0;
 		private Integer error_count = 0;

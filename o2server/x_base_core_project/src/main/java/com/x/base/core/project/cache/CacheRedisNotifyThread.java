@@ -5,19 +5,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 
+import com.x.base.core.project.tools.RedisUtil;
 import redis.clients.jedis.Jedis;
 
 public class CacheRedisNotifyThread extends Thread {
 
-	public CacheRedisNotifyThread(Jedis jedis, LinkedBlockingQueue<WrapClearCacheRequest> queue) {
-		this.jedis = jedis;
+	public CacheRedisNotifyThread(LinkedBlockingQueue<WrapClearCacheRequest> queue) {
 		this.queue = queue;
 	}
-
-	private Jedis jedis;
 
 	private LinkedBlockingQueue<WrapClearCacheRequest> queue;
 
@@ -31,10 +28,14 @@ public class CacheRedisNotifyThread extends Thread {
 //						+ "([\\s\\S]*)$))";
 				String match = "*&*" + new CacheCategory(wi.getClassName()).toString() + "*&*"
 						+ new CacheKey(wi.getKeys()).toString() + "*";
-				Set<String> keys = jedis.keys(match);
-				if (!keys.isEmpty()) {
-					jedis.del(keys.toArray(new String[] {}));
-					jedis.flushDB();
+				Jedis jedis = RedisUtil.getJedis();
+				if(jedis != null) {
+					Set<String> keys = jedis.keys(match);
+					if (!keys.isEmpty()) {
+						jedis.del(keys.toArray(new String[]{}));
+						jedis.flushDB();
+					}
+					RedisUtil.closeJedis(jedis);
 				}
 			} catch (InterruptedException ie) {
 				break;

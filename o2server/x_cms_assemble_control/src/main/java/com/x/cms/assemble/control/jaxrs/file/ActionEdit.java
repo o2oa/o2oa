@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.file;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -57,7 +58,7 @@ class ActionEdit extends BaseAction {
 			}
 			emc.check(file, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(File.class);
+			CacheManager.notify(File.class);
 			Wo wo = new Wo();
 			wo.setId(file.getId());
 			result.setData(wo);
