@@ -330,6 +330,11 @@ public class Cancel extends Activity {
 	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
+	@FieldDescribe("允许挂起")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
+	private Boolean allowSuspend;
+
 	@IdReference(Script.class)
 	@FieldDescribe("生成displayLog脚本.")
 	@Column(length = length_255B, name = ColumnNamePrefix + displayLogScript_FIELDNAME)
@@ -406,6 +411,14 @@ public class Cancel extends Activity {
 
 	public String getExtension() {
 		return extension;
+	}
+
+	public Boolean getAllowSuspend() {
+		return allowSuspend;
+	}
+
+	public void setAllowSuspend(Boolean allowSuspend) {
+		this.allowSuspend = allowSuspend;
 	}
 
 	public void setExtension(String extension) {

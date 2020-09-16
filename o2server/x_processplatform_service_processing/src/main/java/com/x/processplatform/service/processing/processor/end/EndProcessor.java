@@ -138,6 +138,8 @@ public class EndProcessor extends AbstractEndProcessor {
 			aeiObjects.getData().setWork(workCompleted);
 			aeiObjects.getData().setAttachmentList(aeiObjects.getAttachments());
 			aeiObjects.getDeleteWorks().addAll(aeiObjects.getWorks());
+			// 删除快照
+			aeiObjects.getDeleteSnaps().addAll(aeiObjects.getSnaps());
 		}
 
 		return results;

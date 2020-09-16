@@ -334,6 +334,11 @@ public class Embed extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
+	
+	@FieldDescribe("允许挂起")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
+	private Boolean allowSuspend;
 
 	public static final String route_FIELDNAME = "route";
 	@IdReference(Route.class)
@@ -531,6 +536,14 @@ public class Embed extends Activity {
 
 	public String getProcess() {
 		return process;
+	}
+
+	public Boolean getAllowSuspend() {
+		return allowSuspend;
+	}
+
+	public void setAllowSuspend(Boolean allowSuspend) {
+		this.allowSuspend = allowSuspend;
 	}
 
 	public void setProcess(String process) {

@@ -56,7 +56,7 @@ public class End extends Activity {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-		//nothing
+		// nothing
 	}
 
 	/* 更新运行方法 */
@@ -330,6 +330,11 @@ public class End extends Activity {
 	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
+	@FieldDescribe("允许挂起")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
+	private Boolean allowSuspend;
+
 	public static final String allowRollback_FIELDNAME = "allowRollback";
 	@FieldDescribe("允许回滚")
 	@CheckPersist(allowEmpty = true)
@@ -412,6 +417,14 @@ public class End extends Activity {
 
 	public String getExtension() {
 		return extension;
+	}
+
+	public Boolean getAllowSuspend() {
+		return allowSuspend;
+	}
+
+	public void setAllowSuspend(Boolean allowSuspend) {
+		this.allowSuspend = allowSuspend;
 	}
 
 	public void setExtension(String extension) {
