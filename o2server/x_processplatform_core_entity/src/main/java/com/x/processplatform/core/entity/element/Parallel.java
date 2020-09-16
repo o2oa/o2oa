@@ -63,10 +63,7 @@ public class Parallel extends Activity {
 		// nothing
 	}
 
-	/* 更新运行方法 */
-
-	/* flag标志位 */
-	/* Entity 默认字段结束 */
+ 
 
 	@FieldDescribe("分组")
 	@CheckPersist(allowEmpty = true)
@@ -333,6 +330,11 @@ public class Parallel extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
+	
+	@FieldDescribe("允许挂起")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
+	private Boolean allowSuspend;
 
 	public static final String routeList_FIELDNAME = "routeList";
 	@IdReference(Route.class)
@@ -690,6 +692,14 @@ public class Parallel extends Activity {
 
 	public void setEdition(String edition) {
 		this.edition = edition;
+	}
+
+	public Boolean getAllowSuspend() {
+		return allowSuspend;
+	}
+
+	public void setAllowSuspend(Boolean allowSuspend) {
+		this.allowSuspend = allowSuspend;
 	}
 
 }
