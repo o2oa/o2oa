@@ -17,7 +17,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         "expandSubEnable": true,
         "selectAllEnable" : true, //分类是否允许全选下一层
         "exclude" : [],
-        "dutyUnitLevelBy" : "duty" //组织层级是按身份所在群组还是职务
+        "dutyUnitLevelBy" : "duty", //组织层级是按身份所在群组还是职务,
+        "selectType" : "identity"
     },
     loadSelectItems: function(addToNext){
         //根据组织分类展现职务
