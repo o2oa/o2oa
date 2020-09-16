@@ -37,6 +37,7 @@ import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Snap;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
@@ -103,6 +104,8 @@ public class AeiObjects extends GsonPropertyObject {
 	// 使用用懒加载,初始为null
 	private List<DocumentVersion> documentVersions = null;
 	// 使用用懒加载,初始为null
+	private List<Snap> snaps = null;
+	// 使用用懒加载,初始为null
 	private List<Record> records = null;
 	// 使用用懒加载,初始为null
 	private List<Attachment> attachments = null;
@@ -166,6 +169,10 @@ public class AeiObjects extends GsonPropertyObject {
 	private List<DocumentVersion> createDocumentVersions = new ArrayList<>();
 	private List<DocumentVersion> updateDocumentVersions = new ArrayList<>();
 	private List<DocumentVersion> deleteDocumentVersions = new ArrayList<>();
+
+	private List<Snap> createSnaps = new ArrayList<>();
+	private List<Snap> updateSnaps = new ArrayList<>();
+	private List<Snap> deleteSnaps = new ArrayList<>();
 
 	private List<Record> createRecords = new ArrayList<>();
 	private List<Record> updateRecords = new ArrayList<>();
@@ -335,6 +342,14 @@ public class AeiObjects extends GsonPropertyObject {
 		return this.documentVersions;
 	}
 
+	public List<Snap> getSnaps() throws Exception {
+		if (null == this.snaps) {
+			this.snaps = this.business.entityManagerContainer().listEqual(Snap.class, Snap.job_FIELDNAME,
+					this.work.getJob());
+		}
+		return this.snaps;
+	}
+
 	public List<Record> getRecords() throws Exception {
 		if (null == this.records) {
 			this.records = this.business.entityManagerContainer().listEqual(Record.class, Record.job_FIELDNAME,
@@ -458,6 +473,22 @@ public class AeiObjects extends GsonPropertyObject {
 		return deleteDocumentVersions;
 	}
 
+	public List<DocumentVersion> getUpdateDocumentVersions() {
+		return updateDocumentVersions;
+	}
+
+	public List<Snap> getCreateSnaps() {
+		return createSnaps;
+	}
+
+	public List<Snap> getDeleteSnaps() {
+		return deleteSnaps;
+	}
+
+	public List<Snap> getUpdateSnaps() {
+		return updateSnaps;
+	}
+
 	public List<Task> getCreateTasks() {
 		return createTasks;
 	}
@@ -536,6 +567,7 @@ public class AeiObjects extends GsonPropertyObject {
 		/* review必须在task,taskCompleted,read,readCompleted之后提交,需要创建新的review */
 		this.commitReview();
 		this.commitDocumentVersion();
+		this.commitSnap();
 		this.commitRecord();
 		this.commitAttachment();
 		this.commitData();
@@ -1191,6 +1223,37 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
+	private void commitSnap() throws Exception {
+		if (ListTools.isNotEmpty(this.getCreateSnaps()) || ListTools.isNotEmpty(this.getDeleteSnaps())
+				|| ListTools.isNotEmpty(this.getUpdateSnaps())) {
+			this.entityManagerContainer().beginTransaction(Snap.class);
+			this.getCreateSnaps().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			this.getUpdateSnaps().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			this.getDeleteSnaps().stream().forEach(o -> {
+				try {
+					Snap obj = this.business.entityManagerContainer().find(o.getId(), Snap.class);
+					if (null != obj) {
+						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+		}
+	}
+
 	private void commitRecord() throws Exception {
 		if (ListTools.isNotEmpty(this.getCreateRecords()) || ListTools.isNotEmpty(this.getDeleteRecords())
 				|| ListTools.isNotEmpty(this.getUpdateRecords())) {
@@ -1496,10 +1559,6 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public List<Review> getUpdateReviews() {
 		return updateReviews;
-	}
-
-	public List<DocumentVersion> getUpdateDocumentVersions() {
-		return updateDocumentVersions;
 	}
 
 	public List<WorkLog> getCreateWorkLogs() {

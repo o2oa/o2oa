@@ -82,6 +82,8 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 
 	public static final String scratchInteger_FIELDNAME = "scratchInteger";
 
+	public static final String properties_FIELDNAME = "properties";
+
 	public static final String JsonPropertiesValueHandler = "com.x.base.core.entity.annotation.JsonPropertiesValueHandler";
 
 	public static final List<String> FieldsUnmodify = ListUtils.unmodifiableList(Arrays.asList(id_FIELDNAME,
@@ -95,6 +97,10 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	public static final List<String> FieldsInvisible = ListUtils.unmodifiableList(
 			Arrays.asList(distributeFactor_FIELDNAME, sequence_FIELDNAME, password_FIELDNAME, scratchString_FIELDNAME,
 					scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
+
+	public static final List<String> FieldsInvisibleIncludeProperites = ListUtils.unmodifiableList(
+			Arrays.asList(distributeFactor_FIELDNAME, sequence_FIELDNAME, password_FIELDNAME, scratchString_FIELDNAME,
+					scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME, properties_FIELDNAME));
 
 	public static final List<String> FieldsDefault = ListUtils
 			.unmodifiableList(Arrays.asList(id_FIELDNAME, key_FIELDNAME, createTime_FIELDNAME, updateTime_FIELDNAME,
