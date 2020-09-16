@@ -36,16 +36,16 @@ class ActionCaptchaLogin extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			String credential = wi.getCredential();
 			String password = wi.getPassword();
-			
+
 			String isEncrypted = wi.getIsEncrypted();
-			
-			//RSA解秘
+
+			// RSA解秘
 			if (!StringUtils.isEmpty(isEncrypted)) {
-				if(isEncrypted.trim().equalsIgnoreCase("y")) {
-			    	password = this.decryptRSA(password);
+				if (isEncrypted.trim().equalsIgnoreCase("y")) {
+					password = this.decryptRSA(password);
 				}
 			}
-			
+
 			String captcha = wi.getCaptcha();
 			String captchaAnswer = wi.getCaptchaAnswer();
 			if (StringUtils.isEmpty(credential)) {
@@ -64,7 +64,7 @@ class ActionCaptchaLogin extends BaseAction {
 				}
 			}
 			if (Config.token().isInitialManager(credential)) {
-				if (!StringUtils.equals(Config.token().getPassword(), password)) {
+				if (!StringUtils.equals(Crypto.plainTextPassword(Config.token().getPassword()), password)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				wo = this.manager(request, response, business, Wo.class);
@@ -74,20 +74,20 @@ class ActionCaptchaLogin extends BaseAction {
 				if (StringUtils.isEmpty(personId)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
-				
+
 				Person o = null;
-				//处理同中文问题
-				if(personId.indexOf(",") > -1) {
+				// 处理同中文问题
+				if (personId.indexOf(",") > -1) {
 					String[] arrPersion = personId.split(",");
-					for(int i =0 ; i<arrPersion.length ; i++) {
-						 personId = arrPersion[i];
-						 o = emc.find(personId, Person.class);
-						 if (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())) {
-							 break;
-						 }
+					for (int i = 0; i < arrPersion.length; i++) {
+						personId = arrPersion[i];
+						o = emc.find(personId, Person.class);
+						if (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())) {
+							break;
+						}
 					}
-				}else {
-					 o = emc.find(personId, Person.class);
+				} else {
+					o = emc.find(personId, Person.class);
 				}
 
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
@@ -105,8 +105,7 @@ class ActionCaptchaLogin extends BaseAction {
 						}
 					}
 				}
-				
-				
+
 				wo = this.user(request, response, business, o, Wo.class);
 				audit.log(o.getDistinguishedName(), "登录");
 			}
@@ -115,60 +114,60 @@ class ActionCaptchaLogin extends BaseAction {
 		}
 	}
 
+	// 用户登入解密
+	public String decryptRSA(String strDecrypt) {
+		String privateKey;
+		String decrypt = null;
+		try {
+			privateKey = getPrivateKey();
+			decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return decrypt;
+	}
 
-	//用户登入解密 
-		public  String decryptRSA(String strDecrypt) {
-			String privateKey;
-			String decrypt = null;
-			try {
-				privateKey = getPrivateKey();
-			    decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return decrypt;
+	// 转成Base64
+	public String encryptRSA(String strEncrypt) {
+		String encrypt = null;
+		try {
+			String publicKey = Config.publicKey();
+			byte[] publicKeyB = Base64.decodeBase64(publicKey);
+
+			encrypt = Crypto.rsaEncrypt(strEncrypt, new String(Base64.encodeBase64(publicKeyB)));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		//转成Base64	
-		public  String encryptRSA(String strEncrypt) {
-			String encrypt = null;
-			try {
-				 String publicKey = Config.publicKey();
-				 byte[] publicKeyB = Base64.decodeBase64(publicKey);
-				 
-				encrypt = Crypto.rsaEncrypt(strEncrypt,new String(Base64.encodeBase64(publicKeyB)));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return encrypt;
+		return encrypt;
+	}
+
+	// 转成Base64
+	public String getPublicKey() {
+		String publicKey = "";
+		try {
+			publicKey = Config.publicKey();
+			byte[] publicKeyB = Base64.decodeBase64(publicKey);
+			publicKey = new String(Base64.encodeBase64(publicKeyB));
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		//转成Base64			
-		public  String  getPublicKey() {
-			String publicKey = "";
-			 try {
-				 publicKey = Config.publicKey();
-				 byte[] publicKeyB = Base64.decodeBase64(publicKey);
-				 publicKey = new String(Base64.encodeBase64(publicKeyB));
-				 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return publicKey;
+		return publicKey;
+	}
+
+	// 转成Base64
+	public String getPrivateKey() {
+		String privateKey = "";
+		try {
+			privateKey = Config.privateKey();
+			byte[] privateKeyB = Base64.decodeBase64(privateKey);
+			privateKey = new String(Base64.encodeBase64(privateKeyB));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		//转成Base64		
-		public  String  getPrivateKey() {
-			 String privateKey = "";
-			 try {
-				 privateKey = Config.privateKey();
-				 byte[] privateKeyB = Base64.decodeBase64(privateKey);
-				 privateKey = new String(Base64.encodeBase64(privateKeyB));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return privateKey;
-		}
-		
+		return privateKey;
+	}
+
 	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("凭证")
@@ -185,7 +184,7 @@ class ActionCaptchaLogin extends BaseAction {
 
 		@FieldDescribe("是否启用加密,默认不加密,启用(y)。注意:使用加密先要在服务器运行 create encrypt key")
 		private String isEncrypted;
-		
+
 		public String getPassword() {
 			return password;
 		}
@@ -217,6 +216,7 @@ class ActionCaptchaLogin extends BaseAction {
 		public void setCaptchaAnswer(String captchaAnswer) {
 			this.captchaAnswer = captchaAnswer;
 		}
+
 		public String getIsEncrypted() {
 			return isEncrypted;
 		}
