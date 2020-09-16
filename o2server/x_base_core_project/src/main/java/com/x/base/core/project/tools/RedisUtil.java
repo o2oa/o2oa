@@ -82,12 +82,17 @@ public class RedisUtil {
             if (jedisPool == null) {
                 initJedisPool();
                 log.debug("JedisPool init success！");
+            }
+            if (jedisPool != null) {
                 resource = jedisPool.getResource();
             }
         } catch (Exception e) {
             log.warn("JedisPool init error: {}", e.getMessage());
         }
         lockPool.unlock();
+        if(resource == null){
+            log.warn("get redis connect from redisPool is null");
+        }
         return resource;
     }
 
@@ -106,7 +111,12 @@ public class RedisUtil {
     }
 
     public static void closePool() {
-        jedisPool.destroy();
+        try {
+            if(jedisPool != null) {
+                jedisPool.destroy();
+            }
+        } catch (Exception e) {
+        }
     }
 
 }
