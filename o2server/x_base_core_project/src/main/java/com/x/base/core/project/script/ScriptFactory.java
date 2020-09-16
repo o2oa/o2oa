@@ -276,22 +276,4 @@ public class ScriptFactory {
 		return list;
 	}
 
-	public static Object evalIfScriptText(String text) throws ScriptException {
-		if (StringUtils.isEmpty(text)) {
-			return text;
-		}
-		Matcher matcher = StringTools.SCRIPTTEXT_REGEX.matcher(text);
-		if (matcher.matches()) {
-			String eval = functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
-			ScriptContext scriptContext = new SimpleScriptContext();
-			return ScriptFactory.scriptEngine.eval(eval, scriptContext);
-		} else {
-			return text;
-		}
-	}
-
-	public static String evalIfScriptTextAsString(String text) throws Exception {
-		return asString(evalIfScriptText(text));
-	}
-
 }

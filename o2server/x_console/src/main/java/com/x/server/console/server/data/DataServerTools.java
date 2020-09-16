@@ -9,6 +9,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Crypto;
 
 public class DataServerTools {
 
@@ -19,7 +20,7 @@ public class DataServerTools {
 		FileUtils.forceMkdir(dataBaseDir);
 		Server tcpServer = null;
 		Server webServer = null;
-		String password = Config.token().getPassword();
+		String password = Crypto.plainTextPassword(Config.token().getPassword());
 		String[] tcps = new String[9];
 		tcps[0] = "-tcp";
 		tcps[1] = "-tcpAllowOthers";
