@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -29,8 +30,8 @@ class ActionUpdateWithDocumentPath2 extends BaseAction {
 			Wo wo = new Wo();
 			wo.setId(document.getId());
 			result.setData(wo);
-			
-			ApplicationCache.notify( Document.class );
+
+			CacheManager.notify( Document.class );
 			
 			return result;
 		}

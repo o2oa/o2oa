@@ -5,13 +5,13 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import com.x.base.core.project.annotation.AuditLog;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
@@ -127,9 +127,9 @@ public class ActionFileUpload extends BaseAction {
 //				keys.add(  ApplicationCache.concreteCacheKey( document.getId(), "view", isAnonymous, isManager ) ); //清除文档阅读缓存
 //				keys.add( ApplicationCache.concreteCacheKey( document.getId(), "get", isManager )  ); //清除文档信息获取缓存
 //				ApplicationCache.notify( Document.class, keys );
-				
-				ApplicationCache.notify( FileInfo.class );
-				ApplicationCache.notify( Document.class );	
+
+				CacheManager.notify( FileInfo.class );
+				CacheManager.notify( Document.class );
 				
 				Wo wo = new Wo();
 				wo.setId( attachment.getId() );

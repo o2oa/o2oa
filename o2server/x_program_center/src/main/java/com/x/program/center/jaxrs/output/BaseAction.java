@@ -1,11 +1,14 @@
 package com.x.program.center.jaxrs.output;
 
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-    public static class CacheObject {
+    public static class CacheObject extends GsonPropertyObject {
+
+        private static final long serialVersionUID = 594807992442100468L;
 
         private WrapServiceModule module;
 

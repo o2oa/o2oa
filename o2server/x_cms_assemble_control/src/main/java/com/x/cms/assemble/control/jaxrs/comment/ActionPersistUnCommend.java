@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -33,7 +34,7 @@ public class ActionPersistUnCommend extends BaseAction {
 			}
 		}
 
-		ApplicationCache.notify( Document.class );		
+		CacheManager.notify( Document.class );
 		
 		return result;
 	}

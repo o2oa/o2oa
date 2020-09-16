@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.appinfo;
 
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
@@ -109,7 +110,7 @@ public class ActionAppIconUpload extends BaseAction {
 		if( check ){
 			try {
 				appInfoServiceAdv.saveAppInfoIcon( appId, base64, iconMainColor );
-				ApplicationCache.notify( AppInfo.class );
+				CacheManager.notify( AppInfo.class );
 			} catch (Exception e) {
 				check = false;
 				result.error( e );

@@ -6,6 +6,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -173,12 +174,12 @@ public class ActionSave extends BaseAction {
 				}
 				
 				// 更新缓存
-				ApplicationCache.notify(AppInfo.class);
-				ApplicationCache.notify(AppDict.class);
-				ApplicationCache.notify(AppDictItem.class);
-				ApplicationCache.notify(View.class);
-				ApplicationCache.notify(ViewCategory.class);
-				ApplicationCache.notify(ViewFieldConfig.class);
+				CacheManager.notify(AppInfo.class);
+				CacheManager.notify(AppDict.class);
+				CacheManager.notify(AppDictItem.class);
+				CacheManager.notify(View.class);
+				CacheManager.notify(ViewCategory.class);
+				CacheManager.notify(ViewFieldConfig.class);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionAppInfoProcess(e, "应用栏目信息保存时发生异常。");

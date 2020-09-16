@@ -10,6 +10,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -261,8 +262,8 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 						}
 					}
 				}
-				ApplicationCache.notify(FileInfo.class);
-				ApplicationCache.notify(Document.class);
+				CacheManager.notify(FileInfo.class);
+				CacheManager.notify(Document.class);
 			}
 		}
 
@@ -398,8 +399,8 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-				
-		ApplicationCache.notify(Document.class);
+
+		CacheManager.notify(Document.class);
 		return result;
 	}
 

@@ -5,6 +5,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
@@ -72,11 +73,11 @@ public class ActionDelete extends BaseAction {
 				logService.log( emc, effectivePerson.getDistinguishedName(), form.getName(), form.getAppId(), "", "", form.getId(), "FORM", "删除");
 			}			
 			wrap = new WrapOutId( form.getId() );
-			
-			ApplicationCache.notify( Form.class );
-			ApplicationCache.notify( View.class );
-			ApplicationCache.notify( ViewFieldConfig.class );
-			ApplicationCache.notify( ViewCategory.class );
+
+			CacheManager.notify( Form.class );
+			CacheManager.notify( View.class );
+			CacheManager.notify( ViewFieldConfig.class );
+			CacheManager.notify( ViewCategory.class );
 			
 			result.setData(wrap);
 		} catch (Throwable th) {
