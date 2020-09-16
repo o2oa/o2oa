@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -73,7 +74,7 @@ public class ActionQueryListUnReadDocIds extends BaseAction {
 		}
 	}
 
-	public static class Wo {
+	public static class Wo extends GsonPropertyObject {
 
 		@FieldDescribe( "未读文档ID列表." )
 		private List<String> unReadDocIds = null;

@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.cms.core.entity.Document;
 
-public class WrapOutDocumentList {
+public class WrapOutDocumentList extends GsonPropertyObject {
 	
 	@FieldDescribe( "sequence." )
 	private String sequence;

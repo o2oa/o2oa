@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Portal;
@@ -30,7 +31,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return em.createQuery(cq).getResultList();
 	}
 
-	public static class CacheObject {
+	public static class CacheObject extends GsonPropertyObject {
 
 		private String name;
 		private WrapPortal portal;

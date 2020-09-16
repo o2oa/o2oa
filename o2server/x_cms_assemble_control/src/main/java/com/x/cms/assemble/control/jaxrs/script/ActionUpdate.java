@@ -9,6 +9,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -44,7 +45,7 @@ class ActionUpdate extends BaseAction {
 				script.setLastUpdateTime(new Date());
 				emc.commit();
 				// 清除所有的Script缓存
-				ApplicationCache.notify(Script.class);
+				CacheManager.notify(Script.class);
 
 				// 记录日志
 				emc.beginTransaction(Log.class);
