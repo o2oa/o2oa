@@ -45,6 +45,7 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_DDL = "ddl";
 	private static final String CMD_RST = "rst";
 	private static final String CMD_SC = "sc";
+	private static final String CMD_EN = "en";
 
 	private static final int REPEAT_MAX = 100;
 	private static final int REPEAT_MIN = 1;
@@ -83,6 +84,8 @@ public class ActionControl extends ActionBase {
 				rst(cmd);
 			} else if (cmd.hasOption(CMD_SC)) {
 				sc(cmd);
+			} else if (cmd.hasOption(CMD_EN)) {
+				en(cmd);
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("control command", options);
@@ -108,6 +111,7 @@ public class ActionControl extends ActionBase {
 		options.addOption(ddlOption());
 		options.addOption(rstOption());
 		options.addOption(scOption());
+		options.addOption(enOption());
 		return options;
 	}
 
@@ -149,20 +153,10 @@ public class ActionControl extends ActionBase {
 				.desc("导出数据库服务器的数据转换成json格式保存到本地文件.").build();
 	}
 
-//	private static Option dsOption() {
-//		return Option.builder("ds").longOpt("dumpStorage").argName("path").hasArg().optionalArg(true)
-//				.desc("导出存储服务器的文件数据转换成json格式保存到本地文件.").build();
-//	}
-
 	private static Option rdOption() {
 		return Option.builder("rd").longOpt("restoreData").argName("path or date").hasArg()
 				.desc("将导出的json格式数据恢复到数据库服务器.").build();
 	}
-
-//	private static Option rsOption() {
-//		return Option.builder("rs").longOpt("restoreStorage").argName("path or date").hasArg()
-//				.desc("将导出的json格式文件数据恢复到存储服务器.").build();
-//	}
 
 	private static Option ufOption() {
 		return Option.builder("uf").longOpt("updateFile").argName("path").hasArg().desc("升级服务器,升级前请注意备份.").build();
@@ -180,6 +174,10 @@ public class ActionControl extends ActionBase {
 
 	private static Option scOption() {
 		return Option.builder("sc").longOpt("showCluster").desc("显示集群信息.").build();
+	}
+
+	private static Option enOption() {
+		return Option.builder("en").longOpt("encrypt password text.").desc("密码文本加密.").build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -301,6 +299,12 @@ public class ActionControl extends ActionBase {
 	private void sc(CommandLine cmd) throws Exception {
 		ShowCluster sc = new ShowCluster();
 		sc.execute();
+	}
+
+	private void en(CommandLine cmd) throws Exception {
+		String text = Objects.toString(cmd.getOptionValue(CMD_EN), "");
+		Encrypt en = new Encrypt();
+		en.execute(text);
 	}
 
 	private Integer getArgInteger(CommandLine cmd, String opt, Integer defaultValue) {
