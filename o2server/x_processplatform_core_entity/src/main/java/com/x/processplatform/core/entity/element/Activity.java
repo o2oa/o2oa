@@ -102,15 +102,25 @@ public abstract class Activity extends SliceJpaObject {
 
 	public abstract void setOpinionGroup(String opinionGroup);
 
-	/* 是否允许调度 */
+	// 是否允许调度
 	public abstract Boolean getAllowReroute();
 
 	public abstract void setAllowReroute(Boolean allowReroute);
 
-	/* 是否允许调度到此节点 */
+	// 是否允许调度到此节点
 	public abstract Boolean getAllowRerouteTo();
 
 	public abstract void setAllowRerouteTo(Boolean allowReroute);
+
+	// 是否允许快照
+//	public abstract Boolean getAllowSnap();
+//
+//	public abstract void setAllowSnap(Boolean allowSnap);
+
+	// 是否允许挂起
+	public abstract Boolean getAllowSuspend();
+
+	public abstract void setAllowSuspend(Boolean allowSuspend);
 
 	public ActivityType getActivityType() throws Exception {
 		if (this instanceof Agent) {
@@ -182,6 +192,7 @@ public abstract class Activity extends SliceJpaObject {
 	public static final String afterInquireScriptText_FIELDNAME = "afterInquireScriptText";
 	public static final String allowReroute_FIELDNAME = "allowReroute";
 	public static final String allowRerouteTo_FIELDNAME = "allowRerouteTo";
+	public static final String allowSuspend_FIELDNAME = "allowSuspend";
 	public static final String displayLogScript_FIELDNAME = "displayLogScript";
 	public static final String displayLogScriptText_FIELDNAME = "displayLogScriptText";
 	public static final String resetRangeScriptText_FIELDNAME = "resetRangeScriptText";

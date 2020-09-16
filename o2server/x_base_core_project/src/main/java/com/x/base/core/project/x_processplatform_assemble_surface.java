@@ -6,13 +6,14 @@ import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 
 @Module(type = ModuleType.ASSEMBLE, category = ModuleCategory.OFFICIAL, name = "流程", packageName = "com.x.processplatform.assemble.surface", containerEntities = {
-		"com.x.processplatform.core.entity.content.Draft", "com.x.processplatform.core.entity.content.Attachment",
-		"com.x.processplatform.core.entity.content.Read", "com.x.processplatform.core.entity.content.ReadCompleted",
-		"com.x.processplatform.core.entity.content.Review", "com.x.processplatform.core.entity.content.Record",
-		"com.x.processplatform.core.entity.content.SerialNumber", "com.x.processplatform.core.entity.content.Task",
-		"com.x.processplatform.core.entity.content.TaskCompleted", "com.x.processplatform.core.entity.content.Work",
-		"com.x.processplatform.core.entity.content.WorkCompleted", "com.x.processplatform.core.entity.content.WorkLog",
-		"com.x.processplatform.core.entity.content.Record", "com.x.processplatform.core.entity.content.KeyLock",
+		"com.x.processplatform.core.entity.content.Snap", "com.x.processplatform.core.entity.content.Draft",
+		"com.x.processplatform.core.entity.content.Attachment", "com.x.processplatform.core.entity.content.Read",
+		"com.x.processplatform.core.entity.content.ReadCompleted", "com.x.processplatform.core.entity.content.Review",
+		"com.x.processplatform.core.entity.content.Record", "com.x.processplatform.core.entity.content.SerialNumber",
+		"com.x.processplatform.core.entity.content.Task", "com.x.processplatform.core.entity.content.TaskCompleted",
+		"com.x.processplatform.core.entity.content.Work", "com.x.processplatform.core.entity.content.WorkCompleted",
+		"com.x.processplatform.core.entity.content.WorkLog", "com.x.processplatform.core.entity.content.Record",
+		"com.x.processplatform.core.entity.content.KeyLock",
 		"com.x.processplatform.core.entity.content.DocumentVersion", "com.x.processplatform.core.entity.element.Agent",
 		"com.x.processplatform.core.entity.element.Application",
 		"com.x.processplatform.core.entity.element.ApplicationDict",
