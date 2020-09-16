@@ -41,7 +41,7 @@ public class AttendanceSelfHolidayService {
 	public List<AttendanceSelfHoliday> listWithPersonFromCache( EntityManagerContainer emc, String person, boolean debugger) throws Exception {
 		//String cacheKey = ApplicationCache.concreteCacheKey( "list#" + person );
 		//Element element = cache_AttendanceSelfHoliday.get(cacheKey);
-		CacheKey cacheKey = new CacheKey("list#" + person);
+		CacheKey cacheKey = new CacheKey(this.getClass(),"list" , person);
 		Optional<?> optional = CacheManager.get(cache_AttendanceSelfHoliday, cacheKey);
 		
 

@@ -12,6 +12,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -39,7 +40,7 @@ public class ActionDelete extends BaseAction {
 				emc.commit();
 
 				//清除缓存
-				ApplicationCache.notify( AttendanceSelfHoliday.class );
+				CacheManager.notify( AttendanceSelfHoliday.class );
 
 				result.setData( new Wo(id) );
 
