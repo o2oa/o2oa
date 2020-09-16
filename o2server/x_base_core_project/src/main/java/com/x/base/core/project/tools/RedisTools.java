@@ -12,24 +12,24 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-public class RedisUtil {
-    private static final Logger log = LoggerFactory.getLogger(RedisUtil.class);
+public class RedisTools {
+    private static final Logger log = LoggerFactory.getLogger(RedisTools.class);
     private static ReentrantLock lockPool = new ReentrantLock();
 
-    private static RedisUtil instance;
+    private static RedisTools instance;
 
     private static JedisPool jedisPool;
 
     private static ReentrantLock lock = new ReentrantLock();
 
-    private RedisUtil() {
+    private RedisTools() {
     }
 
-    public static RedisUtil getInstance() {
+    public static RedisTools getInstance() {
         if (instance == null) {
             lock.lock();
             if (instance == null) {
-                instance = new RedisUtil();
+                instance = new RedisTools();
             }
             lock.unlock();
         }
