@@ -12,6 +12,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -57,7 +58,7 @@ class ActionCopy extends BaseAction {
 			emc.beginTransaction(File.class);
 			emc.persist(toFile, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(File.class);
+			CacheManager.notify(File.class);
 			Wo wo = new Wo();
 			wo.setId(toFile.getId());
 			result.setData(wo);

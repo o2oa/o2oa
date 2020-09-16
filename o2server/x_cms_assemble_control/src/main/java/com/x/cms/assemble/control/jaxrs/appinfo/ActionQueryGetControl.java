@@ -151,7 +151,7 @@ public class ActionQueryGetControl extends BaseAction {
 	}
 	
 
-	public static class Wo {
+	public static class Wo extends GsonPropertyObject {
 
 		public static WrapCopier<Document, Wo> copier = WrapCopierFactory.wo(Document.class, Wo.class, null, JpaObject.FieldsInvisible);
 

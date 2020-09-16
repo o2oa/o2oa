@@ -7,6 +7,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -218,14 +219,14 @@ class ActionCover extends BaseAction {
 		
 		business.entityManagerContainer().commit();
 
-		ApplicationCache.notify(CategoryInfo.class);
-		ApplicationCache.notify(AppDictItem.class);
-		ApplicationCache.notify(AppDict.class);
-		ApplicationCache.notify(Form.class);
-		ApplicationCache.notify(Script.class);
-		ApplicationCache.notify(AppInfo.class);
+		CacheManager.notify(CategoryInfo.class);
+		CacheManager.notify(AppDictItem.class);
+		CacheManager.notify(AppDict.class);
+		CacheManager.notify(Form.class);
+		CacheManager.notify(Script.class);
+		CacheManager.notify(AppInfo.class);
 		//2020年1月16日 O2LEE 保存栏目信息对应的配置支持信息JSON ---->start
-		ApplicationCache.notify(AppInfoConfig.class);
+		CacheManager.notify(AppInfoConfig.class);
 		//2020年1月16日 O2LEE 保存栏目信息对应的配置支持信息JSON ---->end
 
 		return appInfo;

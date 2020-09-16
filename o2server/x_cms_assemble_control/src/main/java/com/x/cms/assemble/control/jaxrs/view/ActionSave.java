@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -63,9 +64,9 @@ public class ActionSave extends BaseAction {
 				new LogService().log(null, effectivePerson.getDistinguishedName(), view.getName(), view.getAppId(), "",
 						"", view.getId(), "VIEW", "保存");
 
-				ApplicationCache.notify(View.class);
-				ApplicationCache.notify(ViewFieldConfig.class);
-				ApplicationCache.notify(ViewCategory.class);
+				CacheManager.notify(View.class);
+				CacheManager.notify(ViewFieldConfig.class);
+				CacheManager.notify(ViewCategory.class);
 
 				Wo wo = new Wo();
 				wo.setId(view.getId());
