@@ -330,6 +330,11 @@ public class Merge extends Activity {
 	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
+	@FieldDescribe("允许挂起")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
+	private Boolean allowSuspend;
+
 	public static final String route_FIELDNAME = "route";
 	@IdReference(Route.class)
 	@FieldDescribe("出口路由.")
@@ -681,6 +686,14 @@ public class Merge extends Activity {
 
 	public void setEdition(String edition) {
 		this.edition = edition;
+	}
+
+	public Boolean getAllowSuspend() {
+		return allowSuspend;
+	}
+
+	public void setAllowSuspend(Boolean allowSuspend) {
+		this.allowSuspend = allowSuspend;
 	}
 
 }
