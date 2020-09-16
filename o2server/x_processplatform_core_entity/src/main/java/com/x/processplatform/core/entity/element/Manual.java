@@ -351,6 +351,11 @@ public class Manual extends Activity {
 	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
+	@FieldDescribe("允许挂起")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
+	private Boolean allowSuspend;
+
 	public static final String routeList_FIELDNAME = "routeList";
 	@IdReference(Route.class)
 	@FieldDescribe("出口路由,多值.")
@@ -931,41 +936,13 @@ public class Manual extends Activity {
 		this.afterInquireScriptText = afterInquireScriptText;
 	}
 
-	// public String getBeforeArrivedExecuteScript() {
-	// return beforeArrivedExecuteScript;
-	// }
-	//
-	// public void setBeforeArrivedExecuteScript(String
-	// beforeArrivedExecuteScript) {
-	// this.beforeArrivedExecuteScript = beforeArrivedExecuteScript;
-	// }
-	//
-	// public String getBeforeArrivedExecuteScriptText() {
-	// return beforeArrivedExecuteScriptText;
-	// }
-	//
-	// public void setBeforeArrivedExecuteScriptText(String
-	// beforeArrivedExecuteScriptText) {
-	// this.beforeArrivedExecuteScriptText = beforeArrivedExecuteScriptText;
-	// }
-	//
-	// public String getAfterArrivedExecuteScript() {
-	// return afterArrivedExecuteScript;
-	// }
-	//
-	// public void setAfterArrivedExecuteScript(String
-	// afterArrivedExecuteScript) {
-	// this.afterArrivedExecuteScript = afterArrivedExecuteScript;
-	// }
-	//
-	// public String getAfterArrivedExecuteScriptText() {
-	// return afterArrivedExecuteScriptText;
-	// }
-	//
-	// public void setAfterArrivedExecuteScriptText(String
-	// afterArrivedExecuteScriptText) {
-	// this.afterArrivedExecuteScriptText = afterArrivedExecuteScriptText;
-	// }
+	public Boolean getAllowSuspend() {
+		return allowSuspend;
+	}
+
+	public void setAllowSuspend(Boolean allowSuspend) {
+		this.allowSuspend = allowSuspend;
+	}
 
 	public Boolean getAllowReset() {
 		return allowReset;

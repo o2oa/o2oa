@@ -56,11 +56,10 @@ public class Service extends Activity {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-		//nothing
+		// nothing
 	}
 
 	/* 更新运行方法 */
- 
 
 	/* flag标志位 */
 	/* Entity 默认字段结束 */
@@ -330,6 +329,11 @@ public class Service extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
+
+	@FieldDescribe("允许挂起")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
+	private Boolean allowSuspend;
 
 	public static final String route_FIELDNAME = "route";
 	@IdReference(Route.class)
@@ -733,6 +737,14 @@ public class Service extends Activity {
 
 	public void setEdition(String edition) {
 		this.edition = edition;
+	}
+
+	public Boolean getAllowSuspend() {
+		return allowSuspend;
+	}
+
+	public void setAllowSuspend(Boolean allowSuspend) {
+		this.allowSuspend = allowSuspend;
 	}
 
 }

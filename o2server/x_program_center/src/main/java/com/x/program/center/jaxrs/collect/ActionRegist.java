@@ -1,6 +1,5 @@
 package com.x.program.center.jaxrs.collect;
 
-import com.x.program.center.schedule.CollectMarket;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,12 +13,16 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.program.center.ThisApplication;
+import com.x.program.center.schedule.CollectMarket;
 import com.x.program.center.schedule.CollectPerson;
 
 class ActionRegist extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
+		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
+			throw new ExceptionModifyConfig();
+		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String name = wi.getName();
 		String password = wi.getPassword();
