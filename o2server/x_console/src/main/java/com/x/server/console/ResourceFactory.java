@@ -33,6 +33,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
+import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.server.console.node.EventQueueExecutor;
@@ -97,7 +98,7 @@ public class ResourceFactory {
 			dataSource.setDriverClass(ds.getDriverClassName());
 			dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(ds.getUrl()));
 			dataSource.setUser(ds.getUsername());
-			dataSource.setPassword(ScriptFactory.evalIfScriptTextAsString(ds.getPassword()));
+			dataSource.setPassword(Crypto.plainTextPassword(ds.getPassword()));
 			dataSource.setMaxPoolSize(ds.getMaxTotal());
 			dataSource.setMinPoolSize(ds.getMaxIdle());
 			// 增加校验
@@ -130,10 +131,10 @@ public class ResourceFactory {
 			dataSource.setDriverClass(SlicePropertiesBuilder.driver_h2);
 			dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(url));
 			dataSource.setUser("sa");
-			dataSource.setPassword(Config.token().getPassword());
+			dataSource.setPassword(Crypto.plainTextPassword(Config.token().getPassword()));
 			dataSource.setMaxPoolSize(entry.getValue().getMaxTotal());
 			dataSource.setMinPoolSize(entry.getValue().getMaxIdle());
-			dataSource.setAcquireIncrement(0);
+			dataSource.setAcquireIncrement(2);
 			if (BooleanUtils.isTrue(entry.getValue().getStatEnable())) {
 				dataSource.setFilters(entry.getValue().getStatFilter());
 				Properties properties = new Properties();
