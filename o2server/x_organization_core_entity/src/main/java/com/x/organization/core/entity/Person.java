@@ -265,6 +265,13 @@ public class Person extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String lastLoginClient;
 
+	public static final String ipAddress_FIELDNAME = "ipAddress";
+	@FieldDescribe("允许登录的IP.")
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + ipAddress_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + ipAddress_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String ipAddress;
+
 	public static final String mail_FIELDNAME = "mail";
 	@Flag
 	@FieldDescribe("邮件地址.")
@@ -817,5 +824,13 @@ public class Person extends SliceJpaObject {
 
 	public void setWeLinkHash(String weLinkHash) {
 		this.weLinkHash = weLinkHash;
+	}
+
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 }
