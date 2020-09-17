@@ -9,6 +9,8 @@ import com.x.cms.core.entity.element.AppDict;
 import com.x.cms.core.entity.element.AppDictItem;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
+import com.x.organization.core.entity.*;
+import com.x.organization.core.entity.accredit.Empower;
 import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Widget;
@@ -63,6 +65,16 @@ class ActionClearCache extends BaseAction {
 			CacheManager.notify(Agent.class);
 			//invoke
 			CacheManager.notify(Invoke.class);
+			//org
+			CacheManager.notify(Identity.class);
+			CacheManager.notify(Unit.class);
+			CacheManager.notify(UnitAttribute.class);
+			CacheManager.notify(UnitDuty.class);
+			CacheManager.notify(Role.class);
+			CacheManager.notify(Person.class);
+			CacheManager.notify(PersonAttribute.class);
+			CacheManager.notify(Group.class);
+			CacheManager.notify(Empower.class);
 			wo.setValue(true);
 		}else if("cms".equalsIgnoreCase(source)){
 			CacheManager.notify(CategoryInfo.class);
@@ -104,6 +116,18 @@ class ActionClearCache extends BaseAction {
 			wo.setValue(true);
 		}else if("invoke".equalsIgnoreCase(source)){
 			CacheManager.notify(Invoke.class);
+
+			wo.setValue(true);
+		}else if("org".equalsIgnoreCase(source)){
+			CacheManager.notify(Identity.class);
+			CacheManager.notify(Unit.class);
+			CacheManager.notify(UnitAttribute.class);
+			CacheManager.notify(UnitDuty.class);
+			CacheManager.notify(Role.class);
+			CacheManager.notify(Person.class);
+			CacheManager.notify(PersonAttribute.class);
+			CacheManager.notify(Group.class);
+			CacheManager.notify(Empower.class);
 
 			wo.setValue(true);
 		}
