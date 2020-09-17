@@ -24,6 +24,7 @@ import com.x.base.core.project.config.StorageServer;
 import com.x.base.core.project.config.StorageServer.Account;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Crypto;
 
 public class StorageServerTools {
 
@@ -82,11 +83,6 @@ public class StorageServerTools {
 	}
 
 	private static UserManager calculateUserManager(List<Account> list) throws Exception {
-		// if (ListTools.isNotEmpty(list)) {
-		// return concreteUserManager(list);
-		// } else {
-		// return concreteDefaultUserManager();
-		// }
 		return concreteUserManager(list);
 	}
 
@@ -116,27 +112,4 @@ public class StorageServerTools {
 		return userManager;
 	}
 
-	// private static UserManager concreteDefaultUserManager() throws Exception
-	// {
-	// List<BaseUser> users = new ArrayList<>();
-	// for (StorageType o : StorageType.values()) {
-	// BaseUser user = new BaseUser();
-	// user.setEnabled(true);
-	// user.setName(o.toString());
-	// user.setPassword(Config.password());
-	// File file = new File(Config.base(), "local/repository/storage/" +
-	// o.toString());
-	// FileUtils.forceMkdir(file);
-	// user.setHomeDirectory(file.getAbsolutePath());
-	// user.setMaxIdleTime(0);
-	// List<Authority> authorities = new ArrayList<Authority>();
-	// authorities.add(new WritePermission());
-	// authorities.add(new ConcurrentLoginPermission(0, 0));
-	// authorities.add(new TransferRatePermission(0, 0));
-	// user.setAuthorities(authorities);
-	// users.add(user);
-	// }
-	// StorageUserManager userManager = new StorageUserManager(users);
-	// return userManager;
-	// }
 }

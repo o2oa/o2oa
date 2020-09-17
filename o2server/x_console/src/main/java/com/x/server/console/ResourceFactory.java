@@ -98,7 +98,7 @@ public class ResourceFactory {
 			dataSource.setDriverClass(ds.getDriverClassName());
 			dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(ds.getUrl()));
 			dataSource.setUser(ds.getUsername());
-			dataSource.setPassword(Crypto.plainTextPassword(ds.getPassword()));
+			dataSource.setPassword(ds.getPassword());
 			dataSource.setMaxPoolSize(ds.getMaxTotal());
 			dataSource.setMinPoolSize(ds.getMaxIdle());
 			// 增加校验
@@ -131,7 +131,7 @@ public class ResourceFactory {
 			dataSource.setDriverClass(SlicePropertiesBuilder.driver_h2);
 			dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(url));
 			dataSource.setUser("sa");
-			dataSource.setPassword(Crypto.plainTextPassword(Config.token().getPassword()));
+			dataSource.setPassword(Config.token().getPassword());
 			dataSource.setMaxPoolSize(entry.getValue().getMaxTotal());
 			dataSource.setMinPoolSize(entry.getValue().getMaxIdle());
 			dataSource.setAcquireIncrement(2);
