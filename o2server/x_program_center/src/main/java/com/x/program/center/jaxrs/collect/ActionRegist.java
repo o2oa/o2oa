@@ -50,7 +50,7 @@ class ActionRegist extends BaseAction {
 			Config.collect().setName(name);
 			Config.collect().setPassword(password);
 			Config.collect().save();
-			Config.flush();
+			this.configFlush(effectivePerson);
 			/* 人员和应用市场同步 */
 			ThisApplication.context().scheduleLocal(CollectPerson.class);
 			ThisApplication.context().scheduleLocal(CollectMarket.class);
