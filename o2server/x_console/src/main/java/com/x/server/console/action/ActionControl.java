@@ -18,7 +18,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 
 /*
 @author zhourui
@@ -28,8 +27,6 @@ public class ActionControl extends ActionBase {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionControl.class);
 
-	private static Options options = new Options();
-
 	private static final String CMD_PPE = "ppe";
 	private static final String CMD_OS = "os";
 	private static final String CMD_HS = "hs";
@@ -37,15 +34,14 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_TD = "td";
 	private static final String CMD_EC = "ec";
 	private static final String CMD_DD = "dd";
-	// private static final String CMD_DS = "ds";
 	private static final String CMD_RD = "rd";
-	// private static final String CMD_RS = "rs";
 	private static final String CMD_CLH2 = "clh2";
 	private static final String CMD_UF = "uf";
 	private static final String CMD_DDL = "ddl";
 	private static final String CMD_RST = "rst";
 	private static final String CMD_SC = "sc";
 	private static final String CMD_EN = "en";
+	private static final String CMD_DE = "de";
 
 	private static final int REPEAT_MAX = 100;
 	private static final int REPEAT_MIN = 1;
@@ -86,9 +82,11 @@ public class ActionControl extends ActionBase {
 				sc(cmd);
 			} else if (cmd.hasOption(CMD_EN)) {
 				en(cmd);
+			} else if (cmd.hasOption(CMD_DE)) {
+				de(cmd);
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp("control command", options);
+				formatter.printHelp("control command", displayOptions());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -96,6 +94,7 @@ public class ActionControl extends ActionBase {
 	}
 
 	private static Options options() {
+		Options options = new Options();
 		options.addOption(ppeOption());
 		options.addOption(osOption());
 		options.addOption(hsOption());
@@ -103,16 +102,34 @@ public class ActionControl extends ActionBase {
 		options.addOption(tdOption());
 		options.addOption(ecOption());
 		options.addOption(ddOption());
-		// options.addOption(dsOption());
 		options.addOption(rdOption());
-		// options.addOption(rsOption());
 		options.addOption(clh2Option());
 		options.addOption(ufOption());
 		options.addOption(ddlOption());
 		options.addOption(rstOption());
 		options.addOption(scOption());
 		options.addOption(enOption());
+		options.addOption(deOption());
 		return options;
+	}
+
+	private static Options displayOptions() {
+		Options displayOptions = new Options();
+		displayOptions.addOption(ppeOption());
+		displayOptions.addOption(osOption());
+		displayOptions.addOption(hsOption());
+		displayOptions.addOption(hdOption());
+		displayOptions.addOption(tdOption());
+		displayOptions.addOption(ecOption());
+		displayOptions.addOption(ddOption());
+		displayOptions.addOption(rdOption());
+		displayOptions.addOption(clh2Option());
+		displayOptions.addOption(ufOption());
+		displayOptions.addOption(ddlOption());
+		displayOptions.addOption(rstOption());
+		displayOptions.addOption(scOption());
+		displayOptions.addOption(enOption());
+		return displayOptions;
 	}
 
 	private static Option ppeOption() {
@@ -120,64 +137,69 @@ public class ActionControl extends ActionBase {
 	}
 
 	private static Option osOption() {
-		return Option.builder("os").longOpt("operatingSystem").argName("repeat").numberOfArgs(1).optionalArg(true)
+		return Option.builder(CMD_OS).longOpt("operatingSystem").argName("repeat").numberOfArgs(1).optionalArg(true)
 				.hasArgs().desc("显示操作系统信息,间隔2秒.").build();
-
 	}
 
 	private static Option hsOption() {
-		return Option.builder("hs").longOpt("httpStatus").argName("repeat").optionalArg(true).hasArgs()
+		return Option.builder(CMD_HS).longOpt("httpStatus").argName("repeat").optionalArg(true).hasArgs()
 				.desc("Http服务线程状态,间隔5秒.").build();
 	}
 
 	private static Option hdOption() {
-		return Option.builder("hd").longOpt("heapDump").hasArg(false).desc("生成堆转储文件.").build();
+		return Option.builder(CMD_HD).longOpt("heapDump").hasArg(false).desc("生成堆转储文件.").build();
 	}
 
 	private static Option tdOption() {
-		return Option.builder("td").longOpt("threadDump").argName("count").optionalArg(true).hasArg()
+		return Option.builder(CMD_TD).longOpt("threadDump").argName("count").optionalArg(true).hasArg()
 				.desc("服务器线程状态,间隔2秒.合并多次执行线程信息到最后一份日志.").build();
 	}
 
 	private static Option ecOption() {
-		return Option.builder("ec").longOpt("eraseContent").argName("type").hasArg().optionalArg(false)
+		return Option.builder(CMD_EC).longOpt("eraseContent").argName("type").hasArg().optionalArg(false)
 				.desc("清空实例数据,保留设计数据,type可选值: bbs,cms,log,processPlatform,message,org或者实体类名.").build();
 	}
 
 	private static Option clh2Option() {
-		return Option.builder("clh2").longOpt("compactLocalH2").desc("压缩本地H2数据库.").build();
+		return Option.builder(CMD_CLH2).longOpt("compactLocalH2").desc("压缩本地H2数据库.").build();
 	}
 
 	private static Option ddOption() {
-		return Option.builder("dd").longOpt("dumpData").argName("path").hasArg().optionalArg(true)
+		return Option.builder(CMD_DD).longOpt("dumpData").argName("path").hasArg().optionalArg(true)
 				.desc("导出数据库服务器的数据转换成json格式保存到本地文件.").build();
 	}
 
 	private static Option rdOption() {
-		return Option.builder("rd").longOpt("restoreData").argName("path or date").hasArg()
+		return Option.builder(CMD_RD).longOpt("restoreData").argName("path or date").hasArg()
 				.desc("将导出的json格式数据恢复到数据库服务器.").build();
 	}
 
 	private static Option ufOption() {
-		return Option.builder("uf").longOpt("updateFile").argName("path").hasArg().desc("升级服务器,升级前请注意备份.").build();
+		return Option.builder(CMD_UF).longOpt("updateFile").argName("path").hasArg().desc("升级服务器,升级前请注意备份.").build();
 	}
 
 	private static Option ddlOption() {
-		return Option.builder("ddl").longOpt("DataDefinitionLanguage").argName("type").hasArg()
+		return Option.builder(CMD_DDL).longOpt("DataDefinitionLanguage").argName("type").hasArg()
 				.desc("导出数据定义语句:建表语句:build,数据库创建:createDB,数据库删除dropDB.").build();
 	}
 
 	private static Option rstOption() {
-		return Option.builder("rst").longOpt("restartApplication").argName("name").hasArg()
+		return Option.builder(CMD_RST).longOpt("restartApplication").argName("name").hasArg()
 				.desc("重启指定应用: 应用名称:name, 不带.war").build();
 	}
 
 	private static Option scOption() {
-		return Option.builder("sc").longOpt("showCluster").desc("显示集群信息.").build();
+		return Option.builder(CMD_SC).longOpt("showCluster").desc("显示集群信息.").build();
 	}
 
 	private static Option enOption() {
-		return Option.builder("en").longOpt("encrypt password text.").desc("密码文本加密.").build();
+		return Option.builder(CMD_EN).longOpt("encrypt password text.").argName("text").numberOfArgs(1).hasArg()
+				.desc("密码文本加密.").build();
+	}
+
+	private static Option deOption() {
+		return Option.builder(CMD_DE).longOpt("decrypt password text.").argName("text").numberOfArgs(1).hasArg()
+				.desc("密码文本解密.").hasArg().build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -238,23 +260,11 @@ public class ActionControl extends ActionBase {
 		dumpData.execute(path);
 	}
 
-//	private void ds(CommandLine cmd) throws Exception {
-//		String path = Objects.toString(cmd.getOptionValue(CMD_DS), "");
-//		DumpStorage dumpStorage = new DumpStorage();
-//		dumpStorage.execute(path);
-//	}
-
 	private void rd(CommandLine cmd) throws Exception {
 		String path = Objects.toString(cmd.getOptionValue(CMD_RD), "");
 		RestoreData restoreData = new RestoreData();
 		restoreData.execute(path);
 	}
-
-//	private void rs(CommandLine cmd) throws Exception {
-//		String path = Objects.toString(cmd.getOptionValue(CMD_RS), "");
-//		RestoreStorage restoreStorage = new RestoreStorage();
-//		restoreStorage.execute(path);
-//	}
 
 	private void hs(CommandLine cmd) {
 		final Integer repeat = this.getArgInteger(cmd, CMD_HS, 1);
@@ -268,7 +278,7 @@ public class ActionControl extends ActionBase {
 	}
 
 	private void os(CommandLine cmd) {
-		final Integer command = this.getArgInteger(cmd, "os", 1);
+		final Integer command = this.getArgInteger(cmd, CMD_OS, 1);
 		OperatingSystem operatingSystem = new OperatingSystem(command);
 		operatingSystem.start();
 	}
@@ -304,6 +314,12 @@ public class ActionControl extends ActionBase {
 	private void en(CommandLine cmd) throws Exception {
 		String text = Objects.toString(cmd.getOptionValue(CMD_EN), "");
 		Encrypt en = new Encrypt();
+		en.execute(text);
+	}
+
+	private void de(CommandLine cmd) throws Exception {
+		String text = Objects.toString(cmd.getOptionValue(CMD_DE), "");
+		Decrypt en = new Decrypt();
 		en.execute(text);
 	}
 
