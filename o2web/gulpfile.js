@@ -379,6 +379,9 @@ function createBaseWorkConcatTask(path, isMin, thisOptions) {
             'source/x_component_Selector/Person.js',
             'source/x_component_Selector/Identity.js',
             'source/x_component_Selector/Unit.js',
+            'source/x_component_Selector/IdentityWidthDuty.js',
+            'source/x_component_Selector/IdentityWidthDutyCategoryByUnit.js',
+            'source/x_component_Selector/UnitWithType.js',
             'source/o2_core/o2/xScript/Actions/UnitActions.js',
             'source/o2_core/o2/xScript/Actions/ScriptActions.js',
             'source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
@@ -391,6 +394,7 @@ function createBaseWorkConcatTask(path, isMin, thisOptions) {
             'source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
             'source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
             'source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
+            'source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
             'source/' + path + '/js/base_work_end.js',
             'source/' + path + '/js/base.js'
         ];
