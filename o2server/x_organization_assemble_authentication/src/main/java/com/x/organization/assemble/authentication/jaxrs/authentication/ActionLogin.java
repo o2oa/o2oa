@@ -43,7 +43,7 @@ class ActionLogin extends BaseAction {
 				throw new ExceptionPasswordEmpty();
 			}
 			if (Config.token().isInitialManager(credential)) {
-				if (!StringUtils.equals(Crypto.plainTextPassword(Config.token().getPassword()), password)) {
+				if (!StringUtils.equals(Config.token().getPassword(), password)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				wo = this.manager(request, response, business, Wo.class);
