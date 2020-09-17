@@ -20,7 +20,7 @@ public class DataServerTools {
 		FileUtils.forceMkdir(dataBaseDir);
 		Server tcpServer = null;
 		Server webServer = null;
-		String password = Crypto.plainTextPassword(Config.token().getPassword());
+		String password = Config.token().getPassword();
 		String[] tcps = new String[9];
 		tcps[0] = "-tcp";
 		tcps[1] = "-tcpAllowOthers";

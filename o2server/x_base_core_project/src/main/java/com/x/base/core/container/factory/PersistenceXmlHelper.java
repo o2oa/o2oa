@@ -11,6 +11,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Node;
+import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.ListTools;
 
 import org.apache.commons.io.FileUtils;
@@ -62,7 +63,7 @@ public class PersistenceXmlHelper {
 			throw new Exception("registContainerEntity error.className:" + ListTools.toStringJoin(classNames), e);
 		}
 	}
-	
+
 	public static void writeForDdl(String path) throws Exception {
 		try {
 			Document document = DocumentHelper.createDocument();

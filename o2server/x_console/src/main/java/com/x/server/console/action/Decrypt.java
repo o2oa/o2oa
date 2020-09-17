@@ -9,7 +9,7 @@ public class Decrypt {
 	private static Logger logger = LoggerFactory.getLogger(Decrypt.class);
 
 	public boolean execute(String text) throws Exception {
-		logger.print("decrypt text:{}", Crypto.plainTextPassword(text));
+		logger.print("decrypt text:{}", Crypto.plainText(text));
 		return true;
 	}
 

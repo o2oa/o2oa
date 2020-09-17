@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.x.base.core.project.tools.BaseTools;
+import com.x.base.core.project.tools.Crypto;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,6 +34,11 @@ public class Token extends ConfigObject {
 	public static final String defaultSslKeyStorePassword = "123456";
 	public static final String defaultSslKeyManagerPassword = "123456";
 
+	// 此对象临时计算无需存储
+	private transient String _cipher = "";
+	// 此对象临时计算无需存储
+	private transient String _password = "";
+
 	public static Token defaultInstance() {
 		Token o = new Token();
 		return o;
@@ -45,7 +53,7 @@ public class Token extends ConfigObject {
 		this.initialManagerDistinguishedName = defaultInitialManagerDistinguishedName;
 	}
 
-	/** 加密用的key,用于加密口令 */
+	// 加密用的key,用于加密口令
 	@FieldDescribe("加密用口令的密钥,修改后会导致用户口令验证失败.")
 	private String key;
 
@@ -73,7 +81,7 @@ public class Token extends ConfigObject {
 	@FieldDescribe("作为客户端单点登录配置")
 	private List<OauthClient> oauthClients = new ArrayList<>();
 
-	/* 前面的代码是 key+surfix 结果是nullo2platform */
+	// 前面的代码是 key+surfix 结果是nullo2platform
 	public String getKey() {
 		String val = Objects.toString(key, "") + surfix;
 		return StringUtils.substring(val, 0, 8);
@@ -87,12 +95,19 @@ public class Token extends ConfigObject {
 		}
 	}
 
-	public String getCipher() {
-		return this.getPassword() + surfix;
+	public String getCipher() throws Exception {
+		if (StringUtils.isEmpty(this._cipher)) {
+			this._cipher = DigestUtils.md5Hex(this.getPassword());
+		}
+		return this._cipher;
+		// return this.getPassword() + surfix;
 	}
 
-	public String getPassword() {
-		return StringUtils.isEmpty(this.password) ? initPassword : this.password;
+	public String getPassword() throws Exception {
+		if (StringUtils.isEmpty(this._password)) {
+			this._password = StringUtils.isEmpty(this.password) ? initPassword : Crypto.plainText(this.password);
+		}
+		return this._password;
 	}
 
 	public void setPassword(String password) {
@@ -178,7 +193,7 @@ public class Token extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_TOKEN);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
-        BaseTools.executeSyncFile(Config.PATH_CONFIG_TOKEN);
+		BaseTools.executeSyncFile(Config.PATH_CONFIG_TOKEN);
 	}
 
 	public boolean isInitialManager(String name) {
@@ -308,8 +323,6 @@ public class Token extends ConfigObject {
 		public void setRoleList(List<String> roleList) {
 			this.roleList = roleList;
 		}
-
- 
 
 		public String getUnique() {
 			return unique;
