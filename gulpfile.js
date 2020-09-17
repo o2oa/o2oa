@@ -516,6 +516,9 @@ function build_concat_basework() {
         'o2web/source/x_component_Selector/Person.js',
         'o2web/source/x_component_Selector/Identity.js',
         'o2web/source/x_component_Selector/Unit.js',
+        'o2web/source/x_component_Selector/IdentityWidthDuty.js',
+        'o2web/source/x_component_Selector/IdentityWidthDutyCategoryByUnit.js',
+        'o2web/source/x_component_Selector/UnitWithType.js',
         'o2web/source/o2_core/o2/xScript/Actions/UnitActions.js',
         'o2web/source/o2_core/o2/xScript/Actions/ScriptActions.js',
         'o2web/source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
@@ -528,6 +531,7 @@ function build_concat_basework() {
         'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
+        'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
         'o2web/source/x_desktop/js/base_work_end.js',
         'o2web/source/x_desktop/js/base.js'
     ];
