@@ -53,7 +53,7 @@ public class JestAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "清除服务器缓存", action = ActionClearCache.class)
 	public void clearCache(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						   @JaxrsParameterDescribe("*标识：all(所有)|cms|portal|process|query|agent|invoke") @PathParam("source") String source) {
+						   @JaxrsParameterDescribe("*标识：all(所有)|org|cms|portal|process|query|agent|invoke") @PathParam("source") String source) {
 		ActionResult<ActionClearCache.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
