@@ -95,7 +95,7 @@ public class Token extends ConfigObject {
 		}
 	}
 
-	public String getCipher() throws Exception {
+	public String getCipher() {
 		if (StringUtils.isEmpty(this._cipher)) {
 			this._cipher = DigestUtils.md5Hex(this.getPassword());
 		}
@@ -103,7 +103,7 @@ public class Token extends ConfigObject {
 		// return this.getPassword() + surfix;
 	}
 
-	public String getPassword() throws Exception {
+	public String getPassword() {
 		if (StringUtils.isEmpty(this._password)) {
 			this._password = StringUtils.isEmpty(this.password) ? initPassword : Crypto.plainText(this.password);
 		}
