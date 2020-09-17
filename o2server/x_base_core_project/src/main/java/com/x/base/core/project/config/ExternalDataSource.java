@@ -9,8 +9,12 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.LogLevel;
 import com.x.base.core.container.factory.SlicePropertiesBuilder;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.Crypto;
 
 public class ExternalDataSource extends ConfigObject {
+
+	// 无需保存
+	private transient String _password;
 
 	public ExternalDataSource() {
 		this.enable = false;
@@ -136,7 +140,10 @@ public class ExternalDataSource extends ConfigObject {
 	}
 
 	public String getPassword() {
-		return password;
+		if (StringUtils.isEmpty(this._password)) {
+			this._password = Crypto.plainText(this.password);
+		}
+		return this._password;
 	}
 
 	public void setPassword(String password) {

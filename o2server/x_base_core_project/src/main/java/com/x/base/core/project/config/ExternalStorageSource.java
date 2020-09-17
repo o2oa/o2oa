@@ -1,11 +1,16 @@
 package com.x.base.core.project.config;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.StorageProtocol;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.Crypto;
 
 public class ExternalStorageSource extends ConfigObject {
+
+	// 无需保存
+	private transient String _password;
 
 	public ExternalStorageSource() {
 		this.protocol = default_protocol;
@@ -66,7 +71,10 @@ public class ExternalStorageSource extends ConfigObject {
 	}
 
 	public String getPassword() {
-		return password;
+		if (StringUtils.isEmpty(this._password)) {
+			this._password = Crypto.plainText(this.password);
+		}
+		return this._password;
 	}
 
 	public String getHost() {
