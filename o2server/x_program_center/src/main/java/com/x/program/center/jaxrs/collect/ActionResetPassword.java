@@ -1,5 +1,8 @@
 package com.x.program.center.jaxrs.collect;
 
+import com.x.program.center.ThisApplication;
+import com.x.program.center.schedule.CollectMarket;
+import com.x.program.center.schedule.CollectPerson;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,7 +45,7 @@ class ActionResetPassword extends BaseAction {
 		if (BooleanUtils.isTrue(wo.getValue())) {
 			Config.collect().setPassword(password);
 			Config.collect().save();
-			Config.flush();
+			this.configFlush(effectivePerson);
 		}
 		result.setData(wo);
 		return result;
