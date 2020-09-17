@@ -11,12 +11,15 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult.Type;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.program.center.ThisApplication;
 
 class BaseAction extends StandardJaxrsAction {
 
@@ -122,6 +125,19 @@ class BaseAction extends StandardJaxrsAction {
 				.url("/o2_collect_assemble/jaxrs/unit/code/mobile/" + URLEncoder.encode(mobile, DefaultCharset.name));
 		ActionResponse resp = ConnectionAction.get(url, null);
 		return resp.getData(ReturnWoBoolean.class).getValue();
+	}
+
+	public void configFlush(EffectivePerson effectivePerson) throws Exception {
+		Config.flush();
+		ThisApplication.context().applications().values().forEach(o -> {
+			o.stream().forEach(app -> {
+				try {
+					CipherConnectionAction.get(effectivePerson.getDebugger(), app, "cache", "config", "flush");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		});
 	}
 
 	private static class ReturnWoBoolean extends WrapBoolean {
