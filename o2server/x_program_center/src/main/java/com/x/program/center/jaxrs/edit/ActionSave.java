@@ -45,8 +45,17 @@ public class ActionSave extends BaseAction {
 		
 		String fileName = wi.getFileName();
 		String data = wi.getFileContent();
-		
-		File file = new File(Config.base(),"config/"+fileName);
+
+		if(!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			wo.setTime(df.format(new Date()));
+			wo.setStatus("failure");
+			wo.setMessage("禁止编辑");
+			result.setData(wo);
+			return result;
+		}
+
+		File file = new File(Config.base(),Config.dir_config()+"/"+fileName);
 		if(!file.exists()) {
 			file.createNewFile();
 		}
@@ -63,7 +72,7 @@ public class ActionSave extends BaseAction {
 			//其他服务器
 			if(!node.equalsIgnoreCase(curServer)) {
 				if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
-					boolean Syncflag = executeSyncFile("config/"+fileName , node ,nodes.get(node).nodeAgentPort());
+					boolean Syncflag = executeSyncFile(Config.dir_config()+"/"+fileName , node ,nodes.get(node).nodeAgentPort());
 				}
 			}
 		}
@@ -181,10 +190,13 @@ public class ActionSave extends BaseAction {
 		
 		@FieldDescribe("执行结果")
 		private String status;
-		
+
+		@FieldDescribe("执行消息")
+		private String message;
+
 		@FieldDescribe("config文件内容")
 		private String fileContent;
-		
+
 		@FieldDescribe("是否Sample")
 		private boolean isSample;
 		
@@ -218,6 +230,13 @@ public class ActionSave extends BaseAction {
 
 		public void setSample(boolean isSample) {
 			this.isSample = isSample;
+		}
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
 		}
 		
 	}
