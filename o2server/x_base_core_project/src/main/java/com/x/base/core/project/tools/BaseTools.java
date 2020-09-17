@@ -148,11 +148,13 @@ public class BaseTools {
 		String localip = getIpAddress();
 		Nodes nodes = Config.nodes();
 		//同步config文件
-		for (String node : nodes.keySet()) {
-			//其他服务器
-			if (!node.equalsIgnoreCase(localip)) {
-				if (nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()) {
-					Syncflag = executeSyncFile(syncFilePath, node, nodes.get(node).nodeAgentPort());
+		if(Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
+			for (String node : nodes.keySet()) {
+				//其他服务器
+				if (!node.equalsIgnoreCase(localip)) {
+					if (nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()) {
+						Syncflag = executeSyncFile(syncFilePath, node, nodes.get(node).nodeAgentPort());
+					}
 				}
 			}
 		}
