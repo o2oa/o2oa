@@ -97,7 +97,8 @@ class MonthCalendarViewModel(app: Application) : BaseO2ViewModel(app) {
         val start = DateHelper.getDate(startTime.time)
         val end = DateHelper.getDate(endTime.time)
         val result = HashMap<String, ArrayList<CalendarEventInfoData>>()
-        val filter = CalendarEventFilterInfo(calendarIds, O2SDKManager.instance().distinguishedName, "$start 00:00:00", "$end 23:59:59")
+        //O2SDKManager.instance().distinguishedName
+        val filter = CalendarEventFilterInfo(calendarIds, "", "$start 00:00:00", "$end 23:59:59")
         XLog.info("filter:$filter")
         getCalendarAssembleService()?.let { service ->
             service.filterCalendarEventList(filter)
