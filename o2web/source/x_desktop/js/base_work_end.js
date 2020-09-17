@@ -12,5 +12,7 @@ o2.Actions.actions["x_query_assemble_surface"] = new o2.xAction.RestActions.Acti
 o2.xAction.RestActions.Action["x_program_center"] = new Class({Extends: o2.xAction.RestActions.Action});
 o2.Actions.actions["x_program_center"] = new o2.xAction.RestActions.Action["x_program_center"]("x_program_center", centerActins);
 
+o2.Actions.actions["x_organization_assemble_personal"] = new o2.xAction.RestActions.Action["x_organization_assemble_personal"]("x_organization_assemble_personal", personalActions);
+
 
 //});
