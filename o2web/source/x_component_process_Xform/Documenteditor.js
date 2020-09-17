@@ -103,7 +103,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         var control = this.getShowControl();
         this.json.fileup =  !!(control.signer);
 
-        if (this.json.css && this.json.css.code){
+        if (this.json.css && this.json.css.code && !this.styleNode){
             var cssText = this.form.parseCSS(this.json.css.code);
             cssText = cssText.replace(/documenteditor_table/g, 'documenteditor_table'+this.form.json.id+this.json.id)
 
@@ -134,7 +134,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var styleNode = document.createElement("style");
             styleNode.setAttribute("type", "text/css");
             styleNode.id="style"+this.json.id;
-            styleNode.inject(pageContentNode);
+            //styleNode.inject(pageContentNode);
+            styleNode.inject(this.node, "top");
 
             if(styleNode.styleSheet){
                 var setFunc = function(){
@@ -149,6 +150,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 var cssTextNode = document.createTextNode(cssText);
                 styleNode.appendChild(cssTextNode);
             }
+            this.styleNode = styleNode;
         }
 
         if (this.json.documentTempleteType=="cus"){
@@ -1522,7 +1524,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.options.pageShow!=="double"){
                 this._doublePage();
             }else{
-                this._singlePage();
+                this.options.pageShow="single";
+                this.reload();
+                //this._singlePage();
             }
         }.bind(this));
         if (layout.mobile) this.doublePageAction.hide();
