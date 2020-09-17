@@ -136,7 +136,7 @@ class CreateEventViewModel(app: Application) : BaseO2ViewModel(app) {
         if (start == null || end == null) {
             return false
         }
-        return (start.timeInMillis < end.timeInMillis)
+        return (start.timeInMillis <= end.timeInMillis)
     }
 
     /**
@@ -230,7 +230,7 @@ class CreateEventViewModel(app: Application) : BaseO2ViewModel(app) {
                         onError { e, isNetworkError ->
                             XLog.error("update fail, isnet:$isNetworkError", e)
                             isLoading.value = false
-                            val res = FrontendResponse(false, "更新异常")
+                            val res = FrontendResponse(false, "更新异常，${e?.message?:""}")
                             netResponse.value = res
                         }
                     }
@@ -274,7 +274,7 @@ class CreateEventViewModel(app: Application) : BaseO2ViewModel(app) {
                         onError { e, isNetworkError ->
                             XLog.error("update fail, isnet:$isNetworkError", e)
                             isLoading.value = false
-                            val res = FrontendResponse(false, "删除异常")
+                            val res = FrontendResponse(false, "删除异常，${e?.message?:""}")
                             netResponse.value = res
                         }
                     }

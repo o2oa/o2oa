@@ -146,11 +146,11 @@ class MonthCalendarViewModelFragment : CalendarBaseFragment(), OnDateSelectedLis
         rv_fragment_calendar_month_list.adapter = adapter
         adapter.setOnItemClickListener { _, position ->
             val event = list[position]
-            if (checkManageAble(event.manageablePersonList)) {
+//            if (checkManageAble(event.manageablePersonList)) {//关注的日历可以查看
                 if (activity is CalendarMainActivity) {
                     (activity as CalendarMainActivity).editEvent(event)
                 }
-            }
+//            }
         }
         val now = Calendar.getInstance()
         if (!this::selectDay.isInitialized) {
