@@ -48,7 +48,7 @@ class ActionUpdateUnit extends BaseAction {
 			Config.collect().setKey(wi.getKey());
 			Config.collect().setSecret(wi.getSecret());
 			Config.collect().save();
-			Config.flush();
+			this.configFlush(effectivePerson);
 		}
 		result.setData(wo);
 		return result;
