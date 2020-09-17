@@ -32,7 +32,7 @@ class ActionUpdate extends BaseAction {
 		Config.collect().setName(wrapIn.getName());
 		Config.collect().setPassword(wrapIn.getPassword());
 		Config.collect().save();
-		Config.flush();
+		this.configFlush(effectivePerson);
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);
