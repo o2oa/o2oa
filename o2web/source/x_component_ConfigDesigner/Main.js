@@ -577,7 +577,7 @@ o2.xApplication.ConfigDesigner.Main = new Class({
             function( json ){
                 var nodeList = json.data.nodeList;
                 if(nodeList.length>1){
-                    new Element("option", {"value": "*", "text": "*"}).inject(this.nodeSelect);
+                    new Element("option", {"value": "*", "text": "*"}).inject(this.propertyServerNode);
                 }
                 nodeList.each(function (node) {
                     new Element("option", {
