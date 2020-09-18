@@ -451,11 +451,21 @@ MWF.xApplication.Selector.Person = new Class({
 
         if( contentNode )this.contentNode = contentNode;
         if( this.options.contentUrl || isHTML ){
-            if (this.options.count.toInt()!==1) this.loadSelectedNodeHTML();
+            // if (this.options.count.toInt()!==1){
+            //     this.loadSelectedNodeHTML();
+            //     this.loadSelectNodeHTML(contentNode);
+            // }else{
+            //     this.setSelectedItem();
+            //     this.loadSelectNodeHTML(contentNode);
+            // }
+
+            this.loadSelectedNodeHTML();
             this.loadSelectNodeHTML(contentNode);
         }else{
             if (layout.mobile){
-                if (this.options.count.toInt()!==1) this.loadSelectedNodeMobile();
+                // if (this.options.count.toInt()!==1) this.loadSelectedNodeMobile();
+
+                this.loadSelectedNodeMobile();
                 this.loadSelectNodeMobile();
             }else{
                 this.loadSelectNode();
@@ -1038,12 +1048,12 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.setSelectedItem();
 
-        MWF.require("MWF.widget.ScrollBar", function(){
-            var _self = this;
-            new MWF.widget.ScrollBar(this.selectedScrollNode, {
-                "style":"xApp_Organization_Explorer", "where": "before", "distance": 100, "friction": 4,"axis": {"x": false, "y": true}
-            });
-        }.bind(this));
+        // MWF.require("MWF.widget.ScrollBar", function(){
+        //     var _self = this;
+        //     new MWF.widget.ScrollBar(this.selectedScrollNode, {
+        //         "style":"xApp_Organization_Explorer", "where": "before", "distance": 100, "friction": 4,"axis": {"x": false, "y": true}
+        //     });
+        // }.bind(this));
         this.selectedScrollNode.setStyle("display", "none");
     },
 
