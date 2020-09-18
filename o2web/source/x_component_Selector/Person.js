@@ -36,6 +36,9 @@ MWF.xApplication.Selector.Person = new Class({
         "flatCategory" : false, //扁平化展现分类,
         "selectType" : "person",
 
+        "checkStatus" : true,
+        "showSelectedCount" : false,
+
         "itemHeight" : 29,
         "identityItemWidth" : 0, //选项宽度，如果不为0，设置为float:left,
 
@@ -389,6 +392,27 @@ MWF.xApplication.Selector.Person = new Class({
         }
 
         this.setEvent();
+    },
+
+    getUnitIdentityCount : function(){
+
+    },
+    getUnitSelecteIndentityCount : function( unitLevelName ){ //根据组织获取已选身份数
+        var count;
+        this.selectedItems.each( function (item) {
+            if( item.data.unitLevelName.indexOf( unitLevelName ) === 0 )count++;
+        }.bind(this));
+        return count;
+    },
+    getGroupNestCount : function(){
+        // o2.Actions.load("x_organization_assemble_express").
+    },
+    getGroupSelecteIndentityCount : function( groupName ){ //根据组织获取已选身份数
+        var count;
+        this.selectedItems.each( function (item) {
+            if( item.data.unitLevelName.indexOf( unitLevelName ) === 0 )count++;
+        }.bind(this));
+        return count;
     },
 
     setEvent: function(){
