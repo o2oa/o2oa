@@ -567,4 +567,22 @@ public class UnitAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "批量查询组织的嵌套下级组织信息-树形模式.", action = ActionListWithUnitTree.class)
+	@POST
+	@Path("list/unit/tree")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void ListWithUnitTree(@Suspended final AsyncResponse asyncResponse,
+								  @Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<List<ActionListWithUnitTree.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithUnitTree().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
