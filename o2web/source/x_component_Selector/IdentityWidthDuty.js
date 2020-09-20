@@ -50,19 +50,73 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                 }
             }.bind(this));
 
+            var _load = function () {
+                this.options.dutys.each(function(duty){
+                    var data = {"name": duty, "id":duty};
+                    var category = this._newItemCategory("ItemCategory",data, this, this.itemAreaNode);
+                    this.subCategorys.push(category);
+                    loadDutySuccess();
+                }.bind(this));
+            }.bind(this);
 
-            // this.loadInclude();
-            this.options.dutys.each(function(duty){
-                var data = {"name": duty, "id":duty};
-                var category = this._newItemCategory("ItemCategory",data, this, this.itemAreaNode);
-                this.subCategorys.push(category);
-                //category.loadSub();
-                //category.clickItem();
-                // this.action.getUnitduty(function(dutyData){
-                //     var category = this._newItemCategory("ItemCategory", dutyData.data, this, this.itemAreaNode);
-                // }.bind(this), null, duty);
-                loadDutySuccess();
-            }.bind(this));
+            if( this.options.units.length === 0 ){
+                _load();
+            }else{
+                var unitList = [];
+                this.options.units.each(function(u) {
+                    var unitName = typeOf(u) === "string" ? u : (u.distinguishedName || u.unique || u.id || u.levelName);
+                    if (unitName)unitList.push( unitName )
+                });
+
+                if( !this.options.expandSubEnable ){
+                    this.allUnitNames = unitList;
+                    _load();
+                }else{
+                    var unitObjectList = [];
+                    var loadDuty = function(){
+                        MWF.Actions.get("x_organization_assemble_express").listUnitSubNested({"unitList": unitList }, function(json1){
+                            var unitNames = [];
+                            //排序
+                            if( this.options.units.length === 1 ){
+                                unitNames = unitList.concat( json1.data );
+                            }else{
+                                unitObjectList.each( function ( u ) {
+                                    unitNames.push( u.distinguishedName || u.unique || u.id || u.levelName );
+                                    for( var i=0; i<json1.data.length; i++ ){
+                                        if( json1.data[i].levelName.indexOf(u.levelName) > -1 ){
+                                            unitNames.push( json1.data[i].distinguishedName );
+                                        }
+                                    }
+                                })
+                            }
+                            this.allUnitNames = unitNames;
+                            _load();
+                        }.bind(this), null);
+                    }.bind(this);
+
+
+                    var flag = false; //需要获取层次名用于排序
+                    if( this.options.units.length === 1 ){
+                        loadDuty();
+                    }else{
+                        this.options.units.each(function(u) {
+                            if (typeOf(u) === "string" ) {
+                                u.indexOf("/") === -1 ? (flag = true) : unitObjectList.push( { levelName : u } );
+                            } else {
+                                u.levelName ? unitObjectList.push( u ) : (flag = true);
+                            }
+                        });
+                        if( flag ){ //需要获取层次名来排序
+                            o2.Actions.load("x_organization_assemble_express").UnitActions.listObject( function (json) {
+                                unitObjectList = json.data || [];
+                                loadDuty();
+                            }.bind(this) )
+                        }else{
+                            loadDuty();
+                        }
+                    }
+                }
+            }
         }
     },
 
@@ -193,82 +247,124 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
         var style = this.selector.options.style;
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
     },
-    loadSub: function(callback){
+    _getSelectedCount : function(){
+
+    },
+    _getNestItemCount : function(){
+      return this.subItems.length;
+    },
+    _checkStatus : function(){
+
+    },
+    loadSub : function(callback){
+        this._loadSub( function() {
+            if( this.selector.options.isCheckStatus ){
+
+            }
+            if(callback)callback();
+        }.bind(this))
+    },
+    _loadSub: function(callback){
         if (!this.loaded  && !this.loadingsub){
             this.loadingsub = true;
+
             if (this.selector.options.units.length){
-                var action = MWF.Actions.get("x_organization_assemble_express");
-                var data = {"name":this.data.name, "unit":""};
-                var count = this.selector.options.units.length;
-                var i = 0;
+                var data = {
+                    "name":this.data.name,
+                    "unit":"",
+                    "unitList" : this.selector.allUnitNames
+                };
 
-                if (this.selector.options.expandSubEnable) {
-                    this.selector.options.units.each(function(u){
-                        var unitName = "";
-                        if (typeOf(u)==="string"){
-                            unitName = u;
-                        }else{
-                            unitName = u.distinguishedName || u.unique || u.id || u.levelName
-                        }
-                        if (unitName){
-                            var unitNames;
-                            action.listUnitNameSubNested({"unitList": [unitName]}, function(json){
-                                unitNames = json.data.unitList;
-                            }.bind(this), null, false);
-
-                            unitNames.push(unitName);
-                            if (unitNames && unitNames.length){
-                                data.unitList = unitNames;
-                                action.getDuty(data, function(json){
-                                    json.data.each(function(idSubData){
-                                        if( !this.selector.isExcluded( idSubData ) ) {
-                                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-                                            this.selector.items.push(item);
-                                            if(this.subItems)this.subItems.push( item );
-                                        }
-                                    }.bind(this));
-                                }.bind(this), null, false);
-                            }
-                        }
-
-                        i++;
-                        if (i>=count){
-                            if (!this.loaded) {
-                                this.loaded = true;
-                                this.loadingsub = false;
-                                this.itemLoaded = true;
-                                if (callback) callback();
-                            }
+                MWF.Actions.get("x_organization_assemble_express").getDuty(data, function(json){
+                    json.data.each(function(idSubData){
+                        if( !this.selector.isExcluded( idSubData ) ) {
+                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+                            this.selector.items.push(item);
+                            if(this.subItems)this.subItems.push( item );
                         }
                     }.bind(this));
-                }else{
-                    this.selector.options.units.each(function(u){
-                        if (typeOf(u)==="string"){
-                            data.unit = u;
-                        }else{
-                            data.unit = u.distinguishedName || u.unique || u.id || u.levelName
-                        }
-                        action.getDuty(data, function(json){
-                            json.data.each(function(idSubData){
-                                if( !this.selector.isExcluded( idSubData ) ) {
-                                    var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-                                    this.selector.items.push(item);
-                                    if(this.subItems)this.subItems.push( item );
-                                }
-                            }.bind(this));
-                            i++;
-                            if (i>=count){
-                                if (!this.loaded) {
-                                    this.loaded = true;
-                                    this.loadingsub = false;
-                                    this.itemLoaded = true;
-                                    if (callback) callback();
-                                }
-                            }
-                        }.bind(this));
-                    }.bind(this));
-                }
-                // if (callback) callback();
+
+                    if (!this.loaded) {
+                        this.loaded = true;
+                        this.loadingsub = false;
+                        this.itemLoaded = true;
+                        if (callback) callback();
+                    }
+
+                }.bind(this), null, false);
+
+            // if (this.selector.options.units.length){
+            //     var action = MWF.Actions.get("x_organization_assemble_express");
+            //     var data = {"name":this.data.name, "unit":""};
+            //     var count = this.selector.options.units.length;
+            //     var i = 0;
+            //
+            //     if (this.selector.options.expandSubEnable) {
+            //         this.selector.options.units.each(function(u){
+            //             var unitName = "";
+            //             if (typeOf(u)==="string"){
+            //                 unitName = u;
+            //             }else{
+            //                 unitName = u.distinguishedName || u.unique || u.id || u.levelName
+            //             }
+            //             if (unitName){
+            //                 var unitNames;
+            //                 action.listUnitNameSubNested({"unitList": [unitName]}, function(json){
+            //                     unitNames = json.data.unitList;
+            //                 }.bind(this), null, false);
+            //
+            //                 unitNames.push(unitName);
+            //                 if (unitNames && unitNames.length){
+            //                     data.unitList = unitNames;
+            //                     action.getDuty(data, function(json){
+            //                         json.data.each(function(idSubData){
+            //                             if( !this.selector.isExcluded( idSubData ) ) {
+            //                                 var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+            //                                 this.selector.items.push(item);
+            //                                 if(this.subItems)this.subItems.push( item );
+            //                             }
+            //                         }.bind(this));
+            //                     }.bind(this), null, false);
+            //                 }
+            //             }
+            //
+            //             i++;
+            //             if (i>=count){
+            //                 if (!this.loaded) {
+            //                     this.loaded = true;
+            //                     this.loadingsub = false;
+            //                     this.itemLoaded = true;
+            //                     if (callback) callback();
+            //                 }
+            //             }
+            //         }.bind(this));
+            //     }else{
+            //         this.selector.options.units.each(function(u){
+            //             if (typeOf(u)==="string"){
+            //                 data.unit = u;
+            //             }else{
+            //                 data.unit = u.distinguishedName || u.unique || u.id || u.levelName
+            //             }
+            //             action.getDuty(data, function(json){
+            //                 json.data.each(function(idSubData){
+            //                     if( !this.selector.isExcluded( idSubData ) ) {
+            //                         var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+            //                         this.selector.items.push(item);
+            //                         if(this.subItems)this.subItems.push( item );
+            //                     }
+            //                 }.bind(this));
+            //                 i++;
+            //                 if (i>=count){
+            //                     if (!this.loaded) {
+            //                         this.loaded = true;
+            //                         this.loadingsub = false;
+            //                         this.itemLoaded = true;
+            //                         if (callback) callback();
+            //                     }
+            //                 }
+            //             }.bind(this));
+            //         }.bind(this));
+            //     }
 
             }else{
                 this.selector.orgAction.listIdentityWithDuty(function(json){
