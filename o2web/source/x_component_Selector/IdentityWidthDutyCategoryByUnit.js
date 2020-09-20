@@ -235,7 +235,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     },
     _listNestedUnitByIdentity : function( identityList ){
         debugger;
-        var checkStatus = true; //this.options.checkStatus;
         //identityList = Array.unique(identityList);
         var key = this.options.dutyUnitLevelBy === "duty" ? "matchUnitLevelName" : "unitLevelName";
         //根据unitLevelName整合成组织树
@@ -306,7 +305,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         }
         tree.identityList = identityList;
 
-        if( this.options.checkStatus ){
+        if( this.options.isCheckStatus ){
             var names = (tree.matchLevelName || tree.levelName || "").split("/");
             var nameList = [];
             for( var i=0; i<names.length; i++ ){
@@ -416,8 +415,14 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemSelected = new Cla
 
 MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory,
-    getSelectedCount : function(){
+    _getSelectedCount : function(){
         if( typeOf( this.selectedCount ) === "number" )return this.selectedCount;
+
+    },
+    _getNestItemCount : function(){
+        return this.data.subNestedIdentityCount;
+    },
+    _checkStatus : function(){
 
     },
     isExisted : function( d ){
