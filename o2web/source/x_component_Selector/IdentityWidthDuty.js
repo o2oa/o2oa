@@ -50,7 +50,7 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                 }
             }.bind(this));
 
-            var _load = function () {
+            var loadDuty = function () {
                 this.options.dutys.each(function(duty){
                     var data = {"name": duty, "id":duty};
                     var category = this._newItemCategory("ItemCategory",data, this, this.itemAreaNode);
@@ -60,7 +60,7 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
             }.bind(this);
 
             if( this.options.units.length === 0 ){
-                _load();
+                loadDuty();
             }else{
                 var unitList = [];
                 this.options.units.each(function(u) {
@@ -70,10 +70,10 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
 
                 if( !this.options.expandSubEnable ){
                     this.allUnitNames = unitList;
-                    _load();
+                    loadDuty();
                 }else{
                     var unitObjectList = [];
-                    var loadDuty = function(){
+                    var loadNestedUnit = function(){
                         MWF.Actions.get("x_organization_assemble_express").listUnitSubNested({"unitList": unitList }, function(json1){
                             var unitNames = [];
                             //排序
@@ -90,14 +90,14 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                                 })
                             }
                             this.allUnitNames = unitNames;
-                            _load();
+                            loadDuty();
                         }.bind(this), null);
                     }.bind(this);
 
 
                     var flag = false; //需要获取层次名用于排序
                     if( this.options.units.length === 1 ){
-                        loadDuty();
+                        loadNestedUnit();
                     }else{
                         this.options.units.each(function(u) {
                             if (typeOf(u) === "string" ) {
@@ -109,10 +109,10 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                         if( flag ){ //需要获取层次名来排序
                             o2.Actions.load("x_organization_assemble_express").UnitActions.listObject( function (json) {
                                 unitObjectList = json.data || [];
-                                loadDuty();
+                                loadNestedUnit();
                             }.bind(this) )
                         }else{
-                            loadDuty();
+                            loadNestedUnit();
                         }
                     }
                 }
