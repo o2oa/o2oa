@@ -67,7 +67,8 @@ class ActionListWithUnitTree extends BaseAction {
 
 		private static final long serialVersionUID = -1067995706582209831L;
 
-		static WrapCopier<Unit, Wo> copier = WrapCopierFactory.wo(Unit.class, Wo.class, ListTools.toList(Unit.id_FIELDNAME, Unit.distinguishedName_FIELDNAME),
+		static WrapCopier<Unit, Wo> copier = WrapCopierFactory.wo(Unit.class, Wo.class,
+				ListTools.toList(Unit.id_FIELDNAME, Unit.distinguishedName_FIELDNAME, Unit.levelName_FIELDNAME),
 				null);
 
 		@FieldDescribe("直接下级身份成员数量")
