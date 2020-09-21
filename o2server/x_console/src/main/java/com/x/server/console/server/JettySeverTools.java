@@ -35,7 +35,7 @@ public abstract class JettySeverTools {
 		sslContextFactory.setTrustAll(true);
 		HttpConfiguration config = new HttpConfiguration();
 		config.setSecureScheme("https");
-		config.setOutputBufferSize(32768);
+		config.setOutputBufferSize(1024 * 2048);
 		config.setRequestHeaderSize(8192 * 2);
 		config.setResponseHeaderSize(8192 * 2);
 		config.setSendServerVersion(true);
@@ -52,7 +52,7 @@ public abstract class JettySeverTools {
 
 	protected static void addHttpConnector(Server server, Integer port) throws Exception {
 		HttpConfiguration config = new HttpConfiguration();
-		config.setOutputBufferSize(32768);
+		config.setOutputBufferSize(1024 * 2048);
 		config.setRequestHeaderSize(8192 * 2);
 		config.setResponseHeaderSize(8192 * 2);
 		config.setSendServerVersion(true);

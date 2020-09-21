@@ -96,8 +96,8 @@ public class DumpData {
 					EntityManagerFactory emf = null;
 					EntityManager em = null;
 					try {
-						Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false,false,false,
-								false, false, Config.dir_local_temp_classes().toPath()));
+						Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false, false,
+								false, false, false, Config.dir_local_temp_classes().toPath()));
 						Thread.currentThread().setName(DumpData.class.getName() + ":" + className);
 						@SuppressWarnings("unchecked")
 						Class<JpaObject> cls = (Class<JpaObject>) Thread.currentThread().getContextClassLoader()
@@ -208,7 +208,7 @@ public class DumpData {
 				StorageObject s = (StorageObject) t;
 				String name = s.getStorage();
 				StorageMapping mapping = storageMappings.get(s.getClass(), name);
-				if (null == mapping && Config.dumpRestoreStorage().getExceptionInvalidStorage()) {
+				if (null == mapping && Config.dumpRestoreData().getExceptionInvalidStorage()) {
 					throw new ExceptionInvalidStorage(s);
 				}
 				if (null != mapping) {
