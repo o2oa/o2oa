@@ -19,27 +19,27 @@ import java.lang.annotation.Target;
 
 public @interface ContainerEntity {
 
-    /**
-     * 执行dump时分组数量
-     */
-    public int dumpSize() default 1000;
+	/**
+	 * 执行dump时分组数量
+	 */
+	public int dumpSize() default 200;
 
-    /**
-     * 类型
-     */
-    public Type type() default Type.content;
+	/**
+	 * 类型
+	 */
+	public Type type() default Type.content;
 
-    /**
-     * 引用,强数据,软数据(软数据不会影响系统运行)
-     */
+	/**
+	 * 引用,强数据,软数据(软数据不会影响系统运行)
+	 */
 
-    public Reference reference() default Reference.strong;
+	public Reference reference() default Reference.strong;
 
-    public enum Type {
-        element, content, log, custom;
-    }
+	public enum Type {
+		element, content, log, custom;
+	}
 
-    public enum Reference {
-        strong, soft;
-    }
+	public enum Reference {
+		strong, soft;
+	}
 }
