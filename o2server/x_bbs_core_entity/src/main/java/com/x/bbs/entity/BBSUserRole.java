@@ -21,7 +21,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * 
  * @author LIYI
  */
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSUserRole.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSUserRole.table + JpaObject.IndexNameMiddle
