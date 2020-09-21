@@ -57,15 +57,28 @@ MWF.xApplication.Selector.Identity = new Class({
                     unitList.push(unit.id ||  unit.distinguishedName || unit.unique || unit.levelName);
                 }
             }
-            o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( {"unitList" : unitList} , function (json) {
-                if (json.data.length){
-                    json.data.each( function(data){
-                        var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode );
-                        this.subCategorys.push(category);
-                    }.bind(this));
-                }
-                loadUnitSuccess();
-            }.bind(this), loadUnitFailure );
+
+            var loadUnit = function () {
+                o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( {"unitList" : unitList} , function (json) {
+                    if (json.data.length){
+                        json.data.each( function(data){
+                            var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode );
+                            this.subCategorys.push(category);
+                        }.bind(this));
+                    }
+                    loadUnitSuccess();
+                }.bind(this), loadUnitFailure );
+            }.bind(this)
+
+            if( this.options.isCheckStatus ){
+                this.caculateUnitNestedSubCount( unitList, function () {
+                    loadUnit()
+                }.bind(this))
+            }else{
+                loadUnit()
+            }
+
+
 
 
             // var unitLoaded = 0;
@@ -128,20 +141,29 @@ MWF.xApplication.Selector.Identity = new Class({
             //     }
             // }.bind(this));
 
+
             this.orgAction.listTopUnit(function(json){
-                json.data.each(function(data){
-                    if( !this.isExcluded( data ) ){
-                        var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode);
-                        this.subCategorys.push( category );
-                    }
-                }.bind(this));
+                var loadTopUnit = function () {
+                    json.data.each(function(data){
+                        if( !this.isExcluded( data ) ){
+                            var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode);
+                            this.subCategorys.push( category );
+                        }
+                    }.bind(this));
+                    afterLoadSelectItemFun();
+                }.bind(this);
 
-                // this.unitLoaded = true;
-                // if( this.includeLoaded ){
-                afterLoadSelectItemFun();
-                // }
-
-            }.bind(this));
+                if( this.options.isCheckStatus ){
+                    var unitList = json.data.map(function(data){
+                        return data.distinguishedName
+                    })
+                    this.caculateUnitNestedSubCount( unitList, function () {
+                        loadTopUnit()
+                    }.bind(this) )
+                }else{
+                    loadTopUnit()
+                }
+            }.bind(this))
         }
     },
 
@@ -265,12 +287,76 @@ MWF.xApplication.Selector.Identity = new Class({
         if( this.dutyDnList.length )keyObj.unitDutyList = this.dutyDnList;
 
         return units.length ? keyObj : key;
-    }
+    },
     //_listItemNext: function(last, count, callback){
     //    this.action.listRoleNext(last, count, function(json){
     //        if (callback) callback.apply(this, [json]);
     //    }.bind(this));
     //}
+
+    caculateUnitNestedSubCount : function ( unitList, callback ) {
+        if( this.allUnitObject )this.allUnitObject = [];
+        this.getExcludedIdentityCount( function () {
+            o2.Actions.load("x_organization_assemble_express").UnitActions.listWithUnitTree( { "unitList" : unitList }, function (json) {
+                json.data.each( function ( tree ) {
+                    this.caculateNestedCount( tree );
+                    if(callback)callback();
+                }.bind(this) )
+            }.bind(this) )
+        }.bind(this))
+    },
+    caculateNestedCount : function ( tree ) {
+        if( this.isExcluded( tree ) )return ;
+        if(!this.allUnitObject[ tree.levelName ])this.allUnitObject[ tree.levelName ] = unitObject;
+
+        var count = tree.subDirectIdentityCount;
+        if( this.unitExcludedIdentityCount[ tree.levelName ] ){
+            tree.subDirectIdentityCount = (tree.subDirectIdentityCount || 0) - this.unitExcludedIdentityCount[ tree.levelName ];
+        }
+
+        var nameList = tree.levelName.split("/");
+        var names = [];
+        nameList.each( function (n) {
+            names.push( n );
+            var levelName = names.join("/");
+            var unitObject = this.allUnitObject[levelName];
+            if( unitObject )unitObject.subNestedIdentityCount = (unitObject.subNestedIdentityCount || 0) + count;
+        }.bind(this));
+        unitObject.subUnits.each( function (unit) {
+            this.caculateNestedCount( unit )
+        }.bind(this))
+    },
+    getExcludedIdentityCount : function (callback) {
+        if( !this.unitExcludedIdentityCount )this.unitExcludedIdentityCount = {};
+        if( !this.options.exclude || this.options.exclude.length === 0 ){
+            if( callback )callback();
+            return;
+        }
+        var list = [];
+        for( var i=0; i<this.options.exclude.length; i++ ){
+            var d = this.options.exclude[i];
+            if( typeOf( d ) === "object"){
+                if( d.unitLevelName ){
+                    this.unitExcludedIdentityCount[ d.unitLevelName ] = ( this.unitExcludedIdentityCount[ d.unitLevelName ] || 0 )+1;
+                }else{
+                    list.push( d.distinguishedName || d.id || d.unique )
+                }
+            }else{
+                list.push( d )
+            }
+        }
+        if( list.length > 0 ){
+            o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : list }, function (json) {
+                json.data.each( function (id) {
+                    this.unitExcludedIdentityCount[ id.unitLevelName ] = ( this.unitExcludedIdentityCount[ id.unitLevelName ] || 0 )+1;
+                }.bind(this))
+                if( callback )callback();
+            }.bind(this))
+        }else{
+            if( callback )callback();
+        }
+    }
+
 });
 
 
