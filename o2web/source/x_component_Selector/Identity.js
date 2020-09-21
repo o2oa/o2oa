@@ -19,9 +19,67 @@ MWF.xApplication.Selector.Identity = new Class({
         "selectAllEnable" : true,  //分类是否允许全选下一层
         "selectType" : "identity"
     },
-    loadSelectItems: function(addToNext){
-        debugger;
+    loadSelectItems : function(){
+        if( this.options.isCheckStatus ){
 
+            var unitList = [];
+            var groupList = [];
+
+            if( this.options.include.length > 0 ){
+                this.options.include.each( function () {
+
+                })
+            }
+
+            if(this.options.noUnit){
+                this.loadInclude(afterLoadSelectItemFun);
+            }else if (this.options.units.length){
+                var loadUnitSuccess = function () {
+                    this.unitLoaded = true;
+                    if( this.includeLoaded ){
+                        afterLoadSelectItemFun();
+                    }
+                }.bind(this);
+                var loadUnitFailure = loadUnitSuccess;
+
+                this.loadInclude( function () {
+                    this.includeLoaded = true;
+                    if( this.unitLoaded ){
+                        afterLoadSelectItemFun();
+                    }
+                }.bind(this));
+
+                var unitList = [];
+                for( var i=0 ; i<this.options.units.length; i++ ){
+                    var unit = this.options.units[i];
+                    if( typeOf( unit ) === "string" ){
+                        unitList.push(unit);
+                    }else if( typeOf(unit)==="object"){
+                        unitList.push(unit.id ||  unit.distinguishedName || unit.unique || unit.levelName);
+                    }
+                }
+
+
+            }else{
+
+                this.orgAction.listTopUnit(function(json){
+                    json.data.each(function(data){
+                        if( !this.isExcluded( data ) ){
+                            var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode);
+                            this.subCategorys.push( category );
+                        }
+                    }.bind(this));
+                }.bind(this))
+            }
+
+            this.caculateNestedSubCount( unitList, function () {
+                this._loadSelectItems()
+            }.bind(this))
+        }else{
+            this._loadSelectItems()
+        }
+    },
+    _loadSelectItems: function(addToNext){
         var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
         if( this.options.resultType === "person" ){
             if( this.titleTextNode ){
@@ -58,28 +116,15 @@ MWF.xApplication.Selector.Identity = new Class({
                 }
             }
 
-            var loadUnit = function () {
-                o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( {"unitList" : unitList} , function (json) {
-                    if (json.data.length){
-                        json.data.each( function(data){
-                            var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode );
-                            this.subCategorys.push(category);
-                        }.bind(this));
-                    }
-                    loadUnitSuccess();
-                }.bind(this), loadUnitFailure );
-            }.bind(this)
-
-            if( this.options.isCheckStatus ){
-                this.caculateUnitNestedSubCount( unitList, function () {
-                    loadUnit()
-                }.bind(this))
-            }else{
-                loadUnit()
-            }
-
-
-
+            o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( {"unitList" : unitList} , function (json) {
+                if (json.data.length){
+                    json.data.each( function(data){
+                        var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode );
+                        this.subCategorys.push(category);
+                    }.bind(this));
+                }
+                loadUnitSuccess();
+            }.bind(this), loadUnitFailure );
 
             // var unitLoaded = 0;
             //
@@ -141,28 +186,14 @@ MWF.xApplication.Selector.Identity = new Class({
             //     }
             // }.bind(this));
 
-
             this.orgAction.listTopUnit(function(json){
-                var loadTopUnit = function () {
-                    json.data.each(function(data){
-                        if( !this.isExcluded( data ) ){
-                            var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode);
-                            this.subCategorys.push( category );
-                        }
-                    }.bind(this));
-                    afterLoadSelectItemFun();
-                }.bind(this);
-
-                if( this.options.isCheckStatus ){
-                    var unitList = json.data.map(function(data){
-                        return data.distinguishedName
-                    })
-                    this.caculateUnitNestedSubCount( unitList, function () {
-                        loadTopUnit()
-                    }.bind(this) )
-                }else{
-                    loadTopUnit()
-                }
+                json.data.each(function(data){
+                    if( !this.isExcluded( data ) ){
+                        var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode);
+                        this.subCategorys.push( category );
+                    }
+                }.bind(this));
+                afterLoadSelectItemFun();
             }.bind(this))
         }
     },
@@ -294,24 +325,82 @@ MWF.xApplication.Selector.Identity = new Class({
     //    }.bind(this));
     //}
 
-    caculateUnitNestedSubCount : function ( unitList, callback ) {
-        if( this.allUnitObject )this.allUnitObject = [];
-        this.getExcludedIdentityCount( function () {
-            o2.Actions.load("x_organization_assemble_express").UnitActions.listWithUnitTree( { "unitList" : unitList }, function (json) {
-                json.data.each( function ( tree ) {
-                    this.caculateNestedCount( tree );
-                    if(callback)callback();
-                }.bind(this) )
+    caculateNestedSubCount : function(unitList, groupList, callback){
+        var unitLoaded, groupLoaded, excludeLoaded;
+        var unitTree, groupTree;
+
+        if( !this.allUnitObject )this.allUnitObject = {};
+        if( !this.allGroupObject )this.allGroupObject = {};
+
+        var caculate = function () {
+            if( unitLoaded && groupLoaded && excludeLoaded ){
+
+                if( unitTree && unitTree.length ){
+                    unitTree.each( function ( tree ) {
+                        this.caculateUnitNestedCount( tree );
+                    }.bind(this) );
+                }
+
+                if( groupTree && groupTree.length ){
+                    groupTree.each( function ( tree ) {
+                        this.caculateGroupNestedCount( tree );
+                    }.bind(this) );
+                }
+
+                if(callback)callback();
+
+            }
+        }.bind(this);
+
+        this.getExcludedIdentityCount(function () {
+            excludeLoaded = true;
+            caculate();
+        }.bind(this));
+
+        if( unitList && unitList.length > 0 ){
+            o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitTree( { "unitList" : unitList }, function (json) {
+                unitTree = json.data;
+                unitLoaded = true;
+                caculate();
             }.bind(this) )
-        }.bind(this))
+        }else{
+            unitLoaded = true;
+            caculate();
+        }
+
+        if( groupList && groupList.length > 0 ){
+            o2.Actions.load("x_organization_assemble_express").GroupAction.listWithGroupTree( { "groupList" : groupList }, function (json) {
+                groupTree = json.data;
+                groupLoaded = true;
+                caculate();
+            }.bind(this) )
+        }else{
+            groupLoaded = true;
+            caculate();
+        }
     },
-    caculateNestedCount : function ( tree ) {
-        if( this.isExcluded( tree ) )return ;
-        if(!this.allUnitObject[ tree.levelName ])this.allUnitObject[ tree.levelName ] = unitObject;
+    caculateGroupNestedCount : function( tree, parentName ){
+        if( this.isExcluded( tree ) )return;
+        var levelName = parentName ? ( parentName + "/" + tree.distinguishedName.split("@")[0] ) : tree.distinguishedName.split("@")[0];
+        if(!this.allGroupObject[ levelName ])this.allGroupObject[ levelName ] = tree;
+
+        tree.subUnits.each( function (unit) {
+            this.caculateUnitNestedCount( unit )
+        }.bind(this))
+
+        tree.subGroups.each( function (group) {
+            this.caculateGroupNestedCount( group, levelName );
+        }.bind(this))
+
+    },
+
+    caculateUnitNestedCount : function ( tree ) {
+        if( this.isExcluded( tree ) )return;
+        if(!this.allUnitObject[ tree.levelName ])this.allUnitObject[ tree.levelName ] = tree;
 
         var count = tree.subDirectIdentityCount;
         if( this.unitExcludedIdentityCount[ tree.levelName ] ){
-            tree.subDirectIdentityCount = (tree.subDirectIdentityCount || 0) - this.unitExcludedIdentityCount[ tree.levelName ];
+            count = (count || 0) - this.unitExcludedIdentityCount[ tree.levelName ];
         }
 
         var nameList = tree.levelName.split("/");
@@ -322,8 +411,8 @@ MWF.xApplication.Selector.Identity = new Class({
             var unitObject = this.allUnitObject[levelName];
             if( unitObject )unitObject.subNestedIdentityCount = (unitObject.subNestedIdentityCount || 0) + count;
         }.bind(this));
-        unitObject.subUnits.each( function (unit) {
-            this.caculateNestedCount( unit )
+        tree.subUnits.each( function (unit) {
+            this.caculateUnitNestedCount( unit )
         }.bind(this))
     },
     getExcludedIdentityCount : function (callback) {
@@ -349,7 +438,7 @@ MWF.xApplication.Selector.Identity = new Class({
             o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : list }, function (json) {
                 json.data.each( function (id) {
                     this.unitExcludedIdentityCount[ id.unitLevelName ] = ( this.unitExcludedIdentityCount[ id.unitLevelName ] || 0 )+1;
-                }.bind(this))
+                }.bind(this));
                 if( callback )callback();
             }.bind(this))
         }else{
@@ -538,7 +627,13 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         }).inject(this.container);
     },
     _getShowName: function(){
-        return this.data.name;
+        return "" + this._getTotalCount() + "-" + this.data.name ;
+    },
+    _getTotalCount : function(){
+        debugger;
+        var unit = this.selector.allUnitObject[this.data.levelName];
+        var count = unit ? unit.subNestedIdentityCount : "n";
+        return count;
     },
     _setIcon: function(){
         var style = this.selector.options.style;
