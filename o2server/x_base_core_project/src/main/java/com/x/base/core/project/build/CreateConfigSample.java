@@ -27,7 +27,6 @@ import com.x.base.core.project.config.Components;
 import com.x.base.core.project.config.ConfigObject;
 import com.x.base.core.project.config.Dingding;
 import com.x.base.core.project.config.DumpRestoreData;
-import com.x.base.core.project.config.DumpRestoreStorage;
 import com.x.base.core.project.config.Exmail;
 import com.x.base.core.project.config.LogLevel;
 import com.x.base.core.project.config.Meeting;
@@ -64,7 +63,7 @@ public class CreateConfigSample {
 		classes.add(Components.class);
 		classes.add(Dingding.class);
 		classes.add(DumpRestoreData.class);
-		classes.add(DumpRestoreStorage.class);
+		// classes.add(DumpRestoreStorage.class);
 		classes.add(Exmail.class);
 		classes.add(LogLevel.class);
 		classes.add(Meeting.class);

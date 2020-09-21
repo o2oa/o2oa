@@ -28,7 +28,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * 
  * @author LIYI
  */
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSUserInfo.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSUserInfo.table + JpaObject.IndexNameMiddle
@@ -180,7 +180,7 @@ public class BBSUserInfo extends SliceJpaObject {
 	@FieldDescribe("上次访问时间")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + lastVisitTime_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@CheckPersist(allowEmpty = true)
 	private Date lastVisitTime = null;
 
 	public static final String lastOperationTime_FIELDNAME = "lastOperationTime";

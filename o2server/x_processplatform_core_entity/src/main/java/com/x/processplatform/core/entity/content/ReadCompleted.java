@@ -40,7 +40,7 @@ import org.apache.openjpa.persistence.jdbc.Strategy;
  *
  */
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.ReadCompleted.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Content.ReadCompleted.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -169,7 +169,7 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 		}
 		return this.properties;
 	}
-	
+
 	public void setProperties(ReadCompletedProperties properties) {
 		this.properties = properties;
 	}
@@ -1145,7 +1145,5 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 	public void setCurrentActivityName(String currentActivityName) {
 		this.currentActivityName = currentActivityName;
 	}
-
- 
 
 }
