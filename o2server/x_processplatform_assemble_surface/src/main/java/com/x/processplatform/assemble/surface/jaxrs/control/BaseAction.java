@@ -5,7 +5,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	public static class Control extends GsonPropertyObject {
+	protected static class AbstractControl extends GsonPropertyObject {
 		/* 是否可以看到 */
 		private Boolean allowVisit = false;
 		/* 是否可以直接流转 */
