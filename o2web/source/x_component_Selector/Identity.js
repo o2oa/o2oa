@@ -193,8 +193,13 @@ MWF.xApplication.Selector.Identity = new Class({
                         this.subCategorys.push( category );
                     }
                 }.bind(this));
+
+                // this.unitLoaded = true;
+                // if( this.includeLoaded ){
                 afterLoadSelectItemFun();
-            }.bind(this))
+                // }
+
+            }.bind(this));
         }
     },
 
