@@ -304,7 +304,7 @@ public class GroupAction extends StandardJaxrsAction {
 	@Path("list/group/tree")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void ListWithGroupTree(@Suspended final AsyncResponse asyncResponse,
+	public void listWithGroupTree(@Suspended final AsyncResponse asyncResponse,
 											 @Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<List<ActionListWithGroupTree.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
