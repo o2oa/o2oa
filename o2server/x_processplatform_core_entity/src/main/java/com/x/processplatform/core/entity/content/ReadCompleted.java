@@ -233,7 +233,6 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String applicationAlias_FIELDNAME = "applicationAlias";
 	@FieldDescribe("应用别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + applicationAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + applicationAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String applicationAlias;
 
@@ -254,7 +253,6 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String processAlias_FIELDNAME = "processAlias";
 	@FieldDescribe("流程别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + processAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + processAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processAlias;
 
