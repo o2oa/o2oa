@@ -19,6 +19,9 @@ public class DumpRestoreData extends ConfigObject {
 
 	public static final String TYPE_FULL = "full";
 	public static final String TYPE_LITE = "lite";
+	public static final String RESTOREOVERRIDE_CLEAN = "clean";
+	public static final String RESTOREOVERRIDE_SKIPEXISTED = "skipExisted";
+
 	public static final String DEFAULT_TYPE = TYPE_LITE;
 	public static final Boolean DEFAULT_PARALLEL = true;
 	public static final Boolean DEFAULT_REDISTRIBUTE = true;
@@ -54,6 +57,9 @@ public class DumpRestoreData extends ConfigObject {
 
 	@FieldDescribe("无法获取storage是否升起错误.")
 	private Boolean exceptionInvalidStorage;
+
+	@FieldDescribe("数据导入方式,clean:清空重新导入,skipExisted:如果有相同id的数据跳过.默认方式为clean.")
+	private String restoreOverride;
 
 	public Boolean getRedistribute() {
 		return BooleanUtils.isNotFalse(redistribute);
@@ -117,6 +123,14 @@ public class DumpRestoreData extends ConfigObject {
 
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+
+	public String getRestoreOverride() {
+		return restoreOverride;
+	}
+
+	public void setRestoreOverride(String restoreOverride) {
+		this.restoreOverride = restoreOverride;
 	}
 
 }

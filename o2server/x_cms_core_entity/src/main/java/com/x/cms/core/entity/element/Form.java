@@ -25,7 +25,7 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.PersistenceProperties;
 
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.Form.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.Form.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

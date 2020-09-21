@@ -36,7 +36,7 @@ public class CreateSample {
 		classes.add(Collect.class);
 		classes.add(Dingding.class);
 		classes.add(DumpRestoreData.class);
-		classes.add(DumpRestoreStorage.class);
+		//classes.add(DumpRestoreStorage.class);
 		classes.add(LogLevel.class);
 		classes.add(Meeting.class);
 		classes.add(Messages.class);
