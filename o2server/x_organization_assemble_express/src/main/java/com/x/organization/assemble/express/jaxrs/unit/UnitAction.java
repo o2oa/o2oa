@@ -573,7 +573,7 @@ public class UnitAction extends StandardJaxrsAction {
 	@Path("list/unit/tree")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void ListWithUnitTree(@Suspended final AsyncResponse asyncResponse,
+	public void listWithUnitTree(@Suspended final AsyncResponse asyncResponse,
 								  @Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<List<ActionListWithUnitTree.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
