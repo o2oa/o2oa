@@ -740,23 +740,23 @@ public class Config {
 		return instance().dumpRestoreData;
 	}
 
-	public DumpRestoreStorage dumpRestoreStorage;
-
-	public static DumpRestoreStorage dumpRestoreStorage() throws Exception {
-		if (null == instance().dumpRestoreStorage) {
-			synchronized (Config.class) {
-				if (null == instance().dumpRestoreStorage) {
-					DumpRestoreStorage obj = BaseTools.readConfigObject(PATH_CONFIG_DUMPRESTORESTORAGE,
-							DumpRestoreStorage.class);
-					if (null == obj) {
-						obj = DumpRestoreStorage.defaultInstance();
-					}
-					instance().dumpRestoreStorage = obj;
-				}
-			}
-		}
-		return instance().dumpRestoreStorage;
-	}
+//	public DumpRestoreStorage dumpRestoreStorage;
+//
+//	public static DumpRestoreStorage dumpRestoreStorage() throws Exception {
+//		if (null == instance().dumpRestoreStorage) {
+//			synchronized (Config.class) {
+//				if (null == instance().dumpRestoreStorage) {
+//					DumpRestoreStorage obj = BaseTools.readConfigObject(PATH_CONFIG_DUMPRESTORESTORAGE,
+//							DumpRestoreStorage.class);
+//					if (null == obj) {
+//						obj = DumpRestoreStorage.defaultInstance();
+//					}
+//					instance().dumpRestoreStorage = obj;
+//				}
+//			}
+//		}
+//		return instance().dumpRestoreStorage;
+//	}
 
 	public String initialScriptText;
 
