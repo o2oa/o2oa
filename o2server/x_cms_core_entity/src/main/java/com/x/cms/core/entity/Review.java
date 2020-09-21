@@ -23,7 +23,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Review.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Review.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -598,9 +598,9 @@ public class Review extends SliceJpaObject {
 		return sequence_FIELDNAME;
 	}
 
-	private String getSequenceString(String sequenceString ) {
-		if( StringUtils.length(sequenceString) > 60 ){
-			return StringUtils.substring(sequenceString, 0, 60 );
+	private String getSequenceString(String sequenceString) {
+		if (StringUtils.length(sequenceString) > 60) {
+			return StringUtils.substring(sequenceString, 0, 60);
 		}
 		return sequenceString;
 	}

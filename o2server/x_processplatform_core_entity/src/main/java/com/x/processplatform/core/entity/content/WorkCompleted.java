@@ -33,7 +33,7 @@ import org.apache.openjpa.persistence.jdbc.Index;
 import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 100, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.WorkCompleted.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Content.WorkCompleted.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -137,7 +137,7 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		}
 		return this.properties;
 	}
-	
+
 	public void setProperties(WorkCompletedProperties properties) {
 		this.properties = properties;
 	}
@@ -1052,8 +1052,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	public void setMerged(Boolean merged) {
 		this.merged = merged;
 	}
-
- 
 
 	public String getActivity() {
 		return activity;
