@@ -3853,16 +3853,25 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 _self.app.action.setReaded(function () {
                     this.fireEvent("afterReaded");
                     _self.app.reload();
+                    if (layout.mobile) {
+
+                        //移动端页面关闭
+                        _self.finishOnMobile()
+                    } else {
+                        this.close();
+                    }
                 }.bind(_self), null, read.id, read);
             } else {
                 _self.app.reload();
+                if (layout.mobile) {
+
+                    //移动端页面关闭
+                    _self.finishOnMobile()
+                } else {
+                    this.close();
+                }
             }
-            if (layout.mobile) {
-                //移动端页面关闭
-                _self.finishOnMobile()
-            } else {
-                this.close();
-            }
+            
         }, function () {
             this.close();
         }, null, this.app.content, this.json.confirmStyle);
@@ -3918,11 +3927,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var _self = this;
         //新建检查
         this.workAction.checkDraft(this.businessData.work.id, function (json) {
-            var str = JSON.stringify(json);
-            // console.log("===========success==============");
+            // var str = JSON.stringify(json);
+
             _self.finishOnMobileReal();
         }.bind(this), function () {
-            console.log("===========fail..==============");
+
             _self.finishOnMobileReal();
         }, false);
 
