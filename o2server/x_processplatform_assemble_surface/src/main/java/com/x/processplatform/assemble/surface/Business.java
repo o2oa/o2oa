@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
@@ -1228,7 +1229,8 @@ public class Business {
 		}
 		try (ZipOutputStream zos = new ZipOutputStream(os)) {
 			for (Map.Entry<String, Attachment> entry : filePathMap.entrySet()) {
-				zos.putNextEntry(new ZipEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(), new String[]{"/","\\"}, new String[]{"-","-"}))));
+				zos.putNextEntry(new ZipEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
+						new String[] { "/", "\\" }, new String[] { "-", "-" }))));
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 						entry.getValue().getStorage());
 				try (ByteArrayOutputStream os1 = new ByteArrayOutputStream()) {
@@ -1241,7 +1243,8 @@ public class Business {
 
 			if (otherAttMap != null) {
 				for (Map.Entry<String, byte[]> entry : otherAttMap.entrySet()) {
-					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(), new String[]{"/","\\"}, new String[]{"-","-"})));
+					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(), new String[] { "/", "\\" },
+							new String[] { "-", "-" })));
 					zos.write(entry.getValue());
 				}
 			}

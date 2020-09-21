@@ -42,10 +42,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class ActionManageRetract extends BaseAction {
+class V2ManageRetract extends BaseAction {
 
 	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionManageRetract.class);
+	private static Logger logger = LoggerFactory.getLogger(V2ManageRetract.class);
 
 	private WorkLog workLog;
 	private TaskCompleted taskCompleted;
