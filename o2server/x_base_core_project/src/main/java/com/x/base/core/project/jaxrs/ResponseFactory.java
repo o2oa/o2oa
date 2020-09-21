@@ -1,6 +1,7 @@
 package com.x.base.core.project.jaxrs;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.Objects;
 import java.util.zip.CRC32;
 
@@ -9,14 +10,14 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.http.HttpHeader;
+
 import com.x.base.core.project.exception.CallbackPromptException;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.tools.DefaultCharset;
-
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.http.HttpHeader;
 
 public class ResponseFactory {
 

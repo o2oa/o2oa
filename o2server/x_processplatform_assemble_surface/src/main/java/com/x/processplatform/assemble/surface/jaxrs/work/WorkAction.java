@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -995,23 +996,49 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员替代person操作工作召回。", action = ActionManageRetract.class)
+	@JaxrsMethodDescribe(value = "管理员替代person操作工作召回。", action = V2ManageRetract.class)
 	@PUT
 	@Path("v2/{id}/person/{person}/retract/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageRetract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void V2ManageRetract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("召回工作已办人员（根据流转记录确认）") @PathParam("person") String person, JsonElement jsonElement) {
-		ActionResult<ActionManageRetract.Wo> result = new ActionResult<>();
+		ActionResult<V2ManageRetract.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionManageRetract().execute(effectivePerson, id, person);
+			result = new V2ManageRetract().execute(effectivePerson, id, person);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "V2_根据Work或workCompleted取得内容.", action = V2GetWorkOrWorkCompleted.class)
+	@GET
+	@Path("v2/workorworkcompleted/{workOrWorkCompleted}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2GetWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
+		// Date s = new Date();
+		ActionResult<V2GetWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		// System.out.println("!!!!!!!!!!!!!!!!V2GetWorkOrWorkCompleted1:" + ((new
+		// Date()).getTime() - s.getTime()));
+		try {
+			result = new V2GetWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
+			// System.out.println("!!!!!!!!!!!!!!!!V2GetWorkOrWorkCompleted2:" + ((new
+			// Date()).getTime() - s.getTime()));
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		// System.out.println("!!!!!!!!!!!!!!!!V2GetWorkOrWorkCompleted3:" + ((new
+		// Date()).getTime() - s.getTime()));
 	}
 
 }

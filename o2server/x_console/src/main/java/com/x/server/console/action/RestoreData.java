@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
@@ -33,6 +34,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -41,6 +43,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
+
+import net.sf.ehcache.hibernate.management.impl.BeanUtils;
 
 public class RestoreData {
 
@@ -150,8 +155,11 @@ public class RestoreData {
 					throw new ExceptionDirectoryNotExist(directory);
 				}
 				StorageMappings storageMappings = Config.storageMappings();
-				this.clean(cls, em, storageMappings, cls.getAnnotation(ContainerEntity.class));
-				em.clear();
+				if (!Objects.equals(Config.dumpRestoreData().getRestoreOverride(),
+						DumpRestoreData.RESTOREOVERRIDE_SKIPEXISTED)) {
+					this.clean(cls, em, storageMappings, cls.getAnnotation(ContainerEntity.class));
+					em.clear();
+				}
 				List<Path> paths = this.list(directory);
 				paths.stream().forEach(o -> {
 					logger.print("restore {}/{} part of data:{}.", batch.getAndAdd(1), paths.size(), cls.getName());
@@ -160,6 +168,11 @@ public class RestoreData {
 						JsonArray raws = this.convert(o);
 						for (JsonElement json : raws) {
 							Object t = gson.fromJson(json, cls);
+							if (Objects.equals(Config.dumpRestoreData().getRestoreOverride(),
+									DumpRestoreData.RESTOREOVERRIDE_SKIPEXISTED)
+									&& (null != em.find(cls, BeanUtils.getBeanProperty(t, JpaObject.id_FIELDNAME)))) {
+								continue;
+							}
 							if (StorageObject.class.isAssignableFrom(cls)) {
 								Path sub = o.resolveSibling(FilenameUtils.getBaseName(o.getFileName().toString()));
 								this.binary(t, cls, sub, storageMappings);
