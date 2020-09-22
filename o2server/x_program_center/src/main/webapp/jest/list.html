@@ -93,7 +93,6 @@ appMap.set("com.x.base.core.project.x_teamwork_assemble_control", "团队");
 appMap.set("com.x.wcrm.assemble.control.x_wcrm_assemble_control", "WCRM管理");
 appMap.set("com.x.base.core.project.x_jpush_assemble_control", "极光推送");
 appMap.set("zoneland.unicom.bj.assemble.control.zoneland_unicom_bj_assemble_control", "北京联通单点");
-
     $(function() {
 	$.ajax({
 	    type : 'get',
@@ -136,10 +135,57 @@ appMap.set("zoneland.unicom.bj.assemble.control.zoneland_unicom_bj_assemble_cont
 	});
     });
 </script>
+
+<script>
+var entityMap = new Map();
+entityMap.set("x_attendance_core_entity", "考勤相关");
+entityMap.set("x_bbs_core_entity", "论坛相关");
+entityMap.set("x_calendar_core_entity", "日程管理相关");
+entityMap.set("x_cms_core_entity", "内容管理相关");
+entityMap.set("x_component_core_entity", "组件管理相关");
+entityMap.set("x_file_core_entity", "云文件相关");
+entityMap.set("x_general_core_entity","常用功能相关");
+entityMap.set("x_hotpic_core_entity", "热点信息相关");
+entityMap.set("x_jpush_core_entity", "极光推送");
+entityMap.set("x_meeting_core_entity", "会议管理相关");
+entityMap.set("x_message_core_entity", "消息通信相关");
+entityMap.set("x_mind_core_entity", "脑图模块相关");
+entityMap.set("x_okr_core_entity", "执行力相关");
+entityMap.set("x_organization_core_entity", "组织管理相关");
+entityMap.set("x_portal_core_entity", "门户");
+entityMap.set("x_processplatform_core_entity", "流程平台");
+entityMap.set("x_program_center_core_entity", "中心服务");
+entityMap.set("x_query_core_entity", "数据平台全文检索");
+entityMap.set("x_teamwork_core_entity", "团队");
+$(function() {
+	   $.getJSON('../describe/table/tableList.json?rd=' + Math.random(), function(json) {
+				var str = '<center id="title" style="font-size:32px; font-weight:bold;">O2OA Table structure URL</center>	<table border="1">';
+				
+				for(var key in json){
+					str += '<tr>'; 
+					if(typeof(entityMap.get(key)) == "undefined"){
+					   str += '<td>' + '</td>';
+					  }else{
+						str += '<td>' + entityMap.get(key) + '</td>';
+					  }			  
+					str += '<td>' + key + '</td>';
+					str += '<td>';
+					var url = "./listTableDetail.html?param="+ json[key]
+				    str += '<a href="'+url+'" target="_blank">' + json[key] + '</a><br/>'; ;
+					str += '</td>';
+					str += '</tr>';
+                }
+
+				str += '</table>';
+				$('#contentTable').html(str);
+			});
+  });
+</script>
 </head>
 
 <body style="font-size: 12px; font-family: Microsoft Yahei; margin: 0px">
-	<center id="title" style="font-size:32px; font-weight:bold">O2OA Service API URL</center>	
-	<div id="content" style="margin-top:10px">&nbsp;</div>
+	<center id="title" style="font-size:32px; font-weight:bold;">O2OA Service API URL</center>	
+	<div id="content" style="margin-top:10px;margin-left: 50px;float: left;">&nbsp;</div>
+	<div id="contentTable" style="margin-top:20px;margin-left: 50px;float: left;">&nbsp;</div>
 </body>
 </html>
