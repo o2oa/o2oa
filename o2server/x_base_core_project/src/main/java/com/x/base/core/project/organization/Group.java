@@ -8,6 +8,10 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class Group extends GsonPropertyObject {
 
+	@FieldDescribe("匹配字段")
+	private String matchKey;
+	@FieldDescribe("群组id")
+	private String id;
 	@FieldDescribe("群组名称")
 	private String name;
 	@FieldDescribe("群组标识")
@@ -26,6 +30,33 @@ public class Group extends GsonPropertyObject {
 	private List<String> unitList = new ArrayList<>();
 	@FieldDescribe("身份成员")
 	private List<String> identityList = new ArrayList<>();
+	@FieldDescribe("直接下级组织数量")
+	private Long subDirectGroupCount = 0L;
+
+	@FieldDescribe("直接下级用户数量")
+	private Long subDirectPersonCount = 0L;
+
+	@FieldDescribe("直接下级身份数量")
+	private Long subDirectIdentityCount = 0L;
+
+	@FieldDescribe("直接下级组织数量")
+	private Long subDirectOrgCount = 0L;
+
+	public String getMatchKey() {
+		return matchKey;
+	}
+
+	public void setMatchKey(String matchKey) {
+		this.matchKey = matchKey;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -97,5 +128,37 @@ public class Group extends GsonPropertyObject {
 
 	public void setIdentityList(List<String> identityList) {
 		this.identityList = identityList;
+	}
+
+	public Long getSubDirectGroupCount() {
+		return subDirectGroupCount;
+	}
+
+	public void setSubDirectGroupCount(Long subDirectGroupCount) {
+		this.subDirectGroupCount = subDirectGroupCount;
+	}
+
+	public Long getSubDirectPersonCount() {
+		return subDirectPersonCount;
+	}
+
+	public void setSubDirectPersonCount(Long subDirectPersonCount) {
+		this.subDirectPersonCount = subDirectPersonCount;
+	}
+
+	public Long getSubDirectIdentityCount() {
+		return subDirectIdentityCount;
+	}
+
+	public void setSubDirectIdentityCount(Long subDirectIdentityCount) {
+		this.subDirectIdentityCount = subDirectIdentityCount;
+	}
+
+	public Long getSubDirectOrgCount() {
+		return subDirectOrgCount;
+	}
+
+	public void setSubDirectOrgCount(Long subDirectOrgCount) {
+		this.subDirectOrgCount = subDirectOrgCount;
 	}
 }
