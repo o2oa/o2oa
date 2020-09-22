@@ -8,11 +8,9 @@ MWF.xApplication.AppMarketV2.RecommendContent = new Class({
         this.app = app;
         this.container = container;
         this.viewPath = this.app.path+this.app.options.style+"/"+this.options.view;
-        debugger;
         this.load();
     },
     load: function(){
-        debugger;
         this.container.loadHtml(this.viewPath, {"bind": {"lp": this.app.lp}, "module": this}, function(){
             this.loadRecommend(function(){
                 this.fireEvent("load");
@@ -21,7 +19,6 @@ MWF.xApplication.AppMarketV2.RecommendContent = new Class({
     },    
 
     loadRecommend: function(callback){
-        debugger;
         if (!this.isLoading){
             if (!this.topRecommendContentV){
                 this.topRecommendContentV = new MWF.xApplication.AppMarketV2.RecommendContent.Recommend(this, {
@@ -52,11 +49,9 @@ MWF.xApplication.AppMarketV2.RecommendContent.Recommend= new Class({
         
     },
     load: function(){
-        debugger;
         this.loadItemsRes();
     },
     loadItemsRes: function(){
-        debugger;
         this.actions.MarketAction.listPaging(this.page, this.pageSize, this.querydata,function(json){
             if (json.data && json.data.length){
                 this.loadItems(json.data);
@@ -82,12 +77,6 @@ MWF.xApplication.AppMarketV2.RecommendContent.Recommend= new Class({
         this.content.isLoading = false;
     },
     loadItems: function(data){
-        debugger;
-        //var recommendWidth = this.content.topRecommendContent.clientWidth;
-        //var recommendLeftWidth = (recommendWidth - 80-10)*0.65;
-        //var recommendRightWidth = (recommendWidth - 80-10)*0.35;
-        //this.content.leftCoverNode.setStyle("width",recommendLeftWidth+"px");
-        //this.content.rightCoverNode.setStyle("width",recommendRightWidth+"px");
         data.each(function(d, i){
             this.loadItem(d, i);
         }.bind(this));
@@ -95,7 +84,6 @@ MWF.xApplication.AppMarketV2.RecommendContent.Recommend= new Class({
     loadItem: function(d, i){
         var app;
         var apppar;
-        debugger;
         if (i==0){
             app = this.content.recommendBiggestPic;
             apptext = this.content.recommendBiggestTitle;
@@ -113,7 +101,6 @@ MWF.xApplication.AppMarketV2.RecommendContent.Recommend= new Class({
         }
         //获取对应indexPic图片
         this.actions.MarketAction.getCoverPic(d.id,function(json){
-            debugger;
             if (json.data && json.data.value){
                 app.setStyle("background-image", "url(data:image/png;base64,"+json.data.value+")");
             }
@@ -140,6 +127,7 @@ MWF.xApplication.AppMarketV2.RecommendContent.Recommend= new Class({
         debugger;
         var apppar = {};
         apppar["appid"] = d.id;
+        apppar["appname"] = d.name;
         layout.openApplication(e, "AppMarketV2.Application", apppar);
     },
 
