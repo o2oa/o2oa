@@ -8,6 +8,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class Person extends GsonPropertyObject {
 
+	@FieldDescribe("匹配字段")
+	private String matchKey;
 	@FieldDescribe("数据库主键")
 	private String id;
 	@FieldDescribe("个人名称")
@@ -52,6 +54,14 @@ public class Person extends GsonPropertyObject {
 	private String zhengwuDingdingId;
 	@FieldDescribe("华为WeLink id")
 	private String weLinkId;
+
+	public String getMatchKey() {
+		return matchKey;
+	}
+
+	public void setMatchKey(String matchKey) {
+		this.matchKey = matchKey;
+	}
 
 	public String getWeLinkId() {
 		return weLinkId;
