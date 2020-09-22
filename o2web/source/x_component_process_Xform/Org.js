@@ -118,18 +118,29 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         }
         if (this.json.defaultValue && this.json.defaultValue.code){
             var fd = this.form.Macro.exec(this.json.defaultValue.code, this);
-            if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
-            fd.each(function(fdd){
-                if (fdd){
-                    if (typeOf(fdd)==="string"){
-                        var data;
-                        this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, fdd, false);
-                        values.push(data);
-                    }else{
-                        values.push(fdd);
+
+            if (o2.typeOf(fd)=="function"){
+                debugger;
+                // value.addResolve(function(v){
+                //     this._setBusinessData(v);
+                //     if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
+                //     if (this.readonly || this.json.isReadonly) this.node.set("text", v);
+                // }.bind(this));
+                return {"values": values, "resolve": fd};
+            }else{
+                if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
+                fd.each(function(fdd){
+                    if (fdd){
+                        if (typeOf(fdd)==="string"){
+                            var data;
+                            this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, fdd, false);
+                            values.push(data);
+                        }else{
+                            values.push(fdd);
+                        }
                     }
-                }
-            }.bind(this));
+                }.bind(this));
+            }
         }
         if (this.json.count>0){
             return values.slice(0, this.json.count);
@@ -855,6 +866,29 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         return node;
     },
     _setValue: function(value){
+        debugger;
+        if (o2.typeOf(value)==="object" && value.resolve){
+            var values = value.values;
+            value.resolve.addResolve(function(fd){
+                if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
+                fd.each(function(fdd){
+                    if (fdd){
+                        if (typeOf(fdd)==="string"){
+                            var data;
+                            this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, fdd, false);
+                            values.push(data);
+                        }else{
+                            values.push(fdd);
+                        }
+                    }
+                }.bind(this));
+                this.__setValue(values);
+            }.bind(this));
+        }else{
+            this.__setValue(value);
+        }
+    },
+    __setValue: function(value){
         if (value.length==1 && !(value[0])) value=[];
         var values = [];
         var comboxValues = [];
