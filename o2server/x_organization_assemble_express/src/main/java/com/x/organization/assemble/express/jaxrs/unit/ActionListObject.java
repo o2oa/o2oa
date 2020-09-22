@@ -72,6 +72,9 @@ class ActionListObject extends BaseAction {
 	public static class Wo extends Unit {
 		private static final long serialVersionUID = -7913547275132005308L;
 
+		@FieldDescribe("匹配字段")
+		private String matchKey;
+
 		@FieldDescribe("直接下级组织数量")
 		private Long subDirectUnitCount = 0L;
 
@@ -80,6 +83,14 @@ class ActionListObject extends BaseAction {
 
 		static WrapCopier<Unit, Wo> copier = WrapCopierFactory.wo(Unit.class, Wo.class, null,
 				ListTools.toList(JpaObject.FieldsInvisible,Unit.controllerList_FIELDNAME,Unit.inheritedControllerList_FIELDNAME));
+
+		public String getMatchKey() {
+			return matchKey;
+		}
+
+		public void setMatchKey(String matchKey) {
+			this.matchKey = matchKey;
+		}
 
 		public Long getSubDirectUnitCount() {
 			return subDirectUnitCount;
@@ -100,18 +111,22 @@ class ActionListObject extends BaseAction {
 	}
 
 	private List<Wo> list(Business business, Wi wi) throws Exception {
-		List<Unit> os = business.unit().pick(wi.getUnitList());
-		List<Wo> wos = Wo.copier.copy(os);
-
-		for (Wo wo : wos) {
-			if (StringUtils.isNotEmpty(wo.getSuperior())) {
-				Unit superior = business.unit().pick(wo.getSuperior());
-				if (null != superior) {
-					wo.setSuperior(superior.getDistinguishedName());
+		List<Wo> wos = new ArrayList<>();
+		for (String str : wi.getUnitList()) {
+			Unit o = business.unit().pick(str);
+			if(o!=null){
+				Wo wo = Wo.copier.copy(o);
+				wo.setMatchKey(str);
+				if (StringUtils.isNotEmpty(wo.getSuperior())) {
+					Unit superior = business.unit().pick(wo.getSuperior());
+					if (null != superior) {
+						wo.setSuperior(superior.getDistinguishedName());
+					}
 				}
+				wo.setSubDirectIdentityCount(this.countSubDirectIdentity(business, wo));
+				wo.setSubDirectUnitCount(this.countSubDirectUnit(business, wo));
+				wos.add(wo);
 			}
-			wo.setSubDirectIdentityCount(this.countSubDirectIdentity(business, wo));
-			wo.setSubDirectUnitCount(this.countSubDirectUnit(business, wo));
 		}
 		return wos;
 	}
