@@ -186,9 +186,7 @@ public class ApplicationServerTools extends JettySeverTools {
 					}
 					if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
 						FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
-						webApp.addFilter(denialOfServiceFilterHolder, "/jest/index.html",
-								EnumSet.of(DispatcherType.REQUEST));
-						webApp.addFilter(denialOfServiceFilterHolder, "/jest/list.html",
+						webApp.addFilter(denialOfServiceFilterHolder, "/jest/*",
 								EnumSet.of(DispatcherType.REQUEST));
 					}
 					handlers.addHandler(webApp);
