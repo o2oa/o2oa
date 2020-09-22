@@ -207,15 +207,46 @@
     this.o2.uuid = _uuid;
 
 
-    var _runCallback = function(callback, key, par){
-        if (typeOf(callback).toLowerCase() === 'function'){
-            if (key.toLowerCase()==="success") callback.apply(callback, par);
+    var _runCallback = function(callback, key, par, bind){
+        var b = bind || callback;
+        var type = o2.typeOf(callback).toLowerCase();
+        if (!key) key = "success";
+
+        if (key.toLowerCase()==="success" && type==="function"){
+            callback.apply(b, par);
         }else{
-            if (typeOf(callback).toLowerCase()==='object'){
-                var name = ("on-"+key).camelCase();
-                if (callback[name]) callback[name].apply(callback, par);
+            if (type==="function" || type==="object"){
+                if (callback[key]){
+                    callback[key].apply(b, par);
+                }else{
+                    var name = ("on-"+key).camelCase();
+                    if (callback[name]) callback[name].apply(b, par);
+                }
             }
         }
+
+
+        // if (typeOf(callback).toLowerCase() === 'function'){
+        //     if (key.toLowerCase()==="success"){
+        //         callback.apply(b, par);
+        //     }else{
+        //         if (callback[key]){
+        //             callback[key].apply(b, par);
+        //         }else{
+        //             var name = ("on-"+key).camelCase();
+        //             if (callback[name]) callback[name].apply(b, par);
+        //         }
+        //     }
+        // }else{
+        //     if (typeOf(callback).toLowerCase()==='object'){
+        //         if (callback[key]){
+        //             callback[key].apply(b, par);
+        //         }else{
+        //             var name = ("on-"+key).camelCase();
+        //             if (callback[name]) callback[name].apply(b, par);
+        //         }
+        //     }
+        // }
     };
     this.o2.runCallback = _runCallback;
 
@@ -967,11 +998,13 @@
 (function (){
     var _Class = {
         create: function(options) {
-            var newClass = function() {
-                this.initialize.apply(this, arguments);
-            };
-            _copyPrototype(newClass, options);
-            return newClass;
+            // var newClass = function() {
+            //     this.initialize.apply(this, arguments);
+            // };
+            return _copyPrototype(function() {
+                return this.initialize.apply(this, arguments) || this;
+            }, options);
+            //return newClass;
         }
     };
     var _copyPrototype = function (currentNS, props){
@@ -1260,6 +1293,71 @@
         // /jaxrs\/authentication/ig
         // /jaxrs\/statement\/.*\/execute\/page\/.*\/size\/.*/ig
     ];
+    // _restful_bak = function(method, address, data, callback, async, withCredentials, cache){
+    //     var loadAsync = (async !== false);
+    //     var credentials = (withCredentials !== false);
+    //     address = (address.indexOf("?")!==-1) ? address+"&v="+o2.version.v : address+"?v="+o2.version.v;
+    //     //var noCache = cache===false;
+    //     var noCache = !cache;
+    //
+    //
+    //     //if (Browser.name == "ie")
+    //     if (_cacheUrls.length){
+    //         for (var i=0; i<_cacheUrls.length; i++){
+    //             _cacheUrls[i].lastIndex = 0;
+    //             if (_cacheUrls[i].test(address)){
+    //                 noCache = false;
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     //var noCache = false;
+    //     var res = new Request.JSON({
+    //         url: o2.filterUrl(address),
+    //         secure: false,
+    //         method: method,
+    //         emulation: false,
+    //         noCache: noCache,
+    //         async: loadAsync,
+    //         withCredentials: credentials,
+    //         onSuccess: function(responseJSON, responseText){
+    //             // var xToken = this.getHeader("authorization");
+    //             // if (!xToken) xToken = this.getHeader("x-token");
+    //             var xToken = this.getHeader("x-token");
+    //             if (xToken){
+    //                 if (window.layout){
+    //                     if (!layout.session) layout.session = {};
+    //                     layout.session.token = xToken;
+    //                 }
+    //             }
+    //             o2.runCallback(callback, "success", [responseJSON]);
+    //         },
+    //         onFailure: function(xhr){
+    //             o2.runCallback(callback, "requestFailure", [xhr]);
+    //         }.bind(this),
+    //         onError: function(text, error){
+    //             o2.runCallback(callback, "error", [text, error]);
+    //         }.bind(this)
+    //     });
+    //
+    //     res.setHeader("Content-Type", "application/json; charset=utf-8");
+    //     res.setHeader("Accept", "text/html,application/json,*/*");
+    //     if (window.layout) {
+    //         if (layout["debugger"]){
+    //             res.setHeader("x-debugger", "true");
+    //         }
+    //         if (layout.session && layout.session.user){
+    //             if (layout.session.user.token) {
+    //                 res.setHeader("x-token", layout.session.user.token);
+    //                 res.setHeader("authorization", layout.session.user.token);
+    //             }
+    //         }
+    //     }
+    //     //Content-Type	application/x-www-form-urlencoded; charset=utf-8
+    //     res.send(data);
+    //     return res;
+    // };
+
     _restful = function(method, address, data, callback, async, withCredentials, cache){
         var loadAsync = (async !== false);
         var credentials = (withCredentials !== false);
@@ -1278,51 +1376,83 @@
                 }
             }
         }
+
+        var useWebWorker = (window.layout && layout.config && config.useWebWorker);
         //var noCache = false;
-        var res = new Request.JSON({
-            url: o2.filterUrl(address),
-            secure: false,
-            method: method,
-            emulation: false,
-            noCache: noCache,
-            async: loadAsync,
-            withCredentials: credentials,
-            onSuccess: function(responseJSON, responseText){
-                // var xToken = this.getHeader("authorization");
-                // if (!xToken) xToken = this.getHeader("x-token");
-                var xToken = this.getHeader("x-token");
-                if (xToken){
-                    if (window.layout){
-                        if (!layout.session) layout.session = {};
-                        layout.session.token = xToken;
+        if (!loadAsync || !useWebWorker){
+            var res = new Request.JSON({
+                url: o2.filterUrl(address),
+                secure: false,
+                method: method,
+                emulation: false,
+                noCache: noCache,
+                async: loadAsync,
+                withCredentials: credentials,
+                onSuccess: function(responseJSON, responseText){
+                    // var xToken = this.getHeader("authorization");
+                    // if (!xToken) xToken = this.getHeader("x-token");
+                    var xToken = this.getHeader("x-token");
+                    if (xToken){
+                        if (window.layout){
+                            if (!layout.session) layout.session = {};
+                            layout.session.token = xToken;
+                        }
+                    }
+                    o2.runCallback(callback, "success", [responseJSON]);
+                },
+                onFailure: function(xhr){
+                    o2.runCallback(callback, "requestFailure", [xhr]);
+                }.bind(this),
+                onError: function(text, error){
+                    o2.runCallback(callback, "error", [text, error]);
+                }.bind(this)
+            });
+
+            res.setHeader("Content-Type", "application/json; charset=utf-8");
+            res.setHeader("Accept", "text/html,application/json,*/*");
+            if (window.layout) {
+                if (layout["debugger"]){
+                    res.setHeader("x-debugger", "true");
+                }
+                if (layout.session && layout.session.user){
+                    if (layout.session.user.token) {
+                        res.setHeader("x-token", layout.session.user.token);
+                        res.setHeader("authorization", layout.session.user.token);
                     }
                 }
-                o2.runCallback(callback, "success", [responseJSON]);
-            },
-            onFailure: function(xhr){
-                o2.runCallback(callback, "requestFailure", [xhr]);
-            }.bind(this),
-            onError: function(text, error){
-                o2.runCallback(callback, "error", [text, error]);
-            }.bind(this)
-        });
-
-        res.setHeader("Content-Type", "application/json; charset=utf-8");
-        res.setHeader("Accept", "text/html,application/json,*/*");
-        if (window.layout) {
-            if (layout["debugger"]){
-                res.setHeader("x-debugger", "true");
             }
-            if (layout.session && layout.session.user){
-                if (layout.session.user.token) {
-                    res.setHeader("x-token", layout.session.user.token);
-                    res.setHeader("authorization", layout.session.user.token);
+            //Content-Type	application/x-www-form-urlencoded; charset=utf-8
+            res.send(data);
+        }else{
+            var workerMessage = {
+                method: method,
+                noCache: noCache,
+                loadAsync: loadAsync,
+                credentials: credentials,
+                address: o2.filterUrl(address),
+                body: data,
+                debug: (window.layout && layout["debugger"]),
+                token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : ""
+            }
+            var actionWorker = new Worker("../o2_core/o2/actionWorker.js");
+            actionWorker.onmessage = function(e) {
+                result = e.data;
+                if (result.type==="done"){
+                    var xToken = result.data.xToken;
+                    if (xToken){
+                        if (window.layout){
+                            if (!layout.session) layout.session = {};
+                            layout.session.token = xToken;
+                        }
+                    }
+                    o2.runCallback(callback, "success", [result.data]);
+                }else{
+                    o2.runCallback(callback, "failure", [result.data]);
                 }
             }
+            actionWorker.postMessage(workerMessage);
         }
-        //Content-Type	application/x-www-form-urlencoded; charset=utf-8
-        res.send(data);
-        return res;
+        //return res;
     };
 
     var _release = function(o){
@@ -1469,15 +1599,132 @@
         }
         return arr;
     }
-    Date.implement({
-        "getFromServer": function(){
-            var d;
-            o2.Actions.get("x_program_center").echo(function(json){
-                d = Date.parse(json.data.serverTime);
-            }, null, false);
-            return d;
+    // Date.implement({
+    //     "getFromServer": function(callback){
+    //         if (callback){
+    //             o2.Actions.get("x_program_center").echo(function(json){
+    //                 d = Date.parse(json.data.serverTime);
+    //                 callback(d);
+    //             });
+    //         }else{
+    //             var d;
+    //             o2.Actions.get("x_program_center").echo(function(json){
+    //                 d = Date.parse(json.data.serverTime);
+    //             }, null, false);
+    //             return d;
+    //         }
+    //     }
+    // });
+    Date.getFromServer = function(callback){
+            if (callback){
+                o2.Actions.get("x_program_center").echo(function(json){
+                    d = Date.parse(json.data.serverTime);
+                    o2.runCallback(callback, "success", [d]);
+                });
+            }else{
+                var d;
+                o2.Actions.get("x_program_center").echo(function(json){
+                    d = Date.parse(json.data.serverTime);
+                }, null, false);
+                return d;
+            }
+    };
+
+    Object.appendChain = function(oChain, oProto) {
+        if (arguments.length < 2) {
+            throw new TypeError('Object.appendChain - Not enough arguments');
+        }
+        if (typeof oProto === 'number' || typeof oProto === 'boolean') {
+            throw new TypeError('second argument to Object.appendChain must be an object or a string');
+        }
+
+        var oNewProto = oProto,
+            oReturn,
+            o2nd,
+            oLast;
+
+        oReturn = o2nd = oLast = oChain instanceof this ? oChain : new oChain.constructor(oChain);
+
+        for (var o1st = this.getPrototypeOf(o2nd);
+             o1st !== Object.prototype && o1st !== Function.prototype;
+             o1st = this.getPrototypeOf(o2nd)
+        ) {
+            o2nd = o1st;
+        }
+
+        if (oProto.constructor === String) {
+            oNewProto = Function.prototype;
+            oReturn = Function.apply(null, Array.prototype.slice.call(arguments, 1));
+            oReturn = oReturn.bind(oLast);
+            this.setPrototypeOf(oReturn, oLast);
+        }
+
+        this.setPrototypeOf(o2nd, oNewProto);
+        return oReturn;
+    }
+
+    var _AsyncGeneratorPrototype = _Class.create({
+        initialize: function(resolve, reject, name){
+            debugger;
+            this.name = name || "";
+            this._createSuccess();
+            this._createFailure();
+            if (resolve) this.success.resolve = resolve;
+            if (reject) this.failure.reject = reject;
+        },
+        _createSuccess: function(){
+            var _self = this;
+            this.success = function(){
+                var result;
+                if (_self.success.resolve) result = _self.success.resolve.apply(this, arguments);
+                if (_self.success.resolveList){
+                    _self.success.resolveList.each(function(r){
+                        r(result, arguments);
+                    });
+                }
+            }
+        },
+        _createFailure: function(){
+            var _self = this;
+            this.failure = function(){
+                var result;
+                if (_self.failure.reject) result = _self.failure.reject(arguments);
+                if (_self.failure.rejectList){
+                    _self.failure.rejectList.each(function(r){
+                        r(result, arguments);
+                    });
+                }
+            }
+        },
+        setResolve: function(resolve){
+            if (!this.success) this._createSuccess();
+            this.success.resolve = resolve;
+        },
+        setReject: function(reject){
+            if (!this.failure) this._createFailure();
+            this.reject = reject;
+        },
+        addResolve: function(resolve){
+            if (!this.success) this._createSuccess();
+            if (resolve){
+                if (!this.success.resolveList) this.success.resolveList = [];
+                this.success.resolveList.push(resolve);
+            }
+        },
+        addReject: function(reject){
+            if (!this.failure) this._createFailure();
+            if (reject){
+                if (!this.success.rejectList) this.success.rejectList = [];
+                this.success.rejectList.push(reject);
+            }
         }
     });
+    var _AsyncGenerator = function(resolve, reject, name){
+        var asyncGeneratorPrototype = new _AsyncGeneratorPrototype(resolve, reject, name);
+        return Object.appendChain(asyncGeneratorPrototype, "if (this.success) this.success.apply(this, arguments);");
+    }
+
+    o2.AsyncGenerator = o2.AG = _AsyncGenerator;
 
 })();
 o2.core = true;
@@ -1485,7 +1732,7 @@ o2.core = true;
 
 /** ***** BEGIN LICENSE BLOCK *****
  * |------------------------------------------------------------------------------|
- * | O2OA 活力办公 创意无限    o2.more.js                                            |
+ * | O2OA 活力办公 创意无限    o2.more.js                                          |
  * |------------------------------------------------------------------------------|
  * | Distributed under the AGPL license:                                          |
  * |------------------------------------------------------------------------------|
