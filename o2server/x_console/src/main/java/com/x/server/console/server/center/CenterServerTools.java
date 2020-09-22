@@ -75,8 +75,7 @@ public class CenterServerTools extends JettySeverTools {
 			}
 			if (BooleanUtils.isFalse(centerServer.getExposeJest())) {
 				FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
-				webApp.addFilter(denialOfServiceFilterHolder, "/jest/index.html", EnumSet.of(DispatcherType.REQUEST));
-				webApp.addFilter(denialOfServiceFilterHolder, "/jest/list.html", EnumSet.of(DispatcherType.REQUEST));
+				webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
 			}
 			handlers.addHandler(webApp);
 		} else {
