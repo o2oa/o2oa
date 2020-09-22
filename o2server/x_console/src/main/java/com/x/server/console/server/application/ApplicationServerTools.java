@@ -69,6 +69,7 @@ import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
@@ -182,6 +183,13 @@ public class ApplicationServerTools extends JettySeverTools {
 						ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
 						statServletHolder.setInitParameter("sessionStatEnable", BooleanUtils.toStringTrueFalse(false));
 						webApp.addServlet(statServletHolder, "/druid/*");
+					}
+					if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
+						FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
+						webApp.addFilter(denialOfServiceFilterHolder, "/jest/index.html",
+								EnumSet.of(DispatcherType.REQUEST));
+						webApp.addFilter(denialOfServiceFilterHolder, "/jest/list.html",
+								EnumSet.of(DispatcherType.REQUEST));
 					}
 					handlers.addHandler(webApp);
 				} else if (Files.exists(dir)) {
