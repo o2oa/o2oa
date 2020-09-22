@@ -113,8 +113,9 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 					this.applicationintroducememoremarkcommentcount.set("text","共"+this.appdata.commentCount+"个评分")
 					//this.applicationintroducememodownload.set("text",this.appdata.downloadCount);
 					this.applicationintroducememocategory.set("text","分类:"+this.appdata.category);
-					this.applicationintroducememocontent.set("html",this.appdata.abort);
-					this.applicationintroducedownloadprice.set("text","$"+this.appdata.price);
+					this.applicationintroducememocontent.set("text",this.appdata.describe);
+					//this.applicationintroducedownloadprice.set("text","$"+this.appdata.price);
+					this.applicationintroducedownloadprice.set("text","");
 
 					var bottomtext =this.lp.setup;
 					if (this.appdata.installedVersion && this.appdata.installedVersion!=""){
