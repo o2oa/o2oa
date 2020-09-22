@@ -26,6 +26,7 @@ public class DumpRestoreData extends ConfigObject {
 	public static final Boolean DEFAULT_PARALLEL = true;
 	public static final Boolean DEFAULT_REDISTRIBUTE = true;
 	public static final Boolean DEFAULT_EXCEPTIONINVALIDSTORAGE = true;
+	public static final String DEFAULT_ITEMCATEGORY = "";
 
 	public DumpRestoreData() {
 		this.enable = false;
@@ -35,6 +36,7 @@ public class DumpRestoreData extends ConfigObject {
 		this.parallel = DEFAULT_PARALLEL;
 		this.redistribute = DEFAULT_REDISTRIBUTE;
 		this.exceptionInvalidStorage = DEFAULT_EXCEPTIONINVALIDSTORAGE;
+		this.itemCategory = DEFAULT_ITEMCATEGORY;
 	}
 
 	@FieldDescribe("是否启用.")
@@ -60,6 +62,13 @@ public class DumpRestoreData extends ConfigObject {
 
 	@FieldDescribe("数据导入方式,clean:清空重新导入,skipExisted:如果有相同id的数据跳过.默认方式为clean.")
 	private String restoreOverride;
+
+	@FieldDescribe("对于com.x.query.core.entity.Item的itemCategory进行单独过滤,可选值pp, cms, bbs, pp_dict.")
+	private String itemCategory;
+
+	public String getItemCategory() {
+		return this.itemCategory;
+	}
 
 	public Boolean getRedistribute() {
 		return BooleanUtils.isNotFalse(redistribute);
