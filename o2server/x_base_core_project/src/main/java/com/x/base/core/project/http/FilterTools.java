@@ -42,4 +42,6 @@ public class FilterTools {
 
 	public static final String Application_Not_Cipher_Json = "{\"type\": \"error\", \"message\": \"not cipher.\"}";
 
+	public static final String Application_403_Json = "{\"type\": \"error\", \"message\": \"403\"}";
+
 }

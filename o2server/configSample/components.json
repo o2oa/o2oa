@@ -259,6 +259,16 @@
       "type": "system",
       "allowList": [],
       "dentyList": []
+    },
+    {
+      "name": "IMV2",
+      "path": "IMV2",
+      "title": "聊天",
+      "iconPath": "appicon.png",
+      "orderNumber": 26.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
     }
   ],
   "###systems": "默认模块###"
