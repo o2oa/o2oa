@@ -188,9 +188,18 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 		return value || "";
 	},
     _setValue: function(value){
-        this._setBusinessData(value);
-        if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
-        if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+	    if (o2.typeOf(value)==="function" && value.addResolve){
+            value.addResolve(function(v){
+                this._setValue(v);
+                // this._setBusinessData(v);
+                // if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
+                // if (this.readonly || this.json.isReadonly) this.node.set("text", v);
+            }.bind(this));
+        }else{
+            this._setBusinessData(value);
+            if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
+            if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+        }
     },
 	_loadValue: function(){
         this._setValue(this.getValue());

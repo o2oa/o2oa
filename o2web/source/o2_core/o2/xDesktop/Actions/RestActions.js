@@ -91,6 +91,8 @@ MWF.xDesktop.Actions.RestActions = new Class({
 
             var async = (option.async===false) ? false : true;
 
+            if (option.failure && option.failure.failure) option.failure = option.failure.failure;
+
             var callback = new MWF.xDesktop.Actions.RestActions.Callback(option.success, option.failure);
             if (action.enctype && (action.enctype.toLowerCase()=="formdata")){
                 res = this.invokeFormData(method, uri, option.data, option.file, callback, async, progress);
