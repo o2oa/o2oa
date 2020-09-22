@@ -21,6 +21,7 @@ public class CenterServer extends ConfigObject {
 	private static final Boolean DEFAULT_STATENABLE = true;
 	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
 	private static final Integer DEFAULT_MAXFORMCONTENT = 20;
+	private static final Boolean DEFAULT_EXPOSEJEST = true;
 
 	public static CenterServer defaultInstance() {
 		return new CenterServer();
@@ -40,6 +41,7 @@ public class CenterServer extends ConfigObject {
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
 		this.maxFormContent = DEFAULT_MAXFORMCONTENT;
+		this.exposeJest = DEFAULT_EXPOSEJEST;
 	}
 
 	@FieldDescribe("是否启用")
@@ -70,6 +72,12 @@ public class CenterServer extends ConfigObject {
 	private String statExclusions;
 	@FieldDescribe("最大提交数据限制(M),限制有所上传的内容大小,包括附件.")
 	private Integer maxFormContent;
+	@FieldDescribe("暴露jest接口.")
+	private Boolean exposeJest;
+
+	public Boolean getExposeJest() {
+		return BooleanUtils.isNotFalse(this.exposeJest);
+	}
 
 	public Integer getMaxFormContent() {
 		return ((null == maxFormContent) || (maxFormContent < 1)) ? DEFAULT_MAXFORMCONTENT : maxFormContent;
