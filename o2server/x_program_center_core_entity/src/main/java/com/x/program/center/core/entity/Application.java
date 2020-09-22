@@ -74,6 +74,14 @@ public class Application extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Double price;
 
+	public static final String describe_FIELDNAME = "describe";
+	@FieldDescribe("描述.必填")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1K, name = ColumnNamePrefix + describe_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String describe;
+
 	public static final String abort_FIELDNAME = "abort";
 	@FieldDescribe("应用简介")
 	@Lob
@@ -273,5 +281,13 @@ public class Application extends SliceJpaObject {
 
 	public void setCommentCount(Integer commentCount) {
 		this.commentCount = commentCount;
+	}
+
+	public String getDescribe() {
+		return describe;
+	}
+
+	public void setDescribe(String describe) {
+		this.describe = describe;
 	}
 }
