@@ -174,6 +174,9 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
                     }else{
                         _self.content.querydata["category"]=d;
                     }
+                    var key = _self.content.searchAppInputNode.get("value");
+                    if (key==undefined) key="";
+                    _self.content.querydata["name"]=key;     
                     _self.loadApplications();
                 }
             }
