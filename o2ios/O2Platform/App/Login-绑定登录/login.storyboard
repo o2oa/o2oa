@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="2FW-oB-Z7W">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="2FW-oB-Z7W">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -121,7 +121,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RFi-UF-mda" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RFi-UF-mda" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="140" width="343" height="40"/>
                                         <color key="backgroundColor" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
@@ -183,7 +183,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="dnx-pt-seb">
-                                <rect key="frame" x="0.0" y="66" width="375" height="601"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                 <prototypes>
@@ -195,14 +195,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_liebiao1" highlightedImage="icon_liebiao1" translatesAutoresizingMaskIntoConstraints="NO" id="eSE-rC-sdC">
-                                                    <rect key="frame" x="15" y="11" width="22" height="22"/>
+                                                    <rect key="frame" x="16" y="11" width="22" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="22" id="lbS-6x-LVf"/>
                                                         <constraint firstAttribute="height" constant="22" id="rwO-Dc-TVx"/>
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ANNA组织" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="86p-zE-rWI">
-                                                    <rect key="frame" x="48" y="12.5" width="279" height="18.5"/>
+                                                    <rect key="frame" x="49" y="12.5" width="277" height="18.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="18.5" id="utf-Qz-Nga"/>
                                                     </constraints>
@@ -211,7 +211,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_circle" highlightedImage="icon__ok2_click" translatesAutoresizingMaskIntoConstraints="NO" id="6pg-2l-8AO">
-                                                    <rect key="frame" x="338" y="11" width="22" height="22"/>
+                                                    <rect key="frame" x="337" y="11" width="22" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="22" id="Kh2-7z-vhD"/>
                                                         <constraint firstAttribute="height" constant="22" id="eDN-ft-sSR"/>
@@ -242,7 +242,7 @@
                             <constraint firstItem="dnx-pt-seb" firstAttribute="leading" secondItem="xoM-4c-VPc" secondAttribute="leading" id="1dK-o5-Mxg"/>
                             <constraint firstItem="r53-28-RdP" firstAttribute="top" secondItem="dnx-pt-seb" secondAttribute="bottom" id="4j3-Ja-xbw"/>
                             <constraint firstAttribute="trailing" secondItem="dnx-pt-seb" secondAttribute="trailing" id="7lf-X7-E8I"/>
-                            <constraint firstItem="dnx-pt-seb" firstAttribute="top" secondItem="xoM-4c-VPc" secondAttribute="top" constant="66" id="nU3-HT-gYj"/>
+                            <constraint firstItem="dnx-pt-seb" firstAttribute="top" secondItem="xoM-4c-VPc" secondAttribute="top" id="nU3-HT-gYj"/>
                         </constraints>
                     </view>
                     <connections>
@@ -343,7 +343,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bkV-iJ-Vkd" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bkV-iJ-Vkd" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="140" width="343" height="40"/>
                                         <color key="backgroundColor" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
@@ -372,7 +372,7 @@
                                 <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sdH-Rd-Uu5">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sdH-Rd-Uu5">
                                 <rect key="frame" x="243" y="363" width="100" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="McM-ZF-FyV"/>
@@ -385,7 +385,7 @@
                                     <action selector="btnReBindNodeAction:" destination="a0S-mR-qpd" eventType="touchUpInside" id="qQA-3H-Xcv"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VU6-Hu-1I4">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VU6-Hu-1I4">
                                 <rect key="frame" x="32" y="363" width="100" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="DyV-tz-NyM"/>
@@ -454,7 +454,7 @@
                                     <constraint firstAttribute="height" constant="120" id="bqd-au-JQf"/>
                                 </constraints>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q9Q-4z-Rfe" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q9Q-4z-Rfe" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
                                 <rect key="frame" x="26" y="270" width="323" height="40"/>
                                 <color key="backgroundColor" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -473,7 +473,7 @@
                                     <action selector="tapBioAuthLogin:" destination="cft-aF-Yb3" eventType="touchUpInside" id="hAV-fd-WqM"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kLj-hW-IW3">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kLj-hW-IW3">
                                 <rect key="frame" x="257" y="330" width="92" height="30"/>
                                 <state key="normal" title="其它方式登录"/>
                                 <connections>
@@ -503,6 +503,32 @@
             <point key="canvasLocation" x="2825" y="101"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="Nr9-8F-s20">
+            <size key="intrinsicContentSize" width="71.5" height="18.5"/>
+        </designable>
+        <designable name="ObS-rR-SV6">
+            <size key="intrinsicContentSize" width="86" height="18.5"/>
+        </designable>
+        <designable name="Q9Q-4z-Rfe">
+            <size key="intrinsicContentSize" width="92" height="30"/>
+        </designable>
+        <designable name="RFi-UF-mda">
+            <size key="intrinsicContentSize" width="45" height="33"/>
+        </designable>
+        <designable name="bkV-iJ-Vkd">
+            <size key="intrinsicContentSize" width="31" height="30"/>
+        </designable>
+        <designable name="f1x-qE-7k6">
+            <size key="intrinsicContentSize" width="86" height="18.5"/>
+        </designable>
+        <designable name="lEi-tc-UYF">
+            <size key="intrinsicContentSize" width="86" height="18.5"/>
+        </designable>
+        <designable name="uXf-3e-9Bs">
+            <size key="intrinsicContentSize" width="100" height="18.5"/>
+        </designable>
+    </designables>
     <resources>
         <image name="icon__ok2_click" width="22" height="22"/>
         <image name="icon_circle" width="22" height="22"/>

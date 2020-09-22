@@ -57,13 +57,15 @@ class OOBindNodeViewController:OOBaseViewController,UITableViewDataSource,UITabl
         headerView1.configTitle(title: "选择服务节点", actionTitle: nil)
         headerView1.frame = CGRect(x: 0, y: 0, width: kScreenW, height: 66)
         headerView1.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
-        if #available(iOS 11, *) {
-            self.tableView.contentInsetAdjustmentBehavior = .never
-            self.view.addSubview(headerView1)
-        }else{
-            self.view.addSubview(headerView1)
-        }
+//        if #available(iOS 11, *) {
+//            self.tableView.contentInsetAdjustmentBehavior = .never
+//            self.view.addSubview(headerView1)
+//        }else{
+//
+//        }
+        self.view.addSubview(headerView1)
         self.tableView.tableHeaderView = headerView
+        headerView.contentMode = .scaleAspectFill
         self.tableView.tableFooterView = footerView
         self.tableView.dataSource = self
         self.tableView.delegate = self
