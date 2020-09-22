@@ -90,6 +90,13 @@
     color:rgba(51,51,51,1);
     line-height:30px;
     overflow: hidden;
+    line-height: 40px;
+    margin-top: 20px;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    text-indent: 2em;
 }
 
 .o2_appmarket_application_introduce_memo_remark_inner{
