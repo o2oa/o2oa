@@ -42,14 +42,18 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 						//检查是否在云服务器上已注册
 						this.actions.CollectAction.login(//平台封装好的方法
 							function( json ){ //服务调用成功的回调函数, json为服务传回的数据
-								//alert(json.type)
-								if (json.type && json.type=="error"){
-									o2.xDesktop.notice("error", {x: "right", y:"top"}, json.message+"请至系统配置——云服务配置——连接配置注册并连接到O2云");
-								}
 								if (json.type && json.type=="success"){
 									this.loadApp(callback);
 								}
-							}.bind(this),null,false //同步执行 
+							}.bind(this),
+							function( json ){ //服务调用成功的回调函数, json为服务传回的数据
+								errtype = JSON.parse(json.response).type;
+								if (errtype && errtype=="error"){
+									//o2.xDesktop.notice("error", {x: "right", y:"top"}, JSON.parse(json.response).message+"请至系统配置——云服务配置——连接配置注册并连接到O2云");
+									this.loadCloudConnectTip(callback);
+								}
+							}.bind(this)
+							,false //同步执行 
 						);
 						
 					}.bind(this));
@@ -70,6 +74,15 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 
 		this.loadRecommondContent(function(){ this.recommondLoaded = true; this.checkAppLoaded(callback); }.bind(this));
 		this.loadApplicationsContent(function(){ this.applicationsLoaded = true; this.checkAppLoaded(callback); }.bind(this));
+	},
+	loadCloudConnectTip:function(callback){
+		this.initNodeSize();
+		o2.requireApp("AppMarketV2", "CloudConnectTip", function(){
+			this.cloudTip = new MWF.xApplication.AppMarketV2.CloudConnectTip(this, this.cloudConnectTipNode, {
+				"onLoad": function(){if (callback) callback();}
+			});
+		}.bind(this));
+		
 	},
 	checkAppLoaded: function(callback){
 		if (this.recommondLoaded && this.applicationsLoaded){
