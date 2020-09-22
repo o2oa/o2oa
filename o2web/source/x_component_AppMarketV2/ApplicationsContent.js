@@ -101,12 +101,10 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         
     },
     load: function(){
-        debugger;
         this.loadAppCategorys();
         this.loadApplications();
     },
     loadAppCategorys: function(){
-        debugger;
         this.actions.MarketAction.listCategory(function(json){
             if (json.data && json.data.valueList){
                 this.showCategorys(json.data.valueList);
@@ -115,11 +113,9 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         }.bind(this));
     },
     loadApplications: function(){
-        debugger;
         this.emptyLoadContent();
         this.actions.MarketAction.listPaging(this.page, this.pageSize, this.content.querydata,function(json){
             if (json.data && json.data.length){
-                debugger;
                 this.content.currentcategory["name"] = this.content.querydata.category==""||!(this.content.querydata.category)?"全部":this.content.querydata.category;
                 this.content.currentcategory["count"] = json.count;
                 this.showApplications(json.data);
@@ -143,7 +139,6 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         this.content.isLoading = false;
     },
     showCategorys:function(data){
-        debugger;
         var categorysdiv = this.content.appCategory;
         categorysdiv.empty();
         this.loadCertainCategory(categorysdiv,"全部")
@@ -153,7 +148,6 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
 
     },
     loadCertainCategory:function(categorysdiv,d){
-        debugger;
         var _self = this;
         
         var categorydiv = new Element("span",{"text":d,"class":"o2_appmarket_appcategory"}).inject(categorysdiv);
@@ -165,7 +159,6 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         }
         categorydiv.addEvents({
             "mouseover":function(){
-                debugger;
                 this.addClass("o2_appmarket_appcategory_tab_over");
             },
             "mouseout":function(){
@@ -187,7 +180,6 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         })
     },
     showApplications: function(data){
-        debugger;
         //show category count
         //this.content.appCategory_count.empty();
         //new Element("div",{"text":this.content.currentcategory.name+"("+this.content.currentcategory.count+")"}).inject(this.content.appCategory_count);        
@@ -200,7 +192,6 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
             rowappnum = rowappnum -1;
             rowappmargin = (appsdivwidth/240-rowappnum)  * 240  / (rowappnum-1)
         }
-        debugger;
         //appsdiv.setStyle("width","calc("+appwidth+"px)");
         //appsdiv.setStyle("margin-left","10px");
         data.each(function(d, i){
@@ -208,7 +199,6 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         }.bind(this));
     },
     loadCertainApplication: function(appsdiv, d, i,rowappnum,rowappmargin){
-        debugger;
         //app 排列 begin
        var applicationdiv = new Element("div",{"class":"o2_appmarket_application"}).inject(appsdiv);
  
@@ -295,7 +285,6 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
                 }.bind(_self),
                 function( json ){ 
                     data = json.data; 
-                    debugger;
                     _self.app.unmask();
                     //this.clearLoading()
                 }.bind(_self),
@@ -309,10 +298,10 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
     open: function(e, d){
         var apppar = {};
         apppar["appid"] = d.id;
+        apppar["appname"] = d.name;
         layout.openApplication(e, "AppMarketV2.Application", apppar);
     },
     createLoading: function(node,mask){
-        debugger;
         //alert("createloading")
         this.app.content.mask({
             "destroyOnHide": true,
