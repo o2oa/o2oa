@@ -218,6 +218,8 @@
 		B1750087233C937E003DA7B9 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750086233C937E003DA7B9 /* IntExtensions.swift */; };
 		B1750089233C9B2C003DA7B9 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750088233C9B2C003DA7B9 /* Stack.swift */; };
 		B17BF43022B23758009E36E0 /* SkinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17BF42F22B23758009E36E0 /* SkinViewController.swift */; };
+		B17DCCB32519A31900E9EE37 /* OOCalendarStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17DCCB22519A31900E9EE37 /* OOCalendarStoreViewController.swift */; };
+		B17DCCE32519BCC100E9EE37 /* CalendarStoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17DCCE22519BCC100E9EE37 /* CalendarStoreTableViewCell.swift */; };
 		B183987D249AFF64001C6FAA /* IMLocationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B183987C249AFF64001C6FAA /* IMLocationView.xib */; };
 		B18398AD249B00AA001C6FAA /* IMLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18398AC249B00AA001C6FAA /* IMLocationView.swift */; };
 		B18398B0249B079B001C6FAA /* IMLocationChooseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18398AE249B079B001C6FAA /* IMLocationChooseController.swift */; };
@@ -1389,6 +1391,8 @@
 		B1750086233C937E003DA7B9 /* IntExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntExtensions.swift; sourceTree = "<group>"; };
 		B1750088233C9B2C003DA7B9 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		B17BF42F22B23758009E36E0 /* SkinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinViewController.swift; sourceTree = "<group>"; };
+		B17DCCB22519A31900E9EE37 /* OOCalendarStoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarStoreViewController.swift; sourceTree = "<group>"; };
+		B17DCCE22519BCC100E9EE37 /* CalendarStoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarStoreTableViewCell.swift; sourceTree = "<group>"; };
 		B183987C249AFF64001C6FAA /* IMLocationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMLocationView.xib; sourceTree = "<group>"; };
 		B18398AC249B00AA001C6FAA /* IMLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMLocationView.swift; sourceTree = "<group>"; };
 		B18398AE249B079B001C6FAA /* IMLocationChooseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMLocationChooseController.swift; sourceTree = "<group>"; };
@@ -2634,6 +2638,7 @@
 				B15F812B21102BBF00B81F35 /* DatePickerView.xib */,
 				B1089692210AD8E400F02267 /* CalendarEventTableViewCell.swift */,
 				B1C1905C2114410D00935829 /* CalendarTableViewCell.swift */,
+				B17DCCE22519BCC100E9EE37 /* CalendarStoreTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2646,6 +2651,7 @@
 				B1C19024211437E200935829 /* OOCalendarLeftMenuController.swift */,
 				B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */,
 				8840A991248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift */,
+				B17DCCB22519A31900E9EE37 /* OOCalendarStoreViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -5295,6 +5301,7 @@
 				E4B888811D9D48F1002E1A46 /* CellTouchImageView.swift in Sources */,
 				E40E246320B55064009F8BE7 /* OOAttanceCheckinHeaderView.swift in Sources */,
 				B107453921A52BC70015F1B2 /* PersonalAPI.swift in Sources */,
+				B17DCCB32519A31900E9EE37 /* OOCalendarStoreViewController.swift in Sources */,
 				E4B8885D1D9D48F1002E1A46 /* O2App.swift in Sources */,
 				E4B697C120764A2D0062F6E8 /* O2DesktopAPI.swift in Sources */,
 				B165CD6A2242093500373B66 /* CoverVerticalFromTopAnimation.swift in Sources */,
@@ -5610,6 +5617,7 @@
 				E45DA8F91DADC06400E0735D /* TaskBarButtonItem.swift in Sources */,
 				E4B888A21D9D48F1002E1A46 /* MJRefreshAutoStateFooter.m in Sources */,
 				B12FD1DF2283D5B700E636BA /* ThemePicker.swift in Sources */,
+				B17DCCE32519BCC100E9EE37 /* CalendarStoreTableViewCell.swift in Sources */,
 				B165CD622242093500373B66 /* BackgroundView.swift in Sources */,
 				B1912BE72146154700AB36E6 /* OOAIViewModel.swift in Sources */,
 				E4C24C4E208D7EDE00E426B0 /* OOContactSearchCell.swift in Sources */,

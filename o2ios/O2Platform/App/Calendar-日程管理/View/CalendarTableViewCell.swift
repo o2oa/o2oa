@@ -35,7 +35,7 @@ class CalendarTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func renderCalendar(info: OOCalendarInfo?) {
+    func renderCalendar(info: OOCalendarInfo?, _ calendarIds:[String] = []) {
         self.calendarInfo = info
         if let color = info?.color {
             calendarColorView.backgroundColor = UIColor.init(hex: color)
@@ -43,6 +43,13 @@ class CalendarTableViewCell: UITableViewCell {
             calendarColorView.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
         }
         calendarNameView.text = info?.name
+        if !calendarIds.isEmpty {
+            if let id = info?.id, calendarIds.contains(id) {
+                self.calendarSwitch.isOn = true
+            } else {
+                self.calendarSwitch.isOn = false
+            }
+        }
     }
 
 }

@@ -44,13 +44,7 @@ extension ZLCollectionView:UICollectionViewDataSource{
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "itemCell", for: indexPath) as!  O2CollectionViewCell
         let app = self.apps[indexPath.section][indexPath.row]
-        if app.storyBoard! == "webview" {
-            cell.initImg(app: app)
-        }else{
-            cell.appIconImageView.image = UIImage(named: app.normalIcon!)
-            cell.appIconImageView.highlightedImage = UIImage(named: app.selectedIcon!)
-        }
-        cell.appTitle.text = app.title
+        cell.setAppData(app: app)
         return cell
     }
 }

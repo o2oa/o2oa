@@ -22,7 +22,11 @@ enum OONotification:String {
     //重载门户webview
     case reloadPortal
     
+    //websocket使用
     case websocket
+    
+    //日程管理Main中使用
+    case calendarIds
     
     
     

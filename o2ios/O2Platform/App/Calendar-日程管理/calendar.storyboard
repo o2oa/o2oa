@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tKt-3P-uQz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tKt-3P-uQz">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -95,7 +96,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M0F-7m-vuY" userLabel="BottomBar">
                                 <rect key="frame" x="0.0" y="627" width="375" height="40"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wt1-wW-6mZ">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wt1-wW-6mZ">
                                         <rect key="frame" x="16" y="3.5" width="35" height="33"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <state key="normal" title="今天"/>
@@ -103,12 +104,12 @@
                                             <action selector="todayAction:" destination="xYY-yG-JGa" eventType="touchUpInside" id="Wd8-Ne-Gwr"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="71T-qf-T8Z">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="71T-qf-T8Z">
                                         <rect key="frame" x="324" y="3.5" width="35" height="33"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <state key="normal" title="日历"/>
                                         <connections>
-                                            <segue destination="L5W-fh-UuH" kind="show" id="DF4-xt-Rlu"/>
+                                            <segue destination="L5W-fh-UuH" kind="show" identifier="showCalendarList" id="DF4-xt-Rlu"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -122,6 +123,7 @@
                                 </constraints>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="YOP-fD-eOB"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="M0F-7m-vuY" firstAttribute="bottom" secondItem="YOP-fD-eOB" secondAttribute="bottom" id="1g7-OC-yaV"/>
@@ -132,7 +134,6 @@
                             <constraint firstItem="M0F-7m-vuY" firstAttribute="leading" secondItem="YOP-fD-eOB" secondAttribute="leading" id="kLc-Qp-gzN"/>
                             <constraint firstItem="KJj-zi-dZB" firstAttribute="top" secondItem="YOP-fD-eOB" secondAttribute="top" id="plZ-2M-2pz"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="YOP-fD-eOB"/>
                     </view>
                     <navigationItem key="navigationItem" id="4qR-Bd-8HM"/>
                     <connections>
@@ -586,7 +587,7 @@
                                                 <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="vc3-qe-cTN">
                                                     <rect key="frame" x="32" y="90" width="327" height="27"/>
                                                     <subviews>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qy2-Ll-2FL">
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qy2-Ll-2FL">
                                                             <rect key="frame" x="0.0" y="0.0" width="30" height="27"/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
@@ -595,7 +596,7 @@
                                                                 <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </state>
                                                         </button>
-                                                        <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hQt-nQ-yDV">
+                                                        <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hQt-nQ-yDV">
                                                             <rect key="frame" x="49.5" y="0.0" width="30" height="27"/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
@@ -603,35 +604,35 @@
                                                                 <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </state>
                                                         </button>
-                                                        <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GeN-7S-V8E">
+                                                        <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GeN-7S-V8E">
                                                             <rect key="frame" x="99" y="0.0" width="30" height="27"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                                             <state key="normal" title="周三">
                                                                 <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </state>
                                                         </button>
-                                                        <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xOJ-cj-hMc">
+                                                        <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xOJ-cj-hMc">
                                                             <rect key="frame" x="148.5" y="0.0" width="30" height="27"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                                             <state key="normal" title="周四">
                                                                 <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </state>
                                                         </button>
-                                                        <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Szk-bc-YOL">
+                                                        <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Szk-bc-YOL">
                                                             <rect key="frame" x="198" y="0.0" width="30" height="27"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                                             <state key="normal" title="周五">
                                                                 <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </state>
                                                         </button>
-                                                        <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qxa-Na-eLg">
+                                                        <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qxa-Na-eLg">
                                                             <rect key="frame" x="247.5" y="0.0" width="30" height="27"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                                             <state key="normal" title="周六">
                                                                 <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </state>
                                                         </button>
-                                                        <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="To9-IU-AE6">
+                                                        <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="To9-IU-AE6">
                                                             <rect key="frame" x="297" y="0.0" width="30" height="27"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                                             <state key="normal" title="周日">
@@ -668,7 +669,7 @@
                                                         <constraint firstAttribute="height" constant="40" id="3Bl-DY-BuS"/>
                                                     </constraints>
                                                 </webView>
-                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OMA-Fp-nFl">
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OMA-Fp-nFl">
                                                     <rect key="frame" x="24" y="99" width="327" height="30"/>
                                                     <color key="backgroundColor" red="0.98431372549019602" green="0.27843137254901962" blue="0.27843137254901962" alpha="1" colorSpace="calibratedRGB"/>
                                                     <state key="normal" title="删   除">
@@ -683,7 +684,7 @@
                                                         <action selector="tapDeleteBtn:" destination="Vxk-45-vB1" eventType="touchUpInside" id="d3V-gw-XoF"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pZL-hd-WYm">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pZL-hd-WYm">
                                                     <rect key="frame" x="24" y="64" width="62" height="30"/>
                                                     <state key="normal" title="编辑内容"/>
                                                     <connections>
@@ -772,14 +773,14 @@
                         </containerView>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="calendarTableCell" id="hIV-F8-hEt" customClass="CalendarTableViewCell" customModule="O2Platform" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="78" width="375" height="43.5"/>
+                                <rect key="frame" x="0.0" y="78" width="375" height="41.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="hIV-F8-hEt" id="vcr-nc-qYD">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="41.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nUr-LS-pfg">
-                                            <rect key="frame" x="24" y="13" width="18" height="18"/>
+                                            <rect key="frame" x="24" y="12" width="18" height="18"/>
                                             <color key="backgroundColor" red="0.29803921570000003" green="0.68627450980000004" blue="0.31372549020000001" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="18" id="5lB-4A-bhs"/>
@@ -792,17 +793,13 @@
                                             </userDefinedRuntimeAttributes>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="我的日历" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="onv-WL-BxB">
-                                            <rect key="frame" x="52" y="11.5" width="263" height="20.5"/>
+                                            <rect key="frame" x="52" y="0.0" width="246" height="41.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BTT-cO-3bH">
-                                            <rect key="frame" x="325" y="10" width="34" height="24"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="24" id="vBm-Id-XQ9"/>
-                                                <constraint firstAttribute="width" constant="32" id="ySg-20-HOz"/>
-                                            </constraints>
+                                            <rect key="frame" x="308" y="5" width="51" height="31.5"/>
                                             <connections>
                                                 <action selector="calendarSwitchTap:" destination="hIV-F8-hEt" eventType="valueChanged" id="cgk-KU-AwN"/>
                                             </connections>
@@ -810,11 +807,13 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="nUr-LS-pfg" firstAttribute="centerY" secondItem="vcr-nc-qYD" secondAttribute="centerY" id="0fm-s1-CUn"/>
-                                        <constraint firstItem="BTT-cO-3bH" firstAttribute="centerY" secondItem="vcr-nc-qYD" secondAttribute="centerY" id="JcJ-17-Hw0"/>
-                                        <constraint firstItem="onv-WL-BxB" firstAttribute="centerY" secondItem="vcr-nc-qYD" secondAttribute="centerY" id="MiO-8E-It5"/>
+                                        <constraint firstItem="BTT-cO-3bH" firstAttribute="top" secondItem="vcr-nc-qYD" secondAttribute="top" constant="5" id="6dq-te-AwO"/>
                                         <constraint firstItem="BTT-cO-3bH" firstAttribute="leading" secondItem="onv-WL-BxB" secondAttribute="trailing" constant="10" id="ZWp-uB-5KZ"/>
+                                        <constraint firstAttribute="bottom" secondItem="onv-WL-BxB" secondAttribute="bottom" id="asd-bw-2ru"/>
                                         <constraint firstItem="onv-WL-BxB" firstAttribute="leading" secondItem="nUr-LS-pfg" secondAttribute="trailing" constant="10" id="bbS-0Q-jnE"/>
                                         <constraint firstAttribute="trailing" secondItem="BTT-cO-3bH" secondAttribute="trailing" constant="18" id="kUb-UW-eTW"/>
+                                        <constraint firstAttribute="bottom" secondItem="BTT-cO-3bH" secondAttribute="bottom" constant="5" id="m8U-oP-bSE"/>
+                                        <constraint firstItem="onv-WL-BxB" firstAttribute="top" secondItem="vcr-nc-qYD" secondAttribute="top" id="osg-a9-knU"/>
                                         <constraint firstItem="nUr-LS-pfg" firstAttribute="leading" secondItem="vcr-nc-qYD" secondAttribute="leading" constant="24" id="sih-O1-7td"/>
                                     </constraints>
                                 </tableViewCellContentView>
@@ -834,6 +833,7 @@
                     <connections>
                         <outlet property="addCalendarBtnView" destination="KcX-qQ-DIF" id="kAk-es-Ig5"/>
                         <segue destination="6hI-Zf-Dol" kind="show" identifier="showCalendarSegue" id="dTl-zx-3mn"/>
+                        <segue destination="Bfb-e1-6Y0" kind="show" identifier="showCalendarStore" id="6j2-dN-seh"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ffa-JI-hF2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -868,6 +868,7 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="VP9-5C-v7b"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="9kE-CW-qbe" firstAttribute="leading" secondItem="lIW-wy-yeL" secondAttribute="leadingMargin" constant="16" id="5rg-Vk-iwb"/>
@@ -875,7 +876,6 @@
                             <constraint firstItem="9kE-CW-qbe" firstAttribute="top" secondItem="lIW-wy-yeL" secondAttribute="topMargin" id="DIn-lL-K5V"/>
                             <constraint firstAttribute="bottomMargin" secondItem="9kE-CW-qbe" secondAttribute="bottom" id="vQB-at-qUU"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="VP9-5C-v7b"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Z9-K4-mSY" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -901,16 +901,16 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="例如：我的日历" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="E1I-tu-3OF">
-                                                    <rect key="frame" x="16" y="10" width="349" height="24"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <rect key="frame" x="16" y="5" width="349" height="34"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="E1I-tu-3OF" secondAttribute="trailing" constant="10" id="0zd-rU-i9l"/>
-                                                <constraint firstAttribute="bottom" secondItem="E1I-tu-3OF" secondAttribute="bottom" constant="10" id="1Ai-iW-Gr4"/>
+                                                <constraint firstAttribute="bottom" secondItem="E1I-tu-3OF" secondAttribute="bottom" constant="5" id="1Ai-iW-Gr4"/>
                                                 <constraint firstItem="E1I-tu-3OF" firstAttribute="leading" secondItem="ey7-OW-MZr" secondAttribute="leading" constant="16" id="ug4-Pk-Lb7"/>
-                                                <constraint firstItem="E1I-tu-3OF" firstAttribute="top" secondItem="ey7-OW-MZr" secondAttribute="top" constant="10" id="xW5-Or-ZFH"/>
+                                                <constraint firstItem="E1I-tu-3OF" firstAttribute="top" secondItem="ey7-OW-MZr" secondAttribute="top" constant="5" id="xW5-Or-ZFH"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -927,7 +927,7 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GjW-u2-fg5">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GjW-u2-fg5">
                                                     <rect key="frame" x="315" y="6" width="44" height="32"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="44" id="rno-Bo-Yb6"/>
@@ -1233,7 +1233,7 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kae-RP-FyB">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kae-RP-FyB">
                                                     <rect key="frame" x="315" y="6" width="44" height="32"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="44" id="Hwl-ng-8iq"/>
@@ -1268,7 +1268,7 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m4R-gF-vOd">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m4R-gF-vOd">
                                                     <rect key="frame" x="315" y="6" width="44" height="32"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="44" id="L1T-hn-46f"/>
@@ -1303,7 +1303,7 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yrc-Ws-oZH">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yrc-Ws-oZH">
                                                     <rect key="frame" x="315" y="6" width="44" height="32"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="44" id="qzS-jN-n7Y"/>
@@ -1338,7 +1338,7 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ueU-we-edj">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ueU-we-edj">
                                                     <rect key="frame" x="315" y="6" width="44" height="32"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="44" id="LGG-fL-DaH"/>
@@ -1372,7 +1372,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="是否启用" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qf3-2G-kRZ">
-                                                    <rect key="frame" x="74" y="19" width="70" height="11"/>
+                                                    <rect key="frame" x="74" y="11" width="70" height="27"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -1385,8 +1385,8 @@
                                                 </switch>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="bottomMargin" secondItem="qf3-2G-kRZ" secondAttribute="bottom" constant="8" id="GjC-rC-dNw"/>
-                                                <constraint firstItem="qf3-2G-kRZ" firstAttribute="top" secondItem="W0o-2J-yuQ" secondAttribute="topMargin" constant="8" id="Oda-cU-M70"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="qf3-2G-kRZ" secondAttribute="bottom" id="GjC-rC-dNw"/>
+                                                <constraint firstItem="qf3-2G-kRZ" firstAttribute="top" secondItem="W0o-2J-yuQ" secondAttribute="topMargin" id="Oda-cU-M70"/>
                                                 <constraint firstItem="GTC-NP-gGg" firstAttribute="leading" secondItem="W0o-2J-yuQ" secondAttribute="leading" constant="16" id="goD-5C-BW3"/>
                                                 <constraint firstItem="GTC-NP-gGg" firstAttribute="top" secondItem="W0o-2J-yuQ" secondAttribute="top" constant="8" id="v4N-sc-Chi"/>
                                                 <constraint firstItem="qf3-2G-kRZ" firstAttribute="leading" secondItem="GTC-NP-gGg" secondAttribute="trailing" constant="10" id="xtU-RP-ae1"/>
@@ -1420,6 +1420,107 @@
             </objects>
             <point key="canvasLocation" x="1648.8" y="97.601199400299862"/>
         </scene>
+        <!--日历广场-->
+        <scene sceneID="g3n-kS-6vi">
+            <objects>
+                <tableViewController title="日历广场" id="Bfb-e1-6Y0" customClass="OOCalendarStoreViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="cef-ke-3He">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="calendarStoreTableCell" rowHeight="48" id="Ndh-HP-3ck" customClass="CalendarStoreTableViewCell" customModule="O2Platform" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="48"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Ndh-HP-3ck" id="tLV-v6-ZMd">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="48"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vnc-mF-rIl">
+                                            <rect key="frame" x="34" y="15" width="18" height="18"/>
+                                            <color key="backgroundColor" red="0.42352941176470588" green="0.42352941176470588" blue="0.42352941176470588" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="18" id="IF3-GM-Qgv"/>
+                                                <constraint firstAttribute="height" constant="18" id="vvg-DX-rFF"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                    <real key="value" value="9"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="JVL-J4-yhe">
+                                            <rect key="frame" x="60" y="0.0" width="209" height="48"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="公开的日历" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VmY-o1-rF9">
+                                                    <rect key="frame" x="0.0" y="0.0" width="209" height="26"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="创建人：xxx" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jle-N2-9Fg">
+                                                    <rect key="frame" x="0.0" y="26" width="209" height="22"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" red="0.57045853140000002" green="0.57047235969999999" blue="0.57046490910000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </stackView>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uuR-AT-jup">
+                                            <rect key="frame" x="293" y="8" width="64" height="32"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="64" id="bXP-Fz-asJ"/>
+                                            </constraints>
+                                            <state key="normal" title="关注">
+                                                <color key="titleColor" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </state>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                    <real key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                    <real key="value" value="5"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                                    <color key="value" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="tapFollowBtn:" destination="Ndh-HP-3ck" eventType="touchUpInside" id="nTo-6K-MKs"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="JVL-J4-yhe" firstAttribute="top" secondItem="tLV-v6-ZMd" secondAttribute="top" id="5B6-la-gs1"/>
+                                        <constraint firstItem="vnc-mF-rIl" firstAttribute="leading" secondItem="tLV-v6-ZMd" secondAttribute="leadingMargin" constant="18" id="JeK-qR-yPw"/>
+                                        <constraint firstItem="JVL-J4-yhe" firstAttribute="leading" secondItem="vnc-mF-rIl" secondAttribute="trailing" constant="8" id="KJx-6z-vsd"/>
+                                        <constraint firstAttribute="bottom" secondItem="uuR-AT-jup" secondAttribute="bottom" constant="8" id="M7a-F5-8fa"/>
+                                        <constraint firstAttribute="bottom" secondItem="JVL-J4-yhe" secondAttribute="bottom" id="a8N-Zw-VFh"/>
+                                        <constraint firstItem="uuR-AT-jup" firstAttribute="top" secondItem="tLV-v6-ZMd" secondAttribute="top" constant="8" id="erk-KH-Qzk"/>
+                                        <constraint firstItem="uuR-AT-jup" firstAttribute="leading" secondItem="JVL-J4-yhe" secondAttribute="trailing" constant="24" id="nT4-A6-3Hj"/>
+                                        <constraint firstItem="vnc-mF-rIl" firstAttribute="centerY" secondItem="tLV-v6-ZMd" secondAttribute="centerY" id="wXx-cu-GTi"/>
+                                        <constraint firstAttribute="trailing" secondItem="uuR-AT-jup" secondAttribute="trailing" constant="18" id="zJN-ZN-tdX"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="calendarColorView" destination="vnc-mF-rIl" id="bI3-7K-9dZ"/>
+                                    <outlet property="calendarFllowBtn" destination="uuR-AT-jup" id="E7a-t1-YTJ"/>
+                                    <outlet property="calendarOwnerLabel" destination="jle-N2-9Fg" id="gUV-lw-0E5"/>
+                                    <outlet property="calendarTitleLable" destination="VmY-o1-rF9" id="A4w-vW-DYW"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Bfb-e1-6Y0" id="ol9-J4-wab"/>
+                            <outlet property="delegate" destination="Bfb-e1-6Y0" id="WKp-wX-oG4"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="Rpv-5V-KGp"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NEG-LV-WH8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1649" y="838"/>
+        </scene>
         <!--编辑内容-->
         <scene sceneID="d6n-Ns-IYR">
             <objects>
@@ -1427,8 +1528,8 @@
                     <view key="view" contentMode="scaleToFill" id="uZ4-K3-7u9">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="x7Q-Xj-laR"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" title="编辑内容" id="8m9-cj-hJa">
                         <barButtonItem key="leftBarButtonItem" title="取消" landscapeImage="icon_off_grey" id="Nbx-21-hlf">
@@ -1476,5 +1577,8 @@
         <image name="icon_shijian" width="22" height="22"/>
         <image name="icon_tixing" width="22" height="22"/>
         <image name="icon_zengjia" width="22" height="22"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

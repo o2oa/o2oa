@@ -167,7 +167,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 	<key>o2 app version url</key>
-	<string>https://sample.o2oa.net/app/app.json</string>
+	<string>https://app.o2oa.net/download/app.json</string>
 	<key>o2 server</key>
 	<dict>
 		<key>centerContext</key>
