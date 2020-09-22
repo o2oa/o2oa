@@ -39,12 +39,13 @@ public class Components extends ConfigObject {
 	public static final String NAME_CALENDAR = "Calendar";
 	public static final String NAME_ANN = "ANN";
 	public static final String NAME_SEARCH = "Search";
+	public static final String NAME_IM = "IMV2";
 
 	public static List<String> SYSTEM_NAME_NAMES = ListTools.toList(NAME_SETTING, NAME_ORG, NAME_CMSMANAGER,
 			NAME_APPLICATIONEXPLORER, NAME_PORTALEXPLORER, NAME_DATAEXPLORER, NAME_SERVICEMANAGER, NAME_APPMARKET,
 			NAME_APPCENTER, NAME_LOGVIEWER, NAME_PROFILE, NAME_BAM, NAME_CMS, NAME_TASKCENTER, NAME_HOMEPAGE,
 			NAME_HOTARTICLE, NAME_FILE, NAME_NOTE, NAME_MEETING, NAME_ONLINEMEETING, NAME_ATTENDANCE, NAME_FORUM,
-			NAME_MINDER, NAME_CALENDAR, NAME_ANN, NAME_SEARCH);
+			NAME_MINDER, NAME_CALENDAR, NAME_ANN, NAME_SEARCH, NAME_IM);
 
 	public static final String APPICON_PNG = "appicon.png";
 
@@ -107,6 +108,8 @@ public class Components extends ConfigObject {
 			return new Component(NAME_ANN, NAME_ANN, "神经网络", APPICON_PNG, 24, Component.TYPE_SYSTEM);
 		case NAME_SEARCH:
 			return new Component(NAME_SEARCH, NAME_SEARCH, "搜索", APPICON_PNG, 25, Component.TYPE_SYSTEM);
+		case NAME_IM:
+			return new Component(NAME_IM, NAME_IM, "聊天", APPICON_PNG, 26, Component.TYPE_SYSTEM);
 		default:
 			return null;
 		}
@@ -140,6 +143,7 @@ public class Components extends ConfigObject {
 		o.systems.add(systemComponent(NAME_CALENDAR));
 		o.systems.add(systemComponent(NAME_ANN));
 		o.systems.add(systemComponent(NAME_SEARCH));
+		o.systems.add(systemComponent(NAME_IM));
 		return o;
 	}
 
