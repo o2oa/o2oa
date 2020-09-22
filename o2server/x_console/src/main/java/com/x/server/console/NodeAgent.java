@@ -621,11 +621,11 @@ public class NodeAgent extends Thread {
 	private void customJar(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
 		File jar = new File(Config.dir_custom_jars(true), simpleName + ".jar");
 		FileUtils.writeByteArrayToFile(jar, bytes, false);
-		/*if (rebootApp) {
+		if (rebootApp) {
 			Servers.stopApplicationServer();
 			Thread.sleep(3000);
 			Servers.startApplicationServer();
-		}*/
+		}
 	}
 
 	private void customZip(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
