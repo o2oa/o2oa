@@ -224,7 +224,6 @@ var _Action = (function(){
                                 }
                                 var res = null;
                                 try{
-                                        print(uri);
                                         switch (method.toLowerCase()){
                                                 case "get":
                                                         res = bind.applications.getQuery(this.root, uri);
