@@ -25,56 +25,42 @@ MWF.xApplication.Selector.Identity = new Class({
             var unitList = [];
             var groupList = [];
 
-            if( this.options.include.length > 0 ){
-                this.options.include.each( function () {
+            var parseInclude = function () {
+                if( this.options.include.length > 0 ){
+                    this.options.include.each( function (d) {
+                        var dn = typeOf(d)==="string" ? d : d.distinguishedName;
+                        var flag = dn.split("@").getLast().toLowerCase();
+                        if( flag === "u" ){
+                            unitList.push( dn );
+                        }else if( flag === "g" ){
+                            groupList.push( dn )
+                        }
+                    })
+                }
+            };
 
-                })
-            }
+            var load = function () {
+                this.caculateNestedSubCount( unitList, groupList, function () {
+                    this._loadSelectItems()
+                }.bind(this))
+            };
 
             if(this.options.noUnit){
-                this.loadInclude(afterLoadSelectItemFun);
+                parseInclude();
+                load();
             }else if (this.options.units.length){
-                var loadUnitSuccess = function () {
-                    this.unitLoaded = true;
-                    if( this.includeLoaded ){
-                        afterLoadSelectItemFun();
-                    }
-                }.bind(this);
-                var loadUnitFailure = loadUnitSuccess;
-
-                this.loadInclude( function () {
-                    this.includeLoaded = true;
-                    if( this.unitLoaded ){
-                        afterLoadSelectItemFun();
-                    }
+                parseInclude();
+                this.options.units.each( function (u) {
+                    unitList.push( typeOf( u ) === "string" ? u : ( u.distinguishedName || u.id || u.unique || u.levelName) )
                 }.bind(this));
-
-                var unitList = [];
-                for( var i=0 ; i<this.options.units.length; i++ ){
-                    var unit = this.options.units[i];
-                    if( typeOf( unit ) === "string" ){
-                        unitList.push(unit);
-                    }else if( typeOf(unit)==="object"){
-                        unitList.push(unit.id ||  unit.distinguishedName || unit.unique || unit.levelName);
-                    }
-                }
-
-
+                load();
             }else{
-
                 this.orgAction.listTopUnit(function(json){
-                    json.data.each(function(data){
-                        if( !this.isExcluded( data ) ){
-                            var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode);
-                            this.subCategorys.push( category );
-                        }
-                    }.bind(this));
+                    this.topUnitObj = json.data;
+                    this.topUnitObj.each( function (u) { unitList.push( u.distinguishedName ) }.bind(this));
+                    load();
                 }.bind(this))
             }
-
-            this.caculateNestedSubCount( unitList, function () {
-                this._loadSelectItems()
-            }.bind(this))
         }else{
             this._loadSelectItems()
         }
@@ -186,8 +172,8 @@ MWF.xApplication.Selector.Identity = new Class({
             //     }
             // }.bind(this));
 
-            this.orgAction.listTopUnit(function(json){
-                json.data.each(function(data){
+            var load = function ( topUnit ) {
+                topUnit.each(function(data){
                     if( !this.isExcluded( data ) ){
                         var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode);
                         this.subCategorys.push( category );
@@ -198,8 +184,15 @@ MWF.xApplication.Selector.Identity = new Class({
                 // if( this.includeLoaded ){
                 afterLoadSelectItemFun();
                 // }
+            }.bind(this);
 
-            }.bind(this));
+            if( this.topUnitObj ){
+                load( this.topUnitObj );
+            }else{
+                this.orgAction.listTopUnit(function(json){
+                    load( json.data );
+                }.bind(this));
+            }
         }
     },
 
@@ -331,24 +324,26 @@ MWF.xApplication.Selector.Identity = new Class({
     //}
 
     caculateNestedSubCount : function(unitList, groupList, callback){
-        var unitLoaded, groupLoaded, excludeLoaded;
+        var unitLoaded, groupLoaded, unitExcludeLoaded, groupExcludeLoaded;
         var unitTree, groupTree;
 
         if( !this.allUnitObject )this.allUnitObject = {};
         if( !this.allGroupObject )this.allGroupObject = {};
 
         var caculate = function () {
-            if( unitLoaded && groupLoaded && excludeLoaded ){
-
-                if( unitTree && unitTree.length ){
-                    unitTree.each( function ( tree ) {
-                        this.caculateUnitNestedCount( tree );
-                    }.bind(this) );
-                }
+            if( unitLoaded && groupLoaded && unitExcludeLoaded && groupExcludeLoaded ){
 
                 if( groupTree && groupTree.length ){
                     groupTree.each( function ( tree ) {
                         this.caculateGroupNestedCount( tree );
+                    }.bind(this) );
+                }
+
+                if( unitTree && unitTree.length ){
+                    unitTree.each( function ( tree ) {
+                        if( !this.allUnitObject[ tree.levelName ] ){
+                            this.caculateUnitNestedCount( tree );
+                        }
                     }.bind(this) );
                 }
 
@@ -357,10 +352,25 @@ MWF.xApplication.Selector.Identity = new Class({
             }
         }.bind(this);
 
-        this.getExcludedIdentityCount(function () {
-            excludeLoaded = true;
+        if( unitList && unitList.length > 0 ) {
+            this.getUnitExcludedIdentityCount(function () {
+                unitExcludeLoaded = true;
+                caculate();
+            }.bind(this));
+        }else{
+            unitExcludeLoaded = true;
             caculate();
-        }.bind(this));
+        }
+
+        if( groupList && groupList.length > 0 ) {
+            this.getGroupExcludedIdentityCount(function () {
+                groupExcludeLoaded = true;
+                caculate();
+            }.bind(this));
+        }else{
+            groupExcludeLoaded = true;
+            caculate();
+        }
 
         if( unitList && unitList.length > 0 ){
             o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitTree( { "unitList" : unitList }, function (json) {
@@ -384,17 +394,32 @@ MWF.xApplication.Selector.Identity = new Class({
             caculate();
         }
     },
-    caculateGroupNestedCount : function( tree, parentName ){
+    caculateGroupNestedCount : function( tree, parentLevelName ){
         if( this.isExcluded( tree ) )return;
-        var levelName = parentName ? ( parentName + "/" + tree.distinguishedName.split("@")[0] ) : tree.distinguishedName.split("@")[0];
+        var levelName = parentLevelName ? ( parentLevelName + "/" + tree.distinguishedName.split("@")[0] ) : tree.distinguishedName.split("@")[0];
         if(!this.allGroupObject[ levelName ])this.allGroupObject[ levelName ] = tree;
 
-        tree.subUnits.each( function (unit) {
-            this.caculateUnitNestedCount( unit )
-        }.bind(this))
+        // tree.subDirectIdentityCount
+        var count = tree.subDirectIdentityCount;
+        if( this.groupExcludedIdentityCount[ tree.levelName ] ){
+            count = (count || 0) - this.groupExcludedIdentityCount[ tree.levelName ];
+        }
+
+        var nameList = tree.levelName.split("/");
+        var names = [];
+        nameList.each( function (n) {
+            names.push( n );
+            var levelName = names.join("/");
+            var unitObject = this.allUnitObject[levelName];
+            if( unitObject )unitObject.subNestedIdentityCount = (unitObject.subNestedIdentityCount || 0) + count;
+        }.bind(this));
 
         tree.subGroups.each( function (group) {
             this.caculateGroupNestedCount( group, levelName );
+        }.bind(this));
+
+        tree.subUnits.each( function (unit) {
+            this.caculateUnitNestedCount( unit )
         }.bind(this))
 
     },
@@ -416,11 +441,37 @@ MWF.xApplication.Selector.Identity = new Class({
             var unitObject = this.allUnitObject[levelName];
             if( unitObject )unitObject.subNestedIdentityCount = (unitObject.subNestedIdentityCount || 0) + count;
         }.bind(this));
+
         tree.subUnits.each( function (unit) {
             this.caculateUnitNestedCount( unit )
         }.bind(this))
     },
-    getExcludedIdentityCount : function (callback) {
+
+    getGroupExcludedIdentityCount : function (callback) {
+        if( !this.groupExcludedIdentityCount )this.groupExcludedIdentityCount = {};
+        if( !this.options.exclude || this.options.exclude.length === 0 ){
+            if( callback )callback();
+            return;
+        }
+        var list = [];
+        for( var i=0; i<this.options.exclude.length; i++ ){
+            var d = this.options.exclude[i];
+            list.push( typeOf( d ) === "object" ? (d.distinguishedName || d.id || d.unique) : d );
+        }
+        if( list.length > 0 ){
+            o2.Actions.load("x_organization_assemble_express").GroupAction.listWithIdentityObject( {
+                recursiveGroupFlag : true, identityList : list
+            }, function (json) {
+                    json.data.each( function (id) {
+                        this.groupExcludedIdentityCount[ id.unitLevelName ] = ( this.groupExcludedIdentityCount[ id.unitLevelName ] || 0 )+1;
+                    }.bind(this));
+                    if( callback )callback();
+            }.bind(this))
+        }else{
+            if( callback )callback();
+        }
+    },
+    getUnitExcludedIdentityCount : function (callback) {
         if( !this.unitExcludedIdentityCount )this.unitExcludedIdentityCount = {};
         if( !this.options.exclude || this.options.exclude.length === 0 ){
             if( callback )callback();
@@ -712,42 +763,42 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
     },
     loadSub: function(callback){
         if (!this.loaded){
-            if (this.selector.options.dutys && this.selector.options.dutys.length){
-                var ids = [];
-                var object = {};
-                this.selector.options.dutys.each(function(duty){
-                    this.selector.orgAction.listIdentityWidthUnitWithDutyName(this.data.distinguishedName, duty, function(json){
-                        if (json.data && json.data.length){
-                            ids = ids.concat(json.data);
-                        }
-                    }.bind(this), null, false);
-
-                    ids.each(function(idSubData){
-                        if( !this.selector.isExcluded( idSubData ) && !object[ idSubData.id || idSubData.distinguishedName ]) {
-                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-                            this.selector.items.push(item);
-                            if(this.subItems)this.subItems.push( item );
-                            object[ idSubData.id || idSubData.distinguishedName ] = true;
-                        }
-                    }.bind(this));
-                }.bind(this));
-
-                if( this.selector.options.expandSubEnable ){
-                    this.selector.orgAction.listSubUnitDirect(function(json){
-                        json.data.each(function(subData){
-                            if( !this.selector.isExcluded( subData ) ) {
-                                var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
-                                this.subCategorys.push( category );
-                            }
-                        }.bind(this));
-                        this.loaded = true;
-                        if(callback)callback();
-                    }.bind(this), null, this.data.distinguishedName);
-                }else{
-                    this.loaded = true;
-                    if(callback)callback();
-                }
-            }else{
+            // if (this.selector.options.dutys && this.selector.options.dutys.length){
+            //     var ids = [];
+            //     var object = {};
+            //     this.selector.options.dutys.each(function(duty){
+            //         this.selector.orgAction.listIdentityWidthUnitWithDutyName(this.data.distinguishedName, duty, function(json){
+            //             if (json.data && json.data.length){
+            //                 ids = ids.concat(json.data);
+            //             }
+            //         }.bind(this), null, false);
+            //
+            //         ids.each(function(idSubData){
+            //             if( !this.selector.isExcluded( idSubData ) && !object[ idSubData.id || idSubData.distinguishedName ]) {
+            //                 var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+            //                 this.selector.items.push(item);
+            //                 if(this.subItems)this.subItems.push( item );
+            //                 object[ idSubData.id || idSubData.distinguishedName ] = true;
+            //             }
+            //         }.bind(this));
+            //     }.bind(this));
+            //
+            //     if( this.selector.options.expandSubEnable ){
+            //         this.selector.orgAction.listSubUnitDirect(function(json){
+            //             json.data.each(function(subData){
+            //                 if( !this.selector.isExcluded( subData ) ) {
+            //                     var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
+            //                     this.subCategorys.push( category );
+            //                 }
+            //             }.bind(this));
+            //             this.loaded = true;
+            //             if(callback)callback();
+            //         }.bind(this), null, this.data.distinguishedName);
+            //     }else{
+            //         this.loaded = true;
+            //         if(callback)callback();
+            //     }
+            // }else{
 
                 this.selector.orgAction.listIdentityWithUnit(function(idJson){
                     idJson.data.each(function(idSubData){
@@ -774,7 +825,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                         if (callback) callback();
                     }
                 }.bind(this), null, this.data.distinguishedName);
-            }
+            // }
         }else{
             if (callback) callback( );
         }
@@ -844,28 +895,28 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
     },
     loadItemChildren: function(callback){
         if (!this.itemLoaded){
-            if (this.selector.options.dutys && this.selector.options.dutys.length){
-                var ids = [];
-                var object = {};
-                this.selector.options.dutys.each(function(duty){
-                    this.selector.orgAction.listIdentityWidthUnitWithDutyName(this.data.distinguishedName, duty, function(json){
-                        if (json.data && json.data.length){
-                            ids = ids.concat(json.data);
-                        }
-                    }.bind(this), null, false);
-
-                    ids.each(function(idSubData){
-                        if( !this.selector.isExcluded( idSubData ) && !object[ idSubData.id || idSubData.distinguishedName ]) {
-                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-                            this.selector.items.push(item);
-                            if(this.subItems)this.subItems.push( item );
-                            object[ idSubData.id || idSubData.distinguishedName ] = true;
-                        }
-                        this.itemLoaded = true;
-                    }.bind(this));
-                }.bind(this));
-                if (callback) callback();
-            }else{
+            // if (this.selector.options.dutys && this.selector.options.dutys.length){
+            //     var ids = [];
+            //     var object = {};
+            //     this.selector.options.dutys.each(function(duty){
+            //         this.selector.orgAction.listIdentityWidthUnitWithDutyName(this.data.distinguishedName, duty, function(json){
+            //             if (json.data && json.data.length){
+            //                 ids = ids.concat(json.data);
+            //             }
+            //         }.bind(this), null, false);
+            //
+            //         ids.each(function(idSubData){
+            //             if( !this.selector.isExcluded( idSubData ) && !object[ idSubData.id || idSubData.distinguishedName ]) {
+            //                 var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+            //                 this.selector.items.push(item);
+            //                 if(this.subItems)this.subItems.push( item );
+            //                 object[ idSubData.id || idSubData.distinguishedName ] = true;
+            //             }
+            //             this.itemLoaded = true;
+            //         }.bind(this));
+            //     }.bind(this));
+            //     if (callback) callback();
+            // }else{
                 this.selector.orgAction.listIdentityWithUnit(function(idJson){
                     idJson.data.each(function(idSubData){
                         if( !this.selector.isExcluded( idSubData ) ) {
@@ -877,7 +928,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                     }.bind(this));
                     if (callback) callback();
                 }.bind(this), null, this.data.distinguishedName);
-            }
+            // }
         }else{
             if (callback) callback( );
         }
