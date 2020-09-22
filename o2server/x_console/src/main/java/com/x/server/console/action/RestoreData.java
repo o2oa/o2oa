@@ -226,7 +226,7 @@ public class RestoreData {
 			}
 			Path path = sub.resolve(Paths.get(so.path()).getFileName());
 			if (!Files.exists(path)) {
-				throw new ExceptionFileNotExist(path);
+				logger.warn("file not exist: {}.", path.toString());
 			}
 			try (InputStream input = Files.newInputStream(path)) {
 				so.saveContent(mapping, input, so.getName());
