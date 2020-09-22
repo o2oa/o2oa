@@ -321,12 +321,19 @@ MWF.xScript.Environment = function(ev){
             return v;
         },
         //获取人员--返回人员的对象数组
-        getPerson: function(name){
+        getPerson: function(name, callback){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
-            var v = null;
-            orgActions.listPerson(data, function(json){v = json.data;}, null, false);
-            return (v && v.length===1) ? v[0] : v;;
+            if (callback){
+                orgActions.listPerson(data, function(json){
+                    v = json.data;
+                    o2.runCallback(callback, "success", [v], this);
+                });
+            }else{
+                var v = null;
+                orgActions.listPerson(data, function(json){v = json.data;}, null, false);
+                return (v && v.length===1) ? v[0] : v;
+            }
         },
         //查询下级人员--返回人员的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
@@ -479,12 +486,21 @@ MWF.xScript.Environment = function(ev){
 
         //身份**********
         //获取身份
-        getIdentity: function(name){
+        getIdentity: function(name, callback){
             getOrgActions();
             var data = {"identityList":getNameFlag(name)};
-            var v = null;
-            orgActions.listIdentity(data, function(json){v = json.data;}, null, false);
-            return (v && v.length===1) ? v[0] : v;
+
+            if (callback){
+                orgActions.listIdentity(data, function(json){
+                    v = json.data;
+                    v = (v && v.length===1) ? v[0] : v;
+                    o2.runCallback(callback, "success", [v], this);
+                });
+            }else{
+                var v = null;
+                orgActions.listIdentity(data, function(json){v = json.data;}, null, false);
+                return (v && v.length===1) ? v[0] : v;
+            }
         },
         //列出人员的身份
         listIdentityWithPerson: function(name){
@@ -532,16 +548,39 @@ MWF.xScript.Environment = function(ev){
         },
         //查询组织的上级--返回组织的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
-        listSupUnit: function(name, nested){
+        listSupUnit: function(name, nested, callback){
+            debugger;
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
+            var cb = function(json){
+                v = json.data;
+                if (callback) o2.runCallback(callback, "success", [v], this);
+            };
+            var async = !!callback;
+
             var v = null;
             if (nested){
-                orgActions.listUnitSupNested(data, function(json){v = json.data;}, null, false);
+                orgActions.listUnitSupNested(data, cb, null, async);
             }else{
-                orgActions.listUnitSupDirect(data, function(json){v = json.data;}, null, false);
+                orgActions.listUnitSupDirect(data, cb, null, async);
             }
-            return v;
+            return callback||v;
+
+            // if (callback){
+            //     if (nested){
+            //         orgActions.listUnitSupNested(data, function(json){v = json.data; o2.runCallback(callback, "success", [v], this);});
+            //     }else{
+            //         orgActions.listUnitSupDirect(data, function(json){v = json.data; o2.runCallback(callback, "success", [v], this);});
+            //     }
+            // }else{
+            //     var v = null;
+            //     if (nested){
+            //         orgActions.listUnitSupNested(data, function(json){v = json.data;}, null, false);
+            //     }else{
+            //         orgActions.listUnitSupDirect(data, function(json){v = json.data;}, null, false);
+            //     }
+            //     return v;
+            // }
         },
         //根据个人身份获取组织
         //flag 数字    表示获取第几层的组织
