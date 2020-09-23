@@ -20,44 +20,95 @@ MWF.xApplication.Selector.Identity = new Class({
         "selectType" : "identity"
     },
     loadSelectItems : function(){
-        if( this.options.isCheckStatus ){
+        if( this.options.isCheckStatus || this.options.showSelectedCount ) {
 
             var unitList = [];
             var groupList = [];
 
             var parseInclude = function () {
-                if( this.options.include.length > 0 ){
-                    this.options.include.each( function (d) {
-                        var dn = typeOf(d)==="string" ? d : d.distinguishedName;
+                if (this.options.include.length > 0) {
+                    this.options.include.each(function (d) {
+                        var dn = typeOf(d) === "string" ? d : d.distinguishedName;
                         var flag = dn.split("@").getLast().toLowerCase();
-                        if( flag === "u" ){
-                            unitList.push( dn );
-                        }else if( flag === "g" ){
-                            groupList.push( dn )
+                        if (flag === "u") {
+                            unitList.push(dn);
+                        } else if (flag === "g") {
+                            groupList.push(dn)
                         }
                     })
                 }
-            };
+            }.bind(this);
 
             var load = function () {
-                this.caculateNestedSubCount( unitList, groupList, function () {
-                    this._loadSelectItems()
-                }.bind(this))
-            };
 
-            if(this.options.noUnit){
+                var unitLoaded, groupLoaded, selectedIdentityLoaded, excludeIdentityLoaded;
+                var unitTree, groupTree;
+                this.unitExcludedIdentityCount = {};
+                this.groupExcludedIdentityCount = {};
+                this.unitSelectedIdentityCount = {};
+                this.groupSelectedIdentityCount = {};
+
+                var caculate = function () {
+                    if (unitLoaded && groupLoaded && selectedIdentityLoaded && excludeIdentityLoaded) {
+                        this.caculateNestedSubCount(unitTree, groupTree, function () {
+                            this._loadSelectItems()
+                        }.bind(this))
+
+                    }
+                }.bind(this);
+
+                this.getIdentityCountMap(this.options.values, groupList && groupList.length > 0, function (result) {
+                    this.unitSelectedIdentityCount = result.unitMap;
+                    this.groupSelectedIdentityCount = result.groupMap;
+                    selectedIdentityLoaded = true;
+                    caculate();
+                }.bind(this));
+
+                this.getIdentityCountMap(this.options.exclude, groupList && groupList.length > 0, function (result) {
+                    this.unitExcludedIdentityCount = result.unitMap;
+                    this.groupExcludedIdentityCount = result.groupMap;
+                    excludeIdentityLoaded = true;
+                    caculate();
+                }.bind(this));
+
+                if (unitList && unitList.length > 0) {
+                    o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitTree({"unitList": unitList}, function (json) {
+                        unitTree = json.data;
+                        unitLoaded = true;
+                        caculate();
+                    }.bind(this))
+                } else {
+                    unitLoaded = true;
+                    caculate();
+                }
+
+                if (groupList && groupList.length > 0) {
+                    o2.Actions.load("x_organization_assemble_express").GroupAction.listWithGroupTree({"groupList": groupList}, function (json) {
+                        groupTree = json.data;
+                        groupLoaded = true;
+                        caculate();
+                    }.bind(this))
+                } else {
+                    groupLoaded = true;
+                    caculate();
+                }
+            }.bind(this);
+
+            if (this.options.noUnit) {
                 parseInclude();
                 load();
-            }else if (this.options.units.length){
+            } else if (this.options.units.length) {
                 parseInclude();
-                this.options.units.each( function (u) {
-                    unitList.push( typeOf( u ) === "string" ? u : ( u.distinguishedName || u.id || u.unique || u.levelName) )
+                this.options.units.each(function (u) {
+                    unitList.push(typeOf(u) === "string" ? u : (u.distinguishedName || u.id || u.unique || u.levelName))
                 }.bind(this));
                 load();
-            }else{
-                this.orgAction.listTopUnit(function(json){
+            } else {
+                this.orgAction.listTopUnit(function (json) {
                     this.topUnitObj = json.data;
-                    this.topUnitObj.each( function (u) { unitList.push( u.distinguishedName ) }.bind(this));
+                    this.topUnitObj.each(function (u) {
+                        unitList.push(u.distinguishedName)
+                    }.bind(this));
                     load();
                 }.bind(this))
             }
@@ -323,182 +374,212 @@ MWF.xApplication.Selector.Identity = new Class({
     //    }.bind(this));
     //}
 
-    caculateNestedSubCount : function(unitList, groupList, callback){
-        var unitLoaded, groupLoaded, unitExcludeLoaded, groupExcludeLoaded;
-        var unitTree, groupTree;
-
-        if( !this.allUnitObject )this.allUnitObject = {};
-        if( !this.allGroupObject )this.allGroupObject = {};
-
-        var caculate = function () {
-            if( unitLoaded && groupLoaded && unitExcludeLoaded && groupExcludeLoaded ){
-
-                if( groupTree && groupTree.length ){
-                    groupTree.each( function ( tree ) {
-                        this.caculateGroupNestedCount( tree );
-                    }.bind(this) );
+    getIdentityCountMap : function( identityList, byGroup, callback ){
+        var result = {
+            unitMap : {},
+            groupMap : {}
+        };
+        this.listIndetityObject( identityList, function ( list, map ) {
+            list.each( function (id) {
+                if(id.unitLevelName){
+                    result.unitMap[ id.unitLevelName ] = ( result.unitMap[ id.unitLevelName ] || 0 )+1;
                 }
-
-                if( unitTree && unitTree.length ){
-                    unitTree.each( function ( tree ) {
-                        if( !this.allUnitObject[ tree.levelName ] ){
-                            this.caculateUnitNestedCount( tree );
-                        }
-                    }.bind(this) );
-                }
-
-                if(callback)callback();
-
+            }.bind(this));
+            if( byGroup ) {
+                this.listLevelNameGroupMap(list, function ( levelNameGroupMap ) {
+                    for( var key in levelNameGroupMap ){
+                        var group = levelNameGroupMap[key]
+                        var identityCount = group["identityList"].length;
+                        if(identityCount)result.groupMap[key] = identityCount;
+                    }
+                   if( callback )callback( result );
+                }.bind(this));
+            }else{
+                if( callback )callback( result );
             }
-        }.bind(this);
-
-        if( unitList && unitList.length > 0 ) {
-            this.getUnitExcludedIdentityCount(function () {
-                unitExcludeLoaded = true;
-                caculate();
-            }.bind(this));
-        }else{
-            unitExcludeLoaded = true;
-            caculate();
-        }
-
-        if( groupList && groupList.length > 0 ) {
-            this.getGroupExcludedIdentityCount(function () {
-                groupExcludeLoaded = true;
-                caculate();
-            }.bind(this));
-        }else{
-            groupExcludeLoaded = true;
-            caculate();
-        }
-
-        if( unitList && unitList.length > 0 ){
-            o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitTree( { "unitList" : unitList }, function (json) {
-                unitTree = json.data;
-                unitLoaded = true;
-                caculate();
-            }.bind(this) )
-        }else{
-            unitLoaded = true;
-            caculate();
-        }
-
-        if( groupList && groupList.length > 0 ){
-            o2.Actions.load("x_organization_assemble_express").GroupAction.listWithGroupTree( { "groupList" : groupList }, function (json) {
-                groupTree = json.data;
-                groupLoaded = true;
-                caculate();
-            }.bind(this) )
-        }else{
-            groupLoaded = true;
-            caculate();
-        }
-    },
-    caculateGroupNestedCount : function( tree, parentLevelName ){
-        if( this.isExcluded( tree ) )return;
-        var levelName = parentLevelName ? ( parentLevelName + "/" + tree.distinguishedName.split("@")[0] ) : tree.distinguishedName.split("@")[0];
-        if(!this.allGroupObject[ levelName ])this.allGroupObject[ levelName ] = tree;
-
-        // tree.subDirectIdentityCount
-        var count = tree.subDirectIdentityCount;
-        if( this.groupExcludedIdentityCount[ tree.levelName ] ){
-            count = (count || 0) - this.groupExcludedIdentityCount[ tree.levelName ];
-        }
-
-        var nameList = tree.levelName.split("/");
-        var names = [];
-        nameList.each( function (n) {
-            names.push( n );
-            var levelName = names.join("/");
-            var unitObject = this.allUnitObject[levelName];
-            if( unitObject )unitObject.subNestedIdentityCount = (unitObject.subNestedIdentityCount || 0) + count;
         }.bind(this));
-
-        tree.subGroups.each( function (group) {
-            this.caculateGroupNestedCount( group, levelName );
-        }.bind(this));
-
-        tree.subUnits.each( function (unit) {
-            this.caculateUnitNestedCount( unit )
-        }.bind(this))
-
     },
-
-    caculateUnitNestedCount : function ( tree ) {
-        if( this.isExcluded( tree ) )return;
-        if(!this.allUnitObject[ tree.levelName ])this.allUnitObject[ tree.levelName ] = tree;
-
-        var count = tree.subDirectIdentityCount;
-        if( this.unitExcludedIdentityCount[ tree.levelName ] ){
-            count = (count || 0) - this.unitExcludedIdentityCount[ tree.levelName ];
-        }
-
-        var nameList = tree.levelName.split("/");
-        var names = [];
-        nameList.each( function (n) {
-            names.push( n );
-            var levelName = names.join("/");
-            var unitObject = this.allUnitObject[levelName];
-            if( unitObject )unitObject.subNestedIdentityCount = (unitObject.subNestedIdentityCount || 0) + count;
-        }.bind(this));
-
-        tree.subUnits.each( function (unit) {
-            this.caculateUnitNestedCount( unit )
-        }.bind(this))
-    },
-
-    getGroupExcludedIdentityCount : function (callback) {
-        if( !this.groupExcludedIdentityCount )this.groupExcludedIdentityCount = {};
-        if( !this.options.exclude || this.options.exclude.length === 0 ){
-            if( callback )callback();
-            return;
-        }
+    listIndetityObject : function( identityList, callback ){
         var list = [];
-        for( var i=0; i<this.options.exclude.length; i++ ){
-            var d = this.options.exclude[i];
-            list.push( typeOf( d ) === "object" ? (d.distinguishedName || d.id || d.unique) : d );
-        }
-        if( list.length > 0 ){
-            o2.Actions.load("x_organization_assemble_express").GroupAction.listWithIdentityObject( {
-                recursiveGroupFlag : true, identityList : list
-            }, function (json) {
-                    json.data.each( function (id) {
-                        this.groupExcludedIdentityCount[ id.unitLevelName ] = ( this.groupExcludedIdentityCount[ id.unitLevelName ] || 0 )+1;
-                    }.bind(this));
-                    if( callback )callback();
-            }.bind(this))
-        }else{
-            if( callback )callback();
-        }
-    },
-    getUnitExcludedIdentityCount : function (callback) {
-        if( !this.unitExcludedIdentityCount )this.unitExcludedIdentityCount = {};
-        if( !this.options.exclude || this.options.exclude.length === 0 ){
-            if( callback )callback();
-            return;
-        }
-        var list = [];
-        for( var i=0; i<this.options.exclude.length; i++ ){
-            var d = this.options.exclude[i];
+        identityList.each( function (d) {
             if( typeOf( d ) === "object"){
-                if( d.unitLevelName ){
-                    this.unitExcludedIdentityCount[ d.unitLevelName ] = ( this.unitExcludedIdentityCount[ d.unitLevelName ] || 0 )+1;
-                }else{
-                    list.push( d.distinguishedName || d.id || d.unique )
-                }
+                if( !d.unitLevelName || !d.distinguishedName )list.push( d.distinguishedName || d.id || d.unique )
             }else{
                 list.push( d )
             }
-        }
+        });
         if( list.length > 0 ){
             o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : list }, function (json) {
-                json.data.each( function (id) {
-                    this.unitExcludedIdentityCount[ id.unitLevelName ] = ( this.unitExcludedIdentityCount[ id.unitLevelName ] || 0 )+1;
-                }.bind(this));
-                if( callback )callback();
+                var map = {};
+                json.data.each( function (d) { map[ d.matchKey ] =  d; });
+                var result = [];
+                identityList.each( function (d) {
+                    var key = typeOf( d ) === "object" ? ( d.distinguishedName || d.id || d.unique ) : d;
+                    result.push( map[key] ? map[key] : d );
+                });
+                if( callback )callback( result, map );
             }.bind(this))
         }else{
-            if( callback )callback();
+            if( callback )callback( identityList, {} );
+        }
+    },
+
+    listLevelNameGroupMap : function(identityList, callback, referenceFlag, recursiveOrgFlag){
+        var list = identityList.map( function (d) { return d.distinguishedName; }).clean();
+        if( list.length > 0 ){
+            o2.Actions.load("x_organization_assemble_express").GroupAction.listWithIdentityObject( {
+                recursiveGroupFlag : true, identityList : list, referenceFlag : !!referenceFlag, recursiveOrgFlag : !!recursiveOrgFlag
+            }, function (json) {
+                var map = {};
+                var groupList = json.data;
+                groupList.each( function (d) { map[ d.distinguishedName ] = d; });
+                groupList.each( function (d) {
+                    d.identityList = d.identityList.filter( function (id) { return list.contains(id) });
+                    d.groupObjectList  = [];
+                    d.groupList.each( function (g) { if(map[g])d.groupObjectList.push( map[g] ) })
+                });
+
+                var groupIdentityMap = {};
+                var fun = function ( group, parentName ) {
+                    var levelName = parentName ? ( parentName + "/" + group.name ) : group.name;
+                    groupIdentityMap[ levelName ] = group;
+                    group.groupObjectList.each( function( g ){
+                        fun( g, levelName );
+                    })
+                };
+
+                groupList.each( function (d) { fun(d) });
+
+                if( callback )callback( groupIdentityMap );
+            }.bind(this))
+        }else{
+            if( callback )callback({});
+        }
+    },
+
+    caculateNestedSubCount : function(unitTree, groupTree, callback){
+        if( !this.allUnitObject )this.allUnitObject = {};
+        if( !this.allGroupObject )this.allGroupObject = {};
+        if( !this.allGroupObjectByDn )this.allGroupObjectByDn = {};
+
+        if( groupTree && groupTree.length ){
+            groupTree.each( function ( tree ) {
+                this.caculateGroupNestedCount( tree );
+            }.bind(this) );
+        }
+
+        if( unitTree && unitTree.length ){
+            unitTree.each( function ( tree ) {
+                if( !this.allUnitObject[ tree.levelName ] ){
+                    this.caculateUnitNestedCount( tree );
+                }
+            }.bind(this) );
+        }
+
+        if( this.allGroupObject ){
+            for( var k in this.allGroupObject ){
+                var obj = this.allGroupObject[k];
+                this.allGroupObjectByDn[ obj.distinguishedName ] = obj;
+            }
+        }
+
+        if(callback)callback();
+    },
+    caculateGroupNestedCount : function( tree, parentLevelName ){
+        if( this.isExcluded( tree ) )return;
+        var groupLevelName = parentLevelName ? ( parentLevelName + "/" + tree.distinguishedName.split("@")[0] ) : tree.distinguishedName.split("@")[0];
+        if(!this.allGroupObject[ groupLevelName ]){
+            this.allGroupObject[ groupLevelName ] = tree;
+        }else{
+            return;
+        }
+
+        // tree.subDirectIdentityCount
+        var count = tree.subDirectIdentityCount;
+        if( this.groupExcludedIdentityCount && this.groupExcludedIdentityCount[ groupLevelName ] ){
+            count = (count || 0) - this.groupExcludedIdentityCount[ groupLevelName ];
+        }
+
+        var selectedCount = 0;
+        if( this.groupSelectedIdentityCount && this.groupSelectedIdentityCount[ groupLevelName ] ){
+            selectedCount = this.groupSelectedIdentityCount[ groupLevelName ];
+        }
+
+        var nameList = groupLevelName.split("/");
+        var names = [];
+        nameList.each( function (n) {
+            names.push( n );
+            var levelName = names.join("/");
+            var groupObject = this.allGroupObject[levelName];
+            if( groupObject ){
+                groupObject.subNestedIdentityCount = (groupObject.subNestedIdentityCount || 0) + count;
+                groupObject.selectedNestedIdentityCount = (groupObject.selectedNestedIdentityCount || 0) + selectedCount;
+            }
+        }.bind(this));
+
+        tree.subGroups.each( function (group) {
+            this.caculateGroupNestedCount( group, groupLevelName );
+        }.bind(this));
+
+        tree.subUnits.each( function (unit) {
+            var flag = this.allUnitObject[ unit.levelName ];
+            this.caculateUnitNestedCount( unit, groupLevelName, !!flag )
+        }.bind(this))
+
+    },
+
+    caculateUnitNestedCount : function ( tree, groupLevelName, flag ) {
+        if( this.isExcluded( tree ) )return;
+        var count;
+        var selectedCount;
+        if(!this.allUnitObject[ tree.levelName ]){
+            this.allUnitObject[ tree.levelName ] = tree;
+            count = tree.subDirectIdentityCount;
+            if( this.unitExcludedIdentityCount && this.unitExcludedIdentityCount[ tree.levelName ] ){
+                count = (count || 0) - this.unitExcludedIdentityCount[ tree.levelName ];
+            }
+
+            selectedCount = 0;
+            if( this.unitSelectedIdentityCount && this.unitSelectedIdentityCount[ tree.levelName ] ){
+                selectedCount = this.unitSelectedIdentityCount[ tree.levelName ];
+            }
+        }else if( !flag ){
+            return;
+        }else{
+            count = this.allUnitObject[ tree.levelName ].subNestedIdentityCount || 0;
+            count = this.allUnitObject[ tree.levelName ].selectedNestedIdentityCount || 0;
+        }
+
+        if( groupLevelName ){
+            var groupNameList = groupLevelName.split("/");
+            var groupNames = [];
+            groupNameList.each( function (n) {
+                groupNames.push( n );
+                var levelName = groupNames.join("/");
+                var groupObject = this.allGroupObject[levelName];
+                if( groupObject ){
+                    groupObject.subNestedIdentityCount = (groupObject.subNestedIdentityCount || 0) + count;
+                    groupObject.selectedNestedIdentityCount = (groupObject.selectedNestedIdentityCount || 0) + selectedCount;
+                }
+            }.bind(this));
+        }
+
+        if( !flag ){
+            var nameList = tree.levelName.split("/");
+            var names = [];
+            nameList.each( function (n) {
+                names.push( n );
+                var levelName = names.join("/");
+                var unitObject = this.allUnitObject[levelName];
+                if( unitObject ){
+                    unitObject.subNestedIdentityCount = (unitObject.subNestedIdentityCount || 0) + count;
+                    unitObject.selectedNestedIdentityCount = (unitObject.selectedNestedIdentityCount || 0) + selectedCount;
+                }
+            }.bind(this));
+
+            tree.subUnits.each( function (unit) {
+                this.caculateUnitNestedCount( unit, groupLevelName )
+            }.bind(this))
         }
     }
 
@@ -683,12 +764,18 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         }).inject(this.container);
     },
     _getShowName: function(){
-        return "" + this._getTotalCount() + "-" + this.data.name ;
+        return "" + this._getTotalCount() + "-" + this._getSelectedCount() + "-" + this.data.name ;
     },
     _getTotalCount : function(){
-        debugger;
-        var unit = this.selector.allUnitObject[this.data.levelName];
+        if( !this.selector.allUnitObject )return "n";
+        var unit =  this.selector.allUnitObject[this.data.levelName];
         var count = unit ? unit.subNestedIdentityCount : "n";
+        return count;
+    },
+    _getSelectedCount : function(){
+        if( !this.selector.allUnitObject )return 0;
+        var unit =  this.selector.allUnitObject[this.data.levelName];
+        var count = unit ? unit.selectedNestedIdentityCount : 0;
         return count;
     },
     _setIcon: function(){
@@ -951,10 +1038,20 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
         var style = this.selector.options.style;
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
     },
+    _getTotalCount : function(){
+        if( !this.selector.allGroupObjectByDn )return "n";
+        var group = this.selector.allGroupObjectByDn[this.data.distinguishedName];
+        var count = group ? group.subNestedIdentityCount : "n";
+        return count;
+    },
+    _getSelectedCount : function(){
+        if( !this.selector.allGroupObjectByDn )return 0;
+        var group = this.selector.allGroupObjectByDn[this.data.distinguishedName];
+        var count = group ? group.selectedNestedIdentityCount : 0;
+        return count;
+    },
     loadSub: function(callback){
         if (!this.loaded){
-
-            debugger;
             var personContainer, identityContainer, groupContainer, unitContainer;
             if( this.data.personList )personContainer = new Element("div").inject( this.children );
             if( this.data.identityList )identityContainer = new Element("div").inject( this.children );

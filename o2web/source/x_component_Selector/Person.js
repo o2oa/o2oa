@@ -36,8 +36,8 @@ MWF.xApplication.Selector.Person = new Class({
         "flatCategory" : false, //扁平化展现分类,
         "selectType" : "person",
 
-        "isCheckStatus" : true,
-        "showSelectedCount" : false,
+        "isCheckStatus" : false,
+        "showSelectedCount" : true,
 
         "itemHeight" : 29,
         "identityItemWidth" : 0, //选项宽度，如果不为0，设置为float:left,
