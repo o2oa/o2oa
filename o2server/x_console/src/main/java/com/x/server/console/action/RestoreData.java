@@ -227,9 +227,10 @@ public class RestoreData {
 			Path path = sub.resolve(Paths.get(so.path()).getFileName());
 			if (!Files.exists(path)) {
 				logger.warn("file not exist: {}.", path.toString());
-			}
-			try (InputStream input = Files.newInputStream(path)) {
-				so.saveContent(mapping, input, so.getName());
+			}else {
+				try (InputStream input = Files.newInputStream(path)) {
+					so.saveContent(mapping, input, so.getName());
+				}
 			}
 		}
 
