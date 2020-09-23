@@ -2012,6 +2012,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
     },
     selected: function( checkValid, callback, selectedNode ){
+        debugger;
         var count = this.selector.options.maxCount || this.selector.options.count;
         count = count.toInt();
         if (!count) count = 0;
@@ -2032,7 +2033,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 }
             }
             this.selectedItem = this.selector._newItemSelected(this.data, this.selector, this, selectedNode);
-            this.selectedItem.check();
+            // this.selectedItem.check();
             this.selector.selectedItems.push(this.selectedItem);
 
             // if( this.category ){
@@ -2104,6 +2105,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                         item.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
                     }
+                }
+                if( this.selector.options.showSelectedCount ){
+                    if(item.category)item.category._addSelectedCount( -1, true );
                 }
             }.bind(this));
 
@@ -2221,6 +2225,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         if (this.items.indexOf(item)===-1) this.items.push(item);
     },
     check: function(){
+        debugger;
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
                 return item.data.distinguishedName === this.data.distinguishedName;
@@ -2230,6 +2235,9 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();
+                    // if( this.selector.options.showSelectedCount ){
+                    //     if(item.category)item.category._addSelectedCount( 1, true );
+                    // }
                 }.bind(this));
             }
         }
@@ -2434,6 +2442,10 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         var m = this.textNode.getStyle("margin-left").toFloat()+indent;
         this.textNode.setStyle("margin-left", ""+m+"px");
 
+        this.selectedCountNode = new Element("span", {
+            "text": this._getSelectedCount()
+        }).inject(this.textNode);
+
         this.children = new Element("div.children", {
             "styles": this.selector.css.selectorItemCategoryChildrenNode
         }).inject(this.node, "after");
@@ -2483,6 +2495,15 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             "styles": this.selector.css.selectorItemCategory,
             "title" : this._getTtiteText()
         }).inject(this.container);
+    },
+    _addSelectedCount : function( count, nested ){
+        debugger;
+        var c = ( this._getSelectedCount() || 0 ) + count;
+        this.selectedCount = c;
+        this.selectedCountNode.set("text", c);
+        if( nested && this.category ){
+            this.category._addSelectedCount(count, nested);
+        }
     },
     isSelectAllEnable : function(){
 

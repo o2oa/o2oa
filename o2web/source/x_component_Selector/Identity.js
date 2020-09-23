@@ -749,6 +749,9 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();
+                    if( this.selector.options.showSelectedCount ){
+                        if(item.category)item.category._addSelectedCount( 1, true );
+                    }
                 }.bind(this));
             }
         }
@@ -773,9 +776,11 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         return count;
     },
     _getSelectedCount : function(){
+        if( typeOf(this.selectedCount) === "number" )return this.selectedCount;
         if( !this.selector.allUnitObject )return 0;
         var unit =  this.selector.allUnitObject[this.data.levelName];
         var count = unit ? unit.selectedNestedIdentityCount : 0;
+        this.selectedCount = count;
         return count;
     },
     _setIcon: function(){
@@ -1039,17 +1044,20 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
     },
     _getTotalCount : function(){
-        if( !this.selector.allGroupObjectByDn )return "n";
+        if( !this.selector.allGroupObjectByDn )return 0;
         var group = this.selector.allGroupObjectByDn[this.data.distinguishedName];
-        var count = group ? group.subNestedIdentityCount : "n";
+        var count = group ? group.subNestedIdentityCount : 0;
         return count;
     },
     _getSelectedCount : function(){
+        if( typeOf(this.selectedCount) === "number" )return this.selectedCount;
         if( !this.selector.allGroupObjectByDn )return 0;
         var group = this.selector.allGroupObjectByDn[this.data.distinguishedName];
         var count = group ? group.selectedNestedIdentityCount : 0;
+        this.selectedCount = count;
         return count;
     },
+
     loadSub: function(callback){
         if (!this.loaded){
             var personContainer, identityContainer, groupContainer, unitContainer;
