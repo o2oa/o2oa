@@ -5,6 +5,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class WrapBoolean extends GsonPropertyObject {
 
+	private static final long serialVersionUID = 19308077998975323L;
+
 	@FieldDescribe("布尔值.")
 	private Boolean value;
 

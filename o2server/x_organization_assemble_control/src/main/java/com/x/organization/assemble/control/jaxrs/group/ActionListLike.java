@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -19,6 +20,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -27,8 +30,6 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Group_;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 
 class ActionListLike extends BaseAction {
 
@@ -104,7 +105,7 @@ class ActionListLike extends BaseAction {
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Group.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Group> cq = cb.createQuery(Group.class);
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Group> root = cq.from(Group.class);
 		Predicate p = cb.like(cb.lower(root.get(Group_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 		p = cb.or(p, cb.like(cb.lower(root.get(Group_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
@@ -114,7 +115,9 @@ class ActionListLike extends BaseAction {
 		if (ListTools.isNotEmpty(groupIds)) {
 			p = cb.and(p, root.get(Group_.id).in(groupIds));
 		}
-		List<Group> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<String> ids = em.createQuery(cq.select(root.get(Group_.id)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
+		List<Group> os = business.entityManagerContainer().list(Group.class, ids);
 		wos = Wo.copier.copy(os);
 		wos = business.group().sort(wos);
 		return wos;
