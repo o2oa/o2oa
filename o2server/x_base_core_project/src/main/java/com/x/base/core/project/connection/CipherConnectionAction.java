@@ -3,6 +3,9 @@ package com.x.base.core.project.connection;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.Application;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.bean.NameValuePair;
@@ -10,9 +13,6 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.tools.ListTools;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public class CipherConnectionAction {
 
