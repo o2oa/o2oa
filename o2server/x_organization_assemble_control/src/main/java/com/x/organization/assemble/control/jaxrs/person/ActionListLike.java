@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.person;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -36,8 +37,8 @@ class ActionListLike extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName(),
-					wi.getKey(), StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
+			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName(), wi.getKey(),
+					StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -96,7 +97,7 @@ class ActionListLike extends BaseAction {
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 		p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
@@ -106,13 +107,15 @@ class ActionListLike extends BaseAction {
 		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
-		}else{
-			if(ListTools.isNotEmpty(wi.getGroupList(), wi.getRoleList())) {
+		} else {
+			if (ListTools.isNotEmpty(wi.getGroupList(), wi.getRoleList())) {
 				return wos;
 			}
 		}
 		p = cb.and(p, business.personPredicateWithTopUnit(effectivePesron));
-		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<String> ids = em.createQuery(cq.select(root.get(Person_.id)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
+		List<Person> os = business.entityManagerContainer().list(Person.class, ids);
 		wos = Wo.copier.copy(os);
 		wos = business.person().sort(wos);
 		return wos;
