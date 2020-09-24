@@ -9,7 +9,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.http.ActionResult;
@@ -46,7 +45,7 @@ public class ThreadAction extends StandardJaxrsAction {
 	@Path("parameter/{name}")
 	public void parameter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@Context ServletContext servletContext, @PathParam("name") String name) {
-		ActionResult<JsonElement> result = new ActionResult<>();
+		ActionResult<ActionParameter.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionParameter().execute(effectivePerson, servletContext, name);
@@ -62,7 +61,7 @@ public class ThreadAction extends StandardJaxrsAction {
 	@Path("stop/{name}")
 	public void stop(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@Context ServletContext servletContext, @PathParam("name") String name) {
-		ActionResult<JsonElement> result = new ActionResult<>();
+		ActionResult<ActionStop.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionStop().execute(effectivePerson, servletContext, name);
