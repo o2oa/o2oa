@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.unit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -142,7 +143,7 @@ class ActionListLikePinyin extends BaseAction {
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Unit.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Unit> root = cq.from(Unit.class);
 		Predicate p = cb.like(root.get(Unit_.pinyin), str + "%");
 		p = cb.or(p, cb.like(root.get(Unit_.pinyinInitial), str + "%"));
@@ -152,7 +153,9 @@ class ActionListLikePinyin extends BaseAction {
 		if (StringUtils.isNotEmpty(wi.getType())) {
 			p = cb.and(p, cb.isMember(wi.getType(), root.get(Unit_.typeList)));
 		}
-		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<String> ids = em.createQuery(cq.select(root.get(Unit_.id)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
+		List<Unit> os = business.entityManagerContainer().list(Unit.class, ids);
 		wos = Wo.copier.copy(os);
 		for (Wo wo : wos) {
 			wo.setWoSupNestedUnitList(Wo.copier.copy(business.unit().listSupNestedObject(wo)));
