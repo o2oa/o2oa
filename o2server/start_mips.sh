@@ -120,17 +120,17 @@ if [ -d ${current_dir}/local/update ]; then
 		if [ -f ${current_dir}/console_raspberrypi.sh ]; then
 			cp -f ${current_dir}/local/update/o2server/console_raspberrypi.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/start_risc.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/start_risc.sh ${current_dir}/
+		if [ -f ${current_dir}/start_mips.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_mips.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/start_risc_debug.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/start_risc_debug.sh ${current_dir}/
+		if [ -f ${current_dir}/start_mips_debug.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_mips_debug.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/stop_risc.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/stop_risc.sh ${current_dir}/
+		if [ -f ${current_dir}/stop_mips.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/stop_mips.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/console_risc.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/console_risc.sh ${current_dir}/
+		if [ -f ${current_dir}/console_mips.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/console_mips.sh ${current_dir}/
 		fi
 		if [ -f ${current_dir}/start_arm.sh ]; then
 			cp -f ${current_dir}/local/update/o2server/start_arm.sh ${current_dir}/
@@ -148,4 +148,4 @@ if [ -d ${current_dir}/local/update ]; then
 		rm -Rf ${current_dir}/local/update
 	fi
 fi
-setsid ${current_dir}/jvm/risc/bin/java -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Xmx4g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
+setsid ${current_dir}/jvm/mips/bin/java -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Xmx4g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
