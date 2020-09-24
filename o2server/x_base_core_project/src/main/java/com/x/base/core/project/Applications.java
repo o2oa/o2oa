@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.CRC32;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Nodes;
 import com.x.base.core.project.connection.ActionResponse;
@@ -26,9 +29,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList<Application>> {
 
@@ -111,12 +111,13 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public ActionResponse getQuery(Boolean xdebugger, String applicationName, String uri, String seed)
 			throws Exception {
-		if(applicationName.equalsIgnoreCase("x_program_center")|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
+		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
 			Nodes nodes = Config.nodes();
 			for (String node : nodes.keySet()) {
-				if (nodes.get(node).getCenter().getEnable()) {
+				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
 					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuffer buffer = new StringBuffer();
+					StringBuilder buffer = new StringBuilder();
 					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
 						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
 								.append(":" + port);
@@ -125,7 +126,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 								.append(":" + port);
 					}
 					buffer.append("/x_program_center/jaxrs/");
-					return CipherConnectionAction.get(xdebugger, buffer.toString()+ CipherConnectionAction.trim(uri));
+					return CipherConnectionAction.get(xdebugger, buffer.toString() + CipherConnectionAction.trim(uri));
 
 				}
 			}
@@ -183,13 +184,13 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public byte[] getQueryBinary(Boolean xdebugger, String applicationName, String uri, String seed) throws Exception {
 		String name = this.findApplicationName(applicationName);
-
-		if(applicationName.equalsIgnoreCase("x_program_center")|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
+		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
 			Nodes nodes = Config.nodes();
 			for (String node : nodes.keySet()) {
-				if (nodes.get(node).getCenter().getEnable()) {
+				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
 					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuffer buffer = new StringBuffer();
+					StringBuilder buffer = new StringBuilder();
 					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
 						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
 								.append(":" + port);
@@ -257,12 +258,13 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public ActionResponse deleteQuery(Boolean xdebugger, String applicationName, String uri, String seed)
 			throws Exception {
-		if(applicationName.equalsIgnoreCase("x_program_center")|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
+		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
 			Nodes nodes = Config.nodes();
 			for (String node : nodes.keySet()) {
-				if (nodes.get(node).getCenter().getEnable()) {
+				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
 					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuffer buffer = new StringBuffer();
+					StringBuilder buffer = new StringBuilder();
 					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
 						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
 								.append(":" + port);
@@ -331,12 +333,13 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public byte[] deleteQueryBinary(Boolean xdebugger, String applicationName, String uri, String seed)
 			throws Exception {
-		if(applicationName.equalsIgnoreCase("x_program_center")|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
+		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
 			Nodes nodes = Config.nodes();
 			for (String node : nodes.keySet()) {
-				if (nodes.get(node).getCenter().getEnable()) {
+				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
 					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuffer buffer = new StringBuffer();
+					StringBuilder buffer = new StringBuilder();
 					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
 						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
 								.append(":" + port);
@@ -347,7 +350,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 					buffer.append("/x_program_center/jaxrs/");
 
 					return CipherConnectionAction.deleteBinary(xdebugger,
-							buffer.toString()  + CipherConnectionAction.trim(uri));
+							buffer.toString() + CipherConnectionAction.trim(uri));
 				}
 			}
 		}
@@ -407,12 +410,13 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public ActionResponse postQuery(Boolean xdebugger, String applicationName, String uri, Object body, String seed)
 			throws Exception {
-		if(applicationName.equalsIgnoreCase("x_program_center")|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
+		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
 			Nodes nodes = Config.nodes();
 			for (String node : nodes.keySet()) {
-				if (nodes.get(node).getCenter().getEnable()) {
+				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
 					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuffer buffer = new StringBuffer();
+					StringBuilder buffer = new StringBuilder();
 					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
 						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
 								.append(":" + port);
@@ -422,7 +426,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 					}
 					buffer.append("/x_program_center/jaxrs/");
 
-					return CipherConnectionAction.post(xdebugger, buffer.toString()  + CipherConnectionAction.trim(uri),
+					return CipherConnectionAction.post(xdebugger, buffer.toString() + CipherConnectionAction.trim(uri),
 							body);
 				}
 			}
@@ -483,12 +487,13 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public byte[] postQueryBinary(Boolean xdebugger, String applicationName, String uri, Object body, String seed)
 			throws Exception {
-		if(applicationName.equalsIgnoreCase("x_program_center")|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
+		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
 			Nodes nodes = Config.nodes();
 			for (String node : nodes.keySet()) {
-				if (nodes.get(node).getCenter().getEnable()) {
+				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
 					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuffer buffer = new StringBuffer();
+					StringBuilder buffer = new StringBuilder();
 					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
 						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
 								.append(":" + port);
@@ -499,7 +504,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 					buffer.append("/x_program_center/jaxrs/");
 
 					return CipherConnectionAction.postBinary(xdebugger,
-							buffer.toString()  + CipherConnectionAction.trim(uri), body);
+							buffer.toString() + CipherConnectionAction.trim(uri), body);
 				}
 			}
 		}
@@ -565,12 +570,13 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public byte[] postQueryMultiPartBinary(Boolean xdebugger, String applicationName, String uri,
 			Collection<FormField> formFields, Collection<FilePart> fileParts, String seed) throws Exception {
-		if(applicationName.equalsIgnoreCase("x_program_center")|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
+		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
 			Nodes nodes = Config.nodes();
 			for (String node : nodes.keySet()) {
-				if (nodes.get(node).getCenter().getEnable()) {
+				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
 					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuffer buffer = new StringBuffer();
+					StringBuilder buffer = new StringBuilder();
 					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
 						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
 								.append(":" + port);
@@ -642,13 +648,13 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public ActionResponse putQuery(Boolean xdebugger, String applicationName, String uri, Object body, String seed)
 			throws Exception {
-
-		if(applicationName.equalsIgnoreCase("x_program_center")|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
+		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
 			Nodes nodes = Config.nodes();
 			for (String node : nodes.keySet()) {
-				if (nodes.get(node).getCenter().getEnable()) {
+				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
 					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuffer buffer = new StringBuffer();
+					StringBuilder buffer = new StringBuilder();
 					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
 						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
 								.append(":" + port);
@@ -688,10 +694,11 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 				return str;
 			}
 		}
-		if(name.equalsIgnoreCase("x_program_center")|| name.equalsIgnoreCase(x_program_center.class.getName())) {
-			return "x_program_center";
+		if (name.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| name.equalsIgnoreCase(x_program_center.class.getName())) {
+			return x_program_center.class.getName();
 		}
-			return null;
+		return null;
 	}
 
 	public Application findApplicationWithNode(String className, String node) throws Exception {
@@ -703,7 +710,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		return null;
 	}
 
-	public Application randomWithWeight(String className) throws Exception {
+	public Application randomWithWeight(String className) throws IllegalStateException {
 		List<Application> list = this.get(className);
 		if (ListTools.isNotEmpty(list)) {
 			if (list.size() == 1) {
@@ -720,10 +727,10 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			Application application = tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
 			return application;
 		}
-		throw new Exception("randomWithWeight error: " + className + ".");
+		throw new IllegalStateException("randomWithWeight error: " + className + ".");
 	}
 
-	public Application randomWithScheduleWeight(String className) throws Exception {
+	public Application randomWithScheduleWeight(String className) throws IllegalStateException {
 		List<Application> list = this.get(className);
 		if (ListTools.isNotEmpty(list)) {
 			if (list.size() == 1) {
@@ -740,7 +747,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			Application application = tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
 			return application;
 		}
-		throw new Exception("randomWithScheduleWeight error: " + className + ".");
+		throw new IllegalStateException("randomWithScheduleWeight error: " + className + ".");
 	}
 
 	public Application randomWithSeed(String className, String seed) throws Exception {
@@ -772,12 +779,13 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public String describeApi(String name) throws Exception {
 		String urlDescribeApiJson = "";
-		if(name.equalsIgnoreCase("x_program_center")|| name.equalsIgnoreCase(x_program_center.class.getName())) {
-			 Nodes nodes = Config.nodes();
+		if (name.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| name.equalsIgnoreCase(x_program_center.class.getName())) {
+			Nodes nodes = Config.nodes();
 			for (String node : nodes.keySet()) {
-				if (nodes.get(node).getCenter().getEnable()) {
+				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
 					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuffer buffer = new StringBuffer();
+					StringBuilder buffer = new StringBuilder();
 					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
 						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
 								.append(":" + port);
@@ -790,13 +798,12 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 					break;
 				}
 			}
-		}else {
+		} else {
 			String applicationName = this.findApplicationName(name);
 			if (StringUtils.isEmpty(applicationName)) {
 				throw new Exception("getDescribe can not find application with name:" + name + ".");
 			}
 			Application application = this.randomWithWeight(applicationName);
-			//return HttpConnection.getAsString(application.getUrlDescribeApiJson(), null);
 			urlDescribeApiJson = application.getUrlDescribeApiJson();
 		}
 		return HttpConnection.getAsString(urlDescribeApiJson, null);
