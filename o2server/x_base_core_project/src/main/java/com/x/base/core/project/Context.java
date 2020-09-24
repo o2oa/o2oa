@@ -41,9 +41,9 @@ import com.x.base.core.project.schedule.JobReportListener;
 import com.x.base.core.project.schedule.ScheduleLocalRequest;
 import com.x.base.core.project.schedule.ScheduleRequest;
 import com.x.base.core.project.schedule.SchedulerFactoryProperties;
+import com.x.base.core.project.thread.ThreadFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SslTools;
-import com.x.base.core.project.tools.StringTools;
 
 public class Context extends AbstractContext {
 
@@ -175,6 +175,10 @@ public class Context extends AbstractContext {
 		return this.applications;
 	}
 
+	public ThreadFactory threadFactory() {
+		return this.threadFactory;
+	}
+
 	/* 队列 */
 	private List<AbstractQueue<?>> queues;
 
@@ -188,7 +192,7 @@ public class Context extends AbstractContext {
 	}
 
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
-		/* 强制忽略ssl服务器认证 */
+		// 强制忽略ssl服务器认证
 		SslTools.ignoreSsl();
 		ServletContext servletContext = servletContextEvent.getServletContext();
 		Context context = new Context();
@@ -203,14 +207,12 @@ public class Context extends AbstractContext {
 		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
 		context.initDatas();
+		context.threadFactory = new ThreadFactory(context);
 		servletContext.setAttribute(context.getClass().getName(), context);
 		context.initialized = true;
-		/* 20190927新注册机制 */
-		// registApplication(context);
 		return context;
 	}
 
-	/* 20190927新注册机制 */
 	public void regist() throws Exception {
 		Application application = new Application();
 		application.setClassName(this.clazz().getName());
