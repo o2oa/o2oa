@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.role;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -19,6 +20,9 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -27,9 +31,6 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
-import com.x.base.core.project.cache.Cache;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 
 class ActionListLike extends BaseAction {
 
@@ -107,7 +108,7 @@ class ActionListLike extends BaseAction {
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Role.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Role> cq = cb.createQuery(Role.class);
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Role> root = cq.from(Role.class);
 		Predicate p = cb.like(cb.lower(root.get(Role_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 		p = cb.or(p, cb.like(cb.lower(root.get(Role_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
@@ -116,7 +117,9 @@ class ActionListLike extends BaseAction {
 		if (ListTools.isNotEmpty(roleIds)) {
 			p = cb.and(p, root.get(Role_.id).in(roleIds));
 		}
-		List<Role> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<String> ids = em.createQuery(cq.select(root.get(Role_.id)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
+		List<Role> os = business.entityManagerContainer().list(Role.class, ids);
 		wos = Wo.copier.copy(os);
 		wos = business.role().sort(wos);
 		return wos;
