@@ -23,6 +23,8 @@ class ActionAlive extends BaseAction {
 	}
 
 	public static class Wo extends WrapString {
+
+		private static final long serialVersionUID = 6928521934755900177L;
 	}
 
 }

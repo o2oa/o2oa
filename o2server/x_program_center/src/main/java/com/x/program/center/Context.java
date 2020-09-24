@@ -44,6 +44,7 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.schedule.JobReportListener;
 import com.x.base.core.project.schedule.SchedulerFactoryProperties;
+import com.x.base.core.project.thread.ThreadFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SslTools;
 import com.x.base.core.project.tools.StringTools;
@@ -54,8 +55,14 @@ public class Context extends AbstractContext {
 
 	private static Logger logger = LoggerFactory.getLogger(Context.class);
 
+	@Override
 	public Applications applications() throws Exception {
 		return applications;
+	}
+
+	@Override
+	public ThreadFactory threadFactory() {
+		return threadFactory;
 	}
 
 	/* 应用的磁盘路径 */
@@ -159,6 +166,7 @@ public class Context extends AbstractContext {
 		context.servletContextName = servletContext.getServletContextName();
 		context.clazz = Class.forName(servletContextEvent.getServletContext().getInitParameter(INITPARAMETER_PORJECT));
 		context.initDatas();
+		context.threadFactory = new ThreadFactory(context);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			context.checkDefaultRole(emc);
 		}
@@ -221,8 +229,9 @@ public class Context extends AbstractContext {
 				OrganizationDefinition.GroupManager, OrganizationDefinition.UnitManager,
 				OrganizationDefinition.RoleManager, OrganizationDefinition.ProcessPlatformManager,
 				OrganizationDefinition.ProcessPlatformCreator, OrganizationDefinition.MeetingManager,
-				OrganizationDefinition.PortalManager, OrganizationDefinition.BBSManager,OrganizationDefinition.TeamWorkManager,
-				OrganizationDefinition.CMSManager, OrganizationDefinition.OKRManager, OrganizationDefinition.CRMManager,
+				OrganizationDefinition.PortalManager, OrganizationDefinition.BBSManager,
+				OrganizationDefinition.TeamWorkManager, OrganizationDefinition.CMSManager,
+				OrganizationDefinition.OKRManager, OrganizationDefinition.CRMManager,
 				OrganizationDefinition.QueryManager, OrganizationDefinition.MessageManager,
 				OrganizationDefinition.SearchPrivilege, OrganizationDefinition.HotPictureManager);
 		roles = roles.stream().sorted(Comparator.comparing(String::toString)).collect(Collectors.toList());
@@ -290,9 +299,9 @@ public class Context extends AbstractContext {
 			return OrganizationDefinition.OKRManager_discription;
 		} else if (OrganizationDefinition.CRMManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.CRMManager_discription;
-		}else if (OrganizationDefinition.TeamWorkManager.equalsIgnoreCase(str)) {
+		} else if (OrganizationDefinition.TeamWorkManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.TeamWorkManager_discription;
-		}else if (OrganizationDefinition.QueryManager.equalsIgnoreCase(str)) {
+		} else if (OrganizationDefinition.QueryManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.QueryManager_discription;
 		} else if (OrganizationDefinition.MessageManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.MessageManager_discription;
