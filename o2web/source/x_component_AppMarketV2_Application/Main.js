@@ -210,28 +210,17 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 					picdiv.setProperty("data-original",this.collectUrl +'/o2_collect_assemble/jaxrs/attachment/download/'+peratt.id+"?c-token="+this.collectToken);
 					picdiv.setProperty("alt",peratt.name);
 					//picdiv.store("id",peratt.id);
-					/*
-					picdiv.addEvents({
-						"click": function(e){
-							//updateorinstall application
-							var d = this.retrieve("id");
-							if (d){
-								_self.openLargeImage(e,d);
-							}
-						}
-					})
-					*/
 				}
 		}.bind(this));
-		this.loadImgView();
+		this.loadImgView(this.appdata.id);
 	},
 	
-	loadImgView:function(){				
+	loadImgView:function(viewid){			
         if(this.viewer) this.viewer.destroy();
-        this.applicationintroducepics.setProperty("id","list");
+        this.applicationintroducepics.setProperty("id",viewid);
         o2.loadCss(this.path+this.options.style+"/viewer.css", this.content,function(){
             o2.load(this.path+this.options.style+"/viewer.js", function(){
-                this.viewer = new Viewer(document.getElementById('list'), {
+                this.viewer = new Viewer(document.getElementById(viewid), {
                 	url: 'data-original'
                 });                
             }.bind(this));
