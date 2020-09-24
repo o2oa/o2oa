@@ -5,13 +5,14 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import com.x.base.core.project.jaxrs.sysresource.SysResourceAction;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import com.x.base.core.project.jaxrs.cache.CacheAction;
 import com.x.base.core.project.jaxrs.echo.EchoAction;
 import com.x.base.core.project.jaxrs.fireschedule.FireScheduleAction;
 import com.x.base.core.project.jaxrs.logger.LoggerAction;
+import com.x.base.core.project.jaxrs.sysresource.SysResourceAction;
+import com.x.base.core.project.jaxrs.thread.ThreadAction;
 
 public abstract class AbstractActionApplication extends Application {
 	protected Set<Object> singletons = new HashSet<>();
@@ -23,6 +24,7 @@ public abstract class AbstractActionApplication extends Application {
 		classes.add(LoggerAction.class);
 		classes.add(FireScheduleAction.class);
 		classes.add(SysResourceAction.class);
+		classes.add(ThreadAction.class);
 		// providers
 		classes.add(MessageBodyReaderImpl.class);
 		classes.add(MultiPartFeature.class);
