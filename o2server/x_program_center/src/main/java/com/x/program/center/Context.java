@@ -20,6 +20,7 @@ import org.quartz.DateBuilder;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SimpleScheduleBuilder;
@@ -42,6 +43,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.queue.AbstractQueue;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.schedule.JobReportListener;
 import com.x.base.core.project.schedule.SchedulerFactoryProperties;
 import com.x.base.core.project.thread.ThreadFactory;
@@ -170,7 +172,7 @@ public class Context extends AbstractContext {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			context.checkDefaultRole(emc);
 		}
-		servletContext.setAttribute(context.getClass().getName(), context);
+		servletContext.setAttribute(AbstractContext.class.getName(), context);
 		return context;
 	}
 
@@ -322,6 +324,23 @@ public class Context extends AbstractContext {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	@Deprecated
+	// 重来没用调用过的方法,目标是全部方法全部移动到AbstractContext中
+	public <T extends AbstractJob> void fireScheduleOnLocal(Class<T> cls, Integer delay) throws Exception {
+		/* 需要单独生成一个独立任务,保证group和预约的任务不重复 */
+		JobDataMap jobDataMap = new JobDataMap();
+		jobDataMap.put("context", this);
+		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(cls.getName(), clazz.getName())
+				.usingJobData(jobDataMap).withDescription(Config.node()).build();
+		/* 经过测试0代表不重复,仅运行一次 */
+		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(cls.getName(), clazz.getName())
+				.withDescription("schedule").startAt(DateBuilder.futureDate(delay, IntervalUnit.SECOND))
+				.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1).withRepeatCount(0))
+				.build();
+		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
 }
