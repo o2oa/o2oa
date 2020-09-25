@@ -1759,6 +1759,8 @@
         var asyncGeneratorPrototype = new _AsyncGeneratorPrototype(resolve, reject, name);
         return Object.appendChain(asyncGeneratorPrototype, "if (this.success) this.success.apply(this, arguments);");
     }
+
+    //@todo
     _AsyncGenerator.all = function(arr){
         var result = [];
         arr.forEach(function(a){
