@@ -268,45 +268,45 @@ public class Context extends AbstractContext {
 	 */
 	private String getDescriptionWithName(String str) {
 		if (OrganizationDefinition.Manager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.Manager_description;
+			return OrganizationDefinition.Manager_discription;
 		} else if (OrganizationDefinition.AttendanceManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.AttendanceManager_description;
+			return OrganizationDefinition.AttendanceManager_discription;
 		} else if (OrganizationDefinition.OrganizationManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.OrganizationManager_description;
+			return OrganizationDefinition.OrganizationManager_discription;
 		} else if (OrganizationDefinition.PersonManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.PersonManager_description;
+			return OrganizationDefinition.PersonManager_discription;
 		} else if (OrganizationDefinition.GroupManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.GroupManager_description;
+			return OrganizationDefinition.GroupManager_discription;
 		} else if (OrganizationDefinition.UnitManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.UnitManager_description;
+			return OrganizationDefinition.UnitManager_discription;
 		} else if (OrganizationDefinition.RoleManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.RoleManager_description;
+			return OrganizationDefinition.RoleManager_discription;
 		} else if (OrganizationDefinition.ProcessPlatformManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.ProcessPlatformManager_description;
+			return OrganizationDefinition.ProcessPlatformManager_discription;
 		} else if (OrganizationDefinition.ProcessPlatformCreator.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.ProcessPlatformCreator_description;
+			return OrganizationDefinition.ProcessPlatformCreator_discription;
 		} else if (OrganizationDefinition.MeetingManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.MeetingManager_description;
+			return OrganizationDefinition.MeetingManager_discription;
 		} else if (OrganizationDefinition.MeetingViewer.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.MeetingViewer_description;
+			return OrganizationDefinition.MeetingViewer_discription;
 		} else if (OrganizationDefinition.PortalManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.PortalManager_description;
+			return OrganizationDefinition.PortalManager_discription;
 		} else if (OrganizationDefinition.BBSManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.BBSManager_description;
+			return OrganizationDefinition.BBSManager_discription;
 		} else if (OrganizationDefinition.CMSManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.CMSManager_description;
+			return OrganizationDefinition.CMSManager_discription;
 		} else if (OrganizationDefinition.OKRManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.OKRManager_description;
+			return OrganizationDefinition.OKRManager_discription;
 		} else if (OrganizationDefinition.CRMManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.CRMManager_description;
+			return OrganizationDefinition.CRMManager_discription;
 		} else if (OrganizationDefinition.TeamWorkManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.TeamWorkManager_description;
+			return OrganizationDefinition.TeamWorkManager_discription;
 		} else if (OrganizationDefinition.QueryManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.QueryManager_description;
+			return OrganizationDefinition.QueryManager_discription;
 		} else if (OrganizationDefinition.MessageManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.MessageManager_description;
+			return OrganizationDefinition.MessageManager_discription;
 		} else if (OrganizationDefinition.SearchPrivilege.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.SearchPrivilege_description;
+			return OrganizationDefinition.SearchPrivilege_discription;
 		}
 		return "";
 	}
