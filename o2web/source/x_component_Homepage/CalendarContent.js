@@ -109,12 +109,14 @@ MWF.xApplication.Homepage.CalendarContent  = new Class({
                 if (json.data.wholeDayEvents && json.data.wholeDayEvents.length){
                     json.data.wholeDayEvents.each(function(e){
                         var ds = (new Date()).parse(e.startTime);
-                        var i = start.diff(ds);
                         var de = (new Date()).parse(e.endTime);
-                        while( i <  de ){
-
+                        if( start > ds )ds = start.clone();
+                        if( de < start )return;
+                        while( ds < de && ds <= end ){
+                            var i = start.diff(ds);
+                            this.setCalenderFlag(tds[i]);
+                            ds.increment('day',1);
                         }
-                        this.setCalenderFlag(tds[i]);
                     }.bind(this));
                 }
                 if (json.data.inOneDayEvents && json.data.inOneDayEvents.length){
