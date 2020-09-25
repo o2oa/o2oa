@@ -69,7 +69,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.urge = new Urge();
 		this.expire = new Expire();
 		this.touchDelay = new TouchDelay();
-		this.combine = new Combine();
+		this.merge = new Merge();
 		this.touchDetained = new TouchDetained();
 		this.deleteDraft = new DeleteDraft();
 		this.passExpired = new PassExpired();
@@ -146,7 +146,7 @@ public class ProcessPlatform extends ConfigObject {
 	private TouchDelay touchDelay;
 
 	@FieldDescribe("合并任务设置,定时触发合并任务,将已完成工作的Data从Item表中提取合并到WorkCompleted的Data字段中,默认工作完成后2年开始进行合并.")
-	private Combine combine;
+	private Merge merge;
 
 	@FieldDescribe("清除草稿状态的工作.")
 	private DeleteDraft deleteDraft;
@@ -211,8 +211,8 @@ public class ProcessPlatform extends ConfigObject {
 		return this.logLongDetained == null ? new LogLongDetained() : this.logLongDetained;
 	}
 
-	public Combine getCombine() {
-		return this.combine == null ? new Combine() : this.combine;
+	public Merge getMerge() {
+		return this.merge == null ? new Merge() : this.merge;
 	}
 
 	public Press getPress() {
@@ -328,10 +328,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	}
 
-	public static class Combine extends ConfigObject {
+	public static class Merge extends ConfigObject {
 
-		public static Combine defaultInstance() {
-			Combine o = new Combine();
+		public static Merge defaultInstance() {
+			Merge o = new Merge();
 			return o;
 		}
 

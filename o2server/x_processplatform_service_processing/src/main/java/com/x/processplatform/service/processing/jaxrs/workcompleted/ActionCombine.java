@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -22,7 +23,10 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.DocumentVersion;
+import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
@@ -66,14 +70,17 @@ class ActionCombine extends BaseAction {
 				workCompleted = emc.find(id, WorkCompleted.class);
 				Business business = new Business(emc);
 				if (null != workCompleted) {
-					emc.beginTransaction(WorkCompleted.class);
-					List<Item> items = mergeItem(business, workCompleted);
-					List<WorkLog> workLogs = mergeWorkLog(business, workCompleted);
-					List<Record> records = mergeRecord(business, workCompleted);
 					List<DocumentVersion> documentVersions = listDocumentVersion(business, workCompleted);
+					List<Item> items = combineItem(business, workCompleted);
+					List<TaskCompleted> taskCompleteds = combineTaskCompleted(business, workCompleted);
+					List<ReadCompleted> readCompleteds = combineReadCompleted(business, workCompleted);
+					List<Review> reviews = combineReview(business, workCompleted);
+					List<WorkLog> workLogs = combineWorkLog(business, workCompleted);
+					List<Record> records = combineRecord(business, workCompleted);
+					emc.beginTransaction(WorkCompleted.class);
 					workCompleted.setMerged(true);
 					emc.commit();
-					this.remove(business, items, workLogs, records,documentVersions);
+					this.remove(business, items, workLogs, records, documentVersions);
 					logger.print("已完成工作合并, id: {}, title:{}, sequence:{}.", workCompleted.getId(),
 							workCompleted.getTitle(), workCompleted.getSequence());
 				}
@@ -87,8 +94,8 @@ class ActionCombine extends BaseAction {
 			return result;
 		}
 
-		private void remove(Business business, List<Item> items, List<WorkLog> workLogs, List<Record> records,List<DocumentVersion> documentVersions)
-				throws Exception {
+		private void remove(Business business, List<Item> items, List<WorkLog> workLogs, List<Record> records,
+				List<DocumentVersion> documentVersions) throws Exception {
 			EntityManagerContainer emc = business.entityManagerContainer();
 			if (!items.isEmpty()) {
 				emc.beginTransaction(Item.class);
@@ -108,7 +115,7 @@ class ActionCombine extends BaseAction {
 					emc.remove(o, CheckRemoveType.all);
 				}
 			}
-	
+
 			if (!documentVersions.isEmpty()) {
 				emc.beginTransaction(DocumentVersion.class);
 				for (DocumentVersion o : documentVersions) {
@@ -118,12 +125,45 @@ class ActionCombine extends BaseAction {
 			emc.commit();
 		}
 
-		private List<DocumentVersion> listDocumentVersion(Business business, WorkCompleted workCompleted) throws Exception {
-			return  business.entityManagerContainer().listEqual(DocumentVersion.class, DocumentVersion.job_FIELDNAME,
+		private List<TaskCompleted> combineTaskCompleted(Business business, WorkCompleted workCompleted)
+				throws Exception {
+			List<TaskCompleted> list = business.entityManagerContainer().listEqual(TaskCompleted.class,
+					TaskCompleted.job_FIELDNAME, workCompleted.getJob());
+			list = list.stream()
+					.sorted(Comparator.comparing(TaskCompleted::getCreateTime, Comparator.nullsLast(Date::compareTo)))
+					.collect(Collectors.toList());
+			workCompleted.getProperties().setTaskCompletedList(list);
+			return list;
+		}
+
+		private List<ReadCompleted> combineReadCompleted(Business business, WorkCompleted workCompleted)
+				throws Exception {
+			List<ReadCompleted> list = business.entityManagerContainer().listEqual(ReadCompleted.class,
+					ReadCompleted.job_FIELDNAME, workCompleted.getJob());
+			list = list.stream()
+					.sorted(Comparator.comparing(ReadCompleted::getCreateTime, Comparator.nullsLast(Date::compareTo)))
+					.collect(Collectors.toList());
+			workCompleted.getProperties().setReadCompletedList(list);
+			return list;
+		}
+
+		private List<Review> combineReview(Business business, WorkCompleted workCompleted) throws Exception {
+			List<Review> list = business.entityManagerContainer().listEqual(Review.class, Review.job_FIELDNAME,
+					workCompleted.getJob());
+			list = list.stream()
+					.sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsLast(Date::compareTo)))
+					.collect(Collectors.toList());
+			workCompleted.getProperties().setReviewList(list);
+			return list;
+		}
+
+		private List<DocumentVersion> listDocumentVersion(Business business, WorkCompleted workCompleted)
+				throws Exception {
+			return business.entityManagerContainer().listEqual(DocumentVersion.class, DocumentVersion.job_FIELDNAME,
 					workCompleted.getJob());
 		}
 
-		private List<Item> mergeItem(Business business, WorkCompleted workCompleted) throws Exception {
+		private List<Item> combineItem(Business business, WorkCompleted workCompleted) throws Exception {
 			List<Item> list = business.entityManagerContainer().listEqualAndEqual(Item.class, Item.bundle_FIELDNAME,
 					workCompleted.getJob(), Item.itemCategory_FIELDNAME, ItemCategory.pp);
 			DataItemConverter<Item> converter = new DataItemConverter<Item>(Item.class);
@@ -132,7 +172,7 @@ class ActionCombine extends BaseAction {
 			return list;
 		}
 
-		private List<Record> mergeRecord(Business business, WorkCompleted workCompleted) throws Exception {
+		private List<Record> combineRecord(Business business, WorkCompleted workCompleted) throws Exception {
 			List<Record> list = business.entityManagerContainer().listEqual(Record.class, Record.job_FIELDNAME,
 					workCompleted.getJob());
 			Collections.sort(list, Comparator.comparing(Record::getOrder, Comparator.nullsLast(Long::compareTo)));
@@ -140,13 +180,14 @@ class ActionCombine extends BaseAction {
 			return list;
 		}
 
-		private List<WorkLog> mergeWorkLog(Business business, WorkCompleted workCompleted) throws Exception {
+		private List<WorkLog> combineWorkLog(Business business, WorkCompleted workCompleted) throws Exception {
 			List<WorkLog> list = business.entityManagerContainer().listEqual(WorkLog.class, WorkCompleted.job_FIELDNAME,
 					workCompleted.getJob());
 			Collections.sort(list, Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)));
 			workCompleted.getProperties().setWorkLogList(list);
 			return list;
 		}
+
 	}
 
 }
