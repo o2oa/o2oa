@@ -104,11 +104,16 @@ MWF.xApplication.Homepage.CalendarContent  = new Class({
             "createPerson": layout.user.distinguishedName
         };
         o2.Actions.load("x_calendar_assemble_control").Calendar_EventAction.listWithFilter(d, function(json){
+            debugger;
             if (json.data){
                 if (json.data.wholeDayEvents && json.data.wholeDayEvents.length){
                     json.data.wholeDayEvents.each(function(e){
-                        var d = (new Date()).parse(e.startTime);
-                        var i = start.diff(d);
+                        var ds = (new Date()).parse(e.startTime);
+                        var i = start.diff(ds);
+                        var de = (new Date()).parse(e.endTime);
+                        while( i <  de ){
+
+                        }
                         this.setCalenderFlag(tds[i]);
                     }.bind(this));
                 }
