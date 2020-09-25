@@ -32,6 +32,7 @@ public class HttpToken {
 	public static final String X_Person = "x-person";
 	public static final String X_Client = "x-client";
 	public static final String X_Debugger = "x-debugger";
+	public static final String COOKIE_ANONYMOUS_VALUE = "anonymous";
 
 	private static final String RegularExpression_IP = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
 	private static final String RegularExpression_Token = "^(anonymous|user|manager|cipher)([2][0][1-2][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])(\\S{1,})$";
@@ -44,11 +45,6 @@ public class HttpToken {
 		// 加入调试标记
 		Object debugger = request.getHeader(HttpToken.X_Debugger);
 		effectivePerson.setDebugger((null != debugger) && BooleanUtils.toBoolean(Objects.toString(debugger)));
-//		if (null != debugger && BooleanUtils.toBoolean(Objects.toString(debugger))) {
-//			effectivePerson.setDebugger(true);
-//		} else {
-//			effectivePerson.setDebugger(false);
-//		}
 		setAttribute(request, effectivePerson);
 		setToken(request, response, effectivePerson);
 		return effectivePerson;
@@ -100,7 +96,10 @@ public class HttpToken {
 
 	public void deleteToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
-			String cookie = X_Token + "=; path=/; domain=" + this.domain(request) + "; max-age=0";
+			// String cookie = X_Token + "=anonymous; path=/; domain=" +
+			// this.domain(request) + "; max-age=0
+			String cookie = X_Token + "=" + COOKIE_ANONYMOUS_VALUE + "; path=/; domain=" + this.domain(request)
+					+ "; HttpOnly";
 			response.setHeader("Set-Cookie", cookie);
 		} catch (Exception e) {
 			throw new Exception("delete Token cookie error.", e);
@@ -111,7 +110,6 @@ public class HttpToken {
 			throws Exception {
 		switch (effectivePerson.getTokenType()) {
 		case anonymous:
-			// this.deleteToken(request, response);
 			break;
 		case user:
 			this.setResponseToken(request, response, effectivePerson);
@@ -130,20 +128,21 @@ public class HttpToken {
 	private void setResponseToken(HttpServletRequest request, HttpServletResponse response,
 			EffectivePerson effectivePerson) throws Exception {
 		if (!StringUtils.isEmpty(effectivePerson.getToken())) {
-			String cookie = X_Token + "=" + effectivePerson.getToken() + "; path=/; domain=" + this.domain(request);
+			String cookie = X_Token + "=" + effectivePerson.getToken() + "; path=/; domain=" + this.domain(request)
+					+ "; HttpOnly";
 			response.setHeader("Set-Cookie", cookie);
 			response.setHeader(X_Token, effectivePerson.getToken());
 		}
 	}
 
-	public void setResponseToken(HttpServletRequest request, HttpServletResponse response, String tokenName,
-			String token) throws Exception {
-		if (!StringUtils.isEmpty(token)) {
-			String cookie = tokenName + "=" + token + "; path=/; domain=" + this.domain(request);
-			response.setHeader("Set-Cookie", cookie);
-			response.setHeader(tokenName, token);
-		}
-	}
+//	public void setResponseToken(HttpServletRequest request, HttpServletResponse response, String tokenName,
+//			String token) throws Exception {
+//		if (!StringUtils.isEmpty(token)) {
+//			String cookie = tokenName + "=" + token + "; path=/; domain=" + this.domain(request) + "; HttpOnly";
+//			response.setHeader("Set-Cookie", cookie);
+//			response.setHeader(tokenName, token);
+//		}
+//	}
 
 	public String getToken(HttpServletRequest request) throws Exception {
 		String token = null;
