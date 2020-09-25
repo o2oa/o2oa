@@ -126,7 +126,7 @@ public class Snap extends SliceJpaObject {
 
 	public static final String person_FIELDNAME = "person";
 	@FieldDescribe("快照创建人.")
-	@Column(length = length_255B, name = ColumnNamePrefix + creatorPerson_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String person;

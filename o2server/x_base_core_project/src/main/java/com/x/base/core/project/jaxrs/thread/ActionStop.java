@@ -2,6 +2,7 @@ package com.x.base.core.project.jaxrs.thread;
 
 import javax.servlet.ServletContext;
 
+import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -15,7 +16,7 @@ class ActionStop extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, ServletContext servletContext, String name)
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		com.x.base.core.project.Context ctx = com.x.base.core.project.Context.fromServletContext(servletContext);
+		AbstractContext ctx = com.x.base.core.project.Context.fromServletContext(servletContext);
 		Wo wo = new Wo();
 		wo.setValue(ctx.threadFactory().stopLocal(name));
 		result.setData(wo);
