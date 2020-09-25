@@ -276,7 +276,7 @@ o2.widget.Panel = new Class({
 		
 		this.returnMaxContainerSize = this.container.getSize();
 		
-		var size = $(document.body).getSize();
+		var size = this.container.getOffsetParent().getSize();
 		this.container.setStyles({
 			"position": "absolute",
 			"top": 2,
