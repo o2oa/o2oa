@@ -17,8 +17,6 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class StatisticQywxUnitForMonth extends SliceJpaObject {
 
-
-
 	private static final String TABLE = PersistenceProperties.StatisticQywxUnitForMonth.table;
 	private static final long serialVersionUID = 2831416127767736230L;
 
@@ -52,65 +50,65 @@ public class StatisticQywxUnitForMonth extends SliceJpaObject {
 	 */
 	public static final String o2Unit_FIELDNAME = "o2Unit";
 	@FieldDescribe("O2用户所在的组织")
-	@Column( length = length_128B, name = ColumnNamePrefix + o2Unit_FIELDNAME )
+	@Column(length = length_128B, name = ColumnNamePrefix + o2Unit_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String o2Unit;
 
 	public static final String statisticYear_FIELDNAME = "statisticYear";
 	@FieldDescribe("统计年份")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + statisticYear_FIELDNAME )
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + statisticYear_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String statisticYear;
 
 	public static final String statisticMonth_FIELDNAME = "statisticMonth";
 	@FieldDescribe("统计月份")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + statisticMonth_FIELDNAME )
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + statisticMonth_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String statisticMonth;
 
-	public static final String xworkDayCount_FIELDNAME = "xworkDayCount";
+	public static final String workDayCount_FIELDNAME = "workDayCount";
 	@FieldDescribe("出勤天数")
-	@Column( name = ColumnNamePrefix + xworkDayCount_FIELDNAME )
+	@Column(name = ColumnNamePrefix + workDayCount_FIELDNAME)
 	private Long workDayCount;
 
 	public static final String onDutyTimes_FIELDNAME = "onDutyTimes";
 	@FieldDescribe("上班签到次数")
-	@Column( name = ColumnNamePrefix + onDutyTimes_FIELDNAME )
+	@Column(name = ColumnNamePrefix + onDutyTimes_FIELDNAME)
 	private Long onDutyTimes;
 
 	public static final String offDutyTimes_FIELDNAME = "offDutyTimes";
 	@FieldDescribe("下班签到次数")
-	@Column( name = ColumnNamePrefix + offDutyTimes_FIELDNAME )
+	@Column(name = ColumnNamePrefix + offDutyTimes_FIELDNAME)
 	private Long offDutyTimes;
 
 	public static final String outsideDutyTimes_FIELDNAME = "outsideDutyTimes";
 	@FieldDescribe("外出签到次数")
-	@Column( name = ColumnNamePrefix + outsideDutyTimes_FIELDNAME )
+	@Column(name = ColumnNamePrefix + outsideDutyTimes_FIELDNAME)
 	private Long outsideDutyTimes;
 
 	public static final String resultNormal_FIELDNAME = "resultNormal";
 	@FieldDescribe("正常签到次数")
-	@Column( name = ColumnNamePrefix + resultNormal_FIELDNAME )
+	@Column(name = ColumnNamePrefix + resultNormal_FIELDNAME)
 	private Long resultNormal;
 
 	public static final String lateTimes_FIELDNAME = "lateTimes";
 	@FieldDescribe("迟到次数")
-	@Column( name = ColumnNamePrefix + lateTimes_FIELDNAME )
+	@Column(name = ColumnNamePrefix + lateTimes_FIELDNAME)
 	private Long lateTimes;
 
 	public static final String leaveEarlyTimes_FIELDNAME = "leaveEarlyTimes";
 	@FieldDescribe("早退次数")
-	@Column( name = ColumnNamePrefix + leaveEarlyTimes_FIELDNAME )
+	@Column(name = ColumnNamePrefix + leaveEarlyTimes_FIELDNAME)
 	private Long leaveEarlyTimes;
 
 	public static final String absenteeismTimes_FIELDNAME = "absenteeismTimes";
 	@FieldDescribe("旷工次数")
-	@Column( name = ColumnNamePrefix + absenteeismTimes_FIELDNAME )
+	@Column(name = ColumnNamePrefix + absenteeismTimes_FIELDNAME)
 	private Long absenteeismTimes;
 
 	public static final String notSignedCount_FIELDNAME = "notSignedCount";
 	@FieldDescribe("未打卡次数")
-	@Column( name = ColumnNamePrefix + notSignedCount_FIELDNAME )
+	@Column(name = ColumnNamePrefix + notSignedCount_FIELDNAME)
 	private Long notSignedCount;
 
 	public Long getResultNormal() {
