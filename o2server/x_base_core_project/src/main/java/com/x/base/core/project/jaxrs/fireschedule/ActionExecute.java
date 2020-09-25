@@ -3,6 +3,7 @@ package com.x.base.core.project.jaxrs.fireschedule;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 
+import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -18,7 +19,7 @@ class ActionExecute extends BaseAction {
 			throws Exception {
 		logger.debug(effectivePerson, "execute:{}.", className);
 		ActionResult<Wo> result = new ActionResult<>();
-		com.x.base.core.project.Context ctx = com.x.base.core.project.Context.fromServletContext(servletContext);
+		AbstractContext ctx = com.x.base.core.project.Context.fromServletContext(servletContext);
 		Class<?> clz = Class.forName(className);
 		ctx.fireScheduleOnLocal((Class<AbstractJob>) clz, 1);
 		Wo wo = new Wo();
