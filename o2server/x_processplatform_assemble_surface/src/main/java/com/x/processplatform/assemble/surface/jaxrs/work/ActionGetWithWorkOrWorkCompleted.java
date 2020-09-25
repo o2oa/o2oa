@@ -166,18 +166,6 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		for (WoTask task : wo.getTaskList()) {
 			if (effectivePerson.isPerson(task.getPerson())) {
 				wo.setCurrentTaskIndex(loop);
-//				/* 发送抢办信号 */
-//				if (Objects.equals(ManualMode.grab, wo.getActivity().getManualMode())) {
-//					CompletableFuture.runAsync(() -> {
-//						try {
-//							ThisApplication.context().applications().getQuery(
-//									x_processplatform_service_processing.class,
-//									Applications.joinQueryUri("task", task.getId(), "grab"));
-//						} catch (Exception e) {
-//							logger.error(e);
-//						}
-//					});
-//				}
 				break;
 			}
 			loop++;

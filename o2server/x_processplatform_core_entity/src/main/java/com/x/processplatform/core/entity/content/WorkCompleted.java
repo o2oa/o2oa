@@ -16,6 +16,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -25,12 +30,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Entity
 @ContainerEntity(dumpSize = 100, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -153,10 +152,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		} else {
 			return this.title;
 		}
-	}
-
-	public Boolean getMerged() {
-		return BooleanUtils.isTrue(merged);
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -375,7 +370,7 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	private WorkCompletedProperties properties;
 
 	public static final String merged_FIELDNAME = "merged";
-	@FieldDescribe("业务数据是否从item表中合并至data字段")
+	@FieldDescribe("合并数据")
 	@Column(name = ColumnNamePrefix + merged_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + merged_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -1045,6 +1040,10 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setTimeValue02(Date timeValue02) {
 		this.timeValue02 = timeValue02;
+	}
+
+	public Boolean getMerged() {
+		return merged;
 	}
 
 	public void setMerged(Boolean merged) {

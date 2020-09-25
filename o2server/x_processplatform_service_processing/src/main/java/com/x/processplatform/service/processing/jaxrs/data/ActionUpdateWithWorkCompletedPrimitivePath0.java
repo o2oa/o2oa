@@ -5,7 +5,6 @@ import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.BooleanUtils;
 
-import com.google.gson.Gson;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.ItemPrimitiveType;
@@ -26,7 +25,7 @@ import com.x.query.core.entity.Item;
 class ActionUpdateWithWorkCompletedPrimitivePath0 extends BaseAction {
 	/*
 	 * 更新workCompletedPath0 基本类型数据
-	 * */
+	 */
 
 	@ActionLogger
 	private static Logger logger = LoggerFactory.getLogger(ActionUpdateWithWorkCompletedPrimitivePath0.class);
@@ -38,7 +37,8 @@ class ActionUpdateWithWorkCompletedPrimitivePath0 extends BaseAction {
 		String executorSeed = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			WorkCompleted workCompleted = emc.fetch(id, WorkCompleted.class, ListTools.toList(WorkCompleted.job_FIELDNAME));
+			WorkCompleted workCompleted = emc.fetch(id, WorkCompleted.class,
+					ListTools.toList(WorkCompleted.job_FIELDNAME));
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(id, WorkCompleted.class);
 			}
@@ -63,25 +63,26 @@ class ActionUpdateWithWorkCompletedPrimitivePath0 extends BaseAction {
 
 					if (1 == exists.size()) {
 						Item existsItem = exists.get(0);
-						if (existsItem.getItemType().equals(ItemType.p) || existsItem.getItemType().equals(ItemType.n)) {
+						if (existsItem.getItemType().equals(ItemType.p)
+								|| existsItem.getItemType().equals(ItemType.n)) {
 
 							if (existsItem.getItemPrimitiveType().equals(ItemPrimitiveType.s)) {
-								//字符
+								// 字符
 								existsItem.setStringShortValue(val);
 							}
 
 							if (existsItem.getItemPrimitiveType().equals(ItemPrimitiveType.b)) {
-								//Boolean
+								// Boolean
 								existsItem.setBooleanValue(Boolean.parseBoolean(val));
 							}
 
 							if (existsItem.getItemPrimitiveType().equals(ItemPrimitiveType.n)) {
-								//number
+								// number
 								existsItem.setNumberValue(Double.parseDouble(val));
 							}
 
 							if (existsItem.getItemPrimitiveType().equals(ItemPrimitiveType.u)) {
-								//这是啥？问狗哥去吧。
+								// 这是啥？问狗哥去吧。
 								existsItem.setStringShortValue(val);
 							}
 							business.entityManagerContainer().beginTransaction(Item.class);

@@ -188,6 +188,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	public static class AbstractWo extends GsonPropertyObject {
 
+		private String id;
+
 		private WoForm form;
 
 		private Map<String, WoForm> relatedFormMap = new HashMap<>();
@@ -218,6 +220,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.relatedScriptMap = relatedScriptMap;
 		}
 
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		
 	}
 
 }
