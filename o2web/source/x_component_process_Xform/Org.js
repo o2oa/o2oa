@@ -868,21 +868,26 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     _setValue: function(value){
         debugger;
         if (o2.typeOf(value)==="object" && value.resolve){
+            var simple = this.json.storeRange === "simple";
             var values = value.values;
             value.resolve.addResolve(function(fd){
-                if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
-                fd.each(function(fdd){
-                    if (fdd){
-                        if (typeOf(fdd)==="string"){
-                            var data;
-                            this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, fdd, false);
-                            values.push(data);
-                        }else{
-                            values.push(fdd);
+                if (o2.typeOf(fd)==="function" && fd.addResolve){
+                    this._setValue({"values": values, "resolve": fd});
+                }else{
+                    if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
+                    fd.each(function(fdd){
+                        if (fdd){
+                            if (typeOf(fdd)==="string"){
+                                var data;
+                                this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, fdd, false);
+                                values.push(data);
+                            }else{
+                                values.push(fdd);
+                            }
                         }
-                    }
-                }.bind(this));
-                this.__setValue(values);
+                    }.bind(this));
+                    this.__setValue(values);
+                }
             }.bind(this));
         }else{
             this.__setValue(value);

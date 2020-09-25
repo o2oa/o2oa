@@ -58,15 +58,16 @@ function V(httpRequest) {
                 json.xToken = xToken;
             }
             _worker.postMessage({"type": "done", "data": json});
+            _worker.close();
         },
         _errorRequest: function(){
             _worker.postMessage({"type":"error", "data": {"status":  this.request.status, "statusText":  this.request.statusText, "responseText":this.request.responseText}});
+            _worker.close();
         }
     };
 
     this.action = _action;
 })();
-debugger;
 
 onmessage = function(e) {
     debugger;

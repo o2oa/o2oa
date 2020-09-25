@@ -184,11 +184,13 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     },
 	getValue: function(){
         var value = this._getBusinessData();
+        if (!value && this.moduleValueAG) value = this.moduleValueAG;
         if (!value) value = this._computeValue();
 		return value || "";
 	},
     _setValue: function(value){
 	    if (o2.typeOf(value)==="function" && value.addResolve){
+	        this.moduleValueAG = value;
             value.addResolve(function(v){
                 this._setValue(v);
                 // this._setBusinessData(v);
@@ -199,6 +201,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             this._setBusinessData(value);
             if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
             if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+            this.moduleValueAG = null;
         }
     },
 	_loadValue: function(){
@@ -250,13 +253,19 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         this.setData(this.getValue());
     },
 	setData: function(data){
-        this._setBusinessData(data);
-		if (this.node.getFirst()){
-            this.node.getFirst().set("value", data);
-            this.checkDescription();
-            this.validationMode();
+        if (o2.typeOf(data)==="function" && data.addResolve){
+            data.addResolve(function(v){
+                this.setData(v);
+            }.bind(this));
         }else{
-            this.node.set("text", data);
+            this._setBusinessData(data);
+            if (this.node.getFirst()){
+                this.node.getFirst().set("value", data);
+                this.checkDescription();
+                this.validationMode();
+            }else{
+                this.node.set("text", data);
+            }
         }
 	},
 
