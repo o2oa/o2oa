@@ -1063,8 +1063,6 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
     afterStartProcess: function(data, title, processName){
         this.recordProcessData();
 
-        //if (data[0].startMode==="draft"){
-        debugger;
         if (data.work){
             this.startProcessDraft(data, title, processName);
         }else{
