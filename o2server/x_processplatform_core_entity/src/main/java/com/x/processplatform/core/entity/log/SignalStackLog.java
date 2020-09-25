@@ -55,9 +55,9 @@ public class SignalStackLog extends SliceJpaObject {
 		this.properties = new SignalStackLogProperties();
 	}
 
-	public SignalStackLog(String id, String job, SignalStack signalStack) {
+	public SignalStackLog(String work, String job, SignalStack signalStack) {
 		this();
-		this.id = id;
+		this.work = work;
 		this.job = job;
 		this.getProperties().setSignalStack(signalStack);
 	}
