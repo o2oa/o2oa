@@ -1699,6 +1699,7 @@
                         result = r(result, arguments) || result;
                     });
                 }
+                return result;
             }
         },
         _createFailure: function(){
@@ -1757,6 +1758,16 @@
     var _AsyncGenerator = function(resolve, reject, name){
         var asyncGeneratorPrototype = new _AsyncGeneratorPrototype(resolve, reject, name);
         return Object.appendChain(asyncGeneratorPrototype, "if (this.success) this.success.apply(this, arguments);");
+    }
+    _AsyncGenerator.all = function(arr){
+        var result = [];
+        arr.forEach(function(a){
+            if (o2.typeOf(a)=="function"){
+
+            }else{
+
+            }
+        });
     }
 
     o2.AsyncGenerator = o2.AG = _AsyncGenerator;

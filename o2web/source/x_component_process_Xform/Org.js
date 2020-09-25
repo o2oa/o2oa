@@ -91,7 +91,15 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         //}
     },
 
-
+    _valueMerge: function(values, v){
+        if (o2.typeOf(v)=="function"){
+            return v.then(function(re){
+                this._valueMerge(values, re)
+            }.bind(this));
+        }else{
+            return values.concat(v);
+        }
+    },
     _computeValue: function(){
         var simple = this.json.storeRange === "simple";
         var values = [];
@@ -109,6 +117,9 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             if (dutys.length){
                 dutys.each(function(duty){
                     if (duty.code) par = this.form.Macro.exec(duty.code, this);
+                    if (o2.typeOf(par)=="function"){
+
+                    }
                     var code = "return this.org.getDuty(\""+duty.name+"\", \""+par+"\")";
                     var d = this.form.Macro.exec(code, this);
                     if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
@@ -120,13 +131,15 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             var fd = this.form.Macro.exec(this.json.defaultValue.code, this);
 
             if (o2.typeOf(fd)=="function"){
-                debugger;
                 // value.addResolve(function(v){
                 //     this._setBusinessData(v);
                 //     if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
                 //     if (this.readonly || this.json.isReadonly) this.node.set("text", v);
                 // }.bind(this));
-                return {"values": values, "resolve": fd};
+                fd.then(function(v){
+                    return this._valueMerge(values, v);
+                }.bind(this));
+                return fd;
             }else{
                 if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
                 fd.each(function(fdd){
@@ -867,12 +880,12 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     },
     _setValue: function(value){
         debugger;
-        if (o2.typeOf(value)==="object" && value.resolve){
+        if (o2.typeOf(value)==="function"){
             var simple = this.json.storeRange === "simple";
-            var values = value.values;
-            value.resolve.addResolve(function(fd){
+            var values = [];
+            value.addResolve(function(fd){
                 if (o2.typeOf(fd)==="function" && fd.addResolve){
-                    this._setValue({"values": values, "resolve": fd});
+                    this._setValue(fd);
                 }else{
                     if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
                     fd.each(function(fdd){
