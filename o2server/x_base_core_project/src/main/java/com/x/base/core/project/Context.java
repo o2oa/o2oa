@@ -320,9 +320,7 @@ public class Context extends AbstractContext {
 
 	public void destrory(ServletContextEvent servletContextEvent) {
 		try {
-			queues.stream().forEach(p -> {
-				p.stop();
-			});
+			queues.stream().forEach(AbstractQueue::stop);
 			this.scheduler.shutdown();
 			EntityManagerContainerFactory.close();
 			PCRegistry.deRegister(JpaObject.class.getClassLoader());
