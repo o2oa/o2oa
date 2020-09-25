@@ -11,7 +11,10 @@ MWF.xApplication.Selector.CMSView = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "cmsview";
+        this.className = "CMSView";
+    },
     loadSelectItems: function(addToNext){
         this.cmsAction.listCMSApplicationView(function(json){
             if (json.data.length){

@@ -16,8 +16,11 @@ MWF.xApplication.Selector.Identity = new Class({
         "exclude" : [], //排除的可选项
         "resultType" : "", //可以设置成个人，那么结果返回个人
         "expandSubEnable" : true, //是否允许展开下一层,
-        "selectAllEnable" : true,  //分类是否允许全选下一层
-        "selectType" : "identity"
+        "selectAllEnable" : true  //分类是否允许全选下一层
+    },
+    _init : function(){
+        this.selectType = "identity";
+        this.className = "Identity";
     },
     loadSelectItems : function(){
         if( this.options.isCheckStatus || this.options.showSelectedCount ) {
@@ -51,6 +54,7 @@ MWF.xApplication.Selector.Identity = new Class({
                 var caculate = function () {
                     if (unitLoaded && groupLoaded && selectedIdentityLoaded && excludeIdentityLoaded) {
                         this.caculateNestedSubCount(unitTree, groupTree, function () {
+                            debugger;
                             this._loadSelectItems()
                         }.bind(this))
 
@@ -316,8 +320,8 @@ MWF.xApplication.Selector.Identity = new Class({
     _listItemByPinyin: function(callback, failure, key){
         this._listItem( "pinyin", callback, failure, key );
     },
-    _newItem: function(data, selector, container, level, category){
-        return new MWF.xApplication.Selector.Identity.Item(data, selector, container, level, category);
+    _newItem: function(data, selector, container, level, category, delay){
+        return new MWF.xApplication.Selector.Identity.Item(data, selector, container, level, category, delay);
     },
     _newItemSearch: function(data, selector, container, level){
         return new MWF.xApplication.Selector.Identity.SearchItem(data, selector, container, level);
@@ -374,6 +378,31 @@ MWF.xApplication.Selector.Identity = new Class({
     //    }.bind(this));
     //}
 
+    getIdentityAllLevelName : function(identityList, byGroup, callback){
+        var result = {
+            unitMap : {},
+            groupMap : {}
+        };
+        this.listIndetityObject( identityList, function ( list, map ) {
+            list.each( function (id) {
+                if(id.unitLevelName){
+                    result.unitMap[ id.unitLevelName ] = ( result.unitMap[ id.unitLevelName ] || 0 )+1;
+                }
+            }.bind(this));
+            if( byGroup ) {
+                this.listLevelNameGroupMap(list, function ( levelNameGroupMap ) {
+                    for( var key in levelNameGroupMap ){
+                        var group = levelNameGroupMap[key]
+                        var identityCount = group["identityList"].length;
+                        if(identityCount)result.groupMap[key] = identityCount;
+                    }
+                    if( callback )callback( result );
+                }.bind(this));
+            }else{
+                if( callback )callback( result );
+            }
+        }.bind(this));
+    },
     getIdentityCountMap : function( identityList, byGroup, callback ){
         var result = {
             unitMap : {},
@@ -750,7 +779,7 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                     item.selectedItem = this;
                     item.setSelected();
                     if( this.selector.options.showSelectedCount ){
-                        if(item.category)item.category._addSelectedCount( 1, true );
+                        if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( 1, true );
                     }
                 }.bind(this));
             }
@@ -767,7 +796,11 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         }).inject(this.container);
     },
     _getShowName: function(){
-        return "" + this._getTotalCount() + "-" + this._getSelectedCount() + "-" + this.data.name ;
+        if( this._getTotalCount && this._getSelectedCount ){
+            return "" + this._getTotalCount() + "-" + this._getSelectedCount() + "-" + this.data.name ;
+        }else{
+            return this.data.name;
+        }
     },
     _getTotalCount : function(){
         if( !this.selector.allUnitObject )return "n";
@@ -1050,6 +1083,7 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
         return count;
     },
     _getSelectedCount : function(){
+        debugger;
         if( typeOf(this.selectedCount) === "number" )return this.selectedCount;
         if( !this.selector.allGroupObjectByDn )return 0;
         var group = this.selector.allGroupObjectByDn[this.data.distinguishedName];
