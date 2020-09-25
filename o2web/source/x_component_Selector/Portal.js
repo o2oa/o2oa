@@ -10,7 +10,10 @@ MWF.xApplication.Selector.Portal = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "portal";
+        this.className = "Portal";
+    },
     loadSelectItems: function(addToNext){
         this.portalDesignerAction.listApplication(function(json){
             json.data.each(function(data){

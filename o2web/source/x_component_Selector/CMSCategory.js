@@ -11,7 +11,10 @@ MWF.xApplication.Selector.CMSCategory = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "cmscategory";
+        this.className = "CMSCategory"
+    },
     loadSelectItems: function(addToNext){
         this.cmsAction.listCMSApplication(function(json){
             if (json.data.length){

@@ -83,6 +83,11 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.subCategorys = []; //直接的分类
         this.subItems = []; //直接的选择项
+        this._init();
+    },
+    _init : function(){
+        this.selectType = "person";
+        this.className = "Person"
     },
     load: function(){
         this.fireEvent("queryLoad",[this]);
@@ -1806,7 +1811,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }).inject(this.node);
 
 
-        if( this.selector.options.selectType !== "identity" || this.selector.options.identityItemWidth === 0 ) {
+        if( this.selector.selectType !== "identity" || this.selector.options.identityItemWidth === 0 ) {
             var indent = this.selector.options.level1Indent + (this.level - 1) * this.selector.options.indent;
             this.levelNode.setStyle("width", "" + indent + "px");
         }
@@ -1832,7 +1837,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         var m = this.textNode.getStyle("margin-left").toFloat()+indent;
         this.textNode.setStyle("margin-left", ""+m+"px");
 
-        if( this.selector.options.identityItemWidth && this.selector.options.selectType === "identity"){
+        if( this.selector.options.identityItemWidth && this.selector.selectType === "identity"){
             this.node.setStyles({
                 "float" : "left",
                 "min-width" : this.selector.options.identityItemWidth + "px"
@@ -2011,7 +2016,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.selector.fireEvent("unselectItem",[this]);
         if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
     },
-    selected: function( checkValid, callback, selectedNode ){
+    selected: function( checkValid, callback, selectedNode, byelectAll ){
         debugger;
         var count = this.selector.options.maxCount || this.selector.options.count;
         count = count.toInt();
@@ -2107,7 +2112,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     }
                 }
                 if( this.selector.options.showSelectedCount ){
-                    if(item.category)item.category._addSelectedCount( -1, true );
+                    if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( -1, true );
                 }
             }.bind(this));
 
@@ -2383,7 +2388,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             "styles": this.selector.css.selectorItemLevelNode
         }).inject(this.node);
 
-        if(this.selector.options.selectType !== "identity" || this.selector.options.identityItemWidth === 0 ){
+        if(this.selector.selectType !== "identity" || this.selector.options.identityItemWidth === 0 ){
             var indent = this.selector.options.level1Indent + (this.level - 1) * this.selector.options.indent;
             this.levelNode.setStyle("width", "" + indent + "px");
         }else{
@@ -2442,9 +2447,11 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         var m = this.textNode.getStyle("margin-left").toFloat()+indent;
         this.textNode.setStyle("margin-left", ""+m+"px");
 
-        this.selectedCountNode = new Element("span", {
-            "text": this._getSelectedCount()
-        }).inject(this.textNode);
+        if( this.selector.options.showSelectedCount && this._getSelectedCount ){
+            this.selectedCountNode = new Element("span", {
+                "text": this._getSelectedCount()
+            }).inject(this.textNode);
+        }
 
         this.children = new Element("div.children", {
             "styles": this.selector.css.selectorItemCategoryChildrenNode
@@ -2463,7 +2470,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                 this.children.setStyle("height", ""+this.childrenHeight+"px");
             }
 
-            if(this.selector.options.identityItemWidth && this.selector.options.selectType === "identity"){
+            if(this.selector.options.identityItemWidth && this.selector.selectType === "identity"){
                 var indent = this.level === 0 ? this.selector.options.level1Indent : this.selector.options.indent;
                 this.children.setStyles({
                     "padding-left": "" + indent + "px",
@@ -2501,7 +2508,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         var c = ( this._getSelectedCount() || 0 ) + count;
         this.selectedCount = c;
         this.selectedCountNode.set("text", c);
-        if( nested && this.category ){
+        if( nested && this.category && this.category._addSelectedCount ){
             this.category._addSelectedCount(count, nested);
         }
     },
@@ -2537,20 +2544,23 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
     selectAllNested : function( ev, checkValid, selectedNode ){
         var node;
         if(selectedNode)node = new Element("div.categorySelectedNode").inject( selectedNode );
-        this.selectAll(ev, checkValid, node);
-        if( this.subCategorys && this.subCategorys.length ){
-            this.subCategorys.each( function( category ){
-                if(selectedNode)var node = new Element("div.categorySelectedNode").inject( selectedNode );
-                category.selectAllNested(ev, checkValid, node)
-            })
-        }
+        this.selectAll(ev, checkValid, node, function () {
+            if( this.subCategorys && this.subCategorys.length ){
+                this.subCategorys.each( function( category ){
+                    if(selectedNode)var node = new Element("div.categorySelectedNode").inject( selectedNode );
+                    category.selectAllNested(ev, checkValid, node)
+                })
+            }
+        }.bind(this));
     },
-    selectAll: function(ev, checkValid, selectedNode){
+    selectAll: function(ev, checkValid, selectedNode, callback){
         if( this.loaded || this.selector.isFlatCategory ){
             this._selectAll( ev, checkValid, selectedNode );
+            if(callback)callback();
         }else{
             this.clickItem( function(){
                 this._selectAll( ev, checkValid, selectedNode );
+                if(callback)callback();
                 //this.children.setStyles({
                 //    "display": "none",
                 //    "height": "0px"

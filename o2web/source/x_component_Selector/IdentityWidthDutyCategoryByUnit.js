@@ -20,6 +20,10 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         "dutyUnitLevelBy" : "duty", //组织层级是按身份所在群组还是职务,
         "selectType" : "identity"
     },
+    _init : function(){
+        this.selectType = "identity";
+        this.className = "IdentityWidthDutyCategoryByUnit";
+    },
     loadSelectItems: function(addToNext){
         //根据组织分类展现职务
         if( this.options.resultType === "person" ){
@@ -390,8 +394,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
-    _newItem: function(data, selector, container, level, category){
-        return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.Item(data, selector, container, level, category);
+    _newItem: function(data, selector, container, level, category, delay){
+        return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.Item(data, selector, container, level, category, delay);
     },
     _newItemSearch: function(data, selector, container, level){
         return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.SearchItem(data, selector, container, level);
