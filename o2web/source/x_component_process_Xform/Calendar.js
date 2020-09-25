@@ -23,18 +23,35 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
             });
         }
     },
+    _getValueAg: function(value,isDate){
+        if (o2.typeOf(value)=="function" && value.addResolve){
+            return value.then(function(v){
+                this._getValueAg(v, isDate);
+            }.bind(this));
+        }else{
+            var d = (!!value) ? Date.parse(value) : "";
+            if (isDate){
+                return d || null;
+            }else{
+                return (d) ? d.format(this.json.format) : "";
+            }
+        }
+    },
     getValue: function(isDate){
         var value = this._getBusinessData();
         if( value && !isDate)return value;
 
+        if (!value && this.moduleValueAG) value = this.moduleValueAG;
         if (!value) value = this._computeValue();
-        var d = (!!value) ? Date.parse(value) : "";
-        if (isDate){
-            return d || null;
-        }else{
-            //if (d) value = Date.parse(value).format(this.json.format);
-            return (d) ? d.format(this.json.format) : "";
-        }
+
+        return value || "";
+
+        // var d = (!!value) ? Date.parse(value) : "";
+        // if (isDate){
+        //     return d || null;
+        // }else{
+        //     return (d) ? d.format(this.json.format) : "";
+        // }
     },
     getValueStr : function(){
         var value = this._getBusinessData();
