@@ -426,10 +426,38 @@ MWF.xApplication.Homepage.InforContent.AllInfor = new Class({
         }
     },
 
-    open: function(e, d){
-        var id = d.infoId || d.id;
-        var options = {"documentId": id, "docTitle": d.title, "appId": "cms.Document"+id};
-        layout.openApplication(e, "cms.Document", options);
+    open: function(e, data){
+
+        var id = data.infoId || data.id;
+        // var options = {"documentId": id, "docTitle": d.title, "appId": "cms.Document"+id};
+        // layout.openApplication(e, "cms.Document", options);
+
+        if( data.application == "BBS" ){
+            var appId = "ForumDocument"+data.infoId;
+            if (this.app.desktop.apps[appId]){
+                this.app.desktop.apps[appId].setCurrent();
+            }else {
+                layout.openApplication(null, "ForumDocument", {
+                    "id" : id,
+                    "appId": appId,
+                    // "docTitle": data.title,
+                    "isEdited" : false,
+                    "isNew" : false
+                });
+            }
+        }else{
+            var appId = "cms.Document"+data.infoId;
+            if (this.app.desktop.apps[appId]){
+                this.app.desktop.apps[appId].setCurrent();
+            }else {
+                layout.openApplication(null, "cms.Document", {
+                    "documentId" : id,
+                    // "docTitle": data.title,
+                    "appId": appId,
+                    "readonly" : true
+                });
+            }
+        }
     },
     prevPage: function(){
         if (this.page>1){
