@@ -21,7 +21,7 @@ class ActionReceive extends BaseAction {
 		logger.debug(effectivePerson, "receive:{}.", jsonElement);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		Object o = servletContext.getAttribute(com.x.base.core.project.Context.class.getName());
+		Object o = servletContext.getAttribute(com.x.base.core.project.AbstractContext.class.getName());
 		if (null != o) {
 			com.x.base.core.project.Context ctx = (com.x.base.core.project.Context) o;
 			if (null != ctx.clearCacheRequestQueue()) {

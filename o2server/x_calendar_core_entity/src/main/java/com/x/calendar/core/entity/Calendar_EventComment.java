@@ -61,7 +61,7 @@ public class Calendar_EventComment extends SliceJpaObject {
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("COMMENT信息的LOB值")
-	@Column(name = lobValue_FIELDNAME, length = JpaObject.length_10M)
+	@Column(name = ColumnNamePrefix + lobValue_FIELDNAME, length = JpaObject.length_10M)
 	private String lobValue = "";
 
 	public static final String checkTime_FIELDNAME = "checkTime";
