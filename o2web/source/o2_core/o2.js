@@ -216,11 +216,11 @@
             callback.apply(b, par);
         }else{
             if (type==="function" || type==="object"){
-                if (callback[key]){
-                    callback[key].apply(b, par);
+                var name = ("on-"+key).camelCase();
+                if (callback[name]){
+                    callback[name].apply(b, par);
                 }else{
-                    var name = ("on-"+key).camelCase();
-                    if (callback[name]) callback[name].apply(b, par);
+                    if (callback[key]) callback[key].apply(b, par);
                 }
             }
         }
@@ -1365,7 +1365,6 @@
         //var noCache = cache===false;
         var noCache = !cache;
 
-
         //if (Browser.name == "ie")
         if (_cacheUrls.length){
             for (var i=0; i<_cacheUrls.length; i++){
@@ -1377,7 +1376,7 @@
             }
         }
 
-        var useWebWorker = (window.layout && layout.config && config.useWebWorker);
+        var useWebWorker = (window.layout && layout.config && layout.config.useWebWorker);
         //var noCache = false;
         if (!loadAsync || !useWebWorker){
             var res = new Request.JSON({
@@ -1423,6 +1422,9 @@
             }
             //Content-Type	application/x-www-form-urlencoded; charset=utf-8
             res.send(data);
+            var oReturn = (callback.success && callback.success.addResolve) ? callback.success : callback;
+            oReturn.res = res;
+            return oReturn;
         }else{
             var workerMessage = {
                 method: method,
@@ -1449,8 +1451,13 @@
                 }else{
                     o2.runCallback(callback, "failure", [result.data]);
                 }
+                actionWorker.terminate();
             }
             actionWorker.postMessage(workerMessage);
+            var oReturn = (callback.success && callback.success.addResolve) ? callback.success : callback;
+            oReturn.actionWorker = actionWorker;
+            return oReturn;
+            //return callback;
         }
         //return res;
     };
@@ -1615,19 +1622,29 @@
     //         }
     //     }
     // });
-    Date.getFromServer = function(callback){
-            if (callback){
-                o2.Actions.get("x_program_center").echo(function(json){
-                    d = Date.parse(json.data.serverTime);
-                    o2.runCallback(callback, "success", [d]);
-                });
-            }else{
-                var d;
-                o2.Actions.get("x_program_center").echo(function(json){
-                    d = Date.parse(json.data.serverTime);
-                }, null, false);
-                return d;
-            }
+    Date.getFromServer = function(async){
+        var d;
+        var cb = function(json){
+            d = Date.parse(json.data.serverTime);
+            return d;
+        }.ag().catch(function(json){ return d; });
+
+        o2.Actions.get("x_program_center").echo(cb, null, !!async);
+
+        return (!!async) ? cd : d;
+
+            // if (callback){
+            //     o2.Actions.get("x_program_center").echo(function(json){
+            //         d = Date.parse(json.data.serverTime);
+            //         o2.runCallback(callback, "success", [d]);
+            //     });
+            // }else{
+            //     var d;
+            //     o2.Actions.get("x_program_center").echo(function(json){
+            //         d = Date.parse(json.data.serverTime);
+            //     }, null, false);
+            //     return d;
+            // }
     };
 
     Object.appendChain = function(oChain, oProto) {
@@ -1679,7 +1696,7 @@
                 if (_self.success.resolve) result = _self.success.resolve.apply(this, arguments);
                 if (_self.success.resolveList){
                     _self.success.resolveList.each(function(r){
-                        r(result, arguments);
+                        result = r(result, arguments) || result;
                     });
                 }
             }
@@ -1691,7 +1708,7 @@
                 if (_self.failure.reject) result = _self.failure.reject(arguments);
                 if (_self.failure.rejectList){
                     _self.failure.rejectList.each(function(r){
-                        r(result, arguments);
+                        result = r(result, arguments) || result;
                     });
                 }
             }
@@ -1699,25 +1716,43 @@
         setResolve: function(resolve){
             if (!this.success) this._createSuccess();
             this.success.resolve = resolve;
+            return this;
         },
         setReject: function(reject){
             if (!this.failure) this._createFailure();
-            this.reject = reject;
+            this.failure.reject = reject;
+            return this;
         },
         addResolve: function(resolve){
             if (!this.success) this._createSuccess();
             if (resolve){
-                if (!this.success.resolveList) this.success.resolveList = [];
-                this.success.resolveList.push(resolve);
+                if (!this.success.resolve){
+                    this.success.resolve = resolve;
+                }else{
+                    if (!this.success.resolveList) this.success.resolveList = [];
+                    this.success.resolveList.push(resolve);
+                }
             }
+            return this;
         },
         addReject: function(reject){
             if (!this.failure) this._createFailure();
             if (reject){
-                if (!this.success.rejectList) this.success.rejectList = [];
-                this.success.rejectList.push(reject);
+                if (!this.failure.reject){
+                    this.failure.reject = reject;
+                }else{
+                    if (!this.failure.rejectList) this.failure.rejectList = [];
+                    this.failure.rejectList.push(reject);
+                }
             }
-        }
+            return this;
+        },
+        then: function(resolve){
+            return this.addResolve(resolve);
+        },
+        "catch": function(reject){
+            return this.addReject(reject);
+        },
     });
     var _AsyncGenerator = function(resolve, reject, name){
         var asyncGeneratorPrototype = new _AsyncGeneratorPrototype(resolve, reject, name);
@@ -1725,6 +1760,10 @@
     }
 
     o2.AsyncGenerator = o2.AG = _AsyncGenerator;
+
+    Function.prototype.ag = function(){
+        return o2.AG(this);
+    }
 
 })();
 o2.core = true;
