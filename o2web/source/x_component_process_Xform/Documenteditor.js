@@ -1519,17 +1519,20 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
         }
 
-        this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolbarNode);
-        this.doublePageAction.addEvent("click", function(){
-            if (this.options.pageShow!=="double"){
-                this._doublePage();
-            }else{
-                this.options.pageShow="single";
-                this.reload();
-                //this._singlePage();
-            }
-        }.bind(this));
-        if (layout.mobile) this.doublePageAction.hide();
+        if (this.json.canDoublePage!=="n" && !layout.mobile){
+            this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolbarNode);
+            this.doublePageAction.addEvent("click", function(){
+                if (this.options.pageShow!=="double"){
+                    this._doublePage();
+                }else{
+                    this.options.pageShow="single";
+                    this.reload();
+                    //this._singlePage();
+                }
+            }.bind(this));
+            //if (layout.mobile) this.doublePageAction.hide();
+        }
+
 
 
         this.zoomActionArea =  new Element("div", {"styles": {"float": "right", "margin-right": "10px"}}).inject(this.toolbarNode);
