@@ -225,18 +225,24 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
         switch (appNames) {
             case "process.Work":
-                var url = "../x_desktop/work.html";
-                if (options.workId) {
-                    url += "?workid=" + options.workId;
-                    //window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
-                } else if (options.workCompletedId) {
-                    url += "?workcompletedid=" + options.workCompletedId;
-                    //window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
-                } else if (options.draftId){
-                    url += "?draftId=" + options.draftId;
-                } else if (options.draft) {
+                var url = "../x_desktop/work.html".toURI();
+                if (options.draft){
                     url = "../x_desktop/app.html?" + par;
+                }else{
+                    url = url.setData(options).toString();
                 }
+
+                // if (options.workId) {
+                //     url += "?workid=" + options.workId+"&"+par;
+                //     //window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
+                // } else if (options.workCompletedId) {
+                //     url += "?workcompletedid=" + options.workCompletedId+"&"+par;;
+                //     //window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
+                // } else if (options.draftId){
+                //     url += "?draftId=" + options.draftId+"&"+par;;
+                // } else if (options.draft) {
+                //     url = "../x_desktop/app.html?" + par;
+                // }
                 var job = (options.jobid || options.jobId || options.job);
                 if (job) url += ((url.indexOf("?")!=-1) ? "&" : "?") + "jobid="+job;
                 url +=((layout.debugger) ? "&debugger" : "");
