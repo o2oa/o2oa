@@ -19,6 +19,10 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
         "exclude" : [],
         "selectType" : "identity"
     },
+    _init : function(){
+	    this.selectType = "identity";
+	    this.className = "IdentityWidthDuty"
+    },
     loadSelectItems: function(addToNext){
 
         var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
@@ -186,8 +190,8 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
-    _newItem: function(data, selector, container, level, category){
-        return new MWF.xApplication.Selector.IdentityWidthDuty.Item(data, selector, container, level, category);
+    _newItem: function(data, selector, container, level, category, delay){
+        return new MWF.xApplication.Selector.IdentityWidthDuty.Item(data, selector, container, level, category, delay);
     },
     _newItemSearch: function(data, selector, container, level){
         return new MWF.xApplication.Selector.IdentityWidthDuty.SearchItem(data, selector, container, level);
@@ -247,8 +251,12 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
         var style = this.selector.options.style;
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
     },
+    _addSelectedCount : function(){
+        this.selectedCountNode.set("text", this._getSelectedCount());
+    },
     _getSelectedCount : function(){
-
+        var list = this.subItems.filter( function (item) { return item.isSelected; });
+        return list.length;
     },
     _getNestItemCount : function(){
       return this.subItems.length;
