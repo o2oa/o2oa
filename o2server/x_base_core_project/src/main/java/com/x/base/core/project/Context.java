@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.openjpa.enhance.PCRegistry;
@@ -48,26 +47,6 @@ import com.x.base.core.project.tools.SslTools;
 public class Context extends AbstractContext {
 
 	private static Logger logger = LoggerFactory.getLogger(Context.class);
-
-	/* 从servletContext中抽取context */
-	public static Context fromServletContext(ServletContext servletContext) throws Exception {
-		Object o = servletContext.getAttribute(Context.class.getName());
-		if (null == o) {
-			throw new Exception("can not get context form servletContext.");
-		} else {
-			return (Context) o;
-		}
-	}
-
-	/* 从servletRequest中抽取context */
-	public static Context fromServletRequest(ServletRequest servletRequest) throws Exception {
-		Object o = servletRequest.getServletContext().getAttribute(Context.class.getName());
-		if (null == o) {
-			throw new Exception("can not get context form servletRequest.");
-		} else {
-			return (Context) o;
-		}
-	}
 
 	/* 应用的磁盘路径 */
 	private volatile String path;
@@ -208,7 +187,7 @@ public class Context extends AbstractContext {
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
 		context.initDatas();
 		context.threadFactory = new ThreadFactory(context);
-		servletContext.setAttribute(context.getClass().getName(), context);
+		servletContext.setAttribute(AbstractContext.class.getName(), context);
 		context.initialized = true;
 		return context;
 	}
@@ -272,6 +251,7 @@ public class Context extends AbstractContext {
 	 * 接受Center调度的schedule在本地运行,和scheduleOnLocal没有本质区别,仅仅是个withDescription(
 	 * "schedule")不一样,在log中记录这个值.
 	 */
+	@Override
 	public <T extends AbstractJob> void fireScheduleOnLocal(Class<T> cls, Integer delay) throws Exception {
 		/* 需要单独生成一个独立任务,保证group和预约的任务不重复 */
 		JobDataMap jobDataMap = new JobDataMap();
