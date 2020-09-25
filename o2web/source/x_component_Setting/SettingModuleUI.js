@@ -473,9 +473,9 @@ MWF.xApplication.Setting.UIModuleDocument.DeployEdit = new Class({
         this.pathInputNode.set("value", this.data.path);
 
         if (this.data.visible){
-            this.visibleInputNode.getFirst("option").set("checked", true);
+            this.visibleInputNode.getFirst("option").set("selected", true);
         }else{
-            this.visibleInputNode.getLast("option").set("checked", true);
+            this.visibleInputNode.getLast("option").set("selected", true);
         }
 
         // this.widgetNameInputNode.set("value", this.data.widgetName);

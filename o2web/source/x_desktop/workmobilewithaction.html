@@ -35,27 +35,8 @@
         style="height: 4em;overflow: hidden; border-top: 1px solid #dfdfdf; display: block; position: absolute; bottom: 0px; background: #ffffff; width: 100%; z-index:100;">
 
     </div>
-    <script>
-        //动态添加 微信的 jssdk
-        function addWxJsSdk() {
-            var script = document.createElement("script");
-            script.type = "text/javascript";
-            script.src = "http://res.wx.qq.com/open/js/jweixin-1.6.0.js";
-            document.body.appendChild(script);
-        }
-        //判断是否是在小程序中
-        // function ready() {
-        //     if (window.__wxjs_environment === 'miniprogram') { // true 
-        //         addWxJsSdk();
-        //     }
-        // }
-        //微信的WeixinJSBridgeReady加载完成后进行判断
-        if (!window.WeixinJSBridge || !WeixinJSBridge.invoke) {
-            document.addEventListener('WeixinJSBridgeReady', addWxJsSdk, false);
-        } else {
-            addWxJsSdk();
-        }
-    </script>
+
+    <script type="text/javascript" src="/o2_lib/wechat/jweixin-1.6.0.js"></script>
 </body>
 
 </html>
