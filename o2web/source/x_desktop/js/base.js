@@ -232,6 +232,10 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 } else if (options.workCompletedId) {
                     url += "?workcompletedid=" + options.workCompletedId;
                     //window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
+                } else if (options.draftId){
+                    url += "?draftId=" + options.draftId;
+                } else if (options.draft) {
+                    url = "../x_desktop/app.html?" + par;
                 }
                 var job = (options.jobid || options.jobId || options.job);
                 if (job) url += ((url.indexOf("?")!=-1) ? "&" : "?") + "jobid="+job;
