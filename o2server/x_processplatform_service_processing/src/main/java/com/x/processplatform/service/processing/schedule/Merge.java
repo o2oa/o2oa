@@ -13,6 +13,10 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
@@ -28,15 +32,11 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.service.processing.ThisApplication;
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
-public class Combine extends AbstractJob {
+public class Merge extends AbstractJob {
 
-	private static Logger logger = LoggerFactory.getLogger(Combine.class);
+	private static Logger logger = LoggerFactory.getLogger(Merge.class);
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
@@ -78,7 +78,7 @@ public class Combine extends AbstractJob {
 
 	private List<WorkCompleted> list(EntityManagerContainer emc, String sequence) throws Exception {
 		Date date = new Date();
-		date = DateUtils.addDays(date, 0 - Config.processPlatform().getCombine().getThresholdDays());
+		date = DateUtils.addDays(date, 0 - Config.processPlatform().getMerge().getThresholdDays());
 		EntityManager em = emc.get(WorkCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);

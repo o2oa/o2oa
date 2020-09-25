@@ -141,23 +141,78 @@ public class FormAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-//	@JaxrsMethodDescribe(value = "V2根据工作或完成工作标识获取表单,合并关联表单和关联脚本输出.", action = V2GetWithWorkOrWorkCompleted.class)
-//	@GET
-//	@Path("v2/workorworkcompleted/{workOrWorkCompleted}")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void V2GetWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
-//			@Context HttpServletRequest request,
-//			@JaxrsParameterDescribe("工作或完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
-//		ActionResult<V2GetWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new V2GetWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果使用的是combine的表单直接返回内容.", action = V2LookupWorkOrWorkCompleted.class)
+	@GET
+	@Path("v2/lookup/workorworkcompleted/{workOrWorkCompleted}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2LookupWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
+		ActionResult<V2LookupWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2LookupWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询移动端表单,如果有表单那么返回表单id,如果使用的是combine的表单直接返回内容.", action = V2LookupWorkOrWorkCompletedMobile.class)
+	@GET
+	@Path("v2/lookup/workorworkcompleted/{workOrWorkCompleted}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2LookupWorkOrWorkCompletedMobile(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
+		ActionResult<V2LookupWorkOrWorkCompletedMobile.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2LookupWorkOrWorkCompletedMobile().execute(effectivePerson, workOrWorkCompleted);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取表单.", action = V2Get.class)
+	@GET
+	@Path("v2/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2Get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<V2Get.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Get().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取表单Mobile.", action = V2GetMobile.class)
+	@GET
+	@Path("v2/{id}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2GetMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<V2GetMobile.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2GetMobile().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 }
