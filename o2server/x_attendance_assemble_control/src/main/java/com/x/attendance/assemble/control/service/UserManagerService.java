@@ -385,13 +385,15 @@ public class UserManagerService {
 			if (ListTools.isNotEmpty( identities )) {
 				if( identities.size() == 1 ) {
 					return identities.get(0);
-				}
-				for (String identity : identities) {
-					Identity obj = business.organization().identity().getObject(identity);
-					if (obj!= null && obj.getMajor() !=null && obj.getMajor() ) {
-						return identity;
+				}else{
+					for (String identity : identities) {
+						Identity obj = business.organization().identity().getObject(identity);
+						if (obj.getMajor()) {
+							return identity;
+						}
 					}
 				}
+				return identities.get(0);
 			}
 			return null;
 		} catch (Exception e) {
