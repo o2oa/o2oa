@@ -166,7 +166,7 @@ public class UserManagerService {
 	 * @return
 	 * @throws Exception
 	 */
-	public String getMajorIdentityWithPerson(String personName) throws Exception {
+	public String getMajorIdentityWithPerson( String personName ) throws Exception {
 		List<String> identities = null;
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -179,16 +179,18 @@ public class UserManagerService {
 				}
 			}
 			identities = business.organization().identity().listWithPerson(personName);
-			if (identities != null && !identities.isEmpty()) {
+			if (ListTools.isNotEmpty( identities )) {
 				if( identities.size() == 1 ) {
 					return identities.get(0);
-				}
-				for (String identity : identities) {
-					Identity obj = business.organization().identity().getObject(identity);
-					if (obj.getMajor()) {
-						return identity;
+				}else{
+					for (String identity : identities) {
+						Identity obj = business.organization().identity().getObject(identity);
+						if (obj.getMajor()) {
+							return identity;
+						}
 					}
 				}
+				return identities.get(0);
 			}
 			return null;
 		} catch (Exception e) {
