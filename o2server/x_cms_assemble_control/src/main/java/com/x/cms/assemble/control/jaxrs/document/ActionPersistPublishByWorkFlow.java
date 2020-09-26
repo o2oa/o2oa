@@ -182,7 +182,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 						wi.setCreatorTopUnitName("xadmin");
 					}else {
 						//尝试一下根据当前用户获取用户的第一个身份
-						wi.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
+						wi.setCreatorIdentity( userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
 					}
 				}
 
