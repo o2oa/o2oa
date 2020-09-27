@@ -6,7 +6,7 @@ import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 
 @Module(type = ModuleType.SERVICE, category = ModuleCategory.OFFICIAL, name = "流程服务", packageName = "com.x.processplatform.service.processing", containerEntities = {
-		"com.x.processplatform.core.entity.content.Draft", "com.x.processplatform.core.entity.content.Snap",
+		"com.x.processplatform.core.entity.content.Snap", "com.x.processplatform.core.entity.content.Draft",
 		"com.x.processplatform.core.entity.content.Attachment",
 		"com.x.processplatform.core.entity.content.TaskCompleted",
 		"com.x.processplatform.core.entity.content.ReadCompleted", "com.x.processplatform.core.entity.content.Review",
