@@ -23,7 +23,7 @@ MWF.xApplication.Selector.Identity = new Class({
         this.className = "Identity";
     },
     loadSelectItems : function(){
-        if( this.options.isCheckStatus || this.options.showSelectedCount ) {
+        if( this.className === "Identity" && (this.options.isCheckStatus || this.options.showSelectedCount )) {
 
             var unitList = [];
             var groupList = [];
@@ -778,7 +778,7 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();
-                    if( this.selector.options.showSelectedCount ){
+                    if( this.selector.options.showSelectedCount && this.selector.selectType == "identity" ){
                         if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( 1, true );
                     }
                 }.bind(this));

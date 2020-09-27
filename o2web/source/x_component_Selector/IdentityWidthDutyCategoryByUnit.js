@@ -419,9 +419,15 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemSelected = new Cla
 
 MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory,
+    _getShowName: function(){
+        return this.data.name;
+    },
     _getSelectedCount : function(){
-        if( typeOf( this.selectedCount ) === "number" )return this.selectedCount;
-
+        if( typeOf( this.selectedCount ) === "number" ){
+            return this.selectedCount;
+        }else{
+            return 0
+        }
     },
     _getNestItemCount : function(){
         return this.data.subNestedIdentityCount;
