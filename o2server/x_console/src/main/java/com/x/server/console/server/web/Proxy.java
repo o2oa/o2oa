@@ -1,9 +1,18 @@
 package com.x.server.console.server.web;
 
+import java.io.IOException;
+
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.client.api.ContentProvider;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.api.Response;
+import org.eclipse.jetty.client.util.DeferredContentProvider;
 import org.eclipse.jetty.proxy.ProxyServlet;
+import org.eclipse.jetty.util.Callback;
 
 public class Proxy extends ProxyServlet {
 
@@ -28,11 +37,11 @@ public class Proxy extends ProxyServlet {
 	}
 
 	private String port(String url, String port) {
-		if (StringUtils.startsWithIgnoreCase(url, "https://")) {
+		if (StringUtils.startsWithIgnoreCase(url, "https://") || StringUtils.startsWithIgnoreCase(url, "wss://")) {
 			if (StringUtils.equals(port, "443")) {
 				return "";
 			}
-		} else if (StringUtils.startsWithIgnoreCase(url, "http://")) {
+		} else if (StringUtils.startsWithIgnoreCase(url, "http://") || StringUtils.startsWithIgnoreCase(url, "ws://")) {
 			if (StringUtils.equals(port, "80")) {
 				return "";
 			}
@@ -40,13 +49,40 @@ public class Proxy extends ProxyServlet {
 		return ":" + port;
 	}
 
-//	@Test
-//	public void test1() {
-//		System.out.println(target("http://www.o2oa.net:20030/111/22?1=1", "80"));
-//		System.out.println(target("http://www.o2oa.net:20030/111/22?1=1", "81"));
-//		System.out.println(target("https://www.o2oa.net:20030/111/22?1=1", "80"));
-//		System.out.println(target("https://www.o2oa.net:20030/111/22?1=1", "443"));
-//		System.out.println(target("https://www.o2oa.net:20030/111/22?1=1", "4430"));
-//	}
+	@Override
+	protected ContentProvider proxyRequestContent(HttpServletRequest request, HttpServletResponse response,
+			Request proxyRequest) throws IOException {
+		ServletInputStream input = request.getInputStream();
+		DeferredContentProvider provider = new DeferredContentProvider();
+		input.setReadListener(newReadListener(request, response, proxyRequest, provider));
+		return provider;
+	}
 
+	@Override
+	protected void onResponseContent(HttpServletRequest request, HttpServletResponse response, Response proxyResponse,
+			byte[] buffer, int offset, int length, Callback callback) {
+		try {
+			if (_log.isDebugEnabled())
+				_log.debug("{} proxying content to downstream: {} bytes", getRequestId(request), length);
+			StreamWriter writeListener = (StreamWriter) request.getAttribute(WRITE_LISTENER_ATTRIBUTE);
+			if (writeListener == null) {
+				writeListener = newWriteListener(request, proxyResponse);
+				request.setAttribute(WRITE_LISTENER_ATTRIBUTE, writeListener);
+
+				// Set the data to write before calling setWriteListener(), because
+				// setWriteListener() may trigger the call to onWritePossible() on
+				// a different thread and we would have a race.
+				writeListener.data(buffer, offset, length, callback);
+
+				// Setting the WriteListener triggers an invocation to onWritePossible().
+				response.getOutputStream().setWriteListener(writeListener);
+			} else {
+				writeListener.data(buffer, offset, length, callback);
+				writeListener.onWritePossible();
+			}
+		} catch (Throwable x) {
+			callback.failed(x);
+			proxyResponse.abort(x);
+		}
+	}
 }
