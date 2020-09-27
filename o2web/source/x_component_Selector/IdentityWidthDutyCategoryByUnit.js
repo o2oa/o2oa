@@ -422,11 +422,38 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     _getShowName: function(){
         return this.data.name;
     },
-    _getSelectedCount : function(){
+    _addSelectedCount : function( count, nested ){
+        debugger;
+        var c;
+        if( typeOf( this.selectedCount ) === "number" ){
+            c = this.selectedCount + count;
+        }else{
+            c = this._getSelectedCount(nested, true);
+        }
+        this.selectedCount = c;
+        this.selectedCountNode.set("text", c || "");
+        if( nested && this.category && this.category._addSelectedCount ){
+            this.category._addSelectedCount(count, nested);
+        }
+    },
+    // _getSelectedCount : function(){
+    //     var list = this.subItems.filter( function (item) { return item.isSelected; });
+    //     return list.length;
+    // },
+    _getSelectedCount : function(nested, cache){
+        debugger;
         if( typeOf( this.selectedCount ) === "number" ){
             return this.selectedCount;
         }else{
-            return 0
+            var count = 0;
+            if( nested ){
+                this.subCategorys.each( function (category) {
+                    count = count + category._getSelectedCount( nested, cache );
+                });
+            }
+            var list = this.subItems.filter( function (item) { return item.isSelected; });
+            if( cache ) this.selectedCount = count+list.length;
+            return count+list.length;
         }
     },
     _getNestItemCount : function(){
@@ -490,6 +517,11 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
             }
 
             this.loaded = true;
+
+            if( this.selector.options.showSelectedCount ){
+                this.selectedCountNode.set("text", this._getSelectedCount( true, true ) || "" )
+            }
+
             if (callback) callback( );
         }else{
             if (callback) callback( );
