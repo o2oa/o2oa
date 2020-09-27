@@ -52,27 +52,25 @@ public class Merge extends AbstractJob {
 				if (!targets.isEmpty()) {
 					sequence = targets.get(targets.size() - 1).getSequence();
 					for (WorkCompleted workCompleted : targets) {
-						try {
-							try {
-								ThisApplication.context().applications()
-										.getQuery(x_processplatform_service_processing.class, Applications
-												.joinQueryUri("workcompleted", workCompleted.getId(), "combine"),
-												workCompleted.getJob())
-										.getData(WoId.class);
-								count.incrementAndGet();
-							} catch (Exception e) {
-								throw new ExceptionCombine(e, workCompleted.getId(), workCompleted.getTitle(),
-										workCompleted.getSequence());
-							}
-						} catch (Exception e) {
-							logger.error(e);
-						}
+						call(workCompleted, count);
 					}
 				}
 			} while (!targets.isEmpty());
 			logger.print("完成{}个已完成工作合并, 耗时:{}.", count.intValue(), stamp.consumingMilliseconds());
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
+		}
+	}
+
+	private void call(WorkCompleted workCompleted, AtomicInteger count) {
+		try {
+			ThisApplication.context().applications().getQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("workcompleted", workCompleted.getId(), "merge"), workCompleted.getJob())
+					.getData(WoId.class);
+			count.incrementAndGet();
+		} catch (Exception e) {
+			logger.error(new ExceptionMerge(e, workCompleted.getId(), workCompleted.getTitle(),
+					workCompleted.getSequence()));
 		}
 	}
 
@@ -93,7 +91,8 @@ public class Merge extends AbstractJob {
 			p = cb.and(p, cb.greaterThan(sequencePath, sequence));
 		}
 		cq.multiselect(idPath, jobPath, sequencePath).where(p).orderBy(cb.asc(sequencePath));
-		List<Tuple> os = em.createQuery(cq).setMaxResults(100).getResultList();
+		List<Tuple> os = em.createQuery(cq).setMaxResults(Config.processPlatform().getMerge().getBatchSize())
+				.getResultList();
 		List<WorkCompleted> list = new ArrayList<>();
 		for (Tuple o : os) {
 			WorkCompleted workCompleted = new WorkCompleted();

@@ -14,6 +14,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.NumberTools;
 
 /**
  * @author Zhou Rui
@@ -330,6 +331,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class Merge extends ConfigObject {
 
+		private static final long serialVersionUID = -5858277850858377338L;
+
 		public static Merge defaultInstance() {
 			Merge o = new Merge();
 			return o;
@@ -341,14 +344,23 @@ public class ProcessPlatform extends ConfigObject {
 
 		public static final Integer DEFAULT_THRESHOLDDAYS = 365 * 2;
 
+		public static final Integer DEFAULT_BATCHSIZE = 100;
+
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
 
 		@FieldDescribe("定时cron表达式")
 		private String cron = DEFAULT_CRON;
 
-		@FieldDescribe("期限,已完成工作结束间隔指定时间进行combine,默认两年后进行combine")
+		@FieldDescribe("期限,已完成工作结束间隔指定时间进行merge,默认两年后进行merge")
 		private Integer thresholdDays = DEFAULT_THRESHOLDDAYS;
+
+		@FieldDescribe("批量大小.")
+		private Integer batchSize = DEFAULT_BATCHSIZE;
+
+		public Integer getBatchSize() {
+			return NumberTools.nullOrLessThan(this.batchSize, 1) ? DEFAULT_BATCHSIZE : this.batchSize;
+		}
 
 		public String getCron() {
 			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
