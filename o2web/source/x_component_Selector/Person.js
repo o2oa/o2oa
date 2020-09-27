@@ -2448,12 +2448,9 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         this.textNode.setStyle("margin-left", ""+m+"px");
 
         if( this.selector.options.showSelectedCount && this.selector.selectType == "identity" && this._getSelectedCount ){
-            var selectedCount = this._getSelectedCount();
-            if( selectedCount > 0 ){
-                this.selectedCountNode = new Element("span", {
-                    "text": this._getSelectedCount()
-                }).inject(this.textNode);
-            }
+            this.selectedCountNode = new Element("span", {
+                "text": this._getSelectedCount() || ""
+            }).inject(this.textNode);
         }
 
         this.children = new Element("div.children", {
@@ -2510,7 +2507,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         debugger;
         var c = ( this._getSelectedCount() || 0 ) + count;
         this.selectedCount = c;
-        this.selectedCountNode.set("text", c);
+        this.selectedCountNode.set("text", c || "");
         if( nested && this.category && this.category._addSelectedCount ){
             this.category._addSelectedCount(count, nested);
         }

@@ -252,7 +252,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
     },
     _addSelectedCount : function(){
-        this.selectedCountNode.set("text", this._getSelectedCount());
+        this.selectedCountNode.set("text", this._getSelectedCount() || "");
     },
     _getSelectedCount : function(){
         var list = this.subItems.filter( function (item) { return item.isSelected; });
@@ -266,6 +266,9 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
     },
     loadSub : function(callback){
         this._loadSub( function() {
+            if( this.selector.options.showSelectedCount ){
+                this.selectedCountNode.set("text", this._getSelectedCount() || "" )
+            }
             if( this.selector.options.isCheckStatus ){
 
             }
