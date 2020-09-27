@@ -108,17 +108,17 @@ if [ -d ${current_dir}/local/update ]; then
 		if [ -f ${current_dir}/console_aix.sh ]; then
 			cp -f ${current_dir}/local/update/o2server/console_aix.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/start_raspberrypi.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/start_raspberrypi.sh ${current_dir}/
+		if [ -f ${current_dir}/start_raspi.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_raspi.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/start_raspberrypi_debug.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/start_raspberrypi_debug.sh ${current_dir}/
+		if [ -f ${current_dir}/start_raspi_debug.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_raspi_debug.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/stop_raspberrypi.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/stop_raspberrypi.sh ${current_dir}/
+		if [ -f ${current_dir}/stop_raspi.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/stop_raspi.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/console_raspberrypi.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/console_raspberrypi.sh ${current_dir}/
+		if [ -f ${current_dir}/console_raspi.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/console_raspi.sh ${current_dir}/
 		fi
 		if [ -f ${current_dir}/start_mips.sh ]; then
 			cp -f ${current_dir}/local/update/o2server/start_mips.sh ${current_dir}/
