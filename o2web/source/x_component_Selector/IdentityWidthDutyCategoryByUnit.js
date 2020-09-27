@@ -424,14 +424,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     },
     _addSelectedCount : function( count, nested ){
         debugger;
-        var c;
-        if( typeOf( this.selectedCount ) === "number" ){
-            c = this.selectedCount + count;
-        }else{
-            c = this._getSelectedCount(nested, true);
-        }
+        var c = (this._getSelectedCount() || 0) + count;
         this.selectedCount = c;
-        this.selectedCountNode.set("text", c || "");
+        this.selectedCountNode.set("text", c ? "(" + c + ")" : "");
         if( nested && this.category && this.category._addSelectedCount ){
             this.category._addSelectedCount(count, nested);
         }
@@ -440,20 +435,12 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     //     var list = this.subItems.filter( function (item) { return item.isSelected; });
     //     return list.length;
     // },
-    _getSelectedCount : function(nested, cache){
+    _getSelectedCount : function(){
         debugger;
         if( typeOf( this.selectedCount ) === "number" ){
             return this.selectedCount;
         }else{
-            var count = 0;
-            if( nested ){
-                this.subCategorys.each( function (category) {
-                    count = count + category._getSelectedCount( nested, cache );
-                });
-            }
-            var list = this.subItems.filter( function (item) { return item.isSelected; });
-            if( cache ) this.selectedCount = count+list.length;
-            return count+list.length;
+            return 0;
         }
     },
     _getNestItemCount : function(){
@@ -519,7 +506,17 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
             this.loaded = true;
 
             if( this.selector.options.showSelectedCount ){
-                this.selectedCountNode.set("text", this._getSelectedCount( true, true ) || "" )
+
+                var count = 0;
+                this.subCategorys.each( function (category) {
+                    var l = category.subItems.filter( function (item) { return item.isSelected; });
+                    count = count + l.length;
+                });
+
+                var list = this.subItems.filter( function (item) { return item.isSelected; });
+                this.selectedCount = count+list.length;
+
+                this.selectedCountNode.set("text", this.selectedCount ? "(" + this.selectedCount + ")" : "" );
             }
 
             if (callback) callback( );
