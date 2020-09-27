@@ -30,9 +30,11 @@
     "enable": false,
     "cron": "30 30 6 * * ?",
     "thresholdDays": 730.0,
+    "batchSize": 100.0,
     "###enable": "是否启用###",
     "###cron": "定时cron表达式###",
-    "###thresholdDays": "期限,已完成工作结束间隔指定时间进行combine,默认两年后进行combine###"
+    "###thresholdDays": "期限,已完成工作结束间隔指定时间进行merge,默认两年后进行merge###",
+    "###batchSize": "批量大小.###"
   },
   "deleteDraft": {
     "enable": false,
