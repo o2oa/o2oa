@@ -195,6 +195,12 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 					}
 
 					break;
+				case "Textarea":
+					var reg = new RegExp("\n","g");
+					var reg2 = new RegExp("\u003c","g"); //尖括号转义，否则内容会截断
+					var reg3 = new RegExp("\u003e","g");
+					value = value.replace(reg2,"&lt").replace(reg3,"&gt").replace(reg,"<br/>");
+					break;
 				// case "address":
 				// 	if (typeOf(value)==="array"){
 				//
@@ -221,7 +227,12 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			if( module && module.json.type == "ImageClipper" ){
 				this._createImage( cell, module, text )
 			}else{
-				cell.set("text", text);
+				if( module && module.json.type == "Textarea" ){
+					cell.set("html", text);
+				}else{
+					cell.set("text", text);
+				}
+				// /cell.set("text", text);
 			}
 			cell.addEvent("click", function(e){
 				this._editLine(e.target);
@@ -460,7 +471,12 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 					if( module.json.type == "ImageClipper" ){
 						this._createImage( cell, module, data.text );
 					}else{
-						cell.set("text", data.text.join(", "));
+						var text = this._getValueText(idx-1, data.text.join(", "));
+						if( module.json.type == "Textarea"){
+							cell.set("html", text);
+						}else{
+							cell.set("text", data.text.join(", "));
+						}
 					}
 				}else{
 					this._createNewEditTd(newTr, idx, editorTds[idx].get("id"), data.text.join(", "), titleThs.length-1);
@@ -723,10 +739,14 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 
 							var module = this.editModules[index];
 							if( module && module.json.type == "ImageClipper" ){
-								this._createImage( cell, module, v )
+								this._createImage( cell, module, v );
 							}else{
 								var text = this._getValueText(index, v);
-								cell.set("text", text);
+								if( module && module.json.type == "Textarea" ){
+									cell.set("html", text);
+								}else{
+									cell.set("text", text);
+								}
 							}
 
 
