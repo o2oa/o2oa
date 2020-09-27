@@ -3,9 +3,9 @@ package com.x.server.console.server.web;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.proxy.ProxyServlet;
+import org.eclipse.jetty.proxy.AsyncProxyServlet;
 
-public class Proxy extends ProxyServlet {
+public class Proxy extends AsyncProxyServlet {
 
 	private static final long serialVersionUID = 2737360000716631564L;
 
@@ -28,25 +28,15 @@ public class Proxy extends ProxyServlet {
 	}
 
 	private String port(String url, String port) {
-		if (StringUtils.startsWithIgnoreCase(url, "https://")) {
+		if (StringUtils.startsWithIgnoreCase(url, "https://") || StringUtils.startsWithIgnoreCase(url, "wss://")) {
 			if (StringUtils.equals(port, "443")) {
 				return "";
 			}
-		} else if (StringUtils.startsWithIgnoreCase(url, "http://")) {
+		} else if (StringUtils.startsWithIgnoreCase(url, "http://") || StringUtils.startsWithIgnoreCase(url, "ws://")) {
 			if (StringUtils.equals(port, "80")) {
 				return "";
 			}
 		}
 		return ":" + port;
 	}
-
-//	@Test
-//	public void test1() {
-//		System.out.println(target("http://www.o2oa.net:20030/111/22?1=1", "80"));
-//		System.out.println(target("http://www.o2oa.net:20030/111/22?1=1", "81"));
-//		System.out.println(target("https://www.o2oa.net:20030/111/22?1=1", "80"));
-//		System.out.println(target("https://www.o2oa.net:20030/111/22?1=1", "443"));
-//		System.out.println(target("https://www.o2oa.net:20030/111/22?1=1", "4430"));
-//	}
-
 }
