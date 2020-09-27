@@ -157,6 +157,12 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                         return value;
                     }
                     break;
+                case "Textarea":
+                    var reg = new RegExp("\n","g");
+                    var reg2 = new RegExp("\u003c","g"); //尖括号转义，否则内容会截断
+                    var reg3 = new RegExp("\u003e","g");
+                    value = value.replace(reg2,"&lt").replace(reg3,"&gt").replace(reg,"<br/>");
+                    break;
             }
         }
         return value;
@@ -212,10 +218,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
                             var module = this.editModules[index];
                             if( module && module.json.type == "ImageClipper" ){
-                                this._createImage( cell, module, v )
+                                this._createImage( cell, module, v );
                             }else{
                                 text = this._getValueText(index, v);
-                                cell.set("text", text);
+                                if( module && module.json.type == "Textarea" ){
+                                    cell.set("html", text);
+                                }else{
+                                    cell.set("text", text);
+                                }
+                                //cell.set("text", text);
                             }
 
 
@@ -297,7 +308,12 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                                 this._createImage( cell, module, v )
                             }else{
                                 text = this._getValueText(index, v);
-                                cell.set("text", text);
+                                if( module && module.json.type == "Textarea" ){
+                                    cell.set("html", text);
+                                }else{
+                                    cell.set("text", text);
+                                }
+                                //cell.set("text", text);
                             }
 
                             // if (typeOf(v)==="object"){
@@ -682,7 +698,14 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     if( module.json.type == "ImageClipper" ){
                         this._createImage( cell, module, data.text );
                     }else{
-                        cell.set("text", data.text.join(", "));
+                        var text = this._getValueText(idx, data.text.join(", "));
+                        if( module.json.type == "Textarea"){
+                            cell.set("html", text);
+                        }else{
+                            cell.set("text", data.text.join(", "));
+                        }
+
+                        //cell.set("text", data.text.join(", "));
                     }
                 }else{
                     dataRow = table.insertRow(idx);
