@@ -5,7 +5,6 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
-import com.x.processplatform.core.entity.content.Snap;
 import com.x.processplatform.service.processing.jaxrs.applicationdict.ApplicationDictAction;
 import com.x.processplatform.service.processing.jaxrs.attachment.AttachmentAction;
 import com.x.processplatform.service.processing.jaxrs.data.DataAction;
@@ -16,6 +15,7 @@ import com.x.processplatform.service.processing.jaxrs.readcompleted.ReadComplete
 import com.x.processplatform.service.processing.jaxrs.record.RecordAction;
 import com.x.processplatform.service.processing.jaxrs.review.ReviewAction;
 import com.x.processplatform.service.processing.jaxrs.service.ServiceAction;
+import com.x.processplatform.service.processing.jaxrs.snap.SnapAction;
 import com.x.processplatform.service.processing.jaxrs.task.TaskAction;
 import com.x.processplatform.service.processing.jaxrs.taskcompleted.TaskCompletedAction;
 import com.x.processplatform.service.processing.jaxrs.test.TestAction;
@@ -41,7 +41,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(TestAction.class);
 		classes.add(RecordAction.class);
 		classes.add(ServiceAction.class);
-		classes.add(Snap.class);
+		classes.add(SnapAction.class);
 		return classes;
 	}
 
