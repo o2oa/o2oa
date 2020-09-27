@@ -132,17 +132,17 @@ if [ -d ${current_dir}/local/update ]; then
 		if [ -f ${current_dir}/console_mips.sh ]; then
 			cp -f ${current_dir}/local/update/o2server/console_mips.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/start_kylinos_phytium.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/start_kylinos_phytium.sh ${current_dir}/
+		if [ -f ${current_dir}/start_arm.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_arm.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/start_kylinos_phytium_debug.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/start_kylinos_phytium_debug.sh ${current_dir}/
+		if [ -f ${current_dir}/start_arm_debug.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_arm_debug.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/stop_kylinos_phytium.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/stop_kylinos_phytium.sh ${current_dir}/
+		if [ -f ${current_dir}/stop_arm.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/stop_arm.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/console_kylinos_phytium.sh ]; then
-			cp -f ${current_dir}/local/update/o2server/console_kylinos_phytium.sh ${current_dir}/
+		if [ -f ${current_dir}/console_arm.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/console_arm.sh ${current_dir}/
 		fi
 		cp ${current_dir}/local/update/o2server/version.o2 ${current_dir}/
 		rm -Rf ${current_dir}/local/update
