@@ -103,29 +103,29 @@ if exist "%~dp0local\update" (
 		if exist "%~dp0console_aix.sh" (
 			copy "%~dp0local\update\o2server\console_aix.sh" "%~dp0"
 		)
-		if exist "%~dp0start_raspberrypi.sh" (
-			copy "%~dp0local\update\o2server\start_raspberrypi.sh" "%~dp0"
+		if exist "%~dp0start_raspi.sh" (
+			copy "%~dp0local\update\o2server\start_raspi.sh" "%~dp0"
 		)
-		if exist "%~dp0start_raspberrypi_debug.sh" (
-			copy "%~dp0local\update\o2server\start_raspberrypi_debug.sh" "%~dp0"
+		if exist "%~dp0start_raspi_debug.sh" (
+			copy "%~dp0local\update\o2server\start_raspi_debug.sh" "%~dp0"
 		)
-		if exist "%~dp0stop_raspberrypi.sh" (
-			copy "%~dp0local\update\o2server\stop_raspberrypi.sh" "%~dp0"
+		if exist "%~dp0stop_raspi.sh" (
+			copy "%~dp0local\update\o2server\stop_raspi.sh" "%~dp0"
 		)
-		if exist "%~dp0console_raspberrypi.sh" (
-			copy "%~dp0local\update\o2server\console_raspberrypi.sh" "%~dp0"
+		if exist "%~dp0console_raspi.sh" (
+			copy "%~dp0local\update\o2server\console_raspi.sh" "%~dp0"
 		)
-		if exist "%~dp0start_risc.sh" (
-			copy "%~dp0local\update\o2server\start_risc.sh" "%~dp0"
+		if exist "%~dp0start_mips.sh" (
+			copy "%~dp0local\update\o2server\start_mips.sh" "%~dp0"
 		)
-		if exist "%~dp0start_risc_debug.sh" (
-			copy "%~dp0local\update\o2server\start_risc_debug.sh" "%~dp0"
+		if exist "%~dp0start_mips_debug.sh" (
+			copy "%~dp0local\update\o2server\start_mips_debug.sh" "%~dp0"
 		)
-		if exist "%~dp0stop_risc.sh" (
-			copy "%~dp0local\update\o2server\stop_risc.sh" "%~dp0"
+		if exist "%~dp0stop_mips.sh" (
+			copy "%~dp0local\update\o2server\stop_mips.sh" "%~dp0"
 		)
-		if exist "%~dp0console_risc.sh" (
-			copy "%~dp0local\update\o2server\console_risc.sh" "%~dp0"
+		if exist "%~dp0console_mips.sh" (
+			copy "%~dp0local\update\o2server\console_mips.sh" "%~dp0"
 		)
 		if exist "%~dp0start_arm.sh" (
 			copy "%~dp0local\update\o2server\start_arm.sh" "%~dp0"
