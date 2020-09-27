@@ -20,6 +20,7 @@ MWF.xApplication.Minder.Actions.RestActions2 = new Class({
 					}
 				});
 			}
+			if( !this.address )this.getAddress();
 			uri = this.address+uri;
 
 			var async = (option.async===false) ? false : true;
