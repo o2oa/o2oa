@@ -148,4 +148,4 @@ if [ -d ${current_dir}/local/update ]; then
 		rm -Rf ${current_dir}/local/update
 	fi
 fi
-setsid ${current_dir}/jvm/arm/bin/java -javaagent:${current_dir}/console.jar -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Djava.awt.headless=true -Xms2g -Xmx4g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
+setsid ${current_dir}/jvm/arm/bin/java -javaagent:${current_dir}/console.jar -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Djava.awt.headless=true -Xms2g -Xmx4g -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
