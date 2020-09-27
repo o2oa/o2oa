@@ -96,7 +96,7 @@ public class HttpToken {
 
 	public void deleteToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
-			// String cookie = X_Token + "=anonymous; path=/; domain=" +
+			// String cookie = X_Token + "=; path=/; domain=" +
 			// this.domain(request) + "; max-age=0
 			String cookie = X_Token + "=" + COOKIE_ANONYMOUS_VALUE + "; path=/; domain=" + this.domain(request)
 					+ "; HttpOnly";
@@ -135,14 +135,14 @@ public class HttpToken {
 		}
 	}
 
-//	public void setResponseToken(HttpServletRequest request, HttpServletResponse response, String tokenName,
-//			String token) throws Exception {
-//		if (!StringUtils.isEmpty(token)) {
-//			String cookie = tokenName + "=" + token + "; path=/; domain=" + this.domain(request) + "; HttpOnly";
-//			response.setHeader("Set-Cookie", cookie);
-//			response.setHeader(tokenName, token);
-//		}
-//	}
+	public void setResponseToken(HttpServletRequest request, HttpServletResponse response, String tokenName,
+			String token) throws Exception {
+		if (!StringUtils.isEmpty(token)) {
+			String cookie = tokenName + "=" + token + "; path=/; domain=" + this.domain(request) + "; HttpOnly";
+			response.setHeader("Set-Cookie", cookie);
+			response.setHeader(tokenName, token);
+		}
+	}
 
 	public String getToken(HttpServletRequest request) throws Exception {
 		String token = null;
