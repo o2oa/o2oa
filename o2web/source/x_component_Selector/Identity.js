@@ -648,7 +648,7 @@ MWF.xApplication.Selector.Identity.Item = new Class({
                 if (callback) callback();
             }
         }else{
-            if (!this.data.woPerson){
+            if (!this.data.woPerson && (!this.data.personDn || !this.data.personEmployee || !this.data.personUnique)){
                 this.selector.orgAction.getPerson(function(json){
                     this.data.woPerson = json.data;
                     if (callback) callback();
@@ -724,7 +724,7 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
             }else{
                 if (callback) callback();
             }
-        }else if (!this.data.woPerson){
+        }else if (!this.data.woPerson && (!this.data.personDn || !this.data.personEmployee || !this.data.personUnique) ){
             if (this.data.person){
                 this.selector.orgAction.getPerson(function(json){
                     this.data.woPerson = json.data;
