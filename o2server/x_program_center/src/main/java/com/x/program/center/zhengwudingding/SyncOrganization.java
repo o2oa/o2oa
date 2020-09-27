@@ -421,6 +421,7 @@ public class SyncOrganization {
 				identity.setOrderNumber(-order.intValue());
 			}
 		}
+		identity.setMajor(true);
 		emc.persist(identity, CheckPersistType.all);
 		emc.commit();
 		result.getCreateIdentityList().add(identity.getDistinguishedName());
