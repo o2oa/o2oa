@@ -2111,7 +2111,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                         item.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
                     }
                 }
-                if( this.selector.options.showSelectedCount ){
+                if( this.selector.options.showSelectedCount && this.selector.selectType == "identity" ){
                     if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( -1, true );
                 }
             }.bind(this));
@@ -2447,10 +2447,13 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         var m = this.textNode.getStyle("margin-left").toFloat()+indent;
         this.textNode.setStyle("margin-left", ""+m+"px");
 
-        if( this.selector.options.showSelectedCount && this._getSelectedCount ){
-            this.selectedCountNode = new Element("span", {
-                "text": this._getSelectedCount()
-            }).inject(this.textNode);
+        if( this.selector.options.showSelectedCount && this.selector.selectType == "identity" && this._getSelectedCount ){
+            var selectedCount = this._getSelectedCount();
+            if( selectedCount > 0 ){
+                this.selectedCountNode = new Element("span", {
+                    "text": this._getSelectedCount()
+                }).inject(this.textNode);
+            }
         }
 
         this.children = new Element("div.children", {
