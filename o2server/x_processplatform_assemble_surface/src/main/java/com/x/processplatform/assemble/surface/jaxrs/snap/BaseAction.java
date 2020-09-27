@@ -19,7 +19,6 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Snap;
 import com.x.processplatform.core.entity.content.Snap_;
-import com.x.processplatform.core.entity.content.Snap;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
