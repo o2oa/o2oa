@@ -82,7 +82,7 @@
 			{
 			"windows": {
 			"system": "windows",
-			"name": "o2server-windows-${VERSION}",
+			"name": "o2server-${VERSION}-windows",
 			"fileName": "o2server-${VERSION}-windows.zip",
 			"fileSize": "${length_win_mb}MB",
 			"updateTime": "${TODAY}",
@@ -91,7 +91,7 @@
 			},
 			"linux": {
 			"system": "linux",
-			"name": "o2server-linux-${VERSION}",
+			"name": o2server-${VERSION}-linux-x86",
 			"fileName": "o2server-${VERSION}-linux-x86.zip",
 			"fileSize": "${length_linux_mb}MB",
 			"updateTime": "${TODAY}",
@@ -100,7 +100,7 @@
 			},
 			"macos": {
 			"system": "macos",
-			"name": "o2server-macos-${VERSION}",
+			"name": "o2server-${VERSION}-macos",
 			"fileName": "o2server-${VERSION}-macos.zip",
 			"fileSize": "${length_macos_mb}MB",
 			"updateTime": "${TODAY}",
@@ -109,7 +109,7 @@
 			},
 			"aix": {
 			"system": "aix",
-			"name": "o2server-aix-${VERSION}",
+			"name": "o2server-${VERSION}-aix",
 			"fileName": "o2server-${VERSION}-aix.zip",
 			"fileSize": "${length_aix_mb}MB",
 			"updateTime": "${TODAY}",
@@ -127,7 +127,7 @@
 			},
 			"mips": {
 			"system": "mips",
-			"name": "o2server-${VERSION}-mips",
+			"name": "o2server-${VERSION}-linux-mips",
 			"fileName": "o2server-${VERSION}-linux-mips.zip",
 			"fileSize": "${length_mips_mb}MB",
 			"updateTime": "${TODAY}",
@@ -136,7 +136,7 @@
 			},
 			"arm": {
 			"system": "arm",
-			"name": "o2server-${VERSION}-arm",
+			"name": "o2server-${VERSION}-linux-arm",
 			"fileName": "o2server-${VERSION}-linux-arm.zip",
 			"fileSize": "${length_arm_mb}MB",
 			"updateTime": "${TODAY}",
@@ -151,7 +151,7 @@
 			"publishTime": "${TODAY}",
 			"windows": {
 			"system": "windows",
-			"name": "o2server-windows-${VERSION}",
+			"name": "o2server-${VERSION}-windows",
 			"fileName": "o2server-${VERSION}-windows.zip",
 			"fileSize": "${length_win_mb}MB",
 			"updateTime": "${TODAY}",
@@ -160,7 +160,7 @@
 			},
 			"linux": {
 			"system": "linux",
-			"name": "o2server-linux-${VERSION}",
+			"name": "o2server-${VERSION}-linux-x86",
 			"fileName": "o2server-${VERSION}-linux-x86.zip",
 			"fileSize": "${length_linux_mb}MB",
 			"updateTime": "${TODAY}",
@@ -169,7 +169,7 @@
 			},
 			"macos": {
 			"system": "macos",
-			"name": "o2server-macos-${VERSION}",
+			"name": "o2server-${VERSION}-macos",
 			"fileName": "o2server-${VERSION}-macos.zip",
 			"fileSize": "${length_macos_mb}MB",
 			"updateTime": "${TODAY}",
@@ -178,7 +178,7 @@
 			},
 			"aix": {
 			"system": "aix",
-			"name": "o2server-aix-${VERSION}",
+			"name": "o2server-${VERSION}-aix",
 			"fileName": "o2server-${VERSION}-aix.zip",
 			"fileSize": "${length_aix_mb}MB",
 			"updateTime": "${TODAY}",
@@ -196,7 +196,7 @@
 			},
 			"mips": {
 			"system": "mips",
-			"name": "o2server-${VERSION}-mips",
+			"name": "o2server-${VERSION}-linux-mips",
 			"fileName": "o2server-${VERSION}-linux-mips.zip",
 			"fileSize": "${length_mips_mb}MB",
 			"updateTime": "${TODAY}",
@@ -205,7 +205,7 @@
 			},
 			"arm": {
 			"system": "arm",
-			"name": "o2server-${VERSION}-arm",
+			"name": "o2server-${VERSION}-linux-arm",
 			"fileName": "o2server-${VERSION}-linux-arm.zip",
 			"fileSize": "${length_arm_mb}MB",
 			"updateTime": "${TODAY}",
