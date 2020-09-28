@@ -45,13 +45,14 @@
 	"font-size": "28px",
 	"overflow" : "hidden",
 	"min-height": "36px",
-	"margin-right": "20px"
+	"margin-right": "20px",
+	  "float" : "left"
   },
   "formTopCloseActionNode": {
 	"width": "32px",
 	"height": "32px",
 	"float": "right",
-	"margin-top" : "24px",
+	"margin-top" : "0px",
 	"margin-right" : "20px",
 	"background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_close_square_pre.png) no-repeat center center",
 	"cursor": "pointer"

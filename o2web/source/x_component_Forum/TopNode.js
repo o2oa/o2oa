@@ -325,25 +325,40 @@ MWF.xApplication.Forum.TopNode = new Class({
     openLoginForm : function(){
         MWF.require("MWF.xDesktop.Authentication", null, false);
         var authentication = new MWF.xDesktop.Authentication({
-            style : "application",
+            "style" : "flat",
+            "popupStyle_password": "o2platformSignupFlat",
             onPostOk : function(){
                 window.location.reload();
             }
         },this.app);
-        authentication.openLoginForm({
-            hasMask : true
-        });
+        authentication.popupOptions = {
+            "draggable": true,
+            "closeAction": true,
+            "hasMask": true,
+            "relativeToApp": true,
+            "width": "420",
+            "height": "640"
+        };
+        // authentication.loadLogin(this.app.content);
+        authentication.openLoginForm();
     },
     openSignUpForm : function(){
         MWF.require("MWF.xDesktop.Authentication", null, false);
         var authentication = new MWF.xDesktop.Authentication( {
-            style : "application",
+            style : "flat",
+            "popupStyle_password": "o2platformSignupFlat",
             onPostOk : function(){
             }
         }, this.app);
-        authentication.openSignUpForm({
-            hasMask : true
-        });
+        authentication.popupOptions = {
+            "draggable": true,
+            "closeAction": true,
+            "hasMask": true,
+            "relativeToApp": true,
+            "width": "420",
+            "height": "640"
+        };
+        authentication.openSignUpForm();
     },
     logout: function(){
 
