@@ -136,6 +136,7 @@ public class Context extends AbstractContext {
 	/* 清除缓存指定队列 */
 	private AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue;
 
+	@Override
 	public AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue() {
 		return this.clearCacheRequestQueue;
 	}
