@@ -190,7 +190,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 		return value || "";
 	},
     _setValue: function(value){
-	    if (o2.typeOf(value)==="function" && value.addResolve){
+	    if (o2.typeOf(value)==="o2_async_function"){
 	        this.moduleValueAG = value;
             value.addResolve(function(v){
                 this._setValue(v);
@@ -255,7 +255,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         this.setData(this.getValue());
     },
 	setData: function(data){
-        if (o2.typeOf(data)==="function" && data.addResolve){
+        if (o2.typeOf(data)==="o2_async_function"){
             data.addResolve(function(v){
                 this.setData(v);
             }.bind(this));

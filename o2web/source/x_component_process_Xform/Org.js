@@ -117,29 +117,48 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             if (dutys.length){
                 dutys.each(function(duty){
                     if (duty.code) par = this.form.Macro.exec(duty.code, this);
-                    if (o2.typeOf(par)=="function"){
+                    if (o2.typeOf(par)=="o2_async_function"){
+                        var ag = o2.AG.all(par).then(function(p){
+                            var uName = "";
+                            if (p && p.length) uName = p[0].distinguishedName || p[0];
+                            var code = "return this.org.getDuty(\""+duty.name+"\", \""+uName+"\", true)";
+                            var r = this.form.Macro.exec(code, this);
 
+                            o2.AG.all(r).then(function(d) {
+                                //var d = rd[0];
+                                if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
+                                var arr = [];
+                                d.each(function(dd){
+                                    if (dd) arr.push(MWF.org.parseOrgData(dd, true, simple));
+                                });
+                                return arr;
+                            }.bind(this));
+                        }.bind(this));
+                        values.push(ag);
+                    }else{
+                        var code = "return this.org.getDuty(\""+duty.name+"\", \""+par+"\")";
+                        var d = this.form.Macro.exec(code, this);
+                        if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
+                        d.each(function(dd){if (dd) values.push(MWF.org.parseOrgData(dd, true, simple));});
                     }
-                    var code = "return this.org.getDuty(\""+duty.name+"\", \""+par+"\")";
-                    var d = this.form.Macro.exec(code, this);
-                    if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
-                    d.each(function(dd){if (dd) values.push(MWF.org.parseOrgData(dd, true, simple));});
+
                 }.bind(this));
             }
         }
         if (this.json.defaultValue && this.json.defaultValue.code){
             var fd = this.form.Macro.exec(this.json.defaultValue.code, this);
 
-            if (o2.typeOf(fd)=="function"){
+            if (o2.typeOf(fd)=="o2_async_function"){
                 // value.addResolve(function(v){
                 //     this._setBusinessData(v);
                 //     if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
                 //     if (this.readonly || this.json.isReadonly) this.node.set("text", v);
                 // }.bind(this));
-                fd.then(function(v){
-                    return this._valueMerge(values, v);
-                }.bind(this));
-                return fd;
+                values.push(fd);
+                // fd.then(function(v){
+                //     return this._valueMerge(values, v);
+                // }.bind(this));
+                // return fd;
             }else{
                 if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
                 fd.each(function(fdd){
@@ -879,32 +898,54 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         return node;
     },
     _setValue: function(value){
-        debugger;
-        if (o2.typeOf(value)==="function"){
-            var simple = this.json.storeRange === "simple";
-            var values = [];
-            value.addResolve(function(fd){
-                if (o2.typeOf(fd)==="function" && fd.addResolve){
-                    this._setValue(fd);
-                }else{
-                    if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
-                    fd.each(function(fdd){
-                        if (fdd){
-                            if (typeOf(fdd)==="string"){
-                                var data;
-                                this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, fdd, false);
-                                values.push(data);
-                            }else{
-                                values.push(fdd);
-                            }
-                        }
-                    }.bind(this));
-                    this.__setValue(values);
+        var values = [];
+        o2.AG.all(value).then(function(d) {
+            if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
+
+            d.each(function(dd){
+                //if (dd) arr.push(MWF.org.parseOrgData(dd, true, simple));
+                if (dd){
+                    if (typeOf(dd)==="string"){
+                        var data;
+                        this.getOrgAction()[this.getValueMethod(dd)](function(json){
+                            data = MWF.org.parseOrgData(json.data, true, simple);
+                        }.bind(this), null, dd, false);
+
+                        values.push(data);
+                    }else{
+                        values.push(d);
+                    }
                 }
-            }.bind(this));
-        }else{
-            this.__setValue(value);
-        }
+            });
+            this.__setValue(values);
+        }.bind(this));
+
+
+        // if (o2.typeOf(value)==="function"){
+        //     var simple = this.json.storeRange === "simple";
+        //     var values = [];
+        //     value.addResolve(function(fd){
+        //         if (o2.typeOf(fd)==="function" && fd.addResolve){
+        //             this._setValue(fd);
+        //         }else{
+        //             if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
+        //             fd.each(function(fdd){
+        //                 if (fdd){
+        //                     if (typeOf(fdd)==="string"){
+        //                         var data;
+        //                         this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, fdd, false);
+        //                         values.push(data);
+        //                     }else{
+        //                         values.push(fdd);
+        //                     }
+        //                 }
+        //             }.bind(this));
+        //             this.__setValue(values);
+        //         }
+        //     }.bind(this));
+        // }else{
+        //     this.__setValue(value);
+        // }
     },
     __setValue: function(value){
         if (value.length==1 && !(value[0])) value=[];

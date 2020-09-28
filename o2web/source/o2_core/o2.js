@@ -1689,6 +1689,7 @@
             if (resolve) this.success.resolve = resolve;
             if (reject) this.failure.reject = reject;
         },
+        $family: function(){ return "o2_async_function"; },
         _createSuccess: function(){
             var _self = this;
             this.success = function(){
@@ -1763,13 +1764,41 @@
     //@todo
     _AsyncGenerator.all = function(arr){
         var result = [];
-        arr.forEach(function(a){
-            if (o2.typeOf(a)=="function"){
+        var ag = function (){
+            return result;
+        }.ag();
 
-            }else{
+        if (o2.typeOf(arr) !== "array") arr = [arr];
 
-            }
-        });
+        var count  = arr.length;
+        var check = function(){
+            count--;
+            if (count<=0)ag();
+        }
+
+        window.setTimeout(function(){
+            arr.forEach(function(a){
+                if (typeOf(a)=="array"){
+                    o2.AG.all(a).then(function(v){
+                        result = result.concat(v);
+                        check();
+                    });
+                }else{
+                    if (o2.typeOf(a)=="o2_async_function"){
+                        a.then(function(v){
+                            o2.AG.all(v).then(function(r){
+                                result = result.concat(r);
+                                check();
+                            });
+                        });
+                    }else{
+                        result.push(a);
+                        check();
+                    }
+                }
+            });
+        }, 0);
+        return ag;
     }
 
     o2.AsyncGenerator = o2.AG = _AsyncGenerator;
