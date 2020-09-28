@@ -78,7 +78,7 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
 另外，O2OA提供数据定期备份和恢复的能力，建议您开启正式环境的数据定期备份的功能，以确保数据库异常时可以进行数据恢复。
 
 
-# 最新版本服务器安装包下载[o2server_V5.1.1]\:
+# 最新版本服务器安装包下载[o2server_V5.2.0]\:
 
 windows 64Bit : http://download.o2oa.net/download/o2server-5.2.0-windows.zip
 
