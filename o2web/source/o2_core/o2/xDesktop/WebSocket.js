@@ -42,7 +42,7 @@ MWF.xDesktop.WebSocket = new Class({
 
     connect: function(){
         if (layout.config.webSocketEnable){
-            var ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"));
+            var ws = this.ws+"?x-token="+encodeURIComponent(layout.session.token);
             ws = o2.filterUrl(ws);
 
             try{
