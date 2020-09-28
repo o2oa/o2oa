@@ -19,7 +19,7 @@ class ActionExecute extends BaseAction {
 			throws Exception {
 		logger.debug(effectivePerson, "execute:{}.", className);
 		ActionResult<Wo> result = new ActionResult<>();
-		AbstractContext ctx = com.x.base.core.project.Context.fromServletContext(servletContext);
+		AbstractContext ctx = AbstractContext.fromServletContext(servletContext);
 		Class<?> clz = Class.forName(className);
 		ctx.fireScheduleOnLocal((Class<AbstractJob>) clz, 1);
 		Wo wo = new Wo();
