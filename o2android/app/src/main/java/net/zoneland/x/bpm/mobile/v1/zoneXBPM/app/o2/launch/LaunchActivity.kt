@@ -120,21 +120,25 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
     fun start() {
         tv_launch_status.text = getString(R.string.launch_start) //开始启动
         circleProgressBar_launch.visible()
-        PermissionRequester(this)
-                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .o2Subscribe {
-                    onNext { (granted, shouldShowRequestPermissionRationale, deniedPermissions) ->
-                        Log.d("LaunchActivity", "granted:$granted, show:$shouldShowRequestPermissionRationale, deniedList:$deniedPermissions")
-                        if (!granted) {
-                            O2DialogSupport.openAlertDialog(this@LaunchActivity, "非常抱歉，应用需要存储权限才能正常运行， 马上去设置", { permissionSetting() })
-                        } else {
-                            checkNetwork()
+        if (CheckRoot.isDeviceRooted()) {
+            O2DialogSupport.openAlertDialog(this, "当前是Root环境，App禁止使用！")
+        }else {
+            PermissionRequester(this)
+                    .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .o2Subscribe {
+                        onNext { (granted, shouldShowRequestPermissionRationale, deniedPermissions) ->
+                            Log.d("LaunchActivity", "granted:$granted, show:$shouldShowRequestPermissionRationale, deniedList:$deniedPermissions")
+                            if (!granted) {
+                                O2DialogSupport.openAlertDialog(this@LaunchActivity, "非常抱歉，应用需要存储权限才能正常运行， 马上去设置", { permissionSetting() })
+                            } else {
+                                checkNetwork()
+                            }
+                        }
+                        onError { e, _ ->
+                            Log.e("LaunchActivity", "检查权限出错", e)
                         }
                     }
-                    onError { e, _ ->
-                        Log.e("LaunchActivity", "检查权限出错", e)
-                    }
-                }
+        }
     }
 
     /**
