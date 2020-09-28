@@ -277,7 +277,11 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
     }
     private  fun changeLoginType() {
         if (loginType == 0) {
-            ll_login_captcha.visible()
+            if (useCaptcha) {
+                ll_login_captcha.visible()
+            }else {
+                ll_login_captcha.gone()
+            }
             login_edit_password_id.setHint(R.string.activity_login_password)
             login_edit_password_id.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
             button_login_phone_code.gone()
