@@ -12,16 +12,19 @@ public class Proxy extends ProxyServlet {
 	@Override
 	protected String rewriteTarget(HttpServletRequest request) {
 		String url = request.getRequestURL().toString();
-		return target(url, this.getServletConfig().getInitParameter("port"));
+		String parameter = request.getQueryString();
+		return target(url, parameter, this.getServletConfig().getInitParameter("port"));
 	}
 
-	private String target(String url, String port) {
+	private String target(String url, String parameter, String port) {
 		int x = StringUtils.indexOf(url, ":", 8);
 		int y = StringUtils.indexOf(url, "/", 8);
 		if ((x > 0) && (y > 0)) {
-			return url.substring(0, x) + port(url, port) + url.substring(y);
+			return url.substring(0, x) + port(url, port) + url.substring(y)
+					+ (StringUtils.isBlank(parameter) ? "" : "?" + parameter);
 		} else if (y > 0) {
-			return url.substring(0, y) + port(url, port) + url.substring(y);
+			return url.substring(0, y) + port(url, port) + url.substring(y)
+					+ (StringUtils.isBlank(parameter) ? "" : "?" + parameter);
 		} else {
 			return null;
 		}
