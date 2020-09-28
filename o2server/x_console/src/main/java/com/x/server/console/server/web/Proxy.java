@@ -3,9 +3,9 @@ package com.x.server.console.server.web;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.proxy.ProxyServlet;
+import org.eclipse.jetty.proxy.AsyncProxyServlet;
 
-public class Proxy extends ProxyServlet {
+public class Proxy extends AsyncProxyServlet {
 
 	private static final long serialVersionUID = 2737360000716631564L;
 
