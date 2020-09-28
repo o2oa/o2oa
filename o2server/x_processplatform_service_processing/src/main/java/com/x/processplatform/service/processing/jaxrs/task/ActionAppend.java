@@ -129,9 +129,9 @@ class ActionAppend extends BaseAction {
 						emc.beginTransaction(Work.class);
 						work.setManualTaskIdentityList(identities);
 						// 转派后设置过期为空
-						emc.beginTransaction(Task.class);
-						task.setExpired(false);
-						task.setExpireTime(null);
+//						emc.beginTransaction(Task.class);
+//						task.setExpired(false);
+//						task.setExpireTime(null);
 						emc.commit();
 					}
 					result.setData(wo);
