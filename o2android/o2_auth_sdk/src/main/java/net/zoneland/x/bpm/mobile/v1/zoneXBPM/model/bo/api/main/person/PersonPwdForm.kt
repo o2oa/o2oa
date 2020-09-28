@@ -9,5 +9,6 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.person
 class PersonPwdForm(
         var oldPassword: String = "",
         var newPassword: String = "",
-        var confirmPassword: String = ""
+        var confirmPassword: String = "",
+        var isEncrypted: String = ""
 )

@@ -153,6 +153,47 @@
                         android:background="@color/z_color_input_line_blur"
                         />
 
+                    <LinearLayout
+                        android:id="@+id/ll_login_captcha"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+                            <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.ClearTextEdit
+                                android:id="@+id/edit_login_captcha_input"
+                                android:layout_width="match_parent"
+                                android:layout_height="49dp"
+                                android:layout_gravity="center_vertical"
+                                android:background="@null"
+                                android:hint="@string/login_captcha"
+                                android:maxLines="1"
+                                android:inputType="number"
+                                android:textColor="@color/z_color_text_primary"
+                                android:textColorHint="@color/z_color_text_hint"
+                                android:textSize="13sp" />
+                            <View
+                                android:id="@+id/view_login_captcha_input_bottom"
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/z_color_input_line_blur"
+                                />
+                        </LinearLayout>
+                        <ImageView
+                            android:id="@+id/image_login_captcha"
+                            android:layout_width="120dp"
+                            android:layout_height="50dp"
+                            android:scaleType="fitCenter"
+                            />
+
+                    </LinearLayout>
+
+
+
                     <Button
                         android:id="@+id/btn_login_submit"
                         android:layout_width="match_parent"

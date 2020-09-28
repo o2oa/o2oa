@@ -23,6 +23,7 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
     override var mPresenter: AccountSecurityContract.Presenter = AccountSecurityPresenter()
     override fun layoutResId(): Int  = R.layout.activity_account_security
     override fun afterSetContentView(savedInstanceState: Bundle?) {
+        mPresenter.getRSAPublicKey()
         setupToolBar(getString(R.string.title_activity_account_security), true)
 
         account_name_id.text = O2SDKManager.instance().cName

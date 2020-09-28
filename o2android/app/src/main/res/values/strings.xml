@@ -112,6 +112,7 @@
     <string name="activity_login_username">用户名或手机号码</string>
     <string name="login_phone">输入手机号码</string>
     <string name="login_code">验证码</string>
+    <string name="login_captcha">图片验证码</string>
     <string name="activity_login_password">密码</string>
     <string name="activity_login_submit">登    录</string>
     <string name="activity_login_other">其他登录方式</string>
