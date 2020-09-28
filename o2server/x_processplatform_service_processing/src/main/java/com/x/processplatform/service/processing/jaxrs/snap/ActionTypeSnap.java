@@ -1,5 +1,7 @@
 package com.x.processplatform.service.processing.jaxrs.snap;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -13,9 +15,19 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.DocumentVersion;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Snap;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
+import com.x.query.core.entity.Item;
 
 class ActionTypeSnap extends BaseAction {
 
@@ -49,8 +61,20 @@ class ActionTypeSnap extends BaseAction {
 				if (null == work) {
 					throw new ExceptionEntityNotExist(id, Work.class);
 				}
+				List<Item> items = new ArrayList<>();
+				List<Work> works = new ArrayList<>();
+				List<Task> tasks = new ArrayList<>();
+				List<TaskCompleted> taskCompleteds = new ArrayList<>();
+				List<Read> reads = new ArrayList<>();
+				List<ReadCompleted> readCompleteds = new ArrayList<>();
+				List<Review> reviews = new ArrayList<>();
+				List<WorkLog> workLogs = new ArrayList<>();
+				List<Record> records = new ArrayList<>();
+				List<Attachment> attachments = new ArrayList<>();
+				List<DocumentVersion> documentVersions = new ArrayList<>();
 				Snap snap = new Snap(work);
-				snap.setProperties(snap(business, work.getId()));
+				snap.setProperties(snap(business, work.getJob(), items, works, tasks, taskCompleteds, reads,
+						readCompleteds, reviews, workLogs, records, attachments, documentVersions));
 				snap.setType(Snap.TYPE_SNAP);
 				emc.beginTransaction(Snap.class);
 				emc.persist(snap, CheckPersistType.all);
