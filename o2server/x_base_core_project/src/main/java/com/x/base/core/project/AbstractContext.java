@@ -2,17 +2,9 @@ package com.x.base.core.project;
 
 import javax.servlet.ServletContext;
 
-import org.quartz.DateBuilder;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.DateBuilder.IntervalUnit;
-
 import com.x.base.core.project.annotation.Module;
-import com.x.base.core.project.config.Config;
+import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
+import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.thread.ThreadFactory;
 
@@ -54,4 +46,6 @@ public abstract class AbstractContext {
 	}
 
 	public abstract <T extends AbstractJob> void fireScheduleOnLocal(Class<T> cls, Integer delay) throws Exception;
+
+	public abstract AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue();
 }
