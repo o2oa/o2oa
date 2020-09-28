@@ -15,5 +15,10 @@ object AccountSecurityContract {
     interface Presenter : BasePresenter<View> {
         fun logout(deviceId:String)
         fun updateMyPassword(old: String, newPwd: String, newPwdConfirm: String)
+        /**
+         *
+         */
+        fun getRSAPublicKey()
+
     }
 }

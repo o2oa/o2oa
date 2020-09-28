@@ -114,7 +114,10 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
     }
 
     override fun lazyLoad() {
-
+        //页面显示的时候调用一个js方法 这个方法可以用来刷新数据之类的
+        web_view_portal_content.evaluateJavascript("window.o2Reload()") { value ->
+            XLog.info("执行o2Reload ， result: $value")
+        }
     }
 
     override fun loadCmsCategoryListByAppId(categoryList: List<CMSCategoryInfoJson>) {

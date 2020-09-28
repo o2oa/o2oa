@@ -35,10 +35,10 @@ class MyAppPresenter : BasePresenterImpl<MyAppContract.View>(), MyAppContract.Pr
                         obj.appTitle = it.name
                         result.add(obj)
                     }
-                    val newCloudDiskApp = MyAppListObject()
-                    newCloudDiskApp.appId = ApplicationEnum.clouddisk.key
-                    newCloudDiskApp.appTitle = ApplicationEnum.clouddisk.appName
-                    result.add(newCloudDiskApp)
+//                    val newCloudDiskApp = MyAppListObject()
+//                    newCloudDiskApp.appId = ApplicationEnum.clouddisk.key
+//                    newCloudDiskApp.appTitle = ApplicationEnum.clouddisk.appName
+//                    result.add(newCloudDiskApp)
                     service.findAllPortalList()
                 }
                 ?.flatMap { list ->
@@ -66,10 +66,10 @@ class MyAppPresenter : BasePresenterImpl<MyAppContract.View>(), MyAppContract.Pr
                                             obj.appTitle = it.name
                                             result.add(obj)
                                         }
-                                        val newCloudDiskApp = MyAppListObject()
-                                        newCloudDiskApp.appId = ApplicationEnum.clouddisk.key
-                                        newCloudDiskApp.appTitle = ApplicationEnum.clouddisk.appName
-                                        result.add(newCloudDiskApp)
+//                                        val newCloudDiskApp = MyAppListObject()
+//                                        newCloudDiskApp.appId = ApplicationEnum.clouddisk.key
+//                                        newCloudDiskApp.appTitle = ApplicationEnum.clouddisk.appName
+//                                        result.add(newCloudDiskApp)
                                         portalList.filter { portal -> portal.enable }.map {
                                             val obj = MyAppListObject()
                                             obj.appId = it.id

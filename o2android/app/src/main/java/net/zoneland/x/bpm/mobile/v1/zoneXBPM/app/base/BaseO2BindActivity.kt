@@ -1,6 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.widget.TextView
@@ -37,6 +38,7 @@ abstract class BaseO2BindActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         beforeSetContentView()
         bindView(savedInstanceState)
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         // 沉浸式状态栏
         ImmersedStatusBarUtils.setImmersedStatusBar(this)
         afterSetContentView(savedInstanceState)
