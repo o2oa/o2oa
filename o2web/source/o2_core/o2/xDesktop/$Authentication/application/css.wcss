@@ -57,7 +57,6 @@
 	"cursor": "pointer"
   },
   "formTopContentNode" : {
-	"overflow" : "hidden",
 	"float" : "right",
 	"padding-right" : "10px",
 	"text-align" : "right"
@@ -168,7 +167,6 @@
 	"overflow" : "hidden"
   },
   "inputUser": {
-	"input::-ms-clear" : "display:none",
 	"color" : "#666",
 	"font-size" : "16px",
 	"width": "292px",
@@ -267,7 +265,7 @@
 	"margin-left" : "20px",
 	"color" : "#fff",
 	"font-size" : "14px",
-	"width": "80px",
+	"width": "90px",
 	"height": "42px",
 	"line-height": "42px",
 	"background-color":"#3c75b7",
@@ -365,9 +363,6 @@
 	"font-weight" : "normal",
 	"float" : "left",
 	"cursor" : "pointer"
-  },
-  "inputActive" : {
-	"border" : "1px solid #3c75b7"
   },
   "bindLoginTipPic" : {
 	"position" : "absolute",
@@ -478,7 +473,6 @@
 	"margin-left" : "18px"
   },
   "bindLoginContainer" : {
-	"display" : "none",
 	"width" : "100%",
 	"overflow" : "hidden",
 	"positon" : "static"
