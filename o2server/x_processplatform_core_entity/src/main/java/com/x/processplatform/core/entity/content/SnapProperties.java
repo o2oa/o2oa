@@ -46,6 +46,9 @@ public class SnapProperties extends JsonProperties {
 	@FieldDescribe("工作日志")
 	private List<WorkLog> workLogList = new ArrayList<>();
 
+	@FieldDescribe("版式文件版本")
+	private List<DocumentVersion> documentVersionList = new ArrayList<>();
+
 	public Data getData() {
 		return data;
 	}
@@ -129,6 +132,13 @@ public class SnapProperties extends JsonProperties {
 		return workLogList;
 	}
 
+	public List<DocumentVersion> getDocumentVersionList() {
+		if (null == this.documentVersionList) {
+			this.documentVersionList = new ArrayList<>();
+		}
+		return documentVersionList;
+	}
+
 	public void setJob(String job) {
 		this.job = job;
 	}
@@ -167,6 +177,10 @@ public class SnapProperties extends JsonProperties {
 
 	public void setWorkLogList(List<WorkLog> workLogList) {
 		this.workLogList = workLogList;
+	}
+
+	public void setDocumentVersionList(List<DocumentVersion> documentVersionList) {
+		documentVersionList = documentVersionList;
 	}
 
 }

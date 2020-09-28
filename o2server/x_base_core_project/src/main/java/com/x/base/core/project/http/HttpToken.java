@@ -38,7 +38,7 @@ public class HttpToken {
 	private static final String RegularExpression_Token = "^(anonymous|user|manager|cipher)([2][0][1-2][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])(\\S{1,})$";
 
 	public EffectivePerson who(HttpServletRequest request, HttpServletResponse response, String key) throws Exception {
-		EffectivePerson effectivePerson = this.who(this.getToken(request), key);
+		EffectivePerson effectivePerson = this.who(this.getToken(request), key, remoteAddress(request));
 		effectivePerson.setRemoteAddress(HttpToken.remoteAddress(request));
 		effectivePerson.setUserAgent(this.userAgent(request));
 		effectivePerson.setUri(request.getRequestURI());
@@ -50,7 +50,7 @@ public class HttpToken {
 		return effectivePerson;
 	}
 
-	public EffectivePerson who(String token, String key) {
+	public EffectivePerson who(String token, String key, String address) {
 		if (StringUtils.length(token) < 16) {
 			/* token应该是8的倍数有可能前台会输入null空值等可以通过这个过滤掉 */
 			return EffectivePerson.anonymous();
@@ -60,14 +60,14 @@ public class HttpToken {
 			try {
 				plain = Crypto.decrypt(token, key);
 			} catch (Exception e) {
-				logger.warn("can not decrypt token:{}, {}.", token, e.getMessage());
+				logger.warn("can not decrypt token:{}, {}, remote address:{}.", token, e.getMessage(), address);
 				return EffectivePerson.anonymous();
 			}
 			Pattern pattern = Pattern.compile(RegularExpression_Token, Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(plain);
 			if (!matcher.find()) {
 				// 不报错,跳过错误,将用户设置为anonymous
-				logger.warn("token format error:{}.", plain);
+				logger.warn("token format error:{}, remote address:{}.", plain, address);
 				return EffectivePerson.anonymous();
 			}
 			Date date = DateUtils.parseDate(matcher.group(2), DateTools.formatCompact_yyyyMMddHHmmss);
@@ -77,8 +77,8 @@ public class HttpToken {
 			if (TokenType.user.equals(tokenType) || TokenType.manager.equals(tokenType)) {
 				if (diff > (60000L * Config.person().getTokenExpiredMinutes())) {
 					// 不报错,跳过错误,将用户设置为anonymous
-					logger.warn("token expired, user:{}, token:{}.",
-							URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name()), plain);
+					logger.warn("token expired, user:{}, token:{}, remote address:{}.",
+							URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name()), plain, address);
 					return EffectivePerson.anonymous();
 				}
 			}
