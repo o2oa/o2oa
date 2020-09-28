@@ -338,6 +338,13 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
+		public Merge() {
+			this.enable = DEFAULT_ENABLE;
+			this.cron = DEFAULT_CRON;
+			this.thresholdDays = DEFAULT_THRESHOLDDAYS;
+			this.batchSize = DEFAULT_BATCHSIZE;
+		}
+
 		public static final Boolean DEFAULT_ENABLE = false;
 
 		public static final String DEFAULT_CRON = "30 30 6 * * ?";
