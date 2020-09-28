@@ -128,8 +128,8 @@ class ActionAppend extends BaseAction {
 						identities = business.organization().identity().list(ListTools.trim(identities, true, true));
 						emc.beginTransaction(Work.class);
 						work.setManualTaskIdentityList(identities);
-						emc.beginTransaction(Task.class);
 						// 转派后设置过期为空
+						emc.beginTransaction(Task.class);
 						task.setExpired(false);
 						task.setExpireTime(null);
 						emc.commit();
