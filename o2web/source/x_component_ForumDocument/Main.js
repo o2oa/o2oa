@@ -1109,35 +1109,74 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		} );
 		selector.load();
 	},
-	openLoginForm : function( callback ){
-		//MWF.xDesktop.requireApp("Forum", "Login", null, false);
-		//var login = new MWF.xApplication.Forum.Login(this, {
-		//	onPostOk : function(){ if(callback)callback() }
-		//});
-		//login.openLoginForm();
+	// openLoginForm : function( callback ){
+	// 	//MWF.xDesktop.requireApp("Forum", "Login", null, false);
+	// 	//var login = new MWF.xApplication.Forum.Login(this, {
+	// 	//	onPostOk : function(){ if(callback)callback() }
+	// 	//});
+	// 	//login.openLoginForm();
+	// 	MWF.require("MWF.xDesktop.Authentication", null, false);
+	// 	var authentication = new MWF.xDesktop.Authentication({
+	// 		style : "application",
+	// 		onPostOk : function(){ if(callback)callback() }
+	// 	},this);
+	// 	authentication.openLoginForm({
+	// 		hasMask : true
+	// 	});
+	// },
+	// openSignUpForm : function(callback){
+	// 	//MWF.xDesktop.requireApp("Forum", "Login", null, false);
+	// 	//var login = new MWF.xApplication.Forum.Login(this, {
+	// 	//	onPostOk : function(){ if(callback)callback() }
+	// 	//});
+	// 	//login.openSignUpForm();
+	// 	MWF.require("MWF.xDesktop.Authentication", null, false);
+	// 	var authentication = new MWF.xDesktop.Authentication({
+	// 		style : "application",
+	// 		onPostOk : function(){ if(callback)callback() }
+	// 	},this);
+	// 	authentication.openSignUpForm({
+	// 		hasMask : true
+	// 	});
+	// },
+	openLoginForm : function(){
 		MWF.require("MWF.xDesktop.Authentication", null, false);
 		var authentication = new MWF.xDesktop.Authentication({
-			style : "application",
-			onPostOk : function(){ if(callback)callback() }
+			"style" : "flat",
+			"popupStyle_password": "o2platformSignupFlat",
+			onPostOk : function(){
+				if(callback)callback()
+			}
 		},this);
-		authentication.openLoginForm({
-			hasMask : true
-		});
+		authentication.popupOptions = {
+			"draggable": true,
+			"closeAction": true,
+			"hasMask": true,
+			"relativeToApp": true,
+			"width": "420",
+			"height": "640"
+		};
+		// authentication.loadLogin(this.app.content);
+		authentication.openLoginForm();
 	},
-	openSignUpForm : function(callback){
-		//MWF.xDesktop.requireApp("Forum", "Login", null, false);
-		//var login = new MWF.xApplication.Forum.Login(this, {
-		//	onPostOk : function(){ if(callback)callback() }
-		//});
-		//login.openSignUpForm();
+	openSignUpForm : function(){
 		MWF.require("MWF.xDesktop.Authentication", null, false);
-		var authentication = new MWF.xDesktop.Authentication({
-			style : "application",
-			onPostOk : function(){ if(callback)callback() }
-		},this);
-		authentication.openSignUpForm({
-			hasMask : true
-		});
+		var authentication = new MWF.xDesktop.Authentication( {
+			style : "flat",
+			"popupStyle_password": "o2platformSignupFlat",
+			onPostOk : function(){
+				if(callback)callback()
+			}
+		}, this);
+		authentication.popupOptions = {
+			"draggable": true,
+			"closeAction": true,
+			"hasMask": true,
+			"relativeToApp": true,
+			"width": "420",
+			"height": "640"
+		};
+		authentication.openSignUpForm();
 	},
 	gotoReply : function( index ){
 		this.replyView.paging.gotoItem( index );
