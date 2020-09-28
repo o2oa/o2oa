@@ -34,7 +34,7 @@ public class WsConfigurator extends ServerEndpointConfig.Configurator {
 			}
 			if (StringUtils.isNotEmpty(token)) {
 				HttpToken httpToken = new HttpToken();
-				return httpToken.who(token, Config.token().getCipher());
+				return httpToken.who(token, Config.token().getCipher(), "");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
