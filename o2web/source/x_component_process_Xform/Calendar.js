@@ -24,7 +24,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
         }
     },
     _getValueAg: function(value,isDate){
-        if (o2.typeOf(value)=="function" && value.addResolve){
+        if (o2.typeOf(value)=="o2_async_function"){
             return value.then(function(v){
                 this._getValueAg(v, isDate);
             }.bind(this));
