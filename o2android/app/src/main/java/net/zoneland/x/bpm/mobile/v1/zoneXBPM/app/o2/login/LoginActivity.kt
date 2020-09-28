@@ -5,13 +5,15 @@ import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
-import androidx.core.content.ContextCompat
+import android.os.Looper
 import android.text.InputType
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_login.*
 import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.*
@@ -185,6 +187,10 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
 
     override fun onResume() {
         super.onResume()
+        //清除用户名密码
+        login_edit_username_id.setText("")
+        login_edit_password_id.setText("")
+        edit_login_captcha_input.setText("")
 
         playBeep = true
         val audioService = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -192,6 +198,26 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
             playBeep = false
         }
         initBeepSound()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        //Activity反劫持检测工具
+        Thread(Runnable { // 白名单
+            val safe = AntiHijackingUtil.checkActivity(applicationContext)
+            // 系统桌面
+            val isHome = AntiHijackingUtil.isHome(applicationContext)
+            // 锁屏操作
+            val isReflectScreen = AntiHijackingUtil.isReflectScreen(applicationContext)
+            // 判断程序是否当前显示
+            if (!safe && !isHome && !isReflectScreen) {
+                Looper.prepare()
+                Toast.makeText(applicationContext, R.string.activity_safe_warning,
+                        Toast.LENGTH_LONG).show()
+                Looper.loop()
+            }
+        }).start()
     }
 
     override fun onDestroy() {

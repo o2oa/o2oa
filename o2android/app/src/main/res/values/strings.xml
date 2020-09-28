@@ -2,6 +2,7 @@
     <string name="app_name">O2OA</string>
     <string name="app_about">关于O2OA</string>
     <string name="app_name_about">O2OA</string>
+    <string name="activity_safe_warning">已切换至后台运行！</string>
     <string name="copy_right">&#169;</string>
     <string name="reserved">All right reserved.</string>
     <string name="version">版本：</string>
@@ -12,6 +13,8 @@
     <string name="bind_phone_validate_number">验证手机</string>
     <string name="bind_phone_choose_company">选择单位</string>
     <string name="app_error">应用异常</string>
+
+
 
     <string name="launch_start">准备中&#8230;</string>
     <string name="launch_network_is_not_connected">网络未连接，请检查网络连接情况！</string>
