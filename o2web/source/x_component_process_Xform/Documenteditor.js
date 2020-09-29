@@ -866,18 +866,41 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_subject){
             if (!this.json.subjectValueData && this.json.subjectValueType=="data"){
                 this.layout_subject.set("contenteditable", control.subject);
-                this.layout_subject.addEvent("blur", function(){
-                    this.getData();
-                }.bind(this))
+                // this.layout_subject.addEvent("blur", function(){
+                //     this.getData();
+                // }.bind(this))
+                this.layout_subject.addEvent("blur", function(e){
+                    var subject = this.layout_subject.get("text");
+                    if (!subject){
+                        this.layout_subject.set("html", this.data.subject);
+                        this.form.app.notice(MWF.xApplication.process.Xform.LP.subjectEmpty, "error", this.layout_subject, {"x": "center","y":"top"}, {"x": 0,"y":60});
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }else{
+                        this.getData();
+                    }
+                }.bind(this));
             }
         }
 
         if (this.layout_issuanceUnit){
             if (!this.json.issuanceUnitValueData && this.json.issuanceUnitValueType=="data"){
                 this.layout_issuanceUnit.set("contenteditable", control.issuanceUnit);
-                this.layout_issuanceUnit.addEvent("blur", function(){
-                    this.getData();
-                }.bind(this))
+                // this.layout_issuanceUnit.addEvent("blur", function(){
+                //     this.getData();
+                // }.bind(this))
+
+                this.layout_issuanceUnit.addEvent("blur", function(e){
+                    var issuanceUnit = this.layout_issuanceUnit.get("text");
+                    if (!issuanceUnit){
+                        this.layout_issuanceUnit.set("html", this.data.issuanceUnit);
+                        this.form.app.notice(MWF.xApplication.process.Xform.LP.issuanceUnitEmpty, "error", this.layout_issuanceUnit, {"x": "center","y":"top"}, {"x": 0,"y":60});
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }else{
+                        this.getData();
+                    }
+                }.bind(this));
             }
         }
 
