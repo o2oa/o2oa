@@ -42,6 +42,8 @@ public class Snap extends SliceJpaObject {
 
 	public static final String TYPE_SUSPEND = "suspend";
 
+	public static final String TYPE_ABANDONED = "abandoned";
+
 	public String getId() {
 		return id;
 	}
