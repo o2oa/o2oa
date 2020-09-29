@@ -212,10 +212,10 @@
         var type = o2.typeOf(callback).toLowerCase();
         if (!key) key = "success";
 
-        if (key.toLowerCase()==="success" && type==="function"){
+        if (key.toLowerCase()==="success" && (type==="function" || type==="o2_async_function")){
             callback.apply(b, par);
         }else{
-            if (type==="function" || type==="object"){
+            if (type==="function" || type==="object" || type==="o2_async_function"){
                 var name = ("on-"+key).camelCase();
                 if (callback[name]){
                     callback[name].apply(b, par);
@@ -1700,6 +1700,9 @@
                         result = r(result, arguments) || result;
                     });
                 }
+                _self.isSuccess = true;
+                _self.result = result;
+                _self.arg = arguments;
                 return result;
             }
         },
@@ -1713,6 +1716,10 @@
                         result = r(result, arguments) || result;
                     });
                 }
+                _self.isFailure = true;
+                _self.result = result;
+                _self.arg = arguments;
+                return result;
             }
         },
         setResolve: function(resolve){
@@ -1728,11 +1735,15 @@
         addResolve: function(resolve){
             if (!this.success) this._createSuccess();
             if (resolve){
-                if (!this.success.resolve){
-                    this.success.resolve = resolve;
+                if (this.isSuccess){
+                    resolve(this.result, this.arg);
                 }else{
-                    if (!this.success.resolveList) this.success.resolveList = [];
-                    this.success.resolveList.push(resolve);
+                    if (!this.success.resolve){
+                        this.success.resolve = resolve;
+                    }else{
+                        if (!this.success.resolveList) this.success.resolveList = [];
+                        this.success.resolveList.push(resolve);
+                    }
                 }
             }
             return this;
@@ -1740,11 +1751,15 @@
         addReject: function(reject){
             if (!this.failure) this._createFailure();
             if (reject){
-                if (!this.failure.reject){
-                    this.failure.reject = reject;
+                if (this.isFailure){
+                    reject(this.result, this.arg);
                 }else{
-                    if (!this.failure.rejectList) this.failure.rejectList = [];
-                    this.failure.rejectList.push(reject);
+                    if (!this.failure.reject){
+                        this.failure.reject = reject;
+                    }else{
+                        if (!this.failure.rejectList) this.failure.rejectList = [];
+                        this.failure.rejectList.push(reject);
+                    }
                 }
             }
             return this;
@@ -1776,7 +1791,7 @@
             if (count<=0)ag();
         }
 
-        window.setTimeout(function(){
+        //window.setTimeout(function(){
             arr.forEach(function(a){
                 if (typeOf(a)=="array"){
                     o2.AG.all(a).then(function(v){
@@ -1797,7 +1812,7 @@
                     }
                 }
             });
-        }, 0);
+        //}, 0);
         return ag;
     }
 
