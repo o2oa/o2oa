@@ -101,7 +101,7 @@ public class RestoreData {
 				logger.print("find: {} data to restore, path: {}.", classNames.size(), this.dir.toString());
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_restore.xml");
-				PersistenceXmlHelper.write(xml.toString(), classNames);
+				PersistenceXmlHelper.write(xml.toString(), classNames, false);
 				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
 						? classNames.parallelStream()
 						: classNames.stream();
