@@ -3,6 +3,7 @@ package com.x.query.assemble.designer.jaxrs.table;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.x.base.core.entity.dynamic.DynamicBaseEntity;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -36,10 +37,11 @@ class ActionExecute extends BaseAction {
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
-			EntityManager em = emc.get(cls);
-			Query query = em.createQuery(wi.getData());
+
 			Object data = null;
 			if (StringUtils.equalsIgnoreCase(wi.getType(), Statement.TYPE_SELECT)) {
+				EntityManager em = emc.get(DynamicBaseEntity.class);
+				Query query = em.createQuery(wi.getData());
 				if ((null != wi.getMaxResults()) && (wi.getMaxResults() > 0)) {
 					query.setMaxResults(wi.getMaxResults());
 				}
@@ -48,6 +50,8 @@ class ActionExecute extends BaseAction {
 				}
 				data = query.getResultList();
 			} else {
+				EntityManager em = emc.get(cls);
+				Query query = em.createQuery(wi.getData());
 				emc.beginTransaction(cls);
 				data = query.executeUpdate();
 				emc.commit();
