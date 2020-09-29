@@ -30,9 +30,9 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
 
-class ActionTypeSuspend extends BaseAction {
+class ActionTypeAbandoned extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeSuspend.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionTypeAbandoned.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId) throws Exception {
 		String job = null;
@@ -76,7 +76,7 @@ class ActionTypeSuspend extends BaseAction {
 				List<DocumentVersion> documentVersions = new ArrayList<>();
 				snap.setProperties(snap(business, work.getJob(), items, works, tasks, taskCompleteds, reads,
 						readCompleteds, reviews, workLogs, records, attachments, documentVersions));
-				snap.setType(Snap.TYPE_SUSPEND);
+				snap.setType(Snap.TYPE_ABANDONED);
 				emc.beginTransaction(Snap.class);
 				emc.persist(snap, CheckPersistType.all);
 				emc.commit();
