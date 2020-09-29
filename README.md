@@ -78,25 +78,25 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
 另外，O2OA提供数据定期备份和恢复的能力，建议您开启正式环境的数据定期备份的功能，以确保数据库异常时可以进行数据恢复。
 
 
-# 最新版本服务器安装包下载[o2server_V5.2.0]\:
+# 最新版本服务器安装包下载[o2server_V5.2.1]\:
 
-windows 64Bit : http://download.o2oa.net/download/o2server-5.2.0-windows.zip
+windows 64Bit : http://download.o2oa.net/download/o2server-5.2.1-windows.zip
 
-Linux 64Bit : http://download.o2oa.net/download/o2server-5.2.0-linux-x86.zip
+Linux 64Bit : http://download.o2oa.net/download/o2server-5.2.1-linux-x86.zip
 
-MacOS : http://download.o2oa.net/download/o2server-5.2.0-macos.zip
+MacOS : http://download.o2oa.net/download/o2server-5.2.1-macos.zip
 
-AIX : http://download.o2oa.net/download/o2server-5.2.0-aix.zip
+AIX : http://download.o2oa.net/download/o2server-5.2.1-aix.zip
 
-raspberrypi(树莓派)：http://download.o2oa.net/download/o2server-5.2.0-raspi.zip
+raspberrypi(树莓派)：http://download.o2oa.net/download/o2server-5.2.1-raspi.zip
 
 ARM[深度Linux(deepin)，优麒麟(Ubuntu),中标麒麟(NeoKylin),威科乐恩Linux（WiOS）]：
 
-http://download.o2oa.net/download/o2server-5.2.0-linux-arm.zip
+http://download.o2oa.net/download/o2server-5.2.1-linux-arm.zip
 
 RISC-V[Debian GNU/Linux，银河麒麟飞腾]：
 
-http://download.o2oa.net/download/o2server-5.2.0-linux-mips.zip
+http://download.o2oa.net/download/o2server-5.2.1-linux-mips.zip
 
 
 
@@ -107,7 +107,7 @@ http://download.o2oa.net/download/o2server-5.2.0-linux-mips.zip
 腾讯微云：https://share.weiyun.com/5krUMjj
 
 
-# 最新版本 v5.2.0\:
+# 最新版本 v5.2\:
 
 功能新增
 
