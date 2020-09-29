@@ -36,15 +36,10 @@ class ActionManageListFilterPaging extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			if (BooleanUtils.isTrue(business.canManageApplication(effectivePerson, null))) {
 				Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-				if (wi == null) {
-					wi = new Wi();
-				}
-				Integer adjustPage = this.adjustPage(page);
-				Integer adjustPageSize = this.adjustSize(size);
-				List<Task> os = this.list(effectivePerson, business, adjustPage, adjustPageSize, wi);
-				List<Wo> wos = Wo.copier.copy(os);
+				Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
+				List<Wo> wos = emc.fetchDescPaging(Task.class, Wo.copier, p, page, size, Task.startTime_FIELDNAME);
 				result.setData(wos);
-				result.setCount(this.count(effectivePerson, business, wi));
+				result.setCount(emc.count(Task.class, p));
 			} else {
 				result.setData(new ArrayList<Wo>());
 				result.setCount(0L);
@@ -53,8 +48,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		}
 	}
 
-	private List<Task> list(EffectivePerson effectivePerson, Business business, Integer adjustPage,
-			Integer adjustPageSize, Wi wi) throws Exception {
+	private Predicate toFilterPredicate(EffectivePerson effectivePerson, Business business,  Wi wi) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Task.class);
 		List<String> person_ids = business.organization().person().list(wi.getCredentialList());
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -151,109 +145,8 @@ class ActionManageListFilterPaging extends BaseAction {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
 			p = cb.and(p, cb.like(root.get(Task_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
-		cq.select(root).where(p).orderBy(cb.desc(root.get(Task_.startTime)));
-		return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
-				.getResultList();
-	}
 
-	private Long count(EffectivePerson effectivePerson, Business business, Wi wi) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Task.class);
-		List<String> person_ids = business.organization().person().list(wi.getCredentialList());
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Task> root = cq.from(Task.class);
-		Predicate p = cb.conjunction();
-		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			p = cb.and(p, root.get(Task_.application).in(wi.getApplicationList()));
-		}
-		if (StringUtils.isNotBlank(wi.getPerson())) {
-			p = cb.and(p, cb.equal(root.get(Task_.person), wi.getPerson()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue01())) {
-			p = cb.and(p, cb.equal(root.get(Task_.stringValue01), wi.getStringValue01()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue02())) {
-			p = cb.and(p, cb.equal(root.get(Task_.stringValue02), wi.getStringValue02()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue03())) {
-			p = cb.and(p, cb.equal(root.get(Task_.stringValue03), wi.getStringValue03()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue04())) {
-			p = cb.and(p, cb.equal(root.get(Task_.stringValue04), wi.getStringValue04()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue05())) {
-			p = cb.and(p, cb.equal(root.get(Task_.stringValue05), wi.getStringValue05()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue06())) {
-			p = cb.and(p, cb.equal(root.get(Task_.stringValue06), wi.getStringValue06()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue07())) {
-			p = cb.and(p, cb.equal(root.get(Task_.stringValue07), wi.getStringValue07()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue08())) {
-			p = cb.and(p, cb.equal(root.get(Task_.stringValue08), wi.getStringValue08()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue09())) {
-			p = cb.and(p, cb.equal(root.get(Task_.stringValue09), wi.getStringValue09()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue10())) {
-			p = cb.and(p, cb.equal(root.get(Task_.stringValue10), wi.getStringValue10()));
-		}
-
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
-				p = cb.and(p, root.get(Task_.process).in(wi.getProcessList()));
-			} else {
-				p = cb.and(p, root.get(Task_.process).in(business.process().listEditionProcess(wi.getProcessList())));
-			}
-		}
-		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
-			p = cb.and(p, cb.greaterThan(root.get(Task_.startTime), DateTools.parse(wi.getStartTime())));
-		}
-		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
-			p = cb.and(p, cb.lessThan(root.get(Task_.startTime), DateTools.parse(wi.getEndTime())));
-		}
-		if (ListTools.isNotEmpty(person_ids)) {
-			p = cb.and(p, root.get(Task_.person).in(person_ids));
-		}
-		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
-			p = cb.and(p, root.get(Task_.creatorUnit).in(wi.getCreatorUnitList()));
-		}
-		if (ListTools.isNotEmpty(wi.getWorkList())) {
-			p = cb.and(p, root.get(Task_.work).in(wi.getWorkList()));
-		}
-		if (ListTools.isNotEmpty(wi.getJobList())) {
-			p = cb.and(p, root.get(Task_.job).in(wi.getJobList()));
-		}
-		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
-			p = cb.and(p, root.get(Task_.startTimeMonth).in(wi.getStartTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			p = cb.and(p, root.get(Task_.activityName).in(wi.getActivityNameList()));
-		}
-		if (StringUtils.isNotBlank(wi.getExpireTime())) {
-			int expireTime = 0;
-			try {
-				expireTime = Integer.parseInt(wi.getExpireTime());
-			} catch (NumberFormatException e) {
-			}
-			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime),
-					DateTools.getAdjustTimeDay(null, 0, -expireTime, 0, 0)));
-		}
-		if (StringUtils.isNotBlank(wi.getUrgeTime())) {
-			int urgeTime = 0;
-			try {
-				urgeTime = Integer.parseInt(wi.getUrgeTime());
-			} catch (NumberFormatException e) {
-			}
-			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime),
-					DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
-		}
-		if (StringUtils.isNoneBlank(wi.getKey())) {
-			String key = StringTools.escapeSqlLikeKey(wi.getKey());
-			p = cb.and(p, cb.like(root.get(Task_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
-		}
-		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+		return p;
 	}
 
 	public class Wi extends GsonPropertyObject {
