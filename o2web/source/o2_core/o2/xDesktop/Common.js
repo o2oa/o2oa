@@ -614,7 +614,9 @@ MWF.org = {
                 "name": data.name,
                 "distinguishedName": data.distinguishedName,
                 "unitLevelName" : data.unitLevelName,
-                "person": data.person
+                "person": data.person,
+                "unit": data.unit,
+                "unitName": data.unitName,
             };
             if( data.ignoreEmpower )rData.ignoreEmpower = true;
             if( data.ignoredEmpower )rData.ignoredEmpower = true;

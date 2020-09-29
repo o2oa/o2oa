@@ -183,14 +183,14 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "");
     },
 	getValue: function(){
-	    debugger;
+        if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
-        if (!value && this.moduleValueAG) value = this.moduleValueAG;
         if (!value) value = this._computeValue();
 		return value || "";
 	},
     _setValue: function(value){
-	    if (o2.typeOf(value)==="o2_async_function"){
+	    debugger;
+	    if (value && value.isAG){
 	        this.moduleValueAG = value;
             value.addResolve(function(v){
                 this._setValue(v);
@@ -255,7 +255,8 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         this.setData(this.getValue());
     },
 	setData: function(data){
-        if (o2.typeOf(data)==="o2_async_function"){
+        if (data && data.isAG){
+            this.moduleValueAG = data;
             data.addResolve(function(v){
                 this.setData(v);
             }.bind(this));
@@ -268,6 +269,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             }else{
                 this.node.set("text", data);
             }
+            this.moduleValueAG = null;
         }
 	},
 

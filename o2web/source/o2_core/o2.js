@@ -1683,13 +1683,14 @@
     var _AsyncGeneratorPrototype = _Class.create({
         initialize: function(resolve, reject, name){
             debugger;
+            this.isAG = true;
             this.name = name || "";
             this._createSuccess();
             this._createFailure();
             if (resolve) this.success.resolve = resolve;
             if (reject) this.failure.reject = reject;
         },
-        $family: function(){ return "o2_async_function"; },
+        //$family: function(){ return "o2_async_function"; },
         _createSuccess: function(){
             var _self = this;
             this.success = function(){
@@ -1736,7 +1737,7 @@
             if (!this.success) this._createSuccess();
             if (resolve){
                 if (this.isSuccess){
-                    resolve(this.result, this.arg);
+                    this.result = resolve(this.result, this.arg);
                 }else{
                     if (!this.success.resolve){
                         this.success.resolve = resolve;
@@ -1752,7 +1753,7 @@
             if (!this.failure) this._createFailure();
             if (reject){
                 if (this.isFailure){
-                    reject(this.result, this.arg);
+                    this.result = reject(this.result, this.arg);
                 }else{
                     if (!this.failure.reject){
                         this.failure.reject = reject;
@@ -1799,7 +1800,7 @@
                         check();
                     });
                 }else{
-                    if (o2.typeOf(a)=="o2_async_function"){
+                    if (a.isAG){
                         a.then(function(v){
                             o2.AG.all(v).then(function(r){
                                 result = result.concat(r);
