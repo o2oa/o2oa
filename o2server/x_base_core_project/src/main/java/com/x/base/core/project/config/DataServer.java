@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.container.LogLevel;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 public class DataServer extends ConfigObject {
@@ -21,8 +20,7 @@ public class DataServer extends ConfigObject {
 	private static final String DEFAULT_STATFILTER = "mergeStat";
 	private static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
 	private static final Integer DEFAULT_LOCKTIMEOUT = 120000;
-
-	
+	private static final String DEFAULT_LOGLEVEL = "WARN";
 
 	public static DataServer defaultInstance() {
 		return new DataServer();
@@ -38,7 +36,7 @@ public class DataServer extends ConfigObject {
 		this.jmxEnable = DEFAULT_JMXENABLE;
 		this.maxTotal = DEFAULT_MAXTOTAL;
 		this.maxIdle = DEFAULT_MAXIDLE;
-		this.logLevel = LogLevel.WARN;
+		this.logLevel = DEFAULT_LOGLEVEL;
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statFilter = DEFAULT_STATFILTER;
 		this.slowSqlMillis = DEFAULT_SLOWSQLMILLIS;
@@ -59,8 +57,8 @@ public class DataServer extends ConfigObject {
 	private Boolean jmxEnable;
 	@FieldDescribe("H2数据库缓存大小,设置H2用于作为缓存的内存大小,以M作为单位,这里默认为512M.")
 	private Integer cacheSize;
-	@FieldDescribe("默认日志级别")
-	private LogLevel logLevel = LogLevel.WARN;
+	@FieldDescribe("默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完成的配置为DefaultLevel=WARN, Tool=TRACE, Enhance=TRACE, METADATA=TRACE, Runtime=TRACE, Query=TRACE, DataCache=TRACE, JDBC=TRACE, SQL=TRACE")
+	private String logLevel;
 	@FieldDescribe("最大使用连接数")
 	private Integer maxTotal;
 	@FieldDescribe("最大空闲连接数")
@@ -73,13 +71,13 @@ public class DataServer extends ConfigObject {
 	private Integer slowSqlMillis;
 	@FieldDescribe("默认锁超时时间()毫秒).")
 	private Integer lockTimeout;
-	
+
 	public Integer getLockTimeout() {
 		return (null == this.lockTimeout || this.lockTimeout < 1) ? DEFAULT_LOCKTIMEOUT : this.lockTimeout;
 	}
 
-	public LogLevel getLogLevel() {
-		return this.logLevel == null ? LogLevel.WARN : this.logLevel;
+	public String getLogLevel() {
+		return StringUtils.isEmpty(this.logLevel) ? DEFAULT_LOGLEVEL : this.logLevel;
 	}
 
 	public Integer getSlowSqlMillis() {
@@ -178,7 +176,7 @@ public class DataServer extends ConfigObject {
 		this.cacheSize = cacheSize;
 	}
 
-	public void setLogLevel(LogLevel logLevel) {
+	public void setLogLevel(String logLevel) {
 		this.logLevel = logLevel;
 	}
 
