@@ -114,6 +114,8 @@ object O2 {
     //////////////////////////////////SharedPreferences KEY /////////////////////////////////////////////////
 
     val PREFERENCE_FILE = "API_DISTRIBUTE_FILE"
+    val SECURITY_PREFERENCE_FILE = "API_DIST_FILE_SECURITY"
+    val SECURITY_IS_UPDATE = "SECURITY_IS_UPDATE"
     val PRE_ASSEMBLESJSON_KEY = "ASSEMBLESJSON_KEY"
     val PRE_WEBSERVERJSON_KEY = "WEBSERVERJSON_KEY"
     val PRE_CENTER_HOST_KEY = "PRE_CENTER_HOST_KEY"//中心服务器地址

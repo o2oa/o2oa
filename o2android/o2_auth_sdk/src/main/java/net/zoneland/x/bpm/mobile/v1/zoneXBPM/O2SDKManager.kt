@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2.SECURITY_IS_UPDATE
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.LaunchState
@@ -19,6 +20,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.portal.PortalData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.SharedPreferencesHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.edit
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.security.SecuritySharedPreference
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -107,6 +109,13 @@ class O2SDKManager private constructor()  {
         //初始化RetrofitClient
         this.context = context
         spHelper = SharedPreferencesHelper(context)
+        //检查老的sp 是否要更新
+        val isUpdate = prefs().getBoolean(SECURITY_IS_UPDATE, false)
+        if (!isUpdate) {
+            Log.i(TAG, "过渡老的sp文件！")
+            prefs().handleTransition() //执行过渡程序把老的sp文件读取覆盖一下
+            prefs().edit().putBoolean(SECURITY_IS_UPDATE, true).apply()
+        }
 
         RetrofitClient.instance().init(context)
         cId = prefs().getString(CURRENT_PERSON_ID_KEY, "") ?: ""
@@ -132,8 +141,9 @@ class O2SDKManager private constructor()  {
 
     }
 
-    fun prefs(): SharedPreferences = spHelper.prefs()
+//    fun prefs(): SharedPreferences = spHelper.prefs()
 
+    fun prefs(): SecuritySharedPreference = spHelper.securityPrefs()
 
     /**
      * 启动  整个启动过程，检查绑定 连接中心服务器 下载配置 登录
