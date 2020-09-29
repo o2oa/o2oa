@@ -196,6 +196,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "0");
     },
     getValue: function(){
+        if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
         return value || "0";

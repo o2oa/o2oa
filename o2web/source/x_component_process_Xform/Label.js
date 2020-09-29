@@ -44,7 +44,7 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class({
 		}
 	},
     _setNodeText: function(value){
-        if (o2.typeOf(value)==="o2_async_function"){
+        if (value && value.isAG){
             value.addResolve(function(v){
                 this._setNodeText(v);
             }.bind(this));
