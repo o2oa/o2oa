@@ -85,10 +85,14 @@ public class ExternalDataSources extends CopyOnWriteArrayList<ExternalDataSource
 			if (BooleanUtils.isTrue(o.getEnable())) {
 				String n = "s" + ("" + (1000 + idx)).substring(1);
 				if (StringUtils.equals(n, name)) {
-					String value = o.getLogLevel().toString();
-					return "DefaultLevel=WARN, Tool=" + value + ", Enhance=" + value + ", METADATA=" + value
-							+ ", Runtime=" + value + ", Query=" + value + ", DataCache=" + value + ", JDBC=" + value
-							+ ", SQL=" + value;
+					String value = o.getLogLevel();
+					if (StringUtils.contains(value, "=")) {
+						return value;
+					} else {
+						return "DefaultLevel=WARN, Tool=" + value + ", Enhance=" + value + ", METADATA=" + value
+								+ ", Runtime=" + value + ", Query=" + value + ", DataCache=" + value + ", JDBC=" + value
+								+ ", SQL=" + value;
+					}
 				}
 			}
 		}
