@@ -10,6 +10,7 @@ import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 
+import com.x.base.core.entity.dynamic.DynamicBaseEntity;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -132,7 +133,14 @@ class ActionExecute extends BaseAction {
 			throws Exception {
 		Object data = null;
 		Class<? extends JpaObject> cls = this.clazz(business, statement);
-		EntityManager em = business.entityManagerContainer().get(cls);
+		EntityManager em;
+		if(StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
+				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)){
+			em = business.entityManagerContainer().get(DynamicBaseEntity.class);
+		}else{
+			em = business.entityManagerContainer().get(cls);
+		}
+
 		Query query = em.createQuery(statement.getData());
 		for (Parameter<?> p : query.getParameters()) {
 			if (runtime.hasParameter(p.getName())) {
