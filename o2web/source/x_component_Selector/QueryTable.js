@@ -11,6 +11,10 @@ MWF.xApplication.Selector.QueryTable = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
+    _init : function(){
+        this.selectType = "querytable";
+        this.className = "QueryTable";
+    },
     loadSelectItems: function(addToNext){
         this.queryAction.listApplication(function(json){
             if (json.data.length){
