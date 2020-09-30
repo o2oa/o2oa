@@ -11,7 +11,10 @@ MWF.xApplication.Selector.CMSApplication = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "application";
+        this.className = "CMSApplication"
+    },
     loadSelectItems: function(addToNext){
         this.cmsAction.listCMSApplication(function(json){
             json.data.each(function(data){
