@@ -11,7 +11,10 @@ MWF.xApplication.Selector.ProcessFile = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "file";
+        this.className = "ProcessFile";
+    },
     loadSelectItems: function(addToNext){
         if (this.options.isImage) this.options.accept = ["png","jpg","bmp","gif","jpeg","jpe"];
         this.processAction.listApplication(function(json){

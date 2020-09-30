@@ -20,6 +20,10 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         "dutyUnitLevelBy" : "duty", //组织层级是按身份所在群组还是职务,
         "selectType" : "identity"
     },
+    _init : function(){
+        this.selectType = "identity";
+        this.className = "IdentityWidthDutyCategoryByUnit";
+    },
     loadSelectItems: function(addToNext){
         //根据组织分类展现职务
         if( this.options.resultType === "person" ){
@@ -92,6 +96,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     _loadSelectItems : function( identityList ){
         //this.listAllIdentityInUnitObject( identityList );
         var unitTree = this.listNestedUnitByIdentity( identityList );
+        this.uniqueIdentity( unitTree );
         if( this.options.dutyUnitLevelBy === "duty" ){
             this.level1Container = [];
             if( this.options.units && this.options.units.length ){
@@ -113,10 +118,10 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         this.sortUnit( unitTree.unitList );
         for( var i=0; i< unitTree.unitList.length; i++ ){
             var unit = unitTree.unitList[i];
-            if( !this.isExcluded( unit ) ) {
+            // if( !this.isExcluded( unit ) ) {
                 var category = this._newItemCategory("ItemCategory",unit, this, this.itemAreaNode);
                 this.subCategorys.push(category);
-            }
+            // }
         }
     },
     sortUnit : function( unitList ){
@@ -146,7 +151,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         for( var i=0; i< unitTree.unitList.length; i++ ){
             var unit = unitTree.unitList[i];
             if( this.isUnitContain( unit ) ){
-                if( !this.isExcluded( unit ) ) {
+                // if( !this.isExcluded( unit ) ) {
                     var container = this.itemAreaNode;
                     if( this.level1Container && this.level1Container.length ){
                         var index = this.getIndexFromUnitOption( unit );
@@ -154,7 +159,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                     }
                     var category = this._newItemCategory("ItemCategory",unit, this, container );
                     this.subCategorys.push(category);
-                }
+                // }
             }else{
                 this._loadSelectItemsByDutyUnit( unit );
             }
@@ -239,6 +244,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         //根据unitLevelName整合成组织树
         var unitTree = {};
         for( var i=0; i<identityList.length; i++ ){
+            var flag = true;
+            if( this.isExcluded( identityList[i] ) )continue;
+
             var levelNames = identityList[i][key];
             //if( !levelNames && key === "matchUnitLevelName" )levelNames = identityList[i].unitLevelName;
             var unitLevelNameList = levelNames.split("/");
@@ -247,6 +255,11 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             for( var j=0; j<unitLevelNameList.length; j++ ){
                 nameList.push( unitLevelNameList[j] );
                 var name = nameList.join("/");
+
+                if( this.isExcluded( this.allUnitObject[name] || {} ) ){
+                    flag = false;
+                    break;
+                }
 
                 if( !tree.unitList )tree.unitList = [];
                 var found = false;
@@ -258,18 +271,62 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                     }
                 }
                 if( !found ){
-                    var obj = {};
+                    // var obj = {};
+                    var obj = this.allUnitObject[name] || {};
+                    obj.matchLevelName = name;
                     tree.unitList.push( obj );
                     tree = obj;
                 }
-                if( !tree.distinguishedName ){
-                    tree = Object.merge( tree, this.allUnitObject[name] );
-                }
+                // if( !tree.distinguishedName ){
+                //     tree = Object.merge( tree, this.allUnitObject[name] );
+                // }
                 if( !tree.identityList )tree.identityList = [];
+
             }
-            tree.identityList.push( identityList[i] );
+            if(flag)tree.identityList.push( identityList[i] );
         }
         return unitTree;
+    },
+    uniqueIdentity : function( tree ){
+        var map = {};
+        var isExist = function ( d ) {
+            if(( d.distinguishedName && map[ d.distinguishedName ] ) ||
+                ( d.levelName && map[ d.levelName ] ) ||
+                ( d.id && map[ d.id ] ) ||
+                ( d.unique && map[ d.unique ] )){
+                return true;
+            }else{
+                map[ typeOf( d ) === "string" ? d : ( d.distinguishedName || d.id || d.unique || d.employee || d.levelName) ] = true;
+                return false;
+            }
+        };
+
+        var identityList = [];
+        if( tree.identityList ){
+            for( var i=0; i<tree.identityList.length; i++ ){
+                if( !isExist( tree.identityList[i] ) )identityList.push( tree.identityList[i] );
+            }
+        }
+        tree.identityList = identityList;
+
+        if( this.options.isCheckStatus ){
+            var names = (tree.matchLevelName || tree.levelName || "").split("/");
+            var nameList = [];
+            for( var i=0; i<names.length; i++ ){
+                nameList.push( names[i] );
+                var name = nameList.join("/");
+                var obj = this.allUnitObject[name];
+                if( obj ){
+                    obj.subNestedIdentityCount = ( obj.subNestedIdentityCount || 0 ) + identityList.length;
+                }
+            }
+        }
+
+        if( tree.unitList ){
+            for( var i=0; i<tree.unitList.length; i++ ){
+                this.uniqueIdentity( tree.unitList[i] );
+            }
+        }
     },
     //listNestedUnitByIdentity : function( identityList ){
     //    debugger;
@@ -337,8 +394,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
-    _newItem: function(data, selector, container, level, category){
-        return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.Item(data, selector, container, level, category);
+    _newItem: function(data, selector, container, level, category, delay){
+        return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.Item(data, selector, container, level, category, delay);
     },
     _newItemSearch: function(data, selector, container, level){
         return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.SearchItem(data, selector, container, level);
@@ -362,6 +419,37 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemSelected = new Cla
 
 MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory,
+    _getShowName: function(){
+        return this.data.name;
+    },
+    _addSelectedCount : function( count, nested ){
+        debugger;
+        var c = (this._getSelectedCount() || 0) + count;
+        this.selectedCount = c;
+        this.checkCountAndStatus(c);
+
+        if( nested && this.category && this.category._addSelectedCount ){
+            this.category._addSelectedCount(count, nested);
+        }
+    },
+    // _getSelectedCount : function(){
+    //     var list = this.subItems.filter( function (item) { return item.isSelected; });
+    //     return list.length;
+    // },
+    _getTotalCount : function(){
+        return this.data.subNestedIdentityCount;
+    },
+    _getSelectedCount : function(){
+        debugger;
+        if( typeOf( this.selectedCount ) === "number" ){
+            return this.selectedCount;
+        }else{
+            return 0;
+        }
+    },
+    _checkStatus : function(){
+
+    },
     isExisted : function( d ){
         if( !d )return true;
         if( !this.createdItemObject )this.createdItemObject = {};
@@ -385,22 +473,38 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
             return false;
         }
     },
-    loadSub: function(callback){
+    loadSub : function(callback){
+        this._loadSub(function( firstLoad ){
+            if( firstLoad && (this.selector.options.showSelectedCount || this.selector.options.isCheckStatus)){
+                var count = 0;
+                this.subCategorys.each( function (category) {
+                    var l = category.subItems.filter( function (item) { return item.isSelected; });
+                    count = count + l.length;
+                });
+
+                var list = this.subItems.filter( function (item) { return item.isSelected; });
+                this.selectedCount = count+list.length;
+
+                this.checkCountAndStatus(this.selectedCount);
+            }
+            if (callback) callback();
+        }.bind(this))
+    },
+    _loadSub: function(callback){
         if (!this.loaded){
             if( this.data.identityList && this.data.identityList.length>0 ){
-                debugger;
                 this.data.identityList.sort( function(a, b){
                     //this.selector.getUnitOrderNumber( a.unitLevelName )
                     return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
                 });
                 this.data.identityList.each( function( identity ){
-                    if( !this.selector.isExcluded( identity ) ) {
-                        if( !this.isExisted( identity ) ){
+                    // if( !this.selector.isExcluded( identity ) ) {
+                    //     if( !this.isExisted( identity ) ){
                             var item = this.selector._newItem(identity, this.selector, this.children, this.level + 1, this);
                             this.selector.items.push(item);
                             if(this.subItems)this.subItems.push( item );
-                        }
-                    }
+                        // }
+                    // }
                 }.bind(this))
             }
 
@@ -409,35 +513,23 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
                     return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
                 });
                 this.data.unitList.each( function( subData ){
-                    if( !this.selector.isExcluded( subData ) ) {
+                    // if( !this.selector.isExcluded( subData ) ) {
                         var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level + 1, this);
                         this.subCategorys.push( category );
                         category.loadSub()
-                    }
+                    // }
                 }.bind(this));
             }
 
             this.loaded = true;
-            if (callback) callback( );
+
+            if (callback) callback( true );
         }else{
             if (callback) callback( );
         }
     },
     loadCategoryChildren: function(callback){
         if (!this.categoryLoaded){
-            //if( this.data.unitList && this.data.unitList.length ){
-            //    this.data.unitList.sort( function(a, b){
-            //        return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
-            //    });
-            //    this.data.unitList.each( function( subData ){
-            //        if( !this.selector.isExcluded( subData ) ) {
-            //            var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level + 1, this);
-            //            this.subCategorys.push( category );
-            //            category.loadCategoryChildren()
-            //        }
-            //    }.bind(this));
-            //}
-
             this.loadSub();
 
             this.categoryLoaded = true;
@@ -455,13 +547,13 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
                     return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
                 });
                 this.data.identityList.each( function( identity ){
-                    if( !this.selector.isExcluded( identity ) ) {
-                        if( !this.isExisted( identity ) ){
+                    // if( !this.selector.isExcluded( identity ) ) {
+                    //     if( !this.isExisted( identity ) ){
                             var item = this.selector._newItem(identity, this.selector, this.children, this.level + 1, this);
                             this.selector.items.push(item);
                             if(this.subItems)this.subItems.push( item );
-                        }
-                    }
+                        // }
+                    // }
                 }.bind(this))
             }
             this.itemLoaded = true;

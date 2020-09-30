@@ -14,6 +14,10 @@ MWF.xApplication.Selector.CMSFormField = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
+    _init : function(){
+        this.selectType = "formfield";
+        this.className = "CMSFormField";
+    },
     getFields : function(){
         var dataTypes = {
             "string": ["htmledit", "radio", "select", "textarea", "textfield"],
