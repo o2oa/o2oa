@@ -101,8 +101,8 @@ class ActionInputAll extends BaseAction {
 			cacheInputResult.setName(name);
 			cacheInputResult.setBytes(os.toByteArray());
 			String flag = StringTools.uniqueToken();
-			CacheKey cacheKey = new CacheKey(this.getClass(), flag);
-			CacheManager.put(business.cache(), cacheKey, cacheInputResult);
+			CacheKey cacheKey = new CacheKey(flag);
+			CacheManager.put(this.cache, cacheKey, cacheInputResult);
 			CacheManager.notify(Person.class);
 			CacheManager.notify(Group.class);
 			CacheManager.notify(Role.class);
