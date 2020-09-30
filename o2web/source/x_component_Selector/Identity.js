@@ -778,7 +778,7 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();
-                    if( this.selector.options.showSelectedCount && this.selector.selectType == "identity" ){
+                    if( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ) ){
                         if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( 1, true );
                     }
                 }.bind(this));
@@ -795,17 +795,50 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
             "title" : this._getTtiteText()
         }).inject(this.container);
     },
-    _getShowName: function(){
-        if( this._getTotalCount && this._getSelectedCount ){
-            return "" + this._getTotalCount() + "-" + this._getSelectedCount() + "-" + this.data.name ;
-        }else{
-            return this.data.name;
+    _addSelectedCount : function( count, nested ){
+        var c = ( this._getSelectedCount() || 0 ) + count;
+        this.selectedCount = c;
+        this.checkCountAndStatus( c );
+        if( nested && this.category && this.category._addSelectedCount ){
+            this.category._addSelectedCount(count, nested);
         }
     },
+    checkCountAndStatus: function( count ){
+        if( this.selector.options.showSelectedCount ){
+            this.selectedCountNode.set("text", count ? "(" + count + ")" : "" );
+        }
+        if( this.selector.options.isCheckStatus && this.selectAllNode ){
+            var total = this._getTotalCount();
+            if( total ){
+                var styles;
+                if( count >= total ){
+                    styles = this.selector.css.selectorItemCategoryActionNode_selectAll_selected;
+                    this.isSelectedSome = false;
+                    this.isSelectedAll = true;
+                }else if( count > 0 ){
+                    styles = this.selector.css.selectorItemCategoryActionNode_selectsome_selected;
+                    this.isSelectedSome = true;
+                    this.isSelectedAll = false;
+                }else{
+                    styles = this.selector.css.selectorItemCategoryActionNode_selectAll;
+                    this.isSelectedSome = false;
+                    this.isSelectedAll = false;
+                }
+                this.selectAllNode.setStyles( styles );
+            }
+        }
+    },
+    _getShowName: function(){
+        // if( this._getTotalCount && this._getSelectedCount ){
+        //     return "" + this._getTotalCount() + "-" + this._getSelectedCount() + "-" + this.data.name ;
+        // }else{
+        return this.data.name;
+        // }
+    },
     _getTotalCount : function(){
-        if( !this.selector.allUnitObject )return "n";
+        if( !this.selector.allUnitObject )return 0;
         var unit =  this.selector.allUnitObject[this.data.levelName];
-        var count = unit ? unit.subNestedIdentityCount : "n";
+        var count = unit ? unit.subNestedIdentityCount : 0;
         return count;
     },
     _getSelectedCount : function(){
@@ -887,6 +920,11 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         }
     },
     loadSub: function(callback){
+        this._loadSub( function( firstLoad ) {
+            if(callback)callback();
+        }.bind(this))
+    },
+    _loadSub: function(callback){
         if (!this.loaded){
             // if (this.selector.options.dutys && this.selector.options.dutys.length){
             //     var ids = [];
@@ -943,11 +981,11 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                                 }
                             }.bind(this));
                             this.loaded = true;
-                            if (callback) callback();
+                            if (callback) callback( true );
                         }.bind(this), null, this.data.distinguishedName);
                     }else{
                         this.loaded = true;
-                        if (callback) callback();
+                        if (callback) callback( true );
                     }
                 }.bind(this), null, this.data.distinguishedName);
             // }
@@ -966,7 +1004,13 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
     _hasChildItem: function(){
         return (this.data.subDirectIdentityCount) ? this.data.subDirectIdentityCount : 0;
     },
-
+    afterLoad: function(){
+        if (this.level===1) this.clickItem();
+        if( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ){
+            var count = this._getSelectedCount();
+            this.checkCountAndStatus( count );
+        }
+    },
 
     //for flat category start
     clickFlatCategoryItem: function( callback, hidden ){
