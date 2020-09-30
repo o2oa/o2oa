@@ -36,7 +36,7 @@ MWF.xApplication.Selector.Person = new Class({
         "flatCategory" : false, //扁平化展现分类,
         "selectType" : "person",
 
-        "isCheckStatus" : false,
+        "isCheckStatus" : true,
         "showSelectedCount" : true,
 
         "itemHeight" : 29,
@@ -2111,7 +2111,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                         item.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
                     }
                 }
-                if( this.selector.options.showSelectedCount && this.selector.selectType == "identity" ){
+                if( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ) ){
                     if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( -1, true );
                 }
             }.bind(this));
@@ -2429,11 +2429,11 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             if( this.selector.css.selectorItemCategoryActionNode_selectAll_over ){
                 this.selectAllNode.addEvents( {
                     "mouseover" : function(ev){
-                        if( !this.isSelectedAll )this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_over );
+                        if( !this.isSelectedAll && !this.isSelectedSome )this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_over );
                         //ev.stopPropagation();
                     }.bind(this),
                     "mouseout" : function(ev){
-                        if( !this.isSelectedAll )this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+                        if( !this.isSelectedAll && !this.isSelectedSome )this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
                         //ev.stopPropagation();
                     }.bind(this)
                 })
@@ -2447,11 +2447,8 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         var m = this.textNode.getStyle("margin-left").toFloat()+indent;
         this.textNode.setStyle("margin-left", ""+m+"px");
 
-        if( this.selector.options.showSelectedCount && this.selector.selectType == "identity" && this._getSelectedCount ){
-            var c = this._getSelectedCount();
-            this.selectedCountNode = new Element("span", {
-                "text":  c ? "(" + c + ")" : ""
-            }).inject(this.textNode);
+        if( this.selector.options.showSelectedCount && this.selector.selectType == "identity" ){
+            this.selectedCountNode = new Element("span").inject(this.textNode);
         }
 
         this.children = new Element("div.children", {
@@ -2504,35 +2501,33 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             "title" : this._getTtiteText()
         }).inject(this.container);
     },
-    _addSelectedCount : function( count, nested ){
-        debugger;
-        var c = ( this._getSelectedCount() || 0 ) + count;
-        this.selectedCount = c;
-        this.selectedCountNode.set("text", c ? "(" + c + ")" : "" );
-        if( nested && this.category && this.category._addSelectedCount ){
-            this.category._addSelectedCount(count, nested);
-        }
-    },
-    isSelectAllEnable : function(){
-
-    },
     unselectAll : function(ev, exclude, checkValid ){
-        var excludeList = exclude || [];
-        if( exclude && typeOf(exclude) !== "array"  )excludeList = [exclude];
-        ( this.subItems || [] ).each( function(item){
-            if(item.isSelected && !excludeList.contains(item) ){
-                item.unSelected( checkValid );
-            }
-        }.bind(this));
+        var fun = function(){
+            var excludeList = exclude || [];
+            if( exclude && typeOf(exclude) !== "array"  )excludeList = [exclude];
+            ( this.subItems || [] ).each( function(item){
+                if(item.isSelected && !excludeList.contains(item) ){
+                    item.unSelected( checkValid );
+                }
+            }.bind(this));
 
-        if( this.selectAllNode ){
-            if( this.selector.isFlatCategory ){
-                this.selectAllNode.setStyles( this.selector.css.flatCategory_selectAll );
-            }else if(this.selector.css.selectorItemCategoryActionNode_selectAll){
-                this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+            if( this.selectAllNode ){
+                if( this.selector.isFlatCategory ){
+                    this.selectAllNode.setStyles( this.selector.css.flatCategory_selectAll );
+                }else if(this.selector.css.selectorItemCategoryActionNode_selectAll){
+                    this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+                }
             }
+            this.isSelectedAll = false;
+        }.bind(this);
+
+        if( this.loaded ){
+            fun();
+        }else{
+            this.clickItem( function(){
+                fun();
+            }.bind(this))
         }
-        this.isSelectedAll = false;
     },
     unselectAllNested : function( ev, exclude, checkValid ){
         this.unselectAll(ev, exclude, checkValid);
@@ -2595,7 +2590,15 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                     if( this.selector.isFlatCategory ){
                         this.selectAllNode.setStyles( this.selector.css.flatCategory_selectAll_selected );
                     }else if(this.selector.css.selectorItemCategoryActionNode_selectAll_selected){
-                        this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_selected );
+
+                        var styles = this.selector.css.selectorItemCategoryActionNode_selectAll_selected;
+
+                        if( this.selector.options.isCheckStatus && this.selector.selectType === "identity" ){
+                            if( this._getSelectedCount() < this._getTotalCount() ){
+                                styles = this.selector.css.selectorItemCategoryActionNode_selectsome_selected;
+                            }
+                        }
+                        this.selectAllNode.setStyles( styles );
                     }
                 }
                 this.isSelectedAll = true;

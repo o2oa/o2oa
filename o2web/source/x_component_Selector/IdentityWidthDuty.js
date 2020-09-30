@@ -253,26 +253,22 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
     },
     _addSelectedCount : function(){
         var count = this._getSelectedCount();
-        this.selectedCountNode.set("text", count ? "(" + count + ")" : "");
+        this.checkCountAndStatus(count);
+    },
+    _getTotalCount : function(){
+        return this.subItems.length;
     },
     _getSelectedCount : function(){
         var list = this.subItems.filter( function (item) { return item.isSelected; });
         return list.length;
     },
-    _getNestItemCount : function(){
-      return this.subItems.length;
-    },
-    _checkStatus : function(){
-
-    },
     loadSub : function(callback){
-        this._loadSub( function() {
-            if( this.selector.options.showSelectedCount ){
-                var count = this._getSelectedCount();
-                this.selectedCountNode.set("text", count ? "(" + count + ")" : "" )
-            }
-            if( this.selector.options.isCheckStatus ){
-
+        this._loadSub( function( firstLoad ) {
+            if(firstLoad){
+                if( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ){
+                    var count = this._getSelectedCount();
+                    this.checkCountAndStatus(count);
+                }
             }
             if(callback)callback();
         }.bind(this))
@@ -301,7 +297,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                         this.loaded = true;
                         this.loadingsub = false;
                         this.itemLoaded = true;
-                        if (callback) callback();
+                        if (callback) callback( true );
                     }
 
                 }.bind(this), null, false);
@@ -390,7 +386,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                     }.bind(this));
                     this.loaded = true;
                     this.loadingsub = false;
-                    if (callback) callback();
+                    if (callback) callback( true );
                 }.bind(this), null, this.data.name);
             }
         }else{
