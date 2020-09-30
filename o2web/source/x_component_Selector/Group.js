@@ -12,6 +12,10 @@ MWF.xApplication.Selector.Group = new Class({
         "include" : [],
         "selectType" : "group"
     },
+    _init : function(){
+        this.selectType = "group";
+        this.className = "Group";
+    },
     checkLoadSelectItems: function(){
         if( this.options.include && this.options.include.length ){
             this.loadInclude();

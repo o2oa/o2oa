@@ -10,7 +10,10 @@ MWF.xApplication.Selector.Application = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "application";
+        this.className = "Application"
+    },
     loadSelectItems: function(addToNext){
         this.processAction.listApplications(function(json){
             json.data.each(function(data){

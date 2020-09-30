@@ -9,7 +9,10 @@ MWF.xApplication.Selector.Duty = new Class({
         "values": [],
         "expand": false
     },
-
+    _init : function(){
+        this.selectType = "duty";
+        this.className = "Duty";
+    },
     loadSelectItems: function(addToNext){
         this.orgAction.listUnitdutyName(function(json){
            json.data.nameList.each(function(data){
