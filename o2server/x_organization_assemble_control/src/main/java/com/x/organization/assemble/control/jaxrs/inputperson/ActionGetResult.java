@@ -17,7 +17,7 @@ public class ActionGetResult extends BaseAction {
 	protected ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		logger.debug(effectivePerson, "flag:{}.", flag);
 		ActionResult<Wo> result = new ActionResult<>();
-		CacheKey cacheKey = new CacheKey(this.getClass(), flag);
+		CacheKey cacheKey = new CacheKey(flag);
 		Optional<?> optional = CacheManager.get(this.cache, cacheKey);
 		if (!optional.isPresent()) {
 			throw new ExceptionResultNotFound(flag);
