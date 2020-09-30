@@ -13,7 +13,10 @@ MWF.xApplication.Selector.FormField = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "formfield";
+        this.className = "FormField";
+    },
     loadSelectItems: function(addToNext){
         if (this.options.application){
             this.designerAction.listFormField(this.options.application, function(json){

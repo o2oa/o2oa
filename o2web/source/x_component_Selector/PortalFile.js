@@ -13,7 +13,10 @@ MWF.xApplication.Selector.PortalFile = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "file";
+        this.className = "PortalFile";
+    },
     loadSelectItems: function(addToNext){
 	    if (this.options.isImage) this.options.accept = ["png","jpg","bmp","gif","jpeg","jpe"];
         this.portalAction.listApplication(function(json){

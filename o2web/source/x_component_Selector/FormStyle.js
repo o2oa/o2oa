@@ -12,6 +12,10 @@ MWF.xApplication.Selector.FormStyle = new Class({
         "mode" : "pc",
         "forceSearchInItem" : true
     },
+    _init : function(){
+        this.selectType = "formstyle";
+        this.className = "FormStyle";
+    },
     loadSelectItems: function(addToNext){
         var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/config.json";
         MWF.getJSON(stylesUrl,{

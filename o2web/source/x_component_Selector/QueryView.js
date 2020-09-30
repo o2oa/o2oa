@@ -11,7 +11,10 @@ MWF.xApplication.Selector.QueryView = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "queryview";
+        this.className = "QueryView";
+    },
     loadSelectItems: function(addToNext){
         this.queryAction.listApplication(function(json){
             if (json.data.length){
