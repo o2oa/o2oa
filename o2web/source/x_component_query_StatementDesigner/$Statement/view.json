@@ -20,6 +20,7 @@
     "afterGridScriptText": "",
     "afterGroupGridScriptText": "",
     "afterCalculateGridScriptText": "",
+    "actionbarHidden" : true,
     "events": {
       "queryLoad" : {
         "code": "",
