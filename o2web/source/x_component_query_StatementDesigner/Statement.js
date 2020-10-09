@@ -85,7 +85,26 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }.bind(this));
 
         this.loadStatement();
+        // this.showProperty();
+        this.selected();
+    },
+    selected: function(){
+        if (this.currentSelectedModule){
+            if (this.currentSelectedModule==this){
+                return true;
+            }else{
+                this.currentSelectedModule.unSelected();
+            }
+        }
+
+        this.currentSelectedModule = this;
+        this.isSelected = true;
         this.showProperty();
+    },
+    unSelected: function(){
+        this.currentSelectedModule = null;
+        this.isSelected = false;
+        this.hideProperty();
     },
     showProperty: function(){
         if (!this.property){
@@ -99,6 +118,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }else{
             this.property.show();
         }
+    },
+    hideProperty: function(){
+        if (this.property) this.property.hide();
     },
     loadStatement: function(){
         //this.statementDesignerNode = new Element("div", {"styles": this.css.statementDesignerNode}).inject(this.areaNode);
@@ -291,6 +313,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     //     }.bind(this), false);
     // },
     setEvent: function(){
+        this.designerArea.addEvent("click", function (e) {
+            this.selected();
+            e.stopPropagation();
+        }.bind(this));
         this.formatTypeArea.getElements("input").addEvent("click", function(e){
             if (e.target.checked){
                 var v = e.target.get("value");
@@ -549,7 +575,8 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         this.node = this.statement.viewArea;
         //this.tab = this.designer.tab;
 
-        this.areaNode = new Element("div", {"styles": {"height": "100%", "overflow": "auto"}});
+        this.areaNode = new Element("div", {"styles": {"height": "calc(100% - 10px)", "overflow": "auto", "width" : "calc(100% - 10px)" }});
+        this.areaNode.setStyles(this.css.areaNode);
 
         //MWF.require("MWF.widget.ScrollBar", function(){
         //    new MWF.widget.ScrollBar(this.areaNode, {"distance": 100});
@@ -587,7 +614,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
 
             this.loadPaging();
 
-            this.selected();
+            // this.selected();
             this.setEvent();
 
             //if (this.options.showTab) this.page.showTabIm();
@@ -613,6 +640,41 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
                 }.bind(this)
             },false);
         }
+    },
+    setEvent: function(){
+        this.areaNode.addEvents({
+            "click": function(e){ this.selected();  e.stopPropagation(); }.bind(this),
+            "mouseover": function(){ if (!this.isSelected) this.areaNode.setStyles(this.css.areaNode_over)}.bind(this),
+            "mouseout": function(){if (!this.isSelected) this.areaNode.setStyles(this.css.areaNode)}.bind(this)
+        });
+        this.refreshNode.addEvent("click", function(e){
+            this.loadViewData();
+            e.stopPropagation();
+        }.bind(this));
+        this.addColumnNode.addEvent("click", function(e){
+            this.addColumn();
+            e.stopPropagation();
+        }.bind(this));
+    },
+    selected: function(){
+        debugger;
+        if (this.statement.currentSelectedModule){
+            if (this.statement.currentSelectedModule==this){
+                return true;
+            }else{
+                this.statement.currentSelectedModule.unSelected();
+            }
+        }
+        this.areaNode.setStyles(this.css.areaNode_selected);
+        this.statement.currentSelectedModule = this;
+        this.isSelected = true;
+        this.showProperty();
+    },
+    unSelected: function(){
+        this.statement.currentSelectedModule = null;
+        this.isSelected = false;
+        this.areaNode.setStyles(this.css.areaNode);
+        this.hideProperty();
     },
 
     showProperty: function(){
@@ -856,10 +918,6 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         }.bind(this));
         //new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 0}).toRight();
     },
-    unSelected: function(){
-        this.currentSelectedModule = null;
-        this.hideProperty();
-    },
     loadViewColumns: function(){
         //    for (var i=0; i<10; i++){
         if (this.json.data.selectList) {
@@ -1099,13 +1157,97 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
 });
 
 MWF.xApplication.query.StatementDesigner.View.Column = new Class({
-    Extends: MWF.xApplication.query.ViewDesigner.View.Column
+    Extends: MWF.xApplication.query.ViewDesigner.View.Column,
+    selected: function(){
+        if (this.view.statement.currentSelectedModule){
+            if (this.view.statement.currentSelectedModule==this){
+                return true;
+            }else{
+                this.view.statement.currentSelectedModule.unSelected();
+            }
+        }
+        this.node.setStyles(this.css.viewTitleColumnNode_selected);
+        this.listNode.setStyles(this.css.cloumnListNode_selected);
+        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+        new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
+
+        this.view.statement.currentSelectedModule = this;
+        this.isSelected = true;
+        this._showActions();
+        this.showProperty();
+    },
+    unSelected: function(){
+        this.view.statement.currentSelectedModule = null;
+        //this.node.setStyles(this.css.viewTitleColumnNode);
+        if (this.isError){
+            this.node.setStyles(this.css.viewTitleColumnNode_error)
+        }else{
+            this.node.setStyles(this.css.viewTitleColumnNode)
+        }
+
+        this.listNode.setStyles(this.css.cloumnListNode);
+        this.isSelected = false;
+        this._hideActions();
+        this.hideProperty();
+    }
 });
 
 MWF.xApplication.query.StatementDesigner.View.Actionbar = new Class({
-    Extends: MWF.xApplication.query.ViewDesigner.View.Actionbar
+    Extends: MWF.xApplication.query.ViewDesigner.View.Actionbar,
+    getJsonPath : function(){
+        return "../x_component_query_StatementDesigner/$statement/toolbars.json";
+    },
+    selected: function(){
+        if (this.view.statement.currentSelectedModule){
+            if (this.view.statement.currentSelectedModule==this){
+                return true;
+            }else{
+                this.view.statement.currentSelectedModule.unSelected();
+            }
+        }
+        this.node.setStyles(this.css.toolbarWarpNode_selected);
+        //this.listNode.setStyles(this.css.cloumnListNode_selected);
+        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+        //new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
+
+        this.view.statement.currentSelectedModule = this;
+        this.isSelected = true;
+        //this._showActions();
+        this.showProperty();
+    },
+    unSelected: function(){
+        this.view.statement.currentSelectedModule = null;
+        this.node.setStyles(this.css.toolbarWarpNode)
+
+        //this.listNode.setStyles(this.css.cloumnListNode);
+        this.isSelected = false;
+        //this._hideActions();
+        this.hideProperty();
+    },
 });
 
 MWF.xApplication.query.StatementDesigner.View.Paging = new Class({
-    Extends: MWF.xApplication.query.ViewDesigner.View.Paging
+    Extends: MWF.xApplication.query.ViewDesigner.View.Paging,
+    selected: function(){
+        if (this.view.statement.currentSelectedModule){
+            if (this.view.statement.currentSelectedModule==this){
+                return true;
+            }else{
+                this.view.statement.currentSelectedModule.unSelected();
+            }
+        }
+        this.node.setStyles(this.css.pagingWarpNode_selected);
+        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+
+        this.view.statement.currentSelectedModule = this;
+        this.isSelected = true;
+        this.showProperty();
+    },
+    unSelected: function(){
+        this.view.statement.currentSelectedModule = null;
+        this.node.setStyles(this.css.pagingWarpNode);
+
+        this.isSelected = false;
+        this.hideProperty();
+    }
 });
