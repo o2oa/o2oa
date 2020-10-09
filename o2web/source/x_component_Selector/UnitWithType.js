@@ -21,6 +21,12 @@ MWF.xApplication.Selector.UnitWithType = new Class({
         this.className = "UnitWithType";
     },
     loadSelectItems: function(addToNext){
+
+        if( this.options.disabled ){
+            this.afterLoadSelectItem();
+            return;
+        }
+
         var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
 
         var data = {};
