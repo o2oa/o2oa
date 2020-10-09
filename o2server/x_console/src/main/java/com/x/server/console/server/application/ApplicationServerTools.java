@@ -50,7 +50,6 @@ import com.x.base.core.project.x_hotpic_assemble_control;
 import com.x.base.core.project.x_meeting_assemble_control;
 import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.x_mind_assemble_control;
-import com.x.base.core.project.x_okr_assemble_control;
 import com.x.base.core.project.x_organization_assemble_authentication;
 import com.x.base.core.project.x_organization_assemble_control;
 import com.x.base.core.project.x_organization_assemble_express;
@@ -102,7 +101,7 @@ public class ApplicationServerTools extends JettySeverTools {
 			x_portal_assemble_surface.class.getName(), x_attendance_assemble_control.class.getName(),
 			x_bbs_assemble_control.class.getName(), x_file_assemble_control.class.getName(),
 			x_meeting_assemble_control.class.getName(), x_mind_assemble_control.class.getName(),
-			x_okr_assemble_control.class.getName(), x_hotpic_assemble_control.class.getName(),
+			x_hotpic_assemble_control.class.getName(),
 			x_query_service_processing.class.getName(), x_query_assemble_designer.class.getName(),
 			x_query_assemble_surface.class.getName());
 
