@@ -68,84 +68,89 @@ class LoginViewController: UIViewController {
     }
 
     func startFlowForPromise() {
-        
-        if !O2IsConnect2Collect {
-            let unit = O2BindUnitModel()
-            if let infoPath = Bundle.main.path(forResource: "Info", ofType: "plist"), let dic = NSDictionary(contentsOfFile: infoPath) {
-                let o2Server = dic["o2 server"] as? NSDictionary
-                let id = o2Server?["id"] as? String
-                let name = o2Server?["name"] as? String
-                let centerHost = o2Server?["centerHost"] as? String
-                let centerContext = o2Server?["centerContext"] as? String
-                let centerPort = o2Server?["centerPort"] as? Int
-                let httpProtocol = o2Server?["httpProtocol"] as? String
-                DDLogDebug("连接服务器：\(String(describing: name)) , host:\(String(describing: centerHost)) , context:\(String(describing: centerContext)), port:\(centerPort ?? 0), portocal:\(String(describing: httpProtocol)) ")
-                if name == nil || centerHost == nil || centerContext == nil {
-                    self.showError(title:  "服务器配置信息异常！")
-                    return
-                }
-                unit.id = id
-                unit.centerContext = centerContext
-                unit.centerHost = centerHost
-                unit.centerPort = centerPort
-                unit.httpProtocol = httpProtocol
-                unit.name = name
-            }else {
-                self.showError(title:  "没有配置服务器信息！")
-                return
-            }
-            
-            O2AuthSDK.shared.launchInner(unit: unit) { (state, msg) in
-                switch state {
-                case .bindError:
-                    //校验绑定结点信息错误
-                   self.showError(title: "未知错误！")
-                    break
-                case .loginError:
-                    self.forwardToSegue("loginSystemSegue")
-                    //自动登录出错
-                    break
-                case .unknownError:
-                    self.showError(title: msg ?? "未知错误！")
-                    break
-                case .success:
-                    //处理移动端应用
-                    self.viewModel._saveAppConfigToDb()
-                    //跳转到主页
-                    let destVC = O2MainController.genernateVC()
-                    destVC.selectedIndex = 2 // 首页选中 TODO 图标不亮。。。。。
-                    UIApplication.shared.keyWindow?.rootViewController = destVC
-                    UIApplication.shared.keyWindow?.makeKeyAndVisible()
-                }
+        //越狱检查
+        if SecurityCheckManager.shared.isJailBroken() {
+            self.showSystemAlert(title: "提示", message: "当前运行环境已经越狱，本应用将不提供服务！") { (action) in
+                DDLogError("已经越狱的机器，不进入app！")
             }
         }else {
-            //本地 -> 校验 -> 下载NodeAPI -> 下载configInfo -> 自动登录
-            O2AuthSDK.shared.launch { (state, msg) in
-                switch state {
-                case .bindError:
-                    //校验绑定结点信息错误
-                    self.forwardToSegue("bindPhoneSegue")
-                    break
-                case .loginError:
-                    self.forwardToSegue("loginSystemSegue")
-                    //自动登录出错
-                    break
-                case .unknownError:
-//                    self.showError(title: msg ?? "未知错误！")
-                    self.needReBind(msg ?? "未知错误！")
-                    break
-                case .success:
-                    //处理移动端应用
-                    self.viewModel._saveAppConfigToDb()
-                    //跳转到主页
-                    let destVC = O2MainController.genernateVC()
-                    destVC.selectedIndex = 2 // 首页选中 TODO 图标不亮。。。。。
-                    UIApplication.shared.keyWindow?.rootViewController = destVC
-                    UIApplication.shared.keyWindow?.makeKeyAndVisible()
+            if !O2IsConnect2Collect {
+                let unit = O2BindUnitModel()
+                if let infoPath = Bundle.main.path(forResource: "Info", ofType: "plist"), let dic = NSDictionary(contentsOfFile: infoPath) {
+                    let o2Server = dic["o2 server"] as? NSDictionary
+                    let id = o2Server?["id"] as? String
+                    let name = o2Server?["name"] as? String
+                    let centerHost = o2Server?["centerHost"] as? String
+                    let centerContext = o2Server?["centerContext"] as? String
+                    let centerPort = o2Server?["centerPort"] as? Int
+                    let httpProtocol = o2Server?["httpProtocol"] as? String
+                    DDLogDebug("连接服务器：\(String(describing: name)) , host:\(String(describing: centerHost)) , context:\(String(describing: centerContext)), port:\(centerPort ?? 0), portocal:\(String(describing: httpProtocol)) ")
+                    if name == nil || centerHost == nil || centerContext == nil {
+                        self.showError(title:  "服务器配置信息异常！")
+                        return
+                    }
+                    unit.id = id
+                    unit.centerContext = centerContext
+                    unit.centerHost = centerHost
+                    unit.centerPort = centerPort
+                    unit.httpProtocol = httpProtocol
+                    unit.name = name
+                }else {
+                    self.showError(title:  "没有配置服务器信息！")
+                    return
+                }
+                
+                O2AuthSDK.shared.launchInner(unit: unit) { (state, msg) in
+                    switch state {
+                    case .bindError:
+                        //校验绑定结点信息错误
+                       self.showError(title: "未知错误！")
+                        break
+                    case .loginError:
+                        self.forwardToSegue("loginSystemSegue")
+                        //自动登录出错
+                        break
+                    case .unknownError:
+                        self.showError(title: msg ?? "未知错误！")
+                        break
+                    case .success:
+                        //处理移动端应用
+                        self.viewModel._saveAppConfigToDb()
+                        //跳转到主页
+                        let destVC = O2MainController.genernateVC()
+                        destVC.selectedIndex = 2 // 首页选中 TODO 图标不亮。。。。。
+                        UIApplication.shared.keyWindow?.rootViewController = destVC
+                        UIApplication.shared.keyWindow?.makeKeyAndVisible()
+                    }
+                }
+            }else {
+                //本地 -> 校验 -> 下载NodeAPI -> 下载configInfo -> 自动登录
+                O2AuthSDK.shared.launch { (state, msg) in
+                    switch state {
+                    case .bindError:
+                        //校验绑定结点信息错误
+                        self.forwardToSegue("bindPhoneSegue")
+                        break
+                    case .loginError:
+                        self.forwardToSegue("loginSystemSegue")
+                        //自动登录出错
+                        break
+                    case .unknownError:
+    //                    self.showError(title: msg ?? "未知错误！")
+                        self.needReBind(msg ?? "未知错误！")
+                        break
+                    case .success:
+                        //处理移动端应用
+                        self.viewModel._saveAppConfigToDb()
+                        //跳转到主页
+                        let destVC = O2MainController.genernateVC()
+                        destVC.selectedIndex = 2 // 首页选中 TODO 图标不亮。。。。。
+                        UIApplication.shared.keyWindow?.rootViewController = destVC
+                        UIApplication.shared.keyWindow?.makeKeyAndVisible()
+                    }
                 }
             }
         }
-        
     }
 
     

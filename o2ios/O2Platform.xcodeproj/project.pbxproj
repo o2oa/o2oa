@@ -273,6 +273,7 @@
 		B1D1BC8F234C8349002025DA /* CloudFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D1BC8E234C8349002025DA /* CloudFileCell.swift */; };
 		B1D4AFED24B409A9004E648E /* AudioTouchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D4AFEC24B409A9004E648E /* AudioTouchButton.swift */; };
 		B1DA305F2282754500669418 /* QCalendarPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DA305E2282754500669418 /* QCalendarPicker.swift */; };
+		B1DB0843252314F400EE6673 /* SecurityCheckManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DB0842252314F400EE6673 /* SecurityCheckManager.swift */; };
 		B1DB6EA5237E6F2C00D7BA94 /* O2VersionInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DB6EA4237E6F2C00D7BA94 /* O2VersionInfoModel.swift */; };
 		B1DE853823602D36003C36E2 /* Languager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DE853723602D36003C36E2 /* Languager.swift */; };
 		B1DE8564236030E2003C36E2 /* Bundle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DE8563236030E2003C36E2 /* Bundle+Extension.swift */; };
@@ -1444,6 +1445,7 @@
 		B1D1BC8E234C8349002025DA /* CloudFileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileCell.swift; sourceTree = "<group>"; };
 		B1D4AFEC24B409A9004E648E /* AudioTouchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioTouchButton.swift; sourceTree = "<group>"; };
 		B1DA305E2282754500669418 /* QCalendarPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCalendarPicker.swift; sourceTree = "<group>"; };
+		B1DB0842252314F400EE6673 /* SecurityCheckManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityCheckManager.swift; sourceTree = "<group>"; };
 		B1DB6EA4237E6F2C00D7BA94 /* O2VersionInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2VersionInfoModel.swift; sourceTree = "<group>"; };
 		B1DE853723602D36003C36E2 /* Languager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Languager.swift; sourceTree = "<group>"; };
 		B1DE8563236030E2003C36E2 /* Bundle+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Extension.swift"; sourceTree = "<group>"; };
@@ -2813,6 +2815,7 @@
 				B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */,
 				B15BE0BD2499BCEF008CD1DB /* O2RecordVoiceManager.swift */,
 				B15BE110249A6002008CD1DB /* AudioPlayerManager.swift */,
+				B1DB0842252314F400EE6673 /* SecurityCheckManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -5645,6 +5648,7 @@
 				B15F8129210EF15E00B81F35 /* OOCalendarEventViewController.swift in Sources */,
 				09E02E941F16319600579887 /* String+Haneke.swift in Sources */,
 				E40E24B420B7DA3C009F8BE7 /* OOMeetingModels.swift in Sources */,
+				B1DB0843252314F400EE6673 /* SecurityCheckManager.swift in Sources */,
 				E4B888F61D9D48F1002E1A46 /* Application.swift in Sources */,
 				E4C24C3F208D7EDE00E426B0 /* OOContactSearchViewModel.swift in Sources */,
 				E4B697FC2076520E0062F6E8 /* OOFileModels.swift in Sources */,
