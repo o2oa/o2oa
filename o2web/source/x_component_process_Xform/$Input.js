@@ -191,21 +191,22 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     _setValue: function(value){
 	    debugger;
 	    if (value && value.isAG){
-	        this.moduleValueAG = value;
-            value.addResolve(function(v){
-                this._setValue(v);
-                // this._setBusinessData(v);
-                // if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
-                // if (this.readonly || this.json.isReadonly) this.node.set("text", v);
+	        this.moduleValueAG = o2.AG.all(value).then(function(v){
+                this.__setValue(v);
             }.bind(this));
-        }else{
-            this._setBusinessData(value);
-            if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
-            if (this.readonly || this.json.isReadonly) this.node.set("text", value);
-            this.moduleValueAG = null;
-            return value;
+        }else {
+            this.__setValue(value);
         }
+
     },
+    __setValue: function(value){
+        this._setBusinessData(value);
+        if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
+        if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+        this.moduleValueAG = null;
+        return value;
+    },
+
 	_loadValue: function(){
         this._setValue(this.getValue());
 	},
@@ -256,22 +257,25 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     },
 	setData: function(data){
         if (data && data.isAG){
-            this.moduleValueAG = data;
-            data.addResolve(function(v){
-                this.setData(v);
+            this.moduleValueAG = o2.AG.all(data).then(function(v){
+                this.__setData(v);
             }.bind(this));
         }else{
-            this._setBusinessData(data);
-            if (this.node.getFirst()){
-                this.node.getFirst().set("value", data);
-                this.checkDescription();
-                this.validationMode();
-            }else{
-                this.node.set("text", data);
-            }
-            this.moduleValueAG = null;
+            this.__setData(data);
         }
 	},
+    __setData: function(data){
+        this._setBusinessData(data);
+        if (this.node.getFirst()){
+            this.node.getFirst().set("value", data);
+            this.checkDescription();
+            this.validationMode();
+        }else{
+            this.node.set("text", data);
+        }
+        this.moduleValueAG = null;
+    },
+
 
     createErrorNode: function(text){
 
