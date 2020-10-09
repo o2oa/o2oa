@@ -1,0 +1,89 @@
+{
+  "name": "",
+  "id": "",
+  "query": "",
+  "alias": "",
+  "description": "",
+  "display": true,
+  "type": "View",
+
+  "data": {
+    "exportGrid": true,
+    "exportGoupGrid": true,
+    "where": {
+      "accessible": false,
+      "scope": "work",
+      "applicationList": [],
+      "processList": [],
+      "dateRange": {
+        "dateRangeType": "none",
+        "dateEffectType": "start",
+        "year": "",
+        "month": "",
+        "date": "",
+        "season": 0,
+        "week": 0,
+        "adjust": 0,
+        "start": "",
+        "completed": ""
+      },
+      "creatorPersonList": [],
+      "creatorUnitList": [],
+      "creatorIdentityList": []
+    },
+    "noDataText" : "未找到数据",
+    "selectList": [],
+    "filterList": [],
+    "orderList": [],
+    "group": {},
+    "columnList": [],
+    "calculate": {},
+    "afterGridScriptText": "",
+    "afterGroupGridScriptText": "",
+    "afterCalculateGridScriptText": "",
+    "events": {
+      "queryLoad" : {
+        "code": "",
+        "html": ""
+      },
+      "postLoad": {
+        "code": "",
+        "html": ""
+      },
+      "postLoadPageData" : {
+        "code": "",
+        "html": ""
+      },
+      "postLoadPage": {
+        "code": "",
+        "html": ""
+      },
+      "queryLoadItemRow": {
+        "code": "",
+        "html": ""
+      },
+      "postLoadItemRow": {
+        "code": "",
+        "html": ""
+      },
+      "queryLoadCategoryRow": {
+        "code": "",
+        "html": ""
+      },
+      "postLoadCategoryRow": {
+        "code": "",
+        "html": ""
+      },
+      "selectRow" : {
+        "code": "",
+        "html": ""
+      },
+      "unselectRow" : {
+        "code": "",
+        "html": ""
+      }
+    }
+  },
+  "availableIdentityList": [],
+  "availableUnitList": []
+}
