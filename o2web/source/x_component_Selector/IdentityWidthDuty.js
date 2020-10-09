@@ -24,8 +24,11 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
 	    this.className = "IdentityWidthDuty"
     },
     loadSelectItems: function(addToNext){
-
         var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
+        if( this.options.disabled ){
+            this.afterLoadSelectItem();
+            return;
+        }
 
         if( this.options.resultType === "person" ){
             if( this.titleTextNode ){
