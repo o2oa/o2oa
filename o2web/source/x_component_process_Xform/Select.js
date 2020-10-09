@@ -131,21 +131,44 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 	},
 	setOptions: function(){
 		var optionItems = this.getOptions();
-        if (!optionItems) optionItems = [];
-        if (o2.typeOf(optionItems)==="array"){
-			optionItems.each(function(item){
-				var tmps = item.split("|");
-				var text = tmps[0];
-				var value = tmps[1] || text;
-
-				var option = new Element("option", {
-					"value": value,
-					"text": text
-				}).inject(this.node);
-			}.bind(this));
-			this.fireEvent("setOptions", [optionItems])
-		}
+		this._setOptions(optionItems);
 	},
+	_setOptions: function(optionItems){
+		this.moduleSelectAG = o2.AG.all(optionItems).then(function(options){
+			this.moduleSelectAG = null;
+			if (!options) options = [];
+			if (o2.typeOf(options)==="array"){
+				options.each(function(item){
+					var tmps = item.split("|");
+					var text = tmps[0];
+					var value = tmps[1] || text;
+
+					var option = new Element("option", {
+						"value": value,
+						"text": text
+					}).inject(this.node);
+				}.bind(this));
+				this.fireEvent("setOptions", [options])
+			}
+		}.bind(this))
+	},
+	// __setOptions: function(){
+	// 	var optionItems = this.getOptions();
+    //     if (!optionItems) optionItems = [];
+    //     if (o2.typeOf(optionItems)==="array"){
+	// 		optionItems.each(function(item){
+	// 			var tmps = item.split("|");
+	// 			var text = tmps[0];
+	// 			var value = tmps[1] || text;
+	//
+	// 			var option = new Element("option", {
+	// 				"value": value,
+	// 				"text": text
+	// 			}).inject(this.node);
+	// 		}.bind(this));
+	// 		this.fireEvent("setOptions", [optionItems])
+	// 	}
+	// },
 	addOption: function(text, value){
         var option = new Element("option", {
             "value": value || text,
@@ -153,21 +176,63 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
         }).inject(this.node);
 		this.fireEvent("addOption", [text, value])
 	},
+
 	_setValue: function(value){
-		if (!this.readonly && !this.json.isReadonly ) {
-            this._setBusinessData(value);
-            for (var i=0; i<this.node.options.length; i++){
-                var option = this.node.options[i];
-                if (option.value==value){
-                    option.selected = true;
-                    //	break;
-                }else{
-                    option.selected = false;
-                }
-            }
-        }
-		//this.node.set("value", value);
+		this.moduleValueAG = o2.AG.all(value).then(function(v){
+			if (this.moduleSelectAG){
+				this.moduleValueAG = this.moduleSelectAG;
+				this.moduleSelectAG.then(function(){
+					this.__setValue(v);
+				}.bind(this));
+			}else{
+				this.__setValue(v)
+			}
+			return v;
+		}.bind(this));
+
+		// if (value && value.isAG){
+		// 	this.moduleValueAG = o2.AG.all(value),then(function(v){
+		// 		this._setValue(v);
+		// 	}.bind(this));
+		// 	// this.moduleValueAG = value;
+		// 	// value.addResolve(function(v){
+		// 	// 	this._setValue(v);
+		// 	// }.bind(this));
+		// }else{
+		//
+		// }
 	},
+	__setValue: function(value){
+		if (!this.readonly && !this.json.isReadonly ) {
+			this._setBusinessData(value);
+			for (var i=0; i<this.node.options.length; i++){
+				var option = this.node.options[i];
+				if (option.value==value){
+					option.selected = true;
+					//	break;
+				}else{
+					option.selected = false;
+				}
+			}
+		}
+		this.moduleValueAG = null;
+	},
+
+	// _setValue: function(value){
+	// 	if (!this.readonly && !this.json.isReadonly ) {
+    //         this._setBusinessData(value);
+    //         for (var i=0; i<this.node.options.length; i++){
+    //             var option = this.node.options[i];
+    //             if (option.value==value){
+    //                 option.selected = true;
+    //                 //	break;
+    //             }else{
+    //                 option.selected = false;
+    //             }
+    //         }
+    //     }
+	// 	//this.node.set("value", value);
+	// },
 	getTextData: function(){
 		var value = [];
 		var text = [];
@@ -208,6 +273,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 		return (value.length==1) ? value[0] : value;
 	},
     resetData: function(){
+		debugger;
         this.setData(this.getValue());
     },
 	getOptionsObj : function(){
@@ -224,7 +290,20 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 		}
 		return { textList : textList, valueList : valueList };
 	},
+
 	setData: function(data){
+		if (data && data.isAG){
+			this.moduleValueAG = data;
+			data.addResolve(function(v){
+				this.setData(v);
+			}.bind(this));
+		}else{
+			this.__setData(data);
+			this.moduleValueAG = null;
+		}
+	},
+
+	__setData: function(data){
         this._setBusinessData(data);
 		if (this.readonly|| this.json.isReadonly){
 			var d = typeOf(data) === "array" ? data : [data];
@@ -234,7 +313,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 				var idx = ops.valueList.indexOf( v );
 				result.push( idx > -1 ? ops.textList[idx] : v);
 			})
-			this.node.set("text", result.join(","))
+			this.node.set("text", result.join(","));
 		}else{
 			var ops = this.node.getElements("option");
 			ops.each(function(op){
