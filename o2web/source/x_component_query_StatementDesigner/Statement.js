@@ -575,7 +575,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         this.node = this.statement.viewArea;
         //this.tab = this.designer.tab;
 
-        this.areaNode = new Element("div", {"styles": {"height": "calc(100% - 10px)", "overflow": "auto", "width" : "calc(100% - 10px)" }});
+        this.areaNode = new Element("div", {"styles": {"height": "calc(100% - 2px)", "overflow": "auto" }});
         this.areaNode.setStyles(this.css.areaNode);
 
         //MWF.require("MWF.widget.ScrollBar", function(){
@@ -969,11 +969,11 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         var size = this.areaNode.getSize();
 
         if (width>size.x){
-            this.viewTitleNode.setStyle("width", ""+width+"px");
-            this.viewAreaNode.setStyle("width", ""+width+"px");
+            this.viewTitleNode.setStyle("width", ""+(width-2)+"px");
+            this.viewAreaNode.setStyle("width", ""+(width-2)+"px");
         }else{
-            this.viewTitleNode.setStyle("width", ""+size.x+"px");
-            this.viewAreaNode.setStyle("width", ""+size.x+"px");
+            this.viewTitleNode.setStyle("width", ""+(size.x-2)+"px");
+            this.viewAreaNode.setStyle("width", ""+(size.x-2)+"px");
         }
         this.setContentColumnWidth();
         this.setContentHeight();
@@ -1194,8 +1194,24 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
 
 MWF.xApplication.query.StatementDesigner.View.Actionbar = new Class({
     Extends: MWF.xApplication.query.ViewDesigner.View.Actionbar,
+    initialize: function(json, jsonList, view, options){
+        this.setOptions( options );
+        this.propertyPath = "../x_component_query_StatementDesigner/$Statement/actionbar.html";
+        this.path = "../x_component_query_ViewDesigner/$View/";
+        this.imagePath_default = "../x_component_query_ViewDesigner/$View/";
+        this.imagePath_custom = "../x_component_process_FormDesigner/Module/Actionbar/";
+        this.cssPath = "../x_component_query_ViewDesigner/$View/"+this.options.style+"/actionbar.wcss";
+
+        this.view = view;
+        this.json = json;
+        this.jsonList = jsonList;
+        this.css = this.view.css;
+        this.container = this.view.actionbarNode;
+        this.moduleName = "actionbar";
+        this.load();
+    },
     getJsonPath : function(){
-        return "../x_component_query_StatementDesigner/$statement/toolbars.json";
+        return "../x_component_query_StatementDesigner/$Statement/toolbars.json";
     },
     selected: function(){
         if (this.view.statement.currentSelectedModule){
