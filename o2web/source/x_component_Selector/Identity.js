@@ -23,6 +23,10 @@ MWF.xApplication.Selector.Identity = new Class({
         this.className = "Identity";
     },
     loadSelectItems : function(){
+        if( this.options.disabled ){
+            this.afterLoadSelectItem();
+            return;
+        }
         if( this.className === "Identity" && (this.options.isCheckStatus || this.options.showSelectedCount )) {
 
             var unitList = [];
