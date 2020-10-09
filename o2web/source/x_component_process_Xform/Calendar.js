@@ -38,20 +38,12 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
         }
     },
     getValue: function(isDate){
+        if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if( value && !isDate)return value;
-
-        if (!value && this.moduleValueAG) value = this.moduleValueAG;
         if (!value) value = this._computeValue();
 
         return value || "";
-
-        // var d = (!!value) ? Date.parse(value) : "";
-        // if (isDate){
-        //     return d || null;
-        // }else{
-        //     return (d) ? d.format(this.json.format) : "";
-        // }
     },
     getValueStr : function(){
         var value = this._getBusinessData();
