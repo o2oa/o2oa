@@ -33,6 +33,10 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 this.options.title = MWF.xApplication.Selector.LP.selectPerson;
             }
         }
+        if( this.options.disabled ){
+            this.afterLoadSelectItem();
+            return;
+        }
 
         if (this.options.dutys.length){
             this.loadInclude( function () {
