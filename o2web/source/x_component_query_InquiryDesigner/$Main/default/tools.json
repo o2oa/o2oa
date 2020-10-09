@@ -1,0 +1,120 @@
+{
+  "label": {
+    "icon": "label.png",
+    "text": "文本",
+    "className": "Label"
+  },
+  "textfield": {
+    "icon": "textfield.png",
+    "text": "域",
+    "className": "Textfield"
+  },
+  "personfield": {
+    "icon": "personfield.png",
+    "text": "人员",
+    "className": "Personfield"
+  },
+  "calendar": {
+    "icon": "calendar.png",
+    "text": "日期选择",
+    "className": "Calendar"
+  },
+  "textarea": {
+    "icon": "textarea.png",
+    "text": "多行文本",
+    "className": "Textarea"
+  },
+  "select": {
+    "icon": "select.png",
+    "text": "下拉框",
+    "className": "Select"
+  },
+  "radio": {
+    "icon": "radio.png",
+    "text": "单选框",
+    "className": "Radio"
+  },
+  "checkbox": {
+    "icon": "checkbox.png",
+    "text": "多选框",
+    "className": "Checkbox"
+  },
+  "button": {
+    "icon": "button.png",
+    "text": "按钮",
+    "className": "Button"
+  },
+
+  "Actionbar": {
+    "icon": "actionbar.png",
+    "text": "操作条",
+    "className": "Actionbar"
+  },
+
+  "image": {
+    "icon": "image.png",
+    "text": "图片",
+    "className": "Image"
+  },
+  "image": {
+    "icon": "attachment.png",
+    "text": "附件",
+    "className": "Attachment"
+  },
+  "div": {
+    "icon": "div.png",
+    "text": "容器",
+    "className": "Div"
+  },
+  "table": {
+    "icon": "table.png",
+    "text": "表格",
+    "className": "Table"
+  },
+  "datagrid": {
+    "icon": "datagrid.png",
+    "text": "数据网格",
+    "className": "Datagrid"
+  },
+  "html": {
+    "icon": "html.png",
+    "text": "HTML",
+    "className": "Html"
+  },
+
+  "tab": {
+    "icon": "tabs.png",
+    "text": "分页",
+    "className": "Tab"
+  },
+  "tree": {
+    "icon": "tree.png",
+    "text": "树",
+    "className": "Tree"
+  },
+  "log": {
+    "icon": "log.png",
+    "text": "流程记录",
+    "className": "Log"
+  },
+  "monitor": {
+    "icon": "monitor.png",
+    "text": "流程监控",
+    "className": "Monitor"
+  },
+  "iframe": {
+    "icon": "iframe.png",
+    "text": "Iframe",
+    "className": "Iframe"
+  },
+  "htmledit": {
+    "icon": "htmleditor.png",
+    "text": "HTML编辑器",
+    "className": "Htmleditor"
+  },
+  "office": {
+    "icon": "office.png",
+    "text": "Office控件",
+    "className": "Office"
+  }
+}

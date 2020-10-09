@@ -2,7 +2,7 @@ MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.widget.JsonTemplate", null, false);
 
 MWF.xDesktop.requireApp("query.ViewDesigner", "Property", null, false);
-MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
+MWF.xApplication.query.InquiryDesigner.Property = MWF.FIProperty = new Class({
     Extends: MWF.xApplication.query.ViewDesigner.Property,
     Implements: [Options, Events],
     options: {
