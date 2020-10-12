@@ -2915,6 +2915,22 @@ debugger;
             var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
             var htmlNode = tmpNode.getLast();
             htmlNode = this.removeDisplayNone(htmlNode);
+            var nodes = tmpNode.querySelectorAll("[data-w-style]");
+            if (nodes.length){
+                for (var i=0; i<nodes.length; i++){
+                    var n = nodes.item(i);
+                    wStyle = n.dataset["wStyle"];
+                    var styles = wStyle.split(/\s*\;\s*/g);
+                    styles.each(function(style){
+                        if (style){
+                            try{
+                                s = style.split(/\s*\:\s*/g);
+                                n.setStyle(s[0], s[1]);
+                            }catch(e) {}
+                        }
+                    });
+                }
+            }
             var content = "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
 
             var fileName = docNmae || this.json.toWordFilename || "$doc";
