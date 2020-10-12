@@ -277,34 +277,28 @@ public class NodeAgent extends Thread {
 					randomFile.seek(lastTimeFileSize);
 					int curReadSize = 0;
 					String tmp = "";
-					String curTime = "";
+					String curTime = "2020-01-01 00:00:01.001";
 					while ((tmp = randomFile.readLine()) != null) {
 						byte[] bytes = tmp.getBytes("ISO8859-1");
 						curReadSize = curReadSize + bytes.length + 1;
 						String lineStr = new String(bytes);
 						String time = curTime;
 						String logLevel = "";
-						if (lineStr.length() > 23) {
-							time = StringUtils.left(lineStr, 19);
-							if (DateTools.isDateTime(time)) {
-								time = StringUtils.left(lineStr, 23);
-								curTime = time;
-								if (lineStr.length() > 29) {
-									logLevel = StringUtils.right(StringUtils.left(lineStr, 29), 5).trim();
-								}
-							} else {
-								if (StringUtils.isEmpty(curTime)) {
-									time = "2020-01-01 00:00:01.001";
+						if (lineStr.length() > 0) {
+							if (lineStr.length() > 23) {
+								time = StringUtils.left(lineStr, 19);
+								if (DateTools.isDateTime(time)) {
+									time = StringUtils.left(lineStr, 23);
+									curTime = time;
+									if (lineStr.length() > 29) {
+										logLevel = StringUtils.right(StringUtils.left(lineStr, 29), 5).trim();
+									}
 								} else {
 									time = curTime;
 								}
 							}
-						} else {
-							if (StringUtils.isEmpty(curTime)) {
-								continue;
-							} else {
-								time = curTime;
-							}
+						}else{
+							continue;
 						}
 						Map<String, String> map = new HashMap<>();
 						map.put("logTime", time + "#" + Config.node());
