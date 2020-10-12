@@ -479,7 +479,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 						}
 					}
 				}else{
-					this._createNewEditTd(newTr, idx, editorTds[idx].get("id"), data.text.join(", "), titleThs.length-1);
+					var text = this._getValueText(idx-1, data.text.join(", "));
+					this._createNewEditTd(newTr, idx, editorTds[idx].get("id"), text, titleThs.length-1);
 				}
 			}else{
 				if (!cell) this._createNewEditTd(newTr, idx, id, "", titleThs.length-1);

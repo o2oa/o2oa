@@ -720,7 +720,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     if( module.json.type == "ImageClipper" ){
                         this._createImage( cell, module, data.text );
                     }else{
-                        cell.set("text", data.text.join(", "));
+                        var text = this._getValueText(idx, data.text.join(", "));
+                        if( module.json.type == "Textarea"){
+                            cell.set("html", text);
+                        }else{
+                            cell.set("text", text);
+                        }
+                        //cell.set("text", data.text.join(", "));
                     }
                 }
             }else{
