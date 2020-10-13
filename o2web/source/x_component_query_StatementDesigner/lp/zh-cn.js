@@ -32,4 +32,6 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "jpqlRunSuccess": "JPQL执行成功",
     "newLineSuccess": "插入数据成功",
     "newLineJsonError": "插入数据错误，数据格式有误",
+    "queryStatement": "查询语句",
+    "countStatement": "总数语句"
 });
