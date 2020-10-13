@@ -1422,7 +1422,7 @@
             }
             //Content-Type	application/x-www-form-urlencoded; charset=utf-8
             res.send(data);
-            var oReturn = (callback.success && callback.success.addResolve) ? callback.success : callback;
+            var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
             oReturn.res = res;
             return oReturn;
         }else{
@@ -1624,14 +1624,15 @@
     // });
     Date.getFromServer = function(async){
         var d;
-        var cb = function(json){
+        var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+        //var cb = function(json){
             d = Date.parse(json.data.serverTime);
             return d;
         }.ag().catch(function(json){ return d; });
 
         o2.Actions.get("x_program_center").echo(cb, null, !!async);
 
-        return (!!async) ? cd : d;
+        return (!!async) ? cb : d;
 
             // if (callback){
             //     o2.Actions.get("x_program_center").echo(function(json){

@@ -241,17 +241,17 @@ MWF.xScript.Environment = function(ev){
     this.org = {
         //群组***************
         //获取群组--返回群组的对象数组
-        getGroup: function(name, async, callback){
+        getGroup: function(name, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
 
             var v = null;
 
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 v = (v && v.length===1) ? v[0] : v
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listGroup(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -262,15 +262,15 @@ MWF.xScript.Environment = function(ev){
         },
         //查询下级群组--返回群组的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
-        listSubGroup: function(name, nested, async, callback){
+        listSubGroup: function(name, nested, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             if (nested){
                 orgActions.listSubGroupNested(data, cb, null, !!async);
@@ -289,15 +289,15 @@ MWF.xScript.Environment = function(ev){
         },
         //查询上级群组--返回群组的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
-        listSupGroup:function(name, nested, async, callback){
+        listSupGroup:function(name, nested, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             if (nested){
                 orgActions.listSupGroupNested(data, cb, null, !!async);
@@ -314,15 +314,15 @@ MWF.xScript.Environment = function(ev){
             // return v;
         },
         //人员所在群组（嵌套）--返回群组的对象数组
-        listGroupWithPerson:function(name, async, callback){
+        listGroupWithPerson:function(name, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listGroupWithPerson(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -331,16 +331,16 @@ MWF.xScript.Environment = function(ev){
             // return v;
         },
         //群组是否拥有角色--返回true, false
-        groupHasRole: function(name, role, async, callback){
+        groupHasRole: function(name, role, async){
             getOrgActions();
             nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
             var data = {"group":nameFlag,"roleList":getNameFlag(role)};
 
             var v = false;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data.value;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.groupHasRole(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -352,16 +352,16 @@ MWF.xScript.Environment = function(ev){
 
         //角色***************
         //获取角色--返回角色的对象数组
-        getRole: function(name, async, callback){
+        getRole: function(name, async){
             getOrgActions();
             var data = {"roleList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 v = (v && v.length===1) ? v[0] : v;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listRole(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -371,15 +371,15 @@ MWF.xScript.Environment = function(ev){
             // return (v && v.length===1) ? v[0] : v;
         },
         //人员所有角色（嵌套）--返回角色的对象数组
-        listRoleWithPerson:function(name, async, callback){
+        listRoleWithPerson:function(name, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listRoleWithPerson(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -390,16 +390,16 @@ MWF.xScript.Environment = function(ev){
 
         //人员***************
         //人员是否拥有角色--返回true, false
-        personHasRole: function(name, role, async, callback){
+        personHasRole: function(name, role, async){
             getOrgActions();
             nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
             var data = {"person":nameFlag,"roleList":getNameFlag(role)};
 
             var v = false;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data.value;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listRoleWithPerson(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -409,16 +409,16 @@ MWF.xScript.Environment = function(ev){
             // return v;
         },
         //获取人员--返回人员的对象数组
-        getPerson: function(name, async, callback){
+        getPerson: function(name, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 v = (v && v.length===1) ? v[0] : v;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listPerson(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -428,15 +428,15 @@ MWF.xScript.Environment = function(ev){
         },
         //查询下级人员--返回人员的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
-        listSubPerson: function(name, nested, async, callback){
+        listSubPerson: function(name, nested, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             if (nested){
                 orgActions.listPersonSubNested(data, cb, null, !!async);
@@ -447,14 +447,14 @@ MWF.xScript.Environment = function(ev){
         },
         //查询上级人员--返回人员的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
-        listSupPerson: function(name, nested, async, callback){
+        listSupPerson: function(name, nested, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             if (nested){
                 orgActions.listPersonSupNested(data, cb, null, !!async);
@@ -464,69 +464,69 @@ MWF.xScript.Environment = function(ev){
             return (!!async) ? cb : v;
         },
         //获取群组的所有人员--返回人员的对象数组
-        listPersonWithGroup: function(name, async, callback){
+        listPersonWithGroup: function(name, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listPersonWithGroup(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //获取角色的所有人员--返回人员的对象数组
-        listPersonWithRole: function(name, async, callback){
+        listPersonWithRole: function(name, async){
             getOrgActions();
             var data = {"roleList": getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listPersonWithRole(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //获取身份的所有人员--返回人员的对象数组
-        listPersonWithIdentity: function(name, async, callback){
+        listPersonWithIdentity: function(name, async){
             getOrgActions();
             var data = {"identityList": getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listPersonWithIdentity(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //获取身份的所有人员--返回人员的对象数组或人员对象
-        getPersonWithIdentity: function(name, async, callback){
+        getPersonWithIdentity: function(name, async){
             getOrgActions();
             var data = {"identityList": getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 v =  (v && v.length===1) ? v[0] : v;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listPersonWithIdentity(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //查询组织成员的人员--返回人员的对象数组
         //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
-        listPersonWithUnit: function(name, nested, async, callback){
+        listPersonWithUnit: function(name, nested, async){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             if (nested){
                 orgActions.listPersonWithUnitNested(data, cb, null, !!async);
@@ -538,14 +538,14 @@ MWF.xScript.Environment = function(ev){
         //根据属性查询人员--返回人员的对象数组
         //name  string 属性名
         //value  string 属性值
-        listPersonWithAttribute: function(name, value, async, callback){
+        listPersonWithAttribute: function(name, value, async){
             getOrgActions();
             var data = {"name": name, "attribute": value};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listPersonWithAttribute(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -553,14 +553,14 @@ MWF.xScript.Environment = function(ev){
         //根据属性查询人员--返回人员的全称数组
         //name  string 属性名
         //value  string 属性值
-        listPersonNameWithAttribute: function(name, value, async, callback){
+        listPersonNameWithAttribute: function(name, value, async){
             getOrgActions();
             var data = {"name": name, "attribute": value};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data.personList;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listPersonWithAttributeValue(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -596,41 +596,41 @@ MWF.xScript.Environment = function(ev){
             orgActions.setPersonAttribute(data, cb, null, !!async);
         },
         //获取人员属性值
-        getPersonAttribute: function(person, attr, async, callback){
+        getPersonAttribute: function(person, attr, async){
             getOrgActions();
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"name":attr,"person":personFlag};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data.attributeList;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.getPersonAttribute(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //列出人员所有属性的名称
-        listPersonAttributeName: function(name, async, callback){
+        listPersonAttributeName: function(name, async){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data.nameList;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listPersonAttributeName(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //列出人员的所有属性
-        listPersonAllAttribute: function(name, async, callback){
+        listPersonAllAttribute: function(name, async){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listPersonAllAttribute(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -638,43 +638,43 @@ MWF.xScript.Environment = function(ev){
 
         //身份**********
         //获取身份
-        getIdentity: function(name, async, callback){
+        getIdentity: function(name, async){
             getOrgActions();
             var data = {"identityList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 v = (v && v.length===1) ? v[0] : v
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listIdentity(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //列出人员的身份
-        listIdentityWithPerson: function(name, async, callback){
+        listIdentityWithPerson: function(name, async){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listIdentityWithPerson(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //查询组织成员身份--返回身份的对象数组
         //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
-        listIdentityWithUnit: function(name, nested, async, callback){
+        listIdentityWithUnit: function(name, nested, async){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
 
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             if (nested){
                 orgActions.listIdentityWithUnitNested(data, cb, null, !!async);
@@ -686,29 +686,29 @@ MWF.xScript.Environment = function(ev){
 
         //组织**********
         //获取组织
-        getUnit: function(name, async, callback){
+        getUnit: function(name, async){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 v = (v && v.length===1) ? v[0] : v;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listUnit(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //查询组织的下级--返回组织的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
-        listSubUnit: function(name, nested, callback){
+        listSubUnit: function(name, nested){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             if (nested){
                 orgActions.listUnitSubNested(data, cb, null, !!async);
@@ -720,15 +720,15 @@ MWF.xScript.Environment = function(ev){
         //查询组织的上级--返回组织的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
         //async 布尔 true异步请求
-        listSupUnit: function(name, nested, async, callback){
+        listSupUnit: function(name, nested, async){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             if (nested){
                 orgActions.listUnitSupNested(data, cb, null, !!async);
@@ -757,7 +757,7 @@ MWF.xScript.Environment = function(ev){
         //flag 数字    表示获取第几层的组织
         //     字符串  表示获取指定类型的组织
         //     空     表示获取直接所在的组织
-        getUnitByIdentity: function(name, flag, async, callback){
+        getUnitByIdentity: function(name, flag, async){
             getOrgActions();
             var getUnitMethod = "current";
             var v;
@@ -771,27 +771,27 @@ MWF.xScript.Environment = function(ev){
                 case "current":
                     var data = {"identityList":getNameFlag(name)};
 
-                    var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+                    var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                         v = json.data;  v=(v&&v.length===1) ? v[0] : v; return v;
-                    }.ag().catch(function(json){ return v; });
+                    }.ag().catch(function(json){ return json; });
 
                     orgActions.listUnitWithIdentity(data, cb, null, !!async);
                     break;
                 case "type":
                     var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"type":flag};
 
-                    var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+                    var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                         v = json.data;  return v;
-                    }.ag().catch(function(json){ return v; });
+                    }.ag().catch(function(json){ return json; });
 
                     orgActions.getUnitWithIdentityAndType(data, cb, null, !!async);
                     break;
                 case "level":
                     var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"level":flag};
 
-                    var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+                    var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                         v = json.data;  return v;
-                    }.ag().catch(function(json){ return v; });
+                    }.ag().catch(function(json){ return json; });
 
                     orgActions.getUnitWithIdentityAndLevel(data, cb, null, !!async);
                     break;
@@ -799,66 +799,66 @@ MWF.xScript.Environment = function(ev){
             return (!!async) ? cb : v;
         },
         //列出身份所在组织的所有上级组织
-        listAllSupUnitWithIdentity: function(name, async, callback){
+        listAllSupUnitWithIdentity: function(name, async){
             getOrgActions();
             var data = {"identityList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listUnitSupNestedWithIdentity(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //获取人员所在的所有组织
-        listUnitWithPerson: function(name, async, callback){
+        listUnitWithPerson: function(name, async){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listUnitWithPerson(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //列出人员所在组织的所有上级组织
-        listAllSupUnitWithPerson: function(name, async, callback){
+        listAllSupUnitWithPerson: function(name, async){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listUnitSupNestedWithPerson(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //根据组织属性，获取所有符合的组织
-        listUnitWithAttribute: function(name, attribute, async, callback){
+        listUnitWithAttribute: function(name, attribute, async){
             getOrgActions();
             var data = {"name":name,"attribute":attribute};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listUnitWithAttribute(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //根据组织职务，获取所有符合的组织
-        listUnitWithDuty: function(name, id, async, callback){
+        listUnitWithDuty: function(name, id, async){
             getOrgActions();
             var data = {"name":name,"identity":(typeOf(id)==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listUnitWithDuty(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -866,65 +866,65 @@ MWF.xScript.Environment = function(ev){
 
         //组织职务***********
         //获取指定的组织职务的身份
-        getDuty: function(duty, id, async, callback){
+        getDuty: function(duty, id, async){
             getOrgActions();
             var data = {"name":duty,"unit":(typeOf(id)==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.getDuty(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //获取身份的所有职务名称
-        listDutyNameWithIdentity: function(name, async, callback){
+        listDutyNameWithIdentity: function(name, async){
             getOrgActions();
             var data = {"identityList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listDutyNameWithIdentity(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //获取组织的所有职务名称
-        listDutyNameWithUnit: function(name, async, callback){
+        listDutyNameWithUnit: function(name, async){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data.nameList;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listDutyNameWithUnit(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //获取组织的所有职务
-        listUnitAllDuty: function(name, async, callback){
+        listUnitAllDuty: function(name, async){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listUnitAllDuty(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //列出顶层组织
-        listTopUnit: function(async, callback){
+        listTopUnit: function(async){
             var action = MWF.Actions.get("x_organization_assemble_control");
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             action.listTopUnit(cb, null, !!async);
             return (!!async) ? cb : v;
@@ -979,41 +979,41 @@ MWF.xScript.Environment = function(ev){
             // }, false);
         },
         //获取组织属性值
-        getUnitAttribute: function(unit, attr, async, callback){
+        getUnitAttribute: function(unit, attr, async){
             getOrgActions();
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"name":attr,"unit":unitFlag};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data.attributeList;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.getUnitAttribute(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //列出组织所有属性的名称
-        listUnitAttributeName: function(name, async, callback){
+        listUnitAttributeName: function(name, async){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data.nameList;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listUnitAttributeName(data, cb, null, !!async);
             return (!!async) ? cb : v;
         },
         //列出组织的所有属性
-        listUnitAllAttribute: function(name, async, callback){
+        listUnitAllAttribute: function(name, async){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            var cb = ((callback) ? (callback.isAG ? callback : callback.ag()) : null) || function(json){
+            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                 v = json.data;
                 return v;
-            }.ag().catch(function(json){ return v; });
+            }.ag().catch(function(json){ return json; });
 
             orgActions.listUnitAllAttribute(data, cb, null, !!async);
             return (!!async) ? cb : v;
@@ -1744,12 +1744,21 @@ MWF.xScript.createTable = function(){
 };
 MWF.xScript.JSONData = function(data, callback, key, parent, _form){
     var getter = function(data, callback, k, _self){
-        return function(){return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);};
+        return function(){
+            // if (data[k]){
+            //     return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);
+            // }else{
+            //     var p = {"getKey": function(){return k;}, "getParent": function(){return _self;}};
+            //     while (p && !_forms[p.getKey()]) p = p.getParent();
+            //     if (p) if (p.getKey()) if (_forms[p.getKey()]) return _forms[p.getKey()].getValue();
+            // }
+            return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);
+        };
     };
     var setter = function(data, callback, k, _self){
         return function(v){
             data[k] = v;
-            //debugger;
+            //debugger;v
             //this.add(k, v, true);
             if (callback) callback(data, k, _self);
         }

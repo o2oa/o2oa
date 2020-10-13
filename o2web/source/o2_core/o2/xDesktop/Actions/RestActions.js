@@ -91,10 +91,18 @@ MWF.xDesktop.Actions.RestActions = new Class({
 
             var async = (option.async===false) ? false : true;
 
+
             if (option.failure && option.failure.failure) option.failure = option.failure.failure;
             if (!option.failure && option.success && option.success.failure){
                 option.failure = option.success.failure;
                 option.failure.owner = option.success;
+            }
+            if (!option.success){
+                option.success = function(v){return v;}.ag();
+                if (option.failure) {
+                    option.success.catch(option.failure);
+                    option.failure.owner = option.success;
+                }
             }
 
             var callback = new MWF.xDesktop.Actions.RestActions.Callback(option.success, option.failure);

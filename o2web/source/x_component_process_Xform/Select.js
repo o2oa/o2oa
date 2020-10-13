@@ -179,6 +179,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 
 	_setValue: function(value){
 		this.moduleValueAG = o2.AG.all(value).then(function(v){
+			if (o2.typeOf(v)=="array") v = v[0];
 			if (this.moduleSelectAG){
 				this.moduleValueAG = this.moduleSelectAG;
 				this.moduleSelectAG.then(function(){
@@ -293,14 +294,22 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 
 	setData: function(data){
 		if (data && data.isAG){
-			this.moduleValueAG = data;
-			data.addResolve(function(v){
-				this.setData(v);
+			this.moduleValueAG = o2.AG.all(data).then(function(v){
+				if (o2.typeOf(v)=="array") v = v[0];
+				this.__setData(v);
 			}.bind(this));
 		}else{
 			this.__setData(data);
-			this.moduleValueAG = null;
 		}
+		// if (data && data.isAG){
+		// 	this.moduleValueAG = data;
+		// 	data.addResolve(function(v){
+		// 		this.setData(v);
+		// 	}.bind(this));
+		// }else{
+		// 	this.__setData(data);
+		// 	this.moduleValueAG = null;
+		// }
 	},
 
 	__setData: function(data){
