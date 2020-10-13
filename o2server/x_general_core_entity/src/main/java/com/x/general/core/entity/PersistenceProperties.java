@@ -11,4 +11,12 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		}
 
 	}
+
+	public static class General {
+
+		public static class File {
+			public static final String table = "GENERAL_FILE";
+		}
+
+	}
 }
