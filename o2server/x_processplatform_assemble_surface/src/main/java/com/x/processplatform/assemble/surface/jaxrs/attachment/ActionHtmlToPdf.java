@@ -2,6 +2,11 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.io.ByteArrayOutputStream;
 
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.general.core.entity.file.GeneralFile;
+import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -14,9 +19,6 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.Cache.CacheCategory;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -25,7 +27,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.StringTools;
 
 class ActionHtmlToPdf extends BaseAction {
 
@@ -34,9 +35,10 @@ class ActionHtmlToPdf extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
+			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Wo wo = new Wo();
-			String id = savePdf(wi, effectivePerson.getDistinguishedName());
+			String id = savePdf(wi, effectivePerson.getDistinguishedName(), business);
 			wo.setId(id);
 			result.setData(wo);
 			return result;
@@ -47,11 +49,8 @@ class ActionHtmlToPdf extends BaseAction {
 
 	}
 
-	private String savePdf(Wi wi, String person) {
+	private String savePdf(Wi wi, String person, Business business) {
 		try {
-			CacheResultObject ro = new CacheResultObject();
-			ro.setPerson(person);
-
 			String workHtml = wi.getWorkHtml();
 			if (StringUtils.isEmpty(workHtml)) {
 				workHtml = "无内容";
@@ -59,10 +58,11 @@ class ActionHtmlToPdf extends BaseAction {
 			if (workHtml.toLowerCase().indexOf("<html") == -1) {
 				workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
 			}
-			String title = person + DateTools.now() + ".pdf";
+			String name = person + DateTools.now() + ".pdf";
 			if (StringUtils.isNotEmpty(wi.getTitle())) {
-				title = wi.getTitle() + ".pdf";
+				name = wi.getTitle() + ".pdf";
 			}
+			byte[] bytes;
 			try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 				ConverterProperties props = new ConverterProperties();
 				DefaultFontProvider dfp = new DefaultFontProvider(false, false, false);
@@ -77,13 +77,17 @@ class ActionHtmlToPdf extends BaseAction {
 				}
 				pdf.setDefaultPageSize(new PageSize(width, PageSize.A4.getHeight()));
 				HtmlConverter.convertToPdf(workHtml, pdf, props);
-				ro.setBytes(out.toByteArray());
-				ro.setName(title + ".pdf");
+				bytes = out.toByteArray();
 			}
-			CacheCategory cacheCategory = new CacheCategory(CacheResultObject.class);
-			String key = StringTools.uniqueToken();
-			CacheKey cacheKey = new CacheKey(key);
-			CacheManager.put(cacheCategory, cacheKey, ro);
+			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name, person);
+			generalFile.saveContent(gfMapping, bytes, name);
+			EntityManagerContainer emc = business.entityManagerContainer();
+			emc.beginTransaction(GeneralFile.class);
+			emc.persist(generalFile, CheckPersistType.all);
+			emc.commit();
+
+			String key = generalFile.getId();
 			return key;
 		} catch (Exception e) {
 			logger.warn("写work信息异常" + e.getMessage());
