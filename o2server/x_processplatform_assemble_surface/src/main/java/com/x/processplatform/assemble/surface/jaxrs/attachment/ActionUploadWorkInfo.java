@@ -7,6 +7,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.general.core.entity.file.GeneralFile;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import com.google.gson.JsonElement;
@@ -69,7 +73,7 @@ class ActionUploadWorkInfo extends BaseAction {
 				workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
 			}
 			String id = saveHtml(workId, flag, workHtml, effectivePerson.getDistinguishedName(), title,
-					wi.getPageWidth());
+					wi.getPageWidth(), business);
 			Wo wo = new Wo();
 			wo.setId(id);
 			result.setData(wo);
@@ -80,18 +84,19 @@ class ActionUploadWorkInfo extends BaseAction {
 	public static class Wo extends WoId {
 	}
 
-	private String saveHtml(String workId, String flag, String workHtml, String person, String title, Float pageWidth) {
+	private String saveHtml(String workId, String flag, String workHtml, String person, String title,
+							Float pageWidth, Business business) {
 		try {
-			CacheResultObject ro = new CacheResultObject();
-			ro.setPerson(person);
+			String name = "";
+			byte[] bytes;
 			if ("word".equals(flag)) {
 				try (POIFSFileSystem fs = new POIFSFileSystem();
 						InputStream is = new ByteArrayInputStream(workHtml.getBytes("UTF-8"));
 						ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 					fs.createDocument(is, "WordDocument");
 					fs.writeFilesystem(out);
-					ro.setBytes(out.toByteArray());
-					ro.setName(title + "-处理单.doc");
+					bytes = out.toByteArray();
+					name = title + "-处理单.doc";
 				}
 			} else if ("pdf".equals(flag)) {
 				try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -108,19 +113,22 @@ class ActionUploadWorkInfo extends BaseAction {
 					}
 					pdf.setDefaultPageSize(new PageSize(width, PageSize.A4.getHeight()));
 					HtmlConverter.convertToPdf(workHtml, pdf, props);
-					ro.setBytes(out.toByteArray());
-					ro.setName(title + "-处理单.pdf");
+					bytes = out.toByteArray();
+					name = title + "-处理单.pdf";
 				}
 			} else {
-				ro.setBytes(workHtml.getBytes(DefaultCharset.charset));
-				ro.setName(title + "-处理单.html");
+				bytes = workHtml.getBytes(DefaultCharset.charset);
+				name = title + "-处理单.html";
 			}
-			CacheCategory cacheCategory = new CacheCategory(CacheResultObject.class);
-			String key = StringTools.uniqueToken();
-			CacheKey cacheKey = new CacheKey(key);
-			// String cacheKey = ApplicationCache.concreteCacheKey(workId,
-			// UUID.randomUUID().toString());
-			CacheManager.put(cacheCategory, cacheKey, ro);
+			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name, person);
+			generalFile.saveContent(gfMapping, bytes, name);
+			EntityManagerContainer emc = business.entityManagerContainer();
+			emc.beginTransaction(GeneralFile.class);
+			emc.persist(generalFile, CheckPersistType.all);
+			emc.commit();
+
+			String key = generalFile.getId();
 			return key;
 		} catch (Exception e) {
 			logger.warn("写work信息异常" + e.getMessage());
