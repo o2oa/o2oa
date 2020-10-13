@@ -1,0 +1,37 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">类型:</td>
+                <td class="editTableValue"><select class="type" name="column">
+                    <option value="string">string</option>
+                    <option value="integer">integer</option>
+                    <option value="long">long</option>
+                    <option value="double">double</option>
+                    <option value="boolean">boolean</option>
+                    <option value="date">date</option>
+                    <option value="time">time</option>
+                    <option value="dateTime">dateTime</option>
+                    <option value="stringList">stringList</option>
+                    <option value="integerList">integerList</option>
+                    <option value="longList">longList</option>
+                    <option value="doubleList">doubleList</option>
+                    <option value="booleanList">booleanList</option>
+                    <option value="stringLob">stringLob</option>
+                    <option value="stringMap">stringMap</option>
+                </select></td>
+            </tr>
+        </table>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

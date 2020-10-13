@@ -96,6 +96,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 this.currentSelectedModule.unSelected();
             }
         }
+        if( this.view && this.view.domListNode ){
+            this.view.domListNode.hide();
+        }
 
         this.currentSelectedModule = this;
         this.isSelected = true;
@@ -122,10 +125,71 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     hideProperty: function(){
         if (this.property) this.property.hide();
     },
+    loadJpqlTab: function(callback){
+        var _self = this;
+        MWF.require("MWF.widget.Tab", null, false);
+
+        this.jpqlTab = new MWF.widget.Tab(this.jpqlTabNode, {"style": "script"});
+        this.jpqlTab.load();
+
+        this.tabJpqlNode = Element("div");
+        this.jpqlTabPageNode.inject( this.tabJpqlNode );
+
+        this.tabCountJpqlNode = Element("div");
+        this.countJpqlTabPageNode.inject( this.tabCountJpqlNode );
+
+        this.jpqlPage = this.jpqlTab.addTab(this.tabJpqlNode, this.designer.lp.queryStatement);
+        this.countJpqlPage = this.jpqlTab.addTab(this.tabCountJpqlNode, this.designer.lp.countStatement );
+
+        this.jpqlPage.showTabIm();
+
+        // this.jpqlPage.addEvent("postShow", function(){
+        //     if( this.view ){
+        //         this.view.setContentHeight();
+        //         this.view.selected();
+        //     }
+        // }.bind(this));
+        // this.countJpqlPage.addEvent("postShow", function(){
+        //     this.selected();
+        // }.bind(this));
+    },
+    loadTab: function(callback){
+        var _self = this;
+        MWF.require("MWF.widget.Tab", null, false);
+
+        this.tab = new MWF.widget.Tab(this.tabNode, {"style": "script"});
+        this.tab.load();
+
+        this.tabRunNode = Element("div");
+        this.pageRunNode = new Element("div", {"styles": {"overflow": "auto","background-color":"#fff"}}).inject(this.tabRunNode);
+        this.runArea.inject( this.pageRunNode );
+
+        this.tabViewNode = Element("div", {"styles": { "height": "100%" }});
+        this.pageViewNode = new Element("div.pageViewNode").inject(this.tabViewNode);
+        this.viewArea.inject( this.pageViewNode );
+
+        this.runPage = this.tab.addTab(this.tabRunNode, this.designer.lp.runTest);
+        this.viewPage = this.tab.addTab(this.tabViewNode, this.designer.lp.view );
+
+        this.runPage.showTabIm();
+
+        this.viewPage.addEvent("postShow", function(){
+            if( this.view ){
+                this.view.setContentHeight();
+                this.view.selected();
+            }
+        }.bind(this));
+        this.runPage.addEvent("postShow", function(){
+            this.selected();
+        }.bind(this));
+    },
     loadStatement: function(){
         //this.statementDesignerNode = new Element("div", {"styles": this.css.statementDesignerNode}).inject(this.areaNode);
         this.loadStatementHtml(function(){
             this.designerArea = this.areaNode.getElement(".o2_statement_statementDesignerNode");
+
+            this.jpqlTabPageNode = this.areaNode.getElement(".o2_statement_statementJpqlTabPageNode");
+
             this.jpqlArea = this.areaNode.getElement(".o2_statement_statementDesignerJpql");
             this.scriptArea = this.areaNode.getElement(".o2_statement_statementDesignerScript");
 
@@ -141,6 +205,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
             this.dynamicTableContent = this.areaNode.getElement(".o2_statement_statementDesignerTableContent");
 
+            this.jpqlTabNode = this.areaNode.getElement(".o2_statement_statementJpqlTabNode");
 
             this.jpqlTypeSelect = this.areaNode.getElement(".o2_statement_statementDesignerTypeContent").getElement("select");
 
@@ -157,29 +222,39 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.jpqlEditorNode = this.areaNode.getElement(".o2_statement_statementDesignerJpqlLine");
 
 
-            // this.runArea = this.areaNode.getElement(".o2_statement_statementRunNode");
+            this.countJpqlTabPageNode = this.areaNode.getElement(".o2_statement_statementCountJpqlTabPageNode");
+            this.countJpqlArea = this.areaNode.getElement(".o2_statement_statementDesignerCountJpql");
+            this.countScriptArea = this.areaNode.getElement(".o2_statement_statementDesignerCountScript");
+            this.countJpqlEditorNode = this.areaNode.getElement(".o2_statement_statementDesignerCountJpqlLine");
+            this.loadJpqlTab();
+
+            this.tabNode = this.areaNode.getElement(".o2_statement_tabNode");
+
+            this.runArea = this.areaNode.getElement(".o2_statement_statementRunNode");
             // this.runTitleNode = this.areaNode.getElement(".o2_statement_statementRunTitleNode");
-            // this.runContentNode = this.areaNode.getElement(".o2_statement_statementRunContentNode");
-            // this.runJsonNode = this.runContentNode.getFirst();
-            // this.runActionNode = this.runJsonNode.getNext();
-            // this.runResultNode = this.runContentNode.getLast();
-            //
-            // this.setRunnerSize();
-            // this.designer.addEvent("resize", this.setRunnerSize.bind(this));
-
-            this.viewArea = this.areaNode.getElement(".o2_statement_viewNode");
-
-            this.setViewSize();
-            this.designer.addEvent("resize", this.setViewSize.bind(this));
-
+            this.runContentNode = this.areaNode.getElement(".o2_statement_statementRunContentNode");
+            this.runJsonNode = this.runContentNode.getFirst();
+            this.runActionNode = this.runJsonNode.getNext();
+            this.runResultNode = this.runContentNode.getLast();
+            this.setRunnerSize();
+            this.designer.addEvent("resize", this.setRunnerSize.bind(this));
             if (this.json.format=="script"){
                 this.loadStatementScriptEditor();
+                this.loadStatementCountScriptEditor();
             }else{
                 this.loadStatementEditor();
+                this.loadStatementCountEditor();
             }
+            this.loadStatementRunner();
 
-            // this.loadStatementRunner();
-            this.loadView();
+            this.viewArea = this.areaNode.getElement(".o2_statement_viewNode");
+            // if( this.json.viewEnable ){
+                this.loadView();
+            // }
+
+            this.loadTab();
+
+
             this.setEvent();
         }.bind(this));
     },
@@ -199,23 +274,43 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }.bind(this), false);
         }
     },
-    // setRunnerSize: function(){
-    //     debugger;
-    //     var size = this.areaNode.getSize();
-    //     var designerSize = this.designerArea.getComputedSize();
-    //     var y = size.y-designerSize.totalHeight;
-    //     var mTop = this.runArea.getStyle("margin-top").toInt();
-    //     var mBottom = this.runArea.getStyle("margin-bottom").toInt();
-    //     var pTop = this.runArea.getStyle("padding-top").toInt();
-    //     var pBottom = this.runArea.getStyle("padding-bottom").toInt();
-    //     y = y-mTop-mBottom-pTop-pBottom-1;
-    //
-    //     this.runArea.setStyle("height", ""+y+"px");
-    //
-    //     var titleSize = this.runTitleNode.getComputedSize();
-    //     y = y - titleSize.totalHeight;
-    //     this.runContentNode.setStyle("height", ""+y+"px");
-    // },
+    loadStatementCountScriptEditor: function(){
+        if (! this.countScriptEditor){
+            debugger;
+            o2.require("o2.widget.ScriptArea", function(){
+                this.countScriptEditor = new o2.widget.ScriptArea(this.countScriptArea, {
+                    "isbind": false,
+                    "maxObj": this.designer.designNode,
+                    "title": this.designer.lp.scriptTitle,
+                    "onChange": function(){
+                        this.json.countScriptText = this.countScriptEditor.toJson().code;
+                    }.bind(this)
+                });
+                this.countScriptEditor.load({"code": this.json.countScriptText})
+            }.bind(this), false);
+        }
+    },
+    setRunnerSize: function(){
+        debugger;
+        var size = this.areaNode.getSize();
+        var designerSize = this.designerArea.getComputedSize();
+        var y = size.y-designerSize.totalHeight;
+        var mTop = this.runArea.getStyle("margin-top").toInt();
+        var mBottom = this.runArea.getStyle("margin-bottom").toInt();
+        var pTop = this.runArea.getStyle("padding-top").toInt();
+        var pBottom = this.runArea.getStyle("padding-bottom").toInt();
+        y = y-mTop-mBottom-pTop-pBottom-1;
+
+        var tabSize = this.tabNode.getComputedSize();
+        y = y - tabSize.totalHeight;
+
+        this.runArea.setStyle("height", ""+y+"px");
+
+        // var titleSize = this.runTitleNode.getComputedSize();
+        // y = y - titleSize.totalHeight;
+
+        this.runContentNode.setStyle("height", ""+y+"px");
+    },
     loadStatementEditor: function(){
         if (!this.editor){
             o2.require("o2.widget.JavascriptEditor", function(){
@@ -242,6 +337,33 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                         debugger;
                         this.data.data = this.editor.getValue();
                         this.checkJpqlType();
+                    }.bind(this));
+
+                    // this.editor.editor.on("change", function(){
+                    //     this.data.data = this.editor.getValue();
+                    //     this.checkJpqlType();
+                    // }.bind(this));
+                }.bind(this));
+            }.bind(this), false);
+        }
+
+    },
+    loadStatementCountEditor: function(){
+        if (!this.countEditor){
+            o2.require("o2.widget.JavascriptEditor", function(){
+                this.countEditor = new o2.widget.JavascriptEditor(this.countJpqlEditorNode, {"title": "JPQL", "option": {"mode": "sql"}});
+                this.countEditor.load(function(){
+                    if (this.json.countData){
+                        this.countEditor.editor.setValue(this.json.countData);
+                    }else{
+                        var table = "table";
+                        this.countEditor.editor.setValue("SELECT count(o.id) FROM "+table+" o");
+                    }
+                    this.json.countData = this.countEditor.editor.getValue();
+
+                    this.countEditor.addEditorEvent("change", function(){
+                        debugger;
+                        this.data.countData = this.countEditor.getValue();
                     }.bind(this));
 
                     // this.editor.editor.on("change", function(){
@@ -304,14 +426,14 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             if (callback) callback();
         }.bind(this));
     },
-    // loadStatementRunner: function(){
-    //     o2.require("o2.widget.JavascriptEditor", function(){
-    //         this.jsonEditor = new o2.widget.JavascriptEditor(this.runJsonNode, {"title": "JPQL", "option": {"mode": "json"}});
-    //         this.jsonEditor.load(function(){
-    //             this.jsonEditor.editor.setValue("{}");
-    //         }.bind(this));
-    //     }.bind(this), false);
-    // },
+     loadStatementRunner: function(){
+        o2.require("o2.widget.JavascriptEditor", function(){
+            this.jsonEditor = new o2.widget.JavascriptEditor(this.runJsonNode, {"title": "JPQL", "option": {"mode": "json"}});
+            this.jsonEditor.load(function(){
+                this.jsonEditor.editor.setValue("{}");
+            }.bind(this));
+        }.bind(this), false);
+    },
     setEvent: function(){
         this.designerArea.addEvent("click", function (e) {
             this.selected();
@@ -324,10 +446,18 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     this.scriptArea.show();
                     this.jpqlArea.hide();
                     this.loadStatementScriptEditor();
+
+                    this.countScriptArea.show();
+                    this.countJpqlArea.hide();
+                    this.loadStatementCountScriptEditor();
                 }else{
                     this.scriptArea.hide();
                     this.jpqlArea.show();
                     this.loadStatementEditor();
+
+                    this.countScriptArea.hide();
+                    this.countJpqlArea.show();
+                    this.loadStatementCountEditor();
                 }
                 this.json.format = v;
             }
@@ -411,12 +541,24 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         //     }
         }.bind(this));
 
-        // this.runActionNode.getFirst().addEvent("click", this.runStatement.bind(this));
+        this.runActionNode.getFirst().addEvent("click", this.runStatement.bind(this));
 
         this.dynamicTableSelect.addEvent("click", this.selectTable.bind(this));
         this.jpqlTypeSelect.addEvent("change", function(){
             var t = this.jpqlTypeSelect.options[this.jpqlTypeSelect.selectedIndex].value;
-            if (t!=this.json.type) this.json.type=t;
+            if (t!=this.json.type){
+                this.json.type = t;
+            }
+            if( t!="select"){
+                this.jpqlPage.showTabIm();
+                this.countJpqlPage.disableTab();
+
+                this.runPage.showTabIm();
+                this.viewPage.disableTab();
+            }else{
+                this.countJpqlPage.enableTab( true );
+                this.viewPage.enableTab( true );
+            }
         }.bind(this));
     },
 
@@ -456,9 +598,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             var o = JSON.parse(json);
             o2.Actions.get("x_query_assemble_designer").executeStatement(this.json.id, 1, 50 , o, function(json){
                 o2.require("o2.widget.JsonParse", function(){
-                    // this.runResultNode.empty();
-                    // var jsonResult = new o2.widget.JsonParse(json.data, this.runResultNode);
-                    // jsonResult.load();
+                    this.runResultNode.empty();
+                    var jsonResult = new o2.widget.JsonParse(json.data, this.runResultNode);
+                    jsonResult.load();
                 }.bind(this));
                 this.runMask.hide();
             }.bind(this), function(xhr, text, error){
@@ -523,10 +665,15 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }.bind(this));
     },
 
-    loadView : function(){
+    loadView : function( callback ){
+        this.setViewSize();
+        this.designer.addEvent("resize", this.setViewSize.bind(this));
+
         if( !this.data.view )this.data.view = {};
         this.view = new MWF.xApplication.query.StatementDesigner.View(this.designer, this, this.data.view, {});
-        this.view.load();
+        this.view.load( function () {
+            this.view.setContentHeight();
+        }.bind(this));
     },
     setViewSize: function(){
         debugger;
@@ -538,6 +685,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         var pTop = this.viewArea.getStyle("padding-top").toInt();
         var pBottom = this.viewArea.getStyle("padding-bottom").toInt();
         y = y-mTop-mBottom-pTop-pBottom-1;
+
+        var tabSize = this.tabNode.getComputedSize();
+        y = y - tabSize.totalHeight;
 
         this.viewArea.setStyle("height", ""+y+"px");
 
@@ -599,7 +749,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         //     if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
         // }.bind(this));
     },
-    load : function(){
+    load : function( callback ){
         this.setAreaNodeSize();
         this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
         this.areaNode.inject(this.node);
@@ -621,6 +771,8 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
             this.setViewWidth();
 
             this.designer.addEvent("resize", this.setViewWidth.bind(this));
+
+            if(callback)callback();
         }.bind(this))
     },
     parseData: function(){
@@ -667,6 +819,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         }
         this.areaNode.setStyles(this.css.areaNode_selected);
         this.statement.currentSelectedModule = this;
+        this.domListNode.show();
         this.isSelected = true;
         this.showProperty();
     },
@@ -918,6 +1071,23 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         }.bind(this));
         //new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 0}).toRight();
     },
+    setContentHeight: function(){
+        var size = this.areaNode.getSize();
+        var titleSize = this.viewTitleNode.getSize();
+        var actionbarSize = this.actionbarNode ? this.actionbarNode.getSize() : {x:0, y:0};
+        var pagingSize = this.pagingNode ? this.pagingNode.getSize() : {x:0, y:0};
+        var height = size.y-titleSize.y-actionbarSize.y-pagingSize.y-4;
+
+        this.viewContentScrollNode.setStyle("height", height);
+
+        var contentSize = this.viewContentBodyNode.getSize();
+        if (height<contentSize.y) height = contentSize.y+10;
+
+        this.viewContentNode.setStyle("height", height);
+        this.contentLeftNode.setStyle("height", height);
+        this.contentRightNode.setStyle("height", height);
+        //this.viewContentBodyNode.setStyle("min-height", height);
+    },
     loadViewColumns: function(){
         //    for (var i=0; i<10; i++){
         if (this.json.data.selectList) {
@@ -979,55 +1149,6 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         this.setContentHeight();
     },
 
-
-    preview: function(){
-        if( this.isNewView ){
-            this.designer.notice( this.designer.lp.saveViewNotice, "error" );
-            return;
-        }
-        this.saveSilence( function () {
-            var url = "../x_desktop/app.html?app=query.Query&status=";
-            url += JSON.stringify({
-                id : this.data.application,
-                viewId : this.data.id
-            });
-            window.open(o2.filterUrl(url),"_blank");
-        }.bind(this));
-    },
-    saveSilence: function(callback){
-        if (!this.data.name){
-            this.designer.notice(this.designer.lp.notice.inputName, "error");
-            return false;
-        }
-
-        this.designer.actions.saveView(this.data, function(json){
-            this.data.id = json.data.id;
-            this.isNewView = false;
-            //this.page.textNode.set("text", this.data.name);
-            if (this.lisNode) {
-                this.lisNode.getLast().set("text", this.data.name+"("+this.data.alias+")");
-            }
-            if (callback) callback();
-        }.bind(this));
-    },
-    save: function(callback){
-        //if (this.designer.tab.showPage==this.page){
-        if (!this.data.name){
-            this.designer.notice(this.designer.lp.notice.inputName, "error");
-            return false;
-        }
-        //}
-        this.designer.actions.saveView(this.data, function(json){
-            this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
-            this.isNewView = false;
-            this.data.id = json.data.id;
-            //this.page.textNode.set("text", this.data.name);
-            if (this.lisNode) {
-                this.lisNode.getLast().set("text", this.data.name+"("+this.data.alias+")");
-            }
-            if (callback) callback();
-        }.bind(this));
-    },
     _setEditStyle: function(name, input, oldValue){
         if( name=="data.actionbarHidden" ){
             if( this.json.data.actionbarHidden ){
@@ -1110,54 +1231,111 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         Object.each(from, function(style, key){
             if (!this.json.data.viewStyles[to][key]) this.json.data.viewStyles[to][key] = style;
         }.bind(this));
-    },
-
-    saveAs: function(){
-        var form = new MWF.xApplication.query.StatementDesigner.View.NewNameForm(this, {
-            name : this.data.name + "_" + MWF.xApplication.query.StatementDesigner.LP.copy,
-            query : this.data.query || this.data.application,
-            queryName :	this.data.queryName || this.data.applicationName
-        }, {
-            onSave : function( data, callback ){
-                this._saveAs( data, callback );
-            }.bind(this)
-        }, {
-            app: this.designer
-        });
-        form.edit()
-    },
-    _saveAs : function( data , callback){
-        var _self = this;
-
-        var d = this.cloneObject( this.data );
-
-        d.isNewView = true;
-        d.id = this.designer.actions.getUUID();
-        d.name = data.name;
-        d.alias = "";
-        d.query = data.query;
-        d.queryName = data.queryName;
-        d.application = data.query;
-        d.applicationName = data.queryName;
-        d.pid = d.id + d.id;
-
-        delete d[this.data.id+"viewFilterType"];
-        d[d.id+"viewFilterType"]="custom";
-
-        d.data.selectList.each( function( entry ){
-            entry.id = (new MWF.widget.UUID).id;
-        }.bind(this));
-
-        this.designer.actions.saveView(d, function(json){
-            this.designer.notice(this.designer.lp.notice.saveAs_success, "success", this.node, {"x": "left", "y": "bottom"});
-            if (callback) callback();
-        }.bind(this));
     }
+// preview: function(){
+    //     if( this.isNewView ){
+    //         this.designer.notice( this.designer.lp.saveViewNotice, "error" );
+    //         return;
+    //     }
+    //     this.saveSilence( function () {
+    //         var url = "../x_desktop/app.html?app=query.Query&status=";
+    //         url += JSON.stringify({
+    //             id : this.data.application,
+    //             viewId : this.data.id
+    //         });
+    //         window.open(o2.filterUrl(url),"_blank");
+    //     }.bind(this));
+    // },
+    // saveSilence: function(callback){
+    //     if (!this.data.name){
+    //         this.designer.notice(this.designer.lp.notice.inputName, "error");
+    //         return false;
+    //     }
+    //
+    //     this.designer.actions.saveView(this.data, function(json){
+    //         this.data.id = json.data.id;
+    //         this.isNewView = false;
+    //         //this.page.textNode.set("text", this.data.name);
+    //         if (this.lisNode) {
+    //             this.lisNode.getLast().set("text", this.data.name+"("+this.data.alias+")");
+    //         }
+    //         if (callback) callback();
+    //     }.bind(this));
+    // },
+    // save: function(callback){
+    //     //if (this.designer.tab.showPage==this.page){
+    //     if (!this.data.name){
+    //         this.designer.notice(this.designer.lp.notice.inputName, "error");
+    //         return false;
+    //     }
+    //     //}
+    //     this.designer.actions.saveView(this.data, function(json){
+    //         this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
+    //         this.isNewView = false;
+    //         this.data.id = json.data.id;
+    //         //this.page.textNode.set("text", this.data.name);
+    //         if (this.lisNode) {
+    //             this.lisNode.getLast().set("text", this.data.name+"("+this.data.alias+")");
+    //         }
+    //         if (callback) callback();
+    //     }.bind(this));
+    // },
+    // saveAs: function(){
+    //     var form = new MWF.xApplication.query.StatementDesigner.View.NewNameForm(this, {
+    //         name : this.data.name + "_" + MWF.xApplication.query.StatementDesigner.LP.copy,
+    //         query : this.data.query || this.data.application,
+    //         queryName :	this.data.queryName || this.data.applicationName
+    //     }, {
+    //         onSave : function( data, callback ){
+    //             this._saveAs( data, callback );
+    //         }.bind(this)
+    //     }, {
+    //         app: this.designer
+    //     });
+    //     form.edit()
+    // },
+    // _saveAs : function( data , callback){
+    //     var _self = this;
+    //
+    //     var d = this.cloneObject( this.data );
+    //
+    //     d.isNewView = true;
+    //     d.id = this.designer.actions.getUUID();
+    //     d.name = data.name;
+    //     d.alias = "";
+    //     d.query = data.query;
+    //     d.queryName = data.queryName;
+    //     d.application = data.query;
+    //     d.applicationName = data.queryName;
+    //     d.pid = d.id + d.id;
+    //
+    //     delete d[this.data.id+"viewFilterType"];
+    //     d[d.id+"viewFilterType"]="custom";
+    //
+    //     d.data.selectList.each( function( entry ){
+    //         entry.id = (new MWF.widget.UUID).id;
+    //     }.bind(this));
+    //
+    //     this.designer.actions.saveView(d, function(json){
+    //         this.designer.notice(this.designer.lp.notice.saveAs_success, "success", this.node, {"x": "left", "y": "bottom"});
+    //         if (callback) callback();
+    //     }.bind(this));
+    // }
 
 });
 
 MWF.xApplication.query.StatementDesigner.View.Column = new Class({
     Extends: MWF.xApplication.query.ViewDesigner.View.Column,
+    initialize: function(json, view, next){
+        this.propertyPath = "../x_component_query_StatementDesigner/$Statement/column.html";
+        this.view = view;
+        this.json = json;
+        this.next = next;
+        this.css = this.view.css;
+        this.content = this.view.viewTitleTrNode;
+        this.domListNode = this.view.domListNode;
+        this.load();
+    },
     selected: function(){
         if (this.view.statement.currentSelectedModule){
             if (this.view.statement.currentSelectedModule==this){
@@ -1166,6 +1344,7 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
                 this.view.statement.currentSelectedModule.unSelected();
             }
         }
+        this.view.domListNode.show();
         this.node.setStyles(this.css.viewTitleColumnNode_selected);
         this.listNode.setStyles(this.css.cloumnListNode_selected);
         new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
@@ -1221,6 +1400,7 @@ MWF.xApplication.query.StatementDesigner.View.Actionbar = new Class({
                 this.view.statement.currentSelectedModule.unSelected();
             }
         }
+        this.view.domListNode.show();
         this.node.setStyles(this.css.toolbarWarpNode_selected);
         //this.listNode.setStyles(this.css.cloumnListNode_selected);
         new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
@@ -1233,7 +1413,7 @@ MWF.xApplication.query.StatementDesigner.View.Actionbar = new Class({
     },
     unSelected: function(){
         this.view.statement.currentSelectedModule = null;
-        this.node.setStyles(this.css.toolbarWarpNode)
+        this.node.setStyles(this.css.toolbarWarpNode);
 
         //this.listNode.setStyles(this.css.cloumnListNode);
         this.isSelected = false;
@@ -1252,6 +1432,7 @@ MWF.xApplication.query.StatementDesigner.View.Paging = new Class({
                 this.view.statement.currentSelectedModule.unSelected();
             }
         }
+        this.view.domListNode.show();
         this.node.setStyles(this.css.pagingWarpNode_selected);
         new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
 
