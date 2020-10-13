@@ -21,6 +21,10 @@
 			<artifactId>x_organization_core_entity</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>o2oa</groupId>
+			<artifactId>x_general_core_entity</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>core</artifactId>
 		</dependency>

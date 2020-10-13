@@ -1,13 +1,13 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.Optional;
-
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.general.core.entity.file.GeneralFile;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.ActionLogger;
-import com.x.base.core.project.cache.Cache.CacheCategory;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -23,19 +23,26 @@ class ActionPreviewPdfResult extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = null;
-		CacheCategory cacheCategory = new CacheCategory(PreviewPdfResultObject.class);
-		CacheKey cacheKey = new CacheKey(flag);
-		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-		if (optional.isPresent()) {
-			PreviewPdfResultObject obj = (PreviewPdfResultObject) optional.get();
-			if (!StringUtils.equals(effectivePerson.getDistinguishedName(), obj.getPerson())) {
-				throw new ExceptionAccessDenied(effectivePerson);
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			GeneralFile generalFile = emc.find(flag, GeneralFile.class);
+			if(generalFile!=null){
+				if (!StringUtils.equals(effectivePerson.getDistinguishedName(), generalFile.getPerson())) {
+					throw new ExceptionAccessDenied(effectivePerson);
+				}
+				StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
+						generalFile.getStorage());
+				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(true, generalFile.getName()),
+						this.contentDisposition(true, generalFile.getName()));
+				result.setData(wo);
+
+				generalFile.deleteContent(gfMapping);
+				emc.beginTransaction(GeneralFile.class);
+				emc.delete(GeneralFile.class, generalFile.getId());
+				emc.commit();
+			} else {
+				throw new ExceptionPreviewImageResultObject(flag);
 			}
-			wo = new Wo(obj.getBytes(), this.contentType(true, obj.getName()),
-					this.contentDisposition(true, obj.getName()));
-			result.setData(wo);
-		} else {
-			throw new ExceptionPreviewPdfResultObject(flag);
+
 		}
 		result.setData(wo);
 		return result;
