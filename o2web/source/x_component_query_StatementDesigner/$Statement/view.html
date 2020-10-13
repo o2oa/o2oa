@@ -13,26 +13,26 @@
                 <td class="editTableTitle">描述:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
-            <tr>
-                <td class="editTableTitle">隐藏:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="display" text{($.display===false)?'checked':''} type="radio" value="false"/>是
-                    <input class="editTableRadio" name="display" text{($.display!==false)?'checked':''} type="radio" value="true"/>否
-                </td>
-            </tr>
+<!--            <tr>-->
+<!--                <td class="editTableTitle">隐藏:</td>-->
+<!--                <td class="editTableValue">-->
+<!--                    <input class="editTableRadio" name="display" text{($.display===false)?'checked':''} type="radio" value="false"/>是-->
+<!--                    <input class="editTableRadio" name="display" text{($.display!==false)?'checked':''} type="radio" value="true"/>否-->
+<!--                </td>-->
+<!--            </tr>-->
             <tr>
                 <td class="editTableTitle">视图样式:</td>
                 <td class="editTableValue">
                     <select class="MWFViewStyle" name="data.viewStyleType"></select>
                 </td>
             </tr>
-            <tr>
-                <td class="editTableTitle">展开分类:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand==='yes')?'checked':''} type="radio" value="yes"/>是
-                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand!=='yes')?'checked':''} type="radio" value="no"/>否
-                </td>
-            </tr>
+<!--            <tr>-->
+<!--                <td class="editTableTitle">展开分类:</td>-->
+<!--                <td class="editTableValue">-->
+<!--                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand==='yes')?'checked':''} type="radio" value="yes"/>是-->
+<!--                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand!=='yes')?'checked':''} type="radio" value="no"/>否-->
+<!--                </td>-->
+<!--            </tr>-->
             <tr>
                 <td class="editTableTitle">显示序号:</td>
                 <td class="editTableValue">
@@ -40,10 +40,10 @@
                     <input class="editTableRadio" name="data.isSequence" text{($.data.isSequence!=='yes')?'checked':''} type="radio" value="no"/>否
                 </td>
             </tr>
-            <tr>
-                <td class="editTableTitleNoWidth">最大行数:</td>
-                <td class="editTableValue"><input type="number" name="count" value="text{$.count || 600}" class="editTableInput"/></td>
-            </tr>
+<!--            <tr>-->
+<!--                <td class="editTableTitleNoWidth">最大行数:</td>-->
+<!--                <td class="editTableValue"><input type="number" name="count" value="text{$.count || 600}" class="editTableInput"/></td>-->
+<!--            </tr>-->
             <tr>
                 <td class="editTableTitleNoWidth">每页行数:</td>
                 <td class="editTableValue">
@@ -82,34 +82,6 @@
             <!--<tr>-->
             <!--<td class="editTableTitle">最大行数:</td>-->
             <!--<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>-->
-            <!--</tr>-->
-        </table>
-
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">权限</div>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
-            <tr>
-                <td class="editTableTitle">可执行人:</td>
-                <td class="editTableValue">
-                    <div class="MWFPersonIdentity" name="availableIdentityList"></div>
-                </td>
-            </tr>
-            <tr>
-                <td class="editTableTitle">执行组织:</td>
-                <td class="editTableValue">
-                    <div class="MWFPersonUnit" name="availableUnitList"></div>
-                </td>
-            </tr>
-            <!--<tr>-->
-            <!--<td class="editTableTitle">执行部门:</td>-->
-            <!--<td class="editTableValue">-->
-            <!--<div class="MWFSelectDepartment" name="availableDepartmentList"></div>-->
-            <!--</td>-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--<td class="editTableTitle">执行公司:</td>-->
-            <!--<td class="editTableValue">-->
-            <!--<div class="MWFSelectCompany" name="availableCompanyList"></div>-->
-            <!--</td>-->
             <!--</tr>-->
         </table>
 
