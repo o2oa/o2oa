@@ -248,12 +248,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.loadStatementRunner();
 
             this.viewArea = this.areaNode.getElement(".o2_statement_viewNode");
-            // if( this.json.viewEnable ){
-                this.loadView();
-            // }
+            this.loadView();
 
             this.loadTab();
-
 
             this.setEvent();
         }.bind(this));
