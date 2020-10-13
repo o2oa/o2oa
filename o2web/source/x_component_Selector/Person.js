@@ -1471,7 +1471,8 @@ MWF.xApplication.Selector.Person = new Class({
                     if( !category.subItems[0].isSelected )category.subItems[0].clickItem();
                 }
             }else if(category.subCategorys.length === 1){
-                if( !category.subCategorys[0]._hasChild || !category.subCategorys[0]._hasChild() ){ //category.subCategorys[0].isItem &&
+                if( category.subItems && category.subItems.length > 0 ){
+                }else if( !category.subCategorys[0]._hasChild || !category.subCategorys[0]._hasChild() ){ //category.subCategorys[0].isItem &&
                     if( !category.subItems[0].isSelected )category.subItems[0].clickItem();
                 }else{
                     checkCategory( category.subCategorys[0] )
