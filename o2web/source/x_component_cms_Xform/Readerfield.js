@@ -466,7 +466,9 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
         }
 	},
 	loadOrgWidget: function(value, node){
-		var options = {"style": "xform", "canRemove":!this.readonly , "onRemove" : this.removeItem};
+        var disableInfor = layout.mobile ? true : false;
+        if( this.json.showCard === "no" )disableInfor = true;
+		var options = {"style": "xform", "canRemove":!this.readonly , "onRemove" : this.removeItem, "disableInfor" : disableInfor};
 		value.each(function(data){
 			if( data.distinguishedName ){
 				var flag = data.distinguishedName.substr(data.distinguishedName.length-1, 1);
