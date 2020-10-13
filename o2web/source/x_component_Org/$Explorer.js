@@ -440,8 +440,8 @@ MWF.xApplication.Org.$Explorer = new Class({
             }
             this.deleteElementsNode.position({
                 relativeTo: (item) ? item.node : this.toolbarNode,
-                position: "centerBottom",
-                edge: "centerTop"
+                position: "topRight",
+                edge: "topLeft"
             });
         }else{
             if (this.deleteElementsNode){
