@@ -882,6 +882,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
     },
     loadOrgWidget: function(value, node){
         var disableInfor = layout.mobile ? true : false;
+        if( this.json.showCard === "no" )disableInfor = true;
         var height = node.getStyle("height").toInt();
         if (node.getStyle("overflow")==="visible" && !height) node.setStyle("overflow", "hidden");
         if (value && value.length){
