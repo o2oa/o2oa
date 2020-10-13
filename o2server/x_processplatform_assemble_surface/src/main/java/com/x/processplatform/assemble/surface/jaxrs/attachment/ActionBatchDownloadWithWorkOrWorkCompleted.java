@@ -7,16 +7,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import com.x.base.core.project.config.StorageMapping;
+import com.x.general.core.entity.file.GeneralFile;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.Cache.CacheCategory;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -89,12 +88,16 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 
 			Map<String, byte[]> map = new HashMap<>();
 			if (StringUtils.isNotEmpty(flag)) {
-				CacheCategory cacheCategory = new CacheCategory(CacheResultObject.class);
-				CacheKey cacheKey = new CacheKey(flag);
-				Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-				if (optional.isPresent()) {
-					CacheResultObject ro = (CacheResultObject) optional.get();
-					map.put(ro.getName(), ro.getBytes());
+				GeneralFile generalFile = emc.find(flag, GeneralFile.class);
+				if(generalFile!=null){
+					StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
+							generalFile.getStorage());
+					map.put(generalFile.getName(), generalFile.readContent(gfMapping));
+
+					generalFile.deleteContent(gfMapping);
+					emc.beginTransaction(GeneralFile.class);
+					emc.delete(GeneralFile.class, generalFile.getId());
+					emc.commit();
 				}
 			}
 
