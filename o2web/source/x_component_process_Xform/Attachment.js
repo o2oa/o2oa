@@ -701,6 +701,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
     },
     setAttachmentConfig: function (readInput, editInput, controllerInput) {
+        debugger;
         if (this.selectedAttachments.length) {
             var readList = readInput.retrieve("data-value");
             var editList = editInput.retrieve("data-value");
@@ -741,6 +742,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 });
             }
 
+            var loadedCount = 0;
             this.selectedAttachments.each(function (att) {
                 att.data.readUnitList = readUnitList;
                 att.data.readIdentityList = readIdentityList;
@@ -764,6 +766,10 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                             if( attachment.configAction && !this.isAttConfigAvailable(attachment) ){
                                 attachment.configAction.setStyle("display","none");
                             }
+                        }
+                        loadedCount++;
+                        if( loadedCount === this.selectedAttachments.length ){
+                            this.checkActions();
                         }
                     }.bind(this))
                 }.bind(this));
