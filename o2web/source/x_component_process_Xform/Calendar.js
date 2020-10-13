@@ -42,6 +42,15 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
         var value = this._getBusinessData();
         if( value && !isDate)return value;
         if (!value) value = this._computeValue();
+        if (value.isAG) return value;
+
+        var d = (!!value) ? Date.parse(value) : "";
+        if (isDate){
+            return d || null;
+        }else{
+            //if (d) value = Date.parse(value).format(this.json.format);
+            return (d) ? d.format(this.json.format) : "";
+        }
 
         return value || "";
     },
@@ -50,6 +59,17 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
         if (!value) value = this._computeValue();
         return value;
     },
+
+    __setValue: function(value){
+	    var d = Date.parse(value);
+	    var v = d.format(this.json.format);
+        this._setBusinessData(value);
+        if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
+        if (this.readonly || this.json.isReadonly) this.node.set("text", v);
+        this.moduleValueAG = null;
+        return value;
+    },
+
 	clickSelect: function(){
 	    debugger;
         var _self = this;
