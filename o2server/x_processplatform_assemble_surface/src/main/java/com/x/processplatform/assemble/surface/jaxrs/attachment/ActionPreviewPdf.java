@@ -1,5 +1,9 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.general.core.entity.file.GeneralFile;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.commons.io.FilenameUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -38,18 +42,19 @@ class ActionPreviewPdf extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
+		String key = "";
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			byte[] bytes = DocumentTools.toPdf(attachment.getName(), attachment.getBytes(), "");
+			String name = FilenameUtils.getBaseName(attachment.getName()) + ".pdf";
+			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name, effectivePerson.getDistinguishedName());
+			generalFile.saveContent(gfMapping, bytes, name);
+			emc.beginTransaction(GeneralFile.class);
+			emc.persist(generalFile, CheckPersistType.all);
+			emc.commit();
 
-		byte[] bytes = DocumentTools.toPdf(attachment.getName(), attachment.getBytes(), "");
-
-		PreviewPdfResultObject obj = new PreviewPdfResultObject();
-		obj.setPerson(effectivePerson.getDistinguishedName());
-		obj.setBytes(bytes);
-		obj.setName(FilenameUtils.getBaseName(attachment.getName()) + ".pdf");
-
-		String key = StringTools.uniqueToken();
-		CacheCategory cacheCategory = new CacheCategory(PreviewPdfResultObject.class);
-		CacheKey cacheKey = new CacheKey(key);
-		CacheManager.put(cacheCategory, cacheKey, obj);
+			key = generalFile.getId();
+		}
 		Wo wo = new Wo();
 		wo.setId(key);
 		result.setData(wo);
