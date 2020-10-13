@@ -8,18 +8,18 @@
   "type": "View",
 
   "data": {
-    "exportGrid": true,
-    "exportGoupGrid": true,
+//    "exportGrid": true,
+//    "exportGoupGrid": true,
     "noDataText" : "未找到数据",
     "selectList": [],
     "filterList": [],
     "orderList": [],
-    "group": {},
+//    "group": {},
     "columnList": [],
-    "calculate": {},
-    "afterGridScriptText": "",
-    "afterGroupGridScriptText": "",
-    "afterCalculateGridScriptText": "",
+//    "calculate": {},
+//    "afterGridScriptText": "",
+//    "afterGroupGridScriptText": "",
+//    "afterCalculateGridScriptText": "",
     "actionbarHidden" : true,
     "events": {
       "queryLoad" : {
@@ -46,14 +46,14 @@
         "code": "",
         "html": ""
       },
-      "queryLoadCategoryRow": {
-        "code": "",
-        "html": ""
-      },
-      "postLoadCategoryRow": {
-        "code": "",
-        "html": ""
-      },
+//      "queryLoadCategoryRow": {
+//        "code": "",
+//        "html": ""
+//      },
+//      "postLoadCategoryRow": {
+//        "code": "",
+//        "html": ""
+//      },
       "selectRow" : {
         "code": "",
         "html": ""
@@ -63,7 +63,7 @@
         "html": ""
       }
     }
-  },
-  "availableIdentityList": [],
-  "availableUnitList": []
+  }
+//  "availableIdentityList": [],
+//  "availableUnitList": []
 }

@@ -1214,6 +1214,72 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
             this.setCustomStyles();
         }
     },
+
+    loadTemplateStyle : function( callback ){
+        this.loadStylesList(function(){
+            var oldStyleValue = "";
+            if ((!this.json.data.viewStyleType) || !this.stylesList[this.json.data.viewStyleType]) this.json.data.viewStyleType="default";
+            this.loadTemplateStyles( this.stylesList[this.json.data.viewStyleType].file, this.stylesList[this.json.data.viewStyleType].extendFile,
+                function( templateStyles ){
+                    this.templateStyles = templateStyles;
+                    if( !this.json.data.viewStyleType )this.json.data.viewStyleType = "default";
+
+                    if ( this.templateStyles && this.templateStyles["view"]){
+                        var viewStyles = Object.clone(this.templateStyles["view"]);
+                        if( viewStyles.contentGroupTd )delete viewStyles.contentGroupTd;
+                        if( viewStyles.groupCollapseNode )delete viewStyles.groupCollapseNode;
+                        if( viewStyles.groupExpandNode )delete viewStyles.groupExpandNode;
+                        if(!this.json.data.viewStyles){
+                            this.json.data.viewStyles = viewStyles;
+                        }else{
+                            this.setTemplateStyles( viewStyles );
+                        }
+                    }
+
+                    this.setCustomStyles();
+
+                    if(callback)callback();
+                }.bind(this)
+            );
+        }.bind(this));
+    },
+    clearTemplateStyles: function(styles){
+        if (styles){
+            if (styles.container) this.removeStyles(styles.container, "container");
+            if (styles.table) this.removeStyles(styles.table, "table");
+            if (styles.titleTr) this.removeStyles(styles.titleTr, "titleTr");
+            if (styles.titleTd) this.removeStyles(styles.titleTd, "titleTd");
+            if (styles.contentTr) this.removeStyles(styles.contentTr, "contentTr");
+            if (styles.contentSelectedTr) this.removeStyles(styles.contentSelectedTr, "contentSelectedTr");
+            if (styles.contentTd) this.removeStyles(styles.contentTd, "contentTd");
+            // if (styles.contentGroupTd) this.removeStyles(styles.contentGroupTd, "contentGroupTd");
+            // if (styles.groupCollapseNode) this.removeStyles(styles.groupCollapseNode, "groupCollapseNode");
+            // if (styles.groupExpandNode) this.removeStyles(styles.groupExpandNode, "groupExpandNode");
+            if (styles.checkboxNode) this.removeStyles(styles.checkboxNode, "checkboxNode");
+            if (styles.checkedCheckboxNode) this.removeStyles(styles.checkedCheckboxNode, "checkedCheckboxNode");
+            if (styles.radioNode) this.removeStyles(styles.radioNode, "radioNode");
+            if (styles.checkedRadioNode) this.removeStyles(styles.checkedRadioNode, "checkedRadioNode");
+            if (styles.tableProperties) this.removeStyles(styles.tableProperties, "tableProperties");
+        }
+    },
+
+    setTemplateStyles: function(styles){
+        if (styles.container) this.copyStyles(styles.container, "container");
+        if (styles.table) this.copyStyles(styles.table, "table");
+        if (styles.titleTr) this.copyStyles(styles.titleTr, "titleTr");
+        if (styles.titleTd) this.copyStyles(styles.titleTd, "titleTd");
+        if (styles.contentTr) this.copyStyles(styles.contentTr, "contentTr");
+        if (styles.contentSelectedTr) this.copyStyles(styles.contentSelectedTr, "contentSelectedTr");
+        if (styles.contentTd) this.copyStyles(styles.contentTd, "contentTd");
+        // if (styles.contentGroupTd) this.copyStyles(styles.contentGroupTd, "contentGroupTd");
+        // if (styles.groupCollapseNode) this.copyStyles(styles.groupCollapseNode, "groupCollapseNode");
+        // if (styles.groupExpandNode) this.copyStyles(styles.groupExpandNode, "groupExpandNode");
+        if (styles.checkboxNode) this.copyStyles(styles.checkboxNode, "checkboxNode");
+        if (styles.checkedCheckboxNode) this.copyStyles(styles.checkedCheckboxNode, "checkedCheckboxNode");
+        if (styles.radioNode) this.copyStyles(styles.radioNode, "radioNode");
+        if (styles.checkedRadioNode) this.copyStyles(styles.checkedRadioNode, "checkedRadioNode");
+        if (styles.tableProperties) this.copyStyles(styles.tableProperties, "tableProperties");
+    },
     removeStyles: function(from, to){
         if (this.json.data.viewStyles[to]){
             Object.each(from, function(style, key){
