@@ -14,7 +14,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.jaxrs.attachment.ActionListWithWorkOrWorkCompleted.Wo;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
@@ -43,9 +42,9 @@ class ActionGetWithWork extends BaseAction {
 
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 
-			boolean canControl = this.control(wo, effectivePerson, identities, units);
-			boolean canEdit = (this.edit(wo, effectivePerson, identities, units) || canControl);
-			boolean canRead = (this.read(attachment, effectivePerson, identities, units) || canEdit);
+			boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
+			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
+			boolean canRead = this.read(attachment, effectivePerson, identities, units, business);
 			if (canRead) {
 				wo.getControl().setAllowRead(true);
 				wo.getControl().setAllowEdit(canEdit);

@@ -44,9 +44,9 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-			boolean canControl = this.control(wo, effectivePerson, identities, units);
-			boolean canEdit = (this.edit(wo, effectivePerson, identities, units) || canControl);
-			boolean canRead = (this.read(attachment, effectivePerson, identities, units) || canEdit);
+			boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
+			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
+			boolean canRead = this.read(attachment, effectivePerson, identities, units, business);
 			if (canRead) {
 				wo.getControl().setAllowRead(true);
 				wo.getControl().setAllowEdit(canEdit);
