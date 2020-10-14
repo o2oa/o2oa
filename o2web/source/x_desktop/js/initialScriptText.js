@@ -815,6 +815,15 @@ var _Actions = {
 bind.Actions = _Actions;
 
 
+var oPrint = print;
+print = function(str, type){
+    var d = new Date();
+    var t = (type || "PRINT").toUpperCase();
+    var l = "[Script]";
+    oPrint(d.format("db")+"."+d.getMilliseconds()+" "+t+" "+l+" "+str);
+}
+bind.print = print;
+
 bind.library = library;
 bind.data = this.data;
 bind.workContext = wrapWorkContext;
