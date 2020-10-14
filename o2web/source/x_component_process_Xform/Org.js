@@ -769,7 +769,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     },
     checkChange: function(oldValues, values){
         var change = false;
-        if (oldValues.length && values.length){
+        if (!values) values = [];
+        if (oldValues.length && (values && values.length)){
             if (oldValues.length === values.length){
                 for (var i=0; i<oldValues.length; i++){
                     if ((oldValues[i].distinguishedName!==values[i].distinguishedName) || (oldValues[i].name!==values[i].name) || (oldValues[i].unique!==values[i].unique)){
