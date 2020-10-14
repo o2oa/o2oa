@@ -33,6 +33,9 @@ public class HttpToken {
 	public static final String X_Client = "x-client";
 	public static final String X_Debugger = "x-debugger";
 	public static final String COOKIE_ANONYMOUS_VALUE = "anonymous";
+	public static final String SET_COOKIE = "Set-Cookie";
+	
+	
 
 	private static final String RegularExpression_IP = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
 	private static final String RegularExpression_Token = "^(anonymous|user|manager|cipher)([2][0][1-2][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])(\\S{1,})$";
@@ -99,8 +102,8 @@ public class HttpToken {
 			// String cookie = X_Token + "=; path=/; domain=" +
 			// this.domain(request) + "; max-age=0
 			String cookie = X_Token + "=" + COOKIE_ANONYMOUS_VALUE + "; path=/; domain=" + this.domain(request)
-					+ "; HttpOnly";
-			response.setHeader("Set-Cookie", cookie);
+					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? "; HttpOnly" : "");
+			response.setHeader(SET_COOKIE, cookie);
 		} catch (Exception e) {
 			throw new Exception("delete Token cookie error.", e);
 		}
@@ -129,8 +132,8 @@ public class HttpToken {
 			EffectivePerson effectivePerson) throws Exception {
 		if (!StringUtils.isEmpty(effectivePerson.getToken())) {
 			String cookie = X_Token + "=" + effectivePerson.getToken() + "; path=/; domain=" + this.domain(request)
-					+ "; HttpOnly";
-			response.setHeader("Set-Cookie", cookie);
+					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? "; HttpOnly" : "");
+			response.setHeader(SET_COOKIE, cookie);
 			response.setHeader(X_Token, effectivePerson.getToken());
 		}
 	}
@@ -138,8 +141,9 @@ public class HttpToken {
 	public void setResponseToken(HttpServletRequest request, HttpServletResponse response, String tokenName,
 			String token) throws Exception {
 		if (!StringUtils.isEmpty(token)) {
-			String cookie = tokenName + "=" + token + "; path=/; domain=" + this.domain(request) + "; HttpOnly";
-			response.setHeader("Set-Cookie", cookie);
+			String cookie = tokenName + "=" + token + "; path=/; domain=" + this.domain(request)
+					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? "; HttpOnly" : "");
+			response.setHeader(SET_COOKIE, cookie);
 			response.setHeader(tokenName, token);
 		}
 	}
@@ -201,5 +205,8 @@ public class HttpToken {
 	private String userAgent(HttpServletRequest request) {
 		return Objects.toString(request.getHeader("User-Agent"), "");
 	}
+	
+	
+ 
 
 }
