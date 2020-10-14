@@ -17,14 +17,14 @@ class ActionUpdate extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
-			Invoke invoke = emc.flag(flag, Invoke.class );
+			Invoke invoke = emc.flag(flag, Invoke.class);
 			if (null == invoke) {
 				throw new ExceptionInvokeNotExist(flag);
 			}
 			String text = new String(bytes, DefaultCharset.name);
 			emc.beginTransaction(Invoke.class);
 			invoke.setText(text);
-			this.addComment(invoke);
+			// this.addComment(invoke);
 			emc.commit();
 			wo.setId(invoke.getId());
 			result.setData(wo);
