@@ -19,6 +19,8 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
+import java.util.List;
+
 class ActionChangeOrderNumber extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionChangeOrderNumber.class);
@@ -41,9 +43,10 @@ class ActionChangeOrderNumber extends BaseAction {
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-			Application application = business.application().pick(work.getApplication());
-			Process process = business.process().pick(work.getProcess());
-			if (!business.controllerable(effectivePerson, application, process, attachment)) {
+			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
+			if(!canEdit){
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 			emc.beginTransaction(Attachment.class);

@@ -67,8 +67,7 @@ class ActionUpdate extends BaseAction {
 
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-			boolean canControl = this.control(attachment, effectivePerson, identities, units);
-			boolean canEdit = (this.edit(attachment, effectivePerson, identities, units) || canControl);
+			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
 			if(!canEdit){
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}

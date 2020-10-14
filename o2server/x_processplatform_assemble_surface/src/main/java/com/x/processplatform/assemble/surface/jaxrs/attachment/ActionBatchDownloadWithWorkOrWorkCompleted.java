@@ -73,7 +73,7 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 			List<Attachment> readableAttachmentList = new ArrayList<>();
 			for (Attachment attachment : attachmentList) {
-				if (this.read(attachment, effectivePerson, identities, units)) {
+				if (this.read(attachment, effectivePerson, identities, units, business)) {
 					readableAttachmentList.add(attachment);
 				}
 			}
