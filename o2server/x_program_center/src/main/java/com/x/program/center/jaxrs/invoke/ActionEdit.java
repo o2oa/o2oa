@@ -24,7 +24,7 @@ class ActionEdit extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Invoke invoke = emc.flag(flag, Invoke.class );
+			Invoke invoke = emc.flag(flag, Invoke.class);
 			if (StringUtils.isEmpty(wi.getName())) {
 				throw new ExceptionEmptyName();
 			}
@@ -38,7 +38,7 @@ class ActionEdit extends BaseAction {
 			}
 			emc.beginTransaction(Invoke.class);
 			Wi.copier.copy(wi, invoke);
-			this.addComment(invoke);
+			// this.addComment(invoke);
 			emc.check(invoke, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Invoke.class);
