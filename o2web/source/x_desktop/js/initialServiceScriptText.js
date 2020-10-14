@@ -3259,6 +3259,14 @@ var _org = {
     }
 };
 
+var oPrint = print;
+print = function(str, type){
+    var d = new Date();
+    var t = (type || "PRINT").toUpperCase();
+    var l = "[ServiceScript]";
+    oPrint(d.format("db")+"."+d.getMilliseconds()+" "+t+" "+l+" "+str);
+}
+bind.print = print;
 bind.org = _org;
 bind.library = library;
 bind.define = _define;
