@@ -13,8 +13,9 @@ MWF.xApplication.LogViewer.Main = new Class({
     onQueryLoad: function(){
         this.lp = MWF.xApplication.LogViewer.LP;
         this.tagId = o2.uuid();
-
-
+    },
+    onQueryClose: function () {
+        $clear(this.timeDo);
     },
     loadApplication: function(callback){
         if (!this.options.isRefresh){
