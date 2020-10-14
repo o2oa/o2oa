@@ -38,7 +38,7 @@ class ActionEdit extends BaseAction {
 			}
 			emc.beginTransaction(Agent.class);
 			Wi.copier.copy(wi, agent);
-			this.addComment(agent);
+			//this.addComment(agent);
 			emc.check(agent, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Agent.class);
