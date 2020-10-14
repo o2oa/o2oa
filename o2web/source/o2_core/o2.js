@@ -1801,7 +1801,7 @@
                         check();
                     });
                 }else{
-                    if (a.isAG){
+                    if (a && a.isAG){
                         a.then(function(v){
                             o2.AG.all(v).then(function(r){
                                 result = result.concat(r);
