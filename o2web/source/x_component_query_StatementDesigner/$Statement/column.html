@@ -32,105 +32,19 @@
         <div style="border-top: 1px solid #999; margin-top:10px">
             <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">数据</div>
             <div class="MWFDataData" id="text{$.pid}dataDataEditor">
-                <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}dataPathSelectedProcessArea" class="text{$.vid}dataPathSelectedProcessArea">
-                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                        <tr>
-                            <td class="editTableTitle">选择数据:</td>
-                            <td class="editTableValue"><select id="text{$.pid}dataPathSelected" onchange=" var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">
-                                <option value="" selected>(请选择)</option>
-                                <option value="$work.title">标题</option>
-                                <option value="$work.startTime">创建时间</option>
-                                <option value="$work.startTimeMonth">创建月份</option>
-                                <option value="$work.completedTime">完成时间</option>
-                                <option value="$work.completedTimeMonth">完成月份</option>
-                                <option value="$work.creatorPerson">拟稿人</option>
-                                <option value="$work.creatorIdentity">拟稿人身份</option>
-                                <option value="$work.creatorUnit">拟稿组织</option>
-                                <option value="$work.creatorUnitLevelName">拟稿组织层级</option>
-                                <option value="$work.application">应用ID</option>
-                                <option value="$work.applicationName">应用名称</option>
-                                <option value="$work.applicationAlias">应用别名</option>
-                                <option value="$work.process">流程ID</option>
-                                <option value="$work.processName">流程名称</option>
-                                <option value="$work.processAlias">流程别名</option>
-                                <option value="$work.serial">编号</option>
-                                <option value="$work.activityType">活动类型</option>
-                                <option value="$work.activityName">活动名称</option>
-                                <option value="$work.activityArrivedTime">活动到达时间</option>
-                                <option value="$work.workId">工作ID</option>
-                                <option value="$work.workCompletedId">已完成工作ID</option>
-                                <option value="$work.job">JOB的ID(job)</option>
-                                <option value="$work.completed">是否已完成(completed)</option>
-                            </select></td>
-                        </tr>
-                    </table>
-                </div>
-                <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}dataPathSelectedCMSArea" class="text{$.vid}dataPathSelectedCMSArea">
-                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                        <tr>
-                            <td class="editTableTitle">选择数据:</td>
-                            <td class="editTableValue"><select  id="text{$.pid}dataPathSelectedCMS" onchange="var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">
-                                <option value="" selected>(请选择)</option>
-                                <option value="$document.title">标题</option>
-                                <option value="$document.publishTime">发布时间</option>
-                                <option value="$document.creatorPerson">拟稿人</option>
-                                <option value="$document.creatorIdentity">拟稿人身份</option>
-                                <option value="$document.creatorUnitName">拟稿组织</option>
-                                <option value="$document.creatorTopUnitName">拟稿顶级组织</option>
-                                <option value="$document.appId">栏目ID</option>
-                                <option value="$document.appName">栏目名称</option>
-                                <option value="$document.categoryId">分类ID</option>
-                                <option value="$document.categoryName">分类名称</option>
-                                <option value="$document.categoryAlias">分类别名</option>
-                                <option value="$document.id">文档ID</option>
-                            </select></td>
-                        </tr>
-                    </table>
-                </div>
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">数据路径:</td>
-                        <td class="editTableValue"><input onkeypress="$('text{$.pid}dataPathSelected').getElement('option').set('selected', true); $('text{$.pid}dataPathSelectedCMS').getElement('option').set('selected', true)" id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
+                        <td class="editTableValue">
+                            <input onkeypress="$('text{$.pid}dataPathSelected').getElement('option').set('selected', true); $('text{$.pid}dataPathSelectedCMS').getElement('option').set('selected', true)" id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/>
+                            <div style="line-height: 20px;color:#999;">注：指该列相对单条数据的路径。比如 0，title，或 0.title</div>
+                        </td>
                     </tr>
                 </table>
             </div>
         </div>
 
         <div style="border-top: 1px solid #999; margin-top:10px">
-<!--            <div class="MWFColumnExport" id="text{$.pid}columnExportEditor">-->
-<!--                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--                    <tr>-->
-<!--                        <td class="editTableTitle">排序:</td>-->
-<!--                        <td class="editTableValue"><select name="orderType" onchange="-->
-<!--                            var node = $(this).getParent('table').getElement('.MWFColumnExportNumberOrder');-->
-<!--                            if(this.options[this.selectedIndex].value==='none'){-->
-<!--                                node.hide();-->
-<!--                                node.getElements('input')[1].click();-->
-<!--                            }else{-->
-<!--                                node.setStyle('display','table-row');-->
-<!--                            }-->
-<!--                        ">-->
-<!--                            <option value="none" text{(($.orderType)!='asc' && ($.orderType)!='desc') ?'selected':''}>无</option>-->
-<!--                            <option value="asc" text{($.orderType)=='asc' ?'selected':''}>升序</option>-->
-<!--                            <option value="desc" text{($.orderType)=='desc' ?'selected':''}>降序</option>-->
-<!--                        </select></td>-->
-<!--                    </tr>-->
-<!--                    <tr class="MWFColumnExportNumberOrder" style="display: text{(($.orderType)!='asc' && ($.orderType)!='desc') ?'none':'table-row'}">-->
-<!--                        <td class="editTableTitle">转换成数字排序:</td>-->
-<!--                        <td class="editTableValue">-->
-<!--                            <input class="MWFWorkDataCheck" name="numberOrder" type="radio" value="true" text{($.numberOrder)===true?'checked':''}/>是-->
-<!--                            <input class="MWFWorkDataCheck" name="numberOrder" type="radio" value="false" text{($.numberOrder)!==true?'checked':''}/>否-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                    <tr class="MWFColumnExportGroup">-->
-<!--                        <td class="editTableTitle">分类:</td>-->
-<!--                        <td class="editTableValue">-->
-<!--                            <input class="MWFWorkDataCheck" name="groupEntry" type="radio" value="true" text{($.groupEntry)===true?'checked':''}/>是-->
-<!--                            <input class="MWFWorkDataCheck" name="groupEntry" type="radio" value="false" text{($.groupEntry)!==true?'checked':''}/>否-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-<!--            </div>-->
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr class="MWFColumnExportHide">
                     <td class="editTableTitle">隐藏:</td>
