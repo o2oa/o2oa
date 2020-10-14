@@ -1827,7 +1827,19 @@ o2.xDesktop.Default.Lnk = new Class({
     setEvent: function(){
         this.node.addEvents({
             "click": function(){
-                layout.openApplication(null, this.data.name, this.data.options);
+                if (this.data.name=="Homepage"){
+                    var name = this.data.name;
+                    var options = this.data.options;
+
+                    if (layout.config.indexPage && layout.config.indexPage.enable && layout.config.indexPage.portal){
+                        name = "portal.Portal";
+                        var appId = "portal.Portal"+layout.config.indexPage.portal;
+                        options = {"name": "portal.Portal", "portalId": layout.config.indexPage.portal, "pageId": layout.config.indexPage.page, "appId": appId};
+                    }
+                    layout.openApplication(null, name, options);
+                }else{
+                    layout.openApplication(null, this.data.name, this.data.options);
+                }
             }.bind(this),
             "mouseover": function(){
                 this.actionNode.fade("in");

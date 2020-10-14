@@ -174,47 +174,39 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	public boolean read(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,
-			List<String> units) throws Exception {
+			List<String> units, Business business) throws Exception {
 		boolean value = false;
-		if (effectivePerson.isManager()) {
-			value = true;
-		} else if (effectivePerson.isPerson(attachment.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(attachment.getReadIdentityList())
+		if (ListTools.isEmpty(attachment.getReadIdentityList())
 				&& ListTools.isEmpty(attachment.getReadUnitList())) {
 			value = true;
-		} else {
-			if (ListTools.containsAny(identities, attachment.getReadIdentityList())
+		}else if (ListTools.containsAny(identities, attachment.getReadIdentityList())
 					|| ListTools.containsAny(units, attachment.getReadUnitList())) {
-				value = true;
-			}
+			value = true;
+		}else{
+			value = this.edit(attachment, effectivePerson, identities, units, business);
 		}
 		return value;
 	}
 
 	public boolean edit(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,
-			List<String> units) throws Exception {
+			List<String> units, Business business) throws Exception {
 		boolean value = false;
-		if (effectivePerson.isManager()) {
-			value = true;
-		} else if (effectivePerson.isPerson(attachment.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(attachment.getEditIdentityList())
+		if (ListTools.isEmpty(attachment.getEditIdentityList())
 				&& ListTools.isEmpty(attachment.getEditUnitList())) {
 			value = true;
-		} else {
-			if (ListTools.containsAny(identities, attachment.getEditIdentityList())
+		}else if (ListTools.containsAny(identities, attachment.getEditIdentityList())
 					|| ListTools.containsAny(units, attachment.getEditUnitList())) {
-				value = true;
-			}
+			value = true;
+		}else{
+			value = this.control(attachment, effectivePerson, identities, units, business);
 		}
 		return value;
 	}
 
 	public boolean control(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,
-			List<String> units) throws Exception {
+			List<String> units, Business business) throws Exception {
 		boolean value = false;
-		if (effectivePerson.isManager()) {
+		if (business.canManageApplication(effectivePerson, null)) {
 			value = true;
 		} else if (effectivePerson.isPerson(attachment.getPerson())) {
 			value = true;
