@@ -900,6 +900,9 @@ var _org = {
         }
 };
 
+print = function(str, type){}
+bind.print = print;
+
 bind.org = _org;
 bind.library = library;
 bind.define = _define;
