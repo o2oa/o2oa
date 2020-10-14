@@ -7,6 +7,7 @@ MWF.xDesktop.requireApp("query.StatementDesigner", "lp."+MWF.language, null, fal
 MWF.xDesktop.requireApp("query.StatementDesigner", "Property", null, false);
 MWF.xDesktop.requireApp("query.ViewDesigner", "View", null, false);
 o2.require("o2.widget.JavascriptEditor", null, false);
+o2.require("o2.widget.UUID", null, false);
 
 MWF.xApplication.query.StatementDesigner.Statement = new Class({
     Extends: MWF.widget.Common,
@@ -774,6 +775,9 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
     },
     parseData: function(){
         this.json = this.data;
+        if( !this.json.id ){
+            this.json.id = (new o2.widget.UUID).id;
+        }
         if( !this.json.data || !this.json.data.events ){
             var url = "../x_component_query_StatementDesigner/$Statement/view.json";
             MWF.getJSON(url, {
