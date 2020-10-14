@@ -41,6 +41,7 @@ public class Person extends ConfigObject {
 	public static final Integer DEFAULT_FAILUREINTERVAL = 10;
 	public static final Integer DEFAULT_FAILURECOUNT = 5;
 	public static final Integer DEFAULT_TOKENEXPIREDMINUTES = 60 * 24 * 15;
+	public static final Boolean DEFAULT_TOKENCOOKIEHTTPONLY = false;
 
 	public static final String DEFAULT_PASSWORDREGEX = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$";
 	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";
@@ -57,6 +58,7 @@ public class Person extends ConfigObject {
 		this.passwordRegex = DEFAULT_PASSWORDREGEX;
 		this.passwordRegexHint = DEFAULT_PASSWORDREGEXHINT;
 		this.personUnitOrderByAsc = DEFAULT_PERSONUNITORDERBYASC;
+		this.tokenCookieHttpOnly = DEFAULT_TOKENCOOKIEHTTPONLY;
 	}
 
 	public static Person defaultInstance() {
@@ -110,8 +112,15 @@ public class Person extends ConfigObject {
 	@FieldDescribe("token时长,分钟")
 	private Integer tokenExpiredMinutes;
 
+	@FieldDescribe("保存token的cookie是否启用httpOnly")
+	private Boolean tokenCookieHttpOnly;
+
 	@FieldDescribe("人员组织排序是否为升序，true为升序(默认)，false为降序")
 	private Boolean personUnitOrderByAsc;
+
+	public Boolean getTokenCookieHttpOnly() {
+		return BooleanUtils.isTrue(this.tokenCookieHttpOnly);
+	}
 
 	public Integer getTokenExpiredMinutes() {
 		return (this.tokenExpiredMinutes == null || this.tokenExpiredMinutes < 0) ? DEFAULT_TOKENEXPIREDMINUTES
