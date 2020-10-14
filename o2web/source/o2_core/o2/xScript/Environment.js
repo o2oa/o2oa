@@ -247,9 +247,10 @@ MWF.xScript.Environment = function(ev){
 
             var v = null;
 
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
                 v = (v && v.length===1) ? v[0] : v
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -267,10 +268,16 @@ MWF.xScript.Environment = function(ev){
             var data = {"groupList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            //     v = json.data;
+            //     return v;
+            // }.ag().catch(function(json){ return json; });
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
+
 
             if (nested){
                 orgActions.listSubGroupNested(data, cb, null, !!async);
@@ -294,8 +301,9 @@ MWF.xScript.Environment = function(ev){
             var data = {"groupList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -319,8 +327,9 @@ MWF.xScript.Environment = function(ev){
             var data = {"personList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -337,8 +346,9 @@ MWF.xScript.Environment = function(ev){
             var data = {"group":nameFlag,"roleList":getNameFlag(role)};
 
             var v = false;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data.value;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -357,9 +367,10 @@ MWF.xScript.Environment = function(ev){
             var data = {"roleList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
                 v = (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -376,8 +387,9 @@ MWF.xScript.Environment = function(ev){
             var data = {"personList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -396,8 +408,9 @@ MWF.xScript.Environment = function(ev){
             var data = {"person":nameFlag,"roleList":getNameFlag(role)};
 
             var v = false;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data.value;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -414,9 +427,10 @@ MWF.xScript.Environment = function(ev){
             var data = {"personList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
                 v = (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -433,8 +447,9 @@ MWF.xScript.Environment = function(ev){
             var data = {"personList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -451,8 +466,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -469,8 +485,9 @@ MWF.xScript.Environment = function(ev){
             var data = {"groupList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -482,8 +499,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"roleList": getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -495,8 +513,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"identityList": getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -508,9 +527,10 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"identityList": getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
                 v =  (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -523,8 +543,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -542,8 +563,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"name": name, "attribute": value};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -557,8 +579,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"name": name, "attribute": value};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data.personList;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -601,8 +624,9 @@ MWF.xScript.Environment = function(ev){
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"name":attr,"person":personFlag};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data.attributeList;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -614,8 +638,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data.nameList;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -627,8 +652,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -642,9 +668,10 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"identityList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
-                v = (v && v.length===1) ? v[0] : v
+                v = (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -656,8 +683,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -671,8 +699,9 @@ MWF.xScript.Environment = function(ev){
             var data = {"unitList": getNameFlag(name)};
             var v = null;
 
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -690,9 +719,10 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
                 v = (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -705,8 +735,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -725,8 +756,9 @@ MWF.xScript.Environment = function(ev){
             var data = {"unitList": getNameFlag(name)};
 
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -771,27 +803,47 @@ MWF.xScript.Environment = function(ev){
                 case "current":
                     var data = {"identityList":getNameFlag(name)};
 
-                    var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
-                        v = json.data;  v=(v&&v.length===1) ? v[0] : v; return v;
+                    // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+                    //     v = json.data;  v=(v&&v.length===1) ? v[0] : v; return v;
+                    // }.ag().catch(function(json){ return json; });
+
+
+                    var cb = function(json){
+                        v = json.data;  v=(v&&v.length===1) ? v[0] : v;
+                        if (async && o2.typeOf(async)=="function") return async(v);
+                        return v;
                     }.ag().catch(function(json){ return json; });
+
 
                     orgActions.listUnitWithIdentity(data, cb, null, !!async);
                     break;
                 case "type":
                     var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"type":flag};
 
-                    var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
-                        v = json.data;  return v;
+                    var cb = function(json){
+                        v = json.data;
+                        if (async && o2.typeOf(async)=="function") return async(v);
+                        return v;
                     }.ag().catch(function(json){ return json; });
+
+                    // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+                    //     v = json.data;  return v;
+                    // }.ag().catch(function(json){ return json; });
 
                     orgActions.getUnitWithIdentityAndType(data, cb, null, !!async);
                     break;
                 case "level":
                     var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"level":flag};
 
-                    var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
-                        v = json.data;  return v;
+                    var cb = function(json){
+                        v = json.data;  v=(v&&v.length===1) ? v[0] : v;
+                        if (async && o2.typeOf(async)=="function") return async(v);
+                        return v;
                     }.ag().catch(function(json){ return json; });
+
+                    // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+                    //     v = json.data;  return v;
+                    // }.ag().catch(function(json){ return json; });
 
                     orgActions.getUnitWithIdentityAndLevel(data, cb, null, !!async);
                     break;
@@ -803,8 +855,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"identityList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -816,8 +869,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -829,8 +883,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -842,8 +897,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"name":name,"attribute":attribute};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -855,8 +911,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"name":name,"identity":(typeOf(id)==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -870,8 +927,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"name":duty,"unit":(typeOf(id)==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -883,8 +941,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"identityList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -896,8 +955,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data.nameList;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -909,8 +969,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -921,8 +982,9 @@ MWF.xScript.Environment = function(ev){
         listTopUnit: function(async){
             var action = MWF.Actions.get("x_organization_assemble_control");
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -984,8 +1046,9 @@ MWF.xScript.Environment = function(ev){
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"name":attr,"unit":unitFlag};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data.attributeList;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -997,8 +1060,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data.nameList;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
@@ -1010,8 +1074,9 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            var cb = function(json){
                 v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             }.ag().catch(function(json){ return json; });
 
