@@ -236,7 +236,8 @@ public class Context extends AbstractContext {
 				OrganizationDefinition.TeamWorkManager, OrganizationDefinition.CMSManager,
 				OrganizationDefinition.OKRManager, OrganizationDefinition.CRMManager,
 				OrganizationDefinition.QueryManager, OrganizationDefinition.MessageManager,
-				OrganizationDefinition.SearchPrivilege, OrganizationDefinition.HotPictureManager);
+				OrganizationDefinition.SearchPrivilege, OrganizationDefinition.HotPictureManager,
+				OrganizationDefinition.FileManager);
 		roles = roles.stream().sorted(Comparator.comparing(String::toString)).collect(Collectors.toList());
 		for (String str : roles) {
 			EntityManager em = emc.get(Role.class);
@@ -310,6 +311,8 @@ public class Context extends AbstractContext {
 			return OrganizationDefinition.MessageManager_description;
 		} else if (OrganizationDefinition.SearchPrivilege.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.SearchPrivilege_description;
+		} else if (OrganizationDefinition.FileManager.equalsIgnoreCase(str)) {
+			return OrganizationDefinition.FileManager_description;
 		}
 		return "";
 	}
