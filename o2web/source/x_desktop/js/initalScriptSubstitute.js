@@ -824,6 +824,8 @@ var _Actions = {
 };
 bind.Actions = _Actions;
 
+print = function(str, type){}
+bind.print = print;
 
 bind.library = library;
 bind.data = this.data;
