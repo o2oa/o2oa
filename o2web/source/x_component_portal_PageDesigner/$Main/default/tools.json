@@ -126,7 +126,7 @@
   },
   "statement": {
     "icon": "statement.png",
-    "text": "嵌入查询",
+    "text": "嵌入查询视图",
     "className": "Statement"
   }
 }
