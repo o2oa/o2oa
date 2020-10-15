@@ -1683,7 +1683,6 @@
 
     var _AsyncGeneratorPrototype = _Class.create({
         initialize: function(resolve, reject, name){
-            debugger;
             this.isAG = true;
             this.name = name || "";
             this._createSuccess();
@@ -1712,7 +1711,7 @@
             var _self = this;
             this.failure = function(){
                 var result;
-                if (_self.failure.reject) result = _self.failure.reject(arguments);
+                if (_self.failure.reject) result = _self.failure.reject.apply(this, arguments);
                 if (_self.failure.rejectList){
                     _self.failure.rejectList.each(function(r){
                         result = r(result, arguments) || result;

@@ -150,7 +150,10 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 				}.bind(this));
 				this.fireEvent("setOptions", [options])
 			}
-		}.bind(this))
+		}.bind(this));
+		if (this.moduleSelectAG) this.moduleSelectAG.then(function(){
+			this.moduleSelectAG = null;
+		}.bind(this));
 	},
 	// __setOptions: function(){
 	// 	var optionItems = this.getOptions();
@@ -190,6 +193,11 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 			}
 			return v;
 		}.bind(this));
+
+		if (this.moduleValueAG) this.moduleValueAG.then(function(){
+			this.moduleValueAG = null;
+		}.bind(this));
+
 
 		// if (value && value.isAG){
 		// 	this.moduleValueAG = o2.AG.all(value),then(function(v){
