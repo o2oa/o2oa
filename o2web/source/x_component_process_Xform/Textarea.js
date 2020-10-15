@@ -4,7 +4,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
 	Extends: MWF.APP$Input,
 	
 	_loadUserInterface: function(){
-
+debugger;
 		this._loadNode();
         if (this.json.compute == "show"){
             this._setValue(this._computeValue());
@@ -27,6 +27,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
     _setValue: function(value){
         this.moduleValueAG = o2.AG.all(value).then(function(v){
             this.moduleValueAG = null;
+            if (o2.typeOf(v)=="array") v = v[0];
             this._setBusinessData(v);
             if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
             if (this.readonly || this.json.isReadonly){
@@ -37,6 +38,11 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
                 this.node.set("html", text);
             }
         }.bind(this));
+
+        if (this.moduleValueAG) this.moduleValueAG.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this));
+
         return value;
 
         // if (value && value.isAG){

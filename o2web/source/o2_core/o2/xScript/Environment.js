@@ -2230,7 +2230,7 @@ MWF.xScript.createDict = function(application){
             if (!refresh ){
                 var data = MWF.xScript.getDictFromCache( key, path );
                 if( data ){
-                    if (success) success( data );
+                    if (success && o2.typeOf(success)=="function") success( data );
                     return data;
                 }
             }
@@ -2241,9 +2241,9 @@ MWF.xScript.createDict = function(application){
             var cb = function(json){
                 value = json.data;
                 MWF.xScript.addDictToCache(opt, path, value);
-                if (success) value = success(json.data);
+                if (success && o2.typeOf(success)=="function") value = success(json.data);
                 return value;
-            }.ag().catch(function(xhr, text, error){ if (failure) return failure(xhr, text, error); });
+            }.ag().catch(function(xhr, text, error){ if (failure && o2.typeOf(failure)=="function") return failure(xhr, text, error); });
 
             if (path){
                 var p = encodePath( path );

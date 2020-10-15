@@ -932,10 +932,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         return node;
     },
     _setValue: function(value){
-        debugger;
         var values = [];
         var ags = [];
         var simple = this.json.storeRange === "simple";
+        var flag = false;
         var ag = o2.AG.all(value).then(function(d) {
             if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
 
@@ -954,18 +954,20 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             if (ags.length){
                 return o2.AG.all(ags).then(function(data){
                     values = values.concat(data);
+                    flag = true;
                     this.__setValue(values);
                     return values;
                 }.bind(this));
             }else{
+                flag = true;
                 this.__setValue(values);
                 return values
             }
         }.bind(this));
 
         this.moduleValueAG = ag;
-        ag.then(function(){
-            this.moduleValueAG = "";
+        if (ag) ag.then(function(){
+            this.moduleValueAG = null;
         }.bind(this));
         return ag;
     },

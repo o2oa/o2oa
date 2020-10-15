@@ -149,6 +149,9 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
                 }.bind(this));
             }
         }.bind(this));
+        if (this.moduleSelectAG) this.moduleSelectAG.then(function(){
+            this.moduleSelectAG = null;
+        }.bind(this));
 	},
 
     _setValue: function(value){
@@ -156,12 +159,18 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
             if (this.moduleSelectAG){
                 this.moduleValueAG = this.moduleSelectAG;
                 this.moduleSelectAG.then(function(){
+                    this.moduleValueAG = null;
                     this.__setValue(v);
                 }.bind(this));
             }else{
-                this.__setValue(v)
+                this.moduleValueAG = null;
+                this.__setValue(v);
             }
             return v;
+        }.bind(this));
+
+        if (this.moduleValueAG) this.moduleValueAG.then(function(){
+            this.moduleValueAG = "";
         }.bind(this));
     },
 

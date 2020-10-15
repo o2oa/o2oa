@@ -155,7 +155,9 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
                 }.bind(this));
             }
         }.bind(this))
-
+        if (this.moduleSelectAG) this.moduleSelectAG.then(function(){
+            this.moduleSelectAG = null;
+        }.bind(this));
 	},
 
     _setValue: function(value){
@@ -170,6 +172,10 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
                 this.__setValue(v)
             }
             return v;
+        }.bind(this));
+
+        if (this.moduleValueAG) this.moduleValueAG.then(function(){
+            this.moduleValueAG = null;
         }.bind(this));
     },
 
