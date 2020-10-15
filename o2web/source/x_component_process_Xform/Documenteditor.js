@@ -1344,7 +1344,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.allowEdit){
             this.loadCkeditorFiletext(function(e){
                 e.editor.focus();
-                e.editor.getSelection().scrollIntoView();
+                var text = this.data.filetext.replace(/\u3000*/g, "");
+                if (!text){
+                    var range = e.editor.createRange();
+                    range.moveToElementEditEnd(e.editor.editable());
+
+                    range.select();
+                    range.scrollIntoView();
+                }else{
+                    e.editor.getSelection().scrollIntoView();
+                }
+                //e.editor.getSelection().scrollIntoView();
 
                 //this.getFiletextToolber();
                 //this.filetextToolbarNode.inject(this.layout_filetext.getOffsetParent());
