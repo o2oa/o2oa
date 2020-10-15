@@ -1241,6 +1241,7 @@ debugger;
         var viewNodes = this.propertyContent.getElements(".MWFViewSelect");
         var cmsviewNodes = this.propertyContent.getElements(".MWFCMSViewSelect");
         var queryviewNodes = this.propertyContent.getElements(".MWFQueryViewSelect");
+        var queryStatementNodes = this.propertyContent.getElements(".MWFQueryStatementSelect");
         var querystatNodes = this.propertyContent.getElements(".MWFQueryStatSelect");
         var fileNodes = this.propertyContent.getElements(".MWFImageFileSelect");
         var processFileNodes = this.propertyContent.getElements(".MWFProcessImageFileSelect");
@@ -1301,6 +1302,15 @@ debugger;
             queryviewNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "QueryView",
+                    "count": 1,
+                    "names": [this.data[node.get("name")]],
+                    "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
+            queryStatementNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "QueryStatement",
                     "count": 1,
                     "names": [this.data[node.get("name")]],
                     "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
