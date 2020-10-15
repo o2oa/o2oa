@@ -16,6 +16,9 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "save_success": "查询配置保存成功！",
     "inputStatementName": "请输入查询配置名称",
     "inputStatementData": "请先编辑JPQL查询语句",
+    "saveStatementNotice" : "请先保存！",
+    "noViewNotice" : "未创建视图，请先创建视图！",
+    "previewNotSelectStatementNotice" : "只有查询语句才可以预览",
 
     "statementFormat": "如何创建语句：",
     "statementJpql": "直接编写JPQL创建语句",

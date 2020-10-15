@@ -36,7 +36,6 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
 			}
 		}).inject(this.form.container);
 	},
-
 	_createNode: function(){
 		this.node = this.moveNode.clone(true, true);
 		this.node.setStyles(this.css.moduleNode);
@@ -44,7 +43,7 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
 		this.node.addEvent("selectstart", function(){
 			return false;
 		});
-		
+
 		this.iconNode = new Element("div", {
 			"styles": this.css.iconNode
 		}).inject(this.node);
@@ -83,8 +82,8 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
             this.viewSelectCell.setStyle("width", "10px");
         }
 
-        MWF.Actions.get("x_query_assemble_designer").getView(this.json["queryView"].id, function(json){
-            var viewData = JSON.decode(json.data.data);
+        MWF.Actions.get("x_query_assemble_designer").getStatement(this.json["queryStatement"].id, function(json){
+            var viewData = JSON.decode(json.data.view);
 
             this.viewData = viewData;
             if( this.json.actionbar === "show" ){
@@ -107,7 +106,7 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
         this._setViewNodeTitle();
     },
     _checkView: function(callback){
-        if (this.json["queryView"] && this.json["queryView"]!="none"){
+        if (this.json["queryStatement"] && this.json["queryStatement"]!="none"){
             this.iconNode.setStyle("display", "none");
             if (this.viewNode) this.viewNode.destroy();
             this.viewNode = null;
@@ -120,5 +119,33 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
             this.node.setStyles(this.css.moduleNode);
             if (callback) callback();
         }
+    },
+    _setEditStyle: function(name, input, oldValue){
+        if (name=="queryStatement"){
+            if (this.json[name]!=oldValue) this._checkView();
+        }
+        if (name=="select") this._checkSelect();
+        if (name=="isTitle") this._checkTitle();
+        if (name=="titleStyles") this._setTitleStyles();
+
+        if (name=="name"){
+            var title = this.json.name || this.json.id;
+            var text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
+            this.treeNode.setText("<"+text+"> "+title);
+        }
+        if (name=="id"){
+            if (!this.json.name){
+                var text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
+                this.treeNode.setText("<"+text+"> "+this.json.id);
+            }
+            this.treeNode.setTitle(this.json.id);
+            this.node.set("id", this.json.id);
+        }
+        if(name=="actionbar"){
+            this.json.actionbar === "show" ? this._showActionbar() : this._hideActionbar();
+        }
+
+        this._setEditStyle_custom(name, input, oldValue);
+
     }
 });

@@ -497,9 +497,9 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
 		}.bind(this));
 	},
 
-
-
-
+    preview : function(){
+        this.statement.preview();
+    },
 
     saveStatement: function(){
         this.statement.save(function(){
