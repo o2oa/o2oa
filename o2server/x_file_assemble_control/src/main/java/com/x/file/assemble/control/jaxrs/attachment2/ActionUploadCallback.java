@@ -82,6 +82,7 @@ class ActionUploadCallback extends BaseAction {
 				if(bytes==null){
 					throw new ExceptionAttachmentNone(fileName);
 				}
+				this.verifyConstraint(business, effectivePerson.getDistinguishedName(), bytes.length, fileName);
 				originFile = new OriginFile(mapping.getName(), fileName, effectivePerson.getDistinguishedName(), fileMd5);
 				emc.check(originFile, CheckPersistType.all);
 				originFile.saveContent(mapping, bytes, fileName);
@@ -94,6 +95,7 @@ class ActionUploadCallback extends BaseAction {
 				emc.persist(attachment2);
 				emc.commit();
 			}else{
+				this.verifyConstraint(business, effectivePerson.getDistinguishedName(), originFile.getLength(), fileName);
 				attachment2 = new Attachment2(fileName, effectivePerson.getDistinguishedName(),
 						folderId, originFile.getId(), originFile.getLength(), originFile.getType());
 				emc.check(attachment2, CheckPersistType.all);
