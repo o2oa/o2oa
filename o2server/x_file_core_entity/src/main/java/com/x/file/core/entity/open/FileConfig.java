@@ -19,7 +19,7 @@ import javax.persistence.*;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class FileConifg extends SliceJpaObject {
+public class FileConfig extends SliceJpaObject {
 
 	private static final long serialVersionUID = -2266232193925155825L;
 	private static final String TABLE = PersistenceProperties.Open.Config.table;
@@ -40,10 +40,12 @@ public class FileConifg extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-
+		if(this.properties == null){
+			this.properties = new FileConfigProperties();
+		}
 	}
 
-	public FileConifg() {
+	public FileConfig() {
 		this.properties = new FileConfigProperties();
 	}
 
@@ -53,7 +55,7 @@ public class FileConifg extends SliceJpaObject {
 	@FieldDescribe("所属用户.")
 	@Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@CheckPersist(allowEmpty = false, citationNotExists = @CitationNotExist(fields = person_FIELDNAME, type = FileConfig.class))
 	private String person;
 
 	public static final String name_FIELDNAME = "name";
@@ -63,7 +65,7 @@ public class FileConifg extends SliceJpaObject {
 	private String name;
 
 	public static final String capacity_FIELDNAME = "capacity";
-	@FieldDescribe("容量(单位M).")
+	@FieldDescribe("容量(单位M)，0表示无限大.")
 	@Column(name = ColumnNamePrefix + capacity_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Integer capacity;

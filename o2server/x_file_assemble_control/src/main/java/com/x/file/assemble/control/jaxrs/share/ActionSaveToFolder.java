@@ -6,7 +6,6 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.organization.Unit;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Attachment2;
@@ -57,14 +56,22 @@ class ActionSaveToFolder extends BaseAction {
 				throw new Exception("fileId can not be empty.");
 			}
 			/* 转存文件或目录到指定的目录下 */
+			long usedSize = business.attachment2().getUseCapacity(effectivePerson.getDistinguishedName());
 			if("attachment".equals(share.getFileType())){
 				Attachment2 att = emc.find(fileId, Attachment2.class);
-				Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
-						folderId, att.getOriginFile(), att.getLength(), att.getType());
-				emc.check(newAtt, CheckPersistType.all);
-				emc.beginTransaction(Attachment2.class);
-				emc.persist(newAtt);
-				emc.commit();
+				if(att!=null) {
+					usedSize = usedSize + att.getLength();
+					int vResult = business.verifyConstraint(effectivePerson.getDistinguishedName(), usedSize);
+					if(vResult > 0){
+						throw new ExceptionCapacityOut(usedSize, vResult);
+					}
+					Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
+							folderId, att.getOriginFile(), att.getLength(), att.getType());
+					emc.check(newAtt, CheckPersistType.all);
+					emc.beginTransaction(Attachment2.class);
+					emc.persist(newAtt);
+					emc.commit();
+				}
 			}else{
 				Folder2 folder = emc.find(fileId, Folder2.class);
 				Folder2 newFolder = new Folder2(folder.getName(),effectivePerson.getDistinguishedName(),folderId,folder.getStatus());
@@ -81,6 +88,11 @@ class ActionSaveToFolder extends BaseAction {
 					em1.getTransaction().commit();
 					List<Attachment2> attachments = business.attachment2().listWithFolder2(subFold,FileStatus.VALID.getName());
 					for (Attachment2 att : attachments) {
+						usedSize = usedSize + att.getLength();
+						int vResult = business.verifyConstraint(effectivePerson.getDistinguishedName(), usedSize);
+						if(vResult > 0){
+							throw new ExceptionCapacityOut(usedSize, vResult);
+						}
 						Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
 								folderId, att.getOriginFile(), att.getLength(), att.getType());
 						EntityManager em2 = emc.beginTransaction(Attachment2.class);
