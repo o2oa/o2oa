@@ -341,8 +341,14 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
             this.searchCustomView();
         }
-    }
+    },
     //搜索相关结束
+    getStatementInfor : function () {
+        return this.json;
+    },
+    switchStatement : function (json) {
+        this.switchView(json);
+    }
 });
 
 MWF.xApplication.query.Query.Statement.Item = new Class({
