@@ -38,7 +38,8 @@ class ActionResume extends BaseAction {
 					usedSize = usedSize + att.getLength();
 					int vResult = business.verifyConstraint(effectivePerson.getDistinguishedName(), usedSize);
 					if(vResult > 0){
-						throw new ExceptionCapacityOut(usedSize, vResult);
+						long usedCapacity = usedSize / (1024 * 1024);
+						throw new ExceptionCapacityOut(usedCapacity, vResult);
 					}
 					EntityManager aem = emc.beginTransaction(Attachment2.class);
 					att.setStatus(FileStatus.VALID.getName());
@@ -62,7 +63,8 @@ class ActionResume extends BaseAction {
 							usedSize = usedSize + att.getLength();
 							int vResult = business.verifyConstraint(effectivePerson.getDistinguishedName(), usedSize);
 							if(vResult > 0){
-								throw new ExceptionCapacityOut(usedSize, vResult);
+								long usedCapacity = usedSize / (1024 * 1024);
+								throw new ExceptionCapacityOut(usedCapacity, vResult);
 							}
 							EntityManager aem = emc.beginTransaction(Attachment2.class);
 							att.setStatus(FileStatus.VALID.getName());
