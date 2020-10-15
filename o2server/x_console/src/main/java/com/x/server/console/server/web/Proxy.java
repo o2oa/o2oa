@@ -5,18 +5,25 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.http.HttpHeader;
-import org.eclipse.jetty.proxy.AsyncProxyServlet;
+import org.eclipse.jetty.proxy.ProxyServlet;
 
-public class Proxy extends AsyncProxyServlet {
+public class Proxy extends ProxyServlet {
 
 	private static final long serialVersionUID = 2737360000716631564L;
 	private static final String X_Real_IP = "X-Real-IP";
+
+//	@Override
+//	public void init() throws ServletException {
+//		super.init();
+//		this.getHttpClient().setMaxRequestsQueuedPerDestination(10000);
+//	}
 
 	@Override
 	protected String rewriteTarget(HttpServletRequest request) {
 		String url = request.getRequestURL().toString();
 		String parameter = request.getQueryString();
 		return target(url, parameter, this.getServletConfig().getInitParameter("port"));
+
 	}
 
 	private String target(String url, String parameter, String port) {
