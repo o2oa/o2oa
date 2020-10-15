@@ -154,7 +154,6 @@ public class WebServerTools extends JettySeverTools {
 		}
 	}
 
-
 	private static void copyDefaultHtml() throws Exception {
 		File file = new File(Config.dir_config(), "default.html");
 		if (file.exists() && file.isFile()) {
