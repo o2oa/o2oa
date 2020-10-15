@@ -143,9 +143,9 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                     }
                     this.identitys = [];
                     if (this.options.type.toLowerCase()!=="duty") this.node.empty();
+                    var type = this.options.type.toLowerCase();
                     MWF.require("MWF.widget.O2Identity", function(){
                         items.each(function(item){
-                            var type = this.options.type.toLowerCase();
                             if (type==="identity") this.identitys.push(new MWF.widget.O2Identity(item.data, this.node));
                             if (type==="person") this.identitys.push(new MWF.widget.O2Person(item.data, this.node));
                             if (type==="unit") this.identitys.push(new MWF.widget.O2Unit(item.data, this.node));

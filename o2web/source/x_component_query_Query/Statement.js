@@ -215,13 +215,13 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     getView: function(callback){
         this.getLookupAction(function(){
             if (this.json.application){
-                this.getViewRes = this.lookupAction.getView(this.json.viewName, this.json.application, function(json){
+                this.getViewRes = this.lookupAction.getStatement(this.json.statementName, this.json.application, function(json){
                     this.viewJson = JSON.decode(json.data.data);
                     this.json = Object.merge(this.json, json.data);
                     if (callback) callback();
                 }.bind(this));
 
-                // this.lookupAction.invoke({"name": "getView","async": true, "parameter": {"view": this.json.viewName, "application": this.json.application},"success": function(json){
+                // this.lookupAction.invoke({"name": "getView","async": true, "parameter": {"view": this.json.statementName, "application": this.json.application},"success": function(json){
                 //     this.viewJson = JSON.decode(json.data.data);
                 //     this.json = Object.merge(this.json, json.data);
                 //     //var viewData = JSON.decode(json.data.data);
@@ -467,17 +467,29 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
     setOpenWork: function(td, column){
         td.setStyle("cursor", "pointer");
         if( column.clickCode ){
-            // if( !this.view.Macro ){
-            //     MWF.require("MWF.xScript.Macro", function () {
-            //         this.view.businessData = {};
-            //         this.view.Macro = new MWF.Macro.PageContext(this.view);
-            //     }.bind(this), false);
-            // }
+            if( !this.view.Macro ){
+                MWF.require("MWF.xScript.Macro", function () {
+                    this.view.businessData = {};
+                    this.view.Macro = new MWF.Macro.PageContext(this.view);
+                }.bind(this), false);
+            }
             td.addEvent("click", function( ev ){
                 var result = this.view.Macro.fire(column.clickCode, this, ev);
                 ev.stopPropagation();
                 return result;
             }.bind(this));
+        }else{
+            // if (this.view.json.type==="cms"){
+            //     td.addEvent("click", function(ev){
+            //         this.openCms(ev)
+            //         ev.stopPropagation();
+            //     }.bind(this));
+            // }else{
+                td.addEvent("click", function(ev){
+                    this.openWorkAndCompleted(ev)
+                    ev.stopPropagation();
+                }.bind(this));
+            // }
         }
     }
 });

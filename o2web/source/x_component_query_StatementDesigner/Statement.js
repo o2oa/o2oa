@@ -692,6 +692,28 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // var titleSize = this.runTitleNode.getComputedSize();
         // y = y - titleSize.totalHeight;
         // this.runContentNode.setStyle("height", ""+y+"px");
+    },
+    preview: function(){
+        if( this.isNewStatement ){
+            this.designer.notice( this.designer.lp.saveStatementNotice, "error" );
+            return;
+        }
+        if( this.data.type !== "select" ){
+            this.designer.notice( this.designer.lp.previewNotSelectStatementNotice, "error" );
+            return;
+        }
+        if( !this.data.view ){
+            this.designer.notice( this.designer.lp.noViewNotice, "error" );
+
+        }
+        this.saveSilence( function () {
+            var url = "../x_desktop/app.html?app=query.Query&status=";
+            url += JSON.stringify({
+                id : this.data.application,
+                statementId : this.data.id
+            });
+            window.open(o2.filterUrl(url),"_blank");
+        }.bind(this));
     }
 });
 
@@ -1299,7 +1321,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
             if (!this.json.data.viewStyles[to][key]) this.json.data.viewStyles[to][key] = style;
         }.bind(this));
     }
-// preview: function(){
+    // preview: function(){
     //     if( this.isNewView ){
     //         this.designer.notice( this.designer.lp.saveViewNotice, "error" );
     //         return;

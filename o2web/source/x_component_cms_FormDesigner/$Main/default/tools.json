@@ -197,7 +197,7 @@
     "className": "Comment"
   },
   "statementSelector": {
-    "icon": "statement.png",
+    "icon": "statementSelector.png",
     "text": "选择查询",
     "className": "StatementSelector"
   },
