@@ -174,5 +174,15 @@
     "icon": "office.png",
     "text": "Office控件",
     "className": "Office"
+  },
+  "statementSelector": {
+    "icon": "statement.png",
+    "text": "选择查询",
+    "className": "StatementSelector"
+  },
+  "statement": {
+    "icon": "statement.png",
+    "text": "嵌入查询",
+    "className": "Statement"
   }
 }
