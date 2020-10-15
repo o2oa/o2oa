@@ -63,7 +63,8 @@ class ActionSaveToFolder extends BaseAction {
 					usedSize = usedSize + att.getLength();
 					int vResult = business.verifyConstraint(effectivePerson.getDistinguishedName(), usedSize);
 					if(vResult > 0){
-						throw new ExceptionCapacityOut(usedSize, vResult);
+						long usedCapacity = usedSize / (1024 * 1024);
+						throw new ExceptionCapacityOut(usedCapacity, vResult);
 					}
 					Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
 							folderId, att.getOriginFile(), att.getLength(), att.getType());
@@ -91,7 +92,8 @@ class ActionSaveToFolder extends BaseAction {
 						usedSize = usedSize + att.getLength();
 						int vResult = business.verifyConstraint(effectivePerson.getDistinguishedName(), usedSize);
 						if(vResult > 0){
-							throw new ExceptionCapacityOut(usedSize, vResult);
+							long usedCapacity = usedSize / (1024 * 1024);
+							throw new ExceptionCapacityOut(usedCapacity, vResult);
 						}
 						Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
 								folderId, att.getOriginFile(), att.getLength(), att.getType());
