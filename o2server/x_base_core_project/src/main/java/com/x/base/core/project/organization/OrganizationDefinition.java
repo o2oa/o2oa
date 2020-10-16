@@ -74,6 +74,9 @@ public class OrganizationDefinition {
 	public final static String SearchPrivilege = "SearchPrivilege";
 	public final static String SearchPrivilege_description = "搜索管理员(系统角色)，可以跨权限对系统内容进行搜索。";
 
+	public final static String FileManager = "FileManager";
+	public final static String FileManager_description = "云文件管理员(系统角色)，可以进行云文件系统相关配置。";
+
 	public final static String RoleDefinitionSuffix = "SystemRole";
 
 	public final static Pattern person_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@P$");
@@ -97,7 +100,7 @@ public class OrganizationDefinition {
 	public final static List<String> DEFAULTROLES = new UnmodifiableList<String>(ListTools.toList(Manager,
 			AttendanceManager, OrganizationManager, PersonManager, GroupManager, UnitManager, RoleManager,
 			ProcessPlatformManager, ProcessPlatformCreator, MeetingManager, MeetingViewer, PortalManager, BBSManager,
-			CMSManager, OKRManager, CRMManager,TeamWorkManager, QueryManager, MessageManager, HotPictureManager, SearchPrivilege));
+			CMSManager, OKRManager, CRMManager,TeamWorkManager, QueryManager, MessageManager, HotPictureManager, SearchPrivilege, FileManager));
 
 	public static String name(String distinguishedName) {
 		if (StringUtils.contains(distinguishedName, "@")) {

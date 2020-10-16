@@ -8,6 +8,7 @@ import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.file.assemble.control.jaxrs.attachment.AttachmentAction;
 import com.x.file.assemble.control.jaxrs.attachment2.Attachment2Action;
 import com.x.file.assemble.control.jaxrs.complex.ComplexAction;
+import com.x.file.assemble.control.jaxrs.config.ConfigAction;
 import com.x.file.assemble.control.jaxrs.editor.EditorAction;
 import com.x.file.assemble.control.jaxrs.file.FileAction;
 import com.x.file.assemble.control.jaxrs.folder.FolderAction;
@@ -28,6 +29,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(RecycleAction.class);
 		classes.add(EditorAction.class);
 		classes.add(FileAction.class);
+		classes.add(ConfigAction.class);
 		return classes;
 	}
 
