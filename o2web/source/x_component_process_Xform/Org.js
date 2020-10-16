@@ -91,7 +91,15 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         //}
     },
 
-
+    _valueMerge: function(values, v){
+        if (o2.typeOf(v)=="function"){
+            return v.then(function(re){
+                this._valueMerge(values, re)
+            }.bind(this));
+        }else{
+            return values.concat(v);
+        }
+    },
     _computeValue: function(){
         var simple = this.json.storeRange === "simple";
         var values = [];
@@ -109,27 +117,73 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             if (dutys.length){
                 dutys.each(function(duty){
                     if (duty.code) par = this.form.Macro.exec(duty.code, this);
-                    var code = "return this.org.getDuty(\""+duty.name+"\", \""+par+"\")";
-                    var d = this.form.Macro.exec(code, this);
-                    if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
-                    d.each(function(dd){if (dd) values.push(MWF.org.parseOrgData(dd, true, simple));});
+                    if (par && par.isAG){
+                        var ag = o2.AG.all(par).then(function(p){
+                            var uName = "";
+                            if (p && p.length) uName = p[0].distinguishedName || p[0];
+                            var code = "return this.org.getDuty(\""+duty.name+"\", \""+uName+"\", true)";
+                            var r = this.form.Macro.exec(code, this);
+
+                            o2.AG.all(r).then(function(d) {
+                                //var d = rd[0];
+                                if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
+                                var arr = [];
+                                d.each(function(dd){
+                                    if (dd) arr.push(MWF.org.parseOrgData(dd, true, simple));
+                                });
+                                return arr;
+                            }.bind(this));
+                        }.bind(this));
+                        values.push(ag);
+                    }else{
+                        var code = "return this.org.getDuty(\""+duty.name+"\", \""+par+"\", true)";
+                        var r = this.form.Macro.exec(code, this);
+                        var ag = o2.AG.all(r).then(function(d) {
+                            //var d = rd[0];
+                            if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
+                            var arr = [];
+                            d.each(function(dd){
+                                if (dd) arr.push(MWF.org.parseOrgData(dd, true, simple));
+                            });
+                            return arr;
+                        }.bind(this));
+                        values.push(ag);
+
+                        // if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
+                        // d.each(function(dd){if (dd) values.push(MWF.org.parseOrgData(dd, true, simple));});
+                    }
+
                 }.bind(this));
             }
         }
         if (this.json.defaultValue && this.json.defaultValue.code){
             var fd = this.form.Macro.exec(this.json.defaultValue.code, this);
-            if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
-            fd.each(function(fdd){
-                if (fdd){
-                    if (typeOf(fdd)==="string"){
-                        var data;
-                        this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, fdd, false);
-                        values.push(data);
-                    }else{
-                        values.push(fdd);
+
+            if (fd && fd.isAG){
+                // value.addResolve(function(v){
+                //     this._setBusinessData(v);
+                //     if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
+                //     if (this.readonly || this.json.isReadonly) this.node.set("text", v);
+                // }.bind(this));
+                values.push(fd);
+                // fd.then(function(v){
+                //     return this._valueMerge(values, v);
+                // }.bind(this));
+                // return fd;
+            }else{
+                if (typeOf(fd)!=="array") fd = (fd) ? [fd] : [];
+                fd.each(function(fdd){
+                    if (fdd){
+                        if (typeOf(fdd)==="string"){
+                            var data;
+                            this.getOrgAction()[this.getValueMethod(fdd)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), null, fdd, false);
+                            values.push(data);
+                        }else{
+                            values.push(fdd);
+                        }
                     }
-                }
-            }.bind(this));
+                }.bind(this));
+            }
         }
         if (this.json.count>0){
             return values.slice(0, this.json.count);
@@ -367,6 +421,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         }
     },
     resetData: function(){
+        debugger;
         var v = this.getValue();
         //this.setData((v) ? v.join(", ") : "");
         this.setData(v);
@@ -715,51 +770,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             }
         }.bind(this));
     },
-    setData: function(value){
-        if (!value) return false;
-        var oldValues = this.getData();
-        var values = [];
-        var comboxValues = [];
-
-        var simple = this.json.storeRange === "simple";
-
-        var type = typeOf(value);
-        if (type==="array"){
-            value.each(function(v){
-                var vtype = typeOf(v);
-                var data = null;
-                if (vtype==="string"){
-                    var error = (this.json.isInput) ? function(){ comboxValues.push(v); } : null;
-                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), error, v, false);
-                }
-                if (vtype==="object") {
-                    data = MWF.org.parseOrgData(v, true, simple);
-                    if(data.woPerson)delete data.woPerson;
-                }
-                if (data){
-                    values.push(data);
-                    comboxValues.push({"text": this.getDataText(data),"value": data});
-                }
-            }.bind(this));
-        }
-        if (type==="string"){
-            var vData;
-            var error = (this.json.isInput) ? function(){ comboxValues.push(value); } : null;
-            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), error, value, false);
-            if (vData){
-                values.push(vData);
-                comboxValues.push({"text": this.getDataText(vData),"value": vData});
-            }
-        }
-        if (type==="object"){
-            var vData = MWF.org.parseOrgData(value, true, simple);
-            if(vData.woPerson)delete vData.woPerson;
-            values.push( vData );
-            comboxValues.push({"text": this.getDataText(value),"value": vData});
-        }
-
+    checkChange: function(oldValues, values){
         var change = false;
-        if (oldValues.length && values.length){
+        if (!values) values = [];
+        if (oldValues.length && (values && values.length)){
             if (oldValues.length === values.length){
                 for (var i=0; i<oldValues.length; i++){
                     if ((oldValues[i].distinguishedName!==values[i].distinguishedName) || (oldValues[i].name!==values[i].name) || (oldValues[i].unique!==values[i].unique)){
@@ -773,46 +787,109 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         }else if (values.length || oldValues.length) {
             change = true;
         }
-        this._setBusinessData(values);
         if (change) this.fireEvent("change");
-
-        if (this.json.isInput){
-            if (this.combox){
-                this.combox.clear();
-                this.combox.addNewValues(comboxValues);
-            }else{
-                var node = this.node.getFirst();
-                if (node){
-                    node.empty();
-                    comboxValues.each(function(v, i){
-                        this.creteShowNode(v, (i===comboxValues.length-1)).inject(node);
-                    }.bind(this));
-                }
-            }
-            //
-            // this.combox.clear();
-            // values.each(function(v){
-            //     var vtype = typeOf(v);
-            //     if (vtype==="string"){
-            //         var data;
-            //         this.getOrgAction()[this.getValueMethod(v)](function(json){ data = json.data }.bind(this), null, v, false);
-            //         if (data) this.combox.addNewValue(this.getDataText(data), data);
-            //     }
-            //     if (vtype==="object"){
-            //         this.combox.addNewValue(this.getDataText(v), v);
-            //     }
-            // }.bind(this));
-        }else{
-            if (this.node.getFirst()){
-                var node = this.node.getFirst();
-                node.empty();
-                this.loadOrgWidget(values, node)
-            }else{
-                this.node.empty();
-                this.loadOrgWidget(values, this.node);
-            }
-        }
     },
+    setData: function(value){
+        if (!value) return false;
+        var oldValues = this.getData();
+        if (value.length==1 && !(value[0])) value=[];
+
+        var ag = this._setValue(value);
+        ag.then(function(values){
+            if (values && values.isAG){
+                values.then(function(v){
+                    this.checkChange(oldValues, v)
+                }.bind(this));
+            }else{
+                this.checkChange(oldValues, values)
+            }
+        }.bind(this));
+    },
+    // __setData: function(value){
+    //     if (!value) return false;
+    //     var oldValues = this.getData();
+    //     var values = [];
+    //     var comboxValues = [];
+    //
+    //     var simple = this.json.storeRange === "simple";
+    //
+    //     var type = typeOf(value);
+    //     if (type==="array"){
+    //         value.each(function(v){
+    //             var vtype = typeOf(v);
+    //             var data = null;
+    //             if (vtype==="string"){
+    //                 var error = (this.json.isInput) ? function(){ comboxValues.push(v); } : null;
+    //                 this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), error, v, false);
+    //             }
+    //             if (vtype==="object") {
+    //                 data = MWF.org.parseOrgData(v, true, simple);
+    //                 if(data.woPerson)delete data.woPerson;
+    //             }
+    //             if (data){
+    //                 values.push(data);
+    //                 comboxValues.push({"text": this.getDataText(data),"value": data});
+    //             }
+    //         }.bind(this));
+    //     }
+    //     if (type==="string"){
+    //         var vData;
+    //         var error = (this.json.isInput) ? function(){ comboxValues.push(value); } : null;
+    //         this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), error, value, false);
+    //         if (vData){
+    //             values.push(vData);
+    //             comboxValues.push({"text": this.getDataText(vData),"value": vData});
+    //         }
+    //     }
+    //     if (type==="object"){
+    //         var vData = MWF.org.parseOrgData(value, true, simple);
+    //         if(vData.woPerson)delete vData.woPerson;
+    //         values.push( vData );
+    //         comboxValues.push({"text": this.getDataText(value),"value": vData});
+    //     }
+    //
+    //     var change = false;
+    //     if (oldValues.length && values.length){
+    //         if (oldValues.length === values.length){
+    //             for (var i=0; i<oldValues.length; i++){
+    //                 if ((oldValues[i].distinguishedName!==values[i].distinguishedName) || (oldValues[i].name!==values[i].name) || (oldValues[i].unique!==values[i].unique)){
+    //                     change = true;
+    //                     break;
+    //                 }
+    //             }
+    //         }else{
+    //             change = true;
+    //         }
+    //     }else if (values.length || oldValues.length) {
+    //         change = true;
+    //     }
+    //     this._setBusinessData(values);
+    //     if (change) this.fireEvent("change");
+    //
+    //     if (this.json.isInput){
+    //         if (this.combox){
+    //             this.combox.clear();
+    //             this.combox.addNewValues(comboxValues);
+    //         }else{
+    //             var node = this.node.getFirst();
+    //             if (node){
+    //                 node.empty();
+    //                 comboxValues.each(function(v, i){
+    //                     this.creteShowNode(v, (i===comboxValues.length-1)).inject(node);
+    //                 }.bind(this));
+    //             }
+    //         }
+    //     }else{
+    //         if (this.node.getFirst()){
+    //             var node = this.node.getFirst();
+    //             node.empty();
+    //             this.loadOrgWidget(values, node)
+    //         }else{
+    //             this.node.empty();
+    //             this.loadOrgWidget(values, this.node);
+    //         }
+    //     }
+    // },
     creteShowNode: function(data, islast){
         var nodeText = (data.text) ?  data.text : data;
         if (!islast) nodeText = nodeText + (this.json.splitShow || ", ");
@@ -858,6 +935,47 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         return node;
     },
     _setValue: function(value){
+        var values = [];
+        var ags = [];
+        var simple = this.json.storeRange === "simple";
+        var flag = false;
+        var ag = o2.AG.all(value).then(function(d) {
+            if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
+
+            d.each(function(dd){
+                //if (dd) arr.push(MWF.org.parseOrgData(dd, true, simple));
+                if (dd){
+                    if (typeOf(dd)==="string"){
+                        ags.push(this.getOrgAction()[this.getValueMethod(dd)](function(json){
+                            return MWF.org.parseOrgData(json.data, true, simple);
+                        }.bind(this).ag(), null, dd, true));
+                    }else{
+                        values.push(dd);
+                    }
+                }
+            }.bind(this));
+            if (ags.length){
+                return o2.AG.all(ags).then(function(data){
+                    values = values.concat(data);
+                    flag = true;
+                    this.__setValue(values);
+                    return values;
+                }.bind(this));
+            }else{
+                flag = true;
+                this.__setValue(values);
+                return values
+            }
+        }.bind(this));
+
+        this.moduleValueAG = ag;
+        if (ag) ag.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this));
+        return ag;
+    },
+    __setValue: function(value){
+        this.moduleValueAG = null;
         if (value.length==1 && !(value[0])) value=[];
         var values = [];
         var comboxValues = [];
@@ -922,8 +1040,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         }else{
             if (this.node.getFirst()){
                 var node = this.node.getFirst();
+                node.empty();
                 this.loadOrgWidget(values, node)
             }else{
+                this.node.empty();
                 this.loadOrgWidget(values, this.node);
             }
         }

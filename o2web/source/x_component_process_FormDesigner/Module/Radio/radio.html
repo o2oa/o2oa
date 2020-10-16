@@ -13,13 +13,6 @@
 		    <td class="editTableTitle">描述:</td>
 		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 		  </tr>
-		  <tr>
-		    <td class="editTableTitle">可选值:</td>
-		    <td class="editTableValue">
-		    	<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemValues').setStyle('display', 'block'); $('text{$.pid}selectEditItemScript').setStyle('display', 'none')}" name="itemType" text{($.itemType=='values')?'checked':''} type="radio" value="values"/>固定值
-		    	<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'block'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none')}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>脚本
-		    </td>
-		  </tr>
             <tr>
                 <td class="editTableTitle">是否只读:</td>
                 <td class="editTableValue">
@@ -27,6 +20,14 @@
                     <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>否
                 </td>
             </tr>
+		  <tr>
+		    <td class="editTableTitle">可选值:</td>
+		    <td class="editTableValue">
+		    	<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemValues').setStyle('display', 'block'); $('text{$.pid}selectEditItemScript').setStyle('display', 'none')}" name="itemType" text{($.itemType=='values')?'checked':''} type="radio" value="values"/>固定值
+		    	<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'block'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none')}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>脚本
+		    </td>
+		  </tr>
+
 		</table>
 		
 		<div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType=='values')?'block':'none'}" class="MWFArraylist" name="itemValues" title="可选值"></div>
