@@ -1229,8 +1229,8 @@ public class Business {
 		}
 		try (ZipOutputStream zos = new ZipOutputStream(os)) {
 			for (Map.Entry<String, Attachment> entry : filePathMap.entrySet()) {
-				zos.putNextEntry(new ZipEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
-						new String[] { "/", "\\" }, new String[] { "-", "-" }))));
+				zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
+						new String[] { "/",":","*","?","<<",">>","|","<",">","\\" }, new String[] { "","","","","","","","","","" })));
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 						entry.getValue().getStorage());
 				try (ByteArrayOutputStream os1 = new ByteArrayOutputStream()) {
@@ -1243,8 +1243,8 @@ public class Business {
 
 			if (otherAttMap != null) {
 				for (Map.Entry<String, byte[]> entry : otherAttMap.entrySet()) {
-					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(), new String[] { "/", "\\" },
-							new String[] { "-", "-" })));
+					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
+							new String[] { "/",":","*","?","<<",">>","|","<",">","\\" }, new String[] { "","","","","","","","","","" })));
 					zos.write(entry.getValue());
 				}
 			}
