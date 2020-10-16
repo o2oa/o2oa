@@ -1339,65 +1339,83 @@ if( !MWF.xScript.createDict ){
                 if (!refresh ){
                     var data = MWF.xScript.getDictFromCache( key, path );
                     if( data ){
-                        if (success) success( data );
+                        if (success && o2.typeOf(success)=="function") success( data );
                         return data;
                     }
                 }
 
-                if (path){
+                if (success===true) async=true;
+                if (failure===true) async=true;
 
+                var cb = function(json){
+                    value = json.data;
+                    MWF.xScript.addDictToCache(opt, path, value);
+                    if (success && o2.typeOf(success)=="function") value = success(json.data);
+                    return value;
+                }.ag().catch(function(xhr, text, error){ if (failure && o2.typeOf(failure)=="function") return failure(xhr, text, error); });
+
+                if (path){
                     var p = encodePath( path );
                     //var p = path.replace(/\./g, "/");
-                    action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
-                        value = json.data;
-                        // this.dictData[path] = value;
-                        MWF.xScript.addDictToCache(opt, path, value);
-                        if (success) success(json.data);
-                    }.bind(this), function(xhr, text, error){
-                        if (failure) failure(xhr, text, error);
-                    }, !!async, false);
+                    action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async);
                 }else{
-                    action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
-                        value = json.data;
-                        // this.dictData["root"] = value;
-                        MWF.xScript.addDictToCache(opt, path, value);
-                        if (success) success(json.data);
-                    }.bind(this), function(xhr, text, error){
-                        if (failure) failure(xhr, text, error);
-                    }, !!async);
+                    action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async);
                 }
+                return (!!async) ? cb : value;
 
-                return value;
+                // if (path){
+                //     var p = encodePath( path );
+                //     //var p = path.replace(/\./g, "/");
+                //     action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
+                //         value = json.data;
+                //         // this.dictData[path] = value;
+                //         MWF.xScript.addDictToCache(opt, path, value);
+                //         if (success) success(json.data);
+                //     }.bind(this), function(xhr, text, error){
+                //         if (failure) failure(xhr, text, error);
+                //     }, !!async);
+                // }else{
+                //     action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
+                //         value = json.data;
+                //         // this.dictData["root"] = value;
+                //         MWF.xScript.addDictToCache(opt, path, value);
+                //         if (success) success(json.data);
+                //     }.bind(this), function(xhr, text, error){
+                //         if (failure) failure(xhr, text, error);
+                //     }, !!async);
+                // }
+
+                //return value;
             };
 
             this.set = function(path, value, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
                     MWF.xScript.setDictToCache(key, path, value);
-                    if (success) success(json.data);
+                    if (success) return success(json.data);
                 }, function(xhr, text, error){
-                    if (failure) failure(xhr, text, error);
+                    if (failure) return failure(xhr, text, error);
                 }, false, false);
             };
             this.add = function(path, value, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
                     MWF.xScript.insertDictToCache(key, path, value);
-                    if (success) success(json.data);
+                    if (success) return success(json.data);
                 }, function(xhr, text, error){
-                    if (failure) failure(xhr, text, error);
+                    if (failure) return failure(xhr, text, error);
                 }, false, false);
             };
             this["delete"] = function(path, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+                return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
                     MWF.xScript.deleteDictToCache(key, path);
-                    if (success) success(json.data);
+                    if (success) return success(json.data);
                 }, function(xhr, text, error){
-                    if (failure) failure(xhr, text, error);
+                    if (failure) return failure(xhr, text, error);
                 }, false, false);
             };
             this.destory = this["delete"];
