@@ -101,6 +101,8 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 				}
 			}
 
+			fileName = StringUtils.replaceEach(fileName,
+					new String[] { "/",":","*","?","<<",">>","|","<",">","\\" }, new String[] { "","","","","","","","","","" });
 			logger.info("batchDown to {}，att size {}, from work {}, has form {}", fileName, attachmentList.size(),
 					workId, map.size());
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
