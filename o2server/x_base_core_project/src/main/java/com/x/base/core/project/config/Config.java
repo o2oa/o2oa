@@ -100,6 +100,7 @@ public class Config {
 	public static final String DIR_LOCAL_UPDATE = "local/update";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
 	public static final String DIR_LOCAL_TEMP_CLASSES = "local/temp/classes";
+	public static final String DIR_LOCAL_TEMP_CUSTOM = "local/temp/custom";
 	public static final String DIR_LOCAL_TEMP_SQL = "local/temp/sql";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC = "local/temp/dynamic";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC_SRC = "local/temp/dynamic/src";
@@ -318,6 +319,20 @@ public class Config {
 
 	public static File dir_local_temp_classes() throws Exception {
 		return new File(base(), DIR_LOCAL_TEMP_CLASSES);
+	}
+
+	public static File dir_local_temp_custom() throws Exception {
+		return new File(base(), DIR_LOCAL_TEMP_CUSTOM);
+	}
+
+	public static File dir_local_temp_custom(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_LOCAL_TEMP_CUSTOM);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
 	}
 
 	public static File dir_local_temp_dynamic() throws Exception {
