@@ -8,10 +8,15 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.ListTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.FileUtil;
 import com.x.file.assemble.control.ThisApplication;
+import com.x.file.core.entity.open.FileConfig;
+import com.x.file.core.entity.open.FileConfigProperties;
 import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Attachment2_;
@@ -28,8 +33,8 @@ import javax.persistence.criteria.Root;
 
 class ActionUpload extends BaseAction {
 
-	// @HttpMethodDescribe(value = "创建Attachment对象,如果没有上级目录用(0)替代.", response =
-	// WrapOutId.class)
+	private static Logger logger = LoggerFactory.getLogger( ActionUpload.class );
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String folderId, String fileName, String fileMd5, byte[] bytes,
 			FormDataContentDisposition disposition) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -82,6 +87,7 @@ class ActionUpload extends BaseAction {
 				if(bytes==null){
 					throw new ExceptionAttachmentNone(fileName);
 				}
+				this.verifyConstraint(business, effectivePerson.getDistinguishedName(), bytes.length, fileName);
 				originFile = new OriginFile(mapping.getName(), fileName, effectivePerson.getDistinguishedName(), fileMd5);
 				emc.check(originFile, CheckPersistType.all);
 				originFile.saveContent(mapping, bytes, fileName);
@@ -94,6 +100,7 @@ class ActionUpload extends BaseAction {
 				emc.persist(attachment2);
 				emc.commit();
 			}else{
+				this.verifyConstraint(business, effectivePerson.getDistinguishedName(), originFile.getLength(), fileName);
 				attachment2 = new Attachment2(fileName, effectivePerson.getDistinguishedName(),
 						folderId, originFile.getId(), originFile.getLength(), originFile.getType());
 				emc.check(attachment2, CheckPersistType.all);
@@ -110,4 +117,5 @@ class ActionUpload extends BaseAction {
 
 	public static class Wo extends WoId {
 	}
+
 }

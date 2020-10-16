@@ -44,11 +44,10 @@ public class Clean extends AbstractJob {
 	private Long clearGeneralFile() throws Exception {
 		List<GeneralFile> os = null;
 		Long count = 0L;
-
 		do {
-			os = this.listInstant();
-			if (!os.isEmpty()) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				os = this.listInstant(emc);
+				if (!os.isEmpty()) {
 					emc.beginTransaction(GeneralFile.class);
 					for (GeneralFile o : os) {
 						StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
@@ -64,16 +63,14 @@ public class Clean extends AbstractJob {
 		return count;
 	}
 
-	private List<GeneralFile> listInstant() throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			EntityManager em = emc.get(GeneralFile.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<GeneralFile> cq = cb.createQuery(GeneralFile.class);
-			Root<GeneralFile> root = cq.from(GeneralFile.class);
-			Date limit = DateTools.floorDate(new Date(), 0);
-			Predicate p = cb.lessThan(root.get(GeneralFile_.createTime), limit);
-			return em.createQuery(cq.select(root).where(p)).setMaxResults(100).getResultList();
-		}
+	private List<GeneralFile> listInstant(EntityManagerContainer emc) throws Exception {
+		EntityManager em = emc.get(GeneralFile.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<GeneralFile> cq = cb.createQuery(GeneralFile.class);
+		Root<GeneralFile> root = cq.from(GeneralFile.class);
+		Date limit = DateTools.floorDate(new Date(), 0);
+		Predicate p = cb.lessThan(root.get(GeneralFile_.createTime), limit);
+		return em.createQuery(cq.select(root).where(p)).setMaxResults(100).getResultList();
 	}
 
 }
