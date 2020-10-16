@@ -45,7 +45,7 @@ import com.x.processplatform.core.entity.element.Route;
  *
  */
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.TaskCompleted.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Content.TaskCompleted.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -433,7 +433,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String applicationAlias_FIELDNAME = "applicationAlias";
 	@FieldDescribe("应用别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + applicationAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + applicationAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String applicationAlias;
 
@@ -447,7 +446,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String processAlias_FIELDNAME = "processAlias";
 	@FieldDescribe("流程别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + processAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + processAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processAlias;
 
@@ -524,7 +522,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String activityDescription_FIELDNAME = "activityDescription";
 	@FieldDescribe("活动说明.")
 	@Column(length = length_255B, name = ColumnNamePrefix + activityDescription_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + activityDescription_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityDescription;
 
@@ -615,7 +612,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String processingType_FIELDNAME = "processingType";
 	@FieldDescribe("流程流转类型")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + processingType_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + processingType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String processingType;
 
@@ -661,14 +657,12 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String currentActivityName_FIELDNAME = "currentActivityName";
 	@FieldDescribe("当前活动名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + currentActivityName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + currentActivityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String currentActivityName;
 
 	public static final String joinInquire_FIELDNAME = "joinInquire";
 	@FieldDescribe("已办是否参与路由.")
 	@Column(name = ColumnNamePrefix + joinInquire_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + joinInquire_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean joinInquire;
 

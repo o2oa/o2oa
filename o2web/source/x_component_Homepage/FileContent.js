@@ -127,8 +127,9 @@ MWF.xApplication.Homepage.FileContent.File = new Class({
         //this.itemContentNode.addClass("o2_homepage_task_area_content_empty").addClass("icon_notask");
         this.content.noItemNode = new Element("div.o2_homepage_file_area_content_empty_node", {"text": this.app.lp.noFile}).inject(this.container);
         this.content.noItemNode.addEvent("click", function(e){
-            layout.openApplication(e, "File");
-        });
+            // layout.openApplication(e, "File");
+            this.content.openFile(e);
+        }.bind(this));
         var m = (this.content.contentHeight- this.content.noItemNode.getSize().y)/2;
         this.content.noItemNode.setStyle("margin-top", ""+m+"px");
         this.content.isLoading = false;

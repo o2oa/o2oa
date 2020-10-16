@@ -35,15 +35,10 @@ class ActionManageListFilterPaging extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			if (business.canManageApplication(effectivePerson, null)) {
 				Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-				if (wi == null) {
-					wi = new Wi();
-				}
-				Integer adjustPage = this.adjustPage(page);
-				Integer adjustPageSize = this.adjustSize(size);
-				List<TaskCompleted> os = this.list(effectivePerson, business, adjustPage, adjustPageSize, wi);
-				List<Wo> wos = Wo.copier.copy(os);
+				Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
+				List<Wo> wos = emc.fetchDescPaging(TaskCompleted.class, Wo.copier, p, page, size, TaskCompleted.startTime_FIELDNAME);
 				result.setData(wos);
-				result.setCount(this.count(effectivePerson, business, wi));
+				result.setCount(emc.count(TaskCompleted.class, p));
 			}else{
 				result.setData(new ArrayList<Wo>());
 				result.setCount(0L);
@@ -52,79 +47,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		}
 	}
 
-	private List<TaskCompleted> list(EffectivePerson effectivePerson, Business business, Integer adjustPage,
-			Integer adjustPageSize, Wi wi) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(TaskCompleted.class);
-		List<String> person_ids = business.organization().person().list(wi.getCredentialList());
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<TaskCompleted> cq = cb.createQuery(TaskCompleted.class);
-		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
-		Predicate p = cb.conjunction();
-		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
-		}
-		if (StringUtils.isNotBlank(wi.getPerson())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.person), wi.getPerson()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue01), wi.getStringValue01()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue02())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue02), wi.getStringValue02()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue03())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue03), wi.getStringValue03()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue04())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue04), wi.getStringValue04()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue05())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue05), wi.getStringValue05()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue06())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue06), wi.getStringValue06()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue07())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue07), wi.getStringValue07()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue08())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue08), wi.getStringValue08()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue09())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue09), wi.getStringValue09()));
-		}
-		if (StringUtils.isNotBlank(wi.getStringValue10())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue10), wi.getStringValue10()));
-		}
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
-				p = cb.and(p, root.get(TaskCompleted_.process).in(wi.getProcessList()));
-			}else{
-				p = cb.and(p, root.get(TaskCompleted_.process).in(business.process().listEditionProcess(wi.getProcessList())));
-			}
-		}
-		if (ListTools.isNotEmpty(wi.getWorkList())) {
-			p = cb.and(p, root.get(TaskCompleted_.work).in(wi.getWorkList()));
-		}
-		if (ListTools.isNotEmpty(wi.getJobList())) {
-			p = cb.and(p, root.get(TaskCompleted_.job).in(wi.getJobList()));
-		}
-		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
-			p = cb.and(p, root.get(TaskCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
-		}
-		if (StringUtils.isNoneBlank(wi.getKey())) {
-			String key = StringTools.escapeSqlLikeKey(wi.getKey());
-			p = cb.and(p,cb.like(root.get(TaskCompleted_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
-		}
-		cq.select(root).where(p).orderBy(cb.desc(root.get(TaskCompleted_.startTime)));
-		return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
-				.getResultList();
-	}
-
-	private Long count(EffectivePerson effectivePerson, Business business, Wi wi) throws Exception {
+	private Predicate toFilterPredicate(EffectivePerson effectivePerson, Business business,  Wi wi) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(TaskCompleted.class);
 		List<String> person_ids = business.organization().person().list(wi.getCredentialList());
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -202,7 +125,8 @@ class ActionManageListFilterPaging extends BaseAction {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
 			p = cb.and(p,cb.like(root.get(TaskCompleted_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
-		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+
+		return p;
 	}
 
 	public class Wi extends GsonPropertyObject {

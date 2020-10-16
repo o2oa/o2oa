@@ -16,6 +16,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -26,14 +31,8 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
-
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 100, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.WorkCompleted.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Content.WorkCompleted.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -137,7 +136,7 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		}
 		return this.properties;
 	}
-	
+
 	public void setProperties(WorkCompletedProperties properties) {
 		this.properties = properties;
 	}
@@ -153,10 +152,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		} else {
 			return this.title;
 		}
-	}
-
-	public Boolean getMerged() {
-		return BooleanUtils.isTrue(merged);
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -249,7 +244,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String applicationAlias_FIELDNAME = "applicationAlias";
 	@FieldDescribe("应用别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + applicationAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + applicationAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String applicationAlias;
 
@@ -270,7 +264,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String processAlias_FIELDNAME = "processAlias";
 	@FieldDescribe("流程别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + processAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + processAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processAlias;
 
@@ -377,7 +370,7 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	private WorkCompletedProperties properties;
 
 	public static final String merged_FIELDNAME = "merged";
-	@FieldDescribe("业务数据是否从item表中合并至data字段")
+	@FieldDescribe("合并数据")
 	@Column(name = ColumnNamePrefix + merged_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + merged_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -1049,11 +1042,13 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		this.timeValue02 = timeValue02;
 	}
 
+	public Boolean getMerged() {
+		return merged;
+	}
+
 	public void setMerged(Boolean merged) {
 		this.merged = merged;
 	}
-
- 
 
 	public String getActivity() {
 		return activity;

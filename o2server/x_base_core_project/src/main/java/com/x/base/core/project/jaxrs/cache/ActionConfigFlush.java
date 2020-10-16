@@ -16,8 +16,6 @@ class ActionConfigFlush extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, ServletContext servletContext) throws Exception {
 		logger.debug(effectivePerson, "config flush.");
 		ActionResult<Wo> result = new ActionResult<>();
-//		com.x.base.core.project.Context ctx = (com.x.base.core.project.Context) servletContext
-//				.getAttribute(com.x.base.core.project.Context.class.getName());
 		Config.flush();
 		Wo wo = new Wo();
 		wo.setValue(true);

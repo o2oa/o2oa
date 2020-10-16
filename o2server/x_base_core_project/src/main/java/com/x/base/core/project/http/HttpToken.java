@@ -32,29 +32,28 @@ public class HttpToken {
 	public static final String X_Person = "x-person";
 	public static final String X_Client = "x-client";
 	public static final String X_Debugger = "x-debugger";
+	public static final String COOKIE_ANONYMOUS_VALUE = "anonymous";
+	public static final String SET_COOKIE = "Set-Cookie";
+	
+	
 
 	private static final String RegularExpression_IP = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
 	private static final String RegularExpression_Token = "^(anonymous|user|manager|cipher)([2][0][1-2][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])(\\S{1,})$";
 
 	public EffectivePerson who(HttpServletRequest request, HttpServletResponse response, String key) throws Exception {
-		EffectivePerson effectivePerson = this.who(this.getToken(request), key);
+		EffectivePerson effectivePerson = this.who(this.getToken(request), key, remoteAddress(request));
 		effectivePerson.setRemoteAddress(HttpToken.remoteAddress(request));
 		effectivePerson.setUserAgent(this.userAgent(request));
 		effectivePerson.setUri(request.getRequestURI());
 		// 加入调试标记
 		Object debugger = request.getHeader(HttpToken.X_Debugger);
 		effectivePerson.setDebugger((null != debugger) && BooleanUtils.toBoolean(Objects.toString(debugger)));
-//		if (null != debugger && BooleanUtils.toBoolean(Objects.toString(debugger))) {
-//			effectivePerson.setDebugger(true);
-//		} else {
-//			effectivePerson.setDebugger(false);
-//		}
 		setAttribute(request, effectivePerson);
 		setToken(request, response, effectivePerson);
 		return effectivePerson;
 	}
 
-	public EffectivePerson who(String token, String key) {
+	public EffectivePerson who(String token, String key, String address) {
 		if (StringUtils.length(token) < 16) {
 			/* token应该是8的倍数有可能前台会输入null空值等可以通过这个过滤掉 */
 			return EffectivePerson.anonymous();
@@ -64,14 +63,14 @@ public class HttpToken {
 			try {
 				plain = Crypto.decrypt(token, key);
 			} catch (Exception e) {
-				logger.warn("can not decrypt token:{}, {}.", token, e.getMessage());
+				logger.warn("can not decrypt token:{}, {}, remote address:{}.", token, e.getMessage(), address);
 				return EffectivePerson.anonymous();
 			}
 			Pattern pattern = Pattern.compile(RegularExpression_Token, Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(plain);
 			if (!matcher.find()) {
 				// 不报错,跳过错误,将用户设置为anonymous
-				logger.warn("token format error:{}.", plain);
+				logger.warn("token format error:{}, remote address:{}.", plain, address);
 				return EffectivePerson.anonymous();
 			}
 			Date date = DateUtils.parseDate(matcher.group(2), DateTools.formatCompact_yyyyMMddHHmmss);
@@ -81,8 +80,8 @@ public class HttpToken {
 			if (TokenType.user.equals(tokenType) || TokenType.manager.equals(tokenType)) {
 				if (diff > (60000L * Config.person().getTokenExpiredMinutes())) {
 					// 不报错,跳过错误,将用户设置为anonymous
-					logger.warn("token expired, user:{}, token:{}.",
-							URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name()), plain);
+					logger.warn("token expired, user:{}, token:{}, remote address:{}.",
+							URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name()), plain, address);
 					return EffectivePerson.anonymous();
 				}
 			}
@@ -100,8 +99,11 @@ public class HttpToken {
 
 	public void deleteToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
-			String cookie = X_Token + "=; path=/; domain=" + this.domain(request) + "; max-age=0";
-			response.setHeader("Set-Cookie", cookie);
+			// String cookie = X_Token + "=; path=/; domain=" +
+			// this.domain(request) + "; max-age=0
+			String cookie = X_Token + "=" + COOKIE_ANONYMOUS_VALUE + "; path=/; domain=" + this.domain(request)
+					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? "; HttpOnly" : "");
+			response.setHeader(SET_COOKIE, cookie);
 		} catch (Exception e) {
 			throw new Exception("delete Token cookie error.", e);
 		}
@@ -111,7 +113,6 @@ public class HttpToken {
 			throws Exception {
 		switch (effectivePerson.getTokenType()) {
 		case anonymous:
-			// this.deleteToken(request, response);
 			break;
 		case user:
 			this.setResponseToken(request, response, effectivePerson);
@@ -130,8 +131,9 @@ public class HttpToken {
 	private void setResponseToken(HttpServletRequest request, HttpServletResponse response,
 			EffectivePerson effectivePerson) throws Exception {
 		if (!StringUtils.isEmpty(effectivePerson.getToken())) {
-			String cookie = X_Token + "=" + effectivePerson.getToken() + "; path=/; domain=" + this.domain(request);
-			response.setHeader("Set-Cookie", cookie);
+			String cookie = X_Token + "=" + effectivePerson.getToken() + "; path=/; domain=" + this.domain(request)
+					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? "; HttpOnly" : "");
+			response.setHeader(SET_COOKIE, cookie);
 			response.setHeader(X_Token, effectivePerson.getToken());
 		}
 	}
@@ -139,8 +141,9 @@ public class HttpToken {
 	public void setResponseToken(HttpServletRequest request, HttpServletResponse response, String tokenName,
 			String token) throws Exception {
 		if (!StringUtils.isEmpty(token)) {
-			String cookie = tokenName + "=" + token + "; path=/; domain=" + this.domain(request);
-			response.setHeader("Set-Cookie", cookie);
+			String cookie = tokenName + "=" + token + "; path=/; domain=" + this.domain(request)
+					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? "; HttpOnly" : "");
+			response.setHeader(SET_COOKIE, cookie);
 			response.setHeader(tokenName, token);
 		}
 	}
@@ -202,5 +205,8 @@ public class HttpToken {
 	private String userAgent(HttpServletRequest request) {
 		return Objects.toString(request.getHeader("User-Agent"), "");
 	}
+	
+	
+ 
 
 }

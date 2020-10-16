@@ -29,22 +29,23 @@ public class Components extends ConfigObject {
 	public static final String NAME_TASKCENTER = "TaskCenter";
 	public static final String NAME_HOMEPAGE = "Homepage";
 	public static final String NAME_HOTARTICLE = "HotArticle";
-	public static final String NAME_FILE = "File";
+//	public static final String NAME_FILE = "File";
 	public static final String NAME_NOTE = "Note";
 	public static final String NAME_MEETING = "Meeting";
-	public static final String NAME_ONLINEMEETING = "OnlineMeeting";
+	//public static final String NAME_ONLINEMEETING = "OnlineMeeting";
 	public static final String NAME_ATTENDANCE = "Attendance";
 	public static final String NAME_FORUM = "Forum";
 	public static final String NAME_MINDER = "Minder";
 	public static final String NAME_CALENDAR = "Calendar";
 	public static final String NAME_ANN = "ANN";
 	public static final String NAME_SEARCH = "Search";
+	public static final String NAME_IM = "IMV2";
 
 	public static List<String> SYSTEM_NAME_NAMES = ListTools.toList(NAME_SETTING, NAME_ORG, NAME_CMSMANAGER,
 			NAME_APPLICATIONEXPLORER, NAME_PORTALEXPLORER, NAME_DATAEXPLORER, NAME_SERVICEMANAGER, NAME_APPMARKET,
 			NAME_APPCENTER, NAME_LOGVIEWER, NAME_PROFILE, NAME_BAM, NAME_CMS, NAME_TASKCENTER, NAME_HOMEPAGE,
-			NAME_HOTARTICLE, NAME_FILE, NAME_NOTE, NAME_MEETING, NAME_ONLINEMEETING, NAME_ATTENDANCE, NAME_FORUM,
-			NAME_MINDER, NAME_CALENDAR, NAME_ANN, NAME_SEARCH);
+			NAME_HOTARTICLE, NAME_NOTE, NAME_MEETING, NAME_ATTENDANCE, NAME_FORUM,
+			NAME_MINDER, NAME_CALENDAR, NAME_ANN, NAME_SEARCH, NAME_IM);
 
 	public static final String APPICON_PNG = "appicon.png";
 
@@ -86,15 +87,15 @@ public class Components extends ConfigObject {
 			return new Component(NAME_HOMEPAGE, NAME_HOMEPAGE, "首页", APPICON_PNG, 14, Component.TYPE_SYSTEM);
 		case NAME_HOTARTICLE:
 			return new Component(NAME_HOTARTICLE, NAME_HOTARTICLE, "热点", APPICON_PNG, 15, Component.TYPE_SYSTEM);
-		case NAME_FILE:
-			return new Component(NAME_FILE, NAME_FILE, "云文件", APPICON_PNG, 16, Component.TYPE_SYSTEM);
+//		case NAME_FILE:
+//			return new Component(NAME_FILE, NAME_FILE, "云文件", APPICON_PNG, 16, Component.TYPE_SYSTEM);
 		case NAME_NOTE:
 			return new Component(NAME_NOTE, NAME_NOTE, "便签", APPICON_PNG, 17, Component.TYPE_SYSTEM);
 		case NAME_MEETING:
 			return new Component(NAME_MEETING, NAME_MEETING, "会议管理", APPICON_PNG, 18, Component.TYPE_SYSTEM);
-		case NAME_ONLINEMEETING:
-			return new Component(NAME_ONLINEMEETING, NAME_ONLINEMEETING, "网络会议", APPICON_PNG, 19,
-					Component.TYPE_SYSTEM);
+//		case NAME_ONLINEMEETING:
+//			return new Component(NAME_ONLINEMEETING, NAME_ONLINEMEETING, "网络会议", APPICON_PNG, 19,
+//					Component.TYPE_SYSTEM);
 		case NAME_ATTENDANCE:
 			return new Component(NAME_ATTENDANCE, NAME_ATTENDANCE, "考勤管理", APPICON_PNG, 20, Component.TYPE_SYSTEM);
 		case NAME_FORUM:
@@ -107,6 +108,8 @@ public class Components extends ConfigObject {
 			return new Component(NAME_ANN, NAME_ANN, "神经网络", APPICON_PNG, 24, Component.TYPE_SYSTEM);
 		case NAME_SEARCH:
 			return new Component(NAME_SEARCH, NAME_SEARCH, "搜索", APPICON_PNG, 25, Component.TYPE_SYSTEM);
+		case NAME_IM:
+			return new Component(NAME_IM, NAME_IM, "聊天", APPICON_PNG, 26, Component.TYPE_SYSTEM);
 		default:
 			return null;
 		}
@@ -130,16 +133,17 @@ public class Components extends ConfigObject {
 		o.systems.add(systemComponent(NAME_TASKCENTER));
 		o.systems.add(systemComponent(NAME_HOMEPAGE));
 		o.systems.add(systemComponent(NAME_HOTARTICLE));
-		o.systems.add(systemComponent(NAME_FILE));
+//		o.systems.add(systemComponent(NAME_FILE));
 		o.systems.add(systemComponent(NAME_NOTE));
 		o.systems.add(systemComponent(NAME_MEETING));
-		o.systems.add(systemComponent(NAME_ONLINEMEETING));
+//		o.systems.add(systemComponent(NAME_ONLINEMEETING));
 		o.systems.add(systemComponent(NAME_ATTENDANCE));
 		o.systems.add(systemComponent(NAME_FORUM));
 		o.systems.add(systemComponent(NAME_MINDER));
 		o.systems.add(systemComponent(NAME_CALENDAR));
 		o.systems.add(systemComponent(NAME_ANN));
 		o.systems.add(systemComponent(NAME_SEARCH));
+		o.systems.add(systemComponent(NAME_IM));
 		return o;
 	}
 

@@ -14,6 +14,8 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+import java.util.List;
+
 class ActionChangeSite extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, String site) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -33,6 +35,12 @@ class ActionChangeSite extends BaseAction {
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
+			}
+			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
+			if(!canEdit){
+				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 			emc.beginTransaction(Attachment.class);
 			attachment.setSite(site);

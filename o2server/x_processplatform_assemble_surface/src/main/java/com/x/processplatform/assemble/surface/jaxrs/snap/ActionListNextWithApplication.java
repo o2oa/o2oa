@@ -18,7 +18,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Snap;
-import com.x.processplatform.core.entity.content.Snap_;
+import com.x.processplatform.core.entity.content.Snap;
 import com.x.processplatform.core.entity.element.Application;
 
 class ActionListNextWithApplication extends BaseAction {

@@ -245,7 +245,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
                             var module = this.editModules[index];
                             if( module && module.json.type == "ImageClipper" ){
-                                this._createImage( cell, module, v )
+                                this._createImage( cell, module, v );
                             }else{
                                 text = this._getValueText(index, v);
                                 if( module && module.json.type == "Textarea" ){
@@ -355,7 +355,6 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                                 }else{
                                     cell.set("text", text);
                                 }
-
                                 //cell.set("text", text);
                             }
 

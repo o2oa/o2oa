@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.openjpa.enhance.PCRegistry;
@@ -41,33 +40,13 @@ import com.x.base.core.project.schedule.JobReportListener;
 import com.x.base.core.project.schedule.ScheduleLocalRequest;
 import com.x.base.core.project.schedule.ScheduleRequest;
 import com.x.base.core.project.schedule.SchedulerFactoryProperties;
+import com.x.base.core.project.thread.ThreadFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SslTools;
-import com.x.base.core.project.tools.StringTools;
 
 public class Context extends AbstractContext {
 
 	private static Logger logger = LoggerFactory.getLogger(Context.class);
-
-	/* 从servletContext中抽取context */
-	public static Context fromServletContext(ServletContext servletContext) throws Exception {
-		Object o = servletContext.getAttribute(Context.class.getName());
-		if (null == o) {
-			throw new Exception("can not get context form servletContext.");
-		} else {
-			return (Context) o;
-		}
-	}
-
-	/* 从servletRequest中抽取context */
-	public static Context fromServletRequest(ServletRequest servletRequest) throws Exception {
-		Object o = servletRequest.getServletContext().getAttribute(Context.class.getName());
-		if (null == o) {
-			throw new Exception("can not get context form servletRequest.");
-		} else {
-			return (Context) o;
-		}
-	}
 
 	/* 应用的磁盘路径 */
 	private volatile String path;
@@ -155,6 +134,7 @@ public class Context extends AbstractContext {
 
 	private AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue;
 
+	@Override
 	public AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue() {
 		return this.clearCacheRequestQueue;
 	}
@@ -175,6 +155,10 @@ public class Context extends AbstractContext {
 		return this.applications;
 	}
 
+	public ThreadFactory threadFactory() {
+		return this.threadFactory;
+	}
+
 	/* 队列 */
 	private List<AbstractQueue<?>> queues;
 
@@ -188,7 +172,7 @@ public class Context extends AbstractContext {
 	}
 
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
-		/* 强制忽略ssl服务器认证 */
+		// 强制忽略ssl服务器认证
 		SslTools.ignoreSsl();
 		ServletContext servletContext = servletContextEvent.getServletContext();
 		Context context = new Context();
@@ -203,14 +187,12 @@ public class Context extends AbstractContext {
 		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
 		context.initDatas();
-		servletContext.setAttribute(context.getClass().getName(), context);
+		context.threadFactory = new ThreadFactory(context);
+		servletContext.setAttribute(AbstractContext.class.getName(), context);
 		context.initialized = true;
-		/* 20190927新注册机制 */
-		// registApplication(context);
 		return context;
 	}
 
-	/* 20190927新注册机制 */
 	public void regist() throws Exception {
 		Application application = new Application();
 		application.setClassName(this.clazz().getName());
@@ -270,6 +252,7 @@ public class Context extends AbstractContext {
 	 * 接受Center调度的schedule在本地运行,和scheduleOnLocal没有本质区别,仅仅是个withDescription(
 	 * "schedule")不一样,在log中记录这个值.
 	 */
+	@Override
 	public <T extends AbstractJob> void fireScheduleOnLocal(Class<T> cls, Integer delay) throws Exception {
 		/* 需要单独生成一个独立任务,保证group和预约的任务不重复 */
 		JobDataMap jobDataMap = new JobDataMap();
@@ -318,9 +301,7 @@ public class Context extends AbstractContext {
 
 	public void destrory(ServletContextEvent servletContextEvent) {
 		try {
-			queues.stream().forEach(p -> {
-				p.stop();
-			});
+			queues.stream().forEach(AbstractQueue::stop);
 			this.scheduler.shutdown();
 			EntityManagerContainerFactory.close();
 			PCRegistry.deRegister(JpaObject.class.getClassLoader());

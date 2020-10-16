@@ -46,11 +46,11 @@ public class CmsBatchOperationPersistService {
 			emc.beginTransaction( CmsBatchOperation.class );
 			emc.persist( cmsBatchOperation, CheckPersistType.all ); 
 			emc.commit();
-			//将批量操作信息压入队列
-			ThisApplication.queueBatchOperation.send( cmsBatchOperation );
 		} catch ( Exception e ) {
 			throw e;
-		}		
+		}
+		//将批量操作信息压入队列
+		ThisApplication.queueBatchOperation.send( cmsBatchOperation );
 		return cmsBatchOperation;
 	}
 	
@@ -74,8 +74,7 @@ public class CmsBatchOperationPersistService {
 		cmsBatchOperation.setErrorCount( 0 );
 		cmsBatchOperation.setIsRunning( false );
 		cmsBatchOperation.setOldInfo( oldInfo );
-		addOperation( cmsBatchOperation );	
-		return cmsBatchOperation;
+		return addOperation( cmsBatchOperation ) ;
 	}
 	
 	/**

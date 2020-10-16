@@ -29,7 +29,7 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.Review.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Content.Review.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -249,7 +249,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@FieldDescribe("应用别名.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
 			+ applicationAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + applicationAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String applicationAlias;
 
@@ -272,7 +271,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@FieldDescribe("流程别名.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
 			+ processAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + processAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processAlias;
 

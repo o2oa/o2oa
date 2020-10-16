@@ -21,8 +21,7 @@ import com.x.organization.core.entity.accredit.Empower;
 
 class BaseAction extends StandardJaxrsAction {
 
-	CacheCategory cacheCategory = new CacheCategory(Identity.class, Unit.class, UnitAttribute.class, UnitDuty.class,
-			Role.class, Person.class, PersonAttribute.class, Group.class, Empower.class);
+	CacheCategory cacheCategory = new CacheCategory(Identity.class, Unit.class, Person.class, Group.class);
 
 	static class WoGroupAbstract extends GsonPropertyObject {
 
@@ -42,6 +41,7 @@ class BaseAction extends StandardJaxrsAction {
 	protected <T extends com.x.base.core.project.organization.Group> T convert(Business business, Group group,
 			Class<T> clz) throws Exception {
 		T t = clz.newInstance();
+		t.setId(group.getId());
 		t.setName(group.getName());
 		t.setDescription(group.getDescription());
 		t.setUnique(group.getUnique());
@@ -50,26 +50,38 @@ class BaseAction extends StandardJaxrsAction {
 		if (ListTools.isNotEmpty(group.getPersonList())) {
 			for (String str : group.getPersonList()) {
 				Person o = business.person().pick(str);
-				t.getPersonList().add(o.getDistinguishedName());
+				if(o!=null) {
+					t.getPersonList().add(o.getDistinguishedName());
+				}
 			}
+			t.setSubDirectPersonCount((long)t.getPersonList().size());
 		}
 		if (ListTools.isNotEmpty(group.getGroupList())) {
 			for (String str : group.getGroupList()) {
 				Group o = business.group().pick(str);
-				t.getGroupList().add(o.getDistinguishedName());
+				if(o!=null) {
+					t.getGroupList().add(o.getDistinguishedName());
+				}
 			}
+			t.setSubDirectGroupCount((long)t.getGroupList().size());
 		}
 		if (ListTools.isNotEmpty(group.getUnitList())) {
 			for (String str : group.getUnitList()) {
 				Unit o = business.unit().pick(str);
-				t.getUnitList().add(o.getDistinguishedName());
+				if(o!=null) {
+					t.getUnitList().add(o.getDistinguishedName());
+				}
 			}
+			t.setSubDirectOrgCount((long)t.getUnitList().size());
 		}
 		if (ListTools.isNotEmpty(group.getIdentityList())) {
 			for (String str : group.getIdentityList()) {
 				Identity o = business.identity().pick(str);
-				t.getIdentityList().add(o.getDistinguishedName());
+				if(o!=null) {
+					t.getIdentityList().add(o.getDistinguishedName());
+				}
 			}
+			t.setSubDirectIdentityCount((long)t.getIdentityList().size());
 		}
 		return t;
 	}

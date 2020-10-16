@@ -12,6 +12,10 @@ MWF.xApplication.Selector.Dictionary = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
+    _init : function(){
+        this.selectType = "dictionary";
+        this.className = "Dictionary";
+    },
     loadSelectItems: function(addToNext){
         var json = {};
         this.options.appType.each( function (type) {

@@ -10,7 +10,10 @@ MWF.xApplication.Selector.View = new Class({
         "names": [],
         "expand": false
     },
-
+    _init : function(){
+        this.selectType = "view";
+        this.className = "View";
+    },
     loadSelectItems: function(addToNext){
         this.designerAction.listView(function(json){
             if (json.data.length){

@@ -49,7 +49,7 @@ public abstract class SliceEntityManagerContainerFactory {
 	protected SliceEntityManagerContainerFactory(String webApplicationDirectory, List<String> entities,
 			boolean sliceFeatureEnable) throws Exception {
 		File path = new File(webApplicationDirectory + "/WEB-INF/classes/" + PERSISTENCE_XML_PATH);
-		List<String> classNames = PersistenceXmlHelper.write(path.getAbsolutePath(), entities);
+		List<String> classNames = PersistenceXmlHelper.write(path.getAbsolutePath(), entities, true);
 		for (String className : classNames) {
 			Class<? extends JpaObject> clz = (Class<? extends JpaObject>) Class.forName(className);
 			checkPersistFieldMap.put(clz, this.loadCheckPersistField(clz));

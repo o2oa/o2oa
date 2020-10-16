@@ -42,6 +42,8 @@ public class Snap extends SliceJpaObject {
 
 	public static final String TYPE_SUSPEND = "suspend";
 
+	public static final String TYPE_ABANDONED = "abandoned";
+
 	public String getId() {
 		return id;
 	}
@@ -126,7 +128,7 @@ public class Snap extends SliceJpaObject {
 
 	public static final String person_FIELDNAME = "person";
 	@FieldDescribe("快照创建人.")
-	@Column(length = length_255B, name = ColumnNamePrefix + creatorPerson_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String person;
@@ -162,7 +164,6 @@ public class Snap extends SliceJpaObject {
 	public static final String applicationAlias_FIELDNAME = "applicationAlias";
 	@FieldDescribe("应用别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + applicationAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + applicationAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String applicationAlias;
 
@@ -183,7 +184,6 @@ public class Snap extends SliceJpaObject {
 	public static final String processAlias_FIELDNAME = "processAlias";
 	@FieldDescribe("流程别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + processAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + processAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processAlias;
 

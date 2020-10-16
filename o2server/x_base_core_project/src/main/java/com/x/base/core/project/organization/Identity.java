@@ -5,6 +5,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class Identity extends GsonPropertyObject {
 
+	@FieldDescribe("匹配字段")
+	private String matchKey;
 	@FieldDescribe("身份名称")
 	private String name;
 	@FieldDescribe("身份标识")
@@ -27,6 +29,14 @@ public class Identity extends GsonPropertyObject {
 	private Integer orderNumber;
 	@FieldDescribe("是否是设定的主身份")
 	private Boolean major;
+
+	public String getMatchKey() {
+		return matchKey;
+	}
+
+	public void setMatchKey(String matchKey) {
+		this.matchKey = matchKey;
+	}
 
 	public String getName() {
 		return name;

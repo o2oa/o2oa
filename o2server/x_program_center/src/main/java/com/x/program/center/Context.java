@@ -20,6 +20,7 @@ import org.quartz.DateBuilder;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SimpleScheduleBuilder;
@@ -42,8 +43,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.queue.AbstractQueue;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.schedule.JobReportListener;
 import com.x.base.core.project.schedule.SchedulerFactoryProperties;
+import com.x.base.core.project.thread.ThreadFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SslTools;
 import com.x.base.core.project.tools.StringTools;
@@ -54,8 +57,14 @@ public class Context extends AbstractContext {
 
 	private static Logger logger = LoggerFactory.getLogger(Context.class);
 
+	@Override
 	public Applications applications() throws Exception {
 		return applications;
+	}
+
+	@Override
+	public ThreadFactory threadFactory() {
+		return threadFactory;
 	}
 
 	/* 应用的磁盘路径 */
@@ -127,6 +136,7 @@ public class Context extends AbstractContext {
 	/* 清除缓存指定队列 */
 	private AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue;
 
+	@Override
 	public AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue() {
 		return this.clearCacheRequestQueue;
 	}
@@ -159,10 +169,11 @@ public class Context extends AbstractContext {
 		context.servletContextName = servletContext.getServletContextName();
 		context.clazz = Class.forName(servletContextEvent.getServletContext().getInitParameter(INITPARAMETER_PORJECT));
 		context.initDatas();
+		context.threadFactory = new ThreadFactory(context);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			context.checkDefaultRole(emc);
 		}
-		servletContext.setAttribute(context.getClass().getName(), context);
+		servletContext.setAttribute(AbstractContext.class.getName(), context);
 		return context;
 	}
 
@@ -221,10 +232,12 @@ public class Context extends AbstractContext {
 				OrganizationDefinition.GroupManager, OrganizationDefinition.UnitManager,
 				OrganizationDefinition.RoleManager, OrganizationDefinition.ProcessPlatformManager,
 				OrganizationDefinition.ProcessPlatformCreator, OrganizationDefinition.MeetingManager,
-				OrganizationDefinition.PortalManager, OrganizationDefinition.BBSManager,OrganizationDefinition.TeamWorkManager,
-				OrganizationDefinition.CMSManager, OrganizationDefinition.OKRManager, OrganizationDefinition.CRMManager,
+				OrganizationDefinition.PortalManager, OrganizationDefinition.BBSManager,
+				OrganizationDefinition.TeamWorkManager, OrganizationDefinition.CMSManager,
+				OrganizationDefinition.OKRManager, OrganizationDefinition.CRMManager,
 				OrganizationDefinition.QueryManager, OrganizationDefinition.MessageManager,
-				OrganizationDefinition.SearchPrivilege, OrganizationDefinition.HotPictureManager);
+				OrganizationDefinition.SearchPrivilege, OrganizationDefinition.HotPictureManager,
+				OrganizationDefinition.FileManager);
 		roles = roles.stream().sorted(Comparator.comparing(String::toString)).collect(Collectors.toList());
 		for (String str : roles) {
 			EntityManager em = emc.get(Role.class);
@@ -259,45 +272,47 @@ public class Context extends AbstractContext {
 	 */
 	private String getDescriptionWithName(String str) {
 		if (OrganizationDefinition.Manager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.Manager_discription;
+			return OrganizationDefinition.Manager_description;
 		} else if (OrganizationDefinition.AttendanceManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.AttendanceManager_discription;
+			return OrganizationDefinition.AttendanceManager_description;
 		} else if (OrganizationDefinition.OrganizationManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.OrganizationManager_discription;
+			return OrganizationDefinition.OrganizationManager_description;
 		} else if (OrganizationDefinition.PersonManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.PersonManager_discription;
+			return OrganizationDefinition.PersonManager_description;
 		} else if (OrganizationDefinition.GroupManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.GroupManager_discription;
+			return OrganizationDefinition.GroupManager_description;
 		} else if (OrganizationDefinition.UnitManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.UnitManager_discription;
+			return OrganizationDefinition.UnitManager_description;
 		} else if (OrganizationDefinition.RoleManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.RoleManager_discription;
+			return OrganizationDefinition.RoleManager_description;
 		} else if (OrganizationDefinition.ProcessPlatformManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.ProcessPlatformManager_discription;
+			return OrganizationDefinition.ProcessPlatformManager_description;
 		} else if (OrganizationDefinition.ProcessPlatformCreator.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.ProcessPlatformCreator_discription;
+			return OrganizationDefinition.ProcessPlatformCreator_description;
 		} else if (OrganizationDefinition.MeetingManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.MeetingManager_discription;
+			return OrganizationDefinition.MeetingManager_description;
 		} else if (OrganizationDefinition.MeetingViewer.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.MeetingViewer_discription;
+			return OrganizationDefinition.MeetingViewer_description;
 		} else if (OrganizationDefinition.PortalManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.PortalManager_discription;
+			return OrganizationDefinition.PortalManager_description;
 		} else if (OrganizationDefinition.BBSManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.BBSManager_discription;
+			return OrganizationDefinition.BBSManager_description;
 		} else if (OrganizationDefinition.CMSManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.CMSManager_discription;
+			return OrganizationDefinition.CMSManager_description;
 		} else if (OrganizationDefinition.OKRManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.OKRManager_discription;
+			return OrganizationDefinition.OKRManager_description;
 		} else if (OrganizationDefinition.CRMManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.CRMManager_discription;
-		}else if (OrganizationDefinition.TeamWorkManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.TeamWorkManager_discription;
-		}else if (OrganizationDefinition.QueryManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.QueryManager_discription;
+			return OrganizationDefinition.CRMManager_description;
+		} else if (OrganizationDefinition.TeamWorkManager.equalsIgnoreCase(str)) {
+			return OrganizationDefinition.TeamWorkManager_description;
+		} else if (OrganizationDefinition.QueryManager.equalsIgnoreCase(str)) {
+			return OrganizationDefinition.QueryManager_description;
 		} else if (OrganizationDefinition.MessageManager.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.MessageManager_discription;
+			return OrganizationDefinition.MessageManager_description;
 		} else if (OrganizationDefinition.SearchPrivilege.equalsIgnoreCase(str)) {
-			return OrganizationDefinition.SearchPrivilege_discription;
+			return OrganizationDefinition.SearchPrivilege_description;
+		} else if (OrganizationDefinition.FileManager.equalsIgnoreCase(str)) {
+			return OrganizationDefinition.FileManager_description;
 		}
 		return "";
 	}
@@ -313,6 +328,23 @@ public class Context extends AbstractContext {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	@Deprecated
+	// 重来没用调用过的方法,目标是全部方法全部移动到AbstractContext中
+	public <T extends AbstractJob> void fireScheduleOnLocal(Class<T> cls, Integer delay) throws Exception {
+		/* 需要单独生成一个独立任务,保证group和预约的任务不重复 */
+		JobDataMap jobDataMap = new JobDataMap();
+		jobDataMap.put("context", this);
+		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(cls.getName(), clazz.getName())
+				.usingJobData(jobDataMap).withDescription(Config.node()).build();
+		/* 经过测试0代表不重复,仅运行一次 */
+		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(cls.getName(), clazz.getName())
+				.withDescription("schedule").startAt(DateBuilder.futureDate(delay, IntervalUnit.SECOND))
+				.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1).withRepeatCount(0))
+				.build();
+		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
 }

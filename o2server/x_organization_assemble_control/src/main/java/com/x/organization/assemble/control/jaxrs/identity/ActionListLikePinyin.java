@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.identity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -20,6 +21,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -29,8 +32,6 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.UnitDuty;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 
 class ActionListLikePinyin extends BaseAction {
 
@@ -39,10 +40,8 @@ class ActionListLikePinyin extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getKey(),
-					StringUtils.join(wi.getUnitList(), ","),
-					StringUtils.join(wi.getUnitDutyList(), ","),
-					StringUtils.join(wi.getGroupList(), ","));
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getKey(), StringUtils.join(wi.getUnitList(), ","),
+					StringUtils.join(wi.getUnitDutyList(), ","), StringUtils.join(wi.getGroupList(), ","));
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -117,7 +116,7 @@ class ActionListLikePinyin extends BaseAction {
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.conjunction();
 		p = cb.and(p, cb.or(cb.like(cb.lower(root.get(Identity_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR),
@@ -140,10 +139,12 @@ class ActionListLikePinyin extends BaseAction {
 			List<String> identityIds = business.expendGroupToIdentity(wi.getGroupList());
 			set.addAll(identityIds);
 		}
-		if(!set.isEmpty()){
+		if (!set.isEmpty()) {
 			p = cb.and(p, root.get(Identity_.id).in(set.asList()));
 		}
-		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<String> ids = em.createQuery(cq.select(root.get(Identity_.id)).where(p)).getResultList().stream()
+				.distinct().collect(Collectors.toList());
+		List<Identity> os = business.entityManagerContainer().list(Identity.class, ids);
 		wos = Wo.copier.copy(os);
 		wos = business.identity().sort(wos);
 		return wos;

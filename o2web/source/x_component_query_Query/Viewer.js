@@ -392,6 +392,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.options.defaultPage = null;
     },
     lookup: function(data, callback){
+        if( this.lookuping )return;
+        this.lookuping = true;
         this.getLookupAction(function(){
             if (this.json.application){
 
@@ -405,6 +407,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                         if( this.noDataTextNode )this.noDataTextNode.destroy();
                         this.loadCurrentPageData( function () {
                             this.fireEvent("postLoad"); //用户配置的事件
+                            this.lookuping = false;
                             if(callback)callback(this);
                         }.bind(this));
                     }else{
@@ -425,6 +428,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                             this.loadingAreaNode = null;
                         }
                         this.fireEvent("postLoad"); //用户配置的事件
+                        this.lookuping = false;
                         if(callback)callback(this);
                     }
                 }.bind(this));
@@ -433,6 +437,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     loadCurrentPageData: function( callback, async ){
         //是否需要在翻页的时候清空之前的items ?
+
+        if( this.pageloading )return;
+        this.pageloading = true;
+
         this.items = [];
 
         var p = this.currentPage;
@@ -463,8 +471,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.loadingAreaNode = null;
             }
 
-            this.fireEvent("loadView"); //options 传入的事件
+            this.pageloading = false;
 
+            this.fireEvent("loadView"); //options 传入的事件
             this.fireEvent("postLoadPage");
 
             if(callback)callback();
@@ -636,6 +645,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.node.setStyle("display", "none");
     },
     reload: function(){
+        if( this.lookuping || this.pageloading )return;
         this.node.setStyle("display", "block");
         if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
 
@@ -1249,6 +1259,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     setFilter : function( filter, callback ){
+        if( this.lookuping || this.pageloading )return;
         if( !filter )filter = [];
         if( typeOf( filter ) === "object" )filter = [ filter ];
         this.json.filter = filter;

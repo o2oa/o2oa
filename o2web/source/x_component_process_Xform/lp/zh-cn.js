@@ -233,6 +233,8 @@ MWF.xApplication.process.Xform.LP = {
         "original": "原始版本",
         "nodiff": "目前还没有历史修改信息"
     },
+    "subjectEmpty": "标题不能为空",
+    "issuanceUnitEmpty": "发文单位不能为空",
     "fullWidth": "已启用半角空格自动转换为全角空格，如需输入半角空格，请使用：SHIFT+空格"
 
 };

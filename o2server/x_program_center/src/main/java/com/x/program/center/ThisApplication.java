@@ -64,7 +64,7 @@ public class ThisApplication {
 			context().startQueue(logQueue);
 
 			/* 政务钉钉拉入同步 */
-			if (BooleanUtils.isNotTrue(Config.zhengwuDingding().getEnable())) {
+			if (BooleanUtils.isTrue(Config.zhengwuDingding().getEnable())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(ZhengwuDingdingSyncOrganization.class, Config.zhengwuDingding().getSyncCron());
 				/* 添加一个强制同步任务 */
@@ -72,7 +72,7 @@ public class ThisApplication {
 						Config.zhengwuDingding().getForceSyncCron());
 			}
 			/* 企业微信拉入同步 */
-			if (BooleanUtils.isNotTrue(Config.qiyeweixin().getEnable())) {
+			if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(QiyeweixinSyncOrganization.class, Config.qiyeweixin().getSyncCron());
 				/* 添加一个强制同步任务 */
@@ -80,14 +80,14 @@ public class ThisApplication {
 						Config.qiyeweixin().getForceSyncCron());
 			}
 			/* 钉钉同步 */
-			if (BooleanUtils.isNotTrue(Config.dingding().getEnable())) {
+			if (BooleanUtils.isTrue(Config.dingding().getEnable())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(DingdingSyncOrganization.class, Config.dingding().getSyncCron());
 				/* 添加一个强制同步任务 */
 				context().scheduleLocal(DingdingSyncOrganizationTrigger.class, Config.dingding().getForceSyncCron());
 			}
 			/* WeLink同步 */
-			if (BooleanUtils.isNotTrue(Config.weLink().getEnable())) {
+			if (BooleanUtils.isTrue(Config.weLink().getEnable())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(WeLinkSyncOrganization.class, Config.weLink().getSyncCron());
 				/* 添加一个强制同步任务 */

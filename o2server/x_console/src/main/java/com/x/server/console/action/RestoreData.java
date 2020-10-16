@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
@@ -18,6 +19,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.io.FilenameUtils;
@@ -32,7 +34,10 @@ import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.entity.dataitem.DataItem;
+import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -41,6 +46,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.query.core.entity.Item;
+
+import net.sf.ehcache.hibernate.management.impl.BeanUtils;
 
 public class RestoreData {
 
@@ -93,7 +101,7 @@ public class RestoreData {
 				logger.print("find: {} data to restore, path: {}.", classNames.size(), this.dir.toString());
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_restore.xml");
-				PersistenceXmlHelper.write(xml.toString(), classNames);
+				PersistenceXmlHelper.write(xml.toString(), classNames, false);
 				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
 						? classNames.parallelStream()
 						: classNames.stream();
@@ -150,8 +158,11 @@ public class RestoreData {
 					throw new ExceptionDirectoryNotExist(directory);
 				}
 				StorageMappings storageMappings = Config.storageMappings();
-				this.clean(cls, em, storageMappings, cls.getAnnotation(ContainerEntity.class));
-				em.clear();
+				if (!Objects.equals(Config.dumpRestoreData().getRestoreOverride(),
+						DumpRestoreData.RESTOREOVERRIDE_SKIPEXISTED)) {
+					this.clean(cls, em, storageMappings, cls.getAnnotation(ContainerEntity.class));
+					em.clear();
+				}
 				List<Path> paths = this.list(directory);
 				paths.stream().forEach(o -> {
 					logger.print("restore {}/{} part of data:{}.", batch.getAndAdd(1), paths.size(), cls.getName());
@@ -160,6 +171,11 @@ public class RestoreData {
 						JsonArray raws = this.convert(o);
 						for (JsonElement json : raws) {
 							Object t = gson.fromJson(json, cls);
+							if (Objects.equals(Config.dumpRestoreData().getRestoreOverride(),
+									DumpRestoreData.RESTOREOVERRIDE_SKIPEXISTED)
+									&& (null != em.find(cls, BeanUtils.getBeanProperty(t, JpaObject.id_FIELDNAME)))) {
+								continue;
+							}
 							if (StorageObject.class.isAssignableFrom(cls)) {
 								Path sub = o.resolveSibling(FilenameUtils.getBaseName(o.getFileName().toString()));
 								this.binary(t, cls, sub, storageMappings);
@@ -210,10 +226,11 @@ public class RestoreData {
 			}
 			Path path = sub.resolve(Paths.get(so.path()).getFileName());
 			if (!Files.exists(path)) {
-				throw new ExceptionFileNotExist(path);
-			}
-			try (InputStream input = Files.newInputStream(path)) {
-				so.saveContent(mapping, input, so.getName());
+				logger.warn("file not exist: {}.", path.toString());
+			}else {
+				try (InputStream input = Files.newInputStream(path)) {
+					so.saveContent(mapping, input, so.getName());
+				}
 			}
 		}
 
@@ -246,7 +263,13 @@ public class RestoreData {
 				CriteriaBuilder cb = em.getCriteriaBuilder();
 				CriteriaQuery<T> cq = cb.createQuery(cls);
 				Root<T> root = cq.from(cls);
-				list = em.createQuery(cq.select(root)).setMaxResults(containerEntity.dumpSize()).getResultList();
+				Predicate p = cb.conjunction();
+				if ((Item.class == cls) && (StringUtils.isNotBlank(Config.dumpRestoreData().getItemCategory()))) {
+					p = cb.and(p, cb.equal(root.get(DataItem.itemCategory_FIELDNAME),
+							ItemCategory.valueOf(Config.dumpRestoreData().getItemCategory())));
+				}
+				list = em.createQuery(cq.select(root).where(p)).setMaxResults(containerEntity.dumpSize())
+						.getResultList();
 			} while (ListTools.isNotEmpty(list));
 		}
 	}
