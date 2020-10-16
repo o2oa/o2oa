@@ -7,16 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.x.attendance.assemble.control.ThisApplication;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.tools.ListTools;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.factory.AttendanceStatisticRequireLogFactory;
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.AttendanceCycles;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceScheduleSetting;
 import com.x.attendance.entity.AttendanceSelfHoliday;
