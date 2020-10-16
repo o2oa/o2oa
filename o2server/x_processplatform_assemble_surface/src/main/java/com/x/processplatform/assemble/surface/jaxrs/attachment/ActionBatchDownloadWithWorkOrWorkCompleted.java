@@ -100,7 +100,8 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 					emc.commit();
 				}
 			}
-
+			fileName = StringUtils.replaceEach(fileName,
+					new String[] { "/",":","*","?","<<",">>","|","<",">","\\" }, new String[] { "","","","","","","","","","" });
 			logger.info("batchDown to {}，att size {}, from work {}", fileName, attachmentList.size(), workId);
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 				business.downToZip(readableAttachmentList, os, map);
