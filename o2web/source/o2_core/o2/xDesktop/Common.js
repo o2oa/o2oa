@@ -493,13 +493,13 @@ MWF.xDesktop.getServiceAddressConfigArray = function(config, callback, error) {
         requests.push(
             MWF.xDesktop.getServiceAddressConfigObject(center, function(serviceAddressList, center){
                 requests.each(function(res){
-                    if (res) if (res.isRunning()){res.cancel();}
+                    if (res) if (res.isRunning && res.isRunning()){res.cancel();}
                 });
                 if (callback) callback(serviceAddressList, center);
             }.bind(this), function(){
                 if (requests.length){
                     for (var i=0; i<requests.length; i++){
-                        if (requests[i].isRunning()) return "";
+                        if (requests[i].isRunning && requests[i].isRunning()) return "";
                     }
                 }
                 if (error) error();
