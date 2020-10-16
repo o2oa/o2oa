@@ -163,7 +163,7 @@ public class GeneralFile extends StorageObject {
 	@FieldDescribe("文件名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
-	@CheckPersist(allowEmpty = false, fileNameString = true)
+	@CheckPersist(allowEmpty = false)
 	private String name;
 
 	public static final String extension_FIELDNAME = "extension";

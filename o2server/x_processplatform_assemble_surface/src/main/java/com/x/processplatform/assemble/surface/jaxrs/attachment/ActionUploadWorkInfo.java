@@ -42,7 +42,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionUploadWorkInfo extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionUploadWorkInfo.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String flag, JsonElement jsonElement)
 			throws Exception {
