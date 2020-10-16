@@ -48,11 +48,22 @@ class OOLoginViewController: OOBaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //监听截屏通知
+        NotificationCenter.default.addObserver(self, selector: #selector(screenshots),
+                                               name: UIApplication.userDidTakeScreenshotNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+                
         //delegate
         passwordTextField.buttonDelegate = self
         setupUI()
         
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIApplication.userDidTakeScreenshotNotification, object: nil)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let bioAuthUser = AppConfigSettings.shared.bioAuthUser
@@ -71,11 +82,25 @@ class OOLoginViewController: OOBaseViewController {
         }
         
     }
+     
     
     @IBAction func unwindFromBioAuthLogin(_ unwindSegue: UIStoryboardSegue) {
         if unwindSegue.identifier == "goBack2Login" {
             DDLogDebug("从生物识别认证页面返回的，所以不需要再跳转了。。。。。。")
             notJumpBioAuth = true
+        }
+    }
+    
+    @objc private func didEnterBackground() {
+        DDLogDebug("进入后台.................")
+        self.userNameTextField.text = ""
+        self.passwordField.text = ""
+    }
+    
+    //截屏提示
+    @objc private func screenshots() {
+        self.showSystemAlert(title: "提示", message: "为了保护用户名密码安全，请不要截图！") { (action) in
+            DDLogDebug("确定提示。")
         }
     }
     

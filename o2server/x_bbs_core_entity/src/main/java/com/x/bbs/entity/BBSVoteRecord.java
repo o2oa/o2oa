@@ -21,7 +21,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * 
  * @author LIYI
  */
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSVoteRecord.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSVoteRecord.table + JpaObject.IndexNameMiddle
@@ -169,7 +169,11 @@ public class BBSVoteRecord extends SliceJpaObject {
 		this.optionId = optionId;
 	}
 
-	public String getOptionGroupId() { return this.optionGroupId; }
+	public String getOptionGroupId() {
+		return this.optionGroupId;
+	}
 
-	public void setOptionGroupId(final String optionGroupId) { this.optionGroupId = optionGroupId; }
+	public void setOptionGroupId(final String optionGroupId) {
+		this.optionGroupId = optionGroupId;
+	}
 }

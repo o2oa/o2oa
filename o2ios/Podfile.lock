@@ -20,7 +20,7 @@ PODS:
   - CocoaLumberjack/Swift (3.5.3):
     - CocoaLumberjack/Core
   - EmptyDataSet-Swift (5.0.0)
-  - Eureka (5.2.1)
+  - Eureka (5.3.0)
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
@@ -89,7 +89,7 @@ DEPENDENCIES:
   - Chrysan
   - CocoaLumberjack/Swift (~> 3.5)
   - EmptyDataSet-Swift (~> 5.0.0)
-  - Eureka (~> 5.2.1)
+  - Eureka (~> 5.3.0)
   - FMDB (~> 2.6.2)
   - FSCalendar
   - HandyJSON (~> 5.0.2-beta)
@@ -179,7 +179,7 @@ SPEC CHECKSUMS:
   AlamofireImage: 78d67ccbb763d87ba44b21583d2153500a195630
   AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
-  BaiduMapKit: 075465cf7134d0ebf81796b93a59d504c350d9a4
+  BaiduMapKit: 0454428c2475489e3307c55eb67b5765b2cf7b05
   BetterSegmentedControl: b27bddbdff29b6cae988678d6cd106858986cd03
   BMKLocationKit: fd3d6b4a9a3a1a2763819f56b780bda5fc5b8726
   BSImagePicker: 86f28e0f63b78d35fec7c6f0174b7af9e6f1431e
@@ -188,7 +188,7 @@ SPEC CHECKSUMS:
   Chrysan: 6bf6682adb2db76f7f5c103930a8c6670f54eebe
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   EmptyDataSet-Swift: eb382c0c87a2d9c678077385a595cec52da38171
-  Eureka: c883105488e05bc65539f583246ecf9657cabbfe
+  Eureka: 49239596c9d2eed9ab523990c34de62b6feac9f0
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   FSCalendar: 3a5ed3636e2ba1b83ebebfcf0c2603105a6f5efe
   HandyJSON: e18b035d60cb4847c609a59bb831c5db8c549663
@@ -220,6 +220,6 @@ SPEC CHECKSUMS:
   YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
   YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
 
-PODFILE CHECKSUM: 7994fed5103facb0bfff5a065e5612ebe4b411a2
+PODFILE CHECKSUM: 443a1a0e70d86c33975d3a07253f37c7f83d5d0a
 
 COCOAPODS: 1.8.4

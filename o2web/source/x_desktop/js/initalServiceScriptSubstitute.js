@@ -224,7 +224,6 @@ var _Action = (function(){
                                 }
                                 var res = null;
                                 try{
-                                        print(uri);
                                         switch (method.toLowerCase()){
                                                 case "get":
                                                         res = bind.applications.getQuery(this.root, uri);
@@ -900,6 +899,9 @@ var _org = {
                 return o;
         }
 };
+
+print = function(str, type){}
+bind.print = print;
 
 bind.org = _org;
 bind.library = library;

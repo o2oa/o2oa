@@ -16,8 +16,17 @@ MWF.xApplication.Selector.Unit = new Class({
         "selectAllEnable" : true, //分类是否允许全选下一层
         "selectType" : "unit"
     },
-
+    _init : function(){
+        this.selectType = "unit";
+        this.className = "Unit";
+    },
     loadSelectItems: function(addToNext){
+
+        if( this.options.disabled ){
+            this.afterLoadSelectItem();
+            return;
+        }
+
         var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
 
         if (this.options.units.length){
@@ -401,26 +410,29 @@ MWF.xApplication.Selector.Unit.Item = new Class({
     selectAllNested : function(ev, checkValid, selectedNode){
         var node;
         if( selectedNode )node = new Element("div.categorySelectedNode").inject( selectedNode );
-        this.selectAll(ev, checkValid, node);
-        if( this.subCategorys && this.subCategorys.length ){
-            this.subCategorys.each( function( category ){
-                if(selectedNode)var node = new Element("div.categorySelectedNode").inject( selectedNode );
-                if(category.selectAllNested)category.selectAllNested(ev, checkValid, node)
-            })
-        }
-        if( this.subItems && this.subItems.length ){
-            this.subItems.each( function( item ){
-                if(selectedNode)var node = new Element("div.categorySelectedNode").inject( selectedNode );
-                if(item.selectAllNested)item.selectAllNested(ev, checkValid, node)
-            })
-        }
+        this.selectAll(ev, checkValid, node, function () {
+            if( this.subCategorys && this.subCategorys.length ){
+                this.subCategorys.each( function( category ){
+                    if(selectedNode)var node = new Element("div.categorySelectedNode").inject( selectedNode );
+                    if(category.selectAllNested)category.selectAllNested(ev, checkValid, node)
+                })
+            }
+            if( this.subItems && this.subItems.length ){
+                this.subItems.each( function( item ){
+                    if(selectedNode)var node = new Element("div.categorySelectedNode").inject( selectedNode );
+                    if(item.selectAllNested)item.selectAllNested(ev, checkValid, node)
+                })
+            }
+        }.bind(this));
     },
-    selectAll: function(ev, checkValid, selectedNode){
+    selectAll: function(ev, checkValid, selectedNode, callback){
         if( this.loaded || this.selector.isFlatCategory ){
-            this._selectAll( ev, checkValid, selectedNode )
+            this._selectAll( ev, checkValid, selectedNode );
+            if(callback)callback();
         }else{
             this.loadSubItems(function(){
-                this._selectAll( ev, checkValid, selectedNode )
+                this._selectAll( ev, checkValid, selectedNode );
+                if(callback)callback();
             }.bind(this));
             this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
             this.isExpand = true;

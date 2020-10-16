@@ -12,6 +12,10 @@ MWF.xApplication.Selector.Script = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
+    _init : function(){
+        this.selectType = "script";
+        this.className = "Script";
+    },
     loadSelectItems: function(addToNext){
         var json = {};
         this.options.appType.each( function (type) {

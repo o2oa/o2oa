@@ -11,6 +11,9 @@ import CocoaLumberjack
 
 class OOCalendarLeftMenuController: UITableViewController {
     
+    
+    var calendarIds:[String] = []
+    
     private var myCalendarList: [OOCalendarInfo] = []
     private var departmentCalendarList: [OOCalendarInfo] = []
     private var followCalendarList: [OOCalendarInfo] = []
@@ -24,6 +27,7 @@ class OOCalendarLeftMenuController: UITableViewController {
         super.viewDidLoad()
         self.navigationItem.title = "日历"
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "日历广场", style: .plain, target: self, action: #selector(openCalendars))
         
         addCalendarBtnView.addTapGesture { (tap) in
             DDLogInfo("点击了新增日历。。。。。。")
@@ -37,6 +41,7 @@ class OOCalendarLeftMenuController: UITableViewController {
             self.myCalendarList = calendars.myCalendars ?? []
             self.departmentCalendarList = calendars.unitCalendars ?? []
             self.followCalendarList = calendars.followCalendars ?? []
+            self.loadCalendarIds()
             self.tableView.reloadData()
             }.catch { (error) in
                 DDLogError(error.localizedDescription)
@@ -100,17 +105,22 @@ class OOCalendarLeftMenuController: UITableViewController {
     /**/
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "calendarTableCell", for: indexPath) as! CalendarTableViewCell
+        
         switch indexPath.section {
-        case 0:
-            cell.renderCalendar(info: self.myCalendarList[indexPath.row])
-            cell.calendarCellDelegate = self
-        case 1:
-            cell.renderCalendar(info: self.departmentCalendarList[indexPath.row])
-        case 2:
-            cell.renderCalendar(info: self.followCalendarList[indexPath.row])
-        default:
-            DDLogInfo("没有的事。。。。。")
+            case 0:
+                cell.renderCalendar(info: self.myCalendarList[indexPath.row], self.calendarIds)
+                break
+            case 1:
+                cell.renderCalendar(info: self.departmentCalendarList[indexPath.row], self.calendarIds)
+                break
+            case 2:
+                cell.renderCalendar(info: self.followCalendarList[indexPath.row], self.calendarIds)
+                break
+            default:
+                DDLogInfo("没有的事。。。。。")
         }
+        
+        cell.calendarCellDelegate = self
         return cell
     }
  
@@ -152,13 +162,75 @@ class OOCalendarLeftMenuController: UITableViewController {
         }
     }
  
-
+    //前一页传过来的ids如果有值 和 这边重新从网络获取的数据进行id比较合并
+    private func loadCalendarIds() {
+        var newCalendarids:[String] = []
+        self.myCalendarList.forEach { (c) in
+            newCalendarids.append(c.id!)
+        }
+        self.followCalendarList.forEach { (c) in
+            newCalendarids.append(c.id!)
+        }
+        self.departmentCalendarList.forEach { (c) in
+            newCalendarids.append(c.id!)
+        }
+        
+        self.calendarIds.forEach { (id) in
+            if !newCalendarids.contains(id) {
+                self.calendarIds.removeFirst(id)
+            }
+        }
+        
+    }
+    //日历广场
+    @objc private func openCalendars() {
+        self.performSegue(withIdentifier: "showCalendarStore", sender: nil)
+    }
+    
 }
 
 // extension
 
 extension OOCalendarLeftMenuController: CalendarCellSwithOnDelegate {
     func click(isOn: Bool, calendar: OOCalendarInfo?) {
-        DDLogInfo("点击了切换 ison:\(isOn), 日历名称： \(calendar?.name)")
+        
+        if !self.calendarIds.isEmpty {
+            if isOn {
+                self.calendarIds.append(calendar!.id!)
+            }else {
+                self.calendarIds.removeFirst(calendar!.id!)
+            }
+        }else { //第一次
+            var newCalendarids:[String] = []
+            self.myCalendarList.forEach { (c) in
+                if c.id == calendar?.id  {
+                    if isOn {
+                        newCalendarids.append(c.id!)
+                    }
+                }else {
+                    newCalendarids.append(c.id!)
+                }
+            }
+            self.followCalendarList.forEach { (c) in
+                if c.id == calendar?.id  {
+                    if isOn {
+                        newCalendarids.append(c.id!)
+                    }
+                }else {
+                    newCalendarids.append(c.id!)
+                }
+            }
+            self.departmentCalendarList.forEach { (c) in
+                if c.id == calendar?.id  {
+                    if isOn {
+                        newCalendarids.append(c.id!)
+                    }
+                }else {
+                    newCalendarids.append(c.id!)
+                }
+            }
+            self.calendarIds = newCalendarids
+        }
+        NotificationCenter.default.post(name: OONotification.calendarIds.notificationName, object: self.calendarIds)
     }
 }

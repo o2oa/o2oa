@@ -51,6 +51,6 @@ interface OrgAssemblePersonalService {
     /**
      * 更新当前用户密码
      */
-    @PUT("jaxrs/password")
+    @PUT("jaxrs/person/password")
     fun modifyCurrentPersonPassword(@Body body: PersonPwdForm): Observable<ApiResponse<ValueData>>
 }

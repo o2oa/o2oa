@@ -1,27 +1,30 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.login
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
-import androidx.core.content.ContextCompat
+import android.os.Looper
 import android.text.InputType
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_login.*
 import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.bind.BindPhoneActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.main.MainActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.CaptchaImgData
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.LoginModeData
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.LoginWithCaptchaForm
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.AuthenticationInfoJson
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.BitmapUtil
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.biometric.BioConstants
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.biometric.BiometryManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.biometric.OnBiometryAuthCallback
@@ -85,11 +88,21 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
     private var loginType = 0 // 0默认的用户名验证码登录 1用户名密码登录
     private var canBioAuth = false //是否有指纹认证
 
+    //验证码
+    private var useCaptcha = true
+    private var captcha : CaptchaImgData? = null
+
+
 
     override fun afterSetContentView(savedInstanceState: Bundle?) {
+        //获取加密key
+        mPresenter.getRSAPublicKey()
+        //获取图片验证码
+        mPresenter.getCaptcha()
+        //
+        mPresenter.getLoginMode()
+
         receivePhone = intent.extras?.getString(REQUEST_PHONE_KEY) ?: ""
-
-
         setDefaultLogo()
         login_edit_username_id.setText(receivePhone)
         tv_login_copyright.text = getString(R.string.copy_right).plus(" ")
@@ -114,23 +127,29 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
                 view_login_password_bottom.setBackgroundColor(FancySkinManager.instance().getColor(this, R.color.z_color_input_line_blur))
             }
         }
-
-
+        edit_login_captcha_input.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                view_login_captcha_input_bottom.setBackgroundColor(FancySkinManager.instance().getColor(this, R.color.z_color_input_line_focus))
+            }else {
+                view_login_captcha_input_bottom.setBackgroundColor(FancySkinManager.instance().getColor(this, R.color.z_color_input_line_blur))
+            }
+        }
 
         btn_login_submit.setOnClickListener(this)
         btn_bio_auth_login.setOnClickListener(this)
         tv_user_fallback_btn.setOnClickListener(this)
         tv_bioauth_btn.setOnClickListener(this)
+        image_login_captcha.setOnClickListener(this)
 
         //是否开启了指纹识别登录
         checkBioAuthLogin()
         if (BuildConfig.InnerServer) {
             login_edit_password_id.setHint(R.string.activity_login_password)
             login_edit_password_id.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-//            InputType.TYPE_TEXT_VARIATION_PASSWORD
             button_login_phone_code.gone()
             tv_rebind_btn.gone()
             tv_bioauth_btn.gone()
+            ll_login_captcha.visible()
         }else {
             tv_bioauth_btn.visible()
             login_edit_password_id.setHint(R.string.login_code)
@@ -139,6 +158,8 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
             button_login_phone_code.setOnClickListener(this)
             tv_rebind_btn.visible()
             tv_rebind_btn.setOnClickListener(this)
+            //不需要图片验证码
+            ll_login_captcha.gone()
         }
 
     }
@@ -166,6 +187,10 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
 
     override fun onResume() {
         super.onResume()
+        //清除用户名密码
+        login_edit_username_id.setText("")
+        login_edit_password_id.setText("")
+        edit_login_captcha_input.setText("")
 
         playBeep = true
         val audioService = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -173,6 +198,26 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
             playBeep = false
         }
         initBeepSound()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        //Activity反劫持检测工具
+        Thread(Runnable { // 白名单
+            val safe = AntiHijackingUtil.checkActivity(applicationContext)
+            // 系统桌面
+            val isHome = AntiHijackingUtil.isHome(applicationContext)
+            // 锁屏操作
+            val isReflectScreen = AntiHijackingUtil.isReflectScreen(applicationContext)
+            // 判断程序是否当前显示
+            if (!safe && !isHome && !isReflectScreen) {
+                Looper.prepare()
+                Toast.makeText(applicationContext, R.string.activity_safe_warning,
+                        Toast.LENGTH_LONG).show()
+                Looper.loop()
+            }
+        }).start()
     }
 
     override fun onDestroy() {
@@ -202,6 +247,10 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
                     reBindService()
                 })
             }
+            R.id.image_login_captcha -> {
+                showLoadingDialog()
+                mPresenter.getCaptcha()
+            }
         }
     }
 
@@ -228,11 +277,17 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
     }
     private  fun changeLoginType() {
         if (loginType == 0) {
+            if (useCaptcha) {
+                ll_login_captcha.visible()
+            }else {
+                ll_login_captcha.gone()
+            }
             login_edit_password_id.setHint(R.string.activity_login_password)
             login_edit_password_id.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
             button_login_phone_code.gone()
             loginType = 1
         }else {
+            ll_login_captcha.gone()
             login_edit_password_id.setHint(R.string.login_code)
             login_edit_password_id.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_NORMAL
             button_login_phone_code.visible()
@@ -241,6 +296,32 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
         }
     }
 
+
+    override fun loginMode(mode: LoginModeData?) {
+        if (mode != null) {
+            useCaptcha = mode.captchaLogin
+            if (useCaptcha) {
+                ll_login_captcha.visible()
+            }else {
+                ll_login_captcha.gone()
+            }
+        }
+    }
+
+    override fun showCaptcha(data: CaptchaImgData) {
+        hideLoadingDialog()
+        captcha = data
+         val stream = Base64ImageUtil.generateBase642Inputstream(data.image)
+        if (stream != null) {
+            image_login_captcha.setImageBitmap(BitmapFactory.decodeStream(stream))
+        }
+    }
+
+    override fun getCaptchaError(err: String) {
+        hideLoadingDialog()
+        //todo 图片验证码没有
+        XLog.error(err)
+    }
 
     override fun loginSuccess(data: AuthenticationInfoJson) {
         if (login_main_biometry.visibility == View.VISIBLE) {
@@ -280,16 +361,72 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
             XToast.toastShort(this, "$label 不能为空！")
             return
         }
-        showLoadingDialog()
-        if (BuildConfig.InnerServer) {
-            mPresenter.loginByPassword(credential, code)
-        }else {
-            if (loginType == 0) {
-                mPresenter.login(credential, code)
+        if (useCaptcha) {
+            if (BuildConfig.InnerServer) {
+//                mPresenter.loginByPassword(credential, code)
+                val captchaCode = edit_login_captcha_input.text.toString()
+                if (TextUtils.isEmpty(captchaCode)) {
+                    XToast.toastShort(this, "图片验证码 不能为空！")
+                    return
+                }
+                if (captcha == null) {
+                    XToast.toastShort(this, "图片验证码 不能为空！")
+                    return
+                }
+                val form = LoginWithCaptchaForm()
+                form.credential = credential
+                form.password = code
+                form.captcha = captcha!!.id
+                form.captchaAnswer = captchaCode
+                showLoadingDialog()
+                mPresenter.loginWithCaptcha(form)
             }else {
-                mPresenter.loginByPassword(credential, code)
+                if (loginType == 0) {
+                    showLoadingDialog()
+                    mPresenter.login(credential, code)
+                }else {
+//                    mPresenter.loginByPassword(credential, code)
+                    val captchaCode = edit_login_captcha_input.text.toString()
+                    if (TextUtils.isEmpty(captchaCode)) {
+                        XToast.toastShort(this, "图片验证码 不能为空！")
+                        return
+                    }
+                    if (captcha == null) {
+                        XToast.toastShort(this, "图片验证码 不能为空！")
+                        return
+                    }
+                    val form = LoginWithCaptchaForm()
+                    form.credential = credential
+                    form.password = code
+                    form.captcha = captcha!!.id
+                    form.captchaAnswer = captchaCode
+                    showLoadingDialog()
+                    mPresenter.loginWithCaptcha(form)
+                }
+            }
+        }else {
+            if (BuildConfig.InnerServer) {
+//                mPresenter.loginByPassword(credential, code)
+                val form = LoginWithCaptchaForm()
+                form.credential = credential
+                form.password = code
+                showLoadingDialog()
+                mPresenter.loginWithCaptcha(form)
+            }else {
+                if (loginType == 0) {
+                    showLoadingDialog()
+                    mPresenter.login(credential, code)
+                }else {
+//                    mPresenter.loginByPassword(credential, code)
+                    val form = LoginWithCaptchaForm()
+                    form.credential = credential
+                    form.password = code
+                    showLoadingDialog()
+                    mPresenter.loginWithCaptcha(form)
+                }
             }
         }
+
     }
 
 

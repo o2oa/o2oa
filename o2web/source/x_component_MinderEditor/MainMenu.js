@@ -385,10 +385,12 @@ MWF.xApplication.MinderEditor.MainMenu = new Class({
             formData.append('file', img, title+".png");
             formData.append('site', id);
 
+            debugger;
+
             MWF.xDesktop.uploadImageByScale( id, "mindInfo", -1, formData, img,
                 function(json){
                     var url = o2.Actions.load("x_file_assemble_control").FileAction.action.actions.downloadStream.uri.replace( "{id}", json.data.id );
-                    url = o2.filterUrl( o2.Actions.load("x_file_assemble_control").FileAction.action.address + url);
+                    url = o2.filterUrl( o2.Actions.load("x_file_assemble_control").FileAction.action.getAddress() + url);
                     window.open(url);
                 }.bind(this)
             );

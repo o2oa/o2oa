@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.container.LogLevel;
 import com.x.base.core.container.factory.SlicePropertiesBuilder;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.Crypto;
@@ -27,7 +26,7 @@ public class ExternalDataSource extends ConfigObject {
 		this.dictionary = "";
 		this.maxTotal = DEFAULT_MAXTOTAL;
 		this.maxIdle = DEFAULT_MAXIDLE;
-		this.logLevel = LogLevel.WARN;
+		this.logLevel = DEFAULT_LOGLEVEL;
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statFilter = DEFAULT_STATFILTER;
 		this.slowSqlMillis = DEFAULT_SLOWSQLMILLIS;
@@ -64,8 +63,8 @@ public class ExternalDataSource extends ConfigObject {
 	private List<String> includes;
 	@FieldDescribe("在此节点上不存储的类,和includes一起设置实际存储的类,可以使用通配符*")
 	private List<String> excludes;
-	@FieldDescribe("默认日志级别")
-	private LogLevel logLevel = LogLevel.WARN;
+	@FieldDescribe("默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完成的配置为DefaultLevel=WARN, Tool=TRACE, Enhance=TRACE, METADATA=TRACE, Runtime=TRACE, Query=TRACE, DataCache=TRACE, JDBC=TRACE, SQL=TRACE")
+	private String logLevel = DEFAULT_LOGLEVEL;
 
 	public static final Integer DEFAULT_MAXTOTAL = 50;
 
@@ -77,8 +76,10 @@ public class ExternalDataSource extends ConfigObject {
 
 	public static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
 
-	public LogLevel getLogLevel() {
-		return this.logLevel == null ? LogLevel.WARN : this.logLevel;
+	public static final String DEFAULT_LOGLEVEL = "WARN";
+
+	public String getLogLevel() {
+		return StringUtils.isEmpty(this.logLevel) ? DEFAULT_LOGLEVEL : this.logLevel;
 	}
 
 	public String getDriverClassName() throws Exception {
@@ -182,7 +183,7 @@ public class ExternalDataSource extends ConfigObject {
 		this.maxTotal = maxTotal;
 	}
 
-	public void setLogLevel(LogLevel logLevel) {
+	public void setLogLevel(String logLevel) {
 		this.logLevel = logLevel;
 	}
 

@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.jaxrs.snap;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -17,6 +18,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.DocumentVersion;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Record;
@@ -63,8 +65,15 @@ class ActionRestore extends BaseAction {
 				if (null == snap) {
 					throw new ExceptionEntityNotExist(id, Snap.class);
 				}
-				clean(business, snap.getJob());
+				CompletableFuture.allOf(deleteItem(business, snap.getJob()), deleteWork(business, snap.getJob()),
+						deleteTask(business, snap.getJob()), deleteTaskCompleted(business, snap.getJob()),
+						deleteRead(business, snap.getJob()), deleteReadCompleted(business, snap.getJob()),
+						deleteReview(business, snap.getJob()), deleteWorkLog(business, snap.getJob()),
+						deleteRecord(business, snap.getJob()), deleteAttachment(business, snap.getJob()),
+						deleteDocumentVersion(business, snap.getJob())).get();
+				emc.commit();
 				restore(business, snap);
+				emc.commit();
 				emc.beginTransaction(Snap.class);
 				emc.remove(snap, CheckRemoveType.all);
 				emc.commit();
@@ -107,10 +116,11 @@ class ActionRestore extends BaseAction {
 			emc.beginTransaction(Read.class);
 			emc.beginTransaction(ReadCompleted.class);
 			emc.beginTransaction(Review.class);
-			emc.beginTransaction(Record.class);
 			emc.beginTransaction(WorkLog.class);
-			emc.beginTransaction(Attachment.class);
+			emc.beginTransaction(Record.class);
+			emc.beginTransaction(DocumentVersion.class);
 			emc.beginTransaction(Item.class);
+			emc.beginTransaction(Attachment.class);
 			for (Task o : snap.getProperties().getTaskList()) {
 				emc.persist(o, CheckPersistType.all);
 			}
@@ -126,10 +136,13 @@ class ActionRestore extends BaseAction {
 			for (Review o : snap.getProperties().getReviewList()) {
 				emc.persist(o, CheckPersistType.all);
 			}
+			for (WorkLog o : snap.getProperties().getWorkLogList()) {
+				emc.persist(o, CheckPersistType.all);
+			}
 			for (Record o : snap.getProperties().getRecordList()) {
 				emc.persist(o, CheckPersistType.all);
 			}
-			for (WorkLog o : snap.getProperties().getWorkLogList()) {
+			for (DocumentVersion o : snap.getProperties().getDocumentVersionList()) {
 				emc.persist(o, CheckPersistType.all);
 			}
 			for (Attachment o : snap.getProperties().getAttachmentList()) {

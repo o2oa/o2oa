@@ -11,7 +11,10 @@ MWF.xApplication.Selector.QueryStat = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "querystat";
+        this.className = "QueryStat";
+    },
     loadSelectItems: function(addToNext){
         this.queryAction.listApplication(function(json){
             if (json.data.length){

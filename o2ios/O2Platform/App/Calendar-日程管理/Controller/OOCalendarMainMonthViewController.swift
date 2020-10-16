@@ -22,6 +22,7 @@ class OOCalendarMainMonthViewController: UIViewController {
             //todo
         }
     }
+    var calendarIds:[String] = []
     private var eventShowList:[OOCalendarEventInfo] = []
     private var _today: Date?
     private var _selectDay: Date?
@@ -66,6 +67,7 @@ class OOCalendarMainMonthViewController: UIViewController {
         _startTime = DateUtil.share.monthStartDate(date: _today!)
         _endTime = DateUtil.share.monthEndDate(startDate: _startTime!)
         setNavTitle(date: _today!)
+        NotificationCenter.default.addObserver(self, selector: #selector(setTheCalendarIds(_:)), name: OONotification.calendarIds.notificationName, object: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
         loadData()
@@ -77,6 +79,14 @@ class OOCalendarMainMonthViewController: UIViewController {
     }
     
 
+    //设置
+    @objc private func setTheCalendarIds(_ notification:NSNotification) {
+        DDLogDebug("接收到通知消息")
+        if let ids = notification.object as? [String] {
+            DDLogDebug("设置ids：\(ids)")
+            self.calendarIds = ids
+        }
+    }
     /*
     // MARK: - Navigation
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -90,6 +100,13 @@ class OOCalendarMainMonthViewController: UIViewController {
                 let row  = tableView.indexPathForSelectedRow!.row
                 let destination = segue.destination as! OOCalendarEventViewController
                 destination.eventInfo = self.eventShowList[row]
+            }
+        }
+        if segue.identifier == "showCalendarList" {
+            if !self.calendarIds.isEmpty {
+                if let dest = segue.destination as? OOCalendarLeftMenuController {
+                    dest.calendarIds = self.calendarIds
+                }
             }
         }
     }
@@ -108,8 +125,8 @@ class OOCalendarMainMonthViewController: UIViewController {
         let filter = OOCalendarEventFilter()
         filter.startTime = self._startTime?.toString("yyyy-MM-dd HH:mm:ss")
         filter.endTime = self._endTime?.toString("yyyy-MM-dd HH:mm:ss")
-        filter.createPerson = _currentPerson
-        // TODO calendarIds.....
+        filter.calendarIds = self.calendarIds
+        
         viewModel.filterCalendarEventList(filter: filter).then { (response) -> Promise<[String:[OOCalendarEventInfo]]>  in
             return Promise<[String:[OOCalendarEventInfo]]> { fulfill, reject in
                 var result: [String:[OOCalendarEventInfo]] = [:]

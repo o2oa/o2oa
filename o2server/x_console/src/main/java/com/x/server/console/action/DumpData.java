@@ -32,6 +32,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.ContainerEntity.Reference;
+import com.x.base.core.entity.dataitem.DataItem;
+import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.StorageMapping;
@@ -42,6 +44,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.query.core.entity.Item;
 
 public class DumpData {
 
@@ -85,7 +88,7 @@ public class DumpData {
 				logger.print("find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_dump.xml");
-				PersistenceXmlHelper.write(xml.toString(), classNames);
+				PersistenceXmlHelper.write(xml.toString(), classNames, false);
 				StorageMappings storageMappings = Config.storageMappings();
 				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
 						? classNames.parallelStream()
@@ -96,8 +99,8 @@ public class DumpData {
 					EntityManagerFactory emf = null;
 					EntityManager em = null;
 					try {
-						Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false,false,false,
-								false, false, Config.dir_local_temp_classes().toPath()));
+						Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false, false,
+								false, false, false, Config.dir_local_temp_classes().toPath()));
 						Thread.currentThread().setName(DumpData.class.getName() + ":" + className);
 						@SuppressWarnings("unchecked")
 						Class<JpaObject> cls = (Class<JpaObject>) Thread.currentThread().getContextClassLoader()
@@ -160,13 +163,17 @@ public class DumpData {
 			return catalog.values().stream().mapToInt(Integer::intValue).sum();
 		}
 
-		private <T> List<T> list(EntityManager em, Class<T> cls, String id, Integer size) {
+		private <T> List<T> list(EntityManager em, Class<T> cls, String id, Integer size) throws Exception {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<T> cq = cb.createQuery(cls);
 			Root<T> root = cq.from(cls);
 			Predicate p = cb.conjunction();
 			if (StringUtils.isNotEmpty(id)) {
 				p = cb.greaterThan(root.get(JpaObject.id_FIELDNAME), id);
+			}
+			if ((Item.class == cls) && (StringUtils.isNotBlank(Config.dumpRestoreData().getItemCategory()))) {
+				p = cb.and(p, cb.equal(root.get(DataItem.itemCategory_FIELDNAME),
+						ItemCategory.valueOf(Config.dumpRestoreData().getItemCategory())));
 			}
 			cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject.id_FIELDNAME)));
 			return em.createQuery(cq).setMaxResults(size).getResultList();
@@ -208,7 +215,7 @@ public class DumpData {
 				StorageObject s = (StorageObject) t;
 				String name = s.getStorage();
 				StorageMapping mapping = storageMappings.get(s.getClass(), name);
-				if (null == mapping && Config.dumpRestoreStorage().getExceptionInvalidStorage()) {
+				if (null == mapping && Config.dumpRestoreData().getExceptionInvalidStorage()) {
 					throw new ExceptionInvalidStorage(s);
 				}
 				if (null != mapping) {

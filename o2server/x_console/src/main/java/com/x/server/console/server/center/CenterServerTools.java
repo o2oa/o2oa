@@ -27,6 +27,7 @@ import com.alibaba.druid.support.http.WebStatFilter;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
@@ -71,6 +72,10 @@ public class CenterServerTools extends JettySeverTools {
 				ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
 				statServletHolder.setInitParameter("sessionStatEnable", "false");
 				webApp.addServlet(statServletHolder, "/druid/*");
+			}
+			if (BooleanUtils.isFalse(centerServer.getExposeJest())) {
+				FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
+				webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
 			}
 			handlers.addHandler(webApp);
 		} else {

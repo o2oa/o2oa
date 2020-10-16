@@ -57,10 +57,14 @@ class ActionListObject extends BaseAction {
 	}
 
 	private List<Wo> list(Business business, Wi wi) throws Exception {
-		List<Person> os = business.person().pick(wi.getPersonList());
 		List<Wo> wos = new ArrayList<>();
-		for (Person o : os) {
-			wos.add(this.convert(business, o, Wo.class));
+		for (String str : wi.getPersonList()) {
+			Person o = business.person().pick(str);
+			if(o!=null){
+				Wo wo = this.convert(business, o, Wo.class);
+				wo.setMatchKey(str);
+				wos.add(wo);
+			}
 		}
 		return wos;
 	}

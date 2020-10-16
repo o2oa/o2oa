@@ -47,7 +47,9 @@ class ActionListWithPerson extends BaseAction {
 			List<String> ids = this.list(business, effectivePerson, roles, identities, units);
 			for (String id : ids) {
 				Application o = business.application().pick(id);
-				wos.add(Wo.copier.copy(o));
+				if (null != o) {
+					wos.add(Wo.copier.copy(o));
+				}
 			}
 			wos = business.application().sort(wos);
 			result.setData(wos);

@@ -58,7 +58,7 @@ target 'O2Platform' do
     pod 'SDWebImage', '~>4.0'
     
     pod 'BSImagePicker', '~> 3.1.0'
-    pod 'Eureka', '~> 5.2.1'
+    pod 'Eureka', '~> 5.3.0'
     pod 'SwiftyTimer'
 
     pod 'Charts'

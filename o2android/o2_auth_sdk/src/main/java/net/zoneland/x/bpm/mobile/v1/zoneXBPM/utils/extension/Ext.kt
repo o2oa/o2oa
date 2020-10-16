@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.high_order_func.KTXDrawerListener
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.high_order_func._OnPageChangeListener
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.high_order_func._OnSubscribe
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.security.SecurityEditor
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.security.SecuritySharedPreference
 import rx.Observable
 
 /**
@@ -39,12 +41,17 @@ fun Long.friendlyFileLength(): String {
     }
 }
 
-inline fun SharedPreferences.edit(func: SharedPreferences.Editor.() -> Unit) {
-    val editor = edit()
+//inline fun SharedPreferences.edit(func: SharedPreferences.Editor.() -> Unit) {
+//    val editor = edit()
+//    editor.func()
+//    editor.apply()
+//}
+
+inline fun SecuritySharedPreference.edit(func: SecurityEditor.() -> Unit) {
+    val editor  = edit()
     editor.func()
     editor.apply()
 }
-
 
 inline fun ViewPager.addOnPageChangeListener(func: _OnPageChangeListener.() -> Unit) {
     val listener = _OnPageChangeListener()

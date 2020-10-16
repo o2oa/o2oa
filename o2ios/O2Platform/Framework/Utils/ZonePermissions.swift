@@ -59,6 +59,11 @@ public class ZonePermissions: NSObject {
                     callback(ZoneAuthorizationStatus.zAuthorizationStatusRestricted)
                 }
                 
+            case .limited:
+                DispatchQueue.main.async {
+                    callback(ZoneAuthorizationStatus.zAuthorizationStatusAuthorized)
+                    
+                }
             }
         }else {
             DispatchQueue.main.async {
