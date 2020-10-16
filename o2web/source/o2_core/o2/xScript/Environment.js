@@ -1722,15 +1722,21 @@ debugger;
                             "identity": identity,
                             "latest": latest,
                             "onStarted": function(data, title, processName){
-                                var currentTask = [];
-                                data.each(function(work){
-                                    if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
-                                }.bind(this));
-
-                                if (currentTask.length==1){
-                                    var options = {"workId": currentTask[0], "appId": currentTask[0]};
+                                if (data.work){
+                                    var work = data.work;
+                                    var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
                                     layout.desktop.openApplication(null, "process.Work", options);
-                                }else{}
+                                }else{
+                                    var currentTask = [];
+                                    data.each(function(work){
+                                        if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
+                                    }.bind(this));
+
+                                    if (currentTask.length==1){
+                                        var options = {"workId": currentTask[0], "appId": currentTask[0]};
+                                        layout.desktop.openApplication(null, "process.Work", options);
+                                    }else{}
+                                }
 
                                 if (callback) callback(data);
                             }.bind(this)
@@ -1809,21 +1815,12 @@ MWF.xScript.createTable = function(){
 };
 MWF.xScript.JSONData = function(data, callback, key, parent, _form){
     var getter = function(data, callback, k, _self){
-        return function(){
-            // if (data[k]){
-            //     return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);
-            // }else{
-            //     var p = {"getKey": function(){return k;}, "getParent": function(){return _self;}};
-            //     while (p && !_forms[p.getKey()]) p = p.getParent();
-            //     if (p) if (p.getKey()) if (_forms[p.getKey()]) return _forms[p.getKey()].getValue();
-            // }
-            return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);
-        };
+        return function(){return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);};
     };
     var setter = function(data, callback, k, _self){
         return function(v){
             data[k] = v;
-            //debugger;v
+            //debugger;
             //this.add(k, v, true);
             if (callback) callback(data, k, _self);
         }
