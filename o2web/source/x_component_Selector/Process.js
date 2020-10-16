@@ -11,7 +11,10 @@ MWF.xApplication.Selector.Process = new Class({
         "expand": false,
         "forceSearchInItem" : true
     },
-
+    _init : function(){
+        this.selectType = "process";
+        this.className = "Process";
+    },
     loadSelectItems: function(addToNext){
         this.processAction.listApplicationStartable(function(json){
             if (json.data.length){

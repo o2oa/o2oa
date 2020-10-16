@@ -220,13 +220,15 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             if (this.json.identityRange!=="all"){
                 if ( !identityOpt.noUnit && (!identityOpt.units || !identityOpt.units.length) ){
                     this.form.notice(MWF.xApplication.process.Xform.LP.noIdentitySelectRange, "error", this.node);
-                    return false;
+                    identityOpt.disabled = true;
+                    // return false;
                 }
             }
             if ( !identityOpt.noUnit && this.json.dutyRange && this.json.dutyRange!=="all"){
                 if (!identityOpt.dutys || !identityOpt.dutys.length){
                     this.form.notice(MWF.xApplication.process.Xform.LP.noIdentityDutySelectRange, "error", this.node);
-                    return false;
+                    identityOpt.disabled = true;
+                    // return false;
                 }
             }
             identityOpt.values = (this.json.isInput) ? [] : values;
@@ -240,7 +242,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             if (this.json.unitRange!=="all"){
                 if ( !unitOpt.units || !unitOpt.units.length){
                     this.form.notice(MWF.xApplication.process.Xform.LP.noUnitSelectRange, "error", this.node);
-                    return false;
+                    unitOpt.disabled = true;
+                    // return false;
                 }
             }
             unitOpt.values = (this.json.isInput) ? [] : values;
@@ -1068,6 +1071,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     },
     loadOrgWidget: function(value, node){
         var disableInfor = layout.mobile ? true : false;
+        if( this.json.showCard === "no" )disableInfor = true;
         var height = node.getStyle("height").toInt();
         if (node.getStyle("overflow")==="visible" && !height) node.setStyle("overflow", "hidden");
         if (value && value.length){

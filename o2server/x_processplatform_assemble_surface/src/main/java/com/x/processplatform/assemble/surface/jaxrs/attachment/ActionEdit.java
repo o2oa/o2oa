@@ -56,7 +56,7 @@ class ActionEdit extends BaseAction {
 
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-			boolean canControl = this.control(attachment, effectivePerson, identities, units);
+			boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
 			if(!canControl){
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}

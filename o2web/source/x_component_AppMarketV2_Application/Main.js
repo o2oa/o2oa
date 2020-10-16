@@ -22,10 +22,11 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 		this.viewPath = this.path+this.options.style+"/"+this.options.view;
 		this.iconPath = this.path+this.options.style+"/icon/";
 		this.collectToken = "";
-        this.collectUrl = "";
+		this.collectUrl = "";
 		if (!this.status) {
         } else {
-            this.options.appid = this.status.appid;
+			this.options.appid = this.status.appid;
+			this.options.appname = this.status.appname;			
         }
 		this.appdata = {};
 	},
@@ -78,12 +79,12 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 		this.introducenode.setStyle("height", ""+height+"px");
 	},
 	loadIntroduce:function(callback){
-		debugger;
 		this.initNodeSize();
 		if (this.options.appid){
 			this.actions.MarketAction.get(this.options.appid,function(json){
-				if (json.data && json.data.icon){
+				if (json.data && json.data.icon){					
 					this.appdata = json.data;
+					this.setTitle(MWF.xApplication.AppMarketV2.Application.LP.title+"_"+this.appdata.name);
 					var applicationicon = new Element("div",{"class":"o2_appmarket_application_introduce_icon"}).inject(this.applicationintroduceiconcontain);
 					applicationicon.setStyle("background-image", "url(data:image/png;base64,"+this.appdata.icon+")");
 					if (this.applicationintroduceiconcontain.clientWidth<300){
@@ -112,8 +113,9 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 					this.applicationintroducememoremarkcommentcount.set("text","共"+this.appdata.commentCount+"个评分")
 					//this.applicationintroducememodownload.set("text",this.appdata.downloadCount);
 					this.applicationintroducememocategory.set("text","分类:"+this.appdata.category);
-					this.applicationintroducememocontent.set("html",this.appdata.abort);
-					this.applicationintroducedownloadprice.set("text","$"+this.appdata.price);
+					this.applicationintroducememocontent.set("text",this.appdata.describe);
+					//this.applicationintroducedownloadprice.set("text","$"+this.appdata.price);
+					this.applicationintroducedownloadprice.set("text","");
 
 					var bottomtext =this.lp.setup;
 					if (this.appdata.installedVersion && this.appdata.installedVersion!=""){
@@ -156,7 +158,6 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
         //e.currentTarget.removeClass("mainColor_border").removeClass("mainColor_color");
 	},
 	mouseover:function(){
-		debugger;
 		this.addClass("o2_appmarket_appcategory_tab_over");
 	},
 	mouseout:function(){
@@ -182,7 +183,6 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 			}.bind(_self),
 			function( json ){ 
 				data = json.data; 
-				debugger;
 				_self.unmask();
 				//this.clearLoading()
 			}.bind(_self),
@@ -195,7 +195,6 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 	},
 
 	loadIntroduceInfo: function(callback){
-		debugger;
 		var _self = this;
 		this.applicationintroducesinfoTab.getParent().getElements(".o2_appmarket_application_introduce_tab_current").removeClass("mainColor_color").removeClass("o2_appmarket_application_introduce_tab_current").addClass("o2_appmarket_application_introduce_tab");
 		this.applicationintroducesinfoTab.removeClass("o2_appmarket_application_introduce_tab").addClass("mainColor_color").addClass("o2_appmarket_application_introduce_tab_current");
@@ -211,28 +210,17 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 					picdiv.setProperty("data-original",this.collectUrl +'/o2_collect_assemble/jaxrs/attachment/download/'+peratt.id+"?c-token="+this.collectToken);
 					picdiv.setProperty("alt",peratt.name);
 					//picdiv.store("id",peratt.id);
-					/*
-					picdiv.addEvents({
-						"click": function(e){
-							//updateorinstall application
-							var d = this.retrieve("id");
-							if (d){
-								_self.openLargeImage(e,d);
-							}
-						}
-					})
-					*/
 				}
 		}.bind(this));
-		this.loadImgView();
+		this.loadImgView(this.appdata.id);
 	},
 	
-	loadImgView:function(){				
+	loadImgView:function(viewid){			
         if(this.viewer) this.viewer.destroy();
-        this.applicationintroducepics.setProperty("id","list");
+        this.applicationintroducepics.setProperty("id",viewid);
         o2.loadCss(this.path+this.options.style+"/viewer.css", this.content,function(){
             o2.load(this.path+this.options.style+"/viewer.js", function(){
-                this.viewer = new Viewer(document.getElementById('list'), {
+                this.viewer = new Viewer(document.getElementById(viewid), {
                 	url: 'data-original'
                 });                
             }.bind(this));
@@ -240,7 +228,6 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 	},
 	
 	loadIntroduceDemand:function(callback){
-		debugger;
 		this.applicationintroducedemandTab.getParent().getElements(".o2_appmarket_application_introduce_tab_current").removeClass("mainColor_color").removeClass("o2_appmarket_application_introduce_tab_current").addClass("o2_appmarket_application_introduce_tab");
 		this.applicationintroducedemandTab.removeClass("o2_appmarket_application_introduce_tab").addClass("mainColor_color").addClass("o2_appmarket_application_introduce_tab_current");
 		this.applicationintroducecontent.set("html","");
@@ -250,7 +237,6 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 
 	},
 	loadIntroduceComment:function(callback){
-		debugger;
 		this.applicationintroducecommentTab.getParent().getElements(".o2_appmarket_application_introduce_tab_current").removeClass("mainColor_color").removeClass("o2_appmarket_application_introduce_tab_current").addClass("o2_appmarket_application_introduce_tab");
 		this.applicationintroducecommentTab.removeClass("o2_appmarket_application_introduce_tab").addClass("mainColor_color").addClass("o2_appmarket_application_introduce_tab_current");
 		this.applicationintroducecontent.set("html","");
@@ -262,43 +248,9 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 			});
 		}.bind(this));
 	},
-	/*
-	openLargeImage:function(e,id){
-		//alert(this.collectUrl)
-		if (this.collectUrl=="" || this.collectToken==""){
-			this.actions.CollectAction.login(//平台封装好的方法
-				function( json ){ //服务调用成功的回调函数, json为服务传回的数据
-					if (json.type && json.type=="success"){
-						data = json.data; //为变量data赋值
-						this.collectUrl = data.collectUrl;
-						this.collectToken = data.collectToken;						
-						//download large image by attimageid
-						this.openLargeImageDl(id);
-					}					
-				}.bind(this),null,false //同步执行 	
-			)    
-		}else{
-			this.openLargeImageDl(id);
-		}		
-	},
-	openLargeImageDl:function(id){
-		var downloadurl = this.collectUrl +'/o2_collect_assemble/jaxrs/attachment/download/'+id+"?c-token="+this.collectToken;
-		var content = new Element("div", {"styles": {"overflow": "auto"}});
-				var largepicdiv = new Element("div", {"styles": {"overflow": "hidden"}}).inject(content);
-				new Element("img",{"src":downloadurl}).inject(largepicdiv);
-				o2.DL.open({
-					"title": "",
-					"content": content,
-					"width": 1200,
-					"height": 800,
-					"buttonList": [
-					]
-				});
-	},
-	*/
 	recordStatus: function(){
 	    debugger;
-        return {"appid": this.options.appid};x
+        return {"appid": this.options.appid,"appname":this.options.appname};x
     },
     numberFix:function(data,n){
         var numbers = '';

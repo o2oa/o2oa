@@ -28,6 +28,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">显示卡片:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="showCard" value="yes" text{($.showCard!='no')?'checked':''}/>是
+                    <input type="radio" name="showCard" value="no" text{($.showCard=='no')?'checked':''}/>否
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">值类型:</td>
                 <td class="editTableValue">
                     <input type="radio" name="valueType" value="string" text{($.valueType=='string')?'checked':''}/>字符串

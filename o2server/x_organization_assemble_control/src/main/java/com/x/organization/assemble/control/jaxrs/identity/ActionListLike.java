@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.identity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -39,10 +40,8 @@ class ActionListLike extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getKey(),
-					StringUtils.join(wi.getUnitList(), ","),
-					StringUtils.join(wi.getUnitDutyList(), ","),
-					StringUtils.join(wi.getGroupList(), ","));
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getKey(), StringUtils.join(wi.getUnitList(), ","),
+					StringUtils.join(wi.getUnitDutyList(), ","), StringUtils.join(wi.getGroupList(), ","));
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -116,7 +115,7 @@ class ActionListLike extends BaseAction {
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.conjunction();
 		p = cb.and(p, cb.or(cb.like(cb.lower(root.get(Identity_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR),
@@ -142,10 +141,12 @@ class ActionListLike extends BaseAction {
 			List<String> identityIds = business.expendGroupToIdentity(wi.getGroupList());
 			set.addAll(identityIds);
 		}
-		if(!set.isEmpty()){
+		if (!set.isEmpty()) {
 			p = cb.and(p, root.get(Identity_.id).in(set.asList()));
 		}
-		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<String> ids = em.createQuery(cq.select(root.get(Identity_.id)).where(p)).getResultList().stream()
+				.distinct().collect(Collectors.toList());
+		List<Identity> os = business.entityManagerContainer().list(Identity.class, ids);
 		wos = Wo.copier.copy(os);
 		wos = business.identity().sort(wos);
 		return wos;

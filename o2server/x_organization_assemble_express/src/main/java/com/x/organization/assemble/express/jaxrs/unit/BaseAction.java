@@ -22,8 +22,7 @@ import com.x.organization.core.entity.accredit.Empower;
 
 class BaseAction extends StandardJaxrsAction {
 
-	CacheCategory cacheCategory = new CacheCategory(Identity.class, Unit.class, UnitAttribute.class, UnitDuty.class,
-			Role.class, Person.class, PersonAttribute.class, Group.class, Empower.class);
+	CacheCategory cacheCategory = new CacheCategory(Identity.class, Unit.class, UnitAttribute.class, UnitDuty.class, Person.class);
 
 	static class WoUnitListAbstract extends GsonPropertyObject {
 

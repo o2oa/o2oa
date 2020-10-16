@@ -211,7 +211,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		return this.canManageApplicationOrProcess;
 	}
 
-	public static class Wo extends Control {
+	public static class Wo extends AbstractControl {
 
 	}
 

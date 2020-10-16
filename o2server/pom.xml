@@ -29,7 +29,6 @@
 		<module>x_meeting_core_entity</module>
 		<module>x_message_core_entity</module>
 		<module>x_mind_core_entity</module>
-		<module>x_okr_core_entity</module>
 		<module>x_organization_core_entity</module>
 		<module>x_portal_core_entity</module>
 		<module>x_processplatform_core_entity</module>
@@ -50,7 +49,6 @@
 		<module>x_meeting_assemble_control</module>
 		<module>x_message_assemble_communicate</module>
 		<module>x_mind_assemble_control</module>
-		<module>x_okr_assemble_control</module>
 		<module>x_organization_assemble_authentication</module>
 		<module>x_organization_assemble_control</module>
 		<module>x_organization_assemble_express</module>
@@ -927,11 +925,6 @@
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_mind_core_entity</artifactId>
-				<version>5</version>
-			</dependency>
-			<dependency>
-				<groupId>o2oa</groupId>
-				<artifactId>x_okr_core_entity</artifactId>
 				<version>5</version>
 			</dependency>
 			<dependency>

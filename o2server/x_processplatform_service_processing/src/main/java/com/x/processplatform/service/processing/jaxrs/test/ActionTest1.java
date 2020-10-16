@@ -1,38 +1,34 @@
 package com.x.processplatform.service.processing.jaxrs.test;
 
-import java.util.concurrent.Callable;
-
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.thread.ParameterRunnable;
 import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionTest1 extends BaseAction {
 
-	private String unique = "111";
-
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		CallableAction action = new CallableAction();
-		ProcessPlatformExecutorFactory.get(unique).submit(action);
+		ThisApplication.context().threadFactory().start(new ParameterRunnable() {
+			public void run() {
+				try {
+					for (int i = 0; i < 180; i++) {
+						System.out.println("aaaaaaaaaaaaaaaaaaaaa" + i);
+						this.parameter.put("asdfasdf", i);
+						Thread.sleep(1000);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+		}, "112233");
 		return result;
 	}
 
 	public static class Wo extends WrapBoolean {
 
 	}
-
-	public class CallableAction implements Callable<String> {
-
-		public String call() throws Exception {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Callable start!" + unique);
-			Thread.sleep(5000);
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Callable start, again!" + unique);
-			return "";
-		}
-	};
 
 }

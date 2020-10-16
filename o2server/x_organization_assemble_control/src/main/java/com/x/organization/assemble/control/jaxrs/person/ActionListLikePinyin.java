@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.person;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,6 +19,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -26,8 +29,6 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 
 class ActionListLikePinyin extends BaseAction {
 
@@ -36,8 +37,8 @@ class ActionListLikePinyin extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName(),
-					wi.getKey(), StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
+			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName(), wi.getKey(),
+					StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -96,19 +97,21 @@ class ActionListLikePinyin extends BaseAction {
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.like(root.get(Person_.pinyin), str + "%");
 		p = cb.or(p, cb.like(root.get(Person_.pinyinInitial), str + "%"));
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
-		}else{
-			if(ListTools.isNotEmpty(wi.getGroupList(), wi.getRoleList())) {
+		} else {
+			if (ListTools.isNotEmpty(wi.getGroupList(), wi.getRoleList())) {
 				return wos;
 			}
 		}
 		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson));
-		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<String> ids = em.createQuery(cq.select(root.get(Person_.id)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
+		List<Person> os = business.entityManagerContainer().list(Person.class, ids);
 		wos = Wo.copier.copy(os);
 		wos = business.person().sort(wos);
 		return wos;

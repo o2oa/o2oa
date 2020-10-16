@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -19,6 +20,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -27,8 +30,6 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Group_;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 
 class ActionListLikePinyin extends BaseAction {
 
@@ -37,8 +38,8 @@ class ActionListLikePinyin extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getKey(),
-					StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getKey(), StringUtils.join(wi.getGroupList(), ","),
+					StringUtils.join(wi.getRoleList(), ","));
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -105,14 +106,16 @@ class ActionListLikePinyin extends BaseAction {
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Group.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Group> cq = cb.createQuery(Group.class);
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Group> root = cq.from(Group.class);
 		Predicate p = cb.like(root.get(Group_.pinyin), str + "%");
 		p = cb.or(p, cb.like(root.get(Group_.pinyinInitial), str + "%"));
 		if (ListTools.isNotEmpty(groupIds)) {
 			p = cb.and(p, root.get(Group_.id).in(groupIds));
 		}
-		List<Group> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<String> ids = em.createQuery(cq.select(root.get(Group_.id)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
+		List<Group> os = business.entityManagerContainer().list(Group.class, ids);
 		wos = Wo.copier.copy(os);
 		wos = business.group().sort(wos);
 		return wos;

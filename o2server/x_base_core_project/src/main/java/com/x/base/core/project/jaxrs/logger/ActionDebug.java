@@ -15,7 +15,7 @@ class ActionDebug extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, ServletContext servletContext) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		com.x.base.core.project.Context ctx = (com.x.base.core.project.Context) servletContext
-				.getAttribute(com.x.base.core.project.Context.class.getName());
+				.getAttribute(com.x.base.core.project.AbstractContext.class.getName());
 		logger.info("{} change logger level to DEBUG.", ctx.clazz().getName());
 		LoggerFactory.setLevelDebug();
 		result.setData(new Wo(true));

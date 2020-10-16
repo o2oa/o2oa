@@ -14,6 +14,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.NumberTools;
 
 /**
  * @author Zhou Rui
@@ -69,7 +70,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.urge = new Urge();
 		this.expire = new Expire();
 		this.touchDelay = new TouchDelay();
-		this.combine = new Combine();
+		this.merge = new Merge();
 		this.touchDetained = new TouchDetained();
 		this.deleteDraft = new DeleteDraft();
 		this.passExpired = new PassExpired();
@@ -146,7 +147,7 @@ public class ProcessPlatform extends ConfigObject {
 	private TouchDelay touchDelay;
 
 	@FieldDescribe("合并任务设置,定时触发合并任务,将已完成工作的Data从Item表中提取合并到WorkCompleted的Data字段中,默认工作完成后2年开始进行合并.")
-	private Combine combine;
+	private Merge merge;
 
 	@FieldDescribe("清除草稿状态的工作.")
 	private DeleteDraft deleteDraft;
@@ -211,8 +212,8 @@ public class ProcessPlatform extends ConfigObject {
 		return this.logLongDetained == null ? new LogLongDetained() : this.logLongDetained;
 	}
 
-	public Combine getCombine() {
-		return this.combine == null ? new Combine() : this.combine;
+	public Merge getMerge() {
+		return this.merge == null ? new Merge() : this.merge;
 	}
 
 	public Press getPress() {
@@ -328,11 +329,20 @@ public class ProcessPlatform extends ConfigObject {
 
 	}
 
-	public static class Combine extends ConfigObject {
+	public static class Merge extends ConfigObject {
 
-		public static Combine defaultInstance() {
-			Combine o = new Combine();
+		private static final long serialVersionUID = -5858277850858377338L;
+
+		public static Merge defaultInstance() {
+			Merge o = new Merge();
 			return o;
+		}
+
+		public Merge() {
+			this.enable = DEFAULT_ENABLE;
+			this.cron = DEFAULT_CRON;
+			this.thresholdDays = DEFAULT_THRESHOLDDAYS;
+			this.batchSize = DEFAULT_BATCHSIZE;
 		}
 
 		public static final Boolean DEFAULT_ENABLE = false;
@@ -341,14 +351,23 @@ public class ProcessPlatform extends ConfigObject {
 
 		public static final Integer DEFAULT_THRESHOLDDAYS = 365 * 2;
 
+		public static final Integer DEFAULT_BATCHSIZE = 100;
+
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
 
 		@FieldDescribe("定时cron表达式")
 		private String cron = DEFAULT_CRON;
 
-		@FieldDescribe("期限,已完成工作结束间隔指定时间进行combine,默认两年后进行combine")
+		@FieldDescribe("期限,已完成工作结束间隔指定时间进行merge,默认两年后进行merge")
 		private Integer thresholdDays = DEFAULT_THRESHOLDDAYS;
+
+		@FieldDescribe("批量大小.")
+		private Integer batchSize = DEFAULT_BATCHSIZE;
+
+		public Integer getBatchSize() {
+			return NumberTools.nullOrLessThan(this.batchSize, 1) ? DEFAULT_BATCHSIZE : this.batchSize;
+		}
 
 		public String getCron() {
 			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {

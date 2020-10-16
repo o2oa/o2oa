@@ -866,18 +866,41 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_subject){
             if (!this.json.subjectValueData && this.json.subjectValueType=="data"){
                 this.layout_subject.set("contenteditable", control.subject);
-                this.layout_subject.addEvent("blur", function(){
-                    this.getData();
-                }.bind(this))
+                // this.layout_subject.addEvent("blur", function(){
+                //     this.getData();
+                // }.bind(this))
+                this.layout_subject.addEvent("blur", function(e){
+                    var subject = this.layout_subject.get("text");
+                    if (!subject){
+                        this.layout_subject.set("html", this.data.subject);
+                        this.form.app.notice(MWF.xApplication.process.Xform.LP.subjectEmpty, "error", this.layout_subject, {"x": "center","y":"top"}, {"x": 0,"y":60});
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }else{
+                        this.getData();
+                    }
+                }.bind(this));
             }
         }
 
         if (this.layout_issuanceUnit){
             if (!this.json.issuanceUnitValueData && this.json.issuanceUnitValueType=="data"){
                 this.layout_issuanceUnit.set("contenteditable", control.issuanceUnit);
-                this.layout_issuanceUnit.addEvent("blur", function(){
-                    this.getData();
-                }.bind(this))
+                // this.layout_issuanceUnit.addEvent("blur", function(){
+                //     this.getData();
+                // }.bind(this))
+
+                this.layout_issuanceUnit.addEvent("blur", function(e){
+                    var issuanceUnit = this.layout_issuanceUnit.get("text");
+                    if (!issuanceUnit){
+                        this.layout_issuanceUnit.set("html", this.data.issuanceUnit);
+                        this.form.app.notice(MWF.xApplication.process.Xform.LP.issuanceUnitEmpty, "error", this.layout_issuanceUnit, {"x": "center","y":"top"}, {"x": 0,"y":60});
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }else{
+                        this.getData();
+                    }
+                }.bind(this));
             }
         }
 
@@ -1321,6 +1344,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.allowEdit){
             this.loadCkeditorFiletext(function(e){
                 e.editor.focus();
+                var text = this.data.filetext.replace(/\u3000*/g, "");
+                if (!text){
+                    var range = e.editor.createRange();
+                    range.moveToElementEditEnd(e.editor.editable());
+
+                    range.select();
+                    range.scrollIntoView();
+                }else{
+                    e.editor.getSelection().scrollIntoView();
+                }
+                //e.editor.getSelection().scrollIntoView();
 
                 var text = this.data.filetext.replace(/\u3000*/g, "");
                 if (!text){
@@ -1530,17 +1564,20 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
         }
 
-        this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolbarNode);
-        this.doublePageAction.addEvent("click", function(){
-            if (this.options.pageShow!=="double"){
-                this._doublePage();
-            }else{
-                this.options.pageShow="single";
-                this.reload();
-                //this._singlePage();
-            }
-        }.bind(this));
-        if (layout.mobile) this.doublePageAction.hide();
+        //if (this.json.canDoublePage!=="n" && !layout.mobile){
+            this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolbarNode);
+            this.doublePageAction.addEvent("click", function(){
+                if (this.options.pageShow!=="double"){
+                    this._doublePage();
+                }else{
+                    this.options.pageShow="single";
+                    this.reload();
+                    //this._singlePage();
+                }
+            }.bind(this));
+            if (this.json.canDoublePage!=="n" && !layout.mobile) this.doublePageAction.hide();
+        //}
+
 
 
         this.zoomActionArea =  new Element("div", {"styles": {"float": "right", "margin-right": "10px"}}).inject(this.toolbarNode);
@@ -2900,6 +2937,22 @@ debugger;
             var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
             var htmlNode = tmpNode.getLast();
             htmlNode = this.removeDisplayNone(htmlNode);
+            var nodes = tmpNode.querySelectorAll("[data-w-style]");
+            if (nodes.length){
+                for (var i=0; i<nodes.length; i++){
+                    var n = nodes.item(i);
+                    wStyle = n.dataset["wStyle"];
+                    var styles = wStyle.split(/\s*\;\s*/g);
+                    styles.each(function(style){
+                        if (style){
+                            try{
+                                s = style.split(/\s*\:\s*/g);
+                                n.setStyle(s[0], s[1]);
+                            }catch(e) {}
+                        }
+                    });
+                }
+            }
             var content = "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
 
             var fileName = docNmae || this.json.toWordFilename || "$doc";

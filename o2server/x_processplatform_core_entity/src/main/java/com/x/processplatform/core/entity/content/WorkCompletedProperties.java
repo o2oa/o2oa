@@ -9,6 +9,15 @@ import com.x.processplatform.core.entity.element.Form;
 
 public class WorkCompletedProperties extends JsonProperties {
 
+	@FieldDescribe("合并已办对象")
+	private List<TaskCompleted> taskCompletedList = new ArrayList<>();
+
+	@FieldDescribe("合并已阅对象")
+	private List<ReadCompleted> readCompletedList = new ArrayList<>();
+
+	@FieldDescribe("合并参阅对象")
+	private List<Review> reviewList = new ArrayList<>();
+
 	@FieldDescribe("合并记录对象")
 	private List<Record> recordList = new ArrayList<>();
 
@@ -106,6 +115,30 @@ public class WorkCompletedProperties extends JsonProperties {
 
 	public void setMobileRelatedScriptList(List<Script> mobileRelatedScriptList) {
 		this.mobileRelatedScriptList = mobileRelatedScriptList;
+	}
+
+	public List<TaskCompleted> getTaskCompletedList() {
+		return taskCompletedList;
+	}
+
+	public void setTaskCompletedList(List<TaskCompleted> taskCompletedList) {
+		this.taskCompletedList = taskCompletedList;
+	}
+
+	public List<ReadCompleted> getReadCompletedList() {
+		return readCompletedList;
+	}
+
+	public void setReadCompletedList(List<ReadCompleted> readCompletedList) {
+		this.readCompletedList = readCompletedList;
+	}
+
+	public List<Review> getReviewList() {
+		return reviewList;
+	}
+
+	public void setReviewList(List<Review> reviewList) {
+		this.reviewList = reviewList;
 	}
 
 	public static class Script {
