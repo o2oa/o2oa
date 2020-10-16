@@ -307,6 +307,7 @@ public class AttendanceDetailServiceAdv {
 				}
 				if( detail_old == null ) {
 					detail.setBatchName( "FromMobile_" + dateOperation.getNowTimeChar() );
+					detail.setRecordStatus(1);
 					emc.beginTransaction( AttendanceDetail.class );
 					emc.persist( detail , CheckPersistType.all );
 					emc.commit();
@@ -314,15 +315,17 @@ public class AttendanceDetailServiceAdv {
 				}else {
 					emc.beginTransaction( AttendanceDetail.class );
 					detail.copyTo( detail_old, JpaObject.FieldsUnmodify);
+					detail_old.setRecordStatus(1);
 					emc.check( detail_old , CheckPersistType.all );
 					emc.commit();
 				}
+				/*可能引起多人同时打卡时commit error
 				emc.beginTransaction( AttendanceDetailMobile.class );
 				for( AttendanceDetailMobile detailMobile : mobileDetails ) {
 					detailMobile.setRecordStatus(1);
 					emc.check( detailMobile , CheckPersistType.all );
 				}
-				emc.commit();
+				emc.commit();*/
 
 				//分析保存好的考勤数据
 				try {

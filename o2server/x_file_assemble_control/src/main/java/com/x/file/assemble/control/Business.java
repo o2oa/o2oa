@@ -1,12 +1,21 @@
 package com.x.file.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.file.assemble.control.factory.*;
+import com.x.file.core.entity.open.FileConfig;
 import com.x.organization.core.express.Organization;
+
+import java.util.Optional;
 
 public class Business {
 
 	public final static String TOP_FOLD = "$$TOP_FOLD";
+
+	public final static String SYSTEM_CONFIG = "systemConfig";
 
 	private EntityManagerContainer emc;
 
@@ -97,6 +106,40 @@ public class Business {
 			this.organization = new Organization(ThisApplication.context());
 		}
 		return organization;
+	}
+
+	public boolean controlAble(EffectivePerson effectivePerson) throws Exception {
+		boolean result = false;
+		if (effectivePerson.isManager()
+				|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.FileManager))) {
+			result = true;
+		}
+		return result;
+	}
+
+	public Integer verifyConstraint(String person, long usedSize) throws Exception{
+		Cache.CacheCategory cacheCategory = new Cache.CacheCategory(FileConfig.class);
+		Cache.CacheKey cacheKey = new Cache.CacheKey(FileConfig.class, Business.SYSTEM_CONFIG);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		FileConfig config = null;
+		if(optional.isPresent()){
+			config = (FileConfig)optional.get();
+		}else{
+			config = this.entityManagerContainer().firstEqual(FileConfig.class, FileConfig.person_FIELDNAME, Business.SYSTEM_CONFIG);
+			if(config != null){
+				CacheManager.put(cacheCategory, cacheKey, config);
+			}
+		}
+		if (config != null){
+			if(config.getCapacity()!=null && config.getCapacity()>0) {
+				long usedCapacity = usedSize / (1024 * 1024);
+				if (usedCapacity > config.getCapacity()) {
+					return config.getCapacity();
+				}
+			}
+		}
+
+		return 0;
 	}
 
 }
