@@ -10,7 +10,9 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class({
 		if (this.json.valueType == "script"){
 			var code = (this.json.script) ? this.json.script.code : "";
 			if (code){
-				this.node.set("text", this.form.Macro.exec(code, this) || "");
+			    var value = this.form.Macro.exec(code, this);
+			    this._setNodeText(value);
+				//this.node.set("text", this.form.Macro.exec(code, this) || "");
 			} 
 		}
 		if (this.json.prefixIcon || this.json.suffixIcon){
@@ -41,6 +43,15 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class({
             }
 		}
 	},
+    _setNodeText: function(value){
+        if (value && value.isAG){
+            value.addResolve(function(v){
+                this._setNodeText(v);
+            }.bind(this));
+        }else{
+            this.node.set("text", value || "");
+        }
+    },
     setText: function(text){
         this.node.set("text", text);
     }
