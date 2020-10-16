@@ -15,7 +15,7 @@ class ActionUseCapacity extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			String queryPerson = effectivePerson.getDistinguishedName();
-			if(effectivePerson.isManager() && StringUtils.isNotBlank(person)){
+			if(business.controlAble(effectivePerson) && StringUtils.isNotBlank(person)){
 				queryPerson = person;
 			}
 			Wo wo = new Wo();
