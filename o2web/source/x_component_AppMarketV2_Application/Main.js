@@ -32,6 +32,7 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 	},
 	mask: function(){
         if (!this.maskNode){
+			this.introducenode.setStyle("overflow","hidden");
             this.maskNode = new MWF.widget.MaskNode(this.introducenode, {"style": "bam"});
             this.maskNode.load();
         }
@@ -39,7 +40,8 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
     unmask: function(){
         if (this.maskNode) this.maskNode.hide(function(){
             MWF.release(this.maskNode);
-            this.maskNode = null;
+			this.maskNode = null;
+			this.introducenode.setStyle("overflow","auto");
         }.bind(this));
     },
     loadApplication: function(callback){
@@ -169,7 +171,7 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 		var confirmtitle = d.installedVersion==""?this.lp.confirmsetupTitle:this.lp.confirmupdateTitle;
 		var confirmcontent = d.installedVersion==""?this.lp.confirmsetupContent:this.lp.confirmupdateContent;
 		var _self = this;
-		MWF.xDesktop.confirm("warn", tmpe, confirmtitle, confirmcontent, 300, 120, function(){
+		_self.confirm("warn", tmpe, confirmtitle, confirmcontent, 300, 120, function(){
 			_self.mask();
 			//this.createLoading(this.container,true);  
 			//alert("after createLoading")          
