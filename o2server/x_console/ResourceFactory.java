@@ -1,8 +1,6 @@
 package com.x.server.console;
 
 import java.io.PrintStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +13,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.util.RolloverFileOutputStream;
@@ -32,14 +27,11 @@ import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.ExternalDataSource;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.PathTools;
 import com.x.server.console.node.EventQueueExecutor;
 
 import io.github.classgraph.ClassGraph;
@@ -55,12 +47,13 @@ public class ResourceFactory {
 	}
 
 	public static void bind() throws Exception {
-		ClassLoader cl = ClassLoaderTools.urlClassLoader(true, false, true, true, true, unzipCustomWar());
-		try (ScanResult sr = new ClassGraph().addClassLoader(cl).enableAnnotationInfo().scan()) {
-			node(cl, sr);
-			containerEntities(cl, sr);
-			containerEntityNames(cl, sr);
-			stroageContainerEntityNames(cl, sr);
+		try (ScanResult sr = new ClassGraph()
+				.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, true, true, true)).enableAnnotationInfo()
+				.scan()) {
+			node(sr);
+			containerEntities(sr);
+			containerEntityNames(sr);
+			stroageContainerEntityNames(sr);
 		}
 		if (BooleanUtils.isTrue(Config.logLevel().audit().enable())) {
 			auditLog();
@@ -73,24 +66,7 @@ public class ResourceFactory {
 		processPlatformExecutors();
 	}
 
-	private static Path[] unzipCustomWar() throws Exception {
-		FileUtils.cleanDirectory(Config.dir_local_temp_custom(true));
-		List<String> list = new ArrayList<>();
-		for (String str : Config.dir_custom(true).list(new WildcardFileFilter("*" + PathTools.DOT_WAR))) {
-			list.add(FilenameUtils.getBaseName(str));
-		}
-		list = ListTools.includesExcludesWildcard(list, Config.currentNode().getApplication().getIncludes(),
-				Config.currentNode().getApplication().getExcludes());
-		List<Path> paths = new ArrayList<>();
-		for (String str : list) {
-			Path path = Paths.get(Config.dir_custom().toString(), str + PathTools.DOT_WAR);
-			JarTools.unjar(path, "", Config.dir_local_temp_custom().toPath().resolve(str), true);
-			paths.add(Config.dir_local_temp_custom().toPath().resolve(str).resolve(PathTools.WEB_INF_CLASSES));
-		}
-		return paths.toArray(new Path[paths.size()]);
-	}
-
-	private static void node(ClassLoader classLoader, ScanResult sr) throws Exception {
+	private static void node(ScanResult sr) throws Exception {
 		LinkedBlockingQueue<JsonElement> eventQueue = new LinkedBlockingQueue<>();
 		EventQueueExecutor eventQueueExecutor = new EventQueueExecutor(eventQueue);
 		eventQueueExecutor.start();
@@ -102,34 +78,6 @@ public class ResourceFactory {
 		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYNODE, entry.getKey());
 		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYPORT, entry.getValue().getPort());
 		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, entry.getValue().getSslEnable());
-	}
-
-	private static void containerEntityNames(ClassLoader classLoader, ScanResult sr) throws Exception {
-		List<String> list = new ArrayList<>();
-		for (ClassInfo info : sr.getClassesWithAnnotation(ContainerEntity.class.getName())) {
-			list.add(info.getName());
-		}
-		list = ListTools.trim(list, true, true);
-		new Resource(Config.RESOURCE_CONTAINERENTITYNAMES, ListUtils.unmodifiableList(list));
-	}
-
-	private static void stroageContainerEntityNames(ClassLoader classLoader, ScanResult sr) throws Exception {
-		List<String> list = new ArrayList<>();
-		for (ClassInfo info : sr.getClassesWithAnnotation(Storage.class.getName())) {
-			list.add(info.getName());
-		}
-		list = ListTools.trim(list, true, true);
-		new Resource(Config.RESOURCE_STORAGECONTAINERENTITYNAMES, ListUtils.unmodifiableList(list));
-	}
-
-	private static void containerEntities(ClassLoader classLoader, ScanResult sr) throws Exception {
-		Map<String, List<String>> map = new TreeMap<>();
-		for (ClassInfo info : sr.getClassesWithAnnotation(Module.class.getName())) {
-			Class<?> cls = classLoader.loadClass(info.getName());
-			List<String> os = ListTools.toList(cls.getAnnotation(Module.class).containerEntities());
-			map.put(info.getName(), ListUtils.unmodifiableList(os));
-		}
-		new Resource(Config.RESOURCE_CONTAINERENTITIES, MapUtils.unmodifiableMap(map));
 	}
 
 	private static void external() throws Exception {
@@ -192,6 +140,34 @@ public class ResourceFactory {
 			String name = Config.nodes().dataServers().name(entry.getValue());
 			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
 		}
+	}
+
+	private static void containerEntityNames(ScanResult sr) throws Exception {
+		List<String> list = new ArrayList<>();
+		for (ClassInfo info : sr.getClassesWithAnnotation(ContainerEntity.class.getName())) {
+			list.add(info.getName());
+		}
+		list = ListTools.trim(list, true, true);
+		new Resource(Config.RESOURCE_CONTAINERENTITYNAMES, ListUtils.unmodifiableList(list));
+	}
+
+	private static void stroageContainerEntityNames(ScanResult sr) throws Exception {
+		List<String> list = new ArrayList<>();
+		for (ClassInfo info : sr.getClassesWithAnnotation(Storage.class.getName())) {
+			list.add(info.getName());
+		}
+		list = ListTools.trim(list, true, true);
+		new Resource(Config.RESOURCE_STORAGECONTAINERENTITYNAMES, ListUtils.unmodifiableList(list));
+	}
+
+	private static void containerEntities(ScanResult sr) throws Exception {
+		Map<String, List<String>> map = new TreeMap<>();
+		for (ClassInfo info : sr.getClassesWithAnnotation(Module.class.getName())) {
+			Class<?> cls = Class.forName(info.getName());
+			List<String> os = ListTools.toList(cls.getAnnotation(Module.class).containerEntities());
+			map.put(info.getName(), ListUtils.unmodifiableList(os));
+		}
+		new Resource(Config.RESOURCE_CONTAINERENTITIES, MapUtils.unmodifiableMap(map));
 	}
 
 	private static void auditLog() throws Exception {
