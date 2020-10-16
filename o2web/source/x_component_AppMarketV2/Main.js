@@ -23,6 +23,7 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 	},
 	mask: function(){
         if (!this.maskNode){
+			this.marketnode.setStyle("overflow","hidden");
             this.maskNode = new MWF.widget.MaskNode(this.marketnode, {"style": "bam"});
 			this.maskNode.load();
         }
@@ -30,7 +31,8 @@ MWF.xApplication.AppMarketV2.Main = new Class({
     unmask: function(){
         if (this.maskNode) this.maskNode.hide(function(){
             MWF.release(this.maskNode);
-            this.maskNode = null;
+			this.maskNode = null;
+			this.marketnode.setStyle("overflow","auto");
         }.bind(this));
     },
     loadApplication: function(callback){
