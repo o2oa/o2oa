@@ -59,6 +59,10 @@ class ActionCover extends BaseAction {
 			appInfo.setAppName(this.idleAppInfoName(business, appInfo.getAppName(), appInfo.getId()));
 			appInfo.setAppAlias(this.idleAppInfoAlias(business, appInfo.getAppAlias(), appInfo.getId()));
 			persistObjects.add(appInfo);
+		}else{
+			WrapCms.inCopier.copy(wi, appInfo);
+			appInfo.setAppName(this.idleAppInfoName(business, appInfo.getAppName(), appInfo.getId()));
+			appInfo.setAppAlias(this.idleAppInfoAlias(business, appInfo.getAppAlias(), appInfo.getId()));
 		}
 
 		//2020年1月16日 O2LEE 保存栏目信息对应的配置支持信息JSON ---->start

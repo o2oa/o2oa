@@ -61,10 +61,14 @@ class ActionCover extends BaseAction {
 			query.setName(this.idleQueryName(business, query.getName(), query.getId()));
 			query.setAlias(this.idleQueryAlias(business, query.getAlias(), query.getId()));
 			persistObjects.add(query);
-		}else if (!business.editable(effectivePerson, query)) {
+		}else {
+			WrapQuery.inCopier.copy(wi, query);
+			query.setName(this.idleQueryName(business, query.getName(), query.getId()));
+			query.setAlias(this.idleQueryAlias(business, query.getAlias(), query.getId()));
+		}
+		if (!business.editable(effectivePerson, query)) {
 			throw new ExceptionQueryAccessDenied(effectivePerson.getName(), query.getName(), query.getId());
 		}
-
 		for (WrapView _o : wi.getViewList()) {
 			View obj = business.entityManagerContainer().find(_o.getId(), View.class);
 			if (null != obj) {
