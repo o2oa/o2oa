@@ -38,7 +38,7 @@
                 requests.push(
                         getServiceAddressConfigObject(function(address){
                             requests.each(function(res){
-                                if (res.isRunning()){res.cancel();}
+                                if (res.isRunning && res.isRunning()){res.cancel();}
                             });
                             if (callback) callback(address);
                         }.bind(this), center)
@@ -74,12 +74,18 @@
                 window.layout = {};
                 window.layout.config = config;
                 getServiceAddress(config, function(address){
+                    debugger;
                     var uri = new URI(window.location.toString());
                     var xtoken = uri.getData("SMAP_SESSION_DATA");
                     var appID = uri.getData("appID");
                     var uniqueId = uri.getData("uniqueId");
+                    var flushPortalUrl = uri.getData("flushPortalUrl") || "";
+                    if( flushPortalUrl && flushPortalUrl.indexOf("%2F") === -1 ){
+                        flushPortalUrl = encodeURIComponent(flushPortalUrl);
+                    }
                     var redirect = uri.getData("redirect");
-                    redirect = redirect + "&uniqueId=" + uniqueId;
+                    redirect = redirect + "&uniqueId=" + uniqueId + "&flushPortalUrl="+flushPortalUrl;
+                    window.open( redirect, "_new");
                     if (xtoken){
                         var res = new Request.JSON({
                             url: o2.filterUrl(address+"?SMAP_SESSION_DATA="+encodeURIComponent(xtoken)+"&appID="+appID+"&date="+(new Date()).getTime()),
