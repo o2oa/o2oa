@@ -22,7 +22,7 @@ public class WoText extends GsonPropertyObject {
 	private String contentType;
 
 	public String getContentType() {
-		return StringUtils.isEmpty(this.contentType) ? HttpMediaType.APPLICATION_JSON_UTF_8 : this.contentType;
+		return StringUtils.isEmpty(this.contentType) ? HttpMediaType.TEXT_PLAIN_UTF_8 : this.contentType;
 	}
 
 	public void setContentType(String contentType) {
