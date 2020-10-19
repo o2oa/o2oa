@@ -198,7 +198,8 @@ public class Logger {
 		sb.append(e.getMessage());
 		String headString = this.headToString(request);
 		String bodyString = this.bodyToString(body);
-		String requestUrl = request.getRequestURL().toString();
+		String requestUrl = request.getRequestURL().toString()
+				+ (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
 		String stackTraceString = ExceptionUtils.getStackTrace(e);
 		Object[] arr = new String[] { effectivePerson.getDistinguishedName(), request.getMethod(), requestUrl,
 				request.getRemoteHost(), request.getRemoteAddr(), headString, bodyString };

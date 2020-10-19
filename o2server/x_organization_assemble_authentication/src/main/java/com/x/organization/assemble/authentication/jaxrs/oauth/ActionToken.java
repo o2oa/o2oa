@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.config.Token.Oauth;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -18,7 +17,8 @@ class ActionToken extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionToken.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String code, String grant_type) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String code, String grant_type, String contentType)
+			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			if (StringUtils.isEmpty(code)) {
@@ -44,6 +44,7 @@ class ActionToken extends StandardJaxrsAction {
 			woToken.setExpires_in(3600);
 			Wo wo = new Wo();
 			wo.setText(gson.toJson(woToken));
+			wo.setContentType(contentType);
 			result.setData(wo);
 			return result;
 		}
@@ -52,15 +53,17 @@ class ActionToken extends StandardJaxrsAction {
 	public static class WoToken extends GsonPropertyObject {
 		private String access_token;
 		private Integer expires_in;
-		private String token_type = "bearer";
+//		private String token_type = "bearer";
+//		private String refresh_token = "123";
+//		private String scope = "read";
 
-		public String getToken_type() {
-			return token_type;
-		}
-
-		public void setToken_type(String token_type) {
-			this.token_type = token_type;
-		}
+//		public String getToken_type() {
+//			return token_type;
+//		}
+//
+//		public void setToken_type(String token_type) {
+//			this.token_type = token_type;
+//		}
 
 		public String getAccess_token() {
 			return access_token;
