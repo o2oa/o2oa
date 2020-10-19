@@ -602,7 +602,7 @@ gulp.task("cleanAll", getCleanTask('/'));
 
 gulp.task("o2:new-v:html", function () {
     var path = "x_desktop";
-    var src = 'source/x_desktop/*.html';
+    var src = options.dest +'/x_desktop/*.html';
     var dest = options.dest + '/x_desktop/';
     return gulp.src(src)
         .pipe(assetRev())
@@ -627,7 +627,7 @@ gulp.task("o2:new-v:html", function () {
 });
 gulp.task("o2:new-v:o2", function () {
     var path = "o2_core";
-    var src = 'source/o2_core/o2.js';
+    var src = options.dest +'/o2_core/o2.js';
     var dest = options.dest +'/o2_core/';
     return gulp.src(src)
         .pipe(assetRev())
