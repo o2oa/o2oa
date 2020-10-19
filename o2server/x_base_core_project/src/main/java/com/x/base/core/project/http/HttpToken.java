@@ -34,8 +34,6 @@ public class HttpToken {
 	public static final String X_Debugger = "x-debugger";
 	public static final String COOKIE_ANONYMOUS_VALUE = "anonymous";
 	public static final String SET_COOKIE = "Set-Cookie";
-	
-	
 
 	private static final String RegularExpression_IP = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
 	private static final String RegularExpression_Token = "^(anonymous|user|manager|cipher)([2][0][1-2][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])(\\S{1,})$";
@@ -165,7 +163,10 @@ public class HttpToken {
 			token = request.getHeader(X_Token);
 		}
 		if (StringUtils.isEmpty(token)) {
-			token = request.getHeader(X_Authorization);
+			String value = request.getHeader(X_Authorization);
+			if (!StringUtils.contains(value, " ")) {
+				token = value;
+			}
 		}
 		// 此代码将导致input被关闭.
 		// if (StringUtils.isEmpty(token)) {
@@ -205,8 +206,5 @@ public class HttpToken {
 	private String userAgent(HttpServletRequest request) {
 		return Objects.toString(request.getHeader("User-Agent"), "");
 	}
-	
-	
- 
 
 }
