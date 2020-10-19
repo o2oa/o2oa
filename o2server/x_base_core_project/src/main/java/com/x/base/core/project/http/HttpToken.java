@@ -163,6 +163,7 @@ public class HttpToken {
 			token = request.getHeader(X_Token);
 		}
 		if (StringUtils.isEmpty(token)) {
+			//如果使用oauth bearer 通过此传递认证信息.需要进行判断,格式为 Bearer xxxxxxx
 			String value = request.getHeader(X_Authorization);
 			if (!StringUtils.contains(value, " ")) {
 				token = value;
