@@ -1,6 +1,7 @@
 /.idea/
 /coverage/
 /dest/
+/out/
 /node_modules/
 npm-debug.log
 /test/
