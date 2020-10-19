@@ -7,7 +7,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
@@ -31,37 +30,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class OauthAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(OauthAction.class);
-
-	// response_type：表示授权类型，必选项，此处的值固定为"code"
-	// client_id：表示客户端的ID，必选项
-	// client_secret：表示客户端的密钥，必选项
-	// redirect_uri：表示重定向URI，可选项
-	// scope：表示申请的权限范围，可选项
-	// state：表示客户端的当前状态，可以指定任意值，认证服务器会原封不动地返回这个值。
-
-//	@JaxrsMethodDescribe(value = "POST方法实现oauth认证auth方法", action = ActionAuth.class)
-//	@POST
-//	@Path("auth")
-//	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED })
-//	public void postAuth(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-//			@Context HttpServletResponse response,
-//			@JaxrsParameterDescribe("表示授权类型，必选项，此处的值固定为code") @FormParam("response_type") String response_type,
-//			@JaxrsParameterDescribe("表示客户端的ID") @FormParam("client_id") String client_id,
-//			@JaxrsParameterDescribe("表示客户端的密钥") @FormParam("client_secret") String client_secret,
-//			@JaxrsParameterDescribe("表示重定向URI") @FormParam("redirect_uri") String redirect_uri,
-//			@JaxrsParameterDescribe("表示申请的权限范围") @FormParam("scope") String scope,
-//			@JaxrsParameterDescribe("表示客户端的当前状态，可以指定任意值，认证服务器会原封不动地返回这个值") @FormParam("state") String state) {
-//		ActionResult<ActionAuth.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionAuth().execute(effectivePerson, response_type, client_id, client_secret, redirect_uri,
-//					scope, state);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
 
 	@JaxrsMethodDescribe(value = "GET方法实现oauth认证auth方法", action = ActionAuth.class)
 	@GET
@@ -90,11 +58,12 @@ public class OauthAction extends StandardJaxrsAction {
 	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED })
 	public void postToken(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@Context HttpServletResponse response, @FormParam("code") String code,
-			@FormParam("grant_type") String grant_type) {
+			@FormParam("grant_type") String grant_type,
+			@JaxrsParameterDescribe("response CONTENT_TYPE 设置 默认为text/plain; charset=UTF-8") @FormParam("contentType") String contentType) {
 		ActionResult<ActionToken.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionToken().execute(effectivePerson, code, grant_type);
+			result = new ActionToken().execute(effectivePerson, code, grant_type, contentType);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -107,11 +76,12 @@ public class OauthAction extends StandardJaxrsAction {
 	@Path("token")
 	public void getToken(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@Context HttpServletResponse response, @QueryParam("code") String code,
-			@QueryParam("grant_type") String grant_type) {
+			@QueryParam("grant_type") String grant_type,
+			@JaxrsParameterDescribe("response CONTENT_TYPE 设置 默认为text/plain; charset=UTF-8") @QueryParam("contentType") String contentType) {
 		ActionResult<ActionToken.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionToken().execute(effectivePerson, code, grant_type);
+			result = new ActionToken().execute(effectivePerson, code, grant_type, contentType);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -124,11 +94,12 @@ public class OauthAction extends StandardJaxrsAction {
 	@Path("info")
 	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED })
 	public void postInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@Context HttpServletResponse response, @FormParam("access_token") String access_token) {
+			@Context HttpServletResponse response, @FormParam("access_token") String access_token,
+			@JaxrsParameterDescribe("response CONTENT_TYPE 设置 默认为text/plain; charset=UTF-8") @FormParam("contentType") String contentType) {
 		ActionResult<ActionInfo.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionInfo().execute(effectivePerson, access_token);
+			result = new ActionInfo().execute(request, effectivePerson, access_token, contentType);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -141,11 +112,12 @@ public class OauthAction extends StandardJaxrsAction {
 	@Path("info")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void getInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@Context HttpServletResponse response, @QueryParam("access_token") String access_token) {
+			@Context HttpServletResponse response, @QueryParam("access_token") String access_token,
+			@JaxrsParameterDescribe("response CONTENT_TYPE 设置 默认为text/plain; charset=UTF-8") @QueryParam("contentType") String contentType) {
 		ActionResult<ActionInfo.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionInfo().execute(effectivePerson, access_token);
+			result = new ActionInfo().execute(request, effectivePerson, access_token, contentType);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
