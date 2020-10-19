@@ -75,6 +75,8 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                     if (unitName)unitList.push( unitName )
                 });
 
+                debugger;
+
                 if( !this.options.expandSubEnable ){
                     this.allUnitNames = unitList;
                     loadDuty();
@@ -85,7 +87,13 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                             var unitNames = [];
                             //排序
                             if( this.options.units.length === 1 ){
-                                unitNames = unitList.concat( json1.data );
+                                // unitNames = unitList.concat( json1.data );
+                                unitNames = Array.clone(unitList);
+                                for( var i=0; i<json1.data.length; i++ ){
+                                    if( !unitNames.contains(json1.data[i].distinguishedName) ){
+                                        unitNames.push( json1.data[i].distinguishedName );
+                                    }
+                                }
                             }else{
                                 unitObjectList.each( function ( u ) {
                                     unitNames.push( u.distinguishedName || u.unique || u.id || u.levelName );
