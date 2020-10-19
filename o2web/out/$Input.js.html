@@ -1,4 +1,32 @@
-MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: $Input.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: $Input.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** Class Input组件 */
 MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 	Implements: [Events],
@@ -76,7 +104,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             if (this.json.description){
                 var size = this.node.getFirst().getSize();
                 var w = size.x-3;
-                if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
+                if( this.json.showIcon!='no' &amp;&amp; !this.form.json.hideModuleIcon ){
                     if (COMMON.Browser.safari) w = w-20;
                 }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
@@ -147,7 +175,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 				"click": this.clickSelect.bind(this)
 			}
 		});
-        if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
+        if (this.json.showIcon!='no' &amp;&amp; !this.form.json.hideModuleIcon ){
             this.iconNode = new Element("div", {
                 "styles": this.form.css[this.iconStyle],
                 "events": {
@@ -166,13 +194,13 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     _loadStyles: function(){
         if (this.json.styles) this.node.setStyles(this.json.styles);
         if (this.json.inputStyles) if (this.node.getFirst()) this.node.getFirst().setStyles(this.json.inputStyles);
-        if (this.iconNode && this.iconNode.offsetParent !== null){
+        if (this.iconNode &amp;&amp; this.iconNode.offsetParent !== null){
             var size = this.node.getSize();
             //if (!size.y){
             //    var y1 = this.node.getStyle("height");
             //    var y2 = this.node.getFirst().getStyle("height");
             //    alert(y1+"," +y2);
-            //    var y = ((y1!="auto" && y1>y2) || y2=="auto") ? y1 : y2;
+            //    var y = ((y1!="auto" &amp;&amp; y1>y2) || y2=="auto") ? y1 : y2;
             //    size.y = (y=="auto") ? "auto" : y.toInt();
             //    //alert(size.y)
             //}
@@ -181,7 +209,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         }
     },
     _computeValue: function(value){
-        return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "");
+        return (this.json.defaultValue &amp;&amp; this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "");
     },
 	getValue: function(){
         var value = this._getBusinessData();
@@ -211,7 +239,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 //				"left": "-18px"
 //			});
 //		}
-        if (!this.readonly && !this.json.isReadonly ){
+        if (!this.readonly &amp;&amp; !this.json.isReadonly ){
             this.loadDescription();
         }
 	},
@@ -404,7 +432,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
                     }
                     break;
                 case "lt":
-                    if (v<data.value){
+                    if (v&lt;data.value){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
@@ -440,7 +468,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     validationConfig: function(routeName, opinion){
         if (this.json.validationConfig){
             if (this.json.validationConfig.length){
-                for (var i=0; i<this.json.validationConfig.length; i++) {
+                for (var i=0; i&lt;this.json.validationConfig.length; i++) {
                     var data = this.json.validationConfig[i];
                     if (!this.validationConfigItem(routeName, data)) return false;
                 }
@@ -455,7 +483,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
      *  @return {boolean} 是否通过校验
      */
     validation: function(routeName, opinion){
-        if (!this.readonly && !this.json.isReadonly){
+        if (!this.readonly &amp;&amp; !this.json.isReadonly){
             if (!this.validationConfig(routeName, opinion))  return false;
 
             if (!this.json.validation) return true;
@@ -474,4 +502,26 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         return true;
     }
 	
-}); 
+}); </code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#getData">getData</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#resetData">resetData</a></li><li><a href="global.html#setData">setData</a></li><li><a href="global.html#validation">validation</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Mon Oct 19 2020 14:51:24 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
