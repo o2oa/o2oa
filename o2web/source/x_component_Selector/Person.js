@@ -1580,7 +1580,7 @@ MWF.xApplication.Selector.Person = new Class({
             //if (this.options.count.toInt() !== 1){
             var width = nodeWidth - getOffsetX(this.selectNode) - getOffsetX(this.selectedContainerNode);
 
-            var halfWidth = this.options.noSelectedContainer ? width : Math.floor(width / 2);
+            var halfWidth = this.options.noSelectedContainer ? width : ( Math.floor(width / 2) - 2);
 
             this.selectNode.setStyle("width", halfWidth);
             //this.searchInput.setStyle("width", halfWidth - 6);
