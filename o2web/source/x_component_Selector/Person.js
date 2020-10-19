@@ -1516,6 +1516,8 @@ MWF.xApplication.Selector.Person = new Class({
     },
     setSize : function(){
 
+        debugger;
+
         if( !this.options.width && !this.options.height )return;
 
         var getOffsetX = function(node){
@@ -1580,7 +1582,7 @@ MWF.xApplication.Selector.Person = new Class({
             //if (this.options.count.toInt() !== 1){
             var width = nodeWidth - getOffsetX(this.selectNode) - getOffsetX(this.selectedContainerNode);
 
-            var halfWidth = this.options.noSelectedContainer ? width : Math.floor(width / 2);
+            var halfWidth = this.options.noSelectedContainer ? width : ( Math.floor(width / 2) - 2);
 
             this.selectNode.setStyle("width", halfWidth);
             //this.searchInput.setStyle("width", halfWidth - 6);
@@ -1611,7 +1613,7 @@ MWF.xApplication.Selector.Person = new Class({
                 nodeHeight = this.options.height.toInt();
             }
 
-            nodeHeight = nodeHeight - getOffsetY( this.contentNode );
+            nodeHeight = nodeHeight - getOffsetY( this.contentNode ) - 1;
             if( this.titleNode ){
                 nodeHeight = nodeHeight - getOffsetY( this.titleNode ) - this.titleNode.getStyle("height").toInt();
             }
