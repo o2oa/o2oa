@@ -22,7 +22,7 @@ public class ZhengwuDingding extends ConfigObject {
 	private String appSecret;
 	@FieldDescribe("政务钉钉agentId")
 	private String agentId;
-	@FieldDescribe("拉入同步cron,默认每10分钟同步一次.")
+	@FieldDescribe("回调信号触发同步检查,默认每10分钟运行一次,如果期间内有政务钉钉回调信号接收到,那么触发同步任务进行人员同步.")
 	private String syncCron;
 	@FieldDescribe("强制拉入同步cron,默认在每天的8点和12点强制进行同步.")
 	private String forceSyncCron;
