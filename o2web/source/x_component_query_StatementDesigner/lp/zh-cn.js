@@ -18,7 +18,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "inputStatementData": "请先编辑JPQL查询语句",
     "saveStatementNotice" : "请先保存！",
     "noViewNotice" : "未创建视图，请先创建视图！",
-    "previewNotSelectStatementNotice" : "只有查询语句才可以预览",
+    "previewNotSelectStatementNotice" : "只有语句类型为‘Select’才可以预览",
 
     "statementFormat": "如何创建语句：",
     "statementJpql": "直接编写JPQL创建语句",

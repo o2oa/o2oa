@@ -626,6 +626,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.designer.notice(this.designer.lp.inputStatementName, "error");
             return false;
         }
+
+        if( typeOf(this.viewJson) === "object" ){
+            this.data.view = JSON.stringify(this.viewJson);
+        }
         //if( !this.data.tableType ){
         //    this.data.tableType = "dynamic";
         //}
@@ -649,6 +653,11 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.designer.notice(this.designer.lp.inputStatementName, "error");
             return false;
         }
+
+        if( typeOf(this.viewJson) === "object" ){
+            this.data.view = JSON.stringify(this.viewJson);
+        }
+
         if (this.editor) this.data.data = this.editor.editor.getValue();
         if (this.scriptEditor) this.data.scriptText = this.scriptEditor.toJson().code;
 
@@ -667,8 +676,12 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         this.setViewSize();
         this.designer.addEvent("resize", this.setViewSize.bind(this));
 
-        if( !this.data.view )this.data.view = {};
-        this.view = new MWF.xApplication.query.StatementDesigner.View(this.designer, this, this.data.view, {});
+        if( !this.data.view ){
+            this.viewJson = {};
+        }else{
+            this.viewJson = JSON.parse(this.data.view)
+        }
+        this.view = new MWF.xApplication.query.StatementDesigner.View(this.designer, this, this.viewJson, {});
         this.view.load( function () {
             this.view.setContentHeight();
         }.bind(this));
