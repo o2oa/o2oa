@@ -97,7 +97,9 @@ public class ResponseFactory {
 				if (notModified(request, tag)) {
 					return Response.notModified().tag(tag).build();
 				}
-				return Response.ok(wo.getText()).type(HttpMediaType.TEXT_PLAIN_UTF_8).tag(tag).build();
+				// return
+				// Response.ok(wo.getText()).type(HttpMediaType.TEXT_PLAIN_UTF_8).tag(tag).build();
+				return Response.ok(wo.getText()).type(wo.getContentType()).tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoContentType)) {
 				WoContentType wo = (WoContentType) result.getData();
 				EntityTag tag = new EntityTag(etagWoContentType(wo));
