@@ -104,7 +104,12 @@ class ActionCover extends BaseAction {
 			application.setName(this.idleApplicationName(business, application.getName(), application.getId()));
 			application.setAlias(this.idleApplicationAlias(business, application.getAlias(), application.getId()));
 			persistObjects.add(application);
-		}else if (!business.editable(effectivePerson, application)) {
+		}else{
+			WrapProcessPlatform.inCopier.copy(wi, application);
+			application.setName(this.idleApplicationName(business, application.getName(), application.getId()));
+			application.setAlias(this.idleApplicationAlias(business, application.getAlias(), application.getId()));
+		}
+		if (!business.editable(effectivePerson, application)) {
 			throw new ExceptionApplicationAccessDenied(effectivePerson.getName(), application.getName(),
 					application.getId());
 		}
