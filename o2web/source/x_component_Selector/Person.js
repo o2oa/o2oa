@@ -1516,6 +1516,8 @@ MWF.xApplication.Selector.Person = new Class({
     },
     setSize : function(){
 
+        debugger;
+
         if( !this.options.width && !this.options.height )return;
 
         var getOffsetX = function(node){
@@ -1611,7 +1613,7 @@ MWF.xApplication.Selector.Person = new Class({
                 nodeHeight = this.options.height.toInt();
             }
 
-            nodeHeight = nodeHeight - getOffsetY( this.contentNode );
+            nodeHeight = nodeHeight - getOffsetY( this.contentNode ) - 1;
             if( this.titleNode ){
                 nodeHeight = nodeHeight - getOffsetY( this.titleNode ) - this.titleNode.getStyle("height").toInt();
             }
