@@ -120,7 +120,7 @@
 	},
   "contentNode_embedded": {
 	"overflow": "hidden",
-	"padding" : "5px 0px 0px 0px"
+	"padding" : "4px 0px 0px 0px"
   },
 	"selectNode": {
 		//"width": "200px",
