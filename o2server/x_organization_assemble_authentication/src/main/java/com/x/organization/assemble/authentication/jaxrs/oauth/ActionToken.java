@@ -52,6 +52,15 @@ class ActionToken extends StandardJaxrsAction {
 	public static class WoToken extends GsonPropertyObject {
 		private String access_token;
 		private Integer expires_in;
+		private String token_type = "bearer";
+
+		public String getToken_type() {
+			return token_type;
+		}
+
+		public void setToken_type(String token_type) {
+			this.token_type = token_type;
+		}
 
 		public String getAccess_token() {
 			return access_token;
