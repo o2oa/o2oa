@@ -1,12 +1,12 @@
 package com.x.processplatform.assemble.surface.jaxrs.read;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -15,7 +15,6 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
@@ -49,7 +48,7 @@ class ActionCreateWithWork extends BaseAction {
 
 		List<Wo> wos = ThisApplication.context().applications()
 				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						"read/work/" + URLEncoder.encode(work.getId(), DefaultCharset.name), wi, work.getJob())
+						Applications.joinQueryUri("read", "work", work.getId()), wi, work.getJob())
 				.getDataAsList(Wo.class);
 		result.setData(wos);
 		return result;
