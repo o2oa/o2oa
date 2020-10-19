@@ -94,7 +94,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
             if (!option.success) option.success = function(v){return v;}.ag();
             if (option.success && !option.success.isAG) option.success = option.success.ag();
 
-            console.log(option.success)
+            //console.log(option.success)
 
             if (option.failure && option.failure.failure) option.failure = option.failure.failure;
             if (option.failure) {

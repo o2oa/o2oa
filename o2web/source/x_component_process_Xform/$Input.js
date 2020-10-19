@@ -183,6 +183,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "");
     },
 	getValue: function(){
+        debugger;
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
@@ -196,7 +197,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
                 this.__setValue(v);
             }.bind(this));
         }else {
-            this.__setValue(value);
+            Promise.resolve(value).then(function(v){
+                this.__setValue(v);
+            }.bind(this));
+            //this.__setValue(value);
         }
 
     },
