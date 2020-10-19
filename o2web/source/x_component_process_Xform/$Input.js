@@ -1,4 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
+/** Class Input组件 */
 MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 	Implements: [Events],
 	Extends: MWF.APP$Module,
@@ -222,10 +223,18 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
 		return {"value": [value || ""] , "text": [text || value || ""]};
 	},
+    /**
+     * 判断组件值是否为空.
+     * @return {boolean}.
+     */
     isEmpty : function(){
 	    var data = this.getData();
 	    return !data || !data.trim();
     },
+    /**
+     * 获取组件值.
+     * @return {object/string}.
+     */
 	getData: function(when){
         if (this.json.compute == "save") this._setValue(this._computeValue());
 		return this.getInputData();
@@ -237,9 +246,16 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             return this._getBusinessData();
         }
     },
+    /**
+     * 重置组件的值，如果设置了默认值，则设置为默认值，否则置空。
+     */
     resetData: function(){
         this.setData(this.getValue());
     },
+    /**
+     * 为控件赋值。
+     *  @param {string/number/jsonObject} .
+     */
 	setData: function(data){
         this._setBusinessData(data);
 		if (this.node.getFirst()){
@@ -433,6 +449,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         }
         return true;
     },
+    /**
+     * 根据组件的校验设置进行校验。
+     *  @param {string} routeName-路由名称.
+     *  @return {boolean} 是否通过校验
+     */
     validation: function(routeName, opinion){
         if (!this.readonly && !this.json.isReadonly){
             if (!this.validationConfig(routeName, opinion))  return false;
