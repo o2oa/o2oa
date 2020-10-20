@@ -1379,50 +1379,55 @@
         var useWebWorker = (window.layout && layout.config && layout.config.useWebWorker);
         //var noCache = false;
         if (!loadAsync || !useWebWorker){
-            var res = new Request.JSON({
-                url: o2.filterUrl(address),
-                secure: false,
-                method: method,
-                emulation: false,
-                noCache: noCache,
-                async: loadAsync,
-                withCredentials: credentials,
-                onSuccess: function(responseJSON, responseText){
-                    // var xToken = this.getHeader("authorization");
-                    // if (!xToken) xToken = this.getHeader("x-token");
-                    var xToken = this.getHeader("x-token");
-                    if (xToken){
-                        if (window.layout){
-                            if (!layout.session) layout.session = {};
-                            layout.session.token = xToken;
+            var res;
+            var p = new Promise(function(s,f){
+                res = new Request.JSON({
+                    url: o2.filterUrl(address),
+                    secure: false,
+                    method: method,
+                    emulation: false,
+                    noCache: noCache,
+                    async: loadAsync,
+                    withCredentials: credentials,
+                    onSuccess: function(responseJSON, responseText){
+                        // var xToken = this.getHeader("authorization");
+                        // if (!xToken) xToken = this.getHeader("x-token");
+                        var xToken = this.getHeader("x-token");
+                        if (xToken){
+                            if (window.layout){
+                                if (!layout.session) layout.session = {};
+                                layout.session.token = xToken;
+                            }
+                        }
+                        o2.runCallback(callback, "success", [responseJSON]);
+                    },
+                    onFailure: function(xhr){
+                        o2.runCallback(callback, "requestFailure", [xhr]);
+                    }.bind(this),
+                    onError: function(text, error){
+                        o2.runCallback(callback, "error", [text, error]);
+                    }.bind(this)
+                });
+
+                res.setHeader("Content-Type", "application/json; charset=utf-8");
+                res.setHeader("Accept", "text/html,application/json,*/*");
+                if (window.layout) {
+                    if (layout["debugger"]){
+                        res.setHeader("x-debugger", "true");
+                    }
+                    if (layout.session && layout.session.user){
+                        if (layout.session.user.token) {
+                            res.setHeader("x-token", layout.session.user.token);
+                            res.setHeader("authorization", layout.session.user.token);
                         }
                     }
-                    o2.runCallback(callback, "success", [responseJSON]);
-                },
-                onFailure: function(xhr){
-                    o2.runCallback(callback, "requestFailure", [xhr]);
-                }.bind(this),
-                onError: function(text, error){
-                    o2.runCallback(callback, "error", [text, error]);
-                }.bind(this)
-            });
+                }
+                //Content-Type	application/x-www-form-urlencoded; charset=utf-8
+                res.send(data);
+            }.bind(this));
 
-            res.setHeader("Content-Type", "application/json; charset=utf-8");
-            res.setHeader("Accept", "text/html,application/json,*/*");
-            if (window.layout) {
-                if (layout["debugger"]){
-                    res.setHeader("x-debugger", "true");
-                }
-                if (layout.session && layout.session.user){
-                    if (layout.session.user.token) {
-                        res.setHeader("x-token", layout.session.user.token);
-                        res.setHeader("authorization", layout.session.user.token);
-                    }
-                }
-            }
-            //Content-Type	application/x-www-form-urlencoded; charset=utf-8
-            res.send(data);
             var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
+            var oReturn = p;
             oReturn.res = res;
             return oReturn;
         }else{
