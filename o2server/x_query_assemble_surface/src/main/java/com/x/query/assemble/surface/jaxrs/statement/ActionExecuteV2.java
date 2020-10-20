@@ -1,27 +1,17 @@
 package com.x.query.assemble.surface.jaxrs.statement;
 
-import java.util.Objects;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Parameter;
-import javax.persistence.Query;
-import javax.script.Bindings;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
-
-import com.x.base.core.entity.dynamic.DynamicBaseEntity;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.dynamic.DynamicBaseEntity;
 import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.webservices.WebservicesClient;
@@ -31,23 +21,30 @@ import com.x.query.assemble.surface.ThisApplication;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.express.statement.Runtime;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
-import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 
-class ActionExecute extends BaseAction {
+import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
+import javax.persistence.Query;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
+import java.util.Objects;
 
-	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, Integer page, Integer size,
+class ActionExecuteV2 extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionExecuteV2.class);
+
+	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Object> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Statement statement = this.getStatement(business, flag);
+			Statement statement = emc.flag(flag, Statement.class);
 			if (null == statement) {
 				throw new ExceptionEntityNotExist(flag, Statement.class);
 			}
-
 			if (!business.executable(effectivePerson, statement)) {
 				throw new ExceptionAccessDenied(effectivePerson, statement);
 			}
@@ -55,59 +52,60 @@ class ActionExecute extends BaseAction {
 			Runtime runtime = this.runtime(effectivePerson, jsonElement, business, page, size);
 
 			Object data = null;
-
-			switch (Objects.toString(statement.getFormat(), "")) {
-				case Statement.FORMAT_SCRIPT:
-					data = this.script(effectivePerson, business, statement, runtime);
+			Object count = null;
+			switch (mode){
+				case Statement.MODE_DATA:
+					switch (Objects.toString(statement.getFormat(), "")) {
+						case Statement.FORMAT_SCRIPT:
+							data = this.script(effectivePerson, business, statement, runtime, mode);
+							break;
+						default:
+							data = this.jpql(effectivePerson, business, statement, runtime, mode);
+							break;
+					}
+					result.setData(data);
+					break;
+				case Statement.MODE_COUNT:
+					switch (Objects.toString(statement.getFormat(), "")) {
+						case Statement.FORMAT_SCRIPT:
+							count = this.script(effectivePerson, business, statement, runtime, mode);
+							break;
+						default:
+							count = this.jpql(effectivePerson, business, statement, runtime, mode);
+							break;
+					}
+					result.setData(count);
+					result.setCount((Long)count);
 					break;
 				default:
-					data = this.jpql(effectivePerson, business, statement, runtime);
-					break;
+					switch (Objects.toString(statement.getFormat(), "")) {
+						case Statement.FORMAT_SCRIPT:
+							data = this.script(effectivePerson, business, statement, runtime, Statement.MODE_DATA);
+							count = this.script(effectivePerson, business, statement, runtime, Statement.MODE_COUNT);
+							break;
+						default:
+							data = this.jpql(effectivePerson, business, statement, runtime, Statement.MODE_DATA);
+							count = this.jpql(effectivePerson, business, statement, runtime, Statement.MODE_COUNT);
+							break;
+					}
+					result.setData(data);
+					result.setCount((Long)count);
 			}
-			result.setData(data);
 			return result;
 		}
 	}
 
-	private Statement getStatement(Business business, String flag) throws Exception {
-		Statement statement = null;
-		CacheKey cacheKey = new CacheKey(this.getClass(), flag);
-		Optional<?> optional = CacheManager.get(cache, cacheKey);
-		if (optional.isPresent()) {
-			statement = (Statement) optional.get();
-		} else {
-			statement = business.entityManagerContainer().flag(flag, Statement.class);
-			if (null != statement) {
-				CacheManager.put(cache, cacheKey, statement);
-			}
-		}
-		return statement;
-	}
-
-	private CompiledScript getCompiledScriptOfScriptText(Statement statement) throws Exception {
-		CompiledScript compiledScript = null;
-		CacheKey cacheKey = new CacheKey(this.getClass(), statement.getId(),
-				Statement.scriptText_FIELDNAME);
-		Optional<?> optional = CacheManager.get(cache, cacheKey);
-		if (optional.isPresent()) {
-			compiledScript = (CompiledScript) optional.get();
-		} else {
-			compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(statement.getScriptText()));
-			CacheManager.put(cache, cacheKey, compiledScript);
-		}
-		return compiledScript;
-	}
-
-	private Object script(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
+	private Object script(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime, String mode)
 			throws Exception {
 		Object data = null;
-
 		ScriptContext scriptContext = this.scriptContext(effectivePerson, business, runtime);
-
 		ScriptFactory.initialServiceScriptText().eval(scriptContext);
-
-		CompiledScript compiledScript = this.getCompiledScriptOfScriptText(statement);
-		Object o = compiledScript.eval(scriptContext);
+		String scriptText = statement.getScriptText();
+		if(Statement.MODE_COUNT.equals(mode)) {
+			scriptText = statement.getCountScriptText();
+		}
+		Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(scriptText),
+				scriptContext);
 		String text = ScriptFactory.asString(o);
 		Class<? extends JpaObject> cls = this.clazz(business, statement);
 		EntityManager em;
@@ -124,9 +122,13 @@ class ActionExecute extends BaseAction {
 			}
 		}
 		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			query.setFirstResult((runtime.page - 1) * runtime.size);
-			query.setMaxResults(runtime.size);
-			data = query.getResultList();
+			if(Statement.MODE_COUNT.equals(mode)) {
+				data = query.getSingleResult();
+			}else{
+				query.setFirstResult((runtime.page - 1) * runtime.size);
+				query.setMaxResults(runtime.size);
+				data = query.getResultList();
+			}
 		} else {
 			business.entityManagerContainer().beginTransaction(cls);
 			data = query.executeUpdate();
@@ -135,7 +137,7 @@ class ActionExecute extends BaseAction {
 		return data;
 	}
 
-	private Object jpql(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
+	private Object jpql(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime, String mode)
 			throws Exception {
 		Object data = null;
 		Class<? extends JpaObject> cls = this.clazz(business, statement);
@@ -146,26 +148,32 @@ class ActionExecute extends BaseAction {
 		}else{
 			em = business.entityManagerContainer().get(cls);
 		}
-
-		Query query = em.createQuery(statement.getData());
+		String jpqlData = statement.getData();
+		if(Statement.MODE_COUNT.equals(mode)) {
+			jpqlData = statement.getCountData();
+		}
+		Query query = em.createQuery(jpqlData);
 		for (Parameter<?> p : query.getParameters()) {
 			if (runtime.hasParameter(p.getName())) {
 				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
 			}
 		}
 		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			query.setFirstResult((runtime.page - 1) * runtime.size);
-			query.setMaxResults(runtime.size);
-			data = query.getResultList();
+			if(Statement.MODE_COUNT.equals(mode)) {
+				data = query.getSingleResult();
+			}else{
+				query.setFirstResult((runtime.page - 1) * runtime.size);
+				query.setMaxResults(runtime.size);
+				data = query.getResultList();
+			}
 		} else {
 			business.entityManagerContainer().beginTransaction(cls);
-			data = query.executeUpdate();
+			data = Integer.valueOf(query.executeUpdate());
 			business.entityManagerContainer().commit();
 		}
 		return data;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Class<? extends JpaObject> clazz(Business business, Statement statement) throws Exception {
 		Class<? extends JpaObject> cls = null;
 		if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, statement.getEntityCategory())
@@ -185,7 +193,7 @@ class ActionExecute extends BaseAction {
 	private ScriptContext scriptContext(EffectivePerson effectivePerson, Business business, Runtime runtime)
 			throws Exception {
 		ScriptContext scriptContext = new SimpleScriptContext();
-		Resources resources = new Resources();
+		ActionExecute.Resources resources = new ActionExecute.Resources();
 		resources.setEntityManagerContainer(business.entityManagerContainer());
 		resources.setContext(ThisApplication.context());
 		resources.setApplications(ThisApplication.context().applications());
