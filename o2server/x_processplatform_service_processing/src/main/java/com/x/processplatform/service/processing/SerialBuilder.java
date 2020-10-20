@@ -195,7 +195,7 @@ public class SerialBuilder {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<SerialNumber> cq = cb.createQuery(SerialNumber.class);
 			Root<SerialNumber> root = cq.from(SerialNumber.class);
-			Predicate p = cb.equal(root.get(SerialNumber_.process), process.getId());
+			Predicate p = cb.equal(root.get(SerialNumber_.application), process.getApplication());
 			p = cb.and(p, cb.equal(root.get(SerialNumber_.name), name));
 			cq.select(root).where(p);
 			List<SerialNumber> list = em.createQuery(cq).setMaxResults(1).getResultList();
