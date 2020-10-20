@@ -35,11 +35,26 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
                     this.loadActionArea();
                     this.loadStylesList();
                     this.loadMaplist();
+                    this.loadDataPathSelect();
                 }
             }.bind(this));
         } else {
             this.propertyContent.setStyle("display", "block");
         }
+    },
+    loadDataPathSelect : function(){
+        var nodes = this.propertyContent.getElements(".MWFDataPathSelect");
+        nodes.each( function (select) {
+            select.empty();
+            var option = new Element("option", {"text": "none", "value" : ""}).inject(select);
+            this.module.getColumnDataPath().each(function(model){
+                var option = new Element("option", {
+                    "text": model,
+                    "value": model,
+                    "selected": (this.data[name]==model)
+                }).inject(select);
+            }.bind(this));
+        }.bind(this))
     },
     loadViewFilter: function () {
         var nodes = this.propertyContent.getElements(".MWFViewFilter");

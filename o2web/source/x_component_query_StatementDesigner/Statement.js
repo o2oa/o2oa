@@ -441,7 +441,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 "option": {"mode": "json"}
             });
             this.jsonEditor.load(function () {
-                this.jsonEditor.editor.setValue("{}");
+                this.jsonEditor.editor.setValue(this.data.testParameters || "{}");
             }.bind(this));
         }.bind(this), false);
     },
@@ -605,14 +605,22 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         this.runMask.loadNode(this.node);
 
         this.saveSilence(function () {
-
             debugger;
             this.execute(function (json) {
+                this.executeData = json;
                 o2.require("o2.widget.JsonParse", function () {
                     this.runResultNode.empty();
                     var jsonResult = new o2.widget.JsonParse(json, this.runResultNode);
                     jsonResult.load();
                 }.bind(this));
+                if (this.view) {
+                    var flag = true;
+                    if (this.data.type !== "select") flag = false;
+                    if (this.data.format === "script" && !this.data.scriptText) flag = false;
+                    if (this.data.format !== "script" && !this.data.data) flag = false;
+                    if (flag) this.view.loadViewData();
+                }
+                this.setColumnDataPath(json);
                 this.runMask.hide();
             }.bind(this), function () {
                 if (this.runMask) this.runMask.hide();
@@ -671,6 +679,44 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             //     MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
             // }.bind(this))
         }.bind(this));
+    },
+    setColumnDataPath: function (json) {
+        if (this.data.type !== "select") return;
+        if (this.data.format === "script" && !this.data.scriptText) return;
+        if (this.data.format !== "script" && !this.data.data) return;
+        this.columnDataPathList = [];
+        debugger;
+        var addPath = function (value, key) {
+            if (typeOf(value) === "array") {
+                Array.each(value, function (v, idx) {
+                    var path = (key || typeOf(key) === "number") ? (key + "." + idx) : idx.toString();
+                    if (!this.columnDataPathList.contains(path)) this.columnDataPathList.push(path);
+                    if (typeOf(v) === "array" || typeOf(v) === "object") addPath(v, path);
+                }.bind(this))
+            } else if (typeOf(value) === "object") {
+                Object.each(value, function (v, k) {
+                    var path = (key || typeOf(key) === "number") ? (key + "." + k) : k;
+                    if (!this.columnDataPathList.contains(path)) this.columnDataPathList.push(path);
+                    if (typeOf(v) === "array" || typeOf(v) === "object") addPath(v, path);
+                    addPath(v, path);
+                }.bind(this))
+            } else {
+                // if( key && !this.columnDataPathList.indexOf(key) )this.columnDataPathList.push(key);
+            }
+        }.bind(this);
+        for (var i = 0; i < json.data.length && i < 10; i++) {
+            var d = json.data[i];
+            addPath(d);
+        }
+        this.columnDataPathList.sort();
+        if (this.view && this.view.items) {
+            this.view.items.each(function (column) {
+                column.refreshColumnPathData()
+            })
+        }
+    },
+    getColumnDataPath: function () {
+        return this.columnDataPathList || [];
     },
     execute: function (success, failure) {
         var json = this.jsonEditor.editor.getValue();
@@ -737,6 +783,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         //}
         if (this.editor) this.data.data = this.editor.editor.getValue();
         if (this.scriptEditor) this.data.scriptText = this.scriptEditor.toJson().code;
+        if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
 
         this.designer.actions.saveStatement(this.data, function (json) {
             this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});
@@ -763,6 +810,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
         if (this.editor) this.data.data = this.editor.editor.getValue();
         if (this.scriptEditor) this.data.scriptText = this.scriptEditor.toJson().code;
+        if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
 
         this.designer.actions.saveStatement(this.data, function (json) {
             //this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});
@@ -946,7 +994,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
             }.bind(this)
         });
         this.refreshNode.addEvent("click", function (e) {
-            this.loadViewData();
+            this.statement.runStatement();
             e.stopPropagation();
         }.bind(this));
         this.addColumnNode.addEvent("click", function (e) {
@@ -994,70 +1042,112 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
     },
 
     loadViewData: function () {
+        debugger;
         if (this.data.id) {
-            this.statement.saveSilence(function () {
-                this.viewContentBodyNode.empty();
-                this.viewContentTableNode = new Element("table", {
-                    "styles": this.css.viewContentTableNode,
-                    "border": "0px",
-                    "cellPadding": "0",
-                    "cellSpacing": "0"
-                }).inject(this.viewContentBodyNode);
+            // this.statement.saveSilence(function () {
+            this.viewContentBodyNode.empty();
+            this.viewContentTableNode = new Element("table", {
+                "styles": this.css.viewContentTableNode,
+                "border": "0px",
+                "cellPadding": "0",
+                "cellSpacing": "0"
+            }).inject(this.viewContentBodyNode);
 
-                this.statement.execute( function (json) {
-                    var entries = {};
+            // this.statement.execute( function (json) {
 
-                    json.data.selectList.each(function (entry) {
-                        entries[entry.column] = entry;
-                    }.bind(this));
+            // this.statement.setColumnDataPath( json );
 
-                    if (json.data.grid.length) {
-                        json.data.grid.each(function (line, idx) {
-                            var tr = new Element("tr", {
-                                "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTr"] : this.css.viewContentTrNode
-                            }).inject(this.viewContentTableNode);
+            var entries = {};
 
-                            //this.createViewCheckboxTd( tr );
+            this.json.data.selectList.each(function (entry) {
+                entries[entry.column] = entry;
+            }.bind(this));
 
-                            Object.each(entries, function (c, k) {
-                                var d = line.data[k];
-                                if (d != undefined) {
-                                    var td = new Element("td", {
-                                        "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTd"] : this.css.viewContentTdNode
-                                    }).inject(tr);
-                                    //td.set("text", (entries[k].code) ? MWF.Macro.exec(entries[k].code, {"value": d, "gridData": json.data.grid, "data": json.data, "entry": line}) : d);
-                                    if (c.isHtml) {
-                                        td.set("html", d);
-                                    } else {
-                                        td.set("text", d);
-                                    }
-                                    //td.set("text", d);
+            if (this.statement.executeData && this.statement.executeData.data && this.statement.executeData.data.length) {
+                this.statement.executeData.data.each(function (line, idx) {
+                    var tr = new Element("tr", {
+                        "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTr"] : this.css.viewContentTrNode
+                    }).inject(this.viewContentTableNode);
+
+                    //this.createViewCheckboxTd( tr );
+
+                    Object.each(entries, function (c, k) {
+                        debugger;
+
+                        var path = c.path, code = c.code, obj = line;
+                        if( path ){
+                            var pathList = path.split(".");
+                            for( var i=0; i<pathList.length; i++ ){
+                                var p = pathList[i];
+                                if( (/(^[1-9]\d*$)/.test(p)) )p = p.toInt();
+                                if( obj[ p ] ){
+                                    obj = obj[ p ];
+                                }else{
+                                    obj = "";
+                                    break;
                                 }
-                            }.bind(this));
-
-                            // Object.each(line.data, function(d, k){
-                            //     var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
-                            //     td.set("text", (entries[k].code) ? MWF.Macro.exec(entries[k].code, {"value": d, "gridData": json.data.grid, "data": json.data, "entry": line}) : d);
-                            // }.bind(this));
-                        }.bind(this));
-                        this.setContentColumnWidth();
-                        this.setContentHeight();
-                    } else if (this.json.data.noDataText) {
-                        var noDataTextNodeStyle = this.css.noDataTextNode;
-                        if (this.json.data.viewStyles) {
-                            if (this.json.data.viewStyles["noDataTextNode"]) {
-                                noDataTextNodeStyle = this.json.data.viewStyles["noDataTextNode"]
-                            } else {
-                                this.json.data.viewStyles["noDataTextNode"] = this.css.noDataTextNode
                             }
                         }
-                        this.noDataTextNode = new Element("div", {
-                            "styles": noDataTextNodeStyle,
-                            "text": this.json.data.noDataText
-                        }).inject(this.viewContentBodyNode);
-                    }
+
+                        if( code && code.trim())obj = MWF.Macro.exec( code, {"value": obj,  "data": line, "entry": c});
+
+                        var toName = function (value) {
+                            if(typeOf(value) === "array"){
+                                Array.each( value, function (v, idx) {
+                                    value[idx] = toName(v)
+                                })
+                            }else if( typeOf(value) === "object" ){
+                                Object.each( value, function (v, key) {
+                                    value[key] = toName(v);
+                                })
+                            }else if( typeOf( value ) === "string" ){
+                                value = o2.name.cn( value )
+                            }
+                            return value;
+                        };
+
+                        var d;
+                        if( obj!= undefined && obj!= null ){
+                            if( typeOf(obj) === "array" ) {
+                                d = c.isName ? JSON.stringify(toName(Array.clone(obj))) : JSON.stringify(obj);
+                            }else if( typeOf(obj) === "object" ){
+                                d = c.isName ? JSON.stringify(toName(Object.clone(obj))) : JSON.stringify(obj);
+                            }else{
+                                d = c.isName ? o2.name.cn( obj.toString() ) : obj;
+                            }
+                        }
+
+
+                        if (d != undefined && d != null ) {
+                            var td = new Element("td", {
+                                "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTd"] : this.css.viewContentTdNode
+                            }).inject(tr);
+                            if (c.isHtml) {
+                                td.set("html", d);
+                            } else {
+                                td.set("text", d);
+                            }
+                        }
+                    }.bind(this));
                 }.bind(this));
-            }.bind(this));
+                this.setContentColumnWidth();
+                this.setContentHeight();
+            } else if (this.json.data.noDataText) {
+                var noDataTextNodeStyle = this.css.noDataTextNode;
+                if (this.json.data.viewStyles) {
+                    if (this.json.data.viewStyles["noDataTextNode"]) {
+                        noDataTextNodeStyle = this.json.data.viewStyles["noDataTextNode"]
+                    } else {
+                        this.json.data.viewStyles["noDataTextNode"] = this.css.noDataTextNode
+                    }
+                }
+                this.noDataTextNode = new Element("div", {
+                    "styles": noDataTextNodeStyle,
+                    "text": this.json.data.noDataText
+                }).inject(this.viewContentBodyNode);
+            }
+            // }.bind(this));
+            // }.bind(this));
         }
     },
     addColumn: function () {
@@ -1421,6 +1511,38 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
         this.content = this.view.viewTitleTrNode;
         this.domListNode = this.view.domListNode;
         this.load();
+    },
+    refreshColumnPathData: function () {
+        if (this.property) {
+            this.property.loadDataPathSelect();
+        }
+    },
+    getColumnDataPath: function () {
+        return this.view.statement.getColumnDataPath();
+    },
+    showProperty: function () {
+        if (!this.property) {
+            this.property = new MWF.xApplication.query.StatementDesigner.Property(this, this.view.designer.propertyContentArea, this.view.designer, {
+                "path": this.propertyPath,
+                "onPostLoad": function () {
+                    this.property.show();
+
+                    var processDiv = this.property.propertyContent.getElements("#" + this.json.id + "dataPathSelectedProcessArea");
+                    var cmsDiv = this.property.propertyContent.getElements("#" + this.json.id + "dataPathSelectedCMSArea");
+
+                    if (this.view.json.type == "cms") {
+                        processDiv.setStyle("display", "none");
+                        cmsDiv.setStyle("display", "block");
+                    } else {
+                        processDiv.setStyle("display", "block");
+                        cmsDiv.setStyle("display", "none");
+                    }
+                }.bind(this)
+            });
+            this.property.load();
+        } else {
+            this.property.show();
+        }
     },
     selected: function () {
         if (this.view.statement.currentSelectedModule) {

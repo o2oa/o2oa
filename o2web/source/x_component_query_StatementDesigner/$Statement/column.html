@@ -34,9 +34,17 @@
             <div class="MWFDataData" id="text{$.pid}dataDataEditor">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
+                        <td class="editTableTitle">选择路径:</td>
+                        <td class="editTableValue">
+                            <select class="MWFDataPathSelect" id="text{$.pid}dataPathSelected" onchange=" var v=this.options[this.selectedIndex].value; if (true){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">
+                            </select>
+                            <div style="line-height: 20px;color:#999;">注：正确填写了查询语句，再测试语句或刷新视图数据可显示(刷新)选择路径。</div>
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="editTableTitle">数据路径:</td>
                         <td class="editTableValue">
-                            <input onkeypress="$('text{$.pid}dataPathSelected').getElement('option').set('selected', true); $('text{$.pid}dataPathSelectedCMS').getElement('option').set('selected', true)" id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/>
+                            <input id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/>
                             <div style="line-height: 20px;color:#999;">注：指该列相对单条数据的路径。比如 0，title，或 0.title</div>
                         </td>
                     </tr>
