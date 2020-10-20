@@ -18,8 +18,8 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.Read_;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.ReadCompleted_;
 
 class V2ListCreatePrev extends V2Base {
 
@@ -28,11 +28,11 @@ class V2ListCreatePrev extends V2Base {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			EntityManager em = emc.get(Read.class);
+			EntityManager em = emc.get(ReadCompleted.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-			Root<Read> root = cq.from(Read.class);
-			Predicate p = cb.equal(root.get(Read_.creatorPerson), effectivePerson.getDistinguishedName());
+			Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+			Predicate p = cb.equal(root.get(ReadCompleted_.creatorPerson), effectivePerson.getDistinguishedName());
 			p = cb.and(p, this.toFilterPredicate(effectivePerson, business, wi));
 			ActionResult<List<Wo>> result = this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME,
 					DESC, p);
@@ -47,7 +47,7 @@ class V2ListCreatePrev extends V2Base {
 
 	public static class Wo extends AbstractWo {
 		private static final long serialVersionUID = -4773789253221941109L;
-		static WrapCopier<Read, Wo> copier = WrapCopierFactory.wo(Read.class, Wo.class,
-				JpaObject.singularAttributeField(Read.class, true, false), JpaObject.FieldsInvisible);
+		static WrapCopier<ReadCompleted, Wo> copier = WrapCopierFactory.wo(ReadCompleted.class, Wo.class,
+				JpaObject.singularAttributeField(ReadCompleted.class, true, false), JpaObject.FieldsInvisible);
 	}
 }
