@@ -55,7 +55,12 @@ public class ActionSave extends BaseAction {
 			return result;
 		}
 
-		File file = new File(Config.base(),Config.dir_config()+"/"+fileName);
+		File configFold = new File(Config.base(),Config.DIR_CONFIG);
+		if(!configFold.exists()){
+			configFold.mkdir();
+		}
+		
+		File file = new File(Config.base(),Config.DIR_CONFIG+"/"+fileName);
 		if(!file.exists()) {
 			file.createNewFile();
 		}
