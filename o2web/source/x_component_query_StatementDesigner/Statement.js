@@ -233,6 +233,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.countJpqlEditorNode = this.areaNode.getElement(".o2_statement_statementDesignerCountJpqlLine");
             this.loadJpqlTab();
 
+            this.resizeNode = this.areaNode.getElement(".o2_statement_resizeNode");
+
             this.tabNode = this.areaNode.getElement(".o2_statement_tabNode");
 
             this.runArea = this.areaNode.getElement(".o2_statement_statementRunNode");
@@ -258,7 +260,80 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.loadTab();
 
             this.setEvent();
+            this.loadVerticalResize();
         }.bind(this));
+    },
+    loadVerticalResize: function(){
+        this.verticalResize = new Drag(this.resizeNode, {
+            "snap": 10,
+            "onStart": function(el, e){
+                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                el.store("position", {"x": x, "y": y});
+
+                var size = this.designerArea.getSize(); //designerArea
+                el.store("initialHeight", size.y);
+
+                var allSize = this.areaNode.getSize();
+                el.store("initialAllHeight", allSize.y);
+            }.bind(this),
+            "onDrag": function(el, e){
+
+                var allHeight = el.retrieve("initialAllHeight").toFloat(); //this.areaNode.getSize();
+
+                //			var x = e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                var position = el.retrieve("position");
+                var dy = y.toFloat()-position.y.toFloat();
+
+                var initialHeight = el.retrieve("initialHeight").toFloat();
+                var height = initialHeight+dy;
+                if (height < 180) height = 180;
+                if (height > allHeight-180) height = allHeight-180;
+
+                this.designerAreaPercent = height/allHeight;
+
+                this.setVerticalResize();
+
+            }.bind(this)
+        });
+    },
+    setVerticalResize: function(){
+        var size = this.areaNode.getSize();
+
+        var height = size.y;
+
+        var designAreaHeight = this.designerAreaPercent*height;
+        // var runAreaHeight = height-designAreaHeight;
+
+        this.designerArea.setStyle("height", ""+designAreaHeight+"px");
+
+        debugger;
+
+        var editorHeight = designAreaHeight - 98;
+
+        if(this.jpqlEditorNode)this.jpqlEditorNode.setStyle( "height", ""+editorHeight+"px" );
+        if(this.countJpqlEditorNode)this.countJpqlEditorNode.setStyle( "height", ""+editorHeight+"px" );
+        if(this.scriptArea)this.scriptArea.setStyle( "height", ""+editorHeight+"px" );
+        if(this.countScriptArea)this.countScriptArea.setStyle( "height", ""+editorHeight+"px" );
+
+        if( this.editor )this.editor.resize();
+        if( this.countEditor )this.countEditor.resize();
+        if( this.scriptEditor ){
+            this.scriptEditor.container.setStyle("height", ""+editorHeight+"px");
+            this.scriptEditor.resizeContentNodeSize();
+        }
+        if( this.countScriptEditor ){
+            this.countScriptEditor.container.setStyle("height", ""+editorHeight+"px");
+            this.countScriptEditor.resizeContentNodeSize();
+        }
+
+        // this.tabNode.setStyle("height", ""+runAreaHeight+"px");
+        this.setRunnerSize();
+        if( this.view ){
+            this.setViewSize();
+            this.view.setContentHeight()
+        }
     },
     loadStatementScriptEditor: function () {
         if (!this.scriptEditor) {
@@ -296,12 +371,14 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         debugger;
         var size = this.areaNode.getSize();
         var designerSize = this.designerArea.getComputedSize();
-        var y = size.y - designerSize.totalHeight;
+        var reizeNodeSize = this.resizeNode.getComputedSize();
+
+        var y = size.y - designerSize.totalHeight - reizeNodeSize.totalHeight;
         var mTop = this.runArea.getStyle("margin-top").toInt();
         var mBottom = this.runArea.getStyle("margin-bottom").toInt();
         var pTop = this.runArea.getStyle("padding-top").toInt();
         var pBottom = this.runArea.getStyle("padding-bottom").toInt();
-        y = y - mTop - mBottom - pTop - pBottom - 1;
+        y = y - mTop - mBottom - pTop - pBottom - 5;
 
         var tabSize = this.tabNode.getComputedSize();
         y = y - tabSize.totalHeight;
@@ -841,7 +918,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         debugger;
         var size = this.areaNode.getSize();
         var designerSize = this.designerArea.getComputedSize();
-        var y = size.y - designerSize.totalHeight;
+        var reizeNodeSize = this.resizeNode.getComputedSize();
+
+        var y = size.y - designerSize.totalHeight - reizeNodeSize.totalHeight;
         var mTop = this.viewArea.getStyle("margin-top").toInt();
         var mBottom = this.viewArea.getStyle("margin-bottom").toInt();
         var pTop = this.viewArea.getStyle("padding-top").toInt();

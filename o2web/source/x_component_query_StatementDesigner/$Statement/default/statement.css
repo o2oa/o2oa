@@ -123,3 +123,8 @@
 .o2_statement_statementJpqlTabNode{
     height: 32px;
 }
+.o2_statement_resizeNode{
+    height: 3px;
+    background-color: #505050;
+    cursor: row-resize;
+}
