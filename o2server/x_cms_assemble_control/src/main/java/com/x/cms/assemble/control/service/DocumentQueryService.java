@@ -569,6 +569,7 @@ public class DocumentQueryService {
 	public boolean getFileInfoManagerAssess(EffectivePerson effectivePerson, Document doc, CategoryInfo category, AppInfo appInfo ) throws Exception {
 		List<String> setting_permissonNames = new ArrayList<>();
 		List<String> own_permissonNames = new ArrayList<>();
+		own_permissonNames.add(effectivePerson.getDistinguishedName());
 		own_permissonNames.addAll(userManagerService.listIdentitiesWithPerson( effectivePerson.getDistinguishedName()));
 		own_permissonNames.addAll(userManagerService.listUnitNamesWithPerson( effectivePerson.getDistinguishedName()));
 		own_permissonNames.addAll(userManagerService.listGroupNamesByPerson( effectivePerson.getDistinguishedName()));
