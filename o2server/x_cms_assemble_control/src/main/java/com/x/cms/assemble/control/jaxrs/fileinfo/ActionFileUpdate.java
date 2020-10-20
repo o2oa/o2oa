@@ -125,7 +125,7 @@ public class ActionFileUpdate extends BaseAction {
 		
 		if (check) {
 			try {
-				if ( documentQueryService.getFileInfoManagerAssess( effectivePerson, document, categoryInfo, appInfo ) ) {
+				if ( !documentQueryService.getFileInfoManagerAssess( effectivePerson, document, categoryInfo, appInfo ) ) {
 					check = false;
 					Exception exception = new ExceptionDocumentAccessDenied(effectivePerson.getDistinguishedName(), document.getTitle(), document.getId());
 					result.error(exception);
