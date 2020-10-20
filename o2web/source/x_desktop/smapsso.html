@@ -96,7 +96,7 @@
                                 var result = responseJSON.data.value;
 								if(result){
 									if (redirect){
-										window.location = redirect;
+										window.open( redirect, "_self" );
 									}else{
 										window.location = "/";
 									}
