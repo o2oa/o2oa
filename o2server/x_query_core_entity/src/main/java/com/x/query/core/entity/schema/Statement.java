@@ -49,6 +49,9 @@ public class Statement extends SliceJpaObject {
 	public static final String TYPE_UPDATE = "update";
 	public static final String TYPE_INSERT = "insert";
 
+	public static final String MODE_DATA = "data";
+	public static final String MODE_COUNT = "count";
+
 	public static final String FORMAT_JPQL = "jpql";
 	public static final String FORMAT_SCRIPT = "script";
 
@@ -153,7 +156,7 @@ public class Statement extends SliceJpaObject {
 	@FieldDescribe("jpql语句.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_4K, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
@@ -161,9 +164,33 @@ public class Statement extends SliceJpaObject {
 	@FieldDescribe("类型为script的执行脚本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + scriptText_FIELDNAME)
+	@Column(length = JpaObject.length_32K, name = ColumnNamePrefix + scriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String scriptText;
+
+	public static final String countData_FIELDNAME = "countData";
+	@FieldDescribe("jpql语句，用于查询总数.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_4K, name = ColumnNamePrefix + countData_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String countData;
+
+	public static final String countScriptText_FIELDNAME = "countScriptText";
+	@FieldDescribe("类型为script的执行脚本，用于查询总数.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_32K, name = ColumnNamePrefix + countScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String countScriptText;
+
+	public static final String view_FIELDNAME = "view";
+	@FieldDescribe("展现视图.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_32K, name = ColumnNamePrefix + view_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String view;
 
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建者")
@@ -322,4 +349,27 @@ public class Statement extends SliceJpaObject {
 		this.query = query;
 	}
 
+	public String getCountData() {
+		return countData;
+	}
+
+	public void setCountData(String countData) {
+		this.countData = countData;
+	}
+
+	public String getCountScriptText() {
+		return countScriptText;
+	}
+
+	public void setCountScriptText(String countScriptText) {
+		this.countScriptText = countScriptText;
+	}
+
+	public String getView() {
+		return view;
+	}
+
+	public void setView(String view) {
+		this.view = view;
+	}
 }
