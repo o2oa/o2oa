@@ -592,12 +592,42 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         this.runMask.loadNode(this.node);
 
         this.saveSilence(function(){
+
+            debugger;
+
             var json = this.jsonEditor.editor.getValue();
             var o = JSON.parse(json);
-            o2.Actions.get("x_query_assemble_designer").executeStatement(this.json.id, 1, 50 , o, function(json){
+
+            var mode = "data";
+            if( this.data.type === "select" ){
+                if( this.data.format === "script" ){
+                    if( this.data.scriptText && this.data.countScriptText ){
+                        mode = "all"
+                    }else if( this.data.scriptText && !this.data.countScriptText ){
+                        mode = "data"
+                    }else if( !this.data.scriptText && this.data.countScriptText ){
+                        mode = "count"
+                    }else{
+                        this.designer.notice(this.designer.lp.inputStatementData, "error");
+                        return false;
+                    }
+                }else{
+                    if( this.data.data && this.data.countData ){
+                        mode = "all"
+                    }else if( this.data.data && !this.data.countData ){
+                        mode = "data"
+                    }else if( !this.data.data && this.data.countData ){
+                        mode = "count"
+                    }else{
+                        this.designer.notice(this.designer.lp.inputStatementData, "error");
+                        return false;
+                    }
+                }
+            }
+            o2.Actions.get("x_query_assemble_designer").StatementAction.executeV2(this.json.id, mode, 1, 50 , o, function(json){
                 o2.require("o2.widget.JsonParse", function(){
                     this.runResultNode.empty();
-                    var jsonResult = new o2.widget.JsonParse(json.data, this.runResultNode);
+                    var jsonResult = new o2.widget.JsonParse(json, this.runResultNode);
                     jsonResult.load();
                 }.bind(this));
                 this.runMask.hide();
