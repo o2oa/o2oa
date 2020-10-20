@@ -21,8 +21,8 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.Read_;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.ReadCompleted_;
 
 class V2List extends V2Base {
 
@@ -33,18 +33,18 @@ class V2List extends V2Base {
 		if ((!wi.isEmptyFilter()) || ListTools.isNotEmpty(wi.getJobList()) || ListTools.isNotEmpty(wi.getIdList())) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				EntityManager em = emc.get(Read.class);
+				EntityManager em = emc.get(ReadCompleted.class);
 				CriteriaBuilder cb = em.getCriteriaBuilder();
 				CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-				Root<Read> root = cq.from(Read.class);
+				Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 				Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
 				if (ListTools.isNotEmpty(wi.getJobList())) {
-					p = cb.and(p, root.get(Read_.job).in(wi.getJobList()));
+					p = cb.and(p, root.get(ReadCompleted_.job).in(wi.getJobList()));
 				}
 				if (ListTools.isNotEmpty(wi.getIdList())) {
-					p = cb.and(p, root.get(Read_.id).in(wi.getIdList()));
+					p = cb.and(p, root.get(ReadCompleted_.id).in(wi.getIdList()));
 				}
-				wos = emc.fetch(Read.class, Wo.copier, p);
+				wos = emc.fetch(ReadCompleted.class, Wo.copier, p);
 				this.relate(business, wos, wi);
 			}
 		}
@@ -80,7 +80,7 @@ class V2List extends V2Base {
 
 	public static class Wo extends AbstractWo {
 		private static final long serialVersionUID = -4773789253221941109L;
-		static WrapCopier<Read, Wo> copier = WrapCopierFactory.wo(Read.class, Wo.class,
-				JpaObject.singularAttributeField(Read.class, true, false), JpaObject.FieldsInvisible);
+		static WrapCopier<ReadCompleted, Wo> copier = WrapCopierFactory.wo(ReadCompleted.class, Wo.class,
+				JpaObject.singularAttributeField(ReadCompleted.class, true, false), JpaObject.FieldsInvisible);
 	}
 }
