@@ -602,7 +602,7 @@ gulp.task("cleanAll", getCleanTask('/'));
 
 gulp.task("o2:new-v:html", function () {
     var path = "x_desktop";
-    var src = options.dest +'/x_desktop/*.html';
+    var src = '/source/x_desktop/*.html';
     var dest = options.dest + '/x_desktop/';
     return gulp.src(src)
         .pipe(assetRev())
