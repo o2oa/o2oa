@@ -229,6 +229,20 @@ public class Statement extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String entityCategory;
 
+	public static final String testParameters_FIELDNAME = "testParameters";
+	@FieldDescribe("测试参数（json格式文本）.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_4K, name = ColumnNamePrefix + testParameters_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String testParameters;
+
+	public static final String anonymousAccessible_FIELDNAME = "anonymousAccessible";
+	@FieldDescribe("是否允许匿名访问（boolean类型）")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + anonymousAccessible_FIELDNAME)
+	private Boolean anonymousAccessible;
+
 	public void setEntityCategory(String entityCategory) {
 		this.entityCategory = entityCategory;
 	}
@@ -371,5 +385,21 @@ public class Statement extends SliceJpaObject {
 
 	public void setView(String view) {
 		this.view = view;
+	}
+
+	public String getTestParameters() {
+		return testParameters;
+	}
+
+	public void setTestParameters(String testParameters) {
+		this.testParameters = testParameters;
+	}
+
+	public Boolean getAnonymousAccessible() {
+		return anonymousAccessible;
+	}
+
+	public void setAnonymousAccessible(Boolean anonymousAccessible) {
+		this.anonymousAccessible = anonymousAccessible;
 	}
 }
