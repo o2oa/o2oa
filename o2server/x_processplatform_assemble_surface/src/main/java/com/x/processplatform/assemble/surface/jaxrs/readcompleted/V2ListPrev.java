@@ -13,7 +13,7 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
 
 class V2ListPrev extends V2Base {
 
@@ -36,7 +36,7 @@ class V2ListPrev extends V2Base {
 
 	public static class Wo extends AbstractWo {
 		private static final long serialVersionUID = -4773789253221941109L;
-		static WrapCopier<Read, Wo> copier = WrapCopierFactory.wo(Read.class, Wo.class,
-				JpaObject.singularAttributeField(Read.class, true, false), JpaObject.FieldsInvisible);
+		static WrapCopier<ReadCompleted, Wo> copier = WrapCopierFactory.wo(ReadCompleted.class, Wo.class,
+				JpaObject.singularAttributeField(ReadCompleted.class, true, false), JpaObject.FieldsInvisible);
 	}
 }
