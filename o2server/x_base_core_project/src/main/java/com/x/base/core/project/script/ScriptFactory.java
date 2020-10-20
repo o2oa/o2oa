@@ -101,13 +101,13 @@ public class ScriptFactory {
 		return COMPILEDSCRIPT_INITIALSCRIPTTEXT;
 	}
 
-//	public static String functionalization(String text) {
-//		StringBuffer sb = new StringBuffer();
-//		sb.append("(function(){").append(System.lineSeparator());
-//		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
-//		sb.append("})();");
-//		return sb.toString();
-//	}
+	public static String functionalization(String text) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("(function(){").append(System.lineSeparator());
+		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
+		sb.append("})();");
+		return sb.toString();
+	}
 
 	public static List<String> asStringList(Object o) throws Exception {
 		return readAsStringList(o);
