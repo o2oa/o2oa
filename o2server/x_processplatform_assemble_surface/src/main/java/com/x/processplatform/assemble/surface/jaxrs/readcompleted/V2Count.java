@@ -25,8 +25,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.Task_;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.ReadCompleted_;
 
 class V2Count extends V2Base {
 
@@ -59,16 +59,16 @@ class V2Count extends V2Base {
 	}
 
 	private Long count(Business business, Predicate predicate) throws Exception {
-		return business.entityManagerContainer().count(Task.class, predicate);
+		return business.entityManagerContainer().count(ReadCompleted.class, predicate);
 	}
 
 	private List<NameValueCountPair> groupByApplication(Business business, Predicate predicate) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Task.class);
+		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-		Root<Task> root = cq.from(Task.class);
-		Path<String> pathApplication = root.get(Task_.application);
-		Path<String> pathApplicationName = root.get(Task_.applicationName);
+		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+		Path<String> pathApplication = root.get(ReadCompleted_.application);
+		Path<String> pathApplicationName = root.get(ReadCompleted_.applicationName);
 		cq.multiselect(pathApplication, pathApplicationName, cb.count(root)).where(predicate).groupBy(pathApplication);
 		List<Tuple> os = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> list = new ArrayList<>();
@@ -85,12 +85,12 @@ class V2Count extends V2Base {
 	}
 
 	private List<NameValueCountPair> groupByProcess(Business business, Predicate predicate) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Task.class);
+		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-		Root<Task> root = cq.from(Task.class);
-		Path<String> pathProcess = root.get(Task_.process);
-		Path<String> pathProcessName = root.get(Task_.processName);
+		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+		Path<String> pathProcess = root.get(ReadCompleted_.process);
+		Path<String> pathProcessName = root.get(ReadCompleted_.processName);
 		cq.multiselect(pathProcess, pathProcessName, cb.count(root)).where(predicate).groupBy(pathProcess);
 		List<Tuple> os = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> list = new ArrayList<>();
@@ -107,11 +107,11 @@ class V2Count extends V2Base {
 	}
 
 	private List<NameValueCountPair> groupByCreatorPerson(Business business, Predicate predicate) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Task.class);
+		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-		Root<Task> root = cq.from(Task.class);
-		Path<String> pathCreatorPerson = root.get(Task_.creatorPerson);
+		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+		Path<String> pathCreatorPerson = root.get(ReadCompleted_.creatorPerson);
 		cq.multiselect(pathCreatorPerson, cb.count(root)).where(predicate).groupBy(pathCreatorPerson);
 		List<Tuple> os = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> list = new ArrayList<>();
@@ -128,11 +128,11 @@ class V2Count extends V2Base {
 	}
 
 	private List<NameValueCountPair> groupByCreatorUnit(Business business, Predicate predicate) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Task.class);
+		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-		Root<Task> root = cq.from(Task.class);
-		Path<String> pathCreatorUnit = root.get(Task_.creatorUnit);
+		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+		Path<String> pathCreatorUnit = root.get(ReadCompleted_.creatorUnit);
 		cq.multiselect(pathCreatorUnit, cb.count(root)).where(predicate).groupBy(pathCreatorUnit);
 		List<Tuple> os = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> list = new ArrayList<>();
@@ -149,11 +149,11 @@ class V2Count extends V2Base {
 	}
 
 	private List<NameValueCountPair> groupByStartTimeMonth(Business business, Predicate predicate) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Task.class);
+		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-		Root<Task> root = cq.from(Task.class);
-		Path<String> pathStartTimeMonth = root.get(Task_.startTimeMonth);
+		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+		Path<String> pathStartTimeMonth = root.get(ReadCompleted_.startTimeMonth);
 		cq.multiselect(pathStartTimeMonth, cb.count(root)).where(predicate).groupBy(pathStartTimeMonth);
 		List<Tuple> os = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> list = new ArrayList<>();
