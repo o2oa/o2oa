@@ -192,10 +192,12 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     _setValue: function(value){
 	    debugger;
 	    if (value && value.isAG){
-	        this.moduleValueAG = o2.AG.all(value).then(function(v){
+	        var ag = o2.AG.all(value).then(function(v){
 	            if (o2.typeOf(v)=="array") v = v[0];
                 this.__setValue(v);
             }.bind(this));
+            this.moduleValueAG = ag;
+	        ag.then()
         }else {
             Promise.resolve(value).then(function(v){
                 this.__setValue(v);
@@ -267,7 +269,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
                 this.__setData(v);
             }.bind(this));
         }else{
-            this.__setData(data);
+            Promise.resolve(data).then(function(v){
+                this.__setValue(v);
+            }.bind(this));
+            //this.__setData(data);
         }
 	},
     __setData: function(data){
