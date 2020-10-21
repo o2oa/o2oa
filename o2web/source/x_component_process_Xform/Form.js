@@ -3944,10 +3944,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         //新建检查
         this.workAction.checkDraft(this.businessData.work.id, function (json) {
             // var str = JSON.stringify(json);
-            console.log("checkDraft 成功。。。。。。。。。。。。");
             _self.finishOnMobileReal();
         }.bind(this), function () {
-            console.log("checkDraft 失败。。。。。。。。。。。。。。");
             _self.finishOnMobileReal();
         }, false);
 
@@ -3955,16 +3953,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
     finishOnMobileReal: function () {
         if (window.o2android && window.o2android.closeWork) {
-            console.log("finishOnMobileReal o2android。。。。。。。。。。。。。。");
             window.o2android.closeWork("");
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {
-            console.log("finishOnMobileReal ios 。。。。。。。。。。。。。。");
             window.webkit.messageHandlers.closeWork.postMessage("");
         } else if (window.wx && window.__wxjs_environment === 'miniprogram') { //微信小程序 关闭页面
-            console.log("finishOnMobileReal xiaochengxu。。。。。。。。。。。。。。");
             wx.miniProgram.navigateBack({ delta: 1 });
         } else {
-            console.log("finishOnMobileReal web。。。。。。。。。。。。。。");
             var len = window.history.length;
             if (len > 1) {
                 history.back();
