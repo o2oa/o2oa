@@ -1103,6 +1103,22 @@ MWF.xApplication.process.Work.Processor = new Class({
             }
         }
     },
+    getVisableOrgData : function( routeId ){
+        if( !this.hasHiddenOrg )this.hasHiddenOrg = {};
+        var selectConfigList = this.getOrgData( routeId );
+        var list = [];
+        ( selectConfigList || [] ).each( function (config) {
+            if( config.hiddenScript && config.hiddenScript.code ){ //如果隐藏路由，返回
+                var hidden = this.form.Macro.exec(config.hiddenScript.code, this);
+                if( !hidden || hidden.toString() !== "true" ){
+                    list.push( config );
+                }else{
+                    this.hasHiddenOrg[ routeId ] = true;
+                }
+            }
+        });
+        return list;
+    },
     loadOrgs_mobile : function( route ){
         if( !this.form || !route ){
             this.orgsArea.hide();
@@ -1210,7 +1226,10 @@ MWF.xApplication.process.Work.Processor = new Class({
             if( route === key ){
                 this.orgTableObject[key].show();
                 this.orgItems = this.orgItemsObject[key] || [];
+
                 var data = this.getOrgData( route );
+                var dataVisable = this.getVisableOrgData( route );
+
                 this.setSize( data.length );
                 isLoaded = true;
             }else{
@@ -1237,28 +1256,6 @@ MWF.xApplication.process.Work.Processor = new Class({
             }).inject( this.orgsArea );
             this.orgTableObject[route] = routeOrgTable;
 
-            //if( len <= this.options.maxOrgCountPerline ){
-            //    var width = 1 / len * 100;
-            //    var tr = new Element("tr").inject( routeOrgTable );
-            //    for (var n=0; n<len; n++){
-            //        new Element("td", { "width" : width+"%", "styles" : this.css.routeOrgOddTd }).inject( tr );
-            //    }
-            //}else{
-            //    var lines = ((len+1)/this.options.maxOrgCountPerline).toInt();
-            //    var width = 1 / this.options.maxOrgCountPerline * 100;
-            //    for( var n=0; n<lines; n++ ){
-            //        var tr = new Element("tr").inject( routeOrgTable );
-            //        for( var i=0; i<this.options.maxOrgCountPerline; i++ ){
-            //            new Element("td", { "width" : width+"%", "styles" : this.css.routeOrgOddTd }).inject( tr );
-            //        }
-            //    }
-            //}
-            //
-            //var tds = routeOrgTable.getElements("td");
-            //data.each( function( config, i ){
-            //    this.loadOrg( tds[i], config )
-            //}.bind(this))
-
             var lines = ((len+1)/2).toInt();
             for (var n=0; n<lines; n++){
                 var tr = new Element("tr").inject( routeOrgTable );
@@ -1276,11 +1273,13 @@ MWF.xApplication.process.Work.Processor = new Class({
                     trs[trs.length-1].getLast("td").destroy();
                     sNode.setStyle("border","0px");
                     sNode.set("width","100%");
+                    sNode.store( "orgId", config.name );
                     this.loadOrg( sNode, config, "all", ignoreFirstOrgOldData && i==0)
                 }else{
                     var row = ((i+2)/2).toInt();
                     var tr = trs[row-1];
                     sNode = (i % 2===0) ? tr.getFirst("td") : tr.getLast("td");
+                    sNode.store( "orgId", config.name );
                     this.loadOrg( sNode, config, (i % 2===0) ? "left" : "right", ignoreFirstOrgOldData && i==0 )
                 }
             }.bind(this))
