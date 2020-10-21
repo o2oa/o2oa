@@ -1275,11 +1275,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 this.businessData.work = json.data.work;
                 this.app.options.draftId = json.data.work.id;
 
-                if (layout.app && layout.app.inBrowser){
+                if (layout.app && layout.app.inBrowser) {
                     if (layout.app) layout.app.$openWithSelf = true;
                     if (callback) callback();
-                    if (!isstart) layout.desktop.openApplication(null, "process.Work", {"draftId": this.app.options.draftId});
-                }else{
+                    if (!isstart) layout.desktop.openApplication(null, "process.Work", { "draftId": this.app.options.draftId });
+                } else {
                     this.app.options.desktopReload = true;
 
                     this.app.appId = "process.Work" + json.data.work.id;
@@ -1855,7 +1855,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         layout.notice(MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject));
                     }
                 } else {
-                    if (layout.desktop.message){
+                    if (layout.desktop.message) {
                         var msg = {
                             "subject": MWF.xApplication.process.Xform.LP.processStarted,
                             "content": "<div>" + MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject) + "”</div>"
@@ -1865,9 +1865,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         var item = layout.desktop.message.addMessage(msg);
                     }
                 }
-                if (layout.app && layout.app.inBrowser){
+                if (layout.app && layout.app.inBrowser) {
                     if (layout.app) layout.app.$openWithSelf = true;
-                    layout.desktop.openApplication(null, "process.Work", {"workId": this.app.options.workId, "action": "processTask"});
+                    layout.desktop.openApplication(null, "process.Work", { "workId": this.app.options.workId, "action": "processTask" });
                 }
                 this.app.options.action = "processTask";
                 this.app.reload();
@@ -3887,7 +3887,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     this.close();
                 }
             }
-            
+
         }, function () {
             this.close();
         }, null, this.app.content, this.json.confirmStyle);
@@ -3944,10 +3944,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         //新建检查
         this.workAction.checkDraft(this.businessData.work.id, function (json) {
             // var str = JSON.stringify(json);
-
+            console.log("checkDraft 成功。。。。。。。。。。。。");
             _self.finishOnMobileReal();
         }.bind(this), function () {
-
+            console.log("checkDraft 失败。。。。。。。。。。。。。。");
             _self.finishOnMobileReal();
         }, false);
 
@@ -3955,14 +3955,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
     finishOnMobileReal: function () {
         if (window.o2android && window.o2android.closeWork) {
+            console.log("finishOnMobileReal o2android。。。。。。。。。。。。。。");
             window.o2android.closeWork("");
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {
+            console.log("finishOnMobileReal ios 。。。。。。。。。。。。。。");
             window.webkit.messageHandlers.closeWork.postMessage("");
         } else if (window.wx && window.__wxjs_environment === 'miniprogram') { //微信小程序 关闭页面
+            console.log("finishOnMobileReal xiaochengxu。。。。。。。。。。。。。。");
             wx.miniProgram.navigateBack({ delta: 1 });
-        } else if (window.wx) { //微信关闭 当前页面
-            wx.closeWindow();
         } else {
+            console.log("finishOnMobileReal web。。。。。。。。。。。。。。");
             var len = window.history.length;
             if (len > 1) {
                 history.back();
