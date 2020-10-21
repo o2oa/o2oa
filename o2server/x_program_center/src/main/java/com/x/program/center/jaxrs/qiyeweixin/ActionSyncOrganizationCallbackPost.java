@@ -4,6 +4,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoText;
+import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.ThisApplication;
@@ -12,18 +13,19 @@ class ActionSyncOrganizationCallbackPost extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionSyncOrganizationCallbackPost.class);
 
-	// msg_signature=ASDFQWEXZCVAQFASDFASDFSS&timestamp=13500001234&nonce=123412323&echostr=ENCRYPT_STR
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String msg_signature, String timestamp, String nonce,
-			String echostr, String body) throws Exception {
-		logger.info("企业微信接收到通讯录同步消息,msg_signature:{}, timestamp:{}, nonce:{}, echostr:{}, body:{}.", msg_signature,
-				timestamp, nonce, echostr, body);
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String msg_signature, String timestamp, String nonce
+			, String body) throws Exception {
+		logger.info("企业微信接收到通讯录同步消息,msg_signature:{}, timestamp:{}, nonce:{}, body:{}.", msg_signature,
+				timestamp, nonce, body);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		if (Config.qiyeweixin().getEnable()) {
 			WXBizMsgCrypt crypt = new WXBizMsgCrypt(Config.qiyeweixin().getToken(),
 					Config.qiyeweixin().getEncodingAesKey(), Config.qiyeweixin().getCorpId());
-			String value = crypt.VerifyURL(msg_signature, timestamp, nonce, echostr);
-			wo.setText(value);
+//			String value = crypt.VerifyURL(msg_signature, timestamp, nonce, echostr);
+			String msg = crypt.DecryptMsg(msg_signature, timestamp, nonce, body);
+			logger.info(msg);
+			wo.setValue(true);
 			ThisApplication.qiyeweixinSyncOrganizationCallbackRequest.add(body);
 		} else {
 			throw new ExceptionNotPullSync();
@@ -32,7 +34,7 @@ class ActionSyncOrganizationCallbackPost extends BaseAction {
 		return result;
 	}
 
-	public static class Wo extends WoText {
+	public static class Wo extends WrapBoolean {
 	}
 
 }
