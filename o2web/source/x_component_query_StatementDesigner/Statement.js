@@ -303,7 +303,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
         var height = size.y;
 
-        var designAreaHeight = this.designerAreaPercent*height;
+        var designAreaHeight = this.designerAreaPercent*height - 52;
         // var runAreaHeight = height-designAreaHeight;
 
         this.designerArea.setStyle("height", ""+designAreaHeight+"px");
@@ -410,7 +410,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                                 this.editor.editor.setValue("DELETE " + table + " o WHERE ");
                                 break;
                             default:
-                                this.editor.editor.setValue("SELECT * FROM " + table + " o");
+                                this.editor.editor.setValue("SELECT o FROM " + table + " o");
                         }
                     }
                     this.json.data = this.editor.editor.getValue();
@@ -475,7 +475,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     this.editor.editor.setValue("DELETE " + table + " o WHERE ");
                     break;
                 default:
-                    this.editor.editor.setValue("SELECT * FROM " + table + " o");
+                    this.editor.editor.setValue("SELECT o FROM " + table + " o");
             }
         }
     },
