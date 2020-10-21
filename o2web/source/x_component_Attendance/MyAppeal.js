@@ -69,12 +69,12 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
                         "selectText" :["","临时请假","出差","因公外出","其他"]
                     },
                     action : { "value" : "查询", type : "button", className : "filterButton", event : {
-                        click : function(){
-                            var result = this.form.getResult(true,",",true,true,false);
-                            if( !result )return;
-                            this.loadView( result );
-                        }.bind(this)
-                    }}
+                            click : function(){
+                                var result = this.form.getResult(true,",",true,true,false);
+                                if( !result )return;
+                                this.loadView( result );
+                            }.bind(this)
+                        }}
                 }
             }, this.app, this.css);
             this.form.load();
@@ -285,14 +285,17 @@ MWF.xApplication.Attendance.MyAppeal.View = new Class({
 
     },
     _openDocument: function( documentData ){
-        if(!!documentData.appealAuditInfo){
-            var workid = documentData.appealAuditInfo.workId;
-            var options = {"workId":workid, "appId": "process.Work"+workid};
-            this.app.desktop.openApplication(null, "process.Work", options);
-        }else{
-            var appeal = new MWF.xApplication.Attendance.MyAppeal.Appeal(this.explorer, documentData );
-            appeal.open();
+
+        if(documentData.appealAuditInfo){
+            if(documentData.appealAuditInfo.workId){
+                var workid = documentData.appealAuditInfo.workId;
+                var options = {"workId":workid, "appId": "process.Work"+workid};
+                this.app.desktop.openApplication(null, "process.Work", options);
+                return;
+            }
         }
+        var appeal = new MWF.xApplication.Attendance.MyAppeal.Appeal(this.explorer, documentData );
+        appeal.open();
 
     }
 
@@ -450,15 +453,15 @@ MWF.xApplication.Attendance.MyAppeal.Appeal = new Class({
                 offDutyTime : { text:"下班打卡时间",  type : "innertext"},
                 statusShow : {  text:"考勤状态", type : "innertext" },
                 appealStatusShow : { text:"审批状态",type : "innertext"},
-                processPerson1Show : {text:"审核人",type:"innertext", value : this.data.processPerson1.split("@")[0] },
+                processPerson1Show : {text:"审核人",type:"innertext", value : this.data.processPerson1?this.data.processPerson1.split("@")[0] :""},
                 appealReason : {
                     notEmpty : true,
                     text:"申述原因",
                     type : "select",
                     selectValue : ["","临时请假","出差","因公外出","其他"],
                     event : { change : function(mdi){
-                        _self.switchFieldByAppealReason(mdi.getValue());
-                    }}
+                            _self.switchFieldByAppealReason(mdi.getValue());
+                        }}
                 },
                 address : { text:"地点" },
                 selfHolidayType : {
