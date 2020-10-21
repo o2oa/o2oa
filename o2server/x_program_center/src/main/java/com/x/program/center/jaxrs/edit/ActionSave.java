@@ -42,12 +42,24 @@ public class ActionSave extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
 		String curServer = request.getLocalAddr();
-		
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String fileName = wi.getFileName();
+		
+		if(fileName == null) {
+			wo.setTime(df.format(new Date()));
+			wo.setStatus("failure");
+			wo.setMessage("文件名为null");
+			result.setData(wo);
+			return result;
+		}
+		
 		String data = wi.getFileContent();
+		
+		if(fileName.equalsIgnoreCase("node_127.0.0.1.json")) {
+			fileName = "node_"+ curServer +".json";
+		}
 
 		if(!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			wo.setTime(df.format(new Date()));
 			wo.setStatus("failure");
 			wo.setMessage("禁止编辑");
@@ -76,13 +88,15 @@ public class ActionSave extends BaseAction {
 		for (String node : nodes.keySet()){
 			//其他服务器
 			if(!node.equalsIgnoreCase(curServer)) {
-				if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
-					boolean Syncflag = executeSyncFile(Config.dir_config()+"/"+fileName , node ,nodes.get(node).nodeAgentPort());
+				if(!node.equalsIgnoreCase("127.0.0.1")) {
+					if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
+						boolean Syncflag = executeSyncFile(Config.DIR_CONFIG+"/"+fileName , node ,nodes.get(node).nodeAgentPort());
+					}
 				}
 			}
 		}
 		
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 		wo.setTime(df.format(new Date()));
 		wo.setStatus("success");
 		result.setData(wo);
