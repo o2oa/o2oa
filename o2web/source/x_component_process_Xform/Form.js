@@ -3944,10 +3944,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         //新建检查
         this.workAction.checkDraft(this.businessData.work.id, function (json) {
             // var str = JSON.stringify(json);
-
             _self.finishOnMobileReal();
         }.bind(this), function () {
-
             _self.finishOnMobileReal();
         }, false);
 
@@ -3960,8 +3958,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             window.webkit.messageHandlers.closeWork.postMessage("");
         } else if (window.wx && window.__wxjs_environment === 'miniprogram') { //微信小程序 关闭页面
             wx.miniProgram.navigateBack({ delta: 1 });
-        } else if (window.wx) { //微信关闭 当前页面
-            wx.closeWindow();
         } else {
             var len = window.history.length;
             if (len > 1) {
