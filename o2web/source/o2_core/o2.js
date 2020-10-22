@@ -207,23 +207,35 @@
     this.o2.uuid = _uuid;
 
 
-    var _runCallback = function(callback, key, par, bind){
+    var _runCallback = function(callback, key, par, bind, promise_cb){
         var b = bind || callback;
-        var type = o2.typeOf(callback).toLowerCase();
         if (!key) key = "success";
 
-        if (key.toLowerCase()==="success" && (type==="function" || type==="o2_async_function")){
-            callback.apply(b, par);
-        }else{
-            if (type==="function" || type==="object" || type==="o2_async_function"){
+        var cb;
+        if (callback){
+            var type = o2.typeOf(callback).toLowerCase();
+            if (key.toLowerCase()==="success" && type==="function"){
+                cb = callback;
+            }else{
                 var name = ("on-"+key).camelCase();
-                if (callback[name]){
-                    callback[name].apply(b, par);
-                }else{
-                    if (callback[key]) callback[key].apply(b, par);
-                }
+                cb = (callback[name]) ? callback[name] : ((callback[key]) ? callback[key] : null);
             }
         }
+        if (cb) return (promise_cb) ? promise_cb(cb.apply(b, par)) : cb.apply(b, par) ;
+        return (promise_cb) ? promise_cb.apply(b, par) : null;
+
+        // if (key.toLowerCase()==="success" && (type==="function" || type==="o2_async_function")){
+        //     (promise_cb) ? promise_cb(callback.apply(b, par)) : callback.apply(b, par) ;
+        // }else{
+        //     if (type==="function" || type==="object" || type==="o2_async_function"){
+        //         var name = ("on-"+key).camelCase();
+        //         if (callback[name]){
+        //             (promise_cb) ? promise_cb(callback[name].apply(b, par)) : callback[name].apply(b, par);
+        //         }else{
+        //             if (callback[key]) (promise_cb) ? promise_cb(callback[key].apply(b, par)) : callback[key].apply(b, par);
+        //         }
+        //     }
+        // }
 
 
         // if (typeOf(callback).toLowerCase() === 'function'){
@@ -1379,6 +1391,7 @@
         var useWebWorker = (window.layout && layout.config && layout.config.useWebWorker);
         //var noCache = false;
         if (!loadAsync || !useWebWorker){
+            debugger;
             var res;
             var p = new Promise(function(s,f){
                 res = new Request.JSON({
@@ -1399,13 +1412,13 @@
                                 layout.session.token = xToken;
                             }
                         }
-                        o2.runCallback(callback, "success", [responseJSON]);
+                        return o2.runCallback(callback, "success", [responseJSON],null, s);
                     },
                     onFailure: function(xhr){
-                        o2.runCallback(callback, "requestFailure", [xhr]);
+                        return o2.runCallback(callback, "requestFailure", [xhr], null, f);
                     }.bind(this),
                     onError: function(text, error){
-                        o2.runCallback(callback, "error", [text, error]);
+                        return o2.runCallback(callback, "error", [text, error], null, f);
                     }.bind(this)
                 });
 
@@ -1426,7 +1439,7 @@
                 res.send(data);
             }.bind(this));
 
-            var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
+            //var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
             var oReturn = p;
             oReturn.res = res;
             return oReturn;
@@ -1442,24 +1455,28 @@
                 token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : ""
             }
             var actionWorker = new Worker("../o2_core/o2/actionWorker.js");
-            actionWorker.onmessage = function(e) {
-                result = e.data;
-                if (result.type==="done"){
-                    var xToken = result.data.xToken;
-                    if (xToken){
-                        if (window.layout){
-                            if (!layout.session) layout.session = {};
-                            layout.session.token = xToken;
+            var p = new Promise(function(s,f){
+                actionWorker.onmessage = function(e) {
+                    result = e.data;
+                    if (result.type==="done"){
+                        var xToken = result.data.xToken;
+                        if (xToken){
+                            if (window.layout){
+                                if (!layout.session) layout.session = {};
+                                layout.session.token = xToken;
+                            }
                         }
+                        o2.runCallback(callback, "success", [result.data], null, s);
+                    }else{
+                        o2.runCallback(callback, "failure", [result.data], null, f);
                     }
-                    o2.runCallback(callback, "success", [result.data]);
-                }else{
-                    o2.runCallback(callback, "failure", [result.data]);
+                    actionWorker.terminate();
                 }
-                actionWorker.terminate();
-            }
-            actionWorker.postMessage(workerMessage);
-            var oReturn = (callback.success && callback.success.addResolve) ? callback.success : callback;
+                actionWorker.postMessage(workerMessage);
+            }.bind(this));
+
+            //var oReturn = (callback.success && callback.success.addResolve) ? callback.success : callback;
+            var oReturn = p;
             oReturn.actionWorker = actionWorker;
             return oReturn;
             //return callback;
@@ -1629,15 +1646,15 @@
     // });
     Date.getFromServer = function(async){
         var d;
-        var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+        var cb = ((async && o2.typeOf(async)=="function") ? async : null) || function(json){
         //var cb = function(json){
             d = Date.parse(json.data.serverTime);
             return d;
-        }.ag().catch(function(json){ return d; });
+        };
 
-        o2.Actions.get("x_program_center").echo(cb, null, !!async);
+        var promise = o2.Actions.get("x_program_center").echo(cb, null, !!async);
 
-        return (!!async) ? cb : d;
+        return (!!async) ? promise : d;
 
             // if (callback){
             //     o2.Actions.get("x_program_center").echo(function(json){
@@ -1686,147 +1703,154 @@
         return oReturn;
     }
 
-    var _AsyncGeneratorPrototype = _Class.create({
-        initialize: function(resolve, reject, name){
-            this.isAG = true;
-            this.name = name || "";
-            this._createSuccess();
-            this._createFailure();
-            if (resolve) this.success.resolve = resolve;
-            if (reject) this.failure.reject = reject;
-        },
-        //$family: function(){ return "o2_async_function"; },
-        _createSuccess: function(){
-            var _self = this;
-            this.success = function(){
-                var result;
-                if (_self.success.resolve) result = _self.success.resolve.apply(this, arguments);
-                if (_self.success.resolveList){
-                    _self.success.resolveList.each(function(r){
-                        result = r(result, arguments) || result;
-                    });
-                }
-                _self.isSuccess = true;
-                _self.result = result;
-                _self.arg = arguments;
-                return result;
-            }
-        },
-        _createFailure: function(){
-            var _self = this;
-            this.failure = function(){
-                var result;
-                if (_self.failure.reject) result = _self.failure.reject.apply(this, arguments);
-                if (_self.failure.rejectList){
-                    _self.failure.rejectList.each(function(r){
-                        result = r(result, arguments) || result;
-                    });
-                }
-                _self.isFailure = true;
-                _self.result = result;
-                _self.arg = arguments;
-                return result;
-            }
-        },
-        setResolve: function(resolve){
-            if (!this.success) this._createSuccess();
-            this.success.resolve = resolve;
-            return this;
-        },
-        setReject: function(reject){
-            if (!this.failure) this._createFailure();
-            this.failure.reject = reject;
-            return this;
-        },
-        addResolve: function(resolve){
-            if (!this.success) this._createSuccess();
-            if (resolve){
-                if (this.isSuccess){
-                    this.result = resolve(this.result, this.arg);
-                }else{
-                    if (!this.success.resolve){
-                        this.success.resolve = resolve;
-                    }else{
-                        if (!this.success.resolveList) this.success.resolveList = [];
-                        this.success.resolveList.push(resolve);
-                    }
-                }
-            }
-            return this;
-        },
-        addReject: function(reject){
-            if (!this.failure) this._createFailure();
-            if (reject){
-                if (this.isFailure){
-                    this.result = reject(this.result, this.arg);
-                }else{
-                    if (!this.failure.reject){
-                        this.failure.reject = reject;
-                    }else{
-                        if (!this.failure.rejectList) this.failure.rejectList = [];
-                        this.failure.rejectList.push(reject);
-                    }
-                }
-            }
-            return this;
-        },
-        then: function(resolve){
-            return this.addResolve(resolve);
-        },
-        "catch": function(reject){
-            return this.addReject(reject);
-        },
-    });
-    var _AsyncGenerator = function(resolve, reject, name){
-        var asyncGeneratorPrototype = new _AsyncGeneratorPrototype(resolve, reject, name);
-        return Object.appendChain(asyncGeneratorPrototype, "if (this.success) this.success.apply(this, arguments);");
+    // user promise
+    // var _AsyncGeneratorPrototype = _Class.create({
+    //     initialize: function(resolve, reject, name){
+    //         this.isAG = true;
+    //         this.name = name || "";
+    //         this._createSuccess();
+    //         this._createFailure();
+    //         if (resolve) this.success.resolve = resolve;
+    //         if (reject) this.failure.reject = reject;
+    //     },
+    //     //$family: function(){ return "o2_async_function"; },
+    //     _createSuccess: function(){
+    //         var _self = this;
+    //         this.success = function(){
+    //             var result;
+    //             if (_self.success.resolve) result = _self.success.resolve.apply(this, arguments);
+    //             if (_self.success.resolveList){
+    //                 _self.success.resolveList.each(function(r){
+    //                     result = r(result, arguments) || result;
+    //                 });
+    //             }
+    //             _self.isSuccess = true;
+    //             _self.result = result;
+    //             _self.arg = arguments;
+    //             return result;
+    //         }
+    //     },
+    //     _createFailure: function(){
+    //         var _self = this;
+    //         this.failure = function(){
+    //             var result;
+    //             if (_self.failure.reject) result = _self.failure.reject.apply(this, arguments);
+    //             if (_self.failure.rejectList){
+    //                 _self.failure.rejectList.each(function(r){
+    //                     result = r(result, arguments) || result;
+    //                 });
+    //             }
+    //             _self.isFailure = true;
+    //             _self.result = result;
+    //             _self.arg = arguments;
+    //             return result;
+    //         }
+    //     },
+    //     setResolve: function(resolve){
+    //         if (!this.success) this._createSuccess();
+    //         this.success.resolve = resolve;
+    //         return this;
+    //     },
+    //     setReject: function(reject){
+    //         if (!this.failure) this._createFailure();
+    //         this.failure.reject = reject;
+    //         return this;
+    //     },
+    //     addResolve: function(resolve){
+    //         if (!this.success) this._createSuccess();
+    //         if (resolve){
+    //             if (this.isSuccess){
+    //                 this.result = resolve(this.result, this.arg);
+    //             }else{
+    //                 if (!this.success.resolve){
+    //                     this.success.resolve = resolve;
+    //                 }else{
+    //                     if (!this.success.resolveList) this.success.resolveList = [];
+    //                     this.success.resolveList.push(resolve);
+    //                 }
+    //             }
+    //         }
+    //         return this;
+    //     },
+    //     addReject: function(reject){
+    //         if (!this.failure) this._createFailure();
+    //         if (reject){
+    //             if (this.isFailure){
+    //                 this.result = reject(this.result, this.arg);
+    //             }else{
+    //                 if (!this.failure.reject){
+    //                     this.failure.reject = reject;
+    //                 }else{
+    //                     if (!this.failure.rejectList) this.failure.rejectList = [];
+    //                     this.failure.rejectList.push(reject);
+    //                 }
+    //             }
+    //         }
+    //         return this;
+    //     },
+    //     then: function(resolve){
+    //         return this.addResolve(resolve);
+    //     },
+    //     "catch": function(reject){
+    //         return this.addReject(reject);
+    //     },
+    // });
+    // var _AsyncGenerator = function(resolve, reject, name){
+    //     var asyncGeneratorPrototype = new _AsyncGeneratorPrototype(resolve, reject, name);
+    //     return Object.appendChain(asyncGeneratorPrototype, "if (this.success) this.success.apply(this, arguments);");
+    // }
+    //
+    // //@todo
+    // _AsyncGenerator.all = function(arr){
+    //     var result = [];
+    //     var ag = function (){
+    //         return result;
+    //     }.ag();
+    //
+    //     if (o2.typeOf(arr) !== "array") arr = [arr];
+    //
+    //     var count  = arr.length;
+    //     var check = function(){
+    //         count--;
+    //         if (count<=0)ag();
+    //     }
+    //
+    //     //window.setTimeout(function(){
+    //         arr.forEach(function(a){
+    //             if (typeOf(a)=="array"){
+    //                 o2.AG.all(a).then(function(v){
+    //                     result = result.concat(v);
+    //                     check();
+    //                 });
+    //             }else{
+    //                 if (a && a.isAG){
+    //                     a.then(function(v){
+    //                         o2.AG.all(v).then(function(r){
+    //                             result = result.concat(r);
+    //                             check();
+    //                         });
+    //                     });
+    //                 }else{
+    //                     result.push(a);
+    //                     check();
+    //                 }
+    //             }
+    //         });
+    //     //}, 0);
+    //     return ag;
+    // }
+    //
+    // o2.AsyncGenerator = o2.AG = _AsyncGenerator;
+    //
+    // Function.prototype.ag = function(){
+    //     return o2.AG(this);
+    // };
+
+    var _promiseAll = function(p){
+        var method = (o2.typeOf(p)=="array") ? "all" : "resolve";
+        return Promise[method](p);
     }
-
-    //@todo
-    _AsyncGenerator.all = function(arr){
-        var result = [];
-        var ag = function (){
-            return result;
-        }.ag();
-
-        if (o2.typeOf(arr) !== "array") arr = [arr];
-
-        var count  = arr.length;
-        var check = function(){
-            count--;
-            if (count<=0)ag();
-        }
-
-        //window.setTimeout(function(){
-            arr.forEach(function(a){
-                if (typeOf(a)=="array"){
-                    o2.AG.all(a).then(function(v){
-                        result = result.concat(v);
-                        check();
-                    });
-                }else{
-                    if (a && a.isAG){
-                        a.then(function(v){
-                            o2.AG.all(v).then(function(r){
-                                result = result.concat(r);
-                                check();
-                            });
-                        });
-                    }else{
-                        result.push(a);
-                        check();
-                    }
-                }
-            });
-        //}, 0);
-        return ag;
-    }
-
-    o2.AsyncGenerator = o2.AG = _AsyncGenerator;
-
-    Function.prototype.ag = function(){
-        return o2.AG(this);
-    }
+    o2.promiseAll = _promiseAll;
 
 })();
 o2.core = true;

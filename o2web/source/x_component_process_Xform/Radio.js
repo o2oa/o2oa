@@ -106,7 +106,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
     },
 
 	_setOptions: function(optionItems){
-        this.moduleSelectAG = o2.AG.all(optionItems).then(function(radioValues){
+        var p = o2.promiseAll(optionItems).then(function(radioValues){
             this.moduleSelectAG = null;
 
             if (!radioValues) radioValues = [];
@@ -154,19 +154,74 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
                     }.bind(this));
                 }.bind(this));
             }
-        }.bind(this))
-        if (this.moduleSelectAG) this.moduleSelectAG.then(function(){
+        }.bind(this));
+        this.moduleSelectAG = p;
+        if (p) p.then(function(){
             this.moduleSelectAG = null;
         }.bind(this));
+
+        // this.moduleSelectAG = o2.AG.all(optionItems).then(function(radioValues){
+        //     this.moduleSelectAG = null;
+        //
+        //     if (!radioValues) radioValues = [];
+        //     if (o2.typeOf(radioValues)==="array"){
+        //         var flag = (new MWF.widget.UUID).toString();
+        //         radioValues.each(function(item){
+        //             var tmps = item.split("|");
+        //             var text = tmps[0];
+        //             var value = tmps[1] || text;
+        //
+        //             var radio = new Element("input", {
+        //                 "type": "radio",
+        //                 "name": (this.json.properties && this.json.properties.name) ? this.json.properties.name : flag+this.json.id,
+        //                 "value": value,
+        //                 "showText": text,
+        //                 "styles": this.json.buttonStyles
+        //             }).inject(this.node);
+        //             //radio.appendText(text, "after");
+        //
+        //             var textNode = new Element( "span", {
+        //                 "text" : text,
+        //                 "styles" : { "cursor" : "default" }
+        //             }).inject(this.node);
+        //             textNode.addEvent("click", function( ev ){
+        //                 if( this.radio.get("disabled") === true || this.radio.get("disabled") === "true" )return;
+        //                 this.radio.checked = true;
+        //                 this.radio.fireEvent("change");
+        //                 this.radio.fireEvent("click");
+        //             }.bind( {radio : radio} ) );
+        //
+        //             radio.addEvent("click", function(){
+        //                 this.validationMode();
+        //                 if (this.validation()) this._setBusinessData(this.getInputData("change"));
+        //             }.bind(this));
+        //
+        //             Object.each(this.json.events, function(e, key){
+        //                 if (e.code){
+        //                     if (this.options.moduleEvents.indexOf(key)!=-1){
+        //                     }else{
+        //                         radio.addEvent(key, function(event){
+        //                             return this.form.Macro.fire(e.code, this, event);
+        //                         }.bind(this));
+        //                     }
+        //                 }
+        //             }.bind(this));
+        //         }.bind(this));
+        //     }
+        // }.bind(this))
+        // if (this.moduleSelectAG) this.moduleSelectAG.then(function(){
+        //     this.moduleSelectAG = null;
+        // }.bind(this));
 	},
 
     _setValue: function(value){
-        this.moduleValueAG = o2.AG.all(value).then(function(v){
+        var p = o2.promiseAll(value).then(function(v){
             if (o2.typeOf(v)=="array") v = v[0];
             if (this.moduleSelectAG){
                 this.moduleValueAG = this.moduleSelectAG;
                 this.moduleSelectAG.then(function(){
                     this.__setValue(v);
+                    return v;
                 }.bind(this));
             }else{
                 this.__setValue(v)
@@ -174,9 +229,27 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
             return v;
         }.bind(this));
 
+        this.moduleValueAG = p;
         if (this.moduleValueAG) this.moduleValueAG.then(function(){
             this.moduleValueAG = null;
         }.bind(this));
+
+        // this.moduleValueAG = o2.AG.all(value).then(function(v){
+        //     if (o2.typeOf(v)=="array") v = v[0];
+        //     if (this.moduleSelectAG){
+        //         this.moduleValueAG = this.moduleSelectAG;
+        //         this.moduleSelectAG.then(function(){
+        //             this.__setValue(v);
+        //         }.bind(this));
+        //     }else{
+        //         this.__setValue(v)
+        //     }
+        //     return v;
+        // }.bind(this));
+        //
+        // if (this.moduleValueAG) this.moduleValueAG.then(function(){
+        //     this.moduleValueAG = null;
+        // }.bind(this));
     },
 
     __setValue: function(value){
@@ -238,14 +311,15 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
     },
 
     setData: function(data){
-        if (data && data.isAG){
-            this.moduleValueAG = o2.AG.all(data).then(function(v){
-                if (o2.typeOf(v)=="array") v = v[0];
-                this.__setData(v);
-            }.bind(this));
-        }else{
-            this.__setData(data);
-        }
+        return this._setValue(data);
+        // if (data && data.isAG){
+        //     this.moduleValueAG = o2.AG.all(data).then(function(v){
+        //         if (o2.typeOf(v)=="array") v = v[0];
+        //         this.__setData(v);
+        //     }.bind(this));
+        // }else{
+        //     this.__setData(data);
+        // }
 
         // if (data && data.isAG){
         //     this.moduleValueAG = data;

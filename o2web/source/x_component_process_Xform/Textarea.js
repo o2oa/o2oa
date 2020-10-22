@@ -4,7 +4,6 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
 	Extends: MWF.APP$Input,
 	
 	_loadUserInterface: function(){
-debugger;
 		this._loadNode();
         if (this.json.compute == "show"){
             this._setValue(this._computeValue());
@@ -25,8 +24,7 @@ debugger;
 
 
     _setValue: function(value){
-        this.moduleValueAG = o2.AG.all(value).then(function(v){
-            this.moduleValueAG = null;
+        var p = o2.promiseAll(value).then(function(v){
             if (o2.typeOf(v)=="array") v = v[0];
             this._setBusinessData(v);
             if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
@@ -37,11 +35,30 @@ debugger;
                 var text = value.replace(reg2,"&lt").replace(reg3,"&gt").replace(reg,"<br/>");
                 this.node.set("html", text);
             }
+            //this.__setValue(v);
         }.bind(this));
-
-        if (this.moduleValueAG) this.moduleValueAG.then(function(){
+        this.moduleValueAG = p;
+        p.then(function(){
             this.moduleValueAG = null;
         }.bind(this));
+
+        // this.moduleValueAG = o2.AG.all(value).then(function(v){
+        //     this.moduleValueAG = null;
+        //     if (o2.typeOf(v)=="array") v = v[0];
+        //     this._setBusinessData(v);
+        //     if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
+        //     if (this.readonly || this.json.isReadonly){
+        //         var reg = new RegExp("\n","g");
+        //         var reg2 = new RegExp("\u003c","g"); //尖括号转义，否则内容会截断
+        //         var reg3 = new RegExp("\u003e","g");
+        //         var text = value.replace(reg2,"&lt").replace(reg3,"&gt").replace(reg,"<br/>");
+        //         this.node.set("html", text);
+        //     }
+        // }.bind(this));
+        //
+        // if (this.moduleValueAG) this.moduleValueAG.then(function(){
+        //     this.moduleValueAG = null;
+        // }.bind(this));
 
         return value;
 
