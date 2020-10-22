@@ -128,10 +128,10 @@ class ActionCover extends BaseAction {
 			}
 			if (StringUtils.isNotEmpty(obj.getAlias())) {
 				obj.setAlias(
-						this.idleAliasWithQuery(business, query.getId(), obj.getAlias(), Table.class, obj.getId()));
+						this.idleAliasWithQuery(business, null, obj.getAlias(), Table.class, obj.getId()));
 			}
 			if (StringUtils.isNotEmpty(obj.getName())) {
-				obj.setName(this.idleNameWithQuery(business, query.getId(), obj.getName(), Table.class, obj.getId()));
+				obj.setName(this.idleNameWithQuery(business, null, obj.getName(), Table.class, obj.getId()));
 			}
 			obj.setQuery(query.getId());
 		}
@@ -145,10 +145,10 @@ class ActionCover extends BaseAction {
 			}
 			if (StringUtils.isNotEmpty(obj.getAlias())) {
 				obj.setAlias(
-						this.idleAliasWithQuery(business, query.getId(), obj.getAlias(), Statement.class, obj.getId()));
+						this.idleAliasWithQuery(business, null, obj.getAlias(), Statement.class, obj.getId()));
 			}
 			if (StringUtils.isNotEmpty(obj.getName())) {
-				obj.setName(this.idleNameWithQuery(business, query.getId(), obj.getName(), Statement.class, obj.getId()));
+				obj.setName(this.idleNameWithQuery(business, null, obj.getName(), Statement.class, obj.getId()));
 			}
 			obj.setQuery(query.getId());
 		}
@@ -165,8 +165,6 @@ class ActionCover extends BaseAction {
 		if(!wi.getTableList().isEmpty()){
 			CacheManager.notify(Table.class);
 			CacheManager.notify(Statement.class);
-
-			business.buildAllTable();
 		}else if(!wi.getStatementList().isEmpty()){
 			CacheManager.notify(Statement.class);
 		}
@@ -181,58 +179,6 @@ class ActionCover extends BaseAction {
 		}
 
 		return query;
-	}
-
-	private <T extends JpaObject> String idleNameWithQuery(Business business, String queryId, String name, Class<T> cls,
-			String excludeId) throws Exception {
-		if (StringUtils.isEmpty(name)) {
-			return "";
-		}
-		List<String> list = new ArrayList<>();
-		list.add(name);
-		for (int i = 1; i < 99; i++) {
-			list.add(name + String.format("%02d", i));
-		}
-		list.add(StringTools.uniqueToken());
-		EntityManager em = business.entityManagerContainer().get(cls);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<T> root = cq.from(cls);
-		Predicate p = root.get("name").in(list);
-		p = cb.and(p, cb.equal(root.get("query"), queryId));
-		if (StringUtils.isNotEmpty(excludeId)) {
-			p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), excludeId));
-		}
-		cq.select(root.get("name")).where(p);
-		List<String> os = em.createQuery(cq).getResultList();
-		list = ListUtils.subtract(list, os);
-		return list.get(0);
-	}
-
-	private <T extends JpaObject> String idleAliasWithQuery(Business business, String queryId, String alias,
-			Class<T> cls, String excludeId) throws Exception {
-		if (StringUtils.isEmpty(alias)) {
-			return "";
-		}
-		List<String> list = new ArrayList<>();
-		list.add(alias);
-		for (int i = 1; i < 99; i++) {
-			list.add(alias + String.format("%02d", i));
-		}
-		list.add(StringTools.uniqueToken());
-		EntityManager em = business.entityManagerContainer().get(cls);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<T> root = cq.from(cls);
-		Predicate p = root.get("alias").in(list);
-		p = cb.and(p, cb.equal(root.get("query"), queryId));
-		if (StringUtils.isNotEmpty(excludeId)) {
-			p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), excludeId));
-		}
-		cq.select(root.get("alias")).where(p);
-		List<String> os = em.createQuery(cq).getResultList();
-		list = ListUtils.subtract(list, os);
-		return list.get(0);
 	}
 
 	public static class Wi extends WrapQuery {

@@ -53,16 +53,33 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "编译表对象生成实体类进行数据库建表,执行后需要重新启动.", action = ActionBuildAll.class)
+	@JaxrsMethodDescribe(value = "编译表对象生成实体类进行数据库建表,执行后需要重新启动，支持集群环境.", action = ActionBuildAll.class)
 	@GET
 	@Path("build/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void buildAll(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+	public synchronized void buildAll(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		ActionResult<ActionBuildAll.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionBuildAll().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "编译表对象生成实体类进行数据库建表,执行后需要重新启动，仅对当前服务器.", action = ActionBuild.class)
+	@GET
+	@Path("build")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void build(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionBuild.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionBuild().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -25,13 +25,17 @@ import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.Stat_;
 import com.x.query.core.entity.View;
 import com.x.query.core.entity.View_;
+import com.x.query.core.entity.schema.Statement;
+import com.x.query.core.entity.schema.Statement_;
+import com.x.query.core.entity.schema.Table;
+import com.x.query.core.entity.schema.Table_;
 
 class ActionDelete extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
-		logger.debug(effectivePerson, "flag:{}.", flag);
+		logger.print( "{} delete query flag:{}.",effectivePerson.getDistinguishedName(), flag);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -58,6 +62,16 @@ class ActionDelete extends BaseAction {
 				emc.remove(_o, CheckRemoveType.all);
 			}
 			emc.commit();
+			emc.beginTransaction(Statement.class);
+			for (Statement _o : this.listStatement(business, query)) {
+				emc.remove(_o, CheckRemoveType.all);
+			}
+			emc.commit();
+			emc.beginTransaction(Table.class);
+			for (Table _o : this.listTable(business, query)) {
+				emc.remove(_o, CheckRemoveType.all);
+			}
+			emc.commit();
 			emc.beginTransaction(Query.class);
 			emc.remove(query, CheckRemoveType.all);
 			emc.commit();
@@ -65,6 +79,8 @@ class ActionDelete extends BaseAction {
 			CacheManager.notify(Stat.class);
 			CacheManager.notify(Reveal.class);
 			CacheManager.notify(Query.class);
+			CacheManager.notify(Table.class);
+			CacheManager.notify(Statement.class);
 			Wo wo = new Wo();
 			wo.setId(query.getId());
 			result.setData(wo);
@@ -99,6 +115,26 @@ class ActionDelete extends BaseAction {
 		Root<Reveal> root = cq.from(Reveal.class);
 		Predicate p = cb.equal(root.get(Reveal_.query), query.getId());
 		List<Reveal> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		return os;
+	}
+
+	private List<Table> listTable(Business business, Query query) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Table.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Table> cq = cb.createQuery(Table.class);
+		Root<Table> root = cq.from(Table.class);
+		Predicate p = cb.equal(root.get(Table_.query), query.getId());
+		List<Table> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		return os;
+	}
+
+	private List<Statement> listStatement(Business business, Query query) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Statement.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Statement> cq = cb.createQuery(Statement.class);
+		Root<Statement> root = cq.from(Statement.class);
+		Predicate p = cb.equal(root.get(Statement_.query), query.getId());
+		List<Statement> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		return os;
 	}
 
