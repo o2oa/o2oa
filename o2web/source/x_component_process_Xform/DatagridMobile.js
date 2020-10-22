@@ -193,17 +193,29 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
     },
 
     _loadReadDatagrid: function(callback){
-        if (this.gridData && this.gridData.isAG){
-            this.moduleValueAG = this.gridData;
-            this.gridData.addResolve(function(v){
-                this.gridData = v;
-                this._loadReadDatagrid(callback);
-            }.bind(this));
-        }else{
+        var p = o2.promiseAll(this.gridData).then(function(v){
+            this.gridData = v;
             if (o2.typeOf(this.gridData)=="array") this.gridData = {"data": this.gridData};
             this.__loadReadDatagrid(callback);
             this.moduleValueAG = null;
-        }
+            return v;
+        }.bind(this));
+        this.moduleValueAG = p;
+        if (this.moduleValueAG) this.moduleValueAG.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this));
+
+        // if (this.gridData && this.gridData.isAG){
+        //     this.moduleValueAG = this.gridData;
+        //     this.gridData.addResolve(function(v){
+        //         this.gridData = v;
+        //         this._loadReadDatagrid(callback);
+        //     }.bind(this));
+        // }else{
+        //     if (o2.typeOf(this.gridData)=="array") this.gridData = {"data": this.gridData};
+        //     this.__loadReadDatagrid(callback);
+        //     this.moduleValueAG = null;
+        // }
     },
 
     __loadReadDatagrid: function(callback){
@@ -290,18 +302,30 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
     },
 
     _loadEditDatagrid: function(callback){
-        debugger;
-        if (this.gridData && this.gridData.isAG){
-            this.moduleValueAG = this.gridData;
-            this.gridData.addResolve(function(v){
-                this.gridData = v;
-                this._loadEditDatagrid(callback);
-            }.bind(this));
-        }else{
+        var p = o2.promiseAll(this.gridData).then(function(v){
+            this.gridData = v;
             if (o2.typeOf(this.gridData)=="array") this.gridData = {"data": this.gridData};
             this.__loadEditDatagrid(callback);
             this.moduleValueAG = null;
-        }
+            return v;
+        }.bind(this));
+        this.moduleValueAG = p;
+        if (this.moduleValueAG) this.moduleValueAG.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this));
+
+
+        // if (this.gridData && this.gridData.isAG){
+        //     this.moduleValueAG = this.gridData;
+        //     this.gridData.addResolve(function(v){
+        //         this.gridData = v;
+        //         this._loadEditDatagrid(callback);
+        //     }.bind(this));
+        // }else{
+        //     if (o2.typeOf(this.gridData)=="array") this.gridData = {"data": this.gridData};
+        //     this.__loadEditDatagrid(callback);
+        //     this.moduleValueAG = null;
+        // }
     },
     __loadEditDatagrid: function(callback){
         //this._createHelpNode();
@@ -1204,16 +1228,28 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this._setData(data);
     },
     _setData: function(data){
-        if (data && data.isAG){
-            this.moduleValueAG = data;
-            data.addResolve(function(v){
-                this._setData(v);
-            }.bind(this));
-        }else{
+        var p = o2.promiseAll(this.data).then(function(v){
+            this.gridData = v;
             if (o2.typeOf(data)=="array") data = {"data": data};
             this.__setData(data);
             this.moduleValueAG = null;
-        }
+            return v;
+        }.bind(this));
+        this.moduleValueAG = p;
+        if (this.moduleValueAG) this.moduleValueAG.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this));
+
+        // if (data && data.isAG){
+        //     this.moduleValueAG = data;
+        //     data.addResolve(function(v){
+        //         this._setData(v);
+        //     }.bind(this));
+        // }else{
+        //     if (o2.typeOf(data)=="array") data = {"data": data};
+        //     this.__setData(data);
+        //     this.moduleValueAG = null;
+        // }
     },
     __setData: function(data){
         // if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
