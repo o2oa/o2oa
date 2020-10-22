@@ -205,6 +205,7 @@
 		B168BF4724F798790070329F /* libz.1.2.5.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B168BF4624F7986C0070329F /* libz.1.2.5.tbd */; };
 		B169E3D421095EC9007156B3 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B169E3D321095EC9007156B3 /* Date+Extension.swift */; };
 		B17126C121084A2F00369F15 /* calendar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B17126C021084A2F00369F15 /* calendar.storyboard */; };
+		B1737EF525402E0100B487D6 /* O2PlatformTests1.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1737EF425402E0100B487D6 /* O2PlatformTests1.swift */; };
 		B1750078233C6908003DA7B9 /* BlockPan.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750072233C6907003DA7B9 /* BlockPan.swift */; };
 		B1750079233C6908003DA7B9 /* BlockSwipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750073233C6907003DA7B9 /* BlockSwipe.swift */; };
 		B175007A233C6908003DA7B9 /* BlockLongPress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750074233C6908003DA7B9 /* BlockLongPress.swift */; };
@@ -1086,6 +1087,13 @@
 			remoteGlobalIDString = AEBB0C4F19DFB746403D40BC540276A3;
 			remoteInfo = JTCalendar;
 		};
+		B1737EF725402E0100B487D6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4B8870B1D9D477A002E1A46 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E4B887121D9D477A002E1A46;
+			remoteInfo = O2Platform;
+		};
 		B1AE4E6321A3F53A00183FCD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
@@ -1379,6 +1387,9 @@
 		B168BF4624F7986C0070329F /* libz.1.2.5.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.5.tbd; path = usr/lib/libz.1.2.5.tbd; sourceTree = SDKROOT; };
 		B169E3D321095EC9007156B3 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		B17126C021084A2F00369F15 /* calendar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = calendar.storyboard; sourceTree = "<group>"; };
+		B1737EF225402E0100B487D6 /* O2PlatformTests1.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = O2PlatformTests1.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1737EF425402E0100B487D6 /* O2PlatformTests1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2PlatformTests1.swift; sourceTree = "<group>"; };
+		B1737EF625402E0100B487D6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B1750072233C6907003DA7B9 /* BlockPan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockPan.swift; sourceTree = "<group>"; };
 		B1750073233C6907003DA7B9 /* BlockSwipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockSwipe.swift; sourceTree = "<group>"; };
 		B1750074233C6908003DA7B9 /* BlockLongPress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockLongPress.swift; sourceTree = "<group>"; };
@@ -2059,6 +2070,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B1737EEF25402E0100B487D6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E4B887101D9D477A002E1A46 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -2595,6 +2613,15 @@
 				B168BEFC24F797DF0070329F /* libBaiduSpeechSDK.a */,
 			);
 			path = BDSClientLib;
+			sourceTree = "<group>";
+		};
+		B1737EF325402E0100B487D6 /* O2PlatformTests1 */ = {
+			isa = PBXGroup;
+			children = (
+				B1737EF425402E0100B487D6 /* O2PlatformTests1.swift */,
+				B1737EF625402E0100B487D6 /* Info.plist */,
+			);
+			path = O2PlatformTests1;
 			sourceTree = "<group>";
 		};
 		B18FFF3323756B24001B2887 /* JpushAPI */ = {
@@ -3585,6 +3612,7 @@
 				E4E7755421017DB4006ED7FC /* Pods.xcodeproj */,
 				E4B889061D9D4C7E002E1A46 /* podfile */,
 				E4B887151D9D477A002E1A46 /* O2Platform */,
+				B1737EF325402E0100B487D6 /* O2PlatformTests1 */,
 				E4B887141D9D477A002E1A46 /* Products */,
 				6FDEB623AC8AB47096221625 /* Pods */,
 				E034A62CD4B3425CCABD0B19 /* Frameworks */,
@@ -3597,6 +3625,7 @@
 				E4B887131D9D477A002E1A46 /* O2Platform.app */,
 				E4B887271D9D477A002E1A46 /* O2PlatformTests.xctest */,
 				E4B887321D9D477A002E1A46 /* O2PlatformUITests.xctest */,
+				B1737EF225402E0100B487D6 /* O2PlatformTests1.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -4326,6 +4355,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B1737EF125402E0100B487D6 /* O2PlatformTests1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B1737F2925402E0100B487D6 /* Build configuration list for PBXNativeTarget "O2PlatformTests1" */;
+			buildPhases = (
+				B1737EEE25402E0100B487D6 /* Sources */,
+				B1737EEF25402E0100B487D6 /* Frameworks */,
+				B1737EF025402E0100B487D6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B1737EF825402E0100B487D6 /* PBXTargetDependency */,
+			);
+			name = O2PlatformTests1;
+			productName = O2PlatformTests1;
+			productReference = B1737EF225402E0100B487D6 /* O2PlatformTests1.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		E4B887121D9D477A002E1A46 /* O2Platform */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E4B8873B1D9D477A002E1A46 /* Build configuration list for PBXNativeTarget "O2Platform" */;
@@ -4391,10 +4438,17 @@
 		E4B8870B1D9D477A002E1A46 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0930;
+				DefaultBuildSystemTypeForWorkspace = Original;
+				LastSwiftUpdateCheck = 1200;
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = zoneland;
 				TargetAttributes = {
+					B1737EF125402E0100B487D6 = {
+						CreatedOnToolsVersion = 12.0;
+						DevelopmentTeam = NYCN9K3RXF;
+						ProvisioningStyle = Automatic;
+						TestTargetID = E4B887121D9D477A002E1A46;
+					};
 					E4B887121D9D477A002E1A46 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = NTDRU2P6T4;
@@ -4451,6 +4505,7 @@
 				E4B887121D9D477A002E1A46 /* O2Platform */,
 				E4B887261D9D477A002E1A46 /* O2PlatformTests */,
 				E4B887311D9D477A002E1A46 /* O2PlatformUITests */,
+				B1737EF125402E0100B487D6 /* O2PlatformTests1 */,
 			);
 		};
 /* End PBXProject section */
@@ -4739,6 +4794,13 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B1737EF025402E0100B487D6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E4B887111D9D477A002E1A46 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -5118,6 +5180,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B1737EEE25402E0100B487D6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1737EF525402E0100B487D6 /* O2PlatformTests1.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E4B8870F1D9D477A002E1A46 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -5708,6 +5778,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		B1737EF825402E0100B487D6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E4B887121D9D477A002E1A46 /* O2Platform */;
+			targetProxy = B1737EF725402E0100B487D6 /* PBXContainerItemProxy */;
+		};
 		E4B887291D9D477A002E1A46 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E4B887121D9D477A002E1A46 /* O2Platform */;
@@ -5747,6 +5822,55 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		B1737EF925402E0100B487D6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NYCN9K3RXF;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = O2PlatformTests1/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = net.muliba.O2PlatformTests1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/O2Platform.app/O2Platform";
+			};
+			name = Debug;
+		};
+		B1737EFA25402E0100B487D6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NYCN9K3RXF;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = O2PlatformTests1/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = net.muliba.O2PlatformTests1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/O2Platform.app/O2Platform";
+			};
+			name = Release;
+		};
 		E4B887391D9D477A002E1A46 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -6162,6 +6286,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B1737F2925402E0100B487D6 /* Build configuration list for PBXNativeTarget "O2PlatformTests1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1737EF925402E0100B487D6 /* Debug */,
+				B1737EFA25402E0100B487D6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E4B8870E1D9D477A002E1A46 /* Build configuration list for PBXProject "O2Platform" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

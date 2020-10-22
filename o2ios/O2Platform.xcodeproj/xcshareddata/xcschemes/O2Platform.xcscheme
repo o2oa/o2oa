@@ -48,6 +48,16 @@
                ReferencedContainer = "container:O2Platform.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B1737EF125402E0100B487D6"
+               BuildableName = "O2PlatformTests1.xctest"
+               BlueprintName = "O2PlatformTests1"
+               ReferencedContainer = "container:O2Platform.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
