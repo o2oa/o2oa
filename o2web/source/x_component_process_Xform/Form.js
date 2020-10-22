@@ -3814,12 +3814,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             this.doDeleteDraftWork(success, failure);
         } else {
             if (this.businessData.control["allowDelete"]) {
-                this.workAction.deleteWork(function (json) {
+                //this.workAction.deleteWork(function (json) {
+                this.workAction.abandoned(function (json) {
                     if (success) success(json);
                 }.bind(this), function (xhr, text, error) {
                     if (failure) failure(xhr, text, error);
                 }, this.businessData.work.id);
-            } else {
+            //}
+            }else {
                 if (failure) failure(null, "Permission Denied", "");
             }
         }
