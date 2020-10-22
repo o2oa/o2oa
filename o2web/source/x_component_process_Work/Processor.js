@@ -414,6 +414,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         }.bind(this));
         if (!isSelected) {
             this.setSize(0);
+            if( this.orgsArea )this.orgsArea.hide();
         }
     },
     overRoute: function (node) {
@@ -1219,6 +1220,7 @@ MWF.xApplication.process.Work.Processor = new Class({
     },
 
     loadOrgs_mobile: function (route) {
+        debugger;
         if (!this.form || !route) {
             this.orgsArea.hide();
             this.setSize(0);
@@ -1282,7 +1284,7 @@ MWF.xApplication.process.Work.Processor = new Class({
 
         var table_old = this.orgTableObject[route];
         var divsMap_old = {};
-        if (divsMap_old) {
+        if (table_old) {
             var divs = table_old.getChildren("div");
             divs.each(function (div) {
                 divsMap_old[div.retrieve("orgName")] = div;
@@ -1302,6 +1304,8 @@ MWF.xApplication.process.Work.Processor = new Class({
             "styles": this.css.routeOrgTable
         }).inject(this.orgsArea);
         this.orgTableObject[route] = routeOrgTable;
+
+        var ignoreFirstOrgOldData = false
 
         dataVisable.each(function (config, i) {
             var sNode = new Element("div", {
@@ -1454,9 +1458,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.orgItemMap = this.orgItemsMap[route] || {};
         var dataVisable = this.getVisableOrgData(route);
         if (dataVisable.length) {
-            if (this.isSameArray(Object.keys(this.orgItemMap), dataVisable.map(function (d) {
-                return d.name
-            }))) {
+            if (this.isSameArray(Object.keys(this.orgItemMap), dataVisable.map(function (d) { return d.name }))) {
                 this.orgTableObject[route].show();
                 this.orgItems = this.orgItemsObject[route] || [];
                 this.setSize(dataVisable.length);
@@ -2204,6 +2206,9 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
             if (node.getStyle("overflow") === "visible" && !height) node.setStyle("overflow", "hidden");
             if (value && value.length) {
                 value.each(function (data) {
+                    if( typeOf(data) === "string" ){
+                        data = { distinguishedName : data, name : o2.name.cn(data) };
+                    }
                     var flag = data.distinguishedName.substr(data.distinguishedName.length - 1, 1);
                     var copyData = Object.clone(data);
                     if (this.json.displayTextScript && this.json.displayTextScript.code) {
