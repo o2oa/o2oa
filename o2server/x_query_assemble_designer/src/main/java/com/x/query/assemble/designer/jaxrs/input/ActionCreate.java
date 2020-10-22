@@ -22,6 +22,7 @@ import com.x.query.core.entity.View;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.entity.wrap.*;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 
@@ -79,6 +80,13 @@ class ActionCreate extends BaseAction {
 			}
 			obj = WrapTable.inCopier.copy(_o);
 			obj.setQuery(query.getId());
+			if (StringUtils.isNotEmpty(obj.getAlias())) {
+				obj.setAlias(
+						this.idleAliasWithQuery(business, null, obj.getAlias(), Table.class, obj.getId()));
+			}
+			if (StringUtils.isNotEmpty(obj.getName())) {
+				obj.setName(this.idleNameWithQuery(business, null, obj.getName(), Table.class, obj.getId()));
+			}
 			persistObjects.add(obj);
 		}
 		for (WrapStatement _o : wi.getStatementList()) {
@@ -88,6 +96,13 @@ class ActionCreate extends BaseAction {
 			}
 			obj = WrapStatement.inCopier.copy(_o);
 			obj.setQuery(query.getId());
+			if (StringUtils.isNotEmpty(obj.getAlias())) {
+				obj.setAlias(
+						this.idleAliasWithQuery(business, null, obj.getAlias(), Statement.class, obj.getId()));
+			}
+			if (StringUtils.isNotEmpty(obj.getName())) {
+				obj.setName(this.idleNameWithQuery(business, null, obj.getName(), Statement.class, obj.getId()));
+			}
 			persistObjects.add(obj);
 		}
 		for (WrapReveal _o : wi.getRevealList()) {
@@ -112,8 +127,6 @@ class ActionCreate extends BaseAction {
 		if(!wi.getTableList().isEmpty()){
 			CacheManager.notify(Table.class);
 			CacheManager.notify(Statement.class);
-
-			business.buildAllTable();
 		}else if(!wi.getStatementList().isEmpty()){
 			CacheManager.notify(Statement.class);
 		}
