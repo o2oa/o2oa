@@ -29,7 +29,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		runtime.page = this.adjustPage(page);
 		runtime.size = this.adjustSize(size);
-		Set<String> keys = runtime.parameters.keySet();
+		/*Set<String> keys = runtime.parameters.keySet();
 		if (keys.contains(Runtime.PARAMETER_PERSON)) {
 			runtime.parameters.put(Runtime.PARAMETER_PERSON, effectivePerson.getDistinguishedName());
 		}
@@ -52,7 +52,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (keys.contains(Runtime.PARAMETER_ROLELIST)) {
 			runtime.parameters.put(Runtime.PARAMETER_ROLELIST,
 					business.organization().role().listWithPerson(effectivePerson));
-		}
+		}*/
 
 		return runtime;
 	}
