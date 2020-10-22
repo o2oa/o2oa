@@ -496,20 +496,23 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     },
     _loadSub: function(callback){
         if (!this.loaded){
-            if( this.data.identityList && this.data.identityList.length>0 ){
-                this.data.identityList.sort( function(a, b){
-                    //this.selector.getUnitOrderNumber( a.unitLevelName )
-                    return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
-                });
-                this.data.identityList.each( function( identity ){
-                    // if( !this.selector.isExcluded( identity ) ) {
-                    //     if( !this.isExisted( identity ) ){
-                            var item = this.selector._newItem(identity, this.selector, this.children, this.level + 1, this);
-                            this.selector.items.push(item);
-                            if(this.subItems)this.subItems.push( item );
+            if( !this.itemLoaded ){
+                if( this.data.identityList && this.data.identityList.length>0 ){
+                    this.data.identityList.sort( function(a, b){
+                        //this.selector.getUnitOrderNumber( a.unitLevelName )
+                        return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
+                    });
+                    this.data.identityList.each( function( identity ){
+                        // if( !this.selector.isExcluded( identity ) ) {
+                        //     if( !this.isExisted( identity ) ){
+                                var item = this.selector._newItem(identity, this.selector, this.children, this.level + 1, this);
+                                this.selector.items.push(item);
+                                if(this.subItems)this.subItems.push( item );
+                            // }
                         // }
-                    // }
-                }.bind(this))
+                    }.bind(this))
+                }
+                this.itemLoaded = true;
             }
 
             if( this.data.unitList && this.data.unitList.length ){
