@@ -201,13 +201,19 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         //         this.moduleValueAG = null;
         //     }.bind(this));
         // }else {
-        var p = o2.promiseAll(value).then(function(v){
-            this.__setValue(v);
-        }.bind(this));
-        this.moduleValueAG = p;
-        p.then(function(){
+        if (o2.typeOf(value.then)=="function"){
+            var p = o2.promiseAll(value).then(function(v){
+                this.__setValue(v);
+            }.bind(this));
+            this.moduleValueAG = p;
+            p.then(function(){
+                this.moduleValueAG = null;
+            }.bind(this));
+        }else{
             this.moduleValueAG = null;
-        }.bind(this));
+            this.__setValue(v);
+        }
+
             //this.__setValue(value);
         // }
 
@@ -279,13 +285,18 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         //         this.moduleValueAG = null;
         //     }.bind(this));
         // }else{
-        var p = o2.promiseAll(data).then(function(v){
-            this.__setValue(v);
-        }.bind(this));
-        this.moduleValueAG = p;
-        p.then(function(){
+        if (o2.typeOf(value.then)=="function"){
+            var p = o2.promiseAll(data).then(function(v){
+                this.__setValue(v);
+            }.bind(this));
+            this.moduleValueAG = p;
+            p.then(function(){
+                this.moduleValueAG = null;
+            }.bind(this));
+        }else{
             this.moduleValueAG = null;
-        }.bind(this));
+            this.__setValue(v);
+        }
             //this.__setData(data);
         //}
 	},

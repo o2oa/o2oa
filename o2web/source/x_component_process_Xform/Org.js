@@ -132,7 +132,9 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                                     if (dd) arr.push(MWF.org.parseOrgData(dd, true, simple));
                                 });
                                 return arr;
-                            }.bind(this));
+                            }.bind(this)).catch(function(){
+                                console.log("catch error : get duty")
+                            });
                         }.bind(this));
                         values.push(promise);
                     }
@@ -1033,9 +1035,13 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                 da.each(function(dd){
                     if (dd){
                         if (typeOf(dd)==="string"){
-                            ags.push(this.getOrgAction()[this.getValueMethod(dd)](function(json){
+                            var pp = this.getOrgAction()[this.getValueMethod(dd)](function(json){
                                 return MWF.org.parseOrgData(json.data, true, simple);
-                            }.bind(this), null, dd, true));
+                            }.bind(this), null, dd, true).catch(function(e){
+                                console.log("error:" + e);
+                                console.log(e);
+                            });
+                            ags.push(pp);
                         }else{
                             values.push(dd);
                         }

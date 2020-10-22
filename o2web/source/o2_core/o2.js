@@ -1670,38 +1670,38 @@
             // }
     };
 
-    Object.appendChain = function(oChain, oProto) {
-        if (arguments.length < 2) {
-            throw new TypeError('Object.appendChain - Not enough arguments');
-        }
-        if (typeof oProto === 'number' || typeof oProto === 'boolean') {
-            throw new TypeError('second argument to Object.appendChain must be an object or a string');
-        }
-
-        var oNewProto = oProto,
-            oReturn,
-            o2nd,
-            oLast;
-
-        oReturn = o2nd = oLast = oChain instanceof this ? oChain : new oChain.constructor(oChain);
-
-        for (var o1st = this.getPrototypeOf(o2nd);
-             o1st !== Object.prototype && o1st !== Function.prototype;
-             o1st = this.getPrototypeOf(o2nd)
-        ) {
-            o2nd = o1st;
-        }
-
-        if (oProto.constructor === String) {
-            oNewProto = Function.prototype;
-            oReturn = Function.apply(null, Array.prototype.slice.call(arguments, 1));
-            oReturn = oReturn.bind(oLast);
-            this.setPrototypeOf(oReturn, oLast);
-        }
-
-        this.setPrototypeOf(o2nd, oNewProto);
-        return oReturn;
-    }
+    // Object.appendChain = function(oChain, oProto) {
+    //     if (arguments.length < 2) {
+    //         throw new TypeError('Object.appendChain - Not enough arguments');
+    //     }
+    //     if (typeof oProto === 'number' || typeof oProto === 'boolean') {
+    //         throw new TypeError('second argument to Object.appendChain must be an object or a string');
+    //     }
+    //
+    //     var oNewProto = oProto,
+    //         oReturn,
+    //         o2nd,
+    //         oLast;
+    //
+    //     oReturn = o2nd = oLast = oChain instanceof this ? oChain : new oChain.constructor(oChain);
+    //
+    //     for (var o1st = this.getPrototypeOf(o2nd);
+    //          o1st !== Object.prototype && o1st !== Function.prototype;
+    //          o1st = this.getPrototypeOf(o2nd)
+    //     ) {
+    //         o2nd = o1st;
+    //     }
+    //
+    //     if (oProto.constructor === String) {
+    //         oNewProto = Function.prototype;
+    //         oReturn = Function.apply(null, Array.prototype.slice.call(arguments, 1));
+    //         oReturn = oReturn.bind(oLast);
+    //         this.setPrototypeOf(oReturn, oLast);
+    //     }
+    //
+    //     this.setPrototypeOf(o2nd, oNewProto);
+    //     return oReturn;
+    // }
 
     // user promise
     // var _AsyncGeneratorPrototype = _Class.create({
@@ -1847,8 +1847,21 @@
     // };
 
     var _promiseAll = function(p){
-        var method = (o2.typeOf(p)=="array") ? "all" : "resolve";
-        return Promise[method](p);
+        if (o2.typeOf(p)=="array"){
+            if (p.some(function(e){ return (o2.typeOf(e.then)=="function") })){
+                return Promise.all(p);
+            }else{
+                return { "then": function(s){ s(p); return this;} };
+            }
+        }else{
+            if (o2.typeOf(p.then)=="function"){
+                return Promise.resolve(p);
+            }else{
+                return { "then": function(s){ s(p); return this;} };
+            }
+        }
+        // var method = (o2.typeOf(p)=="array") ? "all" : "resolve";
+        // return Promise[method](p);
     }
     o2.promiseAll = _promiseAll;
 
