@@ -62,13 +62,13 @@ class ActionDelete extends BaseAction {
 				emc.remove(_o, CheckRemoveType.all);
 			}
 			emc.commit();
-			emc.beginTransaction(Table.class);
-			for (Table _o : this.listTable(business, query)) {
+			emc.beginTransaction(Statement.class);
+			for (Statement _o : this.listStatement(business, query)) {
 				emc.remove(_o, CheckRemoveType.all);
 			}
 			emc.commit();
-			emc.beginTransaction(Statement.class);
-			for (Statement _o : this.listStatement(business, query)) {
+			emc.beginTransaction(Table.class);
+			for (Table _o : this.listTable(business, query)) {
 				emc.remove(_o, CheckRemoveType.all);
 			}
 			emc.commit();
