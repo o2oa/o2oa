@@ -165,8 +165,6 @@ class ActionCover extends BaseAction {
 		if(!wi.getTableList().isEmpty()){
 			CacheManager.notify(Table.class);
 			CacheManager.notify(Statement.class);
-
-			business.buildAllTable();
 		}else if(!wi.getStatementList().isEmpty()){
 			CacheManager.notify(Statement.class);
 		}
