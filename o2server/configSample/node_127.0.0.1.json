@@ -108,7 +108,7 @@
     "###excludes": "在此节点上不存储的类,和includes一起设置实际存储的类,可以使用通配符*###",
     "###jmxEnable": "是否启动jmx,如果启用,可以通过本地的jmx客户端进行访问,不支持远程jmx客户端.###",
     "###cacheSize": "H2数据库缓存大小,设置H2用于作为缓存的内存大小,以M作为单位,这里默认为512M.###",
-    "###logLevel": "默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完成的配置为DefaultLevel\u003dWARN, Tool\u003dTRACE, Enhance\u003dTRACE, METADATA\u003dTRACE, Runtime\u003dTRACE, Query\u003dTRACE, DataCache\u003dTRACE, JDBC\u003dTRACE, SQL\u003dTRACE###",
+    "###logLevel": "默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完整的配置为DefaultLevel\u003dWARN, Tool\u003dTRACE, Enhance\u003dTRACE, METADATA\u003dTRACE, Runtime\u003dTRACE, Query\u003dTRACE, DataCache\u003dTRACE, JDBC\u003dTRACE, SQL\u003dTRACE###",
     "###maxTotal": "最大使用连接数###",
     "###maxIdle": "最大空闲连接数###",
     "###statEnable": "启用统计,默认启用###",
