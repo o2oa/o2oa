@@ -129,7 +129,7 @@ class ActionDelete extends BaseAction {
 	}
 
 	private List<Statement> listStatement(Business business, Query query) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Table.class);
+		EntityManager em = business.entityManagerContainer().get(Statement.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Statement> cq = cb.createQuery(Statement.class);
 		Root<Statement> root = cq.from(Statement.class);
