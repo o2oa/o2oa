@@ -95,4 +95,60 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return list.get(0);
 	}
 
+	protected <T extends JpaObject> String idleNameWithQuery(Business business, String queryId, String name, Class<T> cls,
+														   String excludeId) throws Exception {
+		if (StringUtils.isEmpty(name)) {
+			return "";
+		}
+		List<String> list = new ArrayList<>();
+		list.add(name);
+		for (int i = 1; i < 99; i++) {
+			list.add(name + String.format("%02d", i));
+		}
+		list.add(StringTools.uniqueToken());
+		EntityManager em = business.entityManagerContainer().get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<T> root = cq.from(cls);
+		Predicate p = root.get("name").in(list);
+		if (StringUtils.isNotEmpty(queryId)) {
+			p = cb.and(p, cb.equal(root.get("query"), queryId));
+		}
+		if (StringUtils.isNotEmpty(excludeId)) {
+			p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), excludeId));
+		}
+		cq.select(root.get("name")).where(p);
+		List<String> os = em.createQuery(cq).getResultList();
+		list = ListUtils.subtract(list, os);
+		return list.get(0);
+	}
+
+	protected <T extends JpaObject> String idleAliasWithQuery(Business business, String queryId, String alias,
+															Class<T> cls, String excludeId) throws Exception {
+		if (StringUtils.isEmpty(alias)) {
+			return "";
+		}
+		List<String> list = new ArrayList<>();
+		list.add(alias);
+		for (int i = 1; i < 99; i++) {
+			list.add(alias + String.format("%02d", i));
+		}
+		list.add(StringTools.uniqueToken());
+		EntityManager em = business.entityManagerContainer().get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<T> root = cq.from(cls);
+		Predicate p = root.get("alias").in(list);
+		if (StringUtils.isNotEmpty(queryId)) {
+			p = cb.and(p, cb.equal(root.get("query"), queryId));
+		}
+		if (StringUtils.isNotEmpty(excludeId)) {
+			p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), excludeId));
+		}
+		cq.select(root.get("alias")).where(p);
+		List<String> os = em.createQuery(cq).getResultList();
+		list = ListUtils.subtract(list, os);
+		return list.get(0);
+	}
+
 }
