@@ -100,7 +100,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
     },
 
     _setOptions: function(optionItems){
-        this.moduleSelectAG = o2.AG.all(optionItems).then(function(radioValues){
+        var p = o2.promiseAll(optionItems).then(function(radioValues){
             this.moduleSelectAG = null;
             if (!radioValues) radioValues = [];
             if (o2.typeOf(radioValues)==="array"){
@@ -149,29 +149,48 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
                 }.bind(this));
             }
         }.bind(this));
-        if (this.moduleSelectAG) this.moduleSelectAG.then(function(){
+        this.moduleSelectAG = p;
+        if (p) p.then(function(){
             this.moduleSelectAG = null;
         }.bind(this));
 	},
 
     _setValue: function(value){
-        this.moduleValueAG = o2.AG.all(value).then(function(v){
+        var p = o2.promiseAll(value).then(function(v){
+            //if (o2.typeOf(v)=="array") v = v[0];
             if (this.moduleSelectAG){
                 this.moduleValueAG = this.moduleSelectAG;
                 this.moduleSelectAG.then(function(){
-                    this.moduleValueAG = null;
                     this.__setValue(v);
+                    return v;
                 }.bind(this));
             }else{
-                this.moduleValueAG = null;
-                this.__setValue(v);
+                this.__setValue(v)
             }
             return v;
         }.bind(this));
-
+        this.moduleValueAG = p;
         if (this.moduleValueAG) this.moduleValueAG.then(function(){
-            this.moduleValueAG = "";
+            this.moduleValueAG = null;
         }.bind(this));
+
+        // this.moduleValueAG = o2.AG.all(value).then(function(v){
+        //     if (this.moduleSelectAG){
+        //         this.moduleValueAG = this.moduleSelectAG;
+        //         this.moduleSelectAG.then(function(){
+        //             this.moduleValueAG = null;
+        //             this.__setValue(v);
+        //         }.bind(this));
+        //     }else{
+        //         this.moduleValueAG = null;
+        //         this.__setValue(v);
+        //     }
+        //     return v;
+        // }.bind(this));
+        //
+        // if (this.moduleValueAG) this.moduleValueAG.then(function(){
+        //     this.moduleValueAG = "";
+        // }.bind(this));
     },
 
     __setValue: function(value){
@@ -241,15 +260,16 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
     },
 
     setData: function(data){
-        if (data && data.isAG){
-            this.moduleValueAG = data;
-            data.addResolve(function(v){
-                this.setData(v);
-            }.bind(this));
-        }else{
-            this.__setData(data);
-            this.moduleValueAG = null;
-        }
+	    return this._setValue(data);
+        // if (data && data.isAG){
+        //     this.moduleValueAG = data;
+        //     data.addResolve(function(v){
+        //         this.setData(v);
+        //     }.bind(this));
+        // }else{
+        //     this.__setData(data);
+        //     this.moduleValueAG = null;
+        // }
     },
 
     __setData: function(data){

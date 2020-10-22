@@ -191,19 +191,25 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 	},
     _setValue: function(value){
 	    debugger;
-	    if (value && value.isAG){
-	        var ag = o2.AG.all(value).then(function(v){
-	            if (o2.typeOf(v)=="array") v = v[0];
-                this.__setValue(v);
-            }.bind(this));
-            this.moduleValueAG = ag;
-	        ag.then()
-        }else {
-            Promise.resolve(value).then(function(v){
-                this.__setValue(v);
-            }.bind(this));
+	    // if (value && value.isAG){
+	    //     var ag = o2.AG.all(value).then(function(v){
+	    //         if (o2.typeOf(v)=="array") v = v[0];
+        //         this.__setValue(v);
+        //     }.bind(this));
+        //     this.moduleValueAG = ag;
+	    //     ag.then(function(){
+        //         this.moduleValueAG = null;
+        //     }.bind(this));
+        // }else {
+        var p = o2.promiseAll(value).then(function(v){
+            this.__setValue(v);
+        }.bind(this));
+        this.moduleValueAG = p;
+        p.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this));
             //this.__setValue(value);
-        }
+        // }
 
     },
     __setValue: function(value){
@@ -263,17 +269,25 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         this.setData(this.getValue());
     },
 	setData: function(data){
-        if (data && data.isAG){
-            this.moduleValueAG = o2.AG.all(data).then(function(v){
-                if (o2.typeOf(v)=="array") v = v[0];
-                this.__setData(v);
-            }.bind(this));
-        }else{
-            Promise.resolve(data).then(function(v){
-                this.__setValue(v);
-            }.bind(this));
+        // if (data && data.isAG){
+        //     var ag = o2.AG.all(data).then(function(v){
+        //         if (o2.typeOf(v)=="array") v = v[0];
+        //         this.__setData(v);
+        //     }.bind(this));
+        //     this.moduleValueAG = ag;
+        //     ag.then(function(){
+        //         this.moduleValueAG = null;
+        //     }.bind(this));
+        // }else{
+        var p = o2.promiseAll(data).then(function(v){
+            this.__setValue(v);
+        }.bind(this));
+        this.moduleValueAG = p;
+        p.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this));
             //this.__setData(data);
-        }
+        //}
 	},
     __setData: function(data){
         this._setBusinessData(data);
