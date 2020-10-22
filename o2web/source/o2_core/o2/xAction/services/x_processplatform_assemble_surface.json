@@ -245,7 +245,7 @@
   "resetWork": {"uri": "/jaxrs/task/{id}/reset", "method": "PUT"},
 
   "deleteWork": {"uri": "/jaxrs/work/{id}", "method": "DELETE"},
-  "abandoned": {"uri": "/jaxrs/snap/work/{workId}/type/abandoned", "method": "DELETE"},
+  "abandoned": {"uri": "/jaxrs/snap/work/{workId}/type/abandoned"},
 
 
   "getJobByWorkAssignForm": {"uri": "/jaxrs/work/{id}/complex/appoint/form/{formTag}"},
