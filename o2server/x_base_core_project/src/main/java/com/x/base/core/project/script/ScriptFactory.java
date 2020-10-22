@@ -264,8 +264,10 @@ public class ScriptFactory {
 						}
 					}
 				} else {
-					list.add(PropertyTools.getOrElse(som, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 				}
+			} else {
+				list.add(Objects.toString(o, ""));
 			}
 		}
 		return list;
