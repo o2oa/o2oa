@@ -85,10 +85,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = (v && v.length===1) ? v[0] : v
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listGroup(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listGroup(data, cb, null, !!async);
+            return (!!async) ? promise : v;
 
             // var v = null;
             // orgActions.listGroup(data, function(json){v = json.data;}, null, false);
@@ -109,15 +109,15 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-
+            var promise;
             if (nested){
-                orgActions.listSubGroupNested(data, cb, null, !!async);
+                promise = orgActions.listSubGroupNested(data, cb, null, !!async);
             }else{
-                orgActions.listSubGroupDirect(data, cb, null, !!async);
+                promise = orgActions.listSubGroupDirect(data, cb, null, !!async);
             }
-            return (!!async) ? cb : v;
+            return (!!async) ? promise : v;
 
             // var v = null;
             // if (nested){
@@ -138,14 +138,15 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
+            var promise
             if (nested){
-                orgActions.listSupGroupNested(data, cb, null, !!async);
+                var promise = orgActions.listSupGroupNested(data, cb, null, !!async);
             }else{
-                orgActions.listSupGroupDirect(data, cb, null, !!async);
+                var promise = orgActions.listSupGroupDirect(data, cb, null, !!async);
             }
-            return (!!async) ? cb : v;
+            return (!!async) ? promise : v;
             // var v = null;
             // if (nested){
             //     orgActions.listSupGroupNested(data, function(json){v = json.data;}, null, false);
@@ -164,10 +165,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listGroupWithPerson(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listGroupWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
             // var v = null;
             // orgActions.listGroupWithPerson(data, function(json){v = json.data;}, null, false);
             // return v;
@@ -183,10 +184,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data.value;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.groupHasRole(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.groupHasRole(data, cb, null, !!async);
+            return (!!async) ? promise : v;
 
             // var v = false;
             // orgActions.groupHasRole(data, function(json){v = json.data.value;}, null, false);
@@ -205,10 +206,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = (v && v.length===1) ? v[0] : v;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listRole(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listRole(data, cb, null, !!async);
+            return (!!async) ? promise : v;
 
             // var v = null;
             // orgActions.listRole(data, function(json){v = json.data;}, null, false);
@@ -224,10 +225,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listRoleWithPerson(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
             // var v = null;
             // orgActions.listRoleWithPerson(data, function(json){v = json.data;}, null, false);
             // return v;
@@ -245,10 +246,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data.value;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listRoleWithPerson(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
 
             // var v = false;
             // orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
@@ -265,10 +266,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = (v && v.length===1) ? v[0] : v;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listPerson(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
             // var v = null;
             // orgActions.listPerson(data, function(json){v = json.data;}, null, false);
             // return (v && v.length===1) ? v[0] : v;
@@ -284,14 +285,15 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
+            var promise;
             if (nested){
-                orgActions.listPersonSubNested(data, cb, null, !!async);
+                promise = orgActions.listPersonSubNested(data, cb, null, !!async);
             }else{
-                orgActions.listPersonSubDirect(data, cb, null, !!async);
+                promise = orgActions.listPersonSubDirect(data, cb, null, !!async);
             }
-            return (!!async) ? cb : v;
+            return (!!async) ? promise : v;
         },
         //查询上级人员--返回人员的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
@@ -303,14 +305,15 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
+            var promise;
             if (nested){
-                orgActions.listPersonSupNested(data, cb, null, !!async);
+                promise = orgActions.listPersonSupNested(data, cb, null, !!async);
             }else{
-                orgActions.listPersonSupDirect(data, cb, null, !!async);
+                promise = orgActions.listPersonSupDirect(data, cb, null, !!async);
             }
-            return (!!async) ? cb : v;
+            return (!!async) ? promise : v;
         },
         //获取群组的所有人员--返回人员的对象数组
         listPersonWithGroup: function(name, async){
@@ -322,10 +325,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listPersonWithGroup(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listPersonWithGroup(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取角色的所有人员--返回人员的对象数组
         listPersonWithRole: function(name, async){
@@ -336,10 +339,11 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listPersonWithRole(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise
+            promise = orgActions.listPersonWithRole(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取身份的所有人员--返回人员的对象数组
         listPersonWithIdentity: function(name, async){
@@ -350,10 +354,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listPersonWithIdentity(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listPersonWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取身份的所有人员--返回人员的对象数组或人员对象
         getPersonWithIdentity: function(name, async){
@@ -365,10 +369,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v =  (v && v.length===1) ? v[0] : v;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listPersonWithIdentity(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listPersonWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //查询组织成员的人员--返回人员的对象数组
         //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
@@ -380,14 +384,15 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
+            var promise;
             if (nested){
-                orgActions.listPersonWithUnitNested(data, cb, null, !!async);
+                promise = orgActions.listPersonWithUnitNested(data, cb, null, !!async);
             }else{
-                orgActions.listPersonWithUnitDirect(data, cb, null, !!async);
+                promise = orgActions.listPersonWithUnitDirect(data, cb, null, !!async);
             }
-            return (!!async) ? cb : v;
+            return (!!async) ? promise : v;
         },
         //根据属性查询人员--返回人员的对象数组
         //name  string 属性名
@@ -400,10 +405,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listPersonWithAttribute(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listPersonWithAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //根据属性查询人员--返回人员的全称数组
         //name  string 属性名
@@ -416,10 +421,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data.personList;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listPersonWithAttributeValue(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listPersonWithAttributeValue(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
 
         //人员属性************
@@ -461,10 +466,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data.attributeList;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.getPersonAttribute(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.getPersonAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出人员所有属性的名称
         listPersonAttributeName: function(name, async){
@@ -475,10 +480,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data.nameList;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listPersonAttributeName(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listPersonAttributeName(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出人员的所有属性
         listPersonAllAttribute: function(name, async){
@@ -489,10 +494,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listPersonAllAttribute(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listPersonAllAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
 
         //身份**********
@@ -506,10 +511,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = (v && v.length===1) ? v[0] : v;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listIdentity(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出人员的身份
         listIdentityWithPerson: function(name, async){
@@ -520,10 +525,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listIdentityWithPerson(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listIdentityWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //查询组织成员身份--返回身份的对象数组
         //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
@@ -532,18 +537,29 @@ MWF.xScript.CMSEnvironment = function(ev){
             var data = {"unitList": getNameFlag(name)};
             var v = null;
 
+            // var cb = function(json){
+            //     v = json.data;
+            //     if (async && o2.typeOf(async)=="function") return async(v);
+            //     return v;
+            // }.ag().catch(function(json){ return json; });
+
             var cb = function(json){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            if (nested){
-                orgActions.listIdentityWithUnitNested(data, cb, null, !!async);
-            }else{
-                orgActions.listIdentityWithUnitDirect(data, cb, null, !!async);
-            }
-            return (!!async) ? cb : v;
+            var method = (nested) ? "listIdentityWithUnitNested" : "listIdentityWithUnitDirect";
+            var promise = orgActions[method](data, cb, null, !!async);
+            promise.name = "org";
+
+            //
+            // if (nested){
+            //     orgActions.listIdentityWithUnitNested(data, cb, null, !!async);
+            // }else{
+            //     orgActions.listIdentityWithUnitDirect(data, cb, null, !!async);
+            // }
+            return (!!async) ? promise : v;
         },
 
         //组织**********
@@ -557,10 +573,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = (v && v.length===1) ? v[0] : v;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listUnit(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listUnit(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //查询组织的下级--返回组织的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
@@ -572,14 +588,15 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
+            var promise;
             if (nested){
-                orgActions.listUnitSubNested(data, cb, null, !!async);
+                promise = orgActions.listUnitSubNested(data, cb, null, !!async);
             }else{
-                orgActions.listUnitSubDirect(data, cb, null, !!async);
+                promise = orgActions.listUnitSubDirect(data, cb, null, !!async);
             }
-            return (!!async) ? cb : v;
+            return (!!async) ? promise : v;
         },
         //查询组织的上级--返回组织的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
@@ -593,14 +610,15 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
+            var promise;
             if (nested){
-                orgActions.listUnitSupNested(data, cb, null, !!async);
+                promise = orgActions.listUnitSupNested(data, cb, null, !!async);
             }else{
-                orgActions.listUnitSupDirect(data, cb, null, !!async);
+                promise = orgActions.listUnitSupDirect(data, cb, null, !!async);
             }
-            return (!!async) ? cb : v;
+            return (!!async) ? promise : v;
 
             // if (callback){
             //     if (nested){
@@ -632,6 +650,7 @@ MWF.xScript.CMSEnvironment = function(ev){
             }
 
             var cb;
+            var promise;
             switch (getUnitMethod){
                 case "current":
                     var data = {"identityList":getNameFlag(name)};
@@ -641,47 +660,47 @@ MWF.xScript.CMSEnvironment = function(ev){
                     // }.ag().catch(function(json){ return json; });
 
 
-                    var cb = function(json){
+                    cb = function(json){
                         v = json.data;  v=(v&&v.length===1) ? v[0] : v;
                         if (async && o2.typeOf(async)=="function") return async(v);
                         return v;
-                    }.ag().catch(function(json){ return json; });
+                    };
 
 
-                    orgActions.listUnitWithIdentity(data, cb, null, !!async);
+                    promise = orgActions.listUnitWithIdentity(data, cb, null, !!async);
                     break;
                 case "type":
                     var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"type":flag};
 
-                    var cb = function(json){
+                    cb = function(json){
                         v = json.data;
                         if (async && o2.typeOf(async)=="function") return async(v);
                         return v;
-                    }.ag().catch(function(json){ return json; });
+                    };
 
                     // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                     //     v = json.data;  return v;
                     // }.ag().catch(function(json){ return json; });
 
-                    orgActions.getUnitWithIdentityAndType(data, cb, null, !!async);
+                    promise = orgActions.getUnitWithIdentityAndType(data, cb, null, !!async);
                     break;
                 case "level":
                     var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"level":flag};
 
-                    var cb = function(json){
+                    cb = function(json){
                         v = json.data;  v=(v&&v.length===1) ? v[0] : v;
                         if (async && o2.typeOf(async)=="function") return async(v);
                         return v;
-                    }.ag().catch(function(json){ return json; });
+                    };
 
                     // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
                     //     v = json.data;  return v;
                     // }.ag().catch(function(json){ return json; });
 
-                    orgActions.getUnitWithIdentityAndLevel(data, cb, null, !!async);
+                    promise = orgActions.getUnitWithIdentityAndLevel(data, cb, null, !!async);
                     break;
             }
-            return (!!async) ? cb : v;
+            return (!!async) ? promise : v;
         },
         //列出身份所在组织的所有上级组织
         listAllSupUnitWithIdentity: function(name, async){
@@ -692,10 +711,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listUnitSupNestedWithIdentity(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listUnitSupNestedWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取人员所在的所有组织
         listUnitWithPerson: function(name, async){
@@ -706,10 +725,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listUnitWithPerson(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listUnitWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出人员所在组织的所有上级组织
         listAllSupUnitWithPerson: function(name, async){
@@ -720,10 +739,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listUnitSupNestedWithPerson(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listUnitSupNestedWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //根据组织属性，获取所有符合的组织
         listUnitWithAttribute: function(name, attribute, async){
@@ -734,10 +753,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listUnitWithAttribute(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            promise = orgActions.listUnitWithAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //根据组织职务，获取所有符合的组织
         listUnitWithDuty: function(name, id, async){
@@ -748,10 +767,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listUnitWithDuty(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listUnitWithDuty(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
 
         //组织职务***********
@@ -760,14 +779,15 @@ MWF.xScript.CMSEnvironment = function(ev){
             getOrgActions();
             var data = {"name":duty,"unit":(typeOf(id)==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id};
             var v = null;
+
             var cb = function(json){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.getDuty(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.getDuty(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取身份的所有职务名称
         listDutyNameWithIdentity: function(name, async){
@@ -778,10 +798,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listDutyNameWithIdentity(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listDutyNameWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取组织的所有职务名称
         listDutyNameWithUnit: function(name, async){
@@ -792,10 +812,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data.nameList;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listDutyNameWithUnit(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listDutyNameWithUnit(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取组织的所有职务
         listUnitAllDuty: function(name, async){
@@ -806,10 +826,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listUnitAllDuty(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listUnitAllDuty(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出顶层组织
         listTopUnit: function(async){
@@ -819,10 +839,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            action.listTopUnit(cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = action.listTopUnit(cb, null, !!async);
+            return (!!async) ? promise : v;
         },
 
         //组织属性**************
@@ -883,10 +903,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data.attributeList;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.getUnitAttribute(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.getUnitAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出组织所有属性的名称
         listUnitAttributeName: function(name, async){
@@ -897,10 +917,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data.nameList;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listUnitAttributeName(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listUnitAttributeName(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出组织的所有属性
         listUnitAllAttribute: function(name, async){
@@ -911,10 +931,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                 v = json.data;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
-            }.ag().catch(function(json){ return json; });
+            };
 
-            orgActions.listUnitAllAttribute(data, cb, null, !!async);
-            return (!!async) ? cb : v;
+            var promise = orgActions.listUnitAllAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         }
     };
 
@@ -2149,21 +2169,29 @@ MWF.xScript.createCMSDict = function(application){
             if (success===true) async=true;
             if (failure===true) async=true;
 
+            // var cb = function(json){
+            //     value = json.data;
+            //     MWF.xScript.addDictToCache(opt, path, value);
+            //     if (success && o2.typeOf(success)=="function") value = success(json.data);
+            //     return value;
+            // }.ag().catch(function(xhr, text, error){ if (failure && o2.typeOf(failure)=="function") return failure(xhr, text, error); });
+
             var cb = function(json){
                 value = json.data;
                 MWF.xScript.addDictToCache(opt, path, value);
                 if (success && o2.typeOf(success)=="function") value = success(json.data);
                 return value;
-            }.ag().catch(function(xhr, text, error){ if (failure && o2.typeOf(failure)=="function") return failure(xhr, text, error); });
+            };
 
+            var promise;
             if (path){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async);
+                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async);
             }else{
-                action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async);
+                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async);
             }
-            return (!!async) ? cb : value;
+            return (!!async) ? promise : value;
 
             // if (path){
             //     var p = encodePath( path );

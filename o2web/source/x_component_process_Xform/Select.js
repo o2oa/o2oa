@@ -134,7 +134,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 		this._setOptions(optionItems);
 	},
 	_setOptions: function(optionItems){
-		this.moduleSelectAG = o2.AG.all(optionItems).then(function(options){
+		var p = o2.promiseAll(optionItems).then(function(options){
 			this.moduleSelectAG = null;
 			if (!options) options = [];
 			if (o2.typeOf(options)==="array"){
@@ -151,9 +151,31 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 				this.fireEvent("setOptions", [options])
 			}
 		}.bind(this));
-		if (this.moduleSelectAG) this.moduleSelectAG.then(function(){
+		this.moduleSelectAG = p;
+		if (p) p.then(function(){
 			this.moduleSelectAG = null;
 		}.bind(this));
+
+		// this.moduleSelectAG = o2.AG.all(optionItems).then(function(options){
+		// 	this.moduleSelectAG = null;
+		// 	if (!options) options = [];
+		// 	if (o2.typeOf(options)==="array"){
+		// 		options.each(function(item){
+		// 			var tmps = item.split("|");
+		// 			var text = tmps[0];
+		// 			var value = tmps[1] || text;
+		//
+		// 			var option = new Element("option", {
+		// 				"value": value,
+		// 				"text": text
+		// 			}).inject(this.node);
+		// 		}.bind(this));
+		// 		this.fireEvent("setOptions", [options])
+		// 	}
+		// }.bind(this));
+		// if (this.moduleSelectAG) this.moduleSelectAG.then(function(){
+		// 	this.moduleSelectAG = null;
+		// }.bind(this));
 	},
 	// __setOptions: function(){
 	// 	var optionItems = this.getOptions();
@@ -181,12 +203,13 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 	},
 
 	_setValue: function(value){
-		this.moduleValueAG = o2.AG.all(value).then(function(v){
+		var p = o2.promiseAll(value).then(function(v){
 			if (o2.typeOf(v)=="array") v = v[0];
 			if (this.moduleSelectAG){
 				this.moduleValueAG = this.moduleSelectAG;
 				this.moduleSelectAG.then(function(){
 					this.__setValue(v);
+					return v;
 				}.bind(this));
 			}else{
 				this.__setValue(v)
@@ -194,10 +217,23 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 			return v;
 		}.bind(this));
 
+		this.moduleValueAG = p;
 		if (this.moduleValueAG) this.moduleValueAG.then(function(){
 			this.moduleValueAG = null;
 		}.bind(this));
 
+		// this.moduleValueAG = o2.AG.all(value).then(function(v){
+		// 	if (o2.typeOf(v)=="array") v = v[0];
+		// 	if (this.moduleSelectAG){
+		// 		this.moduleValueAG = this.moduleSelectAG;
+		// 		this.moduleSelectAG.then(function(){
+		// 			this.__setValue(v);
+		// 		}.bind(this));
+		// 	}else{
+		// 		this.__setValue(v)
+		// 	}
+		// 	return v;
+		// }.bind(this));
 
 		// if (value && value.isAG){
 		// 	this.moduleValueAG = o2.AG.all(value),then(function(v){
@@ -301,14 +337,15 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 	},
 
 	setData: function(data){
-		if (data && data.isAG){
-			this.moduleValueAG = o2.AG.all(data).then(function(v){
-				if (o2.typeOf(v)=="array") v = v[0];
-				this.__setData(v);
-			}.bind(this));
-		}else{
-			this.__setData(data);
-		}
+		return this._setValue(data);
+		// if (data && data.isAG){
+		// 	this.moduleValueAG = o2.AG.all(data).then(function(v){
+		// 		if (o2.typeOf(v)=="array") v = v[0];
+		// 		this.__setData(v);
+		// 	}.bind(this));
+		// }else{
+		// 	this.__setData(data);
+		// }
 		// if (data && data.isAG){
 		// 	this.moduleValueAG = data;
 		// 	data.addResolve(function(v){
