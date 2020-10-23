@@ -82,11 +82,11 @@
                     }"/>多选
                 </td>
             </tr>
-            <tr id="text{$.id}selectBoxShowTr" style="display: text{($.data.select=='single' || $.data.select=='multi' )?'':'none'}">
+            <tr id="text{$.id}selectBoxShowTr" style="display: text{($.data.select=='single' || $.data.select=='multi')?'':'none'}">
                 <td class="editTableTitle">选择框显示:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow===always)?'checked':''} type="radio" value="mouseover"/>一直显示
-                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow!==always)?'checked':''} type="radio" value="always"/>鼠标经过时
+                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow==='always')?'checked':''} type="radio" value="mouseover"/>一直显示
+                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow!=='always')?'checked':''} type="radio" value="always"/>鼠标经过时
                 </td>
             </tr>
             <tr id="text{$.id}allowSelectAllTr" style="display: text{($.data.select=='multi')?'':'none'}">
