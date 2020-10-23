@@ -429,13 +429,17 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemUnitCategory = new Class({
     loadSub: function(callback){
         if (!this.loaded){
             this.selector.orgAction.listIdentityWithUnit(function(idJson){
-                idJson.data.each(function(idSubData){
-                    if( !this.selector.isExcluded( idSubData ) ) {
-                        var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-                        this.selector.items.push(item);
-                        if(this.subItems)this.subItems.push( item );
-                    }
-                }.bind(this));
+                if( !this.itemLoaded ){
+                    idJson.data.each(function(idSubData){
+                        if( !this.selector.isExcluded( idSubData ) ) {
+                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+                            this.selector.items.push(item);
+                            if(this.subItems)this.subItems.push( item );
+                        }
+                    }.bind(this));
+                    this.itemLoaded = true;
+                }
+
                 if( !this.selector.options.expandSubEnable ){
                     this.loaded = true;
                     if (callback) callback();
@@ -490,10 +494,10 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemUnitCategory = new Class({
                         this.selector.items.push(item);
                         if(this.subItems)this.subItems.push( item );
                     }
-                    this.itemLoaded = true;
                 }.bind(this));
                 if (callback) callback();
             }.bind(this), null, this.data.distinguishedName);
+            this.itemLoaded = true;
         }else{
             if (callback) callback( );
         }
