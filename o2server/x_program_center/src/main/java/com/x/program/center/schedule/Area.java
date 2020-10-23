@@ -40,7 +40,9 @@ public class Area extends BaseAction {
 		try {
 			if (pirmaryCenter()) {
 				if (Config.collect().getEnable()) {
+					logger.print("start sync area from o2 cloud!");
 					area();
+					logger.print("completed sync area!");
 				}
 			}
 		} catch (Exception e) {
