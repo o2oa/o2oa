@@ -53,6 +53,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
 
         this.items = [];
+
         this.selectedItems = [];
         this.hideColumns = [];
         this.openColumns = [];
@@ -277,6 +278,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.lookup(data, callback);
         }
     },
+    getSelectFlag : function(){
+        if( this.json.select === "single" || this.json.select === "multi" )return this.json.select;
+        if( this.viewJson.select === "single" || this.viewJson.select === "multi" )return this.viewJson.select;
+        if( this.options.select === "single" || this.options.select === "multi"  )return this.options.select;
+        return "none";
+    },
     isSelectTdHidden :function(){
         if( !this.viewJson.firstTdHidden ){
             return false;
@@ -479,8 +486,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             if(callback)callback();
         }.bind(this), null, async === false ? false : true );
     },
-
-
+    getMode : function(){
+        return this.viewJson.group.column ? "group" : "item";
+    },
     loadData: function(){
         if (this.gridJson.length){
             // if( !this.options.paging ){
@@ -533,19 +541,50 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     loadGroupData: function(){
+        if( this.getSelectFlag() === "multi" && this.viewJson.allowSelectAll ){
+            if (this.selectTitleCell && !this.selectTitleCell.retrieve("selectAllLoaded") ){
+                if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkboxNode"] ){
+                    this.selectAllNode = new Element("span", {
+                        styles : this.viewJson.viewStyles["checkboxNode"]
+                    }).inject( this.selectTitleCell );
+                    // this.selectTitleCell.setStyle("cursor", "pointer");
+                }else{
+                    this.selectAllNode = new Element("span",{
+                        html : "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/checkbox.png'/>"+"</span>",
+                        style : "font-family: Webdings"
+                    }).inject( this.selectTitleCell );
+                }
+                this.selectAllNode.setStyle("cursor", "pointer");
+                this.selectAllNode.addEvent("click", function () {
+                    if( this.getSelectAllStatus() === "all" ){
+                        this.unSelectAll("view")
+                    }else{
+                        this.selectAll("view");
+                    }
+                }.bind(this));
+                this.selectTitleCell.store("selectAllLoaded", true);
+            }
+        }
+
+
         if (this.selectTitleCell && !this.selectTitleCell.retrieve("expandLoaded") ){
             if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
                 this.expandAllNode = new Element("span", {
                     styles : this.viewJson.viewStyles["groupCollapseNode"]
                 }).inject( this.selectTitleCell );
-                this.selectTitleCell.setStyle("cursor", "pointer");
+                // this.selectTitleCell.setStyle("cursor", "pointer");
             }else{
-                this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+                // this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+                this.expandAllNode = new Element("span",{
+                    html : "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>",
+                    style : "font-family: Webdings"
+                }).inject( this.selectTitleCell );
             }
-            this.selectTitleCell.setStyle("cursor", "pointer");
-            this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
+            this.expandAllNode.setStyle("cursor", "pointer");
+            this.expandAllNode.addEvent("click", this.expandOrCollapseAll.bind(this));
             this.selectTitleCell.store("expandLoaded", true);
         }
+
         this.expandAll = false;
 
         if (this.gridJson.length){
@@ -1225,37 +1264,98 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     getSelectedData : function(){
         return this.getData();
     },
+    getSelectAllStatus : function(){
+        if( this.getSelectFlag()!=="multi")return;
+        if( !this.items.length )return "none";
+        var flag = "all";
+        var allFlag = true, noneFlag = true;
+        for( var i=0; i<this.items.length; i++ ){
+            var item = this.items[i];
+            if( item.clazzType === "item" ){
+                item.isSelected ? ( noneFlag = false ) : (allFlag = false);
+            }else{
+                var f = item.getSelectAllStatus();
+                if( f === "none" ){
+                    allFlag = false;
+                }else if( f === "all" ){
+                    noneFlag = false;
+                }else if(f==="some"){
+                    allFlag = false;
+                    noneFlag = false;
+                }
+            }
+            if( !allFlag && !noneFlag )return "some"
+        }
+        if( allFlag )return "all";
+        if( noneFlag )return "none";
+        return "some";
+    },
+    checkSelectAllStatus : function(){
+        if(!this.selectAllNode)return;
+       var status = this.getSelectAllStatus();
+       if( status === "all" ){
+           this.setSelectAllStyle()
+       }else{
+           this.setUnSelectAllStyle()
+       }
+    },
+    setSelectAllStyle : function () {
+        if(!this.selectAllNode)return;
+        if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkedCheckboxNode"] ){
+            this.selectAllNode.setStyles( this.viewJson.viewStyles["checkedCheckboxNode"] );
+        }else {
+            this.selectAllNode.getElement("img").set("src",
+                '../x_component_query_Query/$Viewer/" + this.options.style + "/icon/checkbox_checked.png' )
+        }
+    },
+    setUnSelectAllStyle : function () {
+        if(!this.selectAllNode)return;
+        if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkboxNode"] ){
+            this.selectAllNode.setStyles( this.viewJson.viewStyles["checkboxNode"] );
+        }else {
+            this.selectAllNode.getElement("img").set("src",
+                '../x_component_query_Query/$Viewer/" + this.options.style + "/icon/checkbox.png' )
+        }
+    },
     selectAll : function(){
-        var flag = this.json.select || this.viewJson.select ||  "none";
-        if ( flag==="multi"){
+        // var flag = this.json.select || this.viewJson.select ||  "none";
+        if ( this.getSelectFlag()==="multi"){
             this.items.each( function (item) {
                 if( item.clazzType === "item" ){
-                    item.selected();
+                    item.selected("view");
                 }else{
-                    item.expand();
-                    if( item.items ){
-                        item.items.each( function (it) {
-                            it.selected();
-                        })
-                    }
+                    item.selectAll("view");
+                    // item.expand();
+                    // if( item.items ){
+                    //     item.items.each( function (it) {
+                    //         it.selected();
+                    //     })
+                    // }
                 }
             })
+            if( this.viewJson.allowSelectAll ) {
+                this.setSelectAllStyle();
+            }
         }
     },
     unSelectAll : function(){
-        var flag = this.json.select || this.viewJson.select ||  "none";
-        if ( flag==="multi"){
+        // var flag = this.json.select || this.viewJson.select ||  "none";
+        if ( this.getSelectFlag()==="multi"){
             this.items.each( function (item) {
                 if( item.clazzType === "item" ){
-                    item.unSelected();
+                    item.unSelected("view");
                 }else{
-                    if(item.items){
-                        item.items.each( function (it) {
-                            it.unSelected();
-                        })
-                    }
+                    item.unSelectAll("view");
+                    // if(item.items){
+                    //     item.items.each( function (it) {
+                    //         it.unSelected();
+                    //     })
+                    // }
                 }
             })
+            if( this.viewJson.allowSelectAll ) {
+                this.setUnSelectAllStyle();
+            }
         }
     },
     setFilter : function( filter, callback ){
@@ -1302,11 +1402,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 });
 
 MWF.xApplication.query.Query.Viewer.Item = new Class({
-    initialize: function(view, data, prev, i){
+    initialize: function(view, data, prev, i, category){
         this.view = view;
         this.data = data;
         this.css = this.view.css;
         this.isSelected = false;
+        this.category = category;
         this.prev = prev;
         this.idx = i;
         this.clazzType = "item";
@@ -1332,6 +1433,24 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
         this.selectTd.setStyles({"cursor": "pointer"});
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+
+        //var selectFlag = this.view.json.select || this.view.viewJson.select ||  "none";
+        var selectFlag = this.view.getSelectFlag();
+        if (this.view.viewJson.selectBoxShow==="always") {
+            var viewStyles = this.view.viewJson.viewStyles;
+            if (viewStyles) {
+                if (selectFlag === "single") {
+                    this.selectTd.setStyles(viewStyles["radioNode"]);
+                } else {
+                    this.selectTd.setStyles(viewStyles["checkboxNode"]);
+                }
+            } else {
+                var iconName = "checkbox";
+                if (selectFlag === "single") iconName = "radiobox";
+                this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/" + iconName + ".png) center center no-repeat"});
+            }
+        }
+
         if( this.view.isSelectTdHidden() ){
             this.selectTd.hide();
         }
@@ -1594,11 +1713,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     },
 
     setEvent: function(){
-        var flag = this.view.json.select || this.view.viewJson.select ||  "none";
+        var flag = this.view.getSelectFlag();
         if ( flag ==="single" || flag==="multi"){
             this.node.addEvents({
                 "mouseover": function(){
-                    if (!this.isSelected){
+                    if (!this.isSelected && this.view.viewJson.selectBoxShow !=="always" ){
                         var viewStyles = this.view.viewJson.viewStyles;
                         if( viewStyles ){
                             if( flag === "single" ){
@@ -1614,7 +1733,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
                     }
                 }.bind(this),
                 "mouseout": function(){
-                    if (!this.isSelected) this.selectTd.setStyles({"background": "transparent"});
+                    if (!this.isSelected && this.view.viewJson.selectBoxShow !=="always") this.selectTd.setStyles({"background": "transparent"});
                 }.bind(this),
                 "click": function(){this.select();}.bind(this)
             });
@@ -1622,7 +1741,8 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     },
 
     select: function(  force ){
-        var flag = force || this.view.json.select || this.view.viewJson.select ||  "none";
+        // var flag = force || this.view.json.select || this.view.viewJson.select ||  "none";
+        var flag = force || this.view.getSelectFlag();
         if (this.isSelected){
             if (flag==="single"){
                 this.unSelectedSingle();
@@ -1639,7 +1759,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.view.fireEvent("select"); //options 传入的事件
     },
 
-    selected: function(){
+    selected: function( from ){
         this.view.selectedItems.push(this);
         var viewStyles = this.view.viewJson.viewStyles;
         if( viewStyles ){
@@ -1650,18 +1770,34 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             this.node.setStyles(this.css.viewContentTrNode_selected);
         }
         this.isSelected = true;
+        if( from !== "view" && from !=="category" && this.view.viewJson.allowSelectAll ){
+            this.view.checkSelectAllStatus();
+            if( this.category )this.category.checkSelectAllStatus();
+        }
         this.view.fireEvent("selectRow", [this]);
     },
-    unSelected: function(){
+    unSelected: function( from ){
         this.view.selectedItems.erase(this);
-        this.selectTd.setStyles({"background": "transparent"});
         var viewStyles = this.view.viewJson.viewStyles;
+        if( this.view.viewJson.selectBoxShow !=="always" ){
+            this.selectTd.setStyles({"background": "transparent"});
+        }else{
+            if (viewStyles) {
+                this.selectTd.setStyles(viewStyles["checkboxNode"]);
+            }else{
+                this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/checkbox.png) center center no-repeat"});
+            }
+        }
         if( viewStyles ){
             this.node.setStyles( viewStyles["contentTr"] );
         }else{
             this.node.setStyles(this.css.viewContentTrNode);
         }
         this.isSelected = false;
+        if( from !== "view" && from !=="category" && this.view.viewJson.allowSelectAll ){
+            this.view.checkSelectAllStatus();
+            if( this.category )this.category.checkSelectAllStatus();
+        }
         this.view.fireEvent("unselectRow", [this]);
     },
     selectedSingle: function(){
@@ -1682,8 +1818,16 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     unSelectedSingle: function(){
         this.view.selectedItems = [];
         this.view.currentSelectedItem = null;
-        this.selectTd.setStyles({"background": "transparent"});
         var viewStyles = this.view.viewJson.viewStyles;
+        if( this.view.viewJson.selectBoxShow !=="always" ){
+            this.selectTd.setStyles({"background": "transparent"});
+        }else{
+            if (viewStyles) {
+                this.selectTd.setStyles(viewStyles["radioNode"]);
+            }else{
+                this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/radiobox.png) center center no-repeat"});
+            }
+        }
         if( viewStyles ){
             this.node.setStyles( viewStyles["contentTr"] );
         }else{
@@ -1718,6 +1862,28 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+
+        if( this.view.getSelectFlag() === "multi" && this.view.viewJson.allowSelectAll ){
+            if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkboxNode"] ){
+                this.selectAllNode = new Element("span", {
+                    styles : this.viewJson.viewStyles["checkboxNode"]
+                }).inject( this.selectTd );
+            }else{
+                this.selectAllNode = new Element("span",{
+                    html : "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/checkbox.png'/>"+"</span>",
+                    style : "font-family: Webdings"
+                }).inject( this.selectTd );
+            }
+            this.selectAllNode.setStyle("cursor", "pointer");
+            this.selectAllNode.addEvent("click", function () {
+                if( this.getSelectAllStatus() === "all" ){
+                    this.unSelectAll("category")
+                }else{
+                    this.selectAll("category");
+                }
+            }.bind(this));
+        }
+
         // if( this.view.isSelectTdHidden() ){
         //     this.selectTd.hide();
         // }
@@ -1784,6 +1950,77 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
 
         this.view.fireEvent("postLoadCategoryRow", [null, this]);
     },
+    getSelectAllStatus : function(){
+        if ( this.view.getSelectFlag()!=="multi")return;
+        if( !this.items.length )return "none";
+        var flag = "all";
+        var allFlag = true, noneFlag = true;
+        for( var i=0; i<this.items.length; i++ ){
+            var item = this.items[i];
+            item.isSelected ? ( noneFlag = false ) : (allFlag = false);
+            if( !allFlag && !noneFlag )return "some"
+        }
+        if( allFlag )return "all";
+        if( noneFlag )return "none";
+        return "some";
+    },
+    checkSelectAllStatus : function(){
+        if( !this.selectAllNode )return;
+        var status = this.getSelectAllStatus();
+        if( status === "all" ){
+            this.setSelectAllStyle()
+        }else{
+            this.setUnSelectAllStyle()
+        }
+    },
+    setSelectAllStyle : function () {
+        if( !this.selectAllNode )return;
+        if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkedCheckboxNode"] ){
+            this.selectAllNode.setStyles( this.viewJson.viewStyles["checkedCheckboxNode"] );
+        }else {
+            this.selectAllNode.getElement("img").set("src",
+                '../x_component_query_Query/$Viewer/" + this.options.style + "/icon/checkbox_checked.png' )
+        }
+    },
+    setUnSelectAllStyle : function () {
+        if( !this.selectAllNode )return;
+        if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkboxNode"] ){
+            this.selectAllNode.setStyles( this.viewJson.viewStyles["checkboxNode"] );
+        }else {
+            this.selectAllNode.getElement("img").set("src",
+                '../x_component_query_Query/$Viewer/" + this.options.style + "/icon/checkbox.png' )
+        }
+    },
+    selectAll : function( from ){
+        // var flag = this.json.select || this.viewJson.select ||  "none";
+        if ( this.view.getSelectFlag()==="multi"){
+            this.expand();
+            this.items.each( function (item) {
+                item.selected( from );
+            })
+            if( this.view.viewJson.allowSelectAll ){
+                this.setSelectAllStyle();
+                if( from !== "view" ){
+                    this.view.checkSelectAllStatus();
+                }
+            }
+        }
+
+    },
+    unSelectAll : function( from ){
+        // var flag = this.json.select || this.viewJson.select ||  "none";
+        if ( this.view.getSelectFlag()==="multi"){
+            this.items.each( function (item) {
+                item.unSelected( from );
+            })
+            if( this.view.viewJson.allowSelectAll ) {
+                this.setUnSelectAllStyle();
+                if (from !== "view") {
+                    this.view.checkSelectAllStatus();
+                }
+            }
+        }
+    },
     setEvent: function(){
         //if (this.selectTd){
         this.node.addEvents({
@@ -1829,7 +2066,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
             //window.setTimeout(function(){
             this.data.list.each(function(line, i){
                 var s = this.idx+i;
-                this.lastItem = new MWF.xApplication.query.Query.Viewer.Item(this.view, line, (this.lastItem || this), s);
+                this.lastItem = new MWF.xApplication.query.Query.Viewer.Item(this.view, line, (this.lastItem || this), s, this);
                 this.items.push(this.lastItem);
             }.bind(this));
             this.loadChild = true;
