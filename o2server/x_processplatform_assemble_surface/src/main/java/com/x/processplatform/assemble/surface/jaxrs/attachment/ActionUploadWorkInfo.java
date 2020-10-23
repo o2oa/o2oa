@@ -89,6 +89,9 @@ class ActionUploadWorkInfo extends BaseAction {
 		try {
 			String name = "";
 			byte[] bytes;
+			if(title.length()>60){
+				title = title.substring(0, 60);
+			}
 			if ("word".equals(flag)) {
 				try (POIFSFileSystem fs = new POIFSFileSystem();
 						InputStream is = new ByteArrayInputStream(workHtml.getBytes("UTF-8"));
