@@ -233,6 +233,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.selectTitleCell.hide();
             }
 
+            if( this.getSelectFlag() !== "multi" || !this.viewJson.allowSelectAll ){
+                this.expandTitleCell = this.selectTitleCell;
+            }
+
 
             //序号
             if (this.viewJson.isSequence==="yes"){
@@ -241,12 +245,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 }).inject(this.viewTitleLine);
                 this.sequenceTitleCell.setStyle("width", "10px");
                 if (this.json.titleStyles) this.sequenceTitleCell.setStyles(this.json.titleStyles);
+                if( !this.expandTitleCell )this.expandTitleCell = this.sequenceTitleCell;
             }
 
             this.entries = {};
+            debugger;
             this.viewJson.selectList.each(function(column){
                 this.entries[column.column] = column;
-
                 if (!column.hideColumn){
                     var viewCell = new Element("td", {
                         "styles": viewTitleCellNode,
@@ -255,6 +260,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     var size = MWF.getTextSize(column.displayName, viewTitleCellNode);
                     viewCell.setStyle("min-width", ""+size.x+"px");
                     if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
+
+                    if( column.groupEntry && !this.expandTitleCell )this.expandTitleCell = viewCell;
 
                     if( typeOf(column.titleStyles) === "object" )viewCell.setStyles(column.titleStyles);
                     if( typeOf(column.titleProperties) === "object" )viewCell.setProperties(column.titleProperties);
@@ -271,7 +278,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }.bind(this));
             this.lookup(data, callback);
         }else{
+            this.entries = {};
             this.viewJson.selectList.each(function(column){
+                this.entries[column.column] = column;
                 if (column.hideColumn) this.hideColumns.push(column.column);
                 if (!column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
@@ -279,9 +288,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     getSelectFlag : function(){
-        if( this.json.select === "single" || this.json.select === "multi" )return this.json.select;
-        if( this.viewJson.select === "single" || this.viewJson.select === "multi" )return this.viewJson.select;
-        if( this.options.select === "single" || this.options.select === "multi"  )return this.options.select;
+        if( this.options && this.options.select )return this.options.select;
+        if( this.json && this.json.select )return this.json.select;
+        if( this.viewJson && this.viewJson.select )return this.viewJson.select;
+        // if( this.json.select === "single" || this.json.select === "multi" )return this.json.select;
+        // if( this.viewJson.select === "single" || this.viewJson.select === "multi" )return this.viewJson.select;
+        // if( this.options.select === "single" || this.options.select === "multi"  )return this.options.select;
         return "none";
     },
     isSelectTdHidden :function(){
@@ -486,10 +498,46 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             if(callback)callback();
         }.bind(this), null, async === false ? false : true );
     },
-    getMode : function(){
+    getMode: function(){
         return this.viewJson.group.column ? "group" : "item";
     },
+    createSelectAllNode: function(){
+        if( this.getSelectFlag() === "multi" && this.viewJson.allowSelectAll ){
+            if (this.selectTitleCell && !this.selectTitleCell.retrieve("selectAllLoaded") ){
+                if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkboxNode"] ){
+                    this.selectAllNode = this.selectTitleCell;
+                    this.selectAllNode.setStyles( this.viewJson.viewStyles["checkboxNode"] );
+                    // this.selectAllNode = new Element("div", {
+                    //     styles : this.viewJson.viewStyles["checkboxNode"]
+                    // }).inject( this.selectTitleCell );
+                }else{
+                    this.selectAllNode.html( "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/checkbox.png'/>"+"</span>" )
+                    // this.selectAllNode = new Element("div",{
+                    //     html : "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/checkbox.png'/>"+"</span>",
+                    //     style : "font-family: Webdings"
+                    // }).inject( this.selectTitleCell );
+                }
+                this.selectTitleCell.setStyle("cursor", "pointer");
+                this.selectTitleCell.addEvent("click", function () {
+                    if( this.getSelectAllStatus() === "all" ){
+                        this.unSelectAll("view")
+                    }else{
+                        this.selectAll("view");
+                    }
+                }.bind(this));
+                this.selectTitleCell.store("selectAllLoaded", true);
+            }
+        }
+    },
     loadData: function(){
+        if( this.getSelectFlag() === "multi" && this.viewJson.allowSelectAll ) {
+            if(this.selectTitleCell && this.selectTitleCell.retrieve("selectAllLoaded")){
+                this.setUnSelectAllStyle();
+            }else{
+                this.createSelectAllNode();
+            }
+        }
+
         if (this.gridJson.length){
             // if( !this.options.paging ){
             this.gridJson.each(function(line, i){
@@ -541,51 +589,38 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     loadGroupData: function(){
-        if( this.getSelectFlag() === "multi" && this.viewJson.allowSelectAll ){
-            if (this.selectTitleCell && !this.selectTitleCell.retrieve("selectAllLoaded") ){
-                if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkboxNode"] ){
-                    this.selectAllNode = new Element("span", {
-                        styles : this.viewJson.viewStyles["checkboxNode"]
-                    }).inject( this.selectTitleCell );
+        if( this.getSelectFlag() === "multi" && this.viewJson.allowSelectAll ) {
+            if(this.selectTitleCell && this.selectTitleCell.retrieve("selectAllLoaded")){
+                this.setUnSelectAllStyle();
+            }else{
+                this.createSelectAllNode();
+            }
+        }
+
+        if( this.expandTitleCell ){
+            if ( !this.expandTitleCell.retrieve("expandLoaded") ){
+                if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
+                    this.expandAllNode = new Element("span", {
+                        styles : this.viewJson.viewStyles["groupCollapseNode"]
+                    }).inject( this.expandTitleCell, "top" );
                     // this.selectTitleCell.setStyle("cursor", "pointer");
                 }else{
-                    this.selectAllNode = new Element("span",{
-                        html : "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/checkbox.png'/>"+"</span>",
+                    // this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+                    this.expandAllNode = new Element("span",{
+                        html : "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>",
                         style : "font-family: Webdings"
-                    }).inject( this.selectTitleCell );
+                    }).inject( this.expandTitleCell, "top" );
                 }
-                this.selectAllNode.setStyle("cursor", "pointer");
-                this.selectAllNode.addEvent("click", function () {
-                    if( this.getSelectAllStatus() === "all" ){
-                        this.unSelectAll("view")
-                    }else{
-                        this.selectAll("view");
-                    }
-                }.bind(this));
-                this.selectTitleCell.store("selectAllLoaded", true);
+                this.expandTitleCell.setStyle("cursor", "pointer");
+                this.expandTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
+                this.expandTitleCell.store("expandLoaded", true);
+            }else if( this.json.isExpand !=="yes" ){
+                this.setCollapseAllStyle();
             }
         }
 
 
-        if (this.selectTitleCell && !this.selectTitleCell.retrieve("expandLoaded") ){
-            if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
-                this.expandAllNode = new Element("span", {
-                    styles : this.viewJson.viewStyles["groupCollapseNode"]
-                }).inject( this.selectTitleCell );
-                // this.selectTitleCell.setStyle("cursor", "pointer");
-            }else{
-                // this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
-                this.expandAllNode = new Element("span",{
-                    html : "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>",
-                    style : "font-family: Webdings"
-                }).inject( this.selectTitleCell );
-            }
-            this.expandAllNode.setStyle("cursor", "pointer");
-            this.expandAllNode.addEvent("click", this.expandOrCollapseAll.bind(this));
-            this.selectTitleCell.store("expandLoaded", true);
-        }
-
-        this.expandAll = false;
+        // this.isAllExpanded = false;
 
         if (this.gridJson.length){
             var i = 0;
@@ -597,45 +632,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             if (this.json.isExpand=="yes") this.expandOrCollapseAll();
         }else{
             if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
-        }
-    },
-    expandOrCollapseAll: function(){
-        if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
-            var span = this.selectTitleCell.getElement("span");
-            if( this.expandAll ){
-                this.items.each(function(item){
-                    item.collapse();
-                    span.setStyles( this.viewJson.viewStyles["groupCollapseNode"] );
-                }.bind(this));
-                this.expandAll = false;
-            }else{
-                this.items.each(function(item, i){
-                    window.setTimeout(function(){
-                        item.expand();
-                    }.bind(this), 10*i+5);
-
-                    span.setStyles( this.viewJson.viewStyles["groupExpandNode"] );
-                    this.expandAll = true;
-                }.bind(this));
-            }
-        }else{
-            var icon = this.selectTitleCell.getElement("span");
-            if (icon.get("html").indexOf("expand.png")===-1){
-                this.items.each(function(item){
-                    item.collapse();
-                    icon.set("html", "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
-                }.bind(this));
-                this.expandAll = false;
-            }else{
-                this.items.each(function(item, i){
-                    window.setTimeout(function(){
-                        item.expand();
-                    }.bind(this), 10*i+5);
-
-                    icon.set("html", "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
-                }.bind(this));
-                this.expandAll = true;
-            }
         }
     },
     getView: function(callback){
@@ -1267,7 +1263,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     getSelectAllStatus : function(){
         if( this.getSelectFlag()!=="multi")return;
         if( !this.items.length )return "none";
-        var flag = "all";
         var allFlag = true, noneFlag = true;
         for( var i=0; i<this.items.length; i++ ){
             var item = this.items[i];
@@ -1358,6 +1353,99 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }
         }
     },
+
+    getExpandAllStatus: function(){
+        if( !this.items.length )return "none";
+        var allFlag = true, noneFlag = true;
+        for( var i=0; i<this.items.length; i++ ){
+            var item = this.items[i];
+            item.expanded ? ( noneFlag = false ) : (allFlag = false);
+            if( !allFlag && !noneFlag )return "some"
+        }
+        if( allFlag )return "all";
+        if( noneFlag )return "none";
+        return "some";
+    },
+    checkExpandAllStatus: function(){
+        if(!this.expandAllNode)return;
+        var status = this.getExpandAllStatus();
+        if( status === "all" ){
+            this.setExpandAllStyle()
+        }else{
+            this.setCollapseAllStyle()
+        }
+    },
+    setExpandAllStyle: function(){
+        if(!this.expandAllNode)return;
+        if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupExpandNode"] ){
+            this.expandAllNode.setStyles( this.viewJson.viewStyles["groupExpandNode"] );
+        }else{
+            this.expandAllNode.set("html", "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
+        }
+    },
+    setCollapseAllStyle : function(){
+        if(!this.expandAllNode)return;
+        if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
+            this.expandAllNode.setStyles( this.viewJson.viewStyles["groupCollapseNode"] );
+        }else{
+            this.expandAllNode.set("html", "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
+        }
+    },
+    expandAll: function(){
+        this.items.each(function(item, i){
+            window.setTimeout(function(){
+                item.expand( "view" );
+            }.bind(this), 10*i+5);
+        }.bind(this));
+        this.setExpandAllStyle();
+    },
+    collapseAll: function(){
+        this.items.each(function(item){
+            item.collapse( "view" );
+        }.bind(this));
+        this.setCollapseAllStyle();
+    },
+    expandOrCollapseAll: function(){
+        this.getExpandAllStatus() === "all" ? this.collapseAll() : this.expandAll();
+        // if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
+        //     var span = this.expandAllNode; //this.selectTitleCell.getElement("span");
+        //     if( this.isAllExpanded ){
+        //         this.items.each(function(item){
+        //             item.collapse();
+        //             span.setStyles( this.viewJson.viewStyles["groupCollapseNode"] );
+        //         }.bind(this));
+        //         this.isAllExpanded = false;
+        //     }else{
+        //         this.items.each(function(item, i){
+        //             window.setTimeout(function(){
+        //                 item.expand();
+        //             }.bind(this), 10*i+5);
+        //
+        //             span.setStyles( this.viewJson.viewStyles["groupExpandNode"] );
+        //             this.isAllExpanded = true;
+        //         }.bind(this));
+        //     }
+        // }else{
+        //     var icon = this.expandAllNode; //this.selectTitleCell.getElement("span");
+        //     if (icon.get("html").indexOf("expand.png")===-1){
+        //         this.items.each(function(item){
+        //             item.collapse();
+        //             icon.set("html", "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
+        //         }.bind(this));
+        //         this.isAllExpanded = false;
+        //     }else{
+        //         this.items.each(function(item, i){
+        //             window.setTimeout(function(){
+        //                 item.expand();
+        //             }.bind(this), 10*i+5);
+        //
+        //             icon.set("html", "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
+        //         }.bind(this));
+        //         this.isAllExpanded = true;
+        //     }
+        // }
+    },
+
     setFilter : function( filter, callback ){
         if( this.lookuping || this.pageloading )return;
         if( !filter )filter = [];
@@ -1436,7 +1524,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 
         //var selectFlag = this.view.json.select || this.view.viewJson.select ||  "none";
         var selectFlag = this.view.getSelectFlag();
-        if (this.view.viewJson.selectBoxShow==="always") {
+        if ( ["multi","single"].contains(selectFlag) && this.view.viewJson.selectBoxShow==="always") {
             var viewStyles = this.view.viewJson.viewStyles;
             if (viewStyles) {
                 if (selectFlag === "single") {
@@ -1864,23 +1952,27 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
 
         if( this.view.getSelectFlag() === "multi" && this.view.viewJson.allowSelectAll ){
-            if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkboxNode"] ){
-                this.selectAllNode = new Element("span", {
-                    styles : this.viewJson.viewStyles["checkboxNode"]
-                }).inject( this.selectTd );
+            this.selectAllNode = this.selectTd;
+            if( viewStyles && viewStyles["checkboxNode"] ){
+                this.selectAllNode.setStyles( viewStyles["checkboxNode"] )
+                // this.selectAllNode = new Element("span", {
+                //     styles : viewStyles["checkboxNode"]
+                // }).inject( this.selectTd );
             }else{
-                this.selectAllNode = new Element("span",{
-                    html : "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/checkbox.png'/>"+"</span>",
-                    style : "font-family: Webdings"
-                }).inject( this.selectTd );
+                this.selectAllNode.set( "html", "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/checkbox.png'/>"+"</span>" )
+                // this.selectAllNode = new Element("span",{
+                //     html : "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/checkbox.png'/>"+"</span>",
+                //     style : "font-family: Webdings"
+                // }).inject( this.selectTd );
             }
             this.selectAllNode.setStyle("cursor", "pointer");
-            this.selectAllNode.addEvent("click", function () {
+            this.selectAllNode.addEvent("click", function (ev) {
                 if( this.getSelectAllStatus() === "all" ){
                     this.unSelectAll("category")
                 }else{
                     this.selectAll("category");
                 }
+                ev.stopPropagation();
             }.bind(this));
         }
 
@@ -1975,8 +2067,8 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
     },
     setSelectAllStyle : function () {
         if( !this.selectAllNode )return;
-        if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkedCheckboxNode"] ){
-            this.selectAllNode.setStyles( this.viewJson.viewStyles["checkedCheckboxNode"] );
+        if( this.view.viewJson.viewStyles && this.view.viewJson.viewStyles["checkedCheckboxNode"] ){
+            this.selectAllNode.setStyles( this.view.viewJson.viewStyles["checkedCheckboxNode"] );
         }else {
             this.selectAllNode.getElement("img").set("src",
                 '../x_component_query_Query/$Viewer/" + this.options.style + "/icon/checkbox_checked.png' )
@@ -1984,8 +2076,8 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
     },
     setUnSelectAllStyle : function () {
         if( !this.selectAllNode )return;
-        if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkboxNode"] ){
-            this.selectAllNode.setStyles( this.viewJson.viewStyles["checkboxNode"] );
+        if( this.view.viewJson.viewStyles && this.view.viewJson.viewStyles["checkboxNode"] ){
+            this.selectAllNode.setStyles( this.view.viewJson.viewStyles["checkboxNode"] );
         }else {
             this.selectAllNode.getElement("img").set("src",
                 '../x_component_query_Query/$Viewer/" + this.options.style + "/icon/checkbox.png' )
@@ -2041,7 +2133,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
             this.expand();
         }
     },
-    collapse: function(){
+    collapse: function( from ){
         this.items.each(function(item){
             item.node.setStyle("display", "none");
         }.bind(this));
@@ -2051,8 +2143,11 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
             this.node.getElement("span").set("html", "<img src='../x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/>");
         }
         this.expanded = false;
+        if( from !== "view" ){
+            this.view.checkExpandAllStatus();
+        }
     },
-    expand: function(){
+    expand: function( from ){
         this.items.each(function(item){
             item.node.setStyle("display", "table-row");
         }.bind(this));
@@ -2071,6 +2166,9 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
             }.bind(this));
             this.loadChild = true;
             //}.bind(this), 10);
+        }
+        if( from !== "view" ){
+            this.view.checkExpandAllStatus();
         }
     }
 });

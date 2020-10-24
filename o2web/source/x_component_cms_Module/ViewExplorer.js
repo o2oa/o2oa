@@ -233,6 +233,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         var flag = this.checkboxElement.get("checked");
         this.items.each(function (it) {
             if( it.clazzType == "category" ){
+                it.expand();
                 it.items.each( function(i){
                     if (i.checkboxElement)i.checkboxElement.set("checked", flag)
                 })
@@ -357,7 +358,9 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
 
             this.lookup(data);
         }else{
+            this.entries = {};
             this.viewJson.selectList.each(function(column){
+                this.entries[column.column] = column;
                 if (column.hideColumn) this.hideColumns.push(column.column);
                 if (!column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
@@ -381,6 +384,9 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
     //    }
     //},
     loadData: function(){
+        if( this.checkboxElement ){
+            this.checkboxElement.set("checked", false )
+        }
         if (this.gridJson.length){
             if( !this.options.paging ){
                 this.gridJson.each(function(line, i){
@@ -432,6 +438,9 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         }
     },
     loadGroupData: function(){
+        if( this.checkboxElement ){
+            this.checkboxElement.set("checked", false )
+        }
         if (this.selectTitleCell && !this.selectTitleCell.retrieve("expandLoaded") ){
             if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
                 this.expandAllNode = new Element("span", {
@@ -445,7 +454,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
             this.selectTitleCell.store("expandLoaded", true);
         }
-        this.expandAll = false;
+        // this.expandAll = false;
         if (this.gridJson.length){
             var i = 0;
             this.gridJson.each(function(data){
@@ -797,7 +806,7 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
 
         this.view.fireEvent("postLoadCategoryRow", [null, this]);
     },
-    expand: function(){
+    expand: function( from ){
         this.items.each(function(item){
             item.node.setStyle("display", "table-row");
         }.bind(this));
@@ -817,6 +826,9 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
             }.bind(this));
             this.loadChild = true;
             //}.bind(this), 10);
+        }
+        if( from !== "view" ){
+            this.view.checkExpandAllStatus();
         }
     }
 });
