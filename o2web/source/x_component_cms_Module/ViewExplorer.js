@@ -65,7 +65,7 @@ MWF.xApplication.cms.Module.ViewExplorer = new Class({
             "select": "none",
             "titleStyles": this.css.normalThNode,
             "itemStyles": {},
-            "isExpand": "no",
+            // "isExpand": "no",
             "filter": []
         };
 
@@ -318,6 +318,13 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             // if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
             //}
 
+            this.viewJson.firstTdHidden = true;
+            if( this.json.defaultSelectedScript )this.json.defaultSelectedScript = "";
+            if( this.viewJson.defaultSelectedScript )this.viewJson.defaultSelectedScript = "";
+            if( this.isSelectTdHidden() ){
+                this.selectTitleCell.hide();
+            }
+
 
             //序号
             if (this.viewJson.isSequence==="yes"){
@@ -462,7 +469,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
                 i += data.list.length;
             }.bind(this));
 
-            if (this.json.isExpand=="yes")this.expandOrCollapseAll();
+            if (this.getExpandFlag()=="yes")this.expandOrCollapseAll();
         }else{
             if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
         }
@@ -569,6 +576,10 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         this.selectTd.setStyles({"cursor": "pointer"});
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
+
+        if( this.view.isSelectTdHidden() ){
+            this.selectTd.hide();
+        }
 
         //Object.each(this.data.data, function(cell, k){
         //    if (this.view.hideColumns.indexOf(k)===-1){
