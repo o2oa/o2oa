@@ -287,6 +287,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.lookup(data, callback);
         }
     },
+    getExpandFlag : function(){
+        if( this.options && this.options.isExpand )return this.options.isExpand;
+        if( this.json && this.json.isExpand )return this.json.isExpand;
+        if( this.viewJson && this.viewJson.isExpand )return this.viewJson.isExpand;
+        return "no";
+    },
     getSelectFlag : function(){
         if( this.options && this.options.select )return this.options.select;
         if( this.json && this.json.select )return this.json.select;
@@ -300,19 +306,35 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         if( !this.viewJson.firstTdHidden ){
             return false;
         }
-        if( this.json.select === "single" || this.json.select === "multi" || this.json.defaultSelectedScript || this.viewJson.defaultSelectedScript ){
-            return false;
-        }
-        if( this.viewJson.select === "single" || this.viewJson.select === "multi"  ){
-            return false;
-        }
-        if( this.options.select === "single" || this.options.select === "multi"  ){
-            return false;
-        }
         if( this.viewJson.group && this.viewJson.group.column ){
             return false;
         }
+        if( this.json.defaultSelectedScript || this.viewJson.defaultSelectedScript ){
+            return false;
+        }
+        if( this.options && this.options.select ){
+            return  this.options.select === "none";
+        }
+        if( this.json && this.json.select ){
+            return  this.json.select === "none";
+        }
+        if( this.viewJson && this.viewJson.select ){
+            return  this.viewJson.select === "none";
+        }
         return true;
+        // if( this.json.select === "single" || this.json.select === "multi" || this.json.defaultSelectedScript || this.viewJson.defaultSelectedScript ){
+        //     return false;
+        // }
+        // if( this.options.select === "single" || this.options.select === "multi"  ){
+        //     return false;
+        // }
+        // if( this.viewJson.select === "single" || this.viewJson.select === "multi"  ){
+        //     return false;
+        // }
+        // if( this.viewJson.group && this.viewJson.group.column ){
+        //     return false;
+        // }
+        // return true;
     },
     // _loadPageCountNode: function(){
     //     this.viewPageContentNode.empty();
@@ -614,7 +636,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.expandTitleCell.setStyle("cursor", "pointer");
                 this.expandTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
                 this.expandTitleCell.store("expandLoaded", true);
-            }else if( this.json.isExpand !=="yes" ){
+            }else if( this.getExpandFlag() !=="yes" ){
                 this.setCollapseAllStyle();
             }
         }
@@ -629,7 +651,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 i += data.list.length;
             }.bind(this));
 
-            if (this.json.isExpand=="yes") this.expandOrCollapseAll();
+            if (this.getExpandFlag()=="yes") this.expandOrCollapseAll();
         }else{
             if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
         }
