@@ -91,9 +91,9 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
     var _openWorkAndroid = function (options) {
         if (window.o2android && window.o2android.openO2Work) {
             if (options.workId) {
-                window.o2android.openO2Work(options.workId, "", options.title || "");
+                window.o2android.openO2Work(options.workId, "", options.title || options.docTitle || "");
             } else if (options.workCompletedId) {
-                window.o2android.openO2Work("", options.workCompletedId, options.title || "");
+                window.o2android.openO2Work("", options.workCompletedId, options.title || options.docTitle || "");
             }
             return true;
         }
@@ -105,13 +105,13 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 window.webkit.messageHandlers.openO2Work.postMessage({
                     "work": options.workId,
                     "workCompleted": "",
-                    "title": options.title || ""
+                    "title": options.title || options.docTitle || ""
                 });
             } else if (options.workCompletedId) {
                 window.webkit.messageHandlers.openO2Work.postMessage({
                     "work": "",
                     "workCompleted": options.workCompletedId,
-                    "title": options.title || ""
+                    "title": options.title || options.docTitle || ""
                 });
             }
             return true;
@@ -222,6 +222,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
     };
 
     var _openApplicationPC = function (appNames, options, statusObj) {
+        delete options.docTitle;
         var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
         switch (appNames) {
             case "process.Work":
