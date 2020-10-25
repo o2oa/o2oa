@@ -79,6 +79,10 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this.editorTr = trs[trs.length-1];
 		this.editorTr.addClass("datagridEditorTr");
 
+		this.editorTr.addEvent("blur", function(){
+			alert('blur')
+		});
+
 		return this.editorTr;
 	},
 	_addTitleActionColumn: function(){
@@ -226,6 +230,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			var module = this.editModules[idx-1];
 			if( module && module.json.type == "ImageClipper" ){
 				this._createImage( cell, module, text )
+			}else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
+				this._createAttachment( cell, module, text );
 			}else{
 				if( module && module.json.type == "Textarea" ){
 					cell.set("html", text);
@@ -316,9 +322,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				if (module){
 					if (module.json.type=="sequence"){
 						module.node.set("text", module.node.getParent("tr").rowIndex);
-
-						//var i = newTr.rowIndex;
-						//var data = {"value": [i], "text": [i]};
 					}else {
 						debugger;
 						if (data[id]) {
@@ -399,6 +402,15 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				datagrid.currentEditLine.setStyle("display", "table-row");
 			}
 
+			datagrid.editModules.each(function(module){
+				if (module && (module.json.type=="Attachment" || module.json.type=="AttachmentDg")){
+					module.attachmentController.attachments.each(function(att){
+						datagrid.form.workAction.deleteAttachment(att.data.id, datagrid.form.businessData.work.id);
+					});
+					module.attachmentController.clear();
+				}
+			});
+
 			datagrid.isEdit = false;
 			datagrid.currentEditLine = null;
 
@@ -428,7 +440,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		if (!this.editValidation()){
 			return false;
 		}
-
+debugger;
 		this.isEdit = false;
 
 		var flag = true;
@@ -453,8 +465,15 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			var module = this.editModules[idx-1];
 			if (module){
 				if (module.json.type=="sequence"){
+					flag = false;
 					var i = newTr.rowIndex;
 					var data = {"value": [i], "text": [i]};
+				}else if (module.json.type=="Attachment" || module.json.type == "AttachmentDg"){
+					flag = false;
+					var data = module.getTextData();
+					//data.site = module.json.site;
+					if (!griddata[id]) griddata[id] = {};
+					griddata[id][module.json.id] = data;
 				}else{
 					var data = module.getTextData();
 					if (data.value[0]) flag = false;
@@ -470,6 +489,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				if (cell){
 					if( module.json.type == "ImageClipper" ){
 						this._createImage( cell, module, data.text );
+					}if( module.json.type == "Attachment" || module.json.type == "AttachmentDg" ){
+						this._createAttachment( cell, module, data );
 					}else{
 						var text = this._getValueText(idx-1, data.text.join(", "));
 						if( module.json.type == "Textarea"){
@@ -479,8 +500,12 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 						}
 					}
 				}else{
-					var text = this._getValueText(idx-1, data.text.join(", "));
-					this._createNewEditTd(newTr, idx, editorTds[idx].get("id"), text, titleThs.length-1);
+					if( module.json.type == "Attachment" || module.json.type == "AttachmentDg" ){
+						this._createNewEditTd(newTr, idx, editorTds[idx].get("id"), data, titleThs.length-1);
+					}else{
+						var text = this._getValueText(idx-1, data.text.join(", "));
+						this._createNewEditTd(newTr, idx, editorTds[idx].get("id"), text, titleThs.length-1);
+					}
 				}
 			}else{
 				if (!cell) this._createNewEditTd(newTr, idx, id, "", titleThs.length-1);
@@ -506,17 +531,14 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			newTr.getFirst().setStyles(this.json.actionStyles);
 		}
 
-
-		//this._loadTotal();
-
 		this._loadBorderStyle();
 		this._loadZebraStyle();
 		this._loadSequence();
-
-
 		this.getData();
 		this.validationMode();
 		this.fireEvent("completeLineEdit", [newTr]);
+
+		this.form.saveFormData();
 
 		return true;
 	},
@@ -536,6 +558,50 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				})
 			}
 		}
+	},
+	_createAttachment: function ( cell, module, data ){
+		cell.empty();
+		var options = {
+			"style": module.json.style || "default",
+			"title": "附件区域",
+			"listStyle": module.json.dg_listStyle || "icon",
+			"size": module.json.dg_size || "min",
+			"resize": (module.json.dg_resize === "y" || this.json.dg_resize === "true"),
+			"attachmentCount": 0,
+			"isUpload": false,
+			"isDelete": false,
+			"isReplace": false,
+			"isDownload": true,
+			"isSizeChange": (module.json.dg_isSizeChange === "y" || module.json.dg_isSizeChange === "true"),
+			"readonly": true,
+			"availableListStyles": module.json.dg_availableListStyles ? module.json.dg_availableListStyles : ["list", "seq", "icon", "preview"],
+			"isDeleteOption": "n",
+			"isReplaceOption": "n",
+			"toolbarGroupHidden": module.json.dg_toolbarGroupHidden || []
+		};
+		if (this.readonly) options.readonly = true;
+
+		var atts = [];
+		data.each(function(d){
+			var att = module.attachmentController.attachments.find(function(a){
+				return d.id == a.data.id;
+			});
+			if (att) module.attachmentController.removeAttachment(att);
+		});
+		module.setAttachmentBusinessData();
+
+
+		var attachmentController = new MWF.xApplication.process.Xform.AttachmentController(cell, this, options);
+		attachmentController.load();
+
+		data.each(function (att) {
+			var attachment = this.form.businessData.attachmentList.find(function(a){
+				return a.id==att.id;
+			});
+			var attData = attachment || att;
+			//if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
+			attachmentController.addAttachment(attData);
+		}.bind(this));
 	},
 	_editorTrGoBack: function(){
 		this.editorTr.setStyle("display", "none");
@@ -560,6 +626,29 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		var currentTr = node.getParent("tr");
 		if (currentTr){
 			this.editorTr.inject(currentTr, "after");
+			this.editorTr.focus();
+			this.editModules.each(function(module, idx){
+				if (module.json.type=="Attachment" || module.json.type == "AttachmentDg"){
+					//module.json.site = this.getAttachmentRandomSite();
+					//module.json.id = module.json.site;
+					//module.reload();
+					// var d = this.getData();
+					//
+					// var titleThs = this.titleTr.getElements("th");
+					// var th = titleThs[idx+1];
+					// var title = th.get("id");
+					//
+					// var atts = [];
+					// d.data.each(function(line){
+					// 	atts = line[title][module.json.id];
+					// });
+					//d.data
+
+					// if (json.type=="Attachment" || json.type=="AttachmentDg" ){
+					// 	module.
+					// }
+				}
+			}.bind(this));
 		}
 		this.isEdit =true;
 		this.validationMode();
@@ -576,8 +665,33 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			currentTr.tween("background-color", "#ffd4d4");
 			var datagrid = this;
 			var _self = this;
+
+
+
 			this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteDatagridLine, 300, 120, function(){
 				_self.fireEvent("deleteLine", [currentTr]);
+
+				var data = currentTr.retrieve("data");
+
+				//var attKeys = [];
+				var titleThs = _self.titleTr.getElements("th");
+				titleThs.each(function(th, i){
+					var key = th.get("id");
+					var module = (i>0) ? _self.editModules[i-1] : null;
+					if (key && module && (module.json.type=="Attachment" || module.json.type=="AttachmentDg")){
+						data[key][module.json.id].each(function(d){
+							_self.form.workAction.deleteAttachment(d.id, _self.form.businessData.work.id);
+						});
+					}
+				});
+				// attKeys.each(function(k){
+				// 	if (data[k]){
+				// 		data[k].each(function(d){
+				// 			_self.form.workAction.deleteAttachment(d.id, _self.form.businessData.work.id);
+				// 		});
+				// 	}
+				// });
+
 
 				currentTr.destroy();
 				datagrid._loadZebraStyle();
@@ -587,6 +701,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				this.close();
 
 				_self.fireEvent("afterDeleteLine");
+
+				_self.form.saveFormData();
 			}, function(){
 				var color = currentTr.retrieve("bgcolor");
 				currentTr.tween("background", color);
@@ -1214,6 +1330,10 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			return false;
 		}
 		return true;
+	},
+	getAttachmentRandomSite: function(){
+		var i = (new Date()).getTime();
+		return this.json.id+i;
 	}
 
 });
@@ -1260,8 +1380,12 @@ MWF.xApplication.process.Xform.DatagridPC$Data =  new Class({
 			moduleNodes.each(function(node){
 				var json = this.form._getDomjson(node);
 				var isField = false;
+				if (json.type=="Attachment" || json.type=="AttachmentDg" ){
+					json.type = "AttachmentDg";
+					//json.site = this.dataGrid.getAttachmentRandomSite();
+					//json.id = json.site;
+				}
 				var module = this.form._loadModule(json, node, function(){
-					debugger;
 					isField = this.field;
 					this.field = false;
 				});
@@ -1272,5 +1396,6 @@ MWF.xApplication.process.Xform.DatagridPC$Data =  new Class({
 				this.dataGrid.editModules.push(module);
 			}.bind(this));
 		}
-	}
+	},
+
 });
