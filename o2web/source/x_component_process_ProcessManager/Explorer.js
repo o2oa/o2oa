@@ -171,7 +171,7 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         this.app.addEvent("resize", this.setContentSize.bind(this));
     },
     setContentSize: function(){
-        var toolbarSize = this.toolbarNode.getSize();
+        var toolbarSize = (this.toolbarNode) ? this.toolbarNode.getSize() : {"x": 0, "y": 0};
         var nodeSize = this.node.getSize();
         var pt = this.elementContentNode.getStyle("padding-top").toFloat();
         var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
