@@ -1701,6 +1701,18 @@ o2.core = true;
             return this.some(function(item){ return (arr.indexOf(item)!==-1); })
         }
     });
+    if (!Array.prototype.find){
+        if (Array.implement) Array.implement({
+            "find": this.find || function(callback, thisArg){
+                for (var i=0; i<this.length; i++){
+                    if (callback.apply((thisArg || this), this[i], i, this)){
+                        return this[i];
+                    }
+                }
+                return undefined;
+            }
+        });
+    }
     if (window.Element && Element.implement) Element.implement({
         "isIntoView": function() {
             // var pNode = this.getParent();

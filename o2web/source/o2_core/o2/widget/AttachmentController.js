@@ -1499,7 +1499,8 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.node.addEvents({
             "mouseover": function(){if (!this.isSelected) this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle+"_over"])}.bind(this),
             "mouseout": function(){if (!this.isSelected) this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle])}.bind(this),
-            "mousedown": function(e){this.selected(e);}.bind(this),
+            "mousedown": function(e){this.selected(e); e.stopPropagation();}.bind(this),
+            "click": function(e){e.stopPropagation();}.bind(this),
             "dblclick": function(e){this.openAttachment(e);}.bind(this)
         });
     },
@@ -1869,7 +1870,8 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
                     }
                 }
             }.bind(this),
-            "mousedown": function(e){this.selected(e);}.bind(this),
+            "mousedown": function(e){this.selected(e);e.stopPropagation();}.bind(this),
+            "click": function(e){e.stopPropagation();}.bind(this),
             "dblclick": function(e){this.openAttachment(e);}.bind(this)
         });
     },

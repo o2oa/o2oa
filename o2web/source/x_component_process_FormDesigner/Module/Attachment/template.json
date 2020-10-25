@@ -65,11 +65,11 @@
       "html": ""
     }
   },
-  "size": "max", //max, min
+  "size": "", //max, min
   "isSizeChange": "y",
   "attachmentCount": "0",
   "resize": "n",
-  "listStyle": "icon", //list, icon, preview
+  "listStyle": "", //list, icon, preview
   "readonly": "n",
   "isUpload": "y",
   "isDelete": "y",
