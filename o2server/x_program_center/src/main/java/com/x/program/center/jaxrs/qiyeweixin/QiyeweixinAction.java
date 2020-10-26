@@ -64,6 +64,24 @@ public class QiyeweixinAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取企业微信回调的EncodingAESKey.", action = ActionCallbackAESKey.class)
+	@GET
+	@Path("get/callback/aes")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void syncOrganizationCallbackEncodingAESKeyGet(@Suspended final AsyncResponse asyncResponse,
+														  @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionCallbackAESKey.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionCallbackAESKey().execute(effectivePerson);
+		}catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 //	@Path("sync/organization/callback")
 //	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 //	@Consumes(MediaType.APPLICATION_JSON)
