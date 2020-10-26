@@ -649,6 +649,7 @@
             }
         }
     };
+
     this.o2.loadCss = _loadCss;
     this.o2.removeCss = _removeCss;
     if (window.Element) Element.prototype.loadCss = function(modules, options, callback){
