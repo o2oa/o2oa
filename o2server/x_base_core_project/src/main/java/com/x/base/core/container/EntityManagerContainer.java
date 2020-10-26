@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -17,7 +18,6 @@ import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -644,6 +644,61 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return os.stream().findFirst().orElse(null);
 	}
 
+	public <T extends JpaObject> Optional<T> firstEqualAndLessThanOrEqualTo(Class<T> cls, String attribute,
+			Object value, String otherAttribute, Comparable otherValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root)
+				.where(cb.and(cb.equal(root.get(attribute), value),
+						cb.lessThanOrEqualTo(root.get(otherAttribute), otherValue)))
+				.orderBy(cb.desc(root.get(otherAttribute)));
+		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
+		return os.stream().findFirst();
+	}
+
+	public <T extends JpaObject> Optional<T> firstEqualAndLessThan(Class<T> cls, String attribute, Object value,
+			String otherAttribute, Comparable otherValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root)
+				.where(cb.and(cb.equal(root.get(attribute), value), cb.lessThan(root.get(otherAttribute), otherValue)))
+				.orderBy(cb.desc(root.get(otherAttribute)));
+		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
+		return os.stream().findFirst();
+	}
+
+	public <T extends JpaObject> Optional<T> firstEqualAndGreaterThanOrEqualTo(Class<T> cls, String attribute,
+			Object value, String otherAttribute, Comparable otherValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root)
+				.where(cb.and(cb.equal(root.get(attribute), value),
+						cb.greaterThanOrEqualTo(root.get(otherAttribute), otherValue)))
+				.orderBy(cb.asc(root.get(otherAttribute)));
+		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
+		return os.stream().findFirst();
+	}
+
+	public <T extends JpaObject> Optional<T> firstEqualAndGreaterThan(Class<T> cls, String attribute, Object value,
+			String otherAttribute, Comparable otherValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root)
+				.where(cb.and(cb.equal(root.get(attribute), value),
+						cb.greaterThan(root.get(otherAttribute), otherValue)))
+				.orderBy(cb.asc(root.get(otherAttribute)));
+		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
+		return os.stream().findFirst();
+	}
+
 	public <T extends JpaObject> Long count(Class<T> cls) throws Exception {
 		EntityManager em = this.get(cls);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -888,8 +943,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<T> root = cq.from(cls);
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(cb.isMember(root.get(attribute), cb.literal(values)));
-		return new ArrayList<>(
-				em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList()));
+		return new ArrayList<>(em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList()));
 	}
 
 	public <T extends JpaObject, W extends Object> List<String> idsNotIn(Class<T> cls, String attribute,
