@@ -40,7 +40,7 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class Link {
 			public static final String table = "FILE_LINK";
 		}
-		public static class Config {
+		public static class FileConfig {
 			public static final String table = "FILE_CONFIG";
 		}
 
