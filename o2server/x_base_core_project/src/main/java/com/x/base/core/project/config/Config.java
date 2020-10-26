@@ -13,6 +13,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.http.MimeTypes;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.x.base.core.project.x_program_center;
@@ -21,13 +28,6 @@ import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.Host;
 import com.x.base.core.project.tools.NumberTools;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.http.MimeTypes;
 
 public class Config {
 
@@ -457,41 +457,27 @@ public class Config {
 		return dir;
 	}
 
-	public static void flush() {
-		if (null != INSTANCE) {
-			synchronized (Config.class) {
-				if (null != INSTANCE) {
-					INSTANCE = null;
-				}
-			}
-		}
+	public static synchronized void flush() {
+		INSTANCE = null;
 	}
 
-	private static Config instance() throws Exception {
+	private static synchronized Config instance() throws Exception {
 		if (null == INSTANCE) {
-			synchronized (Config.class) {
-				if (null == INSTANCE) {
-					INSTANCE = new Config();
-				}
-			}
+			INSTANCE = new Config();
 		}
 		return INSTANCE;
 	}
 
 	private String version;
 
-	public static String version() throws Exception {
+	public static synchronized String version() throws Exception {
 		if (null == instance().version) {
-			synchronized (Config.class) {
-				if (null == instance().version) {
-					String text = BaseTools.readString(PATH_VERSION);
-					if (XGsonBuilder.isJsonObject(text)) {
-						JsonObject obj = XGsonBuilder.instance().fromJson(text, JsonObject.class);
-						instance().version = obj.get("version").getAsString();
-					} else {
-						instance().version = text;
-					}
-				}
+			String text = BaseTools.readString(PATH_VERSION);
+			if (XGsonBuilder.isJsonObject(text)) {
+				JsonObject obj = XGsonBuilder.instance().fromJson(text, JsonObject.class);
+				instance().version = obj.get("version").getAsString();
+			} else {
+				instance().version = text;
 			}
 		}
 		return instance().version;
@@ -499,132 +485,104 @@ public class Config {
 
 	private String node;
 
-	public static String node() throws Exception {
+	public static synchronized String node() throws Exception {
 		if (null == instance().node) {
-			synchronized (Config.class) {
-				if (null == instance().node) {
-					instance().node = BaseTools.readCfg(PATH_LOCAL_NODE, Host.ROLLBACK_IPV4);
-				}
-			}
+			instance().node = BaseTools.readCfg(PATH_LOCAL_NODE, Host.ROLLBACK_IPV4);
 		}
 		return instance().node;
 	}
 
 	private String base;
 
-	public static String base() throws Exception {
+	public static synchronized String base() throws Exception {
 		if (null == instance().base) {
-			synchronized (Config.class) {
-				if (null == instance().base) {
-					instance().base = BaseTools.getBasePath();
-				}
-			}
+			instance().base = BaseTools.getBasePath();
 		}
 		return instance().base;
 	}
 
 	private Nodes nodes;
 
-	public static Nodes nodes() throws Exception {
+	public static synchronized Nodes nodes() throws Exception {
 		if (null == instance().nodes) {
-			synchronized (Config.class) {
-				if (null == instance().nodes) {
-					Nodes nodes = new Nodes();
-					FileFilter fileFilter = new WildcardFileFilter("node_*.json");
-					File[] files = dir_config().listFiles(fileFilter);
-					if (null != files && files.length > 0) {
-						for (File o : files) {
-							String name = StringUtils.substringBetween(o.getName(), "node_", ".json");
-							Node node = BaseTools.readConfigObject(DIR_CONFIG + "/" + o.getName(), Node.class);
-							if (StringUtils.isNotEmpty(name) && BooleanUtils.isTrue(node.getEnable())) {
-								nodes.put(name, node);
-							}
-						}
-					} else {
-						Node o = Node.defaultInstance();
-						nodes.put(node(), o);
+			Nodes nodes = new Nodes();
+			FileFilter fileFilter = new WildcardFileFilter("node_*.json");
+			File[] files = dir_config().listFiles(fileFilter);
+			if (null != files && files.length > 0) {
+				for (File o : files) {
+					String name = StringUtils.substringBetween(o.getName(), "node_", ".json");
+					Node node = BaseTools.readConfigObject(DIR_CONFIG + "/" + o.getName(), Node.class);
+					if (StringUtils.isNotEmpty(name) && BooleanUtils.isTrue(node.getEnable())) {
+						nodes.put(name, node);
 					}
-					/* 20191009兼容centerServer */
-					CenterServer c = BaseTools.readConfigObject(PATH_CONFIG_CENTERSERVER, CenterServer.class);
-					if (null != c) {
-						for (Node n : nodes.values()) {
-							n.setCenter(c);
-						}
-					}
-					/* 20191009兼容centerServer end */
-					instance().nodes = nodes;
+				}
+			} else {
+				Node o = Node.defaultInstance();
+				nodes.put(node(), o);
+			}
+			/* 20191009兼容centerServer */
+			CenterServer c = BaseTools.readConfigObject(PATH_CONFIG_CENTERSERVER, CenterServer.class);
+			if (null != c) {
+				for (Node n : nodes.values()) {
+					n.setCenter(c);
 				}
 			}
+			/* 20191009兼容centerServer end */
+			instance().nodes = nodes;
 		}
 		return instance().nodes;
 	}
 
 	private Token token;
 
-	public static Token token() throws Exception {
+	public static synchronized Token token() throws Exception {
 		if (null == instance().token) {
-			synchronized (Config.class) {
-				if (null == instance().token) {
-					Token o = BaseTools.readConfigObject(PATH_CONFIG_TOKEN, Token.class);
-					if (null == o) {
-						o = Token.defaultInstance();
-					}
-					instance().token = o;
-				}
+			Token o = BaseTools.readConfigObject(PATH_CONFIG_TOKEN, Token.class);
+			if (null == o) {
+				o = Token.defaultInstance();
 			}
+			instance().token = o;
 		}
 		return instance().token;
 	}
 
 	private ExternalDataSources externalDataSources;
 
-	public static ExternalDataSources externalDataSources() throws Exception {
+	public static synchronized ExternalDataSources externalDataSources() throws Exception {
 		if (null == instance().externalDataSources) {
-			synchronized (Config.class) {
-				if (null == instance().externalDataSources) {
-					ExternalDataSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALDATASOURCES,
-							ExternalDataSources.class);
-					if (null == obj) {
-						obj = ExternalDataSources.defaultInstance();
-					}
-					instance().externalDataSources = obj;
-				}
+			ExternalDataSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALDATASOURCES,
+					ExternalDataSources.class);
+			if (null == obj) {
+				obj = ExternalDataSources.defaultInstance();
 			}
+			instance().externalDataSources = obj;
 		}
 		return instance().externalDataSources;
 	}
 
 	private ExternalStorageSources externalStorageSources;
 
-	public static ExternalStorageSources externalStorageSources() throws Exception {
+	public static synchronized ExternalStorageSources externalStorageSources() throws Exception {
 		if (null == instance().externalStorageSources) {
-			synchronized (Config.class) {
-				if (null == instance().externalStorageSources) {
-					ExternalStorageSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
-							ExternalStorageSources.class);
-					if (null == obj) {
-						obj = ExternalStorageSources.defaultInstance();
-					}
-					instance().externalStorageSources = obj;
-				}
+			ExternalStorageSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
+					ExternalStorageSources.class);
+			if (null == obj) {
+				obj = ExternalStorageSources.defaultInstance();
 			}
+			instance().externalStorageSources = obj;
 		}
 		return instance().externalStorageSources;
 	}
 
 	private String publicKey;
 
-	public static String publicKey() throws Exception {
+	public static synchronized String publicKey() throws Exception {
 		if (null == instance().publicKey) {
-			synchronized (Config.class) {
-				if (null == instance().publicKey) {
-					File file = new File(Config.base(), PATH_CONFIG_PUBLICKEY);
-					if (file.exists() && file.isFile()) {
-						instance().publicKey = FileUtils.readFileToString(file, "utf-8");
-					} else {
-						instance().publicKey = DEFAULT_PUBLIC_KEY;
-					}
-				}
+			File file = new File(Config.base(), PATH_CONFIG_PUBLICKEY);
+			if (file.exists() && file.isFile()) {
+				instance().publicKey = FileUtils.readFileToString(file, "utf-8");
+			} else {
+				instance().publicKey = DEFAULT_PUBLIC_KEY;
 			}
 		}
 		return instance().publicKey;
@@ -632,17 +590,13 @@ public class Config {
 
 	private String privateKey;
 
-	public static String privateKey() throws Exception {
+	public static synchronized String privateKey() throws Exception {
 		if (null == instance().privateKey) {
-			synchronized (Config.class) {
-				if (null == instance().privateKey) {
-					File file = new File(Config.base(), PATH_CONFIG_PRIVATEKEY);
-					if (file.exists() && file.isFile()) {
-						instance().privateKey = FileUtils.readFileToString(file, "utf-8");
-					} else {
-						instance().privateKey = DEFAULT_PRIVATE_KEY;
-					}
-				}
+			File file = new File(Config.base(), PATH_CONFIG_PRIVATEKEY);
+			if (file.exists() && file.isFile()) {
+				instance().privateKey = FileUtils.readFileToString(file, "utf-8");
+			} else {
+				instance().privateKey = DEFAULT_PRIVATE_KEY;
 			}
 		}
 		return instance().privateKey;
@@ -650,191 +604,128 @@ public class Config {
 
 	private Person person = null;
 
-	public static Person person() throws Exception {
+	public static synchronized Person person() throws Exception {
 		if (null == instance().person) {
-			synchronized (Config.class) {
-				if (null == instance().person) {
-					Person obj = BaseTools.readConfigObject(PATH_CONFIG_PERSON, Person.class);
-					if (null == obj) {
-						obj = Person.defaultInstance();
-					}
-					instance().person = obj;
-				}
+			Person obj = BaseTools.readConfigObject(PATH_CONFIG_PERSON, Person.class);
+			if (null == obj) {
+				obj = Person.defaultInstance();
 			}
+			instance().person = obj;
 		}
 		return instance().person;
 	}
 
 	private Communicate communicate = null;
 
-	public static Communicate communicate() throws Exception {
+	public static synchronized Communicate communicate() throws Exception {
 		if (null == instance().communicate) {
-			synchronized (Config.class) {
-				if (null == instance().communicate) {
-					Communicate obj = BaseTools.readConfigObject(PATH_CONFIG_COMMUNICATE, Communicate.class);
-					if (null == obj) {
-						obj = Communicate.defaultInstance();
-					}
-					instance().communicate = obj;
-				}
+			Communicate obj = BaseTools.readConfigObject(PATH_CONFIG_COMMUNICATE, Communicate.class);
+			if (null == obj) {
+				obj = Communicate.defaultInstance();
 			}
+			instance().communicate = obj;
 		}
 		return instance().communicate;
 	}
 
 	private Meeting meeting;
 
-	public static Meeting meeting() throws Exception {
+	public static synchronized Meeting meeting() throws Exception {
 		if (null == instance().meeting) {
-			synchronized (Config.class) {
-				if (null == instance().meeting) {
-					Meeting obj = BaseTools.readConfigObject(PATH_CONFIG_MEETING, Meeting.class);
-					if (null == obj) {
-						obj = Meeting.defaultInstance();
-					}
-					instance().meeting = obj;
-				}
+			Meeting obj = BaseTools.readConfigObject(PATH_CONFIG_MEETING, Meeting.class);
+			if (null == obj) {
+				obj = Meeting.defaultInstance();
 			}
+			instance().meeting = obj;
 		}
 		return instance().meeting;
 	}
 
 	private com.x.base.core.project.utils.time.WorkTime workTime;
 
-	public static com.x.base.core.project.utils.time.WorkTime workTime() throws Exception {
+	public static synchronized com.x.base.core.project.utils.time.WorkTime workTime() throws Exception {
 		if (null == instance().workTime) {
-			synchronized (Config.class) {
-				if (null == instance().workTime) {
-					com.x.base.core.project.config.WorkTime obj = BaseTools.readConfigObject(PATH_CONFIG_WORKTIME,
-							com.x.base.core.project.config.WorkTime.class);
-					if (null == obj) {
-						obj = com.x.base.core.project.config.WorkTime.defaultInstance();
-					}
-					instance().workTime = new com.x.base.core.project.utils.time.WorkTime(obj.getAmStart(),
-							obj.getAmEnd(), obj.getPmStart(), obj.getPmEnd(), obj.getHolidays(), obj.getWorkdays(),
-							obj.getWeekends());
-				}
+			com.x.base.core.project.config.WorkTime obj = BaseTools.readConfigObject(PATH_CONFIG_WORKTIME,
+					com.x.base.core.project.config.WorkTime.class);
+			if (null == obj) {
+				obj = com.x.base.core.project.config.WorkTime.defaultInstance();
 			}
+			instance().workTime = new com.x.base.core.project.utils.time.WorkTime(obj.getAmStart(), obj.getAmEnd(),
+					obj.getPmStart(), obj.getPmEnd(), obj.getHolidays(), obj.getWorkdays(), obj.getWeekends());
 		}
 		return instance().workTime;
 	}
 
 	public Collect collect;
 
-	public static Collect collect() throws Exception {
+	public static synchronized Collect collect() throws Exception {
 		if (null == instance().collect) {
-			synchronized (Config.class) {
-				if (null == instance().collect) {
-					Collect obj = BaseTools.readConfigObject(PATH_CONFIG_COLLECT, Collect.class);
-					if (null == obj) {
-						obj = Collect.defaultInstance();
-					}
-					instance().collect = obj;
-
-				}
+			Collect obj = BaseTools.readConfigObject(PATH_CONFIG_COLLECT, Collect.class);
+			if (null == obj) {
+				obj = Collect.defaultInstance();
 			}
+			instance().collect = obj;
 		}
 		return instance().collect;
 	}
 
 	public DumpRestoreData dumpRestoreData;
 
-	public static DumpRestoreData dumpRestoreData() throws Exception {
+	public static synchronized DumpRestoreData dumpRestoreData() throws Exception {
 		if (null == instance().dumpRestoreData) {
-			synchronized (Config.class) {
-				if (null == instance().dumpRestoreData) {
-					DumpRestoreData obj = BaseTools.readConfigObject(PATH_CONFIG_DUMPRESTOREDATA,
-							DumpRestoreData.class);
-					if (null == obj) {
-						obj = DumpRestoreData.defaultInstance();
-					}
-					instance().dumpRestoreData = obj;
-				}
+			DumpRestoreData obj = BaseTools.readConfigObject(PATH_CONFIG_DUMPRESTOREDATA, DumpRestoreData.class);
+			if (null == obj) {
+				obj = DumpRestoreData.defaultInstance();
 			}
+			instance().dumpRestoreData = obj;
 		}
 		return instance().dumpRestoreData;
 	}
 
-//	public DumpRestoreStorage dumpRestoreStorage;
-//
-//	public static DumpRestoreStorage dumpRestoreStorage() throws Exception {
-//		if (null == instance().dumpRestoreStorage) {
-//			synchronized (Config.class) {
-//				if (null == instance().dumpRestoreStorage) {
-//					DumpRestoreStorage obj = BaseTools.readConfigObject(PATH_CONFIG_DUMPRESTORESTORAGE,
-//							DumpRestoreStorage.class);
-//					if (null == obj) {
-//						obj = DumpRestoreStorage.defaultInstance();
-//					}
-//					instance().dumpRestoreStorage = obj;
-//				}
-//			}
-//		}
-//		return instance().dumpRestoreStorage;
-//	}
-
 	public String initialScriptText;
 
-	public static String initialScriptText() throws Exception {
+	public static synchronized String initialScriptText() throws Exception {
 		if (null == instance().initialScriptText) {
-			synchronized (Config.class) {
-				if (null == instance().initialScriptText) {
-					instance().initialScriptText = BaseTools.readString(PATH_COMMONS_INITIALSCRIPTTEXT);
-				}
-			}
+			instance().initialScriptText = BaseTools.readString(PATH_COMMONS_INITIALSCRIPTTEXT);
 		}
 		return instance().initialScriptText;
 	}
 
 	public String initialServiceScriptText;
 
-	public static String initialServiceScriptText() throws Exception {
+	public static synchronized String initialServiceScriptText() throws Exception {
 		if (null == instance().initialServiceScriptText) {
-			synchronized (Config.class) {
-				if (null == instance().initialServiceScriptText) {
-					instance().initialServiceScriptText = BaseTools.readString(PATH_COMMONS_INITIALSERVICESCRIPTTEXT);
-				}
-			}
+			instance().initialServiceScriptText = BaseTools.readString(PATH_COMMONS_INITIALSERVICESCRIPTTEXT);
 		}
 		return instance().initialServiceScriptText;
 	}
 
 	public String mooToolsScriptText;
 
-	public static String mooToolsScriptText() throws Exception {
+	public static synchronized String mooToolsScriptText() throws Exception {
 		if (null == instance().mooToolsScriptText) {
-			synchronized (Config.class) {
-				if (null == instance().mooToolsScriptText) {
-					instance().mooToolsScriptText = BaseTools.readString(PATH_COMMONS_MOOTOOLSSCRIPTTEXT);
-				}
-			}
+			instance().mooToolsScriptText = BaseTools.readString(PATH_COMMONS_MOOTOOLSSCRIPTTEXT);
 		}
 		return instance().mooToolsScriptText;
 	}
 
 	private MimeTypes mimeTypes;
 
-	public static MimeTypes mimeTypes() throws Exception {
+	public static synchronized MimeTypes mimeTypes() throws Exception {
 		if (null == instance().mimeTypes) {
-			synchronized (Config.class) {
-				if (null == instance().mimeTypes) {
-					MimeTypes mimeTypes = new MimeTypes();
-					/* 添加o2自定义格式 */
-					mimeTypes.addMimeMapping("wcss", "application/json");
-					/* 添加默认格式 */
-					mimeTypes.addMimeMapping("", "application/octet-stream");
-					/* 添加新版office格式 */
-					mimeTypes.addMimeMapping("docx",
-							"application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-					mimeTypes.addMimeMapping("xlsx",
-							"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-					mimeTypes.addMimeMapping("pptx",
-							"application/vnd.openxmlformats-officedocument.presentationml.presentation");
-					/* 名片 */
-					mimeTypes.addMimeMapping("vcf", "text/x-vcard");
-					instance().mimeTypes = mimeTypes;
-				}
-			}
+			MimeTypes mimeTypes = new MimeTypes();
+			/* 添加o2自定义格式 */
+			mimeTypes.addMimeMapping("wcss", "application/json");
+			/* 添加默认格式 */
+			mimeTypes.addMimeMapping("", "application/octet-stream");
+			/* 添加新版office格式 */
+			mimeTypes.addMimeMapping("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+			mimeTypes.addMimeMapping("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+			mimeTypes.addMimeMapping("pptx",
+					"application/vnd.openxmlformats-officedocument.presentationml.presentation");
+			/* 名片 */
+			mimeTypes.addMimeMapping("vcf", "text/x-vcard");
+			instance().mimeTypes = mimeTypes;
 		}
 		return instance().mimeTypes;
 	}
@@ -858,18 +749,14 @@ public class Config {
 
 	private StorageMappings storageMappings;
 
-	public static StorageMappings storageMappings() throws Exception {
+	public static synchronized StorageMappings storageMappings() throws Exception {
 		if (null == instance().storageMappings) {
-			synchronized (Config.class) {
-				if (null == instance().storageMappings) {
-					ExternalStorageSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
-							ExternalStorageSources.class);
-					if ((obj != null)) {
-						instance().storageMappings = new StorageMappings(obj);
-					} else {
-						instance().storageMappings = new StorageMappings(nodes());
-					}
-				}
+			ExternalStorageSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
+					ExternalStorageSources.class);
+			if ((obj != null)) {
+				instance().storageMappings = new StorageMappings(obj);
+			} else {
+				instance().storageMappings = new StorageMappings(nodes());
 			}
 		}
 		return instance().storageMappings;
@@ -877,20 +764,16 @@ public class Config {
 
 	private File sslKeyStore;
 
-	public static File sslKeyStore() throws Exception {
+	public static synchronized File sslKeyStore() throws Exception {
 		if (null == instance().sslKeyStore) {
-			synchronized (Config.class) {
-				if (null == instance().sslKeyStore) {
-					File file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORE);
-					if ((!file.exists()) || file.isDirectory()) {
-						file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORE + ".jks");
-					}
-					if ((!file.exists()) || file.isDirectory()) {
-						file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORESAMPLE);
-					}
-					instance().sslKeyStore = file;
-				}
+			File file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORE);
+			if ((!file.exists()) || file.isDirectory()) {
+				file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORE + ".jks");
 			}
+			if ((!file.exists()) || file.isDirectory()) {
+				file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORESAMPLE);
+			}
+			instance().sslKeyStore = file;
 		}
 		return instance().sslKeyStore;
 	}
@@ -954,55 +837,42 @@ public class Config {
 
 	private Messages messages;
 
-	public static Messages messages() throws Exception {
+	public static synchronized Messages messages() throws Exception {
 		if (null == instance().messages) {
-			synchronized (Config.class) {
-				if (null == instance().messages) {
-					Messages obj = Messages.defaultInstance();
-					Messages custom = BaseTools.readConfigObject(PATH_CONFIG_MESSAGES, Messages.class);
-					if (null != custom) {
-						custom.entrySet().stream().forEach(o -> {
-							obj.put(o.getKey(),
-									new Message(o.getValue().getConsumers(), o.getValue().getConsumersV2()));
-						});
-					}
-					instance().messages = obj;
-				}
+			Messages obj = Messages.defaultInstance();
+			Messages custom = BaseTools.readConfigObject(PATH_CONFIG_MESSAGES, Messages.class);
+			if (null != custom) {
+				custom.entrySet().stream().forEach(o -> {
+					obj.put(o.getKey(), new Message(o.getValue().getConsumers(), o.getValue().getConsumersV2()));
+				});
 			}
+			instance().messages = obj;
 		}
 		return instance().messages;
 	}
 
 	private String messageSendRuleScript;
 
-	public static String messageSendRuleScript() throws Exception {
+	public static synchronized String messageSendRuleScript() throws Exception {
 		if (null == instance().messageSendRuleScript) {
-			synchronized (Config.class) {
-				if (null == instance().messageSendRuleScript) {
-					String scriptStr = BaseTools.readString(PATH_CONFIG_MESSAGES_SEND_RULE);
-					if (scriptStr == null) {
-						scriptStr = "";
-					}
-					instance().messageSendRuleScript = scriptStr;
-				}
+			String scriptStr = BaseTools.readString(PATH_CONFIG_MESSAGES_SEND_RULE);
+			if (scriptStr == null) {
+				scriptStr = "";
 			}
+			instance().messageSendRuleScript = scriptStr;
 		}
 		return instance().messageSendRuleScript;
 	}
 
 	private PushConfig pushConfig;
 
-	public static PushConfig pushConfig() throws Exception {
+	public static synchronized PushConfig pushConfig() throws Exception {
 		if (null == instance().pushConfig) {
-			synchronized (Config.class) {
-				if (null == instance().pushConfig) {
-					PushConfig custom = BaseTools.readConfigObject(PATH_CONFIG_JPUSH, PushConfig.class);
-					if (null != custom) {
-						instance().pushConfig = custom;
-					} else {
-						instance().pushConfig = PushConfig.defaultInstance();
-					}
-				}
+			PushConfig custom = BaseTools.readConfigObject(PATH_CONFIG_JPUSH, PushConfig.class);
+			if (null != custom) {
+				instance().pushConfig = custom;
+			} else {
+				instance().pushConfig = PushConfig.defaultInstance();
 			}
 		}
 		return instance().pushConfig;
@@ -1010,172 +880,130 @@ public class Config {
 
 	private ProcessPlatform processPlatform;
 
-	public static ProcessPlatform processPlatform() throws Exception {
+	public static synchronized ProcessPlatform processPlatform() throws Exception {
 		if (null == instance().processPlatform) {
-			synchronized (Config.class) {
-				if (null == instance().processPlatform) {
-					ProcessPlatform obj = BaseTools.readConfigObject(PATH_CONFIG_PROCESSPLATFORM,
-							ProcessPlatform.class);
-					if (null == obj) {
-						obj = ProcessPlatform.defaultInstance();
-					}
-					instance().processPlatform = obj;
-				}
+			ProcessPlatform obj = BaseTools.readConfigObject(PATH_CONFIG_PROCESSPLATFORM, ProcessPlatform.class);
+			if (null == obj) {
+				obj = ProcessPlatform.defaultInstance();
 			}
+			instance().processPlatform = obj;
 		}
 		return instance().processPlatform;
 	}
 
 	private Query query;
 
-	public static Query query() throws Exception {
+	public static synchronized Query query() throws Exception {
 		if (null == instance().query) {
-			synchronized (Config.class) {
-				if (null == instance().query) {
-					Query obj = BaseTools.readConfigObject(PATH_CONFIG_QUERY, Query.class);
-					if (null == obj) {
-						obj = Query.defaultInstance();
-					}
-					instance().query = obj;
-				}
+			Query obj = BaseTools.readConfigObject(PATH_CONFIG_QUERY, Query.class);
+			if (null == obj) {
+				obj = Query.defaultInstance();
 			}
+			instance().query = obj;
 		}
 		return instance().query;
 	}
 
 	private Dingding dingding;
 
-	public static Dingding dingding() throws Exception {
+	public static synchronized Dingding dingding() throws Exception {
 		if (null == instance().dingding) {
-			synchronized (Config.class) {
-				if (null == instance().dingding) {
-					Dingding obj = BaseTools.readConfigObject(PATH_CONFIG_DINGDING, Dingding.class);
-					if (null == obj) {
-						obj = Dingding.defaultInstance();
-					}
-					instance().dingding = obj;
-				}
+			Dingding obj = BaseTools.readConfigObject(PATH_CONFIG_DINGDING, Dingding.class);
+			if (null == obj) {
+				obj = Dingding.defaultInstance();
 			}
+			instance().dingding = obj;
 		}
 		return instance().dingding;
 	}
 
 	private WeLink weLink;
 
-	public static WeLink weLink() throws Exception {
+	public static synchronized WeLink weLink() throws Exception {
 		if (null == instance().weLink) {
-			synchronized (Config.class) {
-				if (null == instance().weLink) {
-					WeLink obj = BaseTools.readConfigObject(PATH_CONFIG_WELINK, WeLink.class);
-					if (null == obj) {
-						obj = WeLink.defaultInstance();
-					}
-					instance().weLink = obj;
-				}
+			WeLink obj = BaseTools.readConfigObject(PATH_CONFIG_WELINK, WeLink.class);
+			if (null == obj) {
+				obj = WeLink.defaultInstance();
 			}
+			instance().weLink = obj;
 		}
 		return instance().weLink;
 	}
 
 	private Qiyeweixin qiyeweixin;
 
-	public static Qiyeweixin qiyeweixin() throws Exception {
+	public static synchronized Qiyeweixin qiyeweixin() throws Exception {
 		if (null == instance().qiyeweixin) {
-			synchronized (Config.class) {
-				if (null == instance().qiyeweixin) {
-					Qiyeweixin obj = BaseTools.readConfigObject(PATH_CONFIG_QIYEWEIXIN, Qiyeweixin.class);
-					if (null == obj) {
-						obj = Qiyeweixin.defaultInstance();
-					}
-					instance().qiyeweixin = obj;
-				}
+			Qiyeweixin obj = BaseTools.readConfigObject(PATH_CONFIG_QIYEWEIXIN, Qiyeweixin.class);
+			if (null == obj) {
+				obj = Qiyeweixin.defaultInstance();
 			}
+			instance().qiyeweixin = obj;
 		}
 		return instance().qiyeweixin;
 	}
 
 	private ZhengwuDingding zhengwuDingding;
 
-	public static ZhengwuDingding zhengwuDingding() throws Exception {
+	public static synchronized ZhengwuDingding zhengwuDingding() throws Exception {
 		if (null == instance().zhengwuDingding) {
-			synchronized (Config.class) {
-				if (null == instance().zhengwuDingding) {
-					ZhengwuDingding obj = BaseTools.readConfigObject(PATH_CONFIG_ZHENGWUDINGDING,
-							ZhengwuDingding.class);
-					if (null == obj) {
-						obj = ZhengwuDingding.defaultInstance();
-					}
-					instance().zhengwuDingding = obj;
-				}
+			ZhengwuDingding obj = BaseTools.readConfigObject(PATH_CONFIG_ZHENGWUDINGDING, ZhengwuDingding.class);
+			if (null == obj) {
+				obj = ZhengwuDingding.defaultInstance();
 			}
+			instance().zhengwuDingding = obj;
 		}
 		return instance().zhengwuDingding;
 	}
 
 	private MQ mq;
 
-	public static MQ mq() throws Exception {
+	public static synchronized MQ mq() throws Exception {
 		if (null == instance().mq) {
-			synchronized (Config.class) {
-				if (null == instance().mq) {
-					MQ obj = BaseTools.readConfigObject(PATH_CONFIG_MQ, MQ.class);
-					if (null == obj) {
-						obj = MQ.defaultInstance();
-					}
-					instance().mq = obj;
-				}
+			MQ obj = BaseTools.readConfigObject(PATH_CONFIG_MQ, MQ.class);
+			if (null == obj) {
+				obj = MQ.defaultInstance();
 			}
+			instance().mq = obj;
 		}
 		return instance().mq;
 	}
 
 	private Vfs vfs;
 
-	public static Vfs vfs() throws Exception {
+	public static synchronized Vfs vfs() throws Exception {
 		if (null == instance().vfs) {
-			synchronized (Config.class) {
-				if (null == instance().vfs) {
-					Vfs obj = BaseTools.readConfigObject(PATH_CONFIG_VFS, Vfs.class);
-					if (null == obj) {
-						obj = Vfs.defaultInstance();
-					}
-					instance().vfs = obj;
-				}
+			Vfs obj = BaseTools.readConfigObject(PATH_CONFIG_VFS, Vfs.class);
+			if (null == obj) {
+				obj = Vfs.defaultInstance();
 			}
+			instance().vfs = obj;
 		}
 		return instance().vfs;
 	}
 
 	private AppStyle appStyle;
 
-	public static AppStyle appStyle() throws Exception {
+	public static synchronized AppStyle appStyle() throws Exception {
 		if (null == instance().appStyle) {
-			synchronized (Config.class) {
-				if (null == instance().appStyle) {
-					AppStyle obj = BaseTools.readConfigObject(PATH_CONFIG_APPSTYLE, AppStyle.class);
-					if (null == obj) {
-						obj = AppStyle.defaultInstance();
-					}
-					instance().appStyle = obj;
-				}
+			AppStyle obj = BaseTools.readConfigObject(PATH_CONFIG_APPSTYLE, AppStyle.class);
+			if (null == obj) {
+				obj = AppStyle.defaultInstance();
 			}
+			instance().appStyle = obj;
 		}
 		return instance().appStyle;
 	}
 
 	private File startImage;
 
-	public static File startImage() throws Exception {
+	public static synchronized File startImage() throws Exception {
 		if (null == instance().startImage) {
-			synchronized (Config.class) {
-				if (null == instance().startImage) {
-					File file = new File(BaseTools.getBasePath(), PATH_CONFIG_STARTIMAGE);
-					if (file.exists() && file.isFile()) {
-						instance().startImage = file;
-					} else {
-						instance().startImage = null;
-					}
-				}
+			File file = new File(BaseTools.getBasePath(), PATH_CONFIG_STARTIMAGE);
+			if (file.exists() && file.isFile()) {
+				instance().startImage = file;
+			} else {
+				instance().startImage = null;
 			}
 		}
 		return instance().startImage;
@@ -1183,51 +1011,39 @@ public class Config {
 
 	private LogLevel logLevel;
 
-	public static LogLevel logLevel() throws Exception {
+	public static synchronized LogLevel logLevel() throws Exception {
 		if (null == instance().logLevel) {
-			synchronized (Config.class) {
-				if (null == instance().logLevel) {
-					LogLevel obj = BaseTools.readConfigObject(PATH_CONFIG_LOGLEVEL, LogLevel.class);
-					if (null == obj) {
-						obj = LogLevel.defaultInstance();
-					}
-					instance().logLevel = obj;
-				}
+			LogLevel obj = BaseTools.readConfigObject(PATH_CONFIG_LOGLEVEL, LogLevel.class);
+			if (null == obj) {
+				obj = LogLevel.defaultInstance();
 			}
+			instance().logLevel = obj;
 		}
 		return instance().logLevel;
 	}
 
 	private ClientInit clientInit;
 
-	public static ClientInit clientInit() throws Exception {
+	public static synchronized ClientInit clientInit() throws Exception {
 		if (null == instance().clientInit) {
-			synchronized (Config.class) {
-				if (null == instance().clientInit) {
-					ClientInit obj = BaseTools.readConfigObject(PATH_CONFIG_CLIENTINIT, ClientInit.class);
-					if (null == obj) {
-						obj = ClientInit.defaultInstance();
-					}
-					instance().clientInit = obj;
-				}
+			ClientInit obj = BaseTools.readConfigObject(PATH_CONFIG_CLIENTINIT, ClientInit.class);
+			if (null == obj) {
+				obj = ClientInit.defaultInstance();
 			}
+			instance().clientInit = obj;
 		}
 		return instance().clientInit;
 	}
 
 	private byte[] bindLogo;
 
-	public static byte[] bindLogo() throws Exception {
+	public static synchronized byte[] bindLogo() throws Exception {
 		if (null == instance().bindLogo) {
-			synchronized (Config.class) {
-				if (null == instance().bindLogo) {
-					File file = new File(Config.base(), PATH_CONFIG_BINDLOGO);
-					if (file.exists() && file.isFile()) {
-						instance().bindLogo = FileUtils.readFileToByteArray(file);
-					} else {
-						instance().bindLogo = DEFAULT_BINDLOGO;
-					}
-				}
+			File file = new File(Config.base(), PATH_CONFIG_BINDLOGO);
+			if (file.exists() && file.isFile()) {
+				instance().bindLogo = FileUtils.readFileToByteArray(file);
+			} else {
+				instance().bindLogo = DEFAULT_BINDLOGO;
 			}
 		}
 		return instance().bindLogo;
@@ -1235,64 +1051,48 @@ public class Config {
 
 	private InitialContext initialContext;
 
-	private static InitialContext initialContext() throws Exception {
+	private static synchronized InitialContext initialContext() throws Exception {
 		if (null == instance().initialContext) {
-			synchronized (Config.class) {
-				if (null == instance().initialContext) {
-					instance().initialContext = new InitialContext();
-				}
-			}
+			instance().initialContext = new InitialContext();
 		}
 		return instance().initialContext;
 	}
 
 	public Slice slice;
 
-	public static Slice slice() throws Exception {
+	public static synchronized Slice slice() throws Exception {
 		if (null == instance().slice) {
-			synchronized (Config.class) {
-				if (null == instance().slice) {
-					Slice obj = BaseTools.readConfigObject(PATH_CONFIG_SLICE, Slice.class);
-					if (null == obj) {
-						obj = Slice.defaultInstance();
-					}
-					instance().slice = obj;
-				}
+			Slice obj = BaseTools.readConfigObject(PATH_CONFIG_SLICE, Slice.class);
+			if (null == obj) {
+				obj = Slice.defaultInstance();
 			}
+			instance().slice = obj;
 		}
 		return instance().slice;
 	}
 
 	public Exmail exmail;
 
-	public static Exmail exmail() throws Exception {
+	public static synchronized Exmail exmail() throws Exception {
 		if (null == instance().exmail) {
-			synchronized (Config.class) {
-				if (null == instance().exmail) {
-					Exmail obj = BaseTools.readConfigObject(PATH_CONFIG_EXMAIL, Exmail.class);
-					if (null == obj) {
-						obj = Exmail.defaultInstance();
-					}
-					instance().exmail = obj;
-				}
+			Exmail obj = BaseTools.readConfigObject(PATH_CONFIG_EXMAIL, Exmail.class);
+			if (null == obj) {
+				obj = Exmail.defaultInstance();
 			}
+			instance().exmail = obj;
 		}
 		return instance().exmail;
 	}
 
 	public Portal portal;
 
-	public static Portal portal() throws Exception {
+	public static synchronized Portal portal() throws Exception {
 		if (null == instance().portal) {
-			synchronized (Config.class) {
-				if (null == instance().portal) {
-					Portal obj = BaseTools.readConfigObject(PATH_CONFIG_PORTAL, Portal.class);
-					if (null == obj) {
-						obj = Portal.defaultInstance();
-					}
-					instance().portal = obj;
-				}
+			Portal obj = BaseTools.readConfigObject(PATH_CONFIG_PORTAL, Portal.class);
+			if (null == obj) {
+				obj = Portal.defaultInstance();
 			}
+			instance().portal = obj;
 		}
 		return instance().portal;
 	}
@@ -1325,17 +1125,13 @@ public class Config {
 
 	private Components components = null;
 
-	public static Components components() throws Exception {
+	public static synchronized Components components() throws Exception {
 		if (null == instance().components) {
-			synchronized (Config.class) {
-				if (null == instance().components) {
-					Components obj = BaseTools.readConfigObject(PATH_CONFIG_COMPONENTS, Components.class);
-					if (null == obj) {
-						obj = Components.defaultInstance();
-					}
-					instance().components = obj;
-				}
+			Components obj = BaseTools.readConfigObject(PATH_CONFIG_COMPONENTS, Components.class);
+			if (null == obj) {
+				obj = Components.defaultInstance();
 			}
+			instance().components = obj;
 		}
 		return instance().components;
 	}
