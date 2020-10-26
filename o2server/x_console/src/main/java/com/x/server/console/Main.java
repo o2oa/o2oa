@@ -108,9 +108,8 @@ public class Main {
 		scanWar(base);
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
-		LogTools.setSlf4jSimple();
-		// org.slf4j.impl.StaticLoggerBinder.getSingleton();
 		SystemOutErrorSideCopyBuilder.start();
+		LogTools.setSlf4jSimple();
 		ResourceFactory.bind();
 		CommandFactory.printStartHelp();
 	}
