@@ -172,7 +172,7 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
 
         listScriptItem.store("script", script);
         listScriptItem.addEvents({
-            "dblclick": function(e){_self.loadScriptByData(this, e);},
+            "click": function(e){_self.loadScriptByData(this, e);},
             "mouseover": function(){if (_self.currentListScriptItem!=this) this.setStyles(_self.css.listScriptItem_over);},
             "mouseout": function(){if (_self.currentListScriptItem!=this) this.setStyles(_self.css.listScriptItem);}
         });
