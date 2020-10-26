@@ -8,6 +8,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.type.GenderType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -94,18 +95,25 @@ class ActionCreate extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("用户名称.")
 		private String name;
-
+		
+		@FieldDescribe("性别.男:m,女:f,未知:d")
 		private GenderType genderType;
-
+		
+		@FieldDescribe("密码.")
 		private String password;
-
+		
+		@FieldDescribe("必填,手机号.")
 		private String mobile;
-
+		
+		@FieldDescribe("手机认证码")
 		private String codeAnswer;
-
+		
+		@FieldDescribe("图片认证码")
 		private String captchaAnswer;
-
+		
+		@FieldDescribe("图片认证编号")
 		private String captcha;
 
 		public String getName() {
