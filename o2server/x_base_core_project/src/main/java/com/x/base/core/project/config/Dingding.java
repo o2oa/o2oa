@@ -40,6 +40,12 @@ public class Dingding extends ConfigObject {
 	@FieldDescribe("oapi服务器地址")
 	private String oapiAddress;
 
+	@FieldDescribe("回调token")
+	private String token = "";
+
+	@FieldDescribe("回调encodingAesKey")
+	private String encodingAesKey = "";
+
 	@FieldDescribe("钉钉消息打开工作的url地址，如：http://dev.o2oa.net/x_desktop/")
 	private String workUrl = "";
 
@@ -311,5 +317,19 @@ public class Dingding extends ConfigObject {
 		this.attendanceSyncEnable = attendanceSyncEnable;
 	}
 
+	public String getToken() {
+		return token;
+	}
 
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getEncodingAesKey() {
+		return encodingAesKey;
+	}
+
+	public void setEncodingAesKey(String encodingAesKey) {
+		this.encodingAesKey = encodingAesKey;
+	}
 }
