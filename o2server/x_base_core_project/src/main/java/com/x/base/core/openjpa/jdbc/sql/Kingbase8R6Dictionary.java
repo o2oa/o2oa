@@ -20,14 +20,18 @@ import org.apache.openjpa.jdbc.sql.SQLBuffer;
 import org.apache.openjpa.lib.jdbc.DelegatingConnection;
 import org.apache.openjpa.lib.jdbc.DelegatingPreparedStatement;
 
-public class Kingbase8Dictionary extends DBDictionary {
+public class Kingbase8R6Dictionary extends DBDictionary {
 	public String allSequencesSQL = "select SYS_NAMESPACE.NSPNAME as SEQUENCE_SCHEMA, SYS_CLASS.RELNAME as SEQUENCE_NAME from SYS_NAMESPACE,SYS_CLASS where SYS_NAMESPACE.OID=SYS_CLASS.RELNAMESPACE and SYS_CLASS.RELKIND='S'";
 	public String namedSequencesFromAllSchemasSQL = "select SYS_NAMESPACE.NSPNAME as SEQUENCE_SCHEMA, SYS_CLASS.RELNAME as SEQUENCE_NAME from SYS_NAMESPACE,SYS_CLASS where  SYS_NAMESPACE.OID=SYS_CLASS.RELNAMESPACE and SYS_CLASS.RELKIND='S' AND SYS_CLASS.RELNAME = ?";
 	public String allSequencesFromOneSchemaSQL = "select SYS_NAMESPACE.NSPNAME as SEQUENCE_SCHEMA, SYS_CLASS.RELNAME as SEQUENCE_NAME from SYS_NAMESPACE,SYS_CLASS where SYS_NAMESPACE.OID=SYS_CLASS.RELNAMESPACE and SYS_CLASS.RELKIND='S' AND SYS_NAMESPACE.NSPNAME = ?";
 	public String namedSequenceFromOneSchemaSQL = "select SYS_NAMESPACE.NSPNAME as SEQUENCE_SCHEMA, SYS_CLASS.RELNAME as SEQUENCE_NAME from SYS_NAMESPACE,SYS_CLASS where  SYS_NAMESPACE.OID=SYS_CLASS.RELNAMESPACE and SYS_CLASS.RELKIND='S' AND SYS_CLASS.RELNAME = ? AND SYS_NAMESPACE.NSPNAME = ?";
 
-	public Kingbase8Dictionary() {
-		this.platform = "KingbaseES8";
+	public Kingbase8R6Dictionary() {
+		this.platform = "KingbaseES8R6";
+		// 适配 V8R6
+		this.schemaCase = SCHEMA_CASE_LOWER;
+		// 适配 V8R6
+		this.doubleTypeName = "DOUBLE PRECISION";
 		this.validationSQL = "SELECT NOW()";
 		this.supportsSelectStartIndex = true;
 		this.supportsSelectEndIndex = true;
@@ -211,7 +215,7 @@ public class Kingbase8Dictionary extends DBDictionary {
 
 	private static class KingbasePreparedStatement extends DelegatingPreparedStatement {
 		public KingbasePreparedStatement(PreparedStatement paramPreparedStatement, Connection paramConnection,
-				Kingbase8Dictionary paramKingbaseDictionary) {
+				Kingbase8R6Dictionary paramKingbaseDictionary) {
 			super(paramPreparedStatement, paramConnection);
 		}
 
@@ -229,21 +233,21 @@ public class Kingbase8Dictionary extends DBDictionary {
 	}
 
 	private static class KingbaseConnection extends DelegatingConnection {
-		private final Kingbase8Dictionary _dict;
+		private final Kingbase8R6Dictionary _dict;
 
-		public KingbaseConnection(Connection paramConnection, Kingbase8Dictionary paramKingbaseDictionary) {
+		public KingbaseConnection(Connection paramConnection, Kingbase8R6Dictionary paramKingbaseDictionary) {
 			super(paramConnection);
 			this._dict = paramKingbaseDictionary;
 		}
 
 		protected PreparedStatement prepareStatement(String paramString, boolean paramBoolean) throws SQLException {
-			return new Kingbase8Dictionary.KingbasePreparedStatement(super.prepareStatement(paramString, false), this,
+			return new Kingbase8R6Dictionary.KingbasePreparedStatement(super.prepareStatement(paramString, false), this,
 					this._dict);
 		}
 
 		protected PreparedStatement prepareStatement(String paramString, int paramInt1, int paramInt2,
 				boolean paramBoolean) throws SQLException {
-			return new Kingbase8Dictionary.KingbasePreparedStatement(
+			return new Kingbase8R6Dictionary.KingbasePreparedStatement(
 					super.prepareStatement(paramString, paramInt1, paramInt2, false), this, this._dict);
 		}
 	}

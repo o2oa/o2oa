@@ -180,10 +180,10 @@ public class Node extends ConfigObject {
 			return DateTools.cronAvailable(this.cron());
 		}
 
-		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
-		private Boolean enable = true;
+		@FieldDescribe("是否启用,默认禁用.")
+		private Boolean enable = false;
 
-		@FieldDescribe("定时任务cron表达式")
+		@FieldDescribe("定时任务cron表达式,默认每天凌晨2点进行备份.")
 		private String cron = "";
 
 		@FieldDescribe("最大保留份数,超过将自动删除最久的数据.")
