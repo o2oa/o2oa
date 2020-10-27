@@ -48,9 +48,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-
 			Business business = new Business(emc);
-
 			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
 				Wo wo = null;
 				try {
@@ -84,24 +82,6 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 
 			result.setData(_wo.get());
 			return result;
-
-//			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-//					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-//				throw new ExceptionAccessDenied(effectivePerson);
-//			}
-//
-//			Wo wo = null;
-//
-//			Work work = emc.find(workOrWorkCompleted, Work.class);
-//
-//			if (null != work) {
-//				wo = this.work(business, effectivePerson, work);
-//			} else {
-//				wo = this.workCompleted(business, effectivePerson, emc.flag(workOrWorkCompleted, WorkCompleted.class));
-//			}
-//
-//			result.setData(wo);
-//			return result;
 		}
 	}
 
