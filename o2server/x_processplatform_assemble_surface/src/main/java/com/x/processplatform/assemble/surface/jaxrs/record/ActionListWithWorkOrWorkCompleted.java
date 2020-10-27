@@ -32,9 +32,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
-
 			Business business = new Business(emc);
-
 			CompletableFuture<List<Wo>> _wos = CompletableFuture.supplyAsync(() -> {
 				List<Wo> wos = new ArrayList<>();
 				try {
