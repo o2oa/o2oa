@@ -13,6 +13,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -85,14 +86,15 @@ public class DingdingAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "到钉钉注册回调地址", action = ActionSyncOrganizationCallbackUrlRegister.class)
 	@GET
-	@Path("sync/organization/register/callback")
+	@Path("sync/organization/register/callback/{enable}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void registerSyncOrgCallbackUrl(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+	public void registerSyncOrgCallbackUrl(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+										   @JaxrsParameterDescribe("注册回调地址还是更新") @PathParam("enable") boolean enable) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionSyncOrganizationCallbackUrlRegister.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionSyncOrganizationCallbackUrlRegister().execute(effectivePerson);
+			result = new ActionSyncOrganizationCallbackUrlRegister().execute(effectivePerson, enable);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
