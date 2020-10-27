@@ -22,8 +22,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.jaxrs.work.ActionGetWithWorkOrWorkCompleted.WoRead;
-import com.x.processplatform.assemble.surface.jaxrs.work.ActionGetWithWorkOrWorkCompleted.WoTask;
 import com.x.processplatform.core.entity.content.Attachment;
 
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
@@ -36,45 +34,53 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			Business business = new Business(emc);
 
-			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
-				return business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-						new ExceptionEntityNotExist(workOrWorkCompleted));
+			CompletableFuture<List<Wo>> _wos = CompletableFuture.supplyAsync(() -> {
+				List<Wo> wos = new ArrayList<>();
+				try {
+					List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+					List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+					final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
+					for (Attachment attachment : this.list(business, job)) {
+						Wo wo = Wo.copier.copy(attachment);
+						boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
+						boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
+						boolean canRead = this.read(attachment, effectivePerson, identities, units, business);
+						if (canRead) {
+							wo.getControl().setAllowRead(true);
+							wo.getControl().setAllowEdit(canEdit);
+							wo.getControl().setAllowControl(canControl);
+							wos.add(wo);
+						}
+					}
+					wos = wos
+							.stream().sorted(
+									Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
+											.thenComparing(Comparator.comparing(Wo::getCreateTime,
+													Comparator.nullsLast(Date::compareTo))))
+							.collect(Collectors.toList());
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return wos;
 			});
 
-			CompletableFuture<List<Wo>> _wos = CompletableFuture.supplyAsync(() -> {
-				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-
-				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-
-				final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
-
-				List<Wo> wos = new ArrayList<>();
-
-				for (Attachment attachment : this.list(business, job)) {
-					Wo wo = Wo.copier.copy(attachment);
-					boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
-					boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
-					boolean canRead = this.read(attachment, effectivePerson, identities, units, business);
-					if (canRead) {
-						wo.getControl().setAllowRead(true);
-						wo.getControl().setAllowEdit(canEdit);
-						wo.getControl().setAllowControl(canControl);
-						wos.add(wo);
-					}
+			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+				Boolean value = false;
+				try {
+					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+							new ExceptionEntityNotExist(workOrWorkCompleted));
+				} catch (Exception e) {
+					logger.error(e);
 				}
-
-				wos = wos.stream()
-						.sorted(Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
-								.thenComparing(
-										Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
-						.collect(Collectors.toList());
-				return wos;
+				return value;
 			});
 
 			if (BooleanUtils.isFalse(_control.get())) {
 				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
+
 			result.setData(_wos.get());
+
 			return result;
 		}
 	}
