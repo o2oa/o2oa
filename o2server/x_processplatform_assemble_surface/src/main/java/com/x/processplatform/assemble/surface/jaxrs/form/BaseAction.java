@@ -2,12 +2,11 @@ package com.x.processplatform.assemble.surface.jaxrs.form;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.processplatform.assemble.surface.Business;
+import com.x.base.core.project.jaxrs.WoFastETag;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Script;
@@ -186,7 +185,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	public static class AbstractWo extends GsonPropertyObject {
+	public static class AbstractWo extends WoFastETag {
 
 		private String id;
 
@@ -228,7 +227,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.id = id;
 		}
 
-		
 	}
 
 }
