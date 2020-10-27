@@ -260,6 +260,8 @@
   "getFormMobile": {"uri": "/jaxrs/form/{id}/application/{applicationFlag}/mobile"},
   "getScript": {"uri": "/jaxrs/script/{flag}/application/{applicationFlag}"},
   "getScriptByName": {"uri": "/jaxrs/script/{name}/application/{applicationId}","method": "POST"},
+  "getFormV2": {"uri": "/jaxrs/form/v2/{id}"},
+  "getFormV2Mobile": {"uri": "/jaxrs/form/v2/{id}/mobile"},
 
   "sendReaderByWork" : {"uri":"/jaxrs/read/work/{workId}", "method": "POST"},
   "sendReaderByWorkCompleted" : {"uri":"/jaxrs/read/workcompleted/{workCompletedId}", "method": "POST"},
@@ -285,6 +287,9 @@
   "getWorkControl": {"uri": "/jaxrs/control/workorworkcompleted/{workOrWorkCompleted}"},
   "getWorkForm": {"uri": "/jaxrs/form/workorworkcompleted/{workOrWorkCompleted}"},
   "getWorkFormMobile": {"uri": "/jaxrs/form/workorworkcompleted/{workOrWorkCompleted}/mobile"},
+
+  "loadWorkV2": {"uri": "/jaxrs/work/v2/workorworkcompleted/{workOrWorkCompleted}"},
+  "lookupFormWithWork": {"uri": "/jaxrs/form/v2/lookup/workorworkcompleted/{workOrWorkCompleted}"},
 
   "listTaskByJob": {"uri": "/jaxrs/task/list/job/{job}"},
   "listTaskCompletedByJob": {"uri": "/jaxrs/taskcompleted/list/job/{job}"},
