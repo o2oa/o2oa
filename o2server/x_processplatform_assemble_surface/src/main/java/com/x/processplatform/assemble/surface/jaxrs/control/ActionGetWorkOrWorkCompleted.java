@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.control;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -50,23 +51,57 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
+				Wo wo = null;
+				try {
+					Work work = emc.find(workOrWorkCompleted, Work.class);
+					if (null != work) {
+						wo = this.work(business, effectivePerson, work);
+					} else {
+						wo = this.workCompleted(business, effectivePerson,
+								emc.flag(workOrWorkCompleted, WorkCompleted.class));
+					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return wo;
+			});
+
+			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+				Boolean value = false;
+				try {
+					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+							new ExceptionEntityNotExist(workOrWorkCompleted));
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return value;
+			});
+
+			if (BooleanUtils.isFalse(_control.get())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
 
-			Wo wo = null;
-
-			Work work = emc.find(workOrWorkCompleted, Work.class);
-
-			if (null != work) {
-				wo = this.work(business, effectivePerson, work);
-			} else {
-				wo = this.workCompleted(business, effectivePerson, emc.flag(workOrWorkCompleted, WorkCompleted.class));
-			}
-
-			result.setData(wo);
+			result.setData(_wo.get());
 			return result;
+
+//			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+//					new ExceptionEntityNotExist(workOrWorkCompleted))) {
+//				throw new ExceptionAccessDenied(effectivePerson);
+//			}
+//
+//			Wo wo = null;
+//
+//			Work work = emc.find(workOrWorkCompleted, Work.class);
+//
+//			if (null != work) {
+//				wo = this.work(business, effectivePerson, work);
+//			} else {
+//				wo = this.workCompleted(business, effectivePerson, emc.flag(workOrWorkCompleted, WorkCompleted.class));
+//			}
+//
+//			result.setData(wo);
+//			return result;
 		}
 	}
 
