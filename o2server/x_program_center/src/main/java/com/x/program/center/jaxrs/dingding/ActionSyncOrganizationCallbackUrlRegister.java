@@ -26,10 +26,10 @@ public class ActionSyncOrganizationCallbackUrlRegister extends BaseAction {
 
     private List<String> tags = new ArrayList<>(Arrays.asList("user_add_org", "user_modify_org", "user_leave_org", "user_active_org", "org_dept_create", "org_dept_modify", "org_dept_remove"));
 
-    ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, boolean enable) throws Exception {
         logger.info("注册钉钉回调接口。。。。。。。");
         ActionResult<Wo> result = new ActionResult<>();
-
         if (Config.dingding().getEnable()) {
             RegisterObject registerObject = new RegisterObject();
             registerObject.setAes_key(Config.dingding().getEncodingAesKey());
@@ -45,7 +45,12 @@ public class ActionSyncOrganizationCallbackUrlRegister extends BaseAction {
             registerObject.setUrl(callbackUrl);
             logger.info("注册回调地址 post对象：{}", registerObject.toString());
             //钉钉回调地址注册 url post
-            String address = Config.dingding().getOapiAddress() + "/call_back/register_call_back?access_token=" + Config.dingding().corpAccessToken();
+            String address;
+            if (enable) {
+                address = Config.dingding().getOapiAddress() + "/call_back/register_call_back?access_token=" + Config.dingding().corpAccessToken();
+            }else {
+                address = Config.dingding().getOapiAddress() + "/call_back/update_call_back?access_token=" + Config.dingding().corpAccessToken();
+            }
             logger.info("register url :" + address);
             DingdingMessageResp resp = HttpConnection.postAsObject(address, null, registerObject.toString(), DingdingMessageResp.class);
             if (resp.getErrcode() != 0) {
