@@ -31,7 +31,6 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-
 			Business business = new Business(emc);
 
 			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {

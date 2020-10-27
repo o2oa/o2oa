@@ -35,6 +35,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -53,21 +54,40 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
-			Wo wo = null;
-			Work work = business.entityManagerContainer().find(workOrWorkCompleted, Work.class);
-			if (null != work) {
-				wo = this.work(effectivePerson, business, work);
-			} else {
-				WorkCompleted workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
-				if (null != workCompleted) {
-					wo = this.workCompleted(business, effectivePerson, workCompleted);
+
+			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
+				Wo wo = null;
+				try {
+					Work work = business.entityManagerContainer().find(workOrWorkCompleted, Work.class);
+					if (null != work) {
+						wo = this.work(effectivePerson, business, work);
+					} else {
+						WorkCompleted workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
+						if (null != workCompleted) {
+							wo = this.workCompleted(business, effectivePerson, workCompleted);
+						}
+					}
+				} catch (Exception e) {
+					logger.error(e);
 				}
+				return wo;
+			});
+
+			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+				Boolean value = false;
+				try {
+					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+							new ExceptionEntityNotExist(workOrWorkCompleted));
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return value;
+			});
+
+			if (BooleanUtils.isFalse(_control.get())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
-			result.setData(wo);
+			result.setData(_wo.get());
 			return result;
 		}
 	}
@@ -75,15 +95,32 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private Wo work(EffectivePerson effectivePerson, Business business, Work work)
 			throws InterruptedException, ExecutionException {
 		Wo wo = new Wo();
-		// Date s = new Date();
 		CompletableFuture.allOf(workJson(work, wo), activity(business, work, wo), data(business, work, wo),
 				task(effectivePerson, business, work, wo), read(effectivePerson, business, work.getJob(), wo),
 				creatorIdentity(business, work.getCreatorIdentity(), wo),
 				creatorPerson(business, work.getCreatorPerson(), wo), creatorUnit(business, work.getCreatorUnit(), wo),
-				attachment(effectivePerson, business, work.getJob(), wo)).get();
-		// System.out.println("!!!!!!!!!!!!!!!!work:" + ((new Date()).getTime() -
-		// s.getTime()));
+				attachment(effectivePerson, business, work.getJob(), wo),
+				record(effectivePerson, business, work.getJob(), wo)).get();
+		for (WoTask woTask : wo.getTaskList()) {
+			wo.getRecordList().add(taskToRecord(woTask));
+		}
 		return wo;
+	}
+
+	private WoRecord taskToRecord(WoTask woTask) {
+		WoRecord o = new WoRecord();
+		o.setType(Record.TYPE_CURRENTTASK);
+		o.setFromActivity(woTask.getActivity());
+		o.setFromActivityAlias(woTask.getActivityAlias());
+		o.setFromActivityName(woTask.getActivityName());
+		o.setFromActivityToken(woTask.getActivityToken());
+		o.setFromActivityType(woTask.getActivityType());
+		o.setPerson(woTask.getPerson());
+		o.setIdentity(o.getIdentity());
+		o.setUnit(woTask.getUnit());
+		o.getProperties().setStartTime(woTask.getStartTime());
+		o.getProperties().setEmpowerFromIdentity(woTask.getEmpowerFromIdentity());
+		return o;
 	}
 
 	private CompletableFuture<Void> data(Business business, Work work, Wo wo) {
@@ -107,6 +144,36 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
+	private CompletableFuture<Void> record(EffectivePerson effectivePerson, Business business, String job, Wo wo) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				wo.setRecordList(business.entityManagerContainer()
+						.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, job).stream()
+						.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private CompletableFuture<Void> completedRecord(EffectivePerson effectivePerson, Business business,
+			WorkCompleted workCompleted, Wo wo) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
+					wo.setRecordList(WoRecord.copier.copy(workCompleted.getProperties().getRecordList()).stream()
+							.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+				} else {
+					wo.setRecordList(business.entityManagerContainer()
+							.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, workCompleted.getJob())
+							.stream().sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
 	private CompletableFuture<Void> activity(Business business, Work work, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
@@ -117,12 +184,9 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 					activity.copyTo(woActivity);
 					wo.setActivity(woActivity);
 					if (Objects.equals(ActivityType.manual, activity.getActivityType())) {
-						wo.setRouteList(business.entityManagerContainer().fetchIn(Route.class, WoRoute.copier,
-								JpaObject.id_FIELDNAME, ((Manual) activity).getRouteList()));
+						wo.setRouteList(WoRoute.copier.copy(business.route().pick(((Manual) activity).getRouteList())));
 					}
 				}
-				// System.out.println("!!!!!!!!!!!!!!!!activity:" + ((new Date()).getTime() -
-				// s.getTime()));
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -256,7 +320,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 				creatorIdentity(business, workCompleted.getCreatorIdentity(), wo),
 				creatorPerson(business, workCompleted.getCreatorPerson(), wo),
 				creatorUnit(business, workCompleted.getCreatorUnit(), wo),
-				attachment(effectivePerson, business, workCompleted.getJob(), wo)).get();
+				attachment(effectivePerson, business, workCompleted.getJob(), wo),
+				completedRecord(effectivePerson, business, workCompleted, wo)).get();
 		return wo;
 	}
 
@@ -373,6 +438,9 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		// work和workCompleted都有
 		private List<WoAttachment> attachmentList;
 
+		// work和workCompleted都有
+		private List<WoRecord> recordList;
+
 		// 只有work有
 		private WoActivity activity;
 		// 只有work有
@@ -476,6 +544,14 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		public void setAttachmentList(List<WoAttachment> attachmentList) {
 			this.attachmentList = attachmentList;
+		}
+
+		public List<WoRecord> getRecordList() {
+			return recordList;
+		}
+
+		public void setRecordList(List<WoRecord> recordList) {
+			this.recordList = recordList;
 		}
 
 	}
@@ -616,7 +692,10 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 	}
 
-	public static class WoRoute extends GsonPropertyObject {
+	public static class WoRoute extends Route {
+
+		private static final long serialVersionUID = 556378904185283486L;
+
 		static WrapCopier<Route, WoRoute> copier = WrapCopierFactory.wo(Route.class, WoRoute.class,
 				ListTools.toList(JpaObject.id_FIELDNAME, Route.name_FIELDNAME, Route.description_FIELDNAME,
 						Route.alias_FIELDNAME),
@@ -636,7 +715,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		public void setControl(WoAttachmentControl control) {
 			this.control = control;
 		}
-
 	}
 
 	public static class WoAttachmentControl extends GsonPropertyObject {
@@ -668,6 +746,15 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		public void setAllowControl(Boolean allowControl) {
 			this.allowControl = allowControl;
 		}
+
+	}
+
+	public static class WoRecord extends Record {
+
+		private static final long serialVersionUID = -7666329770246726197L;
+
+		static WrapCopier<Record, WoRecord> copier = WrapCopierFactory.wo(Record.class, WoRecord.class,
+				JpaObject.singularAttributeField(Record.class, true, false), JpaObject.FieldsInvisible);
 
 	}
 
