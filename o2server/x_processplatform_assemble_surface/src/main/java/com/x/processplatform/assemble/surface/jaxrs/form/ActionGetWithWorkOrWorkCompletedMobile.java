@@ -1,17 +1,17 @@
 package com.x.processplatform.assemble.surface.jaxrs.form;
 
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.PropertyTools;
@@ -27,29 +27,43 @@ class ActionGetWithWorkOrWorkCompletedMobile extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionGetWithWorkOrWorkCompletedMobile.class);
 
-	ActionResult<JsonElement> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
-			ActionResult<JsonElement> result = new ActionResult<>();
+			ActionResult<Wo> result = new ActionResult<>();
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
+				Wo wo = null;
+				try {
+					Work work = emc.find(workOrWorkCompleted, Work.class);
+					if (null != work) {
+						wo = this.work(business, work);
+					} else {
+						wo = this.workCompleted(business, emc.flag(workOrWorkCompleted, WorkCompleted.class));
+					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return wo;
+			});
+
+			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+				Boolean value = false;
+				try {
+					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+							new ExceptionEntityNotExist(workOrWorkCompleted));
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return value;
+			});
+
+			if (BooleanUtils.isFalse(_control.get())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
 
-			JsonElement wo = null;
-
-			Work work = emc.find(workOrWorkCompleted, Work.class);
-
-			if (null != work) {
-				wo = gson.toJsonTree(this.work(business, work));
-			} else {
-				wo = gson.toJsonTree(this.workCompleted(business, emc.flag(workOrWorkCompleted, WorkCompleted.class)));
-			}
-			audit.log(null, "查看");
-			result.setData(wo);
+			result.setData(_wo.get());
 			return result;
 		}
 	}
