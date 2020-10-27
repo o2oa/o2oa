@@ -40,6 +40,7 @@ import com.x.base.core.project.config.Qiyeweixin;
 import com.x.base.core.project.config.Query;
 import com.x.base.core.project.config.Token;
 import com.x.base.core.project.config.Vfs;
+import com.x.base.core.project.config.Web;
 import com.x.base.core.project.config.WorkTime;
 import com.x.base.core.project.config.ZhengwuDingding;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -80,6 +81,7 @@ public class CreateConfigSample {
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
 		classes.add(Cache.class);
+		classes.add(Web.class);
 
 		Collections.sort(classes, new Comparator<Class<?>>() {
 			public int compare(Class<?> c1, Class<?> c2) {
