@@ -1317,7 +1317,7 @@ debugger;
             }.bind(this));
 
             scriptNodes.each(function(node){
-                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                var ps = new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "Script",
                     "count": node.dataset["count"] || 1,
                     "names": (!node.dataset["count"] || node.dataset["count"].toInt()==1) ? [this.data[node.get("name")]] : this.data[node.get("name")],
@@ -1325,6 +1325,74 @@ debugger;
                         this.saveScriptSelectItem(node, ids);
                     }.bind(this)
                 });
+                node.store("selector", ps);
+
+                var actionNode = node.getNext();
+                if (actionNode.hasClass("MWFScriptSelectAction")){
+                    var _self = this;
+                    var copyNode = actionNode.getFirst();
+                    var pasteNode = actionNode.getLast();
+                    copyNode.store("slectNode", node);
+                    pasteNode.store("slectNode", node);
+                    copyNode.addEvent("click", function(e){
+                        var selectNode = this.retrieve("slectNode");
+                        if (selectNode){
+                            var name = node.get("name");
+                            var data = _self.data[name];
+                            if (data){
+                                var str = JSON.encode(data);
+                                o2.DL.open({
+                                    "isTitle": false,
+                                    "width": 400,
+                                    "height": 500,
+                                    "html": "<textarea style='width: 99%; height: 98%'>"+str+"</textarea>",
+                                    "buttonList": [{
+                                        "type": "ok",
+                                        "text": "ok",
+                                        "action": function(){this.close();}
+                                    }]
+                                })
+                            }
+                        }
+                    });
+
+                    pasteNode.addEvent("click", function(e){
+                        var selectNode = this.retrieve("slectNode");
+                        if (selectNode){
+
+                            o2.DL.open({
+                                "isTitle": false,
+                                "width": 400,
+                                "height": 500,
+                                "html": "<textarea style='width: 99%; height: 98%'></textarea>",
+                                "buttonList": [{
+                                    "type": "ok",
+                                    "text": "ok",
+                                    "action": function(){
+                                        var dataStr = this.content.getElement("textarea").get("value");
+                                        try{
+
+                                            var data = JSON.decode(dataStr);
+                                            var s = selectNode.retrieve("selector");
+                                            s.setData(data);
+                                            _self.saveScriptSelectItem(selectNode, s.identitys);
+                                        }catch(e){
+                                            throw e;
+                                        }
+                                        this.close();
+                                    }
+                                },{
+                                    "type": "cancel",
+                                    "text": "cancel",
+                                    "action": function(){this.close();}
+                                }]
+                            })
+
+                        }
+                    });
+                }
+
+
             }.bind(this));
 
             var _self = this;
