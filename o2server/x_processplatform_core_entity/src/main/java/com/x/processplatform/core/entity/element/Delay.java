@@ -1,5 +1,6 @@
 package com.x.processplatform.core.entity.element;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
@@ -29,6 +31,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.entity.annotation.IdReference;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
@@ -62,10 +65,14 @@ public class Delay extends Activity {
 		// nothing
 	}
 
-	/* 更新运行方法 */
-
-	/* flag标志位 */
-	/* Entity 默认字段结束 */
+	@Override
+	public List<String> getRouteList() {
+		if (StringUtils.isNotEmpty(this.getRoute())) {
+			return ListTools.toList(this.getRoute());
+		} else {
+			return new ArrayList<>();
+		}
+	}
 
 	@FieldDescribe("分组")
 	@CheckPersist(allowEmpty = true)
@@ -337,7 +344,7 @@ public class Delay extends Activity {
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
 	private Boolean allowSuspend;
-	
+
 	public static final String route_FIELDNAME = "route";
 	@IdReference(Route.class)
 	@FieldDescribe("出口路由.")

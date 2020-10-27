@@ -159,25 +159,6 @@ public class FormAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "查询移动端表单,如果有表单那么返回表单id,如果使用的是combine的表单直接返回内容.", action = V2LookupWorkOrWorkCompletedMobile.class)
-	@GET
-	@Path("v2/lookup/workorworkcompleted/{workOrWorkCompleted}/mobile")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2LookupWorkOrWorkCompletedMobile(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
-		ActionResult<V2LookupWorkOrWorkCompletedMobile.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new V2LookupWorkOrWorkCompletedMobile().execute(effectivePerson, workOrWorkCompleted);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 	@JaxrsMethodDescribe(value = "获取表单.", action = V2Get.class)
 	@GET
 	@Path("v2/{id}")
