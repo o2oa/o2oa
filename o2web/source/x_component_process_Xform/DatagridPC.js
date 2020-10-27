@@ -79,10 +79,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this.editorTr = trs[trs.length-1];
 		this.editorTr.addClass("datagridEditorTr");
 
-		this.editorTr.addEvent("blur", function(){
-			alert('blur')
-		});
-
 		return this.editorTr;
 	},
 	_addTitleActionColumn: function(){
@@ -440,7 +436,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		if (!this.editValidation()){
 			return false;
 		}
-debugger;
+
 		this.isEdit = false;
 
 		var flag = true;
@@ -489,7 +485,7 @@ debugger;
 				if (cell){
 					if( module.json.type == "ImageClipper" ){
 						this._createImage( cell, module, data.text );
-					}if( module.json.type == "Attachment" || module.json.type == "AttachmentDg" ){
+					}else if( module.json.type == "Attachment" || module.json.type == "AttachmentDg" ){
 						this._createAttachment( cell, module, data );
 					}else{
 						var text = this._getValueText(idx-1, data.text.join(", "));
@@ -626,29 +622,6 @@ debugger;
 		var currentTr = node.getParent("tr");
 		if (currentTr){
 			this.editorTr.inject(currentTr, "after");
-			this.editorTr.focus();
-			this.editModules.each(function(module, idx){
-				if (module.json.type=="Attachment" || module.json.type == "AttachmentDg"){
-					//module.json.site = this.getAttachmentRandomSite();
-					//module.json.id = module.json.site;
-					//module.reload();
-					// var d = this.getData();
-					//
-					// var titleThs = this.titleTr.getElements("th");
-					// var th = titleThs[idx+1];
-					// var title = th.get("id");
-					//
-					// var atts = [];
-					// d.data.each(function(line){
-					// 	atts = line[title][module.json.id];
-					// });
-					//d.data
-
-					// if (json.type=="Attachment" || json.type=="AttachmentDg" ){
-					// 	module.
-					// }
-				}
-			}.bind(this));
 		}
 		this.isEdit =true;
 		this.validationMode();
@@ -665,9 +638,6 @@ debugger;
 			currentTr.tween("background-color", "#ffd4d4");
 			var datagrid = this;
 			var _self = this;
-
-
-
 			this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteDatagridLine, 300, 120, function(){
 				_self.fireEvent("deleteLine", [currentTr]);
 
@@ -684,14 +654,6 @@ debugger;
 						});
 					}
 				});
-				// attKeys.each(function(k){
-				// 	if (data[k]){
-				// 		data[k].each(function(d){
-				// 			_self.form.workAction.deleteAttachment(d.id, _self.form.businessData.work.id);
-				// 		});
-				// 	}
-				// });
-
 
 				currentTr.destroy();
 				datagrid._loadZebraStyle();
@@ -1396,6 +1358,5 @@ MWF.xApplication.process.Xform.DatagridPC$Data =  new Class({
 				this.dataGrid.editModules.push(module);
 			}.bind(this));
 		}
-	},
-
+	}
 });

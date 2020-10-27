@@ -1589,7 +1589,17 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
     getTextData: function(){
         var data = [];
         this.attachmentController.attachments.each(function(att){
-            data.push(att.data);
+            var o = {
+                "person": att.data.person,
+                "creatorUid": att.data.creatorUid,
+                "name": att.data.name,
+                "orderNumber": att.data.orderNumber,
+                "length": att.data.length,
+                "extension": att.data.extension,
+                "lastUpdateTime": att.data.lastUpdateTime,
+                "activityName": att.data.activityName
+            }
+            data.push(o);
         });
         return data;
     },
