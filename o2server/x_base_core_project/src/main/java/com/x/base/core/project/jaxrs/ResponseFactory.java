@@ -1,7 +1,6 @@
 package com.x.base.core.project.jaxrs;
 
 import java.net.URI;
-import java.util.Date;
 import java.util.Objects;
 import java.util.zip.CRC32;
 
@@ -81,7 +80,7 @@ public class ResponseFactory {
 			}
 		} else {
 			if ((null != result.getData()) && (result.getData() instanceof WoFile)) {
-				/* 附件,二进制流文件 */
+				// 附件,二进制流文件
 				WoFile wo = (WoFile) result.getData();
 				EntityTag tag = new EntityTag(etagWoFile(wo));
 				if (notModified(request, tag)) {
@@ -91,14 +90,12 @@ public class ResponseFactory {
 						.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
 						.header(Accept_Ranges, "bytes").tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
-				/* 纯文本text */
+				// 纯文本text
 				WoText wo = (WoText) result.getData();
 				EntityTag tag = new EntityTag(etagWoText(wo));
 				if (notModified(request, tag)) {
 					return Response.notModified().tag(tag).build();
 				}
-				// return
-				// Response.ok(wo.getText()).type(HttpMediaType.TEXT_PLAIN_UTF_8).tag(tag).build();
 				return Response.ok(wo.getText()).type(wo.getContentType()).tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoContentType)) {
 				WoContentType wo = (WoContentType) result.getData();
@@ -108,10 +105,10 @@ public class ResponseFactory {
 				}
 				return Response.ok(wo.getBody()).type(wo.getContentType()).tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoCallback)) {
-				/* jsonp callback */
+				// jsonp callback
 				return Response.ok(callback((WoCallback) result.getData())).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoSeeOther)) {
-				/* 303 */
+				// 303
 				WoSeeOther wo = (WoSeeOther) result.getData();
 				try {
 					return Response.seeOther(new URI(wo.getUrl())).build();
@@ -119,7 +116,7 @@ public class ResponseFactory {
 					return Response.serverError().entity(Objects.toString(wo.getUrl(), "")).build();
 				}
 			} else if ((null != result.getData()) && (result.getData() instanceof WoTemporaryRedirect)) {
-				/* 304 */
+				// 304
 				WoTemporaryRedirect wo = (WoTemporaryRedirect) result.getData();
 				try {
 					return Response.temporaryRedirect(new URI(wo.getUrl())).build();
@@ -127,7 +124,7 @@ public class ResponseFactory {
 					return Response.serverError().entity(Objects.toString(wo.getUrl(), "")).build();
 				}
 			} else {
-				/* default */
+				// default
 				EntityTag tag = new EntityTag(etagDefault(result.getData()));
 				if (notModified(request, tag)) {
 					return Response.notModified().tag(tag).build();
@@ -149,7 +146,11 @@ public class ResponseFactory {
 
 	private static String etagWoFile(WoFile wo) {
 		CRC32 crc = new CRC32();
-		crc.update(wo.getBytes());
+		if (StringUtils.isNotEmpty(wo.getFastETag())) {
+			crc.update(wo.getFastETag().getBytes(DefaultCharset.charset_utf_8));
+		} else {
+			crc.update(wo.getBytes());
+		}
 		return crc.getValue() + "";
 	}
 
@@ -161,13 +162,26 @@ public class ResponseFactory {
 
 	private static String etagWoText(WoText wo) {
 		CRC32 crc = new CRC32();
-		crc.update(wo.getText().getBytes(DefaultCharset.charset_utf_8));
+		if (StringUtils.isNotEmpty(wo.getFastETag())) {
+			crc.update(wo.getFastETag().getBytes(DefaultCharset.charset_utf_8));
+		} else {
+			crc.update(wo.getText().getBytes(DefaultCharset.charset_utf_8));
+		}
 		return crc.getValue() + "";
 	}
 
 	private static String etagDefault(Object o) {
 		CRC32 crc = new CRC32();
-		crc.update(XGsonBuilder.toJson(o).getBytes(DefaultCharset.charset_utf_8));
+		if (o instanceof WoFastETag) {
+			WoFastETag fast = ((WoFastETag) o);
+			if (StringUtils.isNotEmpty(fast.getFastETag())) {
+				crc.update(fast.getFastETag().getBytes(DefaultCharset.charset_utf_8));
+			} else {
+				crc.update(XGsonBuilder.toJson(o).getBytes(DefaultCharset.charset_utf_8));
+			}
+		} else {
+			crc.update(XGsonBuilder.toJson(o).getBytes(DefaultCharset.charset_utf_8));
+		}
 		return crc.getValue() + "";
 	}
 

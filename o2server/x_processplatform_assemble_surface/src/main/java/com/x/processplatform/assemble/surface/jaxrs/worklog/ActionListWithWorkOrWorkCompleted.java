@@ -49,33 +49,42 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
-
 			final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
 
-			CompletableFuture<List<WoTask>> future_tasks = CompletableFuture.supplyAsync(() -> {
+			CompletableFuture<List<WoTask>> _tasks = CompletableFuture.supplyAsync(() -> {
 				return this.tasks(business, job);
 			});
-			CompletableFuture<List<WoTaskCompleted>> future_taskCompleteds = CompletableFuture.supplyAsync(() -> {
+			CompletableFuture<List<WoTaskCompleted>> _taskCompleteds = CompletableFuture.supplyAsync(() -> {
 				return this.taskCompleteds(business, job);
 			});
-			CompletableFuture<List<WoRead>> future_reads = CompletableFuture.supplyAsync(() -> {
+			CompletableFuture<List<WoRead>> _reads = CompletableFuture.supplyAsync(() -> {
 				return this.reads(business, job);
 			});
-			CompletableFuture<List<WoReadCompleted>> future_readCompleteds = CompletableFuture.supplyAsync(() -> {
+			CompletableFuture<List<WoReadCompleted>> _readCompleteds = CompletableFuture.supplyAsync(() -> {
 				return this.readCompleteds(business, job);
 			});
-			CompletableFuture<List<WorkLog>> future_workLogs = CompletableFuture.supplyAsync(() -> {
+			CompletableFuture<List<WorkLog>> _workLogs = CompletableFuture.supplyAsync(() -> {
 				return this.workLogs(business, job);
 			});
-			List<WoTask> tasks = future_tasks.get();
-			List<WoTaskCompleted> taskCompleteds = future_taskCompleteds.get();
-			List<WoRead> reads = future_reads.get();
-			List<WoReadCompleted> readCompleteds = future_readCompleteds.get();
-			List<WorkLog> workLogs = future_workLogs.get();
+			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+				Boolean value = false;
+				try {
+					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+							new ExceptionEntityNotExist(workOrWorkCompleted));
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return value;
+			});
+
+			if (BooleanUtils.isFalse(_control.get())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+			}
+			List<WoTask> tasks = _tasks.get();
+			List<WoTaskCompleted> taskCompleteds = _taskCompleteds.get();
+			List<WoRead> reads = _reads.get();
+			List<WoReadCompleted> readCompleteds = _readCompleteds.get();
+			List<WorkLog> workLogs = _workLogs.get();
 
 			WorkLogTree tree = new WorkLogTree(workLogs);
 
@@ -137,11 +146,6 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	private List<WoTask> tasks(Business business, String job) {
 		List<WoTask> os = new ArrayList<>();
 		try {
-			// os = business.entityManagerContainer().fetchEqual(Task.class, WoTask.copier,
-			// WoTask.job_FIELDNAME, job)
-			// .stream().sorted(Comparator.comparing(Task::getStartTime,
-			// Comparator.nullsLast(Date::compareTo)))
-			// .collect(Collectors.toList());
 			os = WoTask.copier.copy(business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, job)
 					.stream().sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList()));

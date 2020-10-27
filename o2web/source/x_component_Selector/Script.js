@@ -110,7 +110,7 @@ MWF.xApplication.Selector.Script = new Class({
 MWF.xApplication.Selector.Script.Item = new Class({
     Extends: MWF.xApplication.Selector.Person.Item,
     _getShowName: function(){
-        return this.data.name;
+        return this.data.name+"("+this.data.alias+")";
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/attr.png)");
@@ -154,7 +154,7 @@ MWF.xApplication.Selector.Script.Item = new Class({
 MWF.xApplication.Selector.Script.ItemSelected = new Class({
     Extends: MWF.xApplication.Selector.Person.ItemSelected,
     _getShowName: function(){
-        return this.data.name;
+        return this.data.name+"("+this.data.alias+")";
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/attr.png)");
