@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.x.query.assemble.surface.factory.*;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -203,6 +204,39 @@ public class Business {
 		return false;
 	}
 
+	public boolean readable(EffectivePerson effectivePerson, Statement statement) throws Exception {
+		if (null == statement) {
+			return false;
+		}
+		if(BooleanUtils.isTrue(statement.getAnonymousAccessible())){
+			return true;
+		}
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (statement.getExecutePersonList().isEmpty() && statement.getExecuteUnitList().isEmpty()) {
+			return true;
+		}
+		if (CollectionUtils.containsAny(statement.getExecutePersonList(),
+				organization().identity().listWithPerson(effectivePerson))) {
+			return true;
+		}
+		if (CollectionUtils.containsAny(statement.getExecuteUnitList(),
+				organization().unit().listWithPersonSupNested(effectivePerson))) {
+			return true;
+		}
+		Query query = this.entityManagerContainer().find(statement.getQuery(), Query.class);
+		/** 在所属query的管理人员中 */
+		if (null != query && ListTools.contains(query.getControllerList(), effectivePerson.getDistinguishedName())) {
+			return true;
+		}
+		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.QueryManager)) {
+			return true;
+		}
+		return false;
+	}
+
 	public boolean readable(EffectivePerson effectivePerson, Reveal reveal) throws Exception {
 		if (null == reveal) {
 			return false;
@@ -293,21 +327,25 @@ public class Business {
 	public boolean executable(EffectivePerson effectivePerson, Statement o) throws Exception {
 		boolean result = false;
 		if (null != o) {
-			if (ListTools.isEmpty(o.getExecutePersonList()) && ListTools.isEmpty(o.getExecuteUnitList())) {
+			if(BooleanUtils.isTrue(o.getAnonymousAccessible())){
 				result = true;
-			}
-			if (!result) {
-				if (effectivePerson.isManager()
-						|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-								OrganizationDefinition.QueryManager))
-						|| effectivePerson.isPerson(o.getExecutePersonList())) {
+			}else {
+				if (ListTools.isEmpty(o.getExecutePersonList()) && ListTools.isEmpty(o.getExecuteUnitList())) {
 					result = true;
 				}
-				if ((!result) && ListTools.isNotEmpty(o.getExecuteUnitList())) {
-					List<String> units = this.organization().unit()
-							.listWithPerson(effectivePerson.getDistinguishedName());
-					if (ListTools.containsAny(units, o.getExecuteUnitList())) {
+				if (!result) {
+					if (effectivePerson.isManager()
+							|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+							OrganizationDefinition.QueryManager))
+							|| effectivePerson.isPerson(o.getExecutePersonList())) {
 						result = true;
+					}
+					if ((!result) && ListTools.isNotEmpty(o.getExecuteUnitList())) {
+						List<String> units = this.organization().unit()
+								.listWithPerson(effectivePerson.getDistinguishedName());
+						if (ListTools.containsAny(units, o.getExecuteUnitList())) {
+							result = true;
+						}
 					}
 				}
 			}
