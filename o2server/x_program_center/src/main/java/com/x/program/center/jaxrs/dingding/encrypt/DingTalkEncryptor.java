@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.dingding.encrypt;
 
+
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
@@ -86,10 +87,11 @@ public class DingTalkEncryptor {
             Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
             SecretKeySpec keySpec = new SecretKeySpec(this.aesKey, "AES");
             IvParameterSpec iv = new IvParameterSpec(this.aesKey, 0, 16);
-            cipher.init(1, keySpec, iv);
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, iv);
             byte[] encrypted = cipher.doFinal(unencrypted);
             String result = base64.encodeToString(encrypted);
             return result;
+
         } catch (Exception var15) {
             throw new DingTalkEncryptException(900007);
         }
