@@ -823,11 +823,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.validationMode();
         this.fireEvent("completeLineEdit", [table]);
 
-        this.addAction.set("text", MWF.xApplication.process.Xform.LP.addLine);
-        this.addAction.removeEvents("click");
-        this.addAction.addEvent("click", function(){
-            this._addLine();
-        }.bind(this));
+        if (this.addAction){
+            this.addAction.set("text", MWF.xApplication.process.Xform.LP.addLine);
+            this.addAction.removeEvents("click");
+            this.addAction.addEvent("click", function(){
+                this._addLine();
+            }.bind(this));
+        }
 
         this.form.saveFormData();
         return true;
@@ -950,7 +952,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 var data = currentTable.retrieve("data");
 
                 //var attKeys = [];
-                var titleThs = currentTable.getElements("th");
+                debugger;
+                var titleThs = _self.table.getElements("th");
                 titleThs.each(function(th, i){
                     var key = th.get("id");
                     var module = _self.editModules[i];
