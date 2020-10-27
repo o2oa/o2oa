@@ -62,35 +62,10 @@ class ActionCloseCheck extends BaseAction {
 		return wo;
 	}
 
-//	private WoGrabRelease grabRelease(Business business, EffectivePerson effectivePerson, Work work) throws Exception {
-//		WoGrabRelease wo = new WoGrabRelease();
-//		if ((null != work) && (Objects.equals(work.getActivityType(), ActivityType.manual))) {
-//			Manual manual = business.manual().pick(work.getActivity());
-//			if ((null != manual) && Objects.equals(ManualMode.grab, manual.getManualMode())) {
-//				if (ListTools.isEmpty(work.getManualTaskIdentityList())
-//						|| (work.getManualTaskIdentityList().size() == 1)) {
-//					business.entityManagerContainer().beginTransaction(Work.class);
-//					work.getManualTaskIdentityList().clear();
-//					business.entityManagerContainer().commit();
-//					ThisApplication.context().applications().putQuery(effectivePerson.getDebugger(),
-//							x_processplatform_service_processing.class,
-//							Applications.joinQueryUri("work", work.getId(), "processing"), null);
-//					List<Task> tasks = business.entityManagerContainer().fetchEqual(Task.class,
-//							ListTools.toList(Task.identity_FIELDNAME), Task.work_FIELDNAME, work.getId());
-//					wo.setRelease(true);
-//					wo.setTaskList(tasks);
-//				}
-//			}
-//		}
-//		return wo;
-//	}
-
 	public static class Wo extends GsonPropertyObject {
 
 		@FieldDescribe("检查删除草稿结果")
 		private WoDraft draft;
-//		@FieldDescribe("检查抢办释放结果")
-//		private WoGrabRelease grabRelease;
 
 		public WoDraft getDraft() {
 			return draft;
@@ -99,14 +74,6 @@ class ActionCloseCheck extends BaseAction {
 		public void setDraft(WoDraft draft) {
 			this.draft = draft;
 		}
-
-//		public WoGrabRelease getGrabRelease() {
-//			return grabRelease;
-//		}
-//
-//		public void setGrabRelease(WoGrabRelease grabRelease) {
-//			this.grabRelease = grabRelease;
-//		}
 
 	}
 

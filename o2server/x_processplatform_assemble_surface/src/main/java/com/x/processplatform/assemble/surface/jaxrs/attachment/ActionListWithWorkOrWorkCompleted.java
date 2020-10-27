@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -31,37 +34,53 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
-
-			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-
-			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-
-			final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
-
-			List<Wo> wos = new ArrayList<>();
-
-			for (Attachment attachment : this.list(business, job)) {
-				Wo wo = Wo.copier.copy(attachment);
-				boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
-				boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
-				boolean canRead = this.read(attachment, effectivePerson, identities, units, business);
-				if (canRead) {
-					wo.getControl().setAllowRead(true);
-					wo.getControl().setAllowEdit(canEdit);
-					wo.getControl().setAllowControl(canControl);
-					wos.add(wo);
+			CompletableFuture<List<Wo>> _wos = CompletableFuture.supplyAsync(() -> {
+				List<Wo> wos = new ArrayList<>();
+				try {
+					List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+					List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+					final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
+					for (Attachment attachment : this.list(business, job)) {
+						Wo wo = Wo.copier.copy(attachment);
+						boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
+						boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
+						boolean canRead = this.read(attachment, effectivePerson, identities, units, business);
+						if (canRead) {
+							wo.getControl().setAllowRead(true);
+							wo.getControl().setAllowEdit(canEdit);
+							wo.getControl().setAllowControl(canControl);
+							wos.add(wo);
+						}
+					}
+					wos = wos
+							.stream().sorted(
+									Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
+											.thenComparing(Comparator.comparing(Wo::getCreateTime,
+													Comparator.nullsLast(Date::compareTo))))
+							.collect(Collectors.toList());
+				} catch (Exception e) {
+					logger.error(e);
 				}
+				return wos;
+			});
+
+			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+				Boolean value = false;
+				try {
+					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+							new ExceptionEntityNotExist(workOrWorkCompleted));
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return value;
+			});
+
+			if (BooleanUtils.isFalse(_control.get())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
 
-			wos = wos.stream().sorted(Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
-					.thenComparing(Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
-					.collect(Collectors.toList());
+			result.setData(_wos.get());
 
-			result.setData(wos);
 			return result;
 		}
 	}

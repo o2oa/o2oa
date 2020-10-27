@@ -3,6 +3,9 @@ package com.x.base.core.project.config;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,6 +82,7 @@ public class Config {
 	public static final String PATH_CONFIG_CACHE = "config/cache.json";
 	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
 	public static final String PATH_CONFIG_EMAIL = "config/email.json";
+	public static final String PATH_CONFIG_WEB = "config/web.json";
 
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
@@ -116,6 +120,7 @@ public class Config {
 	public static final String DIR_SERVERS_CENTERSERVER_WEBAPPS = "servers/centerServer/webapps";
 	public static final String DIR_SERVERS_CENTERSERVER_WORK = "servers/centerServer/work";
 	public static final String DIR_SERVERS_WEBSERVER = "servers/webServer";
+	public static final String DIR_SERVERS_WEBSERVER_X_DESKTOP_RES_CONFIG = "servers/webServer/x_desktop/res/config";
 	public static final String DIR_STORE = "store";
 	public static final String DIR_STORE_JARS = "store/jars";
 
@@ -455,6 +460,14 @@ public class Config {
 			}
 		}
 		return dir;
+	}
+
+	public static Path path_servers_webServer_x_desktop_res_config(Boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER_X_DESKTOP_RES_CONFIG);
+		if (!Files.exists(path)) {
+			Files.createDirectories(path);
+		}
+		return path;
 	}
 
 	public static synchronized void flush() {
@@ -1134,6 +1147,19 @@ public class Config {
 			instance().components = obj;
 		}
 		return instance().components;
+	}
+
+	public Web web;
+
+	public static synchronized Web web() throws Exception {
+		if (null == instance().web) {
+			Web obj = BaseTools.readConfigObject(PATH_CONFIG_WEB, Web.class);
+			if (null == obj) {
+				obj = Web.defaultInstance();
+			}
+			instance().web = obj;
+		}
+		return instance().web;
 	}
 
 	public static Object resource(String name) throws Exception {
