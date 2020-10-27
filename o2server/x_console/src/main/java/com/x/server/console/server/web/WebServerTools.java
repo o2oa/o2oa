@@ -70,9 +70,9 @@ public class WebServerTools extends JettySeverTools {
 		threadPool.setMaxThreads(WEBSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
 		if (webServer.getSslEnable()) {
-			addHttpsConnector(server, webServer.getPort());
+			addHttpsConnector(server, webServer.getPort(), webServer.getPersistentConnectionsEnable());
 		} else {
-			addHttpConnector(server, webServer.getPort());
+			addHttpConnector(server, webServer.getPort(), webServer.getPersistentConnectionsEnable());
 		}
 		WebAppContext context = new WebAppContext();
 		context.setContextPath("/");
