@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -19,6 +22,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.jaxrs.work.ActionGetWithWorkOrWorkCompleted.WoRead;
+import com.x.processplatform.assemble.surface.jaxrs.work.ActionGetWithWorkOrWorkCompleted.WoTask;
 import com.x.processplatform.core.entity.content.Attachment;
 
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
@@ -31,37 +36,45 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
+			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+				return business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+						new ExceptionEntityNotExist(workOrWorkCompleted));
+			});
 
-			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+			CompletableFuture<List<Wo>> _wos = CompletableFuture.supplyAsync(() -> {
+				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 
-			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 
-			final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
+				final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
 
-			List<Wo> wos = new ArrayList<>();
+				List<Wo> wos = new ArrayList<>();
 
-			for (Attachment attachment : this.list(business, job)) {
-				Wo wo = Wo.copier.copy(attachment);
-				boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
-				boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
-				boolean canRead = this.read(attachment, effectivePerson, identities, units, business);
-				if (canRead) {
-					wo.getControl().setAllowRead(true);
-					wo.getControl().setAllowEdit(canEdit);
-					wo.getControl().setAllowControl(canControl);
-					wos.add(wo);
+				for (Attachment attachment : this.list(business, job)) {
+					Wo wo = Wo.copier.copy(attachment);
+					boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
+					boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
+					boolean canRead = this.read(attachment, effectivePerson, identities, units, business);
+					if (canRead) {
+						wo.getControl().setAllowRead(true);
+						wo.getControl().setAllowEdit(canEdit);
+						wo.getControl().setAllowControl(canControl);
+						wos.add(wo);
+					}
 				}
+
+				wos = wos.stream()
+						.sorted(Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
+								.thenComparing(
+										Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
+						.collect(Collectors.toList());
+				return wos;
+			});
+
+			if (BooleanUtils.isFalse(_control.get())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
-
-			wos = wos.stream().sorted(Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
-					.thenComparing(Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
-					.collect(Collectors.toList());
-
-			result.setData(wos);
+			result.setData(_wos.get());
 			return result;
 		}
 	}

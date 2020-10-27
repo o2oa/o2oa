@@ -1,8 +1,10 @@
 package com.x.server.console.server.web;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -52,21 +54,15 @@ public class WebServerTools extends JettySeverTools {
 
 	public static Server start(WebServer webServer) throws Exception {
 
-		/**
-		 * 更新x_desktop的center指向
-		 */
+		// 创建Web.json
+		updateWeb();
+		// 更新x_desktop的center指向
 		updateCenterConfigJson();
-		/**
-		 * 更新 favicon.ico
-		 */
+		// 更新 favicon.ico
 		updateFavicon();
-		/**
-		 * 创建index.html
-		 */
+		// 创建index.html
 		createIndexPage();
-		/**
-		 * copyDefaultHtml
-		 */
+		// copyDefaultHtml
 		copyDefaultHtml();
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
@@ -159,6 +155,11 @@ public class WebServerTools extends JettySeverTools {
 		if (file.exists() && file.isFile()) {
 			FileUtils.copyFile(file, new File(Config.base(), "servers/webServer/default.html"));
 		}
+	}
+
+	private static void updateWeb() throws Exception {
+		Path path = Config.path_servers_webServer_x_desktop_res_config(true);
+		Files.write(path.resolve("web.json"), XGsonBuilder.toJson(Config.web()).getBytes(StandardCharsets.UTF_8));
 	}
 
 	private static void updateFavicon() throws Exception {
