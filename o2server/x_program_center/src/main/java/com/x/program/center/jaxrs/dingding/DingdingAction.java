@@ -8,6 +8,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -19,7 +21,6 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Path("dingding")
@@ -114,13 +115,13 @@ public class DingdingAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void syncOrganizationCallback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-										 @QueryParam("signature") String signature,
-										 @QueryParam("timestamp") String timestamp, @QueryParam("nonce") String nonce,
-										 JsonElement jsonElement) {
+										 @QueryParam("signature") String signature, @QueryParam("timestamp") String timestamp,
+										 @QueryParam("nonce") String nonce, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			String json = new ActionSyncOrganizationCallbackPost().execute(effectivePerson, signature, timestamp, nonce, jsonElement);
-			asyncResponse.resume(Response.ok(json).build());
+			Map<String, String> json = new ActionSyncOrganizationCallbackPost().execute(effectivePerson, signature, timestamp, nonce, jsonElement);
+			Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+			asyncResponse.resume(Response.ok(gson.toJson(json)).build());
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			asyncResponse.resume(Response.serverError().entity("fail").build());

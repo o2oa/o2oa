@@ -1,7 +1,6 @@
 package com.x.program.center.jaxrs.dingding;
 
 
-import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.HttpConnection;
@@ -47,6 +46,7 @@ public class ActionSyncOrganizationCallbackUrlRegister extends BaseAction {
             logger.info("注册回调地址 post对象：{}", registerObject.toString());
             //钉钉回调地址注册 url post
             String address = Config.dingding().getOapiAddress() + "/call_back/register_call_back?access_token=" + Config.dingding().corpAccessToken();
+            logger.info("register url :" + address);
             DingdingMessageResp resp = HttpConnection.postAsObject(address, null, registerObject.toString(), DingdingMessageResp.class);
             if (resp.getErrcode() != 0) {
                 throw  new ExceptionRegisterCallbackMessage(resp.getErrcode(), resp.getErrmsg());

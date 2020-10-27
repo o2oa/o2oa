@@ -2,7 +2,6 @@ package com.x.program.center.jaxrs.dingding;
 
 
 import com.google.gson.Gson;
-import com.x.program.center.jaxrs.dingding.encrypt.DingTalkEncryptException;
 import com.x.program.center.jaxrs.dingding.encrypt.DingTalkEncryptor;
 
 import java.util.Date;
@@ -34,11 +33,15 @@ public class TestMain {
             //    "nonce": "2dffdfdfdf2222"
             //}
 
-            String j = dingTalkEncryptor.getDecryptMsg("77d1d1214d0bb07e91be9b231c802cfd575d8a5f", "1603697312745", "2dffdfdfdf2222",
-                    "Z129Xx+g/4RNjuplftqRsS24/FbMqS8Zy56JGpUQtL1zpVAoqhGS1PHiF5QdxQKRwzUgNg06tDylA02Lyy/W9Q\\u003d\\u003d");
-            System.out.println(j);
-        } catch (DingTalkEncryptException e) {
+//            String j = dingTalkEncryptor.getDecryptMsg("111108bb8e6dbce3c9671d6fdb69d15066227608", "1783610513", "123456",
+//                    "1ojQf0NSvw2WPvW7LijxS8UvISr8pdDP+rXpPbcLGOmIBNbWetRg7IP0vdhVgkVwSoZBJeQwY2zhROsJq/HJ+q6tp1qhl9L1+ccC9ZjKs1wV5bmA9NoAWQiZ+7MpzQVq+j74rJQljdVyBdI/dGOvsnBSCxCVW0ISWX0vn9lYTuuHSoaxwCGylH9xRhYHL9bRDskBc7bO0FseHQQasdfghjkl");
+//            System.out.println(j+"点点滴滴");
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 }
