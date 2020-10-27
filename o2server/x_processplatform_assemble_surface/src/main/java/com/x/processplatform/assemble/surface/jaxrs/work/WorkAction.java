@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -201,9 +200,27 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionProcessing.class)
 	@POST
+	@Path("{id}/processing/mockpost2put")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
+	public void processingMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<ActionProcessing.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionProcessing().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@POST
 	@Path("process/{processFlag}")
 	@JaxrsMethodDescribe(value = "创建工作（创建启动版本的流程）.", action = ActionCreate.class)
 	public void create(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -219,10 +236,10 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("process/{processFlag}/force")
+	@POST
 	@JaxrsMethodDescribe(value = "创建工作（强制创建存在的流程）.", action = ActionCreateForce.class)
 	public void createForce(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("流程标识") @PathParam("processFlag") String processFlag, JsonElement jsonElement) {
@@ -297,6 +314,24 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionDelete.class)
+	@GET
+	@Path("{id}/mockget2delete")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockGet2Delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "完成工作关闭时候的检查,1.检查是否要删除处于草稿状态的工作,没有保存过任何数据将被认为是草稿.2.检查是否需要释放抢办.", action = ActionCloseCheck.class)
 	@GET
 	@Path("{id}/close/check")
@@ -319,7 +354,7 @@ public class WorkAction extends StandardJaxrsAction {
 	@POST
 	@Path("{id}/close/check")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	// @Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public void closeCheckPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
 		ActionResult<ActionCloseCheck.Wo> result = new ActionResult<>();
@@ -600,12 +635,51 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionRetract.class)
+	@POST
+	@Path("{id}/retract/mockPost2Put")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void retractMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<ActionRetract.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionRetract().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "将工作调度。", action = ActionReroute.class)
 	@PUT
 	@Path("{id}/reroute/activity/{activityId}/activitytype/{activityType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void reroute(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("活动标识") @PathParam("activityId") String activityId,
+			@JaxrsParameterDescribe("活动类型") @PathParam("activityType") ActivityType activityType,
+			JsonElement jsonElement) {
+		ActionResult<ActionReroute.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionReroute().execute(effectivePerson, id, activityId, activityType, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "将工作调度。", action = ActionReroute.class)
+	@POST
+	@Path("{id}/reroute/activity/{activityId}/activitytype/{activityType}/mockpost2put")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void rerouteMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("活动标识") @PathParam("activityId") String activityId,
 			@JaxrsParameterDescribe("活动类型") @PathParam("activityType") ActivityType activityType,
@@ -639,12 +713,48 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionAddSplit.class)
+	@POST
+	@Path("{id}/add/split/mockpost2put")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void addSplitMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<List<ActionAddSplit.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionAddSplit().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "回滚工作到指定的workLog", action = ActionRollback.class)
 	@PUT
 	@Path("{id}/rollback")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void rollback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionRollback.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionRollback().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionRollback.class)
+	@POST
+	@Path("{id}/rollback/mockpost2put")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void rollbackMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionRollback.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -825,12 +935,48 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionManageDeleteSingleWork.class)
+	@GET
+	@Path("{id}/single/manage/mockget2delete")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageDeleteSingleWorkMockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<List<ActionManageDeleteSingleWork.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageDeleteSingleWork().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "删除所有相关联的工作.", action = ActionManageDeleteRelativeWork.class)
 	@DELETE
 	@Path("{id}/relative/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void manageDeleteRelativeWork(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<List<ActionManageDeleteRelativeWork.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageDeleteRelativeWork().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionManageDeleteRelativeWork.class)
+	@GET
+	@Path("{id}/relative/manage/mockget2delete")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageDeleteRelativeWorkMockGet2Delete(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
 		ActionResult<List<ActionManageDeleteRelativeWork.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -942,12 +1088,48 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2Reroute.class)
+	@POST
+	@Path("v2/{id}/reroute/mockpost2put")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2RerouteMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<V2Reroute.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Reroute().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "V2_工作召回。", action = V2Retract.class)
 	@PUT
 	@Path("v2/{id}/retract")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2Retract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<V2Retract.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Retract().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2Retract.class)
+	@POST
+	@Path("v2/{id}/retract/mockpost2put")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2RetractMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<V2Retract.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -978,6 +1160,25 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2Rollback.class)
+	@POST
+	@Path("v2/{id}/rollback/mockpost2put")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2RollbackMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
+		ActionResult<V2Rollback.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Rollback().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "V2_增加一个会签分支", action = ActionAddSplit.class)
 	@PUT
 	@Path("v2/{id}/add/split")
@@ -985,6 +1186,25 @@ public class WorkAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2AddSplit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<V2AddSplit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2AddSplit().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionAddSplit.class)
+	@POST
+	@Path("v2/{id}/add/split/mockpost2put")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2AddSplitMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<V2AddSplit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1015,6 +1235,25 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2ManageRetract.class)
+	@POST
+	@Path("v2/{id}/person/{person}/retract/manage/mockpost2put")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2ManageRetractMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("召回工作已办人员（根据流转记录确认）") @PathParam("person") String person, JsonElement jsonElement) {
+		ActionResult<V2ManageRetract.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2ManageRetract().execute(effectivePerson, id, person);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "V2_根据Work或workCompleted取得内容.", action = V2GetWorkOrWorkCompleted.class)
 	@GET
 	@Path("v2/workorworkcompleted/{workOrWorkCompleted}")
@@ -1023,22 +1262,15 @@ public class WorkAction extends StandardJaxrsAction {
 	public void V2GetWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
-		// Date s = new Date();
 		ActionResult<V2GetWorkOrWorkCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		// System.out.println("!!!!!!!!!!!!!!!!V2GetWorkOrWorkCompleted1:" + ((new
-		// Date()).getTime() - s.getTime()));
 		try {
 			result = new V2GetWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
-			// System.out.println("!!!!!!!!!!!!!!!!V2GetWorkOrWorkCompleted2:" + ((new
-			// Date()).getTime() - s.getTime()));
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-		// System.out.println("!!!!!!!!!!!!!!!!V2GetWorkOrWorkCompleted3:" + ((new
-		// Date()).getTime() - s.getTime()));
 	}
 
 }
