@@ -89,9 +89,9 @@ public class CenterServerTools extends JettySeverTools {
 		server.setAttribute("maxFormContentSize", centerServer.getMaxFormContent() * 1024 * 1024);
 
 		if (BooleanUtils.isTrue(centerServer.getSslEnable())) {
-			addHttpsConnector(server, centerServer.getPort());
+			addHttpsConnector(server, centerServer.getPort(), centerServer.getPersistentConnectionsEnable());
 		} else {
-			addHttpConnector(server, centerServer.getPort());
+			addHttpConnector(server, centerServer.getPort(), centerServer.getPersistentConnectionsEnable());
 		}
 
 		GzipHandler gzipHandler = new GzipHandler();
