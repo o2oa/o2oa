@@ -27,7 +27,8 @@ import com.x.base.core.project.config.Config;
 
 public abstract class JettySeverTools {
 
-	protected static void addHttpsConnector(Server server, Integer port) throws Exception {
+	protected static void addHttpsConnector(Server server, Integer port, boolean persistentConnectionsEnable)
+			throws Exception {
 		SslContextFactory sslContextFactory = new SslContextFactory.Server();
 		sslContextFactory.setKeyStorePath(Config.sslKeyStore().getAbsolutePath());
 		sslContextFactory.setKeyStorePassword(Config.token().getSslKeyStorePassword());
@@ -35,12 +36,11 @@ public abstract class JettySeverTools {
 		sslContextFactory.setTrustAll(true);
 		HttpConfiguration config = new HttpConfiguration();
 		config.setSecureScheme("https");
-		config.setOutputBufferSize(1024 * 2048);
+		config.setPersistentConnectionsEnabled(persistentConnectionsEnable);
 		config.setRequestHeaderSize(8192 * 2);
 		config.setResponseHeaderSize(8192 * 2);
-		config.setSendServerVersion(true);
+		config.setSendServerVersion(false);
 		config.setSendDateHeader(false);
-
 		ServerConnector https = new ServerConnector(server,
 				new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
 				new HttpConnectionFactory(config));
@@ -50,12 +50,14 @@ public abstract class JettySeverTools {
 		server.addConnector(https);
 	}
 
-	protected static void addHttpConnector(Server server, Integer port) throws Exception {
+	protected static void addHttpConnector(Server server, Integer port, boolean persistentConnectionsEnable)
+			throws Exception {
 		HttpConfiguration config = new HttpConfiguration();
-		config.setOutputBufferSize(1024 * 2048);
+		// config.setOutputBufferSize(1024 * 2048);
+		config.setPersistentConnectionsEnabled(persistentConnectionsEnable);
 		config.setRequestHeaderSize(8192 * 2);
 		config.setResponseHeaderSize(8192 * 2);
-		config.setSendServerVersion(true);
+		config.setSendServerVersion(false);
 		config.setSendDateHeader(false);
 		ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(config));
 		http.setAcceptQueueSize(-1);

@@ -33,7 +33,6 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 
 			Business business = new Business(emc);
-
 			CompletableFuture<List<Wo>> _wos = CompletableFuture.supplyAsync(() -> {
 				List<Wo> wos = new ArrayList<>();
 				try {

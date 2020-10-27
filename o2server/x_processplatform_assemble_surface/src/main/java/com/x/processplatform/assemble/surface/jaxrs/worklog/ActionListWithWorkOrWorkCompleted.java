@@ -46,7 +46,6 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
-
 			Business business = new Business(emc);
 
 			final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
@@ -137,7 +136,6 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 					READLIST_FIELDNAME);
 			ListTools.groupStick(wos, readCompleteds, WorkLog.fromActivityToken_FIELDNAME,
 					ReadCompleted.activityToken_FIELDNAME, READCOMPLETEDLIST_FIELDNAME);
-			result.setData(wos);
 			result.setData(wos);
 			return result;
 		}

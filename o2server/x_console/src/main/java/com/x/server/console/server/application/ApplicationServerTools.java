@@ -101,9 +101,8 @@ public class ApplicationServerTools extends JettySeverTools {
 			x_portal_assemble_surface.class.getName(), x_attendance_assemble_control.class.getName(),
 			x_bbs_assemble_control.class.getName(), x_file_assemble_control.class.getName(),
 			x_meeting_assemble_control.class.getName(), x_mind_assemble_control.class.getName(),
-			x_hotpic_assemble_control.class.getName(),
-			x_query_service_processing.class.getName(), x_query_assemble_designer.class.getName(),
-			x_query_assemble_surface.class.getName());
+			x_hotpic_assemble_control.class.getName(), x_query_service_processing.class.getName(),
+			x_query_assemble_designer.class.getName(), x_query_assemble_surface.class.getName());
 
 	public static Server start(ApplicationServer applicationServer) throws Exception {
 
@@ -129,9 +128,9 @@ public class ApplicationServerTools extends JettySeverTools {
 		server.setAttribute("maxFormContentSize", applicationServer.getMaxFormContent() * 1024 * 1024);
 
 		if (BooleanUtils.isTrue(applicationServer.getSslEnable())) {
-			addHttpsConnector(server, applicationServer.getPort());
+			addHttpsConnector(server, applicationServer.getPort(), applicationServer.getPersistentConnectionsEnable());
 		} else {
-			addHttpConnector(server, applicationServer.getPort());
+			addHttpConnector(server, applicationServer.getPort(), applicationServer.getPersistentConnectionsEnable());
 		}
 
 		GzipHandler gzipHandler = new GzipHandler();
@@ -185,8 +184,7 @@ public class ApplicationServerTools extends JettySeverTools {
 					}
 					if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
 						FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
-						webApp.addFilter(denialOfServiceFilterHolder, "/jest/*",
-								EnumSet.of(DispatcherType.REQUEST));
+						webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
 					}
 					handlers.addHandler(webApp);
 				} else if (Files.exists(dir)) {

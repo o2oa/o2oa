@@ -100,6 +100,8 @@ public abstract class Activity extends SliceJpaObject {
 
 	public abstract String getOpinionGroup();
 
+	public abstract List<String> getRouteList();
+
 	public abstract void setOpinionGroup(String opinionGroup);
 
 	// 是否允许调度
