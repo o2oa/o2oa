@@ -3,7 +3,10 @@ package com.x.processplatform.assemble.surface.jaxrs.record;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -32,35 +35,50 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
-
-			String job = business.job().findWithWork(workOrWorkCompleted);
-
-			List<Wo> wos = new ArrayList<>();
-			if (null != job) {
-				wos = emc.fetchEqual(Record.class, Wo.copier, Record.job_FIELDNAME, job);
-			} else {
-				job = business.job().findWithWorkCompleted(workOrWorkCompleted);
-				WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job);
-				if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
-					wos = Wo.copier.copy(workCompleted.getProperties().getRecordList());
-				} else {
-					wos = emc.fetchEqual(Record.class, Wo.copier, Record.job_FIELDNAME, job);
+			CompletableFuture<List<Wo>> _wos = CompletableFuture.supplyAsync(() -> {
+				List<Wo> wos = new ArrayList<>();
+				try {
+					String job = business.job().findWithWork(workOrWorkCompleted);
+					if (null != job) {
+						wos = emc.fetchEqual(Record.class, Wo.copier, Record.job_FIELDNAME, job);
+					} else {
+						job = business.job().findWithWorkCompleted(workOrWorkCompleted);
+						WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
+								job);
+						if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
+							wos = Wo.copier.copy(workCompleted.getProperties().getRecordList());
+						} else {
+							wos = emc.fetchEqual(Record.class, Wo.copier, Record.job_FIELDNAME, job);
+						}
+					}
+					wos = wos.stream().sorted(Comparator.comparing(Wo::getOrder)).collect(Collectors.toList());
+					for (Task task : emc.listEqual(Task.class, Task.job_FIELDNAME, job).stream()
+							.sorted(Comparator.comparing(Task::getStartTime)).collect(Collectors.toList())) {
+						Record record = this.taskToRecord(task);
+						wos.add(Wo.copier.copy(record));
+					}
+				} catch (Exception e) {
+					logger.error(e);
 				}
+				return wos;
+			});
+
+			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+				Boolean value = false;
+				try {
+					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+							new ExceptionEntityNotExist(workOrWorkCompleted));
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return value;
+			});
+
+			if (BooleanUtils.isFalse(_control.get())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
 
-			wos = wos.stream().sorted(Comparator.comparing(Wo::getOrder)).collect(Collectors.toList());
-
-			for (Task task : emc.listEqual(Task.class, Task.job_FIELDNAME, job).stream()
-					.sorted(Comparator.comparing(Task::getStartTime)).collect(Collectors.toList())) {
-				Record record = this.taskToRecord(task);
-				wos.add(Wo.copier.copy(record));
-			}
-
-			result.setData(wos);
+			result.setData(_wos.get());
 			return result;
 		}
 
