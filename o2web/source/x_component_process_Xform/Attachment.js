@@ -1590,6 +1590,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
         var data = [];
         this.attachmentController.attachments.each(function(att){
             var o = {
+                "id": att.data.id,
                 "person": att.data.person,
                 "creatorUid": att.data.creatorUid,
                 "name": att.data.name,
