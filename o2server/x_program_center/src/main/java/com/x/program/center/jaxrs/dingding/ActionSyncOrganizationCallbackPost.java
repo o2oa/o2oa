@@ -10,6 +10,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.jaxrs.dingding.encrypt.DingTalkEncryptor;
+import com.x.program.center.jaxrs.dingding.encrypt.Utils;
 
 import java.util.*;
 
@@ -24,7 +25,7 @@ public class ActionSyncOrganizationCallbackPost extends BaseAction {
 
     private List<String> tags = new ArrayList<>(Arrays.asList("user_add_org", "user_modify_org", "user_leave_org", "user_active_org", "org_dept_create", "org_dept_modify", "org_dept_remove"));
 
-    String execute(EffectivePerson effectivePerson, String signature, String timestamp, String nonce, JsonElement body) throws Exception {
+    Map<String, String> execute(EffectivePerson effectivePerson, String signature, String timestamp, String nonce, JsonElement body) throws Exception {
         String params = "signature:" + signature + " timestamp:" + timestamp + " nonce:" + nonce + " body:" + body;
         logger.info(params);
         if (Config.dingding().getEnable()) {
@@ -42,11 +43,8 @@ public class ActionSyncOrganizationCallbackPost extends BaseAction {
             } else {
                 logger.info("忽略的。。。。。。。。。。");
             }
-            Long time = new Date().getTime();
-            Map<String, String> result = dingTalkEncryptor.getEncryptedMap("success", time, nonce);
-            String json = gson.toJson(result);
-            logger.info("json: {}", json);
-            return json;
+            Map<String, String> result = dingTalkEncryptor.getEncryptedMap("success", System.currentTimeMillis(), Utils.getRandomStr(8));
+            return result;
         }else {
             throw new ExceptionNotPullSync();
         }
