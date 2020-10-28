@@ -144,7 +144,6 @@ MWF.xApplication.process.Work.Main = new Class({
     loadWorkByWork: function(id){
         //var getWorkLogMothed = "getWorkLog";    //以前使用worklog，现在改成record了
         //var getWorkLogMothed = (this.options.worklogType.toLowerCase()==="worklog") ? "getWorkLog" : "getRecordLog";
-
         var loadFormFlag = false;
         var loadWorkFlag = false;
 
@@ -172,12 +171,12 @@ MWF.xApplication.process.Work.Main = new Class({
             }
         }.bind(this);
 
-        if (this.options.form && this.options.form.id && this.options.form.app){
+        if (this.options.form && this.options.form.id){
             o2.Actions.invokeAsync([
                 {"action": this.action, "name": "loadWorkV2"},
                 {"action": this.action, "name": "getWorkLog"},
                 {"action": this.action, "name": "getWorkControl"},
-                {"action": this.action, "name": "getForm"}
+                {"action": this.action, "name": ((layout.mobile) ? "getFormV2Mobile": "getFormV2")}
             ], {"success": function(jsonWork, jsonLog, jsonControl, jsonForm){
                     json_work = jsonWork;
                     json_log = jsonLog;
@@ -188,18 +187,25 @@ MWF.xApplication.process.Work.Main = new Class({
                     check();
                 }.bind(this), "failure": function(){
                     //this.close();
-                }.bind(this)}, id, id, id, [this.options.form.id, this.options.form.app]);
+                }.bind(this)}, id, id, id, [this.options.form.id]);
         }else{
             this.action.lookupFormWithWork(id, function(json){
                 var formId = json.data.id;
-                this.action[((layout.mobile) ? "getFormV2Mobile": "getFormV2")](formId, function(formJson){
-                    json_form = formJson;
+                if (json.data.form){
+                    json_form = json;
                     loadFormFlag = true;
                     check();
-                }, function(){
-                    loadFormFlag = true;
-                    check();
-                });
+                }else{
+                    this.action[((layout.mobile) ? "getFormV2Mobile": "getFormV2")](formId, function(formJson){
+                        json_form = formJson;
+                        loadFormFlag = true;
+                        check();
+                    }, function(){
+                        loadFormFlag = true;
+                        check();
+                    });
+                }
+
             }.bind(this), function(){
                 loadFormFlag = true;
                 check();
