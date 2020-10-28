@@ -77,6 +77,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
             var method = action.method || "GET";
             var uri = action.uri;
             var progress = action.progress;
+
             if (option.parameter){
                 Object.each(option.parameter, function(value, key){
                     var reg = new RegExp("{"+key+"}", "g");
@@ -95,7 +96,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
                 if (mock){
                     method = mock.to || method;
                     var append = mock.append;
-                    url += ((url.substr(url.length-1, 1)=="/") ? append : "/"+append);
+                    uri = uri+((uri.substr(uri.length-1, 1)=="/") ? append : "/"+append);
                 }
             }
 
