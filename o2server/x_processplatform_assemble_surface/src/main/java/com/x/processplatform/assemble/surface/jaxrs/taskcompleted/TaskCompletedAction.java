@@ -409,10 +409,10 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionManageDelete.class)
 	@GET
-	@Path("{id}/manage/mockget2delete")
+	@Path("{id}/manage/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageDeleteMockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void manageDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<ActionManageDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -445,10 +445,10 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionManageOpinion.class)
 	@POST
-	@Path("{id}/opinion/manage/mockpost2put")
+	@Path("{id}/opinion/manage/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageOpinionMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void manageOpinionMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("已办标识") @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<ActionManageOpinion.Wo> result = new ActionResult<>();
