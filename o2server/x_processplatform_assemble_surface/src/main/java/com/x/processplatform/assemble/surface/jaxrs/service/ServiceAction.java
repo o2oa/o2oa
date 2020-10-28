@@ -50,10 +50,10 @@ public class ServiceAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionTouch.class)
 	@POST
-	@Path("work/{id}/touch/mockpost2put")
+	@Path("work/{id}/touch/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void touchMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void touchMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionTouch.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
