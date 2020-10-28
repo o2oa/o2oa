@@ -12,7 +12,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.End;
@@ -171,21 +170,16 @@ public class EndProcessor extends AbstractEndProcessor {
 	private WorkCompleted createWorkCompleted(Work work, End end) throws Exception {
 		Date completedTime = new Date();
 		Long duration = Config.workTime().betweenMinutes(work.getStartTime(), completedTime);
-		String formString = "";
-		String formMobileString = "";
-		if (StringUtils.isNotEmpty(work.getForm())) {
-			Form form = this.entityManagerContainer().fetch(work.getForm(), Form.class,
-					ListTools.toList(Form.data_FIELDNAME, Form.mobileData_FIELDNAME));
-			if (null != form) {
-				formString = form.getData();
-				formMobileString = form.getMobileData();
-			}
-		}
-		WorkCompleted workCompleted = new WorkCompleted(work, completedTime, duration, formString, formMobileString);
+		WorkCompleted workCompleted = new WorkCompleted(work, completedTime, duration);
 		workCompleted.setActivity(end.getId());
 		workCompleted.setActivityAlias(end.getAlias());
 		workCompleted.setActivityDescription(end.getDescription());
 		workCompleted.setActivityName(end.getName());
+		if (StringUtils.isNotEmpty(work.getForm())) {
+			Form form = this.entityManagerContainer().find(work.getForm(), Form.class);
+			this.entityManagerContainer().get(Form.class).detach(form);
+			workCompleted.getProperties().setForm(form);
+		}
 		return workCompleted;
 	}
 }
