@@ -125,7 +125,7 @@ public class SnapAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "删除快照", action = ActionDelete.class)
 	@GET
-	@Path("{id}/mockget2delete")
+	@Path("{id}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteMockGet2Delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,

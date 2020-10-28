@@ -12,6 +12,7 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.jaxrs.snap.ActionListMyFilterPaging.Wo;
 import com.x.processplatform.core.entity.content.Snap;
@@ -38,7 +39,7 @@ class ActionListNextWithProcess extends BaseAction {
 		private static final long serialVersionUID = 2988668146783909521L;
 
 		static WrapCopier<Snap, Wo> copier = WrapCopierFactory.wo(Snap.class, Wo.class,
-				JpaObject.singularAttributeField(Snap.class, true, true), null);
+				JpaObject.singularAttributeField(Snap.class, true, true), ListTools.toList(Snap.properties_FIELDNAME));
 
 	}
 }

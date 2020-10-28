@@ -202,10 +202,10 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionProcessing.class)
 	@POST
-	@Path("{id}/processing/mockpost2put")
+	@Path("{id}/processing/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void processingMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void processingMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
 		ActionResult<ActionProcessing.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -316,10 +316,10 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionDelete.class)
 	@GET
-	@Path("{id}/mockget2delete")
+	@Path("{id}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteMockGet2Delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -354,7 +354,7 @@ public class WorkAction extends StandardJaxrsAction {
 	@POST
 	@Path("{id}/close/check")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
+	// 不需要申明,这里使用的是chrome在onunload事件运行有特殊的限制@Consumes(MediaType.APPLICATION_JSON)
 	public void closeCheckPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
 		ActionResult<ActionCloseCheck.Wo> result = new ActionResult<>();
@@ -637,10 +637,10 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionRetract.class)
 	@POST
-	@Path("{id}/retract/mockPost2Put")
+	@Path("{id}/retract/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void retractMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void retractMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
 		ActionResult<ActionRetract.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -676,7 +676,7 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "将工作调度。", action = ActionReroute.class)
 	@POST
-	@Path("{id}/reroute/activity/{activityId}/activitytype/{activityType}/mockpost2put")
+	@Path("{id}/reroute/activity/{activityId}/activitytype/{activityType}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void rerouteMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -715,10 +715,10 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionAddSplit.class)
 	@POST
-	@Path("{id}/add/split/mockpost2put")
+	@Path("{id}/add/split/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addSplitMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void addSplitMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<List<ActionAddSplit.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -751,10 +751,10 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionRollback.class)
 	@POST
-	@Path("{id}/rollback/mockpost2put")
+	@Path("{id}/rollback/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void rollbackMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void rollbackMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionRollback.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -937,10 +937,10 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionManageDeleteSingleWork.class)
 	@GET
-	@Path("{id}/single/manage/mockget2delete")
+	@Path("{id}/single/manage/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageDeleteSingleWorkMockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void manageDeleteSingleWorkMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
 		ActionResult<List<ActionManageDeleteSingleWork.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -973,10 +973,10 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionManageDeleteRelativeWork.class)
 	@GET
-	@Path("{id}/relative/manage/mockget2delete")
+	@Path("{id}/relative/manage/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageDeleteRelativeWorkMockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void manageDeleteRelativeWorkMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
 		ActionResult<List<ActionManageDeleteRelativeWork.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -1090,11 +1090,12 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2Reroute.class)
 	@POST
-	@Path("v2/{id}/reroute/mockpost2put")
+	@Path("v2/{id}/reroute/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2RerouteMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+	public void V2RerouteMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<V2Reroute.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1126,11 +1127,12 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2Retract.class)
 	@POST
-	@Path("v2/{id}/retract/mockpost2put")
+	@Path("v2/{id}/retract/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2RetractMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+	public void V2RetractMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<V2Retract.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1162,10 +1164,10 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2Rollback.class)
 	@POST
-	@Path("v2/{id}/rollback/mockpost2put")
+	@Path("v2/{id}/rollback/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2RollbackMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void V2RollbackMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<V2Rollback.Wo> result = new ActionResult<>();
@@ -1199,10 +1201,10 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionAddSplit.class)
 	@POST
-	@Path("v2/{id}/add/split/mockpost2put")
+	@Path("v2/{id}/add/split/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2AddSplitMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void V2AddSplitMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<V2AddSplit.Wo> result = new ActionResult<>();
@@ -1237,10 +1239,10 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2ManageRetract.class)
 	@POST
-	@Path("v2/{id}/person/{person}/retract/manage/mockpost2put")
+	@Path("v2/{id}/person/{person}/retract/manage/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2ManageRetractMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void V2ManageRetractMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("召回工作已办人员（根据流转记录确认）") @PathParam("person") String person, JsonElement jsonElement) {
 		ActionResult<V2ManageRetract.Wo> result = new ActionResult<>();
