@@ -13,7 +13,7 @@
   "statExclusions": "*.js,*.gif,*.jpg,*.png,*.css,*.ico",
   "maxFormContent": 20.0,
   "exposeJest": true,
-  "persistentConnectionsEnable": false,
+  "persistentConnectionsEnable": true,
   "###enable": "是否启用###",
   "###order": "center节点顺序,顺序排列0,1,2...###",
   "###sslEnable": "是否启用ssl传输加密,如果启用将使用config/keystore文件作为密钥文件.使用config/token.json文件中的sslKeyStorePassword字段为密钥密码,sslKeyManagerPassword为管理密码.###",

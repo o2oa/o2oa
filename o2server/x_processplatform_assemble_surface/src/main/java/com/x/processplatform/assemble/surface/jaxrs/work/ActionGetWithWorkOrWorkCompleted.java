@@ -295,8 +295,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = -1772642962691214007L;
 
 		static WrapCopier<WorkCompleted, WoWorkCompleted> copier = WrapCopierFactory.wo(WorkCompleted.class,
-				WoWorkCompleted.class, null, ListTools.toList(JpaObject.FieldsInvisible,
-						WorkCompleted.formData_FIELDNAME, WorkCompleted.formMobileData_FIELDNAME));
+				WoWorkCompleted.class, null, JpaObject.FieldsInvisible);
 	}
 
 	public static class WoTask extends Task {
