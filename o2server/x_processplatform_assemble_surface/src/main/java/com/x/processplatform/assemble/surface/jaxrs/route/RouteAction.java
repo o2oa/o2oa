@@ -71,10 +71,10 @@ public class RouteAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionList.class)
 	@POST
-	@Path("list/mockpost2put")
+	@Path("list/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void listMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			JsonElement jsonElement) {
 		ActionResult<List<ActionList.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
