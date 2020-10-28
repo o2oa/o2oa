@@ -34,7 +34,7 @@ public class WebServer extends ConfigObject {
 	private static final Integer DEFAULT_CACHECONTROLMAXAGE = 0;
 	private static final Boolean DEFAULT_PROXYCENTERENABLE = true;
 	private static final Boolean DEFAULT_PROXYAPPLICATIONENABLE = true;
-	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = false;
+	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;

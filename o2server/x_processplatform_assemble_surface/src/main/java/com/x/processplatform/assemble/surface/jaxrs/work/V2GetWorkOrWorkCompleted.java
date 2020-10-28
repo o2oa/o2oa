@@ -579,7 +579,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = 5244996549744746585L;
 
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class, null,
-				JpaObject.FieldsInvisibleIncludeProperites);
+				JpaObject.FieldsInvisible);
 
 	}
 
@@ -588,7 +588,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = 5244996549744746585L;
 
 		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class, null,
-				JpaObject.FieldsInvisibleIncludeProperites);
+				JpaObject.FieldsInvisible);
 
 	}
 

@@ -319,10 +319,10 @@ public class ReadAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionEdit.class)
 	@POST
-	@Path("{id}/mockpost2put")
+	@Path("{id}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void editMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void editMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("待阅标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -482,10 +482,10 @@ public class ReadAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "管理删除待阅.", action = ActionManageDelete.class)
 	@GET
-	@Path("{id}/manage/mockget2delete")
+	@Path("{id}/manage/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageDeleteMockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void manageDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("待阅标识") @PathParam("id") String id) {
 		ActionResult<ActionManageDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -518,10 +518,10 @@ public class ReadAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionManageProcessing.class)
 	@POST
-	@Path("{id}/processing/manage/mockpost2put")
+	@Path("{id}/processing/manage/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageProcessingMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void manageProcessingMockPostToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("待阅标识") @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<ActionManageProcessing.Wo> result = new ActionResult<>();
@@ -555,10 +555,10 @@ public class ReadAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionManageReset.class)
 	@POST
-	@Path("{id}/reset/manage/mockpost2put")
+	@Path("{id}/reset/manage/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageReadMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void manageReadMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("待阅标识") @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<ActionManageReset.Wo> result = new ActionResult<>();
@@ -592,10 +592,10 @@ public class ReadAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionManageOpinion.class)
 	@POST
-	@Path("{id}/opinion/manage/mockpost2put")
+	@Path("{id}/opinion/manage/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageOpinionMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void manageOpinionMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("待阅标识") @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<ActionManageOpinion.Wo> result = new ActionResult<>();

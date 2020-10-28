@@ -421,10 +421,10 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionManageDelete.class)
 	@GET
-	@Path("{id}/delete/manage/mockget2delete")
+	@Path("{id}/delete/manage/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageDeleteMockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void manageDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<List<ActionManageDelete.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -534,11 +534,11 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 	}
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionRollback.class)
-	@Path("{flag}/rollback/mockpost2put")
+	@Path("{flag}/rollback/mockputtopost")
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void rollbackMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void rollbackMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("流程标识") @PathParam("flag") String flag, JsonElement jsonElement) {
 		ActionResult<ActionRollback.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);

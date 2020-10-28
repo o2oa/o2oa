@@ -194,10 +194,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionDeleteWithWork.class)
 	@GET
-	@Path("{id}/work/{workId}/mockget2delete")
+	@Path("{id}/work/{workId}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteWithWorkMockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void deleteWithWorkMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId) {
 		ActionResult<ActionDeleteWithWork.Wo> result = new ActionResult<>();
@@ -232,10 +232,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionDeleteWithWorkCompleted.class)
 	@GET
-	@Path("{id}/workcompleted/{workCompletedId}/mockget2delete")
+	@Path("{id}/workcompleted/{workCompletedId}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteWithWorkCompletedMockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void deleteWithWorkCompletedMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId) {
 		ActionResult<ActionDeleteWithWorkCompleted.Wo> result = new ActionResult<>();
@@ -541,10 +541,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionUpdate.class)
 	@POST
-	@Path("update/{id}/work/{workId}/mockpost2put")
+	@Path("update/{id}/work/{workId}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public void updateMockPost2Put(FormDataMultiPart form, @Suspended final AsyncResponse asyncResponse,
+	public void updateMockPutToPost(FormDataMultiPart form, @Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
 			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
@@ -596,10 +596,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionUpdateContent.class)
 	@POST
-	@Path("update/content/{id}/work/{workId}/mockpost2put")
+	@Path("update/content/{id}/work/{workId}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateContentMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void updateContentMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId, JsonElement jsonElement) {
 		ActionResult<ActionUpdateContent.Wo> result = new ActionResult<>();
@@ -752,10 +752,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionEdit.class)
 	@POST
-	@Path("edit/{id}/work/{workId}/mockpost2put")
+	@Path("edit/{id}/work/{workId}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void editMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void editMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId, JsonElement jsonElement) {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
@@ -810,10 +810,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionEditText.class)
 	@POST
-	@Path("edit/{id}/work/{workId}/text/mockpost2put")
+	@Path("edit/{id}/work/{workId}/text/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void exitTextMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void exitTextMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId, JsonElement jsonElement) {
 		ActionResult<ActionEditText.Wo> result = new ActionResult<>();
@@ -1024,10 +1024,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionUploadWorkInfo.class)
 	@POST
-	@Path("upload/work/{workId}/save/as/{flag}/mockpost2put")
+	@Path("upload/work/{workId}/save/as/{flag}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void uploadWorkInfoMockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void uploadWorkInfoMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
 			@JaxrsParameterDescribe("另存为格式：(0)表示不转换|pdf表示转为pdf|word表示转为word") @PathParam("flag") String flag,

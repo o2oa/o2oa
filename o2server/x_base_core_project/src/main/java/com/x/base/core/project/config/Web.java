@@ -1,7 +1,6 @@
 package com.x.base.core.project.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.TreeMap;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 
@@ -18,14 +17,19 @@ public class Web extends ConfigObject {
 	}
 
 	@FieldDescribe("使用Post模拟Put,Get模拟Delete的模块.")
-	private List<String> mocks = new ArrayList<>();
+	private Mock mock = new Mock();
 
-	public List<String> getMocks() {
-		return mocks;
+	public static class Mock extends TreeMap<String, MockItem> {
+
 	}
 
-	public void setMocks(List<String> mocks) {
-		this.mocks = mocks;
+	public static class MockItem {
+		private MockItemObject put;
+		private MockItemObject delete;
 	}
 
+	public static class MockItemObject {
+		private String to;
+		private String append;
+	}
 }

@@ -47,10 +47,10 @@ public class KeyLockAction extends BaseAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionLock.class)
 	@POST
-	@Path("lock/mockpost2put")
+	@Path("lock/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void lockMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void lockMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			JsonElement jsonElement) {
 		ActionResult<ActionLock.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
