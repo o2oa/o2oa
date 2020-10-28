@@ -184,7 +184,7 @@ public class WorkCompletedProperties extends JsonProperties {
 		return adapt;
 	}
 
-	public static class AdaptForm {
+	public static class AdaptForm extends GsonPropertyObject {
 
 		private Form form;
 

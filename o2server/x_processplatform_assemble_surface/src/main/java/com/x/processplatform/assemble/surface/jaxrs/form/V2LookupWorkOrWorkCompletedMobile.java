@@ -17,6 +17,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.jaxrs.form.V2LookupWorkOrWorkCompleted.Wo;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.AdaptForm;
@@ -37,11 +38,11 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 					Work work = emc.fetch(workOrWorkCompleted, Work.class, ListTools.toList(JpaObject.id_FIELDNAME,
 							Work.form_FIELDNAME, Work.activity_FIELDNAME, Work.activityType_FIELDNAME));
 					if (null != work) {
-						this.work(business, work, wo);
+						wo = this.work(business, work);
 					} else {
 						WorkCompleted workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
 						if (null != workCompleted) {
-							this.workCompleted(business, workCompleted, wo);
+							wo = this.workCompleted(business, workCompleted);
 						}
 					}
 				} catch (Exception e) {
@@ -69,23 +70,27 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 		}
 	}
 
-	private void work(Business business, Work work, Wo wo) throws Exception {
+	private Wo work(Business business, Work work) throws Exception {
+		Wo wo = new Wo();
 		if (null != business.form().pick(work.getForm())) {
 			wo.setId(work.getForm());
 		} else {
 			Activity activity = business.getActivity(work);
 			wo.setId(PropertyTools.getOrElse(activity, Activity.form_FIELDNAME, String.class, ""));
 		}
+		return wo;
 	}
 
-	private void workCompleted(Business business, WorkCompleted workCompleted, Wo wo) throws Exception {
+	private Wo workCompleted(Business business, WorkCompleted workCompleted) throws Exception {
 		// 先使用当前库的表单,如果不存在使用储存的表单.
+		Wo wo = new Wo();
 		if (null != business.form().pick(workCompleted.getForm())) {
 			wo.setId(workCompleted.getForm());
 		} else if (null != workCompleted.getProperties().getForm()) {
 			AdaptForm adapt = workCompleted.getProperties().adaptForm(true);
 			wo = XGsonBuilder.convert(adapt, Wo.class);
 		}
+		return wo;
 	}
 
 	public static class Wo extends AbstractWo {
