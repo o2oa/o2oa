@@ -570,8 +570,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = -1772642962691214007L;
 
 		static WrapCopier<WorkCompleted, WoWorkCompleted> copier = WrapCopierFactory.wo(WorkCompleted.class,
-				WoWorkCompleted.class, null, ListTools.toList(JpaObject.FieldsInvisibleIncludeProperites,
-						WorkCompleted.formData_FIELDNAME, WorkCompleted.formMobileData_FIELDNAME));
+				WoWorkCompleted.class, null, JpaObject.FieldsInvisibleIncludeProperites);
 	}
 
 	public static class WoTask extends Task {
