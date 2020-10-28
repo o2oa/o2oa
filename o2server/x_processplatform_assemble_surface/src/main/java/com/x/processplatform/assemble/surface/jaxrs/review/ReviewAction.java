@@ -181,10 +181,10 @@ public class ReviewAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionManageDelete.class)
 	@GET
-	@Path("{id}/application/{applicationFlag}/manage/mockget2delete")
+	@Path("{id}/application/{applicationFlag}/manage/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageDeleteMockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void manageDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("参阅标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<ActionManageDelete.Wo> result = new ActionResult<>();

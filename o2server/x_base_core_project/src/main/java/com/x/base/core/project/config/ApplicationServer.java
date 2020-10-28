@@ -21,7 +21,7 @@ public class ApplicationServer extends ConfigObject {
 	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
 	private static final Integer DEFAULT_MAXFORMCONTENT = 20;
 	private static final Boolean DEFAULT_EXPOSEJEST = true;
-	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = false;
+	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
 
 	public ApplicationServer() {
 		this.enable = true;
