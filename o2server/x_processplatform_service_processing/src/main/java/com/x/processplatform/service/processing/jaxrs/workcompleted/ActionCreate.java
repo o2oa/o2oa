@@ -76,7 +76,6 @@ class ActionCreate extends BaseAction {
 					workCompleted.setExpired(false);
 					workCompleted.setExpireTime(null);
 					workCompleted.setForm(wi.getForm());
-					workCompleted.setFormData(wi.getFormData());
 					workCompleted.setJob(StringTools.uniqueToken());
 					workCompleted.setProcess(process.getId());
 					workCompleted.setProcessAlias(process.getAlias());
@@ -120,9 +119,6 @@ class ActionCreate extends BaseAction {
 
 		@FieldDescribe("指定表单.")
 		private String form;
-
-		@FieldDescribe("指定表单数据.")
-		private String formData;
 
 		@FieldDescribe("启动人员身份.")
 		private String identity;
@@ -174,14 +170,6 @@ class ActionCreate extends BaseAction {
 
 		public void setForm(String form) {
 			this.form = form;
-		}
-
-		public String getFormData() {
-			return formData;
-		}
-
-		public void setFormData(String formData) {
-			this.formData = formData;
 		}
 
 		public String getSerial() {

@@ -98,7 +98,7 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	/**
 	 * 通过Work创建WorkCompleted
 	 */
-	public WorkCompleted(Work work, Date completedTime, Long duration, String formData, String formMobileData) {
+	public WorkCompleted(Work work, Date completedTime, Long duration) {
 		this();
 		this.job = work.getJob();
 		this.setTitle(work.getTitle());
@@ -117,8 +117,8 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		this.processAlias = work.getProcessAlias();
 		this.serial = work.getSerial();
 		this.form = work.getForm();
-		this.formData = formData;
-		this.formMobileData = formMobileData;
+//		this.formData = formData;
+//		this.formMobileData = formMobileData;
 		this.work = work.getId();
 		this.expireTime = work.getExpireTime();
 		if ((null != expireTime) && (completedTime.after(expireTime))) {
@@ -281,21 +281,21 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private String form;
 
-	public static final String formData_FIELDNAME = "formData";
-	@FieldDescribe("文本内容.")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + formData_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String formData;
+//	public static final String formData_FIELDNAME = "formData";
+//	@FieldDescribe("文本内容.")
+//	@Lob
+//	@Basic(fetch = FetchType.EAGER)
+//	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + formData_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String formData;
 
-	public static final String formMobileData_FIELDNAME = "formMobileData";
-	@FieldDescribe("移动端文本内容.")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + formMobileData_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String formMobileData;
+//	public static final String formMobileData_FIELDNAME = "formMobileData";
+//	@FieldDescribe("移动端文本内容.")
+//	@Lob
+//	@Basic(fetch = FetchType.EAGER)
+//	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + formMobileData_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String formMobileData;
 
 	public static final String work_FIELDNAME = "work";
 	@Flag
@@ -714,21 +714,21 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		this.completedTimeMonth = completedTimeMonth;
 	}
 
-	public String getFormData() {
-		return formData;
-	}
-
-	public void setFormData(String formData) {
-		this.formData = formData;
-	}
-
-	public String getFormMobileData() {
-		return formMobileData;
-	}
-
-	public void setFormMobileData(String formMobileData) {
-		this.formMobileData = formMobileData;
-	}
+//	public String getFormData() {
+//		return formData;
+//	}
+//
+//	public void setFormData(String formData) {
+//		this.formData = formData;
+//	}
+//
+//	public String getFormMobileData() {
+//		return formMobileData;
+//	}
+//
+//	public void setFormMobileData(String formMobileData) {
+//		this.formMobileData = formMobileData;
+//	}
 
 	public Long getDuration() {
 		return duration;
