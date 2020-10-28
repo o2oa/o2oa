@@ -34,10 +34,10 @@ public class DraftAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(DraftAction.class);
 
-	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("process/{processFlag}")
+	@POST
 	@JaxrsMethodDescribe(value = "拟稿.", action = ActionDraw.class)
 	public void draw(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("流程标识") @PathParam("processFlag") String processFlag, JsonElement jsonElement) {
@@ -90,10 +90,10 @@ public class DraftAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get To Delete", action = ActionDelete.class)
 	@GET
-	@Path("{id}/mockget2delete")
+	@Path("{id}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteMockGet2Delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("草稿标识") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -127,7 +127,8 @@ public class DraftAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "Mock Post 2 Put.", action = ActionSave.class)
 	@POST
-	public void saveMockPost2Put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	@Path("mockputtopost")
+	public void saveMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);

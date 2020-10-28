@@ -22,18 +22,14 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.AdaptForm;
 import com.x.processplatform.core.entity.element.Activity;
 
-class V2LookupWorkOrWorkCompleted extends BaseAction {
+class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2LookupWorkOrWorkCompleted.class);
+	private static Logger logger = LoggerFactory.getLogger(V2LookupWorkOrWorkCompletedMobile.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
 
 			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
 				Wo wo = new Wo();
@@ -87,7 +83,7 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 		if (null != business.form().pick(workCompleted.getForm())) {
 			wo.setId(workCompleted.getForm());
 		} else if (null != workCompleted.getProperties().getForm()) {
-			AdaptForm adapt = workCompleted.getProperties().adaptForm(false);
+			AdaptForm adapt = workCompleted.getProperties().adaptForm(true);
 			wo = XGsonBuilder.convert(adapt, Wo.class);
 		}
 	}
