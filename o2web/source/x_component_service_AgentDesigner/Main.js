@@ -104,7 +104,7 @@ MWF.xApplication.service.AgentDesigner.Main = new Class({
         }).inject(this.agentListNode);
 
         this.agentListResizeNode = new Element("div", {"styles": this.css.agentListResizeNode}).inject(this.agentListNode);
-        this.agentListAreaSccrollNode = new Element("div", {"styles": this.css.agentListAreaSccrollNode}).inject(this.agentListNode);
+        this.agentListAreaSccrollNode = new Element("div.agentListAreaSccrollNode", {"styles": this.css.agentListAreaSccrollNode}).inject(this.agentListNode);
         this.agentListAreaNode = new Element("div", {"styles": this.css.agentListAreaNode}).inject(this.agentListAreaSccrollNode);
 
         this.loadAgentListResize();

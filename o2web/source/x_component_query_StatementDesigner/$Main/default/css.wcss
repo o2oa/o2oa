@@ -46,7 +46,7 @@
     "statementListAreaSccrollNode": {
         "margin": "4px",
         "margin-right": "8px",
-        "overflow": "hidden",
+        "overflow": "auto",
         "background-color": "#FFF",
         "border-top": "1px solid #999",
         "border-left": "1px solid #999",
