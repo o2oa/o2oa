@@ -23,6 +23,14 @@ public class Web extends ConfigObject {
 
 	}
 
+	public Mock getMock() {
+		return mock;
+	}
+
+	public void setMock(Mock mock) {
+		this.mock = mock;
+	}
+
 	public static class MockItem {
 		private MockItemObject put;
 		private MockItemObject delete;
