@@ -54,8 +54,6 @@ public class WebServerTools extends JettySeverTools {
 
 	public static Server start(WebServer webServer) throws Exception {
 
-		// 创建Web.json
-		updateWeb();
 		// 更新x_desktop的center指向
 		updateCenterConfigJson();
 		// 更新 favicon.ico
@@ -252,7 +250,7 @@ public class WebServerTools extends JettySeverTools {
 				publicKey = new String(Base64.encodeBase64(publicKeyB));
 				map.put("publicKey", publicKey);
 			}
-
+			map.put("mock", Config.web().getMock());
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 		}
 	}
