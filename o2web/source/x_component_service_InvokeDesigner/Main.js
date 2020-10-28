@@ -104,7 +104,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         }).inject(this.invokeListNode);
 
         this.invokeListResizeNode = new Element("div", {"styles": this.css.invokeListResizeNode}).inject(this.invokeListNode);
-        this.invokeListAreaSccrollNode = new Element("div", {"styles": this.css.invokeListAreaSccrollNode}).inject(this.invokeListNode);
+        this.invokeListAreaSccrollNode = new Element("div.invokeListAreaSccrollNode", {"styles": this.css.invokeListAreaSccrollNode}).inject(this.invokeListNode);
         this.invokeListAreaNode = new Element("div", {"styles": this.css.invokeListAreaNode}).inject(this.invokeListAreaSccrollNode);
 
         this.loadInvokeListResize();
