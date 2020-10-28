@@ -211,7 +211,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             }.bind(this));
         }else{
             this.moduleValueAG = null;
-            this.__setValue(v);
+            this.__setValue(value);
         }
 
             //this.__setValue(value);
@@ -295,7 +295,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             }.bind(this));
         }else{
             this.moduleValueAG = null;
-            this.__setValue(v);
+            this.__setValue(data);
         }
             //this.__setData(data);
         //}
