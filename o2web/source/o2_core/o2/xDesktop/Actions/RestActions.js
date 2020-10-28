@@ -89,6 +89,16 @@ MWF.xDesktop.Actions.RestActions = new Class({
             }
             uri = this.address+uri;
 
+            //putToPost, deleteToGet
+            if (layout.config.mock && layout.config.mock[this.serviceName]){
+                var mock = layout.config.mock[this.serviceName][method.toLowerCase()];
+                if (mock){
+                    method = mock.to || method;
+                    var append = mock.append;
+                    url += ((url.substr(url.length-1, 1)=="/") ? append : "/"+append);
+                }
+            }
+
             var async = (option.async===false) ? false : true;
 
             var callback = new MWF.xDesktop.Actions.RestActions.Callback(option.success, option.failure);
