@@ -303,12 +303,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath0.class)
+	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateDataPath0.class)
 	@POST
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/data/mockpost2put")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateDataPath0MockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void updateDataPath0MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -346,12 +346,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath1.class)
+	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateDataPath1.class)
 	@POST
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/data/mockpost2put")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateDataPath1MockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void updateDataPath1MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -392,12 +392,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath2.class)
+	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateDataPath2.class)
 	@POST
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/data/mockpost2put")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateDataPath2MockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void updateDataPath2MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -440,12 +440,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath3.class)
+	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateDataPath3.class)
 	@POST
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/data/mockpost2put")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateDataPath3MockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void updateDataPath3MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -492,10 +492,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath4.class)
 	@POST
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data/mockpost2put")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateDataPath4MockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void updateDataPath4MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -544,10 +544,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath5.class)
 	@POST
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data/mockpost2put")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateDataPath5MockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void updateDataPath5MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -598,10 +598,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath6.class)
 	@POST
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data/mockpost2put")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateDataPath6MockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void updateDataPath6MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -654,10 +654,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath7.class)
 	@POST
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data/mockpost2put")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateDataPath7MockPost2Put(@Suspended final AsyncResponse asyncResponse,
+	public void updateDataPath7MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -898,10 +898,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath0.class)
 	@GET
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/data/mockget2delete")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteDataPath0MockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void deleteDataPath0MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -940,10 +940,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath1.class)
 	@GET
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/data/mockget2delete")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteDataPath1MockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void deleteDataPath1MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -984,10 +984,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath2.class)
 	@GET
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/data/mockget2delete")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteDataPath2MockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void deleteDataPath2MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -1031,10 +1031,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath3.class)
 	@DELETE
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/data/mockget2delete")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteDataPath3MockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void deleteDataPath3MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -1081,10 +1081,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath4.class)
 	@GET
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data/mockget2delete")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteDataPath4MockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void deleteDataPath4MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -1133,10 +1133,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath5.class)
 	@GET
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data/mockget2delete")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteDataPath5MockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void deleteDataPath5MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -1187,10 +1187,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath6.class)
 	@GET
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data/mockget2delete")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteDataPath6MockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void deleteDataPath6MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
@@ -1243,10 +1243,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath7.class)
 	@GET
-	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data/mockget2delete")
+	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteDataPath7MockGet2Delete(@Suspended final AsyncResponse asyncResponse,
+	public void deleteDataPath7MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,

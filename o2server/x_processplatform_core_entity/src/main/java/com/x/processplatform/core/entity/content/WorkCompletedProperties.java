@@ -1,10 +1,13 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.element.Form;
 
 public class WorkCompletedProperties extends JsonProperties {
@@ -39,7 +42,7 @@ public class WorkCompletedProperties extends JsonProperties {
 	@FieldDescribe("合并工作mobileRelatedFormList")
 	private List<Form> mobileRelatedFormList = new ArrayList<>();
 
-	@FieldDescribe("合并工作relatedScriptList")
+	@FieldDescribe("合并工作mobileRelatedFormList")
 	private List<Script> mobileRelatedScriptList = new ArrayList<>();
 
 	@FieldDescribe("标题")
@@ -141,7 +144,81 @@ public class WorkCompletedProperties extends JsonProperties {
 		this.reviewList = reviewList;
 	}
 
-	public static class Script {
+	public AdaptForm adaptForm(boolean mobile) throws Exception {
+		AdaptForm adapt = new AdaptForm();
+		if (null != this.form) {
+			if (mobile) {
+				Form f = new Form();
+				this.form.copyTo(f, Form.data_FIELDNAME, Form.mobileData_FIELDNAME);
+				f.setData(form.getMobileDataOrData());
+				adapt.setForm(f);
+				for (Form o : this.getMobileRelatedFormList()) {
+					Form m = new Form();
+					o.copyTo(m, true, Form.data_FIELDNAME, Form.mobileData_FIELDNAME);
+					m.setData(o.getMobileDataOrData());
+					adapt.getRelatedFormMap().put(o.getId(), m);
+				}
+				for (Script o : this.getMobileRelatedScriptList()) {
+					Script s = new Script();
+					o.copyTo(s, true);
+					adapt.getRelatedScriptMap().put(o.getId(), s);
+				}
+			} else {
+				Form f = new Form();
+				this.form.copyTo(f, Form.data_FIELDNAME, Form.mobileData_FIELDNAME);
+				f.setData(form.getDataOrMobileData());
+				adapt.setForm(f);
+				for (Form o : this.getRelatedFormList()) {
+					Form m = new Form();
+					o.copyTo(m, true, Form.data_FIELDNAME, Form.mobileData_FIELDNAME);
+					m.setData(o.getDataOrMobileData());
+					adapt.getRelatedFormMap().put(o.getId(), m);
+				}
+				for (Script o : this.getRelatedScriptList()) {
+					Script s = new Script();
+					o.copyTo(s, true);
+					adapt.getRelatedScriptMap().put(o.getId(), s);
+				}
+			}
+		}
+		return adapt;
+	}
+
+	public static class AdaptForm {
+
+		private Form form;
+
+		private Map<String, Form> relatedFormMap = new HashMap<>();
+
+		private Map<String, Script> relatedScriptMap = new HashMap<>();
+
+		public Form getForm() {
+			return form;
+		}
+
+		public void setForm(Form form) {
+			this.form = form;
+		}
+
+		public Map<String, Form> getRelatedFormMap() {
+			return relatedFormMap;
+		}
+
+		public void setRelatedFormMap(Map<String, Form> relatedFormMap) {
+			this.relatedFormMap = relatedFormMap;
+		}
+
+		public Map<String, Script> getRelatedScriptMap() {
+			return relatedScriptMap;
+		}
+
+		public void setRelatedScriptMap(Map<String, Script> relatedScriptMap) {
+			this.relatedScriptMap = relatedScriptMap;
+		}
+
+	}
+
+	public static class Script extends GsonPropertyObject {
 
 		public static final String TYPE_PROCESSPLATFORM = "processPlatform";
 		public static final String TYPE_CMS = "cms";

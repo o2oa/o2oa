@@ -20,6 +20,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.entity.annotation.RestrictFlag;
@@ -309,8 +310,15 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 				if (BooleanUtils.isTrue(excludeInvisible) && FieldsInvisible.contains(field.getName())) {
 					continue;
 				}
-				if (BooleanUtils.isTrue(excludeLob) && (null != field.getAnnotation(Lob.class))) {
-					continue;
+				if (BooleanUtils.isTrue(excludeLob)) {
+					if (null != field.getAnnotation(Lob.class)) {
+						continue;
+					} else {
+						Strategy strategy = field.getAnnotation(Strategy.class);
+						if ((null != strategy) && StringUtils.equals(JsonPropertiesValueHandler, strategy.value())) {
+							continue;
+						}
+					}
 				}
 				names.add(field.getName());
 			}
