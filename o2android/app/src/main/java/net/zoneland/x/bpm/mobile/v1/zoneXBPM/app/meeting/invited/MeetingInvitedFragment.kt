@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem
-import com.yanzhenjie.recyclerview.swipe.widget.DefaultItemDecoration
+import com.yanzhenjie.recyclerview.SwipeMenuCreator
+import com.yanzhenjie.recyclerview.SwipeMenuItem
+import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration
+
 import kotlinx.android.synthetic.main.fragment_meeting_invited.*
 import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
