@@ -1,4 +1,5 @@
 o2.widget = o2.widget || {};
+if( !o2.widget.UUID )o2.require("o2.widget.UUID", null, false);
 o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     Extends: o2.widget.Common,
 	Implements: [Options, Events],
