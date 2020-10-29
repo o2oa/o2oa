@@ -36,5 +36,8 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "newLineSuccess": "插入数据成功",
     "newLineJsonError": "插入数据错误，数据格式有误",
     "queryStatement": "查询语句",
-    "countStatement": "总数语句"
+    "countStatement": "总数语句",
+
+    "mastInputParameter" : "请输入参数",
+    "pathExecption" : "路径的写法是\"表别名.字段名\",格式不正确"
 });

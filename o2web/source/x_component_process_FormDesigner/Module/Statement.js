@@ -91,7 +91,7 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
                 this._showActionbar();
             }
 
-            var columnList = viewData.selectEntryList || viewData.selectList;
+            var columnList = viewData.data ? (viewData.data.selectEntryList || viewData.data.selectList) : [];
             columnList.each(function(column){
                 if (!column.hideColumn){
                     var viewCell = new Element("td", {

@@ -48,6 +48,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class({
         var viewJson = {
             "application": (this.json.queryStatement) ? this.json.queryStatement.appName : this.json.application,
             "statementName": (this.json.queryStatement) ? this.json.queryStatement.name : this.json.statementName,
+            "statementId": (this.json.queryStatement) ? this.json.queryStatement.id : this.json.statementId,
             "isTitle": this.json.isTitle || "yes",
             "select": this.json.select || "none",
             "titleStyles": this.json.titleStyles,

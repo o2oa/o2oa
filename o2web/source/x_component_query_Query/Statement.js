@@ -98,48 +98,55 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     lookup: function(data, callback){
         if( this.lookuping )return;
         this.lookuping = true;
-        this.getLookupAction(function(){
-            if (this.json.application){
+        // this.getLookupAction(function(){
+        //     if (this.json.application){
 
                 var d = data || {};
-                d.count = this.json.count;
-                this.lookupAction.bundleView(this.json.id, d, function(json){
-                    this.bundleItems = json.data.valueList;
+                // d.count = this.json.count;
+                // this.lookupAction.bundleView(this.json.id, d, function(json){
+                //     this.bundleItems = json.data.valueList;
 
-                    this._initPage();
-                    if (this.bundleItems.length){
-                        if( this.noDataTextNode )this.noDataTextNode.destroy();
-                        this.loadCurrentPageData( function () {
+                    // this._initPage();
+
+                    this.currentPage = this.options.defaultPage || 1;
+                    this.options.defaultPage = null;
+
+                    if( this.noDataTextNode )this.noDataTextNode.destroy();
+                    this.loadCurrentPageData( function (json) {
+                        if( typeOf(json.count) === "number" )this.totalCount = json.count;
+                        if(this.totalCount){
                             this.fireEvent("postLoad"); //用户配置的事件
                             this.lookuping = false;
                             if(callback)callback(this);
-                        }.bind(this));
-                    }else{
-                        //this._loadPageNode();
-                        this.viewPageAreaNode.empty();
-                        if( this.viewJson.noDataText ){
-                            var noDataTextNodeStyle = this.css.noDataTextNode;
-                            if( this.viewJson.viewStyles && this.viewJson.viewStyles["noDataTextNode"] ){
-                                noDataTextNodeStyle = this.viewJson.viewStyles["noDataTextNode"];
+                        }else{
+                            this.viewPageAreaNode.empty();
+                            if( this.viewJson.noDataText ){
+                                var noDataTextNodeStyle = this.css.noDataTextNode;
+                                if( this.viewJson.viewStyles && this.viewJson.viewStyles["noDataTextNode"] ){
+                                    noDataTextNodeStyle = this.viewJson.viewStyles["noDataTextNode"];
+                                }
+                                this.noDataTextNode = new Element( "div", {
+                                    "styles": noDataTextNodeStyle,
+                                    "text" : this.viewJson.noDataText
+                                }).inject( this.contentAreaNode );
                             }
-                            this.noDataTextNode = new Element( "div", {
-                                "styles": noDataTextNodeStyle,
-                                "text" : this.viewJson.noDataText
-                            }).inject( this.contentAreaNode );
+                            // if (this.loadingAreaNode){
+                            //     this.loadingAreaNode.destroy();
+                            //     this.loadingAreaNode = null;
+                            // }
+                            this.fireEvent("postLoad"); //用户配置的事件
+                            this.lookuping = false;
+                            if(callback)callback(this);
                         }
-                        if (this.loadingAreaNode){
-                            this.loadingAreaNode.destroy();
-                            this.loadingAreaNode = null;
-                        }
-                        this.fireEvent("postLoad"); //用户配置的事件
-                        this.lookuping = false;
-                        if(callback)callback(this);
-                    }
-                }.bind(this));
-            }
-        }.bind(this));
+
+
+                    }.bind(this), true,"all");
+
+                // }.bind(this));
+            // }
+        // }.bind(this));
     },
-    loadCurrentPageData: function( callback, async ){
+    loadCurrentPageData: function( callback, async, type ){
         //是否需要在翻页的时候清空之前的items ?
 
         if( this.pageloading )return;
@@ -148,27 +155,32 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         this.items = [];
 
         var p = this.currentPage;
-        var d = {};
-        var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
-        d.bundleList = valueList;
+        var d = {
+            "filterList" : [],
+            "parameter" : {
+
+            }
+        };
 
         while (this.viewTable.rows.length>1){
             this.viewTable.deleteRow(-1);
         }
         //this.createLoadding();
 
-        this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-            this.viewData = json.data;
+        this.loadViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+            this.json.statementId || this.json.statementName,
+            type || "data", p, this.json.pageSize, d, function(json){
+
+            this.gridJson = json.data;
 
             this.fireEvent("postLoadPageData");
 
-            if (this.viewJson.group.column){
-                this.gridJson = json.data.groupGrid;
-                // this.loadGroupData();
-            }else{
-                this.gridJson = json.data.grid;
+            // if (this.viewJson.group.column){
+            //     this.gridJson = json.data.groupGrid;
+            // }else{
+            //     this.gridJson = json.data.grid;
                 this.loadData();
-            }
+            // }
             if (this.gridJson.length) this._loadPageNode();
             if (this.loadingAreaNode){
                 this.loadingAreaNode.destroy();
@@ -180,10 +192,19 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             this.fireEvent("loadView"); //options 传入的事件
             this.fireEvent("postLoadPage");
 
-            if(callback)callback();
+            if(callback)callback( json );
         }.bind(this), null, async === false ? false : true );
     },
-
+    getView: function(callback){
+        this.getViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.get(this.json.statementId || this.json.statementName, function(json){
+            debugger;
+            this.viewJson = JSON.decode(json.data.view);
+            this.json.application = json.data.query;
+            //this.json = Object.merge(this.json, json.data);
+            this.statementJson = json.data;
+            if (callback) callback();
+        }.bind(this));
+    },
 
     loadData: function(){
         if (this.gridJson.length){
@@ -212,31 +233,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             if( to == this.gridJson.length )this.isItemsLoaded = true;
         }
     },
-    getView: function(callback){
-        this.getLookupAction(function(){
-            if (this.json.application){
-                this.getViewRes = this.lookupAction.getStatement(this.json.statementName, this.json.application, function(json){
-                    this.viewJson = JSON.decode(json.data.data);
-                    this.json = Object.merge(this.json, json.data);
-                    if (callback) callback();
-                }.bind(this));
-
-                // this.lookupAction.invoke({"name": "getView","async": true, "parameter": {"view": this.json.statementName, "application": this.json.application},"success": function(json){
-                //     this.viewJson = JSON.decode(json.data.data);
-                //     this.json = Object.merge(this.json, json.data);
-                //     //var viewData = JSON.decode(json.data.data);
-                //     if (callback) callback();
-                // }.bind(this)});
-            }else{
-                this.getViewRes = this.lookupAction.getViewById(this.json.viewId, function(json){
-                    this.viewJson = JSON.decode(json.data.data);
-                    this.json.application = json.data.query;
-                    this.json = Object.merge(this.json, json.data);
-                    if (callback) callback();
-                }.bind(this));
-            }
-        }.bind(this));
-    },
     getFilter: function(){
         var filterData = [];
         if (this.searchStatus==="custom"){
@@ -255,7 +251,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                             "path": entry.path,
                             "value": key,
                             "formatType": entry.formatType,
-                            "logic": "or",
+                            "logic": "and",
                             "comparison": "like"
                         };
                         filterData.push(d);
@@ -267,7 +263,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                                 "path": entry.path,
                                 "value": v,
                                 "formatType": entry.formatType,
-                                "logic": "or",
+                                "logic": "and",
                                 "comparison": "like"
                             };
                             filterData.push(d);
