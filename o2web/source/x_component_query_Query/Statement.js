@@ -21,7 +21,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         this.app = app;
 
         this.container = $(container);
-        this.json = json;
+        this.json = json || {};
 
         this.parentMacro = parentMacro;
 
@@ -36,6 +36,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         this.selectedItems = [];
         this.hideColumns = [];
         this.openColumns = [];
+        this.parameter = {};
 
         this.gridJson = null;
 
@@ -87,67 +88,115 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             this.paging.reload();
         }
     },
-    _initPage: function(){
-        this.count = this.bundleItems.length;
-
-        var i = this.count/this.json.pageSize;
-        this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
-        this.currentPage = this.options.defaultPage || 1;
-        this.options.defaultPage = null;
-    },
+    // _initPage: function(){
+    //     var i = this.count/this.json.pageSize;
+    //     this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
+    //     this.currentPage = this.options.defaultPage || 1;
+    //     this.options.defaultPage = null;
+    // },
     lookup: function(data, callback){
         if( this.lookuping )return;
         this.lookuping = true;
         // this.getLookupAction(function(){
         //     if (this.json.application){
 
-                var d = data || {};
-                // d.count = this.json.count;
-                // this.lookupAction.bundleView(this.json.id, d, function(json){
-                //     this.bundleItems = json.data.valueList;
+        var d = data || {};
+        // d.count = this.json.count;
+        // this.lookupAction.bundleView(this.json.id, d, function(json){
+        //     this.bundleItems = json.data.valueList;
 
-                    // this._initPage();
+        // this._initPage();
 
-                    this.currentPage = this.options.defaultPage || 1;
-                    this.options.defaultPage = null;
+        debugger;
 
-                    if( this.noDataTextNode )this.noDataTextNode.destroy();
-                    this.loadCurrentPageData( function (json) {
-                        if( typeOf(json.count) === "number" )this.totalCount = json.count;
-                        if(this.totalCount){
-                            this.fireEvent("postLoad"); //用户配置的事件
-                            this.lookuping = false;
-                            if(callback)callback(this);
-                        }else{
-                            this.viewPageAreaNode.empty();
-                            if( this.viewJson.noDataText ){
-                                var noDataTextNodeStyle = this.css.noDataTextNode;
-                                if( this.viewJson.viewStyles && this.viewJson.viewStyles["noDataTextNode"] ){
-                                    noDataTextNodeStyle = this.viewJson.viewStyles["noDataTextNode"];
-                                }
-                                this.noDataTextNode = new Element( "div", {
-                                    "styles": noDataTextNodeStyle,
-                                    "text" : this.viewJson.noDataText
-                                }).inject( this.contentAreaNode );
-                            }
-                            // if (this.loadingAreaNode){
-                            //     this.loadingAreaNode.destroy();
-                            //     this.loadingAreaNode = null;
-                            // }
-                            this.fireEvent("postLoad"); //用户配置的事件
-                            this.lookuping = false;
-                            if(callback)callback(this);
-                        }
+        this.currentPage = this.options.defaultPage || 1;
+        this.options.defaultPage = null;
+
+        if( this.noDataTextNode )this.noDataTextNode.destroy();
+        this.loadCurrentPageData( function (json) {
+            if(this.count){
+                this.fireEvent("postLoad"); //用户配置的事件
+                this.lookuping = false;
+                if(callback)callback(this);
+            }else{
+                this.viewPageAreaNode.empty();
+                if( this.viewJson.noDataText ){
+                    var noDataTextNodeStyle = this.css.noDataTextNode;
+                    if( this.viewJson.viewStyles && this.viewJson.viewStyles["noDataTextNode"] ){
+                        noDataTextNodeStyle = this.viewJson.viewStyles["noDataTextNode"];
+                    }
+                    this.noDataTextNode = new Element( "div", {
+                        "styles": noDataTextNodeStyle,
+                        "text" : this.viewJson.noDataText
+                    }).inject( this.contentAreaNode );
+                }
+                // if (this.loadingAreaNode){
+                //     this.loadingAreaNode.destroy();
+                //     this.loadingAreaNode = null;
+                // }
+                this.fireEvent("postLoad"); //用户配置的事件
+                this.lookuping = false;
+                if(callback)callback(this);
+            }
 
 
-                    }.bind(this), true,"all");
+        }.bind(this), true,"all");
 
-                // }.bind(this));
-            // }
         // }.bind(this));
+        // }
+        // }.bind(this));
+    },
+    getParameter : function(){
+        ( this.viewJson.filterList || [] ).each( function (f) {
+            var value = f.value;
+            if( f.valueType === "script" ){
+                value = this.Macro.exec( f.valueScript ? f.valueScript.code : "", this);
+            }else if( f.value.indexOf( "@" ) > -1 ){
+                debugger;
+                var user = layout.user;
+                switch ( f.value ) {
+                    case "@person":
+                        value = user.distinguishedName;
+                        break;
+                    case "@identityList":
+                        value =  user.identityList.map( function (d) {
+                            return d.distinguishedName;
+                        })
+                        break;
+                    case "@unitList":
+                        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({ "personList" : [user.distinguishedName] }, function (json) {
+                            value = json.unitList;
+                        }, null, false)
+                        break;
+                    case "@unitAllList":
+                        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({ "personList" : [user.distinguishedName] }, function (json) {
+                            value = json.unitList;
+                        }, null, false)
+                        break;
+                    case "@year":
+                        value = (new Date().getFullYear()).toString();
+                        break;
+                    case "@season":
+                        break;
+                    case "@month":
+                        value = new Date().format("%Y-%m");
+                        break;
+                    case "@time":
+                        value = new Date().format("db");
+                        break;
+                    case "@date":
+                        value = new Date().format("%Y-%m-%");
+                        break;
+                    default:
+                }
+            }
+            this.parameter[ f.parameter ] = value;
+        }.bind(this))
     },
     loadCurrentPageData: function( callback, async, type ){
         //是否需要在翻页的时候清空之前的items ?
+
+        debugger;
 
         if( this.pageloading )return;
         this.pageloading = true;
@@ -157,9 +206,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         var p = this.currentPage;
         var d = {
             "filterList" : [],
-            "parameter" : {
-
-            }
+            "parameter" : this.getParameter()
         };
 
         while (this.viewTable.rows.length>1){
@@ -171,34 +218,44 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             this.json.statementId || this.json.statementName,
             type || "data", p, this.json.pageSize, d, function(json){
 
-            this.gridJson = json.data;
+                if( type === "all" || type === "count" ){
+                    if( typeOf(json.count) === "number" ){
+                        this.count = json.count;
+                        var i = this.count/this.json.pageSize;
+                        this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
+                    }
+                }
 
-            this.fireEvent("postLoadPageData");
+                this.gridJson = json.data;
 
-            // if (this.viewJson.group.column){
-            //     this.gridJson = json.data.groupGrid;
-            // }else{
-            //     this.gridJson = json.data.grid;
+                this.fireEvent("postLoadPageData");
+
+                // if (this.viewJson.group.column){
+                //     this.gridJson = json.data.groupGrid;
+                // }else{
+                //     this.gridJson = json.data.grid;
                 this.loadData();
-            // }
-            if (this.gridJson.length) this._loadPageNode();
-            if (this.loadingAreaNode){
-                this.loadingAreaNode.destroy();
-                this.loadingAreaNode = null;
-            }
+                // }
+                if (this.gridJson.length) this._loadPageNode();
+                if (this.loadingAreaNode){
+                    this.loadingAreaNode.destroy();
+                    this.loadingAreaNode = null;
+                }
 
-            this.pageloading = false;
+                this.pageloading = false;
 
-            this.fireEvent("loadView"); //options 传入的事件
-            this.fireEvent("postLoadPage");
+                this.fireEvent("loadView"); //options 传入的事件
+                this.fireEvent("postLoadPage");
 
-            if(callback)callback( json );
-        }.bind(this), null, async === false ? false : true );
+                if(callback)callback( json );
+            }.bind(this), null, async === false ? false : true );
     },
     getView: function(callback){
         this.getViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.get(this.json.statementId || this.json.statementName, function(json){
             debugger;
-            this.viewJson = JSON.decode(json.data.view);
+            var viewData = JSON.decode(json.data.view);
+            if( !this.json.pageSize )this.json.pageSize = viewData.pageSize;
+            this.viewJson = viewData.data;
             this.json.application = json.data.query;
             //this.json = Object.merge(this.json, json.data);
             this.statementJson = json.data;
@@ -487,10 +544,10 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             //         ev.stopPropagation();
             //     }.bind(this));
             // }else{
-                td.addEvent("click", function(ev){
-                    this.openWorkAndCompleted(ev)
-                    ev.stopPropagation();
-                }.bind(this));
+            td.addEvent("click", function(ev){
+                this.openWorkAndCompleted(ev)
+                ev.stopPropagation();
+            }.bind(this));
             // }
         }
     }
