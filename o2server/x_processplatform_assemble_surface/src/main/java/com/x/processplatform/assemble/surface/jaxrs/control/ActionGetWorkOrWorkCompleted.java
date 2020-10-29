@@ -56,8 +56,10 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 					if (null != work) {
 						wo = this.work(business, effectivePerson, work);
 					} else {
-						wo = this.workCompleted(business, effectivePerson,
-								emc.flag(workOrWorkCompleted, WorkCompleted.class));
+						WorkCompleted workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
+						if (null != workCompleted) {
+							wo = this.workCompleted(business, effectivePerson, workCompleted);
+						}
 					}
 				} catch (Exception e) {
 					logger.error(e);

@@ -38,7 +38,7 @@ public class HttpStatus extends Thread {
 						bean.getDaemonThreadCount(), deadLockedCount));
 				if (BooleanUtils.isTrue(Servers.centerServerIsRunning())) {
 					String file = "centerServer_" + DateTools.compact(new Date()) + ".txt";
-					list.add(String.format("  +++ center server thread pool size:%d, idle:%d, detail:%d.",
+					list.add(String.format("  +++ center server thread pool size:%d, idle:%d, detail:%s.",
 							Servers.centerServer.getThreadPool().getThreads(),
 							Servers.centerServer.getThreadPool().getIdleThreads(), file));
 					try (FileOutputStream stream = new FileOutputStream(new File(Config.dir_logs(true), file));
@@ -48,7 +48,7 @@ public class HttpStatus extends Thread {
 				}
 				if (BooleanUtils.isTrue(Servers.applicationServerIsRunning())) {
 					String file = "applicationServer_" + DateTools.compact(new Date()) + ".txt";
-					list.add(String.format("  +++ application server thread pool size:%d, idle:%d, detail:%d.",
+					list.add(String.format("  +++ application server thread pool size:%d, idle:%d, detail:%s.",
 							Servers.applicationServer.getThreadPool().getThreads(),
 							Servers.applicationServer.getThreadPool().getIdleThreads(), file));
 					try (FileOutputStream stream = new FileOutputStream(new File(Config.dir_logs(true), file));
@@ -58,7 +58,7 @@ public class HttpStatus extends Thread {
 				}
 				if (BooleanUtils.isTrue(Servers.webServerIsRunning())) {
 					String file = "webServer_" + DateTools.compact(new Date()) + ".txt";
-					list.add(String.format("  +++ web server thread pool size:%d, idle:%d, detail:%d.",
+					list.add(String.format("  +++ web server thread pool size:%d, idle:%d, detail:%s.",
 							Servers.webServer.getThreadPool().getThreads(),
 							Servers.webServer.getThreadPool().getIdleThreads(), file));
 					try (FileOutputStream stream = new FileOutputStream(new File(Config.dir_logs(true), file));
