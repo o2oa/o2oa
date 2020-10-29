@@ -1978,6 +1978,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
     selectedSingle: function( checkValid ){
         if (!this.isSelected){
             if (this.selector.currentItem) this.selector.currentItem.unSelectedSingle();
+            this.selector.emptySelectedItems();
             this.getData(function(){
                 this.selector.currentItem = this;
                 this.isSelected = true;
