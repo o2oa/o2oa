@@ -48,20 +48,18 @@ public class StatementAction extends StandardJaxrsAction {
 	}
 
 	@JaxrsMethodDescribe(value = "根据查询列示语句对象.", action = ActionListWithQuery.class)
-	@GET
+	@POST
 	@Path("list/query/{queryFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listWithQuery(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							  @JaxrsParameterDescribe("查询标识") @PathParam("queryFlag") String queryFlag,
-							  @JaxrsParameterDescribe("是否只查询select语句") @QueryParam("justSelect") Boolean justSelect,
-							  @JaxrsParameterDescribe("是否只查询含有视图的语句") @QueryParam("hasView") Boolean hasView) {
+							  @JaxrsParameterDescribe("查询标识") @PathParam("queryFlag") String queryFlag, JsonElement jsonElement) {
 		ActionResult<List<ActionListWithQuery.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithQuery().execute(effectivePerson, queryFlag, justSelect, hasView);
+			result = new ActionListWithQuery().execute(effectivePerson, queryFlag, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -87,7 +85,7 @@ public class StatementAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "执行语句V2,可以同时执行查询结果及查询总数.", action = ActionExecuteV2.class)
 	@POST
-	@Path("{flag}/execute/mode/{mode}page/{page}/size/{size}")
+	@Path("{flag}/execute/mode/{mode}/page/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void executeV2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
