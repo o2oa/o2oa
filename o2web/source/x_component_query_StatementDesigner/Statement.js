@@ -1169,7 +1169,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
                             }
                         }
 
-                        if( code && code.trim())obj = MWF.Macro.exec( code, {"value": obj,  "data": line, "entry": c});
+                        if( code && code.trim())obj = MWF.Macro.exec( code, { "target" : {"value": obj,  "data": line, "entry": c} });
 
                         var toName = function (value) {
                             if(typeOf(value) === "array"){

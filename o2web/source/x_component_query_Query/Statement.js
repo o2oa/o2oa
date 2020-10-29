@@ -567,7 +567,7 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             }
         }
 
-        if( code && code.trim())obj = MWF.Macro.exec( code, {"value": obj,  "data": this.data, "entry": c, "node" : td, "json" : c, "row" : this});
+        if( code && code.trim())obj = this.view.Macro.exec( code, {"value": obj,  "data": this.data, "entry": c, "node" : td, "json" : c, "row" : this});
 
         var toName = function (value) {
             if(typeOf(value) === "array"){
