@@ -37,31 +37,33 @@ public class HttpStatus extends Thread {
 						bean.getTotalStartedThreadCount(), bean.getThreadCount(), bean.getPeakThreadCount(),
 						bean.getDaemonThreadCount(), deadLockedCount));
 				if (BooleanUtils.isTrue(Servers.centerServerIsRunning())) {
-					String file = "centerServer_" + DateTools.compact(new Date()) + ".txt";
+					File file = new File(Config.dir_logs(true),
+							"centerServer_" + DateTools.compact(new Date()) + ".txt");
 					list.add(String.format("  +++ center server thread pool size:%d, idle:%d, detail:%s.",
 							Servers.centerServer.getThreadPool().getThreads(),
-							Servers.centerServer.getThreadPool().getIdleThreads(), file));
-					try (FileOutputStream stream = new FileOutputStream(new File(Config.dir_logs(true), file));
+							Servers.centerServer.getThreadPool().getIdleThreads(), file.getAbsolutePath()));
+					try (FileOutputStream stream = new FileOutputStream(file);
 							OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 						Servers.centerServer.dump(writer);
 					}
 				}
 				if (BooleanUtils.isTrue(Servers.applicationServerIsRunning())) {
-					String file = "applicationServer_" + DateTools.compact(new Date()) + ".txt";
+					File file = new File(Config.dir_logs(true),
+							"applicationServer_" + DateTools.compact(new Date()) + ".txt");
 					list.add(String.format("  +++ application server thread pool size:%d, idle:%d, detail:%s.",
 							Servers.applicationServer.getThreadPool().getThreads(),
-							Servers.applicationServer.getThreadPool().getIdleThreads(), file));
-					try (FileOutputStream stream = new FileOutputStream(new File(Config.dir_logs(true), file));
+							Servers.applicationServer.getThreadPool().getIdleThreads(), file.getAbsolutePath()));
+					try (FileOutputStream stream = new FileOutputStream(file);
 							OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 						Servers.applicationServer.dump(writer);
 					}
 				}
 				if (BooleanUtils.isTrue(Servers.webServerIsRunning())) {
-					String file = "webServer_" + DateTools.compact(new Date()) + ".txt";
+					File file = new File(Config.dir_logs(true), "webServer_" + DateTools.compact(new Date()) + ".txt");
 					list.add(String.format("  +++ web server thread pool size:%d, idle:%d, detail:%s.",
 							Servers.webServer.getThreadPool().getThreads(),
-							Servers.webServer.getThreadPool().getIdleThreads(), file));
-					try (FileOutputStream stream = new FileOutputStream(new File(Config.dir_logs(true), file));
+							Servers.webServer.getThreadPool().getIdleThreads(), file.getAbsolutePath()));
+					try (FileOutputStream stream = new FileOutputStream(file);
 							OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 						Servers.webServer.dump(writer);
 					}
