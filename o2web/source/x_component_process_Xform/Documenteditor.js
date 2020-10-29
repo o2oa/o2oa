@@ -2210,28 +2210,20 @@ debugger;
                     }.bind(this));
                     e.data.dataValue = tmp.get("html");
                     tmp.destroy();
+
+                    this.fireEvent("paste");
+                }.bind(this) );
+
+                this.filetextEditor.on( 'afterPaste', function( e ) {
+                    this.resetNodeSize();
+                    this.fireEvent("afterPaste");
                 }.bind(this) );
 
 
                 if (this.json.textIndent!=="n"){
-                    // this.filetextEditor.addCommand( 'textIndent_P', {
-                    //     exec: function( editor ) {
-                    //         debugger;
-                    //         editor.insertHtml("<br><div>　　</div>");
-                    //     }
-                    // } );
-                    // this.filetextEditor.setKeystroke( CKEDITOR.CTRL + 13, 'textIndent_P' );
                     this.layout_filetext.addEvent("keyup", function(ev){
                         if (ev.code==13) this.filetextEditor.insertText("　　");
                     }.bind(this));
-                    //
-                    // this.filetextEditor.on("key", function(e){
-                    //     if (e.data.keyCode==13){
-                    //         e.editor.insertText("　　");
-                    //         //e.cancel();
-                    //     }
-                    // }.bind(this));
-
                 }
                 if (this.json.fullWidth!=="n"){
                     this.filetextEditor.addCommand( 'insertHalfSpace', {
