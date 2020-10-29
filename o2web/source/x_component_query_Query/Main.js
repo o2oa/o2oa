@@ -80,7 +80,7 @@ MWF.xApplication.query.Query.Main = new Class({
         this.naviStatTitleNode = new Element("div", {"styles": this.css.naviStatTitleNode, "text": this.lp.stat}).inject(this.naviContentNode);
         this.naviStatContentNode = new Element("div", {"styles": this.css.naviStatContentNode}).inject(this.naviContentNode);
 
-        this.naviStatementTitleNode = new Element("div", {"styles": this.css.naviStatementTitleNode, "text": this.lp.stat}).inject(this.naviContentNode);
+        this.naviStatementTitleNode = new Element("div", {"styles": this.css.naviStatementTitleNode, "text": this.lp.statement}).inject(this.naviContentNode);
         this.naviStatementContentNode = new Element("div", {"styles": this.css.naviStatementContentNode}).inject(this.naviContentNode);
 
         this.setContentHeightFun = this.setContentHeight.bind(this);
@@ -131,7 +131,10 @@ MWF.xApplication.query.Query.Main = new Class({
                 }.bind(this));
             }
         }.bind(this));
-        MWF.Actions.get("x_query_assemble_surface").listStatement(this.options.id, function(json){
+        MWF.Actions.load("x_query_assemble_surface").StatementAction.listWithQuery(this.options.id, {
+            "justSelect" : true,
+            "hasView" : true
+        }, function(json){
             //this.action.listStat(this.options.id, function(json){
             if (json.data){
                 json.data.each(function(statement){
@@ -152,8 +155,8 @@ MWF.xApplication.query.Query.Main = new Class({
         var item = new MWF.xApplication.query.Query.StatItem(stat, this);
         return item;
     },
-    createStatementNaviItem: function(stat){
-        var item = new MWF.xApplication.query.Query.StatementItem(stat, this);
+    createStatementNaviItem: function(statement){
+        var item = new MWF.xApplication.query.Query.StatementItem(statement, this);
         return item;
     },
 
@@ -251,7 +254,8 @@ MWF.xApplication.query.Query.StatementItem = new Class({
             this.viewContent.empty();
             this.viewer = new MWF.QStatement(this.app, this.viewContent, {
                 "application": this.view.query,
-                "statementName": this.view.name
+                "statementName": this.view.name,
+                "statementId" : this.view.id
             });
         }.bind(this));
     }

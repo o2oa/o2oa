@@ -58,18 +58,18 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
     },
     loadViewFilter: function () {
         var nodes = this.propertyContent.getElements(".MWFViewFilter");
-        //var filtrData = this.view.data.data.filterList;
+        var filtrData = this.view.data.data.filterList;
         var customData = this.view.data.data.customFilterList;
         nodes.each(function (node) {
             MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilter", function () {
                 var _slef = this;
                 new MWF.xApplication.query.StatementDesigner.widget.ViewFilter(node, this.view.designer, {
-                    // "filtrData": filtrData,
+                    "filtrData": filtrData,
                     "customData": customData
                 }, {
                     "onChange": function (ids) {
                         var data = this.getData();
-                        // _slef.changeJsonDate(["data", "filterList"], data.data);
+                        _slef.changeJsonDate(["data", "filterList"], data.data);
                         _slef.changeJsonDate(["data", "customFilterList"], data.customData);
                     }
                 });
