@@ -145,7 +145,7 @@ public class StatementAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "执行语句V2,可以同时执行查询结果及查询总数.", action = ActionExecuteV2.class)
 	@POST
-	@Path("{flag}/execute/mode/{mode}page/{page}/size/{size}")
+	@Path("{flag}/execute/mode/{mode}/page/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void executeV2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
