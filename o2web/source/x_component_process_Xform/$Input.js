@@ -285,7 +285,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         //         this.moduleValueAG = null;
         //     }.bind(this));
         // }else{
-        if (o2.typeOf(value.then)=="function"){
+        if (o2.typeOf(data.then)=="function"){
             var p = o2.promiseAll(data).then(function(v){
                 this.__setValue(v);
             }.bind(this));
