@@ -19,7 +19,8 @@
     "titleTd":{ //viewTitleColumnNode  viewTitleCellNode
       "font-weight": "bold",
       "padding": "0px 10px",
-      "border-bottom": "1px solid #dcdfe6"
+      "border-bottom": "1px solid #dcdfe6",
+      "background" : "inherit"
     },
     "contentTr" : {
       "background": "#ffffff"
