@@ -43,6 +43,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
@@ -52,10 +53,11 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 					if (null != work) {
 						wo = this.work(business, effectivePerson, work);
 					} else {
-						wo = this.workCompleted(business, effectivePerson,
-								emc.flag(workOrWorkCompleted, WorkCompleted.class));
+						WorkCompleted workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
+						if (null != workCompleted) {
+							wo = this.workCompleted(business, effectivePerson, workCompleted);
+						}
 					}
-
 				} catch (Exception e) {
 					logger.error(e);
 				}
