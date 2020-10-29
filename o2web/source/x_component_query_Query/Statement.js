@@ -108,6 +108,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         // this._initPage();
 
         debugger;
+        this.loadParameter();
+        this.loadFilter( data );
 
         this.currentPage = this.options.defaultPage || 1;
         this.options.defaultPage = null;
@@ -146,13 +148,27 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         // }
         // }.bind(this));
     },
-    getParameter : function(){
+    loadFilter : function( data ){
+        this.filterList = [];
+        ( data.filterList || [] ).each( function (d) {
+            var parameterName = d.path.replace(/\./g, "_");
+            if( d.comparison === "like" || d.comparison === "notLike" ){
+                this.parameter[ parameterName ] = "%"+d.value+"%";
+            }else{
+                this.parameter[ parameterName ] = d.value;
+            }
+            d.value = parameterName;
+
+            this.filterList.push( d );
+        }.bind(this))
+    },
+    loadParameter : function(){
         ( this.viewJson.filterList || [] ).each( function (f) {
             var value = f.value;
+            debugger;
             if( f.valueType === "script" ){
                 value = this.Macro.exec( f.valueScript ? f.valueScript.code : "", this);
             }else if( f.value.indexOf( "@" ) > -1 ){
-                debugger;
                 var user = layout.user;
                 switch ( f.value ) {
                     case "@person":
@@ -177,6 +193,16 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                         value = (new Date().getFullYear()).toString();
                         break;
                     case "@season":
+                        var m = new Date().format("%m");
+                        if( ["01","02","03"].contains(m) ){
+                            value = "1"
+                        }else if( ["04","05","06"].contains(m) ){
+                            value = "2"
+                        }else if( ["07","08","09"].contains(m) ){
+                            value = "3"
+                        }else{
+                            value = "4"
+                        }
                         break;
                     case "@month":
                         value = new Date().format("%Y-%m");
@@ -185,7 +211,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                         value = new Date().format("db");
                         break;
                     case "@date":
-                        value = new Date().format("%Y-%m-%");
+                        value = new Date().format("%Y-%m-%d");
                         break;
                     default:
                 }
@@ -205,8 +231,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
         var p = this.currentPage;
         var d = {
-            "filterList" : [],
-            "parameter" : this.getParameter()
+            "filterList" : this.filterList,
+            "parameter" : this.parameter
         };
 
         while (this.viewTable.rows.length>1){
@@ -452,48 +478,50 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
         debugger;
 
         Object.each(this.view.entries, function(c, k){
-            var cell = this.data.data[k];
-            if (cell === undefined) cell = "";
             //if (cell){
             if (this.view.hideColumns.indexOf(k)===-1){
                 var td = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
-                if (k!== this.view.viewJson.group.column){
-                    //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
-                    var v = cell;
-                    if (c.isHtml){
-                        td.set("html", v);
-                    }else{
-                        td.set("text", v);
-                    }
-                    if( typeOf(c.contentProperties) === "object" )td.setProperties(c.contentProperties);
-                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
-                    if( typeOf(c.contentStyles) === "object" )td.setStyles(c.contentStyles);
+
+                var cell =  this.getText( c, k, td ); //this.data[k];
+                if (cell === undefined || cell === null) cell = "";
+
+                // if (k!== this.view.viewJson.group.column){
+                var v = cell;
+                if (c.isHtml){
+                    td.set("html", v);
                 }else{
-                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+                    td.set("text", v);
                 }
+
+                if( typeOf(c.contentProperties) === "object" )td.setProperties(c.contentProperties);
+                if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+                if( typeOf(c.contentStyles) === "object" )td.setStyles(c.contentStyles);
+                // }else{
+                //     if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+                // }
 
                 if (this.view.openColumns.indexOf(k)!==-1){
                     this.setOpenWork(td, c)
                 }
 
-                if (k!== this.view.viewJson.group.column){
-                    Object.each( c.events || {}, function (e , key) {
-                        if(e.code){
-                            if( key === "loadContent" ){
-                                this.view.Macro.fire( e.code,
-                                    {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this});
-                            }else if( key !== "loadTitle" ){
-                                td.addEvent(key, function(event){
-                                    return this.view.Macro.fire(
-                                        e.code,
-                                        {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this},
-                                        event
-                                    );
-                                }.bind(this));
-                            }
+                // if (k!== this.view.viewJson.group.column){
+                Object.each( c.events || {}, function (e , key) {
+                    if(e.code){
+                        if( key === "loadContent" ){
+                            this.view.Macro.fire( e.code,
+                                {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this});
+                        }else if( key !== "loadTitle" ){
+                            td.addEvent(key, function(event){
+                                return this.view.Macro.fire(
+                                    e.code,
+                                    {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this},
+                                    event
+                                );
+                            }.bind(this));
                         }
-                    }.bind(this));
-                }
+                    }
+                }.bind(this));
+                // }
             }
             //}
         }.bind(this));
@@ -522,6 +550,52 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
         this.setEvent();
 
         this.view.fireEvent("postLoadItemRow", [null, this]);
+    },
+    getText : function(c, k, td){
+        var path = c.path, code = c.code, obj = this.data;
+        if( path ){
+            var pathList = path.split(".");
+            for( var i=0; i<pathList.length; i++ ){
+                var p = pathList[i];
+                if( (/(^[1-9]\d*$)/.test(p)) )p = p.toInt();
+                if( obj[ p ] ){
+                    obj = obj[ p ];
+                }else{
+                    obj = "";
+                    break;
+                }
+            }
+        }
+
+        if( code && code.trim())obj = MWF.Macro.exec( code, {"value": obj,  "data": this.data, "entry": c, "node" : td, "json" : c, "row" : this});
+
+        var toName = function (value) {
+            if(typeOf(value) === "array"){
+                Array.each( value, function (v, idx) {
+                    value[idx] = toName(v)
+                })
+            }else if( typeOf(value) === "object" ){
+                Object.each( value, function (v, key) {
+                    value[key] = toName(v);
+                })
+            }else if( typeOf( value ) === "string" ){
+                value = o2.name.cn( value )
+            }
+            return value;
+        };
+
+        var d;
+        if( obj!= undefined && obj!= null ){
+            if( typeOf(obj) === "array" ) {
+                d = c.isName ? JSON.stringify(toName(Array.clone(obj))) : JSON.stringify(obj);
+            }else if( typeOf(obj) === "object" ){
+                d = c.isName ? JSON.stringify(toName(Object.clone(obj))) : JSON.stringify(obj);
+            }else{
+                d = c.isName ? o2.name.cn( obj.toString() ) : obj;
+            }
+        }
+
+        return d;
     },
     setOpenWork: function(td, column){
         td.setStyle("cursor", "pointer");

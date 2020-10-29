@@ -854,6 +854,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
         if (typeOf(this.viewJson) === "object") {
             this.data.view = JSON.stringify(this.viewJson);
+            if(!this.data.view.group)this.data.view.group = {};
         }
         //if( !this.data.tableType ){
         //    this.data.tableType = "dynamic";
