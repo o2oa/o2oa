@@ -89,12 +89,13 @@ MWF.xApplication.Forum.Attachment = new Class({
                 this.actions.getAttachment(aid, this.options.documentId, function (json) {
                     json = this.transportData(json);
                     if (json.data) {
-                        this.attachmentController.addAttachment(json.data);
+                        this.attachmentController.addAttachment(json.data, o.messageId);
                         //this.attachmentList.push(json.data);
                     }
                     this.attachmentController.checkActions();
 
                     this.fireEvent("upload", [json.data]);
+                    this.fireEvent("change");
                 }.bind(this))
             }
             this.attachmentController.checkActions();
