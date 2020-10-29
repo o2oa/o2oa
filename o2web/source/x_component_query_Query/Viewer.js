@@ -233,7 +233,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.selectTitleCell.hide();
             }
 
-            if( this.getSelectFlag() !== "multi" || !this.viewJson.allowSelectAll ){
+            if( this.getSelectFlag( true ) !== "multi" || !this.viewJson.allowSelectAll ){
                 this.expandTitleCell = this.selectTitleCell;
             }
 
@@ -293,7 +293,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         if( this.viewJson && this.viewJson.isExpand )return this.viewJson.isExpand;
         return "no";
     },
-    getSelectFlag : function(){
+    getSelectFlag : function( ignoreSelectEnable ){
+        if( !ignoreSelectEnable && !this.viewSelectedEnable )return "none";
         if( this.options && this.options.select )return this.options.select;
         if( this.json && this.json.select )return this.json.select;
         if( this.viewJson && this.viewJson.select )return this.viewJson.select;
@@ -312,6 +313,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         if( this.json.defaultSelectedScript || this.viewJson.defaultSelectedScript ){
             return false;
         }
+        // if( !this.viewSelectedEnable ){
+        //     return true;
+        // }
         if( this.options && this.options.select ){
             return  this.options.select === "none";
         }
@@ -501,9 +505,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
             if (this.viewJson.group.column){
                 this.gridJson = json.data.groupGrid;
+                this.setSelectedableFlag();
                 this.loadGroupData();
             }else{
                 this.gridJson = json.data.grid;
+                this.setSelectedableFlag();
                 this.loadData();
             }
             if (this.gridJson.length) this._loadPageNode();
@@ -519,6 +525,34 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
             if(callback)callback();
         }.bind(this), null, async === false ? false : true );
+    },
+    setSelectedableFlag : function(){
+        this.viewSelectedEnable = false;
+        var selectedAbleScript = this.json.selectedAbleScript || this.viewJson.selectedAbleScript;
+        if (this.viewJson.group.column){
+            this.gridJson.each( function( d ){
+                d.list.each( function( v ){
+                    if( selectedAbleScript ){
+                        v.$selectedEnable = this.Macro.exec( selectedAbleScript, { "data" : v, "groupData" : d ,"view": this });
+                    }else{
+                        v.$selectedEnable = true;
+                    }
+                    if( v.$selectedEnable ){
+                        d.$selectedEnable = true;
+                        this.viewSelectedEnable = true;
+                    }
+                }.bind(this))
+            }.bind(this))
+        }else{
+            this.gridJson.each( function( v ){
+                if( selectedAbleScript ){
+                    v.$selectedEnable = this.Macro.exec( selectedAbleScript, { "data" : v, "view": this });
+                }else{
+                    v.$selectedEnable = true;
+                }
+                if( v.$selectedEnable )this.viewSelectedEnable = true;
+            }.bind(this))
+        }
     },
     getMode: function(){
         return this.viewJson.group.column ? "group" : "item";
@@ -558,6 +592,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }else{
                 this.createSelectAllNode();
             }
+        }else if(this.selectAllNode){
+            this.clearSelectAllStyle();
         }
 
         if (this.gridJson.length){
@@ -617,6 +653,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }else{
                 this.createSelectAllNode();
             }
+        }else if( this.selectAllNode ){
+            this.clearSelectAllStyle();
         }
 
         if( this.expandTitleCell ){
@@ -1289,22 +1327,26 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         for( var i=0; i<this.items.length; i++ ){
             var item = this.items[i];
             if( item.clazzType === "item" ){
-                item.isSelected ? ( noneFlag = false ) : (allFlag = false);
+                if( item.data.$selectedEnable ){
+                    item.isSelected ? ( noneFlag = false ) : (allFlag = false);
+                }
             }else{
-                var f = item.getSelectAllStatus();
-                if( f === "none" ){
-                    allFlag = false;
-                }else if( f === "all" ){
-                    noneFlag = false;
-                }else if(f==="some"){
-                    allFlag = false;
-                    noneFlag = false;
+                if( item.data.$selectedEnable ) {
+                    var f = item.getSelectAllStatus();
+                    if (f === "none") {
+                        allFlag = false;
+                    } else if (f === "all") {
+                        noneFlag = false;
+                    } else if (f === "some") {
+                        allFlag = false;
+                        noneFlag = false;
+                    }
                 }
             }
             if( !allFlag && !noneFlag )return "some"
         }
-        if( allFlag )return "all";
         if( noneFlag )return "none";
+        if( allFlag )return "all";
         return "some";
     },
     checkSelectAllStatus : function(){
@@ -1334,20 +1376,28 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 '../x_component_query_Query/$Viewer/" + this.options.style + "/icon/checkbox.png' )
         }
     },
+    clearSelectAllStyle : function(){
+        debugger;
+        if(!this.selectAllNode)return;
+        var viewStyles = this.viewJson.viewStyles;
+        var viewTitleCellNode = (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode;
+        if( !viewTitleCellNode["background"] || !viewTitleCellNode["background-image"] || !viewTitleCellNode["background-color"] ){
+            viewTitleCellNode["background"] = "inherit";
+        }
+        this.selectAllNode.setStyles( viewTitleCellNode );
+        var img = this.selectAllNode.getElement("img");
+        if( img )img.set("src", '../x_component_query_Query/$Viewer/" + this.options.style + "/icon/blank.png')
+    },
     selectAll : function(){
         // var flag = this.json.select || this.viewJson.select ||  "none";
         if ( this.getSelectFlag()==="multi"){
             this.items.each( function (item) {
-                if( item.clazzType === "item" ){
-                    item.selected("view");
-                }else{
-                    item.selectAll("view");
-                    // item.expand();
-                    // if( item.items ){
-                    //     item.items.each( function (it) {
-                    //         it.selected();
-                    //     })
-                    // }
+                if( item.data.$selectedEnable ){
+                    if( item.clazzType === "item" ){
+                        item.selected("view");
+                    }else{
+                        item.selectAll("view");
+                    }
                 }
             })
             if( this.viewJson.allowSelectAll ) {
@@ -1359,15 +1409,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         // var flag = this.json.select || this.viewJson.select ||  "none";
         if ( this.getSelectFlag()==="multi"){
             this.items.each( function (item) {
-                if( item.clazzType === "item" ){
-                    item.unSelected("view");
-                }else{
-                    item.unSelectAll("view");
-                    // if(item.items){
-                    //     item.items.each( function (it) {
-                    //         it.unSelected();
-                    //     })
-                    // }
+                if( item.data.$selectedEnable ) {
+                    if (item.clazzType === "item") {
+                        item.unSelected("view");
+                    } else {
+                        item.unSelectAll("view");
+                    }
                 }
             })
             if( this.viewJson.allowSelectAll ) {
@@ -1546,7 +1593,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 
         //var selectFlag = this.view.json.select || this.view.viewJson.select ||  "none";
         var selectFlag = this.view.getSelectFlag();
-        if ( ["multi","single"].contains(selectFlag) && this.view.viewJson.selectBoxShow==="always") {
+        if ( this.data.$selectedEnable && ["multi","single"].contains(selectFlag) && this.view.viewJson.selectBoxShow==="always") {
             var viewStyles = this.view.viewJson.viewStyles;
             if (viewStyles) {
                 if (selectFlag === "single") {
@@ -1622,6 +1669,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             }
             //}
         }.bind(this));
+
 
         //默认选中
         var defaultSelectedScript = this.view.json.defaultSelectedScript || this.view.viewJson.defaultSelectedScript;
@@ -1824,7 +1872,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 
     setEvent: function(){
         var flag = this.view.getSelectFlag();
-        if ( flag ==="single" || flag==="multi"){
+        if ( this.data.$selectedEnable && (flag ==="single" || flag==="multi")){
             this.node.addEvents({
                 "mouseover": function(){
                     if (!this.isSelected && this.view.viewJson.selectBoxShow !=="always" ){
@@ -1973,7 +2021,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
 
-        if( this.view.getSelectFlag() === "multi" && this.view.viewJson.allowSelectAll ){
+        if( this.data.$selectedEnable && this.view.getSelectFlag() === "multi" && this.view.viewJson.allowSelectAll ){
             this.selectAllNode = this.selectTd;
             if( viewStyles && viewStyles["checkboxNode"] ){
                 this.selectAllNode.setStyles( viewStyles["checkboxNode"] )
@@ -2071,8 +2119,10 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         var allFlag = true, noneFlag = true;
         for( var i=0; i<this.items.length; i++ ){
             var item = this.items[i];
-            item.isSelected ? ( noneFlag = false ) : (allFlag = false);
-            if( !allFlag && !noneFlag )return "some"
+            if( item.data.$selectedEnable ){
+                item.isSelected ? ( noneFlag = false ) : (allFlag = false);
+                if( !allFlag && !noneFlag )return "some"
+            }
         }
         if( allFlag )return "all";
         if( noneFlag )return "none";
@@ -2110,7 +2160,9 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         if ( this.view.getSelectFlag()==="multi"){
             this.expand();
             this.items.each( function (item) {
-                item.selected( from );
+                if( item.data.$selectedEnable ){
+                    item.selected( from );
+                }
             })
             if( this.view.viewJson.allowSelectAll ){
                 this.setSelectAllStyle();
@@ -2125,7 +2177,9 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         // var flag = this.json.select || this.viewJson.select ||  "none";
         if ( this.view.getSelectFlag()==="multi"){
             this.items.each( function (item) {
-                item.unSelected( from );
+                if( item.data.$selectedEnable ) {
+                    item.unSelected(from);
+                }
             })
             if( this.view.viewJson.allowSelectAll ) {
                 this.setUnSelectAllStyle();
