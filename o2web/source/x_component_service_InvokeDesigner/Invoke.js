@@ -140,20 +140,20 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
             this.editor.addEvent("save", function(){
                 this.save();
             }.bind(this));
-            this.editor.addEvent("reference", function(editor, e, e1){
-                if (!this.invokeReferenceMenu){
-                    MWF.require("MWF.widget.ScriptHelp", function(){
-                        this.invokeReferenceMenu = new MWF.widget.ScriptHelp(null, this.editor.editor, {
-                            "onPostLoad": function(){
-                                this.showReferenceMenu();
-                            }.bind(this)
-                        });
-                        this.invokeReferenceMenu.getEditor = function(){return this.editor.editor;}.bind(this)
-                    }.bind(this));
-                }else{
-                    this.showReferenceMenu();
-                }
-            }.bind(this));
+            //this.editor.addEvent("reference", function(editor, e, e1){
+                // if (!this.invokeReferenceMenu){
+                //     MWF.require("MWF.widget.ScriptHelp", function(){
+                //         this.invokeReferenceMenu = new MWF.widget.ScriptHelp(null, this.editor.editor, {
+                //             "onPostLoad": function(){
+                //                 this.showReferenceMenu();
+                //             }.bind(this)
+                //         });
+                //         this.invokeReferenceMenu.getEditor = function(){return this.editor.editor;}.bind(this)
+                //     }.bind(this));
+                // }else{
+                //     this.showReferenceMenu();
+                // }
+            //}.bind(this));
 
             var options = this.designer.styleSelectNode.options;
             for (var i=0; i<options.length; i++){

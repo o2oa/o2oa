@@ -732,15 +732,15 @@ MWF.xApplication.cms.ScriptDesigner.Main = new Class({
                     }.bind(this));
                 }
             };
-            if (!this.scriptHelpMenu){
-                MWF.require("MWF.widget.ScriptHelp", function(){
-                    this.scriptHelpMenu = new MWF.widget.ScriptHelp($("MWFScriptAutoCode"), this.script.editor);
-                    this.scriptHelpMenu.getEditor = function(){
-                        if (this.scriptTab.showPage) return this.scriptTab.showPage.script.editor.editor;
-                        return null;
-                    }.bind(this)
-                }.bind(this));
-            }
+            // if (!this.scriptHelpMenu){
+            //     MWF.require("MWF.widget.ScriptHelp", function(){
+            //         this.scriptHelpMenu = new MWF.widget.ScriptHelp($("MWFScriptAutoCode"), this.script.editor);
+            //         this.scriptHelpMenu.getEditor = function(){
+            //             if (this.scriptTab.showPage) return this.scriptTab.showPage.script.editor.editor;
+            //             return null;
+            //         }.bind(this)
+            //     }.bind(this));
+            // }
 		}.bind(this));
 	},
 
