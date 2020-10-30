@@ -284,7 +284,8 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                 "isExpand": this.json.isExpand || "no",
                 "showActionbar" : this.json.actionbar === "show",
                 "filter": filter,
-                "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null
+                "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null,
+                "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
             };
             var options = {};
             var width = options.width || "850";
