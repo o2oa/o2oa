@@ -69,16 +69,19 @@
                     if (this.checked){
                         $('text{$.id}selectBoxShowTr').setStyle('display', 'none');
                         $('text{$.id}allowSelectAllTr').setStyle('display', 'none');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'none');
                     }"/>无
                     <input class="editTableRadio" name="data.select" text{($.data.select==='single')?'checked':''} type="radio" value="single" onclick="
                     if (this.checked){
                         $('text{$.id}selectBoxShowTr').setStyle('display', 'table-row');
                         $('text{$.id}allowSelectAllTr').setStyle('display', 'none');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'block');
                     }"/>单选
                     <input class="editTableRadio" name="data.select" text{($.data.select==='multi')?'checked':''} type="radio" value="multi" onclick="
                     if (this.checked){
                         $('text{$.id}selectBoxShowTr').setStyle('display', 'table-row');
                         $('text{$.id}allowSelectAllTr').setStyle('display', 'table-row');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'block');
                     }"/>多选
                 </td>
             </tr>
@@ -144,7 +147,8 @@
         </table>
 
         <div class="MWFFormulaArea" name="data.defaultSelectedScript" title="默认选中行脚本"></div>
-        <div class="MWFFormulaArea" name="data.selectedAbleScript" title="允许选择行脚本"></div>
+        <div class="MWFFormulaArea" name="data.selectedAbleScript" title="允许选择行脚本" id="text{$.id}selectedAbleScript"
+             style="display: text{($.data.select=='single' || $.data.select=='multi')?'':'none'}"></div>
 
 
 
