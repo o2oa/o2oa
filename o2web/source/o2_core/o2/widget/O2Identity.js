@@ -284,7 +284,7 @@ o2.widget.O2Duty = new Class({
     getPersonData: function(){
         if (!this.data.woUnit){
             this.action.actions = {"getUnitduty": {"uri": "/jaxrs/unitduty/{id}"}};
-            this.action.invoke({"name": "getUnitduty", "async": false, "parameter": {"id": (this.data.dutyId || this.data.name)}, "success": function(json){
+            this.action.invoke({"name": "getUnitduty", "async": false, "parameter": {"id": (this.data.Id || this.data.name)}, "success": function(json){
                 this.data = json.data;
             }.bind(this)});
         }
