@@ -321,6 +321,10 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             this.viewJson.firstTdHidden = true;
             if( this.json.defaultSelectedScript )this.json.defaultSelectedScript = "";
             if( this.viewJson.defaultSelectedScript )this.viewJson.defaultSelectedScript = "";
+
+            if( this.json.selectedAbleScript )this.json.selectedAbleScript = "";
+            if( this.viewJson.selectedAbleScript )this.viewJson.selectedAbleScript = "";
+
             if( this.isSelectTdHidden() ){
                 this.selectTitleCell.hide();
             }
