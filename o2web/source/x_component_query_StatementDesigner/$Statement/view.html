@@ -100,9 +100,22 @@
         <div class="MWFViewFilter">
             <div class="inputAreaNode_vf">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable restrictViewFilterTable_vf">
+                    <tr id="text{$.id}pathInputSelectTr">
+                        <td class="editTableTitle">选择:</td>
+                        <td class="editTableValue">
+                            <select class="pathInputSelect_vf"></select>
+                            <!--                            <div style="line-height: 20px;color:#999;">注：选择路径后，需在选择的值前面加上"表别名."，如：o.</div>-->
+                        </td>
+                    </tr>
                     <tr>
                         <td class="editTableTitle">标题:</td>
                         <td class="editTableValue"><input type="text" class="editTableInput titleInput_vf"/></td>
+                    </tr>
+                    <tr id="text{$.id}parameterInputSelectTr" style="display: none">
+                        <td class="editTableTitle">选择参数:</td>
+                        <td class="editTableValue">
+                            <select class="parameterInputSelect_vf"></select>
+                        </td>
                     </tr>
                     <tr id="text{$.id}parameterInputTr" style="display: none">
                         <td class="editTableTitle">参数:</td>
@@ -161,14 +174,18 @@
                                 debugger;
                                 $('text{$.id}viewFilterRestrict').setStyle('display', 'block');
                                 $('text{$.id}parameterInputTr').setStyle('display', 'table-row');
+                                $('text{$.id}parameterInputSelectTr').setStyle('display', 'table-row');
                                 $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'none');
                                 $('text{$.id}pathInputTr').setStyle('display', 'none');
+                                $('text{$.id}pathInputSelectTr').setStyle('display', 'none');
                             }"/>作为默认过滤条件<br>
                             <input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
                                 $('text{$.id}viewFilterRestrict').setStyle('display', 'none');
                                 $('text{$.id}parameterInputTr').setStyle('display', 'none');
+                                $('text{$.id}parameterInputSelectTr').setStyle('display', 'none');
                                 $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'block');
                                 $('text{$.id}pathInputTr').setStyle('display', 'table-row');
+                                $('text{$.id}pathInputSelectTr').setStyle('display', 'table-row');
                             }" checked/>作为自定义过滤数据
                         </td>
                     </tr>

@@ -124,7 +124,9 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
 
         this.titleInput = this.inputAreaNode.getElement(".titleInput_vf");
         this.pathInput = this.inputAreaNode.getElement(".pathInput_vf");
+        this.pathInputSelect = this.inputAreaNode.getElement(".pathInputSelect_vf");
         this.parameterInput = this.inputAreaNode.getElement(".parameterInput_vf");
+        this.parameterInputSelect = this.inputAreaNode.getElement(".parameterInputSelect_vf");
         this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput_vf");
 
         this.restrictFilterInput = this.inputAreaNode.getElement(".restrictFilterInput_vf");
@@ -199,6 +201,84 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             if (e.code == 13) this.modifyOrAddFilterItem();
         }.bind(this));
 
+        this.pathInputSelect.addEvent("change", function ( ev ) {
+            var option = ev.target.options[ev.target.selectedIndex];
+            debugger;
+            var type = option.retrieve("type");
+            var d = this.app.statement.data;
+            if( type === "dynamic" ){
+                var field = option.retrieve("field");
+                if( field ){
+                    this.titleInput.set("value", field.description || field.name);
+                    if( field.name ){
+                        var path = this.pathInput.get("value");
+                        if( path.indexOf(".") > -1 ){
+                            path = path.split(".")[0] +"."+ field.name;
+                        }else{
+                            var alias;
+                            var tableName = option.retrieve("tableName");
+                            if( d.data.indexOf(tableName) > -1){
+                                var str = d.data.split(tableName)[1].trim();
+                                if( str.indexOf(" ") )alias = str.split(" ")[0];
+                            }
+                            path = alias ? ( alias +"."+ field.name ) : field.name;
+                        }
+                        this.pathInput.set("value", path);
+                    }
+                    if( field.type ){
+                        var t;
+                        switch (field.type) {
+                            case "string":
+                            case "stringList":
+                            case "stringLob":
+                            case "stringMap":
+                                t = "textValue";
+                                break;
+                            case "integer":
+                            case "long":
+                            case "double":
+                            case "integerList":
+                            case "longList":
+                            case "doubleList":
+                                t = "numberValue";
+                                break;
+                            case "dateTime":
+                                t = "dateTimeValue";
+                                break;
+                            case "date":
+                                t = "dateValue";
+                                break;
+                            case "time":
+                                t = "timeValue";
+                                break;
+                            case "boolean":
+                            case "booleanList":
+                                t = "booleanValue";
+                                break;
+                            default:
+                                t = "textValue";
+                                break;
+                        }
+                        for (var i = 0; i < this.datatypeInput.options.length; i++) {
+                            if (this.datatypeInput.options[i].value === t) {
+                                this.datatypeInput.options[i].set("selected", true);
+                                this.switchInputDisplay();
+                                if (this.datatypeInput.onchange) this.datatypeInput.onchange();
+                                break;
+                            }
+                        }
+                    }
+                }else{
+                    this.titleInput.set("value", "");
+                    this.pathInput.set("value", "");
+                    this.datatypeInput.options[0].set("selected", true);
+                    this.switchInputDisplay();
+                    if (this.datatypeInput.onchange)this.datatypeInput.onchange();
+                }
+            }
+        }.bind(this))
+        this.setPathInputSelectOptions()
+
         //if (this.app.statement.view){
         //    var id = this.app.view.data.id;
         //     var div = this.node.getElement("#"+id+"viewFilterValueArea2");
@@ -245,6 +325,38 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         //}.bind(this));
         //     }
         // }
+    },
+    setPathInputSelectOptions : function(){
+        debugger;
+        var d = this.app.statement.data;
+        this.pathInputSelect.empty();
+        if( d.entityCategory ==='dynamic' && d.table ){
+            o2.Actions.load("x_query_assemble_designer").TableAction.get( d.table, function(json){
+                if( json.data.data ){
+
+                    var ps = this.pathInput.get("value").split(".");
+                    var p = ps[1] ? ps[1] : ps[0];
+
+                    var option = new Element("option", { "text": "", "value": "" }).inject(this.pathInputSelect);
+                    option.store("type", "dynamic");
+                    option.store("tableName", json.data.name);
+
+                    var fieldJson = JSON.parse( json.data.data );
+                    fieldJson.fieldList.each( function ( field ) {
+                        var option = new Element("option", {
+                            "text": field.name + ( field.description ? ("-" + field.description) : "" ),
+                            "value": field.name,
+                            "selected": (field.name===p)
+                        }).inject(this.pathInputSelect);
+                        option.store("field", field);
+                        option.store("type", "dynamic");
+                        option.store("tableName", json.data.name);
+                    }.bind(this))
+                }
+            }.bind(this))
+        }else if( d.entityCategory ==='official' ){
+
+        }
     },
     switchInputDisplay: function () {
         var id = "";
@@ -590,6 +702,18 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 break;
             }
         }
+
+        var ps = this.pathInput.get("value").split(".");
+        var p = ps[1] ? ps[1] : ps[0];
+        var flag = true;
+        for (var i = 0; i < this.pathInputSelect.options.length; i++) {
+            if (this.pathInputSelect.options[i].value === p) {
+                this.pathInputSelect.options[i].set("selected", true);
+                flag = false;
+                break;
+            }
+        }
+        if(flag)this.pathInputSelect.options[0].set("selected", true);
 
         switch (data.formatType) {
             case "textValue":
