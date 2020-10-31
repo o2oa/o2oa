@@ -63,7 +63,7 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
         nodes.each(function (node) {
             MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilter", function () {
                 var _slef = this;
-                new MWF.xApplication.query.StatementDesigner.widget.ViewFilter(node, this.view.designer, {
+                this.viewFilter = new MWF.xApplication.query.StatementDesigner.widget.ViewFilter(node, this.view.designer, {
                     "filtrData": filtrData,
                     "customData": customData
                 }, {
