@@ -576,28 +576,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             debugger;
             var entityClassName = e.target.options[e.target.selectedIndex].value;
             this.json.entityClassName = entityClassName;
-            if (this.json.format == "jpql") {
-                if (this.editor) {
-                    var re = /(.*from\s*)/ig;
-                    if (this.json.type == "update") re = /(.*update\s*)/ig;
-
-                    //if (this.json.type=="select" && this.editor){
-                    var v = this.json.data;
-
-                    var re2 = /(\s+)/ig;
-                    var arr = re.exec(v);
-                    if (arr && arr[0]) {
-                        var left = arr[0]
-                        v = v.substring(left.length, v.length);
-                        //var ar = re2.exec(v);
-                        var right = v.substring(v.indexOf(" "), v.length);
-                        this.json.data = left + entityClassName + right;
-                        this.editor.editor.setValue(this.json.data);
-                    }
-                    //}
-                }
-
-            }
+            this.changeEditorEntityClassName( entityClassName.split(".").getLast() );
 
 
             //     var className = e.target.options[e.target.selectedIndex].value;
@@ -649,6 +628,47 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }
         }.bind(this));
     },
+    changeEditorEntityClassName : function( entityClassName ){
+        if (this.json.format == "jpql") {
+            if (this.editor) {
+                var re = /(.*from\s*)/ig;
+                if (this.json.type == "update") re = /(.*update\s*)/ig;
+
+                //if (this.json.type=="select" && this.editor){
+                var v = this.json.data;
+
+                var re2 = /(\s+)/ig;
+                var arr = re.exec(v);
+                if (arr && arr[0]) {
+                    var left = arr[0]
+                    v = v.substring(left.length, v.length);
+                    //var ar = re2.exec(v);
+                    var right = v.substring(v.indexOf(" "), v.length);
+                    this.json.data = left + entityClassName + right;
+                    this.editor.editor.setValue(this.json.data);
+                }
+
+                //}
+            }
+
+            if( this.countEditor ){
+                var re = /(.*from\s*)/ig;
+                var v = this.json.countData;
+
+                var re2 = /(\s+)/ig;
+                var arr = re.exec(v);
+                if (arr && arr[0]) {
+                    var left = arr[0]
+                    v = v.substring(left.length, v.length);
+                    //var ar = re2.exec(v);
+                    var right = v.substring(v.indexOf(" "), v.length);
+                    this.json.countData = left + entityClassName + right;
+                    this.countEditor.editor.setValue(this.json.countData);
+                }
+            }
+
+        }
+    },
 
     selectTable: function () {
         new MWF.O2Selector(this.designer.content, {
@@ -663,9 +683,12 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     this.dynamicTableContent.set("text", name);
                     this.json.table = name;
                     this.json.tableObj = items[0].data;
+                    this.changeEditorEntityClassName( name );
+                    if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
                 } else {
                     this.dynamicTableContent.set("text", "");
                     this.json.table = "";
+                    if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
                 }
             }.bind(this)
         });
