@@ -275,7 +275,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             className,
             d.entityCategory,
             function(json){
-                var option = new Element("option", { "text": "", "value": "" }).inject(this.fieldSelect);
+                var option = new Element("option", { "text": this.designer.lp.fileldSelectNote, "value": "" }).inject(this.fieldSelect);
                 option.store("type", d.entityCategory);
                 option.store("tableName", className );
                 (json.data||[]).each( function ( field ) {
