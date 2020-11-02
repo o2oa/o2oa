@@ -209,6 +209,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.dynamicTableSelect = this.areaNode.getElement(".o2_statement_statementDesignerSelectTable");
             this.officialTableSelect = this.officialTableArea.getElement("select");
 
+            this.fieldSelect = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_field").getElement("select");
+            this.loadFieldSelect();
+
             this.dynamicTableContent = this.areaNode.getElement(".o2_statement_statementDesignerTableContent");
 
             this.jpqlTabNode = this.areaNode.getElement(".o2_statement_statementJpqlTabNode");
@@ -262,6 +265,30 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.setEvent();
             this.loadVerticalResize();
         }.bind(this));
+    },
+    loadFieldSelect : function(){
+        this.fieldSelect.empty();
+        var d = this.data;
+        var className = d.entityCategory === "dynamic" ? d.table : d.entityClassName;
+        if( !className )return;
+        o2.Actions.load("x_query_assemble_designer").QueryAction.getEntityProperties(
+            className,
+            d.entityCategory,
+            function(json){
+                var option = new Element("option", { "text": "", "value": "" }).inject(this.fieldSelect);
+                option.store("type", d.entityCategory);
+                option.store("tableName", className );
+                (json.data||[]).each( function ( field ) {
+                    var option = new Element("option", {
+                        "text": field.name + ( field.description ? ("-" + field.description) : "" ),
+                        "value": field.name
+                    }).inject(this.fieldSelect);
+                    option.store("field", field);
+                    option.store("type", d.entityCategory );
+                    option.store("tableName", className );
+                }.bind(this))
+            }.bind(this)
+        )
     },
     loadVerticalResize: function(){
         this.verticalResize = new Drag(this.resizeNode, {
@@ -569,7 +596,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     this.customTableArea.hide();
                     break;
             }
-            this.json.entityCategory = entityCategory
+            this.json.entityCategory = entityCategory;
+            this.loadFieldSelect();
+            if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
         }.bind(this));
         //@todo change table
         this.officialTableSelect.addEvent("change", function (e) {
@@ -579,7 +608,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             if( entityClassName ){
                 this.changeEditorEntityClassName( entityClassName.split(".").getLast() );
             }
-
+            this.loadFieldSelect();
+            if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
 
             //     var className = e.target.options[e.target.selectedIndex].value;
             //     if (this.json.type=="select"){
@@ -629,6 +659,26 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 this.viewPage.enableTab(true);
             }
         }.bind(this));
+
+        this.fieldSelect.addEvent("change", function (ev) {
+            var option = ev.target.options[ev.target.selectedIndex];
+            var type = option.retrieve("type");
+            var field = option.retrieve("field");
+            if( !field )return;
+            if( this.countJpqlPage && this.countJpqlPage.isShow && !this.countJpqlPage.disabled ){
+                if( this.data.format === "script" && this.countScriptEditor.jsEditor ){
+                    this.countScriptEditor.jsEditor.insertValue( field.name );
+                }else{
+                    this.countEditor.insertValue( field.name );
+                }
+            }else{
+                if( this.data.format === "script" && this.scriptEditor.jsEditor ){
+                    this.scriptEditor.jsEditor.insertValue( field.name );
+                }else{
+                    this.editor.insertValue( field.name );
+                }
+            }
+        }.bind(this))
     },
     changeEditorEntityClassName : function( entityClassName ){
         if (this.json.format == "jpql") {
@@ -686,10 +736,12 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     this.json.table = name;
                     this.json.tableObj = items[0].data;
                     this.changeEditorEntityClassName( name );
+                    this.loadFieldSelect();
                     if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
                 } else {
                     this.dynamicTableContent.set("text", "");
                     this.json.table = "";
+                    this.loadFieldSelect();
                     if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
                 }
             }.bind(this)
