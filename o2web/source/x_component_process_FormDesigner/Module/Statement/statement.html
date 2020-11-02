@@ -79,9 +79,16 @@
 		</table>
 
 		<div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center; cursor:pointer">过滤</div>
-		<div class="MWFViewFilter">
+		<div class="MWFStatementFilter">
 			<div class="inputAreaNode_vf">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable restrictViewFilterTable_vf">
+					<tr id="text{$.id}pathInputSelectTr">
+						<td class="editTableTitle">选择:</td>
+						<td class="editTableValue">
+							<select class="pathInputSelect_vf"></select>
+							<!--                            <div style="line-height: 20px;color:#999;">注：选择路径后，需在选择的值前面加上"表别名."，如：o.</div>-->
+						</td>
+					</tr>
 					<tr style="display:none">
 						<td class="editTableTitle">标题:</td>
 						<td class="editTableValue"><input type="text" class="editTableInput titleInput_vf"/></td>
@@ -89,32 +96,33 @@
 					<tr>
 						<td class="editTableTitle">路径:</td>
 						<td class="editTableValue"><input type="text" class="editTableInput pathInput_vf"/></td>
+						注：路径的写法是"表别名.字段名"，如：o.title
 					</tr>
 					<tr>
 						<td class="editTableTitle">数据类型:</td>
 						<td class="editTableValue"><select class="datatypeInput_vf">
 							<option value="textValue" selected>文本</option>
 							<option value="numberValue">数字</option>
-							<option value="dateTimeValue">日期</option>
+							<option value="dateTimeValue">日期时间</option>
 							<option value="booleanValue">布尔</option>
 						</select></td>
 					</tr>
-					<tr style="display:none">
-						<td class="editTableTitle"></td>
-						<td class="editTableValue">
-							<input type="radio" class="restrictFilterInput_vf" value="restrict" name="text{$.id}viewFilterType" checked/>作为默认过滤条件<br>
-							<input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType"/>作为自定义过滤数据
-						</td>
-					</tr>
+<!--					<tr style="display:none">-->
+<!--						<td class="editTableTitle"></td>-->
+<!--						<td class="editTableValue">-->
+<!--							<input type="radio" class="restrictFilterInput_vf" value="restrict" name="text{$.id}viewFilterType" checked/>作为默认过滤条件<br>-->
+<!--							<input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType"/>作为自定义过滤数据-->
+<!--						</td>-->
+<!--					</tr>-->
 				</table>
 				<table id="text{$.pid}viewFilterRestrict" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-					<tr>
-						<td class="editTableTitle">逻辑:</td>
-						<td class="editTableValue"><select class="logicInput_vf">
-							<option selected value="and">并且(and)</option>
-							<option value="or">或者(or)</option>
-						</select></td>
-					</tr>
+<!--					<tr>-->
+<!--						<td class="editTableTitle">逻辑:</td>-->
+<!--						<td class="editTableValue"><select class="logicInput_vf">-->
+<!--							<option selected value="and">并且(and)</option>-->
+<!--							<option value="or">或者(or)</option>-->
+<!--						</select></td>-->
+<!--					</tr>-->
 
 					<tr>
 						<td class="editTableTitle">比较:</td>
@@ -130,28 +138,28 @@
 							<option value="range">范围(range)</option>
 						</select></td>
 					</tr>
-					<tr style="display:none">
-						<td class="editTableTitle">值:</td>
-						<td class="editTableValue">
-							<input type="text" class="editTableInput valueTextInput_vf" style="display: block"/>
-							<input type="number" class="editTableInput valueNumberInput_vf" style="display: none"/>
-							<input type="text" class="editTableInput valueDatetimeInput_vf" style="display: none" readonly/>
-							<input type="text" class="editTableInput valueDateInput_vf" style="display: none" readonly/>
-							<input type="text" class="editTableInput valueTimeInput_vf" style="display: none" readonly/>
-							<select class="valueBooleanInput_vf" style="display: none">
-								<option value="true" selected>是(True)</option>
-								<option value="false">否(False)</option>
-							</select>
-						</td>
-					</tr>
+<!--					<tr style="display:none">-->
+<!--						<td class="editTableTitle">值:</td>-->
+<!--						<td class="editTableValue">-->
+<!--							<input type="text" class="editTableInput valueTextInput_vf" style="display: block"/>-->
+<!--							<input type="number" class="editTableInput valueNumberInput_vf" style="display: none"/>-->
+<!--							<input type="text" class="editTableInput valueDatetimeInput_vf" style="display: none" readonly/>-->
+<!--							<input type="text" class="editTableInput valueDateInput_vf" style="display: none" readonly/>-->
+<!--							<input type="text" class="editTableInput valueTimeInput_vf" style="display: none" readonly/>-->
+<!--							<select class="valueBooleanInput_vf" style="display: none">-->
+<!--								<option value="true" selected>是(True)</option>-->
+<!--								<option value="false">否(False)</option>-->
+<!--							</select>-->
+<!--						</td>-->
+<!--					</tr>-->
 				</table>
 				<div title="值" class="MWFFilterFormulaArea"></div>
 			</div>
 			<div class="actionAreaNode_vf"></div>
 			<div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">默认过滤条件</div>
 			<div class="listAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
-			<div style="display:none; height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">自定义过滤数据</div>
-			<div class="fieldListAreaNode_vf" style="display:none; min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+<!--			<div style="display:none; height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">自定义过滤数据</div>-->
+<!--			<div class="fieldListAreaNode_vf" style="display:none; min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>-->
 		</div>
 		<div class="MWFScriptArea" name="defaultSelectedScript" title="默认选中行脚本"></div>
 	</div>
