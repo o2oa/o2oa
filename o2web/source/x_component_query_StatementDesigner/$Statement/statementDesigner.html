@@ -39,6 +39,7 @@
             <div style="margin-left: 30px;" class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
             <div class="o2_statement_statementDesignerOfficialTable">
                 <select>
+                    <option value=""></option>
                     <option value="com.x.processplatform.core.entity.content.Task" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Task'}} selected {{end if}}>待办(Task)</option>
                     <option value="com.x.processplatform.core.entity.content.TaskCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.TaskCompleted'}} selected {{end if}}>已办(TaskCompleted)</option>
                     <option value="com.x.processplatform.core.entity.content.Read" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Read'}} selected {{end if}}>待阅(Read)</option>

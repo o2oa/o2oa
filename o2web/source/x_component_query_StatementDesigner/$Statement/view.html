@@ -111,12 +111,12 @@
                         <td class="editTableTitle">标题:</td>
                         <td class="editTableValue"><input type="text" class="editTableInput titleInput_vf"/></td>
                     </tr>
-                    <tr id="text{$.id}parameterInputSelectTr" style="display: none">
-                        <td class="editTableTitle">选择参数:</td>
-                        <td class="editTableValue">
-                            <select class="parameterInputSelect_vf"></select>
-                        </td>
-                    </tr>
+<!--                    <tr id="text{$.id}parameterInputSelectTr" style="display: none">-->
+<!--                        <td class="editTableTitle">选择参数:</td>-->
+<!--                        <td class="editTableValue">-->
+<!--                            <select class="parameterInputSelect_vf"></select>-->
+<!--                        </td>-->
+<!--                    </tr>-->
                     <tr id="text{$.id}parameterInputTr" style="display: none">
                         <td class="editTableTitle">参数:</td>
                         <td class="editTableValue">
@@ -174,7 +174,7 @@
                                 debugger;
                                 $('text{$.id}viewFilterRestrict').setStyle('display', 'block');
                                 $('text{$.id}parameterInputTr').setStyle('display', 'table-row');
-                                $('text{$.id}parameterInputSelectTr').setStyle('display', 'table-row');
+                                // $('text{$.id}parameterInputSelectTr').setStyle('display', 'table-row');
                                 $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'none');
                                 $('text{$.id}pathInputTr').setStyle('display', 'none');
                                 $('text{$.id}pathInputSelectTr').setStyle('display', 'none');
@@ -182,7 +182,7 @@
                             <input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
                                 $('text{$.id}viewFilterRestrict').setStyle('display', 'none');
                                 $('text{$.id}parameterInputTr').setStyle('display', 'none');
-                                $('text{$.id}parameterInputSelectTr').setStyle('display', 'none');
+                                // $('text{$.id}parameterInputSelectTr').setStyle('display', 'none');
                                 $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'block');
                                 $('text{$.id}pathInputTr').setStyle('display', 'table-row');
                                 $('text{$.id}pathInputSelectTr').setStyle('display', 'table-row');
