@@ -226,7 +226,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             var d = this.statementData;
             var field = option.retrieve("field");
             if( field ){
-                this.titleInput.set("value", field.description || field.name);
+                this.titleInput.set("value", (field.description || field.name).replace(/\./g,""));
                 if( field.name ){
                     var path = this.pathInput.get("value");
                     if( path.indexOf(".") > -1 ){
