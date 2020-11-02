@@ -112,13 +112,22 @@
                     <input type="text" name="data.noDataText" value="text{$.data.noDataText}" class="editTableInput"/>
                 </td>
             </tr>
+
+            <tr>
+                <td class="editTableTitle">启用缓存:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="cacheAccess" text{($.cacheAccess===true)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="cacheAccess" text{($.cacheAccess!==true)?'checked':''} type="radio" value="false"/>否
+                    <div style="color:#999;">注：启用缓存则范围中的权限失效！</div>
+                </td>
+            </tr>
             <!--<tr>-->
             <!--<td class="editTableTitle">最大行数:</td>-->
             <!--<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>-->
             <!--</tr>-->
         </table>
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">权限</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">可执行者</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>
                 <td class="editTableTitle">可执行人:</td>
