@@ -155,7 +155,15 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             if( d.comparison === "like" || d.comparison === "notLike" ){
                 this.parameter[ parameterName ] = "%"+d.value+"%";
             }else{
-                this.parameter[ parameterName ] = d.value;
+                var value = d.value;
+                if( d.formatType === "dateTimeValue" || d.formatType === "datetimeValue"){
+                    value = "{ts '"+value+"'}"
+                }else if( d.formatType === "dateValue" ){
+                    value = "{d '"+value+"'}"
+                }else if( d.formatType === "timeValue" ){
+                    value = "{t '"+value+"'}"
+                }
+                this.parameter[ parameterName ] = value;
             }
             d.value = parameterName;
 
@@ -163,6 +171,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         }.bind(this))
     },
     loadParameter : function(){
+        this.parameter = {};
         ( this.viewJson.filterList || [] ).each( function (f) {
             var value = f.value;
             debugger;
@@ -177,17 +186,17 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                     case "@identityList":
                         value =  user.identityList.map( function (d) {
                             return d.distinguishedName;
-                        })
+                        });
                         break;
                     case "@unitList":
                         o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({ "personList" : [user.distinguishedName] }, function (json) {
                             value = json.unitList;
-                        }, null, false)
+                        }, null, false);
                         break;
                     case "@unitAllList":
                         o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({ "personList" : [user.distinguishedName] }, function (json) {
                             value = json.unitList;
-                        }, null, false)
+                        }, null, false);
                         break;
                     case "@year":
                         value = (new Date().getFullYear()).toString();
@@ -216,6 +225,13 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                     default:
                 }
             }
+            if( f.formatType === "dateTimeValue" || f.formatType === "datetimeValue"){
+                value = "{ts '"+value+"'}"
+            }else if( f.formatType === "dateValue" ){
+                value = "{d '"+value+"'}"
+            }else if( f.formatType === "timeValue" ){
+                value = "{t '"+value+"'}"
+            }
             this.parameter[ f.parameter ] = value;
         }.bind(this))
     },
@@ -241,7 +257,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         //this.createLoadding();
 
         this.loadViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
-            this.json.statementId || this.json.statementName,
+            this.options.statementId || this.options.statementName || this.json.statementId || this.json.statementName,
             type || "data", p, this.json.pageSize, d, function(json){
 
                 if( type === "all" || type === "count" ){

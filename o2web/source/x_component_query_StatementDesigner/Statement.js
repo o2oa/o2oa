@@ -576,7 +576,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             debugger;
             var entityClassName = e.target.options[e.target.selectedIndex].value;
             this.json.entityClassName = entityClassName;
-            this.changeEditorEntityClassName( entityClassName.split(".").getLast() );
+            if( entityClassName ){
+                this.changeEditorEntityClassName( entityClassName.split(".").getLast() );
+            }
 
 
             //     var className = e.target.options[e.target.selectedIndex].value;
