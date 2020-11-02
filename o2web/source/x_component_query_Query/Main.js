@@ -252,11 +252,12 @@ MWF.xApplication.query.Query.StatementItem = new Class({
     loadView: function(){
         MWF.xDesktop.requireApp("query.Query", "Statement",function(){
             this.viewContent.empty();
-            this.viewer = new MWF.QStatement(this.app, this.viewContent, {
+            debugger;
+            this.viewer = new MWF.QStatement( this.viewContent, {
                 "application": this.view.query,
                 "statementName": this.view.name,
                 "statementId" : this.view.id
-            });
+            },{}, this.app);
         }.bind(this));
     }
 });

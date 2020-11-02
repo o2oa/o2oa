@@ -126,7 +126,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         this.pathInput = this.inputAreaNode.getElement(".pathInput_vf");
         this.pathInputSelect = this.inputAreaNode.getElement(".pathInputSelect_vf");
         this.parameterInput = this.inputAreaNode.getElement(".parameterInput_vf");
-        this.parameterInputSelect = this.inputAreaNode.getElement(".parameterInputSelect_vf");
+        // this.parameterInputSelect = this.inputAreaNode.getElement(".parameterInputSelect_vf");
         this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput_vf");
 
         this.restrictFilterInput = this.inputAreaNode.getElement(".restrictFilterInput_vf");
@@ -275,6 +275,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                     this.switchInputDisplay();
                     if (this.datatypeInput.onchange)this.datatypeInput.onchange();
                 }
+            }else if( type === "official" ){
+
             }
         }.bind(this))
         this.setPathInputSelectOptions()
@@ -355,7 +357,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 }
             }.bind(this))
         }else if( d.entityCategory ==='official' ){
-
+            this.pathInputSelect.empty();
         }
     },
     switchInputDisplay: function () {
@@ -713,7 +715,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 break;
             }
         }
-        if(flag)this.pathInputSelect.options[0].set("selected", true);
+        if(flag && this.pathInputSelect.options.length)this.pathInputSelect.options[0].set("selected", true);
 
         switch (data.formatType) {
             case "textValue":
