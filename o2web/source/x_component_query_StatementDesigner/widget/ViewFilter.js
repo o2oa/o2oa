@@ -1,6 +1,10 @@
 MWF.xApplication.query = MWF.xApplication.query || {};
 MWF.xApplication.query.StatementDesigner = MWF.xApplication.query.StatementDesigner || {};
+if(!MWF.APPDSMD)MWF.APPDSMD = MWF.xApplication.query.StatementDesigner;
 MWF.xApplication.query.StatementDesigner.widget = MWF.xApplication.query.StatementDesigner.widget || {};
+if( !MWF.APPDSMD.LP ){
+    MWF.xDesktop.requireApp("query.StatementDesigner", "lp." + MWF.language, null, false);
+}
 
 MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
     Implements: [Options, Events],
@@ -25,11 +29,24 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
 
     },
     load: function (data) {
-        this.getInputNodes();
-        this.createActionNode();
-        //this.createAddNode();
-        //this.loadIdentitys();
-        this.loadData();
+        var _load = function () {
+            this.getInputNodes();
+            this.createActionNode();
+            //this.createAddNode();
+            //this.loadIdentitys();
+            this.loadData();
+        }.bind(this)
+        if( this.app.statement && this.app.statement.data ){
+            this.statementData = this.app.statement.data;
+            _load();
+        }else if( this.options.statementId ){
+            o2.Actions.load("x_query_assemble_designer").StatementAction.get( this.options.statementId, function (json) {
+                this.statementData = json;
+                _load();
+            }.bind(this))
+        }else{
+            _load();
+        }
     },
     loadData: function () {
         if (this.filtrData.filtrData && this.filtrData.filtrData.length) {
@@ -146,7 +163,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         this.valueDateInput = this.inputAreaNode.getElement(".valueDateInput_vf");
         this.valueTimeInput = this.inputAreaNode.getElement(".valueTimeInput_vf");
 
-        if (this.app.statement.view) {
+        if (this.app.statement && this.app.statement.view) {
             var dataId = this.app.statement.view.data.id;
 
             this.filterValueType = this.inputAreaNode.getElements("[name='" + dataId + "viewFilterValueType']");
@@ -203,82 +220,79 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
 
         this.pathInputSelect.addEvent("change", function ( ev ) {
             var option = ev.target.options[ev.target.selectedIndex];
+            if( !this.statementData )return;
             debugger;
             var type = option.retrieve("type");
-            var d = this.app.statement.data;
-            if( type === "dynamic" ){
-                var field = option.retrieve("field");
-                if( field ){
-                    this.titleInput.set("value", field.description || field.name);
-                    if( field.name ){
-                        var path = this.pathInput.get("value");
-                        if( path.indexOf(".") > -1 ){
-                            path = path.split(".")[0] +"."+ field.name;
-                        }else{
-                            var alias;
-                            var tableName = option.retrieve("tableName");
-                            if( d.data.indexOf(tableName) > -1){
-                                var str = d.data.split(tableName)[1].trim();
-                                if( str.indexOf(" ") )alias = str.split(" ")[0];
-                            }
-                            path = alias ? ( alias +"."+ field.name ) : field.name;
+            var d = this.statementData;
+            var field = option.retrieve("field");
+            if( field ){
+                this.titleInput.set("value", field.description || field.name);
+                if( field.name ){
+                    var path = this.pathInput.get("value");
+                    if( path.indexOf(".") > -1 ){
+                        path = path.split(".")[0] +"."+ field.name;
+                    }else{
+                        var alias;
+                        var tableName = option.retrieve("tableName");
+                        if( d.data.indexOf(tableName) > -1){
+                            var str = d.data.split(tableName)[1].trim();
+                            if( str.indexOf(" ") )alias = str.split(" ")[0];
                         }
-                        this.pathInput.set("value", path);
+                        path = alias ? ( alias +"."+ field.name ) : field.name;
                     }
-                    if( field.type ){
-                        var t;
-                        switch (field.type) {
-                            case "string":
-                            case "stringList":
-                            case "stringLob":
-                            case "stringMap":
-                                t = "textValue";
-                                break;
-                            case "integer":
-                            case "long":
-                            case "double":
-                            case "integerList":
-                            case "longList":
-                            case "doubleList":
-                                t = "numberValue";
-                                break;
-                            case "dateTime":
-                                t = "dateTimeValue";
-                                break;
-                            case "date":
-                                t = "dateValue";
-                                break;
-                            case "time":
-                                t = "timeValue";
-                                break;
-                            case "boolean":
-                            case "booleanList":
-                                t = "booleanValue";
-                                break;
-                            default:
-                                t = "textValue";
-                                break;
-                        }
-                        for (var i = 0; i < this.datatypeInput.options.length; i++) {
-                            if (this.datatypeInput.options[i].value === t) {
-                                this.datatypeInput.options[i].set("selected", true);
-                                this.switchInputDisplay();
-                                if (this.datatypeInput.onchange) this.datatypeInput.onchange();
-                                break;
-                            }
-                        }
-                    }
-                }else{
-                    this.titleInput.set("value", "");
-                    this.pathInput.set("value", "");
-                    this.datatypeInput.options[0].set("selected", true);
-                    this.switchInputDisplay();
-                    if (this.datatypeInput.onchange)this.datatypeInput.onchange();
+                    this.pathInput.set("value", path);
                 }
-            }else if( type === "official" ){
-
+                if( field.type ){
+                    var t;
+                    switch (( field.type || "string" ).toLowerCase()) {
+                        case "string":
+                        case "stringList":
+                        case "stringLob":
+                        case "stringMap":
+                            t = "textValue";
+                            break;
+                        case "integer":
+                        case "long":
+                        case "double":
+                        case "integerList":
+                        case "longList":
+                        case "doubleList":
+                            t = "numberValue";
+                            break;
+                        case "dateTime":
+                        case "date":
+                            t = "dateTimeValue";
+                            break;
+                            // t = "dateValue";
+                            // break;
+                        case "time":
+                            t = "timeValue";
+                            break;
+                        case "boolean":
+                        case "booleanList":
+                            t = "booleanValue";
+                            break;
+                        default:
+                            t = "textValue";
+                            break;
+                    }
+                    for (var i = 0; i < this.datatypeInput.options.length; i++) {
+                        if (this.datatypeInput.options[i].value === t) {
+                            this.datatypeInput.options[i].set("selected", true);
+                            this.switchInputDisplay();
+                            if (this.datatypeInput.onchange) this.datatypeInput.onchange();
+                            break;
+                        }
+                    }
+                }
+            }else{
+                this.titleInput.set("value", "");
+                this.pathInput.set("value", "");
+                this.datatypeInput.options[0].set("selected", true);
+                this.switchInputDisplay();
+                if (this.datatypeInput.onchange)this.datatypeInput.onchange();
             }
-        }.bind(this))
+        }.bind(this));
         this.setPathInputSelectOptions()
 
         //if (this.app.statement.view){
@@ -330,40 +344,48 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
     },
     setPathInputSelectOptions : function(){
         debugger;
-        var d = this.app.statement.data;
+        var d = this.statementData;
         this.pathInputSelect.empty();
-        if( d.entityCategory ==='dynamic' && d.table ){
-            o2.Actions.load("x_query_assemble_designer").TableAction.get( d.table, function(json){
-                if( json.data.data ){
-
+        if( !this.statementData )return;
+        var fun = function ( tableName ) {
+            o2.Actions.load("x_query_assemble_designer").QueryAction.getEntityProperties(
+                d.entityCategory === "dynamic" ? d.table : d.entityClassName,
+                d.entityCategory,
+                function(json){
                     var ps = this.pathInput.get("value").split(".");
                     var p = ps[1] ? ps[1] : ps[0];
-
                     var option = new Element("option", { "text": "", "value": "" }).inject(this.pathInputSelect);
-                    option.store("type", "dynamic");
-                    option.store("tableName", json.data.name);
-
-                    var fieldJson = JSON.parse( json.data.data );
-                    fieldJson.fieldList.each( function ( field ) {
+                    option.store("type", d.entityCategory);
+                    option.store("tableName", tableName );
+                    (json.data||[]).each( function ( field ) {
                         var option = new Element("option", {
                             "text": field.name + ( field.description ? ("-" + field.description) : "" ),
                             "value": field.name,
                             "selected": (field.name===p)
                         }).inject(this.pathInputSelect);
                         option.store("field", field);
-                        option.store("type", "dynamic");
-                        option.store("tableName", json.data.name);
+                        option.store("type", d.entityCategory );
+                        option.store("tableName", tableName );
                     }.bind(this))
-                }
-            }.bind(this))
-        }else if( d.entityCategory ==='official' ){
-            this.pathInputSelect.empty();
+                }.bind(this)
+            )
+        }.bind(this);
+        if( d.entityCategory === "dynamic" ){
+            if( d.table ){
+                o2.Actions.load("x_query_assemble_designer").TableAction.get(d.table, function(json){
+                    fun( json.data.name )
+                })
+            }
+        }else{
+            fun( d.entityClassName.split(".").getLast() )
         }
     },
     switchInputDisplay: function () {
         var id = "";
         if (this.app.statement.view) {
             id = this.app.statement.view.data.id;
+        }else{
+            return;
         }
 
         var config = {
@@ -505,7 +527,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
             new Element("div", {
                 "styles": this.css.verificationTextNode,
-                "text": this.app.lp.mastInputParameter
+                "text": MWF.APPDSMD.LP.mastInputParameter
             }).inject(this.verificationNode);
             this.parameterInput.focus();
             this.parameterInput.setStyle("background-color", "#fbe8e8");
@@ -529,7 +551,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
         // if (data.comparison=="range" && !data.otherValue){
         //     this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
-        //     new Element("div", {"styles": this.css.verificationTextNode, "text": this.app.lp.mastInputPath}).inject(this.verificationNode);
+        //     new Element("div", {"styles": this.css.verificationTextNode, "text": MWF.APPDSMD.LP.mastInputPath}).inject(this.verificationNode);
         // }
         return true;
     },
@@ -538,7 +560,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
             new Element("div", {
                 "styles": this.css.verificationTextNode,
-                "text": this.app.lp.mastInputTitle
+                "text": MWF.APPDSMD.LP.mastInputTitle
             }).inject(this.verificationNode);
             this.titleInput.focus();
             this.titleInput.setStyle("background-color", "#fbe8e8");
@@ -562,7 +584,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
         if (!data.path || data.path.indexOf(".")<1 ) {
             this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
-            var text = !data.path ? this.app.lp.mastInputPath : this.app.lp.pathExecption;
+            var text = !data.path ? MWF.APPDSMD.LP.mastInputPath : MWF.APPDSMD.LP.pathExecption;
             new Element("div", {
                 "styles": this.css.verificationTextNode,
                 "text": text
@@ -872,7 +894,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item = new Class({
         }.bind(this));
     },
     getText: function () {
-        var lp = this.app.lp.filter;
+        var lp = MWF.APPDSMD.LP.filter;
         if (this.data.formatType === "numberValue") {
             return this.data.title + " " + this.data.parameter + " " + this.data.value;
         } else {
@@ -903,7 +925,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item = new Class({
     },
     deleteItem: function (e) {
         var _self = this;
-        this.filter.app.confirm("warn", e, this.app.lp.delete_filterItem_title, this.app.lp.delete_filterItem, 300, 120, function () {
+        this.filter.app.confirm("warn", e, MWF.APPDSMD.LP.delete_filterItem_title, MWF.APPDSMD.LP.delete_filterItem, 300, 120, function () {
             _self.destroy();
             this.close();
         }, function () {
@@ -939,7 +961,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemCustom = new Clas
         this.filter.setData(this.data);
     },
     getText: function () {
-        var lp = this.app.lp.filter;
+        var lp = MWF.APPDSMD.LP.filter;
         return this.data.title + "(" + this.data.path + ")";
     },
 });
