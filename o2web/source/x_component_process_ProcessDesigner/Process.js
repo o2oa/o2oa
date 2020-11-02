@@ -1684,9 +1684,12 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 			this.propertyListTab = new MWF.widget.Tab(this.propertyListContent, {"style": "moduleList"});
 			this.propertyListTab.load();
 			this.propertyTabPage = this.propertyListTab.addTab(this.propertyListNode, MWF.APPPD.LP.property, false);
-			
 			this.objectTabPage = this.propertyListTab.addTab(this.jsonObjectNode, "JSON", false);
 			this.stringTabPage = this.propertyListTab.addTab(this.jsonStringNode, "Text", false);
+
+
+			// this.propertyListTab.tabNodeContainerArea
+			// showAdvanced
 			
 			this.process.setScrollBar(this.propertyTabPage.contentNodeArea, "small", null, null);
 			this.process.setScrollBar(this.objectTabPage.contentNodeArea, "small", null, null);
