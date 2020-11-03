@@ -41,16 +41,14 @@ public class CmsBatchOperationPersistService {
 		}
 		if( StringUtils.isEmpty( cmsBatchOperation.getDescription()  )) {
 			throw new Exception("description can not empty for save CmsBatchOperation!");
-		}		
+		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			emc.beginTransaction( CmsBatchOperation.class );
 			emc.persist( cmsBatchOperation, CheckPersistType.all ); 
 			emc.commit();
-			//将批量操作信息压入队列
-			ThisApplication.queueBatchOperation.send( cmsBatchOperation );
-		} catch ( Exception e ) {
-			throw e;
-		}		
+		}
+		//将批量操作信息压入队列
+		ThisApplication.queueBatchOperation.send( cmsBatchOperation );
 		return cmsBatchOperation;
 	}
 	
