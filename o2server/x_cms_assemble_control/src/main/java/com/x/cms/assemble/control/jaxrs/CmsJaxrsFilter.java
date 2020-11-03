@@ -37,6 +37,7 @@ import javax.servlet.annotation.WebFilter;
         "/jaxrs/permission/*",
         "/jaxrs/docpermission/*",
         "/jaxrs/comment/*",
+        "/jaxrs/commend/*",
         "/servlet/*"
 }, asyncSupported = true)
 public class CmsJaxrsFilter extends ManagerUserJaxrsFilter {
