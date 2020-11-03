@@ -665,17 +665,18 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             var type = option.retrieve("type");
             var field = option.retrieve("field");
             if( !field )return;
+            var text = " " + field.name;
             if( this.countJpqlPage && this.countJpqlPage.isShow && !this.countJpqlPage.disabled ){
                 if( this.data.format === "script" && this.countScriptEditor.jsEditor ){
-                    this.countScriptEditor.jsEditor.insertValue( field.name );
+                    this.countScriptEditor.jsEditor.insertValue( text );
                 }else{
-                    this.countEditor.insertValue( field.name );
+                    this.countEditor.insertValue( text );
                 }
             }else{
                 if( this.data.format === "script" && this.scriptEditor.jsEditor ){
-                    this.scriptEditor.jsEditor.insertValue( field.name );
+                    this.scriptEditor.jsEditor.insertValue( text );
                 }else{
-                    this.editor.insertValue( field.name );
+                    this.editor.insertValue( text );
                 }
             }
         }.bind(this))
