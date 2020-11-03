@@ -44,7 +44,7 @@ MWF.xApplication.TeamWork.GroupSelect = new Class({
 
         this.commonGroupContainer = new Element("div.commonGroupContainer",{styles:this.css.commonGroupContainer}).inject(this.contentNode);
         this.app.setScrollBar(this.commonGroupContainer);
-        this.createCommonGroup();
+        this.createCommonGroup(data);
 
         this.newGroupContainer = new Element("div.newGroupContainer",{styles:this.css.newGroupContainer}).inject(this.contentNode);
         this.newGroupContainer.addEvents({
@@ -160,7 +160,7 @@ MWF.xApplication.TeamWork.GroupSelect = new Class({
 
     },
 
-    createCommonGroup:function(){
+    createCommonGroup:function(newData){
         var _self = this;
         this.app.setLoading(this.commonGroupContainer);
         this.rootActions.ProjectGroupAction.listGroups(function(json){
@@ -171,19 +171,22 @@ MWF.xApplication.TeamWork.GroupSelect = new Class({
             if(data){
                 data.each(function (d,i) {
                     if(i<100){
-                        var groupItemContainer = new Element("div.groupItemContainer",{styles:this.css.groupItemContainer}).inject(this.commonGroupContainer);
-                        var groupItemIcon = new Element("div.groupItemIcon",{styles:this.css.groupItemIcon,id:d.id}).inject(groupItemContainer);
-                        groupItemIcon.addEvents({
-                            click:function(){
-                                _self.selectGroupIcon(this);
+                        if(!newData || newData.id!=d.id){
+                            var groupItemContainer = new Element("div.groupItemContainer",{styles:this.css.groupItemContainer}).inject(this.commonGroupContainer);
+                            var groupItemIcon = new Element("div.groupItemIcon",{styles:this.css.groupItemIcon,id:d.id}).inject(groupItemContainer);
+                            groupItemIcon.addEvents({
+                                click:function(){
+                                    _self.selectGroupIcon(this);
 
+                                }
+                            });
+                            var groupItemText = new Element("div.groupItemText",{styles:this.css.groupItemText,text:d.name}).inject(groupItemContainer);
+                            if(_self.getIdInArr(d.id)){
+                                groupItemIcon.setStyle("background-image",groupItemIcon.getStyle("background-image").replace("icon_circle.png","icon_renwu_ywc_click.png"));
+                                groupItemIcon.set("cc","yes");
                             }
-                        });
-                        var groupItemText = new Element("div.groupItemText",{styles:this.css.groupItemText,text:d.name}).inject(groupItemContainer);
-                        if(_self.getIdInArr(d.id)){
-                            groupItemIcon.setStyle("background-image",groupItemIcon.getStyle("background-image").replace("icon_circle.png","icon_renwu_ywc_click.png"));
-                            groupItemIcon.set("cc","yes");
                         }
+
                     }
 
                 }.bind(this))
