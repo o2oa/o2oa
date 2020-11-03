@@ -275,6 +275,7 @@ MWF.xApplication.TeamWork.Project = new Class({
                 var opt = {
                     onCreateTask:function(){
                         this.createTaskGroup();
+                        this.reloadTaskCountInfor()
                     }.bind(this)
                 };
                 var newTask = new MWF.xApplication.TeamWork.Project.NewTask(this,data,opt,{});
@@ -322,6 +323,24 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.loadTaskLine();
 
         //this.naviTopMyTaskLayout.click();
+    },
+    reloadTaskCountInfor:function(){debugger
+        //刷新任务数量区域
+        window.setTimeout(function(){
+            this.rootActions.TaskAction.statiticMyProject(this.data.id,function(json){
+                this.projectGroupData = json.data;
+                if(this.projectGroupData.groups && this.projectGroupData.groups.length>0){
+                    this.currentProjectGroupData = this.projectGroupData.groups[0]; //默认只有一个分组
+                    this.naviTopMyTaskCount.set("text","("+this.currentProjectGroupData.completedTotal+"/"+this.currentProjectGroupData.taskTotal+")")
+                    this.loadTaskLine();
+                }
+
+            }.bind(this));
+        }.bind(this),1000)
+
+
+
+
     },
     loadTaskLine:function(){
         this.completeLine = new Element("div.completeLine",{styles:this.css.completeLine}).inject(this.naviTopTaskLine);
@@ -565,6 +584,7 @@ MWF.xApplication.TeamWork.Project = new Class({
                             var opt = {
                                 onCreateTask:function(){
                                     this.createTaskGroup();
+                                    this.reloadTaskCountInfor()
                                 }.bind(this)
                             };
                             var newTaskGroup = new MWF.xApplication.TeamWork.Project.NewTaskGroup(this,data,opt,{});
@@ -639,6 +659,7 @@ MWF.xApplication.TeamWork.Project = new Class({
                 var opt = {
                     onCreateTask:function(){
                         this.createTaskGroup();
+                        this.reloadTaskCountInfor()
                     }.bind(this)
                 };
                 var newTask = new MWF.xApplication.TeamWork.Project.NewTask(this,pdata,opt,{});
@@ -1010,6 +1031,7 @@ MWF.xApplication.TeamWork.Project = new Class({
                         callback()
                     }
                     //this.createTaskGroup();
+                    this.reloadTaskCountInfor()
                 }
             }.bind(this)
         };
