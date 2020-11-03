@@ -83,7 +83,11 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
         }
 
         MWF.Actions.get("x_query_assemble_designer").getStatement(this.json["queryStatement"].id, function(json){
-            var viewData = JSON.decode(json.data.view);
+
+            var viewData = JSON.decode(json.data.view || "");
+            if( !viewData || !viewData.data ){
+                return;
+            }
 
             this.viewData = viewData;
             if( this.json.actionbar === "show" ){
@@ -113,11 +117,17 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
             this._createViewNode(function(){
                 if (callback) callback();
             }.bind(this));
+            if( this.property && this.property.viewFilter ){
+                this.property.viewFilter.resetStatementData( this.json["queryStatement"].id );
+            }
         }else{
             this.iconNode.setStyle("display", "block");
             if (this.viewNode) this.viewNode.destroy();
             this.node.setStyles(this.css.moduleNode);
             if (callback) callback();
+            if( this.property && this.property.viewFilter ){
+                this.property.viewFilter.resetStatementData();
+            }
         }
     },
     _setEditStyle: function(name, input, oldValue){
