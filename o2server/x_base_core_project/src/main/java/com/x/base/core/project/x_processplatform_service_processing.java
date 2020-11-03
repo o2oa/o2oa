@@ -29,9 +29,11 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.element.Form", "com.x.processplatform.core.entity.element.FormField",
 		"com.x.processplatform.core.entity.element.Embed", "com.x.processplatform.core.entity.element.Mapping",
 		"com.x.processplatform.core.entity.log.SignalStackLog", "com.x.query.core.entity.Item",
+		"com.x.cms.core.entity.element.Script", "com.x.portal.core.entity.Script",
 		"com.x.query.dynamic.entity.*" }, storageTypes = { StorageType.processPlatform }, storeJars = {
 				"x_organization_core_entity", "x_organization_core_express", "x_processplatform_core_entity",
-				"x_processplatform_core_express", "x_query_core_entity" }, dynamicJars = { "x_query_dynamic_entity" })
+				"x_processplatform_core_express", "x_query_core_entity", "x_cms_core_entity",
+				"x_portal_core_entity" }, dynamicJars = { "x_query_dynamic_entity" })
 public class x_processplatform_service_processing extends Deployable {
 
 }
