@@ -402,7 +402,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                     }.bind(this),
                     onPostClose:function(json){
                         //this.reloadLayoutList();
-                        if(json.data && json.data.id){
+                        if(json && json.data && json.data.id){
                             //this.actions.projectGet(json.data.id,function(jsonr){
                             this.actions.get(json.data.id,function(jsonr){
                                 if(jsonr.data){
