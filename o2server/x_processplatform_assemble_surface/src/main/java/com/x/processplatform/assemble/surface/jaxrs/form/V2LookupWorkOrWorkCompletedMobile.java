@@ -17,10 +17,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.jaxrs.form.V2LookupWorkOrWorkCompleted.Wo;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkCompletedProperties.AdaptForm;
+import com.x.processplatform.core.entity.content.WorkCompletedProperties.StoreForm;
 import com.x.processplatform.core.entity.element.Activity;
 
 class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
@@ -31,6 +30,10 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+					new ExceptionEntityNotExist(workOrWorkCompleted))) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 
 			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
 				Wo wo = new Wo();
@@ -86,14 +89,24 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 		Wo wo = new Wo();
 		if (null != business.form().pick(workCompleted.getForm())) {
 			wo.setId(workCompleted.getForm());
-		} else if (null != workCompleted.getProperties().getForm()) {
-			AdaptForm adapt = workCompleted.getProperties().adaptForm(true);
-			wo = XGsonBuilder.convert(adapt, Wo.class);
+		} else if (null != workCompleted.getProperties().getStoreFormMobile()) {
+			StoreForm storeForm = workCompleted.getProperties().getStoreFormMobile();
+			wo = XGsonBuilder.convert(storeForm, Wo.class);
 		}
 		return wo;
 	}
 
 	public static class Wo extends AbstractWo {
+
+		private String id;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
 
 	}
 
