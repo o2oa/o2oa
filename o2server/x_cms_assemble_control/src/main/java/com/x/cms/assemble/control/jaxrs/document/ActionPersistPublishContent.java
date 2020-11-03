@@ -7,6 +7,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.processplatform.core.entity.content.Attachment;
@@ -16,12 +17,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -416,8 +415,8 @@ public class ActionPersistPublishContent extends BaseAction {
 			}
 		}
 
-		ApplicationCache.notify(FileInfo.class);
-		ApplicationCache.notify(Document.class);
+		CacheManager.notify(FileInfo.class);
+		CacheManager.notify(Document.class);
 		return result;
 	}
 

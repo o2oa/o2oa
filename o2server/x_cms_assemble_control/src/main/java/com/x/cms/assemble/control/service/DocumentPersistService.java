@@ -6,6 +6,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.DocumentDataHelper;
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistBatchModifyData.WiDataChange;
@@ -349,7 +350,7 @@ public class DocumentPersistService {
 					}
 				}
 			}
-			ApplicationCache.notify(Document.class);
+			CacheManager.notify(Document.class);
 		}
     }
 }

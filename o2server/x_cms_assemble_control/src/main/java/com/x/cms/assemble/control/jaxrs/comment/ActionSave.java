@@ -7,6 +7,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -64,8 +65,8 @@ public class ActionSave extends BaseAction {
 				documentCommentInfo = documentCommentInfoPersistService.save( documentCommentInfo, wi.getContent(),  effectivePerson );
 				
 				// 更新缓存
-				ApplicationCache.notify( Document.class );
-				ApplicationCache.notify( DocumentCommentInfo.class );
+				CacheManager.notify( Document.class );
+				CacheManager.notify( DocumentCommentInfo.class );
 				
 				Wo wo = new Wo();
 				wo.setId( documentCommentInfo.getId() );
