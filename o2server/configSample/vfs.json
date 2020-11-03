@@ -4,5 +4,8 @@
   },
   "ftps": {
     "passive": true
+  },
+  "sftp": {
+    "passive": true
   }
 }

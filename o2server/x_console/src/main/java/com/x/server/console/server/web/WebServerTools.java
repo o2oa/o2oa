@@ -4,7 +4,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -62,6 +62,8 @@ public class WebServerTools extends JettySeverTools {
 		createIndexPage();
 		// copyDefaultHtml
 		copyDefaultHtml();
+		// 覆盖 webServer
+		coverToWebServer();
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setMinThreads(WEBSERVER_THREAD_POOL_SIZE_MIN);
@@ -287,6 +289,13 @@ public class WebServerTools extends JettySeverTools {
 			buffer.append("</html>");
 			File file = new File(Config.base(), "index.html");
 			FileUtils.write(file, buffer.toString(), DefaultCharset.name);
+		}
+	}
+
+	private static void coverToWebServer() throws Exception {
+		Path p = Config.path_config_coverToWebServer(true);
+		if (Files.exists(p)) {
+			FileUtils.copyDirectory(p.toFile(), Config.path_servers_webServer(true).toFile());
 		}
 	}
 }
