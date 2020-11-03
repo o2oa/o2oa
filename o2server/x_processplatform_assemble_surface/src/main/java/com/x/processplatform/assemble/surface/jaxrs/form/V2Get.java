@@ -33,8 +33,10 @@ class V2Get extends BaseAction {
 			CacheKey cacheKey = new CacheKey(this.getClass(), id);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
+				System.out.println("!!!!!!!!!!!!!!!!!!!getForm from cache");
 				result.setData((Wo) optional.get());
 			} else {
+				System.out.println("!!!!!!!!!!!!!!!!!!!getForm from db");
 				Wo wo = this.get(business, id);
 				CacheManager.put(cacheCategory, cacheKey, wo);
 				result.setData(wo);
@@ -49,7 +51,7 @@ class V2Get extends BaseAction {
 			throw new ExceptionEntityNotExist(id, Form.class);
 		}
 		Wo wo = new Wo();
-		wo.setFastETag(form.getId() + form.getLastUpdateTime().getTime());
+		wo.setFastETag(form.getId() + form.getUpdateTime().getTime());
 		wo.setForm(new RelatedForm(form, form.getDataOrMobileData()));
 		CompletableFuture<Map<String, RelatedForm>> _relatedForm = CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedForm> map = new TreeMap<String, RelatedForm>();

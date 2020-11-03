@@ -49,7 +49,7 @@ class V2GetMobile extends BaseAction {
 			throw new ExceptionEntityNotExist(id, Form.class);
 		}
 		Wo wo = new Wo();
-		wo.setFastETag(form.getId() + form.getLastUpdateTime().getTime());
+		wo.setFastETag(form.getId() + form.getUpdateTime().getTime());
 		wo.setForm(new RelatedForm(form, form.getMobileDataOrData()));
 		CompletableFuture<Map<String, RelatedForm>> _relatedForm = CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedForm> map = new TreeMap<String, RelatedForm>();
