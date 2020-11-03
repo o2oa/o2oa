@@ -28,119 +28,119 @@ public class FormAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(FormAction.class);
 
-	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取表单.", action = ActionGetWithWorkOrWorkCompleted.class)
-	@GET
-	@Path("workorworkcompleted/{workOrWorkCompleted}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作或完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
-		ActionResult<ActionGetWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGetWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取表单.", action = ActionGetWithWorkOrWorkCompleted.class)
+//	@GET
+//	@Path("workorworkcompleted/{workOrWorkCompleted}")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void getWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+//			@Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("工作或完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
+//		ActionResult<ActionGetWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionGetWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 
-	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取移动表单.", action = ActionGetWithWorkOrWorkCompletedMobile.class)
-	@GET
-	@Path("workorworkcompleted/{workOrWorkCompleted}/mobile")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkOrWorkCompletedMobile(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作或完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
-		ActionResult<ActionGetWithWorkOrWorkCompletedMobile.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGetWithWorkOrWorkCompletedMobile().execute(effectivePerson, workOrWorkCompleted);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取移动表单.", action = ActionGetWithWorkOrWorkCompletedMobile.class)
+//	@GET
+//	@Path("workorworkcompleted/{workOrWorkCompleted}/mobile")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void getWithWorkOrWorkCompletedMobile(@Suspended final AsyncResponse asyncResponse,
+//			@Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("工作或完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
+//		ActionResult<ActionGetWithWorkOrWorkCompletedMobile.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionGetWithWorkOrWorkCompletedMobile().execute(effectivePerson, workOrWorkCompleted);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 
-	@JaxrsMethodDescribe(value = "获取表单.", action = ActionGet.class)
-	@GET
-	@Path("{flag}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag) {
-		ActionResult<ActionGet.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGet().execute(effectivePerson, flag);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@JaxrsMethodDescribe(value = "获取表单.", action = ActionGet.class)
+//	@GET
+//	@Path("{flag}")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag) {
+//		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionGet().execute(effectivePerson, flag);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 
-	@JaxrsMethodDescribe(value = "获取移动端表单.", action = ActionGetMobile.class)
-	@GET
-	@Path("{flag}/mobile")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag) {
-		ActionResult<ActionGetMobile.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGetMobile().execute(effectivePerson, flag);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@JaxrsMethodDescribe(value = "获取移动端表单.", action = ActionGetMobile.class)
+//	@GET
+//	@Path("{flag}/mobile")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void getMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag) {
+//		ActionResult<ActionGetMobile.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionGetMobile().execute(effectivePerson, flag);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 
-	@JaxrsMethodDescribe(value = "根据标识和应用标识获取表单.", action = ActionGetWithApplication.class)
-	@GET
-	@Path("{flag}/application/{applicationFlag}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag,
-			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
-		ActionResult<ActionGetWithApplication.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGetWithApplication().execute(effectivePerson, applicationFlag, flag);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@JaxrsMethodDescribe(value = "根据标识和应用标识获取表单.", action = ActionGetWithApplication.class)
+//	@GET
+//	@Path("{flag}/application/{applicationFlag}")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void getWithApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag,
+//			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
+//		ActionResult<ActionGetWithApplication.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionGetWithApplication().execute(effectivePerson, applicationFlag, flag);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 
-	@JaxrsMethodDescribe(value = "根据标识和应用标识获取移动端表单.", action = ActionGetWithApplicationMobile.class)
-	@GET
-	@Path("{flag}/application/{applicationFlag}/mobile")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithApplicationMobile(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag,
-			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
-		ActionResult<ActionGetWithApplicationMobile.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGetWithApplicationMobile().execute(effectivePerson, applicationFlag, flag);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@JaxrsMethodDescribe(value = "根据标识和应用标识获取移动端表单.", action = ActionGetWithApplicationMobile.class)
+//	@GET
+//	@Path("{flag}/application/{applicationFlag}/mobile")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void getWithApplicationMobile(@Suspended final AsyncResponse asyncResponse,
+//			@Context HttpServletRequest request, @JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag,
+//			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
+//		ActionResult<ActionGetWithApplicationMobile.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionGetWithApplicationMobile().execute(effectivePerson, applicationFlag, flag);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 
-	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果使用的是combine的表单直接返回内容.", action = V2LookupWorkOrWorkCompleted.class)
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在且是已完成工作,那么返回storeForm.", action = V2LookupWorkOrWorkCompleted.class)
 	@GET
 	@Path("v2/lookup/workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -152,6 +152,25 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new V2LookupWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在且是已完成工作,那么返回storeFormMobile.", action = V2LookupWorkOrWorkCompletedMobile.class)
+	@GET
+	@Path("v2/lookup/workorworkcompleted/{workOrWorkCompleted}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2LookupWorkOrWorkCompletedMobile(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
+		ActionResult<V2LookupWorkOrWorkCompletedMobile.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2LookupWorkOrWorkCompletedMobile().execute(effectivePerson, workOrWorkCompleted);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
