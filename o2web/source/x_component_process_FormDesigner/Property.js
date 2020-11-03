@@ -525,7 +525,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         nodes.each(function(node){
             MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilter", function(){
                 var _slef = this;
-                new MWF.xApplication.query.StatementDesigner.widget.ViewFilter(node, this.form.designer, {"filtrData": filtrData, "customData": null}, {
+                this.viewFilter = new MWF.xApplication.query.StatementDesigner.widget.ViewFilter(node, this.form.designer, {"filtrData": filtrData, "customData": null}, {
                     "statementId" : this.data.queryStatement ? this.data.queryStatement.id : "",
                     "withForm" : true,
                     "onChange": function(ids){

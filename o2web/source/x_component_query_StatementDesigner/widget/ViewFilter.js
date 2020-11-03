@@ -349,9 +349,9 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
     },
     setPathInputSelectOptions : function(){
         debugger;
-        var d = this.statementData;
         this.pathInputSelect.empty();
         if( !this.statementData )return;
+        var d = this.statementData;
         var fun = function ( tableName ) {
             o2.Actions.load("x_query_assemble_designer").QueryAction.getEntityProperties(
                 d.entityCategory === "dynamic" ? d.table : d.entityClassName,
@@ -375,6 +375,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 }.bind(this)
             )
         }.bind(this);
+
         if( d.entityCategory === "dynamic" ){
             if( d.table ){
                 o2.Actions.load("x_query_assemble_designer").TableAction.get(d.table, function(json){
@@ -383,6 +384,21 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             }
         }else{
             fun( d.entityClassName.split(".").getLast() )
+        }
+    },
+    resetStatementData : function( statementId, callback ){
+        if( statementId && statementId !== "none" ){
+            this.options.statementId = statementId;
+            o2.Actions.load("x_query_assemble_designer").StatementAction.get( statementId, function (json) {
+                this.statementData = json.data;
+                this.setPathInputSelectOptions();
+                if(callback)callback();
+            }.bind(this))
+        }else{
+            this.options.statementId = "";
+            this.statementData = null;
+            this.setPathInputSelectOptions();
+            if(callback)callback();
         }
     },
     switchInputDisplay: function () {
@@ -499,7 +515,6 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }.bind(this));
     },
     modifyOrAddFilterItem: function () {
-        debugger;
         var flag;
         if (this.currentFilterItem) {
             flag = this.modifyFilterItem();
@@ -879,7 +894,6 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         } catch (e) {
         }
 
-        debugger;
         if( this.options.withForm ){
             this.switchInputDisplay();
         }else{
@@ -993,7 +1007,6 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         this.fireEvent("change");
     },
     getData: function () {
-        debugger;
         var data = [];
         var customData = [];
         this.items.each(function (item) {
