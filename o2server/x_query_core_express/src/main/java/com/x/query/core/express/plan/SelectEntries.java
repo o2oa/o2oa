@@ -16,7 +16,7 @@ public class SelectEntries extends TreeList<SelectEntry> {
 
 	public Boolean emptyColumnCode() {
 		for (SelectEntry en : this) {
-			if (StringUtils.isNotEmpty(en.code)) {
+			if (StringUtils.isNotBlank(en.code)) {
 				return false;
 			}
 		}
