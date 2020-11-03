@@ -12,6 +12,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
     options: {
         "style": "default",
         "type": "identity",
+        "withForm" : false,
         "names": []
     },
     initialize: function (node, app, filtrData, options) {
@@ -41,7 +42,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             _load();
         }else if( this.options.statementId ){
             o2.Actions.load("x_query_assemble_designer").StatementAction.get( this.options.statementId, function (json) {
-                this.statementData = json;
+                this.statementData = json.data;
                 _load();
             }.bind(this))
         }else{
@@ -51,7 +52,11 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
     loadData: function () {
         if (this.filtrData.filtrData && this.filtrData.filtrData.length) {
             this.filtrData.filtrData.each(function (data) {
-                this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item(this, data));
+                if( this.options.withForm ){
+                    this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemWithForm(this, data));
+                }else{
+                    this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item(this, data));
+                }
             }.bind(this));
         }
 
@@ -151,7 +156,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
 
         // this.logicInput = this.inputAreaNode.getElement(".logicInput_vf");
 
-        // this.comparisonInput = this.inputAreaNode.getElement(".comparisonInput_vf");
+        this.comparisonInput = this.inputAreaNode.getElement(".comparisonInput_vf");
         // this.comparisonInput.addEvent("change", function(){
         //     this.switchInputDisplay();
         // }.bind(this))
@@ -381,75 +386,110 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
     },
     switchInputDisplay: function () {
-        var id = "";
-        if (this.app.statement.view) {
-            id = this.app.statement.view.data.id;
-        }else{
-            return;
+        var formatType = this.datatypeInput.options[this.datatypeInput.selectedIndex].value;
+
+        if( !this.options.withForm ) {
+            var id = "";
+            if ( this.app.statement && this.app.statement.view ) {
+                id = this.app.statement.view.data.id;
+            }
+            var config = {
+                "textValue": {
+                    "selectorArea": "#" + id + "viewFilterTextFormulaSelector",
+                    "input": this.valueTextInput
+                },
+                "datetimeValue": {
+                    "selectorArea": "#" + id + "viewFilterDateFormulaSelector",
+                    "input": this.valueDatetimeInput
+                },
+                "dateTimeValue": {
+                    "selectorArea": "#" + id + "viewFilterDateFormulaSelector",
+                    "input": this.valueDatetimeInput
+                },
+                "dateValue": {
+                    "selectorArea": "#" + id + "viewFilterDateOnlyFormulaSelector",
+                    "input": this.valueDateInput
+                },
+                "timeValue": {
+                    "selectorArea": "#" + id + "viewFilterTimeOnlyFormulaSelector",
+                    "input": this.valueTimeInput
+                },
+                "numberValue": {
+                    "input": this.valueNumberInput
+                },
+                "booleanValue": {
+                    "input": this.valueBooleanInput
+                }
+            };
+
+            var formulaSelectorIdList = [
+                "#" + id + "viewFilterTextFormulaSelector",
+                "#" + id + "viewFilterDateFormulaSelector",
+                "#" + id + "viewFilterDateOnlyFormulaSelector",
+                "#" + id + "viewFilterTimeOnlyFormulaSelector"
+            ];
+
+            var inputList = [
+                this.valueTextInput,
+                this.valueDatetimeInput,
+                this.valueDateInput,
+                this.valueTimeInput,
+                this.valueNumberInput,
+                this.valueBooleanInput
+            ];
+            formulaSelectorIdList.each(function (id) {
+                var el = this.inputAreaNode.getElement(id);
+                if (!el) return;
+                el.setStyle("display", "none");
+            }.bind(this));
+            inputList.each(function (el) {
+                el.setStyle("display", "none");
+            }.bind(this));
+            var obj = config[formatType];
+            if (obj) {
+                if (obj.selectorArea) {
+                    var el = this.inputAreaNode.getElement(obj.selectorArea);
+                    if (el) el.setStyle("display", "block");
+                }
+                if (obj.input) obj.input.setStyle("display", "block");
+            }
         }
 
-        var config = {
-            "textValue": {
-                "selectorArea" : "#" + id + "viewFilterTextFormulaSelector",
-                "input" : this.valueTextInput
-            },
-            "datetimeValue" : {
-                "selectorArea" : "#" + id + "viewFilterDateFormulaSelector",
-                "input" : this.valueDatetimeInput
-            },
-            "dateTimeValue": {
-                "selectorArea" : "#" + id + "viewFilterDateFormulaSelector",
-                "input" : this.valueDatetimeInput
-            },
-            "dateValue": {
-                "selectorArea" : "#" + id + "viewFilterDateOnlyFormulaSelector",
-                "input" : this.valueDateInput
-            },
-            "timeValue": {
-                "selectorArea" : "#" + id + "viewFilterTimeOnlyFormulaSelector",
-                "input" : this.valueTimeInput
-            },
-            "numberValue": {
-                "input" : this.valueNumberInput
-            },
-            "booleanValue": {
-                "input" : this.valueBooleanInput
-            }
+
+        var comparisonConfig = {
+            "textValue": ["equals", "notEquals", "greaterThan", "greaterThanOrEqualTo", "lessThan", "lessThanOrEqualTo", "like", "notLike"],
+            "numberValue": ["equals", "notEquals", "greaterThan", "greaterThanOrEqualTo", "lessThan", "lessThanOrEqualTo"],
+            "dateTimeValue": ["equals", "notEquals", "greaterThan", "greaterThanOrEqualTo", "lessThan", "lessThanOrEqualTo"],
+            "dateValue": ["equals", "notEquals", "greaterThan", "greaterThanOrEqualTo", "lessThan", "lessThanOrEqualTo" ],
+            "timeValue": [ "equals", "notEquals", "greaterThan", "greaterThanOrEqualTo", "lessThan", "lessThanOrEqualTo"],
+            "booleanValue": ["equals","notEquals"]
         };
-
-        debugger;
-
-        var formulaSelectorIdList = [
-            "#" + id + "viewFilterTextFormulaSelector",
-            "#" + id + "viewFilterDateFormulaSelector",
-            "#" + id + "viewFilterDateOnlyFormulaSelector",
-            "#" + id + "viewFilterTimeOnlyFormulaSelector"
-        ];
-
-        var inputList = [
-            this.valueTextInput,
-            this.valueDatetimeInput,
-            this.valueDateInput,
-            this.valueTimeInput,
-            this.valueNumberInput,
-            this.valueBooleanInput
-        ];
-        formulaSelectorIdList.each( function(id) {
-            var el = this.inputAreaNode.getElement( id );
-            if( !el )return;
-            el.setStyle("display", "none");
-        }.bind(this));
-        inputList.each( function(el){
-            el.setStyle("display", "none");
-        }.bind(this));
-        var formatType = this.datatypeInput.options[this.datatypeInput.selectedIndex].value;
-        var obj = config[formatType];
-        if( obj ){
-            if(obj.selectorArea){
-                var el = this.inputAreaNode.getElement( obj.selectorArea );
-                if( el )el.setStyle("display", "block");
+        if( this.comparisonInput ){
+            var availableComparisonList = comparisonConfig[formatType];
+            var options = this.comparisonInput.options;
+            var comparison = options[this.comparisonInput.selectedIndex].value;
+            if( !this.originalComparisonOptions ){
+                this.originalComparisonOptions = [];
+                for( var i=0; i< options.length; i++ ){
+                    this.originalComparisonOptions.push({
+                        "text" : options[i].text,
+                        "value" : options[i].value
+                    });
+                }
             }
-            if( obj.input )obj.input.setStyle("display", "block");
+            while( this.comparisonInput.options && this.comparisonInput.options.length ){
+                this.comparisonInput.options[0].destroy();
+            }
+            for( var i=0; i<this.originalComparisonOptions.length; i++ ){
+                var opt = this.originalComparisonOptions[i];
+                if( availableComparisonList.contains( opt.value )){
+                    var option = new Element("option", {
+                        text : opt.text,
+                        value : opt.value
+                    }).inject( this.comparisonInput );
+                    if( opt.value === comparison )option.selected = true;
+                }
+            }
         }
     },
     createActionNode: function () {
@@ -464,7 +504,9 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         if (this.currentFilterItem) {
             flag = this.modifyFilterItem();
         } else {
-            if (this.restrictFilterInput.checked) {
+            if( this.options.withForm ){
+                flag = this.addFilterItemWithForm();
+            }else if (this.restrictFilterInput.checked) {
                 flag = this.addFilterItem();
             } else {
                 flag = this.addCustomFilterItem();
@@ -487,7 +529,14 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
     },
     modifyFilterItem: function () {
         var data = this.getInputData();
-        if( this.restrictFilterInput.checked ){
+        if( this.options.withForm ){
+            if (this.verificationDataWithForm(data)) {
+                this.currentFilterItem.reload(data);
+                this.currentFilterItem.unSelected();
+                this.fireEvent("change");
+                return true;
+            }
+        }else if( this.restrictFilterInput.checked ){
             if (this.verificationData(data)) {
                 this.currentFilterItem.reload(data);
                 this.currentFilterItem.unSelected();
@@ -522,8 +571,17 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
         return false;
     },
+    addFilterItemWithForm : function(){
+        var data = this.getInputData();
+        if (this.verificationDataWithForm(data)) {
+            this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemWithForm(this, data));
+            this.fireEvent("change");
+            return true;
+        }
+        return false;
+    },
     verificationData: function (data) {
-        if (!data.parameter) {
+        if ( this.parameterInput && !data.parameter) {
             this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
             new Element("div", {
                 "styles": this.css.verificationTextNode,
@@ -611,10 +669,66 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
         return true;
     },
+    verificationDataWithForm: function (data) {
+        // if (!data.title) {
+        //     this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
+        //     new Element("div", {
+        //         "styles": this.css.verificationTextNode,
+        //         "text": MWF.APPDSMD.LP.mastInputTitle
+        //     }).inject(this.verificationNode);
+        //     this.titleInput.focus();
+        //     this.titleInput.setStyle("background-color", "#fbe8e8");
+        //
+        //     this.titleInput.addEvents({
+        //         "keydown": function () {
+        //             if (this.verificationNode) {
+        //                 this.verificationNode.destroy();
+        //                 this.verificationNode = null;
+        //                 this.titleInput.setStyle("background-color", "#FFF");
+        //             }
+        //         }.bind(this),
+        //         "click": function () {
+        //             if (this.verificationNode) {
+        //                 this.verificationNode.destroy();
+        //                 this.verificationNode = null;
+        //             }
+        //         }.bind(this)
+        //     });
+        //     return false;
+        // }
+        if (!data.path || data.path.indexOf(".")<1 ) {
+            this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
+            var text = !data.path ? MWF.APPDSMD.LP.mastInputPath : MWF.APPDSMD.LP.pathExecption;
+            new Element("div", {
+                "styles": this.css.verificationTextNode,
+                "text": text
+            }).inject(this.verificationNode);
+            this.pathInput.focus();
+            this.pathInput.setStyle("background-color", "#fbe8e8");
+
+            this.pathInput.addEvents({
+                "keydown": function () {
+                    if (this.verificationNode) {
+                        this.verificationNode.destroy();
+                        this.verificationNode = null;
+                        this.pathInput.setStyle("background-color", "#FFF");
+                    }
+                }.bind(this),
+                "click": function () {
+                    if (this.verificationNode) {
+                        this.verificationNode.destroy();
+                        this.verificationNode = null;
+                    }
+                }.bind(this)
+            });
+            return false;
+        }
+        return true;
+    },
     getInputData: function () {
         // var logic = this.logicInput.options[this.logicInput.selectedIndex].value;
         var path = this.pathInput.get("value");
-        var parameter = this.parameterInput.get("value");
+        var parameter = this.parameterInput ? this.parameterInput.get("value") : "";
 
         var title = this.titleInput.get("value");
         if (this.restrictFilterInput.checked) var type = "restrict";
@@ -622,6 +736,10 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
 
         // var comparison = this.comparisonInput.options[this.comparisonInput.selectedIndex].value;
         var comparison = "";
+        if( this.comparisonInput ){
+            comparison = this.comparisonInput.options[this.comparisonInput.selectedIndex].value;
+        }
+
         var formatType = this.datatypeInput.options[this.datatypeInput.selectedIndex].value;
         var value = "";
         var value2 = "";
@@ -663,7 +781,19 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 //}
                 break;
         }
-        if (type === "restrict") {
+        if (this.options.withForm ) {
+            return {
+                // "logic": "and",
+                "path": path,
+                "title": title,
+                "type": type,
+                "comparison": comparison,
+                "formatType": formatType,
+                "value": value,
+                "otherValue": value2,
+                "code": this.scriptData
+            };
+        }else if (type === "restrict") {
             this.filterValueType.each(function (radio) {
                 if (radio.get("checked")) valueType = radio.get("value");
             });
@@ -709,16 +839,19 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         //     }
         // }
 
-        this.titleInput.set("value", data.title);
-        this.pathInput.set("value", data.path);
-        this.parameterInput.set("value", data.parameter);
+        if(this.titleInput)this.titleInput.set("value", data.title);
+        if(this.pathInput)this.pathInput.set("value", data.path);
+        if(this.parameterInput)this.parameterInput.set("value", data.parameter);
 
-        // for (var i=0; i<this.comparisonInput.options.length; i++){
-        //     if (this.comparisonInput.options[i].value===data.comparison){
-        //this.comparisonInput.options[i].set("selected", true);
-        //break;
-        //     }
-        // }
+        if( this.comparisonInput ){
+            for (var i=0; i<this.comparisonInput.options.length; i++){
+                if (this.comparisonInput.options[i].value===data.comparison){
+                    this.comparisonInput.options[i].set("selected", true);
+                    break;
+                }
+            }
+        }
+
 
         for (var i = 0; i < this.datatypeInput.options.length; i++) {
             if (this.datatypeInput.options[i].value === data.formatType) {
@@ -739,58 +872,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
         if(flag && this.pathInputSelect.options.length)this.pathInputSelect.options[0].set("selected", true);
 
-        switch (data.formatType) {
-            case "textValue":
-                this.valueTextInput.set("value", data.value);
-                //if (this.valueTextInput2) this.valueTextInput2.set("value", data.otherValue);
-                break;
-            case "numberValue":
-                this.valueNumberInput.set("value", data.value);
-                //if (this.valueNumberInput2) this.valueNumberInput2.set("value", data.otherValue);
-                break;
-            case "datetimeValue":
-            case "dateTimeValue":
-                this.valueDatetimeInput.set("value", data.value);
-                //if (this.valueDatetimeInput2) this.valueDatetimeInput2.set("value", data.otherValue);
-                break;
-            case "dateValue":
-                this.valueDateInput.set("value", data.value);
-                //if (this.valueDateInput2) this.valueDateInput2.set("value", data.otherValue);
-                break;
-            case "timeValue":
-                this.valueTimeInput.set("value", data.value);
-                //if (this.valueTimeInput2) this.valueTimeInput2.set("value", data.otherValue);
-                break;
-            case "booleanValue":
 
-                for (var i = 0; i < this.valueBooleanInput.options.length; i++) {
-                    var v = this.valueBooleanInput.options[i].value;
-                    if (v == "true") {
-                        v = true;
-                    } else {
-                        v = false;
-                    }
-                    if (v === data.value) {
-                        this.valueBooleanInput.options[i].set("selected", true);
-                        break;
-                    }
-                }
-                //if (this.valueBooleanInput2){
-                //    for (var i=0; i<this.valueBooleanInput2.options.length; i++){
-                //        var v = this.valueBooleanInput2.options[i].value;
-                //        if (v=="true"){
-                //            v = true;
-                //        }else{
-                //            v = false;
-                //        }
-                //        if (v===data.otherValue){
-                //            this.valueBooleanInput2.options[i].set("selected", true);
-                //            break;
-                //        }
-                //    }
-                //}
-                break;
-        }
         this.scriptData = data.code;
         try {
             if (this.scriptArea && this.scriptArea.editor) this.scriptArea.editor.setValue(this.scriptData.code);
@@ -798,50 +880,106 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
 
         debugger;
-        if (data.type === "custom") {
-            this.customFilterValueTypes.each(function (radio) {
-                if (data.valueType) {
-                    if (data.valueType === radio.get("value")) radio.set("checked", true);
-                } else {
-                    if ("input" === radio.get("value")) radio.set("checked", true);
-                }
-            });
-            if (this.customFilterValueScriptArea) {
-                if (!data.valueType || data.valueType === "input") {
-                    this.customFilterValueScriptDiv.hide();
-                    this.customFilterValueScriptData = "";
-                    this.customFilterValueScriptArea.editor.setValue("");
-                } else {
-                    this.customFilterValueScriptDiv.show();
-                    this.customFilterValueScriptData = data.valueScript;
-                    this.customFilterValueScriptArea.editor.setValue(data.valueScript ? data.valueScript.code : "");
+        if( this.options.withForm ){
+            this.switchInputDisplay();
+        }else{
+            switch (data.formatType) {
+                case "textValue":
+                    this.valueTextInput.set("value", data.value);
+                    //if (this.valueTextInput2) this.valueTextInput2.set("value", data.otherValue);
+                    break;
+                case "numberValue":
+                    this.valueNumberInput.set("value", data.value);
+                    //if (this.valueNumberInput2) this.valueNumberInput2.set("value", data.otherValue);
+                    break;
+                case "datetimeValue":
+                case "dateTimeValue":
+                    this.valueDatetimeInput.set("value", data.value);
+                    //if (this.valueDatetimeInput2) this.valueDatetimeInput2.set("value", data.otherValue);
+                    break;
+                case "dateValue":
+                    this.valueDateInput.set("value", data.value);
+                    //if (this.valueDateInput2) this.valueDateInput2.set("value", data.otherValue);
+                    break;
+                case "timeValue":
+                    this.valueTimeInput.set("value", data.value);
+                    //if (this.valueTimeInput2) this.valueTimeInput2.set("value", data.otherValue);
+                    break;
+                case "booleanValue":
+
+                    for (var i = 0; i < this.valueBooleanInput.options.length; i++) {
+                        var v = this.valueBooleanInput.options[i].value;
+                        if (v == "true") {
+                            v = true;
+                        } else {
+                            v = false;
+                        }
+                        if (v === data.value) {
+                            this.valueBooleanInput.options[i].set("selected", true);
+                            break;
+                        }
+                    }
+                    //if (this.valueBooleanInput2){
+                    //    for (var i=0; i<this.valueBooleanInput2.options.length; i++){
+                    //        var v = this.valueBooleanInput2.options[i].value;
+                    //        if (v=="true"){
+                    //            v = true;
+                    //        }else{
+                    //            v = false;
+                    //        }
+                    //        if (v===data.otherValue){
+                    //            this.valueBooleanInput2.options[i].set("selected", true);
+                    //            break;
+                    //        }
+                    //    }
+                    //}
+                    break;
+            }
+
+            if (data.type === "custom") {
+                this.customFilterValueTypes.each(function (radio) {
+                    if (data.valueType) {
+                        if (data.valueType === radio.get("value")) radio.set("checked", true);
+                    } else {
+                        if ("input" === radio.get("value")) radio.set("checked", true);
+                    }
+                });
+                if (this.customFilterValueScriptArea) {
+                    if (!data.valueType || data.valueType === "input") {
+                        this.customFilterValueScriptDiv.hide();
+                        this.customFilterValueScriptData = "";
+                        this.customFilterValueScriptArea.editor.setValue("");
+                    } else {
+                        this.customFilterValueScriptDiv.show();
+                        this.customFilterValueScriptData = data.valueScript;
+                        this.customFilterValueScriptArea.editor.setValue(data.valueScript ? data.valueScript.code : "");
+                    }
                 }
             }
-        }
 
-        if (data.type === "restrict") {
-            this.filterValueType.each(function (radio) {
-                if (data.valueType) {
-                    if (data.valueType === radio.get("value")) radio.set("checked", true);
-                } else {
-                    if ("input" === radio.get("value")) radio.set("checked", true);
-                }
-            });
-            if (this.filterValueScriptArea) {
-                if (!data.valueType || data.valueType === "input") {
-                    this.filterValueScriptDiv.hide();
-                    this.filterValueScriptData = "";
-                    this.filterValueScriptArea.editor.setValue("");
-                } else {
-                    this.filterValueScriptDiv.show();
-                    this.filterValueScriptData = data.valueScript;
-                    this.filterValueScriptArea.editor.setValue(data.valueScript ? data.valueScript.code : "");
+            if (data.type === "restrict") {
+                this.filterValueType.each(function (radio) {
+                    if (data.valueType) {
+                        if (data.valueType === radio.get("value")) radio.set("checked", true);
+                    } else {
+                        if ("input" === radio.get("value")) radio.set("checked", true);
+                    }
+                });
+                if (this.filterValueScriptArea) {
+                    if (!data.valueType || data.valueType === "input") {
+                        this.filterValueScriptDiv.hide();
+                        this.filterValueScriptData = "";
+                        this.filterValueScriptArea.editor.setValue("");
+                    } else {
+                        this.filterValueScriptDiv.show();
+                        this.filterValueScriptData = data.valueScript;
+                        this.filterValueScriptArea.editor.setValue(data.valueScript ? data.valueScript.code : "");
+                    }
                 }
             }
+            this.switchInputDisplay();
         }
 
-
-        this.switchInputDisplay();
         if (this.datatypeInput.onchange) {
             this.datatypeInput.onchange();
         }
@@ -955,6 +1093,35 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemCustom = new Clas
         }
          this.filter.customFilterInput.set("checked", true);
          this.filter.customFilterInput.click();
+        if (this.filter.currentFilterItem) this.filter.currentFilterItem.unSelected();
+        this.node.setStyles(this.css.itemNode_current);
+        this.filter.currentFilterItem = this;
+        this.filter.setData(this.data);
+    },
+    getText: function () {
+        var lp = MWF.APPDSMD.LP.filter;
+        return this.data.title + "(" + this.data.path + ")";
+    },
+});
+
+MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemWithForm = new Class({
+    Extends: MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item,
+    initialize: function (filter, data) {
+        this.filter = filter;
+        this.data = data;
+        this.container = this.filter.listAreaNode;
+        this.css = this.filter.css;
+        this.app = this.filter.app;
+        this.load();
+    },
+    selected: function () {
+        if( this.filter.verificationNode ){
+            this.filter.verificationNode.destroy();
+            this.filter.verificationNode = null;
+            this.filter.pathInput.setStyle("background-color", "#FFF");
+        }
+        // this.filter.customFilterInput.set("checked", true);
+        // this.filter.customFilterInput.click();
         if (this.filter.currentFilterItem) this.filter.currentFilterItem.unSelected();
         this.node.setStyles(this.css.itemNode_current);
         this.filter.currentFilterItem = this;

@@ -519,12 +519,15 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }
     },
     loadStatementFilter: function(){
+	    debugger;
         var nodes = this.propertyContent.getElements(".MWFStatementFilter");
         var filtrData = this.data.filterList;
         nodes.each(function(node){
             MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilter", function(){
                 var _slef = this;
                 new MWF.xApplication.query.StatementDesigner.widget.ViewFilter(node, this.form.designer, {"filtrData": filtrData, "customData": null}, {
+                    "statementId" : this.data.queryStatement ? this.data.queryStatement.id : "",
+                    "withForm" : true,
                     "onChange": function(ids){
                         var data = this.getData();
                         _slef.changeJsonDate(["filterList"], data.data);
