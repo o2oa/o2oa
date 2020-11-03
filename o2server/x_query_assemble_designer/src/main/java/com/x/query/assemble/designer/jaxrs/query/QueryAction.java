@@ -215,4 +215,23 @@ public class QueryAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据标识获取语句操作对象的属性信息.", action = ActionGetEntityProperties.class)
+	@GET
+	@Path("entity/{entity}/category/{entityCategory}/properties")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getEntityProperties(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									@JaxrsParameterDescribe("实体类名称(系统表要全称如com.x.query.core.entity.Query，自建表只要名称)") @PathParam("entity") String entity,
+									@JaxrsParameterDescribe("实体类类型(自建表：dynamic|系统表：official)") @PathParam("entityCategory") String entityCategory) {
+		ActionResult<List<ActionGetEntityProperties.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetEntityProperties().execute(effectivePerson, entity, entityCategory);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }

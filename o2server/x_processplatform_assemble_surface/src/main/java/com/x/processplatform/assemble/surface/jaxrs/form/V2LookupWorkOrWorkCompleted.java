@@ -19,7 +19,7 @@ import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkCompletedProperties.AdaptForm;
+import com.x.processplatform.core.entity.content.WorkCompletedProperties.StoreForm;
 import com.x.processplatform.core.entity.element.Activity;
 
 class V2LookupWorkOrWorkCompleted extends BaseAction {
@@ -89,14 +89,24 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 		Wo wo = new Wo();
 		if (null != business.form().pick(workCompleted.getForm())) {
 			wo.setId(workCompleted.getForm());
-		} else if (null != workCompleted.getProperties().getForm()) {
-			AdaptForm adapt = workCompleted.getProperties().adaptForm(false);
-			wo = XGsonBuilder.convert(adapt, Wo.class);
+		} else if (null != workCompleted.getProperties().getStoreForm()) {
+			StoreForm storeForm = workCompleted.getProperties().getStoreForm();
+			wo = XGsonBuilder.convert(storeForm, Wo.class);
 		}
 		return wo;
 	}
 
 	public static class Wo extends AbstractWo {
+
+		private String id;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
 
 	}
 
