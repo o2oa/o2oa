@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.templateform;
 
 import java.util.Arrays;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -44,7 +45,7 @@ class ActionCreate extends BaseAction {
 				emc.persist(o, CheckPersistType.all);
 			}
 			emc.commit();
-			ApplicationCache.notify(TemplateForm.class);
+			CacheManager.notify(TemplateForm.class);
 			Wo wo = new Wo();
 			wo.setId(o.getId());
 			result.setData(wo);

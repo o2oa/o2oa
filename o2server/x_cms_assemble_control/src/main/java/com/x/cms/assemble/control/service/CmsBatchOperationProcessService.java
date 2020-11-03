@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.service;
 
 import java.util.List;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -213,8 +214,8 @@ public class CmsBatchOperationProcessService {
 		} catch (Exception e) {
 			throw e;
 		}
-		ApplicationCache.notify( Review.class );
-		ApplicationCache.notify( Document.class );
+		CacheManager.notify( Review.class );
+		CacheManager.notify( Document.class );
 	}
 
 	/**
@@ -271,8 +272,8 @@ public class CmsBatchOperationProcessService {
 		} catch (Exception e) {
 			throw e;
 		}
-		ApplicationCache.notify( Review.class );
-		ApplicationCache.notify( Document.class );
+		CacheManager.notify( Review.class );
+		CacheManager.notify( Document.class );
 	}
 
 
@@ -343,9 +344,9 @@ public class CmsBatchOperationProcessService {
 		} catch (Exception e) {
 			throw e;
 		}
-		
-		ApplicationCache.notify( Document.class );
-		ApplicationCache.notify( CategoryInfo.class );
+
+		CacheManager.notify( Document.class );
+		CacheManager.notify( CategoryInfo.class );
 	}
 
 	/**
@@ -414,8 +415,8 @@ public class CmsBatchOperationProcessService {
 				emc.commit();
 			}
 		}
-		ApplicationCache.notify( Document.class );
-		ApplicationCache.notify( CategoryInfo.class );
+		CacheManager.notify( Document.class );
+		CacheManager.notify( CategoryInfo.class );
 	}
 
 	/**
@@ -479,8 +480,8 @@ public class CmsBatchOperationProcessService {
 		} catch (Exception e) {
 			throw e;
 		}
-		ApplicationCache.notify( CategoryInfo.class );
-		ApplicationCache.notify( Document.class );
+		CacheManager.notify( CategoryInfo.class );
+		CacheManager.notify( Document.class );
 	}
 
 	/**
@@ -530,8 +531,8 @@ public class CmsBatchOperationProcessService {
 		} catch (Exception e) {
 			throw e;
 		}
-		ApplicationCache.notify( Document.class );
-		ApplicationCache.notify( CategoryInfo.class );
+		CacheManager.notify( Document.class );
+		CacheManager.notify( CategoryInfo.class );
 	}
 
 	/**

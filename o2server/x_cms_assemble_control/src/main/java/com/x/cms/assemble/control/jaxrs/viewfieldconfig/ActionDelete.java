@@ -8,6 +8,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -59,7 +60,7 @@ public class ActionDelete extends BaseAction {
 
 			wrap = new Wo();
 			wrap.setId(viewFieldConfig.getId());
-			ApplicationCache.notify(ViewFieldConfig.class);
+			CacheManager.notify(ViewFieldConfig.class);
 			result.setData(wrap);
 		} catch (Throwable th) {
 			th.printStackTrace();
