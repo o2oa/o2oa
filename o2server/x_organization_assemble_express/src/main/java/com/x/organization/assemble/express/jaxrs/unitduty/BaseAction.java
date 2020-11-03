@@ -15,21 +15,15 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
-import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.PersonAttribute;
-import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
-import com.x.organization.core.entity.accredit.Empower;
 
 class BaseAction extends StandardJaxrsAction {
 
-	CacheCategory cacheCategory = new CacheCategory(Identity.class, Unit.class, UnitAttribute.class, UnitDuty.class,
-			Role.class, Person.class, PersonAttribute.class, Group.class, Empower.class);
+	CacheCategory cacheCategory = new CacheCategory(Identity.class, Unit.class, UnitDuty.class);
 
 	protected List<String> listUnitDutyDistinguishedNameSorted(Business business, List<String> unitDutyIds)
 			throws Exception {
