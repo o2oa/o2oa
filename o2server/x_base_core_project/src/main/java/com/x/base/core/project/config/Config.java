@@ -88,6 +88,7 @@ public class Config {
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
 	public static final String DIR_COMMONS_EXT = "commons/ext";
 	public static final String DIR_CONFIG = "config";
+	public static final String DIR_CONFIG_COVERTOWEBSERVER = "config/coverToWebServer";
 	public static final String DIR_CONFIGSAMPLE = "configSample";
 	public static final String DIR_CUSTOM = "custom";
 	public static final String DIR_CUSTOM_JARS = "custom/jars";
@@ -464,6 +465,22 @@ public class Config {
 
 	public static Path path_servers_webServer_x_desktop_res_config(Boolean force) throws Exception {
 		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER_X_DESKTOP_RES_CONFIG);
+		if (!Files.exists(path)) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_config_coverToWebServer(Boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_CONFIG_COVERTOWEBSERVER);
+		if (!Files.exists(path)) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_servers_webServer(Boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER);
 		if (!Files.exists(path)) {
 			Files.createDirectories(path);
 		}
