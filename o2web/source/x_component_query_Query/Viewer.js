@@ -807,10 +807,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         });
     },
     searchView: function(){
+        debugger;
         if (this.viewJson.customFilterList) {
             var key = this.viewSearchInputNode.get("value");
             if (key && key !== this.lp.searchKeywork) {
-                var filterData = this.json.filter ? this.json.filter : [];
+                var filterData = this.json.filter ? this.json.filter.clone() : [];
                 this.filterItems = [];
                 this.viewJson.customFilterList.each(function (entry) {
                     if (entry.formatType === "textValue") {
@@ -843,7 +844,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.createViewNode({"filterList": filterData});
             }else{
                 this.filterItems = [];
-                this.createViewNode();
+                var filterData = this.json.filter ? this.json.filter.clone() : [];
+                this.createViewNode( {"filterList": filterData} );
             }
         }
     },

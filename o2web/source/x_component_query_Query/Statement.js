@@ -109,7 +109,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
         debugger;
         this.loadParameter();
-        this.loadFilter( data );
+        this.loadFilter( d );
 
         this.currentPage = this.options.defaultPage || 1;
         this.options.defaultPage = null;
@@ -149,13 +149,17 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         // }.bind(this));
     },
     loadFilter : function( data ){
+        debugger;
         this.filterList = [];
         ( data.filterList || [] ).each( function (d) {
             var parameterName = d.path.replace(/\./g, "_");
+            var value = d.value;
+            if( d.code && d.code.code ){
+                value = this.Macro.exec( d.code.code, this);
+            }
             if( d.comparison === "like" || d.comparison === "notLike" ){
-                this.parameter[ parameterName ] = "%"+d.value+"%";
+                this.parameter[ parameterName ] = "%"+value+"%";
             }else{
-                var value = d.value;
                 if( d.formatType === "dateTimeValue" || d.formatType === "datetimeValue"){
                     value = "{ts '"+value+"'}"
                 }else if( d.formatType === "dateValue" ){
