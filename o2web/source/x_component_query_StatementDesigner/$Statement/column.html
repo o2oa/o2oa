@@ -17,14 +17,27 @@
                 <td class="editTableTitle">打开文档:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="allowOpen" text{($.allowOpen===true)?'checked':''} type="radio" value="true"
-                           onclick="if(this.checked){ $('text{$.pid}clickCodeTr').setStyle('display', '');}"/>是
+                           onclick="if(this.checked){
+                               $('text{$.pid}clickCodeTr').setStyle('display', '');
+                               $('text{$.pid}idPathTr').setStyle('display', '');
+                           }"/>是
                     <input class="editTableRadio" name="allowOpen" text{($.allowOpen!==true)?'checked':''} type="radio" value="false"
-                           onclick="if(this.checked){ $('text{$.pid}clickCodeTr').setStyle('display', 'none');}"/>否
+                           onclick="if(this.checked){
+                               $('text{$.pid}clickCodeTr').setStyle('display', 'none');
+                               $('text{$.pid}idPathTr').setStyle('display', 'none');
+                           }"/>否
                 </td>
             </tr>
             <tr id="text{$.pid}clickCodeTr" style="display:text{($.allowOpen===true)?'':'none'}">
                 <td class="editTableValue" colspan="2">
                     <div class="MWFFormulaArea" name="clickCode" title="打开文档脚本(S)"></div>
+                </td>
+            </tr>
+            <tr id="text{$.pid}idPathTr" style="display:text{($.allowOpen===true)?'':'none'}">
+                <td class="editTableTitle">cms文档/流程work id路径:</td>
+                <td class="editTableValue">
+                    <input type="text" name="idPath" value="text{$.idPath}" class="editTableInput"/>
+                    <div style="line-height: 20px;color:#999;">注：指Id相对单条数据的路径。</div>
                 </td>
             </tr>
         </table>

@@ -21,6 +21,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         this.app = app;
 
         this.container = $(container);
+
+        debugger;
         this.json = json || {};
 
         this.parentMacro = parentMacro;
@@ -50,6 +52,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     init: function(callback){
         if (this.json.view){
             this.viewJson = JSON.decode(this.json.view);
+            this.statementJson = this.json;
             if (callback) callback();
         }else{
             this.getView(callback);
@@ -571,23 +574,27 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
 
         this.view.fireEvent("postLoadItemRow", [null, this]);
     },
+    getDataByPath : function( obj, path ){
+        var pathList = path.split(".");
+        for (var i = 0; i < pathList.length; i++) {
+            var p = pathList[i];
+            if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
+            if (obj[p]) {
+                obj = obj[p];
+            } else {
+                obj = "";
+                break;
+            }
+        }
+        return obj
+    },
     getText : function(c, k, td){
         var path = c.path, code = c.code, obj = this.data;
         if( !path ){
             return ""
         }else if( path === "$all" ){
         }else{
-            var pathList = path.split(".");
-            for (var i = 0; i < pathList.length; i++) {
-                var p = pathList[i];
-                if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
-                if (obj[p]) {
-                    obj = obj[p];
-                } else {
-                    obj = "";
-                    break;
-                }
-            }
+            obj = this.getDataByPath(obj, path);
         }
 
         if( code && code.trim())obj = this.view.Macro.exec( code, {"value": obj,  "data": this.data, "entry": c, "node" : td, "json" : c, "row" : this});
@@ -634,19 +641,32 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
                 ev.stopPropagation();
                 return result;
             }.bind(this));
-        }else{
-            // if (this.view.json.type==="cms"){
-            //     td.addEvent("click", function(ev){
-            //         this.openCms(ev)
-            //         ev.stopPropagation();
-            //     }.bind(this));
-            // }else{
-            td.addEvent("click", function(ev){
-                this.openWorkAndCompleted(ev)
-                ev.stopPropagation();
-            }.bind(this));
-            // }
+        }else if( this.view.statementJson.entityCategory==="official" && column.idPath ){
+            var id = this.getDataByPath(this.data, column.idPath );
+            if( id ){
+                if (this.view.statementJson.entityClassName==="com.x.cms.core.entity.Document"){
+                    td.addEvent("click", function(ev){
+                        this.openCms(ev, id);
+                        ev.stopPropagation();
+                    }.bind(this));
+                }else{
+                    td.addEvent("click", function(ev){
+                        this.openWork(ev, id);
+                        ev.stopPropagation();
+                    }.bind(this));
+                }
+            }
         }
+    },
+    openCms: function(e, id){
+        var options = {"documentId": id};
+        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
+        layout.desktop.openApplication(e, "cms.Document", options);
+    },
+    openWork: function(e, id){
+        var options = {"workId": id};
+        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
+        layout.desktop.openApplication(e, "process.Work", options);
     }
 });
 
