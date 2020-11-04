@@ -137,7 +137,8 @@
     height:58px;
     background:rgba(74,144,226,1);
     border-radius:30px;
-    text-align: center;      
+    text-align: center;     
+    cursor: pointer; 
 }
 .o2_appmarket_application_introduce_download_downbtn_text{
     width:94px;
@@ -146,8 +147,55 @@
     font-family:MicrosoftYaHei;
     color:rgba(255,255,255,1);
     line-height:29px;
-    padding-top:10px;
+    padding-top:15px;
     margin:auto auto;        
+}
+.o2_appmarket_application_introduce_download_forumbtn{
+    width:240px;
+    height:58px;
+    background: #F0F0F0;
+    border-radius:30px;
+    text-align: center;
+    margin-top:15px;   
+    cursor: pointer;   
+}
+.o2_appmarket_application_introduce_download_forumbtn_text{
+    width: 143px;
+    height: 29px;
+    font-size: 22px;
+    font-family: MicrosoftYaHei;
+    color: #666666;
+    line-height: 29px;
+    padding-top:15px;
+    margin:auto auto;
+}
+.o2_appmarket_application_introduce_download_bbs{
+    margin-top:34px;
+}
+.o2_appmarket_application_introduce_download_bbspng{
+    width: 20px;
+    height: 20px;
+    background-image: url("../x_component_AppMarketV2_Application/$Main/default/icon/icon_deng.png");
+    float:left;        
+}
+.o2_appmarket_application_introduce_download_bbstitle{
+    width: 97px;
+    height: 20px;
+    font-size: 16px;
+    font-family: MicrosoftYaHei;
+    color: #4A90E2;
+    line-height: 21px;
+    float:left;
+    margin-left:5px;
+}
+.o2_appmarket_application_introduce_download_bbstip{
+    width: 240px;
+    height: 58px;
+    font-size: 16px;
+    font-family: MicrosoftYaHei;
+    color: #333333;
+    line-height: 30px;
+    margin-top:70px;
 }
 .o2_appmarket_application_introduce_download_favbtn{
     width:240px;
