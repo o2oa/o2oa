@@ -137,4 +137,22 @@ public class UnitDutyAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据组织和职务名称获取职务信息.", action = ActionGetWithUnitWithName.class)
+	@POST
+	@Path("find/by/unit/name")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithUnitWithName(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							 JsonElement jsonElement) {
+		ActionResult<ActionGetWithUnitWithName.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithUnitWithName().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
