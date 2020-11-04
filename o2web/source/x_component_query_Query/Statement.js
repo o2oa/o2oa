@@ -300,7 +300,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         this.getViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.get(this.json.statementId || this.json.statementName, function(json){
             debugger;
             var viewData = JSON.decode(json.data.view);
-            if( !this.json.pageSize )this.json.pageSize = viewData.pageSize;
+            if( !this.json.pageSize )this.json.pageSize = viewData.pageSize || "20";
             this.viewJson = viewData.data;
             this.json.application = json.data.query;
             //this.json = Object.merge(this.json, json.data);
@@ -573,18 +573,21 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
     },
     getText : function(c, k, td){
         var path = c.path, code = c.code, obj = this.data;
-        if( path ){
+        if( path && path!=="$all") {
             var pathList = path.split(".");
-            for( var i=0; i<pathList.length; i++ ){
+            for (var i = 0; i < pathList.length; i++) {
                 var p = pathList[i];
-                if( (/(^[1-9]\d*$)/.test(p)) )p = p.toInt();
-                if( obj[ p ] ){
-                    obj = obj[ p ];
-                }else{
+                if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
+                if (obj[p]) {
+                    obj = obj[p];
+                } else {
                     obj = "";
                     break;
                 }
             }
+        }else if( path === "$all" ){
+        }else{
+            return "";
         }
 
         if( code && code.trim())obj = this.view.Macro.exec( code, {"value": obj,  "data": this.data, "entry": c, "node" : td, "json" : c, "row" : this});
