@@ -3869,7 +3869,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
             if (read) {
                 _self.app.action.setReaded(function () {
-                    this.fireEvent("afterReaded");
+                    _self.fireEvent("afterReaded");
                     _self.app.reload();
                     if (layout.mobile) {
 
@@ -3878,7 +3878,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     } else {
                         this.close();
                     }
-                }.bind(_self), null, read.id, read);
+                }, null, read.id, read);
             } else {
                 _self.app.reload();
                 if (layout.mobile) {
