@@ -573,7 +573,10 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
     },
     getText : function(c, k, td){
         var path = c.path, code = c.code, obj = this.data;
-        if( path && path!=="$all") {
+        if( !path ){
+            return ""
+        }else if( path === "$all" ){
+        }else{
             var pathList = path.split(".");
             for (var i = 0; i < pathList.length; i++) {
                 var p = pathList[i];
@@ -585,9 +588,6 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
                     break;
                 }
             }
-        }else if( path === "$all" ){
-        }else{
-            return "";
         }
 
         if( code && code.trim())obj = this.view.Macro.exec( code, {"value": obj,  "data": this.data, "entry": c, "node" : td, "json" : c, "row" : this});
