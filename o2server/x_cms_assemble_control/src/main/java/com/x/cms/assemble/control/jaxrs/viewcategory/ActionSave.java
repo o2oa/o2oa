@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -74,8 +75,8 @@ public class ActionSave extends BaseAction {
 				Wo wo = new Wo();
 				wo.setId( viewCategory.getId() );
 				result.setData(wo);
-				ApplicationCache.notify( View.class );
-				ApplicationCache.notify( ViewCategory.class );
+				CacheManager.notify( View.class );
+				CacheManager.notify( ViewCategory.class );
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -49,7 +50,7 @@ class ActionUpdate extends BaseAction {
 					this.transQuery(queryView);
 					emc.check(queryView, CheckPersistType.all);
 					emc.commit();
-					ApplicationCache.notify(QueryView.class);
+					CacheManager.notify(QueryView.class);
 					
 					Wo wo = new Wo();
 					wo.setId( queryView.getId() );
