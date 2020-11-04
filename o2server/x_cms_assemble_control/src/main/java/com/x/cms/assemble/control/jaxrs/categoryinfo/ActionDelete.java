@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -71,10 +72,10 @@ public class ActionDelete extends BaseAction {
 						CmsBatchOperationProcessService.OPT_TYPE_DELETE, id, id, "删除分类：ID=" + id );
 				
 				new LogService().log(null, effectivePerson.getDistinguishedName(), categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName(), id, "", "", "", "CATEGORY", "删除");
-				
-				ApplicationCache.notify( AppInfo.class );
-				ApplicationCache.notify( CategoryInfo.class );
-				ApplicationCache.notify( ViewCategory.class );
+
+				CacheManager.notify( AppInfo.class );
+				CacheManager.notify( CategoryInfo.class );
+				CacheManager.notify( ViewCategory.class );
 			} catch (Exception e) {
 				Exception exception = new ExceptionCategoryInfoProcess(e, "分类信息在删除时发生异常。ID:" + id);
 				result.error(exception);
