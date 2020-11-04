@@ -140,7 +140,14 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 							}
 						}
 					})
-					
+					//add by xlq @20201104 for adding button which goes to bbs.
+					this.applicationintroduceforumbtntext.set("text",this.lp.bbsname);
+					this.applicationintroduceforumbtn.addEvents({
+						"click": function(e){
+							//updateorinstall application
+							window.open(_self.lp.bbslink);
+						}
+					})
 					//this.applicationintroducefavbtntext.set("text","下载");
 
 					this.loadIntroduceInfo();
