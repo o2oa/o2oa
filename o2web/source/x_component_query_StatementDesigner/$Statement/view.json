@@ -6,7 +6,7 @@
   "description": "",
   "display": true,
   "type": "View",
-
+  "pageSize" : "20",
   "data": {
 //    "exportGrid": true,
 //    "exportGoupGrid": true,
