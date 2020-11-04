@@ -1,7 +1,6 @@
 package com.x.query.core.express.plan;
 
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -559,6 +558,12 @@ public class FilterEntry extends GsonPropertyObject {
 					p = cb.and(p, cb.notLike(root.get(Item_.stringShortValue), "%" + compareValue + "%"));
 				} else if (Comparison.isBetween(this.comparison)) {
 					p = cb.and(p, cb.between(root.get(Item_.stringShortValue), compareValue, compareOtherValue));
+				} else if (Comparison.isIsMember(this.comparison)) {
+					if(compareValue.indexOf(",") > -1){
+						p = cb.and(p,  root.get(Item_.stringShortValue).in(Arrays.asList(compareValue.split(","))));
+					}else{
+						p = cb.and(p, cb.equal(root.get(Item_.stringShortValue), compareValue));
+					}
 				} else {
 					p = cb.and(p, cb.equal(root.get(Item_.stringShortValue), compareValue));
 				}
@@ -974,6 +979,12 @@ public class FilterEntry extends GsonPropertyObject {
 					p = cb.and(p, cb.notLike(root.get(paramName), "%" + compareValue + "%"));
 				} else if (Comparison.isBetween(this.comparison)) {
 					p = cb.and(p, cb.between(root.get(paramName), compareValue, compareOtherValue));
+				} else if (Comparison.isIsMember(this.comparison)) {
+					if(compareValue.indexOf(",") > -1){
+						p = cb.and(p,  root.get(paramName).in(Arrays.asList(compareValue.split(","))));
+					}else{
+						p = cb.and(p, cb.equal(root.get(paramName), compareValue));
+					}
 				} else {
 					p = cb.and(p, cb.equal(root.get(paramName), compareValue));
 				}
