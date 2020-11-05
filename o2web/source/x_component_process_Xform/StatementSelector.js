@@ -3,6 +3,50 @@ MWF.xDesktop.requireApp("process.Xform", "ViewSelector", null, false);
 MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  new Class({
 	Implements: [Events],
 	Extends: MWF.xApplication.process.Xform.ViewSelector,
+    doResult: function(data){
+        if (this.json.result === "script"){
+            this.selectedData = data;
+            return (this.json.selectedScript.code) ? this.form.Macro.exec(this.json.selectedScript.code, this) : "";
+        }else{
+            Object.each(this.json.selectedSetValues, function(v, k){
+                var value = "";
+                data.each(function(d, idx){
+                    // Object.each(d, function(dv, dk){
+                    //     if (dk===v) value = (value) ? (value+", "+dv) : dv;
+                    // }.bind(this));
+
+                    var pathList = v.split(".");
+                    for( var i=0; i<pathList.length; i++ ){
+                        var p = pathList[i];
+                        if( (/(^[1-9]\d*$)/.test(p)) )p = p.toInt();
+                        if( d[ p ] ){
+                            d = d[ p ];
+                        }else{
+                            d = "";
+                            break;
+                        }
+                    }
+
+                    if( typeOf(d) === "array" || typeOf(d) === "object" ) {
+                        d = JSON.stringify(d);
+                    }
+
+                    value = (value) ? (value+", "+d) : d;
+
+                }.bind(this));
+
+                var field = this.form.all[k];
+                if (field){
+                    field.setData(value);
+                    if (value){
+                        if (field.descriptionNode) field.descriptionNode.setStyle("display", "none");
+                    }else{
+                        if (field.descriptionNode) field.descriptionNode.setStyle("display", "block");
+                    }
+                }
+            }.bind(this));
+        }
+    },
     selectView: function(callback){
         var viewData = this.json.queryStatement;
 
@@ -28,7 +72,8 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
                 "isExpand": this.json.isExpand || "no",
                 "showActionbar" : this.json.actionbar === "show",
                 "filter": filter,
-                "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null
+                "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null,
+                "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
             };
             var options = {};
             var width = options.width || "850";
@@ -114,50 +159,6 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
                 // }.bind(this));
             }.bind(this));
         }
-    },
-    doResult: function(data){
-        if (this.json.result === "script"){
-            this.selectedData = data;
-            return (this.json.selectedScript.code) ? this.form.Macro.exec(this.json.selectedScript.code, this) : "";
-        }else{
-            Object.each(this.json.selectedSetValues, function(v, k){
-                var value = "";
-                data.each(function(d, idx){
-                    // Object.each(d, function(dv, dk){
-                    //     if (dk===v) value = (value) ? (value+", "+dv) : dv;
-                    // }.bind(this));
-
-                    var pathList = v.split(".");
-                    for( var i=0; i<pathList.length; i++ ){
-                        var p = pathList[i];
-                        if( (/(^[1-9]\d*$)/.test(p)) )p = p.toInt();
-                        if( d[ p ] ){
-                            d = d[ p ];
-                        }else{
-                            d = "";
-                            break;
-                        }
-                    }
-
-                    if( typeOf(d) === "array" || typeOf(d) === "object" ) {
-                        d = JSON.stringify(d);
-                    }
-
-                    value = (value) ? (value+", "+d) : d;
-
-                }.bind(this));
-
-                var field = this.form.all[k];
-                if (field){
-                    field.setData(value);
-                    if (value){
-                        if (field.descriptionNode) field.descriptionNode.setStyle("display", "none");
-                    }else{
-                        if (field.descriptionNode) field.descriptionNode.setStyle("display", "block");
-                    }
-                }
-            }.bind(this));
-        }
-    },
+    }
 	
 }); 
