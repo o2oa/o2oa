@@ -1,4 +1,5 @@
 .o2_statement_statementDesignerNode {
+    height : 360px;
     overflow: hidden;
     padding: 20px;
     box-shadow: 0 0 10px #999999;
@@ -49,7 +50,19 @@
     border: 1px solid #cccccc;
     background: #ffffff;
 }
+.o2_statement_statementDesignerCountJpqlLine {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
 .o2_statement_statementDesignerScript {
+     height: 260px;
+     margin-top: 10px;
+     border: 1px solid #cccccc;
+     background: #ffffff;
+ }
+.o2_statement_statementDesignerCountScript {
     height: 260px;
     margin-top: 10px;
     border: 1px solid #cccccc;
@@ -103,4 +116,15 @@
     top:45%;
     margin: auto;
     cursor: pointer;
+}
+.o2_statement_tabNode{
+    height: 32px;
+}
+.o2_statement_statementJpqlTabNode{
+    height: 32px;
+}
+.o2_statement_resizeNode{
+    height: 3px;
+    background-color: #505050;
+    cursor: row-resize;
 }

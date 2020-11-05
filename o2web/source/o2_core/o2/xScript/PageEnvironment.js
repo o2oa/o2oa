@@ -751,6 +751,104 @@ MWF.xScript.PageEnvironment = function (ev) {
         }
     };
 
+    this.statement = {
+        "execute": function (statement, callback, async) {
+            var filterList = { "filterList": (statement.filter || null) };
+            MWF.Actions.get("x_query_assemble_surface").execute(statement.view, statement.application, filterList, function (json) {
+                var data = {
+                    "grid": json.data.grid,
+                };
+                if (callback) callback(data);
+            }, null, async);
+        },
+        "select": function (statement, callback, options) {
+            if (statement.statement) {
+                var statementJson = {
+                    "application": statement.application || _form.json.application,
+                    "statementName": statement.statement || "",
+                    "isTitle": (statement.isTitle === false) ? "no" : "yes",
+                    "select": (statement.isMulti === false) ? "single" : "multi",
+                    "filter": statement.filter
+                };
+                if (!options) options = {};
+                options.width = statement.width;
+                options.height = statement.height;
+                options.title = statement.caption;
+
+                var width = options.width || "700";
+                var height = options.height || "400";
+
+                if (layout.mobile) {
+                    var size = document.body.getSize();
+                    width = size.x;
+                    height = size.y;
+                    options.style = "viewmobile";
+                }
+                width = width.toInt();
+                height = height.toInt();
+
+                var size = _form.app.content.getSize();
+                var x = (size.x - width) / 2;
+                var y = (size.y - height) / 2;
+                if (x < 0) x = 0;
+                if (y < 0) y = 0;
+                if (layout.mobile) {
+                    x = 20;
+                    y = 0;
+                }
+
+                var _self = this;
+                MWF.require("MWF.xDesktop.Dialog", function () {
+                    var dlg = new MWF.xDesktop.Dialog({
+                        "title": options.title || "select statement view",
+                        "style": options.style || "view",
+                        "top": y,
+                        "left": x - 20,
+                        "fromTop": y,
+                        "fromLeft": x - 20,
+                        "width": width,
+                        "height": height,
+                        "html": "<div style='height: 100%;'></div>",
+                        "maskNode": _form.app.content,
+                        "container": _form.app.content,
+                        "buttonList": [
+                            {
+                                "text": MWF.LP.process.button.ok,
+                                "action": function () {
+                                    //if (callback) callback(_self.view.selectedItems);
+                                    if (callback) callback(_self.statement.getData());
+                                    this.close();
+                                }
+                            },
+                            {
+                                "text": MWF.LP.process.button.cancel,
+                                "action": function () { this.close(); }
+                            }
+                        ]
+                    });
+                    dlg.show();
+
+                    if (layout.mobile) {
+                        var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
+                        var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
+                        if (backAction) backAction.addEvent("click", function (e) {
+                            dlg.close();
+                        }.bind(this));
+                        if (okAction) okAction.addEvent("click", function (e) {
+                            //if (callback) callback(this.view.selectedItems);
+                            if (callback) callback(this.statement.getData());
+                            dlg.close();
+                        }.bind(this));
+                    }
+
+                    MWF.xDesktop.requireApp("query.Query", "Statement", function () {
+                        this.statement = new MWF.xApplication.query.Query.Statement(dlg.content.getFirst(), statementJson, { "style": "select" }, _form.app, _form.Macro);
+                    }.bind(this));
+                }.bind(this));
+            }
+        }
+    };
+
     //include 引用脚本
     //optionsOrName : {
     //  type : "", 默认为portal, 可以为 portal  process  cms

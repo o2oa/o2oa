@@ -103,5 +103,10 @@
     "icon": "subpage.png",
     "text": "部件元素",
     "className": "Widgetmodules"
+  },
+  "statement": {
+    "icon": "statement.png",
+    "text": "嵌入查询视图",
+    "className": "Statement"
   }
 }

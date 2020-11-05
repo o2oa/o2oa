@@ -197,7 +197,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
         this.loadNode();
 
         var form = this.editor.designer.form || this.editor.designer.page || this.editor.designer.view;
-        if (form.scriptDesigner){
+        if (form && form.scriptDesigner){
             this.scriptItem = form.scriptDesigner.addScriptItem(this.data, "actionScript", this.editor.module, "action.tools", this.data.text);
         }
 
