@@ -192,26 +192,30 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             }
             if( f.valueType === "script" ){
                 value = this.Macro.exec( f.valueScript ? f.valueScript.code : "", this);
-            }else if( f.value.indexOf( "@" ) > -1 ){
-                var user = layout.user;
+            }else{
+                //var user = layout.user;
                 switch ( f.value ) {
                     case "@person":
-                        value = user.distinguishedName;
+                    case "person":
+                        //value = user.distinguishedName;
                         break;
                     case "@identityList":
-                        value =  user.identityList.map( function (d) {
-                            return d.distinguishedName;
-                        });
+                    case "identityList":
+                        //value =  user.identityList.map( function (d) {
+                        //    return d.distinguishedName;
+                        //});
                         break;
                     case "@unitList":
-                        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({ "personList" : [user.distinguishedName] }, function (json) {
-                            value = json.unitList;
-                        }, null, false);
+                    case "unitList":
+                        //o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({ "personList" : [user.distinguishedName] }, function (json) {
+                        //    value = json.unitList;
+                        //}, null, false);
                         break;
                     case "@unitAllList":
-                        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({ "personList" : [user.distinguishedName] }, function (json) {
-                            value = json.unitList;
-                        }, null, false);
+                    case "unitAllList":
+                        //o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({ "personList" : [user.distinguishedName] }, function (json) {
+                        //    value = json.unitList;
+                        //}, null, false);
                         break;
                     case "@year":
                         value = (new Date().getFullYear()).toString();
@@ -294,6 +298,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                 }
 
                 this.gridJson = json.data;
+                this.setSelectedableFlag();
 
                 this.fireEvent("postLoadPageData");
 
@@ -331,6 +336,16 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     },
 
     loadData: function(){
+         if( this.getSelectFlag() === "multi" && this.viewJson.allowSelectAll ) {
+            if(this.selectTitleCell && this.selectTitleCell.retrieve("selectAllLoaded")){
+                this.setUnSelectAllStyle();
+            }else{
+                this.createSelectAllNode();
+            }
+        }else if(this.selectAllNode){
+            this.clearSelectAllStyle();
+        }
+
         if (this.gridJson.length){
             // if( !this.options.paging ){
             this.gridJson.each(function(line, i){
@@ -375,7 +390,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                             "path": entry.path,
                             "value": key,
                             "formatType": entry.formatType,
-                            "logic": "and",
+                            "logic": "or",
                             "comparison": "like"
                         };
                         filterData.push(d);
@@ -387,7 +402,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                                 "path": entry.path,
                                 "value": v,
                                 "formatType": entry.formatType,
-                                "logic": "and",
+                                "logic": "or",
                                 "comparison": "like"
                             };
                             filterData.push(d);
@@ -483,11 +498,12 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
 MWF.xApplication.query.Query.Statement.Item = new Class({
     Extends : MWF.xApplication.query.Query.Viewer.Item,
-    initialize: function(view, data, prev, i){
+    initialize: function(view, data, prev, i, category){
         this.view = view;
         this.data = data;
         this.css = this.view.css;
         this.isSelected = false;
+        this.category = category;
         this.prev = prev;
         this.idx = i;
         this.clazzType = "item";
@@ -513,6 +529,24 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
         this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
         this.selectTd.setStyles({"cursor": "pointer"});
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+
+        //var selectFlag = this.view.json.select || this.view.viewJson.select ||  "none";
+        var selectFlag = this.view.getSelectFlag();
+        if ( this.data.$selectedEnable && ["multi","single"].contains(selectFlag) && this.view.viewJson.selectBoxShow==="always") {
+            var viewStyles = this.view.viewJson.viewStyles;
+            if (viewStyles) {
+                if (selectFlag === "single") {
+                    this.selectTd.setStyles(viewStyles["radioNode"]);
+                } else {
+                    this.selectTd.setStyles(viewStyles["checkboxNode"]);
+                }
+            } else {
+                var iconName = "checkbox";
+                if (selectFlag === "single") iconName = "radiobox";
+                this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/" + iconName + ".png) center center no-repeat"});
+            }
+        }
+
         if( this.view.isSelectTdHidden() ){
             this.selectTd.hide();
         }
