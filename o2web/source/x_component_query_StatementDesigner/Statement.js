@@ -939,7 +939,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }
 
         if (typeOf(this.viewJson) === "object") {
-            if(!this.viewJson.group)this.viewJson.group = {};
+            if(this.viewJson.data && !this.viewJson.data.group)this.viewJson.data.group = {};
             if(!this.viewJson.pageSize)this.viewJson.pageSize = "20";
             this.data.view = JSON.stringify(this.viewJson);
         }
@@ -970,6 +970,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }
 
         if (typeOf(this.viewJson) === "object") {
+            if(this.viewJson.data && !this.viewJson.data.group)this.viewJson.data.group = {};
             if( !this.viewJson.pageSize )this.viewJson.pageSize = "20";
             this.data.view = JSON.stringify(this.viewJson);
         }
