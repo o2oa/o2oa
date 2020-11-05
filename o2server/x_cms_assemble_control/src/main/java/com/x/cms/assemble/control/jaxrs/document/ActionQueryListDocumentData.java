@@ -35,50 +35,38 @@ public class ActionQueryListDocumentData extends BaseAction {
 			business = new Business(emc);
 		}
 		List<Wo> wos = new ArrayList<>();
-		if(wi.getDocIds()!=null) {
-			List<String> unitNames = userManagerService.listUnitNamesWithPerson(effectivePerson.getDistinguishedName());
-			List<String> groupNames = userManagerService.listGroupNamesByPerson(effectivePerson.getDistinguishedName());
-			for(String id : wi.getDocIds()){
-				Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), id, effectivePerson.getDistinguishedName());
-				Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-				if (optional.isPresent()) {
-					wos.add((Wo)optional.get());
-				} else {
-					Wo wo = getDocumentQueryResult(business,id, effectivePerson, unitNames, groupNames);
-					if(wo != null) {
-						wos.add(wo);
-						CacheManager.put(cacheCategory, cacheKey, wo);
-					}
-				}
-			}
+		if(wi.getDocIds()!=null && !wi.getDocIds().isEmpty()) {
+			wos = getDocumentQueryResult(business, wi.getDocIds(), effectivePerson);
 		}
 		result.setData(wos);
 		return result;			
 	}
 
-	/**
-	 * 获取需要返回的文档信息对象
-	 * @param id
-	 * @param effectivePerson
-	 * @return
-	 */
-	private Wo getDocumentQueryResult(Business business, String id, EffectivePerson effectivePerson, List<String> unitNames, List<String> groupNames) throws Exception {
-		Wo wo = new Wo();
-		Document document = documentQueryService.view( id, effectivePerson );
-		if ( document != null ){
+	private List<Wo> getDocumentQueryResult(Business business, List<String> ids, EffectivePerson effectivePerson) throws Exception {
+		List<Wo> wos = new ArrayList<>();
+		Wo wo = null;
+		List<Document> docs = documentQueryService.list(ids);
+		List<String> unitNames = userManagerService.listUnitNamesWithPerson(effectivePerson.getDistinguishedName());
+		List<String> groupNames = userManagerService.listGroupNamesByPerson(effectivePerson.getDistinguishedName());
+		for (Document document : docs){
 			if(this.hasReadPermission(business, document, unitNames, groupNames, effectivePerson, null)) {
-				WoDocument woOutDocument = WoDocument.copier.copy(document);
-				wo.setDocId(id);
-				wo.setDocument(woOutDocument);
-				if (woOutDocument != null) {
+				Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), document.getId());
+				Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+				if (optional.isPresent()) {
+					wo = (Wo)optional.get();
+				} else {
+					wo = new Wo();
+					WoDocument woOutDocument = WoDocument.copier.copy(document);
+					wo.setDocId(document.getId());
+					wo.setDocument(woOutDocument);
 					wo.setData(documentQueryService.getDocumentData(document));
+					CacheManager.put(cacheCategory, cacheKey, wo);
 				}
-			}else{
-				return null;
+				wos.add(wo);
 			}
 		}
 		
-		return wo;
+		return wos;
 	}
 
 	public static class Wo extends GsonPropertyObject {
