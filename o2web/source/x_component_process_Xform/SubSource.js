@@ -18,7 +18,16 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class({
     _loadUserInterface: function(){
         this.loopNodes = [];
         this.subSourceItems = [];
-        this.node.hide();
+        var node = new Element("div").inject(this.node, "before");
+        this.node.inject(node);
+        this.loopNode = this.node.dispose();
+        this.node = node;
+        var id = node.get("id");
+        node.set("id", "");
+        this.node.set({
+            "id": id,
+            "mwftype": node.get("mwftype")
+        });
         this.node.store("module", this);
         this._loadJsonData();
     },
@@ -97,19 +106,8 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class({
             if (this.source.data){
                 this._getSourceData(this.source.data);
                 this.fireEvent("postLoadData");
-                this.node.show();
+                if (typeOf(this.data)!=="array") this.data = [this.data];
                 if (typeOf(this.data)=="array"){
-                    var node = new Element("div").inject(this.node, "before");
-                    this.node.inject(node);
-                    this.loopNode = this.node.dispose();
-                    this.node = node;
-                    var id = node.get("id");
-                    node.set("id", "");
-                    this.node.set({
-                        "id": id,
-                        "mwftype": node.get("mwftype")
-                    });
-
                     this._loopData();
                     this.fireEvent("loadData");
                 }else{
