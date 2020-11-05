@@ -6,9 +6,12 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.service.AppInfoServiceAdv;
 import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
 import com.x.cms.assemble.control.service.DocCommendPersistService;
@@ -23,6 +26,7 @@ import com.x.cms.assemble.control.service.QueryViewService;
 import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.core.entity.*;
 import com.x.query.core.entity.Item;
+import org.apache.commons.lang3.StringUtils;
 
 public class BaseAction extends StandardJaxrsAction {
 
@@ -206,6 +210,82 @@ public class BaseAction extends StandardJaxrsAction {
 			}
 		}		
 		return false;
+	}
+
+	protected boolean hasReadPermission(Business business, Document document, List<String> unitNames, List<String> groupNames, EffectivePerson effectivePerson, String queryPerson) throws Exception{
+		String personName = effectivePerson.getDistinguishedName();
+		if(effectivePerson.isManager()){
+			if(StringUtils.isNotEmpty(queryPerson)){
+				Person person = userManagerService.getPerson(queryPerson);
+				if(person!=null){
+					personName = person.getDistinguishedName();
+				}else{
+					return false;
+				}
+			}else {
+				return true;
+			}
+		}
+		//是否是读者
+		if(ListTools.contains(document.getReadPersonList(), getShortTargetFlag(personName)) ||
+				ListTools.contains(document.getReadPersonList(), "所有人")){
+			return true;
+		}
+		if(unitNames == null){
+			unitNames = userManagerService.listUnitNamesWithPerson(personName);
+		}
+		for(String unitName : unitNames){
+			if(ListTools.contains(document.getReadUnitList(), getShortTargetFlag(unitName))){
+				return true;
+			}
+		}
+		if (groupNames == null){
+			groupNames = userManagerService.listGroupNamesByPerson(personName);
+		}
+		for(String groupName : groupNames){
+			if(ListTools.contains(document.getReadGroupList(), getShortTargetFlag(groupName))){
+				return true;
+			}
+		}
+		//是否是作者
+		if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
+			if( document.getAuthorPersonList().contains( personName ) ) {
+				return true;
+			}
+		}
+		if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
+			if( ListTools.containsAny( unitNames, document.getAuthorUnitList())) {
+				return true;
+			}
+		}
+		if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
+			if( ListTools.containsAny( groupNames, document.getAuthorGroupList())) {
+				return true;
+			}
+		}
+
+		if(business.isHasPlatformRole(personName, ThisApplication.ROLE_CMSManager)){
+			return true;
+		}
+
+		return false;
+	}
+
+	protected String getShortTargetFlag(String distinguishedName) {
+		String target = null;
+		if( StringUtils.isNotEmpty( distinguishedName ) ){
+			String[] array = distinguishedName.split("@");
+			StringBuffer sb = new StringBuffer();
+			if( array.length == 3 ){
+				target = sb.append(array[1]).append("@").append(array[2]).toString();
+			}else if( array.length == 2 ){
+				//2段
+				target = sb.append(array[0]).append("@").append(array[1]).toString();
+			}else{
+				target = array[0];
+			}
+		}
+		return target;
 	}
 
 
