@@ -1,4 +1,14 @@
 {
+
+    "areaNode" : {
+        "border": "1px solid #fff"
+    },
+    "areaNode_selected": {
+        "border": "1px solid red"
+    },
+    "areaNode_over": {
+        "border": "1px dotted blue"
+    },
     "actionbarNode" : {
         "overflow": "hidden"
     },
