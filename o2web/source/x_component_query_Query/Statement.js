@@ -177,14 +177,15 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             this.filterList.push( d );
         }.bind(this))
     },
-    loadParameter : function( data ){
+    loadParameter : function(){
         this.parameter = {};
+        var parameter = this.json.parameter ? Object.clone(this.json.parameter) : {};
         //系统默认的参数
-        ( this.viewJson.filterList || [] ).each( function (f) {
+        ( this.viewJson.parameterList || [] ).each( function (f) {
             var value = f.value;
-            if( data.parameter && data.parameter[ f.parameter ] ){
-                value = data.parameter[ f.parameter ];
-                delete data.parameter[ f.parameter ];
+            if( parameter && parameter[ f.parameter ] ){
+                value = parameter[ f.parameter ];
+                delete parameter[ f.parameter ];
             }
             debugger;
             if( typeOf( value ) === "date" ){
@@ -254,14 +255,12 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             this.parameter[ f.parameter ] = value;
         }.bind(this));
         //传入的参数
-        if( data.parameter ){
-            for( var p in data.parameter ){
-                var value = data.parameter[p];
-                if( typeOf( value ) === "date" ){
-                    value = "{ts '"+value+"'}"
-                }
-                this.parameter[ p ] = value;
+        for( var p in parameter ){
+            var value = parameter[p];
+            if( typeOf( value ) === "date" ){
+                value = "{ts '"+value+"'}"
             }
+            parameter[ p ] = value;
         }
     },
     loadCurrentPageData: function( callback, async, type ){
@@ -484,14 +483,14 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     switchStatement : function (json) {
         this.switchView(json);
     },
-    setFilter : function( filter, callback ){
+    setFilter : function( filter, parameter, callback ){
         if( this.lookuping || this.pageloading )return;
-        if( !filter )filter = {"filterList": [], "paramter" : {} };
-        if( typeOf( filter ) === "object" )return;
-        this.json.filter = filter.filterList || [];
-        this.json.paramter = filter.paramter || {};
+        if( !filter )filter = [];
+        if( !parameter )parameter = {};
+        this.json.filter = filter;
+        this.json.parameter = parameter;
         if( this.viewAreaNode ){
-            this.createViewNode({"filterList": this.json.filter.clone(), "paramter" : Object.clone(this.json.paramter) }, callback);
+            this.createViewNode({"filterList": this.json.filter.clone() }, callback);
         }
     }
 });
