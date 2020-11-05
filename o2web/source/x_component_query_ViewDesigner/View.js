@@ -1858,7 +1858,9 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         this.textNode.set("text", this.json.displayName);
         this.listNode.getLast().set("text", this.json.displayName+"("+listText+")");
     },
-
+    getJsonPath : function(){
+        return this.path+"toolbars.json";
+    },
     _createNode: function(callback){
         this.node = new Element("div", {
             "id": this.json.id,
@@ -1898,7 +1900,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             this._setEditStyle_custom("hideSystemTools");
             //json = null;
         }else{
-            MWF.getJSON(this.path+"toolbars.json", function(json){
+            MWF.getJSON( this.getJsonPath(), function(json){
                 this.json.defaultTools = json;
                 var json = Array.clone(this.json.defaultTools);
                 //if (this.json.tools) json.append(this.json.tools);
@@ -1934,7 +1936,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
                 this.toolbarWidget.load();
                 //json = null;
             }else{
-                MWF.getJSON(this.path+"toolbars.json", function(json){
+                MWF.getJSON( this.getJsonPath(), function(json){
                     this.json.defaultTools = json;
                     var json = Array.clone(this.json.defaultTools);
                     //if (this.json.tools) json.append(this.json.tools);

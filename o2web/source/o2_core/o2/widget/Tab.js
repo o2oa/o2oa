@@ -267,9 +267,13 @@ o2.widget.TabPage = new Class({
 			this.fireEvent("hide");
 		}
 	},
-	enableTab : function(){
+	enableTab : function( notShow ){
 		this.disabled = false;
-		this.showTab();
+		if( notShow ){
+			this.tabNode.show();
+		}else{
+			this.showTab();
+		}
 	},
 	disableTab : function( notShowSibling ){
 		this.disabled = true;

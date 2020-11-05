@@ -10,6 +10,7 @@ MWF.xApplication.query.Query.LP = {
     "noDescription": "未定义描述",
     "view": "视图",
     "stat": "统计",
+    "statement" : "查询",
     "customSearch": "高级搜索",
     "searchKeywork": "输入关键字搜索视图",
     "yes": "是",
