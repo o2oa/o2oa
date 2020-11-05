@@ -111,7 +111,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         // this._initPage();
 
         debugger;
-        this.loadParameter();
+        this.loadParameter( d );
         this.loadFilter( d );
 
         this.currentPage = this.options.defaultPage || 1;
@@ -177,11 +177,19 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             this.filterList.push( d );
         }.bind(this))
     },
-    loadParameter : function(){
+    loadParameter : function( data ){
         this.parameter = {};
+        //系统默认的参数
         ( this.viewJson.filterList || [] ).each( function (f) {
             var value = f.value;
+            if( data.parameter && data.parameter[ f.parameter ] ){
+                value = data.parameter[ f.parameter ];
+                delete data.parameter[ f.parameter ];
+            }
             debugger;
+            if( typeOf( value ) === "date" ){
+                value = value.format("db");
+            }
             if( f.valueType === "script" ){
                 value = this.Macro.exec( f.valueScript ? f.valueScript.code : "", this);
             }else if( f.value.indexOf( "@" ) > -1 ){
@@ -240,7 +248,17 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                 value = "{t '"+value+"'}"
             }
             this.parameter[ f.parameter ] = value;
-        }.bind(this))
+        }.bind(this));
+        //传入的参数
+        if( data.parameter ){
+            for( var p in data.parameter ){
+                var value = data.parameter[p];
+                if( typeOf( value ) === "date" ){
+                    value = "{ts '"+value+"'}"
+                }
+                this.parameter[ p ] = value;
+            }
+        }
     },
     loadCurrentPageData: function( callback, async, type ){
         //是否需要在翻页的时候清空之前的items ?
@@ -450,6 +468,16 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     },
     switchStatement : function (json) {
         this.switchView(json);
+    },
+    setFilter : function( filter, callback ){
+        if( this.lookuping || this.pageloading )return;
+        if( !filter )filter = {"filterList": [], "paramter" : {} };
+        if( typeOf( filter ) === "object" )return;
+        this.json.filter = filter.filterList || [];
+        this.json.paramter = filter.paramter || {};
+        if( this.viewAreaNode ){
+            this.createViewNode({"filterList": this.json.filter.clone(), "paramter" : Object.clone(this.json.paramter) }, callback);
+        }
     }
 });
 
