@@ -60,9 +60,38 @@
             <tr>
                 <td class="editTableTitle">选择:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.select" text{($.data.select!=='single' || $.data.select!=='multi' )?'checked':''} type="radio" value="none"/>无
-                    <input class="editTableRadio" name="data.select" text{($.data.select==='single')?'checked':''} type="radio" value="single"/>单选
-                    <input class="editTableRadio" name="data.select" text{($.data.select==='multi')?'checked':''} type="radio" value="multi"/>多选
+                    <input class="editTableRadio" name="data.select" text{($.data.select!=='single' || $.data.select!=='multi' )?'checked':''} type="radio" value="none" onclick="
+                    if (this.checked){
+                        $('text{$.id}selectBoxShowTr').setStyle('display', 'none');
+                        $('text{$.id}allowSelectAllTr').setStyle('display', 'none');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'none');
+                    }"/>无
+                    <input class="editTableRadio" name="data.select" text{($.data.select==='single')?'checked':''} type="radio" value="single" onclick="
+                    if (this.checked){
+                        $('text{$.id}selectBoxShowTr').setStyle('display', 'table-row');
+                        $('text{$.id}allowSelectAllTr').setStyle('display', 'none');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'block');
+                    }"/>单选
+                    <input class="editTableRadio" name="data.select" text{($.data.select==='multi')?'checked':''} type="radio" value="multi" onclick="
+                    if (this.checked){
+                        $('text{$.id}selectBoxShowTr').setStyle('display', 'table-row');
+                        $('text{$.id}allowSelectAllTr').setStyle('display', 'table-row');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'block');
+                    }"/>多选
+                </td>
+            </tr>
+            <tr id="text{$.id}selectBoxShowTr" style="display: text{($.data.select=='single' || $.data.select=='multi')?'':'none'}">
+                <td class="editTableTitle">选择框显示:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow==='always')?'checked':''} type="radio" value="always"/>一直显示
+                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow!=='always')?'checked':''} type="radio" value="mouseover"/>鼠标经过时
+                </td>
+            </tr>
+            <tr id="text{$.id}allowSelectAllTr" style="display: text{($.data.select=='multi')?'':'none'}">
+                <td class="editTableTitle" id="">允许全选:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.allowSelectAll" text{($.data.allowSelectAll===true)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="data.allowSelectAll" text{($.data.allowSelectAll!==true)?'checked':''} type="radio" value="false"/>否
                 </td>
             </tr>
             <tr>
@@ -85,6 +114,8 @@
         </table>
 
         <div class="MWFFormulaArea" name="data.defaultSelectedScript" title="默认选中行脚本"></div>
+        <div class="MWFFormulaArea" name="data.selectedAbleScript" title="允许选择行脚本" id="text{$.id}selectedAbleScript"
+             style="display: text{($.data.select=='single' || $.data.select=='multi')?'':'none'}"></div>
 
 
 
