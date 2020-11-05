@@ -1164,6 +1164,14 @@ MWF.xApplication.process.Work.Processor = new Class({
         delete this.okButton;
     },
     getRouteDataList: function () {
+        debugger;
+        if(this.routeDataList)return this.routeDataList;
+        if( this.form && this.form.businessData && this.form.businessData.routeList ){
+            this.form.businessData.routeList.each( function(d){
+                d.selectConfigList = JSON.parse(d.selectConfig || "[]");
+            }.bind(this));
+            this.routeDataList = this.form.businessData.routeList;
+        }
         if (!this.routeDataList) {
             o2.Actions.get("x_processplatform_assemble_surface").listRoute({"valueList": this.task.routeList}, function (json) {
                 json.data.each(function (d) {
@@ -1783,6 +1791,26 @@ MWF.xApplication.process.Work.Processor = new Class({
     },
     saveOrgsWithCheckEmpower: function (callback) {
         debugger;
+        var currentRoute = this.selectedRoute ? this.selectedRoute.retrieve("route") : "";
+
+        var visableOrg = this.getVisableOrgData( currentRoute );
+        var needOrgLength = visableOrg.length;
+
+        var loadedOrgLength = 0;
+        if ( this.orgItems && this.orgItems.length)loadedOrgLength = this.orgItems.length;
+
+        if( needOrgLength !== loadedOrgLength ){
+            MWF.xDesktop.notice(
+                "error",
+                {"x": "center", "y": "center"},
+                MWF.xApplication.process.Work.LP.loadedOrgCountUnexpected,
+                this.node,
+                {"x": 0, "y": 30},
+                {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+            );
+            return false;
+        }
+
         if (!this.orgItems || !this.orgItems.length) {
             if (callback) callback();
             return true;
