@@ -50,13 +50,17 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
     },
     loadData: function () {
+        if (this.filtrData.parameterData && this.filtrData.parameterData.length) {
+            this.filtrData.parameterData.each(function (data) {
+                data.type = "parameter";
+                this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter(this, data));
+            }.bind(this));
+        }
+
         if (this.filtrData.filtrData && this.filtrData.filtrData.length) {
             this.filtrData.filtrData.each(function (data) {
-                if( this.options.withForm ){
-                    this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemWithForm(this, data));
-                }else{
-                    this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item(this, data));
-                }
+                data.type = "filter";
+                this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemFilter(this, data));
             }.bind(this));
         }
 
@@ -87,25 +91,25 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             this.scriptArea.load(v);
         }.bind(this));
     },
-    createFilterValueScriptArea: function (node) {
+    createParameterValueScriptArea: function (node) {
         var title = node.get("title");
 
         MWF.require("MWF.widget.ScriptArea", function () {
-            this.filterValueScriptArea = new MWF.widget.ScriptArea(node, {
+            this.parameterValueScriptArea = new MWF.widget.ScriptArea(node, {
                 "title": title,
                 "isload": true,
                 "isbind": false,
                 "maxObj": this.app.formContentNode || this.app.pageContentNode,
                 "onChange": function () {
-                    this.filterValueScriptData = this.filterValueScriptArea.toJson();
+                    this.parameterValueScriptData = this.parameterValueScriptArea.toJson();
                 }.bind(this),
                 "onSave": function () {
                     //this.app.saveForm();
                 }.bind(this),
                 "style": "formula"
             });
-            var v = (this.filterValueScriptData) ? this.filterValueScriptData.code : "";
-            this.filterValueScriptArea.load(v);
+            var v = (this.parameterValueScriptData) ? this.parameterValueScriptData.code : "";
+            this.parameterValueScriptArea.load(v);
         }.bind(this));
     },
     createCustomFilterValueScriptArea: function (node) {
@@ -151,7 +155,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         // this.parameterInputSelect = this.inputAreaNode.getElement(".parameterInputSelect_vf");
         this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput_vf");
 
-        this.restrictFilterInput = this.inputAreaNode.getElement(".restrictFilterInput_vf");
+        this.restrictParameterInput = this.inputAreaNode.getElement(".restrictParameterInput_vf");
         this.customFilterInput = this.inputAreaNode.getElement(".customFilterInput_vf");
 
         // this.logicInput = this.inputAreaNode.getElement(".logicInput_vf");
@@ -171,11 +175,11 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         if (this.app.statement && this.app.statement.view) {
             var dataId = this.app.statement.view.data.id;
 
-            this.filterValueType = this.inputAreaNode.getElements("[name='" + dataId + "viewFilterValueType']");
-            this.filterValueScriptDiv = this.inputAreaNode.getElement("#" + dataId + "viewFilterValueScriptDiv");
-            this.filterValueScript = this.inputAreaNode.getElement("[name='" + dataId + "viewFilterValueScript']");
-            if (this.filterValueScript) {
-                this.createFilterValueScriptArea(this.filterValueScript);
+            this.parameterValueType = this.inputAreaNode.getElements("[name='" + dataId + "viewParameterValueType']");
+            this.parameterValueScriptDiv = this.inputAreaNode.getElement("#" + dataId + "viewParameterValueScriptDiv");
+            this.parameterValueScript = this.inputAreaNode.getElement("[name='" + dataId + "viewParameterValueScript']");
+            if (this.parameterValueScript) {
+                this.createParameterValueScriptArea(this.parameterValueScript);
             }
 
             this.customFilterValueTypes = this.inputAreaNode.getElements("[name='" + dataId + "viewCustomFilterValueType']");
@@ -194,7 +198,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 "target": this.app.content,
                 "format": "db",
                 "onComplate": function () {
-                    this.node.getElement("#" + id + "viewFilterDateFormulaSelector").getElements("input").set("checked", false);
+                    this.node.getElement("#" + id + "viewParameterDateFormulaSelector").getElements("input").set("checked", false);
                 }.bind(this)
             });
             new MWF.widget.Calendar(this.valueDateInput, {
@@ -302,7 +306,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
 
         //if (this.app.statement.view){
         //    var id = this.app.view.data.id;
-        //     var div = this.node.getElement("#"+id+"viewFilterValueArea2");
+        //     var div = this.node.getElement("#"+id+"viewParameterValueArea2");
         //     // inputs = div.getElements("input");
         //     if( div ){
         //this.valueTextInput2 = div.getElement(".valueTextInput2_vf") || null;
@@ -320,7 +324,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         //        "target": this.app.content,
         //        "format": "db",
         //        "onComplate": function(){
-        //            this.node.getElement("#"+id+"viewFilterDateFormulaSelector2").getElements("input").set("checked", false);
+        //            this.node.getElement("#"+id+"viewParameterDateFormulaSelector2").getElements("input").set("checked", false);
         //        }.bind(this)
         //    });
         //    new MWF.widget.Calendar(this.valueDateInput2, {
@@ -411,23 +415,23 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             }
             var config = {
                 "textValue": {
-                    "selectorArea": "#" + id + "viewFilterTextFormulaSelector",
+                    "selectorArea": "#" + id + "viewParameterTextFormulaSelector",
                     "input": this.valueTextInput
                 },
                 "datetimeValue": {
-                    "selectorArea": "#" + id + "viewFilterDateFormulaSelector",
+                    "selectorArea": "#" + id + "viewParameterDateFormulaSelector",
                     "input": this.valueDatetimeInput
                 },
                 "dateTimeValue": {
-                    "selectorArea": "#" + id + "viewFilterDateFormulaSelector",
+                    "selectorArea": "#" + id + "viewParameterDateFormulaSelector",
                     "input": this.valueDatetimeInput
                 },
                 "dateValue": {
-                    "selectorArea": "#" + id + "viewFilterDateOnlyFormulaSelector",
+                    "selectorArea": "#" + id + "viewParameterDateOnlyFormulaSelector",
                     "input": this.valueDateInput
                 },
                 "timeValue": {
-                    "selectorArea": "#" + id + "viewFilterTimeOnlyFormulaSelector",
+                    "selectorArea": "#" + id + "viewParameterTimeOnlyFormulaSelector",
                     "input": this.valueTimeInput
                 },
                 "numberValue": {
@@ -439,10 +443,10 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             };
 
             var formulaSelectorIdList = [
-                "#" + id + "viewFilterTextFormulaSelector",
-                "#" + id + "viewFilterDateFormulaSelector",
-                "#" + id + "viewFilterDateOnlyFormulaSelector",
-                "#" + id + "viewFilterTimeOnlyFormulaSelector"
+                "#" + id + "viewParameterTextFormulaSelector",
+                "#" + id + "viewParameterDateFormulaSelector",
+                "#" + id + "viewParameterDateOnlyFormulaSelector",
+                "#" + id + "viewParameterTimeOnlyFormulaSelector"
             ];
 
             var inputList = [
@@ -516,13 +520,13 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
     },
     modifyOrAddFilterItem: function () {
         var flag;
-        if (this.currentFilterItem) {
+        if (this.currentItem) {
             flag = this.modifyFilterItem();
         } else {
             if( this.options.withForm ){
                 flag = this.addFilterItemWithForm();
-            }else if (this.restrictFilterInput.checked) {
-                flag = this.addFilterItem();
+            }else if (this.restrictParameterInput.checked) {
+                flag = this.addParameterItem();
             } else {
                 flag = this.addCustomFilterItem();
             }
@@ -533,7 +537,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 "path": "",
                 "parameter" : "",
                 "title": "",
-                "type": this.restrictFilterInput.checked ? "restrict" : "custom",
+                "type": this.restrictParameterInput.checked ? "parameter" : "custom",
                 "comparison": "equals",
                 "formatType": "textValue",
                 "value": "",
@@ -546,32 +550,32 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         var data = this.getInputData();
         if( this.options.withForm ){
             if (this.verificationDataWithForm(data)) {
-                this.currentFilterItem.reload(data);
-                this.currentFilterItem.unSelected();
+                this.currentItem.reload(data);
+                this.currentItem.unSelected();
                 this.fireEvent("change");
                 return true;
             }
-        }else if( this.restrictFilterInput.checked ){
+        }else if( this.restrictParameterInput.checked ){
             if (this.verificationData(data)) {
-                this.currentFilterItem.reload(data);
-                this.currentFilterItem.unSelected();
+                this.currentItem.reload(data);
+                this.currentItem.unSelected();
                 this.fireEvent("change");
                 return true;
             }
         }else{
             if (this.verificationDataCustom(data)) {
-                this.currentFilterItem.reload(data);
-                this.currentFilterItem.unSelected();
+                this.currentItem.reload(data);
+                this.currentItem.unSelected();
                 this.fireEvent("change");
                 return true;
             }
         }
         return false;
     },
-    addFilterItem: function () {
+    addParameterItem: function () {
         var data = this.getInputData();
         if (this.verificationData(data)) {
-            this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item(this, data));
+            this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter(this, data));
             this.fireEvent("change");
             return true;
         }
@@ -586,10 +590,10 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
         return false;
     },
-    addFilterItemWithForm : function(){
+    addFilterItem : function(){
         var data = this.getInputData();
         if (this.verificationDataWithForm(data)) {
-            this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemWithForm(this, data));
+            this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemFilter(this, data));
             this.fireEvent("change");
             return true;
         }
@@ -746,7 +750,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         var parameter = this.parameterInput ? this.parameterInput.get("value") : "";
 
         var title = this.titleInput.get("value");
-        if (this.restrictFilterInput.checked) var type = "restrict";
+        if (this.restrictParameterInput.checked) var type = "parameter";
         if (this.customFilterInput.checked) var type = "custom";
 
         // var comparison = this.comparisonInput.options[this.comparisonInput.selectedIndex].value;
@@ -808,8 +812,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 "otherValue": value2,
                 "code": this.scriptData
             };
-        }else if (type === "restrict") {
-            this.filterValueType.each(function (radio) {
+        }else if (type === "parameter") {
+            this.parameterValueType.each(function (radio) {
                 if (radio.get("checked")) valueType = radio.get("value");
             });
             return {
@@ -823,7 +827,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 //"otherValue": value2,
                 "code": this.scriptData,
                 "valueType": valueType,
-                "valueScript": this.filterValueScriptData
+                "valueScript": this.parameterValueScriptData
             };
         } else {
             var valueType = "";
@@ -971,23 +975,23 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 }
             }
 
-            if (data.type === "restrict") {
-                this.filterValueType.each(function (radio) {
+            if (data.type === "parameter") {
+                this.parameterValueType.each(function (radio) {
                     if (data.valueType) {
                         if (data.valueType === radio.get("value")) radio.set("checked", true);
                     } else {
                         if ("input" === radio.get("value")) radio.set("checked", true);
                     }
                 });
-                if (this.filterValueScriptArea) {
+                if (this.parameterValueScriptArea) {
                     if (!data.valueType || data.valueType === "input") {
-                        this.filterValueScriptDiv.hide();
-                        this.filterValueScriptData = "";
-                        this.filterValueScriptArea.editor.setValue("");
+                        this.parameterValueScriptDiv.hide();
+                        this.parameterValueScriptData = "";
+                        this.parameterValueScriptArea.editor.setValue("");
                     } else {
-                        this.filterValueScriptDiv.show();
-                        this.filterValueScriptData = data.valueScript;
-                        this.filterValueScriptArea.editor.setValue(data.valueScript ? data.valueScript.code : "");
+                        this.parameterValueScriptDiv.show();
+                        this.parameterValueScriptData = data.valueScript;
+                        this.parameterValueScriptArea.editor.setValue(data.valueScript ? data.valueScript.code : "");
                     }
                 }
             }
@@ -1000,27 +1004,30 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
     },
 
     deleteItem: function (item) {
-        if (this.currentFilterItem == item) item.unSelected();
+        if (this.currentItem == item) item.unSelected();
         this.items.erase(item);
         item.node.destroy();
         MWF.release(item);
         this.fireEvent("change");
     },
     getData: function () {
-        var data = [];
+        var parameterData = [];
         var customData = [];
+        var filterData = [];
         this.items.each(function (item) {
             if (item.data.type === "custom") {
                 customData.push(item.data);
+            }else if (item.data.type === "filter") {
+                filterData.push(item.data);
             } else {
-                data.push(item.data);
+                parameterData.push(item.data);
             }
         }.bind(this));
-        return {"data": data, "customData": customData};
+        return {"parameterData": parameterData, "customData": customData, "filterData" : filterData };
     }
 });
 
-MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item = new Class({
+MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter = new Class({
     Implements: [Events],
     initialize: function (filter, data) {
         this.filter = filter;
@@ -1062,17 +1069,16 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item = new Class({
             this.filter.verificationNode = null;
             this.filter.parameterInput.setStyle("background-color", "#FFF");
         }
-        this.filter.restrictFilterInput.set("checked", true);
-        this.filter.restrictFilterInput.click();
-        if (this.filter.currentFilterItem) this.filter.currentFilterItem.unSelected();
+        this.filter.restrictParameterInput.set("checked", true);
+        this.filter.restrictParameterInput.click();
+        if (this.filter.currentItem) this.filter.currentItem.unSelected();
         this.node.setStyles(this.css.itemNode_current);
-        this.filter.currentFilterItem = this;
+        this.filter.currentItem = this;
         this.filter.setData(this.data);
     },
     unSelected: function () {
         this.node.setStyles(this.css.itemNode);
-        this.filter.currentFilterItem = null;
-        this.filter.currentItem = this;
+        this.filter.currentItem = null;
     },
     deleteItem: function (e) {
         var _self = this;
@@ -1089,7 +1095,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item = new Class({
 });
 
 MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemCustom = new Class({
-    Extends: MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item,
+    Extends: MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter,
     initialize: function (filter, data) {
         this.filter = filter;
         this.data = data;
@@ -1106,9 +1112,9 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemCustom = new Clas
         }
          this.filter.customFilterInput.set("checked", true);
          this.filter.customFilterInput.click();
-        if (this.filter.currentFilterItem) this.filter.currentFilterItem.unSelected();
+        if (this.filter.currentItem) this.filter.currentItem.unSelected();
         this.node.setStyles(this.css.itemNode_current);
-        this.filter.currentFilterItem = this;
+        this.filter.currentItem = this;
         this.filter.setData(this.data);
     },
     getText: function () {
@@ -1117,8 +1123,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemCustom = new Clas
     },
 });
 
-MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemWithForm = new Class({
-    Extends: MWF.xApplication.query.StatementDesigner.widget.ViewFilter.Item,
+MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemFilter = new Class({
+    Extends: MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter,
     initialize: function (filter, data) {
         this.filter = filter;
         this.data = data;
@@ -1135,9 +1141,9 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemWithForm = new Cl
         }
         // this.filter.customFilterInput.set("checked", true);
         // this.filter.customFilterInput.click();
-        if (this.filter.currentFilterItem) this.filter.currentFilterItem.unSelected();
+        if (this.filter.currentItem) this.filter.currentItem.unSelected();
         this.node.setStyles(this.css.itemNode_current);
-        this.filter.currentFilterItem = this;
+        this.filter.currentItem = this;
         this.filter.setData(this.data);
     },
     getText: function () {
