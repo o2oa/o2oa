@@ -36,6 +36,7 @@ MWF.xApplication.process.Work.LP = {
     "noAppendTaskIdentityConfig" : "没有配置转交人，请联系管理员",
     "selectAppendTaskIdentityNotice" : "请选择转交人",
     "routeValidFailure" : "路由校验失败",
+    "loadedOrgCountUnexpected" : "人员选择界面未加载完成，请稍候...",
 
     "taskCompletedPerson": "办理人",
     "readPerson": "阅读人",
