@@ -84,6 +84,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadSourceTestRestful();
                     this.loadSidebarPosition();
                     this.loadViewFilter();
+                    this.loadStatementFilter();
                     this.loadDocumentTempleteSelect();
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
@@ -516,6 +517,25 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 }.bind(this));
             }.bind(this));
         }
+    },
+    loadStatementFilter: function(){
+	    debugger;
+        var nodes = this.propertyContent.getElements(".MWFStatementFilter");
+        var filtrData = this.data.filterList;
+        nodes.each(function(node){
+            MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilter", function(){
+                var _slef = this;
+                this.viewFilter = new MWF.xApplication.query.StatementDesigner.widget.ViewFilter(node, this.form.designer, {"filtrData": filtrData, "customData": null}, {
+                    "statementId" : this.data.queryStatement ? this.data.queryStatement.id : "",
+                    "withForm" : true,
+                    "onChange": function(ids){
+                        var data = this.getData();
+                        _slef.changeJsonDate(["filterList"], data.data);
+                        //_slef.changeJsonDate(["data", "customFilterEntryList"], data.customData);
+                    }
+                });
+            }.bind(this));
+        }.bind(this));
     },
     loadViewFilter: function(){
         var nodes = this.propertyContent.getElements(".MWFViewFilter");
@@ -1241,6 +1261,7 @@ debugger;
         var viewNodes = this.propertyContent.getElements(".MWFViewSelect");
         var cmsviewNodes = this.propertyContent.getElements(".MWFCMSViewSelect");
         var queryviewNodes = this.propertyContent.getElements(".MWFQueryViewSelect");
+        var queryStatementNodes = this.propertyContent.getElements(".MWFQueryStatementSelect");
         var querystatNodes = this.propertyContent.getElements(".MWFQueryStatSelect");
         var fileNodes = this.propertyContent.getElements(".MWFImageFileSelect");
         var processFileNodes = this.propertyContent.getElements(".MWFProcessImageFileSelect");
@@ -1301,6 +1322,15 @@ debugger;
             queryviewNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "QueryView",
+                    "count": 1,
+                    "names": [this.data[node.get("name")]],
+                    "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
+            queryStatementNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "QueryStatement",
                     "count": 1,
                     "names": [this.data[node.get("name")]],
                     "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
