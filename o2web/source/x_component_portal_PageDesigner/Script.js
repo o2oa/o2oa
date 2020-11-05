@@ -158,6 +158,10 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadSubformScript(v); break;
             case "ViewSelector":
                 this.loadViewSelectorScript(v); break;
+            case "Statement":
+                this.loadStatementScript(v); break;
+            case "StatementSelector":
+                this.loadStatementSelectorScript(v); break;
         }
         this.bindDataId(v);
     },
@@ -417,6 +421,14 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.loadEventsScript(data);
     },
     loadViewSelectorScript: function(data){
+        this.addScriptItem(data.selectedScript, "code", data, "selectedScript");
+        this.loadEventsScript(data);
+    },
+
+    loadStatementScript: function(data){
+        this.loadEventsScript(data);
+    },
+    loadStatementSelectorScript: function(data){
         this.addScriptItem(data.selectedScript, "code", data, "selectedScript");
         this.loadEventsScript(data);
     },

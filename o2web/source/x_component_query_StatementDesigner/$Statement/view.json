@@ -1,0 +1,69 @@
+{
+  "name": "",
+  "id": "",
+  "query": "",
+  "alias": "",
+  "description": "",
+  "display": true,
+  "type": "View",
+  "pageSize" : "20",
+  "data": {
+//    "exportGrid": true,
+//    "exportGoupGrid": true,
+    "noDataText" : "未找到数据",
+    "selectList": [],
+    "filterList": [],
+    "orderList": [],
+    "group": {},
+    "columnList": [],
+//    "calculate": {},
+//    "afterGridScriptText": "",
+//    "afterGroupGridScriptText": "",
+//    "afterCalculateGridScriptText": "",
+    "actionbarHidden" : true,
+    "events": {
+      "queryLoad" : {
+        "code": "",
+        "html": ""
+      },
+      "postLoad": {
+        "code": "",
+        "html": ""
+      },
+      "postLoadPageData" : {
+        "code": "",
+        "html": ""
+      },
+      "postLoadPage": {
+        "code": "",
+        "html": ""
+      },
+      "queryLoadItemRow": {
+        "code": "",
+        "html": ""
+      },
+      "postLoadItemRow": {
+        "code": "",
+        "html": ""
+      },
+//      "queryLoadCategoryRow": {
+//        "code": "",
+//        "html": ""
+//      },
+//      "postLoadCategoryRow": {
+//        "code": "",
+//        "html": ""
+//      },
+      "selectRow" : {
+        "code": "",
+        "html": ""
+      },
+      "unselectRow" : {
+        "code": "",
+        "html": ""
+      }
+    }
+  }
+//  "availableIdentityList": [],
+//  "availableUnitList": []
+}
