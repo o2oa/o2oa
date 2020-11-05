@@ -126,7 +126,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> data(Business business, Work work, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
-				// Date s = new Date();
 				List<Item> list = business.entityManagerContainer().listEqualAndEqual(Item.class,
 						DataItem.bundle_FIELDNAME, work.getJob(), DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
 				if (!list.isEmpty()) {
@@ -136,8 +135,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 						wo.setData(gson.fromJson(jsonElement, Data.class));
 					}
 				}
-				// System.out.println("!!!!!!!!!!!!!!!!data:" + ((new Date()).getTime() -
-				// s.getTime()));
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -177,7 +174,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> activity(Business business, Work work, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
-				// Date s = new Date();
 				Activity activity = business.getActivity(work);
 				if (null != activity) {
 					WoActivity woActivity = new WoActivity();
@@ -196,13 +192,10 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> task(EffectivePerson effectivePerson, Business business, Work work, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
-				// Date s = new Date();
 				wo.setTaskList(WoTask.copier.copy(
 						business.entityManagerContainer().listEqual(Task.class, Task.work_FIELDNAME, work.getId())));
 				wo.setCurrentTaskIndex(
 						ListUtils.indexOf(wo.getTaskList(), e -> effectivePerson.isPerson(e.getPerson())));
-				// System.out.println("!!!!!!!!!!!!!!!!task:" + ((new Date()).getTime() -
-				// s.getTime()));
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -212,7 +205,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> attachment(EffectivePerson effectivePerson, Business business, String job, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
-				// Date s = new Date();
 				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 				List<WoAttachment> wos = new ArrayList<>();
@@ -236,8 +228,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 										Comparator.nullsLast(Date::compareTo))))
 						.collect(Collectors.toList());
 				wo.setAttachmentList(wos);
-				// System.out.println("!!!!!!!!!!!!!!!!attachment:" + ((new Date()).getTime() -
-				// s.getTime()));
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -247,13 +237,10 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> read(EffectivePerson effectivePerson, Business business, String job, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
-				// Date s = new Date();
 				wo.setReadList(WoRead.copier
 						.copy(business.entityManagerContainer().listEqual(Read.class, Read.job_FIELDNAME, job)));
 				wo.setCurrentReadIndex(
 						ListUtils.indexOf(wo.getReadList(), e -> effectivePerson.isPerson(e.getPerson())));
-				// System.out.println("!!!!!!!!!!!!!!!!read:" + ((new Date()).getTime() -
-				// s.getTime()));
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -263,10 +250,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> workJson(Work work, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
-				// Date s = new Date();
 				wo.setWork(gson.toJsonTree(WoWork.copier.copy(work)));
-				// System.out.println("!!!!!!!!!!!!!!!!workJson:" + ((new Date()).getTime() -
-				// s.getTime()));
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -276,10 +260,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> creatorIdentity(Business business, String creatorIdentity, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
-				// Date s = new Date();
 				wo.setCreatorIdentity(business.organization().identity().getObject(creatorIdentity));
-				// System.out.println("!!!!!!!!!!!!!!!!creatorIdentity:" + ((new
-				// Date()).getTime() - s.getTime()));
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -289,10 +270,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> creatorPerson(Business business, String creatorPerson, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
-				// Date s = new Date();
 				wo.setCreatorPerson(business.organization().person().getObject(creatorPerson));
-				// System.out.println("!!!!!!!!!!!!!!!!creatorPerson:" + ((new Date()).getTime()
-				// - s.getTime()));
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -302,10 +280,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> creatorUnit(Business business, String creatorUnit, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
-				// Date s = new Date();
 				wo.setCreatorUnit(business.organization().unit().getObject(creatorUnit));
-				// System.out.println("!!!!!!!!!!!!!!!!creatorUnit:" + ((new Date()).getTime() -
-				// s.getTime()));
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -695,10 +670,10 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		private static final long serialVersionUID = 556378904185283486L;
 
-		static WrapCopier<Route, WoRoute> copier = WrapCopierFactory.wo(Route.class, WoRoute.class,
-				ListTools.toList(JpaObject.id_FIELDNAME, Route.name_FIELDNAME, Route.description_FIELDNAME,
-						Route.alias_FIELDNAME),
-				null);
+		static WrapCopier<Route, WoRoute> copier = WrapCopierFactory.wo(Route.class, WoRoute.class, null,
+				ListTools.toList(Route.createTime_FIELDNAME, Route.edition_FIELDNAME, Route.position_FIELDNAME,
+						Route.process_FIELDNAME, Route.updateTime_FIELDNAME, Route.track_FIELDNAME,
+						Route.properties_FIELDNAME));
 	}
 
 	public static class WoAttachment extends Attachment {
