@@ -669,7 +669,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     this.statement = {
         "execute": function (statement, callback, async) {
-            var obj = { "filterList": (statement.filterList || []), parameter : (statement.parameter || {}) };
+            var obj = { "filterList": (statement.filter || []), parameter : (statement.parameter || {}) };
             MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
                 statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
                 function (json) {
@@ -683,7 +683,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     "statementName": statement.statement || "",
                     "isTitle": (statement.isTitle === false) ? "no" : "yes",
                     "select": (statement.isMulti === false) ? "single" : "multi",
-                    "filter": statement.filter
+                    "filter": statement.filter,
+                    "parameter": statement.parameter
                 };
                 if (!options) options = {};
                 options.width = statement.width;
@@ -872,7 +873,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
         "selectAll" : function () { return _form.selectAll(); },
         "unSelectAll" : function () { return _form.unSelectAll(); },
         "getSelectedData" : function () { return _form.getSelectedData(); },
-        "setFilter" : function ( filter ) { return _form.setFilter(filter); },
+        "setFilter" : function ( filter, callback ) { return _form.setFilter(filter, callback); },
+        "setStatementFilter" : function ( filter , parameter, callback) { return _form.setFilter(filter, parameter, callback); },
         "switchView" : function ( options ) { return _form.switchView(options); },
         "switchStatement" : function ( options ) { if(_form.switchStatement)_form.switchStatement(options) ; },
         "reload" : function () { _form.reload(); },
