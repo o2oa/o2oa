@@ -85,58 +85,63 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			List<WoReadCompleted> readCompleteds = _readCompleteds.get();
 			List<WorkLog> workLogs = _workLogs.get();
 
-			WorkLogTree tree = new WorkLogTree(workLogs);
+			if (workLogs.isEmpty()) {
 
-			List<Wo> wos = new ArrayList<>();
-			for (WorkLog o : workLogs.stream().filter(o -> Objects.equals(ActivityType.manual, o.getFromActivityType()))
-					.collect(Collectors.toList())) {
-				Wo wo = Wo.copier.copy(o);
-				Node node = tree.find(o);
-				if (null != node) {
-					Nodes nodes = node.downNextManual();
-					if (nodes.isEmpty()) {
-						/* 如果没有找到后面的人工节点,那么有多种可能,有一种是已经删除,工作合并到其他分支了,那么找其他分支的下一步 */
-						WorkLog otherWorkLog = workLogs.stream()
-								.filter(g -> (g != o)
-										&& StringUtils.equals(g.getArrivedActivity(), o.getArrivedActivity())
-										&& StringUtils.equals(g.getSplitToken(), o.getSplitToken()))
-								.findFirst().orElse(null);
-						if (null != otherWorkLog) {
-							node = tree.find(otherWorkLog);
-							if (null != node) {
-								nodes = node.downNextManual();
+				WorkLogTree tree = new WorkLogTree(workLogs);
+
+				List<Wo> wos = new ArrayList<>();
+				for (WorkLog o : workLogs.stream()
+						.filter(o -> Objects.equals(ActivityType.manual, o.getFromActivityType()))
+						.collect(Collectors.toList())) {
+					Wo wo = Wo.copier.copy(o);
+					Node node = tree.find(o);
+					if (null != node) {
+						Nodes nodes = node.downNextManual();
+						if (nodes.isEmpty()) {
+							/* 如果没有找到后面的人工节点,那么有多种可能,有一种是已经删除,工作合并到其他分支了,那么找其他分支的下一步 */
+							WorkLog otherWorkLog = workLogs.stream()
+									.filter(g -> (g != o)
+											&& StringUtils.equals(g.getArrivedActivity(), o.getArrivedActivity())
+											&& StringUtils.equals(g.getSplitToken(), o.getSplitToken()))
+									.findFirst().orElse(null);
+							if (null != otherWorkLog) {
+								node = tree.find(otherWorkLog);
+								if (null != node) {
+									nodes = node.downNextManual();
+								}
+							}
+						}
+						if (!nodes.isEmpty()) {
+							for (Node n : nodes) {
+								tasks.stream().filter(t -> StringUtils.equals(t.getActivityToken(),
+										n.getWorkLog().getFromActivityToken())).forEach(t -> {
+											wo.getNextTaskIdentityList().add(t.getIdentity());
+										});
+								taskCompleteds.stream()
+										.filter(t -> BooleanUtils.isTrue(t.getJoinInquire()) && StringUtils
+												.equals(t.getActivityToken(), n.getWorkLog().getFromActivityToken()))
+										.forEach(t -> {
+											wo.getNextTaskCompletedIdentityList().add(t.getIdentity());
+										});
 							}
 						}
 					}
-					if (!nodes.isEmpty()) {
-						for (Node n : nodes) {
-							tasks.stream().filter(t -> StringUtils.equals(t.getActivityToken(),
-									n.getWorkLog().getFromActivityToken())).forEach(t -> {
-										wo.getNextTaskIdentityList().add(t.getIdentity());
-									});
-							taskCompleteds.stream()
-									.filter(t -> BooleanUtils.isTrue(t.getJoinInquire()) && StringUtils
-											.equals(t.getActivityToken(), n.getWorkLog().getFromActivityToken()))
-									.forEach(t -> {
-										wo.getNextTaskCompletedIdentityList().add(t.getIdentity());
-									});
-						}
-					}
+					/* 下一环节处理人可能是重复处理导致重复的,去重 */
+					wo.setNextTaskIdentityList(ListTools.trim(wo.getNextTaskIdentityList(), true, true));
+					wo.setNextTaskCompletedIdentityList(
+							ListTools.trim(wo.getNextTaskCompletedIdentityList(), true, true));
+					wos.add(wo);
 				}
-				/* 下一环节处理人可能是重复处理导致重复的,去重 */
-				wo.setNextTaskIdentityList(ListTools.trim(wo.getNextTaskIdentityList(), true, true));
-				wo.setNextTaskCompletedIdentityList(ListTools.trim(wo.getNextTaskCompletedIdentityList(), true, true));
-				wos.add(wo);
+				ListTools.groupStick(wos, tasks, WorkLog.fromActivityToken_FIELDNAME, Task.activityToken_FIELDNAME,
+						TASKLIST_FIELDNAME);
+				ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
+						TaskCompleted.activityToken_FIELDNAME, TASKCOMPLETEDLIST_FIELDNAME);
+				ListTools.groupStick(wos, reads, WorkLog.fromActivityToken_FIELDNAME, Read.activityToken_FIELDNAME,
+						READLIST_FIELDNAME);
+				ListTools.groupStick(wos, readCompleteds, WorkLog.fromActivityToken_FIELDNAME,
+						ReadCompleted.activityToken_FIELDNAME, READCOMPLETEDLIST_FIELDNAME);
+				result.setData(wos);
 			}
-			ListTools.groupStick(wos, tasks, WorkLog.fromActivityToken_FIELDNAME, Task.activityToken_FIELDNAME,
-					TASKLIST_FIELDNAME);
-			ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
-					TaskCompleted.activityToken_FIELDNAME, TASKCOMPLETEDLIST_FIELDNAME);
-			ListTools.groupStick(wos, reads, WorkLog.fromActivityToken_FIELDNAME, Read.activityToken_FIELDNAME,
-					READLIST_FIELDNAME);
-			ListTools.groupStick(wos, readCompleteds, WorkLog.fromActivityToken_FIELDNAME,
-					ReadCompleted.activityToken_FIELDNAME, READCOMPLETEDLIST_FIELDNAME);
-			result.setData(wos);
 			return result;
 		}
 	}
