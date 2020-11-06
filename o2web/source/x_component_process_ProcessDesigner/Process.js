@@ -1687,16 +1687,46 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 			this.objectTabPage = this.propertyListTab.addTab(this.jsonObjectNode, "JSON", false);
 			this.stringTabPage = this.propertyListTab.addTab(this.jsonStringNode, "Text", false);
 
-			var div = new Element("div", {"styles": {
-				"float": "right",
-				"margin-right": "10px"
-			}, "text": MWF.APPPD.LP.showAdvanced}).inject(this.propertyListTab.tabNodeContainer)
-			this.showAdvanced = new Element("input", {
-				"type": "checkbox",
-				"events": {
-					"mousedown": function(e){ e.stopPropagation(); }
-				}
-			}).inject(div, "top");
+			var div = new Element("div", {
+				"styles": {"float": "right", "margin-right": "10px"},
+				"html": "<span>"+MWF.APPPD.LP.showAdvanced+"</span>"
+			}).inject(this.propertyListTab.tabNodeContainer);
+			div.getElement("span").addEvents({
+				"mousedown": function(e){ e.stopPropagation(); },
+				"click": function(e){
+					this.showAdvanced.click();
+					e.stopPropagation();
+				}.bind(this)
+			});
+
+			o2.UD.getDataJson("process-show-advanced", function(json){
+				this.showAdvanced = new Element("input", {
+					"type": "checkbox",
+					"checked": (!json) ? false : json.show,
+					"events": {
+						"mousedown": function(e){ e.stopPropagation(); },
+						"change": function(){
+							if (this.showAdvanced.checked){
+								var advs = this.propertyListNode.querySelectorAll("*[data-o2-advanced=\"yes\"]");
+								if (advs && advs.length){
+									for (var i=0; i<advs.length; i++){
+										advs[i].show();
+									}
+								}
+							}else{
+								var advs = this.propertyListNode.querySelectorAll("*[data-o2-advanced=\"yes\"]");
+								if (advs && advs.length){
+									for (var i=0; i<advs.length; i++){
+										advs[i].hide();
+									}
+								}
+							}
+							o2.UD.putData("process-show-advanced", {"show": !!this.showAdvanced.checked})
+						}.bind(this)
+					}
+				}).inject(div, "top");
+			}.bind(this));
+
 
 			// this.propertyListTab.tabNodeContainerArea
 			// showAdvanced
