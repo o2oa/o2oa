@@ -53,7 +53,7 @@ class MeetingDetailInfoActivity : BaseMVPActivity<MeetingDetailInfoContract.View
         edit_meeting_invited_start_day.text = meetingDetailInfo.startTime.substring(0,10)
         edit_meeting_time.text = meetingDetailInfo.startTime.substring(11,16)+"-"+meetingDetailInfo.completedTime.substring(11,16)
         meeting_people_sum.text = Integer.toString(meetingDetailInfo.invitePersonList.size+1)+"人"
-        edit_meeting_create_form_desc.text = meetingDetailInfo.description
+        edit_meeting_create_form_desc.text = meetingDetailInfo.summary
         mPresenter.asyncLoadRoomName(edit_meeting_invited_room,meetingDetailInfo.room)
 
         meetingFileList.addAll(meetingDetailInfo.attachmentList)
