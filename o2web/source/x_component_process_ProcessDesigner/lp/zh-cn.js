@@ -11,6 +11,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"property": "属性",
 	"showJson": "查看JSON",
 	"all" : "全部",
+	"showAdvanced": "显示高级属性",
 
     "phone": "手机",
     "mail": "邮件",
