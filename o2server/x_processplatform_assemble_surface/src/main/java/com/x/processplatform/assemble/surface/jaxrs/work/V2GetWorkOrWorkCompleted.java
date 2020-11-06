@@ -193,7 +193,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		return CompletableFuture.runAsync(() -> {
 			try {
 				wo.setTaskList(WoTask.copier.copy(
-						business.entityManagerContainer().listEqual(Task.class, Task.work_FIELDNAME, work.getId())));
+						business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, work.getJob())));
 				wo.setCurrentTaskIndex(
 						ListUtils.indexOf(wo.getTaskList(), e -> effectivePerson.isPerson(e.getPerson())));
 			} catch (Exception e) {
