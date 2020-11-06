@@ -157,11 +157,13 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         ( data.filterList || [] ).each( function (d) {
             var parameterName = d.path.replace(/\./g, "_");
             var value = d.value;
-            if( d.code && d.code.code ){
-                value = this.Macro.exec( d.code.code, this);
-            }
+            // if( d.code && d.code.code ){
+            //     value = this.Macro.exec( d.code.code, this);
+            // }
             if( d.comparison === "like" || d.comparison === "notLike" ){
-                this.parameter[ parameterName ] = "%"+value+"%";
+                if( value.substr(0, 1) !== "%" )value = "%"+value;
+                if( value.substr(value.length-1,1) !== "%" )value = value+"%";
+                this.parameter[ parameterName ] = value; //"%"+value+"%";
             }else{
                 if( d.formatType === "dateTimeValue" || d.formatType === "datetimeValue"){
                     value = "{ts '"+value+"'}"
