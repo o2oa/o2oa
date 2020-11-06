@@ -107,7 +107,6 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 				"styles": this.process.css.propertyTabNode
 			}).inject(tmpNode, "before");
 
-			debugger;
 			MWF.require("MWF.widget.Tab", function(){
 				var tab = new MWF.widget.Tab(tabAreaNode, {"style": "moduleList"});
 				tab.load();
@@ -117,7 +116,6 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 					tabPages.push(tabPage);
 					if (node.hasAttribute("data-o2-advanced") && node.dataset["o2Advanced"]=="yes"){
                         tabPage.tabNode.setAttribute("data-o2-advanced", "yes");
-                        tabPage.tabNode.hide();
                     }
 				}.bind(this));
 				tabPages[0].showTab();
