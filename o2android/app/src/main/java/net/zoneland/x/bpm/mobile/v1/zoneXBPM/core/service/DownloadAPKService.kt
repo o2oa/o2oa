@@ -1,27 +1,18 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service
 
 import android.app.IntentService
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import androidx.core.app.NotificationCompat
-import android.widget.RemoteViews
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.BuildConfig
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import android.app.NotificationChannel
-import android.os.Build
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.BuildConfig
 
 
 /**
@@ -89,41 +80,43 @@ class DownloadAPKService : IntentService("DownloadAPKService") {
         val downloadUrl = intent.getStringExtra(DOWNLOAD_URL_EXTRA_NAME)
         val file = File(FileUtil.appExternalCacheDir(applicationContext)?.absolutePath + File.separator + versionName + ".apk")
         return try {
-            if (!file.exists()) {
-                val url = URL(downloadUrl)
-                val conn = url.openConnection() as HttpURLConnection
-                conn.setRequestProperty("Accept-Encoding", "identity")
-                conn.connect()
-                val length = conn.contentLength
-                val inputStream = conn.inputStream
-                val fos = FileOutputStream(file, true)
-                var oldProgress = 0
-                val buf = ByteArray(1024 * 8)
-                var currentLength = 0
-                while (true) {
-                    val num = inputStream.read(buf)
-                    currentLength += num
-                    // 计算进度条位置
-                    val progress = (currentLength / length.toFloat() * 100).toInt()
-                    if (progress > oldProgress) {
-                        updateMessage(progress)
-                        oldProgress = progress
-                    }
-                    if (num <= 0) {
-                        break
-                    }
-                    fos.write(buf, 0, num)
-                    fos.flush()
-                }
-                fos.flush()
-                fos.close()
-                inputStream.close()
+            if (file.exists()) {
+                file.delete()
             }
+            val url = URL(downloadUrl)
+            val conn = url.openConnection() as HttpURLConnection
+            conn.setRequestProperty("Accept-Encoding", "identity")
+            conn.connect()
+            val length = conn.contentLength
+            val inputStream = conn.inputStream
+            val fos = FileOutputStream(file, true)
+            var oldProgress = 0
+            val buf = ByteArray(1024 * 8)
+            var currentLength = 0
+            while (true) {
+                val num = inputStream.read(buf)
+                currentLength += num
+                // 计算进度条位置
+                val progress = (currentLength / length.toFloat() * 100).toInt()
+                if (progress > oldProgress) {
+                    updateMessage(progress)
+                    oldProgress = progress
+                }
+                if (num <= 0) {
+                    break
+                }
+                fos.write(buf, 0, num)
+                fos.flush()
+            }
+            fos.flush()
+            fos.close()
+            inputStream.close()
+
             file
         } catch (e: Exception) {
             XLog.error("下载应用安装包失败", e)
             try {
-                file.deleteOnExit()
+                file.delete()
             } catch (e: Exception) {
             }
             null
