@@ -669,13 +669,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     this.statement = {
         "execute": function (statement, callback, async) {
-            var filterList = { "filterList": (statement.filter || null) };
-            MWF.Actions.get("x_query_assemble_surface").execute(statement.view, statement.application, filterList, function (json) {
-                var data = {
-                    "grid": json.data.grid,
-                };
-                if (callback) callback(data);
-            }, null, async);
+            var obj = { "filterList": (statement.filterList || []), parameter : (statement.parameter || {}) };
+            MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+                statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
+                function (json) {
+                    if (callback) callback(json);
+                }, null, async);
         },
         "select": function (statement, callback, options) {
             if (statement.statement) {
