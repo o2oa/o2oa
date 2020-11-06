@@ -166,28 +166,28 @@
                         <td class="editTableTitle">数据类型:</td>
                         <td class="editTableValue"><select class="datatypeInput_vf">
 <!--                                 onchange="if (this.selectedIndex==2){-->
-<!--                                    $('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'block');-->
-<!--                                    $('text{$.id}viewFilterDateOnlyFormulaSelector').setStyle('display', 'none');-->
-<!--                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterDateFormulaSelector').setStyle('display', 'block');-->
+<!--                                    $('text{$.id}viewParameterDateOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterTimeOnlyFormulaSelector').setStyle('display', 'none');-->
 <!--                                   }else if (this.selectedIndex==3){-->
-<!--                                    $('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'none');-->
-<!--                                    $('text{$.id}viewFilterDateOnlyFormulaSelector').setStyle('display', 'block');-->
-<!--                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterDateFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterDateOnlyFormulaSelector').setStyle('display', 'block');-->
+<!--                                    $('text{$.id}viewParameterTimeOnlyFormulaSelector').setStyle('display', 'none');-->
 
 <!--                                }else if (this.selectedIndex==4){-->
-<!--                                    $('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'none');-->
-<!--                                    $('text{$.id}viewFilterDateOnlyFormulaSelector').setStyle('display', 'none');-->
-<!--                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector').setStyle('display', 'block');-->
+<!--                                    $('text{$.id}viewParameterDateFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterDateOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterTimeOnlyFormulaSelector').setStyle('display', 'block');-->
 <!--                                }else{-->
-<!--                                    $('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'none');-->
-<!--                                    $('text{$.id}viewFilterDateOnlyFormulaSelector').setStyle('display', 'none');-->
-<!--                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterDateFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterDateOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterTimeOnlyFormulaSelector').setStyle('display', 'none');-->
 <!--                                }-->
 
 <!--                                if (this.selectedIndex==0){-->
-<!--                                    $('text{$.id}viewFilterTextFormulaSelector').setStyle('display', 'block');-->
+<!--                                    $('text{$.id}viewParameterTextFormulaSelector').setStyle('display', 'block');-->
 <!--                                }else{-->
-<!--                                    $('text{$.id}viewFilterTextFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterTextFormulaSelector').setStyle('display', 'none');-->
 <!--                                }">-->
 
                             <option value="textValue" selected>文本</option>
@@ -201,9 +201,9 @@
                     <tr>
                         <td class="editTableTitle"></td>
                         <td class="editTableValue">
-                            <input type="radio" class="restrictFilterInput_vf" value="restrict" name="text{$.id}viewFilterType" onclick="if (this.checked){
+                            <input type="radio" class="restrictParameterInput_vf" value="restrict" name="text{$.id}viewFilterType" onclick="if (this.checked){
                                 debugger;
-                                $('text{$.id}viewFilterRestrict').setStyle('display', 'block');
+                                $('text{$.id}viewParameterRestrict').setStyle('display', 'block');
                                 $('text{$.id}parameterInputTr').setStyle('display', 'table-row');
                                 // $('text{$.id}parameterInputSelectTr').setStyle('display', 'table-row');
                                 $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'none');
@@ -211,7 +211,7 @@
                                 $('text{$.id}pathInputSelectTr').setStyle('display', 'none');
                             }"/>作为默认过滤条件<br>
                             <input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
-                                $('text{$.id}viewFilterRestrict').setStyle('display', 'none');
+                                $('text{$.id}viewParameterRestrict').setStyle('display', 'none');
                                 $('text{$.id}parameterInputTr').setStyle('display', 'none');
                                 // $('text{$.id}parameterInputSelectTr').setStyle('display', 'none');
                                 $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'block');
@@ -221,32 +221,32 @@
                         </td>
                     </tr>
                 </table>
-                 <div id="text{$.id}viewFilterRestrict"  style="display: none">
+                 <div id="text{$.id}viewParameterRestrict"  style="display: none">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle" id="text{$.id}viewFilterValueTitleArea">值:</td>
+                            <td class="editTableTitle" id="text{$.id}viewParameterValueTitleArea">值:</td>
 
                             <td class="editTableValue">
-                                <input class="editTableRadio"  name="viewFilterValueType" type="radio" value="input" checked onclick="
+                                <input class="editTableRadio"  name="viewParameterValueType" type="radio" value="input" checked onclick="
                                     if (this.checked){
-                                        $('text{$.id}viewFilterValueScriptDiv').setStyle('display', 'none');
-                                        $('text{$.id}viewFilterValueArea').setStyle('display', 'table-row');
-                                        $('text{$.id}viewFilterFormulaSelector').setStyle('display', 'block');
+                                        $('text{$.id}viewParameterValueScriptDiv').setStyle('display', 'none');
+                                        $('text{$.id}viewParameterValueArea').setStyle('display', 'table-row');
+                                        $('text{$.id}viewParameterFormulaSelector').setStyle('display', 'block');
                                     }
                                 "/>输入
-                                <input class="editTableRadio" name="viewFilterValueType" type="radio" value="script" onclick="
+                                <input class="editTableRadio" name="viewParameterValueType" type="radio" value="script" onclick="
                                     if (this.checked){
-                                        $('text{$.id}viewFilterValueScriptDiv').setStyle('display', 'block');
-                                        $('text{$.id}viewFilterValueArea').setStyle('display', 'none');
-                                        $('text{$.id}viewFilterFormulaSelector').setStyle('display', 'none');
+                                        $('text{$.id}viewParameterValueScriptDiv').setStyle('display', 'block');
+                                        $('text{$.id}viewParameterValueArea').setStyle('display', 'none');
+                                        $('text{$.id}viewParameterFormulaSelector').setStyle('display', 'none');
                                     }
                                 "/>脚本
                             </td>
                         </tr>
-                        <tr id="text{$.id}viewFilterValueArea">
+                        <tr id="text{$.id}viewParameterValueArea">
                             <td class="editTableTitle"></td>
                             <td class="editTableValue">
-                                <input type="text" class="editTableInput valueTextInput_vf" style="display: block" onkeypress="$('text{$.id}viewFilterTextFormulaSelector').getElements('input').set('checked', false)"/>
+                                <input type="text" class="editTableInput valueTextInput_vf" style="display: block" onkeypress="$('text{$.id}viewParameterTextFormulaSelector').getElements('input').set('checked', false)"/>
                                 <input type="number" class="editTableInput valueNumberInput_vf" style="display: none"/>
                                 <input type="text" class="editTableInput valueDatetimeInput_vf" style="display: none" readonly/>
                                 <input type="text" class="editTableInput valueDateInput_vf" style="display: none" readonly/>
@@ -259,62 +259,62 @@
                         </tr>
 
                     </table>
-                     <div id="text{$.id}viewFilterFormulaSelector">
-                        <div style="display: none" id="text{$.id}viewFilterDateFormulaSelector">
+                     <div id="text{$.id}viewParameterFormulaSelector">
+                        <div style="display: none" id="text{$.id}viewParameterDateFormulaSelector">
                             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                                 <tr>
                                     <td class="editTableTitle"></td>
                                     <td class="editTableValue">
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@year" />当前年度
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@season" />当前季度
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@month" />当前月份<br/>
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@time" />当前时间
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@date" />当天
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@year" />当前年度
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@season" />当前季度
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@month" />当前月份<br/>
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@time" />当前时间
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@date" />当天
 
                                     </td>
                                 </tr>
                             </table>
                         </div>
-                        <div style="display: none" id="text{$.id}viewFilterDateOnlyFormulaSelector">
+                        <div style="display: none" id="text{$.id}viewParameterDateOnlyFormulaSelector">
                             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                                 <tr>
                                     <td class="editTableTitle"></td>
                                     <td class="editTableValue">
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@year" />当前年度
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@season" />当前季度
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@month" />当前月份<br/>
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@date" />当天
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@year" />当前年度
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@season" />当前季度
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@month" />当前月份<br/>
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@date" />当天
 
                                     </td>
                                 </tr>
                             </table>
                         </div>
-                        <div style="display: none" id="text{$.id}viewFilterTimeOnlyFormulaSelector">
+                        <div style="display: none" id="text{$.id}viewParameterTimeOnlyFormulaSelector">
                             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                                 <tr>
                                     <td class="editTableTitle"></td>
                                     <td class="editTableValue">
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@time" />当前时间
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueTimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@time" />当前时间
                                     </td>
                                 </tr>
                             </table>
                         </div>
-                        <div style="display: block" id="text{$.id}viewFilterTextFormulaSelector">
+                        <div style="display: block" id="text{$.id}viewParameterTextFormulaSelector">
                             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                                 <tr>
                                     <td class="editTableTitle"></td>
                                     <td class="editTableValue">
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" onclick="" type="radio" value="@person" />当前人
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" type="radio" value="@identityList" />当前身份<br/>
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" type="radio" value="@unitList" />当前人所在直接组织<br/>
-                                        <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" type="radio" value="@unitAllList" />当前人所在所有组织
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewParameterTextFormula" onclick="" type="radio" value="@person" />当前人
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewParameterTextFormula" type="radio" value="@identityList" />当前身份<br/>
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewParameterTextFormula" type="radio" value="@unitList" />当前人所在直接组织<br/>
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewParameterTextFormula" type="radio" value="@unitAllList" />当前人所在所有组织
                                     </td>
                                 </tr>
                             </table>
                         </div>
                      </div>
-                     <div style="display:none" id="text{$.id}viewFilterValueScriptDiv">
-                         <div name="text{$.id}viewFilterValueScript" title="脚本"></div>
+                     <div style="display:none" id="text{$.id}viewParameterValueScriptDiv">
+                         <div name="text{$.id}viewParameterValueScript" title="脚本"></div>
                      </div>
                 </div>
 
@@ -343,9 +343,9 @@
             </div>
             <div class="actionAreaNode_vf"></div>
             <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">默认过滤条件</div>
-            <div class="listAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+            <div class="parameterListAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
             <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">自定义过滤数据</div>
-            <div class="fieldListAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+            <div class="customFilterListAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
         </div>
     </div>
 
