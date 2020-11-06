@@ -247,6 +247,7 @@ o2.xDesktop.Default = new Class({
 
         taskitem = layout.desktop.createTaskItem(app);
         app.taskitem = taskitem;
+        app.isIndex = true;
         this.apps[app.options.appId] = app;
         taskitem.textNode.click();
     },
