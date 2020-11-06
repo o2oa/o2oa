@@ -85,10 +85,8 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			List<WoReadCompleted> readCompleteds = _readCompleteds.get();
 			List<WorkLog> workLogs = _workLogs.get();
 
-			if (workLogs.isEmpty()) {
-
+			if (!workLogs.isEmpty()) {
 				WorkLogTree tree = new WorkLogTree(workLogs);
-
 				List<Wo> wos = new ArrayList<>();
 				for (WorkLog o : workLogs.stream()
 						.filter(o -> Objects.equals(ActivityType.manual, o.getFromActivityType()))

@@ -33,10 +33,8 @@ class V2Get extends BaseAction {
 			CacheKey cacheKey = new CacheKey(this.getClass(), id);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
-				System.out.println("!!!!!!!!!!!!!!!!!!!getForm from cache");
 				result.setData((Wo) optional.get());
 			} else {
-				System.out.println("!!!!!!!!!!!!!!!!!!!getForm from db");
 				Wo wo = this.get(business, id);
 				CacheManager.put(cacheCategory, cacheKey, wo);
 				result.setData(wo);
