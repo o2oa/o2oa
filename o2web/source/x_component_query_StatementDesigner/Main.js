@@ -112,12 +112,15 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         this.statementListNode = new Element("div", {
             "styles": this.css.statementListNode
         }).inject(this.node);
+
         this.designerNode = new Element("div", {
             "styles": this.css.designerNode
         }).inject(this.node);
+
         this.contentNode = new Element("div", {
             "styles": this.css.contentNode
         }).inject(this.node);
+        this.formContentNode = this.contentNode;
     },
     loadStatementListNodes: function(){
         this.statementListTitleNode = new Element("div", {
