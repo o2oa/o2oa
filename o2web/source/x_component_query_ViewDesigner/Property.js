@@ -929,6 +929,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         }
     },
     loadActionArea: function () {
+        debugger;
         MWF.xApplication.process = MWF.xApplication.process || {};
         MWF.APPFD = MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
         MWF.xDesktop.requireApp("process.FormDesigner", "lp." + o2.language, null, false);
@@ -952,7 +953,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 // actionEditor.load(this.module.defaultToolBarsData);
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
-                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "maxObj": this.propertyNode.parentElement.parentElement,
                     "noEditShow": true,
                     "noReadShow": true,
                     "onChange": function () {
@@ -972,7 +973,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function () {
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
-                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "maxObj": this.propertyNode.parentElement.parentElement,
                     "isSystemTool": true,
                     "systemToolsAddress": "../x_component_query_ViewDesigner/$View/toolbars.json",
                     "noCreate": true,
