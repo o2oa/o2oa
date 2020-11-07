@@ -231,6 +231,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 		this.contentNode = new Element("div", {
 			"styles": this.css.contentNode
 		}).inject(this.node);
+        this.formContentNode = this.contentNode;
 	},
 
     //loadViewListNodes-------------------------------
