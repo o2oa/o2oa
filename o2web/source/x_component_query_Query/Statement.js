@@ -53,6 +53,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         if (this.json.view){
             this.viewJson = JSON.decode(this.json.view);
             this.statementJson = this.json;
+            this.statementJson.viewJson = this.viewJson;
             if (callback) callback();
         }else{
             this.getView(callback);
@@ -181,6 +182,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     },
     loadParameter : function(){
         this.parameter = {};
+        debugger;
         var parameter = this.json.parameter ? Object.clone(this.json.parameter) : {};
         //系统默认的参数
         ( this.viewJson.parameterList || [] ).each( function (f) {
@@ -189,36 +191,31 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                 value = parameter[ f.parameter ];
                 delete parameter[ f.parameter ];
             }
-            debugger;
             if( typeOf( value ) === "date" ){
                 value = value.format("db");
             }
             if( f.valueType === "script" ){
                 value = this.Macro.exec( f.valueScript ? f.valueScript.code : "", this);
             }else{
-                //var user = layout.user;
+                var user = layout.user;
                 switch ( f.value ) {
                     case "@person":
-                    case "person":
-                        //value = user.distinguishedName;
+                        value = user.distinguishedName;
                         break;
                     case "@identityList":
-                    case "identityList":
-                        //value =  user.identityList.map( function (d) {
-                        //    return d.distinguishedName;
-                        //});
+                        value =  user.identityList.map( function (d) {
+                           return d.distinguishedName;
+                        });
                         break;
                     case "@unitList":
-                    case "unitList":
-                        //o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({ "personList" : [user.distinguishedName] }, function (json) {
-                        //    value = json.unitList;
-                        //}, null, false);
+                        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({ "personList" : [user.distinguishedName] }, function (json) {
+                           value = json.unitList;
+                        }, null, false);
                         break;
                     case "@unitAllList":
-                    case "unitAllList":
-                        //o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({ "personList" : [user.distinguishedName] }, function (json) {
-                        //    value = json.unitList;
-                        //}, null, false);
+                        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({ "personList" : [user.distinguishedName] }, function (json) {
+                           value = json.unitList;
+                        }, null, false);
                         break;
                     case "@year":
                         value = (new Date().getFullYear()).toString();
@@ -260,9 +257,9 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         for( var p in parameter ){
             var value = parameter[p];
             if( typeOf( value ) === "date" ){
-                value = "{ts '"+value+"'}"
+                value = "{ts '"+value.format("db")+"'}"
             }
-            parameter[ p ] = value;
+            this.parameter[ p ] = value;
         }
     },
     loadCurrentPageData: function( callback, async, type ){
@@ -332,6 +329,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             this.json.application = json.data.query;
             //this.json = Object.merge(this.json, json.data);
             this.statementJson = json.data;
+            this.statementJson.viewJson = this.viewJson;
             if (callback) callback();
         }.bind(this));
     },
@@ -480,7 +478,15 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     },
     //搜索相关结束
     getStatementInfor : function () {
-        return this.json;
+        debugger;
+        return this.statementJson;
+    },
+    getPageInfor : function(){
+        return {
+            pages : this.pages,
+            perPageCount : this.json.pageSize,
+            currentPageNumber : this.currentPage
+        };
     },
     switchStatement : function (json) {
         this.switchView(json);
