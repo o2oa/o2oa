@@ -669,18 +669,63 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     this.statement = {
         "execute": function (statement, callback, async) {
-            var obj = { "filterList": (statement.filter || []), parameter : (statement.parameter || {}) };
+            var parameter = this.parseParameter(statement.parameter);
+            var filterList = this.parseFilter(statement.filter, parameter);
+            var obj = {
+                "filterList": filterList,
+                "parameter" : parameter
+            };
             MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
                 statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
                 function (json) {
                     if (callback) callback(json);
                 }, null, async);
         },
+        parseFilter : function( filter, parameter ){
+            if( typeOf(filter) !== "array" )return [];
+            var filterList = [];
+            ( filter || [] ).each( function (d) {
+                var parameterName = d.path.replace(/\./g, "_");
+                var value = d.value;
+                if( d.comparison === "like" || d.comparison === "notLike" ){
+                    if( value.substr(0, 1) !== "%" )value = "%"+value;
+                    if( value.substr(value.length-1,1) !== "%" )value = value+"%";
+                    parameter[ parameterName ] = value; //"%"+value+"%";
+                }else{
+                    if( d.formatType === "dateTimeValue" || d.formatType === "datetimeValue"){
+                        value = "{ts '"+value+"'}"
+                    }else if( d.formatType === "dateValue" ){
+                        value = "{d '"+value+"'}"
+                    }else if( d.formatType === "timeValue" ){
+                        value = "{t '"+value+"'}"
+                    }
+                    parameter[ parameterName ] = value;
+                }
+                d.value = parameterName;
+
+                filterList.push( d );
+            }.bind(this));
+            return filterList;
+        },
+        parseParameter : function( obj ){
+            if( typeOf(obj) !== "object" )return {};
+            var parameter = {};
+            //传入的参数
+            for( var p in obj ){
+                var value = obj[p];
+                if( typeOf( value ) === "date" ){
+                    value = "{ts '"+value.format("db")+"'}"
+                }
+                parameter[ p ] = value;
+            }
+            return parameter;
+        },
         "select": function (statement, callback, options) {
-            if (statement.statement) {
+            if (statement.name) {
+                // var parameter = this.parseParameter(statement.parameter);
+                // var filterList = this.parseFilter(statement.filter, parameter);
                 var statementJson = {
-                    "application": statement.application || _form.json.application,
-                    "statementName": statement.statement || "",
+                    "statementId": statement.name || "",
                     "isTitle": (statement.isTitle === false) ? "no" : "yes",
                     "select": (statement.isMulti === false) ? "single" : "multi",
                     "filter": statement.filter,
