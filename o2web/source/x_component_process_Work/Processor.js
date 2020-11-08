@@ -1793,7 +1793,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         debugger;
         var currentRoute = this.selectedRoute ? this.selectedRoute.retrieve("route") : "";
 
-        var visableOrg = this.getVisableOrgData( currentRoute );
+        var visableOrg = this.getVisableOrgData( currentRoute || this.selectedRouteId || "" );
         var needOrgLength = visableOrg.length;
 
         var loadedOrgLength = 0;
