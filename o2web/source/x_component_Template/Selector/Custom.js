@@ -295,6 +295,7 @@ MWF.xApplication.Template.Selector.Custom.ItemSelected = new Class({
                 }.bind(this));
             }
         }
+        if( this.afterCheck )this.afterCheck();
     }
 });
 
