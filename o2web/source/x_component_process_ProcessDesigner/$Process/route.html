@@ -105,6 +105,14 @@
                     <input class="editTableRadio" name="sole" text{(!$.sole)?'checked':''} type="radio" value="false"/>否
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">立即路由:</td>
+                <td class="editTableValue" id="text{$.id}sole" >
+                    <input class="editTableRadio" name="soleDirect" text{($.soleDirect!==false)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="soleDirect" text{($.soleDirect===false)?'checked':''} type="radio" value="false"/>否
+                    <br><div style="color: #999999">(当选择“是”，多人处理时只要选择此路由，则立即按此路由流转文档)</div>
+                </td>
+            </tr>
 
             <tr>
                 <td class="editTableValue" id="text{$.id}passExpired" colspan="2"><b>活动超时时自动流转：</b><input class="editTableRadio" name="passExpired" text{($.passExpired)?'checked':''} type="radio" value="true"/>是
