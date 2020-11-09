@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -33,6 +32,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServer;
@@ -252,7 +252,9 @@ public class WebServerTools extends JettySeverTools {
 				publicKey = new String(Base64.encodeBase64(publicKeyB));
 				map.put("publicKey", publicKey);
 			}
-			map.put("mock", Config.web().getMock());
+			for (Entry<String, JsonElement> en : Config.web().entrySet()) {
+				map.put(en.getKey(), en.getValue());
+			}
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 		}
 	}
