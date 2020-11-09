@@ -788,6 +788,7 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 }.bind(this));
             }
         }
+        if( this.afterCheck )this.afterCheck();
     }
 });
 
