@@ -72,6 +72,7 @@ public class Route extends SliceJpaObject {
 	@PostLoad
 	public void postLoad() {
 		this.asyncSupported = this.getProperties().getAsyncSupported();
+		this.soleDirect = this.getProperties().getSoleDirect();
 	}
 
 	public Route() {
@@ -93,13 +94,25 @@ public class Route extends SliceJpaObject {
 		return asyncSupported;
 	}
 
+	public Boolean getSoleDirect() {
+		return soleDirect;
+	}
+
 	public void setAsyncSupported(Boolean asyncSupported) {
 		this.asyncSupported = asyncSupported;
 		this.getProperties().setAsyncSupported(asyncSupported);
 	}
 
+	public void setSoleDirect(Boolean soleDirect) {
+		this.soleDirect = soleDirect;
+		this.getProperties().setSoleDirect(soleDirect);
+	}
+
 	@Transient
 	private Boolean asyncSupported;
+
+	@Transient
+	private Boolean soleDirect;
 
 	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("名称.")
