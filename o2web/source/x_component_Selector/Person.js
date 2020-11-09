@@ -2250,6 +2250,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
                 }.bind(this));
             }
         }
+        if( this.afterCheck )this.afterCheck();
     },
     destroy: function(){
         if(this.node){
