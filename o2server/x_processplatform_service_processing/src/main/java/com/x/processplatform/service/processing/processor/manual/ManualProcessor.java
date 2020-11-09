@@ -453,8 +453,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 		boolean passThrough = false;
 		// 取得本环节已经处理的已办
 		List<TaskCompleted> taskCompleteds = this.listJoinInquireTaskCompleted(aeiObjects, identities);
-		// 存在优先路由,如果有人选择了优先路由那么直接流转.
-		Route soleRoute = aeiObjects.getRoutes().stream().filter(r -> BooleanUtils.isTrue(r.getSole())).findFirst()
+		// 存在优先路由,如果有人选择了优先路由那么直接流转.需要判断是否启用了soleDirect
+		Route soleRoute = aeiObjects.getRoutes().stream()
+				.filter(r -> BooleanUtils.isTrue(r.getSole()) && BooleanUtils.isTrue(r.getSoleDirect())).findFirst()
 				.orElse(null);
 		if (null != soleRoute) {
 			TaskCompleted soleTaskCompleted = taskCompleteds.stream()
