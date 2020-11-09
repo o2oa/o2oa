@@ -1166,13 +1166,13 @@ public class Config {
 		return instance().components;
 	}
 
-	public Web web;
+	public JsonObject web;
 
-	public static synchronized Web web() throws Exception {
+	public static synchronized JsonObject web() throws Exception {
 		if (null == instance().web) {
-			Web obj = BaseTools.readConfigObject(PATH_CONFIG_WEB, Web.class);
+			JsonObject obj = BaseTools.readConfigObject(PATH_CONFIG_WEB, JsonObject.class);
 			if (null == obj) {
-				obj = Web.defaultInstance();
+				obj = new JsonObject();
 			}
 			instance().web = obj;
 		}
