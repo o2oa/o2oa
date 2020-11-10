@@ -696,6 +696,9 @@
 }
 .o2_homepage_calender_item_title_text {
     margin-left: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .o2_homepage_calender_item_time {
     height: 20px;
