@@ -3859,6 +3859,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var text = "您确定要将“" + title + "”标记为已阅吗？";
 
         this.app.confirm("infor", e, "标记已阅确认", text, 300, 120, function () {
+            var confirmDlg = this;
             var read = null;
             for (var i = 0; i < _self.businessData.readList.length; i++) {
                 if (_self.businessData.readList[i].person === layout.session.user.distinguishedName) {
@@ -3876,7 +3877,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         //移动端页面关闭
                         _self.finishOnMobile()
                     } else {
-                        this.close();
+                        confirmDlg.close();
                     }
                 }, null, read.id, read);
             } else {
@@ -3886,7 +3887,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     //移动端页面关闭
                     _self.finishOnMobile()
                 } else {
-                    this.close();
+                    confirmDlg.close();
                 }
             }
             
