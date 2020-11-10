@@ -1,6 +1,5 @@
 package com.x.base.core.openjpa.jdbc.sql;
 
-import org.apache.openjpa.jdbc.sql.BooleanRepresentation;
 import org.apache.openjpa.jdbc.sql.BooleanRepresentationFactory;
 import org.apache.openjpa.jdbc.sql.DBDictionary;
 import org.apache.openjpa.lib.util.Localizer;
@@ -21,8 +20,9 @@ public class OscarDictionary extends DBDictionary {
 		maxEmbeddedBlobSize = -1;
 		doubleTypeName = "DOUBLE PRECISION";
 		booleanTypeName = "BOOL";
+		useGetStringForClobs = true;
+		useSetStringForClobs = true;
+		booleanRepresentation = BooleanRepresentationFactory.BOOLEAN;
 	}
-
-	protected BooleanRepresentation booleanRepresentation = BooleanRepresentationFactory.BOOLEAN;
 
 }
