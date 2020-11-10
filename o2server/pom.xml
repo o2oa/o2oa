@@ -447,6 +447,12 @@
 				<artifactId>maven-jxr-plugin</artifactId>
 				<version>2.3</version>
 			</plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencyManagement>
@@ -1017,4 +1023,10 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>o2oa-release</id>
+			<url>http://maven.o2oa.net/repository/o2oa-release/</url>
+		</repository>
+	</distributionManagement>
 </project>
