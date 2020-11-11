@@ -369,9 +369,23 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         }
     },
     saveSilence: function(callback){
+        debugger;
         if (!this.data.name){
             this.designer.notice(this.designer.lp.inputTableName, "error");
             return false;
+        }
+        if( this.data.status !== "build" ){
+            var reg = /^[A-Za-z]/;
+            if( !reg.test(this.data.name) ){
+                this.designer.notice(this.designer.lp.tableNameNotStartWithLetter, "error");
+                return false;
+            }
+
+            var reg2 = /^[A-Za-z0-9]+$/;
+            if( !reg2.test(this.data.name) ){
+                this.designer.notice(this.designer.lp.tableNameNotBeLetterAndNumber, "error");
+                return false;
+            }
         }
         if (!this.json.draftData.fieldList.length){
             this.designer.notice(this.designer.lp.errorFieldList, "error");
@@ -387,9 +401,32 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         }.bind(this));
     },
     save: function(callback){
+        debugger;
         if (!this.data.name){
             this.designer.notice(this.designer.lp.inputTableName, "error");
             return false;
+        }
+        if( this.data.status !== "build" ){
+            var reg = /^[A-Za-z]/;
+            if( !reg.test(this.data.name) ){
+                this.designer.notice(this.designer.lp.tableNameNotStartWithLetter, "error");
+                return false;
+            }
+            if( this.data.alias && !reg.test(this.data.alias) ){
+                this.designer.notice(this.designer.lp.tableAliasNotStartWithLetter, "error");
+                return false;
+            }
+
+
+            var reg2 = /^[A-Za-z0-9]+$/;
+            if( !reg2.test(this.data.name) ){
+                this.designer.notice(this.designer.lp.tableNameNotBeLetterAndNumber, "error");
+                return false;
+            }
+            if( this.data.alias && !reg2.test(this.data.alias) ){
+                this.designer.notice(this.designer.lp.tableAliasNotBeLetterAndNumber, "error");
+                return false;
+            }
         }
         if (!this.json.draftData.fieldList.length){
             this.designer.notice(this.designer.lp.errorFieldList, "error");
