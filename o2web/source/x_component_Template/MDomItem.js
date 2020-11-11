@@ -2597,7 +2597,8 @@ MDomItem.Rtf = new Class({
                 "enterMode": 1,
                 //"height": "200",
                 //"width": "",
-                "readOnly": false
+                "readOnly": false,
+                "extraAllowedContent " : "img{onerror}"
             };
             if( this.options.RTFConfig ){
                 editorConfig = Object.merge( editorConfig, this.options.RTFConfig )
