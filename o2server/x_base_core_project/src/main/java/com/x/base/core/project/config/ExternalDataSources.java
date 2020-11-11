@@ -117,4 +117,11 @@ public class ExternalDataSources extends CopyOnWriteArrayList<ExternalDataSource
 		throw new Exception("hasSchema error.");
 	}
 
+	public String getTransactionIsolation() {
+		for (ExternalDataSource o : this) {
+			return o.getTransactionIsolation();
+		}
+		return null;
+	}
+
 }
