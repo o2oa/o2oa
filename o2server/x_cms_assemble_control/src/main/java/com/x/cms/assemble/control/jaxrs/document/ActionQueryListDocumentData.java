@@ -46,10 +46,11 @@ public class ActionQueryListDocumentData extends BaseAction {
 		List<Wo> wos = new ArrayList<>();
 		Wo wo = null;
 		List<Document> docs = documentQueryService.list(ids);
-		List<String> unitNames = userManagerService.listUnitNamesWithPerson(effectivePerson.getDistinguishedName());
-		List<String> groupNames = userManagerService.listGroupNamesByPerson(effectivePerson.getDistinguishedName());
+		//先不考虑阅读权限的问题
+		/*List<String> unitNames = userManagerService.listUnitNamesWithPerson(effectivePerson.getDistinguishedName());
+		List<String> groupNames = userManagerService.listGroupNamesByPerson(effectivePerson.getDistinguishedName());*/
 		for (Document document : docs){
-			if(this.hasReadPermission(business, document, unitNames, groupNames, effectivePerson, null)) {
+			//if(this.hasReadPermission(business, document, unitNames, groupNames, effectivePerson, null)) {
 				Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), document.getId());
 				Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 				if (optional.isPresent()) {
@@ -63,7 +64,7 @@ public class ActionQueryListDocumentData extends BaseAction {
 					CacheManager.put(cacheCategory, cacheKey, wo);
 				}
 				wos.add(wo);
-			}
+			//}
 		}
 		
 		return wos;
