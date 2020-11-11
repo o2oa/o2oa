@@ -5,6 +5,7 @@
 (function () {
     function setupCheckbox(b) {
         debugger;
+        if(!b.hasAttribute)return;
         var c = this instanceof CKEDITOR.ui.dialog.checkbox;
         b.hasAttribute(this.id) && (b = b.getAttribute(this.id), c ? this.setValue(checboxOptions[this.id]["true"] == b.toLowerCase()) : this.setValue(b))
     }
