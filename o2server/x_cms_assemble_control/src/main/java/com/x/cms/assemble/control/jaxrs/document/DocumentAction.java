@@ -695,4 +695,27 @@ public class DocumentAction extends StandardJaxrsAction{
 
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "查看文档数据.", action = ActionQueryGetDocumentData.class)
+	@GET
+	@Path("{id}/document/data")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_getDocumentData( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+											  @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionQueryGetDocumentData.Wo> result = new ActionResult<>();
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = new ActionQueryGetDocumentData().execute(request, effectivePerson, id);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
