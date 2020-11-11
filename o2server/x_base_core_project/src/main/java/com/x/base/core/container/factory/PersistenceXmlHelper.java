@@ -172,7 +172,7 @@ public class PersistenceXmlHelper {
 					mapped_element.addText(o.getName());
 				}
 			}
-			if(dynamicFlag) {
+			if (dynamicFlag) {
 				for (String className : names) {
 					if (className.startsWith(DynamicEntity.CLASS_PACKAGE)) {
 						dyClasses.add(className);
@@ -192,7 +192,7 @@ public class PersistenceXmlHelper {
 						mapped_element.addText(dyClass);
 					}
 					for (Class<?> o : JpaObjectTools.scanMappedSuperclass(DynamicBaseEntity.class)) {
-						if(!o.getName().equals(DynamicBaseEntity.class.getName())) {
+						if (!o.getName().equals(DynamicBaseEntity.class.getName())) {
 							Element mapped_element = unit.addElement("class");
 							mapped_element.addText(o.getName());
 						}
@@ -295,6 +295,9 @@ public class PersistenceXmlHelper {
 		/* 如果是DB2 添加 Schema,mysql 不需要Schema 如果用了Schema H2数据库就会报错说没有Schema */
 		if (Config.externalDataSources().hasSchema()) {
 			properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
+		}
+		if (StringUtils.isNotEmpty(Config.externalDataSources().getTransactionIsolation())) {
+			properties.put("openjpa.jdbc.TransactionIsolation", Config.externalDataSources().getTransactionIsolation());
 		}
 		for (String name : Config.externalDataSources().findNamesOfContainerEntity(className)) {
 			properties.put("openjpa.ConnectionFactoryName", Config.RESOURCE_JDBC_PREFIX + name);
