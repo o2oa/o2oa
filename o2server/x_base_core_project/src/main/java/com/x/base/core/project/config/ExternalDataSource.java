@@ -30,6 +30,7 @@ public class ExternalDataSource extends ConfigObject {
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statFilter = DEFAULT_STATFILTER;
 		this.slowSqlMillis = DEFAULT_SLOWSQLMILLIS;
+		this.transactionIsolation = DEFAULT_TRANSACTIONISOLATION;
 	}
 
 	public static ExternalDataSource defaultInstance() {
@@ -65,6 +66,8 @@ public class ExternalDataSource extends ConfigObject {
 	private List<String> excludes;
 	@FieldDescribe("默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完成的配置为DefaultLevel=WARN, Tool=TRACE, Enhance=TRACE, METADATA=TRACE, Runtime=TRACE, Query=TRACE, DataCache=TRACE, JDBC=TRACE, SQL=TRACE")
 	private String logLevel = DEFAULT_LOGLEVEL;
+	@FieldDescribe("事务隔离级别:default,none,read-committed,read-uncommitted,repeatable-read,serializable.默认使用default(数据库设置的事务级别).")
+	private String transactionIsolation;
 
 	public static final Integer DEFAULT_MAXTOTAL = 50;
 
@@ -77,6 +80,13 @@ public class ExternalDataSource extends ConfigObject {
 	public static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
 
 	public static final String DEFAULT_LOGLEVEL = "WARN";
+
+	public static final String DEFAULT_TRANSACTIONISOLATION = "default";
+
+	public String getTransactionIsolation() {
+		return StringUtils.isEmpty(this.transactionIsolation) ? DEFAULT_TRANSACTIONISOLATION
+				: this.transactionIsolation;
+	}
 
 	public String getLogLevel() {
 		return StringUtils.isEmpty(this.logLevel) ? DEFAULT_LOGLEVEL : this.logLevel;
