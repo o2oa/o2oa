@@ -252,6 +252,9 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 },
                 "range": {
                     "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
+                },
+                "in" : {
+                    "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
                 }
             },
             "numberValue": {
@@ -261,7 +264,8 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 "greaterThanOrEqualTo": {},
                 "lessThan": {},
                 "lessThanOrEqualTo": {},
-                "range": {}
+                "range": {},
+                "in": {}
             },
             "dateTimeValue": {
                 "equals": {
@@ -283,6 +287,9 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                     "selectorArea" : ["#"+id+"viewFilterDateFormulaSelector"]
                 },
                 "range": {
+                    "invalidValue" : ["@year","@season","@month","@time","@date"]
+                },
+                "in": {
                     "invalidValue" : ["@year","@season","@month","@time","@date"]
                 }
             },
@@ -307,6 +314,9 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 },
                 "range": {
                     "invalidValue" : ["@year","@season","@month","@date"]
+                },
+                "in": {
+                    "invalidValue" : ["@year","@season","@month","@date"]
                 }
             },
             "timeValue": {
@@ -329,6 +339,9 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                     "selectorArea" : ["#"+id+"viewFilterTimeOnlyFormulaSelector"]
                 },
                 "range": {
+                    "invalidValue" : ["@time"]
+                },
+                "in": {
                     "invalidValue" : ["@time"]
                 }
             },
