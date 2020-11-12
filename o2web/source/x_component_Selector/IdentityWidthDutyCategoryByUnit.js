@@ -24,6 +24,74 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         this.selectType = "identity";
         this.className = "IdentityWidthDutyCategoryByUnit";
     },
+    // loadSelectItems: function (addToNext) {
+    //     //根据组织分类展现职务
+    //     if (this.options.resultType === "person") {
+    //         if (this.titleTextNode) {
+    //             this.titleTextNode.set("text", MWF.xApplication.Selector.LP.selectPerson);
+    //         } else {
+    //             this.options.title = MWF.xApplication.Selector.LP.selectPerson;
+    //         }
+    //     }
+    //     if (this.options.disabled) {
+    //         this.afterLoadSelectItem();
+    //         return;
+    //     }
+    //
+    //     if (this.options.dutys.length) {
+    //         this.loadInclude(function () {
+    //             this.includeLoaded = true;
+    //             if (this.dutyLoaded) {
+    //                 this.afterLoadSelectItem();
+    //             }
+    //         }.bind(this));
+    //         if (this.options.units.length) {
+    //
+    //             var units = [];
+    //             for (var i = 0; i < this.options.units.length; i++) {
+    //                 var unit = this.options.units[i];
+    //                 if (typeOf(unit) === "string") {
+    //                     units.push(unit)
+    //                 } else {
+    //                     units.push(unit.distinguishedName || unit.unique || unit.id || unit.levelName)
+    //                 }
+    //             }
+    //             this.unitStringList = units;
+    //
+    //             var getAllIdentity = function (unitList) {
+    //                 o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listIdentityWithUnitWithNameObject({
+    //                     nameList: this.options.dutys,
+    //                     unitList: unitList
+    //                 }, function (json) {
+    //                     this._loadSelectItems(json.data)
+    //                 }.bind(this))
+    //             }.bind(this);
+    //
+    //             if (this.options.expandSubEnable) {
+    //                 o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitSubNested({
+    //                     unitList: units
+    //                 }, function (json) {
+    //                     getAllIdentity(units.combine(json.data ? json.data.unitList : []));
+    //                 }.bind(this))
+    //             } else {
+    //                 getAllIdentity(units);
+    //             }
+    //         } else {
+    //             var identityList = [];
+    //             var count = 0;
+    //             this.options.dutys.each(function (d) {
+    //                 this.orgAction.listIdentityWithDuty(function (json) {
+    //                     count++;
+    //                     identityList = identityList.combine(json.data);
+    //                     if (this.options.dutys.length === count) this._loadSelectItems(identityList);
+    //                 }.bind(this), function () {
+    //                     count++;
+    //                     if (this.options.dutys.length === count) this._loadSelectItems(identityList);
+    //                 }.bind(this), d);
+    //             }.bind(this));
+    //         }
+    //     }
+    // },
     loadSelectItems: function (addToNext) {
         //根据组织分类展现职务
         if (this.options.resultType === "person") {
@@ -45,56 +113,27 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                     this.afterLoadSelectItem();
                 }
             }.bind(this));
-            if (this.options.units.length) {
 
-                var units = [];
-                for (var i = 0; i < this.options.units.length; i++) {
-                    var unit = this.options.units[i];
-                    if (typeOf(unit) === "string") {
-                        units.push(unit)
-                    } else {
-                        units.push(unit.distinguishedName || unit.unique || unit.id || unit.levelName)
-                    }
-                }
-                this.unitStringList = units;
-
-                var getAllIdentity = function (unitList) {
-                    o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listIdentityWithUnitWithNameObject({
-                        nameList: this.options.dutys,
-                        unitList: unitList
-                    }, function (json) {
-                        this._loadSelectItems(json.data)
-                    }.bind(this))
-                }.bind(this);
-
-                if (this.options.expandSubEnable) {
-                    o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitSubNested({
-                        unitList: units
-                    }, function (json) {
-                        getAllIdentity(units.combine(json.data ? json.data.unitList : []));
-                    }.bind(this))
+            var units = [];
+            for (var i = 0; i < this.options.units.length; i++) {
+                var unit = this.options.units[i];
+                if (typeOf(unit) === "string") {
+                    units.push(unit)
                 } else {
-                    getAllIdentity(units);
+                    units.push(unit.distinguishedName || unit.unique || unit.id || unit.levelName)
                 }
-            } else {
-                var identityList = [];
-                var count = 0;
-                this.options.dutys.each(function (d) {
-                    this.orgAction.listIdentityWithDuty(function (json) {
-                        count++;
-                        identityList = identityList.combine(json.data);
-                        if (this.options.dutys.length === count) this._loadSelectItems(identityList);
-                    }.bind(this), function () {
-                        count++;
-                        if (this.options.dutys.length === count) this._loadSelectItems(identityList);
-                    }.bind(this), d);
-                }.bind(this));
             }
-            //this.options.dutys.each(function(duty){
-            //    var data = {"name": duty, "id":duty};
-            //    var category = this._newItemCategory("ItemCategory",data, this, this.itemAreaNode);
-            //    this.subCategorys.push(category);
-            //}.bind(this));
+            this.unitStringList = units;
+
+            o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listIdentityWithUnitWithNameObject({
+                nameList: this.options.dutys,
+                unitList: units,
+                recursiveUnit : !!this.options.expandSubEnable
+            }, function (json) {
+                this._loadSelectItems(json.data)
+            }.bind(this))
+        }else{
+            this.afterLoadSelectItem();
         }
     },
     _loadSelectItems: function (identityList) {
