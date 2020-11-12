@@ -1402,6 +1402,12 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                 this.form.workAction.getAttachment(attachment.data.id, this.form.businessData.work.id, function (json) {
                     attachment.data = json.data;
                     attachment.reload();
+
+                    if (o.messageId && this.attachmentController.messageItemList) {
+                        var message = this.attachmentController.messageItemList[o.messageId];
+                        if( message && message.node )message.node.destroy();
+                    }
+
                     this.attachmentController.checkActions();
                 }.bind(this))
             }.bind(this), null, true, accept, size);
