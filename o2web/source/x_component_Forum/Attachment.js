@@ -212,6 +212,12 @@ MWF.xApplication.Forum.Attachment = new Class({
                         this.form.documentAction.getAttachment(attachment.data.id, this.opetions.documentId, function (json) {
                             attachment.data = json.data;
                             attachment.reload();
+
+                            if (o.messageId && this.attachmentController.messageItemList) {
+                                var message = this.attachmentController.messageItemList[o.messageId];
+                                if( message && message.node )message.node.destroy();
+                            }
+
                             this.attachmentController.checkActions();
                         }.bind(this))
                     }.bind(this), null, formData, file);
