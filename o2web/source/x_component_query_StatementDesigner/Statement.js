@@ -217,7 +217,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.jpqlTabNode = this.areaNode.getElement(".o2_statement_statementJpqlTabNode");
 
             this.jpqlTypeSelect = this.areaNode.getElement(".o2_statement_statementDesignerTypeContent").getElement("select");
-
+            this.loadJpqlTypeSelect();
 
             // this.jpqlSelectEditor = this.areaNode.getElement(".o2_statement_statementDesignerJpql_select");
             // this.jpqlUpdateEditor = this.areaNode.getElement(".o2_statement_statementDesignerJpql_update");
@@ -265,6 +265,33 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.setEvent();
             this.loadVerticalResize();
         }.bind(this));
+    },
+    loadJpqlTypeSelect : function(){
+      this.jpqlTypeSelect.empty();
+      var optionList = [{text:"SELECT", value:"select"}];
+      if( this.data.entityCategory === "dynamic" ){
+          optionList = optionList.concat([
+              {text:"UPDATE", value:"update"},
+              {text:"DELETE", value:"delete"}
+           ])
+      }
+
+      var flag = true;
+        optionList.each( function ( field ) {
+            var option = new Element("option", {
+                "text": field.text,
+                "value": field.value
+            }).inject(this.jpqlTypeSelect);
+            if( this.json.type === field.value ){
+                flag = false;
+                option.selected = true;
+            }
+        }.bind(this));
+        if( flag ){
+            this.jpqlTypeSelect.options[0].selected = true;
+            this.json.type = this.jpqlTypeSelect.options[0].value;
+            this.jpqlTypeSelect.fireEvent("change");
+        }
     },
     loadFieldSelect : function(){
         this.fieldSelect.empty();
@@ -597,6 +624,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     break;
             }
             this.json.entityCategory = entityCategory;
+            this.loadJpqlTypeSelect();
             this.loadFieldSelect();
             if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
         }.bind(this));
