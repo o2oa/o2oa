@@ -61,12 +61,13 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("组织属性名称")
+		@FieldDescribe("组织职务名称")
 		private String name;
+
 		@FieldDescribe("组织")
 		private String unit;
 
-		@FieldDescribe("组织属性名称(多值)")
+		@FieldDescribe("组织职务名称(多值)")
 		private List<String> nameList;
 
 		@FieldDescribe("组织(多值)")
