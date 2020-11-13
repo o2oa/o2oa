@@ -243,7 +243,7 @@ public class FileInfoServiceAdv {
 				Document document = emc.find( docId, Document.class );
 				FileInfo old_fileInfo = emc.find( old_attId, FileInfo.class );
 				if( document != null ){
-					emc.beginTransaction( FileInfo.class );				
+					emc.beginTransaction( FileInfo.class );
 					old_fileInfo.setLastUpdateTime( new Date() );
 					old_fileInfo.setExtension( attachment.getExtension() );
 					old_fileInfo.setName( attachment.getName() );
@@ -260,6 +260,7 @@ public class FileInfoServiceAdv {
 					old_fileInfo.setFilePath( attachment.getFilePath() );
 					old_fileInfo.setType( attachment.getType() );
 					old_fileInfo.setText( attachment.getText() );
+					old_fileInfo.setLength( attachment.getLength() );
 					emc.check( old_fileInfo, CheckPersistType.all );
 					emc.commit();
 				}

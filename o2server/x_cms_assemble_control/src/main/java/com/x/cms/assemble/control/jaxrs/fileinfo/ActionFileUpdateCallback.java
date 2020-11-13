@@ -124,7 +124,7 @@ public class ActionFileUpdateCallback extends BaseAction {
 							attachment.getText());
 				}
 				
-				attachment.saveContent(mapping, bytes, fileName);
+				attachment.updateContent(mapping, bytes, fileName);
 				attachment = fileInfoServiceAdv.updateAttachment( docId, old_attId, attachment, mapping );
 //				
 //				List<String> keys = new ArrayList<>();
