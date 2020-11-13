@@ -192,7 +192,7 @@ public class ActionFileUpdate extends BaseAction {
 				}
 				
 				//文件存储				
-				attachment.saveContent( mapping, bytes, fileName );
+				attachment.updateContent( mapping, bytes, fileName );
 				//完成替换逻辑
 				attachment = fileInfoServiceAdv.updateAttachment( docId, old_attId, attachment, mapping );
 //				
