@@ -283,16 +283,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<Work> results = new ArrayList<>();
 		boolean passThrough = false;
-		// 找到在当前环节已经处理过的已办
-		List<TaskCompleted> taskCompleteds = aeiObjects.getJoinInquireTaskCompleteds().stream()
-				.filter(o -> StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getActivityToken()))
-				.collect(Collectors.toList());
-		// 去掉已经处理过的身份
-		List<String> identities = ListUtils.subtract(aeiObjects.getWork().getManualTaskIdentityList(),
-				ListTools.extractProperty(taskCompleteds, TaskCompleted.identity_FIELDNAME, String.class, true, true));
-		identities = aeiObjects.business().organization().identity().list(identities);
-		// 现在处理人为空且没有参与流转的已办
-		if (identities.isEmpty() && taskCompleteds.isEmpty()) {
+		List<String> identities = aeiObjects.business().organization().identity()
+				.list(aeiObjects.getWork().getManualTaskIdentityList());
+		if (identities.isEmpty()) {
 			identities = calculateTaskIdentities(aeiObjects, manual);
 			logger.info("工作设置的处理人已经全部无效,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.", aeiObjects.getWork().getTitle(),
 					aeiObjects.getWork().getId(), identities);
