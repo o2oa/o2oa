@@ -165,13 +165,13 @@ MWF.xApplication.process.Work.Main = new Class({
                         delete this.options.workcompletedid;
                         this.loadWork();
                     }else{
-                        this.close();
+                        //this.close();
                     }
                 }
             }
         }.bind(this);
 
-        if (this.options.form && this.options.form.id){
+        if ((this.options.form && this.options.form.id) || this.options.formid){
             o2.Actions.invokeAsync([
                 {"action": this.action, "name": "loadWorkV2"},
                 {"action": this.action, "name": "getWorkLog"},
@@ -187,7 +187,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     check();
                 }.bind(this), "failure": function(){
                     //this.close();
-                }.bind(this)}, id, id, id, [this.options.form.id]);
+                }.bind(this)}, id, id, id, [this.options.formid || this.options.form.id]);
         }else{
             this.action.lookupFormWithWork(id, function(json){
                 var formId = json.data.id;
@@ -322,10 +322,10 @@ MWF.xApplication.process.Work.Main = new Class({
                     }
                 }
             }else{
-                this.close();
+                //this.close();
             }
         }.bind(this), function(){
-            this.close();
+            //this.close();
         }.bind(this));
     },
     loadWorkByDraft: function(work, data){
