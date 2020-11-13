@@ -10,6 +10,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -28,7 +32,7 @@ import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 
 class ActionListIdentityWithUnitWithName extends BaseAction {
-
+	private static Logger logger = LoggerFactory.getLogger(ActionListIdentityWithUnitWithName.class);
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -50,12 +54,12 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 			}
 			names = ListTools.trim(names, true, true);
 			units = ListTools.trim(units, true, true);
-			CacheKey cacheKey = new CacheKey(this.getClass(), names, units);
+			CacheKey cacheKey = new CacheKey(this.getClass(), names, units, wi.getRecursiveUnit());
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				result.setData((Wo) optional.get());
 			} else {
-				Wo wo = this.list(business, names, units);
+				Wo wo = this.list(business, names, units, wi.getRecursiveUnit());
 				CacheManager.put(cacheCategory, cacheKey, wo);
 				result.setData(wo);
 			}
@@ -65,16 +69,20 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("组织属性名称")
+		@FieldDescribe("组织职务名称")
 		private String name;
+
 		@FieldDescribe("组织")
 		private String unit;
 
-		@FieldDescribe("组织属性名称(多值)")
+		@FieldDescribe("组织职务名称(多值)")
 		private List<String> nameList;
 
 		@FieldDescribe("组织(多值)")
 		private List<String> unitList;
+
+		@FieldDescribe("是否递归下级组织（默认false）")
+		private Boolean recursiveUnit;
 
 		public String getName() {
 			return name;
@@ -108,6 +116,13 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 			this.unitList = unitList;
 		}
 
+		public Boolean getRecursiveUnit() {
+			return recursiveUnit;
+		}
+
+		public void setRecursiveUnit(Boolean recursiveUnit) {
+			this.recursiveUnit = recursiveUnit;
+		}
 	}
 
 	public static class Wo extends GsonPropertyObject {
@@ -125,27 +140,44 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 
 	}
 
-	private Wo list(Business business, List<String> names, List<String> units) throws Exception {
+	private Wo list(Business business, List<String> names, List<String> units, Boolean recursiveUnit) throws Exception {
 		Wo wo = new Wo();
-		List<String> identityIds = new ArrayList<>();
-		for (String str : units) {
-			Unit unit = business.unit().pick(str);
-			if (null != unit) {
+		List<UnitDuty> os = new ArrayList<>();
+		if(units.isEmpty()){
+			EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
+			Root<UnitDuty> root = cq.from(UnitDuty.class);
+			Predicate p = root.get(UnitDuty_.name).in(names);
+			os = em.createQuery(cq.select(root).where(p)).getResultList();
+		}else{
+			List<Unit> unitList = business.unit().pick(units);
+			if(!unitList.isEmpty()){
+				units.clear();
+				for(Unit unit : unitList){
+					units.add(unit.getId());
+					if(BooleanUtils.isTrue(recursiveUnit)){
+						units.addAll(business.unit().listSubNested(unit.getId()));
+					}
+				}
+				units = ListTools.trim(units, true, true);
 				EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
 				CriteriaBuilder cb = em.getCriteriaBuilder();
 				CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 				Root<UnitDuty> root = cq.from(UnitDuty.class);
-				Predicate p = cb.equal(root.get(UnitDuty_.unit), unit.getId());
-				p = cb.and(p, root.get(UnitDuty_.name).in(names));
-				List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList();
-				if (!os.isEmpty()) {
-					for (UnitDuty o : os) {
-						identityIds.addAll(o.getIdentityList());
-					}
-				}
+				Predicate p = root.get(UnitDuty_.name).in(names);
+				p = cb.and(p, root.get(UnitDuty_.unit).in(units));
+				os = em.createQuery(cq.select(root).where(p)).getResultList();
 			}
 		}
-		identityIds = ListTools.trim(identityIds, true, true);
+
+		List<String> identityIds = new ArrayList<>();
+		if (!os.isEmpty()) {
+			for (UnitDuty o : os) {
+				identityIds.addAll(o.getIdentityList());
+			}
+			identityIds = ListTools.trim(identityIds, true, true);
+		}
 		List<String> list = business.identity().listIdentityDistinguishedNameSorted(identityIds);
 		wo.getIdentityList().addAll(list);
 		return wo;
