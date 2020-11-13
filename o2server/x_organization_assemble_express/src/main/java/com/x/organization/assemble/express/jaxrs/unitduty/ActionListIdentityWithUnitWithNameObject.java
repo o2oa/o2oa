@@ -46,12 +46,12 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 			}
 			names = ListTools.trim(names, true, true);
 			units = ListTools.trim(units, true, true);
-			CacheKey cacheKey = new CacheKey(this.getClass(), names, units);
+			CacheKey cacheKey = new CacheKey(this.getClass(), names, units, wi.getRecursiveUnit());
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
 			} else {
-				List<Wo> wos = this.list(business, names, units);
+				List<Wo> wos = this.list(business, names, units, wi.getRecursiveUnit());
 				CacheManager.put(cacheCategory, cacheKey, wos);
 				result.setData(wos);
 			}
@@ -72,6 +72,9 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 
 		@FieldDescribe("组织(多值)")
 		private List<String> unitList;
+
+		@FieldDescribe("是否递归下级组织（默认false）")
+		private Boolean recursiveUnit;
 
 		public String getName() {
 			return name;
@@ -103,6 +106,14 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 
 		public void setUnitList(List<String> unitList) {
 			this.unitList = unitList;
+		}
+
+		public Boolean getRecursiveUnit() {
+			return recursiveUnit;
+		}
+
+		public void setRecursiveUnit(Boolean recursiveUnit) {
+			this.recursiveUnit = recursiveUnit;
 		}
 
 	}
@@ -139,7 +150,7 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 
 	}
 
-	private List<Wo> list(Business business, List<String> names, List<String> units) throws Exception {
+	private List<Wo> list(Business business, List<String> names, List<String> units, Boolean recursiveUnit) throws Exception {
 		List<Wo> wos = new ArrayList<>();
 		for (String str : units) {
 			Unit matchUnit = business.unit().pick(str);
