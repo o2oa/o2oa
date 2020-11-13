@@ -437,11 +437,13 @@ o2.addReady(function () {
     var _load = function () {
         var _loadApp = function (json) {
             //用户已经登录
-            layout.user = json.data;
-            layout.session = layout.session || {};
-            layout.session.user = json.data;
-            layout.session.token = json.data.token;
-            layout.desktop.session = layout.session;
+            if (json){
+                layout.user = json.data;
+                layout.session = layout.session || {};
+                layout.session.user = json.data;
+                layout.session.token = json.data.token;
+                layout.desktop.session = layout.session;
+            }
 
             _loadProgressBar(true);
             while (layout.readys && layout.readys.length) {
@@ -456,27 +458,36 @@ o2.addReady(function () {
             Cookie.write("x-token", options["x-token"]);
         }
 
+        _loadApp();
+
         //先判断用户是否登录
         o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
             //已经登录
-            _loadProgressBar();
-            _loadApp(json);
+            //_loadProgressBar();
+
+            layout.user = json.data;
+            layout.session = layout.session || {};
+            layout.session.user = json.data;
+            layout.session.token = json.data.token;
+            layout.desktop.session = layout.session;
+
+            //_loadApp(json);
         }.bind(this), function (json) {
-            _loadProgressBar();
+            //_loadProgressBar();
             //允许匿名访问
             if (layout.anonymous) {
-                _loadProgressBar(true);
-                _loadApp({
-                    data : {
-                        user: "anonymous",
-                        session: {
-                            user: {
-                                name: "anonymous",
-                                roleList: []
-                            }
-                        }
-                    }
-                });
+                //_loadProgressBar(true);
+                // _loadApp({
+                //     data : {
+                //         user: "anonymous",
+                //         session: {
+                //             user: {
+                //                 name: "anonymous",
+                //                 roleList: []
+                //             }
+                //         }
+                //     }
+                // });
             } else {
                 _loadProgressBar(true);
                 if (layout.yqwx) {
