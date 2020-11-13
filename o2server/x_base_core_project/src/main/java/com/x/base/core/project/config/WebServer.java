@@ -63,7 +63,7 @@ public class WebServer extends ConfigObject {
 	@FieldDescribe("是否启用application服务器代理")
 	private Boolean proxyApplicationEnable;
 
-	@FieldDescribe("是否启用长连接,默认false.")
+	@FieldDescribe("是否启用长连接,默认true.")
 	private Boolean persistentConnectionsEnable;
 
 	public Boolean getPersistentConnectionsEnable() {

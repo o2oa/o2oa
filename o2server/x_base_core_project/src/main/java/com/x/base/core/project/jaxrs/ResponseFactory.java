@@ -182,7 +182,6 @@ public class ResponseFactory {
 		} else {
 			crc.update(XGsonBuilder.toJson(o).getBytes(DefaultCharset.charset_utf_8));
 		}
-		// crc.update(XGsonBuilder.toJson(o).getBytes(DefaultCharset.charset_utf_8));
 		return crc.getValue() + "";
 	}
 
