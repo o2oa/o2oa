@@ -154,6 +154,8 @@ function createXFormConcatTask(path, isMin, thisOptions) {
             'source/' + path + '/DatagridPC.js',
             'source/' + path + '/Textfield.js',
             'source/' + path + '/Personfield.js',
+            'source/' + path + '/Button.js',
+            'source/' + path + '/ViewSelector.js',
             'source/' + path + '/*.js',
             'source/x_component_process_Work/Processor.js',
             '!source/' + path + '/Office.js'

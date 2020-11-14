@@ -1481,15 +1481,24 @@
         return arr;
     }
     Date.implement({
-        "getFromServer": function(){
+        // "getFromServer": function(){
+        //     var d;
+        //     o2.Actions.get("x_program_center").echo(function(json){
+        //         d = Date.parse(json.data.serverTime);
+        //     }, null, false);
+        //     return d;
+        // }
+        "getFromServer": function(callback){
+            var async = !!callback;
             var d;
-            o2.Actions.get("x_program_center").echo(function(json){
+            var r = o2.Actions.get("x_program_center").echo(function(json){
                 d = Date.parse(json.data.serverTime);
-            }, null, false);
-            return d;
+                if (callback) callback(d);
+            }, null, async);
+            return d || r;
         }
-    });
 
+    });
 })();
 o2.core = true;
 
