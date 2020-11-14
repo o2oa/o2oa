@@ -146,17 +146,27 @@ MWF.xApplication.process.Work.Main = new Class({
         //var getWorkLogMothed = (this.options.worklogType.toLowerCase()==="worklog") ? "getWorkLog" : "getRecordLog";
         var loadFormFlag = false;
         var loadWorkFlag = false;
+        var loadModuleFlag = false;
 
         var json_work, json_log, json_control, json_form;
 
         var check = function(){
-            if (loadWorkFlag && loadFormFlag){
+            if (loadWorkFlag && loadFormFlag && loadModuleFlag){
                 if (json_work && json_control && json_form && json_log){
                     this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_work.data.recordList, json_work.data.attachmentList);
                     if (this.mask) this.mask.hide();
                     //if (layout.mobile) this.loadMobileActions();
-                    this.openWork();
-                    this.unLoading();
+                    if (layout.session && layout.session.user){
+                        this.openWork();
+                        this.unLoading();
+                    }else{
+                        if (layout.sessionPromise){
+                            layout.sessionPromise.then(function(){
+                                this.openWork();
+                                this.unLoading();
+                            }.bind(this));
+                        }
+                    }
                 } else{
                     if (this.options.jobId || this.options.jobid || this.options.job){
                         delete this.options.workCompletedId;
@@ -196,14 +206,24 @@ MWF.xApplication.process.Work.Main = new Class({
                     loadFormFlag = true;
                     check();
                 }else{
-                    this.action[((layout.mobile) ? "getFormV2Mobile": "getFormV2")](formId, function(formJson){
-                        json_form = formJson;
-                        loadFormFlag = true;
-                        check();
-                    }, function(){
-                        loadFormFlag = true;
-                        check();
-                    });
+                    //临时查看效果
+                    // if (formId=="4f8b4fde-d963-468c-b6c9-9e7b919f0bd0"){
+                    //     o2.JSON.get("../x_desktop/res/form/4f8b4fde-d963-468c-b6c9-9e7b919f0bd0.json", function(formJson){
+                    //         json_form = formJson;
+                    //         loadFormFlag = true;
+                    //         check();
+                    //     });
+                    // }else{
+                        this.action[((layout.mobile) ? "getFormV2Mobile": "getFormV2")](formId, function(formJson){
+                            json_form = formJson;
+                            loadFormFlag = true;
+                            check();
+                        }, function(){
+                            loadFormFlag = true;
+                            check();
+                        });
+                    // }
+
                 }
 
             }.bind(this), function(){
@@ -225,6 +245,11 @@ MWF.xApplication.process.Work.Main = new Class({
                     }.bind(this)}, id
             );
         }
+        var cl = "$all";
+        MWF.xDesktop.requireApp("process.Xform", cl, function(){
+            loadModuleFlag = true;
+            check();
+        });
 
         // if (this.options.form && this.options.form.id && this.options.form.app){
         //     o2.Actions.invokeAsync([
@@ -646,8 +671,8 @@ MWF.xApplication.process.Work.Main = new Class({
             this.formNode.setStyles(this.css.formNode);
             var uri = window.location.href;
             //var cl = (uri.indexOf("$all")!=-1) ? "$all" : "Form";
-            var cl = "$all";
-            MWF.xDesktop.requireApp("process.Xform", cl, function(){
+           // var cl = "$all";
+           // MWF.xDesktop.requireApp("process.Xform", cl, function(){
             //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.form, {});
                 this.appForm.businessData = {
@@ -700,7 +725,7 @@ debugger;
                     this.fireEvent("postLoadForm");
 
                 }.bind(this));
-            }.bind(this));
+            //}.bind(this));
         }
     },
 
