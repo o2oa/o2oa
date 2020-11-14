@@ -31,6 +31,8 @@ public class ExternalDataSource extends ConfigObject {
 		this.statFilter = DEFAULT_STATFILTER;
 		this.slowSqlMillis = DEFAULT_SLOWSQLMILLIS;
 		this.transactionIsolation = DEFAULT_TRANSACTIONISOLATION;
+		this.testConnectionOnCheckin = DEFAULT_TESTCONNECTIONONCHECKIN;
+		this.testConnectionOnCheckout = DEFAULT_TESTCONNECTIONONCHECKOUT;
 	}
 
 	public static ExternalDataSource defaultInstance() {
@@ -68,6 +70,10 @@ public class ExternalDataSource extends ConfigObject {
 	private String logLevel = DEFAULT_LOGLEVEL;
 	@FieldDescribe("事务隔离级别:default,none,read-committed,read-uncommitted,repeatable-read,serializable.默认使用default(数据库设置的事务级别).")
 	private String transactionIsolation;
+	@FieldDescribe("测试入池连接.")
+	private Boolean testConnectionOnCheckin;
+	@FieldDescribe("测试出池连接.")
+	private Boolean testConnectionOnCheckout;
 
 	public static final Integer DEFAULT_MAXTOTAL = 50;
 
@@ -82,6 +88,18 @@ public class ExternalDataSource extends ConfigObject {
 	public static final String DEFAULT_LOGLEVEL = "WARN";
 
 	public static final String DEFAULT_TRANSACTIONISOLATION = "default";
+
+	public static final Boolean DEFAULT_TESTCONNECTIONONCHECKIN = true;
+
+	public static final Boolean DEFAULT_TESTCONNECTIONONCHECKOUT = true;
+
+	public Boolean getTestConnectionOnCheckin() {
+		return this.testConnectionOnCheckin == null ? DEFAULT_TESTCONNECTIONONCHECKIN : this.testConnectionOnCheckin;
+	}
+
+	public Boolean getTestConnectionOnCheckout() {
+		return this.testConnectionOnCheckout == null ? DEFAULT_TESTCONNECTIONONCHECKOUT : this.testConnectionOnCheckout;
+	}
 
 	public String getTransactionIsolation() {
 		return StringUtils.isEmpty(this.transactionIsolation) ? DEFAULT_TRANSACTIONISOLATION

@@ -124,4 +124,18 @@ public class ExternalDataSources extends CopyOnWriteArrayList<ExternalDataSource
 		return null;
 	}
 
+	public Boolean getTestConnectionOnCheckin() {
+		for (ExternalDataSource o : this) {
+			return o.getTestConnectionOnCheckin();
+		}
+		return null;
+	}
+
+	public Boolean getTestConnectionOnCheckout() {
+		for (ExternalDataSource o : this) {
+			return o.getTestConnectionOnCheckout();
+		}
+		return null;
+	}
+
 }
