@@ -260,8 +260,8 @@
   "getFormMobile": {"uri": "/jaxrs/form/{id}/application/{applicationFlag}/mobile"},
   "getScript": {"uri": "/jaxrs/script/{flag}/application/{applicationFlag}"},
   "getScriptByName": {"uri": "/jaxrs/script/{name}/application/{applicationId}","method": "POST"},
-  "getFormV2": {"uri": "/jaxrs/form/v2/{id}"},
-  "getFormV2Mobile": {"uri": "/jaxrs/form/v2/{id}/mobile"},
+  "getFormV2": {"uri": "/jaxrs/form/v2/{id}?t={tag}"},
+  "getFormV2Mobile": {"uri": "/jaxrs/form/v2/{id}/mobile?t={tag}"},
 
   "sendReaderByWork" : {"uri":"/jaxrs/read/work/{workId}", "method": "POST"},
   "sendReaderByWorkCompleted" : {"uri":"/jaxrs/read/workcompleted/{workCompletedId}", "method": "POST"},
