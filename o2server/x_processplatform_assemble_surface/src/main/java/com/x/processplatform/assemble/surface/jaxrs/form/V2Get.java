@@ -103,6 +103,7 @@ class V2Get extends BaseAction {
 		});
 		wo.setRelatedFormMap(_relatedForm.get());
 		wo.setRelatedScriptMap(_relatedScript.get());
+		wo.setMaxAge(3600 * 24);
 		return wo;
 	}
 

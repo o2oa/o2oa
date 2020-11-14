@@ -149,8 +149,8 @@ public class ResourceFactory {
 			dataSource.setMaxPoolSize(ds.getMaxTotal());
 			dataSource.setMinPoolSize(ds.getMaxIdle());
 			// 增加校验
-			dataSource.setTestConnectionOnCheckin(true);
-			dataSource.setTestConnectionOnCheckout(true);
+			dataSource.setTestConnectionOnCheckin(ds.getTestConnectionOnCheckin());
+			dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
 			dataSource.setAcquireIncrement(2);
 			if (BooleanUtils.isTrue(ds.getStatEnable())) {
 				dataSource.setFilters(ds.getStatFilter());
