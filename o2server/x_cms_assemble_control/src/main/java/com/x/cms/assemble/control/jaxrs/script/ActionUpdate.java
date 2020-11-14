@@ -8,7 +8,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -18,22 +17,21 @@ import com.x.cms.assemble.control.ExceptionWrapInConvert;
 import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.element.Script;
 
-
 class ActionUpdate extends BaseAction {
-	ActionResult<Wo> execute( EffectivePerson effectivePerson, String id, JsonElement jsonElement ) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wrapIn = null;
 		Boolean check = true;
-		
+
 		try {
-			wrapIn = this.convertToWrapIn( jsonElement, Wi.class );
-		} catch (Exception e ) {
+			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
+		} catch (Exception e) {
 			check = false;
-			Exception exception = new ExceptionWrapInConvert( e, jsonElement );
-			result.error( exception );
+			Exception exception = new ExceptionWrapInConvert(e, jsonElement);
+			result.error(exception);
 			e.printStackTrace();
 		}
-		if( check ){
+		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Script script = emc.find(id, Script.class);
 				if (null == script) {
@@ -41,19 +39,19 @@ class ActionUpdate extends BaseAction {
 				}
 				emc.beginTransaction(Script.class);
 				wrapIn.copyTo(script, JpaObject.ID_DISTRIBUTEFACTOR);
-				script.setLastUpdatePerson( effectivePerson.getDistinguishedName());
+				script.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 				script.setLastUpdateTime(new Date());
 				emc.commit();
 				// 清除所有的Script缓存
 				CacheManager.notify(Script.class);
-
 				// 记录日志
 				emc.beginTransaction(Log.class);
-				logService.log(emc, effectivePerson.getDistinguishedName(), script.getName(), script.getAppId(), "", "", script.getId(), "SCRIPT", "更新");
+				logService.log(emc, effectivePerson.getDistinguishedName(), script.getName(), script.getAppId(), "", "",
+						script.getId(), "SCRIPT", "更新");
 				emc.commit();
-				
+
 				Wo wo = new Wo();
-				wo.setId( script.getId() );
+				wo.setId(script.getId());
 				result.setData(wo);
 			} catch (Throwable th) {
 				th.printStackTrace();
@@ -62,36 +60,36 @@ class ActionUpdate extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("创建时间.")
 		private Date createTime;
-		
+
 		@FieldDescribe("更新时间.")
 		private Date updateTime;
-		
+
 		@FieldDescribe("ID.")
 		private String id;
-		
+
 		@FieldDescribe("脚本名称.")
 		private String name;
-		
+
 		@FieldDescribe("脚本别名.")
 		private String alias;
-		
+
 		@FieldDescribe("脚本说明.")
 		private String description;
-		
+
 		@FieldDescribe("是否验证成功.")
 		private Boolean validated;
-		
+
 		@FieldDescribe("所属栏目ID.")
 		private String appId;
-		
+
 		@FieldDescribe("脚本内容.")
 		private String text;
-		
+
 		@FieldDescribe("依赖的脚本ID列表.")
 		private List<String> dependScriptList;
 
@@ -176,7 +174,7 @@ class ActionUpdate extends BaseAction {
 		}
 
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}
