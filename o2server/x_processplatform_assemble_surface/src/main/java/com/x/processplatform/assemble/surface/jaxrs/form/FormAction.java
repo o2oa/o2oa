@@ -28,44 +28,6 @@ public class FormAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(FormAction.class);
 
-//	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取表单.", action = ActionGetWithWorkOrWorkCompleted.class)
-//	@GET
-//	@Path("workorworkcompleted/{workOrWorkCompleted}")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void getWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
-//			@Context HttpServletRequest request,
-//			@JaxrsParameterDescribe("工作或完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
-//		ActionResult<ActionGetWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionGetWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
-
-//	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取移动表单.", action = ActionGetWithWorkOrWorkCompletedMobile.class)
-//	@GET
-//	@Path("workorworkcompleted/{workOrWorkCompleted}/mobile")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void getWithWorkOrWorkCompletedMobile(@Suspended final AsyncResponse asyncResponse,
-//			@Context HttpServletRequest request,
-//			@JaxrsParameterDescribe("工作或完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
-//		ActionResult<ActionGetWithWorkOrWorkCompletedMobile.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionGetWithWorkOrWorkCompletedMobile().execute(effectivePerson, workOrWorkCompleted);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
-
 	@JaxrsMethodDescribe(value = "获取表单内容.", action = ActionGet.class)
 	@GET
 	@Path("{flag}")

@@ -125,11 +125,18 @@ public class ResponseFactory {
 				}
 			} else {
 				// default
-				EntityTag tag = new EntityTag(etagDefault(result.getData()));
-				if (notModified(request, tag)) {
-					return Response.notModified().tag(tag).build();
+				Integer maxAge = maxAgeDefault(result.getData());
+				if (null != maxAge) {
+					CacheControl cacheControl = new CacheControl();
+					cacheControl.setMaxAge(3600 * 4);
+					return Response.ok(result.toJson()).cacheControl(cacheControl).build();
+				} else {
+					EntityTag tag = new EntityTag(etagDefault(result.getData()));
+					if (notModified(request, tag)) {
+						return Response.notModified().tag(tag).build();
+					}
+					return Response.ok(result.toJson()).tag(tag).build();
 				}
-				return Response.ok(result.toJson()).tag(tag).build();
 			}
 		}
 	}
@@ -172,8 +179,8 @@ public class ResponseFactory {
 
 	private static String etagDefault(Object o) {
 		CRC32 crc = new CRC32();
-		if (o instanceof WoFastETag) {
-			WoFastETag fast = ((WoFastETag) o);
+		if (o instanceof WoMaxAgeFastETag) {
+			WoMaxAgeFastETag fast = ((WoMaxAgeFastETag) o);
 			if (StringUtils.isNotEmpty(fast.getFastETag())) {
 				crc.update(fast.getFastETag().getBytes(DefaultCharset.charset_utf_8));
 			} else {
@@ -183,6 +190,13 @@ public class ResponseFactory {
 			crc.update(XGsonBuilder.toJson(o).getBytes(DefaultCharset.charset_utf_8));
 		}
 		return crc.getValue() + "";
+	}
+
+	private static Integer maxAgeDefault(Object o) {
+		if (o instanceof WoMaxAgeFastETag) {
+			return ((WoMaxAgeFastETag) o).getMaxAge();
+		}
+		return null;
 	}
 
 	private static String callback(WoCallback woCallback) {
