@@ -1331,7 +1331,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             //    this.fireEvent("afterClose");
         }
         if (!this.options.readonly) {
-            if (this.businessData.work && this.businessData.work.id) {
+            if (this.businessData.work && this.businessData.work.id && this.json.checkDraft) {
                 if (this.app.inBrowser && navigator.sendBeacon) {
                     debugger;
                     var obj = this.workAction.action.actions["checkDraft"];
@@ -3945,13 +3945,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     finishOnMobile: function () {
         var _self = this;
         //新建检查
-        this.workAction.checkDraft(this.businessData.work.id, function (json) {
-            // var str = JSON.stringify(json);
+        if (this.json.checkDraft){
+            this.workAction.checkDraft(this.businessData.work.id, function (json) {
+                // var str = JSON.stringify(json);
+                _self.finishOnMobileReal();
+            }.bind(this), function () {
+                _self.finishOnMobileReal();
+            }, false);
+        }else {
             _self.finishOnMobileReal();
-        }.bind(this), function () {
-            _self.finishOnMobileReal();
-        }, false);
-
+        }
+        // this.workAction.checkDraft(this.businessData.work.id, function (json) {
+        //     // var str = JSON.stringify(json);
+        //     _self.finishOnMobileReal();
+        // }.bind(this), function () {
+        //     _self.finishOnMobileReal();
+        // }, false);
     },
 
     finishOnMobileReal: function () {
