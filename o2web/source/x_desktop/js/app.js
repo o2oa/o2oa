@@ -26,6 +26,17 @@ layout.addReady(function(){
             }
             layout.openApplication(null, appName, option||{}, m_status);
         };
-        _load();
+
+        if (layout.session && layout.session.user){
+            _load();
+        }else{
+            if (layout.sessionPromise){
+                layout.sessionPromise.then(function(){
+                    _load();
+                });
+            }
+        }
+
+        //_load();
     })(layout);
 });
