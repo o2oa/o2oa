@@ -3,10 +3,9 @@ package com.x.processplatform.assemble.surface.jaxrs.form;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoFastETag;
+import com.x.base.core.project.jaxrs.WoMaxAgeFastETag;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Form;
 
@@ -28,7 +27,7 @@ class ActionGetMobile extends BaseAction {
 		}
 	}
 
-	public static class Wo extends WoFastETag {
+	public static class Wo extends WoMaxAgeFastETag {
 
 		private String data;
 

@@ -285,23 +285,16 @@ public class ManualProcessor extends AbstractManualProcessor {
 		boolean passThrough = false;
 		List<String> identities = aeiObjects.business().organization().identity()
 				.list(aeiObjects.getWork().getManualTaskIdentityList());
-		// 去掉已经处理过的身份
-		identities = ListUtils.subtract(identities, ListTools.extractProperty(aeiObjects.getJoinInquireTaskCompleteds(),
-				TaskCompleted.identity_FIELDNAME, String.class, true, true));
-		identities = aeiObjects.business().organization().identity().list(identities);
-		// 现在处理人为空且没有参与流转的已办
-		if (identities.isEmpty() && aeiObjects.getJoinInquireTaskCompleteds().isEmpty()) {
+		if (identities.isEmpty()) {
 			identities = calculateTaskIdentities(aeiObjects, manual);
 			logger.info("工作设置的处理人已经全部无效,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.", aeiObjects.getWork().getTitle(),
 					aeiObjects.getWork().getId(), identities);
 			// 后面进行了identitis.remove()这里必须用一个新对象包装
 			aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<>(identities));
 		}
-
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
 				Objects.toString(manual.getManualMode(), ""), identities));
-
 		switch (manual.getManualMode()) {
 		case single:
 			passThrough = this.single(aeiObjects, manual, identities);
