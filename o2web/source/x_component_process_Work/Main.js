@@ -214,7 +214,8 @@ MWF.xApplication.process.Work.Main = new Class({
                     //         check();
                     //     });
                     // }else{
-                        this.action[((layout.mobile) ? "getFormV2Mobile": "getFormV2")](formId, function(formJson){
+                    var cacheTag = json.data.cacheTag || "";
+                        this.action[((layout.mobile) ? "getFormV2Mobile": "getFormV2")](formId, cacheTag, function(formJson){
                             json_form = formJson;
                             loadFormFlag = true;
                             check();
