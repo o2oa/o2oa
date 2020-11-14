@@ -128,7 +128,7 @@ public class ResponseFactory {
 				Integer maxAge = maxAgeDefault(result.getData());
 				if (null != maxAge) {
 					CacheControl cacheControl = new CacheControl();
-					cacheControl.setMaxAge(3600 * 4);
+					cacheControl.setMaxAge(maxAge);
 					return Response.ok(result.toJson()).cacheControl(cacheControl).build();
 				} else {
 					EntityTag tag = new EntityTag(etagDefault(result.getData()));
