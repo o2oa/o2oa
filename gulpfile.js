@@ -460,6 +460,8 @@ function build_concat_xform(){
         'o2web/source/' + path + '/DatagridPC.js',
         'o2web/source/' + path + '/Textfield.js',
         'o2web/source/' + path + '/Personfield.js',
+        'o2web/source/' + path + '/Button.js',
+        'o2web/source/' + path + '/ViewSelector.js',
         'o2web/source/' + path + '/*.js',
         'o2web/source/x_component_process_Work/Processor.js',
         '!o2web/source/' + path + '/Office.js'
