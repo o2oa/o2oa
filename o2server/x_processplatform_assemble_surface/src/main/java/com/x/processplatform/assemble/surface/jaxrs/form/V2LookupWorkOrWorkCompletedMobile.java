@@ -1,12 +1,20 @@
 package com.x.processplatform.assemble.surface.jaxrs.form;
 
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.zip.CRC32;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -15,12 +23,14 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkCompletedProperties;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.StoreForm;
 import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.Form;
+import com.x.processplatform.core.entity.element.Script;
 
 class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 
@@ -74,23 +84,89 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 	}
 
 	private Wo work(Business business, Work work) throws Exception {
-		Wo wo = new Wo();
-		if (null != business.form().pick(work.getForm())) {
-			wo.setId(work.getForm());
-		} else {
+		Form form = business.form().pick(work.getForm());
+		if (null == form) {
 			Activity activity = business.getActivity(work);
-			wo.setId(PropertyTools.getOrElse(activity, Activity.form_FIELDNAME, String.class, ""));
+			if (null != activity) {
+				form = business.form().pick(activity.getForm());
+			}
 		}
-		return wo;
+		if (null != form) {
+			return this.get(business, form);
+		}
+		return new Wo();
+	}
+
+	private Wo get(Business business, Form form) throws Exception {
+		CacheKey cacheKey = new CacheKey(this.getClass(), form.getId());
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			return (Wo) optional.get();
+		} else {
+			List<String> list = new CopyOnWriteArrayList<>();
+			CompletableFuture<Void> _relatedForm = CompletableFuture.runAsync(() -> {
+				try {
+					Form _f;
+					for (String _id : form.getProperties().getMobileRelatedFormList()) {
+						_f = business.form().pick(_id);
+						if (null != _f) {
+							list.add(_f.getId() + _f.getUpdateTime().getTime());
+						}
+					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			CompletableFuture<Void> _relatedScript = CompletableFuture.runAsync(() -> {
+				try {
+					for (Entry<String, String> entry : form.getProperties().getMobileRelatedScriptMap().entrySet()) {
+						switch (entry.getValue()) {
+						case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
+							Script _pp = business.script().pick(entry.getKey());
+							if (null != _pp) {
+								list.add(_pp.getId() + _pp.getUpdateTime().getTime());
+							}
+							break;
+						case WorkCompletedProperties.RelatedScript.TYPE_CMS:
+							com.x.cms.core.entity.element.Script _cms = business.cms().script().pick(entry.getKey());
+							if (null != _cms) {
+								list.add(_cms.getId() + _cms.getUpdateTime().getTime());
+							}
+							break;
+						case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
+							com.x.portal.core.entity.Script _p = business.portal().script().pick(entry.getKey());
+							if (null != _p) {
+								list.add(_p.getId() + _p.getUpdateTime().getTime());
+							}
+							break;
+						default:
+							break;
+						}
+					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			_relatedForm.get();
+			_relatedScript.get();
+			list.add(form.getId() + form.getUpdateTime().getTime());
+			Wo wo = new Wo();
+			wo.setId(form.getId());
+			CRC32 crc = new CRC32();
+			crc.update(StringUtils.join(list, "#").getBytes());
+			wo.setCacheTag(crc.getValue() + "");
+			return wo;
+		}
 	}
 
 	private Wo workCompleted(Business business, WorkCompleted workCompleted) throws Exception {
 		// 先使用当前库的表单,如果不存在使用储存的表单.
 		Wo wo = new Wo();
-		if (null != business.form().pick(workCompleted.getForm())) {
-			wo.setId(workCompleted.getForm());
-		} else if (null != workCompleted.getProperties().getStoreFormMobile()) {
-			StoreForm storeForm = workCompleted.getProperties().getStoreFormMobile();
+		Form form = business.form().pick(workCompleted.getForm());
+		if (null != form) {
+			return this.get(business, form);
+		} else if (null != workCompleted.getProperties().getStoreForm()) {
+			StoreForm storeForm = workCompleted.getProperties().getStoreForm();
 			wo = XGsonBuilder.convert(storeForm, Wo.class);
 		}
 		return wo;
@@ -100,12 +176,22 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 
 		private String id;
 
+		private String cacheTag;
+
 		public String getId() {
 			return id;
 		}
 
 		public void setId(String id) {
 			this.id = id;
+		}
+
+		public String getCacheTag() {
+			return cacheTag;
+		}
+
+		public void setCacheTag(String cacheTag) {
+			this.cacheTag = cacheTag;
 		}
 
 	}

@@ -3,10 +3,9 @@ package com.x.base.core.project.jaxrs;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.HttpMediaType;
 
-public class WoText extends WoFastETag {
+public class WoText extends WoMaxAgeFastETag {
 
 	public WoText() {
 	}
