@@ -143,8 +143,10 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         if (this.options.dutyUnitLevelBy === "duty") {
             this.level1Container = [];
             if (this.options.units && this.options.units.length) {
-                var div = new Element("div").inject(this.itemAreaNode);
-                this.level1Container.push(div);
+                this.options.units.each( function () {
+                    var div = new Element("div").inject(this.itemAreaNode);
+                    this.level1Container.push(div);
+                }.bind(this))
             }
             this._loadSelectItemsByDutyUnit(unitTree);
         } else {
