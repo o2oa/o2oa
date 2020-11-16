@@ -143,7 +143,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         if (this.options.dutyUnitLevelBy === "duty") {
             this.level1Container = [];
             if (this.options.units && this.options.units.length) {
-                this.options.units.each( function () {
+                this.options.units.each( function (unit ,i) {
                     var div = new Element("div").inject(this.itemAreaNode);
                     this.level1Container.push(div);
                 }.bind(this))
@@ -200,7 +200,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 var container = this.itemAreaNode;
                 if (this.level1Container && this.level1Container.length) {
                     var index = this.getIndexFromUnitOption(unit);
-                    if (index > -1 && (this.level1Container.length > index) && this.level1Container[i]) container = this.level1Container[i];
+                    if (index > -1 && (this.level1Container.length > index) && this.level1Container[index]) container = this.level1Container[index];
                 }
                 var category = this._newItemCategory("ItemCategory", unit, this, container);
                 this.subCategorys.push(category);
