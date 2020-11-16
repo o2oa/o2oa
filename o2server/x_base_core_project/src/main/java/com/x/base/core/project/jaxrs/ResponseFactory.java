@@ -142,13 +142,8 @@ public class ResponseFactory {
 	}
 
 	private static boolean notModified(HttpServletRequest request, EntityTag tag) {
-		String If_None_Match = request.getHeader(HttpHeader.IF_NONE_MATCH.toString());
-		if (StringUtils.isNotEmpty(If_None_Match)) {
-			if (StringUtils.equals(If_None_Match, "\"" + tag.getValue() + "\"")) {
-				return true;
-			}
-		}
-		return false;
+		String ifNoneMatch = request.getHeader(HttpHeader.IF_NONE_MATCH.toString());
+		return (StringUtils.isNotEmpty(ifNoneMatch) && StringUtils.equals(ifNoneMatch, "\"" + tag.getValue() + "\""));
 	}
 
 	private static String etagWoFile(WoFile wo) {
