@@ -151,6 +151,7 @@ public class ResourceFactory {
 			// 增加校验
 			dataSource.setTestConnectionOnCheckin(ds.getTestConnectionOnCheckin());
 			dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
+			dataSource.setMaxIdleTime(ds.getMaxIdleTime());
 			dataSource.setAcquireIncrement(2);
 			if (BooleanUtils.isTrue(ds.getStatEnable())) {
 				dataSource.setFilters(ds.getStatFilter());
