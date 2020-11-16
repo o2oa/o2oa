@@ -1,21 +1,13 @@
 package com.x.processplatform.assemble.surface.jaxrs.workcompleted;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -36,17 +28,13 @@ import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Activity;
-import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
@@ -350,196 +338,196 @@ abstract class BaseAction extends StandardJaxrsAction {
 				JpaObject.singularAttributeField(Form.class, true, true), null);
 	}
 
-	protected <T extends AbstractWo> T get(Business business, EffectivePerson effectivePerson,
-			WorkCompleted workCompleted, Class<T> cls) throws Exception {
-		T t = cls.newInstance();
-		List<WoTaskCompleted> woTaskCompleteds = new ArrayList<>();
-		List<WoReadCompleted> woReadCompleteds = new ArrayList<>();
-		Application application = null;
-		Process process = null;
-		Activity activity = null;
-		Long reviewCount = 0L;
-
-		CompletableFuture<Void> future_taskCompleteds = CompletableFuture.runAsync(() -> {
-			try {
-				List<TaskCompleted> os = business.entityManagerContainer()
-						.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, workCompleted.getJob()).stream()
-						.sorted(Comparator.comparing(TaskCompleted::getStartTime,
-								Comparator.nullsLast(Date::compareTo)))
-						.collect(Collectors.toList());
-				woTaskCompleteds.addAll(WoTaskCompleted.copier.copy(os));
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
-		CompletableFuture<Void> future_reads = CompletableFuture.runAsync(() -> {
-			try {
-				List<Read> os = business.entityManagerContainer()
-						.listEqual(Read.class, Read.job_FIELDNAME, workCompleted.getJob()).stream()
-						.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
-						.collect(Collectors.toList());
-				t.getReadList().addAll(WoRead.copier.copy(os));
-				t.setCurrentReadIndex(-1);
-				for (int i = 0; i < t.getReadList().size(); i++) {
-					if (StringUtils.equals(t.getReadList().get(i).getPerson(),
-							effectivePerson.getDistinguishedName())) {
-						t.setCurrentReadIndex(i);
-						break;
-					}
-				}
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
-		CompletableFuture<Void> future_readCompleteds = CompletableFuture.runAsync(() -> {
-			try {
-				List<ReadCompleted> os = business.entityManagerContainer()
-						.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, workCompleted.getJob()).stream()
-						.sorted(Comparator.comparing(ReadCompleted::getStartTime,
-								Comparator.nullsLast(Date::compareTo)))
-						.collect(Collectors.toList());
-				woReadCompleteds.addAll(WoReadCompleted.copier.copy(os));
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
-		CompletableFuture<Void> future_attachments = CompletableFuture.runAsync(() -> {
-			try {
-				List<Attachment> os = business.entityManagerContainer()
-						.listEqual(Attachment.class, Attachment.job_FIELDNAME, workCompleted.getJob()).stream()
-						.sorted(Comparator.comparing(Attachment::getCreateTime, Comparator.nullsLast(Date::compareTo)))
-						.collect(Collectors.toList());
-				t.setAttachmentList(WoAttachment.copier.copy(os));
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
-		CompletableFuture<Void> future_workLogs = CompletableFuture.runAsync(() -> {
-			try {
-				List<WorkLog> os = business.entityManagerContainer()
-						.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, workCompleted.getJob()).stream()
-						.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
-						.collect(Collectors.toList());
-				t.setWorkLogList(WoWorkLog.copier.copy(os));
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
-		CompletableFuture<Void> future_data = CompletableFuture.runAsync(() -> {
-			try {
-				t.setData(this.loadData(business, workCompleted));
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
-		CompletableFuture<Application> future_application = CompletableFuture.supplyAsync(() -> {
-			Application o = null;
-			try {
-				o = business.application().pick(workCompleted.getApplication());
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			return o;
-		});
-		CompletableFuture<Process> future_process = CompletableFuture.supplyAsync(() -> {
-			Process o = null;
-			try {
-				o = business.process().pick(workCompleted.getProcess());
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			return o;
-		});
-		CompletableFuture<Long> future_reviewCount = CompletableFuture.supplyAsync(() -> {
-			Long o = 0L;
-			try {
-				o = business.entityManagerContainer().countEqualAndEqual(Review.class, Review.person_FIELDNAME,
-						effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, workCompleted.getJob());
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			return o;
-		});
-
-		future_taskCompleteds.get(300, TimeUnit.SECONDS);
-		future_reads.get(300, TimeUnit.SECONDS);
-		future_readCompleteds.get(300, TimeUnit.SECONDS);
-		future_attachments.get(300, TimeUnit.SECONDS);
-		future_workLogs.get(300, TimeUnit.SECONDS);
-		future_data.get(300, TimeUnit.SECONDS);
-		application = future_application.get(300, TimeUnit.SECONDS);
-		process = future_process.get(300, TimeUnit.SECONDS);
-		reviewCount = future_reviewCount.get(300, TimeUnit.SECONDS);
-
-		t.setWorkCompleted(WoWorkCompleted.copier.copy(workCompleted));
-		this.arrangeWorkLog(business, t, woTaskCompleteds, woReadCompleteds);
-
-		WoControl control = new WoControl();
-		/** 工作是否可以打开(管理员 或 有task,taskCompleted,read,readCompleted,review的人) */
-		control.setAllowVisit(false);
-		/** 工作是否可以处理待阅(有read的人) */
-		control.setAllowReadProcessing(false);
-		/** 工作是否可删除(管理员 或者 此活动在流程设计中允许删除且当前待办人是文件的创建者) */
-		control.setAllowDelete(false);
-		/** 设置allowVisit */
-		if ((t.getCurrentReadIndex() > -1) || (woTaskCompleteds.stream()
-				.filter(o -> StringUtils.equals(o.getPerson(), effectivePerson.getDistinguishedName())).count() > 0)
-				|| (woReadCompleteds.stream()
-						.filter(o -> StringUtils.equals(o.getPerson(), effectivePerson.getDistinguishedName()))
-						.count() > 0)
-				|| (reviewCount > 0)) {
-			control.setAllowVisit(true);
-		} else if (effectivePerson.isPerson(workCompleted.getCreatorPerson())) {
-			control.setAllowVisit(true);
-		} else if (business.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			control.setAllowVisit(true);
-		}
-		/* 设置allowReadProcessing */
-		if (t.getCurrentReadIndex() > -1) {
-			control.setAllowReadProcessing(true);
-		}
-		/* 设置 allowDelete */
-		if (business.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			control.setAllowDelete(true);
-		}
-		t.setControl(control);
-		return t;
-	}
-
-	/* 如果通过已完成工作发送的已办有可能activityToken为空 */
-	private void arrangeWorkLog(Business business, AbstractWo wo, List<WoTaskCompleted> woTaskCompleteds,
-			List<WoReadCompleted> woReadCompleteds) throws Exception {
-		/* read 和 readCompleted 的 workLog o.getActivityToken 有可能为空 */
-		ListTools.groupStick(wo.getWorkLogList(),
-				woTaskCompleteds.stream().filter(o -> StringUtils.isNotEmpty(o.getActivityToken()))
-						.collect(Collectors.toList()),
-				WorkLog.fromActivityToken_FIELDNAME, TaskCompleted.activityToken_FIELDNAME, "taskCompletedList");
-		/* read 和 readCompleted 的 workLog o.getActivityToken 有可能为空 */
-		ListTools.groupStick(wo.getWorkLogList(),
-				wo.getReadList().stream().filter(o -> StringUtils.isNotEmpty(o.getActivityToken()))
-						.collect(Collectors.toList()),
-				WorkLog.fromActivityToken_FIELDNAME, Read.activityToken_FIELDNAME, "readList");
-		/* read 和 readCompleted 的 workLog o.getActivityToken 有可能为空 */
-		ListTools.groupStick(wo.getWorkLogList(),
-				woReadCompleteds.stream().filter(o -> StringUtils.isNotEmpty(o.getActivityToken()))
-						.collect(Collectors.toList()),
-				WorkLog.fromActivityToken_FIELDNAME, ReadCompleted.activityToken_FIELDNAME, "readCompletedList");
-		/* 将没有actiivityToken对应的已办或者待办绑定到最后一个end节点 */
-		List<String> tokens = ListTools.extractProperty(wo.getWorkLogList(), WorkLog.fromActivityToken_FIELDNAME,
-				String.class, true, true);
-		WoWorkLog latestEnd = wo.getWorkLogList().stream()
-				.filter(o -> Objects.equals(o.getArrivedActivityType(), ActivityType.end)).sorted(Comparator
-						.comparing(WorkLog::getArrivedTime, Comparator.nullsFirst(Date::compareTo)).reversed())
-				.findFirst().orElse(null);
-		if (null != latestEnd) {
-			latestEnd.getReadList()
-					.addAll(wo.getReadList().stream().filter(o -> !tokens.contains(o.getActivityToken())).sorted(
-							Comparator.comparing(Read::getStartTime, Comparator.nullsFirst(Date::compareTo)).reversed())
-							.collect(Collectors.toList()));
-			latestEnd.getReadCompletedList().addAll(woReadCompleteds.stream()
-					.filter(o -> !tokens.contains(o.getActivityToken())).sorted(Comparator
-							.comparing(ReadCompleted::getStartTime, Comparator.nullsFirst(Date::compareTo)).reversed())
-					.collect(Collectors.toList()));
-		}
-	}
+//	protected <T extends AbstractWo> T get(Business business, EffectivePerson effectivePerson,
+//			WorkCompleted workCompleted, Class<T> cls) throws Exception {
+//		T t = cls.newInstance();
+//		List<WoTaskCompleted> woTaskCompleteds = new ArrayList<>();
+//		List<WoReadCompleted> woReadCompleteds = new ArrayList<>();
+//		Application application = null;
+//		Process process = null;
+//		Activity activity = null;
+//		Long reviewCount = 0L;
+//
+//		CompletableFuture111111<Void> future_taskCompleteds = CompletableFuture111111.runAsync(() -> {
+//			try {
+//				List<TaskCompleted> os = business.entityManagerContainer()
+//						.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, workCompleted.getJob()).stream()
+//						.sorted(Comparator.comparing(TaskCompleted::getStartTime,
+//								Comparator.nullsLast(Date::compareTo)))
+//						.collect(Collectors.toList());
+//				woTaskCompleteds.addAll(WoTaskCompleted.copier.copy(os));
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//		});
+//		CompletableFuture111111<Void> future_reads = CompletableFuture111111.runAsync(() -> {
+//			try {
+//				List<Read> os = business.entityManagerContainer()
+//						.listEqual(Read.class, Read.job_FIELDNAME, workCompleted.getJob()).stream()
+//						.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
+//						.collect(Collectors.toList());
+//				t.getReadList().addAll(WoRead.copier.copy(os));
+//				t.setCurrentReadIndex(-1);
+//				for (int i = 0; i < t.getReadList().size(); i++) {
+//					if (StringUtils.equals(t.getReadList().get(i).getPerson(),
+//							effectivePerson.getDistinguishedName())) {
+//						t.setCurrentReadIndex(i);
+//						break;
+//					}
+//				}
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//		});
+//		CompletableFuture111111<Void> future_readCompleteds = CompletableFuture111111.runAsync(() -> {
+//			try {
+//				List<ReadCompleted> os = business.entityManagerContainer()
+//						.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, workCompleted.getJob()).stream()
+//						.sorted(Comparator.comparing(ReadCompleted::getStartTime,
+//								Comparator.nullsLast(Date::compareTo)))
+//						.collect(Collectors.toList());
+//				woReadCompleteds.addAll(WoReadCompleted.copier.copy(os));
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//		});
+//		CompletableFuture111111<Void> future_attachments = CompletableFuture111111.runAsync(() -> {
+//			try {
+//				List<Attachment> os = business.entityManagerContainer()
+//						.listEqual(Attachment.class, Attachment.job_FIELDNAME, workCompleted.getJob()).stream()
+//						.sorted(Comparator.comparing(Attachment::getCreateTime, Comparator.nullsLast(Date::compareTo)))
+//						.collect(Collectors.toList());
+//				t.setAttachmentList(WoAttachment.copier.copy(os));
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//		});
+//		CompletableFuture111111<Void> future_workLogs = CompletableFuture111111.runAsync(() -> {
+//			try {
+//				List<WorkLog> os = business.entityManagerContainer()
+//						.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, workCompleted.getJob()).stream()
+//						.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
+//						.collect(Collectors.toList());
+//				t.setWorkLogList(WoWorkLog.copier.copy(os));
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//		});
+//		CompletableFuture111111<Void> future_data = CompletableFuture111111.runAsync(() -> {
+//			try {
+//				t.setData(this.loadData(business, workCompleted));
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//		});
+//		CompletableFuture111111<Application> future_application = CompletableFuture111111.supplyAsync(() -> {
+//			Application o = null;
+//			try {
+//				o = business.application().pick(workCompleted.getApplication());
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//			return o;
+//		});
+//		CompletableFuture111111<Process> future_process = CompletableFuture111111.supplyAsync(() -> {
+//			Process o = null;
+//			try {
+//				o = business.process().pick(workCompleted.getProcess());
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//			return o;
+//		});
+//		CompletableFuture111111<Long> future_reviewCount = CompletableFuture111111.supplyAsync(() -> {
+//			Long o = 0L;
+//			try {
+//				o = business.entityManagerContainer().countEqualAndEqual(Review.class, Review.person_FIELDNAME,
+//						effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, workCompleted.getJob());
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//			return o;
+//		});
+//
+//		future_taskCompleteds.get(300, TimeUnit.SECONDS);
+//		future_reads.get(300, TimeUnit.SECONDS);
+//		future_readCompleteds.get(300, TimeUnit.SECONDS);
+//		future_attachments.get(300, TimeUnit.SECONDS);
+//		future_workLogs.get(300, TimeUnit.SECONDS);
+//		future_data.get(300, TimeUnit.SECONDS);
+//		application = future_application.get(300, TimeUnit.SECONDS);
+//		process = future_process.get(300, TimeUnit.SECONDS);
+//		reviewCount = future_reviewCount.get(300, TimeUnit.SECONDS);
+//
+//		t.setWorkCompleted(WoWorkCompleted.copier.copy(workCompleted));
+//		this.arrangeWorkLog(business, t, woTaskCompleteds, woReadCompleteds);
+//
+//		WoControl control = new WoControl();
+//		/** 工作是否可以打开(管理员 或 有task,taskCompleted,read,readCompleted,review的人) */
+//		control.setAllowVisit(false);
+//		/** 工作是否可以处理待阅(有read的人) */
+//		control.setAllowReadProcessing(false);
+//		/** 工作是否可删除(管理员 或者 此活动在流程设计中允许删除且当前待办人是文件的创建者) */
+//		control.setAllowDelete(false);
+//		/** 设置allowVisit */
+//		if ((t.getCurrentReadIndex() > -1) || (woTaskCompleteds.stream()
+//				.filter(o -> StringUtils.equals(o.getPerson(), effectivePerson.getDistinguishedName())).count() > 0)
+//				|| (woReadCompleteds.stream()
+//						.filter(o -> StringUtils.equals(o.getPerson(), effectivePerson.getDistinguishedName()))
+//						.count() > 0)
+//				|| (reviewCount > 0)) {
+//			control.setAllowVisit(true);
+//		} else if (effectivePerson.isPerson(workCompleted.getCreatorPerson())) {
+//			control.setAllowVisit(true);
+//		} else if (business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+//			control.setAllowVisit(true);
+//		}
+//		/* 设置allowReadProcessing */
+//		if (t.getCurrentReadIndex() > -1) {
+//			control.setAllowReadProcessing(true);
+//		}
+//		/* 设置 allowDelete */
+//		if (business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+//			control.setAllowDelete(true);
+//		}
+//		t.setControl(control);
+//		return t;
+//	}
+//
+//	/* 如果通过已完成工作发送的已办有可能activityToken为空 */
+//	private void arrangeWorkLog(Business business, AbstractWo wo, List<WoTaskCompleted> woTaskCompleteds,
+//			List<WoReadCompleted> woReadCompleteds) throws Exception {
+//		/* read 和 readCompleted 的 workLog o.getActivityToken 有可能为空 */
+//		ListTools.groupStick(wo.getWorkLogList(),
+//				woTaskCompleteds.stream().filter(o -> StringUtils.isNotEmpty(o.getActivityToken()))
+//						.collect(Collectors.toList()),
+//				WorkLog.fromActivityToken_FIELDNAME, TaskCompleted.activityToken_FIELDNAME, "taskCompletedList");
+//		/* read 和 readCompleted 的 workLog o.getActivityToken 有可能为空 */
+//		ListTools.groupStick(wo.getWorkLogList(),
+//				wo.getReadList().stream().filter(o -> StringUtils.isNotEmpty(o.getActivityToken()))
+//						.collect(Collectors.toList()),
+//				WorkLog.fromActivityToken_FIELDNAME, Read.activityToken_FIELDNAME, "readList");
+//		/* read 和 readCompleted 的 workLog o.getActivityToken 有可能为空 */
+//		ListTools.groupStick(wo.getWorkLogList(),
+//				woReadCompleteds.stream().filter(o -> StringUtils.isNotEmpty(o.getActivityToken()))
+//						.collect(Collectors.toList()),
+//				WorkLog.fromActivityToken_FIELDNAME, ReadCompleted.activityToken_FIELDNAME, "readCompletedList");
+//		/* 将没有actiivityToken对应的已办或者待办绑定到最后一个end节点 */
+//		List<String> tokens = ListTools.extractProperty(wo.getWorkLogList(), WorkLog.fromActivityToken_FIELDNAME,
+//				String.class, true, true);
+//		WoWorkLog latestEnd = wo.getWorkLogList().stream()
+//				.filter(o -> Objects.equals(o.getArrivedActivityType(), ActivityType.end)).sorted(Comparator
+//						.comparing(WorkLog::getArrivedTime, Comparator.nullsFirst(Date::compareTo)).reversed())
+//				.findFirst().orElse(null);
+//		if (null != latestEnd) {
+//			latestEnd.getReadList()
+//					.addAll(wo.getReadList().stream().filter(o -> !tokens.contains(o.getActivityToken())).sorted(
+//							Comparator.comparing(Read::getStartTime, Comparator.nullsFirst(Date::compareTo)).reversed())
+//							.collect(Collectors.toList()));
+//			latestEnd.getReadCompletedList().addAll(woReadCompleteds.stream()
+//					.filter(o -> !tokens.contains(o.getActivityToken())).sorted(Comparator
+//							.comparing(ReadCompleted::getStartTime, Comparator.nullsFirst(Date::compareTo)).reversed())
+//					.collect(Collectors.toList()));
+//		}
+//	}
 }
