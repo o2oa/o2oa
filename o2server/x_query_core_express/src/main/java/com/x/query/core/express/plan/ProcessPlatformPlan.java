@@ -20,6 +20,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
@@ -90,22 +91,22 @@ public class ProcessPlatformPlan extends Plan {
 		this.selectList = list;
 	}
 
-	List<String> listBundle(EntityManagerContainer emc) throws Exception {
+	List<String> listBundle() throws Exception {
 		List<String> jobs = new TreeList<>();
 		switch (StringUtils.trim(this.where.scope)) {
 		case (SCOPE_ALL):
-			jobs = ListUtils.union(this.listBundle_workCompleted(emc), this.listBundle_work(emc));
+			jobs = ListUtils.union(this.listBundle_workCompleted(), this.listBundle_work());
 			break;
 		case (SCOPE_WORKCOMPLETED):
-			jobs = this.listBundle_workCompleted(emc);
+			jobs = this.listBundle_workCompleted();
 			break;
 		default:
-			jobs = this.listBundle_work(emc);
+			jobs = this.listBundle_work();
 			break;
 		}
 		if (BooleanUtils.isTrue(this.where.accessible)) {
 			if (StringUtils.isNotEmpty(runtime.person)) {
-				jobs = this.listBundle_accessible(emc, jobs, runtime.person);
+				jobs = this.listBundle_accessible(jobs, runtime.person);
 			}
 		}
 		/** 针对DataItem进行判断 */
@@ -116,7 +117,7 @@ public class ProcessPlatformPlan extends Plan {
 			}
 		}
 		if (!filterEntries.isEmpty()) {
-			jobs = listBundle_filterEntry(emc, jobs, filterEntries);
+			jobs = listBundle_filterEntry(jobs, filterEntries);
 		}
 		filterEntries.clear();
 		for (FilterEntry _o : ListTools.trim(this.runtime.filterList, true, true)) {
@@ -125,39 +126,42 @@ public class ProcessPlatformPlan extends Plan {
 			}
 		}
 		if (!filterEntries.isEmpty()) {
-			jobs = listBundle_filterEntry(emc, jobs, filterEntries);
+			jobs = listBundle_filterEntry(jobs, filterEntries);
 		}
 		return jobs;
 	}
 
-	private List<String> listBundle_work(EntityManagerContainer emc) throws Exception {
-		EntityManager em = emc.get(Work.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Work> root = cq.from(Work.class);
-		cq.select(root.get(Work_.job)).where(this.where.workPredicate(cb, root));
-		List<String> jobs = em.createQuery(cq).getResultList();
-		return jobs.stream().distinct().collect(Collectors.toList());
+	private List<String> listBundle_work() throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			EntityManager em = emc.get(Work.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<String> cq = cb.createQuery(String.class);
+			Root<Work> root = cq.from(Work.class);
+			cq.select(root.get(Work_.job)).where(this.where.workPredicate(cb, root));
+			List<String> jobs = em.createQuery(cq).getResultList();
+			return jobs.stream().distinct().collect(Collectors.toList());
+		}
 	}
 
-	private List<String> listBundle_workCompleted(EntityManagerContainer emc) throws Exception {
-		EntityManager em = emc.get(WorkCompleted.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
-		cq.select(root.get(WorkCompleted_.job)).where(this.where.workCompletedPredicate(cb, root));
-		List<String> jobs = em.createQuery(cq).getResultList();
-		return jobs.stream().distinct().collect(Collectors.toList());
+	private List<String> listBundle_workCompleted() throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			EntityManager em = emc.get(WorkCompleted.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<String> cq = cb.createQuery(String.class);
+			Root<WorkCompleted> root = cq.from(WorkCompleted.class);
+			cq.select(root.get(WorkCompleted_.job)).where(this.where.workCompletedPredicate(cb, root));
+			List<String> jobs = em.createQuery(cq).getResultList();
+			return jobs.stream().distinct().collect(Collectors.toList());
+		}
 	}
 
-	private List<String> listBundle_accessible(EntityManagerContainer emc, List<String> jobs, String person)
-			throws Exception {
+	private List<String> listBundle_accessible(List<String> jobs, String person) throws Exception {
 		logger.debug("开始过滤权限.");
 		List<String> list = new TreeList<>();
 		List<CompletableFuture<List<String>>> futures = new TreeList<>();
 		for (List<String> _part_bundles : ListTools.batch(jobs, SQL_STATEMENT_IN_BATCH)) {
 			CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
-				try {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					EntityManager em = emc.get(Review.class);
 					CriteriaBuilder cb = em.getCriteriaBuilder();
 					CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -187,8 +191,7 @@ public class ProcessPlatformPlan extends Plan {
 		return list;
 	}
 
-	private List<String> listBundle_filterEntry(EntityManagerContainer emc, List<String> jobs,
-			List<FilterEntry> filterEntries) throws Exception {
+	private List<String> listBundle_filterEntry(List<String> jobs, List<FilterEntry> filterEntries) throws Exception {
 		/** 运行FilterEntry */
 		List<String> partJobs = new TreeList<>();
 		List<List<String>> batch_jobs = ListTools.batch(jobs, SQL_STATEMENT_IN_BATCH);
@@ -199,7 +202,7 @@ public class ProcessPlatformPlan extends Plan {
 			List<CompletableFuture<List<String>>> futures = new TreeList<>();
 			for (List<String> _batch : batch_jobs) {
 				CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
-					try {
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 						EntityManager em = emc.get(Item.class);
 						CriteriaBuilder cb = em.getCriteriaBuilder();
 						CriteriaQuery<String> cq = cb.createQuery(String.class);
