@@ -13,6 +13,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.server.console.server.Servers;
 
@@ -20,6 +22,8 @@ import com.x.server.console.server.Servers;
  * @author
  */
 public class HttpStatus extends Thread {
+
+	private static Logger logger = LoggerFactory.getLogger(HttpStatus.class);
 
 	private Integer repeat;
 
