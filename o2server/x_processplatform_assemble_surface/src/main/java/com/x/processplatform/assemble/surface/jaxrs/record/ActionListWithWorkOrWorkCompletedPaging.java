@@ -31,63 +31,61 @@ class ActionListWithWorkOrWorkCompletedPaging extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted, Integer page,
 			Integer size) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
 
-			Business business = new Business(emc);
+		ActionResult<List<Wo>> result = new ActionResult<>();
 
-			CompletableFuture<List<Wo>> _wos = CompletableFuture.supplyAsync(() -> {
-				List<Wo> wos = new ArrayList<>();
-				try {
-					String job = business.job().findWithWork(workOrWorkCompleted);
-					if (null != job) {
+		CompletableFuture<List<Wo>> _wos = CompletableFuture.supplyAsync(() -> {
+			List<Wo> wos = new ArrayList<>();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				String job = business.job().findWithWork(workOrWorkCompleted);
+				if (null != job) {
+					wos = emc.fetchEqualAscPaging(Record.class, Wo.copier, Record.job_FIELDNAME, job, page, size,
+							Record.order_FIELDNAME);
+				} else {
+					job = business.job().findWithWorkCompleted(workOrWorkCompleted);
+					WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job);
+					if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
+						List<Record> os = workCompleted.getProperties().getRecordList();
+						int start = (page - 1) * size;
+						start = Math.min(start, os.size());
+						wos = Wo.copier.copy(os.stream().sorted(Comparator.comparing(Record::getOrder)).skip(start)
+								.limit(size).collect(Collectors.toList()));
+					} else {
 						wos = emc.fetchEqualAscPaging(Record.class, Wo.copier, Record.job_FIELDNAME, job, page, size,
 								Record.order_FIELDNAME);
-					} else {
-						job = business.job().findWithWorkCompleted(workOrWorkCompleted);
-						WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
-								job);
-						if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
-							List<Record> os = workCompleted.getProperties().getRecordList();
-							int start = (page - 1) * size;
-							start = Math.min(start, os.size());
-							wos = Wo.copier.copy(os.stream().sorted(Comparator.comparing(Record::getOrder)).skip(start)
-									.limit(size).collect(Collectors.toList()));
-						} else {
-							wos = emc.fetchEqualAscPaging(Record.class, Wo.copier, Record.job_FIELDNAME, job, page,
-									size, Record.order_FIELDNAME);
-						}
 					}
-
-					for (Task task : emc.listEqual(Task.class, Task.job_FIELDNAME, job).stream()
-							.sorted(Comparator.comparing(Task::getStartTime)).collect(Collectors.toList())) {
-						Record record = this.taskToRecord(task);
-						wos.add(Wo.copier.copy(record));
-					}
-				} catch (Exception e) {
-					logger.error(e);
 				}
-				return wos;
-			});
 
-			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
-				Boolean value = false;
-				try {
-					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-							new ExceptionEntityNotExist(workOrWorkCompleted));
-				} catch (Exception e) {
-					logger.error(e);
+				for (Task task : emc.listEqual(Task.class, Task.job_FIELDNAME, job).stream()
+						.sorted(Comparator.comparing(Task::getStartTime)).collect(Collectors.toList())) {
+					Record record = this.taskToRecord(task);
+					wos.add(Wo.copier.copy(record));
 				}
-				return value;
-			});
-
-			if (BooleanUtils.isFalse(_control.get())) {
-				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+			} catch (Exception e) {
+				logger.error(e);
 			}
+			return wos;
+		});
 
-			result.setData(_wos.get());
-			return result;
+		CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+			Boolean value = false;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+						new ExceptionEntityNotExist(workOrWorkCompleted));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return value;
+		});
+
+		if (BooleanUtils.isFalse(_control.get())) {
+			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
+
+		result.setData(_wos.get());
+		return result;
 
 	}
 

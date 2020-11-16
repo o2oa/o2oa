@@ -20,6 +20,10 @@ import javax.persistence.criteria.Root;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import org.apache.commons.collections4.list.TreeList;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.ItemPrimitiveType;
@@ -32,10 +36,6 @@ import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
-
-import org.apache.commons.collections4.list.TreeList;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public abstract class Plan extends GsonPropertyObject {
 
@@ -210,120 +210,112 @@ public abstract class Plan extends GsonPropertyObject {
 
 	abstract void adjust() throws Exception;
 
-	abstract List<String> listBundle(EntityManagerContainer emc) throws Exception;
+	abstract List<String> listBundle() throws Exception;
 
 	public void access() throws Exception {
 		/* 先获取所有记录对应的job值作为返回的结果集 */
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			/* 先进行字段调整 */
-			this.adjust();
-			this.group = this.findGroupSelectEntry();
-			this.orderList = this.listOrderSelectEntry();
-			List<String> bundles = null;
-			if ((null != this.runtime) && (ListTools.isNotEmpty(runtime.bundleList))) {
-				bundles = this.runtime.bundleList;
-			} else {
-				bundles = this.listBundle(emc);
-			}
-			// if ((null != this.count) && (this.count > 0)) {
-			// /* 默认限制了数量 */
-			// if (this.count < bundles.size()) {
-			// bundles = bundles.subList(0, this.count);
-			// }
-			// }
-			if ((null != this.runtime.count) && (this.runtime.count > 0)) {
-				/* runtime限制了数量 */
-				if (this.runtime.count < bundles.size()) {
-					bundles = bundles.subList(0, this.runtime.count);
-				}
-			}
+		/* 先进行字段调整 */
+		this.adjust();
+		this.group = this.findGroupSelectEntry();
+		this.orderList = this.listOrderSelectEntry();
+		List<String> bundles = null;
+		if ((null != this.runtime) && (ListTools.isNotEmpty(runtime.bundleList))) {
+			bundles = this.runtime.bundleList;
+		} else {
+			bundles = this.listBundle();
+		}
 
-			final Table fillTable = this.concreteTable(bundles);
-			List<CompletableFuture<Void>> futures = new TreeList<>();
-			for (List<String> _part_bundles : ListTools.batch(bundles, SQL_STATEMENT_IN_BATCH)) {
-				for (SelectEntry selectEntry : this.selectList) {
-					CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-						try {
-							this.fillSelectEntry(emc, _part_bundles, selectEntry, fillTable);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+		if ((null != this.runtime.count) && (this.runtime.count > 0)) {
+			/* runtime限制了数量 */
+			if (this.runtime.count < bundles.size()) {
+				bundles = bundles.subList(0, this.runtime.count);
+			}
+		}
+
+		final Table fillTable = this.concreteTable(bundles);
+		List<CompletableFuture<Void>> futures = new TreeList<>();
+		for (List<String> _part_bundles : ListTools.batch(bundles, SQL_STATEMENT_IN_BATCH)) {
+			for (SelectEntry selectEntry : this.selectList) {
+				CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+					try {
+						this.fillSelectEntry(_part_bundles, selectEntry, fillTable);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
+				futures.add(future);
+			}
+		}
+		for (CompletableFuture<Void> future : futures) {
+			future.get(300, TimeUnit.SECONDS);
+		}
+		Table table = this.order(fillTable);
+		/* 新增测试 */
+		if (!this.selectList.emptyColumnCode()) {
+			ScriptEngine engine = this.getScriptEngine();
+			engine.put("gird", table);
+			for (SelectEntry selectEntry : this.selectList) {
+				if (StringUtils.isNotBlank(selectEntry.code)) {
+					List<ExtractObject> extractObjects = new TreeList<>();
+					table.stream().forEach(r -> {
+						ExtractObject extractObject = new ExtractObject();
+						extractObject.setBundle(r.bundle);
+						extractObject.setColumn(selectEntry.getColumn());
+						extractObject.setValue(r.find(selectEntry.getColumn()));
+						extractObject.setEntry(r);
+						extractObjects.add(extractObject);
 					});
-					futures.add(future);
+					engine.put("extractObjects", extractObjects);
+					StringBuffer text = new StringBuffer();
+					text.append("function executeScript(o){\n");
+					text.append(selectEntry.code);
+					text.append("\n");
+					text.append("}\n");
+					text.append("for each (var extractObject in extractObjects) {\n");
+					text.append("var o= {\n");
+					text.append("'value':extractObject.getValue(),\n");
+					text.append("'entry':extractObject.getEntry(),\n");
+					text.append("'columnName':extractObject.getColumn()\n");
+					text.append("}\n");
+					text.append("extractObject.setValue(executeScript.apply(o));\n");
+					text.append("}");
+					engine.eval(text.toString());
+					for (ExtractObject extractObject : extractObjects) {
+						table.get(extractObject.getBundle()).put(extractObject.getColumn(), extractObject.getValue());
+					}
 				}
 			}
-			for (CompletableFuture<Void> future : futures) {
-				future.get(300, TimeUnit.SECONDS);
-			}
-			Table table = this.order(fillTable);
-			/* 新增测试 */
-			if (!this.selectList.emptyColumnCode()) {
+		}
+		this.grid = table;
+		if (null != this.findGroupSelectEntry()) {
+			GroupTable groupTable = group(table);
+			if (StringUtils.isNotEmpty(this.afterGroupGridScriptText)) {
 				ScriptEngine engine = this.getScriptEngine();
-				engine.put("gird", table);
-				for (SelectEntry selectEntry : this.selectList) {
-					if (StringUtils.isNotBlank(selectEntry.code)) {
-						List<ExtractObject> extractObjects = new TreeList<>();
-						table.stream().forEach(r -> {
-							ExtractObject extractObject = new ExtractObject();
-							extractObject.setBundle(r.bundle);
-							extractObject.setColumn(selectEntry.getColumn());
-							extractObject.setValue(r.find(selectEntry.getColumn()));
-							extractObject.setEntry(r);
-							extractObjects.add(extractObject);
-						});
-						engine.put("extractObjects", extractObjects);
-						StringBuffer text = new StringBuffer();
-						text.append("function executeScript(o){\n");
-						text.append(selectEntry.code);
-						text.append("\n");
-						text.append("}\n");
-						text.append("for each (var extractObject in extractObjects) {\n");
-						text.append("var o= {\n");
-						text.append("'value':extractObject.getValue(),\n");
-						text.append("'entry':extractObject.getEntry(),\n");
-						text.append("'columnName':extractObject.getColumn()\n");
-						text.append("}\n");
-						text.append("extractObject.setValue(executeScript.apply(o));\n");
-						text.append("}");
-						engine.eval(text.toString());
-						for (ExtractObject extractObject : extractObjects) {
-							table.get(extractObject.getBundle()).put(extractObject.getColumn(),
-									extractObject.getValue());
+				engine.put("groupGrid", groupTable);
+				engine.eval(this.afterGroupGridScriptText);
+			}
+			this.groupGrid = groupTable;
+		}
+		/* 需要抽取单独的列 */
+		if (ListTools.isNotEmpty(this.columnList)) {
+			this.columnGrid = new TreeList<Object>();
+			for (String column : this.columnList) {
+				List<Object> list = new TreeList<>();
+				SelectEntry selectEntry = this.selectList.column(column);
+				if (null != selectEntry) {
+					for (Row o : table) {
+						if (selectEntry.isName) {
+							list.add(name(Objects.toString(o.find(column), "")));
+						} else {
+							list.add(o.find(column));
 						}
 					}
 				}
-			}
-			this.grid = table;
-			if (null != this.findGroupSelectEntry()) {
-				GroupTable groupTable = group(table);
-				if (StringUtils.isNotEmpty(this.afterGroupGridScriptText)) {
-					ScriptEngine engine = this.getScriptEngine();
-					engine.put("groupGrid", groupTable);
-					engine.eval(this.afterGroupGridScriptText);
-				}
-				this.groupGrid = groupTable;
-			}
-			/* 需要抽取单独的列 */
-			if (ListTools.isNotEmpty(this.columnList)) {
-				this.columnGrid = new TreeList<Object>();
-				for (String column : this.columnList) {
-					List<Object> list = new TreeList<>();
-					SelectEntry selectEntry = this.selectList.column(column);
-					if (null != selectEntry) {
-						for (Row o : table) {
-							if (selectEntry.isName) {
-								list.add(name(Objects.toString(o.find(column), "")));
-							} else {
-								list.add(o.find(column));
-							}
-						}
-					}
-					/* 只有一列的情况下直接输出List */
-					if (this.columnList.size() == 1) {
-						this.columnGrid = list;
-					} else {
-						this.columnGrid.add(list);
-					}
+				/* 只有一列的情况下直接输出List */
+				if (this.columnList.size() == 1) {
+					this.columnGrid = list;
+				} else {
+					this.columnGrid.add(list);
 				}
 			}
 		}
@@ -360,53 +352,51 @@ public abstract class Plan extends GsonPropertyObject {
 
 	public List<String> fetchBundles() throws Exception {
 		/* 先获取所有记录对应的job值作为返回的结果集 */
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			/* 先进行字段调整 */
-			this.adjust();
-			this.group = this.findGroupSelectEntry();
-			this.orderList = this.listOrderSelectEntry();
-			List<String> bundles = this.listBundle(emc);
-			if ((null != this.runtime.count) && (this.runtime.count > 0)) {
-				/* runtime限制了数量 */
-				if (this.runtime.count < bundles.size()) {
-					bundles = bundles.subList(0, this.runtime.count);
-				}
+		List<String> bundles = this.listBundle();
+		/* 先进行字段调整 */
+		this.adjust();
+		this.group = this.findGroupSelectEntry();
+		this.orderList = this.listOrderSelectEntry();
+		if ((null != this.runtime.count) && (this.runtime.count > 0)) {
+			/* runtime限制了数量 */
+			if (this.runtime.count < bundles.size()) {
+				bundles = bundles.subList(0, this.runtime.count);
 			}
-			if (orderList.isEmpty()) {
-				return bundles;
+		}
+		if (orderList.isEmpty()) {
+			return bundles;
+		}
+		TreeList<String> os = new TreeList<>();
+		final Table fillTable = this.concreteTable(bundles);
+		List<CompletableFuture<Void>> futures = new TreeList<>();
+		for (List<String> _part_bundles : ListTools.batch(bundles, SQL_STATEMENT_IN_BATCH)) {
+			for (SelectEntry selectEntry : this.orderList) {
+				CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+					try {
+						this.fillSelectEntry(_part_bundles, selectEntry, fillTable);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
+				futures.add(future);
 			}
-			TreeList<String> os = new TreeList<>();
-			final Table fillTable = this.concreteTable(bundles);
-			List<CompletableFuture<Void>> futures = new TreeList<>();
-			for (List<String> _part_bundles : ListTools.batch(bundles, SQL_STATEMENT_IN_BATCH)) {
-				for (SelectEntry selectEntry : this.orderList) {
-					CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-						try {
-							this.fillSelectEntry(emc, _part_bundles, selectEntry, fillTable);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					});
-					futures.add(future);
-				}
+		}
+		for (CompletableFuture<Void> future : futures) {
+			future.get(300, TimeUnit.SECONDS);
+		}
+		Table table = this.order(fillTable);
+		if (null == group) {
+			for (Row row : table) {
+				os.add(row.bundle);
 			}
-			for (CompletableFuture<Void> future : futures) {
-				future.get(300, TimeUnit.SECONDS);
-			}
-			Table table = this.order(fillTable);
-			if (null == group) {
-				for (Row row : table) {
+		} else {
+			for (GroupRow groupRow : group(table)) {
+				for (Row row : groupRow.list) {
 					os.add(row.bundle);
 				}
-			} else {
-				for (GroupRow groupRow : group(table)) {
-					for (Row row : groupRow.list) {
-						os.add(row.bundle);
-					}
-				}
 			}
-			return os;
 		}
+		return os;
 	}
 
 	private String name(String str) {
@@ -457,106 +447,107 @@ public abstract class Plan extends GsonPropertyObject {
 		return table;
 	}
 
-	private void fillSelectEntry(EntityManagerContainer emc, List<String> bundles, SelectEntry selectEntry, Table table)
-			throws Exception {
+	private void fillSelectEntry(List<String> bundles, SelectEntry selectEntry, Table table) throws Exception {
 		/* oracle 将empty string 自动转换成null,需要判断 */
-		EntityManager em = emc.get(Item.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-		Root<Item> root = cq.from(Item.class);
-		Predicate p = cb.isMember(root.get(Item_.bundle), cb.literal(bundles));
-		String[] paths = StringUtils.split(selectEntry.path, ".");
-		if ((paths.length > 0) && StringUtils.isNotEmpty(paths[0])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path0), paths[0]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path0)), cb.equal(root.get(Item_.path0), "")));
-		}
-		if ((paths.length > 1) && StringUtils.isNotEmpty(paths[1])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path1), paths[1]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path1)), cb.equal(root.get(Item_.path1), "")));
-		}
-		if ((paths.length > 2) && StringUtils.isNotEmpty(paths[2])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path2), paths[2]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path2)), cb.equal(root.get(Item_.path2), "")));
-		}
-		if ((paths.length > 3) && StringUtils.isNotEmpty(paths[3])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path3), paths[3]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path3)), cb.equal(root.get(Item_.path3), "")));
-		}
-		if ((paths.length > 4) && StringUtils.isNotEmpty(paths[4])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path4), paths[4]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path4)), cb.equal(root.get(Item_.path4), "")));
-		}
-		if ((paths.length > 5) && StringUtils.isNotEmpty(paths[5])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path5), paths[5]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path5)), cb.equal(root.get(Item_.path5), "")));
-		}
-		if ((paths.length > 6) && StringUtils.isNotEmpty(paths[6])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path6), paths[6]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path6)), cb.equal(root.get(Item_.path6), "")));
-		}
-		if ((paths.length > 7) && StringUtils.isNotEmpty(paths[7])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path7), paths[7]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path7)), cb.equal(root.get(Item_.path7), "")));
-		}
-		cq.multiselect(root.get(Item_.bundle), root.get(Item_.itemPrimitiveType), root.get(Item_.itemStringValueType),
-				root.get(Item_.stringShortValue), root.get(Item_.stringLongValue), root.get(Item_.dateValue),
-				root.get(Item_.timeValue), root.get(Item_.dateTimeValue), root.get(Item_.booleanValue),
-				root.get(Item_.numberValue)).where(p);
-		List<Tuple> list = em.createQuery(cq).getResultList();
-		Row row = null;
-		for (Tuple o : list) {
-			row = table.get(Objects.toString(o.get(0)));
-			switch (ItemPrimitiveType.valueOf(Objects.toString(o.get(1)))) {
-			case s:
-				switch (ItemStringValueType.valueOf(Objects.toString(o.get(2)))) {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			EntityManager em = emc.get(Item.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+			Root<Item> root = cq.from(Item.class);
+			Predicate p = cb.isMember(root.get(Item_.bundle), cb.literal(bundles));
+			String[] paths = StringUtils.split(selectEntry.path, ".");
+			if ((paths.length > 0) && StringUtils.isNotEmpty(paths[0])) {
+				p = cb.and(p, cb.equal(root.get(Item_.path0), paths[0]));
+			} else {
+				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path0)), cb.equal(root.get(Item_.path0), "")));
+			}
+			if ((paths.length > 1) && StringUtils.isNotEmpty(paths[1])) {
+				p = cb.and(p, cb.equal(root.get(Item_.path1), paths[1]));
+			} else {
+				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path1)), cb.equal(root.get(Item_.path1), "")));
+			}
+			if ((paths.length > 2) && StringUtils.isNotEmpty(paths[2])) {
+				p = cb.and(p, cb.equal(root.get(Item_.path2), paths[2]));
+			} else {
+				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path2)), cb.equal(root.get(Item_.path2), "")));
+			}
+			if ((paths.length > 3) && StringUtils.isNotEmpty(paths[3])) {
+				p = cb.and(p, cb.equal(root.get(Item_.path3), paths[3]));
+			} else {
+				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path3)), cb.equal(root.get(Item_.path3), "")));
+			}
+			if ((paths.length > 4) && StringUtils.isNotEmpty(paths[4])) {
+				p = cb.and(p, cb.equal(root.get(Item_.path4), paths[4]));
+			} else {
+				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path4)), cb.equal(root.get(Item_.path4), "")));
+			}
+			if ((paths.length > 5) && StringUtils.isNotEmpty(paths[5])) {
+				p = cb.and(p, cb.equal(root.get(Item_.path5), paths[5]));
+			} else {
+				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path5)), cb.equal(root.get(Item_.path5), "")));
+			}
+			if ((paths.length > 6) && StringUtils.isNotEmpty(paths[6])) {
+				p = cb.and(p, cb.equal(root.get(Item_.path6), paths[6]));
+			} else {
+				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path6)), cb.equal(root.get(Item_.path6), "")));
+			}
+			if ((paths.length > 7) && StringUtils.isNotEmpty(paths[7])) {
+				p = cb.and(p, cb.equal(root.get(Item_.path7), paths[7]));
+			} else {
+				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path7)), cb.equal(root.get(Item_.path7), "")));
+			}
+			cq.multiselect(root.get(Item_.bundle), root.get(Item_.itemPrimitiveType),
+					root.get(Item_.itemStringValueType), root.get(Item_.stringShortValue),
+					root.get(Item_.stringLongValue), root.get(Item_.dateValue), root.get(Item_.timeValue),
+					root.get(Item_.dateTimeValue), root.get(Item_.booleanValue), root.get(Item_.numberValue)).where(p);
+			List<Tuple> list = em.createQuery(cq).getResultList();
+			Row row = null;
+			for (Tuple o : list) {
+				row = table.get(Objects.toString(o.get(0)));
+				switch (ItemPrimitiveType.valueOf(Objects.toString(o.get(1)))) {
 				case s:
-					if (null != o.get(3)) {
-						if ((null != o.get(4)) && StringUtils.isNotEmpty(Objects.toString(o.get(4)))) {
-							row.put(selectEntry.getColumn(), Objects.toString(o.get(4)));
-						} else {
-							row.put(selectEntry.getColumn(), Objects.toString(o.get(3)));
+					switch (ItemStringValueType.valueOf(Objects.toString(o.get(2)))) {
+					case s:
+						if (null != o.get(3)) {
+							if ((null != o.get(4)) && StringUtils.isNotEmpty(Objects.toString(o.get(4)))) {
+								row.put(selectEntry.getColumn(), Objects.toString(o.get(4)));
+							} else {
+								row.put(selectEntry.getColumn(), Objects.toString(o.get(3)));
+							}
 						}
+						break;
+					case d:
+						if (null != o.get(5)) {
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(5)));
+						}
+						break;
+					case t:
+						if (null != o.get(6)) {
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(6)));
+						}
+						break;
+					case dt:
+						if (null != o.get(7)) {
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(7)));
+						}
+						break;
+					default:
+						break;
 					}
 					break;
-				case d:
-					if (null != o.get(5)) {
-						row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(5)));
+				case b:
+					if (null != o.get(8)) {
+						row.put(selectEntry.getColumn(), (Boolean) o.get(8));
 					}
 					break;
-				case t:
-					if (null != o.get(6)) {
-						row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(6)));
-					}
-					break;
-				case dt:
-					if (null != o.get(7)) {
-						row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(7)));
+				case n:
+					if (null != o.get(9)) {
+						row.put(selectEntry.getColumn(), (Number) o.get(9));
 					}
 					break;
 				default:
 					break;
 				}
-				break;
-			case b:
-				if (null != o.get(8)) {
-					row.put(selectEntry.getColumn(), (Boolean) o.get(8));
-				}
-				break;
-			case n:
-				if (null != o.get(9)) {
-					row.put(selectEntry.getColumn(), (Number) o.get(9));
-				}
-				break;
-			default:
-				break;
 			}
 		}
 	}
