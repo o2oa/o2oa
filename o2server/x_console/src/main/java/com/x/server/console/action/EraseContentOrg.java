@@ -2,6 +2,8 @@ package com.x.server.console.action;
 
 import javax.wsdl.Definition;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.core.entity.Bind;
 import com.x.organization.core.entity.Custom;
 import com.x.organization.core.entity.Group;
@@ -19,6 +21,8 @@ import com.x.organization.core.entity.accredit.EmpowerLog;
 
 public class EraseContentOrg extends EraseContent {
 
+	private static Logger logger = LoggerFactory.getLogger(EraseContentOrg.class);
+	
 	@Override
 	public boolean execute() throws Exception {
 		this.init("org", null);
