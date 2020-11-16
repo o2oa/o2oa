@@ -17,6 +17,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.query.assemble.surface.Business;
@@ -43,6 +44,8 @@ class ActionExecuteV2 extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionExecuteV2.class);
 	private final static String[] keys = {"group by","GROUP BY","order by","ORDER BY","limit","LIMIT"};
+	private final static String JOIN_KEY = " JOIN ";
+	private final static String JOIN_ON_KEY = " ON ";
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
@@ -115,7 +118,7 @@ class ActionExecuteV2 extends BaseAction {
 		}
 		Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(scriptText),
 				scriptContext);
-		String text = ScriptFactory.asString(o);
+		String jpql = ScriptFactory.asString(o);
 		Class<? extends JpaObject> cls = this.clazz(business, statement);
 		EntityManager em;
 		if(StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
@@ -124,9 +127,15 @@ class ActionExecuteV2 extends BaseAction {
 		}else{
 			em = business.entityManagerContainer().get(cls);
 		}
-		text = joinSql(text, wi);
-		logger.print("执行的sql：{}",text);
-		Query query = em.createQuery(text);
+		jpql = joinSql(jpql, wi, business);
+		logger.info("执行的sql：{}",jpql);
+		Query query;
+		String upJpql = jpql.toUpperCase();
+		if(upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1){
+			query = em.createNativeQuery(jpql);
+		}else{
+			query = em.createQuery(jpql);
+		}
 		for (Parameter<?> p : query.getParameters()) {
 			if (runtime.hasParameter(p.getName())) {
 				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
@@ -159,13 +168,19 @@ class ActionExecuteV2 extends BaseAction {
 		}else{
 			em = business.entityManagerContainer().get(cls);
 		}
-		String jpqlData = statement.getData();
+		String jpql = statement.getData();
 		if(Statement.MODE_COUNT.equals(mode)) {
-			jpqlData = statement.getCountData();
+			jpql = statement.getCountData();
 		}
-		jpqlData = joinSql(jpqlData, wi);
-		logger.print("执行的sql：{}",jpqlData);
-		Query query = em.createQuery(jpqlData);
+		jpql = joinSql(jpql, wi, business);
+		logger.info("执行的sql：{}",jpql);
+		Query query;
+		String upJpql = jpql.toUpperCase();
+		if(upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1){
+			query = em.createNativeQuery(jpql);
+		}else{
+			query = em.createQuery(jpql);
+		}
 		for (Parameter<?> p : query.getParameters()) {
 			if (runtime.hasParameter(p.getName())) {
 				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
@@ -219,7 +234,7 @@ class ActionExecuteV2 extends BaseAction {
 		return scriptContext;
 	}
 
-	private String joinSql(String sql, Wi wi) throws Exception{
+	private String joinSql(String sql, Wi wi, Business business) throws Exception{
 		if(wi.getFilterList()!=null && !wi.getFilterList().isEmpty()) {
 			List<String> list = new ArrayList<>();
 			String whereSql = sql.replaceAll("\\s{1,}", " ");
@@ -281,6 +296,15 @@ class ActionExecuteV2 extends BaseAction {
 				list.add(rightSql);
 			}
 			sql = StringUtils.join(list, " ");
+		}
+		String upSql = sql.toUpperCase();
+		if(upSql.indexOf(JOIN_KEY) > -1 && upSql.indexOf(JOIN_ON_KEY) > -1){
+			sql = sql.replaceAll("\\.", ".x");
+			sql = sql.replaceAll("\\.x\\*", ".*");
+			List<Table> tables = business.entityManagerContainer().fetchEqual(Table.class, ListTools.toList(Table.name_FIELDNAME), Table.status_FIELDNAME, Table.STATUS_build);
+			for (Table table : tables){
+				sql = sql.replaceAll(" "+table.getName()+" ", " "+DynamicEntity.TABLE_PREFIX + table.getName().toUpperCase()+" ");
+			}
 		}
 		return sql;
 	}
