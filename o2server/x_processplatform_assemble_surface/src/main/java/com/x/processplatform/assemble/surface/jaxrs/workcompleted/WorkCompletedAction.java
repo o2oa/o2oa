@@ -95,53 +95,17 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取复合的WorkCompleted.", action = ActionComplex.class)
-	@GET
-	@Path("{id}/complex")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getComplex(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
-		ActionResult<ActionComplex.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionComplex().execute(id, effectivePerson);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "获取复合的WorkCompleted.", action = ActionComplexMobile.class)
-	@GET
-	@Path("{id}/complex/mobile")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getComplexMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
-		ActionResult<ActionComplexMobile.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionComplexMobile().execute(id, effectivePerson);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-//	@JaxrsMethodDescribe(value = "获取复合的WorkCompleted，使用最后记录的表单。", action = ActionComplexSnapForm.class)
+//	@JaxrsMethodDescribe(value = "获取复合的WorkCompleted.", action = ActionComplex.class)
 //	@GET
-//	@Path("{id}/complex/snap/form")
+//	@Path("{id}/complex")
 //	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 //	@Consumes(MediaType.APPLICATION_JSON)
-//	public void getComplexSnapForm(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//	public void getComplex(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 //			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
-//		ActionResult<ActionComplexSnapForm.Wo> result = new ActionResult<>();
+//		ActionResult<ActionComplex.Wo> result = new ActionResult<>();
 //		EffectivePerson effectivePerson = this.effectivePerson(request);
 //		try {
-//			result = new ActionComplexSnapForm().execute(id, effectivePerson);
+//			result = new ActionComplex().execute(id, effectivePerson);
 //		} catch (Exception e) {
 //			logger.error(e, effectivePerson, request, null);
 //			result.error(e);
@@ -149,17 +113,17 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 //		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 //	}
 
-//	@JaxrsMethodDescribe(value = "获取复合的WorkCompleted，使用最后记录的Mobile表单。", action = ActionComplexSnapForm.class)
+//	@JaxrsMethodDescribe(value = "获取复合的WorkCompleted.", action = ActionComplexMobile.class)
 //	@GET
-//	@Path("{id}/complex/snap/form/mobile")
+//	@Path("{id}/complex/mobile")
 //	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 //	@Consumes(MediaType.APPLICATION_JSON)
-//	public void getComplexMobileSnapForm(@Suspended final AsyncResponse asyncResponse,
-//			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
-//		ActionResult<ActionComplexSnapForm.Wo> result = new ActionResult<>();
+//	public void getComplexMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+//		ActionResult<ActionComplexMobile.Wo> result = new ActionResult<>();
 //		EffectivePerson effectivePerson = this.effectivePerson(request);
 //		try {
-//			result = new ActionComplexSnapForm().execute(id, effectivePerson);
+//			result = new ActionComplexMobile().execute(id, effectivePerson);
 //		} catch (Exception e) {
 //			logger.error(e, effectivePerson, request, null);
 //			result.error(e);
@@ -167,43 +131,45 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 //		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 //	}
 
-	@JaxrsMethodDescribe(value = "根据WorkCompleted Id获取组装的WorkCompleted内容同时返回指定的Form.", action = ActionComplexAppointForm.class)
-	@GET
-	@Path("{id}/complex/appoint/form/{formFlag}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getComplexAppointForm(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("表单标识") @PathParam("formFlag") String formFlag) {
-		ActionResult<ActionComplexAppointForm.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionComplexAppointForm().execute(effectivePerson, id, formFlag);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+ 
 
-	@JaxrsMethodDescribe(value = "根据WorkCompleted Id获取组装的WorkCompleted内容.", action = ActionComplexAppointFormMobile.class)
-	@GET
-	@Path("{id}/complex/appoint/form/{formFlag}/mobile")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getComplexAppointFormMobile(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("表单标识") @PathParam("formFlag") String formFlag) {
-		ActionResult<ActionComplexAppointFormMobile.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionComplexAppointFormMobile().execute(effectivePerson, id, formFlag);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@JaxrsMethodDescribe(value = "根据WorkCompleted Id获取组装的WorkCompleted内容同时返回指定的Form.", action = ActionComplexAppointForm.class)
+//	@GET
+//	@Path("{id}/complex/appoint/form/{formFlag}")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void getComplexAppointForm(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
+//			@JaxrsParameterDescribe("表单标识") @PathParam("formFlag") String formFlag) {
+//		ActionResult<ActionComplexAppointForm.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionComplexAppointForm().execute(effectivePerson, id, formFlag);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
+
+//	@JaxrsMethodDescribe(value = "根据WorkCompleted Id获取组装的WorkCompleted内容.", action = ActionComplexAppointFormMobile.class)
+//	@GET
+//	@Path("{id}/complex/appoint/form/{formFlag}/mobile")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void getComplexAppointFormMobile(@Suspended final AsyncResponse asyncResponse,
+//			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id,
+//			@JaxrsParameterDescribe("表单标识") @PathParam("formFlag") String formFlag) {
+//		ActionResult<ActionComplexAppointFormMobile.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionComplexAppointFormMobile().execute(effectivePerson, id, formFlag);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 
 	@JaxrsMethodDescribe(value = "统计当前用户创建的WorkCompleted，按应用分类.", action = ActionListCountWithApplication.class)
 	@GET
