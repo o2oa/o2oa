@@ -25,7 +25,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
@@ -42,60 +41,64 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionGetWithWorkOrWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
-				Wo wo = null;
-				try {
-					Work work = emc.find(workOrWorkCompleted, Work.class);
-					if (null != work) {
-						wo = this.work(business, effectivePerson, work);
-					} else {
-						WorkCompleted workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
-						if (null != workCompleted) {
-							wo = this.workCompleted(business, effectivePerson, workCompleted);
-						}
+		ActionResult<Wo> result = new ActionResult<>();
+		CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
+			Wo wo = null;
+			try {
+				Work work = null;
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					work = emc.find(workOrWorkCompleted, Work.class);
+				}
+				if (null != work) {
+					wo = this.work(effectivePerson, work);
+				} else {
+					WorkCompleted workCompleted = null;
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
 					}
-				} catch (Exception e) {
-					logger.error(e);
+					if (null != workCompleted) {
+						wo = this.workCompleted(effectivePerson, workCompleted);
+					}
 				}
-				return wo;
-			});
-
-			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
-				Boolean value = false;
-				try {
-					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-							new ExceptionEntityNotExist(workOrWorkCompleted));
-				} catch (Exception e) {
-					logger.error(e);
-				}
-				return value;
-			});
-
-			if (BooleanUtils.isFalse(_control.get())) {
-				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+			} catch (Exception e) {
+				logger.error(e);
 			}
+			return wo;
+		});
 
-			result.setData(_wo.get());
-			return result;
+		CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+			Boolean value = false;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+						new ExceptionEntityNotExist(workOrWorkCompleted));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return value;
+		});
+
+		if (BooleanUtils.isFalse(_control.get())) {
+			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
+
+		result.setData(_wo.get());
+		return result;
 	}
 
-	private Wo work(Business business, EffectivePerson effectivePerson, Work work) throws Exception {
+	private Wo work(EffectivePerson effectivePerson, Work work) throws Exception {
 		Wo wo = new Wo();
 		wo.setWork(gson.toJsonTree(WoWork.copier.copy(work)));
-		wo.setActivity(this.activity(business, work));
+		wo.setActivity(this.activity(work));
 		CompletableFuture<Data> future_data = CompletableFuture.supplyAsync(() -> {
-			return this.data(business, work.getJob());
+			return this.data(work.getJob());
 		});
 		CompletableFuture<List<WoTask>> future_task = CompletableFuture.supplyAsync(() -> {
-			return this.tasks(business, work.getId());
+			return this.tasks(work.getId());
 		});
 		CompletableFuture<List<WoRead>> future_read = CompletableFuture.supplyAsync(() -> {
-			return this.reads(business, work.getJob());
+			return this.reads(work.getJob());
 		});
 		wo.setData(future_data.get());
 		wo.setTaskList(future_task.get());
@@ -105,8 +108,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		return wo;
 	}
 
-	private Wo workCompleted(Business business, EffectivePerson effectivePerson, WorkCompleted workCompleted)
-			throws Exception {
+	private Wo workCompleted(EffectivePerson effectivePerson, WorkCompleted workCompleted) throws Exception {
 		Wo wo = new Wo();
 		wo.setWork(gson.toJsonTree(WoWorkCompleted.copier.copy(workCompleted)));
 		CompletableFuture<Data> future_data = CompletableFuture.supplyAsync(() -> {
@@ -114,11 +116,11 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 				/* 如果data已经merged */
 				return workCompleted.getProperties().getData();
 			} else {
-				return this.data(business, workCompleted.getJob());
+				return this.data(workCompleted.getJob());
 			}
 		});
 		CompletableFuture<List<WoRead>> future_read = CompletableFuture.supplyAsync(() -> {
-			return this.reads(business, workCompleted.getJob());
+			return this.reads(workCompleted.getJob());
 		});
 		wo.setData(future_data.get());
 		wo.setReadList(future_read.get());
@@ -126,29 +128,26 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		return wo;
 	}
 
-	private Data data(Business business, String job) {
-		try {
-			try {
-				EntityManager em = business.entityManagerContainer().get(Item.class);
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<Item> cq = cb.createQuery(Item.class);
-				Root<Item> root = cq.from(Item.class);
-				Predicate p = cb.equal(root.get(Item_.bundle), job);
-				p = cb.and(p, cb.equal(root.get(Item_.itemCategory), ItemCategory.pp));
-				List<Item> list = em.createQuery(cq.where(p)).getResultList();
-				if (list.isEmpty()) {
-					return new Data();
+	private Data data(String job) {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			EntityManager em = business.entityManagerContainer().get(Item.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Item> cq = cb.createQuery(Item.class);
+			Root<Item> root = cq.from(Item.class);
+			Predicate p = cb.equal(root.get(Item_.bundle), job);
+			p = cb.and(p, cb.equal(root.get(Item_.itemCategory), ItemCategory.pp));
+			List<Item> list = em.createQuery(cq.where(p)).getResultList();
+			if (list.isEmpty()) {
+				return new Data();
+			} else {
+				JsonElement jsonElement = itemConverter.assemble(list);
+				if (jsonElement.isJsonObject()) {
+					return gson.fromJson(jsonElement, Data.class);
 				} else {
-					JsonElement jsonElement = itemConverter.assemble(list);
-					if (jsonElement.isJsonObject()) {
-						return gson.fromJson(jsonElement, Data.class);
-					} else {
-						/* 如果不是Object强制返回一个Map对象 */
-						return new Data();
-					}
+					/* 如果不是Object强制返回一个Map对象 */
+					return new Data();
 				}
-			} catch (Exception e) {
-				throw new ExceptionData(e, job);
 			}
 		} catch (Exception e) {
 			logger.error(e);
@@ -156,32 +155,34 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		return null;
 	}
 
-	private List<WoTask> tasks(Business business, String workId) {
-		try {
-			return WoTask.copier
-					.copy(business.entityManagerContainer().listEqual(Task.class, Task.work_FIELDNAME, workId));
+	private List<WoTask> tasks(String workId) {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return WoTask.copier.copy(emc.listEqual(Task.class, Task.work_FIELDNAME, workId));
 		} catch (Exception e) {
 			logger.error(e);
 		}
 		return null;
 	}
 
-	private List<WoRead> reads(Business business, String job) {
-		try {
-			return WoRead.copier.copy(business.entityManagerContainer().listEqual(Read.class, Read.job_FIELDNAME, job));
+	private List<WoRead> reads(String job) {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return WoRead.copier.copy(emc.listEqual(Read.class, Read.job_FIELDNAME, job));
 		} catch (Exception e) {
 			logger.error(e);
 		}
 		return null;
 	}
 
-	private WoActivity activity(Business business, Work work) throws Exception {
+	private WoActivity activity(Work work) throws Exception {
 		WoActivity woActivity = new WoActivity();
-		Activity activity = business.getActivity(work);
-		if (null != activity) {
-			activity.copyTo(woActivity);
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Activity activity = business.getActivity(work);
+			if (null != activity) {
+				activity.copyTo(woActivity);
+			}
+			return woActivity;
 		}
-		return woActivity;
 	}
 
 	private void setCurrentTaskIndex(EffectivePerson effectivePerson, Wo wo) {

@@ -23,9 +23,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted.WoRead;
-import com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted.WoReadCompleted;
-import com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted.WoTask;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Task;
@@ -40,9 +37,10 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 	private final static String taskCompletedList_FIELDNAME = "taskCompletedList";
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
+		ActionResult<List<Wo>> result = new ActionResult<>();
 
+		String job = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 
 			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
@@ -50,29 +48,30 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
-			final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
-
-			CompletableFuture<List<WoTaskCompleted>> future_taskCompleteds = CompletableFuture.supplyAsync(() -> {
-				return this.taskCompleteds(business, job);
-			});
-
-			CompletableFuture<List<Wo>> future_workLogs = CompletableFuture.supplyAsync(() -> {
-				return this.workLogs(business, job);
-			});
-			List<WoTaskCompleted> taskCompleteds = future_taskCompleteds.get();
-			List<Wo> wos = future_workLogs.get();
-			ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
-					TaskCompleted.activityToken_FIELDNAME, taskCompletedList_FIELDNAME);
-			result.setData(wos);
-			return result;
+			job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
 		}
+
+		final String workLogJob = job;
+
+		CompletableFuture<List<WoTaskCompleted>> future_taskCompleteds = CompletableFuture.supplyAsync(() -> {
+			return this.taskCompleteds(workLogJob);
+		});
+
+		CompletableFuture<List<Wo>> future_workLogs = CompletableFuture.supplyAsync(() -> {
+			return this.workLogs(workLogJob);
+		});
+		List<WoTaskCompleted> taskCompleteds = future_taskCompleteds.get();
+		List<Wo> wos = future_workLogs.get();
+		ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
+				TaskCompleted.activityToken_FIELDNAME, taskCompletedList_FIELDNAME);
+		result.setData(wos);
+		return result;
 	}
 
-	private List<WoTaskCompleted> taskCompleteds(Business business, String job) {
+	private List<WoTaskCompleted> taskCompleteds(String job) {
 		List<WoTaskCompleted> os = new ArrayList<>();
-		try {
-			os = business.entityManagerContainer()
-					.fetchEqual(TaskCompleted.class, WoTaskCompleted.copier, TaskCompleted.job_FIELDNAME, job).stream()
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			os = emc.fetchEqual(TaskCompleted.class, WoTaskCompleted.copier, TaskCompleted.job_FIELDNAME, job).stream()
 					.sorted(Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
@@ -81,11 +80,10 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		return os;
 	}
 
-	private List<Wo> workLogs(Business business, String job) {
+	private List<Wo> workLogs(String job) {
 		List<Wo> os = new ArrayList<>();
-		try {
-			os = business.entityManagerContainer().fetchEqual(WorkLog.class, Wo.copier, WorkLog.job_FIELDNAME, job)
-					.stream()
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			os = emc.fetchEqual(WorkLog.class, Wo.copier, WorkLog.job_FIELDNAME, job).stream()
 					.filter(o -> (!BooleanUtils.isTrue(o.getSplitting()))
 							&& (Objects.equals(o.getArrivedActivityType(), ActivityType.manual)))
 					.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
