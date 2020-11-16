@@ -1,5 +1,7 @@
 package com.x.server.console.action;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMConversationExt;
 import com.x.message.core.entity.IMMsg;
@@ -9,6 +11,8 @@ import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Org;
 
 public class EraseContentMessage extends EraseContent {
+
+	private static Logger logger = LoggerFactory.getLogger(EraseContentMessage.class);
 
 	@Override
 	public boolean execute() throws Exception {
