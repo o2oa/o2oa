@@ -41,6 +41,7 @@ public class ThreadDump {
 						logger.print("thread dump to file:{}.", out.toString());
 						Thread.sleep(1000);
 					}
+					logger.print("{} thread dump completed.", count);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

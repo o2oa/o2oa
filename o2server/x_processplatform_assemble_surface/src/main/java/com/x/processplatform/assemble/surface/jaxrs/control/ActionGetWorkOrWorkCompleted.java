@@ -46,45 +46,44 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 	private Map<String, Boolean> hasTaskCompletedWithActivityToken = new HashMap<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
-				Wo wo = null;
-				try {
-					Work work = emc.find(workOrWorkCompleted, Work.class);
-					if (null != work) {
-						wo = this.work(business, effectivePerson, work);
-					} else {
-						WorkCompleted workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
-						if (null != workCompleted) {
-							wo = this.workCompleted(business, effectivePerson, workCompleted);
-						}
+		ActionResult<Wo> result = new ActionResult<>();
+		CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
+			Wo wo = null;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				Work work = emc.find(workOrWorkCompleted, Work.class);
+				if (null != work) {
+					wo = this.work(business, effectivePerson, work);
+				} else {
+					WorkCompleted workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
+					if (null != workCompleted) {
+						wo = this.workCompleted(business, effectivePerson, workCompleted);
 					}
-				} catch (Exception e) {
-					logger.error(e);
 				}
-				return wo;
-			});
-
-			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
-				Boolean value = false;
-				try {
-					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-							new ExceptionEntityNotExist(workOrWorkCompleted));
-				} catch (Exception e) {
-					logger.error(e);
-				}
-				return value;
-			});
-
-			if (BooleanUtils.isFalse(_control.get())) {
-				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+			} catch (Exception e) {
+				logger.error(e);
 			}
+			return wo;
+		});
 
-			result.setData(_wo.get());
-			return result;
+		CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+			Boolean value = false;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+						new ExceptionEntityNotExist(workOrWorkCompleted));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return value;
+		});
+
+		if (BooleanUtils.isFalse(_control.get())) {
+			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
+
+		result.setData(_wo.get());
+		return result;
 	}
 
 	private Wo workCompleted(Business business, EffectivePerson effectivePerson, WorkCompleted workCompleted)
