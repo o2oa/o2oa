@@ -138,4 +138,11 @@ public class ExternalDataSources extends CopyOnWriteArrayList<ExternalDataSource
 		return null;
 	}
 
+	public Integer getMaxIdleTime() {
+		for (ExternalDataSource o : this) {
+			return o.getMaxIdleTime();
+		}
+		return null;
+	}
+
 }
