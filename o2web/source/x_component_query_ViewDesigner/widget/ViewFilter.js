@@ -101,6 +101,8 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             this.createScriptArea(scriptValueArea);
         }
 
+        this.multiValueNoticeNode = this.inputAreaNode.getElement(".multiValueNotice_vf");
+
         this.titleInput = this.inputAreaNode.getElement(".titleInput_vf");
         this.pathInput = this.inputAreaNode.getElement(".pathInput_vf");
         this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput_vf");
@@ -252,6 +254,9 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 },
                 "range": {
                     "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
+                },
+                "in" : {
+                    "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
                 }
             },
             "numberValue": {
@@ -354,6 +359,11 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         var options = this.comparisonInput.options;
 
         var comparison = options[this.comparisonInput.selectedIndex].value;
+        if( availableComparisonList.contains( "in" ) && comparison === "in" ){
+            if(this.multiValueNoticeNode)this.multiValueNoticeNode.show()
+        }else{
+            if(this.multiValueNoticeNode)this.multiValueNoticeNode.hide()
+        }
 
         if( !this.originalComparisonOptions ){
             this.originalComparisonOptions = [];
