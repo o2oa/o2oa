@@ -20,6 +20,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
@@ -83,16 +84,16 @@ public class CmsPlan extends Plan {
 		this.selectList = list;
 	}
 
-	List<String> listBundle(EntityManagerContainer emc) throws Exception {
+	List<String> listBundle() throws Exception {
 		List<String> docIds = new TreeList<>();
 
 		// 根据where条件查询符合条件的所有文档ID列表
-		docIds = listBundle_document(emc);
+		docIds = listBundle_document();
 
 		if (BooleanUtils.isTrue(this.where.accessible)) {
 			if (StringUtils.isNotEmpty(runtime.person)) {
 				// 过滤可见范围
-				docIds = this.listBundle_accessible(emc, docIds, runtime.person);
+				docIds = this.listBundle_accessible(docIds, runtime.person);
 			}
 		}
 
@@ -104,7 +105,7 @@ public class CmsPlan extends Plan {
 			}
 		}
 		if (!filterEntries.isEmpty()) {
-			docIds = listBundle_filterEntry(emc, docIds, filterEntries);
+			docIds = listBundle_filterEntry(docIds, filterEntries);
 		}
 		filterEntries.clear();
 		for (FilterEntry _o : ListTools.trim(this.runtime.filterList, true, true)) {
@@ -113,7 +114,7 @@ public class CmsPlan extends Plan {
 			}
 		}
 		if (!filterEntries.isEmpty()) {
-			docIds = listBundle_filterEntry(emc, docIds, filterEntries);
+			docIds = listBundle_filterEntry(docIds, filterEntries);
 		}
 		return docIds;
 	}
@@ -125,23 +126,25 @@ public class CmsPlan extends Plan {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<String> listBundle_document(EntityManagerContainer emc) throws Exception {
-		EntityManager em = emc.get(Document.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Document> root = cq.from(Document.class);
-		cq.select(root.get(Document_.id)).where(this.where.documentPredicate(cb, root, this.runtime, this.filterList));
-		List<String> docIds = em.createQuery(cq).getResultList();
-		return docIds.stream().distinct().collect(Collectors.toList());
+	private List<String> listBundle_document() throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			EntityManager em = emc.get(Document.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<String> cq = cb.createQuery(String.class);
+			Root<Document> root = cq.from(Document.class);
+			cq.select(root.get(Document_.id))
+					.where(this.where.documentPredicate(cb, root, this.runtime, this.filterList));
+			List<String> docIds = em.createQuery(cq).getResultList();
+			return docIds.stream().distinct().collect(Collectors.toList());
+		}
 	}
 
-	private List<String> listBundle_accessible(EntityManagerContainer emc, List<String> docIds, String person)
-			throws Exception {
+	private List<String> listBundle_accessible(List<String> docIds, String person) throws Exception {
 		List<String> list = new TreeList<>();
 		List<CompletableFuture<List<String>>> futures = new TreeList<>();
 		for (List<String> documentId : ListTools.batch(docIds, SQL_STATEMENT_IN_BATCH)) {
 			CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
-				try {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					EntityManager em = emc.get(Review.class);
 					CriteriaBuilder cb = em.getCriteriaBuilder();
 					CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -170,8 +173,7 @@ public class CmsPlan extends Plan {
 		return list;
 	}
 
-	private List<String> listBundle_filterEntry(EntityManagerContainer emc, List<String> docIds,
-			List<FilterEntry> filterEntries) throws Exception {
+	private List<String> listBundle_filterEntry(List<String> docIds, List<FilterEntry> filterEntries) throws Exception {
 		/** 运行FilterEntry */
 		List<String> partDocIds = new TreeList<>();
 		List<List<String>> batch_docIds = ListTools.batch(docIds, SQL_STATEMENT_IN_BATCH);
@@ -181,7 +183,7 @@ public class CmsPlan extends Plan {
 			List<CompletableFuture<List<String>>> futures = new TreeList<>();
 			for (List<String> _batch : batch_docIds) {
 				CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
-					try {
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 						EntityManager em = emc.get(Item.class);
 						CriteriaBuilder cb = em.getCriteriaBuilder();
 						CriteriaQuery<String> cq = cb.createQuery(String.class);
