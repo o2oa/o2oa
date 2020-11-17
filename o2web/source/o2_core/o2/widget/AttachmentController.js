@@ -584,13 +584,16 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     checkDownloadAction: function(){
         if (!this.options.isDownload){
             this.setActionDisabled(this.downloadAction);
+            this.setActionDisabled(this.min_downloadAction);
             this.setActionDisabled(this.downloadAllAction);
             this.setAttachmentsAction("download", false );
         }else{
             if (this.selectedAttachments.length){
                 this.setActionEnabled(this.downloadAction);
+                this.setActionEnabled(this.min_downloadAction);
             }else{
                 this.setActionDisabled(this.downloadAction);
+                this.setActionDisabled(this.min_downloadAction);
             }
             this.setActionEnabled(this.downloadAllAction);
             this.setAttachmentsAction("download", true );
