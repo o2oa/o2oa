@@ -244,4 +244,41 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据标识获取表.", action = ActionGet.class)
+	@GET
+	@Path("{flag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					@JaxrsParameterDescribe("标识") @PathParam("flag") String flag) {
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGet().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "分页列示Table对象.", action = ActionListPaging.class)
+	@POST
+	@Path("list/paging/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						   @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+						   @JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size) {
+		ActionResult<List<ActionListPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListPaging().execute(effectivePerson, page, size);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
