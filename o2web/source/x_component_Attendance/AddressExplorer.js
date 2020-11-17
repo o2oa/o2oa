@@ -463,7 +463,7 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
         this.formTableArea.set("html",html);
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
-            this.form = new MForm( this.formTableArea, {q_empName : layout.desktop.session.user.distinguishedName }, {
+            this.form = new MForm( this.formTableArea, {ak : layout.desktop.session.user.distinguishedName }, {
                 isEdited : true,
                 itemTemplate : {
                     ak : {  "text" : "密钥" }
