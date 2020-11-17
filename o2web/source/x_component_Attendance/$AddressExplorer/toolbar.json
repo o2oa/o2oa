@@ -14,5 +14,16 @@
   },{
   "id": "wpContent",
   "styles" : "toolbarContent"
+  },
+  {
+    "title": "设置百度开发者认证",
+    "text" : "设置工作场所需要用到百度开发者认证",
+    "id": "1.1",
+    "action": "setBiduAccount",
+    "icon": "create.png",
+    "expand": false,
+    "position" : "right",
+    "styles" : "toolbarItemRightNode",
+    "sub": []
   }
 ]

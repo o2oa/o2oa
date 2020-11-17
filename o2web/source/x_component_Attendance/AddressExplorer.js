@@ -55,6 +55,9 @@ MWF.xApplication.Attendance.AddressExplorer = new Class({
         }.bind(this));
 
     },
+    setBiduAccount: function(){
+
+    },
     reloadList: function(){
         this.actions.listWorkplace( function(json){
             this.wpContent.empty();
@@ -436,5 +439,44 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
             if( label )label.remove();
             mkr.remove();
         }
+    }
+});
+
+MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
+    _createTableContent: function(){
+
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
+            "<tr><td colspan='2' styles='formTableHead'>百度开发者认证</td></tr>" +
+            "<tr>" +
+            "    <td styles='formTableValue' colspan='2'>工作场所设置使用了百度地图开放平台的服务，你可以注册百度开发者认证来提高地图的并发量。认证完成后，请将密钥填至下方的输入框。</td>"+
+            "</tr>" +
+            "<tr>" +
+            "    <td styles='formTableValue' colspan='2'><a href='http://lbsyun.baidu.com/apiconsole/auth' target='_blank'>点击此打开认证通道</a></td>"+
+            "</tr>" +
+            "<tr>" +
+            "    <td styles='formTableTitle' lable='ak'></td>"+
+            "    <td styles='formTableValue' item='ak'></td>"+
+            //"    <td styles='formTableValue' item='action'></td>"+
+            "</tr>" +
+            "</table>";
+        this.formTableArea.set("html",html);
+
+        MWF.xDesktop.requireApp("Template", "MForm", function(){
+            this.form = new MForm( this.formTableArea, {q_empName : layout.desktop.session.user.distinguishedName }, {
+                isEdited : true,
+                itemTemplate : {
+                    ak : {  "text" : "密钥" }
+                }
+            }, this.app );
+            this.form.load();
+        }.bind(this), true);
+
+    },
+    _ok: function( data, callback ){
+        this.app.restActions.exportSelfHoliday( data.startDate, data.endDate, function(json){
+            if( callback )callback(json);
+        }.bind(this) );
+        this.close();
     }
 });
