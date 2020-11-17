@@ -6,9 +6,7 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -1177,6 +1175,22 @@ public class Config {
 			instance().web = obj;
 		}
 		return instance().web;
+	}
+
+	public Map<String, JsonObject> customAppConfig = new HashMap<>();
+
+	public static synchronized JsonObject customAppConfig(String configName) throws Exception {
+		if(StringUtils.isBlank(configName)){
+			return null;
+		}else{
+			if(instance().customAppConfig.get(configName)==null){
+				JsonObject obj = BaseTools.readConfigObject(DIR_CONFIG+"/"+configName+".json", JsonObject.class);
+				if(obj!=null){
+					instance().customAppConfig.put(configName, obj);
+				}
+			}
+			return instance().customAppConfig.get(configName);
+		}
 	}
 
 	public static Object resource(String name) throws Exception {
