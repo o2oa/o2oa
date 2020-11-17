@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.Table;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -30,6 +32,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.OrderColumn;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import 	org.apache.openjpa.persistence.jdbc.ContainerTable;
 
 import org.apache.commons.collections4.list.SetUniqueList;
 import org.apache.commons.io.FileUtils;
@@ -38,12 +48,15 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.ApiBuilder.JaxrsApiMethod;
-import com.x.base.core.project.annotation.DescribeBuilder.JaxrsMethod;
+import com.x.base.core.project.annotation.ApiBuilder.JaxrsClass;
+import com.x.base.core.project.annotation.ApiBuilder.JaxrsField;
+import com.x.base.core.project.annotation.ApiBuilder.JaxrsFormParameter;
+import com.x.base.core.project.annotation.ApiBuilder.JaxrsMethod;
+import com.x.base.core.project.annotation.ApiBuilder.JaxrsPathParameter;
+import com.x.base.core.project.annotation.ApiBuilder.JaxrsQueryParameter;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -56,29 +69,52 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
-public class ApiBuilder {
+public class ApiAllBuilder {
 
-	private static Logger logger = LoggerFactory.getLogger(ApiBuilder.class);
+	private static Logger logger = LoggerFactory.getLogger(ApiAllBuilder.class);
 
 	public static void main(String[] args) throws IOException {
-		File basedir = new File(args[0]);
-		File sourcedir = new File(args[1]);
-		
-		File dir = new File(basedir, "src/main/webapp/describe");
-		FileUtils.forceMkdir(dir);
-		ApiBuilder builder = new ApiBuilder();
-		builder.scan(dir);
-
 		String filePath = args[0];
-		String fileName = filePath.substring(filePath.lastIndexOf(File.separator), filePath.length());
 		filePath = filePath.substring(0, filePath.lastIndexOf(File.separator));
 		filePath = filePath + File.separator+"x_program_center";
-		dir = new File(filePath ,"src/main/webapp/describe/api");
-		FileUtils.forceMkdir(dir);
-		builder.scan(dir,fileName);
+		File dir = new File(filePath ,"src/main/webapp/describe/api");
+		ApiAllBuilder builder = new ApiAllBuilder();
+		builder.scan(dir);
 	}
-	
-	private void scan(File dir,String fileName) {
+
+	private void scan(File dir) {
+		try {
+			ArrayList List = new ArrayList(); 
+			List.add("x_processplatform_assemble_surface");
+			List.add("x_portal_assemble_surface");
+			List.add("x_query_assemble_surface");
+			List.add("x_cms_assemble_control");
+			List.add("x_organization_assemble_express");
+			List.add("x_organization_assemble_control");
+			
+			if (dir.isDirectory()) {
+            	LinkedHashMap<String,String> mapList = new LinkedHashMap<>();
+                File[] fs = dir.listFiles();
+        		for(File f:fs){
+        			if(f.isFile()) {
+        				String fileNameJosn = f.getName();
+        				if(!fileNameJosn.equalsIgnoreCase("apiList.json")) {
+        					if(List.contains(fileNameJosn.substring(0,fileNameJosn.lastIndexOf(".")))) {
+        				      mapList.put(fileNameJosn.substring(0,fileNameJosn.lastIndexOf(".")),  FileUtils.readFileToString(f,"UTF-8"));
+        					  }
+        					}
+        			}
+        		}
+        	 File fileList = new File(dir, "apiList.json");
+    	     FileUtils.writeStringToFile(fileList, XGsonBuilder.toJson(mapList), DefaultCharset.charset);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void scan0(File dir,String fileName) {
 		try {
 			List<JaxrsClass> jaxrsClasses = new ArrayList<>();
 			List<Class<?>> classes = this.scanJaxrsClass();
@@ -87,35 +123,13 @@ public class ApiBuilder {
 					jaxrsClasses.add(this.jaxrsClass(clz));
 				}
 			}
+			
 			
 			LinkedHashMap<String, List<?>> map = new LinkedHashMap<>();
 			jaxrsClasses = jaxrsClasses.stream().sorted(Comparator.comparing(JaxrsClass::getName))
 					.collect(Collectors.toList());
 			map.put("jaxrs", jaxrsClasses);
 			File file = new File(dir,  fileName + ".json");
-			FileUtils.writeStringToFile(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-
-	private void scan(File dir) {
-		try {
-			List<JaxrsClass> jaxrsClasses = new ArrayList<>();
-			List<Class<?>> classes = this.scanJaxrsClass();
-			for (Class<?> clz : classes) {
-				if (StandardJaxrsAction.class.isAssignableFrom(clz)) {
-					jaxrsClasses.add(this.jaxrsClass(clz));
-				}
-			}
-			
-			
-			LinkedHashMap<String, List<?>> map = new LinkedHashMap<>();
-			jaxrsClasses = jaxrsClasses.stream().sorted(Comparator.comparing(JaxrsClass::getName))
-					.collect(Collectors.toList());
-			map.put("jaxrs", jaxrsClasses);
-			File file = new File(dir, "api.json");
 			FileUtils.writeStringToFile(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -148,9 +162,11 @@ public class ApiBuilder {
 		for (Method method : clz.getMethods()) {
 			JaxrsMethodDescribe jaxrsMethodDescribe = method.getAnnotation(JaxrsMethodDescribe.class);
 			if (null != jaxrsMethodDescribe) {
+				
 				jaxrsClass.getMethods().add(this.jaxrsApiMethod(clz, method));
 			}
-		}		
+		}
+				
 		return jaxrsClass;
 		
 	}
@@ -163,6 +179,7 @@ public class ApiBuilder {
                 this.keyName = keyName;
             }
             public int compare(Map<String, JaxrsApiMethod> mp1, Map<String, JaxrsApiMethod> mp2) {
+            	 System.out.println("this.keyName=" + mp1.keySet().toArray()[0]);
                  String d1 = mp1.keySet().toArray()[0].toString();
                  String d2 = mp2.keySet().toArray()[0].toString();
                 return d2.compareTo(d1);
@@ -889,5 +906,5 @@ public class ApiBuilder {
 		}
 
 	}
-
+   
 }
