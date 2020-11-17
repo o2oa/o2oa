@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,9 +33,11 @@ public class CollectMarket extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(CollectMarket.class);
 
+	private static ReentrantLock lock = new ReentrantLock();
+
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
+		lock.lock();
 		try {
 			if (pirmaryCenter() && BooleanUtils.isTrue(Config.collect().getEnable())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -112,6 +115,8 @@ public class CollectMarket extends BaseAction {
 		} catch (Exception e) {
 			logger.error(e);
 			throw new JobExecutionException(e);
+		} finally {
+			lock.unlock();
 		}
 	}
 
