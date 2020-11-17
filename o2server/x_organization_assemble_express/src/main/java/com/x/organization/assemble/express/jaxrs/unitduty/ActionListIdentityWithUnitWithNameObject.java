@@ -196,14 +196,13 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 					matchUnit = business.unit().pick(o.getUnit());
 					unitMap.put(matchUnit.getId(), matchUnit);
 				}
-				/*Unit unit = unitMap.get(identity.getUnit());
+				Unit unit = unitMap.get(identity.getUnit());
 				if(unit == null){
 					unit = business.unit().pick(identity.getUnit());
 					unitMap.put(unit.getId(), unit);
 				}
 				Person person = business.person().pick(identity.getPerson());
-				 */
-				Wo wo = this.convertToIdentity(matchUnit, null, null, identity);
+				Wo wo = this.convertToIdentity(matchUnit, unit, person, identity);
 				wos.add(wo);
 			}
 		}
