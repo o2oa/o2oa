@@ -1177,19 +1177,19 @@ public class Config {
 		return instance().web;
 	}
 
-	public Map<String, JsonObject> customAppConfig = new HashMap<>();
+	public Map<String, JsonObject> customConfig = new HashMap<>();
 
-	public static synchronized JsonObject customAppConfig(String configName) throws Exception {
+	public static synchronized JsonObject customConfig(String configName) throws Exception {
 		if(StringUtils.isBlank(configName)){
 			return null;
 		}else{
-			if(instance().customAppConfig.get(configName)==null){
+			if(instance().customConfig.get(configName)==null){
 				JsonObject obj = BaseTools.readConfigObject(DIR_CONFIG+"/"+configName+".json", JsonObject.class);
 				if(obj!=null){
-					instance().customAppConfig.put(configName, obj);
+					instance().customConfig.put(configName, obj);
 				}
 			}
-			return instance().customAppConfig.get(configName);
+			return instance().customConfig.get(configName);
 		}
 	}
 
