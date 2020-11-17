@@ -1619,7 +1619,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         //
         this.orgTableObject = {};
         this.orgItemsObject = {};
-        this.orgItemMap = {};
+        this.orgItemsMap = {};
         this.orgsArea.empty();
     },
     getCurrentRouteSelectorList: function () {
