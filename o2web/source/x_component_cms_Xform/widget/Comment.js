@@ -355,6 +355,30 @@ O2CMSComment.Editor = new Class({
         this.saveCommentAction.addEvent("click",function(){
             this.saveComment();
         }.bind(this));
+
+        var rtfConfig = {
+            //skin : "bootstrapck",
+            "resize_enabled": false,
+            isSetImageMaxWidth : true,
+            reference : this.advanceCommentId,
+            referenceType: "forumReply",
+            //uiColor : '#9AB8F3',
+            //toolbarCanCollapse : true,
+            toolbar : [
+                //{ name: 'document', items : [ 'Preview' ] },
+                //{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+                //{ name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
+                //{ name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
+                //{ name: 'styles', items : [ 'Font','FontSize' ] },
+                //{ name: 'colors', items : [ 'TextColor','BGColor' ] },
+                //{ name: 'links', items : [ 'Link','Unlink' ] },
+                { name: 'insert', items : [ 'Image' ] }
+                //{ name: 'tools', items : [ 'Maximize','-','About' ] }
+            ]
+        };
+        if( this.comment.options.editorProperties ){
+            rtfConfig = Object.merge( rtfConfig, this.comment.options.editorProperties )
+        }
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.node, this.data || {}, {
                 style: "forum",
@@ -368,26 +392,7 @@ O2CMSComment.Editor = new Class({
                         }
                     }.bind(this)},
                     creatorName: { type : "innerText", value : layout.session.user.name },
-                    content: { type : "rtf", RTFConfig : {
-                        //skin : "bootstrapck",
-                        "resize_enabled": false,
-                        isSetImageMaxWidth : true,
-                        reference : this.advanceCommentId,
-                        referenceType: "forumReply",
-                        //uiColor : '#9AB8F3',
-                        //toolbarCanCollapse : true,
-                        toolbar : [
-                            //{ name: 'document', items : [ 'Preview' ] },
-                            //{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-                            //{ name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
-                            //{ name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
-                            //{ name: 'styles', items : [ 'Font','FontSize' ] },
-                            //{ name: 'colors', items : [ 'TextColor','BGColor' ] },
-                            //{ name: 'links', items : [ 'Link','Unlink' ] },
-                            { name: 'insert', items : [ 'Image' ] }
-                            //{ name: 'tools', items : [ 'Maximize','-','About' ] }
-                        ]
-                    }}
+                    content: { type : "rtf", RTFConfig : rtfConfig }
                 }
             }, this, this.comment.css);
             this.form.load();
