@@ -1,5 +1,6 @@
 package com.x.portal.assemble.designer.jaxrs.page;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,6 +17,11 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.Portal;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 class ActionEdit extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -38,6 +44,10 @@ class ActionEdit extends BaseAction {
 			Wi.copier.copy(wi, page);
 			this.checkName(business, page);
 			this.checkAlias(business, page);
+			page.getProperties().setRelatedWidgetList(wi.getRelatedWidgetList());
+			page.getProperties().setMobileRelatedWidgetList(wi.getMobileRelatedWidgetList());
+			page.getProperties().setRelatedScriptMap(wi.getRelatedScriptMap());
+			page.getProperties().setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
 			emc.check(page, CheckPersistType.all);
 			/** 更新首页 */
 			if (this.isBecomeFirstPage(business, portal, page)) {
@@ -64,6 +74,50 @@ class ActionEdit extends BaseAction {
 		private static final long serialVersionUID = 6624639107781167248L;
 
 		static WrapCopier<Wi, Page> copier = WrapCopierFactory.wi(Wi.class, Page.class, null, JpaObject.FieldsUnmodify);
+
+		@FieldDescribe("关联Widget.")
+		private List<String> relatedWidgetList = new ArrayList<>();
+
+		@FieldDescribe("移动端关联Widget.")
+		private List<String> mobileRelatedWidgetList = new ArrayList<>();
+
+		@FieldDescribe("关联脚本.")
+		private Map<String, String> relatedScriptMap = new LinkedHashMap<>();
+
+		@FieldDescribe("移动端关联脚本.")
+		private Map<String, String> mobileRelatedScriptMap = new LinkedHashMap<>();
+
+		public List<String> getRelatedWidgetList() {
+			return this.relatedWidgetList == null ? new ArrayList<>() : this.relatedWidgetList;
+		}
+
+		public List<String> getMobileRelatedWidgetList() {
+			return this.mobileRelatedWidgetList == null ? new ArrayList<>() : this.mobileRelatedWidgetList;
+		}
+
+		public Map<String, String> getRelatedScriptMap() {
+			return this.relatedScriptMap == null ? new LinkedHashMap<>() : this.relatedScriptMap;
+		}
+
+		public Map<String, String> getMobileRelatedScriptMap() {
+			return this.mobileRelatedScriptMap == null ? new LinkedHashMap<>() : this.mobileRelatedScriptMap;
+		}
+
+		public void setRelatedWidgetList(List<String> relatedWidgetList) {
+			this.relatedWidgetList = relatedWidgetList;
+		}
+
+		public void setMobileRelatedWidgetList(List<String> mobileRelatedWidgetList) {
+			this.mobileRelatedWidgetList = mobileRelatedWidgetList;
+		}
+
+		public void setRelatedScriptMap(Map<String, String> relatedScriptMap) {
+			this.relatedScriptMap = relatedScriptMap;
+		}
+
+		public void setMobileRelatedScriptMap(Map<String, String> mobileRelatedScriptMap) {
+			this.mobileRelatedScriptMap = mobileRelatedScriptMap;
+		}
 	}
 
 	public static class Wo extends WoId {
