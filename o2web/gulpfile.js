@@ -409,7 +409,11 @@ function createBaseWorkConcatStyleTask(path){
             "source/x_component_process_Work/$Main/default/css.wcss",
             "source/x_component_process_Xform/$Form/default/css.wcss",
             "source/o2_core/o2/widget/$Tab/mobileForm/css.wcss",
-            "source/o2_core/o2/widget/$Menu/tab/css.wcss"
+            "source/o2_core/o2/widget/$Menu/tab/css.wcss",
+            "source/o2_core/o2/widget/$Tab/form/css.wcss",
+            "source/x_component_process_Xform/$Form/default/doc.wcss",
+            "source/o2_core/o2/widget/$Toolbar/documentEdit/css.wcss",
+            "source/o2_core/o2/widget/$Toolbar/documentEdit_side/css.wcss"
         ])
             .pipe(concat_Style())
             .pipe(concat('js/base_work_style_temp.js'))
