@@ -494,6 +494,7 @@ o2.addReady(function () {
                 this.resolveReturn = this;
 
                 //先判断用户是否登录
+                console.log("layout.sessionPromise.init")
                 o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
                     this.status = "fulfilled";
                     this.resolveReturn = json.data;
@@ -540,7 +541,7 @@ o2.addReady(function () {
             layout.session.user = data;
             layout.session.token = data.token;
             layout.desktop.session = layout.session;
-            _loadApp();
+
         }, function(){
             //允许匿名访问
             if (layout.anonymous) {
@@ -550,7 +551,7 @@ o2.addReady(function () {
                 layout.session.user = data;
                 layout.session.token = data.token;
                 layout.desktop.session = layout.session;
-                _loadApp();
+                //_loadApp();
             } else {
                 _loadProgressBar(true);
                 if (layout.yqwx) {
@@ -560,6 +561,7 @@ o2.addReady(function () {
                 }
             }
         });
+        _loadApp();
 
         // //先判断用户是否登录
         // o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
