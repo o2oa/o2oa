@@ -2,6 +2,7 @@ package com.x.program.center.schedule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,9 +29,11 @@ public class CollectPerson extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(CollectPerson.class);
 
+	private static ReentrantLock lock = new ReentrantLock();
+
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
+		lock.lock();
 		try {
 			if (pirmaryCenter() && BooleanUtils.isTrue(Config.collect().getEnable())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -78,6 +81,8 @@ public class CollectPerson extends BaseAction {
 		} catch (Exception e) {
 			logger.error(e);
 			throw new JobExecutionException(e);
+		} finally {
+			lock.unlock();
 		}
 	}
 
