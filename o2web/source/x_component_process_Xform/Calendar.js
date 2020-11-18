@@ -52,7 +52,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
                     "isTime": (this.json.selectType==="datetime" || this.json.selectType==="time"),
                     "timeOnly": (this.json.selectType === "time"),
                     //"target": this.form.node,
-                    "target": this.form.app.content,
+                    "target": layout.mobile ? $(document.body) : this.form.app.content,
                     "format": this.json.format,
                     "onComplate": function(formateDate, date){
                         this.validationMode();
