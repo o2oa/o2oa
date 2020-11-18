@@ -23,11 +23,11 @@ class ActionValidate extends BaseAction {
 		if (!this.validate(Config.collect().getName(), Config.collect().getPassword())) {
 			wo.setValue(false);
 		}
-		if (BooleanUtils.isTrue(wo.getValue())) {
-			/* 人员和应用市场同步 */
+		/*if (BooleanUtils.isTrue(wo.getValue())) {
+			*//* 人员和应用市场同步 *//*
 			ThisApplication.context().scheduleLocal(CollectPerson.class);
 			ThisApplication.context().scheduleLocal(CollectMarket.class);
-		}
+		}*/
 		result.setData(wo);
 		return result;
 	}
