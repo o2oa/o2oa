@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -164,6 +165,7 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 			_relatedForm.get();
 			_relatedScript.get();
 			list.add(form.getId() + form.getUpdateTime().getTime());
+			list = list.stream().sorted().collect(Collectors.toList());
 			Wo wo = new Wo();
 			wo.setId(form.getId());
 			CRC32 crc = new CRC32();
