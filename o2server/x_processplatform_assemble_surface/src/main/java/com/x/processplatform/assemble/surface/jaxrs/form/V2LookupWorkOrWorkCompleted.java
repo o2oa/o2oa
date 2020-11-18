@@ -109,7 +109,7 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 		if (optional.isPresent()) {
 			return (Wo) optional.get();
 		} else {
-			List<String> list = new CopyOnWriteArrayList<>();
+			final List<String> list = new CopyOnWriteArrayList<>();
 			CompletableFuture<Void> _relatedForm = CompletableFuture.runAsync(() -> {
 				if (ListTools.isNotEmpty(form.getProperties().getRelatedFormList())) {
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -164,11 +164,11 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 			_relatedForm.get();
 			_relatedScript.get();
 			list.add(form.getId() + form.getUpdateTime().getTime());
-			list = list.stream().sorted().collect(Collectors.toList());
+			List<String> sortList = list.stream().sorted().collect(Collectors.toList());
 			Wo wo = new Wo();
 			wo.setId(form.getId());
 			CRC32 crc = new CRC32();
-			crc.update(StringUtils.join(list, "#").getBytes());
+			crc.update(StringUtils.join(sortList, "#").getBytes());
 			wo.setCacheTag(crc.getValue() + "");
 			return wo;
 		}
