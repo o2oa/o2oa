@@ -1,7 +1,7 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
 MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
 //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
-MWF.O2Selector = new Class({
+o2.xApplication.Selector.package = MWF.O2Selector = new Class({
     Implements: [Options],
     options: {
         "count": 0,
