@@ -1,7 +1,5 @@
 package com.x.processplatform.service.processing.jaxrs.test;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -234,17 +232,16 @@ public class TestAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "test1.", action = ActionTest1.class)
+	@JaxrsMethodDescribe(value = "test5.", action = ActionTest5.class)
 	@GET
-	@Path("test5/{id}")
+	@Path("test5")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void test5(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+	public void test5(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		ActionResult<ActionTest5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionTest5().execute(effectivePerson, id);
+			result = new ActionTest5().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -252,20 +249,21 @@ public class TestAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "test1.", action = ActionTest52.class)
+	@JaxrsMethodDescribe(value = "test6.", action = ActionTest6.class)
 	@GET
-	@Path("test5/123")
+	@Path("test6")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void test5(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<ActionTest52.Wo> result = new ActionResult<>();
+	public void test6(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionTest6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionTest52().execute(effectivePerson);
+			result = new ActionTest6().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
 }
