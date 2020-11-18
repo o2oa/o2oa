@@ -1,3 +1,5 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xApplication.process.Xform.LP = {
     "ok": "确定",
 	"deleteDatagridLineTitle":"删除条目确认",
@@ -238,3 +240,4 @@ MWF.xApplication.process.Xform.LP = {
     "fullWidth": "已启用半角空格自动转换为全角空格，如需输入半角空格，请使用：SHIFT+空格"
 
 };
+MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;
