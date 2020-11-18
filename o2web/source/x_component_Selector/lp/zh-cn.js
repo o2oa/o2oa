@@ -1,3 +1,4 @@
+MWF.xApplication.Selector=MWF.xApplication.Selector||{};
 MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "title": "选择",
     "multiSelectTitle": "选择",
@@ -50,3 +51,4 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "ok": "确定",
     "noPerson": "人员“{name}”不存在"
 };
+MWF.xApplication.Selector["lp."+o2.language] = MWF.xApplication.Selector.LP;
