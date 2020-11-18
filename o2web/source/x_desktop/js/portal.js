@@ -30,16 +30,16 @@ layout.addReady(function(){
             layout.openApplication(null, appName, option||{}, m_status);
         };
 
-        if (layout.session && layout.session.user){
-            _load();
-        }else{
-            if (layout.sessionPromise){
-                layout.sessionPromise.then(function(){
-                    _load();
-                });
-            }
-        }
-        //_load();
+        // if (layout.session && layout.session.user){
+        //     _load();
+        // }else{
+        //     if (layout.sessionPromise){
+        //         layout.sessionPromise.then(function(){
+        //             _load();
+        //         });
+        //     }
+        // }
+        _load();
 
         window.addEventListener('popstate', function (event) {
             uri = new URI(document.location.href);

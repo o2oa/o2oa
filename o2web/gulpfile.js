@@ -15,13 +15,15 @@ var gulp = require('gulp'),
     concat = require('gulp-concat');
 //let uglify = require('gulp-uglify-es').default;
 var through2 = require('through2');
+var path = require('path');
+
 
 var assetRev = require('gulp-tm-asset-rev');
 var apps = require('./gulpapps.js');
 var ftpconfig = require('./gulpconfig.js');
 
 var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
-    string: ["ev", "upload", "location", "host", "user", "pass", "port", "remotePath", "dest", "src"]
+    string: ["ev", "upload", "location", "host", "user", "pass", "port", "remotePath", "dest", "src", "lp"]
 });
 function getEvOptions(ev){
     options.ev = ev;
@@ -46,6 +48,7 @@ function setOptions(op1, op2){
     options.port = op1.port || op2.port || "";
     options.remotePath = op1.remotePath || op2.remotePath || "";
     options.dest = op1.dest || op2.dest || "dest";
+    options.lp = op1.lp || op2.lp || "zh-cn";
 }
 var options = {};
 setOptions(o_options, getEvOptions(o_options.ev));
@@ -354,11 +357,102 @@ function createO2ConcatTask(path, isMin, thisOptions) {
     });
 }
 
-function createBaseWorkConcatTask(path, isMin, thisOptions) {
+function concat_Actions(){
+    return through2.obj(function (file, enc, cb) {
+        debugger;
+        if (file.isNull()) {
+            this.push(file);
+            return cb();
+        }
+
+        if (file.isStream()) {
+            this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+            return cb();
+        }
+        var content = file.contents.toString();
+
+        var o = path.parse(file.path);
+        var name = o.name;
+        content = "var actionJson = "+content;
+        content = content+"\nif (!o2.xAction.RestActions.Action[\""+name+"\"]) o2.xAction.RestActions.Action[\""+name+"\"] = new Class({Extends: o2.xAction.RestActions.Action});";
+        content = content+"\no2.Actions.actions[\""+name+"\"] = new o2.xAction.RestActions.Action[\""+name+"\"](\""+name+"\", actionJson);";
+
+        file.contents = new Buffer.from(content);
+        this.push(file);
+        cb();
+    });
+}
+function concat_Style(){
+    return through2.obj(function (file, enc, cb) {
+        if (file.isNull()) {
+            this.push(file);
+            return cb();
+        }
+
+        if (file.isStream()) {
+            this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+            return cb();
+        }
+        var content = file.contents.toString();
+        name = ".."+file.path.replace(process.cwd(), "").replace(/\\/g, "/").substring("/source".length);
+        content = "var csskey = encodeURIComponent(\""+name+"\");\no2.widget.css[csskey]="+content;
+
+        file.contents = new Buffer.from(content);
+        this.push(file);
+        cb();
+    });
+}
+
+function createBaseWorkConcatStyleTask(path){
+    gulp.task(path+".base_work : style", function(){
+        return gulp.src([
+            "source/x_component_process_Work/$Main/default/css.wcss",
+            "source/x_component_process_Xform/$Form/default/css.wcss"
+        ])
+            .pipe(concat_Style())
+            .pipe(concat('js/base_work_style_temp.js'))
+            .pipe(gulp.dest('source/x_desktop/'))
+    })
+}
+
+function createBaseWorkConcatActionTask(path){
+    gulp.task(path+".base_work : action", function(){
+        return gulp.src([
+            "source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
+            "source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.json",
+            "source/o2_core/o2/xAction/services/x_organization_assemble_control.json",
+            "source/o2_core/o2/xAction/services/x_query_assemble_surface.json",
+            "source/o2_core/o2/xAction/services/x_cms_assemble_control.json",
+            "source/o2_core/o2/xAction/services/x_program_center.json",
+            "source/o2_core/o2/xAction/services/x_organization_assemble_personal.json"
+        ])
+            .pipe(concat_Actions())
+            .pipe(concat('js/base_work_actions_temp.js'))
+            .pipe(gulp.dest('source/x_desktop/'))
+    })
+}
+function createBaseWorkConcatDelTempTask(path) {
+    gulp.task(path+".base_work : clean", function(cb){
+        var dest = [
+            'source/'+path+'/js/base_work_actions_temp.js',
+            'source/'+path+'/js/base_work_style_temp.js'
+        ];
+        return del(dest, cb);
+    });
+}
+
+function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
     gulp.task(path+".base_work : concat", function(){
         var option = thisOptions || options;
         var src = [
-            'source/' + path + '/js/base_work_begin.js',
+            'source/' + path + '/js/base_concat_head.js',
+            'source/o2_core/o2/lp/'+(option.lp || 'zh-cn')+'.js',
+            'source/x_component_process_Work/lp/'+(option.lp || 'zh-cn')+'.js',
+            'source/x_component_process_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
+            'source/x_component_Selector/lp/'+(option.lp || 'zh-cn')+'.js',
+
+            'source/' + path + '/js/base_work_style_temp.js',
+
             'source/o2_core/o2/widget/Common.js',
             'source/o2_core/o2/widget/Dialog.js',
             'source/o2_core/o2/widget/UUID.js',
@@ -373,7 +467,6 @@ function createBaseWorkConcatTask(path, isMin, thisOptions) {
             'source/o2_core/o2/xDesktop/UserData.js',
             'source/x_component_Template/MPopupForm.js',
             'source/o2_core/o2/xDesktop/Authentication.js',
-            'source/o2_core/o2/xDesktop/Dialog.js',
             'source/o2_core/o2/xDesktop/Window.js',
             'source/x_component_Common/Main.js',
             'source/x_component_process_Work/Main.js',
@@ -397,7 +490,9 @@ function createBaseWorkConcatTask(path, isMin, thisOptions) {
             'source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
             'source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
             'source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
-            'source/' + path + '/js/base_work_end.js',
+
+            'source/' + path + '/js/base_work_actions_temp.js',
+
             'source/' + path + '/js/base.js'
         ];
         var dest = option.dest+'/' + path + '/';
@@ -439,6 +534,161 @@ function createBaseWorkConcatTask(path, isMin, thisOptions) {
             .pipe(gulp.dest(dest))
     });
 }
+function createBaseWorkConcatTask(path, isMin, thisOptions){
+    createBaseWorkConcatActionTask(path);
+    createBaseWorkConcatStyleTask(path);
+    createBaseWorkConcatBodyTask(path, isMin, thisOptions);
+    createBaseWorkConcatDelTempTask(path);
+    gulp.task( path+".base_work", gulp.series(path+".base_work : action", path+".base_work : style", path+".base_work : concat", path+".base_work : clean"));
+}
+
+function createBasePortalConcatStyleTask(path){
+    gulp.task(path+".base_portal : style", function(){
+        return gulp.src([
+            "source/x_component_process_Work/$Main/default/css.wcss",
+            "source/x_component_portal_Portal/$Main/default/css.wcss",
+            "source/x_component_process_Xform/$Form/default/css.wcss"
+        ])
+            .pipe(concat_Style())
+            .pipe(concat('js/base_portal_style_temp.js'))
+            .pipe(gulp.dest('source/x_desktop/'))
+    })
+}
+
+function createBasePortalConcatActionTask(path){
+    gulp.task(path+".base_portal : action", function(){
+        return gulp.src([
+            "source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
+            "source/o2_core/o2/xAction/services/x_portal_assemble_surface.json",
+            "source/o2_core/o2/xAction/services/x_organization_assemble_control.json",
+            "source/o2_core/o2/xAction/services/x_query_assemble_surface.json",
+            "source/o2_core/o2/xAction/services/x_cms_assemble_control.json",
+            "source/o2_core/o2/xAction/services/x_program_center.json",
+            "source/o2_core/o2/xAction/services/x_organization_assemble_personal.json"
+        ])
+            .pipe(concat_Actions())
+            .pipe(concat('js/base_portal_actions_temp.js'))
+            .pipe(gulp.dest('source/x_desktop/'))
+    })
+}
+function createBasePortalConcatDelTempTask(path) {
+    gulp.task(path+".base_portal : clean", function(cb){
+        var dest = [
+            'source/'+path+'/js/base_portal_actions_temp.js',
+            'source/'+path+'/js/base_portal_style_temp.js'
+        ];
+        return del(dest, cb);
+    });
+}
+
+function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
+    gulp.task(path+".base_portal : concat", function(){
+        var option = thisOptions || options;
+        var src = [
+            'source/' + path + '/js/base_concat_head.js',
+            'source/o2_core/o2/lp/'+(option.lp || 'zh-cn')+'.js',
+
+            'source/' + path + '/js/base_portal_style_temp.js',
+
+            'source/o2_core/o2/widget/Common.js',
+            'source/o2_core/o2/widget/Dialog.js',
+            'source/o2_core/o2/widget/UUID.js',
+            'source/o2_core/o2/widget/Menu.js',
+            'source/o2_core/o2/widget/Toolbar.js',
+            'source/o2_core/o2/xDesktop/Common.js',
+            'source/o2_core/o2/xDesktop/Actions/RestActions.js',
+            'source/o2_core/o2/xAction/RestActions.js',
+            'source/o2_core/o2/xDesktop/Access.js',
+            'source/o2_core/o2/xDesktop/Dialog.js',
+            'source/o2_core/o2/xDesktop/Menu.js',
+            'source/o2_core/o2/xDesktop/UserData.js',
+            'source/x_component_Template/MPopupForm.js',
+            'source/o2_core/o2/xDesktop/Authentication.js',
+            'source/o2_core/o2/xDesktop/Window.js',
+
+            'source/x_component_Common/Main.js',
+
+            'source/x_component_process_Work/lp/'+(option.lp || 'zh-cn')+'.js',
+            'source/x_component_portal_Portal/lp/'+(option.lp || 'zh-cn')+'.js',
+            'source/x_component_process_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
+            'source/x_component_Selector/lp/'+(option.lp || 'zh-cn')+'.js',
+
+            'source/x_component_portal_Portal/Main.js',
+
+            'source/x_component_Selector/package.js',
+            'source/x_component_Selector/Person.js',
+            'source/x_component_Selector/Identity.js',
+            'source/x_component_Selector/Unit.js',
+            'source/x_component_Selector/IdentityWidthDuty.js',
+            'source/x_component_Selector/IdentityWidthDutyCategoryByUnit.js',
+            'source/x_component_Selector/UnitWithType.js',
+
+            'source/o2_core/o2/xScript/Actions/UnitActions.js',
+            'source/o2_core/o2/xScript/Actions/ScriptActions.js',
+            'source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
+            'source/o2_core/o2/xScript/Actions/PortalScriptActions.js',
+            'source/o2_core/o2/xScript/PageEnvironment.js',
+
+            'source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
+            'source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
+            'source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
+            'source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
+            'source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
+
+            'source/' + path + '/js/base_portal_actions_temp.js',
+
+            'source/' + path + '/js/base.js'
+        ];
+        var dest = option.dest+'/' + path + '/';
+        return gulp.src(src)
+            .pipe(concat('js/base_portal.js'))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+            // .pipe(gulp.src(src))
+            .pipe(concat('js/base_portal.min.js'))
+            .pipe(uglify())
+            // .pipe(rename({ extname: '.min.js' }))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+    });
+}
+function createBasePortalConcatTask(path, isMin, thisOptions){
+    createBasePortalConcatActionTask(path);
+    createBasePortalConcatStyleTask(path);
+    createBasePortalConcatBodyTask(path, isMin, thisOptions);
+    createBasePortalConcatDelTempTask(path);
+    gulp.task( path+".base_portal", gulp.series(path+".base_portal : action", path+".base_portal : style", path+".base_portal : concat", path+".base_portal : clean"));
+}
+
+
 function getAppTask(path, isMin, thisOptions) {
     if (path==="x_component_process_Xform"){
         createDefaultTask(path, isMin, thisOptions);
@@ -451,7 +701,9 @@ function getAppTask(path, isMin, thisOptions) {
     }else if (path==="x_desktop") {
         createDefaultTask(path, isMin, thisOptions);
         createBaseWorkConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path+".base_work : concat");
+        createBasePortalConcatTask(path, isMin, thisOptions);
+        return gulp.series(path, path+".base_work", path+".base_portal");
+        //return gulp.series(path, path+".base_work : concat");
     }else{
         createDefaultTask(path, isMin, thisOptions);
         return gulp.series(path);
