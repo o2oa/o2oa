@@ -407,7 +407,9 @@ function createBaseWorkConcatStyleTask(path){
     gulp.task(path+".base_work : style", function(){
         return gulp.src([
             "source/x_component_process_Work/$Main/default/css.wcss",
-            "source/x_component_process_Xform/$Form/default/css.wcss"
+            "source/x_component_process_Xform/$Form/default/css.wcss",
+            "source/o2_core/o2/widget/$Tab/mobileForm/css.wcss",
+            "source/o2_core/o2/widget/$Menu/tab/css.wcss"
         ])
             .pipe(concat_Style())
             .pipe(concat('js/base_work_style_temp.js'))
@@ -547,7 +549,9 @@ function createBasePortalConcatStyleTask(path){
         return gulp.src([
             "source/x_component_process_Work/$Main/default/css.wcss",
             "source/x_component_portal_Portal/$Main/default/css.wcss",
-            "source/x_component_process_Xform/$Form/default/css.wcss"
+            "source/x_component_process_Xform/$Form/default/css.wcss",
+            "source/o2_core/o2/widget/$Tab/mobileForm/css.wcss",
+            "source/o2_core/o2/widget/$Menu/tab/css.wcss"
         ])
             .pipe(concat_Style())
             .pipe(concat('js/base_portal_style_temp.js'))
