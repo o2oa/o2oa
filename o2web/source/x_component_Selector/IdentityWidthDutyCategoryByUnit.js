@@ -175,17 +175,23 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 unitList.sort(function (a, b) {
                     var idxA = this.getIndexFromUnitOption(a);
                     var idxB = this.getIndexFromUnitOption(b);
+                    if( a.orderNumber === 0 )a.orderNumber = -1;
+                    if( b.orderNumber === 0 )b.orderNumber = -1;
                     idxA = idxA === -1 ? 9999999 + (a.orderNumber || 9999999) : idxA;
                     idxB = idxB === -1 ? 9999999 + (b.orderNumber || 9999999) : idxB;
                     return idxA - idxB;
                 }.bind(this))
             } else {
                 unitList.sort(function (a, b) {
+                    if( a.orderNumber === 0 )a.orderNumber = -1;
+                    if( b.orderNumber === 0 )b.orderNumber = -1;
                     return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
                 }.bind(this))
             }
         } else {
             unitList.sort(function (a, b) {
+                if( a.orderNumber === 0 )a.orderNumber = -1;
+                if( b.orderNumber === 0 )b.orderNumber = -1;
                 return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
             }.bind(this))
         }
@@ -545,6 +551,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
                 if (this.data.identityList && this.data.identityList.length > 0) {
                     this.data.identityList.sort(function (a, b) {
                         //this.selector.getUnitOrderNumber( a.unitLevelName )
+                        if( a.orderNumber === 0 )a.orderNumber = -1;
+                        if( b.orderNumber === 0 )b.orderNumber = -1;
                         return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
                     });
                     this.data.identityList.each(function (identity) {
@@ -562,6 +570,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
 
             if (this.data.unitList && this.data.unitList.length) {
                 this.data.unitList.sort(function (a, b) {
+                    if( a.orderNumber === 0 )a.orderNumber = -1;
+                    if( b.orderNumber === 0 )b.orderNumber = -1;
                     return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
                 });
                 this.data.unitList.each(function (subData) {
@@ -596,6 +606,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
             if (this.data.identityList && this.data.identityList.length > 0) {
                 this.data.identityList.sort(function (a, b) {
                     //this.selector.getUnitOrderNumber( a.unitLevelName )
+                    if( a.orderNumber === 0 )a.orderNumber = -1;
+                    if( b.orderNumber === 0 )b.orderNumber = -1;
                     return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
                 });
                 this.data.identityList.each(function (identity) {
