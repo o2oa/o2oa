@@ -547,7 +547,11 @@ function build_concat_basework_style(){
         "o2web/source/x_component_process_Work/$Main/default/css.wcss",
         "o2web/source/x_component_process_Xform/$Form/default/css.wcss",
         "o2web/source/o2_core/o2/widget/$Tab/mobileForm/css.wcss",
-        "o2web/source/o2_core/o2/widget/$Menu/tab/css.wcss"
+        "o2web/source/o2_core/o2/widget/$Menu/tab/css.wcss",
+        "o2web/source/o2_core/o2/widget/$Tab/form/css.wcss",
+        "o2web/source/x_component_process_Xform/$Form/default/doc.wcss",
+        "o2web/source/o2_core/o2/widget/$Toolbar/documentEdit/css.wcss",
+        "o2web/source/o2_core/o2/widget/$Toolbar/documentEdit_side/css.wcss"
     ])
         .pipe(concat_Style())
         .pipe(concat('js/base_work_style_temp.js'))
@@ -645,7 +649,7 @@ function build_concat_baseportal_style(){
         "o2web/source/x_component_portal_Portal/$Main/default/css.wcss",
         "o2web/source/x_component_process_Xform/$Form/default/css.wcss",
         "o2web/source/o2_core/o2/widget/$Tab/mobileForm/css.wcss",
-        "o2web/source/o2_core/o2/widget/$Menu/tab/css.wcss"
+        "o2web/source/o2_core/o2/widget/$Menu/tab/css.wcss",
     ])
         .pipe(concat_Style())
         .pipe(concat('js/base_portal_style_temp.js'))
