@@ -716,15 +716,11 @@ MWF.xApplication.process.Work.Main = new Class({
                         layout.appForm = this.appForm;
                         window.webkit.messageHandlers.appFormLoaded.postMessage(JSON.stringify(this.appForm.mobileTools));
                     }
-debugger;
-
                     if (this.options.action=="processTask"){
                         this.appForm.processWork();
                         this.options.action = "";
                     }
-
                     this.fireEvent("postLoadForm");
-
                 }.bind(this));
             //}.bind(this));
         }
