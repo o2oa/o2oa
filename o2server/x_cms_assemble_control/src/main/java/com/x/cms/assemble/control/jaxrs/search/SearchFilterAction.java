@@ -8,8 +8,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
-import com.x.cms.assemble.control.ThisApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -22,8 +20,6 @@ import javax.ws.rs.core.MediaType;
 @JaxrsDescribe("信息文档搜索服务")
 public class SearchFilterAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
-
 	@JaxrsMethodDescribe(value = "获取用户有权限访问的所有已发布文档分类列表.", action = ActionListAppSearchFilterForDocStatus.class)
 	@GET
 	@Path("list/publish/filter/category/{categoryId}")
@@ -33,9 +29,7 @@ public class SearchFilterAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionListAppSearchFilterForDocStatus.Wo> result =
-				((ActionListAppSearchFilterForDocStatus)proxy
-						.getProxy(ActionListAppSearchFilterForDocStatus.class))
-						.execute(request, effectivePerson, "published", categoryId);
+				new ActionListAppSearchFilterForDocStatus().execute(request, effectivePerson, "published", categoryId);
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
@@ -48,9 +42,7 @@ public class SearchFilterAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionListAppSearchFilterForDocStatus.Wo> result =
-				((ActionListAppSearchFilterForDocStatus)proxy
-						.getProxy(ActionListAppSearchFilterForDocStatus.class))
-						.execute(request, effectivePerson, "draft", categoryId);
+				new ActionListAppSearchFilterForDocStatus().execute(request, effectivePerson, "draft", categoryId);
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
@@ -63,9 +55,7 @@ public class SearchFilterAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionListAppSearchFilterForDocStatus.Wo> result =
-				((ActionListAppSearchFilterForDocStatus)proxy
-						.getProxy(ActionListAppSearchFilterForDocStatus.class))
-						.execute(request, effectivePerson, "archived", categoryId);
+				new ActionListAppSearchFilterForDocStatus().execute(request, effectivePerson, "archived", categoryId);
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}	
 }

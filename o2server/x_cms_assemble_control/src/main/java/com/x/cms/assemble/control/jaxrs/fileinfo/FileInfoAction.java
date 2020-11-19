@@ -10,10 +10,8 @@ import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.http.WrapOutString;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -29,7 +27,6 @@ import java.util.List;
 @JaxrsDescribe("附件信息管理")
 public class FileInfoAction extends StandardJaxrsAction{
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger( FileInfoAction.class );
 	
 	@JaxrsMethodDescribe(value = "获取全部的文件或者附件列表.", action = ActionListAll.class)
@@ -41,7 +38,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListAll)proxy.getProxy(ActionListAll.class)).execute( request, effectivePerson );
+			result = new ActionListAll().execute( request, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -60,7 +57,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByDocId.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListByDocId)proxy.getProxy(ActionListByDocId.class)).execute( request, effectivePerson, documentId );
+			result = new ActionListByDocId().execute( request, effectivePerson, documentId );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -80,7 +77,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute( request, effectivePerson, id, documentId );
+			result = new ActionGet().execute( request, effectivePerson, id, documentId );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -99,7 +96,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionDelete)proxy.getProxy(ActionDelete.class)).execute( request, effectivePerson, id );
+			result = new ActionDelete().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -119,7 +116,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		try {
-			result = ((ActionImageToBase64)proxy.getProxy(ActionImageToBase64.class)).execute( request, effectivePerson, id, size );
+			result = new ActionImageToBase64().execute( request, effectivePerson, id, size );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -138,7 +135,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		ActionResult<ActionFileDownload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileDownload)proxy.getProxy(ActionFileDownload.class)).execute(request, effectivePerson, id);
+			result = new ActionFileDownload().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -156,7 +153,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		ActionResult<ActionFileDownloadStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileDownloadStream)proxy.getProxy(ActionFileDownloadStream.class)).execute(request, effectivePerson, id );
+			result = new ActionFileDownloadStream().execute(request, effectivePerson, id );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -175,7 +172,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		ActionResult<ActionFileEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileEdit)proxy.getProxy(ActionFileEdit.class)).execute( request, effectivePerson, id, docId, jsonElement);
+			result = new ActionFileEdit().execute( request, effectivePerson, id, docId, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -198,7 +195,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		ActionResult<ActionFileUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileUpload)proxy.getProxy(ActionFileUpload.class)).execute(request, effectivePerson, docId, site, fileName, bytes, disposition);
+			result = new ActionFileUpload().execute(request, effectivePerson, docId, site, fileName, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -222,7 +219,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		ActionResult<ActionFileUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileUpdate)proxy.getProxy(ActionFileUpdate.class)).execute(request, effectivePerson, docId, id, site, fileName, bytes, disposition);
+			result = new ActionFileUpdate().execute(request, effectivePerson, docId, id, site, fileName, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -245,7 +242,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		ActionResult<ActionFileUploadCallback.Wo<ActionFileUploadCallback.WoObject>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileUploadCallback)proxy.getProxy(ActionFileUploadCallback.class)).execute(request, effectivePerson, docId, callback, site, fileName, bytes, disposition);
+			result = new ActionFileUploadCallback().execute(request, effectivePerson, docId, callback, site, fileName, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -270,7 +267,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 		ActionResult<ActionFileUpdateCallback.Wo<ActionFileUpdateCallback.WoObject>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileUpdateCallback)proxy.getProxy(ActionFileUpdateCallback.class)).execute(request, effectivePerson, docId, id, callback, site, fileName, bytes, disposition);
+			result = new ActionFileUpdateCallback().execute(request, effectivePerson, docId, id, callback, site, fileName, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

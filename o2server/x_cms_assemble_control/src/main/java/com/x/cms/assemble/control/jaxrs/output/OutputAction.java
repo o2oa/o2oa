@@ -26,8 +26,6 @@ import java.util.List;
 @JaxrsDescribe("导出CMS")
 public class OutputAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
-
 	private static Logger logger = LoggerFactory.getLogger(OutputAction.class);
 
 	@JaxrsMethodDescribe(value = "选择栏目结构.", action = ActionSelect.class)
@@ -41,7 +39,7 @@ public class OutputAction extends StandardJaxrsAction {
 		ActionResult<ActionSelect.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionSelect)proxy.getProxy(ActionSelect.class)).execute(effectivePerson, appInfoFlag, jsonElement);
+			result = new ActionSelect().execute(effectivePerson, appInfoFlag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -58,7 +56,7 @@ public class OutputAction extends StandardJaxrsAction {
 		ActionResult<List<ActionList.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionList)proxy.getProxy(ActionList.class)).execute(effectivePerson);
+			result = new ActionList().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

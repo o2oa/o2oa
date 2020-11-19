@@ -8,10 +8,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -24,7 +22,6 @@ import javax.ws.rs.core.MediaType;
 @JaxrsDescribe("信息发布栏目导出服务")
 public class AppInfoExportAction extends StandardJaxrsAction {
 
-    private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger(AppInfoExportAction.class);
 
     @JaxrsMethodDescribe(value = "根据ID导出栏目信息对象所有设计.", action = ActionAppInfoExport.class)
@@ -36,7 +33,7 @@ public class AppInfoExportAction extends StandardJaxrsAction {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionAppInfoExport.Wo> result = new ActionResult<>();
         try {
-            result = ((ActionAppInfoExport)proxy.getProxy(ActionAppInfoExport.class)).execute( request, effectivePerson, id );
+            result = new ActionAppInfoExport().execute( request, effectivePerson, id );
         } catch (Exception e) {
             result = new ActionResult<>();
             Exception exception = new ExceptionAppInfoProcess(e, "根据指定ID导出栏目信息对象时发生异常。ID:" + id );

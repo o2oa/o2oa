@@ -9,10 +9,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -26,7 +24,6 @@ import java.util.List;
 @Path("anonymous/appinfo")
 public class AppInfoAnonymousAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static Logger logger = LoggerFactory.getLogger(AppInfoAnonymousAction.class);
 
 	@JaxrsMethodDescribe(value = "根据标识获取信息栏目信息对象.", action = ActionGetAnonymous.class)
@@ -38,7 +35,7 @@ public class AppInfoAnonymousAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<BaseAction.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionGetAnonymous)proxy.getProxy(ActionGetAnonymous.class)).execute( request, effectivePerson, flag );
+			result = new ActionGetAnonymous().execute( request, effectivePerson, flag );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "根据指定ID查询应用栏目信息对象时发生异常。flag:" + flag );
@@ -60,8 +57,7 @@ public class AppInfoAnonymousAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListNextWithFilterAnonymous.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListNextWithFilterAnonymous)proxy.getProxy(ActionListNextWithFilterAnonymous.class))
-					.execute(request, effectivePerson, id, count, jsonElement );
+			result = new ActionListNextWithFilterAnonymous().execute(request, effectivePerson, id, count, jsonElement );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "查询栏目信息对象时发生异常");
