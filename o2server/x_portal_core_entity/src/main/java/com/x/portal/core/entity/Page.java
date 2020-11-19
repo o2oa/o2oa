@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.JpaObject;
@@ -26,6 +27,7 @@ import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.entity.annotation.IdReference;
 import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.project.annotation.FieldDescribe;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -56,6 +58,21 @@ public class Page extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+	}
+
+	public Page() {
+		this.properties = new PageProperties();
+	}
+
+	public PageProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new PageProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(PageProperties properties) {
+		this.properties = properties;
 	}
 
 	/* flag标志位 */
@@ -135,6 +152,15 @@ public class Page extends SliceJpaObject {
 	@FieldDescribe("是否有移动端内容.")
 	@Column(name = ColumnNamePrefix + hasMobile_FIELDNAME)
 	private Boolean hasMobile;
+
+	public static final String properties_FIELDNAME = "properties";
+	// @Basic(fetch = FetchType.EAGER)
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private PageProperties properties;
 
 	// public static String[] FLA GS = new String[] { JpaObject.id_FIELDNAME };
 	//
