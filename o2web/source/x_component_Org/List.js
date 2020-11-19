@@ -73,6 +73,7 @@ MWF.xApplication.Org.List = new Class({
             this.deleteAction.addEvent("click", function(e){
                 this.deleteItem(e);
             }.bind(this));
+            this.fireEvent("postLoadAction")
         }
     },
     addItem: function(){
