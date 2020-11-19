@@ -25,16 +25,13 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 
 @Path("script")
 @JaxrsDescribe("脚本信息管理")
 public class ScriptAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static Logger logger = LoggerFactory.getLogger(ScriptAction.class);
 
 	@JaxrsMethodDescribe(value = "根据ID获取指定的脚本信息.", action = ActionGet.class)
@@ -47,7 +44,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionGet) proxy.getProxy(ActionGet.class)).execute(effectivePerson, id);
+			result = new ActionGet().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -64,7 +61,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionCreate) proxy.getProxy(ActionCreate.class)).execute(request, effectivePerson, jsonElement);
+			result = new ActionCreate().execute(request, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -82,7 +79,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionUpdate) proxy.getProxy(ActionUpdate.class)).execute(effectivePerson, id, jsonElement);
+			result = new ActionUpdate().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -100,7 +97,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionDelete) proxy.getProxy(ActionDelete.class)).execute(effectivePerson, id);
+			result = new ActionDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -118,8 +115,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListWithApplication) proxy.getProxy(ActionListWithApplication.class))
-					.execute(effectivePerson, flag);
+			result = new ActionListWithApplication().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -138,8 +134,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<ActionGetWithAppAndName.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionGetWithAppAndName) proxy.getProxy(ActionGetWithAppAndName.class)).execute(effectivePerson,
-					appId, name);
+			result = new ActionGetWithAppAndName().execute(effectivePerson, appId, name);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -158,7 +153,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListNext.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListNext) proxy.getProxy(ActionListNext.class)).execute(effectivePerson, id, count);
+			result = new ActionListNext().execute(effectivePerson, id, count);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -177,7 +172,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPrev.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListPrev) proxy.getProxy(ActionListPrev.class)).execute(effectivePerson, id, count);
+			result = new ActionListPrev().execute(effectivePerson, id, count);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -196,7 +191,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<ActionPostScriptNested.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionPostScriptNested) proxy.getProxy(ActionPostScriptNested.class)).execute(request,
+			result = new ActionPostScriptNested().execute(request,
 					effectivePerson, uniqueName, flag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
@@ -217,8 +212,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<ActionGetScriptNestedImported.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionGetScriptNestedImported) proxy.getProxy(ActionGetScriptNestedImported.class))
-					.execute(request, effectivePerson, uniqueName, flag);
+			result = new ActionGetScriptNestedImported().execute(request, effectivePerson, uniqueName, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -237,7 +231,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<ActionLoad.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionLoad) proxy.getProxy(ActionLoad.class)).execute(effectivePerson, flag, applicationFlag,
+			result = new ActionLoad().execute(effectivePerson, flag, applicationFlag,
 					jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
@@ -257,7 +251,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListPaging)proxy.getProxy(ActionListPaging.class)).execute(effectivePerson, page, size);
+			result = new ActionListPaging().execute(effectivePerson, page, size);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
