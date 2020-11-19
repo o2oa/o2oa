@@ -12,9 +12,9 @@ import com.x.general.assemble.control.ThisApplication;
 import com.x.general.core.entity.file.GeneralFile;
 
 
-public class ActionGetResult extends BaseAction {
+public class ActionGeneralResult extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionGetResult.class);
+    private static Logger logger = LoggerFactory.getLogger(ActionGeneralResult.class);
 
     protected ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
         logger.debug(effectivePerson, "flag:{}.", flag);
