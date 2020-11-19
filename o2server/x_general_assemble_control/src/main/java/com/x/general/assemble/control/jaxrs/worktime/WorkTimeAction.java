@@ -126,7 +126,7 @@ public class WorkTimeAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void isWorkDay(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("指定时间") @PathParam("date") String date) {
+			@JaxrsParameterDescribe("指定日期") @PathParam("date") String date) {
 		ActionResult<ActionIsWorkDay.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
