@@ -556,7 +556,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 			}
 		}
 		this.app.desktop.openApplication(e, "cms.Module", {
-			"columnData": this.data,
+			"columnData": {"id":this.data.id},
 			"appId": appId,
 			"categoryId": categoryId,
 			//"viewId" : "default",
