@@ -66,7 +66,7 @@ public class WorkTimeAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "计算开始时间前进指定工作天数后的工作时间.", action = ActionForwardMinutes.class)
+	@JaxrsMethodDescribe(value = "计算开始时间前进指定工作天数后的工作时间.", action = ActionForwardDays.class)
 	@GET
 	@Path("forwarddays/start/{start}/days/{days}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -74,10 +74,10 @@ public class WorkTimeAction extends StandardJaxrsAction {
 	public void forwardDays(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("开始时间") @PathParam("start") String start,
 			@JaxrsParameterDescribe("前进工作天数") @PathParam("days") int days) {
-		ActionResult<ActionForwardMinutes.Wo> result = new ActionResult<>();
+		ActionResult<ActionForwardDays.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionForwardMinutes().execute(effectivePerson, start, days);
+			result = new ActionForwardDays().execute(effectivePerson, start, days);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
