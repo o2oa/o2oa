@@ -74,6 +74,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.id = page.getId();
 			this.alias = page.getAlias();
 			this.name = page.getName();
+			this.description = page.getDescription();
 			this.portal = page.getPortal();
 			this.hasMobile = page.getHasMobile();
 			this.data = data;
@@ -82,6 +83,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		private String id;
 		private String alias;
 		private String name;
+		private String description;
 		private String portal;
 		private Boolean hasMobile;
 		private String data;
@@ -132,6 +134,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public void setData(String data) {
 			this.data = data;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
 		}
 	}
 
