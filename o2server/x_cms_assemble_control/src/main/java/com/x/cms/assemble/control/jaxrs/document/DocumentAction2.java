@@ -9,10 +9,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.queue.DataImportStatus;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -29,7 +27,6 @@ import java.util.List;
 @JaxrsDescribe("信息发布信息文档管理")
 public class DocumentAction2 extends StandardJaxrsAction{
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger( DocumentAction2.class );
 
 	@JaxrsMethodDescribe(value = "变更指定文档的分类信息.", action = ActionPersistChangeCategory.class)
@@ -44,7 +41,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		
 		if( check ){
 			try {
-				result = ((ActionPersistChangeCategory)proxy.getProxy(ActionPersistChangeCategory.class)).execute( request, jsonElement, effectivePerson );
+				result = new ActionPersistChangeCategory().execute( request, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -66,7 +63,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionPersistBatchModifyData)proxy.getProxy(ActionPersistBatchModifyData.class)).execute( request, jsonElement, effectivePerson );
+				result = new ActionPersistBatchModifyData().execute( request, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -86,7 +83,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<DataImportStatus> result = new ActionResult<>();
 		try {
-			result = ((ActionQueryImportStatusWithName)proxy.getProxy(ActionQueryImportStatusWithName.class)).execute( request, effectivePerson, batchName );
+			result = new ActionQueryImportStatusWithName().execute( request, effectivePerson, batchName );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -104,7 +101,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<DataImportStatus>> result = new ActionResult<>();
 		try {
-			result = ((ActionQueryAllImportStatus)proxy.getProxy(ActionQueryAllImportStatus.class)).execute( request, effectivePerson );
+			result = new ActionQueryAllImportStatus().execute( request, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -123,7 +120,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionQueryGetDocument.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionQueryGetDocument)proxy.getProxy(ActionQueryGetDocument.class)).execute( request, id, effectivePerson );
+			result = new ActionQueryGetDocument().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -141,7 +138,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionQueryListDocumentFields.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionQueryListDocumentFields)proxy.getProxy(ActionQueryListDocumentFields.class)).execute( request );
+			result = new ActionQueryListDocumentFields().execute( request );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -161,7 +158,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionQueryViewDocument.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionQueryViewDocument)proxy.getProxy(ActionQueryViewDocument.class)).execute( request, id, effectivePerson );
+			result = new ActionQueryViewDocument().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -180,7 +177,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionQueryCountViewTimes.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionQueryCountViewTimes)proxy.getProxy(ActionQueryCountViewTimes.class)).execute( request, id, effectivePerson );
+			result = new ActionQueryCountViewTimes().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -201,7 +198,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 
 		if( check ){
 			try {
-				result = ((ActionQueryCountWithFilter)proxy.getProxy(ActionQueryCountWithFilter.class)).execute( request,  jsonElement, effectivePerson );
+				result = new ActionQueryCountWithFilter().execute( request,  jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -221,7 +218,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionPersistDeleteDocument.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionPersistDeleteDocument)proxy.getProxy(ActionPersistDeleteDocument.class)).execute( request, id, effectivePerson );
+			result = new ActionPersistDeleteDocument().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -240,7 +237,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionPersistDeleteWithBatch.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionPersistDeleteWithBatch)proxy.getProxy(ActionPersistDeleteWithBatch.class)).execute( request, batchId, effectivePerson );
+			result = new ActionPersistDeleteWithBatch().execute( request, batchId, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -259,7 +256,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionPersistArchive.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionPersistArchive)proxy.getProxy(ActionPersistArchive.class)).execute( request, id, effectivePerson );
+			result = new ActionPersistArchive().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -281,7 +278,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 
 		if( check ){
 			try {
-				result = ((ActionPersistPublishAndNotify)proxy.getProxy(ActionPersistPublishAndNotify.class)).execute( request, id, effectivePerson, jsonElement );
+				result = new ActionPersistPublishAndNotify().execute( request, id, effectivePerson, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -305,7 +302,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		if( check ){
 			System.out.println( "please wait, system try to publish content......" );
 			try {
-				result = ((ActionPersistPublishContent)proxy.getProxy(ActionPersistPublishContent.class)).execute( request, jsonElement, effectivePerson );
+				result = new ActionPersistPublishContent().execute( request, jsonElement, effectivePerson );
 				System.out.println( "system publish content successful!" );
 			} catch (Exception e) {
 				result = new ActionResult<>();
@@ -326,7 +323,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionPersistPublishCancel.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionPersistPublishCancel)proxy.getProxy(ActionPersistPublishCancel.class)).execute( request, id, effectivePerson );
+			result = new ActionPersistPublishCancel().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -350,7 +347,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 
 		if( check ){
 			try {
-				result = ((ActionQueryListNextWithFilter)proxy.getProxy(ActionQueryListNextWithFilter.class)).execute( request, id, count, jsonElement, effectivePerson );
+				result = new ActionQueryListNextWithFilter().execute( request, id, count, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -375,7 +372,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 
 		if( check ){
 			try {
-				result = ((ActionQueryListPrevWithFilter)proxy.getProxy(ActionQueryListPrevWithFilter.class)).execute( request, id, count, jsonElement, effectivePerson );
+				result = new ActionQueryListPrevWithFilter().execute( request, id, count, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -400,7 +397,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 
 		if( check ){
 			try {
-				result = ((ActionQueryListDraftNextWithFilter)proxy.getProxy(ActionQueryListDraftNextWithFilter.class)).execute( request, id, count, jsonElement, effectivePerson );
+				result = new ActionQueryListDraftNextWithFilter().execute( request, id, count, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -422,7 +419,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionQueryGetFirstPicture)proxy.getProxy(ActionQueryGetFirstPicture.class)).execute( request, id, effectivePerson );
+				result = new ActionQueryGetFirstPicture().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -444,7 +441,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionQueryListAllPictures)proxy.getProxy(ActionQueryListAllPictures.class)).execute( request, id, effectivePerson );
+				result = new ActionQueryListAllPictures().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -468,7 +465,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		ActionResult<ActionPersistImportDataExcel.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionPersistImportDataExcel)proxy.getProxy(ActionPersistImportDataExcel.class)).execute(request, effectivePerson, categoryId, bytes,  json_data, disposition);
+			result = new ActionPersistImportDataExcel().execute(request, effectivePerson, categoryId, bytes,  json_data, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -487,7 +484,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		
 		if( check ){
 			try {
-				result = ((ActionPersistSaveDocument)proxy.getProxy(ActionPersistSaveDocument.class)).execute( request, jsonElement, effectivePerson );
+				result = new ActionPersistSaveDocument().execute( request, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -510,7 +507,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionPersistCommend)proxy.getProxy(ActionPersistCommend.class)).execute( request, id, effectivePerson );
+				result = new ActionPersistCommend().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -532,7 +529,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionPersistUnCommend)proxy.getProxy(ActionPersistUnCommend.class)).execute( request, id, effectivePerson );
+				result = new ActionPersistUnCommend().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -554,7 +551,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionPersistTopDocument)proxy.getProxy(ActionPersistTopDocument.class)).execute( request, id, effectivePerson );
+				result = new ActionPersistTopDocument().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -576,7 +573,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionPersistUnTopDocument)proxy.getProxy(ActionPersistUnTopDocument.class)).execute( request, id, effectivePerson );
+				result = new ActionPersistUnTopDocument().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -600,7 +597,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 
 		if( check ){
 			try {
-				result = ((ActionQueryListWithFilterPaging)proxy.getProxy(ActionQueryListWithFilterPaging.class)).execute( request, page, size, jsonElement, effectivePerson );
+				result = new ActionQueryListWithFilterPaging().execute( request, page, size, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -622,7 +619,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionQueryGetControl)proxy.getProxy(ActionQueryGetControl.class)).execute( request, id, effectivePerson );
+				result = new ActionQueryGetControl().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -644,7 +641,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionQueryListVisiblePersons)proxy.getProxy(ActionQueryListVisiblePersons.class)).execute( request, id, effectivePerson );
+				result = new ActionQueryListVisiblePersons().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -687,7 +684,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		ActionResult<List<ActionQueryListDocumentData.Wo>> result = new ActionResult<>();
 
 		try {
-			result = ((ActionQueryListDocumentData)proxy.getProxy(ActionQueryListDocumentData.class)).execute( request, effectivePerson, jsonElement );
+			result = new ActionQueryListDocumentData().execute( request, effectivePerson, jsonElement );
 		} catch (Exception e) {
 			result.error( e );
 			logger.error( e, effectivePerson, request, jsonElement);

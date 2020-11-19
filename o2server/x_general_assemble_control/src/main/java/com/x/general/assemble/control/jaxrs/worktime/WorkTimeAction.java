@@ -66,6 +66,25 @@ public class WorkTimeAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "计算开始时间前进指定工作天数后的工作时间.", action = ActionForwardDays.class)
+	@GET
+	@Path("forwarddays/start/{start}/days/{days}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void forwardDays(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("开始时间") @PathParam("start") String start,
+			@JaxrsParameterDescribe("前进工作天数") @PathParam("days") int days) {
+		ActionResult<ActionForwardDays.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionForwardDays().execute(effectivePerson, start, days);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "返回一个工作日的工作分钟数.", action = ActionMinutesOfWorkDay.class)
 	@GET
 	@Path("minutesofworkday")
@@ -85,7 +104,7 @@ public class WorkTimeAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "返回指定时间是否是工作时间.", action = ActionIsWorkTime.class)
 	@GET
-	@Path("isworktime/date/{date}")
+	@Path("isworktime/{date}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void isWorkTime(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -94,6 +113,24 @@ public class WorkTimeAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionIsWorkTime().execute(effectivePerson, date);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "返回指定时间是否是工作日.", action = ActionIsWorkDay.class)
+	@GET
+	@Path("isworkday/{date}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void isWorkDay(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("指定日期") @PathParam("date") String date) {
+		ActionResult<ActionIsWorkDay.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionIsWorkDay().execute(effectivePerson, date);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
