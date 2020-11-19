@@ -22,6 +22,8 @@ MWF.xApplication.Org.LP = {
     "process" : "流程",
     "yes": "是",
     "no": "否",
+    "sortByPinYin" : "按拼音排序",
+    "sortByPinYinConfirmContent" : "该操作将使本组织内身份按照拼音排序，确定操作？",
 
     "search": "搜索",
     "searchText": "请输入关键字",
