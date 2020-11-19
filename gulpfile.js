@@ -584,10 +584,6 @@ function build_concat_basework_clean(cb) {
 function build_concat_basework_body() {
     var src = [
         'o2web/source/' + path + '/js/base_concat_head.js',
-        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_process_Work/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
 
         'o2web/source/' + path + '/js/base_work_style_temp.js',
 
@@ -608,6 +604,12 @@ function build_concat_basework_body() {
         'o2web/source/o2_core/o2/xDesktop/Dialog.js',
         'o2web/source/o2_core/o2/xDesktop/Window.js',
         'o2web/source/x_component_Common/Main.js',
+
+        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_process_Work/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
+
         'o2web/source/x_component_process_Work/Main.js',
         'o2web/source/x_component_Selector/package.js',
         'o2web/source/x_component_Selector/Person.js',
