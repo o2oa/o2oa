@@ -4,17 +4,13 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.portal.assemble.surface.Business;
-import com.x.portal.core.entity.Page;
-import com.x.portal.core.entity.PageProperties;
-import com.x.portal.core.entity.Script;
-import com.x.portal.core.entity.Widget;
+import com.x.portal.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -26,32 +22,52 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-class V2Get extends BaseAction {
+class V2GetWithPortal extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2Get.class);
+	private static Logger logger = LoggerFactory.getLogger(V2GetWithPortal.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String portalFlag) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		CacheKey cacheKey = new CacheKey(this.getClass(), id);
+		Wo wo = null;
+		CacheKey cacheKey = new CacheKey(this.getClass(), flag, portalFlag);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
-			result.setData((Wo) optional.get());
+			wo = (Wo) optional.get();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				Portal portal = business.portal().pick(portalFlag);
+				if (null == portal) {
+					throw new ExceptionPortalNotExist(portalFlag);
+				}
+				if (isNotLoginPage(flag) && (!business.portal().visible(effectivePerson, portal))) {
+					throw new ExceptionPortalAccessDenied(effectivePerson.getDistinguishedName(), portal.getName(),
+							portal.getId());
+				}
+			}
 		} else {
-			Wo wo = this.get(id);
+			wo = this.get(flag, portalFlag, effectivePerson);
 			CacheManager.put(cacheCategory, cacheKey, wo);
-			result.setData(wo);
 		}
+		result.setData(wo);
 		return result;
 	}
 
-	private Wo get(String id) throws Exception {
-		Page page;
+	private Wo get(String flag, String portalFlag, EffectivePerson effectivePerson) throws Exception {
+		Page page = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			page = business.page().pick(id);
-		}
-		if (null == page) {
-			throw new ExceptionEntityNotExist(id, Page.class);
+			Portal portal = business.portal().pick(portalFlag);
+			if (null == portal) {
+				throw new ExceptionPortalNotExist(portalFlag);
+			}
+			if (isNotLoginPage(flag) && (!business.portal().visible(effectivePerson, portal))) {
+				throw new ExceptionPortalAccessDenied(effectivePerson.getDistinguishedName(), portal.getName(),
+						portal.getId());
+			}
+			page = business.page().pick(portal, flag);
+			if (null == page) {
+				throw new ExceptionPageNotExist(flag);
+			}
 		}
 		Wo wo = new Wo();
 		final PageProperties properties = page.getProperties();
