@@ -1,3 +1,4 @@
+MWF.xApplication = MWF.xApplication || {};
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Work = MWF.xApplication.process.Work || {};
 MWF.xApplication.process.Work.LP = {
