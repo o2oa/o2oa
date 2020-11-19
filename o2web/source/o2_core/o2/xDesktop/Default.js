@@ -44,6 +44,7 @@ o2.xDesktop.Default = new Class({
             this.status.apps[appNames] = options || {};
             this.status.apps[appNames].name = appNames;
             this.status.apps[appNames].appId = appNames;
+            this.status.apps[appNames].isIndex = true;
             this.status.currentApp = appNames;
         }else{
             this.status = layout.userLayout;
@@ -228,7 +229,7 @@ o2.xDesktop.Default = new Class({
                     this.taskitem.destroy();
                 },
                 "setCurrent": function(){
-                    this.taskitem.textNode.click();
+                    if (this.taskitem.textNode) this.taskitem.textNode.click();
                 }
             };
             //layout.openApplication(null, "portal.Portal", options);
@@ -239,7 +240,7 @@ o2.xDesktop.Default = new Class({
                     this.taskitem.destroy();
                 },
                 "setCurrent": function(){
-                    this.taskitem.textNode.click();
+                    if (this.taskitem.textNode) this.taskitem.textNode.click();
                 }
             };
             //layout.openApplication(null, "Homepage");
@@ -247,7 +248,7 @@ o2.xDesktop.Default = new Class({
 
         taskitem = layout.desktop.createTaskItem(app);
         app.taskitem = taskitem;
-        app.isIndex = true;
+        app.options.isIndex = true;
         this.apps[app.options.appId] = app;
         taskitem.textNode.click();
     },
@@ -264,6 +265,7 @@ o2.xDesktop.Default = new Class({
     },
 
     loadStatus: function(){
+        debugger;
         if (this.status){
             var keys = Object.keys(this.status.apps);
             if (this.status.apps && keys.length){
@@ -281,7 +283,7 @@ o2.xDesktop.Default = new Class({
                             this.taskitem.destroy();
                         },
                         "setCurrent": function(){
-                            this.taskitem.textNode.click();
+                            if (this.taskitem.textNode) this.taskitem.textNode.click();
                         }
                     };
                     taskitem = layout.desktop.createTaskItem(app);
@@ -508,6 +510,11 @@ o2.xDesktop.Default = new Class({
             if (app.options.appId!==this.options.index){
                 var appStatus = this.getAppStatusData(app, id);
                 if (appStatus) status.apps[id] = appStatus;
+            }
+            debugger;
+            if (app.isIndex){
+                if (!status.apps[id]) status.apps[id] = {};
+                status.apps[id].isIndex = true;
             }
         }.bind(this));
         this.lnks.each(function(lnk){

@@ -1387,6 +1387,18 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         }.bind(this));
         return fieldList;
     },
+    getWidgetList: function(data){
+        widgetList = [];
+
+        Object.each(data.moduleList, function(moudle){
+            if (moudle.moduleName.toLowerCase()=="widget"){
+                if (moudle.widgetType == "select"){
+                    widgetList.push(moudle.widgetSelected);
+                }
+            }
+        }.bind(this));
+        return widgetList;
+    },
     saveForm: function(){
         this.savePage()
     },
@@ -1402,10 +1414,12 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             var pcData, mobileData;
             if (this.pcPage){
                 this.pcPage._getPageData();
+                this.pcPage.json.widgetList = this.getWidgetList(this.pcPage.json);
                 pcData = this.pcPage.data;
             }
             if (this.mobilePage){
                 this.mobilePage._getPageData();
+                this.mobilePage.json.widgetList = this.getWidgetList(this.mobilePage.json);
                 mobileData = this.mobilePage.data;
             }else{
                 if (this.pageMobileData) mobileData = this.pageMobileData;
@@ -1413,6 +1427,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 
             this.isSave = true;
             var fieldList = this.getFieldList();
+
             this._savePage(pcData, mobileData, fieldList, function(responseJSON){
                 this.notice(MWF.APPPD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"});
                 if (!this.pcPage.json.name) this.pcPage.treeNode.setText("<"+this.json.type+"> "+this.json.id);
