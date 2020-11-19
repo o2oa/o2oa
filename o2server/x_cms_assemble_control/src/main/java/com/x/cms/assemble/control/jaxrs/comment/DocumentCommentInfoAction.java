@@ -9,10 +9,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -26,7 +24,6 @@ import java.util.List;
 @JaxrsDescribe("评论信息管理")
 public class DocumentCommentInfoAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private Logger logger = LoggerFactory.getLogger(DocumentCommentInfoAction.class);
 
 	@JaxrsMethodDescribe(value = "根据标识获取评论信息对象.", action = ActionGet.class)
@@ -38,7 +35,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute( request, effectivePerson, id );
+			result = new ActionGet().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionCommentQuery(e, "根据指定ID查询评论信息对象时发生异常。id:" + id );
@@ -60,7 +57,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPageWithFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListPageWithFilter)proxy.getProxy(ActionListPageWithFilter.class)).execute(request, effectivePerson, page, size, jsonElement );
+			result = new ActionListPageWithFilter().execute(request, effectivePerson, page, size, jsonElement );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -80,7 +77,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPrevWithFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListPrevWithFilter)proxy.getProxy(ActionListPrevWithFilter.class)).execute(request, effectivePerson, id, count, jsonElement);
+			result = new ActionListPrevWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -100,7 +97,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListNextWithFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListNextWithFilter)proxy.getProxy(ActionListNextWithFilter.class)).execute(request, effectivePerson, id, count, jsonElement);
+			result = new ActionListNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -118,7 +115,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionSave)proxy.getProxy(ActionSave.class)).execute(request, effectivePerson, jsonElement);
+			result = new ActionSave().execute(request, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -137,7 +134,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionDelete)proxy.getProxy(ActionDelete.class)).execute(request, effectivePerson, id);
+			result = new ActionDelete().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -157,7 +154,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionPersistCommend)proxy.getProxy(ActionPersistCommend.class)).execute( request, id, effectivePerson );
+				result = new ActionPersistCommend().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -179,7 +176,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = ((ActionPersistUnCommend)proxy.getProxy(ActionPersistUnCommend.class)).execute( request, id, effectivePerson );
+				result = new ActionPersistUnCommend().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );

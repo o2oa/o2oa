@@ -7,10 +7,8 @@ import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.*;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -24,7 +22,6 @@ import java.util.List;
 @JaxrsDescribe("表单信息管理")
 public class FormAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger( FormAction.class );
 
 	@JaxrsMethodDescribe(value = "获取全部的表单模板列表.", action = ActionListAll.class)
@@ -36,7 +33,7 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListAll)proxy.getProxy(ActionListAll.class)).execute( request, effectivePerson );
+			result = new ActionListAll().execute( request, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
@@ -56,7 +53,7 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByApp.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListByApp)proxy.getProxy(ActionListByApp.class)).execute( request, effectivePerson, appId );
+			result = new ActionListByApp().execute( request, effectivePerson, appId );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在根据栏目ID查询表单时发生异常。" );
@@ -76,7 +73,7 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute( request, effectivePerson, id );
+			result = new ActionGet().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在根据ID查询表单时发生异常。" );
@@ -97,7 +94,7 @@ public class FormAction extends StandardJaxrsAction {
 		ActionResult<ActionGetWithAppInfo.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionGetWithAppInfo)proxy.getProxy(ActionGetWithAppInfo.class)).execute(request, effectivePerson, appFlag, formFlag);
+			result = new ActionGetWithAppInfo().execute(request, effectivePerson, appFlag, formFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -116,7 +113,7 @@ public class FormAction extends StandardJaxrsAction {
 		
 		if( check ){
 			try {
-				result = ((ActionSave)proxy.getProxy(ActionSave.class)).execute( request, effectivePerson, null, jsonElement );
+				result = new ActionSave().execute( request, effectivePerson, null, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -139,7 +136,7 @@ public class FormAction extends StandardJaxrsAction {
 
 		if( check ){
 			try {
-				result = ((ActionSave)proxy.getProxy(ActionSave.class)).execute( request, effectivePerson, id, jsonElement );
+				result = new ActionSave().execute( request, effectivePerson, id, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -159,7 +156,7 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		try {
-			result = ((ActionDelete)proxy.getProxy(ActionDelete.class)).execute( request, effectivePerson, id );
+			result = new ActionDelete().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在根据ID删除表单时发生异常。" );
@@ -182,7 +179,7 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListNextWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListNextWithFilter)proxy.getProxy(ActionListNextWithFilter.class)).execute( request, effectivePerson, id, count, appId, jsonElement );
+			result = new ActionListNextWithFilter().execute( request, effectivePerson, id, count, appId, jsonElement );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
@@ -205,7 +202,7 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListPrevWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListPrevWithFilter)proxy.getProxy(ActionListPrevWithFilter.class)).execute( request, effectivePerson, id, count, appId, jsonElement );
+			result = new ActionListPrevWithFilter().execute( request, effectivePerson, id, count, appId, jsonElement );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
@@ -226,7 +223,7 @@ public class FormAction extends StandardJaxrsAction {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListFormFieldWithAppInfo)proxy.getProxy(ActionListFormFieldWithAppInfo.class)).execute(applicationId);
+			result = new ActionListFormFieldWithAppInfo().execute(applicationId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -244,7 +241,7 @@ public class FormAction extends StandardJaxrsAction {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListFormFieldWithForm)proxy.getProxy(ActionListFormFieldWithForm.class)).execute(id);
+			result = new ActionListFormFieldWithForm().execute(id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
