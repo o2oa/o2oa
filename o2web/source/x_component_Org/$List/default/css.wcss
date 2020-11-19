@@ -105,4 +105,20 @@
         "text-align": "left",
         "color": "#333333"
     },
+    "sortActionNode": {
+        "background": "url(../x_component_Org/$List/default/icon/order.png) 3px center no-repeat",
+        "float": "right",
+        "cursor": "pointer",
+        "margin-top": "0px",
+        "margin-left": "5px",
+        "padding": "3px 5px",
+        "padding-left": "22px",
+        "font-size": "12px",
+        "font-weight": "normal",
+        "border": "1px solid #666",
+        "background-color": "#FFF",
+        "line-height": "normal",
+        "color":"#333",
+        "border-radius":"3px"
+    }
 }

@@ -785,7 +785,14 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                     var count = this.identityCountNode.get("text").toInt()-delCount;
                     this.identityCountNode.set("text", count);
                 }
-            }.bind(this)
+            }.bind(this),
+            "onPostLoadAction": function () {
+                debugger;
+                this.sortAction = new Element("div", {"styles": this.css.sortActionNode, "text": _self.explorer.app.lp.sortByPinYin}).inject(this.actionNode);
+                this.sortAction.addEvent("click", function (e) {
+                    _self.sortByPinYin(e)
+                })
+            }
         });
         this.identityMemberList.addItem = this.addPersonMember.bind(this);
         this.identityMemberList.load([
@@ -800,6 +807,26 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
         this.data.woSubDirectIdentityList.each(function(id){
             var item = this.identityMemberList.push(id);
         }.bind(this));
+    },
+    sortByPinYin : function(e){
+        var _self = this;
+        this.explorer.app.confirm("infor", e, this.explorer.app.lp.sortByPinYin, {"html": this.explorer.app.lp.sortByPinYinConfirmContent}, 300, 180, function(){
+            debugger;
+            var list = _self.data.woSubDirectIdentityList;
+            list.sort( function(a, b){
+               return a.name.localeCompare(b.name);
+            });
+            for( var i=0; i<list.length; i++ ){
+                _self.explorer.actions.orderIdentity(list[i].id, "(0)", function(){}, null, false);
+            }
+            _self.identityMemberList.clear();
+            list.each(function(id){
+                var item = _self.identityMemberList.push(id);
+            }.bind(this));
+            this.close();
+        }, function(){
+            this.close();
+        });
     },
     startOrder: function(item, td, e){
         var tr = td.getParent("tr");
