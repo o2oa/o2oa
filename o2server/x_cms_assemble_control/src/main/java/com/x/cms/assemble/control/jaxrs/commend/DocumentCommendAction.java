@@ -9,10 +9,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -26,7 +24,6 @@ import java.util.List;
 @JaxrsDescribe("点赞信息管理")
 public class DocumentCommendAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private Logger logger = LoggerFactory.getLogger(DocumentCommendAction.class);
 
 	@JaxrsMethodDescribe(value = "根据标识获取点赞对象.", action = ActionGet.class)
@@ -38,7 +35,7 @@ public class DocumentCommendAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute( request, effectivePerson, id );
+			result = new ActionGet().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -57,7 +54,7 @@ public class DocumentCommendAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListPaging)proxy.getProxy(ActionListPaging.class)).execute(effectivePerson, page, size, jsonElement);
+			result = new ActionListPaging().execute(effectivePerson, page, size, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
