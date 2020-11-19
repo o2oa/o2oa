@@ -583,9 +583,8 @@ function build_concat_basework_clean(cb) {
 
 function build_concat_basework_body() {
     var src = [
-        'o2web/source/' + path + '/js/base_concat_head.js',
-
-        'o2web/source/' + path + '/js/base_work_style_temp.js',
+        'o2web/source/x_desktop/js/base_concat_head.js',
+        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
 
         'o2web/source/o2_core/o2/widget/Common.js',
         'o2web/source/o2_core/o2/widget/Dialog.js',
