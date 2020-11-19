@@ -158,8 +158,17 @@ MWF.xApplication.portal.Portal.Main = new Class({
             if (!!pageJson && loadModuleFlag){
                 layout.sessionPromise.then(function(){
                     this.setTitle(pageJson.data.name);
-                    this.page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
-                    this.pageInfor = pageJson.data;
+                    if (pageJson.data.page){
+                        this.page = (pageJson.data.page.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.page.data)): null;
+                        this.relatedFormMap = pageJson.data.relatedWidgetMap;
+                        this.relatedScriptMap = pageJson.data.relatedScriptMap;
+                        delete pageJson.data.page.data;
+                        this.pageInfor = pageJson.data.page;
+                    }else{
+                        this.page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
+                        delete pageJson.data.data;
+                        this.pageInfor = pageJson.data;
+                    }
                     this.openPortal(par, callback);
                 }.bind(this));
             }
@@ -169,7 +178,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         if( this.options.widgetId ){
             m = (layout.mobile) ? "getWidgetByNameMobile" : "getWidgetByName";
         }else{
-            m = (layout.mobile) ? "getPageByNameMobile" : "getPageByName";
+            m = (layout.mobile) ? "getPageByNameMobileV2" : "getPageByNameV2";
         }
         this.action[m]( this.options.widgetId || this.options.pageId, this.options.portalId, function(json){
             pageJson = json;
@@ -202,6 +211,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
     },
 
     openPortal: function(par, callback){
+        debugger;
         if (this.page){
             //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.page, {
@@ -216,8 +226,10 @@ MWF.xApplication.portal.Portal.Main = new Class({
                     "data": {}
                 };
 
+
                 this.appForm.workAction = this.action;
                 this.appForm.app = this;
+
                 this.appForm.load();
 
                 if (callback) callback();
