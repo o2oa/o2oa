@@ -3,6 +3,7 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class({
     Extends: MWF.APP$Module,
 
     _loadUserInterface: function(){
+        debugger;
         this.node.empty();
         this.getWidget(function(){
             this.loadWidget();
@@ -139,11 +140,19 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class({
             }
         }else{
             if (this.json.widgetSelected && this.json.widgetSelected!=="none"){
-                var app = this.form.businessData.pageInfor.portal;
-                o2.Actions.get("x_portal_assemble_surface")[method](this.json.widgetSelected, app, function(json){
-                    this.getWidgetData(json.data);
+
+                var widgetData = (this.form.app.relatedFormMap) ? this.form.app.relatedFormMap[this.json.widgetSelected] : null;
+                if (widgetData){
+                    this.getWidgetData({"data": widgetData.data});
                     if (callback) callback();
-                }.bind(this));
+
+                }else{
+                    var app = this.form.businessData.pageInfor.portal;
+                    o2.Actions.get("x_portal_assemble_surface")[method](this.json.widgetSelected, app, function(json){
+                        this.getWidgetData(json.data);
+                        if (callback) callback();
+                    }.bind(this));
+                }
             }else{
                 if (callback) callback();
             }
