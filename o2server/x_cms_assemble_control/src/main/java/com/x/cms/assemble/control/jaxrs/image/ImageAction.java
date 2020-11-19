@@ -9,10 +9,8 @@ import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.http.WrapOutString;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -27,7 +25,6 @@ import javax.ws.rs.core.MediaType;
 @JaxrsDescribe("附件信息管理")
 public class ImageAction extends StandardJaxrsAction{
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger( ImageAction.class );
 	
 	@JaxrsMethodDescribe(value = "将上传的图片传为base64.", action = ActionImageBase64Encode.class)
@@ -43,7 +40,7 @@ public class ImageAction extends StandardJaxrsAction{
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionImageBase64Encode)proxy.getProxy(ActionImageBase64Encode.class)).execute(request, effectivePerson, size, bytes, disposition);
+			result = new ActionImageBase64Encode().execute(request, effectivePerson, size, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -64,7 +61,7 @@ public class ImageAction extends StandardJaxrsAction{
 		ActionResult<ActionImageChangeSize.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionImageChangeSize)proxy.getProxy(ActionImageChangeSize.class)).execute(request, effectivePerson, id, width, height);
+			result = new ActionImageChangeSize().execute(request, effectivePerson, id, width, height);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
