@@ -85,4 +85,12 @@ public class WorkTime extends BaseWorkTime {
 		return false;
 	}
 
+	public boolean isWorkDay(Date d) {
+		return !this.isHoliday(DateUtils.toCalendar(d));
+	}
+
+	public boolean isWorkDay(Calendar c) {
+		return !this.isHoliday(c);
+	}
+
 }
