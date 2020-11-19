@@ -1626,7 +1626,7 @@ o2.xDesktop.Default.StartMenu.InforItem = new Class({
     },
     addLnk: function(dragTargetLnk, dragPosition){
         lnkdata = {
-            "name": "cms.Document",
+            "name": "cms.Module",
             "title": this.data.appName,
             "iconData": (this.data.appIcon) || "",
             "icon": null,
