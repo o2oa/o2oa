@@ -533,7 +533,8 @@ function concat_Style(){
             return cb();
         }
         var content = file.contents.toString();
-        name = ".."+file.path.replace(process.cwd(), "").replace(/\\/g, "/").substring("/source".length);
+        var name = file.path.replace(process.cwd(), "").replace(/\\/g, "/")
+        name = ".."+name.substring(name.indexOf("/source")+7);
         content = "var csskey = encodeURIComponent(\""+name+"\");\no2.widget.css[csskey]="+content;
 
         file.contents = new Buffer.from(content);
@@ -551,7 +552,8 @@ function build_concat_basework_style(){
         "o2web/source/o2_core/o2/widget/$Tab/form/css.wcss",
         "o2web/source/x_component_process_Xform/$Form/default/doc.wcss",
         "o2web/source/o2_core/o2/widget/$Toolbar/documentEdit/css.wcss",
-        "o2web/source/o2_core/o2/widget/$Toolbar/documentEdit_side/css.wcss"
+        "o2web/source/o2_core/o2/widget/$Toolbar/documentEdit_side/css.wcss",
+        "o2web/source/x_component_process_Xform/$Form/default/css.wcss"
     ])
         .pipe(concat_Style())
         .pipe(concat('js/base_work_style_temp.js'))
@@ -585,6 +587,8 @@ function build_concat_basework_body() {
     var src = [
         'o2web/source/x_desktop/js/base_concat_head.js',
         'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
+
+        'o2web/source/x_desktop/js/base_work_style_temp.js',
 
         'o2web/source/o2_core/o2/widget/Common.js',
         'o2web/source/o2_core/o2/widget/Dialog.js',
@@ -624,14 +628,15 @@ function build_concat_basework_body() {
         'o2web/source/o2_core/o2/xScript/Environment.js',
         'o2web/source/x_component_Template/MTooltips.js',
         'o2web/source/x_component_Template/MSelector.js',
+
+        'o2web/source/x_desktop/js/base_work_actions_temp.js',
+
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
         'o2web/source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
-
-        'o2web/source/' + path + '/js/base_work_actions_temp.js',
 
         'o2web/source/x_desktop/js/base.js'
     ];
@@ -726,13 +731,13 @@ function build_concat_baseportal_body() {
         'o2web/source/o2_core/o2/xScript/Actions/PortalScriptActions.js',
         'o2web/source/o2_core/o2/xScript/PageEnvironment.js',
 
+        'o2web/source/x_desktop/js/base_portal_actions_temp.js',
+
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
         'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
-
-        'o2web/source/x_desktop/js/base_portal_actions_temp.js',
 
         'o2web/source/x_desktop/js/base.js'
     ];
