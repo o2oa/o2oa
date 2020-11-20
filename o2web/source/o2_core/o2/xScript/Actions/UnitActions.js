@@ -3,7 +3,7 @@ MWF.xScript.Actions = MWF.xScript.Actions || {};
 MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
 var invoke = function(serviceName){
     return function(data, success, failure, async){
-        this.action.invoke({"name": serviceName,"data": data, "async": async, "success": success,"failure": failure});
+        return this.action.invoke({"name": serviceName,"data": data, "async": async, "success": success,"failure": failure});
     }
 };
 
