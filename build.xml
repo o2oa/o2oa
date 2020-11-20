@@ -45,14 +45,14 @@
 			project.setNewProperty("length_aix_mb", length_aix_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-${VERSION}-raspi.zip" property="build_raspberrypi.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-raspi.zip" property="length_raspberrypi"/>
+		<checksum file="${preName}-${VERSION}-raspi.zip" property="build_raspi.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-raspi.zip" property="length_raspi"/>
 		<script language="javascript">
 			<![CDATA[
-			var length_raspberrypi_bytes = project.getProperty("length_raspberrypi");
-			var length_raspberrypi_kbytes = Math.round((length_raspberrypi_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			var length_raspberrypi_mbytes = Math.round((length_raspberrypi_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			project.setNewProperty("length_raspberrypi_mb", length_raspberrypi_mbytes);
+			var length_raspi_bytes = project.getProperty("length_raspi");
+			var length_raspi_kbytes = Math.round((length_raspi_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			var length_raspi_mbytes = Math.round((length_raspi_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			project.setNewProperty("length_raspi_mb", length_raspi_mbytes);
 		]]>
 		</script>
 		<checksum file="${preName}-${VERSION}-linux-mips.zip" property="build_mips.sha" algorithm="SHA-256" />
@@ -116,14 +116,14 @@
 			"url": "/download/o2server-${VERSION}-aix.zip",
 			"sha256": "${build_aix.sha}"
 			},
-			"raspberrypi": {
+			"raspi": {
 			"system": "raspberrypi",
 			"name": "o2server-${VERSION}-raspi.zip",
 			"fileName": "o2server-${VERSION}-raspi.zip",
 			"fileSize": "${length_raspberrypi_mb}MB",
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-${VERSION}-raspi.zip",
-			"sha256": "${build_raspberrypi.sha}"
+			"sha256": "${build_raspi.sha}"
 			},
 			"mips": {
 			"system": "mips",
@@ -185,14 +185,14 @@
 			"url": "/download/o2server-${VERSION}-aix.zip",
 			"sha256": "${build_aix.sha}"
 			},
-			"raspberrypi": {
-			"system": "raspberrypi",
+			"raspi": {
+			"system": "raspi",
 			"name": "o2server-${VERSION}-raspi.zip",
 			"fileName": "o2server-${VERSION}-raspi.zip",
-			"fileSize": "${length_raspberrypi_mb}MB",
+			"fileSize": "${length_raspi_mb}MB",
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-${VERSION}-raspi.zip",
-			"sha256": "${build_raspberrypi.sha}"
+			"sha256": "${build_raspi.sha}"
 			},
 			"mips": {
 			"system": "mips",
@@ -220,7 +220,7 @@
 			}
 			}</echo>
 	</target>
-	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macos,zip_aix,zip_raspberrypi,zip_mips,zip_arm" />
+	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macos,zip_aix,zip_raspi,zip_mips,zip_arm" />
 	<target name="version_o2">
 		<tstamp>
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -308,7 +308,7 @@
 			</zipfileset>
 		</zip>
 	</target>
-	<target name="zip_raspberrypi">
+	<target name="zip_raspi">
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-raspi.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
@@ -320,7 +320,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/raspberrypi/"/>
+				<include name="jvm/raspi/"/>
 				<include name="start_raspi.sh"/>
 				<include name="start_raspi_debug.sh"/>
 				<include name="console_raspi.sh"/>

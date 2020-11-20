@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.control;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -45,29 +46,44 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 	private Map<String, Boolean> hasTaskCompletedWithActivityToken = new HashMap<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-
-			Business business = new Business(emc);
-
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
-
+		ActionResult<Wo> result = new ActionResult<>();
+		CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
 			Wo wo = null;
-
-			Work work = emc.find(workOrWorkCompleted, Work.class);
-
-			if (null != work) {
-				wo = this.work(business, effectivePerson, work);
-			} else {
-				wo = this.workCompleted(business, effectivePerson, emc.flag(workOrWorkCompleted, WorkCompleted.class));
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				Work work = emc.find(workOrWorkCompleted, Work.class);
+				if (null != work) {
+					wo = this.work(business, effectivePerson, work);
+				} else {
+					WorkCompleted workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
+					if (null != workCompleted) {
+						wo = this.workCompleted(business, effectivePerson, workCompleted);
+					}
+				}
+			} catch (Exception e) {
+				logger.error(e);
 			}
+			return wo;
+		});
 
-			result.setData(wo);
-			return result;
+		CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+			Boolean value = false;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+						new ExceptionEntityNotExist(workOrWorkCompleted));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return value;
+		});
+
+		if (BooleanUtils.isFalse(_control.get())) {
+			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
+
+		result.setData(_wo.get());
+		return result;
 	}
 
 	private Wo workCompleted(Business business, EffectivePerson effectivePerson, WorkCompleted workCompleted)

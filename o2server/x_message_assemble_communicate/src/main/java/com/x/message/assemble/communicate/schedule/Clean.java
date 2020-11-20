@@ -98,7 +98,7 @@ public class Clean extends AbstractJob {
 		Root<Message> root = cq.from(Message.class);
 		Date limit = DateUtils.addDays(new Date(), -Config.communicate().clean().getKeep());
 		Predicate p = cb.lessThan(root.get(Message_.createTime), limit);
-		return em.createQuery(cq.select(root).where(p)).setMaxResults(2000).getResultList();
+		return em.createQuery(cq.select(root).where(p)).setMaxResults(200).getResultList();
 	}
 
 }

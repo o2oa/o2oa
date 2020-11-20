@@ -11,7 +11,6 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -29,45 +28,7 @@ public class FormAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(FormAction.class);
 
-	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取表单.", action = ActionGetWithWorkOrWorkCompleted.class)
-	@GET
-	@Path("workorworkcompleted/{workOrWorkCompleted}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作或完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
-		ActionResult<JsonElement> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGetWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取移动表单.", action = ActionGetWithWorkOrWorkCompletedMobile.class)
-	@GET
-	@Path("workorworkcompleted/{workOrWorkCompleted}/mobile")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkOrWorkCompletedMobile(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作或完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
-		ActionResult<JsonElement> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGetWithWorkOrWorkCompletedMobile().execute(effectivePerson, workOrWorkCompleted);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "获取表单.", action = ActionGet.class)
+	@JaxrsMethodDescribe(value = "获取表单内容.", action = ActionGet.class)
 	@GET
 	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -85,7 +46,7 @@ public class FormAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取移动端表单.", action = ActionGetMobile.class)
+	@JaxrsMethodDescribe(value = "获取移动端表单内容.", action = ActionGetMobile.class)
 	@GET
 	@Path("{flag}/mobile")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -141,7 +102,7 @@ public class FormAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果使用的是combine的表单直接返回内容.", action = V2LookupWorkOrWorkCompleted.class)
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在且是已完成工作,那么返回storeForm.", action = V2LookupWorkOrWorkCompleted.class)
 	@GET
 	@Path("v2/lookup/workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -160,7 +121,7 @@ public class FormAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "查询移动端表单,如果有表单那么返回表单id,如果使用的是combine的表单直接返回内容.", action = V2LookupWorkOrWorkCompletedMobile.class)
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在且是已完成工作,那么返回storeFormMobile.", action = V2LookupWorkOrWorkCompletedMobile.class)
 	@GET
 	@Path("v2/lookup/workorworkcompleted/{workOrWorkCompleted}/mobile")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

@@ -1,6 +1,6 @@
 <div class="o2_statement_statementDesignerNode">
     <div class="o2_statement_statementDesignerFormatLine">
-        <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.statementFormat}}: </div>
+        <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.statementFormat}} </div>
         <div class="o2_statement_statementDesignerFormatContent" style="float: left; margin-right: 20px">
             <input name="format" type="radio" value="jpql" {{if $.data.format!=='script'}} checked {{end if}}/>{{$.lp.statementJpql}}
             <input name="format" type="radio" value="script" {{if $.data.format=='script'}} checked {{end if}}/>{{$.lp.statementScript}}
@@ -11,7 +11,7 @@
             <select>
                 <option value="official" {{if $.data.entityCategory!=='dynamic' && $.data.entityCategory!=='custom'}} selected {{end if}}>系统表</option>
                 <option value="dynamic" {{if $.data.entityCategory=='dynamic'}} selected {{end if}}>自建数据表</option>
-                <option value="custom" {{if $.data.entityCategory=='custom'}} selected {{end if}}>自定义应用</option>
+<!--                <option value="custom" {{if $.data.entityCategory=='custom'}} selected {{end if}}>自定义应用</option>-->
             </select>
         </div>
     </div>
@@ -20,9 +20,9 @@
         <div class="o2_statement_statementDesignerTitle">{{$.lp.statementType}}: </div>
         <div class="o2_statement_statementDesignerTypeContent">
             <select>
-                <option value="select">SELECT</option>
-                <option value="update">UPDATE</option>
-                <option value="delete">DELETE</option>
+<!--                <option value="select">SELECT</option>-->
+<!--                <option value="update">UPDATE</option>-->
+<!--                <option value="delete">DELETE</option>-->
             </select>
         </div>
 
@@ -39,6 +39,7 @@
             <div style="margin-left: 30px;" class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
             <div class="o2_statement_statementDesignerOfficialTable">
                 <select>
+                    <option value=""></option>
                     <option value="com.x.processplatform.core.entity.content.Task" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Task'}} selected {{end if}}>待办(Task)</option>
                     <option value="com.x.processplatform.core.entity.content.TaskCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.TaskCompleted'}} selected {{end if}}>已办(TaskCompleted)</option>
                     <option value="com.x.processplatform.core.entity.content.Read" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Read'}} selected {{end if}}>待阅(Read)</option>
@@ -46,6 +47,7 @@
                     <option value="com.x.processplatform.core.entity.content.Work" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Work'}} selected {{end if}}>流程实例(Work)</option>
                     <option value="com.x.processplatform.core.entity.content.WorkCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.WorkCompleted'}} selected {{end if}}>已完成流程实例(WorkCompleted)</option>
                     <option value="com.x.processplatform.core.entity.content.Review" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Review'}} selected {{end if}}>可阅读(Review)</option>
+                    <option value="com.x.cms.core.entity.Document" {{if $.data.entityClassName =='com.x.cms.core.entity.Document'}} selected {{end if}}>内容管理文档(Document)</option>
                 </select>
             </div>
         </div>
@@ -54,45 +56,69 @@
 
         </div>
 
+        <div class="o2_statement_statementDesignerTableArea_field">
+            <div style="margin-left: 30px;" class="o2_statement_statementDesignerTitle">{{$.lp.field}}: </div>
+            <select>
+            </select>
+        </div>
+
     </div>
 
-    <div class="o2_statement_statementDesignerJpql" style="{{if $.data.format=='script'}} display: none {{end if}}">
+<!--    <div class="o2_statement_statementJpqlTabNode" style="{{if $.data.type!='select'}} display: none {{end if}}"></div>-->
+    <div class="o2_statement_statementJpqlTabNode"></div>
 
-        <div class="o2_statement_statementDesignerJpqlLine">
+    <div class="o2_statement_statementJpqlTabPageNode">
+        <div class="o2_statement_statementDesignerJpql" style="{{if $.data.format=='script'}} display: none {{end if}}">
 
-<!--            <div class="o2_statement_statementDesignerJpql_select" style="{{if $.data.type=='update' || $.data.type=='delete'}} display: none {{end if}}">-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_select">SELECT</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_selectContent"></div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_from">FROM</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_fromContent"></div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_where">WHERE</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_whereContent"></div>&ndash;&gt;-->
-<!--            </div>-->
+            <div class="o2_statement_statementDesignerJpqlLine">
 
-<!--            <div class="o2_statement_statementDesignerJpql_update" style="{{if $.data.type!=='update'}} display: none {{end if}}">-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_update">UPDATE</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_updateContent"></div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_set">SET</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_setContent"></div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_where">WHERE</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_whereContent"></div>&ndash;&gt;-->
-<!--            </div>-->
+                <!--            <div class="o2_statement_statementDesignerJpql_select" style="{{if $.data.type=='update' || $.data.type=='delete'}} display: none {{end if}}">-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_select">SELECT</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_selectContent"></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_from">FROM</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_fromContent"></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_where">WHERE</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_whereContent"></div>&ndash;&gt;-->
+                <!--            </div>-->
 
-<!--            <div class="o2_statement_statementDesignerJpql_sdelete" style="{{if $.data.type!=='delete'}} display: none {{end if}}">-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_delete">DELETE</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_deleteContent"></div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_where">WHERE</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_whereContent"></div>&ndash;&gt;-->
-<!--            </div>-->
+                <!--            <div class="o2_statement_statementDesignerJpql_update" style="{{if $.data.type!=='update'}} display: none {{end if}}">-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_update">UPDATE</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_updateContent"></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_set">SET</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_setContent"></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_where">WHERE</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_whereContent"></div>&ndash;&gt;-->
+                <!--            </div>-->
+
+                <!--            <div class="o2_statement_statementDesignerJpql_sdelete" style="{{if $.data.type!=='delete'}} display: none {{end if}}">-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_delete">DELETE</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_deleteContent"></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_where">WHERE</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;                <div class="o2_statement_statementDesignerJpql_jpql_whereContent"></div>&ndash;&gt;-->
+                <!--            </div>-->
+            </div>
+        </div>
+        <div class="o2_statement_statementDesignerScript" style="{{if $.data.format!=='script'}} display: none {{end if}}">
+
         </div>
     </div>
-    <div class="o2_statement_statementDesignerScript" style="{{if $.data.format!=='script'}} display: none {{end if}}">
 
+
+    <div class="o2_statement_statementCountJpqlTabPageNode">
+        <div class="o2_statement_statementDesignerCountJpql" style="{{if $.data.format=='script'}} display: none {{end if}}">
+            <div class="o2_statement_statementDesignerCountJpqlLine"></div>
+        </div>
+        <div class="o2_statement_statementDesignerCountScript" style="{{if $.data.format!=='script'}} display: none {{end if}}">
+        </div>
     </div>
 </div>
 
+<div class="o2_statement_resizeNode"></div>
+
+<div class="o2_statement_tabNode"></div>
+
 <div class="o2_statement_statementRunNode">
-    <div class="o2_statement_statementRunTitleNode">{{$.lp.runTest}}</div>
+<!--    <div class="o2_statement_statementRunTitleNode">{{$.lp.runTest}}</div>-->
     <div class="o2_statement_statementRunContentNode">
         <div class="o2_statement_statementRunJsonNode">
 <!--            <div class="o2_statement_statementRunJsonContent"></div>-->
@@ -106,3 +132,5 @@
     </div>
 
 </div>
+
+<div class="o2_statement_viewNode"></div>

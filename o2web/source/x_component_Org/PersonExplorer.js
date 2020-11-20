@@ -696,6 +696,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         var n = this.editContentNode.getElement(".infor_ipAddress");
         if (n) n.set("text", this.data.ipAddress || "");
 
+        var n = this.editContentNode.getElement(".infor_description");
+        if (n) n.set("text", this.data.description || "");
+
         this.editContentNode.getElements("td.inforTitle").setStyles(this.style.baseInforTitleNode);
         this.editContentNode.getElements("td.inforContent").setStyles(this.style.baseInforContentNode);
         this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
@@ -720,7 +723,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personBoardDate+":</td><td class='inforContent infor_boardDate'>"+(this.data.boardDate || "")+"</td>" +
             "<td class='inforTitle'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td></tr>";
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
-            "<td class='inforTitle'></td></tr>";
+            "<td class='inforTitle'>"+this.explorer.app.lp.description+":</td><td class='inforContent infor_description'>"+(this.data.description || "")+"</td></tr>";
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
@@ -840,6 +843,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         this.ipAddressInputNode.set("value", (this.data.ipAddress));
 
 
+        tdContents[13].setStyles(this.style.baseInforContentNode_edit).empty();
+        this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[13]);
+        this.descriptionInputNode.set("value", (this.data.description));
 
         var _self = this;
         this.editContentNode.getElements("input").addEvents({
@@ -923,6 +929,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         data.boardDate = this.boardDateInputNode.get("value");
         data.birthday = this.birthdayInputNode.get("value");
         data.ipAddress = this.ipAddressInputNode.get("value");
+        data.description = this.descriptionInputNode.get("value");
 
         var tdContents = this.editContentNode.getElements("td.inforContent");
         var radios = tdContents[4].getElements("input");
@@ -975,6 +982,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             tdContents[10].setStyles(this.style.baseInforContentNode).set("text", this.data.boardDate || "");
             tdContents[11].setStyles(this.style.baseInforContentNode).set("text", this.data.birthday || "");
             tdContents[12].setStyles(this.style.baseInforContentNode).set("text", this.data.ipAddress || "");
+            tdContents[13].setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
 
             this.mode = "read";
 

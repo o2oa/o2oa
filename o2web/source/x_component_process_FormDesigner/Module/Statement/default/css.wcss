@@ -1,0 +1,91 @@
+{
+	"moduleNodeMove": {
+		"border": "2px dashed #ffa200",
+		"height": "22px",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"display": "block",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "absolute",
+		"z-index": 10002,
+		"opacity": 0.7,
+		"width": "100px",
+		"cursor": "move",
+		"background-color": "#EEE"
+	},
+	"moduleNodeShow": {
+		"border": "1px dashed #333",
+		"height": "2px",
+		"cursor": "pointer",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "block",
+		"top": "auto",
+		"left": "auto",
+		"width": "auto",
+		"opacity": 0.5,
+		"background": "#ffa200"
+	},
+	"moduleNode": {
+		"border": "1px dashed #333",
+		"height": "100px",
+		"cursor": "pointer",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "block",
+		"top": "auto",
+		"left": "auto",
+		"width": "auto",
+		"opacity": 1,
+		"background": "transparent"
+	},
+	"iconNode": {
+		"width": "70px",
+		"height": "24px",
+		"color": "#999",
+		"font-size": "12px",
+		"position": "static",
+		"margin": "10px auto"
+	},
+	"iconNodeIcon":{
+		"width": "24px",
+		"height": "24px",
+		"background": "url("+"../x_component_process_FormDesigner/Module/Statement/default/icon/statement.png) 5px center no-repeat",
+		"float": "left"
+	},
+	"iconNodeText":{
+		"line-height": "24px",
+		"height": "24px",
+		"width": "44px",
+		"float": "right"
+	},
+	"viewNode": {
+	    "overflow": "hidden",
+        "height": "100%"
+	},
+	"viewTitleTableNode": {
+	    "width": "100%",
+	    "height": "30px",
+	    "background-color": "#EEE",
+	    "border": "1px solid #999"
+	},
+	"viewTitleLineNode": {
+	    "line-height": "30px"
+	},
+	"viewTitleCellNode": {
+	    "border-left": "1px solid #FFF",
+	    "border-right": "1px solid #999",
+	    "padding": "0px 10px"
+	}
+	
+}

@@ -65,7 +65,7 @@ MWF.xApplication.cms.Module.ViewExplorer = new Class({
             "select": "none",
             "titleStyles": this.css.normalThNode,
             "itemStyles": {},
-            "isExpand": "no",
+            // "isExpand": "no",
             "filter": []
         };
 
@@ -233,6 +233,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         var flag = this.checkboxElement.get("checked");
         this.items.each(function (it) {
             if( it.clazzType == "category" ){
+                it.expand();
                 it.items.each( function(i){
                     if (i.checkboxElement)i.checkboxElement.set("checked", flag)
                 })
@@ -317,6 +318,17 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             // if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
             //}
 
+            this.viewJson.firstTdHidden = true;
+            if( this.json.defaultSelectedScript )this.json.defaultSelectedScript = "";
+            if( this.viewJson.defaultSelectedScript )this.viewJson.defaultSelectedScript = "";
+
+            if( this.json.selectedAbleScript )this.json.selectedAbleScript = "";
+            if( this.viewJson.selectedAbleScript )this.viewJson.selectedAbleScript = "";
+
+            if( this.isSelectTdHidden() ){
+                this.selectTitleCell.hide();
+            }
+
 
             //序号
             if (this.viewJson.isSequence==="yes"){
@@ -357,7 +369,9 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
 
             this.lookup(data);
         }else{
+            this.entries = {};
             this.viewJson.selectList.each(function(column){
+                this.entries[column.column] = column;
                 if (column.hideColumn) this.hideColumns.push(column.column);
                 if (!column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
@@ -381,6 +395,9 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
     //    }
     //},
     loadData: function(){
+        if( this.checkboxElement ){
+            this.checkboxElement.set("checked", false )
+        }
         if (this.gridJson.length){
             if( !this.options.paging ){
                 this.gridJson.each(function(line, i){
@@ -432,6 +449,9 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         }
     },
     loadGroupData: function(){
+        if( this.checkboxElement ){
+            this.checkboxElement.set("checked", false )
+        }
         if (this.selectTitleCell && !this.selectTitleCell.retrieve("expandLoaded") ){
             if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
                 this.expandAllNode = new Element("span", {
@@ -445,7 +465,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
             this.selectTitleCell.store("expandLoaded", true);
         }
-        this.expandAll = false;
+        // this.expandAll = false;
         if (this.gridJson.length){
             var i = 0;
             this.gridJson.each(function(data){
@@ -453,7 +473,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
                 i += data.list.length;
             }.bind(this));
 
-            if (this.json.isExpand=="yes")this.expandOrCollapseAll();
+            if (this.getExpandFlag()=="yes")this.expandOrCollapseAll();
         }else{
             if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
         }
@@ -560,6 +580,10 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         this.selectTd.setStyles({"cursor": "pointer"});
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
+
+        if( this.view.isSelectTdHidden() ){
+            this.selectTd.hide();
+        }
 
         //Object.each(this.data.data, function(cell, k){
         //    if (this.view.hideColumns.indexOf(k)===-1){
@@ -797,7 +821,7 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
 
         this.view.fireEvent("postLoadCategoryRow", [null, this]);
     },
-    expand: function(){
+    expand: function( from ){
         this.items.each(function(item){
             item.node.setStyle("display", "table-row");
         }.bind(this));
@@ -817,6 +841,9 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
             }.bind(this));
             this.loadChild = true;
             //}.bind(this), 10);
+        }
+        if( from !== "view" ){
+            this.view.checkExpandAllStatus();
         }
     }
 });

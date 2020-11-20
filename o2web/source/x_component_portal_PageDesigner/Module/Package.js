@@ -28,3 +28,4 @@ MWF.xDesktop.requireApp("portal.PageDesigner", "Module.SourceText", null, false)
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.SubSource", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Widget", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Widgetmodules", null, false);
+MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Statement", null, false);

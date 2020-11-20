@@ -317,6 +317,24 @@ public class ReadAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionEdit.class)
+	@POST
+	@Path("{id}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void editMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("待阅标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEdit().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取制定人员的待阅数量,没有权限限制.", action = ActionCountWithPerson.class)
 	@GET
 	@Path("count/{credential}")
@@ -462,6 +480,24 @@ public class ReadAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "管理删除待阅.", action = ActionManageDelete.class)
+	@GET
+	@Path("{id}/manage/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("待阅标识") @PathParam("id") String id) {
+		ActionResult<ActionManageDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageDelete().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "管理待阅转已阅.", action = ActionManageProcessing.class)
 	@PUT
 	@Path("{id}/processing/manage")
@@ -480,13 +516,51 @@ public class ReadAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "重置待阅，将之前的待办转为已办,opinion:办理意见,,identityList:新的待阅人.", action = ActionManageReset.class)
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionManageProcessing.class)
+	@POST
+	@Path("{id}/processing/manage/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageProcessingMockPostToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("待阅标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
+		ActionResult<ActionManageProcessing.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageProcessing().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "重置待阅,将之前的待办转为已办,opinion:办理意见,identityList:新的待阅人.", action = ActionManageReset.class)
 	@PUT
 	@Path("{id}/reset/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void manageRead(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("待阅标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionManageReset.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageReset().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionManageReset.class)
+	@POST
+	@Path("{id}/reset/manage/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageReadMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("待阅标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<ActionManageReset.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -505,6 +579,25 @@ public class ReadAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void manageOpinion(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("待阅标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionManageOpinion.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageOpinion().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionManageOpinion.class)
+	@POST
+	@Path("{id}/opinion/manage/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageOpinionMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("待阅标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<ActionManageOpinion.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -728,8 +821,8 @@ public class ReadAction extends StandardJaxrsAction {
 	@Path("list/person/{person}/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageListWithPerson(@Suspended final AsyncResponse asyncResponse,
-									 @Context HttpServletRequest request, @JaxrsParameterDescribe("用户") @PathParam("person") String person) {
+	public void manageListWithPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("用户") @PathParam("person") String person) {
 		ActionResult<List<ActionManageListWithPerson.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -746,8 +839,8 @@ public class ReadAction extends StandardJaxrsAction {
 	@Path("list/date/{date}/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageListWithDate(@Suspended final AsyncResponse asyncResponse,
-									 @Context HttpServletRequest request, @JaxrsParameterDescribe("日期（如:2020-09-11）") @PathParam("date") String date) {
+	public void manageListWithDate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("日期（如:2020-09-11）") @PathParam("date") String date) {
 		ActionResult<List<ActionManageListWithDate.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

@@ -2597,7 +2597,8 @@ MDomItem.Rtf = new Class({
                 "enterMode": 1,
                 //"height": "200",
                 //"width": "",
-                "readOnly": false
+                "readOnly": false,
+                "extraAllowedContent " : "img[onerror,data-id]"
             };
             if( this.options.RTFConfig ){
                 editorConfig = Object.merge( editorConfig, this.options.RTFConfig )
@@ -2621,6 +2622,32 @@ MDomItem.Rtf = new Class({
                 }
             }
             this.editor = this.module.editor = CKEDITOR.replace(item, editorConfig);
+
+            var imgSrc = MWF.xDesktop.getImageSrc();
+            var imgHost = imgSrc.split("/x_file_assemble_control/")[0];
+            debugger;
+            this.editor.on("instanceReady", function(e){
+                debugger;
+                var editable = e.editor.editable && e.editor.editable();
+                if(!editable)return;
+               var imgs = editable.find("img");
+                for( var i=0; i<imgs.count(); i++ ){
+                    var img = imgs.getItem(i);
+                    var src = img.getAttribute("src");
+                    if( src && src.indexOf("/x_file_assemble_control/") > -1 ){
+                        if( imgHost !== src.split("/x_file_assemble_control/")[0] ){
+                            var id = img.getAttribute("data-id");
+                            if( id ){
+                                var newSrc = MWF.xDesktop.getImageSrc(id);
+                                if(newSrc){
+                                    img.setAttribute("src" , newSrc );
+                                    img.setAttribute("data-cke-saved-src" , newSrc );
+                                }
+                            }
+                        }
+                    }
+                }
+            });
             this.items.push( this.editor );
         }.bind(this));
     },

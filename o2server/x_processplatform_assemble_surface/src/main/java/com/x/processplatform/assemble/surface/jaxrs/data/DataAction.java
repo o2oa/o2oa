@@ -690,6 +690,25 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateWithWork.class)
+	@POST
+	@Path("work/{id}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWork.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWork().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定Work的Data数据.", action = ActionUpdateWithWorkPath0.class)
 	@PUT
 	@Path("work/{id}/{path0}")
@@ -697,6 +716,25 @@ public class DataAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateWithWorkPath0(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkPath0.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkPath0().execute(effectivePerson, id, path0, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定Work的Data数据.", action = ActionUpdateWithWorkPath0.class)
+	@POST
+	@Path("work/{id}/{path0}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkPath0MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, JsonElement jsonElement) {
 		ActionResult<ActionUpdateWithWorkPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -729,6 +767,26 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock PUT To POST.", action = ActionUpdateWithWorkPath1.class)
+	@PUT
+	@Path("work/{id}/{path0}/{path1}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkPath1MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkPath1.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkPath1().execute(effectivePerson, id, path0, path1, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定Work的Data数据.", action = ActionUpdateWithWorkPath2.class)
 	@PUT
 	@Path("work/{id}/{path0}/{path1}/{path2}")
@@ -736,6 +794,27 @@ public class DataAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateWithWorkPath2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkPath2.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkPath2().execute(effectivePerson, id, path0, path1, path2, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateWithWorkPath2.class)
+	@POST
+	@Path("work/{id}/{path0}/{path1}/{path2}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkPath2MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2, JsonElement jsonElement) {
@@ -773,6 +852,29 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateWithWorkPath3.class)
+	@POST
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkPath3MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkPath3.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkPath3().execute(effectivePerson, id, path0, path1, path2, path3,
+					jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定Work的Data数据.", action = ActionUpdateWithWorkPath4.class)
 	@PUT
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}")
@@ -780,6 +882,30 @@ public class DataAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateWithWorkPath4(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkPath4.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkPath4().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateWithWorkPath4.class)
+	@POST
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkPath4MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
@@ -822,6 +948,31 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定Work的Data数据.", action = ActionUpdateWithWorkPath5.class)
+	@POST
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkPath5MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkPath5.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkPath5().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定Work的Data数据.", action = ActionUpdateWithWorkPath6.class)
 	@PUT
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
@@ -829,6 +980,32 @@ public class DataAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateWithWorkPath6(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkPath6.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkPath6().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5, path6, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateWithWorkPath6.class)
+	@POST
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkPath6MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
@@ -875,12 +1052,58 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定Work的Data数据.", action = ActionUpdateWithWorkPath7.class)
+	@POST
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkPath7MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
+			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkPath7.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkPath7().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5, path6, path7, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompleted.class)
 	@PUT
 	@Path("workcompleted/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateWithWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkCompleted().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompleted.class)
+	@POST
+	@Path("workcompleted/{id}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkCompletedMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<ActionUpdateWithWorkCompleted.Wo> result = new ActionResult<>();
@@ -913,12 +1136,51 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath0.class)
+	@POST
+	@Path("workcompleted/{id}/{path0}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkCompletedPath0MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkCompletedPath0.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkCompletedPath0().execute(effectivePerson, id, path0, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath1.class)
 	@PUT
 	@Path("workcompleted/{id}/{path0}/{path1}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateWithWorkCompletedPath1(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkCompletedPath1.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkCompletedPath1().execute(effectivePerson, id, path0, path1, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath1.class)
+	@POST
+	@Path("workcompleted/{id}/{path0}/{path1}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkCompletedPath1MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1, JsonElement jsonElement) {
@@ -955,12 +1217,57 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath2.class)
+	@POST
+	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkCompletedPath2MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkCompletedPath2.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkCompletedPath2().execute(effectivePerson, id, path0, path1, path2,
+					jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath3.class)
 	@PUT
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateWithWorkCompletedPath3(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkCompletedPath3.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkCompletedPath3().execute(effectivePerson, id, path0, path1, path2, path3,
+					jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath3.class)
+	@POST
+	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkCompletedPath3MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1002,12 +1309,61 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath4.class)
+	@POST
+	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkCompletedPath4MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkCompletedPath4.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkCompletedPath4().execute(effectivePerson, id, path0, path1, path2, path3,
+					path4, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath5.class)
 	@PUT
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateWithWorkCompletedPath5(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkCompletedPath5.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkCompletedPath5().execute(effectivePerson, id, path0, path1, path2, path3,
+					path4, path5, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath5.class)
+	@POST
+	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkCompletedPath5MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1053,12 +1409,65 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath6.class)
+	@POST
+	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkCompletedPath6MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkCompletedPath6.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkCompletedPath6().execute(effectivePerson, id, path0, path1, path2, path3,
+					path4, path5, path6, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath7.class)
 	@PUT
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateWithWorkCompletedPath7(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
+			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithWorkCompletedPath7.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithWorkCompletedPath7().execute(effectivePerson, id, path0, path1, path2, path3,
+					path4, path5, path6, path7, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath7.class)
+	@POST
+	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithWorkCompletedPath7MockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1301,6 +1710,24 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWork.class)
+	@GET
+	@Path("work/{id}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithWorkMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<ActionDeleteWithWork.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithWork().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath0.class)
 	@DELETE
 	@Path("work/{id}/{path0}")
@@ -1308,6 +1735,25 @@ public class DataAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteWithWorkPath0(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0) {
+		ActionResult<ActionDeleteWithWorkPath0.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithWorkPath0().execute(effectivePerson, id, path0);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath0.class)
+	@GET
+	@Path("work/{id}/{path0}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithWorkPath0MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0) {
 		ActionResult<ActionDeleteWithWorkPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -1340,6 +1786,26 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath1.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithWorkPath1MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1) {
+		ActionResult<ActionDeleteWithWorkPath1.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithWorkPath1().execute(effectivePerson, id, path0, path1);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath2.class)
 	@DELETE
 	@Path("work/{id}/{path0}/{path1}/{path2}")
@@ -1347,6 +1813,27 @@ public class DataAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteWithWorkPath2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2) {
+		ActionResult<ActionDeleteWithWorkPath2.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithWorkPath2().execute(effectivePerson, id, path0, path1, path2);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath2.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithWorkPath2MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2) {
@@ -1383,6 +1870,28 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath3.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithWorkPath3MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3) {
+		ActionResult<ActionDeleteWithWorkPath3.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithWorkPath3().execute(effectivePerson, id, path0, path1, path2, path3);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath4.class)
 	@DELETE
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}")
@@ -1390,6 +1899,29 @@ public class DataAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteWithWorkPath4(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4) {
+		ActionResult<ActionDeleteWithWorkPath4.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithWorkPath4().execute(effectivePerson, id, path0, path1, path2, path3, path4);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath4.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithWorkPath4MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
@@ -1431,6 +1963,31 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath5.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithWorkPath5MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5) {
+		ActionResult<ActionDeleteWithWorkPath5.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithWorkPath5().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath6.class)
 	@DELETE
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
@@ -1438,6 +1995,32 @@ public class DataAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteWithWorkPath6(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6) {
+		ActionResult<ActionDeleteWithWorkPath6.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithWorkPath6().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5, path6);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath6.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithWorkPath6MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
@@ -1484,6 +2067,33 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "对指定的work删除局部data数据.", action = ActionDeleteWithWorkPath7.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithWorkPath7MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
+			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7) {
+		ActionResult<ActionDeleteWithWorkPath7.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithWorkPath7().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5, path6, path7);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据job获取指定路径的部分data数据.", action = ActionFetchWithJob.class)
 	@POST
 	@Path("fetch/job/{job}")
@@ -1502,21 +2112,4 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-//	@JaxrsMethodDescribe(value = "更新指定Work的Data数据合并区段数据.", action = ActionUpdateWithWorkSection.class)
-//	@PUT
-//	@Path("section/work/{id}")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void updateWithWorkSection(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-//			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
-//		ActionResult<ActionUpdateWithWorkSection.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionUpdateWithWorkSection().execute(effectivePerson, id, jsonElement);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, jsonElement);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
 }

@@ -3814,12 +3814,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             this.doDeleteDraftWork(success, failure);
         } else {
             if (this.businessData.control["allowDelete"]) {
-                this.workAction.deleteWork(function (json) {
+                //this.workAction.deleteWork(function (json) {
+                this.workAction.abandoned(function (json) {
                     if (success) success(json);
                 }.bind(this), function (xhr, text, error) {
                     if (failure) failure(xhr, text, error);
                 }, this.businessData.work.id);
-            } else {
+            //}
+            }else {
                 if (failure) failure(null, "Permission Denied", "");
             }
         }
@@ -3857,6 +3859,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var text = "您确定要将“" + title + "”标记为已阅吗？";
 
         this.app.confirm("infor", e, "标记已阅确认", text, 300, 120, function () {
+            var confirmDlg = this;
             var read = null;
             for (var i = 0; i < _self.businessData.readList.length; i++) {
                 if (_self.businessData.readList[i].person === layout.session.user.distinguishedName) {
@@ -3867,16 +3870,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
             if (read) {
                 _self.app.action.setReaded(function () {
-                    this.fireEvent("afterReaded");
+                    _self.fireEvent("afterReaded");
                     _self.app.reload();
                     if (layout.mobile) {
 
                         //移动端页面关闭
                         _self.finishOnMobile()
                     } else {
-                        this.close();
+                        confirmDlg.close();
                     }
-                }.bind(_self), null, read.id, read);
+                }, null, read.id, read);
             } else {
                 _self.app.reload();
                 if (layout.mobile) {
@@ -3884,7 +3887,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     //移动端页面关闭
                     _self.finishOnMobile()
                 } else {
-                    this.close();
+                    confirmDlg.close();
                 }
             }
             
@@ -3942,15 +3945,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     finishOnMobile: function () {
         var _self = this;
         //新建检查
+        // if (this.json.checkDraft){
+        //     this.workAction.checkDraft(this.businessData.work.id, function (json) {
+        //         // var str = JSON.stringify(json);
+        //         _self.finishOnMobileReal();
+        //     }.bind(this), function () {
+        //         _self.finishOnMobileReal();
+        //     }, false);
+        // }else {
+        //     _self.finishOnMobileReal();
+        // }
         this.workAction.checkDraft(this.businessData.work.id, function (json) {
             // var str = JSON.stringify(json);
-
             _self.finishOnMobileReal();
         }.bind(this), function () {
-
             _self.finishOnMobileReal();
         }, false);
-
     },
 
     finishOnMobileReal: function () {
@@ -3960,8 +3970,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             window.webkit.messageHandlers.closeWork.postMessage("");
         } else if (window.wx && window.__wxjs_environment === 'miniprogram') { //微信小程序 关闭页面
             wx.miniProgram.navigateBack({ delta: 1 });
-        } else if (window.wx) { //微信关闭 当前页面
-            wx.closeWindow();
         } else {
             var len = window.history.length;
             if (len > 1) {

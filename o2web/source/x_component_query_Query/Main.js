@@ -79,6 +79,10 @@ MWF.xApplication.query.Query.Main = new Class({
         this.naviViewContentNode = new Element("div", {"styles": this.css.naviViewContentNode}).inject(this.naviContentNode);
         this.naviStatTitleNode = new Element("div", {"styles": this.css.naviStatTitleNode, "text": this.lp.stat}).inject(this.naviContentNode);
         this.naviStatContentNode = new Element("div", {"styles": this.css.naviStatContentNode}).inject(this.naviContentNode);
+
+        this.naviStatementTitleNode = new Element("div", {"styles": this.css.naviStatementTitleNode, "text": this.lp.statement}).inject(this.naviContentNode);
+        this.naviStatementContentNode = new Element("div", {"styles": this.css.naviStatementContentNode}).inject(this.naviContentNode);
+
         this.setContentHeightFun = this.setContentHeight.bind(this);
         this.addEvent("resize", this.setContentHeightFun);
         this.setContentHeightFun();
@@ -127,6 +131,21 @@ MWF.xApplication.query.Query.Main = new Class({
                 }.bind(this));
             }
         }.bind(this));
+        MWF.Actions.load("x_query_assemble_surface").StatementAction.listWithQuery(this.options.id, {
+            "justSelect" : true,
+            "hasView" : true
+        }, function(json){
+            //this.action.listStat(this.options.id, function(json){
+            if (json.data){
+                json.data.each(function(statement){
+                    debugger;
+                    var item = this.createStatementNaviItem(statement);
+                    if( statement.id === this.options.statementId ){
+                        item.selected()
+                    }
+                }.bind(this));
+            }
+        }.bind(this));
     },
     createViewNaviItem: function(view){
         var item = new MWF.xApplication.query.Query.ViewItem(view, this);
@@ -134,6 +153,10 @@ MWF.xApplication.query.Query.Main = new Class({
     },
     createStatNaviItem: function(stat){
         var item = new MWF.xApplication.query.Query.StatItem(stat, this);
+        return item;
+    },
+    createStatementNaviItem: function(statement){
+        var item = new MWF.xApplication.query.Query.StatementItem(statement, this);
         return item;
     },
 
@@ -217,6 +240,24 @@ MWF.xApplication.query.Query.StatItem = new Class({
                 "isChart": true,
                 "isLegend": true
             });
+        }.bind(this));
+    }
+});
+
+MWF.xApplication.query.Query.StatementItem = new Class({
+    Extends: MWF.xApplication.query.Query.ViewItem,
+    getContentNode: function(){
+        return this.app.naviStatementContentNode;
+    },
+    loadView: function(){
+        MWF.xDesktop.requireApp("query.Query", "Statement",function(){
+            this.viewContent.empty();
+            debugger;
+            this.viewer = new MWF.QStatement( this.viewContent, {
+                "application": this.view.query,
+                "statementName": this.view.name,
+                "statementId" : this.view.id
+            },{}, this.app);
         }.bind(this));
     }
 });

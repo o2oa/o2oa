@@ -41,3 +41,5 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Attachment", null, false
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Orgfield", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Org", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Opinion", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Statement", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.StatementSelector", null, false);

@@ -43,7 +43,7 @@
                 <td class="editTableValue"><div class="MWFIcon" name="icon"></div></td>
             </tr>
             <tr>
-                <td class="editTableTitle">使用路由名称作为缺省意见:</td>
+                <td class="editTableTitle">使用路由<br>名称作为<br>缺省意见:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="routeNameAsOpinion" text{($.routeNameAsOpinion===true)?'checked':''} type="radio" value="true"/>是
                     <input class="editTableRadio" name="routeNameAsOpinion" text{($.routeNameAsOpinion!==true)?'checked':''} type="radio" value="false"/>否
@@ -51,58 +51,60 @@
                 </td>
             </tr>
         </table>
-        <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">版 本</div>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">版本名称:</td>
-                <td class="editTableValue">text{$.editionName}</td>
-            </tr>
-            <tr>
-                <td class="editTableTitle">版本标识:</td>
-                <td class="editTableValue">text{$.edition}</td>
-            </tr>
-            <tr>
-                <td class="editTableTitle">版本描述:</td>
-                <td class="editTableValue"><textarea  name="editionDes" class="editTableTextarea">text{$.editionDes}</textarea></td>
-            </tr>
-        </table>
-
-
-        <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">启 动</div>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">启动终端:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal!=='client' && $.startableTerminal!=='mobile')?'checked':''} type="radio" value="all"/>PC端和移动端
-                    <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='client')?'checked':''} type="radio" value="client"/>仅PC端
-<!--                    <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='mobile')?'checked':''} type="radio" value="mobile"/>移动端-->
-                </td>
-            </tr>
-        </table>
-
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">启动模式:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="defaultStartMode" onclick="if (this.checked){ $('text{$.id}checkDraftArea').setStyle('display', 'block');}"  text{($.defaultStartMode!=='draft')?'checked':''} type="radio" value="instance"/>实例模式
-                    <span style="color: #999999; font-size: 12px"> (新建流程时直接创建流程实例，给拟稿人生成待办)</span>
-                    <br/><input class="editTableRadio" name="defaultStartMode" onclick="if (this.checked){ $('text{$.id}checkDraftArea').setStyle('display', 'none');}" text{($.defaultStartMode==='draft')?'checked':''} type="radio" value="draft"/>草稿模式
-                    <span style="color: #999999; font-size: 12px"> (新建流程时不创建流程实例，不生成待办，产生一个草稿文档，直到流转时才创建流程实例)</span>
-                </td>
-            </tr>
-        </table>
-
-        <div id="text{$.id}checkDraftArea" style="display: text{($.defaultStartMode=='draft')?'none':'block'};">
+        <div data-o2-advanced="yes">
+            <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">版 本</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">新建检查:</td>
+                    <td class="editTableTitle">版本名称:</td>
+                    <td class="editTableValue">text{$.editionName}</td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">版本标识:</td>
+                    <td class="editTableValue">text{$.edition}</td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">版本描述:</td>
+                    <td class="editTableValue"><textarea  name="editionDes" class="editTableTextarea">text{$.editionDes}</textarea></td>
+                </tr>
+            </table>
+
+
+            <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">启 动</div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">启动终端:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="checkDraft" text{($.checkDraft===true)?'checked':''} type="radio" value="true"/>是
-                        <input class="editTableRadio" name="checkDraft" text{($.checkDraft!==true)?'checked':''} type="radio" value="false"/>否
-                        <br/>(选择“是”：未保存过的流程实例不会保留)
+                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal!=='client' && $.startableTerminal!=='mobile')?'checked':''} type="radio" value="all"/>PC端和移动端
+                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='client')?'checked':''} type="radio" value="client"/>仅PC端
+    <!--                    <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='mobile')?'checked':''} type="radio" value="mobile"/>移动端-->
                     </td>
                 </tr>
             </table>
+
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">启动模式:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="defaultStartMode" onclick="if (this.checked){ $('text{$.id}checkDraftArea').setStyle('display', 'block');}"  text{($.defaultStartMode!=='draft')?'checked':''} type="radio" value="instance"/>实例模式
+                        <span style="color: #999999; font-size: 12px"> (新建流程时直接创建流程实例，给拟稿人生成待办)</span>
+                        <br/><input class="editTableRadio" name="defaultStartMode" onclick="if (this.checked){ $('text{$.id}checkDraftArea').setStyle('display', 'none');}" text{($.defaultStartMode==='draft')?'checked':''} type="radio" value="draft"/>草稿模式
+                        <span style="color: #999999; font-size: 12px"> (新建流程时不创建流程实例，不生成待办，产生一个草稿文档，直到流转时才创建流程实例)</span>
+                    </td>
+                </tr>
+            </table>
+
+            <div id="text{$.id}checkDraftArea" style="display: text{($.defaultStartMode=='draft')?'none':'block'};">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">新建检查:</td>
+                        <td class="editTableValue">
+                            <input class="editTableRadio" name="checkDraft" text{($.checkDraft===true)?'checked':''} type="radio" value="true"/>是
+                            <input class="editTableRadio" name="checkDraft" text{($.checkDraft!==true)?'checked':''} type="radio" value="false"/>否
+                            <br/>(选择“是”：未保存过的流程实例不会保留)
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
         <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">权 限</div>
@@ -177,7 +179,7 @@
             <!--</tr>-->
         </table>
     </div>
-    <div title="编号"  class="MWFTab">
+    <div title="编号"  class="MWFTab" data-o2-advanced="yes">
         <div class="MWFSerial" name="serialTexture"></div>
         <div style="border-top: 1px solid #CCC">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
@@ -196,7 +198,7 @@
             </table>
         </div>
     </div>
-    <div title="时效"  class="MWFTab">
+    <div title="时效"  class="MWFTab" data-o2-advanced="yes">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">流程超时:</td>
@@ -248,7 +250,7 @@
 
     </div>
 
-    <div title="映射"  class="MWFTab">
+    <div title="映射"  class="MWFTab" data-o2-advanced="yes">
         <div class="MWFProjection" name="projection">
             <div style="margin: 0px; height: 20px; padding: 5px; background-color: #F6F6F6; line-height: 20px; text-align: center">映射业务数据</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
@@ -289,9 +291,9 @@
 
     </div>
 
-    <div title="事件"  class="MWFTab">
+    <div title="事件"  class="MWFTab" data-o2-advanced="yes">
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
-            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeBeginScript || $.beforeBeginScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">流程启动前</div>
         </div>
 
@@ -312,7 +314,7 @@
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
-            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterBeginScript || $.afterBeginScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">流程启动后</div>
         </div>
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
@@ -334,7 +336,7 @@
 
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
-            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeArriveScript || $.beforeArriveScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">活动到达前</div>
         </div>
 
@@ -355,7 +357,7 @@
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
-            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterArriveScript || $.afterArriveScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">活动到达后</div>
         </div>
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
@@ -375,7 +377,7 @@
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
-            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeExecuteScript || $.beforeExecuteScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">活动执行前</div>
         </div>
 
@@ -396,7 +398,7 @@
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
-            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterExecuteScript || $.afterExecuteScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">活动执行后</div>
         </div>
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
@@ -416,7 +418,7 @@
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
-            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeInquireScript || $.beforeInquireScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">路由查询前</div>
         </div>
 
@@ -437,7 +439,7 @@
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
-            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterInquireScript || $.afterInquireScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">路由查询后</div>
         </div>
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
@@ -457,7 +459,7 @@
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
-            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeEndScript || $.beforeEndScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">流程结束前</div>
         </div>
 
@@ -478,7 +480,7 @@
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
-            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterEndScript || $.afterEndScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">流程结束后</div>
         </div>
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">

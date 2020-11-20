@@ -7,10 +7,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -23,7 +21,6 @@ import javax.ws.rs.core.MediaType;
 @JaxrsDescribe("文档权限操作服务（管理员）")
 public class PermissionManagerAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger( PermissionManagerAction.class );
 
 	@JaxrsMethodDescribe(value = "重新计算所有文档的权限信息.", action = ActionRefreshAllDocumentPermission.class)

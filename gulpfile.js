@@ -19,6 +19,8 @@ var fg = require('fast-glob');
 var logger = require('gulp-logger');
 var assetRev = require('gulp-tm-asset-rev');
 const os = require('os');
+var through2 = require('through2');
+var path = require('path');
 
 //var downloadHost = "download.o2oa.net";
 // var downloadHost = "release.o2oa.net";
@@ -46,7 +48,7 @@ var jvmUrls = {
     "arm": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/arm",
     "macos": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/macos",
     "risc": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/risc",
-    "raspberrypi": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/raspberrypi",
+    "raspi": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/raspi",
     "windows": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/windows"
 };
 
@@ -57,15 +59,16 @@ var scripts = {
     "arm": ["o2server/*arm*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "macos": ["o2server/*macos*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "risc": ["o2server/*risc*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
-    "raspberrypi": ["o2server/*raspberrypi*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
+    "raspi": ["o2server/*raspi*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "windows": ["o2server/*windows*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"]
 };
 
 var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
-    string: ["e"]
+    string: ["e", "lp"]
 });
 var options = {};
 options.ev = o_options.e || "all";
+options.lp = o_options.lp || "zh-cn";
 var jvmUrl = jvmUrls[options.ev];
 var scriptSource = scripts[options.ev];
 
@@ -460,6 +463,8 @@ function build_concat_xform(){
         'o2web/source/' + path + '/DatagridPC.js',
         'o2web/source/' + path + '/Textfield.js',
         'o2web/source/' + path + '/Personfield.js',
+        'o2web/source/' + path + '/Button.js',
+        'o2web/source/' + path + '/ViewSelector.js',
         'o2web/source/' + path + '/*.js',
         'o2web/source/x_component_process_Work/Processor.js',
         '!o2web/source/' + path + '/Office.js'
@@ -491,9 +496,100 @@ function build_bundle(){
         .pipe(gulp.dest(dest))
 }
 
-function build_concat_basework() {
+
+function concat_Actions(){
+    return through2.obj(function (file, enc, cb) {
+        if (file.isNull()) {
+            this.push(file);
+            return cb();
+        }
+
+        if (file.isStream()) {
+            this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+            return cb();
+        }
+        var content = file.contents.toString();
+
+        var o = path.parse(file.path);
+        var name = o.name;
+        content = "var actionJson = "+content;
+        content = content+"\nif (!o2.xAction.RestActions.Action[\""+name+"\"]) o2.xAction.RestActions.Action[\""+name+"\"] = new Class({Extends: o2.xAction.RestActions.Action});";
+        content = content+"\no2.Actions.actions[\""+name+"\"] = new o2.xAction.RestActions.Action[\""+name+"\"](\""+name+"\", actionJson);";
+
+        file.contents = new Buffer.from(content);
+        this.push(file);
+        cb();
+    });
+}
+function concat_Style(){
+    return through2.obj(function (file, enc, cb) {
+        if (file.isNull()) {
+            this.push(file);
+            return cb();
+        }
+
+        if (file.isStream()) {
+            this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+            return cb();
+        }
+        var content = file.contents.toString();
+        var name = file.path.replace(process.cwd(), "").replace(/\\/g, "/")
+        name = ".."+name.substring(name.indexOf("/source")+7);
+        content = "var csskey = encodeURIComponent(\""+name+"\");\no2.widget.css[csskey]="+content;
+
+        file.contents = new Buffer.from(content);
+        this.push(file);
+        cb();
+    });
+}
+
+function build_concat_basework_style(){
+    return gulp.src([
+        "o2web/source/x_component_process_Work/$Main/default/css.wcss",
+        "o2web/source/x_component_process_Xform/$Form/default/css.wcss",
+        "o2web/source/o2_core/o2/widget/$Tab/mobileForm/css.wcss",
+        "o2web/source/o2_core/o2/widget/$Menu/tab/css.wcss",
+        "o2web/source/o2_core/o2/widget/$Tab/form/css.wcss",
+        "o2web/source/x_component_process_Xform/$Form/default/doc.wcss",
+        "o2web/source/o2_core/o2/widget/$Toolbar/documentEdit/css.wcss",
+        "o2web/source/o2_core/o2/widget/$Toolbar/documentEdit_side/css.wcss",
+        "o2web/source/x_component_process_Xform/$Form/default/css.wcss"
+    ])
+        .pipe(concat_Style())
+        .pipe(concat('js/base_work_style_temp.js'))
+        .pipe(gulp.dest('o2web/source/x_desktop/'));
+}
+
+function build_concat_basework_action(){
+    return gulp.src([
+        "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
+        "o2web/source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.json",
+        "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.json",
+        "o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.json",
+        "o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.json",
+        "o2web/source/o2_core/o2/xAction/services/x_program_center.json",
+        "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.json"
+    ])
+        .pipe(concat_Actions())
+        .pipe(concat('js/base_work_actions_temp.js'))
+        .pipe(gulp.dest('o2web/source/x_desktop/'));
+}
+
+function build_concat_basework_clean(cb) {
+    var dest = [
+        'o2web/source/x_desktop/js/base_work_actions_temp.js',
+        'o2web/source/x_desktop/js/base_work_style_temp.js'
+    ];
+    return del(dest, cb);
+}
+
+function build_concat_basework_body() {
     var src = [
-        'o2web/source/x_desktop/js/base_work_begin.js',
+        'o2web/source/x_desktop/js/base_concat_head.js',
+        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
+
+        'o2web/source/x_desktop/js/base_work_style_temp.js',
+
         'o2web/source/o2_core/o2/widget/Common.js',
         'o2web/source/o2_core/o2/widget/Dialog.js',
         'o2web/source/o2_core/o2/widget/UUID.js',
@@ -511,6 +607,12 @@ function build_concat_basework() {
         'o2web/source/o2_core/o2/xDesktop/Dialog.js',
         'o2web/source/o2_core/o2/xDesktop/Window.js',
         'o2web/source/x_component_Common/Main.js',
+
+        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_process_Work/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
+
         'o2web/source/x_component_process_Work/Main.js',
         'o2web/source/x_component_Selector/package.js',
         'o2web/source/x_component_Selector/Person.js',
@@ -526,13 +628,16 @@ function build_concat_basework() {
         'o2web/source/o2_core/o2/xScript/Environment.js',
         'o2web/source/x_component_Template/MTooltips.js',
         'o2web/source/x_component_Template/MSelector.js',
+
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
         'o2web/source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
-        'o2web/source/x_desktop/js/base_work_end.js',
+
+        'o2web/source/x_desktop/js/base_work_actions_temp.js',
+
         'o2web/source/x_desktop/js/base.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
@@ -543,10 +648,116 @@ function build_concat_basework() {
         .pipe(rename({ extname: '.min.js' }))
         .pipe(gulp.dest(dest));
 }
-// function build_concat(){
-//     return gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform);
-// }
-exports.build_concat = gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform, build_bundle, build_concat_basework);
+
+function build_concat_baseportal_style(){
+    return gulp.src([
+        "o2web/source/x_component_process_Work/$Main/default/css.wcss",
+        "o2web/source/x_component_portal_Portal/$Main/default/css.wcss",
+        "o2web/source/x_component_process_Xform/$Form/default/css.wcss",
+        "o2web/source/o2_core/o2/widget/$Tab/mobileForm/css.wcss",
+        "o2web/source/o2_core/o2/widget/$Menu/tab/css.wcss",
+    ])
+        .pipe(concat_Style())
+        .pipe(concat('js/base_portal_style_temp.js'))
+        .pipe(gulp.dest('o2web/source/x_desktop/'));
+}
+
+function build_concat_baseportal_action(){
+    return gulp.src([
+        "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
+        "o2web/source/o2_core/o2/xAction/services/x_portal_assemble_surface.json",
+        "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.json",
+        "o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.json",
+        "o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.json",
+        "o2web/source/o2_core/o2/xAction/services/x_program_center.json",
+        "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.json"
+    ])
+        .pipe(concat_Actions())
+        .pipe(concat('js/base_portal_actions_temp.js'))
+        .pipe(gulp.dest('o2web/source/x_desktop/'));
+}
+
+function build_concat_baseportal_clean(cb) {
+    var dest = [
+        'o2web/source/x_desktop/js/base_portal_actions_temp.js',
+        'o2web/source/x_desktop/js/base_portal_style_temp.js'
+    ];
+    return del(dest, cb);
+}
+
+function build_concat_baseportal_body() {
+    var src = [
+        'o2web/source/x_desktop/js/base_concat_head.js',
+        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
+
+        'o2web/source/x_desktop/js/base_portal_style_temp.js',
+
+        'o2web/source/o2_core/o2/widget/Common.js',
+        'o2web/source/o2_core/o2/widget/Dialog.js',
+        'o2web/source/o2_core/o2/widget/UUID.js',
+        'o2web/source/o2_core/o2/widget/Menu.js',
+        'o2web/source/o2_core/o2/widget/Toolbar.js',
+        'o2web/source/o2_core/o2/xDesktop/Common.js',
+        'o2web/source/o2_core/o2/xDesktop/Actions/RestActions.js',
+        'o2web/source/o2_core/o2/xAction/RestActions.js',
+        'o2web/source/o2_core/o2/xDesktop/Access.js',
+        'o2web/source/o2_core/o2/xDesktop/Dialog.js',
+        'o2web/source/o2_core/o2/xDesktop/Menu.js',
+        'o2web/source/o2_core/o2/xDesktop/UserData.js',
+        'o2web/source/x_component_Template/MPopupForm.js',
+        'o2web/source/o2_core/o2/xDesktop/Authentication.js',
+        'o2web/source/o2_core/o2/xDesktop/Window.js',
+
+        'o2web/source/x_component_Common/Main.js',
+
+        'o2web/source/x_component_process_Work/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_portal_Portal/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
+
+        'o2web/source/x_component_portal_Portal/Main.js',
+
+        'o2web/source/x_component_Selector/package.js',
+        'o2web/source/x_component_Selector/Person.js',
+        'o2web/source/x_component_Selector/Identity.js',
+        'o2web/source/x_component_Selector/Unit.js',
+        'o2web/source/x_component_Selector/IdentityWidthDuty.js',
+        'o2web/source/x_component_Selector/IdentityWidthDutyCategoryByUnit.js',
+        'o2web/source/x_component_Selector/UnitWithType.js',
+
+        'o2web/source/o2_core/o2/xScript/Actions/UnitActions.js',
+        'o2web/source/o2_core/o2/xScript/Actions/ScriptActions.js',
+        'o2web/source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
+        'o2web/source/o2_core/o2/xScript/Actions/PortalScriptActions.js',
+        'o2web/source/o2_core/o2/xScript/PageEnvironment.js',
+
+        'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
+        'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
+        'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
+        'o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
+        'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
+
+        'o2web/source/x_desktop/js/base_portal_actions_temp.js',
+
+        'o2web/source/x_desktop/js/base.js'
+    ];
+    var dest = 'target/o2server/servers/webServer/x_desktop/js/';
+    return gulp.src(src)
+        .pipe(concat('base_portal.js'))
+        .pipe(gulp.dest(dest))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulp.dest(dest));
+}
+
+exports.build_concat = gulp.parallel(
+    build_concat_o2,
+    build_concat_desktop,
+    build_concat_xform,
+    build_bundle,
+    gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
+    gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean)
+);
 
 
 function build_web_v_html() {
@@ -638,7 +849,20 @@ function chmod_sh(){
 function chmod_servers(){
     return (shell.task('chmod 777 -R target/o2server/servers'))();
 }
-exports.build_web = gulp.series(build_web_minimize, build_web_move, gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform, build_bundle, build_concat_basework), build_web_v_html, build_web_v_o2);
+exports.build_web = gulp.series(
+    build_web_minimize,
+    build_web_move,
+    gulp.parallel(
+        build_concat_o2,
+        build_concat_desktop,
+        build_concat_xform,
+        gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
+        gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean),
+        build_bundle
+    ),
+    build_web_v_html,
+    build_web_v_o2);
+
 if (os.platform().indexOf("win")==-1){
     exports.deploy = gulp.series(deploy_server, chmod_jvm, chmod_commons, chmod_sh, chmod_servers);
 }else{

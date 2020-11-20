@@ -259,5 +259,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "subformScript": "子表单脚本",
         "selectedScript": "视图选择脚本",
         "action.tools": "操作按钮"
-    }
+    },
+    "copyed": "已复制"
 };

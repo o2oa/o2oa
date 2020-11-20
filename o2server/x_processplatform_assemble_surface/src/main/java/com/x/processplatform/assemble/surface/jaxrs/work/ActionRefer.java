@@ -28,12 +28,11 @@ class ActionRefer extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionRefer.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			TimeStamp stamp = new TimeStamp();
+
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
 			CompletableFuture<Void> future_task = CompletableFuture.runAsync(() -> {
-				try {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					List<Task> os = emc.listEqualAndEqual(Task.class, Task.work_FIELDNAME, workId,
 							Task.person_FIELDNAME, effectivePerson.getDistinguishedName());
 					wo.getTaskList().addAll(WoTask.copier.copy(os));
@@ -43,7 +42,7 @@ class ActionRefer extends BaseAction {
 				}
 			});
 			CompletableFuture<Void> future_taskCompleted = CompletableFuture.runAsync(() -> {
-				try {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					List<TaskCompleted> os = emc.listEqualAndEqual(TaskCompleted.class, TaskCompleted.work_FIELDNAME,
 							workId, TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
 					wo.getTaskCompletedList().addAll(WoTaskCompleted.copier.copy(os));
@@ -53,7 +52,7 @@ class ActionRefer extends BaseAction {
 				}
 			});
 			CompletableFuture<Void> future_read = CompletableFuture.runAsync(() -> {
-				try {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					List<Read> os = emc.listEqualAndEqual(Read.class, Read.work_FIELDNAME, workId,
 							Read.person_FIELDNAME, effectivePerson.getDistinguishedName());
 					wo.getReadList().addAll(WoRead.copier.copy(os));
@@ -63,7 +62,7 @@ class ActionRefer extends BaseAction {
 				}
 			});
 			CompletableFuture<Void> future_readCompleted = CompletableFuture.runAsync(() -> {
-				try {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					List<ReadCompleted> os = emc.listEqualAndEqual(ReadCompleted.class, ReadCompleted.work_FIELDNAME,
 							workId, ReadCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
 					wo.getReadCompletedList().addAll(WoReadCompleted.copier.copy(os));
@@ -73,7 +72,7 @@ class ActionRefer extends BaseAction {
 				}
 			});
 			CompletableFuture<Void> future_review = CompletableFuture.runAsync(() -> {
-				try {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					List<Review> os = emc.listEqualAndEqual(Review.class, Review.work_FIELDNAME, workId,
 							Review.person_FIELDNAME, effectivePerson.getDistinguishedName());
 					wo.getReviewList().addAll(WoReview.copier.copy(os));
@@ -90,7 +89,6 @@ class ActionRefer extends BaseAction {
 			result.setData(wo);
 
 			return result;
-		}
 	}
 
 	public static class Wo extends GsonPropertyObject {

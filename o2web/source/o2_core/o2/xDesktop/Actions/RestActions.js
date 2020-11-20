@@ -77,6 +77,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
             var method = action.method || "GET";
             var uri = action.uri;
             var progress = action.progress;
+
             if (option.parameter){
                 Object.each(option.parameter, function(value, key){
                     var reg = new RegExp("{"+key+"}", "g");
@@ -88,6 +89,16 @@ MWF.xDesktop.Actions.RestActions = new Class({
                 });
             }
             uri = this.address+uri;
+
+            //putToPost, deleteToGet
+            if (layout.config.mock && layout.config.mock[this.serviceName]){
+                var mock = layout.config.mock[this.serviceName][method.toLowerCase()];
+                if (mock){
+                    method = mock.to || method;
+                    var append = mock.append;
+                    uri = uri+((uri.substr(uri.length-1, 1)=="/") ? append : "/"+append);
+                }
+            }
 
             var async = (option.async===false) ? false : true;
 
@@ -144,7 +155,8 @@ MWF.xDesktop.Actions.RestActions = new Class({
             if(file){
                 this.transferComplete(e, xhr, messageItem, currentDate, file);
             }
-        }.bind(this), false);        xhr.upload.addEventListener("loadstart", function(e){this.transferStart(e, xhr, messageItem);}.bind(this), false);
+        }.bind(this), false);
+        xhr.upload.addEventListener("loadstart", function(e){this.transferStart(e, xhr, messageItem);}.bind(this), false);
         xhr.upload.addEventListener("error", function(e){this.transferFailed(e, xhr, messageItem);}.bind(this), false);
         xhr.upload.addEventListener("abort", function(e){this.transferCanceled(e, xhr, messageItem);}.bind(this), false);
         xhr.upload.addEventListener("timeout", function(e){this.transferCanceled(e, xhr, messageItem);}.bind(this), false);

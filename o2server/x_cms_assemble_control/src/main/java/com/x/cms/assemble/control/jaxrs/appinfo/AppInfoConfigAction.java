@@ -10,10 +10,8 @@ import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoText;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -26,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 @JaxrsDescribe("信息发布(CMS)-栏目配置支持信息(APPINFOCONFIG)管理服务")
 public class AppInfoConfigAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger(AppInfoConfigAction.class);
 
 	@JaxrsMethodDescribe(value = "更新栏目配置支持信息，JSON格式。", action = ActionSaveConfig.class)
@@ -42,7 +39,7 @@ public class AppInfoConfigAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if (check) {
 			try {
-				result = ((ActionSaveConfig)proxy.getProxy(ActionSaveConfig.class)).execute( request, effectivePerson, appId, jsonElement );
+				result = new ActionSaveConfig().execute( request, effectivePerson, appId, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppInfoProcess(e, "栏目信息保存时发生异常。");
@@ -63,7 +60,7 @@ public class AppInfoConfigAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<WoText> result = new ActionResult<>();
 		try {
-			result = ((ActionGetConfig)proxy.getProxy(ActionGetConfig.class)).execute( request, effectivePerson, id );
+			result = new ActionGetConfig().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "根据指定ID查询应用栏目配置支持信息时发生异常。id:" + id );

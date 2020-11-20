@@ -27,7 +27,7 @@ MWF.shortcut = {
     clearDesktop: function(){
         var keys = Array.clone(Object.keys(layout.desktop.apps));
         keys.each(function(key){
-            layout.desktop.apps[key].close();
+            if (!layout.desktop.apps[key].isIndex && !layout.desktop.apps[key].options.isIndex) layout.desktop.apps[key].close();
         });
         keys = null;
     },

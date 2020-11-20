@@ -274,7 +274,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
             var confirmtitle = d.installedVersion==""?this.app.lp.confirmsetupTitle:this.app.lp.confirmupdateTitle;
             var confirmcontent = d.installedVersion==""?this.app.lp.confirmsetupContent:this.app.lp.confirmupdateContent;
             var _self = this;
-            MWF.xDesktop.confirm("warn", tmpe, confirmtitle, confirmcontent, 300, 120, function(){
+            _self.app.confirm("warn", tmpe, confirmtitle, confirmcontent, 300, 120, function(){
                 _self.app.mask();
                 //this.createLoading(this.container,true);  
                 //alert("after createLoading")          

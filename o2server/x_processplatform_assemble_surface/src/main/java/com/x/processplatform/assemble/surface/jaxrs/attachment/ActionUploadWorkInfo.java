@@ -42,7 +42,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionUploadWorkInfo extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionUploadWorkInfo.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String flag, JsonElement jsonElement)
 			throws Exception {
@@ -89,6 +89,9 @@ class ActionUploadWorkInfo extends BaseAction {
 		try {
 			String name = "";
 			byte[] bytes;
+			if(title.length()>60){
+				title = title.substring(0, 60);
+			}
 			if ("word".equals(flag)) {
 				try (POIFSFileSystem fs = new POIFSFileSystem();
 						InputStream is = new ByteArrayInputStream(workHtml.getBytes("UTF-8"));

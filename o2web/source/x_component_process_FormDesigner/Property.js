@@ -84,6 +84,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadSourceTestRestful();
                     this.loadSidebarPosition();
                     this.loadViewFilter();
+                    this.loadStatementFilter();
                     this.loadDocumentTempleteSelect();
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
@@ -516,6 +517,25 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 }.bind(this));
             }.bind(this));
         }
+    },
+    loadStatementFilter: function(){
+	    debugger;
+        var nodes = this.propertyContent.getElements(".MWFStatementFilter");
+        var filtrData = this.data.filterList;
+        nodes.each(function(node){
+            MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilter", function(){
+                var _slef = this;
+                this.viewFilter = new MWF.xApplication.query.StatementDesigner.widget.ViewFilter(node, this.form.designer, {"filtrData": filtrData, "customData": null, "parameterData": null}, {
+                    "statementId" : this.data.queryStatement ? this.data.queryStatement.id : "",
+                    "withForm" : true,
+                    "onChange": function(ids){
+                        var data = this.getData();
+                        _slef.changeJsonDate(["filterList"], data.filterData);
+                        //_slef.changeJsonDate(["data", "customFilterEntryList"], data.customData);
+                    }
+                });
+            }.bind(this));
+        }.bind(this));
     },
     loadViewFilter: function(){
         var nodes = this.propertyContent.getElements(".MWFViewFilter");
@@ -1241,6 +1261,7 @@ debugger;
         var viewNodes = this.propertyContent.getElements(".MWFViewSelect");
         var cmsviewNodes = this.propertyContent.getElements(".MWFCMSViewSelect");
         var queryviewNodes = this.propertyContent.getElements(".MWFQueryViewSelect");
+        var queryStatementNodes = this.propertyContent.getElements(".MWFQueryStatementSelect");
         var querystatNodes = this.propertyContent.getElements(".MWFQueryStatSelect");
         var fileNodes = this.propertyContent.getElements(".MWFImageFileSelect");
         var processFileNodes = this.propertyContent.getElements(".MWFProcessImageFileSelect");
@@ -1307,6 +1328,15 @@ debugger;
                 });
             }.bind(this));
 
+            queryStatementNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "QueryStatement",
+                    "count": 1,
+                    "names": [this.data[node.get("name")]],
+                    "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
             querystatNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "QueryStat",
@@ -1317,7 +1347,7 @@ debugger;
             }.bind(this));
 
             scriptNodes.each(function(node){
-                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                var ps = new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "Script",
                     "count": node.dataset["count"] || 1,
                     "names": (!node.dataset["count"] || node.dataset["count"].toInt()==1) ? [this.data[node.get("name")]] : this.data[node.get("name")],
@@ -1325,6 +1355,74 @@ debugger;
                         this.saveScriptSelectItem(node, ids);
                     }.bind(this)
                 });
+                node.store("selector", ps);
+
+                var actionNode = node.getNext();
+                if (actionNode.hasClass("MWFScriptSelectAction")){
+                    var _self = this;
+                    var copyNode = actionNode.getFirst();
+                    var pasteNode = actionNode.getLast();
+                    copyNode.store("slectNode", node);
+                    pasteNode.store("slectNode", node);
+                    copyNode.addEvent("click", function(e){
+                        var selectNode = this.retrieve("slectNode");
+                        if (selectNode){
+                            var name = node.get("name");
+                            var data = _self.data[name];
+                            if (data){
+                                var str = JSON.encode(data);
+                                o2.DL.open({
+                                    "isTitle": false,
+                                    "width": 400,
+                                    "height": 500,
+                                    "html": "<textarea style='width: 99%; height: 98%'>"+str+"</textarea>",
+                                    "buttonList": [{
+                                        "type": "ok",
+                                        "text": "ok",
+                                        "action": function(){this.close();}
+                                    }]
+                                })
+                            }
+                        }
+                    });
+
+                    pasteNode.addEvent("click", function(e){
+                        var selectNode = this.retrieve("slectNode");
+                        if (selectNode){
+
+                            o2.DL.open({
+                                "isTitle": false,
+                                "width": 400,
+                                "height": 500,
+                                "html": "<textarea style='width: 99%; height: 98%'></textarea>",
+                                "buttonList": [{
+                                    "type": "ok",
+                                    "text": "ok",
+                                    "action": function(){
+                                        var dataStr = this.content.getElement("textarea").get("value");
+                                        try{
+
+                                            var data = JSON.decode(dataStr);
+                                            var s = selectNode.retrieve("selector");
+                                            s.setData(data);
+                                            _self.saveScriptSelectItem(selectNode, s.identitys);
+                                        }catch(e){
+                                            throw e;
+                                        }
+                                        this.close();
+                                    }
+                                },{
+                                    "type": "cancel",
+                                    "text": "cancel",
+                                    "action": function(){this.close();}
+                                }]
+                            })
+
+                        }
+                    });
+                }
+
+
             }.bind(this));
 
             var _self = this;

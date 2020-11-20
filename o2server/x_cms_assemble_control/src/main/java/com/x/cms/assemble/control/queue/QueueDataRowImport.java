@@ -59,7 +59,7 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 						document.setTitle( "无标题"  );
 					}					
 				}
-						
+				boolean flag = false;
 				try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 					emc.beginTransaction( Document.class );
 					document.setDocStatus( excelReadRuntime.template.getDocStatus() ); //已发布
@@ -102,11 +102,7 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 					data.setDocument( document );
 					documentDataHelper.update( data );
 					emc.commit();
-					
-					new CmsBatchOperationPersistService().addOperation( 
-							CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
-							CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  document.getId(),  document.getId(), "导入新文档：ID=" +  document.getId() );
-					
+					flag = true;
 					dataImportStatus.addDocumentId( document.getId() );
 					dataImportStatus.increaseSuccessTotal(1);
 					System.out.println( "第" + curRow + "行数据导入成功，已经成功提交到数据库！导入成功共"+ excelReadRuntime.wo.getSuccess_count() +"条");
@@ -115,6 +111,12 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 					dataImportStatus.appendErorrData( colmlist );
 					dataImportStatus.increaseErrorTotal(1);
 					e.printStackTrace();
+				}
+
+				if(flag) {
+					new CmsBatchOperationPersistService().addOperation(
+							CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
+							CmsBatchOperationProcessService.OPT_TYPE_PERMISSION, document.getId(), document.getId(), "导入新文档：ID=" + document.getId());
 				}
 			}else {
 				System.out.println("数据导入不成功，propertyNames为空，无法识别数据列对应的属性！");

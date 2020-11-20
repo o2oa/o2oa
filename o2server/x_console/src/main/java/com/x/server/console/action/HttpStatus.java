@@ -1,19 +1,29 @@
 package com.x.server.console.action;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-import com.x.server.console.server.Servers;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DateTools;
+import com.x.server.console.server.Servers;
 
 /**
  * @author
  */
 public class HttpStatus extends Thread {
+
+	private static Logger logger = LoggerFactory.getLogger(HttpStatus.class);
 
 	private Integer repeat;
 
@@ -31,24 +41,41 @@ public class HttpStatus extends Thread {
 						bean.getTotalStartedThreadCount(), bean.getThreadCount(), bean.getPeakThreadCount(),
 						bean.getDaemonThreadCount(), deadLockedCount));
 				if (BooleanUtils.isTrue(Servers.centerServerIsRunning())) {
-					list.add(String.format("  +++ center server thread pool size:%d, idle:%d.",
+					File file = new File(Config.dir_logs(true),
+							"centerServer_" + DateTools.compact(new Date()) + ".txt");
+					list.add(String.format("  +++ center server thread pool size:%d, idle:%d, detail:%s.",
 							Servers.centerServer.getThreadPool().getThreads(),
-							Servers.centerServer.getThreadPool().getIdleThreads()));
+							Servers.centerServer.getThreadPool().getIdleThreads(), file.getAbsolutePath()));
+					try (FileOutputStream stream = new FileOutputStream(file);
+							OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+						Servers.centerServer.dump(writer);
+					}
 				}
 				if (BooleanUtils.isTrue(Servers.applicationServerIsRunning())) {
-					list.add(String.format("  +++ application server thread pool size:%d, idle:%d.",
+					File file = new File(Config.dir_logs(true),
+							"applicationServer_" + DateTools.compact(new Date()) + ".txt");
+					list.add(String.format("  +++ application server thread pool size:%d, idle:%d, detail:%s.",
 							Servers.applicationServer.getThreadPool().getThreads(),
-							Servers.applicationServer.getThreadPool().getIdleThreads()));
+							Servers.applicationServer.getThreadPool().getIdleThreads(), file.getAbsolutePath()));
+					try (FileOutputStream stream = new FileOutputStream(file);
+							OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+						Servers.applicationServer.dump(writer);
+					}
 				}
 				if (BooleanUtils.isTrue(Servers.webServerIsRunning())) {
-					list.add(String.format("  +++ web server thread pool size:%d, idle:%d.",
+					File file = new File(Config.dir_logs(true), "webServer_" + DateTools.compact(new Date()) + ".txt");
+					list.add(String.format("  +++ web server thread pool size:%d, idle:%d, detail:%s.",
 							Servers.webServer.getThreadPool().getThreads(),
-							Servers.webServer.getThreadPool().getIdleThreads()));
+							Servers.webServer.getThreadPool().getIdleThreads(), file.getAbsolutePath()));
+					try (FileOutputStream stream = new FileOutputStream(file);
+							OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+						Servers.webServer.dump(writer);
+					}
 				}
 				System.out.println(StringUtils.join(list, StringUtils.LF));
 				Thread.sleep(2000);
 			}
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

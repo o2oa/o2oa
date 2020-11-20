@@ -11,7 +11,6 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
@@ -89,8 +88,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 		p = cb.and(p, cb.equal(root.get(Snap_.application), application.getId()));
 		return p;
 	}
-	
-	protected Predicate myProcessFilter(EffectivePerson effectivePerson, Business business, Process process) throws Exception {
+
+	protected Predicate myProcessFilter(EffectivePerson effectivePerson, Business business, Process process)
+			throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Snap.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Snap> cq = cb.createQuery(Snap.class);
@@ -99,7 +99,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		p = cb.and(p, cb.equal(root.get(Snap_.process), process.getId()));
 		return p;
 	}
-
 
 	protected class FilterWi {
 
@@ -149,9 +148,19 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	protected abstract static class RankWo extends GsonPropertyObject {
+	protected abstract static class RankWo extends Snap {
+
+		private Long rank;
 
 		private static final long serialVersionUID = 2279846765261247910L;
+
+		public Long getRank() {
+			return rank;
+		}
+
+		public void setRank(Long rank) {
+			this.rank = rank;
+		}
 
 	}
 

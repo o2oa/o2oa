@@ -176,6 +176,8 @@ var MTooltips = new Class({
         this.fireEvent("queryCreate",[this]);
         this.loadStyle();
 
+        this.fireEvent("loadStyle",[this]);
+
         this.node = new Element("div.tooltipNode", {
             styles : this.nodeStyles
         }).inject( this.container );

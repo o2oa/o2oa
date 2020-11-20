@@ -66,11 +66,24 @@ public class MergeProcessor extends AbstractMergeProcessor {
 			Work branch = this.findWorkBranch(aeiObjects);
 			if (null != branch) {
 				aeiObjects.getWork().setSplitting(true);
+				// 回滚splitTokenList
 				aeiObjects.getWork().setSplitTokenList(ListUtils.longestCommonSubsequence(
 						aeiObjects.getWork().getSplitTokenList(), branch.getSplitTokenList()));
+				// 回滚splitToken
 				aeiObjects.getWork().setSplitToken(aeiObjects.getWork().getSplitTokenList()
 						.get(aeiObjects.getWork().getSplitTokenList().size() - 1));
-				aeiObjects.getWork().setSplitValue("");
+				// 回滚splitValueList
+				if (aeiObjects.getWork().getSplitValueList().size() > aeiObjects.getWork().getSplitTokenList().size()) {
+					aeiObjects.getWork().setSplitValueList(aeiObjects.getWork().getSplitValueList().subList(0,
+							aeiObjects.getWork().getSplitTokenList().size()));
+				}
+				// 回滚splitValue
+				if (aeiObjects.getWork().getSplitValueList().size() > 0) {
+					aeiObjects.getWork().setSplitValue(aeiObjects.getWork().getSplitValueList()
+							.get(aeiObjects.getWork().getSplitValueList().size() - 1));
+				} else {
+					aeiObjects.getWork().setSplitValue("");
+				}
 				results.add(aeiObjects.getWork());
 			} else {
 				// 完全找不到合并的文档,唯一一份

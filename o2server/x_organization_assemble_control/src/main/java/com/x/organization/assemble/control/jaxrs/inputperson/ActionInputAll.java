@@ -22,7 +22,10 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.general.core.entity.file.GeneralFile;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -97,12 +100,7 @@ class ActionInputAll extends BaseAction {
 			this.scanUnit(business, workbook);
 			String name = "person_input_" + DateTools.formatDate(new Date()) + ".xlsx";
 			workbook.write(os);
-			CacheInputResult cacheInputResult = new CacheInputResult();
-			cacheInputResult.setName(name);
-			cacheInputResult.setBytes(os.toByteArray());
-			String flag = StringTools.uniqueToken();
-			CacheKey cacheKey = new CacheKey(flag);
-			CacheManager.put(this.cache, cacheKey, cacheInputResult);
+			String flag = saveAttachment(os.toByteArray(),name,effectivePerson);
 			CacheManager.notify(Person.class);
 			CacheManager.notify(Group.class);
 			CacheManager.notify(Role.class);
@@ -1226,6 +1224,18 @@ class ActionInputAll extends BaseAction {
 		}
 		for (PersonItem o : people) {
 			o.setPassword(Crypto.encrypt(o.getPassword(), Config.token().getKey()));
+		}
+	}
+
+	private String saveAttachment(byte[] bytes,String attachmentName,EffectivePerson effectivePerson) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), attachmentName, effectivePerson.getDistinguishedName());
+			generalFile.saveContent(gfMapping, bytes, attachmentName);
+			emc.beginTransaction(GeneralFile.class);
+			emc.persist(generalFile, CheckPersistType.all);
+			emc.commit();
+			return generalFile.getId();
 		}
 	}
 	

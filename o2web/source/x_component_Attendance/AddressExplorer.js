@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("Attendance", "Explorer", null, false);
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
+o2.require("MWF.widget.UUID", null, false);
 MWF.xApplication.Attendance.AddressExplorer = new Class({
     Extends: MWF.xApplication.Attendance.Explorer,
     Implements: [Options, Events],
@@ -55,6 +56,10 @@ MWF.xApplication.Attendance.AddressExplorer = new Class({
         }.bind(this));
 
     },
+    setBiduAccount: function(){
+        var baiduAccountForm = new MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm( this );
+        baiduAccountForm.edit();
+    },
     reloadList: function(){
         this.actions.listWorkplace( function(json){
             this.wpContent.empty();
@@ -65,7 +70,7 @@ MWF.xApplication.Attendance.AddressExplorer = new Class({
         this.wdList = new Element("div", {
             styles : this.css.wdList
         }).inject( this.wpContent );
-        this.wdList.setStyle( "width" , this.toolbarNode.getSize().x - 200 + "px" );
+        this.wdList.setStyle( "width" , this.toolbarNode.getSize().x - 370 + "px" );
 
         data.each( function( d ){
             var placeItem = new Element( "div", {
@@ -110,7 +115,7 @@ MWF.xApplication.Attendance.AddressExplorer = new Class({
         }
     },
     _setContentSize: function(){
-        this.wdList.setStyle( "width" , this.toolbarNode.getSize().x - 200 + "px" );
+        this.wdList.setStyle( "width" , this.toolbarNode.getSize().x - 370 + "px" );
     },
     openList : function( e ){
         this.arrow = "down";
@@ -155,17 +160,20 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
             height : "99%"
         }}).inject(this.container);
         setTimeout( function(){
-            this.loadResource( );
+            MWF.UD.getPublicData("baiduAccountKey", function (json) {
+                this.loadResource(null, json );
+            }.bind(this))
         }.bind(this) , 200 )
     },
-    loadResource: function (callback) {
+    loadResource: function (callback, ak) {
         window.BMap_loadScriptTime = (new Date).getTime();
         //var apiPath = "http://api.map.baidu.com/api?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
         var apiPath;
+        var accountkey = ak || "Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
         if( window.location.protocol.toLowerCase() === "https" ){
-            apiPath = "https://api.map.baidu.com/getscript?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg&services=&t=20161219171637";
+            apiPath = "https://api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&services=&t=20161219171637";
         }else{
-            apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg&services=&t=20161219171637";
+            apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&services=&t=20161219171637";
         }
         if( !window.BDMapApiLoaded ){
             COMMON.AjaxModule.loadDom(apiPath, function () {
@@ -436,5 +444,46 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
             if( label )label.remove();
             mkr.remove();
         }
+    }
+});
+
+MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
+    _createTableContent: function(){
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
+            "<tr><td colspan='2' styles='formTableHead'>百度开发者认证</td></tr>" +
+            "<tr>" +
+            "    <td styles='formTableValue' colspan='2'>工作场所设置使用了百度地图开放平台的服务，你可以注册百度开发者认证来提高地图的并发量。认证完成后，请将密钥填至下方的输入框。</td>"+
+            "</tr>" +
+            "<tr>" +
+            "    <td styles='formTableValue' colspan='2'><a href='http://lbsyun.baidu.com/apiconsole/auth' target='_blank'>点击此打开认证通道</a></td>"+
+            "</tr>" +
+            "<tr>" +
+            "    <td styles='formTableTitle' lable='ak'></td>"+
+            "    <td styles='formTableValue' item='ak'></td>"+
+            //"    <td styles='formTableValue' item='action'></td>"+
+            "</tr>" +
+            "</table>";
+        this.formTableArea.set("html",html);
+
+        MWF.UD.getPublicData("baiduAccountKey", function (json) {
+            debugger;
+            MWF.xDesktop.requireApp("Template", "MForm", function(){
+                this.form = new MForm( this.formTableArea, {ak : json || "" }, {
+                    isEdited : true,
+                    itemTemplate : {
+                        ak : {  "text" : "密钥" }
+                    }
+                }, this.app );
+                this.form.load();
+            }.bind(this), true);
+        }.bind(this))
+    },
+    _ok: function( data, callback ){
+        debugger;
+        MWF.UD.putPublicData("baiduAccountKey",  data.ak, function (json) {
+            if(callback)callback(json);
+            // this.close();
+        }.bind(this));
     }
 });

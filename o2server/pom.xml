@@ -1017,4 +1017,10 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>o2oa-release</id>
+			<url>http://maven.o2oa.net/repository/o2oa-release/</url>
+		</repository>
+	</distributionManagement>
 </project>

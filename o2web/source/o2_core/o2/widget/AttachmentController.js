@@ -1,4 +1,5 @@
 o2.widget = o2.widget || {};
+if( !o2.widget.UUID )o2.require("o2.widget.UUID", null, false);
 o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     Extends: o2.widget.Common,
 	Implements: [Options, Events],
@@ -583,13 +584,16 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     checkDownloadAction: function(){
         if (!this.options.isDownload){
             this.setActionDisabled(this.downloadAction);
+            this.setActionDisabled(this.min_downloadAction);
             this.setActionDisabled(this.downloadAllAction);
             this.setAttachmentsAction("download", false );
         }else{
             if (this.selectedAttachments.length){
                 this.setActionEnabled(this.downloadAction);
+                this.setActionEnabled(this.min_downloadAction);
             }else{
                 this.setActionDisabled(this.downloadAction);
+                this.setActionDisabled(this.min_downloadAction);
             }
             this.setActionEnabled(this.downloadAllAction);
             this.setAttachmentsAction("download", true );
@@ -935,7 +939,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                                 };
                                 if (layout.desktop.message) layout.desktop.message.addTooltip(msg);
                                 if (layout.desktop.message) layout.desktop.message.addMessage(msg);
-                                if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("error", {"x": "right", "y": "top"}, "文件：“"+file.name+"”不符合允许上传类型", this.node);
+                                if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("info", {"x": "right", "y": "top"}, "文件：“"+file.name+"”不符合允许上传类型", this.node);
                             }else if (size && file.size> size*1024*1024){
                                 var msg = {
                                     "subject": o2.LP.widget.refuseUpload,
@@ -943,7 +947,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                                 };
                                 if (layout.desktop.message) layout.desktop.message.addTooltip(msg);
                                 if (layout.desktop.message) layout.desktop.message.addMessage(msg);
-                                if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("error", {"x": "right", "y": "top"}, "文件：“"+file.name+"”超出允许的大小，（仅允许上传小于"+size+"M的文件）", this.node);
+                                if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("info", {"x": "right", "y": "top"}, "文件：“"+file.name+"”超出允许的大小，（仅允许上传小于"+size+"M的文件）", this.node);
                             }else{
                                 var formData = new FormData();
                                 Object.each(obj, function(v, k){
@@ -1499,7 +1503,8 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.node.addEvents({
             "mouseover": function(){if (!this.isSelected) this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle+"_over"])}.bind(this),
             "mouseout": function(){if (!this.isSelected) this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle])}.bind(this),
-            "mousedown": function(e){this.selected(e);}.bind(this),
+            "mousedown": function(e){this.selected(e); e.stopPropagation();}.bind(this),
+            "click": function(e){e.stopPropagation();}.bind(this),
             "dblclick": function(e){this.openAttachment(e);}.bind(this)
         });
     },
@@ -1869,7 +1874,8 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
                     }
                 }
             }.bind(this),
-            "mousedown": function(e){this.selected(e);}.bind(this),
+            "mousedown": function(e){this.selected(e);e.stopPropagation();}.bind(this),
+            "click": function(e){e.stopPropagation();}.bind(this),
             "dblclick": function(e){this.openAttachment(e);}.bind(this)
         });
     },

@@ -27,7 +27,7 @@ public class Kingbase8Dictionary extends DBDictionary {
 	public String namedSequenceFromOneSchemaSQL = "select SYS_NAMESPACE.NSPNAME as SEQUENCE_SCHEMA, SYS_CLASS.RELNAME as SEQUENCE_NAME from SYS_NAMESPACE,SYS_CLASS where  SYS_NAMESPACE.OID=SYS_CLASS.RELNAMESPACE and SYS_CLASS.RELKIND='S' AND SYS_CLASS.RELNAME = ? AND SYS_NAMESPACE.NSPNAME = ?";
 
 	public Kingbase8Dictionary() {
-		this.platform = "KingbaseES";
+		this.platform = "KingbaseES8";
 		this.validationSQL = "SELECT NOW()";
 		this.supportsSelectStartIndex = true;
 		this.supportsSelectEndIndex = true;

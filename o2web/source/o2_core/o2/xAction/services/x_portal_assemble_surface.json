@@ -11,8 +11,15 @@
 
   "getPage": {"uri": "/jaxrs/page/{id}"},
   "getPageMobile": {"uri": "/jaxrs/page/{id}/mobile"},
+  "getPageV2": {"uri": "/jaxrs/page/v2/{id}"},
+  "getPageMobileV2": {"uri": "/jaxrs/page/v2/{id}/mobile"},
+
   "getPageByName": {"uri": "/jaxrs/page/{name}/portal/{id}"},
   "getPageByNameMobile": {"uri": "/jaxrs/page/{name}/portal/{id}/mobile"},
+
+  "getPageByNameV2": {"uri": "/jaxrs/page/v2/{name}/portal/{id}"},
+  "getPageByNameMobileV2": {"uri": "/jaxrs/page/v2/{name}/portal/{id}/mobile"},
+
   "getSource": {"uri": "/jaxrs/source/{id}"},
   "getScript": {"uri": "/jaxrs/script/{id}"},
   //"getScriptByName": {"uri": "/jaxrs/script/portal/{applicationId}/name/{name}"},

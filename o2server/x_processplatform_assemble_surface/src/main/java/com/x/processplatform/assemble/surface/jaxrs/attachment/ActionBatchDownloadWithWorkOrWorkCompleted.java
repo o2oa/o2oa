@@ -78,6 +78,9 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 				}
 			}
 			if (StringUtils.isBlank(fileName)) {
+				if(title.length()>60){
+					title = title.substring(0, 60);
+				}
 				fileName = title + DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss) + ".zip";
 			} else {
 				String extension = FilenameUtils.getExtension(fileName);
@@ -100,7 +103,8 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 					emc.commit();
 				}
 			}
-
+			fileName = StringUtils.replaceEach(fileName,
+					new String[] { "/",":","*","?","<<",">>","|","<",">","\\" }, new String[] { "","","","","","","","","","" });
 			logger.info("batchDown to {}，att size {}, from work {}", fileName, attachmentList.size(), workId);
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 				business.downToZip(readableAttachmentList, os, map);

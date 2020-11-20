@@ -80,6 +80,7 @@ public class CreateConfigSample {
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
 		classes.add(Cache.class);
+		//classes.add(Web.class);
 
 		Collections.sort(classes, new Comparator<Class<?>>() {
 			public int compare(Class<?> c1, Class<?> c2) {

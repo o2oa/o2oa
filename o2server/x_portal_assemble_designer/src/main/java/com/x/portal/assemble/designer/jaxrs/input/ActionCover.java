@@ -64,7 +64,13 @@ class ActionCover extends BaseAction {
 			portal.setName(this.idlePortalName(business, portal.getName(), portal.getId()));
 			portal.setAlias(this.idlePortalAlias(business, portal.getAlias(), portal.getId()));
 			persistObjects.add(portal);
-		}else if (!business.editable(effectivePerson, portal)) {
+		}else{
+			WrapPortal.inCopier.copy(wi, portal);
+			portal.setName(this.idlePortalName(business, portal.getName(), portal.getId()));
+			portal.setAlias(this.idlePortalAlias(business, portal.getAlias(), portal.getId()));
+		}
+
+		if (!business.editable(effectivePerson, portal)) {
 			throw new ExceptionPortalAccessDenied(effectivePerson.getName(), portal.getName(), portal.getId());
 		}
 

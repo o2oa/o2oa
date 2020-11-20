@@ -37,97 +37,97 @@ class ActionManageGetAssignment extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionManageGetAssignment.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		WorkCompleted workCompleted = null;
+		WoControl control = null;
+		Wo wo = new Wo();
+		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wo wo = new Wo();
 			Business business = new Business(emc);
-			WorkCompleted workCompleted = emc.find(id, WorkCompleted.class);
+			workCompleted = emc.find(id, WorkCompleted.class);
 			Process process = business.process().pick(workCompleted.getProcess());
 			Application application = business.application().pick(workCompleted.getApplication());
 			// 需要对这个应用的管理权限
 			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
+			control = business.getControl(effectivePerson, workCompleted, WoControl.class);
 			wo.setControl(control);
-
-			CompletableFuture<Void> future_taskCompleted = CompletableFuture.runAsync(() -> {
-				try {
-					emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, workCompleted.getJob()).stream()
-							.sorted(Comparator.comparing(TaskCompleted::getStartTime,
-									Comparator.nullsLast(Date::compareTo)))
-							.forEach(o -> {
-								try {
-									WoTaskCompleted w = WoTaskCompleted.copier.copy(o);
-									w.setControl(control);
-									wo.getTaskCompletedList().add(w);
-								} catch (Exception e) {
-									logger.error(e);
-								}
-							});
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			CompletableFuture<Void> future_read = CompletableFuture.runAsync(() -> {
-				try {
-					emc.listEqual(Read.class, Read.job_FIELDNAME, workCompleted.getJob()).stream()
-							.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
-							.forEach(o -> {
-								try {
-									WoRead w = WoRead.copier.copy(o);
-									w.setControl(control);
-									wo.getReadList().add(w);
-								} catch (Exception e) {
-									logger.error(e);
-								}
-							});
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			CompletableFuture<Void> future_readCompleted = CompletableFuture.runAsync(() -> {
-				try {
-					emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, workCompleted.getJob()).stream()
-							.sorted(Comparator.comparing(ReadCompleted::getStartTime,
-									Comparator.nullsLast(Date::compareTo)))
-							.forEach(o -> {
-								try {
-									WoReadCompleted w = WoReadCompleted.copier.copy(o);
-									w.setControl(control);
-									wo.getReadCompletedList().add(w);
-								} catch (Exception e) {
-									logger.error(e);
-								}
-							});
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			CompletableFuture<Void> future_review = CompletableFuture.runAsync(() -> {
-				try {
-					emc.listEqual(Review.class, Review.job_FIELDNAME, workCompleted.getJob()).stream()
-							.sorted(Comparator.comparing(Review::getStartTime, Comparator.nullsLast(Date::compareTo)))
-							.forEach(o -> {
-								try {
-									WoReview w = WoReview.copier.copy(o);
-									w.setControl(control);
-									wo.getReviewList().add(w);
-								} catch (Exception e) {
-									logger.error(e);
-								}
-							});
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			future_taskCompleted.get(300, TimeUnit.SECONDS);
-			future_read.get(300, TimeUnit.SECONDS);
-			future_readCompleted.get(300, TimeUnit.SECONDS);
-			future_review.get(300, TimeUnit.SECONDS);
-			result.setData(wo);
-			return result;
 		}
+		final String job = workCompleted.getJob();
+		CompletableFuture<Void> future_taskCompleted = CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, job).stream().sorted(
+						Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
+						.forEach(o -> {
+							try {
+								WoTaskCompleted w = WoTaskCompleted.copier.copy(o);
+								// w.setControl(control);
+								wo.getTaskCompletedList().add(w);
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						});
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+		CompletableFuture<Void> future_read = CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.listEqual(Read.class, Read.job_FIELDNAME, job).stream()
+						.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
+						.forEach(o -> {
+							try {
+								WoRead w = WoRead.copier.copy(o);
+								//w.setControl(control);
+								wo.getReadList().add(w);
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						});
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+		CompletableFuture<Void> future_readCompleted = CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, job).stream().sorted(
+						Comparator.comparing(ReadCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
+						.forEach(o -> {
+							try {
+								WoReadCompleted w = WoReadCompleted.copier.copy(o);
+								//w.setControl(control);
+								wo.getReadCompletedList().add(w);
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						});
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+		CompletableFuture<Void> future_review = CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.listEqual(Review.class, Review.job_FIELDNAME, job).stream()
+						.sorted(Comparator.comparing(Review::getStartTime, Comparator.nullsLast(Date::compareTo)))
+						.forEach(o -> {
+							try {
+								WoReview w = WoReview.copier.copy(o);
+								//w.setControl(control);
+								wo.getReviewList().add(w);
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						});
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+		future_taskCompleted.get(300, TimeUnit.SECONDS);
+		future_read.get(300, TimeUnit.SECONDS);
+		future_readCompleted.get(300, TimeUnit.SECONDS);
+		future_review.get(300, TimeUnit.SECONDS);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends GsonPropertyObject {

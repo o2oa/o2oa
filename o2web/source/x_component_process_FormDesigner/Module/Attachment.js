@@ -66,6 +66,8 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 
 	_initModule: function(){
 		this.node.empty();
+		if (this.parentContainer && this.parentContainer.json.moduleName == "datagrid$Data" && !this.json.size) this.json.size = "min";
+		if (this.parentContainer && this.parentContainer.json.moduleName == "datagrid$Data" && !this.json.listStyle) this.json.listStyle = "sequence";
 		this.loadAttachmentController(this.json.editorProperties);
 
 		this.setPropertiesOrStyles("styles");
@@ -73,6 +75,9 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 		this._setNodeProperty();
         if (!this.form.isSubform) this._createIconAction();
 		this._setNodeEvent();
+
+		debugger;
+
 	},
     loadAttachmentController: function(){
         MWF.require("MWF.widget.AttachmentController", function(){
