@@ -148,7 +148,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
             this.getPageData(function(json){
                 this.options.pageId = this.portal.firstPage;
                 this.loadPortalPage();
-            });
+            }.bind(this));
         }
     },
     loadPortalPage: function(par, callback){
