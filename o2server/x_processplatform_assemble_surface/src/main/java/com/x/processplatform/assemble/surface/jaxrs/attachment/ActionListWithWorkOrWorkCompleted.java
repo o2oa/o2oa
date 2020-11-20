@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -31,14 +33,24 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 
 		ActionResult<List<Wo>> result = new ActionResult<>();
+		CompletableFuture<List<Wo>> listFuture = listFuture(effectivePerson, workOrWorkCompleted);
+		CompletableFuture<Boolean> checkControlFuture = checkControlFuture(effectivePerson, workOrWorkCompleted);
+		result.setData(listFuture.get(10, TimeUnit.SECONDS));
+		if (BooleanUtils.isFalse(checkControlFuture.get(10, TimeUnit.SECONDS))) {
+			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+		}
+		return result;
 
-		CompletableFuture<List<Wo>> _wos = CompletableFuture.supplyAsync(() -> {
+	}
+
+	private CompletableFuture<List<Wo>> listFuture(EffectivePerson effectivePerson, String flag) {
+		return CompletableFuture.supplyAsync(() -> {
 			List<Wo> wos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-				final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
+				final String job = business.job().findWithWorkOrWorkCompleted(flag);
 				for (Attachment attachment : business.entityManagerContainer().listEqual(Attachment.class,
 						Attachment.job_FIELDNAME, job)) {
 					Wo wo = Wo.copier.copy(attachment);
@@ -63,25 +75,6 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			return wos;
 		});
 
-		CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
-			Boolean value = false;
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-						new ExceptionEntityNotExist(workOrWorkCompleted));
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			return value;
-		});
-
-		if (BooleanUtils.isFalse(_control.get())) {
-			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
-		}
-
-		result.setData(_wos.get());
-
-		return result;
 	}
 
 	public static class Wo extends Attachment {
@@ -105,8 +98,11 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	public static class WoControl extends GsonPropertyObject {
 		private static final long serialVersionUID = -7283783148043076205L;
+		@FieldDescribe("可读")
 		private Boolean allowRead = false;
+		@FieldDescribe("可写")
 		private Boolean allowEdit = false;
+		@FieldDescribe("可控制")
 		private Boolean allowControl = false;
 
 		public Boolean getAllowRead() {

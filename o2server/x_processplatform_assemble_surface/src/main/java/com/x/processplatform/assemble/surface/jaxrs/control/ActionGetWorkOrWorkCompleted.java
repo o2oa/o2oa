@@ -3,13 +3,13 @@ package com.x.processplatform.assemble.surface.jaxrs.control;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -47,7 +47,17 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
+		CompletableFuture<Wo> getFuture = this.getFuture(effectivePerson, workOrWorkCompleted);
+		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, workOrWorkCompleted);
+		result.setData(getFuture.get(10, TimeUnit.SECONDS));
+		if (BooleanUtils.isFalse(checkControlFuture.get(10, TimeUnit.SECONDS))) {
+			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+		}
+		return result;
+	}
+
+	private CompletableFuture<Wo> getFuture(EffectivePerson effectivePerson, String workOrWorkCompleted) {
+		return CompletableFuture.supplyAsync(() -> {
 			Wo wo = null;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
@@ -65,25 +75,6 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 			}
 			return wo;
 		});
-
-		CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
-			Boolean value = false;
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-						new ExceptionEntityNotExist(workOrWorkCompleted));
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			return value;
-		});
-
-		if (BooleanUtils.isFalse(_control.get())) {
-			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
-		}
-
-		result.setData(_wo.get());
-		return result;
 	}
 
 	private Wo workCompleted(Business business, EffectivePerson effectivePerson, WorkCompleted workCompleted)
