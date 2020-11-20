@@ -1,9 +1,20 @@
 package com.x.processplatform.assemble.surface.jaxrs.control;
 
+import java.util.concurrent.CompletableFuture;
+
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.processplatform.assemble.surface.Business;
 
 abstract class BaseAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
 	protected static class AbstractControl extends GsonPropertyObject {
 		/* 是否可以看到 */
@@ -117,6 +128,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.allowPress = allowPress;
 		}
 
+	}
+
+	protected CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
+		return CompletableFuture.supplyAsync(() -> {
+			Boolean value = false;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag,
+						new ExceptionEntityNotExist(flag));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return value;
+		});
 	}
 
 }
