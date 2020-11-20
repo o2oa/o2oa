@@ -87,7 +87,7 @@ class ActionCreate extends BaseAction {
 		private static final long serialVersionUID = -6314932919066148113L;
 
 		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, Unit.superior_FIELDNAME, Unit.pinyin_FIELDNAME,
+				ListTools.toList(JpaObject.FieldsUnmodify, Unit.pinyin_FIELDNAME,
 						Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME, Unit.levelName_FIELDNAME,
 						Unit.inheritedControllerList_FIELDNAME));
 	}
