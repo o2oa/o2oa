@@ -29,7 +29,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                 //alert(this.readonly)
 
                 if( this.json.multiTools ){ //自定义操作和系统操作混合的情况，用 system : true 来区分系统和自定义
-                    var addReadActionFlag = !this.json.hideSystemTools; //是否需要增加已阅
+                    var addReadActionFlag = !this.json.hideSystemTools && !this.json.hideReadedAction; //是否需要增加已阅
                     this.json.multiTools.each( function (tool) {
                         if( tool.system ){
                             if( !this.json.hideSystemTools ){
@@ -80,7 +80,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
 
                             //this.json.defaultTools.push(o);
                             this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
-                            this.setToolbars(addActions, this.toolbarNode, this.readonly);
+                            if( !this.json.hideReadedAction ){
+                                this.setToolbars(addActions, this.toolbarNode, this.readonly);
+                            }
 
                             this.setCustomToolbars(this.json.tools, this.toolbarNode);
                             this.toolbarWidget.load();
