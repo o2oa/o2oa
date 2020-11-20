@@ -184,15 +184,49 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "");
     },
 	getValue: function(){
+        debugger;
+        if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
 		return value || "";
 	},
     _setValue: function(value){
+	    debugger;
+	    // if (value && value.isAG){
+	    //     var ag = o2.AG.all(value).then(function(v){
+	    //         if (o2.typeOf(v)=="array") v = v[0];
+        //         this.__setValue(v);
+        //     }.bind(this));
+        //     this.moduleValueAG = ag;
+	    //     ag.then(function(){
+        //         this.moduleValueAG = null;
+        //     }.bind(this));
+        // }else {
+        if (o2.typeOf(value.then)=="function"){
+            var p = o2.promiseAll(value).then(function(v){
+                this.__setValue(v);
+            }.bind(this));
+            this.moduleValueAG = p;
+            p.then(function(){
+                this.moduleValueAG = null;
+            }.bind(this));
+        }else{
+            this.moduleValueAG = null;
+            this.__setValue(value);
+        }
+
+            //this.__setValue(value);
+        // }
+
+    },
+    __setValue: function(value){
         this._setBusinessData(value);
         if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
         if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+        this.moduleValueAG = null;
+        return value;
     },
+
 	_loadValue: function(){
         this._setValue(this.getValue());
 	},
@@ -237,7 +271,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
      */
 	getData: function(when){
         if (this.json.compute == "save") this._setValue(this._computeValue());
-		return this.getInputData();
+        return this.getInputData();
 	},
     getInputData: function(){
         if (this.node.getFirst()){
@@ -257,15 +291,43 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
      *  @param {string/number/jsonObject} .
      */
 	setData: function(data){
+        // if (data && data.isAG){
+        //     var ag = o2.AG.all(data).then(function(v){
+        //         if (o2.typeOf(v)=="array") v = v[0];
+        //         this.__setData(v);
+        //     }.bind(this));
+        //     this.moduleValueAG = ag;
+        //     ag.then(function(){
+        //         this.moduleValueAG = null;
+        //     }.bind(this));
+        // }else{
+        if (o2.typeOf(data.then)=="function"){
+            var p = o2.promiseAll(data).then(function(v){
+                this.__setValue(v);
+            }.bind(this));
+            this.moduleValueAG = p;
+            p.then(function(){
+                this.moduleValueAG = null;
+            }.bind(this));
+        }else{
+            this.moduleValueAG = null;
+            this.__setValue(data);
+        }
+            //this.__setData(data);
+        //}
+	},
+    __setData: function(data){
         this._setBusinessData(data);
-		if (this.node.getFirst()){
+        if (this.node.getFirst()){
             this.node.getFirst().set("value", data);
             this.checkDescription();
             this.validationMode();
         }else{
             this.node.set("text", data);
         }
-	},
+        this.moduleValueAG = null;
+    },
+
 
     createErrorNode: function(text){
 
