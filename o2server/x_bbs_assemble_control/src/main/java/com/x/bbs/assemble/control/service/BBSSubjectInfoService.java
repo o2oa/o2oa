@@ -651,7 +651,7 @@ public class BBSSubjectInfoService {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.subjectInfoFactory().listSubjectInSectionForPage( searchTitle, forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, maxRecordCount, viewSectionIds );
+			return business.subjectInfoFactory().listSubjectInSectionForPage( searchTitle, forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, maxRecordCount, viewSectionIds,null,null );
 		}catch( Exception e ){
 			throw e;
 		}
@@ -664,7 +664,7 @@ public class BBSSubjectInfoService {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.subjectInfoFactory().countSubjectInSectionForPage( searchTitle, forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, viewSectionIds );
+			return business.subjectInfoFactory().countSubjectInSectionForPage( searchTitle, forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, viewSectionIds ,null,null );
 		}catch( Exception e ){
 			throw e;
 		}
