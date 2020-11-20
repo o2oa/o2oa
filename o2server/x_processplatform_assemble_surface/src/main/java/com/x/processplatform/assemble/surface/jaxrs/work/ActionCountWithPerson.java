@@ -41,61 +41,94 @@ class ActionCountWithPerson extends BaseAction {
 		}
 		if (StringUtils.isNotEmpty(person)) {
 			final String dn = person;
-			CompletableFuture<Void> future_task = CompletableFuture.runAsync(() -> {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					wo.setTask(emc.countEqual(Task.class, Task.person_FIELDNAME, dn));
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 已办仅取latest */
-			CompletableFuture<Void> future_taskCompleted = CompletableFuture.runAsync(() -> {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					EntityManager em;
-					em = emc.get(TaskCompleted.class);
-					CriteriaBuilder cb = em.getCriteriaBuilder();
-					CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-					Root<TaskCompleted> root = cq.from(TaskCompleted.class);
-					Predicate p = cb.equal(root.get(TaskCompleted_.person), dn);
-					p = cb.and(p, cb.or(cb.equal(root.get(TaskCompleted_.latest), true),
-							cb.isNull(root.get(TaskCompleted_.latest))));
-					wo.setTaskCompleted(em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult());
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			CompletableFuture<Void> future_read = CompletableFuture.runAsync(() -> {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					wo.setRead(emc.countEqual(Read.class, Read.person_FIELDNAME, dn));
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			CompletableFuture<Void> future_readCompleted = CompletableFuture.runAsync(() -> {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					wo.setReadCompleted(emc.countEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn));
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			CompletableFuture<Void> future_review = CompletableFuture.runAsync(() -> {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					wo.setReview(emc.countEqual(Review.class, Review.person_FIELDNAME, dn));
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			future_task.get(300, TimeUnit.SECONDS);
-			future_taskCompleted.get(300, TimeUnit.SECONDS);
-			future_read.get(300, TimeUnit.SECONDS);
-			future_readCompleted.get(300, TimeUnit.SECONDS);
-			future_review.get(300, TimeUnit.SECONDS);
+			CompletableFuture<Long> taskFuture = this.taskFuture(dn);
+			CompletableFuture<Long> taskCompletedFuture = this.taskCompletedFuture(dn);
+			CompletableFuture<Long> readFuture = this.readFuture(dn);
+			CompletableFuture<Long> readCompletedFuture = this.readCompletedFuture(dn);
+			CompletableFuture<Long> reviewFuture = this.reviewFuture(dn);
+			wo.setTask(taskFuture.get(10, TimeUnit.SECONDS));
+			wo.setTaskCompleted(taskCompletedFuture.get(10, TimeUnit.SECONDS));
+			wo.setRead(readFuture.get(10, TimeUnit.SECONDS));
+			wo.setReadCompleted(readCompletedFuture.get(10, TimeUnit.SECONDS));
+			wo.setReview(reviewFuture.get(10, TimeUnit.SECONDS));
 		}
 		result.setData(wo);
 		return result;
 	}
 
+	private CompletableFuture<Long> taskFuture(String dn) {
+		return CompletableFuture.supplyAsync(() -> {
+			Long count = 0L;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				count = emc.countEqual(Task.class, Task.person_FIELDNAME, dn);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return count;
+		});
+	}
+
+	private CompletableFuture<Long> taskCompletedFuture(String dn) {
+		return CompletableFuture.supplyAsync(() -> {
+			Long count = 0L;
+			// 已办仅取latest
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				EntityManager em;
+				em = emc.get(TaskCompleted.class);
+				CriteriaBuilder cb = em.getCriteriaBuilder();
+				CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+				Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+				Predicate p = cb.equal(root.get(TaskCompleted_.person), dn);
+				p = cb.and(p, cb.or(cb.equal(root.get(TaskCompleted_.latest), true),
+						cb.isNull(root.get(TaskCompleted_.latest))));
+				count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return count;
+		});
+
+	}
+
+	private CompletableFuture<Long> readFuture(String dn) {
+		return CompletableFuture.supplyAsync(() -> {
+			Long count = 0L;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				count = emc.countEqual(Read.class, Read.person_FIELDNAME, dn);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return count;
+		});
+	}
+
+	private CompletableFuture<Long> readCompletedFuture(String dn) {
+		return CompletableFuture.supplyAsync(() -> {
+			Long count = 0L;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				count = emc.countEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return count;
+		});
+	}
+
+	private CompletableFuture<Long> reviewFuture(String dn) {
+		return CompletableFuture.supplyAsync(() -> {
+			Long count = 0L;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				count = emc.countEqual(Review.class, Review.person_FIELDNAME, dn);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return count;
+		});
+	}
+
 	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -4391978436352777470L;
 
 		@FieldDescribe("待办数量")
 		private Long task = 0L;
