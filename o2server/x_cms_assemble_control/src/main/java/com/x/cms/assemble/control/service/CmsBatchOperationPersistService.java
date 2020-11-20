@@ -72,8 +72,7 @@ public class CmsBatchOperationPersistService {
 		cmsBatchOperation.setErrorCount( 0 );
 		cmsBatchOperation.setIsRunning( false );
 		cmsBatchOperation.setOldInfo( oldInfo );
-		addOperation( cmsBatchOperation );	
-		return cmsBatchOperation;
+		return addOperation( cmsBatchOperation ) ;
 	}
 	
 	/**
