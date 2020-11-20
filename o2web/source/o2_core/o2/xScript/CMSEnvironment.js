@@ -74,281 +74,509 @@ MWF.xScript.CMSEnvironment = function(ev){
     this.org = {
         //群组***************
         //获取群组--返回群组的对象数组
-        getGroup: function(name){
+        getGroup: function(name, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
+
             var v = null;
-            orgActions.listGroup(data, function(json){v = json.data;}, null, false);
-            return (v && v.length===1) ? v[0] : v;
+
+            var cb = function(json){
+                v = json.data;
+                v = (v && v.length===1) ? v[0] : v
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listGroup(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var v = null;
+            // orgActions.listGroup(data, function(json){v = json.data;}, null, false);
+            // return (v && v.length===1) ? v[0] : v;
         },
         //查询下级群组--返回群组的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
-        listSubGroup: function(name, nested){
+        listSubGroup: function(name, nested, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
+
             var v = null;
+            // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            //     v = json.data;
+            //     return v;
+            // }.ag().catch(function(json){ return json; });
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise;
             if (nested){
-                orgActions.listSubGroupNested(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listSubGroupNested(data, cb, null, !!async);
             }else{
-                orgActions.listSubGroupDirect(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listSubGroupDirect(data, cb, null, !!async);
             }
-            return v;
+            return (!!async) ? promise : v;
+
+            // var v = null;
+            // if (nested){
+            //     orgActions.listSubGroupNested(data, function(json){v = json.data;}, null, false);
+            // }else{
+            //     orgActions.listSubGroupDirect(data, function(json){v = json.data;}, null, false);
+            // }
+            // return v;
         },
         //查询上级群组--返回群组的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
-        listSupGroup:function(name, nested){
+        listSupGroup:function(name, nested, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
+
             var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise
             if (nested){
-                orgActions.listSupGroupNested(data, function(json){v = json.data;}, null, false);
+                var promise = orgActions.listSupGroupNested(data, cb, null, !!async);
             }else{
-                orgActions.listSupGroupDirect(data, function(json){v = json.data;}, null, false);
+                var promise = orgActions.listSupGroupDirect(data, cb, null, !!async);
             }
-            return v;
+            return (!!async) ? promise : v;
+            // var v = null;
+            // if (nested){
+            //     orgActions.listSupGroupNested(data, function(json){v = json.data;}, null, false);
+            // }else{
+            //     orgActions.listSupGroupDirect(data, function(json){v = json.data;}, null, false);
+            // }
+            // return v;
         },
         //人员所在群组（嵌套）--返回群组的对象数组
-        listGroupWithPerson:function(name){
+        listGroupWithPerson:function(name, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
+
             var v = null;
-            orgActions.listGroupWithPerson(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listGroupWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+            // var v = null;
+            // orgActions.listGroupWithPerson(data, function(json){v = json.data;}, null, false);
+            // return v;
         },
         //群组是否拥有角色--返回true, false
-        groupHasRole: function(name, role){
+        groupHasRole: function(name, role, async){
             getOrgActions();
             nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
             var data = {"group":nameFlag,"roleList":getNameFlag(role)};
+
             var v = false;
-            orgActions.groupHasRole(data, function(json){v = json.data.value;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data.value;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.groupHasRole(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var v = false;
+            // orgActions.groupHasRole(data, function(json){v = json.data.value;}, null, false);
+            // return v;
         },
 
         //角色***************
         //获取角色--返回角色的对象数组
-        getRole: function(name){
+        getRole: function(name, async){
             getOrgActions();
             var data = {"roleList": getNameFlag(name)};
+
             var v = null;
-            orgActions.listRole(data, function(json){v = json.data;}, null, false);
-            return (v && v.length===1) ? v[0] : v;
+            var cb = function(json){
+                v = json.data;
+                v = (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listRole(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var v = null;
+            // orgActions.listRole(data, function(json){v = json.data;}, null, false);
+            // return (v && v.length===1) ? v[0] : v;
         },
         //人员所有角色（嵌套）--返回角色的对象数组
-        listRoleWithPerson:function(name){
+        listRoleWithPerson:function(name, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
+
             var v = null;
-            orgActions.listRoleWithPerson(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+            // var v = null;
+            // orgActions.listRoleWithPerson(data, function(json){v = json.data;}, null, false);
+            // return v;
         },
 
         //人员***************
         //人员是否拥有角色--返回true, false
-        personHasRole: function(name, role){
+        personHasRole: function(name, role, async){
             getOrgActions();
             nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
             var data = {"person":nameFlag,"roleList":getNameFlag(role)};
+
             var v = false;
-            orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data.value;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var v = false;
+            // orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
+            // return v;
         },
         //获取人员--返回人员的对象数组
-        getPerson: function(name){
+        getPerson: function(name, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
+
             var v = null;
-            orgActions.listPerson(data, function(json){v = json.data;}, null, false);
-            return (v && v.length===1) ? v[0] : v;;
+            var cb = function(json){
+                v = json.data;
+                v = (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+            // var v = null;
+            // orgActions.listPerson(data, function(json){v = json.data;}, null, false);
+            // return (v && v.length===1) ? v[0] : v;
         },
         //查询下级人员--返回人员的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
-        listSubPerson: function(name, nested){
+        listSubPerson: function(name, nested, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
+
             var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise;
             if (nested){
-                orgActions.listPersonSubNested(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listPersonSubNested(data, cb, null, !!async);
             }else{
-                orgActions.listPersonSubDirect(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listPersonSubDirect(data, cb, null, !!async);
             }
-            return v;
+            return (!!async) ? promise : v;
         },
         //查询上级人员--返回人员的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
-        listSupPerson: function(name, nested){
+        listSupPerson: function(name, nested, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
             var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise;
             if (nested){
-                orgActions.listPersonSupNested(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listPersonSupNested(data, cb, null, !!async);
             }else{
-                orgActions.listPersonSupDirect(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listPersonSupDirect(data, cb, null, !!async);
             }
-            return v;
+            return (!!async) ? promise : v;
         },
         //获取群组的所有人员--返回人员的对象数组
-        listPersonWithGroup: function(name){
+        listPersonWithGroup: function(name, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
+
             var v = null;
-            orgActions.listPersonWithGroup(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonWithGroup(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取角色的所有人员--返回人员的对象数组
-        listPersonWithRole: function(name){
+        listPersonWithRole: function(name, async){
             getOrgActions();
             var data = {"roleList": getNameFlag(name)};
             var v = null;
-            orgActions.listPersonWithRole(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise
+            promise = orgActions.listPersonWithRole(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取身份的所有人员--返回人员的对象数组
-        listPersonWithIdentity: function(name){
+        listPersonWithIdentity: function(name, async){
             getOrgActions();
             var data = {"identityList": getNameFlag(name)};
             var v = null;
-            orgActions.listPersonWithIdentity(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取身份的所有人员--返回人员的对象数组或人员对象
-        getPersonWithIdentity: function(name){
+        getPersonWithIdentity: function(name, async){
             getOrgActions();
             var data = {"identityList": getNameFlag(name)};
             var v = null;
-            orgActions.listPersonWithIdentity(data, function(json){v = json.data;}, null, false);
-            return (v && v.length===1) ? v[0] : v;
+            var cb = function(json){
+                v = json.data;
+                v =  (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //查询组织成员的人员--返回人员的对象数组
         //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
-        listPersonWithUnit: function(name, nested){
+        listPersonWithUnit: function(name, nested, async){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise;
             if (nested){
-                orgActions.listPersonWithUnitNested(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listPersonWithUnitNested(data, cb, null, !!async);
             }else{
-                orgActions.listPersonWithUnitDirect(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listPersonWithUnitDirect(data, cb, null, !!async);
             }
-            return v;
+            return (!!async) ? promise : v;
         },
         //根据属性查询人员--返回人员的对象数组
         //name  string 属性名
         //value  string 属性值
-        listPersonWithAttribute: function(name, value){
+        listPersonWithAttribute: function(name, value, async){
             getOrgActions();
             var data = {"name": name, "attribute": value};
             var v = null;
-            orgActions.listPersonWithAttribute(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonWithAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //根据属性查询人员--返回人员的全称数组
         //name  string 属性名
         //value  string 属性值
-        listPersonNameWithAttribute: function(name, value){
+        listPersonNameWithAttribute: function(name, value, async){
             getOrgActions();
             var data = {"name": name, "attribute": value};
             var v = null;
-            orgActions.listPersonWithAttributeValue(data, function(json){v = json.data.personList;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data.personList;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonWithAttributeValue(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
 
         //人员属性************
         //添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)
-        appendPersonAttribute: function(person, attr, values, success, failure){
+        appendPersonAttribute: function(person, attr, values, success, failure, async){
             getOrgActions();
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"attributeList":values,"name":attr,"person":personFlag};
-            orgActions.appendPersonAttribute(data, function(json){
-                if (json.data.value){
-                    if (success) success();
-                }else{
-                    if (failure) failure(null, "", "append values failed");
-                }
-            }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
-            }, false);
+
+            var cb = function(json){
+                if (success) return success(json);
+            }.ag().catch(function(xhr, text, error){
+                if (failure) return failure(xhr, text, error);
+            });
+
+            orgActions.appendPersonAttribute(data, cb, null, !!async);
         },
         //设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
-        setPersonAttribute: function(person, attr, values, success, failure){
+        setPersonAttribute: function(person, attr, values, success, failure, async){
             getOrgActions();
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"attributeList":values,"name":attr,"person":personFlag};
-            orgActions.setPersonAttribute(data, function(json){
-                if (json.data.value){
-                    if (success) success();
-                }else{
-                    if (failure) failure(null, "", "append values failed");
-                }
-            }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
-            }, false);
+
+            var cb = function(json){
+                if (success) return success(json);
+            }.ag().catch(function(xhr, text, error){
+                if (failure) return failure(xhr, text, error);
+            });
+
+            orgActions.setPersonAttribute(data, cb, null, !!async);
         },
         //获取人员属性值
-        getPersonAttribute: function(person, attr){
+        getPersonAttribute: function(person, attr, async){
             getOrgActions();
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"name":attr,"person":personFlag};
             var v = null;
-            orgActions.getPersonAttribute(data, function(json){v = json.data.attributeList;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data.attributeList;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.getPersonAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出人员所有属性的名称
-        listPersonAttributeName: function(name){
+        listPersonAttributeName: function(name, async){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            orgActions.listPersonAttributeName(data, function(json){v = json.data.nameList;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data.nameList;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonAttributeName(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出人员的所有属性
-        listPersonAllAttribute: function(name){
+        listPersonAllAttribute: function(name, async){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            orgActions.listPersonAllAttribute(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonAllAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
 
         //身份**********
         //获取身份
-        getIdentity: function(name){
+        getIdentity: function(name, async){
             getOrgActions();
             var data = {"identityList":getNameFlag(name)};
             var v = null;
-            orgActions.listIdentity(data, function(json){v = json.data;}, null, false);
-            return (v && v.length===1) ? v[0] : v;
+            var cb = function(json){
+                v = json.data;
+                v = (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出人员的身份
-        listIdentityWithPerson: function(name){
+        listIdentityWithPerson: function(name, async){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            orgActions.listIdentityWithPerson(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listIdentityWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //查询组织成员身份--返回身份的对象数组
         //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
-        listIdentityWithUnit: function(name, nested){
+        listIdentityWithUnit: function(name, nested, async){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
-            if (nested){
-                orgActions.listIdentityWithUnitNested(data, function(json){v = json.data;}, null, false);
-            }else{
-                orgActions.listIdentityWithUnitDirect(data, function(json){v = json.data;}, null, false);
-            }
-            return v;
+
+            // var cb = function(json){
+            //     v = json.data;
+            //     if (async && o2.typeOf(async)=="function") return async(v);
+            //     return v;
+            // }.ag().catch(function(json){ return json; });
+
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var method = (nested) ? "listIdentityWithUnitNested" : "listIdentityWithUnitDirect";
+            var promise = orgActions[method](data, cb, null, !!async);
+            promise.name = "org";
+
+            //
+            // if (nested){
+            //     orgActions.listIdentityWithUnitNested(data, cb, null, !!async);
+            // }else{
+            //     orgActions.listIdentityWithUnitDirect(data, cb, null, !!async);
+            // }
+            return (!!async) ? promise : v;
         },
 
         //组织**********
         //获取组织
-        getUnit: function(name){
+        getUnit: function(name, async){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            orgActions.listUnit(data, function(json){v = json.data;}, null, false);
-            return (v && v.length===1) ? v[0] : v;
+            var cb = function(json){
+                v = json.data;
+                v = (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listUnit(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //查询组织的下级--返回组织的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
@@ -356,31 +584,63 @@ MWF.xScript.CMSEnvironment = function(ev){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise;
             if (nested){
-                orgActions.listUnitSubNested(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listUnitSubNested(data, cb, null, !!async);
             }else{
-                orgActions.listUnitSubDirect(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listUnitSubDirect(data, cb, null, !!async);
             }
-            return v;
+            return (!!async) ? promise : v;
         },
         //查询组织的上级--返回组织的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
-        listSupUnit: function(name, nested){
+        //async 布尔 true异步请求
+        listSupUnit: function(name, nested, async){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
+
             var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise;
             if (nested){
-                orgActions.listUnitSupNested(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listUnitSupNested(data, cb, null, !!async);
             }else{
-                orgActions.listUnitSupDirect(data, function(json){v = json.data;}, null, false);
+                promise = orgActions.listUnitSupDirect(data, cb, null, !!async);
             }
-            return v;
+            return (!!async) ? promise : v;
+
+            // if (callback){
+            //     if (nested){
+            //         orgActions.listUnitSupNested(data, function(json){v = json.data; o2.runCallback(callback, "success", [v], this);});
+            //     }else{
+            //         orgActions.listUnitSupDirect(data, function(json){v = json.data; o2.runCallback(callback, "success", [v], this);});
+            //     }
+            // }else{
+            //     var v = null;
+            //     if (nested){
+            //         orgActions.listUnitSupNested(data, function(json){v = json.data;}, null, false);
+            //     }else{
+            //         orgActions.listUnitSupDirect(data, function(json){v = json.data;}, null, false);
+            //     }
+            //     return v;
+            // }
         },
         //根据个人身份获取组织
         //flag 数字    表示获取第几层的组织
         //     字符串  表示获取指定类型的组织
         //     空     表示获取直接所在的组织
-        getUnitByIdentity: function(name, flag){
+        getUnitByIdentity: function(name, flag, async){
             getOrgActions();
             var getUnitMethod = "current";
             var v;
@@ -388,161 +648,293 @@ MWF.xScript.CMSEnvironment = function(ev){
                 if (typeOf(flag)==="string") getUnitMethod = "type";
                 if (typeOf(flag)==="number") getUnitMethod = "level";
             }
+
+            var cb;
+            var promise;
             switch (getUnitMethod){
                 case "current":
                     var data = {"identityList":getNameFlag(name)};
-                    orgActions.listUnitWithIdentity(data, function(json){ v = json.data; v=(v&&v.length===1) ? v[0] : v }, null, false);
+
+                    // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+                    //     v = json.data;  v=(v&&v.length===1) ? v[0] : v; return v;
+                    // }.ag().catch(function(json){ return json; });
+
+
+                    cb = function(json){
+                        v = json.data;  v=(v&&v.length===1) ? v[0] : v;
+                        if (async && o2.typeOf(async)=="function") return async(v);
+                        return v;
+                    };
+
+
+                    promise = orgActions.listUnitWithIdentity(data, cb, null, !!async);
                     break;
                 case "type":
                     var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"type":flag};
-                    orgActions.getUnitWithIdentityAndType(data, function(json){ v = json.data; }, null, false);
+
+                    cb = function(json){
+                        v = json.data;
+                        if (async && o2.typeOf(async)=="function") return async(v);
+                        return v;
+                    };
+
+                    // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+                    //     v = json.data;  return v;
+                    // }.ag().catch(function(json){ return json; });
+
+                    promise = orgActions.getUnitWithIdentityAndType(data, cb, null, !!async);
                     break;
                 case "level":
                     var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"level":flag};
-                    orgActions.getUnitWithIdentityAndLevel(data, function(json){ v = json.data; }, null, false);
+
+                    cb = function(json){
+                        v = json.data;  v=(v&&v.length===1) ? v[0] : v;
+                        if (async && o2.typeOf(async)=="function") return async(v);
+                        return v;
+                    };
+
+                    // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+                    //     v = json.data;  return v;
+                    // }.ag().catch(function(json){ return json; });
+
+                    promise = orgActions.getUnitWithIdentityAndLevel(data, cb, null, !!async);
                     break;
             }
-            return v;
+            return (!!async) ? promise : v;
         },
         //列出身份所在组织的所有上级组织
-        listAllSupUnitWithIdentity: function(name){
+        listAllSupUnitWithIdentity: function(name, async){
             getOrgActions();
             var data = {"identityList":getNameFlag(name)};
             var v = null;
-            orgActions.listUnitSupNestedWithIdentity(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listUnitSupNestedWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取人员所在的所有组织
-        listUnitWithPerson: function(name){
+        listUnitWithPerson: function(name, async){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            orgActions.listUnitWithPerson(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listUnitWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
-        //列出身份所在组织的所有上级组织
-        listAllSupUnitWithPerson: function(name){
+        //列出人员所在组织的所有上级组织
+        listAllSupUnitWithPerson: function(name, async){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
             var v = null;
-            orgActions.listUnitSupNestedWithPerson(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listUnitSupNestedWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //根据组织属性，获取所有符合的组织
-        listUnitWithAttribute: function(name, attribute){
+        listUnitWithAttribute: function(name, attribute, async){
             getOrgActions();
             var data = {"name":name,"attribute":attribute};
             var v = null;
-            orgActions.listUnitWithAttribute(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            promise = orgActions.listUnitWithAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //根据组织职务，获取所有符合的组织
-        listUnitWithDuty: function(name, id){
+        listUnitWithDuty: function(name, id, async){
             getOrgActions();
-            var data = {"name":"","identity":(typeOf(id)==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id};
+            var data = {"name":name,"identity":(typeOf(id)==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id};
             var v = null;
-            orgActions.listUnitWithDuty(data, function(json){v = json.data;}, null, false);
-            return v;
-        },
-        //列出顶层组织
-        listTopUnit: function(){
-            var action = MWF.Actions.get("x_organization_assemble_control");
-            var v = null;
-            action.listTopUnit(function(json){
+            var cb = function(json){
                 v = json.data;
-            }, null, false);
-            return v;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listUnitWithDuty(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
 
         //组织职务***********
         //获取指定的组织职务的身份
-        getDuty: function(duty, id){
+        getDuty: function(duty, id, async){
             getOrgActions();
             var data = {"name":duty,"unit":(typeOf(id)==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id};
             var v = null;
-            orgActions.getDuty(data, function(json){v = json.data;}, null, false);
-            return v;
+
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.getDuty(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取身份的所有职务名称
-        listDutyNameWithIdentity: function(name){
+        listDutyNameWithIdentity: function(name, async){
             getOrgActions();
             var data = {"identityList":getNameFlag(name)};
             var v = null;
-            orgActions.listDutyNameWithIdentity(data, function(json){v = json.data.nameList;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listDutyNameWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取组织的所有职务名称
-        listDutyNameWithUnit: function(name){
+        listDutyNameWithUnit: function(name, async){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            orgActions.listDutyNameWithUnit(data, function(json){v = json.data.nameList;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data.nameList;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listDutyNameWithUnit(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //获取组织的所有职务
-        listUnitAllDuty: function(name){
+        listUnitAllDuty: function(name, async){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            orgActions.listUnitAllDuty(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listUnitAllDuty(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
+        //列出顶层组织
+        listTopUnit: function(async){
+            var action = MWF.Actions.get("x_organization_assemble_control");
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = action.listTopUnit(cb, null, !!async);
+            return (!!async) ? promise : v;
         },
 
         //组织属性**************
         //添加组织属性值(在属性中添加values值，如果没有此属性，则创建一个)
-        appendUnitAttribute: function(unit, attr, values, success, failure){
+        appendUnitAttribute: function(unit, attr, values, success, failure, async){
             getOrgActions();
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"attributeList":values,"name":attr,"unit":unitFlag};
-            orgActions.appendUnitAttribute(data, function(json){
-                if (json.data.value){
-                    if (success) success();
-                }else{
-                    if (failure) failure(null, "", "append values failed");
-                }
-            }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
-            }, false);
+
+            var cb = function(json){
+                if (success) return success(json);
+            }.ag().catch(function(xhr, text, error){
+                if (failure) return failure(xhr, text, error);
+            });
+
+            orgActions.appendPersonAttribute(data, cb, null, !!async);
+
+            // orgActions.appendUnitAttribute(data, function(json){
+            //     if (json.data.value){
+            //         if (success) success();
+            //     }else{
+            //         if (failure) failure(null, "", "append values failed");
+            //     }
+            // }, function(xhr, text, error){
+            //     if (failure) failure(xhr, text, error);
+            // }, false);
         },
         //设置组织属性值(将属性值修改为values，如果没有此属性，则创建一个)
-        setUnitAttribute: function(unit, attr, values, success, failure){
+        setUnitAttribute: function(unit, attr, values, success, failure, async){
             getOrgActions();
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"attributeList":values,"name":attr,"unit":unitFlag};
-            orgActions.setUnitAttribute(data, function(json){
-                if (json.data.value){
-                    if (success) success();
-                }else{
-                    if (failure) failure(null, "", "append values failed");
-                }
-            }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
-            }, false);
+
+            var cb = function(json){
+                if (success) return success(json);
+            }.ag().catch(function(xhr, text, error){
+                if (failure) return failure(xhr, text, error);
+            });
+            orgActions.setUnitAttribute(data, cb, null, !!async);
+
+            // orgActions.setUnitAttribute(data, function(json){
+            //     if (json.data.value){
+            //         if (success) success();
+            //     }else{
+            //         if (failure) failure(null, "", "append values failed");
+            //     }
+            // }, function(xhr, text, error){
+            //     if (failure) failure(xhr, text, error);
+            // }, false);
         },
         //获取组织属性值
-        getUnitAttribute: function(unit, attr){
+        getUnitAttribute: function(unit, attr, async){
             getOrgActions();
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"name":attr,"unit":unitFlag};
             var v = null;
-            orgActions.getUnitAttribute(data, function(json){v = json.data.attributeList;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data.attributeList;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.getUnitAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出组织所有属性的名称
-        listUnitAttributeName: function(name){
+        listUnitAttributeName: function(name, async){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            orgActions.listUnitAttributeName(data, function(json){v = json.data.nameList;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data.nameList;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listUnitAttributeName(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         },
         //列出组织的所有属性
-        listUnitAllAttribute: function(name){
+        listUnitAllAttribute: function(name, async){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            orgActions.listUnitAllAttribute(data, function(json){v = json.data;}, null, false);
-            return v;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listUnitAllAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
         }
     };
 
@@ -1877,7 +2269,7 @@ MWF.xScript.createCMSDict = function(application){
             options = { name : options };
         }
         var name = this.name = options.name;
-        var type = ( options.type && options.application ) ?  options.type : "cms";
+        var type = ( options.type && options.application ) ?  options.type : "process";
         var applicationId = options.application || application;
         var enableAnonymous = options.enableAnonymous || false;
 
@@ -1912,258 +2304,93 @@ MWF.xScript.createCMSDict = function(application){
             if (!refresh ){
                 var data = MWF.xScript.getDictFromCache( key, path );
                 if( data ){
-                    if (success) success( data );
+                    if (success && o2.typeOf(success)=="function") success( data );
                     return data;
                 }
             }
 
-            if (path){
+            if (success===true) async=true;
+            if (failure===true) async=true;
 
+            // var cb = function(json){
+            //     value = json.data;
+            //     MWF.xScript.addDictToCache(opt, path, value);
+            //     if (success && o2.typeOf(success)=="function") value = success(json.data);
+            //     return value;
+            // }.ag().catch(function(xhr, text, error){ if (failure && o2.typeOf(failure)=="function") return failure(xhr, text, error); });
+
+            var cb = function(json){
+                value = json.data;
+                MWF.xScript.addDictToCache(opt, path, value);
+                if (success && o2.typeOf(success)=="function") value = success(json.data);
+                return value;
+            };
+
+            var promise;
+            if (path){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
-                    value = json.data;
-                    // this.dictData[path] = value;
-                    MWF.xScript.addDictToCache(opt, path, value);
-                    if (success) success(json.data);
-                }.bind(this), function(xhr, text, error){
-                    if (failure) failure(xhr, text, error);
-                }, !!async, false);
+                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async);
             }else{
-                action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
-                    value = json.data;
-                    // this.dictData["root"] = value;
-                    MWF.xScript.addDictToCache(opt, path, value);
-                    if (success) success(json.data);
-                }.bind(this), function(xhr, text, error){
-                    if (failure) failure(xhr, text, error);
-                }, !!async);
+                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async);
             }
+            return (!!async) ? promise : value;
 
-            return value;
+            // if (path){
+            //     var p = encodePath( path );
+            //     //var p = path.replace(/\./g, "/");
+            //     action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
+            //         value = json.data;
+            //         // this.dictData[path] = value;
+            //         MWF.xScript.addDictToCache(opt, path, value);
+            //         if (success) success(json.data);
+            //     }.bind(this), function(xhr, text, error){
+            //         if (failure) failure(xhr, text, error);
+            //     }, !!async);
+            // }else{
+            //     action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
+            //         value = json.data;
+            //         // this.dictData["root"] = value;
+            //         MWF.xScript.addDictToCache(opt, path, value);
+            //         if (success) success(json.data);
+            //     }.bind(this), function(xhr, text, error){
+            //         if (failure) failure(xhr, text, error);
+            //     }, !!async);
+            // }
+
+            //return value;
         };
 
         this.set = function(path, value, success, failure){
             var p = encodePath( path );
             //var p = path.replace(/\./g, "/");
-            action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+            return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
                 MWF.xScript.setDictToCache(key, path, value);
-                if (success) success(json.data);
+                if (success) return success(json.data);
             }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
+                if (failure) return failure(xhr, text, error);
             }, false, false);
         };
         this.add = function(path, value, success, failure){
             var p = encodePath( path );
             //var p = path.replace(/\./g, "/");
-            action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+            return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
                 MWF.xScript.insertDictToCache(key, path, value);
-                if (success) success(json.data);
+                if (success) return success(json.data);
             }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
+                if (failure) return failure(xhr, text, error);
             }, false, false);
         };
         this["delete"] = function(path, success, failure){
             var p = encodePath( path );
             //var p = path.replace(/\./g, "/");
-            action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+            return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
                 MWF.xScript.deleteDictToCache(key, path);
-                if (success) success(json.data);
+                if (success) return success(json.data);
             }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
+                if (failure) return failure(xhr, text, error);
             }, false, false);
         };
         this.destory = this["delete"];
     }
 };
-
-// var dictLoaded = {};
-// MWF.xScript.createCMSDict = function(application){
-//     //optionsOrName : {
-//     //  type : "", //默认为process, 可以为  process  cms
-//     //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
-//     //  name : "", // 数据字典名称/别名/id
-//     //  enableAnonymous : false //允许在未登录的情况下读取CMS的数据字典
-//     //}
-//     //或者name: "" // 数据字典名称/别名/id
-//     return function(optionsOrName){
-//         var options = optionsOrName;
-//         if( typeOf( options ) == "string" ){
-//             options = { name : options };
-//         }
-//         var name = this.name = options.name;
-//         var type = ( options.type && options.application ) ?  options.type : "cms";
-//         var applicationId = options.application || application;
-//         var enableAnonymous = options.enableAnonymous || false;
-//
-//         var key = name+type+applicationId+enableAnonymous
-//         if (!dictLoaded[key]) dictLoaded[key] = {};
-//         this.dictData = dictLoaded[key];
-//
-//         //MWF.require("MWF.xScript.Actions.DictActions", null, false);
-//         if( type == "cms" ){
-//             var action = MWF.Actions.get("x_cms_assemble_control");
-//         }else{
-//             var action = MWF.Actions.get("x_processplatform_assemble_surface");
-//         }
-//
-//         var encodePath = function( path ){
-//             var arr = path.split(/\./g);
-//             var ar = arr.map(function(v){
-//                 return encodeURIComponent(v);
-//             });
-//             return ar.join("/");
-//         };
-//
-//         this.get = function(path, success, failure, async, refresh){
-//             var value = null;
-//             if (path){
-//                 if ( !refresh && this.dictData[path] ){
-//                     if (success) success(this.dictData[path]);
-//                     return this.dictData[path];
-//                 }
-//
-//                 var p = encodePath( path );
-//                 //var p = path.replace(/\./g, "/");
-//                 action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
-//                     value = json.data;
-//                     this.dictData[path] = value;
-//                     if (success) success(json.data);
-//                 }.bind(this), function(xhr, text, error){
-//                     if (failure) failure(xhr, text, error);
-//                 }, !!async, false);
-//             }else{
-//                 if (this.dictData["root"]){
-//                     if (success) success(this.dictData["root"]);
-//                     return this.dictData["root"];
-//                 }
-//                 action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
-//                     value = json.data;
-//                     this.dictData["root"] = value;
-//                     if (success) success(json.data);
-//                 }.bind(this), function(xhr, text, error){
-//                     if (failure) failure(xhr, text, error);
-//                 }, !!async);
-//             }
-//
-//             return value;
-//         };
-//
-//         this.set = function(path, value, success, failure){
-//             var p = encodePath( path );
-//             //var p = path.replace(/\./g, "/");
-//             action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
-//                 if (success) success(json.data);
-//             }, function(xhr, text, error){
-//                 if (failure) failure(xhr, text, error);
-//             }, false, false);
-//         };
-//         this.add = function(path, value, success, failure){
-//             var p = encodePath( path );
-//             //var p = path.replace(/\./g, "/");
-//             action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
-//                 if (success) success(json.data);
-//             }, function(xhr, text, error){
-//                 if (failure) failure(xhr, text, error);
-//             }, false, false);
-//         };
-//         this["delete"] = function(path, success, failure){
-//             var p = encodePath( path );
-//             //var p = path.replace(/\./g, "/");
-//             action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
-//                 if (success) success(json.data);
-//             }, function(xhr, text, error){
-//                 if (failure) failure(xhr, text, error);
-//             }, false, false);
-//         };
-//         this.destory = this["delete"];
-//     }
-// };
-
-// MWF.xScript.createCMSDict = function(application){
-//     //optionsOrName : {
-//     //  type : "", //默认为cms, 可以为  process  cms
-//     //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
-//     //  name : "", // 数据字典名称/别名/id
-//     //  enableAnonymous : false //允许在未登录的情况下读取CMS的数据字典
-//     //}
-//     //或者name: "" // 数据字典名称/别名/id
-//     return function(optionsOrName){
-//         var options = optionsOrName;
-//         if( typeOf( options ) == "string" ){
-//             options = { name : options };
-//         }
-//         var name = this.name = options.name;
-//         var type = ( options.type && options.application ) ?  options.type : "cms";
-//         var applicationId = options.application || application;
-//         var enableAnonymous = options.enableAnonymous || false;
-//
-//         //MWF.require("MWF.xScript.Actions.DictActions", null, false);
-//         if( type == "cms" ){
-//             var action = MWF.Actions.get("x_cms_assemble_control");
-//         }else{
-//             var action = MWF.Actions.get("x_processplatform_assemble_surface");
-//         }
-//
-//         var encodePath = function( path ){
-//             var arr = path.split(/\./g);
-//             var ar = arr.map(function(v){
-//                 return encodeURIComponent(v);
-//             });
-//             return ar.join("/");
-//         };
-//
-//         this.get = function(path, success, failure){
-//             var value = null;
-//             if (path){
-//                 var p = encodePath( path );
-//                 //var p = path.replace(/\./g, "/");
-//                 action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
-//                     value = json.data;
-//                     if (success) success(json.data);
-//                 }, function(xhr, text, error){
-//                     if (failure) failure(xhr, text, error);
-//                 }, false, false);
-//             }else{
-//                 action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](encodeURIComponent(this.name), applicationId, function(json){
-//                     value = json.data;
-//                     if (success) success(json.data);
-//                 }, function(xhr, text, error){
-//                     if (failure) failure(xhr, text, error);
-//                 }, false);
-//             }
-//
-//             return value;
-//         };
-//
-//         this.set = function(path, value, success, failure){
-//             var p = encodePath( path );
-//             //var p = path.replace(/\./g, "/");
-//             action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
-//                 if (success) success(json.data);
-//             }, function(xhr, text, error){
-//                 if (failure) failure(xhr, text, error);
-//             }, false, false);
-//         };
-//         this.add = function(path, value, success, failure){
-//             var p = encodePath( path );
-//             //var p = path.replace(/\./g, "/");
-//             action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
-//                 if (success) success(json.data);
-//             }, function(xhr, text, error){
-//                 if (failure) failure(xhr, text, error);
-//             }, false, false);
-//         };
-//         this["delete"] = function(path, success, failure){
-//             var p = encodePath( path );
-//             //var p = path.replace(/\./g, "/");
-//             action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
-//                 if (success) success(json.data);
-//             }, function(xhr, text, error){
-//                 if (failure) failure(xhr, text, error);
-//             }, false, false);
-//         };
-//         this.destory = this["delete"];
-//     }
-// };
-

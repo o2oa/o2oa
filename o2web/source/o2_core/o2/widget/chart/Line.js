@@ -57,6 +57,24 @@ o2.widget.chart.Line = new Class({
         }.bind(this));
         //this.transition();
     },
+    loadScales: function(){
+        this.xScale = d3.scaleBand().domain(this.data.map(function(d){ return d[this.item];}.bind(this)))
+            .rangeRound(this.getXScaleRange()).paddingOuter(0.3).paddingInner(0.3);
+
+        this.barsData = [];
+        this.bars.each(function(bar, i){
+            this.barsData.push(
+                this.data.map(function(d, idx) {
+                    return {"name": d[this.item], "data": ((typeOf(bar.data)==="function") ? bar.data(d, i) : d[bar.data]), "text": ((typeOf(bar.text)==="function") ? bar.text(d, i) : d[bar.text])}
+                }.bind(this))
+            );
+        }.bind(this));
+        var max = d3.max(this.barsData, function(d){ return d3.max(d, function(d){return d.data}); });
+        var min = d3.min(this.barsData, function(d){ return d3.min(d, function(d){return d.data}); });
+
+        this.yScale = d3.scaleLinear().domain([min*0.9, max*1.1])
+            .range(this.getYScaleRange());
+    },
     setEvents: function(){
         var rects = this.group.selectAll("circle");
         var texts = this.group.selectAll("text");
