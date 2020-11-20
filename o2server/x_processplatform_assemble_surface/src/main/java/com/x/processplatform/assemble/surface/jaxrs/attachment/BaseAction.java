@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,9 +14,14 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
@@ -23,6 +29,8 @@ import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Attachment_;
 
 abstract class BaseAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
 	public static class WiExtraParam {
 		private String site;
@@ -176,13 +184,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 	public boolean read(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,
 			List<String> units, Business business) throws Exception {
 		boolean value = false;
-		if (ListTools.isEmpty(attachment.getReadIdentityList())
-				&& ListTools.isEmpty(attachment.getReadUnitList())) {
+		if (ListTools.isEmpty(attachment.getReadIdentityList()) && ListTools.isEmpty(attachment.getReadUnitList())) {
 			value = true;
-		}else if (ListTools.containsAny(identities, attachment.getReadIdentityList())
-					|| ListTools.containsAny(units, attachment.getReadUnitList())) {
+		} else if (ListTools.containsAny(identities, attachment.getReadIdentityList())
+				|| ListTools.containsAny(units, attachment.getReadUnitList())) {
 			value = true;
-		}else{
+		} else {
 			value = this.edit(attachment, effectivePerson, identities, units, business);
 		}
 		return value;
@@ -191,13 +198,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 	public boolean edit(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,
 			List<String> units, Business business) throws Exception {
 		boolean value = false;
-		if (ListTools.isEmpty(attachment.getEditIdentityList())
-				&& ListTools.isEmpty(attachment.getEditUnitList())) {
+		if (ListTools.isEmpty(attachment.getEditIdentityList()) && ListTools.isEmpty(attachment.getEditUnitList())) {
 			value = true;
-		}else if (ListTools.containsAny(identities, attachment.getEditIdentityList())
-					|| ListTools.containsAny(units, attachment.getEditUnitList())) {
+		} else if (ListTools.containsAny(identities, attachment.getEditIdentityList())
+				|| ListTools.containsAny(units, attachment.getEditUnitList())) {
 			value = true;
-		}else{
+		} else {
 			value = this.control(attachment, effectivePerson, identities, units, business);
 		}
 		return value;
@@ -220,5 +226,19 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 		}
 		return value;
+	}
+
+	protected CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
+		return CompletableFuture.supplyAsync(() -> {
+			Boolean value = false;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag,
+						new ExceptionEntityNotExist(flag));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return value;
+		});
 	}
 }
