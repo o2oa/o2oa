@@ -207,15 +207,58 @@
     this.o2.uuid = _uuid;
 
 
-    var _runCallback = function(callback, key, par){
-        if (typeOf(callback).toLowerCase() === 'function'){
-            if (key.toLowerCase()==="success") callback.apply(callback, par);
-        }else{
-            if (typeOf(callback).toLowerCase()==='object'){
+    var _runCallback = function(callback, key, par, bind, promise_cb){
+        var b = bind || callback;
+        if (!key) key = "success";
+
+        var cb;
+        if (callback){
+            var type = o2.typeOf(callback).toLowerCase();
+            if (key.toLowerCase()==="success" && type==="function"){
+                cb = callback;
+            }else{
                 var name = ("on-"+key).camelCase();
-                if (callback[name]) callback[name].apply(callback, par);
+                cb = (callback[name]) ? callback[name] : ((callback[key]) ? callback[key] : null);
             }
         }
+        if (cb) return (promise_cb) ? promise_cb(cb.apply(b, par)) : cb.apply(b, par) ;
+        return (promise_cb) ? promise_cb.apply(b, par) : null;
+
+        // if (key.toLowerCase()==="success" && (type==="function" || type==="o2_async_function")){
+        //     (promise_cb) ? promise_cb(callback.apply(b, par)) : callback.apply(b, par) ;
+        // }else{
+        //     if (type==="function" || type==="object" || type==="o2_async_function"){
+        //         var name = ("on-"+key).camelCase();
+        //         if (callback[name]){
+        //             (promise_cb) ? promise_cb(callback[name].apply(b, par)) : callback[name].apply(b, par);
+        //         }else{
+        //             if (callback[key]) (promise_cb) ? promise_cb(callback[key].apply(b, par)) : callback[key].apply(b, par);
+        //         }
+        //     }
+        // }
+
+
+        // if (typeOf(callback).toLowerCase() === 'function'){
+        //     if (key.toLowerCase()==="success"){
+        //         callback.apply(b, par);
+        //     }else{
+        //         if (callback[key]){
+        //             callback[key].apply(b, par);
+        //         }else{
+        //             var name = ("on-"+key).camelCase();
+        //             if (callback[name]) callback[name].apply(b, par);
+        //         }
+        //     }
+        // }else{
+        //     if (typeOf(callback).toLowerCase()==='object'){
+        //         if (callback[key]){
+        //             callback[key].apply(b, par);
+        //         }else{
+        //             var name = ("on-"+key).camelCase();
+        //             if (callback[name]) callback[name].apply(b, par);
+        //         }
+        //     }
+        // }
     };
     this.o2.runCallback = _runCallback;
 
@@ -978,11 +1021,13 @@
 (function (){
     var _Class = {
         create: function(options) {
-            var newClass = function() {
-                this.initialize.apply(this, arguments);
-            };
-            _copyPrototype(newClass, options);
-            return newClass;
+            // var newClass = function() {
+            //     this.initialize.apply(this, arguments);
+            // };
+            return _copyPrototype(function() {
+                return this.initialize.apply(this, arguments) || this;
+            }, options);
+            //return newClass;
         }
     };
     var _copyPrototype = function (currentNS, props){
@@ -1271,13 +1316,77 @@
         // /jaxrs\/authentication/ig
         // /jaxrs\/statement\/.*\/execute\/page\/.*\/size\/.*/ig
     ];
+    // _restful_bak = function(method, address, data, callback, async, withCredentials, cache){
+    //     var loadAsync = (async !== false);
+    //     var credentials = (withCredentials !== false);
+    //     address = (address.indexOf("?")!==-1) ? address+"&v="+o2.version.v : address+"?v="+o2.version.v;
+    //     //var noCache = cache===false;
+    //     var noCache = !cache;
+    //
+    //
+    //     //if (Browser.name == "ie")
+    //     if (_cacheUrls.length){
+    //         for (var i=0; i<_cacheUrls.length; i++){
+    //             _cacheUrls[i].lastIndex = 0;
+    //             if (_cacheUrls[i].test(address)){
+    //                 noCache = false;
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     //var noCache = false;
+    //     var res = new Request.JSON({
+    //         url: o2.filterUrl(address),
+    //         secure: false,
+    //         method: method,
+    //         emulation: false,
+    //         noCache: noCache,
+    //         async: loadAsync,
+    //         withCredentials: credentials,
+    //         onSuccess: function(responseJSON, responseText){
+    //             // var xToken = this.getHeader("authorization");
+    //             // if (!xToken) xToken = this.getHeader("x-token");
+    //             var xToken = this.getHeader("x-token");
+    //             if (xToken){
+    //                 if (window.layout){
+    //                     if (!layout.session) layout.session = {};
+    //                     layout.session.token = xToken;
+    //                 }
+    //             }
+    //             o2.runCallback(callback, "success", [responseJSON]);
+    //         },
+    //         onFailure: function(xhr){
+    //             o2.runCallback(callback, "requestFailure", [xhr]);
+    //         }.bind(this),
+    //         onError: function(text, error){
+    //             o2.runCallback(callback, "error", [text, error]);
+    //         }.bind(this)
+    //     });
+    //
+    //     res.setHeader("Content-Type", "application/json; charset=utf-8");
+    //     res.setHeader("Accept", "text/html,application/json,*/*");
+    //     if (window.layout) {
+    //         if (layout["debugger"]){
+    //             res.setHeader("x-debugger", "true");
+    //         }
+    //         if (layout.session && layout.session.user){
+    //             if (layout.session.user.token) {
+    //                 res.setHeader("x-token", layout.session.user.token);
+    //                 res.setHeader("authorization", layout.session.user.token);
+    //             }
+    //         }
+    //     }
+    //     //Content-Type	application/x-www-form-urlencoded; charset=utf-8
+    //     res.send(data);
+    //     return res;
+    // };
+
     _restful = function(method, address, data, callback, async, withCredentials, cache){
         var loadAsync = (async !== false);
         var credentials = (withCredentials !== false);
         address = (address.indexOf("?")!==-1) ? address+"&v="+o2.version.v : address+"?v="+o2.version.v;
         //var noCache = cache===false;
         var noCache = !cache;
-
 
         //if (Browser.name == "ie")
         if (_cacheUrls.length){
@@ -1289,51 +1398,101 @@
                 }
             }
         }
+
+        var useWebWorker = (window.layout && layout.config && layout.config.useWebWorker);
         //var noCache = false;
-        var res = new Request.JSON({
-            url: o2.filterUrl(address),
-            secure: false,
-            method: method,
-            emulation: false,
-            noCache: noCache,
-            async: loadAsync,
-            withCredentials: credentials,
-            onSuccess: function(responseJSON, responseText){
-                // var xToken = this.getHeader("authorization");
-                // if (!xToken) xToken = this.getHeader("x-token");
-                var xToken = this.getHeader("x-token");
-                if (xToken){
-                    if (window.layout){
-                        if (!layout.session) layout.session = {};
-                        layout.session.token = xToken;
+        if (!loadAsync || !useWebWorker){
+            debugger;
+            var res;
+            var p = new Promise(function(s,f){
+                res = new Request.JSON({
+                    url: o2.filterUrl(address),
+                    secure: false,
+                    method: method,
+                    emulation: false,
+                    noCache: noCache,
+                    async: loadAsync,
+                    withCredentials: credentials,
+                    onSuccess: function(responseJSON, responseText){
+                        // var xToken = this.getHeader("authorization");
+                        // if (!xToken) xToken = this.getHeader("x-token");
+                        var xToken = this.getHeader("x-token");
+                        if (xToken){
+                            if (window.layout){
+                                if (!layout.session) layout.session = {};
+                                layout.session.token = xToken;
+                            }
+                        }
+                        return o2.runCallback(callback, "success", [responseJSON],null, s);
+                    },
+                    onFailure: function(xhr){
+                        return o2.runCallback(callback, "requestFailure", [xhr], null, f);
+                    }.bind(this),
+                    onError: function(text, error){
+                        return o2.runCallback(callback, "error", [text, error], null, f);
+                    }.bind(this)
+                });
+
+                res.setHeader("Content-Type", "application/json; charset=utf-8");
+                res.setHeader("Accept", "text/html,application/json,*/*");
+                if (window.layout) {
+                    if (layout["debugger"]){
+                        res.setHeader("x-debugger", "true");
+                    }
+                    if (layout.session && layout.session.user){
+                        if (layout.session.user.token) {
+                            res.setHeader("x-token", layout.session.user.token);
+                            res.setHeader("authorization", layout.session.user.token);
+                        }
                     }
                 }
-                o2.runCallback(callback, "success", [responseJSON]);
-            },
-            onFailure: function(xhr){
-                o2.runCallback(callback, "requestFailure", [xhr]);
-            }.bind(this),
-            onError: function(text, error){
-                o2.runCallback(callback, "error", [text, error]);
-            }.bind(this)
-        });
+                //Content-Type	application/x-www-form-urlencoded; charset=utf-8
+                res.send(data);
+            }.bind(this));
 
-        res.setHeader("Content-Type", "application/json; charset=utf-8");
-        res.setHeader("Accept", "text/html,application/json,*/*");
-        if (window.layout) {
-            if (layout["debugger"]){
-                res.setHeader("x-debugger", "true");
+            //var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
+            var oReturn = p;
+            oReturn.res = res;
+            return oReturn;
+        }else{
+            var workerMessage = {
+                method: method,
+                noCache: noCache,
+                loadAsync: loadAsync,
+                credentials: credentials,
+                address: o2.filterUrl(address),
+                body: data,
+                debug: (window.layout && layout["debugger"]),
+                token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : ""
             }
-            if (layout.session && layout.session.user){
-                if (layout.session.user.token) {
-                    res.setHeader("x-token", layout.session.user.token);
-                    res.setHeader("authorization", layout.session.user.token);
+            var actionWorker = new Worker("../o2_core/o2/actionWorker.js");
+            var p = new Promise(function(s,f){
+                actionWorker.onmessage = function(e) {
+                    result = e.data;
+                    if (result.type==="done"){
+                        var xToken = result.data.xToken;
+                        if (xToken){
+                            if (window.layout){
+                                if (!layout.session) layout.session = {};
+                                layout.session.token = xToken;
+                            }
+                        }
+                        o2.runCallback(callback, "success", [result.data], null, s);
+                    }else{
+                        o2.runCallback(callback, "failure", [result.data], null, f);
+                    }
+                    actionWorker.terminate();
                 }
-            }
+                actionWorker.postMessage(workerMessage);
+            }.bind(this));
+
+            //var oReturn = (callback.success && callback.success.addResolve) ? callback.success : callback;
+            var oReturn = p;
+            oReturn.actionWorker = actionWorker;
+            return oReturn;
+            //return callback;
         }
-        //Content-Type	application/x-www-form-urlencoded; charset=utf-8
-        res.send(data);
-        return res;
+        //return res;
     };
 
     var _release = function(o){
@@ -1480,23 +1639,242 @@
         }
         return arr;
     }
-    Date.implement({
-        // "getFromServer": function(){
-        //     var d;
-        //     o2.Actions.get("x_program_center").echo(function(json){
-        //         d = Date.parse(json.data.serverTime);
-        //     }, null, false);
-        //     return d;
-        // }
-        "getFromServer": function(callback){
-            var async = !!callback;
-            var d;
-            var r = o2.Actions.get("x_program_center").echo(function(json){
-                d = Date.parse(json.data.serverTime);
-                if (callback) callback(d);
-            }, null, async);
-            return d || r;
+    // Date.implement({
+    //     "getFromServer": function(callback){
+    //         if (callback){
+    //             o2.Actions.get("x_program_center").echo(function(json){
+    //                 d = Date.parse(json.data.serverTime);
+    //                 callback(d);
+    //             });
+    //         }else{
+    //             var d;
+    //             o2.Actions.get("x_program_center").echo(function(json){
+    //                 d = Date.parse(json.data.serverTime);
+    //             }, null, false);
+    //             return d;
+    //         }
+    //     }
+    // });
+    Date.getFromServer = function(async){
+        var d;
+        var cb = ((async && o2.typeOf(async)=="function") ? async : null) || function(json){
+        //var cb = function(json){
+            d = Date.parse(json.data.serverTime);
+            return d;
+        };
+
+        var promise = o2.Actions.get("x_program_center").echo(cb, null, !!async);
+
+        return (!!async) ? promise : d;
+
+            // if (callback){
+            //     o2.Actions.get("x_program_center").echo(function(json){
+            //         d = Date.parse(json.data.serverTime);
+            //         o2.runCallback(callback, "success", [d]);
+            //     });
+            // }else{
+            //     var d;
+            //     o2.Actions.get("x_program_center").echo(function(json){
+            //         d = Date.parse(json.data.serverTime);
+            //     }, null, false);
+            //     return d;
+            // }
+    };
+
+    // Object.appendChain = function(oChain, oProto) {
+    //     if (arguments.length < 2) {
+    //         throw new TypeError('Object.appendChain - Not enough arguments');
+    //     }
+    //     if (typeof oProto === 'number' || typeof oProto === 'boolean') {
+    //         throw new TypeError('second argument to Object.appendChain must be an object or a string');
+    //     }
+    //
+    //     var oNewProto = oProto,
+    //         oReturn,
+    //         o2nd,
+    //         oLast;
+    //
+    //     oReturn = o2nd = oLast = oChain instanceof this ? oChain : new oChain.constructor(oChain);
+    //
+    //     for (var o1st = this.getPrototypeOf(o2nd);
+    //          o1st !== Object.prototype && o1st !== Function.prototype;
+    //          o1st = this.getPrototypeOf(o2nd)
+    //     ) {
+    //         o2nd = o1st;
+    //     }
+    //
+    //     if (oProto.constructor === String) {
+    //         oNewProto = Function.prototype;
+    //         oReturn = Function.apply(null, Array.prototype.slice.call(arguments, 1));
+    //         oReturn = oReturn.bind(oLast);
+    //         this.setPrototypeOf(oReturn, oLast);
+    //     }
+    //
+    //     this.setPrototypeOf(o2nd, oNewProto);
+    //     return oReturn;
+    // }
+
+    // user promise
+    // var _AsyncGeneratorPrototype = _Class.create({
+    //     initialize: function(resolve, reject, name){
+    //         this.isAG = true;
+    //         this.name = name || "";
+    //         this._createSuccess();
+    //         this._createFailure();
+    //         if (resolve) this.success.resolve = resolve;
+    //         if (reject) this.failure.reject = reject;
+    //     },
+    //     //$family: function(){ return "o2_async_function"; },
+    //     _createSuccess: function(){
+    //         var _self = this;
+    //         this.success = function(){
+    //             var result;
+    //             if (_self.success.resolve) result = _self.success.resolve.apply(this, arguments);
+    //             if (_self.success.resolveList){
+    //                 _self.success.resolveList.each(function(r){
+    //                     result = r(result, arguments) || result;
+    //                 });
+    //             }
+    //             _self.isSuccess = true;
+    //             _self.result = result;
+    //             _self.arg = arguments;
+    //             return result;
+    //         }
+    //     },
+    //     _createFailure: function(){
+    //         var _self = this;
+    //         this.failure = function(){
+    //             var result;
+    //             if (_self.failure.reject) result = _self.failure.reject.apply(this, arguments);
+    //             if (_self.failure.rejectList){
+    //                 _self.failure.rejectList.each(function(r){
+    //                     result = r(result, arguments) || result;
+    //                 });
+    //             }
+    //             _self.isFailure = true;
+    //             _self.result = result;
+    //             _self.arg = arguments;
+    //             return result;
+    //         }
+    //     },
+    //     setResolve: function(resolve){
+    //         if (!this.success) this._createSuccess();
+    //         this.success.resolve = resolve;
+    //         return this;
+    //     },
+    //     setReject: function(reject){
+    //         if (!this.failure) this._createFailure();
+    //         this.failure.reject = reject;
+    //         return this;
+    //     },
+    //     addResolve: function(resolve){
+    //         if (!this.success) this._createSuccess();
+    //         if (resolve){
+    //             if (this.isSuccess){
+    //                 this.result = resolve(this.result, this.arg);
+    //             }else{
+    //                 if (!this.success.resolve){
+    //                     this.success.resolve = resolve;
+    //                 }else{
+    //                     if (!this.success.resolveList) this.success.resolveList = [];
+    //                     this.success.resolveList.push(resolve);
+    //                 }
+    //             }
+    //         }
+    //         return this;
+    //     },
+    //     addReject: function(reject){
+    //         if (!this.failure) this._createFailure();
+    //         if (reject){
+    //             if (this.isFailure){
+    //                 this.result = reject(this.result, this.arg);
+    //             }else{
+    //                 if (!this.failure.reject){
+    //                     this.failure.reject = reject;
+    //                 }else{
+    //                     if (!this.failure.rejectList) this.failure.rejectList = [];
+    //                     this.failure.rejectList.push(reject);
+    //                 }
+    //             }
+    //         }
+    //         return this;
+    //     },
+    //     then: function(resolve){
+    //         return this.addResolve(resolve);
+    //     },
+    //     "catch": function(reject){
+    //         return this.addReject(reject);
+    //     },
+    // });
+    // var _AsyncGenerator = function(resolve, reject, name){
+    //     var asyncGeneratorPrototype = new _AsyncGeneratorPrototype(resolve, reject, name);
+    //     return Object.appendChain(asyncGeneratorPrototype, "if (this.success) this.success.apply(this, arguments);");
+    // }
+    //
+    // //@todo
+    // _AsyncGenerator.all = function(arr){
+    //     var result = [];
+    //     var ag = function (){
+    //         return result;
+    //     }.ag();
+    //
+    //     if (o2.typeOf(arr) !== "array") arr = [arr];
+    //
+    //     var count  = arr.length;
+    //     var check = function(){
+    //         count--;
+    //         if (count<=0)ag();
+    //     }
+    //
+    //     //window.setTimeout(function(){
+    //         arr.forEach(function(a){
+    //             if (typeOf(a)=="array"){
+    //                 o2.AG.all(a).then(function(v){
+    //                     result = result.concat(v);
+    //                     check();
+    //                 });
+    //             }else{
+    //                 if (a && a.isAG){
+    //                     a.then(function(v){
+    //                         o2.AG.all(v).then(function(r){
+    //                             result = result.concat(r);
+    //                             check();
+    //                         });
+    //                     });
+    //                 }else{
+    //                     result.push(a);
+    //                     check();
+    //                 }
+    //             }
+    //         });
+    //     //}, 0);
+    //     return ag;
+    // }
+    //
+    // o2.AsyncGenerator = o2.AG = _AsyncGenerator;
+    //
+    // Function.prototype.ag = function(){
+    //     return o2.AG(this);
+    // };
+
+    var _promiseAll = function(p){
+        if (o2.typeOf(p)=="array"){
+            if (p.some(function(e){ return (o2.typeOf(e.then)=="function") })){
+                return Promise.all(p);
+            }else{
+                return { "then": function(s){ s(p); return this;} };
+            }
+        }else{
+            if (o2.typeOf(p.then)=="function"){
+                return Promise.resolve(p);
+            }else{
+                return { "then": function(s){ s(p); return this;} };
+            }
         }
+        // var method = (o2.typeOf(p)=="array") ? "all" : "resolve";
+        // return Promise[method](p);
+    }
+    o2.promiseAll = _promiseAll;
 
     });
 })();
@@ -1505,7 +1883,7 @@ o2.core = true;
 
 /** ***** BEGIN LICENSE BLOCK *****
  * |------------------------------------------------------------------------------|
- * | O2OA 活力办公 创意无限    o2.more.js                                            |
+ * | O2OA 活力办公 创意无限    o2.more.js                                          |
  * |------------------------------------------------------------------------------|
  * | Distributed under the AGPL license:                                          |
  * |------------------------------------------------------------------------------|
