@@ -432,8 +432,8 @@ o2.addReady(function () {
             layout.config.app_protocol = window.location.protocol;
         }
 
-        if (layout.config.configMapping && layout.config.configMapping[window.location.host]){
-            var mapping = layout.config.configMapping[window.location.host];
+        if (layout.config.configMapping && (layout.config.configMapping[window.location.host] || layout.config.configMapping[window.location.hostname])){
+            var mapping = layout.config.configMapping[window.location.host] || layout.config.configMapping[window.location.hostname];
             if (mapping.servers){
                 layout.serviceAddressList = mapping.servers;
                 layout.desktop.serviceAddressList = mapping.servers;
