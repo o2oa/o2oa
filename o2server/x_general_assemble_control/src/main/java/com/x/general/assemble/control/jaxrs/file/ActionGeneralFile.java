@@ -1,4 +1,4 @@
-package com.x.general.assemble.control.jaxrs.result;
+package com.x.general.assemble.control.jaxrs.file;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -12,9 +12,9 @@ import com.x.general.assemble.control.ThisApplication;
 import com.x.general.core.entity.file.GeneralFile;
 
 
-public class ActionGeneralResult extends BaseAction {
+public class ActionGeneralFile extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionGeneralResult.class);
+    private static Logger logger = LoggerFactory.getLogger(ActionGeneralFile.class);
 
     protected ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
         logger.debug(effectivePerson, "flag:{}.", flag);
@@ -34,7 +34,7 @@ public class ActionGeneralResult extends BaseAction {
                 emc.delete(GeneralFile.class, generalFile.getId());
                 emc.commit();
             } else {
-                throw new ExceptionInputResultObject(flag);
+                throw new ExceptionInputFileObject(flag);
             }
 
         }
