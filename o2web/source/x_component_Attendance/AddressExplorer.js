@@ -482,8 +482,8 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
     _ok: function( data, callback ){
         debugger;
         MWF.UD.putPublicData("baiduAccountKey",  data.ak, function (json) {
-            if(callback)callback();
-            this.close();
+            if(callback)callback(json);
+            // this.close();
         }.bind(this));
     }
 });
