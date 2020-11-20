@@ -78,7 +78,7 @@ class ActionManageGetAssignment extends BaseAction {
 						.forEach(o -> {
 							try {
 								WoRead w = WoRead.copier.copy(o);
-								//w.setControl(control);
+								// w.setControl(control);
 								wo.getReadList().add(w);
 							} catch (Exception e) {
 								logger.error(e);
@@ -95,7 +95,7 @@ class ActionManageGetAssignment extends BaseAction {
 						.forEach(o -> {
 							try {
 								WoReadCompleted w = WoReadCompleted.copier.copy(o);
-								//w.setControl(control);
+								// w.setControl(control);
 								wo.getReadCompletedList().add(w);
 							} catch (Exception e) {
 								logger.error(e);
@@ -112,7 +112,7 @@ class ActionManageGetAssignment extends BaseAction {
 						.forEach(o -> {
 							try {
 								WoReview w = WoReview.copier.copy(o);
-								//w.setControl(control);
+								// w.setControl(control);
 								wo.getReviewList().add(w);
 							} catch (Exception e) {
 								logger.error(e);
@@ -122,10 +122,10 @@ class ActionManageGetAssignment extends BaseAction {
 				logger.error(e);
 			}
 		});
-		future_taskCompleted.get(300, TimeUnit.SECONDS);
-		future_read.get(300, TimeUnit.SECONDS);
-		future_readCompleted.get(300, TimeUnit.SECONDS);
-		future_review.get(300, TimeUnit.SECONDS);
+		future_taskCompleted.get(10, TimeUnit.SECONDS);
+		future_read.get(10, TimeUnit.SECONDS);
+		future_readCompleted.get(10, TimeUnit.SECONDS);
+		future_review.get(10, TimeUnit.SECONDS);
 		result.setData(wo);
 		return result;
 	}
