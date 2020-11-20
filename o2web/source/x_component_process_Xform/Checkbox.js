@@ -93,57 +93,107 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 		}
 		//return [];
 	},
-	
-	setOptions: function(){
-		var radioValues = this.getOptions();
-        if (!radioValues) radioValues = [];
-        if (o2.typeOf(radioValues)==="array"){
-            var flag = (new MWF.widget.UUID).toString();
-            radioValues.each(function(item){
-                var tmps = item.split("|");
-                var text = tmps[0];
-                var value = tmps[1] || text;
 
-                var radio = new Element("input", {
-                    "type": "checkbox",
-                    "name": ((this.json.properties) ? this.json.properties.name : null) || flag+this.json.id,
-                    "value": value,
-                    "showText": text,
-                    "styles": this.json.buttonStyles
-                }).inject(this.node);
-                //radio.appendText(text, "after");
+    setOptions: function(){
+        var optionItems = this.getOptions();
+        this._setOptions(optionItems);
+    },
 
-                var textNode = new Element( "span", {
-                    "text" : text,
-                    "styles" : { "cursor" : "default" }
-                }).inject(this.node);
-                textNode.addEvent("click", function( ev ){
-                    if( this.radio.get("disabled") === true || this.radio.get("disabled") === "true" )return;
-                    this.radio.checked = ! this.radio.checked;
-                    this.radio.fireEvent("change");
-                    this.radio.fireEvent("click");
-                }.bind( {radio : radio} ) );
+    _setOptions: function(optionItems){
+        var p = o2.promiseAll(optionItems).then(function(radioValues){
+            this.moduleSelectAG = null;
+            if (!radioValues) radioValues = [];
+            if (o2.typeOf(radioValues)==="array"){
+                var flag = (new MWF.widget.UUID).toString();
+                radioValues.each(function(item){
+                    var tmps = item.split("|");
+                    var text = tmps[0];
+                    var value = tmps[1] || text;
 
-                radio.addEvent("click", function(){
-                    this.validationMode();
-                    if (this.validation()) this._setBusinessData(this.getInputData("change") || []);
-                }.bind(this));
+                    var radio = new Element("input", {
+                        "type": "checkbox",
+                        "name": ((this.json.properties) ? this.json.properties.name : null) || flag+this.json.id,
+                        "value": value,
+                        "showText": text,
+                        "styles": this.json.buttonStyles
+                    }).inject(this.node);
+                    //radio.appendText(text, "after");
 
-                Object.each(this.json.events, function(e, key){
-                    if (e.code){
-                        if (this.options.moduleEvents.indexOf(key)!=-1){
-                        }else{
-                            radio.addEvent(key, function(event){
-                                return this.form.Macro.fire(e.code, this, event);
-                            }.bind(this));
+                    var textNode = new Element( "span", {
+                        "text" : text,
+                        "styles" : { "cursor" : "default" }
+                    }).inject(this.node);
+                    textNode.addEvent("click", function( ev ){
+                        if( this.radio.get("disabled") === true || this.radio.get("disabled") === "true" )return;
+                        this.radio.checked = ! this.radio.checked;
+                        this.radio.fireEvent("change");
+                        this.radio.fireEvent("click");
+                    }.bind( {radio : radio} ) );
+
+                    radio.addEvent("click", function(){
+                        this.validationMode();
+                        if (this.validation()) this._setBusinessData(this.getInputData("change") || []);
+                    }.bind(this));
+
+                    Object.each(this.json.events, function(e, key){
+                        if (e.code){
+                            if (this.options.moduleEvents.indexOf(key)!=-1){
+                            }else{
+                                radio.addEvent(key, function(event){
+                                    return this.form.Macro.fire(e.code, this, event);
+                                }.bind(this));
+                            }
                         }
-                    }
-                }.bind(this));
+                    }.bind(this));
 
-            }.bind(this));
-        }
+                }.bind(this));
+            }
+        }.bind(this));
+        this.moduleSelectAG = p;
+        if (p) p.then(function(){
+            this.moduleSelectAG = null;
+        }.bind(this));
 	},
+
     _setValue: function(value){
+        var p = o2.promiseAll(value).then(function(v){
+            //if (o2.typeOf(v)=="array") v = v[0];
+            if (this.moduleSelectAG){
+                this.moduleValueAG = this.moduleSelectAG;
+                this.moduleSelectAG.then(function(){
+                    this.__setValue(v);
+                    return v;
+                }.bind(this));
+            }else{
+                this.__setValue(v)
+            }
+            return v;
+        }.bind(this));
+        this.moduleValueAG = p;
+        if (this.moduleValueAG) this.moduleValueAG.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this));
+
+        // this.moduleValueAG = o2.AG.all(value).then(function(v){
+        //     if (this.moduleSelectAG){
+        //         this.moduleValueAG = this.moduleSelectAG;
+        //         this.moduleSelectAG.then(function(){
+        //             this.moduleValueAG = null;
+        //             this.__setValue(v);
+        //         }.bind(this));
+        //     }else{
+        //         this.moduleValueAG = null;
+        //         this.__setValue(v);
+        //     }
+        //     return v;
+        // }.bind(this));
+        //
+        // if (this.moduleValueAG) this.moduleValueAG.then(function(){
+        //     this.moduleValueAG = "";
+        // }.bind(this));
+    },
+
+    __setValue: function(value){
         this._setBusinessData(value);
         var radios = this.node.getElements("input");
         for (var i=0; i<radios.length; i++){
@@ -208,7 +258,21 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
     resetData: function(){
         this.setData(this.getValue());
     },
-	setData: function(data){
+
+    setData: function(data){
+	    return this._setValue(data);
+        // if (data && data.isAG){
+        //     this.moduleValueAG = data;
+        //     data.addResolve(function(v){
+        //         this.setData(v);
+        //     }.bind(this));
+        // }else{
+        //     this.__setData(data);
+        //     this.moduleValueAG = null;
+        // }
+    },
+
+    __setData: function(data){
         this._setBusinessData(data);
 
 		var inputs = this.node.getElements("input");
