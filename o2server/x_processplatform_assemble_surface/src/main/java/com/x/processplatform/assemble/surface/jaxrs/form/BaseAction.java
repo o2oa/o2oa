@@ -1,18 +1,33 @@
 package com.x.processplatform.assemble.surface.jaxrs.form;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoMaxAgeFastETag;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.WorkCompletedProperties;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.RelatedForm;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.RelatedScript;
 import com.x.processplatform.core.entity.element.Form;
+import com.x.processplatform.core.entity.element.FormProperties;
 import com.x.processplatform.core.entity.element.Script;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
+	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
+
+	
 	CacheCategory cacheCategory = new CacheCategory(Form.class, Script.class, com.x.portal.core.entity.Script.class,
 			com.x.cms.core.entity.element.Script.class);
 
@@ -51,5 +66,67 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 
 	}
+
+	protected Map<String, RelatedScript> convertScript(Business bus, FormProperties properties) throws Exception {
+		Map<String, RelatedScript> map = new TreeMap<>();
+		for (Entry<String, String> entry : properties.getMobileRelatedScriptMap().entrySet()) {
+			switch (entry.getValue()) {
+			case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
+				Script pp = bus.script().pick(entry.getKey());
+				if (null != pp) {
+					map.put(entry.getKey(),
+							new RelatedScript(pp.getId(), pp.getName(), pp.getAlias(), pp.getText(), entry.getValue()));
+				}
+				break;
+			case WorkCompletedProperties.RelatedScript.TYPE_CMS:
+				com.x.cms.core.entity.element.Script cms = bus.cms().script().pick(entry.getKey());
+				if (null != cms) {
+					map.put(entry.getKey(), new RelatedScript(cms.getId(), cms.getName(), cms.getAlias(), cms.getText(),
+							entry.getValue()));
+				}
+				break;
+			case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
+				com.x.portal.core.entity.Script p = bus.portal().script().pick(entry.getKey());
+				if (null != p) {
+					map.put(entry.getKey(),
+							new RelatedScript(p.getId(), p.getName(), p.getAlias(), p.getText(), entry.getValue()));
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		return map;
+	}
+
+	protected List<String> convertScriptToCacheTag(Business business, Map<String, String> map) throws Exception {
+		List<String> list = new ArrayList<>();
+		for (Entry<String, String> entry : map.entrySet()) {
+			switch (entry.getValue()) {
+			case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
+				Script pp = business.script().pick(entry.getKey());
+				if (null != pp) {
+					list.add(pp.getId() + pp.getUpdateTime().getTime());
+				}
+				break;
+			case WorkCompletedProperties.RelatedScript.TYPE_CMS:
+				com.x.cms.core.entity.element.Script cms = business.cms().script().pick(entry.getKey());
+				if (null != cms) {
+					list.add(cms.getId() + cms.getUpdateTime().getTime());
+				}
+				break;
+			case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
+				com.x.portal.core.entity.Script p = business.portal().script().pick(entry.getKey());
+				if (null != p) {
+					list.add(p.getId() + p.getUpdateTime().getTime());
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		return list;
+	}
+
 
 }

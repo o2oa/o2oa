@@ -188,9 +188,9 @@ public class EndProcessor extends AbstractEndProcessor {
 			Form form = (aeiObjects.business().element().get(work.getForm(), Form.class));
 			if (null != form) {
 				StoreForm storeForm = new StoreForm();
-				StoreForm storeFormMobile = new StoreForm();
+				StoreForm mobileStoreForm = new StoreForm();
 				storeForm.setForm(new RelatedForm(form, form.getDataOrMobileData()));
-				storeFormMobile.setForm(new RelatedForm(form, form.getMobileDataOrData()));
+				mobileStoreForm.setForm(new RelatedForm(form, form.getMobileDataOrData()));
 				CompletableFuture<Map<String, RelatedForm>> _relatedForm = CompletableFuture.supplyAsync(() -> {
 					Map<String, RelatedForm> map = new TreeMap<>();
 					try {
@@ -300,10 +300,10 @@ public class EndProcessor extends AbstractEndProcessor {
 						});
 				storeForm.setRelatedFormMap(_relatedForm.get());
 				storeForm.setRelatedScriptMap(_relatedScript.get());
-				storeFormMobile.setRelatedFormMap(_relatedFormMobile.get());
-				storeFormMobile.setRelatedScriptMap(_relatedScriptMobile.get());
+				mobileStoreForm.setRelatedFormMap(_relatedFormMobile.get());
+				mobileStoreForm.setRelatedScriptMap(_relatedScriptMobile.get());
 				workCompleted.getProperties().setStoreForm(storeForm);
-				workCompleted.getProperties().setStoreFormMobile(storeFormMobile);
+				workCompleted.getProperties().setMobileStoreForm(mobileStoreForm);
 			}
 		}
 		return workCompleted;
