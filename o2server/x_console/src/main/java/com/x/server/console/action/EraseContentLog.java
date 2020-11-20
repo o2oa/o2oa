@@ -1,5 +1,7 @@
 package com.x.server.console.action;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.element.FormVersion;
 import com.x.processplatform.core.entity.element.ProcessVersion;
 import com.x.processplatform.core.entity.element.ScriptVersion;
@@ -11,6 +13,8 @@ import com.x.program.center.core.entity.WarnLog;
 
 public class EraseContentLog extends EraseContent {
 
+	private static Logger logger = LoggerFactory.getLogger(EraseContentLog.class);
+	
 	@Override
 	public boolean execute() throws Exception {
 		this.init("log", null);

@@ -1,28 +1,37 @@
 package com.x.file.core.entity.open;
 
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.SliceJpaObject;
-import com.x.base.core.entity.annotation.*;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.file.core.entity.PersistenceProperties;
-import org.apache.commons.lang3.StringUtils;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
 import org.apache.openjpa.persistence.jdbc.Strategy;
 
-import javax.persistence.*;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.SliceJpaObject;
+import com.x.base.core.entity.annotation.CheckPersist;
+import com.x.base.core.entity.annotation.CitationNotExist;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.file.core.entity.PersistenceProperties;
 
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 100, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.Open.Config.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Personal.Folder.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Open.FileConfig.table, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.Open.FileConfig.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class FileConfig extends SliceJpaObject {
 
 	private static final long serialVersionUID = -2266232193925155825L;
-	private static final String TABLE = PersistenceProperties.Open.Config.table;
+	private static final String TABLE = PersistenceProperties.Open.FileConfig.table;
 
 	public String getId() {
 		return id;
@@ -40,7 +49,7 @@ public class FileConfig extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-		if(this.properties == null){
+		if (this.properties == null) {
 			this.properties = new FileConfigProperties();
 		}
 	}

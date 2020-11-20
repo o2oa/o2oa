@@ -1067,6 +1067,149 @@ MWF.xScript.ViewEnvironment = function (ev) {
         }
     };
 
+    this.statement = {
+        "execute": function (statement, callback, async) {
+            var parameter = this.parseParameter(statement.parameter);
+            var filterList = this.parseFilter(statement.filter, parameter);
+            var obj = {
+                "filterList": filterList,
+                "parameter" : parameter
+            };
+            MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+                statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
+                function (json) {
+                    if (callback) callback(json);
+                }, null, async);
+        },
+        parseFilter : function( filter, parameter ){
+            if( typeOf(filter) !== "array" )return [];
+            var filterList = [];
+            ( filter || [] ).each( function (d) {
+                var parameterName = d.path.replace(/\./g, "_");
+                var value = d.value;
+                if( d.comparison === "like" || d.comparison === "notLike" ){
+                    if( value.substr(0, 1) !== "%" )value = "%"+value;
+                    if( value.substr(value.length-1,1) !== "%" )value = value+"%";
+                    parameter[ parameterName ] = value; //"%"+value+"%";
+                }else{
+                    if( d.formatType === "dateTimeValue" || d.formatType === "datetimeValue"){
+                        value = "{ts '"+value+"'}"
+                    }else if( d.formatType === "dateValue" ){
+                        value = "{d '"+value+"'}"
+                    }else if( d.formatType === "timeValue" ){
+                        value = "{t '"+value+"'}"
+                    }
+                    parameter[ parameterName ] = value;
+                }
+                d.value = parameterName;
+
+                filterList.push( d );
+            }.bind(this));
+            return filterList;
+        },
+        parseParameter : function( obj ){
+            if( typeOf(obj) !== "object" )return {};
+            var parameter = {};
+            //传入的参数
+            for( var p in obj ){
+                var value = obj[p];
+                if( typeOf( value ) === "date" ){
+                    value = "{ts '"+value.format("db")+"'}"
+                }
+                parameter[ p ] = value;
+            }
+            return parameter;
+        },
+        "select": function (statement, callback, options) {
+            if (statement.name) {
+                // var parameter = this.parseParameter(statement.parameter);
+                // var filterList = this.parseFilter(statement.filter, parameter);
+                var statementJson = {
+                    "statementId": statement.name || "",
+                    "isTitle": (statement.isTitle === false) ? "no" : "yes",
+                    "select": (statement.isMulti === false) ? "single" : "multi",
+                    "filter": statement.filter,
+                    "parameter": statement.parameter
+                };
+                if (!options) options = {};
+                options.width = statement.width;
+                options.height = statement.height;
+                options.title = statement.caption;
+
+                var width = options.width || "700";
+                var height = options.height || "400";
+
+                if (layout.mobile) {
+                    var size = document.body.getSize();
+                    width = size.x;
+                    height = size.y;
+                    options.style = "viewmobile";
+                }
+                width = width.toInt();
+                height = height.toInt();
+
+                var size = _form.app.content.getSize();
+                var x = (size.x - width) / 2;
+                var y = (size.y - height) / 2;
+                if (x < 0) x = 0;
+                if (y < 0) y = 0;
+                if (layout.mobile) {
+                    x = 20;
+                    y = 0;
+                }
+
+                var _self = this;
+                MWF.require("MWF.xDesktop.Dialog", function () {
+                    var dlg = new MWF.xDesktop.Dialog({
+                        "title": options.title || "select statement view",
+                        "style": options.style || "view",
+                        "top": y,
+                        "left": x - 20,
+                        "fromTop": y,
+                        "fromLeft": x - 20,
+                        "width": width,
+                        "height": height,
+                        "html": "<div style='height: 100%;'></div>",
+                        "maskNode": _form.app.content,
+                        "container": _form.app.content,
+                        "buttonList": [
+                            {
+                                "text": MWF.LP.process.button.ok,
+                                "action": function () {
+                                    //if (callback) callback(_self.view.selectedItems);
+                                    if (callback) callback(_self.statement.getData());
+                                    this.close();
+                                }
+                            },
+                            {
+                                "text": MWF.LP.process.button.cancel,
+                                "action": function () { this.close(); }
+                            }
+                        ]
+                    });
+                    dlg.show();
+
+                    if (layout.mobile) {
+                        var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
+                        var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
+                        if (backAction) backAction.addEvent("click", function (e) {
+                            dlg.close();
+                        }.bind(this));
+                        if (okAction) okAction.addEvent("click", function (e) {
+                            //if (callback) callback(this.view.selectedItems);
+                            if (callback) callback(this.statement.getData());
+                            dlg.close();
+                        }.bind(this));
+                    }
+
+                    MWF.xDesktop.requireApp("query.Query", "Statement", function () {
+                        this.statement = new MWF.xApplication.query.Query.Statement(dlg.content.getFirst(), statementJson, { "style": "select" }, _form.app, _form.Macro);
+                    }.bind(this));
+                }.bind(this));
+            }
+        }
+    };
+
     //include 引用脚本
     //optionsOrName : {
     //  type : "", 默认为portal, 可以为 portal  process  cms
@@ -1165,8 +1308,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     //仅前台对象-----------------------------------------
     //form
-    this.page = this.form = this.queryView = {
+    this.page = this.form = this.queryView = this.queryStatement = {
         "getParentEnvironment" : function () { return _form.getParentEnvironment(); }, //视图嵌入的表单或页面的上下文
+        "getStatementInfor" : function () { return _form.getStatementInfor ? _form.getStatementInfor() : null; },
         "getViewInfor" : function () { return _form.getViewInfor(); },
         "getPageInfor" : function () { return _form.getPageInfor(); },
         "getPageData" : function () { return _form.getPageData(); },
@@ -1174,8 +1318,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
         "selectAll" : function () { return _form.selectAll(); },
         "unSelectAll" : function () { return _form.unSelectAll(); },
         "getSelectedData" : function () { return _form.getSelectedData(); },
-        "setFilter" : function ( filter ) { return _form.setFilter(filter); },
+        "setFilter" : function ( filter, callback ) { return _form.setFilter(filter, callback); },
+        "setStatementFilter" : function ( filter , parameter, callback) { return _form.setFilter(filter, parameter, callback); },
         "switchView" : function ( options ) { return _form.switchView(options); },
+        "switchStatement" : function ( options ) { if(_form.switchStatement)_form.switchStatement(options) ; },
         "reload" : function () { _form.reload(); },
 
         // "getInfor": function () { return ev.pageInfor; },

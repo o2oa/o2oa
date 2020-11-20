@@ -10,8 +10,9 @@ public abstract class Comparison {
 	private static String[] lessThan = new String[] { "lessThan", "<" };
 	private static String[] lessThanOrEqualTo = new String[] { "lessThanOrEqualTo", "<=" };
 	private static String[] like = new String[] { "like" };
-	private static String[] notLike = new String[] { "notLike" };
-	private static String[] between = new String[] { "between", "range" };
+	private static String[] notLike = new String[] { "notLike", "not like" };
+	private static String[] between = new String[] { "range", "between" };
+	private static String[] isMember = new String[] { "isMember", "in" };
 
 	public static boolean isEquals(String comparison) throws Exception {
 		for (String str : equals) {
@@ -92,5 +93,44 @@ public abstract class Comparison {
 			}
 		}
 		return false;
+	}
+
+	public static boolean isIsMember(String comparison) throws Exception {
+		for (String str : isMember) {
+			if (StringUtils.equalsIgnoreCase(str, StringUtils.trim(comparison))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static String getMatchCom(String comparison) throws Exception {
+		if(isNotEquals(comparison)){
+			return notEquals[notEquals.length-1];
+
+		}else if(isGreaterThan(comparison)){
+			return greaterThan[greaterThan.length-1];
+
+		}else if(isGreaterThanOrEqualTo(comparison)){
+			return greaterThanOrEqualTo[greaterThanOrEqualTo.length-1];
+
+		}else if(isLessThan(comparison)){
+			return lessThan[lessThan.length-1];
+
+		}else if(isLessThanOrEqualTo(comparison)){
+			return lessThanOrEqualTo[lessThanOrEqualTo.length-1];
+
+		}else if(isLike(comparison)){
+			return like[like.length-1];
+
+		}else if(isNotLike(comparison)){
+			return notLike[notLike.length-1];
+
+		}else if(isIsMember(comparison)){
+			return isMember[isMember.length-1];
+
+		}else{
+			return equals[equals.length-1];
+		}
 	}
 }

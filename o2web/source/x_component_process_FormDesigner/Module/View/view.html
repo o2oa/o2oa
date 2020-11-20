@@ -159,7 +159,7 @@
 			<tr>
 				<td class="editTableTitle">选择文件</td>
 				<td class="editTableValue">
-					<select name="select">
+					<select name="select" onchange="$('text{$.pid}selectedAbleScript').setStyle('display', this.options[this.selectedIndex].value === 'no' ? 'none' : 'block');">
 						<option text{($.select!='single' && $.select!='multi')?'selected':''} value="no">不允许</option>
 						<option text{($.select=='single')?'selected':''} value="single">单选</option>
 						<option text{($.select=='multi')?'selected':''} value="multi">多选</option>
@@ -232,6 +232,7 @@
 							<option value="like">匹配(like)</option>
 							<option value="notLike">不匹配(not-like)</option>
 							<option value="range">范围(range)</option>
+							<option value="in">包含(in)</option>
 						</select></td>
 					</tr>
 					<tr style="display:none">
@@ -246,6 +247,7 @@
 								<option value="true" selected>是(True)</option>
 								<option value="false">否(False)</option>
 							</select>
+							<div class="multiValueNotice_vf" style="display: none;color: #999;line-height: 24px;">多值用半角逗号(,)隔开</div>
 						</td>
 					</tr>
 				</table>
@@ -258,6 +260,8 @@
 			<div class="fieldListAreaNode_vf" style="display:none; min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
 		</div>
 		<div class="MWFScriptArea" name="defaultSelectedScript" title="默认选中行脚本"></div>
+		<div class="MWFScriptArea" name="selectedAbleScript" title="允许选择行脚本" id="text{$.pid}selectedAbleScript"
+			 style="display: text{($.select=='single' || $.select=='multi')?'':'none'}"></div>
 	</div>
 
 	<div title="事件"  class="MWFTab">

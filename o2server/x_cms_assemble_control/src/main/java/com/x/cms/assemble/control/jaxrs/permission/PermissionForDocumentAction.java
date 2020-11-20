@@ -8,10 +8,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -27,7 +25,6 @@ import javax.ws.rs.core.MediaType;
 @JaxrsDescribe("信息文档发布权限管理")
 public class PermissionForDocumentAction extends StandardJaxrsAction{
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger( PermissionForDocumentAction.class );
 	
 	@JaxrsMethodDescribe(value = "刷新信息文档发布权限.", action = ActionRefreshDocumentPermission.class)
@@ -41,7 +38,7 @@ public class PermissionForDocumentAction extends StandardJaxrsAction{
 
 		if(check){
 			try {
-				result = ((ActionRefreshDocumentPermission)proxy.getProxy(ActionRefreshDocumentPermission.class)).execute( request, effectivePerson, jsonElement );
+				result = new ActionRefreshDocumentPermission().execute( request, effectivePerson, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionServiceLogic( e, "系统在更新文档的访问和管理权限过程中发生异常！" );

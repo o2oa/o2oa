@@ -26,14 +26,28 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             if (callback) callback();
         }
     },
+    //隐藏高级属性
+    hideAdvanced: function(){
+	    if (this.process.panel.showAdvanced && !this.process.panel.showAdvanced.checked){
+            var advs = this.propertyContent.querySelectorAll("*[data-o2-advanced=\"yes\"]");
+            if (advs && advs.length){
+                for (var i=0; i<advs.length; i++){
+                    advs[i].hide();
+                }
+            }
+        }
+    },
+
 	show: function(){
         if (!this.process.options.isView){
             if (!this.propertyContent){
                 this.getHtmlString(function(){
+                    debugger;
                     this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.process.propertyListNode);
                     this.process.panel.propertyTabPage.showTabIm();
                     this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
                     this.propertyContent.set("html", this.JsonTemplate.load());
+
                     this.process.panel.data = this.data;
 
                     this.setEditNodeEvent();
@@ -53,6 +67,8 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     this.loadIconSelect();
                     this.loadContextRoot();
                     this.loadProjection();
+
+                    this.hideAdvanced();
                 }.bind(this));
                 //this.loadDutySelector();
             }else{
@@ -98,6 +114,9 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 				tabNodes.each(function(node){
 					var tabPage = tab.addTab(node, node.get("title"), false);
 					tabPages.push(tabPage);
+					if (node.hasAttribute("data-o2-advanced") && node.dataset["o2Advanced"]=="yes"){
+                        tabPage.tabNode.setAttribute("data-o2-advanced", "yes");
+                    }
 				}.bind(this));
 				tabPages[0].showTab();
 			}.bind(this));

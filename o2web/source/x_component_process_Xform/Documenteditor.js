@@ -2222,28 +2222,20 @@ debugger;
                     }.bind(this));
                     e.data.dataValue = tmp.get("html");
                     tmp.destroy();
+
+                    this.fireEvent("paste");
+                }.bind(this) );
+
+                this.filetextEditor.on( 'afterPaste', function( e ) {
+                    this.resetNodeSize();
+                    this.fireEvent("afterPaste");
                 }.bind(this) );
 
 
                 if (this.json.textIndent!=="n"){
-                    // this.filetextEditor.addCommand( 'textIndent_P', {
-                    //     exec: function( editor ) {
-                    //         debugger;
-                    //         editor.insertHtml("<br><div>　　</div>");
-                    //     }
-                    // } );
-                    // this.filetextEditor.setKeystroke( CKEDITOR.CTRL + 13, 'textIndent_P' );
                     this.layout_filetext.addEvent("keyup", function(ev){
                         if (ev.code==13) this.filetextEditor.insertText("　　");
                     }.bind(this));
-                    //
-                    // this.filetextEditor.on("key", function(e){
-                    //     if (e.data.keyCode==13){
-                    //         e.editor.insertText("　　");
-                    //         //e.cancel();
-                    //     }
-                    // }.bind(this));
-
                 }
                 if (this.json.fullWidth!=="n"){
                     this.filetextEditor.addCommand( 'insertHalfSpace', {
@@ -2906,7 +2898,30 @@ debugger;
         }
         return node;
     },
-
+    getDocumentHtml: function(){
+        var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
+        var htmlNode = tmpNode.getLast();
+        htmlNode = this.removeDisplayNone(htmlNode);
+        var nodes = tmpNode.querySelectorAll("[data-w-style]");
+        if (nodes.length){
+            for (var i=0; i<nodes.length; i++){
+                var n = nodes.item(i);
+                wStyle = n.dataset["wStyle"];
+                var styles = wStyle.split(/\s*\;\s*/g);
+                styles.each(function(style){
+                    if (style){
+                        try{
+                            s = style.split(/\s*\:\s*/g);
+                            n.setStyle(s[0], s[1]);
+                        }catch(e) {}
+                    }
+                });
+            }
+        }
+        var htmlStr = tmpNode.get("html");
+        tmpNode.destroy();
+        return "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+htmlStr+"</body></html>";
+    },
     toWord: function(callback, name){
         debugger;
         var docNmae = name || "";
@@ -2934,26 +2949,27 @@ debugger;
             });
 
             //var content = this.contentNode.getFirst().getFirst().get("html");
-            var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
-            var htmlNode = tmpNode.getLast();
-            htmlNode = this.removeDisplayNone(htmlNode);
-            var nodes = tmpNode.querySelectorAll("[data-w-style]");
-            if (nodes.length){
-                for (var i=0; i<nodes.length; i++){
-                    var n = nodes.item(i);
-                    wStyle = n.dataset["wStyle"];
-                    var styles = wStyle.split(/\s*\;\s*/g);
-                    styles.each(function(style){
-                        if (style){
-                            try{
-                                s = style.split(/\s*\:\s*/g);
-                                n.setStyle(s[0], s[1]);
-                            }catch(e) {}
-                        }
-                    });
-                }
-            }
-            var content = "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
+            // var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
+            // var htmlNode = tmpNode.getLast();
+            // htmlNode = this.removeDisplayNone(htmlNode);
+            // var nodes = tmpNode.querySelectorAll("[data-w-style]");
+            // if (nodes.length){
+            //     for (var i=0; i<nodes.length; i++){
+            //         var n = nodes.item(i);
+            //         wStyle = n.dataset["wStyle"];
+            //         var styles = wStyle.split(/\s*\;\s*/g);
+            //         styles.each(function(style){
+            //             if (style){
+            //                 try{
+            //                     s = style.split(/\s*\:\s*/g);
+            //                     n.setStyle(s[0], s[1]);
+            //                 }catch(e) {}
+            //             }
+            //         });
+            //     }
+            // }
+            var content = this.getDocumentHtml();
+            //var content = "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
 
             var fileName = docNmae || this.json.toWordFilename || "$doc";
             var n = fileName.lastIndexOf(".");
@@ -2978,7 +2994,7 @@ debugger;
                     }.bind(this));
                 }
             }.bind(this));
-            tmpNode.destroy();
+            //tmpNode.destroy();
 
             if (!toEdit){
                 this._readFiletext();

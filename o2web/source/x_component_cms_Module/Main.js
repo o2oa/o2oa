@@ -66,16 +66,20 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}).inject(this.titleBar );
 	},
 	loadApplicationContent: function(){
-		if( this.options.columnData ){
-			this.setColumnDataConfig();
-			this.setTitle(this.options.columnData.appName);
-			this.loadController(function(){
-				this.loadTitle(function(){
-					this.loadMenu();
-				}.bind(this));
-			}.bind(this))
-		}else if( (this.status && this.status.columnId) || this.options.columnId ){
-			var columnId = this.options.columnId || this.status.columnId;
+		var columnId = (this.options.columnData && this.options.columnData.id ) ||
+			(this.status && this.status.columnId) || this.options.columnId;
+		var columnAlias = this.options.columnAlias || (this.options.columnData && this.options.columnData.columnAlias ) ||
+			(this.status && this.status.columnAlias );
+		// if( this.options.columnData ){
+		// 	this.setColumnDataConfig();
+		// 	this.setTitle(this.options.columnData.appName);
+		// 	this.loadController(function(){
+		// 		this.loadTitle(function(){
+		// 			this.loadMenu();
+		// 		}.bind(this));
+		// 	}.bind(this))
+		// }else
+		if( columnId ){
 			this.loadColumnData( columnId, function(){
 				this.loadController(function(){
 					this.loadTitle(function(){
@@ -83,11 +87,11 @@ MWF.xApplication.cms.Module.Main = new Class({
 					}.bind(this));
 				}.bind(this))
 			}.bind(this))
-		}else if( this.options.columnAlias ){
-			this.restActions.getColumnByAlias( this.options.columnAlias, function( json ){
-				this.options.columnData = json.data;
+		}else if( columnAlias ){
+			this.restActions.getColumnByAlias( columnAlias, function( json ){
+				this.columnData = json.data;
 				this.setColumnDataConfig();
-				this.setTitle(this.options.columnData.appName);
+				this.setTitle(this.columnData.appName);
 				this.loadController(function(){
 					this.loadTitle(function(){
 						this.loadMenu();
@@ -97,25 +101,25 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}
 	},
 	setColumnDataConfig : function(){
-		if( !this.options.columnData.config ){
-			this.options.columnData.config = {};
-		}else if( typeOf(this.options.columnData.config) === "string" ){
-			this.options.columnData.config = JSON.parse( this.options.columnData.config || {} );
+		if( !this.columnData.config ){
+			this.columnData.config = {};
+		}else if( typeOf(this.columnData.config) === "string" ){
+			this.columnData.config = JSON.parse( this.columnData.config || {} );
 		}
 	},
 	loadColumnData : function(columnId, callback){
 		this.restActions.getColumn( columnId, function( json ){
-			this.options.columnData = json.data;
-			this.setTitle(this.options.columnData.appName);
+			this.columnData = json.data;
+			this.setTitle(this.columnData.appName);
 			this.setColumnDataConfig();
 
 			//MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
 			//MWF.require("o2.xScript.Macro", null, false);
 			//var scriptAction = new MWF.xScript.Actions.CMSScriptActions();
-			//scriptAction.getScriptByName( this.options.columnData.id, "_config", [], function(json){
+			//scriptAction.getScriptByName( this.columnData.id, "_config", [], function(json){
 			//	if (json.data){
 			//		try{
-			//			this.options.columnData = Object.merge(this.options.columnData,JSON.parse(json.data.text));
+			//			this.columnData = Object.merge(this.columnData,JSON.parse(json.data.text));
 			//		}catch(e){
 			//		}
 			//	}
@@ -125,7 +129,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}.bind(this))
 	},
 	loadController: function(callback){
-		//this.restActions.listColumnController(this.options.columnData.id, function( json ){
+		//this.restActions.listColumnController(this.columnData.id, function( json ){
 		//	json.data = json.data || [];
 		//	json.data.each(function(item){
 		//		this.controllers.push(item.adminUid)
@@ -133,7 +137,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		//	this.isAdmin = MWF.AC.isCMSManager() || this.controllers.contains(layout.desktop.session.user.distinguishedName);
 		//	if(callback)callback(json);
 		//}.bind(this));
-		this.restActions.isAppInfoManager( this.options.columnData.id, function( json ){
+		this.restActions.isAppInfoManager( this.columnData.id, function( json ){
 			this.isAdmin = MWF.AC.isCMSManager() || json.data.value;
 			if(callback)callback(json);
 		}.bind(this))
@@ -212,7 +216,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}
 	},
 	loadCreateDocumentActionNode: function( callback ){
-		this.restActions.listCategoryByPublisher( this.options.columnData.id, function( json ){
+		this.restActions.listCategoryByPublisher( this.columnData.id, function( json ){
 			if( json.data && json.data.length ){
 				this.createDocumentAction = new Element("div", {
 					"styles": this.css.createDocumentAction,
@@ -222,10 +226,10 @@ MWF.xApplication.cms.Module.Main = new Class({
 					"click": function(e){
 						MWF.xDesktop.requireApp("cms.Index", "Newer", null, false);
 
-						//if(this.options.columnData.latest===undefined) this.options.columnData.latest = true;
-						//if(this.options.columnData.ignoreTitle===undefined) this.options.columnData.ignoreTitle = false;
+						//if(this.columnData.latest===undefined) this.columnData.latest = true;
+						//if(this.columnData.ignoreTitle===undefined) this.columnData.ignoreTitle = false;
 
-						this.creater = new MWF.xApplication.cms.Index.Newer( this.options.columnData, null, this, this.view, {
+						this.creater = new MWF.xApplication.cms.Index.Newer( this.columnData, null, this, this.view, {
 							restrictToColumn : true
 							// onAfterPublish : function () {
 							// 	try{
@@ -235,8 +239,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 							// 	}catch (e) {
 							// 	}
 							// }.bind(this)
-							//ignoreTitle : this.options.columnData.ignoreTitle,
-							//latest : this.options.columnData.latest
+							//ignoreTitle : this.columnData.ignoreTitle,
+							//latest : this.columnData.latest
 						});
 						this.creater.load();
 					}.bind(this),
@@ -547,7 +551,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		this.publishableCategoryInfoObject_name = {};
 		this.categoryTransformMap = {};
 		this.categoryRadioHtml = "";
-		o2.Actions.load("x_cms_assemble_control").CategoryInfoAction.listPublishableCategoryInfo( this.options.columnData.id, function(json){
+		o2.Actions.load("x_cms_assemble_control").CategoryInfoAction.listPublishableCategoryInfo( this.columnData.id, function(json){
 			( json.data || [] ).each( function(c){
 				this.publishableCategoryInfoObject_id[c.id] = c;
 				this.publishableCategoryInfoObject_alias[c.categoryAlias] = c;
@@ -739,7 +743,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 	},
 	saveItemAsNew: function(data, success, failure, clearId, newCategory){
 
-		var columnData = this.options.columnData;
+		var columnData = this.columnData;
 
 		var doc = data.document;
 		if( clearId ){
@@ -812,7 +816,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 	loadSelectCategoryDialog : function(title, callback){
 		if( !this.categoryList ){
 			this.categoryList = [];
-			this.restActions.listCategory( this.options.columnData.id, function( json ){
+			this.restActions.listCategory( this.columnData.id, function( json ){
 				json.data.each( function(d){
 					this.categoryList.push( {
 						name : d.categoryName,
@@ -890,8 +894,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 		var iconNode = this.iconNode = new Element("img",{
 			"styles" : this.css.titleIconNode
 		}).inject(iconAreaNode);
-		if (this.options.columnData.appIcon){
-			this.iconNode.set("src", "data:image/png;base64,"+this.options.columnData.appIcon+"");
+		if (this.columnData.appIcon){
+			this.iconNode.set("src", "data:image/png;base64,"+this.columnData.appIcon+"");
 		}else{
 			this.iconNode.set("src", this.defaultColumnIcon)
 		}
@@ -901,13 +905,13 @@ MWF.xApplication.cms.Module.Main = new Class({
 	},
 	_getLnkPar: function(){
 		var lnkIcon = this.defaultColumnIcon;
-		if (this.options.columnData.appIcon) lnkIcon = "data:image/png;base64,"+this.options.columnData.appIcon;
+		if (this.columnData.appIcon) lnkIcon = "data:image/png;base64,"+this.columnData.appIcon;
 
-		var appId = "cms.Module"+this.options.columnData.id;
+		var appId = "cms.Module"+this.columnData.id;
 		return {
 			"icon": lnkIcon,
-			"title": this.options.columnData.appName,
-			"par": "cms.Module#{\"columnId\": \""+this.options.columnData.id+"\", \"appId\": \""+appId+"\"}"
+			"title": this.columnData.appName,
+			"par": "cms.Module#{\"columnId\": \""+this.columnData.id+"\", \"appId\": \""+appId+"\"}"
 		};
 	},
 	loadTitleContentNode: function(){
@@ -917,14 +921,14 @@ MWF.xApplication.cms.Module.Main = new Class({
 
 		this.titleTextNode = new Element("div.titleTextNode", {
 			"styles": this.css.titleTextNode,
-			"text": this.options.columnData.appName,
-			"title": this.options.columnData.appName
+			"text": this.columnData.appName,
+			"title": this.columnData.appName
 		}).inject(this.titleContentNode);
 
 		this.titleDescriptionNode =  new Element("div.titleDescriptionNode", {
 			"styles": this.css.titleDescriptionNode,
-			"text": this.options.columnData.description ? this.options.columnData.description : this.lp.noDescription,
-			"title": this.options.columnData.description ? this.options.columnData.description : this.lp.noDescription
+			"text": this.columnData.description ? this.columnData.description : this.lp.noDescription,
+			"title": this.columnData.description ? this.columnData.description : this.lp.noDescription
 		}).inject(this.titleContentNode);
 	},
 	loadSearchNode : function(){
@@ -982,7 +986,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}
 	},
 	_loadMenu : function( options ){
-		this.navi = new MWF.xApplication.cms.Module.Navi(this, this.naviNode, this.options.columnData, options );
+		this.navi = new MWF.xApplication.cms.Module.Navi(this, this.naviNode, this.columnData, options );
 		this.setNaviSize();
 	},
 	clearContent: function(){
@@ -1010,7 +1014,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 			this.view = new MWF.xApplication.cms.Module.ViewExplorer(
 				this.moduleContent,
 				this,
-				this.options.columnData,
+				this.columnData,
 				categoryData,
 				revealData,
 				{"isAdmin": this.isAdmin, "searchKey" : searchKey },
@@ -1032,7 +1036,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 			this.view = new MWF.xApplication.cms.Module.ListExplorer(
 				this.moduleContent,
 				this.restActions,
-				this.options.columnData,
+				this.columnData,
 				categoryData,
 				revealData,
 				{"isAdmin": this.isAdmin, "searchKey" : searchKey },
@@ -1049,16 +1053,16 @@ MWF.xApplication.cms.Module.Main = new Class({
 			var categoryId = currentObject.getCategoryId();
 			if (categoryId){
 				return {
-					"columnId" : this.options.columnData.id,
+					"columnId" : this.columnData.id,
 					"categoryId" :categoryId,
 					"isCategory" : currentObject.isCategory,
 					"viewId" : currentObject.data.id
 				};
 			}else{
-				return { "columnId" : this.options.columnData.id , "categoryId" : "whole"}
+				return { "columnId" : this.columnData.id , "categoryId" : "whole"}
 			}
 		}else{
-			return { "columnId" : this.options.columnData.id , "categoryId" : "whole" }
+			return { "columnId" : this.columnData.id , "categoryId" : "whole" }
 		}
 	},
 	setNaviSize: function(){

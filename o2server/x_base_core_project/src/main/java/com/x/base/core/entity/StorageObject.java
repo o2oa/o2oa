@@ -117,14 +117,6 @@ public abstract class StorageObject extends SliceJpaObject {
 		return this.updateContent(mapping, input);
 	}
 
-	// /** 更新Content内容 */
-	// public Long updateContent(StorageMapping mapping, byte[] bytes) throws
-	// Exception {
-	// try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
-	// return updateContent(mapping, bais);
-	// }
-	// }
-
 	/** 更新Content内容 */
 	public Long updateContent(StorageMapping mapping, byte[] bytes, String name) throws Exception {
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
@@ -148,64 +140,6 @@ public abstract class StorageObject extends SliceJpaObject {
 	/** 更新Content内容 */
 	public Long updateContent(StorageMapping mapping, InputStream input) throws Exception {
 		return updateContent(mapping, IOUtils.toByteArray(input));
-		// long length = -1L;
-		// FileSystemManager manager = this.getFileSystemManager();
-		// String prefix = this.getPrefix(mapping);
-		// String path = this.path();
-		// if (StringUtils.isEmpty(path)) {
-		// throw new Exception("path can not be empty.");
-		// }
-		// FileSystemOptions options = this.getOptions(mapping);
-		// try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-		// /* 由于可以在传输过程中取消传输,先拷贝到内存 */
-		// IOUtils.copyLarge(input, baos);
-		// FileObject fo = null;
-		// OutputStream output = null;
-		// try {
-		// /*
-		// * 需要进行两次判断，在前端使用nginx分发的情况下，可能同时触发多个文件的上传，多个文件同时上传可能会同时创建文件的存储目录，会在后台导致错误
-		// * org.apache.commons.vfs2.FileSystemException: Could not create folder
-		// *
-		// "ftp://processPlatform:***@o2.server01.com:20040/20200601/1beb018a-5009-4baa-a9ef-7e903f9d48ef".
-		// * 这种情况下再次发起请求尝试获取文件可以解决这个问题.
-		// */
-		// try {
-		// fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
-		// output = fo.getContent().getOutputStream();
-		// } catch (FileSystemException fse) {
-		// // 此段代码全部关闭对象，并要进行webdav判断进行关闭。
-		// if (null != output) {
-		// output.close();
-		// }
-		// if (null != fo) {
-		// if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
-		// /* webdav关闭会试图去关闭commons.httpClient */
-		// manager.closeFileSystem(fo.getFileSystem());
-		// }
-		// fo.close();
-		// }
-		// fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
-		// output = fo.getContent().getOutputStream();
-		// }
-		// length = IOUtils.copyLarge(new ByteArrayInputStream(baos.toByteArray()),
-		// output);
-		// this.setLength(length);
-		// if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
-		// /* webdav关闭会试图去关闭commons.httpClient */
-		// manager.closeFileSystem(fo.getFileSystem());
-		// }
-		// } finally {
-		// if (null != output) {
-		// output.close();
-		// }
-		// if (null != fo) {
-		// fo.close();
-		// }
-		// }
-		// }
-		// this.setStorage(mapping.getName());
-		// this.setLastUpdateTime(new Date());
-		// return length;
 	}
 
 	/** 更新Content内容 */
@@ -229,7 +163,8 @@ public abstract class StorageObject extends SliceJpaObject {
 					OutputStream output = fo.getContent().getOutputStream()) {
 				length = IOUtils.copyLarge(new ByteArrayInputStream(bytes), output);
 				this.setLength(length);
-				if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
+				if ((!Objects.equals(StorageProtocol.webdav, mapping.getProtocol()))
+						&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))) {
 					/* webdav关闭会试图去关闭commons.httpClient */
 					manager.closeFileSystem(fo.getFileSystem());
 				}
@@ -339,6 +274,12 @@ public abstract class StorageObject extends SliceJpaObject {
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
 					+ mapping.getPort();
 			break;
+		case sftp:
+			// ftps://[ username[: password]@] hostname[: port][ relative-path]
+			prefix = "sftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+					+ mapping.getPort();
+			break;
 		case cifs:
 			// smb://[ username[: password]@] hostname[: port][ absolute-path]
 			prefix = "smb://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
@@ -369,6 +310,19 @@ public abstract class StorageObject extends SliceJpaObject {
 		switch (mapping.getProtocol()) {
 		// bzip2,file, ftp, ftps, gzip, hdfs, http, https, jar, ram, res, sftp,
 		// tar, temp, webdav, zip, cifs, mime;
+		case sftp:
+			FtpFileSystemConfigBuilder sftpBuilder = FtpFileSystemConfigBuilder.getInstance();
+			sftpBuilder.setPassiveMode(opts, Config.vfs().getSftp().getPassive());
+			/** 强制不校验IP */
+			sftpBuilder.setRemoteVerification(opts, false);
+			sftpBuilder.setFileType(opts, FtpFileType.BINARY);
+			sftpBuilder.setConnectTimeout(opts, 10000);
+			sftpBuilder.setSoTimeout(opts, 10000);
+			sftpBuilder.setControlEncoding(opts, DefaultCharset.name);
+			// By default, the path is relative to the user's home directory. This can be
+			// changed with:
+			sftpBuilder.setUserDirIsRoot(opts, false);
+			break;
 		case ftp:
 			FtpFileSystemConfigBuilder ftpBuilder = FtpFileSystemConfigBuilder.getInstance();
 			/*

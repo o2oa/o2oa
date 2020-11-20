@@ -18,7 +18,7 @@ import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Script;
 
 class ActionEdit extends BaseAction {
-	
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

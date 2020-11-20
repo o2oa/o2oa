@@ -22,6 +22,7 @@ public class CenterServer extends ConfigObject {
 	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
 	private static final Integer DEFAULT_MAXFORMCONTENT = 20;
 	private static final Boolean DEFAULT_EXPOSEJEST = true;
+	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
 
 	public static CenterServer defaultInstance() {
 		return new CenterServer();
@@ -42,6 +43,7 @@ public class CenterServer extends ConfigObject {
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
 		this.maxFormContent = DEFAULT_MAXFORMCONTENT;
 		this.exposeJest = DEFAULT_EXPOSEJEST;
+		this.persistentConnectionsEnable = DEFAULT_PERSISTENTCONNECTIONSENABLE;
 	}
 
 	@FieldDescribe("是否启用")
@@ -74,6 +76,14 @@ public class CenterServer extends ConfigObject {
 	private Integer maxFormContent;
 	@FieldDescribe("暴露jest接口.")
 	private Boolean exposeJest;
+
+	@FieldDescribe("是否启用长连接,默认false.")
+	private Boolean persistentConnectionsEnable;
+
+	public Boolean getPersistentConnectionsEnable() {
+		return persistentConnectionsEnable == null ? DEFAULT_PERSISTENTCONNECTIONSENABLE
+				: this.persistentConnectionsEnable;
+	}
 
 	public Boolean getExposeJest() {
 		return BooleanUtils.isNotFalse(this.exposeJest);

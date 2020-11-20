@@ -143,66 +143,174 @@ MWF.xApplication.process.Work.Main = new Class({
     },
     loadWorkByWork: function(id){
         //var getWorkLogMothed = "getWorkLog";    //以前使用worklog，现在改成record了
-        var getWorkLogMothed = (this.options.worklogType.toLowerCase()==="worklog") ? "getWorkLog" : "getRecordLog";
-        if (this.options.form && this.options.form.id && this.options.form.app){
-            o2.Actions.invokeAsync([
-                {"action": this.action, "name": "getForm"},
-                {"action": this.action, "name": "loadWork"},
-                {"action": this.action, "name": "getWorkControl"},
-                {"action": this.action, "name": "getWorkLog"},
-                {"action": this.action, "name": "getRecordLog"},
-                {"action": this.action, "name": "listAttachments"}
-            ], {"success": function(json_form, json_work, json_control, json_log, json_record, json_att){
-                    if (json_work && json_control && json_form && json_log && json_att){
-                        this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_record.data, json_att.data);
-                        if (this.mask) this.mask.hide();
-                        //if (layout.mobile) this.loadMobileActions();
+        //var getWorkLogMothed = (this.options.worklogType.toLowerCase()==="worklog") ? "getWorkLog" : "getRecordLog";
+        var loadFormFlag = false;
+        var loadWorkFlag = false;
+        var loadModuleFlag = false;
+
+        var json_work, json_log, json_control, json_form;
+
+        var check = function(){
+            if (loadWorkFlag && loadFormFlag && loadModuleFlag){
+                if (json_work && json_control && json_form && json_log){
+                    this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_work.data.recordList, json_work.data.attachmentList);
+                    if (this.mask) this.mask.hide();
+                    //if (layout.mobile) this.loadMobileActions();
+                    if (layout.session && layout.session.user){
                         this.openWork();
                         this.unLoading();
-                    } else{
-                        if (this.options.jobId || this.options.jobid || this.options.job){
-                            delete this.options.workCompletedId;
-                            delete this.options.workId;
-                            delete this.options.workid;
-                            delete this.options.workcompletedid;
-                            this.loadWork();
-                        }else{
-                            this.close();
+                    }else{
+                        if (layout.sessionPromise){
+                            layout.sessionPromise.then(function(){
+                                this.openWork();
+                                this.unLoading();
+                            }.bind(this));
                         }
                     }
+                } else{
+                    if (this.options.jobId || this.options.jobid || this.options.job){
+                        delete this.options.workCompletedId;
+                        delete this.options.workId;
+                        delete this.options.workid;
+                        delete this.options.workcompletedid;
+                        this.loadWork();
+                    }else{
+                        //this.close();
+                    }
+                }
+            }
+        }.bind(this);
+
+        if ((this.options.form && this.options.form.id) || this.options.formid){
+            o2.Actions.invokeAsync([
+                {"action": this.action, "name": "loadWorkV2"},
+                {"action": this.action, "name": "getWorkLog"},
+                {"action": this.action, "name": "getWorkControl"},
+                {"action": this.action, "name": ((layout.mobile) ? "getFormV2Mobile": "getFormV2")}
+            ], {"success": function(jsonWork, jsonLog, jsonControl, jsonForm){
+                    json_work = jsonWork;
+                    json_log = jsonLog;
+                    json_control = jsonControl;
+                    json_form = jsonForm;
+                    loadWorkFlag = true;
+                    loadFormFlag = true;
+                    check();
                 }.bind(this), "failure": function(){
                     //this.close();
-                }.bind(this)}, [this.options.form.id, this.options.form.app], id);
+                }.bind(this)}, id, id, id, [this.options.formid || this.options.form.id]);
         }else{
+            this.action.lookupFormWithWork(id, function(json){
+                var formId = json.data.id;
+                if (json.data.form){
+                    json_form = json;
+                    loadFormFlag = true;
+                    check();
+                }else{
+                    //临时查看效果
+                    // if (formId=="4f8b4fde-d963-468c-b6c9-9e7b919f0bd0"){
+                    //     o2.JSON.get("../x_desktop/res/form/4f8b4fde-d963-468c-b6c9-9e7b919f0bd0.json", function(formJson){
+                    //         json_form = formJson;
+                    //         loadFormFlag = true;
+                    //         check();
+                    //     });
+                    // }else{
+                    var cacheTag = json.data.cacheTag || "";
+                        this.action[((layout.mobile) ? "getFormV2Mobile": "getFormV2")](formId, cacheTag, function(formJson){
+                            json_form = formJson;
+                            loadFormFlag = true;
+                            check();
+                        }, function(){
+                            loadFormFlag = true;
+                            check();
+                        });
+                    // }
+
+                }
+
+            }.bind(this), function(){
+                loadFormFlag = true;
+                check();
+            });
             o2.Actions.invokeAsync([
-                {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
-                {"action": this.action, "name": "loadWork"},
-                {"action": this.action, "name": "getWorkControl"},
-                {"action": this.action, "name": "getWorkLog"},
-                {"action": this.action, "name": "getRecordLog"},
-                {"action": this.action, "name": "listAttachments"}
-            ], {"success": function(json_form, json_work, json_control, json_log, json_record, json_att){
-                    if (json_work && json_control && json_form && json_log && json_att){
-                        this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_record.data, json_att.data);
-                        if (this.mask) this.mask.hide();
-                        //if (layout.mobile) this.loadMobileActions();
-                        this.openWork();
-                        this.unLoading();
-                    } else{
-                        if (this.options.jobId || this.options.jobid || this.options.job){
-                            delete this.options.workCompletedId;
-                            delete this.options.workId;
-                            delete this.options.workid;
-                            delete this.options.workcompletedid;
-                            this.loadWork();
-                        }else{
-                            this.close();
-                        }
-                    }
-                }.bind(this), "failure": function(){
-                    //this.close();
-                }.bind(this)}, id);
+                    {"action": this.action, "name": "loadWorkV2"},
+                    {"action": this.action, "name": "getWorkLog"},
+                    {"action": this.action, "name": "getWorkControl"}
+                ], {"success": function(jsonWork, jsonLog, jsonControl){
+                        json_work = jsonWork;
+                        json_log = jsonLog;
+                        json_control = jsonControl;
+                        loadWorkFlag = true;
+                        check();
+                    }.bind(this), "failure": function(){
+                        //this.close();
+                    }.bind(this)}, id
+            );
         }
+        var cl = "$all";
+        MWF.xDesktop.requireApp("process.Xform", cl, function(){
+            loadModuleFlag = true;
+            check();
+        });
+
+        // if (this.options.form && this.options.form.id && this.options.form.app){
+        //     o2.Actions.invokeAsync([
+        //         {"action": this.action, "name": "loadWork"},
+        //         {"action": this.action, "name": "getWorkLog"},
+        //         {"action": this.action, "name": "getRecordLog"},
+        //         {"action": this.action, "name": "getWorkControl"},
+        //         {"action": this.action, "name": "listAttachments"},
+        //         {"action": this.action, "name": "getForm"}
+        //     ], {"success": function(json_work, json_log, json_record, json_control, json_att, json_form){
+        //             if (json_work && json_control && json_form && json_log && json_att){
+        //                 this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_record.data, json_att.data);
+        //                 if (this.mask) this.mask.hide();
+        //                 //if (layout.mobile) this.loadMobileActions();
+        //                 this.openWork();
+        //                 this.unLoading();
+        //             } else{
+        //                 if (this.options.jobId || this.options.jobid || this.options.job){
+        //                     delete this.options.workCompletedId;
+        //                     delete this.options.workId;
+        //                     delete this.options.workid;
+        //                     delete this.options.workcompletedid;
+        //                     this.loadWork();
+        //                 }else{
+        //                     this.close();
+        //                 }
+        //             }
+        //         }.bind(this), "failure": function(){
+        //             //this.close();
+        //         }.bind(this)}, id, id, id, id, id, [this.options.form.id, this.options.form.app]);
+        // }else{
+            // o2.Actions.invokeAsync([
+            //     {"action": this.action, "name": "loadWork"},
+            //     {"action": this.action, "name": "getWorkLog"},
+            //     {"action": this.action, "name": "getRecordLog"},
+            //     {"action": this.action, "name": "getWorkControl"},
+            //     {"action": this.action, "name": "listAttachments"},
+            //     {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"}
+            // ], {"success": function(json_work, json_log, json_record, json_control, json_att, json_form){
+            //         if (json_work && json_control && json_form && json_log && json_att){
+            //             this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_record.data, json_att.data);
+            //             if (this.mask) this.mask.hide();
+            //             //if (layout.mobile) this.loadMobileActions();
+            //             this.openWork();
+            //             this.unLoading();
+            //         } else{
+            //             if (this.options.jobId || this.options.jobid || this.options.job){
+            //                 delete this.options.workCompletedId;
+            //                 delete this.options.workId;
+            //                 delete this.options.workid;
+            //                 delete this.options.workcompletedid;
+            //                 this.loadWork();
+            //             }else{
+            //                 this.close();
+            //             }
+            //         }
+            //     }.bind(this), "failure": function(){
+            //         //this.close();
+            //     }.bind(this)}, id);
+        //}
     },
     loadWorkByJob: function(jobId){
         MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(jobId, function(json){
@@ -240,10 +348,10 @@ MWF.xApplication.process.Work.Main = new Class({
                     }
                 }
             }else{
-                this.close();
+                //this.close();
             }
         }.bind(this), function(){
-            this.close();
+            //this.close();
         }.bind(this));
     },
     loadWorkByDraft: function(work, data){
@@ -364,6 +472,7 @@ MWF.xApplication.process.Work.Main = new Class({
         this.currentTask = this.getCurrentTaskData(workData);
         this.taskList = workData.taskList;
         this.readList = workData.readList;
+        this.routeList = workData.routeList;
         this.work = workData.work;
         this.workCompleted = (workData.work.completedTime) ? workData.work : null;
 
@@ -563,8 +672,8 @@ MWF.xApplication.process.Work.Main = new Class({
             this.formNode.setStyles(this.css.formNode);
             var uri = window.location.href;
             //var cl = (uri.indexOf("$all")!=-1) ? "$all" : "Form";
-            var cl = "$all";
-            MWF.xDesktop.requireApp("process.Xform", cl, function(){
+           // var cl = "$all";
+           // MWF.xDesktop.requireApp("process.Xform", cl, function(){
             //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.form, {});
                 this.appForm.businessData = {
@@ -579,6 +688,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     "task": this.currentTask,
                     "workLogList": this.workLogList,
                     "recordList": this.recordList,
+                    "routeList" : this.routeList,
                     "attachmentList": this.attachmentList,
                     "inheritedAttachmentList": this.inheritedAttachmentList,
                     "formInfor": this.formInfor,
@@ -606,17 +716,13 @@ MWF.xApplication.process.Work.Main = new Class({
                         layout.appForm = this.appForm;
                         window.webkit.messageHandlers.appFormLoaded.postMessage(JSON.stringify(this.appForm.mobileTools));
                     }
-debugger;
-
                     if (this.options.action=="processTask"){
                         this.appForm.processWork();
                         this.options.action = "";
                     }
-
                     this.fireEvent("postLoadForm");
-
                 }.bind(this));
-            }.bind(this));
+            //}.bind(this));
         }
     },
 

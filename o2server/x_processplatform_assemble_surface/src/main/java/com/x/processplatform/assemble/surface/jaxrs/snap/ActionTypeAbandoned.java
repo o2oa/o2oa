@@ -15,8 +15,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Activity;
 
 class ActionTypeAbandoned extends BaseAction {
 
@@ -30,14 +30,11 @@ class ActionTypeAbandoned extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			job = work.getJob();
-			Activity activity = business.getActivity(work.getActivity(), work.getActivityType());
-			if (BooleanUtils.isNotTrue(
-					business.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess()))
-					&& ((!business.editable(effectivePerson, work))
-							|| (BooleanUtils.isNotTrue(activity.getAllowSuspend())))) {
+			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			if (BooleanUtils.isNotTrue(control.getAllowDelete())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
+			job = work.getJob();
 		}
 
 		Wo wo = ThisApplication.context().applications()
@@ -54,6 +51,9 @@ class ActionTypeAbandoned extends BaseAction {
 
 		private static final long serialVersionUID = -2577413577740827608L;
 
+	}
+
+	public static class WoControl extends WorkControl {
 	}
 
 }

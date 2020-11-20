@@ -7,6 +7,8 @@ import com.x.portal.assemble.surface.factory.PageFactory;
 import com.x.portal.assemble.surface.factory.PortalFactory;
 import com.x.portal.assemble.surface.factory.ScriptFactory;
 import com.x.portal.assemble.surface.factory.WidgetFactory;
+import com.x.portal.assemble.surface.factory.cms.CmsFactory;
+import com.x.portal.assemble.surface.factory.process.ProcessFactory;
 
 public class Business {
 
@@ -72,6 +74,24 @@ public class Business {
 			this.file = new FileFactory(this);
 		}
 		return file;
+	}
+
+	private CmsFactory cms;
+
+	public CmsFactory cms() throws Exception {
+		if (null == this.cms) {
+			this.cms = new CmsFactory(this);
+		}
+		return cms;
+	}
+
+	private ProcessFactory process;
+
+	public ProcessFactory process() throws Exception {
+		if (null == this.process) {
+			this.process = new ProcessFactory(this);
+		}
+		return process;
 	}
 
 }

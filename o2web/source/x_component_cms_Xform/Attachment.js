@@ -358,6 +358,12 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                 this.form.documentAction.getAttachment(attachment.data.id, this.form.businessData.document.id, function (json) {
                     attachment.data = json.data;
                     attachment.reload();
+
+                    if (o.messageId && this.attachmentController.messageItemList) {
+                        var message = this.attachmentController.messageItemList[o.messageId];
+                        if( message && message.node )message.node.destroy();
+                    }
+
                     this.attachmentController.checkActions();
                 }.bind(this))
             }.bind(this), null);

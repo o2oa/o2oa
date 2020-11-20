@@ -32,6 +32,7 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 	},
 	mask: function(){
         if (!this.maskNode){
+			this.introducenode.setStyle("overflow","hidden");
             this.maskNode = new MWF.widget.MaskNode(this.introducenode, {"style": "bam"});
             this.maskNode.load();
         }
@@ -39,7 +40,8 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
     unmask: function(){
         if (this.maskNode) this.maskNode.hide(function(){
             MWF.release(this.maskNode);
-            this.maskNode = null;
+			this.maskNode = null;
+			this.introducenode.setStyle("overflow","auto");
         }.bind(this));
     },
     loadApplication: function(callback){
@@ -138,7 +140,14 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 							}
 						}
 					})
-					
+					//add by xlq @20201104 for adding button which goes to bbs.
+					this.applicationintroduceforumbtntext.set("text",this.lp.bbsname);
+					this.applicationintroduceforumbtn.addEvents({
+						"click": function(e){
+							//updateorinstall application
+							window.open(_self.lp.bbslink);
+						}
+					})
 					//this.applicationintroducefavbtntext.set("text","下载");
 
 					this.loadIntroduceInfo();
@@ -169,7 +178,7 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 		var confirmtitle = d.installedVersion==""?this.lp.confirmsetupTitle:this.lp.confirmupdateTitle;
 		var confirmcontent = d.installedVersion==""?this.lp.confirmsetupContent:this.lp.confirmupdateContent;
 		var _self = this;
-		MWF.xDesktop.confirm("warn", tmpe, confirmtitle, confirmcontent, 300, 120, function(){
+		_self.confirm("warn", tmpe, confirmtitle, confirmcontent, 300, 120, function(){
 			_self.mask();
 			//this.createLoading(this.container,true);  
 			//alert("after createLoading")          

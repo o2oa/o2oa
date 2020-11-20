@@ -1,3 +1,4 @@
+MWF.xApplication = MWF.xApplication || {};
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Work = MWF.xApplication.process.Work || {};
 MWF.xApplication.process.Work.LP = {
@@ -36,6 +37,7 @@ MWF.xApplication.process.Work.LP = {
     "noAppendTaskIdentityConfig" : "没有配置转交人，请联系管理员",
     "selectAppendTaskIdentityNotice" : "请选择转交人",
     "routeValidFailure" : "路由校验失败",
+    "loadedOrgCountUnexpected" : "人员选择界面未加载完成，请稍候...",
 
     "taskCompletedPerson": "办理人",
     "readPerson": "阅读人",
@@ -68,3 +70,4 @@ MWF.xApplication.process.Work.LP = {
     "managerLoginConfirmContent" : "确定要以{user}身份登录并打开文件？点击确定后，需注销重新登录才能回到当前用户。",
     "managerLoginSuccess" : "已成功切换为{user}"
 };
+MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;

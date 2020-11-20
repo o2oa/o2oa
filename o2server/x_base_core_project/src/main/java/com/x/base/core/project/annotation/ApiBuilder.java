@@ -9,11 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -63,21 +61,44 @@ public class ApiBuilder {
 	private static Logger logger = LoggerFactory.getLogger(ApiBuilder.class);
 
 	public static void main(String[] args) throws IOException {
-		//System.out.println("ApiBuilder......");
 		File basedir = new File(args[0]);
 		File sourcedir = new File(args[1]);
 		
 		File dir = new File(basedir, "src/main/webapp/describe");
-
 		FileUtils.forceMkdir(dir);
-
 		ApiBuilder builder = new ApiBuilder();
-
 		builder.scan(dir);
 
-		//FileUtils.copyDirectory(sourcedir, new File(dir, "sources"));
-
+		String filePath = args[0];
+		String fileName = filePath.substring(filePath.lastIndexOf(File.separator), filePath.length());
+		filePath = filePath.substring(0, filePath.lastIndexOf(File.separator));
+		filePath = filePath + File.separator+"x_program_center";
+		dir = new File(filePath ,"src/main/webapp/describe/api");
+		FileUtils.forceMkdir(dir);
+		builder.scan(dir,fileName);
 	}
+	
+	private void scan(File dir,String fileName) {
+		try {
+			List<JaxrsClass> jaxrsClasses = new ArrayList<>();
+			List<Class<?>> classes = this.scanJaxrsClass();
+			for (Class<?> clz : classes) {
+				if (StandardJaxrsAction.class.isAssignableFrom(clz)) {
+					jaxrsClasses.add(this.jaxrsClass(clz));
+				}
+			}
+			
+			LinkedHashMap<String, List<?>> map = new LinkedHashMap<>();
+			jaxrsClasses = jaxrsClasses.stream().sorted(Comparator.comparing(JaxrsClass::getName))
+					.collect(Collectors.toList());
+			map.put("jaxrs", jaxrsClasses);
+			File file = new File(dir,  fileName + ".json");
+			FileUtils.writeStringToFile(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	private void scan(File dir) {
 		try {
@@ -123,23 +144,13 @@ public class ApiBuilder {
 		logger.print("describe class:{}.", clz.getName());
 		JaxrsDescribe jaxrsDescribe = clz.getAnnotation(JaxrsDescribe.class);
 		JaxrsClass jaxrsClass = new JaxrsClass();
-		//jaxrsClass.setClassName(clz.getName());
 		jaxrsClass.setName(clz.getSimpleName());
-		//jaxrsClass.setDescription(jaxrsDescribe.value());
 		for (Method method : clz.getMethods()) {
 			JaxrsMethodDescribe jaxrsMethodDescribe = method.getAnnotation(JaxrsMethodDescribe.class);
 			if (null != jaxrsMethodDescribe) {
-				/*
-				Map<String, JaxrsApiMethod> map = new HashMap<String,JaxrsApiMethod>();
-				map.put(method.getName(), this.jaxrsApiMethod(clz, method));
-				jaxrsClass.getMethods().add(map);
-				*/
 				jaxrsClass.getMethods().add(this.jaxrsApiMethod(clz, method));
 			}
-		}
-		
-		//jaxrsClass.setMethods(this.getSortData("name",jaxrsClass.getMethods()));
-		
+		}		
 		return jaxrsClass;
 		
 	}
@@ -152,7 +163,6 @@ public class ApiBuilder {
                 this.keyName = keyName;
             }
             public int compare(Map<String, JaxrsApiMethod> mp1, Map<String, JaxrsApiMethod> mp2) {
-            	 System.out.println("this.keyName=" + mp1.keySet().toArray()[0]);
                  String d1 = mp1.keySet().toArray()[0].toString();
                  String d2 = mp2.keySet().toArray()[0].toString();
                 return d2.compareTo(d1);
@@ -167,9 +177,7 @@ public class ApiBuilder {
 		JaxrsMethodDescribe jaxrsMethodDescribe = method.getAnnotation(JaxrsMethodDescribe.class);
 		JaxrsApiMethod jaxrsMethod = new JaxrsApiMethod();
 		jaxrsMethod.setName(method.getName());
-		//jaxrsMethod.setDescription(jaxrsMethodDescribe.value());
 		Class<?> actionClass = jaxrsMethodDescribe.action();
-		//jaxrsMethod.setClassName(actionClass.getName());
 		if (null != method.getAnnotation(GET.class)) {
 			jaxrsMethod.setMethod("GET");
 		} else if (null != method.getAnnotation(POST.class)) {
@@ -541,23 +549,13 @@ public class ApiBuilder {
 		public String getName() {
 			return name;
 		}
-  /*
-		private List<Map<String,JaxrsApiMethod>> methods = new ArrayList<Map<String,JaxrsApiMethod>>();
-		public List<Map<String, JaxrsApiMethod>> getMethods() {
-			return methods;
-		}
 
-		public void setMethods(List<Map<String, JaxrsApiMethod>> methods) {
-			this.methods = methods;
-		}
-  */
 		public void setName(String name) {
 			this.name = name;
 		}
 	}
 	
     public class JaxrsApiMethod{
-		//private List<JaxsApiMethodProperty> name = new ArrayList<>();
     	private String name;
 		private String uri;
 		private String method;

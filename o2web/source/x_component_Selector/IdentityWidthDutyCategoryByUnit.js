@@ -11,324 +11,371 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         "values": [],
         "zIndex": 1000,
         "expand": false,
-        "noUnit" : false,
-        "include" : [], //增加的可选项
-        "resultType" : "", //可以设置成个人，那么结果返回个人
+        "noUnit": false,
+        "include": [], //增加的可选项
+        "resultType": "", //可以设置成个人，那么结果返回个人
         "expandSubEnable": true,
-        "selectAllEnable" : true, //分类是否允许全选下一层
-        "exclude" : [],
-        "dutyUnitLevelBy" : "duty", //组织层级是按身份所在群组还是职务,
-        "selectType" : "identity"
+        "selectAllEnable": true, //分类是否允许全选下一层
+        "exclude": [],
+        "dutyUnitLevelBy": "duty", //组织层级是按身份所在群组还是职务,
+        "selectType": "identity"
     },
-    _init : function(){
+    _init: function () {
         this.selectType = "identity";
         this.className = "IdentityWidthDutyCategoryByUnit";
     },
-    loadSelectItems: function(addToNext){
+    // loadSelectItems: function (addToNext) {
+    //     //根据组织分类展现职务
+    //     if (this.options.resultType === "person") {
+    //         if (this.titleTextNode) {
+    //             this.titleTextNode.set("text", MWF.xApplication.Selector.LP.selectPerson);
+    //         } else {
+    //             this.options.title = MWF.xApplication.Selector.LP.selectPerson;
+    //         }
+    //     }
+    //     if (this.options.disabled) {
+    //         this.afterLoadSelectItem();
+    //         return;
+    //     }
+    //
+    //     if (this.options.dutys.length) {
+    //         this.loadInclude(function () {
+    //             this.includeLoaded = true;
+    //             if (this.dutyLoaded) {
+    //                 this.afterLoadSelectItem();
+    //             }
+    //         }.bind(this));
+    //         if (this.options.units.length) {
+    //
+    //             var units = [];
+    //             for (var i = 0; i < this.options.units.length; i++) {
+    //                 var unit = this.options.units[i];
+    //                 if (typeOf(unit) === "string") {
+    //                     units.push(unit)
+    //                 } else {
+    //                     units.push(unit.distinguishedName || unit.unique || unit.id || unit.levelName)
+    //                 }
+    //             }
+    //             this.unitStringList = units;
+    //
+    //             var getAllIdentity = function (unitList) {
+    //                 o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listIdentityWithUnitWithNameObject({
+    //                     nameList: this.options.dutys,
+    //                     unitList: unitList
+    //                 }, function (json) {
+    //                     this._loadSelectItems(json.data)
+    //                 }.bind(this))
+    //             }.bind(this);
+    //
+    //             if (this.options.expandSubEnable) {
+    //                 o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitSubNested({
+    //                     unitList: units
+    //                 }, function (json) {
+    //                     getAllIdentity(units.combine(json.data ? json.data.unitList : []));
+    //                 }.bind(this))
+    //             } else {
+    //                 getAllIdentity(units);
+    //             }
+    //         } else {
+    //             var identityList = [];
+    //             var count = 0;
+    //             this.options.dutys.each(function (d) {
+    //                 this.orgAction.listIdentityWithDuty(function (json) {
+    //                     count++;
+    //                     identityList = identityList.combine(json.data);
+    //                     if (this.options.dutys.length === count) this._loadSelectItems(identityList);
+    //                 }.bind(this), function () {
+    //                     count++;
+    //                     if (this.options.dutys.length === count) this._loadSelectItems(identityList);
+    //                 }.bind(this), d);
+    //             }.bind(this));
+    //         }
+    //     }
+    // },
+    loadSelectItems: function (addToNext) {
         //根据组织分类展现职务
-        if( this.options.resultType === "person" ){
-            if( this.titleTextNode ){
-                this.titleTextNode.set("text", MWF.xApplication.Selector.LP.selectPerson );
-            }else{
+        if (this.options.resultType === "person") {
+            if (this.titleTextNode) {
+                this.titleTextNode.set("text", MWF.xApplication.Selector.LP.selectPerson);
+            } else {
                 this.options.title = MWF.xApplication.Selector.LP.selectPerson;
             }
         }
-        if( this.options.disabled ){
+        if (this.options.disabled) {
             this.afterLoadSelectItem();
             return;
         }
 
-        if (this.options.dutys.length){
-            this.loadInclude( function () {
+        if (this.options.dutys.length) {
+            this.loadInclude(function () {
                 this.includeLoaded = true;
-                if( this.dutyLoaded ){
+                if (this.dutyLoaded) {
                     this.afterLoadSelectItem();
                 }
             }.bind(this));
-            if( this.options.units.length ){
 
-                var units = [];
-                for( var i=0 ;i<this.options.units.length; i++ ){
-                    var unit = this.options.units[i];
-                    if( typeOf( unit ) === "string" ){
-                        units.push( unit )
-                    }else{
-                        units.push( unit.distinguishedName || unit.unique || unit.id || unit.levelName )
-                    }
+            var units = [];
+            for (var i = 0; i < this.options.units.length; i++) {
+                var unit = this.options.units[i];
+                if (typeOf(unit) === "string") {
+                    units.push(unit)
+                } else {
+                    units.push(unit.distinguishedName || unit.unique || unit.id || unit.levelName)
                 }
-                this.unitStringList = units;
-
-                var getAllIdentity = function( unitList ){
-                    o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listIdentityWithUnitWithNameObject({
-                        nameList : this.options.dutys,
-                        unitList : unitList
-                    }, function( json ){
-                        this._loadSelectItems( json.data )
-                    }.bind(this))
-                }.bind(this);
-
-                if( this.options.expandSubEnable ){
-                    o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitSubNested({
-                        unitList : units
-                    }, function( json ){
-                        getAllIdentity( units.combine( json.data ? json.data.unitList : [] ));
-                    }.bind(this))
-                }else{
-                    getAllIdentity( units );
-                }
-            }else{
-                var identityList = [];
-                var count = 0;
-                this.options.dutys.each( function( d ){
-                    this.orgAction.listIdentityWithDuty(function(json){
-                        count++;
-                        identityList = identityList.combine( json.data );
-                        if( this.options.dutys.length === count )this._loadSelectItems( identityList );
-                    }.bind(this), function(){
-                        count++;
-                        if( this.options.dutys.length === count )this._loadSelectItems( identityList );
-                    }.bind(this), d );
-                }.bind(this));
             }
-            //this.options.dutys.each(function(duty){
-            //    var data = {"name": duty, "id":duty};
-            //    var category = this._newItemCategory("ItemCategory",data, this, this.itemAreaNode);
-            //    this.subCategorys.push(category);
-            //}.bind(this));
+            this.unitStringList = units;
+
+            o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listIdentityWithUnitWithNameObject({
+                nameList: this.options.dutys,
+                unitList: units,
+                recursiveUnit : !!this.options.expandSubEnable
+            }, function (json) {
+                this._loadSelectItems(json.data)
+            }.bind(this))
+        }else{
+            this.afterLoadSelectItem();
         }
     },
-    _loadSelectItems : function( identityList ){
+    _loadSelectItems: function (identityList) {
         //this.listAllIdentityInUnitObject( identityList );
-        var unitTree = this.listNestedUnitByIdentity( identityList );
-        this.uniqueIdentity( unitTree );
-        if( this.options.dutyUnitLevelBy === "duty" ){
+        var unitTree = this.listNestedUnitByIdentity(identityList);
+        this.uniqueIdentity(unitTree);
+        if (this.options.dutyUnitLevelBy === "duty") {
             this.level1Container = [];
-            if( this.options.units && this.options.units.length ){
-                var div = new Element( "div" ).inject(this.itemAreaNode);
-                this.level1Container.push(div);
+            if (this.options.units && this.options.units.length) {
+                this.options.units.each( function (unit ,i) {
+                    var div = new Element("div").inject(this.itemAreaNode);
+                    this.level1Container.push(div);
+                }.bind(this))
             }
             this._loadSelectItemsByDutyUnit(unitTree);
-        }else{
+        } else {
             this._loadSelectItemsByIdentityUnit(unitTree);
         }
 
         this.dutyLoaded = true;
-        if( this.includeLoaded ){
+        if (this.includeLoaded) {
             this.afterLoadSelectItem();
         }
     },
-    _loadSelectItemsByIdentityUnit : function( unitTree ){
-        if( !unitTree.unitList )return;
-        this.sortUnit( unitTree.unitList );
-        for( var i=0; i< unitTree.unitList.length; i++ ){
+    _loadSelectItemsByIdentityUnit: function (unitTree) {
+        if (!unitTree.unitList) return;
+        this.sortUnit(unitTree.unitList);
+        for (var i = 0; i < unitTree.unitList.length; i++) {
             var unit = unitTree.unitList[i];
             // if( !this.isExcluded( unit ) ) {
-                var category = this._newItemCategory("ItemCategory",unit, this, this.itemAreaNode);
-                this.subCategorys.push(category);
+            var category = this._newItemCategory("ItemCategory", unit, this, this.itemAreaNode);
+            this.subCategorys.push(category);
             // }
         }
     },
-    sortUnit : function( unitList ){
-        if( this.options.dutyUnitLevelBy === "duty" ){
-            if( this.options.units ){
-                unitList.sort( function(a, b){
-                    var idxA = this.getIndexFromUnitOption( a );
-                    var idxB = this.getIndexFromUnitOption( b );
+    sortUnit: function (unitList) {
+        if (this.options.dutyUnitLevelBy === "duty") {
+            if (this.options.units) {
+                unitList.sort(function (a, b) {
+                    var idxA = this.getIndexFromUnitOption(a);
+                    var idxB = this.getIndexFromUnitOption(b);
+                    if( a.orderNumber === 0 )a.orderNumber = -1;
+                    if( b.orderNumber === 0 )b.orderNumber = -1;
                     idxA = idxA === -1 ? 9999999 + (a.orderNumber || 9999999) : idxA;
                     idxB = idxB === -1 ? 9999999 + (b.orderNumber || 9999999) : idxB;
                     return idxA - idxB;
                 }.bind(this))
-            }else{
-                unitList.sort( function(a, b){
+            } else {
+                unitList.sort(function (a, b) {
+                    if( a.orderNumber === 0 )a.orderNumber = -1;
+                    if( b.orderNumber === 0 )b.orderNumber = -1;
                     return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
                 }.bind(this))
             }
-        }else{
-            unitList.sort( function(a, b){
+        } else {
+            unitList.sort(function (a, b) {
+                if( a.orderNumber === 0 )a.orderNumber = -1;
+                if( b.orderNumber === 0 )b.orderNumber = -1;
                 return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
             }.bind(this))
         }
     },
-    _loadSelectItemsByDutyUnit : function( unitTree ){
-        if( !unitTree.unitList )return;
+    _loadSelectItemsByDutyUnit: function (unitTree) {
+        if (!unitTree.unitList) return;
         // this.sortUnit( unitTree.unitList );
-        for( var i=0; i< unitTree.unitList.length; i++ ){
+        for (var i = 0; i < unitTree.unitList.length; i++) {
             var unit = unitTree.unitList[i];
-            if( this.isUnitContain( unit ) ){
+            if (this.isUnitContain(unit)) {
                 // if( !this.isExcluded( unit ) ) {
-                    var container = this.itemAreaNode;
-                    if( this.level1Container && this.level1Container.length ){
-                        var index = this.getIndexFromUnitOption( unit );
-                        if( index > -1 && (this.level1Container.length > index) && this.level1Container[i] )container = this.level1Container[i];
-                    }
-                    var category = this._newItemCategory("ItemCategory",unit, this, container );
-                    this.subCategorys.push(category);
+                var container = this.itemAreaNode;
+                if (this.level1Container && this.level1Container.length) {
+                    var index = this.getIndexFromUnitOption(unit);
+                    if (index > -1 && (this.level1Container.length > index) && this.level1Container[index]) container = this.level1Container[index];
+                }
+                var category = this._newItemCategory("ItemCategory", unit, this, container);
+                this.subCategorys.push(category);
                 // }
-            }else{
-                this._loadSelectItemsByDutyUnit( unit );
+            } else {
+                this._loadSelectItemsByDutyUnit(unit);
             }
         }
     },
-    getIndexFromUnitOption : function( unit ){
-        if( !this.unitStringList || !this.unitStringList.length )return -1;
+    getIndexFromUnitOption: function (unit) {
+        if (!this.unitStringList || !this.unitStringList.length) return -1;
         var idx = -1;
-        if(idx == -1 && unit.distinguishedName)idx = this.unitStringList.indexOf( unit.distinguishedName );
-        if(idx == -1 && unit.id)idx = this.unitStringList.indexOf( unit.id );
-        if(idx == -1 && unit.unique)idx = this.unitStringList.indexOf( unit.unique );
-        if(idx == -1 && unit.levelName)idx = this.unitStringList.indexOf( unit.levelName );
+        if (idx == -1 && unit.distinguishedName) idx = this.unitStringList.indexOf(unit.distinguishedName);
+        if (idx == -1 && unit.id) idx = this.unitStringList.indexOf(unit.id);
+        if (idx == -1 && unit.unique) idx = this.unitStringList.indexOf(unit.unique);
+        if (idx == -1 && unit.levelName) idx = this.unitStringList.indexOf(unit.levelName);
         return idx
     },
-    isUnitContain : function( d ){
-        if( this.options.units.length === 0 )return true;
-        if( !this.unitFlagMap ){
+    isUnitContain: function (d) {
+        if (this.options.units.length === 0) return true;
+        if (!this.unitFlagMap) {
             this.unitFlagMap = {};
-            this.options.units.each( function( e ){
-                if( !e )return;
-                this.unitFlagMap[ typeOf( e ) === "string" ? e : ( e.distinguishedName || e.id || e.unique || e.employee || e.levelName) ] = true;
+            this.options.units.each(function (e) {
+                if (!e) return;
+                this.unitFlagMap[typeOf(e) === "string" ? e : (e.distinguishedName || e.id || e.unique || e.employee || e.levelName)] = true;
             }.bind(this));
         }
         var map = this.unitFlagMap;
-        return ( d.distinguishedName && map[ d.distinguishedName ] ) ||
-            ( d.levelName && map[ d.levelName ] ) ||
-            ( d.id && map[ d.id ] ) ||
-            ( d.unique && map[ d.unique ] );
+        return (d.distinguishedName && map[d.distinguishedName]) ||
+            (d.levelName && map[d.levelName]) ||
+            (d.id && map[d.id]) ||
+            (d.unique && map[d.unique]);
     },
-    listAllIdentityInUnitObject : function(){
+    listAllIdentityInUnitObject: function () {
         var unitArray = [];
-        for( var i=0; i<identityList.length; i++ ){
-            unitArray.push( identityList[i].unit || identityList[i].unitLevelName );
+        for (var i = 0; i < identityList.length; i++) {
+            unitArray.push(identityList[i].unit || identityList[i].unitLevelName);
         }
         o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({
-            unitList : unitArray
-        }, function(json){
+            unitList: unitArray
+        }, function (json) {
             this.allIdentityInUnitObject = {};
-            json.data.each( function( u ){
+            json.data.each(function (u) {
                 this.allIdentityInUnitObject[u.levelName] = u;
             }.bind(this));
-            if(callback)callback();
+            if (callback) callback();
         }.bind(this), null, false)
     },
-    getUnitOrderNumber : function( unit ){
+    getUnitOrderNumber: function (unit) {
         return this.allIdentityInUnitObject[unit.levelName].orderNumber;
     },
-    listAllUnitObject: function( identityList, callback ){
+    listAllUnitObject: function (identityList, callback) {
         var key = this.options.dutyUnitLevelBy === "duty" ? "matchUnitLevelName" : "unitLevelName";
         var unitArray = [];
-        for( var i=0; i<identityList.length; i++ ){
+        for (var i = 0; i < identityList.length; i++) {
             var levelNames = identityList[i][key];
             //if( !levelNames && key === "matchUnitLevelName" )levelNames = identityList[i].unitLevelName;
             var unitLevelNameList = levelNames.split("/");
             var nameList = [];
-            for( var j=0; j<unitLevelNameList.length; j++ ){
-                nameList.push( unitLevelNameList[j] );
+            for (var j = 0; j < unitLevelNameList.length; j++) {
+                nameList.push(unitLevelNameList[j]);
                 var name = nameList.join("/");
-                if( !unitArray.contains( name ) ){
-                    unitArray.push( name );
+                if (!unitArray.contains(name)) {
+                    unitArray.push(name);
                 }
             }
         }
         o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({
-            unitList : unitArray
-        }, function(json){
+            unitList: unitArray
+        }, function (json) {
             this.allUnitObject = {};
-            json.data.each( function( u ){
+            json.data.each(function (u) {
                 this.allUnitObject[u.levelName] = u;
             }.bind(this));
-            if(callback)callback();
+            if (callback) callback();
         }.bind(this), null, false)
     },
-    listNestedUnitByIdentity : function( identityList ){
-        this.listAllUnitObject( identityList);
-        return this._listNestedUnitByIdentity( identityList );
+    listNestedUnitByIdentity: function (identityList) {
+        this.listAllUnitObject(identityList);
+        return this._listNestedUnitByIdentity(identityList);
     },
-    _listNestedUnitByIdentity : function( identityList ){
+    _listNestedUnitByIdentity: function (identityList) {
         debugger;
         //identityList = Array.unique(identityList);
         var key = this.options.dutyUnitLevelBy === "duty" ? "matchUnitLevelName" : "unitLevelName";
         //根据unitLevelName整合成组织树
         var unitTree = {};
-        for( var i=0; i<identityList.length; i++ ){
+        for (var i = 0; i < identityList.length; i++) {
             var flag = true;
-            if( this.isExcluded( identityList[i] ) )continue;
+            if (this.isExcluded(identityList[i])) continue;
 
             var levelNames = identityList[i][key];
             //if( !levelNames && key === "matchUnitLevelName" )levelNames = identityList[i].unitLevelName;
             var unitLevelNameList = levelNames.split("/");
             var nameList = [];
             var tree = unitTree;
-            for( var j=0; j<unitLevelNameList.length; j++ ){
-                nameList.push( unitLevelNameList[j] );
+            for (var j = 0; j < unitLevelNameList.length; j++) {
+                nameList.push(unitLevelNameList[j]);
                 var name = nameList.join("/");
 
-                if( this.isExcluded( this.allUnitObject[name] || {} ) ){
+                if (this.isExcluded(this.allUnitObject[name] || {})) {
                     flag = false;
                     break;
                 }
 
-                if( !tree.unitList )tree.unitList = [];
+                if (!tree.unitList) tree.unitList = [];
                 var found = false;
-                for( var k=0; k<tree.unitList.length; k++ ){
-                    if( tree.unitList[k].levelName == name ){
+                for (var k = 0; k < tree.unitList.length; k++) {
+                    if (tree.unitList[k].levelName == name) {
                         tree = tree.unitList[k];
                         found = true;
                         break;
                     }
                 }
-                if( !found ){
+                if (!found) {
                     // var obj = {};
                     var obj = this.allUnitObject[name] || {};
                     obj.matchLevelName = name;
-                    tree.unitList.push( obj );
+                    tree.unitList.push(obj);
                     tree = obj;
                 }
                 // if( !tree.distinguishedName ){
                 //     tree = Object.merge( tree, this.allUnitObject[name] );
                 // }
-                if( !tree.identityList )tree.identityList = [];
+                if (!tree.identityList) tree.identityList = [];
 
             }
-            if(flag)tree.identityList.push( identityList[i] );
+            if (flag) tree.identityList.push(identityList[i]);
         }
         return unitTree;
     },
-    uniqueIdentity : function( tree ){
+    uniqueIdentity: function (tree) {
         var map = {};
-        var isExist = function ( d ) {
-            if(( d.distinguishedName && map[ d.distinguishedName ] ) ||
-                ( d.levelName && map[ d.levelName ] ) ||
-                ( d.id && map[ d.id ] ) ||
-                ( d.unique && map[ d.unique ] )){
+        var isExist = function (d) {
+            if ((d.distinguishedName && map[d.distinguishedName]) ||
+                (d.levelName && map[d.levelName]) ||
+                (d.id && map[d.id]) ||
+                (d.unique && map[d.unique])) {
                 return true;
-            }else{
-                map[ typeOf( d ) === "string" ? d : ( d.distinguishedName || d.id || d.unique || d.employee || d.levelName) ] = true;
+            } else {
+                map[typeOf(d) === "string" ? d : (d.distinguishedName || d.id || d.unique || d.employee || d.levelName)] = true;
                 return false;
             }
         };
 
         var identityList = [];
-        if( tree.identityList ){
-            for( var i=0; i<tree.identityList.length; i++ ){
-                if( !isExist( tree.identityList[i] ) )identityList.push( tree.identityList[i] );
+        if (tree.identityList) {
+            for (var i = 0; i < tree.identityList.length; i++) {
+                if (!isExist(tree.identityList[i])) identityList.push(tree.identityList[i]);
             }
         }
         tree.identityList = identityList;
 
-        if( this.options.isCheckStatus ){
+        if (this.options.isCheckStatus) {
             var names = (tree.matchLevelName || tree.levelName || "").split("/");
             var nameList = [];
-            for( var i=0; i<names.length; i++ ){
-                nameList.push( names[i] );
+            for (var i = 0; i < names.length; i++) {
+                nameList.push(names[i]);
                 var name = nameList.join("/");
                 var obj = this.allUnitObject[name];
-                if( obj ){
-                    obj.subNestedIdentityCount = ( obj.subNestedIdentityCount || 0 ) + identityList.length;
+                if (obj) {
+                    obj.subNestedIdentityCount = (obj.subNestedIdentityCount || 0) + identityList.length;
                 }
             }
         }
 
-        if( tree.unitList ){
-            for( var i=0; i<tree.unitList.length; i++ ){
-                this.uniqueIdentity( tree.unitList[i] );
+        if (tree.unitList) {
+            for (var i = 0; i < tree.unitList.length; i++) {
+                this.uniqueIdentity(tree.unitList[i]);
             }
         }
     },
@@ -361,47 +408,47 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     //    }
     //    return unitTree;
     //},
-    _scrollEvent: function(y){
+    _scrollEvent: function (y) {
         return true;
     },
-    _getChildrenItemIds: function(){
+    _getChildrenItemIds: function () {
         return null;
     },
-    _newItemCategory: function(type, data, selector, item, level, category, delay){
+    _newItemCategory: function (type, data, selector, item, level, category, delay) {
         return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit[type](data, selector, item, level, category, delay)
     },
 
-    _listItemByKey: function(callback, failure, key){
+    _listItemByKey: function (callback, failure, key) {
         if (this.options.units.length) key = {"key": key, "unitList": this.options.units};
-        this.orgAction.listIdentityByKey(function(json){
+        this.orgAction.listIdentityByKey(function (json) {
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
-    _getItem: function(callback, failure, id, async){
-        if( typeOf(id) === "string" ){
-            this.orgAction.getIdentity(function(json){
-               if (callback) callback.apply(this, [json]);
-            }.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
-        }else{
+    _getItem: function (callback, failure, id, async) {
+        if (typeOf(id) === "string") {
+            this.orgAction.getIdentity(function (json) {
+                if (callback) callback.apply(this, [json]);
+            }.bind(this), failure, ((typeOf(id) === "string") ? id : id.distinguishedName), async);
+        } else {
             if (callback) callback.apply(this, [id]);
         }
         //this.orgAction.getIdentity(function(json){
         //    if (callback) callback.apply(this, [json]);
         //}.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
     },
-    _newItemSelected: function(data, selector, item, selectedNode){
+    _newItemSelected: function (data, selector, item, selectedNode) {
         return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemSelected(data, selector, item, selectedNode)
     },
-    _listItemByPinyin: function(callback, failure, key){
+    _listItemByPinyin: function (callback, failure, key) {
         if (this.options.units.length) key = {"key": key, "unitList": this.options.units};
-        this.orgAction.listIdentityByPinyin(function(json){
+        this.orgAction.listIdentityByPinyin(function (json) {
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
-    _newItem: function(data, selector, container, level, category, delay){
+    _newItem: function (data, selector, container, level, category, delay) {
         return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.Item(data, selector, container, level, category, delay);
     },
-    _newItemSearch: function(data, selector, container, level){
+    _newItemSearch: function (data, selector, container, level) {
         return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.SearchItem(data, selector, container, level);
     }
     //_listItemNext: function(last, count, callback){
@@ -423,16 +470,16 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemSelected = new Cla
 
 MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory,
-    _getShowName: function(){
+    _getShowName: function () {
         return this.data.name;
     },
-    _addSelectedCount : function( count, nested ){
+    _addSelectedCount: function (count, nested) {
         debugger;
         var c = (this._getSelectedCount() || 0) + count;
         this.selectedCount = c;
         this.checkCountAndStatus(c);
 
-        if( nested && this.category && this.category._addSelectedCount ){
+        if (nested && this.category && this.category._addSelectedCount) {
             this.category._addSelectedCount(count, nested);
         }
     },
@@ -440,30 +487,30 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     //     var list = this.subItems.filter( function (item) { return item.isSelected; });
     //     return list.length;
     // },
-    _getTotalCount : function(){
+    _getTotalCount: function () {
         return this.data.subNestedIdentityCount;
     },
-    _getSelectedCount : function(){
+    _getSelectedCount: function () {
         debugger;
-        if( typeOf( this.selectedCount ) === "number" ){
+        if (typeOf(this.selectedCount) === "number") {
             return this.selectedCount;
-        }else{
+        } else {
             return 0;
         }
     },
-    _checkStatus : function(){
+    _checkStatus: function () {
 
     },
-    isExisted : function( d ){
-        if( !d )return true;
-        if( !this.createdItemObject )this.createdItemObject = {};
+    isExisted: function (d) {
+        if (!d) return true;
+        if (!this.createdItemObject) this.createdItemObject = {};
         var map = this.createdItemObject;
-        if(( d.distinguishedName && map[ d.distinguishedName ] ) ||
-            ( d.levelName && map[ d.levelName ] ) ||
-            ( d.id && map[ d.id ] ) ||
-            ( d.unique && map[ d.unique ] )){
+        if ((d.distinguishedName && map[d.distinguishedName]) ||
+            (d.levelName && map[d.levelName]) ||
+            (d.id && map[d.id]) ||
+            (d.unique && map[d.unique])) {
             return true;
-        }else{
+        } else {
             //if( typeOf( d ) === "string" ){
             //    this.createdItemObject[ d ] = true;
             //}else{
@@ -473,107 +520,120 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
             //    if( d.employee )this.createdItemObject[ d.employee ] = true;
             //    if( d.levelName )this.createdItemObject[ d.levelName ] = true;
             //}
-            this.createdItemObject[ typeOf( d ) === "string" ? d : ( d.distinguishedName || d.id || d.unique || d.employee || d.levelName) ] = true;
+            this.createdItemObject[typeOf(d) === "string" ? d : (d.distinguishedName || d.id || d.unique || d.employee || d.levelName)] = true;
             return false;
         }
     },
-    loadSub : function(callback){
-        this._loadSub(function( firstLoad ){
-            if( firstLoad && (this.selector.options.showSelectedCount || this.selector.options.isCheckStatus)){
+    loadSub: function (callback) {
+        this._loadSub(function (firstLoad) {
+            if (firstLoad && (this.selector.options.showSelectedCount || this.selector.options.isCheckStatus)) {
                 var count = 0;
-                this.subCategorys.each( function (category) {
-                    var l = category.subItems.filter( function (item) { return item.isSelected; });
+                this.subCategorys.each(function (category) {
+                    var l = category.subItems.filter(function (item) {
+                        return item.isSelected;
+                    });
                     count = count + l.length;
                 });
 
-                var list = this.subItems.filter( function (item) { return item.isSelected; });
-                this.selectedCount = count+list.length;
+                var list = this.subItems.filter(function (item) {
+                    return item.isSelected;
+                });
+                this.selectedCount = count + list.length;
 
                 this.checkCountAndStatus(this.selectedCount);
             }
             if (callback) callback();
         }.bind(this))
     },
-    _loadSub: function(callback){
-        if (!this.loaded){
-            if( this.data.identityList && this.data.identityList.length>0 ){
-                this.data.identityList.sort( function(a, b){
-                    //this.selector.getUnitOrderNumber( a.unitLevelName )
-                    return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
-                });
-                this.data.identityList.each( function( identity ){
-                    // if( !this.selector.isExcluded( identity ) ) {
-                    //     if( !this.isExisted( identity ) ){
-                            var item = this.selector._newItem(identity, this.selector, this.children, this.level + 1, this);
-                            this.selector.items.push(item);
-                            if(this.subItems)this.subItems.push( item );
+    _loadSub: function (callback) {
+        if (!this.loaded) {
+            if (!this.itemLoaded) {
+                if (this.data.identityList && this.data.identityList.length > 0) {
+                    this.data.identityList.sort(function (a, b) {
+                        //this.selector.getUnitOrderNumber( a.unitLevelName )
+                        if( a.orderNumber === 0 )a.orderNumber = -1;
+                        if( b.orderNumber === 0 )b.orderNumber = -1;
+                        return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
+                    });
+                    this.data.identityList.each(function (identity) {
+                        // if( !this.selector.isExcluded( identity ) ) {
+                        //     if( !this.isExisted( identity ) ){
+                        var item = this.selector._newItem(identity, this.selector, this.children, this.level + 1, this);
+                        this.selector.items.push(item);
+                        if (this.subItems) this.subItems.push(item);
                         // }
-                    // }
-                }.bind(this))
+                        // }
+                    }.bind(this))
+                }
+                this.itemLoaded = true;
             }
 
-            if( this.data.unitList && this.data.unitList.length ){
-                this.data.unitList.sort( function(a, b){
+            if (this.data.unitList && this.data.unitList.length) {
+                this.data.unitList.sort(function (a, b) {
+                    if( a.orderNumber === 0 )a.orderNumber = -1;
+                    if( b.orderNumber === 0 )b.orderNumber = -1;
                     return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
                 });
-                this.data.unitList.each( function( subData ){
+                this.data.unitList.each(function (subData) {
                     // if( !this.selector.isExcluded( subData ) ) {
-                        var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level + 1, this);
-                        this.subCategorys.push( category );
-                        category.loadSub()
+                    var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level + 1, this);
+                    this.subCategorys.push(category);
+                    category.loadSub()
                     // }
                 }.bind(this));
             }
 
             this.loaded = true;
 
-            if (callback) callback( true );
-        }else{
-            if (callback) callback( );
+            if (callback) callback(true);
+        } else {
+            if (callback) callback();
         }
     },
-    loadCategoryChildren: function(callback){
-        if (!this.categoryLoaded){
+    loadCategoryChildren: function (callback) {
+        if (!this.categoryLoaded) {
             this.loadSub();
 
             this.categoryLoaded = true;
             this.itemLoaded = true;
-            if (callback) callback( );
-        }else{
-            if (callback) callback( );
+            if (callback) callback();
+        } else {
+            if (callback) callback();
         }
     },
-    loadItemChildren: function(callback){
-        if (!this.itemLoaded){
-            if( this.data.identityList && this.data.identityList.length>0 ){
-                this.data.identityList.sort( function(a, b){
+    loadItemChildren: function (callback) {
+        if (!this.itemLoaded) {
+            if (this.data.identityList && this.data.identityList.length > 0) {
+                this.data.identityList.sort(function (a, b) {
                     //this.selector.getUnitOrderNumber( a.unitLevelName )
+                    if( a.orderNumber === 0 )a.orderNumber = -1;
+                    if( b.orderNumber === 0 )b.orderNumber = -1;
                     return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
                 });
-                this.data.identityList.each( function( identity ){
+                this.data.identityList.each(function (identity) {
                     // if( !this.selector.isExcluded( identity ) ) {
                     //     if( !this.isExisted( identity ) ){
-                            var item = this.selector._newItem(identity, this.selector, this.children, this.level + 1, this);
-                            this.selector.items.push(item);
-                            if(this.subItems)this.subItems.push( item );
-                        // }
+                    var item = this.selector._newItem(identity, this.selector, this.children, this.level + 1, this);
+                    this.selector.items.push(item);
+                    if (this.subItems) this.subItems.push(item);
+                    // }
                     // }
                 }.bind(this))
             }
             this.itemLoaded = true;
-            if (callback) callback( );
-        }else{
-            if (callback) callback( );
+            if (callback) callback();
+        } else {
+            if (callback) callback();
         }
     },
-    _hasChild: function(){
+    _hasChild: function () {
         return (this.data.unitList && this.data.unitList.length > 0) ||
             (this.data.identityList && this.data.identityList.length > 0);
     },
-    _hasChildCategory : function(){
+    _hasChildCategory: function () {
         return (this.data.unitList && this.data.unitList.length > 0);
     },
-    _hasChildItem: function(){
+    _hasChildItem: function () {
         return this.data.identityList && this.data.identityList.length > 0;
     }
 

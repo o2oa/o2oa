@@ -8,22 +8,36 @@ MWF.xScript.CMSMacro = MWF.CMSMacro = {
 
     exec: function(code, bind){
         var returnValue;
-        //     try{
         if (!bind) bind = window;
-        try {
-            var f = eval("(function(){\n"+code+"\n})");
-            returnValue = f.apply(bind);
-        }catch(e){}
-        //     }catch(e){}
-
-
-        //	var CMSMacroCode = "MWF.CMSMacro.swapSpace.tmpMacroFunction = function (){"+code+"};";
-        //	Browser.exec(macroCode);
-        //	var returnValue;
-        //	if (!bind) bind = window;
-        ////      try {
-        //          returnValue = MWF.Macro.swapSpace.tmpMacroFunction.apply(bind);
-        ////      }catch(e){};
+        if (o2.session.isDebugger){
+            try {
+                var f = eval("(function(){return function(){\n"+code+"\n}})();");
+                returnValue = f.apply(bind);
+            }catch(e){
+                console.log(o2.LP.script.error);
+                if (code.length>500){
+                    var t = code.substr(0,500)+"\n...\n";
+                    console.log(t);
+                }else{
+                    console.log(code);
+                }
+                console.log(e);
+            }
+        }else{
+            try {
+                var f = eval("(function(){return function(){\n"+code+"\n}})();");
+                returnValue = f.apply(bind);
+            }catch(e){
+                console.log(o2.LP.script.error);
+                if (code.length>500){
+                    var t = code.substr(0,500)+"\n...\n";
+                    console.log(t);
+                }else{
+                    console.log(code);
+                }
+                console.log(e);
+            }
+        }
         return returnValue;
     }
 };

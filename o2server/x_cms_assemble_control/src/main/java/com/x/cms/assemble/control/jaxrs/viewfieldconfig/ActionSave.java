@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -130,8 +131,8 @@ public class ActionSave extends BaseAction {
 				wrap = new Wo();
 				wrap.setId( viewFieldConfig.getId() );
 				result.setData(wrap);
-				ApplicationCache.notify( ViewFieldConfig.class );
-				ApplicationCache.notify( View.class );
+				CacheManager.notify( ViewFieldConfig.class );
+				CacheManager.notify( View.class );
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);

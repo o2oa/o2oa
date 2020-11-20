@@ -57,7 +57,7 @@ public class DataServer extends ConfigObject {
 	private Boolean jmxEnable;
 	@FieldDescribe("H2数据库缓存大小,设置H2用于作为缓存的内存大小,以M作为单位,这里默认为512M.")
 	private Integer cacheSize;
-	@FieldDescribe("默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完成的配置为DefaultLevel=WARN, Tool=TRACE, Enhance=TRACE, METADATA=TRACE, Runtime=TRACE, Query=TRACE, DataCache=TRACE, JDBC=TRACE, SQL=TRACE")
+	@FieldDescribe("默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完整的配置为DefaultLevel=WARN, Tool=TRACE, Enhance=TRACE, METADATA=TRACE, Runtime=TRACE, Query=TRACE, DataCache=TRACE, JDBC=TRACE, SQL=TRACE")
 	private String logLevel;
 	@FieldDescribe("最大使用连接数")
 	private Integer maxTotal;

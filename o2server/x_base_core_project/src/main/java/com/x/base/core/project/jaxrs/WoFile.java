@@ -1,9 +1,8 @@
 package com.x.base.core.project.jaxrs;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
 
-public abstract class WoFile extends GsonPropertyObject {
+public abstract class WoFile extends WoMaxAgeFastETag {
 
 	private static final long serialVersionUID = -4566232046358204025L;
 	@FieldDescribe("说明")

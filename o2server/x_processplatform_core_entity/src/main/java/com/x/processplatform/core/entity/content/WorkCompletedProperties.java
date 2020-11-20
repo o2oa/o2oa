@@ -1,11 +1,15 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.element.Form;
+import com.x.processplatform.core.entity.element.Script;
 
 public class WorkCompletedProperties extends JsonProperties {
 
@@ -28,19 +32,10 @@ public class WorkCompletedProperties extends JsonProperties {
 	private List<WorkLog> workLogList = new ArrayList<>();
 
 	@FieldDescribe("合并工作Form")
-	private Form form;
+	private StoreForm storeForm;
 
-	@FieldDescribe("合并工作relatedFormList")
-	private List<Form> relatedFormList = new ArrayList<>();
-
-	@FieldDescribe("合并工作relatedScriptList")
-	private List<Script> relatedScriptList = new ArrayList<>();
-
-	@FieldDescribe("合并工作mobileRelatedFormList")
-	private List<Form> mobileRelatedFormList = new ArrayList<>();
-
-	@FieldDescribe("合并工作relatedScriptList")
-	private List<Script> mobileRelatedScriptList = new ArrayList<>();
+	@FieldDescribe("合并工作Form,移动端.")
+	private StoreForm storeFormMobile;
 
 	@FieldDescribe("标题")
 	private String title;
@@ -77,46 +72,6 @@ public class WorkCompletedProperties extends JsonProperties {
 		this.title = title;
 	}
 
-	public Form getForm() {
-		return form;
-	}
-
-	public void setForm(Form form) {
-		this.form = form;
-	}
-
-	public List<Form> getRelatedFormList() {
-		return relatedFormList;
-	}
-
-	public List<Script> getRelatedScriptList() {
-		return relatedScriptList;
-	}
-
-	public void setRelatedFormList(List<Form> relatedFormList) {
-		this.relatedFormList = relatedFormList;
-	}
-
-	public void setRelatedScriptList(List<Script> relatedScriptList) {
-		this.relatedScriptList = relatedScriptList;
-	}
-
-	public List<Form> getMobileRelatedFormList() {
-		return mobileRelatedFormList;
-	}
-
-	public void setMobileRelatedFormList(List<Form> mobileRelatedFormList) {
-		this.mobileRelatedFormList = mobileRelatedFormList;
-	}
-
-	public List<Script> getMobileRelatedScriptList() {
-		return mobileRelatedScriptList;
-	}
-
-	public void setMobileRelatedScriptList(List<Script> mobileRelatedScriptList) {
-		this.mobileRelatedScriptList = mobileRelatedScriptList;
-	}
-
 	public List<TaskCompleted> getTaskCompletedList() {
 		return taskCompletedList;
 	}
@@ -141,19 +96,93 @@ public class WorkCompletedProperties extends JsonProperties {
 		this.reviewList = reviewList;
 	}
 
-	public static class Script {
+	public StoreForm storeForm(boolean mobile) throws Exception {
+		if (mobile) {
+			return this.getStoreFormMobile();
+		} else {
+			return this.getStoreForm();
+		}
+	}
+
+	public StoreForm getStoreForm() {
+		return storeForm;
+	}
+
+	public void setStoreForm(StoreForm storeForm) {
+		this.storeForm = storeForm;
+	}
+
+	public StoreForm getStoreFormMobile() {
+		return storeFormMobile;
+	}
+
+	public void setStoreFormMobile(StoreForm storeFormMobile) {
+		this.storeFormMobile = storeFormMobile;
+	}
+
+	public static class StoreForm extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 6402145056972301805L;
+
+		private RelatedForm form;
+
+		private Map<String, RelatedForm> relatedFormMap = new HashMap<>();
+
+		private Map<String, RelatedScript> relatedScriptMap = new HashMap<>();
+
+		public RelatedForm getForm() {
+			return form;
+		}
+
+		public void setForm(RelatedForm form) {
+			this.form = form;
+		}
+
+		public Map<String, RelatedForm> getRelatedFormMap() {
+			return relatedFormMap;
+		}
+
+		public void setRelatedFormMap(Map<String, RelatedForm> relatedFormMap) {
+			this.relatedFormMap = relatedFormMap;
+		}
+
+		public Map<String, RelatedScript> getRelatedScriptMap() {
+			return relatedScriptMap;
+		}
+
+		public void setRelatedScriptMap(Map<String, RelatedScript> relatedScriptMap) {
+			this.relatedScriptMap = relatedScriptMap;
+		}
+
+	}
+
+	public static class RelatedScript extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 4695405501650343555L;
 
 		public static final String TYPE_PROCESSPLATFORM = "processPlatform";
 		public static final String TYPE_CMS = "cms";
 		public static final String TYPE_PORTAL = "portal";
+
+		public RelatedScript() {
+
+		}
+
+		public RelatedScript(String id, String name, String alias, String text, String type) {
+			this.id = id;
+			this.alias = alias;
+			this.name = name;
+			this.text = text;
+			this.type = type;
+		}
+
+		private String type;
 
 		private String id;
 
 		private String alias;
 
 		private String name;
-
-		private String type;
 
 		private String text;
 
@@ -197,6 +226,89 @@ public class WorkCompletedProperties extends JsonProperties {
 			this.text = text;
 		}
 
+	}
+
+	public static class RelatedForm extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -8345275108890011204L;
+
+		public RelatedForm() {
+
+		}
+
+		public RelatedForm(Form form, String data) {
+			this.id = form.getId();
+			this.alias = form.getAlias();
+			this.name = form.getName();
+			this.category = form.getCategory();
+			this.application = form.getApplication();
+			this.hasMobile = form.getHasMobile();
+			this.data = data;
+		}
+
+		private String id;
+		private String alias;
+		private String name;
+		private String category;
+		private String application;
+		private Boolean hasMobile;
+		private String data;
+
+		public String getCategory() {
+			return category;
+		}
+
+		public void setCategory(String category) {
+			this.category = category;
+		}
+
+		public String getApplication() {
+			return application;
+		}
+
+		public void setApplication(String application) {
+			this.application = application;
+		}
+
+		public Boolean getHasMobile() {
+			return hasMobile;
+		}
+
+		public void setHasMobile(Boolean hasMobile) {
+			this.hasMobile = hasMobile;
+		}
+
+		public String getAlias() {
+			return alias;
+		}
+
+		public void setAlias(String alias) {
+			this.alias = alias;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getData() {
+			return data;
+		}
+
+		public void setData(String data) {
+			this.data = data;
+		}
 	}
 
 }

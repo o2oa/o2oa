@@ -26,6 +26,14 @@
 		</dependency>
 		<dependency>
 			<groupId>o2oa</groupId>
+			<artifactId>x_processplatform_core_entity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>o2oa</groupId>
+			<artifactId>x_cms_core_entity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>o2oa</groupId>
 			<artifactId>x_general_core_entity</artifactId>
 		</dependency>
 	</dependencies>
@@ -123,6 +131,12 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

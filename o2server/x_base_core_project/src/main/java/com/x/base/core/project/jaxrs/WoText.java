@@ -1,9 +1,11 @@
 package com.x.base.core.project.jaxrs;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
+import org.apache.commons.lang3.StringUtils;
 
-public class WoText  extends GsonPropertyObject {
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.http.HttpMediaType;
+
+public class WoText extends WoMaxAgeFastETag {
 
 	public WoText() {
 	}
@@ -14,6 +16,17 @@ public class WoText  extends GsonPropertyObject {
 
 	@FieldDescribe("text")
 	private String text;
+
+	@FieldDescribe("返回Content_Type")
+	private String contentType;
+
+	public String getContentType() {
+		return StringUtils.isEmpty(this.contentType) ? HttpMediaType.TEXT_PLAIN_UTF_8 : this.contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
 
 	public String getText() {
 		return text;

@@ -108,6 +108,7 @@
             <div class="MWFScriptArea" name="selectedScript" title="选择结果 (S)"></div>
         </div>
         <div class="MWFScriptArea" name="defaultSelectedScript" title="默认选中行脚本"></div>
+        <div class="MWFScriptArea" name="selectedAbleScript" title="允许选择行脚本"></div>
 	</div>
     <div title="过滤"  class="MWFTab">
         <div class="MWFViewFilter">
@@ -159,6 +160,7 @@
                             <option value="like">匹配(like)</option>
                             <option value="notLike">不匹配(not-like)</option>
                             <option value="range">范围(range)</option>
+                            <option value="in">包含(in)</option>
                         </select></td>
                     </tr>
                     <tr style="display:none">
@@ -173,6 +175,7 @@
                                 <option value="true" selected>是(True)</option>
                                 <option value="false">否(False)</option>
                             </select>
+                            <div class="multiValueNotice_vf" style="display: none;color: #999;line-height: 24px;">多值用半角逗号(,)隔开</div>
                         </td>
                     </tr>
                 </table>

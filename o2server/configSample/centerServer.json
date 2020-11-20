@@ -13,6 +13,7 @@
   "statExclusions": "*.js,*.gif,*.jpg,*.png,*.css,*.ico",
   "maxFormContent": 20.0,
   "exposeJest": true,
+  "persistentConnectionsEnable": true,
   "###enable": "是否启用###",
   "###order": "center节点顺序,顺序排列0,1,2...###",
   "###sslEnable": "是否启用ssl传输加密,如果启用将使用config/keystore文件作为密钥文件.使用config/token.json文件中的sslKeyStorePassword字段为密钥密码,sslKeyManagerPassword为管理密码.###",
@@ -27,5 +28,6 @@
   "###statEnable": "启用统计,默认启用统计.###",
   "###statExclusions": "统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico###",
   "###maxFormContent": "最大提交数据限制(M),限制有所上传的内容大小,包括附件.###",
-  "###exposeJest": "暴露jest接口.###"
+  "###exposeJest": "暴露jest接口.###",
+  "###persistentConnectionsEnable": "是否启用长连接,默认false.###"
 }

@@ -112,12 +112,15 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         this.statementListNode = new Element("div", {
             "styles": this.css.statementListNode
         }).inject(this.node);
+
         this.designerNode = new Element("div", {
             "styles": this.css.designerNode
         }).inject(this.node);
+
         this.contentNode = new Element("div", {
             "styles": this.css.contentNode
         }).inject(this.node);
+        this.formContentNode = this.contentNode;
     },
     loadStatementListNodes: function(){
         this.statementListTitleNode = new Element("div", {
@@ -299,20 +302,22 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             "styles": this.css.designerContentNode
         }).inject(this.designerNode);
 
-        // this.designerStatementArea = new Element("div", {
-        //     "styles": this.css.designerStatementArea
-        // }).inject(this.designerContentNode);
-        //
-        // this.designerStatementPercent = 0.6;
-        // this.designerContentResizeNode = new Element("div", {
-        //     "styles": this.css.designerContentResizeNode
-        // }).inject(this.designerContentNode);
+        this.designerStatementArea = new Element("div", {
+            "styles": this.css.designerStatementArea
+        }).inject(this.designerContentNode);
+        this.propertyDomArea = this.designerStatementArea;
+
+        this.designerStatementPercent = 0.6;
+        this.designerContentResizeNode = new Element("div", {
+            "styles": this.css.designerContentResizeNode
+        }).inject(this.designerContentNode);
 
         this.designerContentArea = new Element("div", {
             "styles": this.css.designerContentArea
         }).inject(this.designerContentNode);
+        this.propertyContentArea = this.designerContentArea;
 
-        //this.loadDesignerStatementResize();
+        this.loadDesignerStatementResize();
         //this.setPropertyContent();
         this.designerNode.addEvent("keydown", function(e){e.stopPropagation();});
     },
@@ -348,37 +353,37 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             }.bind(this)
         });
     },
-    // loadDesignerStatementResize: function(){
-    //     this.designerContentResize = new Drag(this.designerContentResizeNode, {
-    //         "snap": 1,
-    //         "onStart": function(el, e){
-    //             var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
-    //             var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
-    //             el.store("position", {"x": x, "y": y});
-    //
-    //             var size = this.designerStatementArea.getSize();
-    //             el.store("initialHeight", size.y);
-    //         }.bind(this),
-    //         "onDrag": function(el, e){
-    //             var size = this.designerContentNode.getSize();
-    //
-    //             //			var x = e.event.x;
-    //             var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
-    //             var position = el.retrieve("position");
-    //             var dy = y.toFloat()-position.y.toFloat();
-    //
-    //             var initialHeight = el.retrieve("initialHeight").toFloat();
-    //             var height = initialHeight+dy;
-    //             if (height<40) height = 40;
-    //             if (height> size.y-40) height = size.y-40;
-    //
-    //             this.designerStatementPercent = height/size.y;
-    //
-    //             this.setDesignerStatementResize();
-    //
-    //         }.bind(this)
-    //     });
-    // },
+    loadDesignerStatementResize: function(){
+        this.designerContentResize = new Drag(this.designerContentResizeNode, {
+            "snap": 1,
+            "onStart": function(el, e){
+                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                el.store("position", {"x": x, "y": y});
+
+                var size = this.designerStatementArea.getSize();
+                el.store("initialHeight", size.y);
+            }.bind(this),
+            "onDrag": function(el, e){
+                var size = this.designerContentNode.getSize();
+
+                //			var x = e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                var position = el.retrieve("position");
+                var dy = y.toFloat()-position.y.toFloat();
+
+                var initialHeight = el.retrieve("initialHeight").toFloat();
+                var height = initialHeight+dy;
+                if (height<40) height = 40;
+                if (height> size.y-40) height = size.y-40;
+
+                this.designerStatementPercent = height/size.y;
+
+                this.setDesignerStatementResize();
+
+            }.bind(this)
+        });
+    },
     setDesignerStatementResize: function(){
         var size = this.designerContentNode.getSize();
         //var resizeNodeSize = this.designerContentResizeNode.getSize();
@@ -495,9 +500,9 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
 		}.bind(this));
 	},
 
-
-
-
+    preview : function(){
+        this.statement.preview();
+    },
 
     saveStatement: function(){
         this.statement.save(function(){

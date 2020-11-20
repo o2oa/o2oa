@@ -19,10 +19,10 @@ MWF.xApplication.Attendance.MyDetail = new Class({
     },
     load: function(){
         //options = {
-    //    "name": "直接主管",
-    //        "personName": this.workContext.getWork().creatorPerson
-    //}
-    //return this.org.getPersonAttribute(options);
+        //    "name": "直接主管",
+        //        "personName": this.workContext.getWork().creatorPerson
+        //}
+        //return this.org.getPersonAttribute(options);
         this.loadTab();
     },
     loadTab : function(){
@@ -190,25 +190,25 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
                     isLate : { text: "迟到",  "type" : "select", "selectValue" : ["","true","false"], "selectText" : ["","迟到","未迟到"] },
                     isLackOfTime : { text: "工时不足", "type" : "select", "selectValue" : ["","true","false"], "selectText" : ["","是","否"] },
                     action : { "value" : "查询", type : "button", className : "filterButton", event : {
-                        click : function(){
-                            var result = this.form.getResult(false,null,false,true,false);
+                            click : function(){
+                                var result = this.form.getResult(false,null,false,true,false);
 
-                            var year = this.preMonthDate.getFullYear().toString();
-                            var month = (this.preMonthDate.getMonth()+1).toString();
-                            if( month.length == 1 )month = "0"+month;
-                            result.cycleYear = year;
-                            result.cycleMonth = month;
+                                var year = this.preMonthDate.getFullYear().toString();
+                                var month = (this.preMonthDate.getMonth()+1).toString();
+                                if( month.length == 1 )month = "0"+month;
+                                result.cycleYear = year;
+                                result.cycleMonth = month;
 
-                            if( typeOf( result.isAbsent ) == "string" )result.isAbsent = this.getBoolean( result.isAbsent );
-                            if( typeOf( result.isLate ) == "string" )result.isLate = this.getBoolean( result.isLate );
-                            if( typeOf( result.isLackOfTime ) == "string" )result.isLackOfTime = this.getBoolean( result.isLackOfTime );
+                                if( typeOf( result.isAbsent ) == "string" )result.isAbsent = this.getBoolean( result.isAbsent );
+                                if( typeOf( result.isLate ) == "string" )result.isLate = this.getBoolean( result.isLate );
+                                if( typeOf( result.isLackOfTime ) == "string" )result.isLackOfTime = this.getBoolean( result.isLackOfTime );
 
-                            if( result.date && result.date !="" ){
-                                result.q_date =  year + "-" + month + "-" + result.date;
-                            }
-                            this.loadView( result );
-                        }.bind(this)
-                    }}
+                                if( result.date && result.date !="" ){
+                                    result.q_date =  year + "-" + month + "-" + result.date;
+                                }
+                                this.loadView( result );
+                            }.bind(this)
+                        }}
                 }
             }, this.app, this.css);
             this.form.load();
@@ -636,7 +636,7 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticView = new Class({
         if( month.length == 1 )month = "0"+month;
         filter.cycleMonth = month;
         this.actions.listStaticMonthPerson( filter.q_empName, filter.cycleYear,filter.cycleMonth, function(json){
-            
+
             if( callback )callback(json);
         }.bind(this))
     },
@@ -776,14 +776,17 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
             }.bind(this)});
     },
     seeAppeal : function(){
-        if(!this.data.appealInfos){
-            var form = new MWF.xApplication.Attendance.MyDetail.Appeal( this.explorer, this.data );
-            form.open();
-        }else{
-            var workid = this.data.appealInfos[0].appealAuditInfo.workId;
-            var options = {"workId":workid, "appId": "process.Work"+workid};
-            this.app.desktop.openApplication(null, "process.Work", options);
+
+        if(this.data.appealInfos[0].appealAuditInfo){
+            if(this.data.appealInfos[0].appealAuditInfo.workId){
+                var workid = this.data.appealInfos[0].appealAuditInfo.workId;
+                var options = {"workId":workid, "appId": "process.Work"+workid};
+                this.app.desktop.openApplication(null, "process.Work", options);
+                return;
+            }
         }
+        var form = new MWF.xApplication.Attendance.MyDetail.Appeal( this.explorer, this.data );
+        form.open();
     }
 });
 
@@ -916,8 +919,8 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
             }
             if( d.isGetSelfHolidays && d.selfHolidayDayTime == "下午" ){
                 status.push("请假或外出报备");
-            //}else if(d.isLeaveEarlier){
-            //    status.push( '早退')
+                //}else if(d.isLeaveEarlier){
+                //    status.push( '早退')
             }else if(d.isAbsent && d.absentDayTime == "下午" ){
                 status.push( '缺勤')
             }else if(d.isAbnormalDuty && d.abnormalDutyDayTime == "下午" ){
@@ -934,13 +937,13 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
         } else if (d.status == -1) {
             appealStatus = "审批未通过"
         }
-            //if (d.appealStatus == 1) {
-            //    appealStatus = "申诉中"
-            //} else if (d.appealStatus == -1) {
-            //    appealStatus = "申诉未通过"
-            //} else if (d.appealStatus == 9) {
-            //    appealStatus = "申诉通过"
-            //}
+        //if (d.appealStatus == 1) {
+        //    appealStatus = "申诉中"
+        //} else if (d.appealStatus == -1) {
+        //    appealStatus = "申诉未通过"
+        //} else if (d.appealStatus == 9) {
+        //    appealStatus = "申诉通过"
+        //}
         this.data.appealStatusShow = appealStatus;
 
         //var auditors = this.getAuditor();
@@ -955,25 +958,25 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
             +"<tr><td styles='formTableTitle' lable='onDutyTime'></td>"+
             "    <td styles='formTableValue' item='onDutyTime'></td>" +
             ((this.data.signProxy=="2"||this.data.signProxy=="3")?
-            "    <td styles='formTableTitle' lable='morningOffDutyTime'></td>"+
-            "    <td styles='formTableValue' item='morningOffDutyTime'></td></tr>" +
-            "<tr><td styles='formTableTitle' lable='afternoonOnDutyTime'></td>"+
-            "    <td styles='formTableValue' item='afternoonOnDutyTime'></td>" : ""
+                    "    <td styles='formTableTitle' lable='morningOffDutyTime'></td>"+
+                    "    <td styles='formTableValue' item='morningOffDutyTime'></td></tr>" +
+                    "<tr><td styles='formTableTitle' lable='afternoonOnDutyTime'></td>"+
+                    "    <td styles='formTableValue' item='afternoonOnDutyTime'></td>" : ""
             ) +
             "    <td styles='formTableTitle' lable='offDutyTime'></td>"+
             "    <td styles='formTableValue' item='offDutyTime'></td></tr>" +
             ( ( this.isNew && identityList.identities.length > 1 ) ?
-        "<tr><td styles='formTableTitle' lable='identity'></td>"+
-        "    <td styles='formTableValue' item='identity'  colspan='3'></td></tr>" : ""
+                    "<tr><td styles='formTableTitle' lable='identity'></td>"+
+                    "    <td styles='formTableValue' item='identity'  colspan='3'></td></tr>" : ""
             ) +
             ( this.isNew ?
-            "<tr><td styles='formTableTitle' lable='statusShow'></td>"+
-            "    <td styles='formTableValue' item='statusShow'></td>" +
-            "    <td styles='formTableTitle' lable='appealStatusShow'></td>"+
-            "    <td styles='formTableValue' item='appealStatusShow'></td></tr>"
-            :
-        "<tr><td styles='formTableTitle' lable='appealStatusShow'></td>"+
-        "    <td styles='formTableValue' item='appealStatusShow'  colspan='3'></td></tr>"
+                    "<tr><td styles='formTableTitle' lable='statusShow'></td>"+
+                    "    <td styles='formTableValue' item='statusShow'></td>" +
+                    "    <td styles='formTableTitle' lable='appealStatusShow'></td>"+
+                    "    <td styles='formTableValue' item='appealStatusShow'></td></tr>"
+                    :
+                    "<tr><td styles='formTableTitle' lable='appealStatusShow'></td>"+
+                    "    <td styles='formTableValue' item='appealStatusShow'  colspan='3'></td></tr>"
             )
             +
             "<tr><td styles='formTableTitle' lable='appealReason'></td>"+
@@ -1016,8 +1019,8 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                     type : "select",
                     selectValue : ["","临时请假","出差","因公外出","其他"],
                     event : { change : function(mdi){
-                        _self.switchFieldByAppealReason(mdi.getValue());
-                    }}
+                            _self.switchFieldByAppealReason(mdi.getValue());
+                        }}
                 },
                 identity : {
                     notEmpty : true,
@@ -1138,7 +1141,7 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                 }.bind(this), null, false );
             }else if( setting.APPEAL_AUDITOR_TYPE.configValue == "人员属性" ){
                 this.app.personActions.getPerson( function( json ){
-                   var attribute = setting.APPEAL_AUDITOR_VALUE.configValue;
+                    var attribute = setting.APPEAL_AUDITOR_VALUE.configValue;
                     json.data.woPersonAttributeList.each( function( attr ){
                         if( attr.name == attribute ){
                             var p = attr.attributeList[0];

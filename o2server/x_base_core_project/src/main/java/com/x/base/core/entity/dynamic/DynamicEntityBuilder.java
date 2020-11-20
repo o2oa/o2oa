@@ -16,7 +16,6 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.PersistentMap;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
@@ -42,6 +41,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.dynamic.DynamicEntity.Field;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 
 public class DynamicEntityBuilder {
 
@@ -196,10 +196,10 @@ public class DynamicEntityBuilder {
 		FieldSpec fieldSpec = FieldSpec.builder(typeClass, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
 				.addAnnotation(this.checkPersist(field)).addAnnotation(column).build();
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
+		MethodSpec get = MethodSpec.methodBuilder(StringTools.getMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(typeClass).addStatement("return this." + field.getName())
 				.build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
+		MethodSpec set = MethodSpec.methodBuilder(StringTools.setMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(typeClass, field.getName())
 				.addStatement("this." + field.getName() + " = " + field.getName()).build();
 		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
@@ -222,10 +222,10 @@ public class DynamicEntityBuilder {
 		FieldSpec fieldSpec = FieldSpec.builder(Date.class, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
 				.addAnnotation(this.checkPersist(field)).addAnnotation(column).addAnnotation(temporal).build();
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
+		MethodSpec get = MethodSpec.methodBuilder(StringTools.getMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(Date.class).addStatement("return this." + field.getName())
 				.build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
+		MethodSpec set = MethodSpec.methodBuilder(StringTools.setMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(Date.class, field.getName())
 				.addStatement("this." + field.getName() + " = " + field.getName()).build();
 		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
@@ -249,10 +249,10 @@ public class DynamicEntityBuilder {
 		FieldSpec fieldSpec = FieldSpec.builder(Date.class, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
 				.addAnnotation(this.checkPersist(field)).addAnnotation(column).addAnnotation(temporal).build();
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
+		MethodSpec get = MethodSpec.methodBuilder(StringTools.getMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(Date.class).addStatement("return this." + field.getName())
 				.build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
+		MethodSpec set = MethodSpec.methodBuilder(StringTools.setMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(Date.class, field.getName())
 				.addStatement("this." + field.getName() + " = " + field.getName()).build();
 		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
@@ -276,10 +276,10 @@ public class DynamicEntityBuilder {
 		FieldSpec fieldSpec = FieldSpec.builder(Date.class, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
 				.addAnnotation(this.checkPersist(field)).addAnnotation(column).addAnnotation(temporal).build();
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
+		MethodSpec get = MethodSpec.methodBuilder(StringTools.getMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(Date.class).addStatement("return this." + field.getName())
 				.build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
+		MethodSpec set = MethodSpec.methodBuilder(StringTools.setMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(Date.class, field.getName())
 				.addStatement("this." + field.getName() + " = " + field.getName()).build();
 		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
@@ -365,10 +365,10 @@ public class DynamicEntityBuilder {
 		FieldSpec fieldSpec = FieldSpec.builder(list_type, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(containerTable).addAnnotation(elementIndex)
 				.addAnnotation(persistentCollection).addAnnotation(orderColumn).addAnnotation(elementColumn).build();
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
+		MethodSpec get = MethodSpec.methodBuilder(StringTools.getMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(list_type).addStatement("return this." + field.getName())
 				.build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
+		MethodSpec set = MethodSpec.methodBuilder(StringTools.setMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(list_type, field.getName())
 				.addStatement("this." + field.getName() + " = " + field.getName()).build();
 		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
@@ -401,10 +401,10 @@ public class DynamicEntityBuilder {
 		FieldSpec fieldSpec = FieldSpec.builder(String.class, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(lob).addAnnotation(basic).addAnnotation(column)
 				.build();
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
+		MethodSpec get = MethodSpec.methodBuilder(StringTools.getMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(String.class).addStatement("return this." + field.getName())
 				.build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
+		MethodSpec set = MethodSpec.methodBuilder(StringTools.setMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(String.class, field.getName())
 				.addStatement("this." + field.getName() + " = " + field.getName()).build();
 		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
@@ -467,9 +467,9 @@ public class DynamicEntityBuilder {
 				.addAnnotation(keyColumn).addAnnotation(elementColumn).addAnnotation(elementIndex)
 				.addAnnotation(keyIndex).build();
 
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
+		MethodSpec get = MethodSpec.methodBuilder(StringTools.getMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(map_type).addStatement("return this." + field.getName()).build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
+		MethodSpec set = MethodSpec.methodBuilder(StringTools.setMethodName(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(map_type, field.getName())
 				.addStatement("this." + field.getName() + " = " + field.getName()).build();
 		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);

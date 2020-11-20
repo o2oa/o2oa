@@ -8,8 +8,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
-import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.query.Query;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +23,6 @@ import java.util.List;
 @JaxrsDescribe("数据视图信息管理")
 public class QueryViewAction extends BaseAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
-
 	@JaxrsMethodDescribe(value = "列示所有栏目中的数据视图信息.", action = ActionListAll.class)
 	@GET
 	@Path("list/all")
@@ -36,7 +32,7 @@ public class QueryViewAction extends BaseAction {
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson( request );
-			result = ((ActionListAll)proxy.getProxy(ActionListAll.class)).execute( request, effectivePerson);
+			result = new ActionListAll().execute( request, effectivePerson);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -53,7 +49,7 @@ public class QueryViewAction extends BaseAction {
 		ActionResult<List<ActionList.Wo>> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson( request );
-			result = ((ActionList)proxy.getProxy(ActionList.class)).execute( request, effectivePerson);
+			result = new ActionList().execute( request, effectivePerson);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -71,7 +67,7 @@ public class QueryViewAction extends BaseAction {
 		ActionResult<ActionFlag.Wo> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = ((ActionFlag)proxy.getProxy(ActionFlag.class)).execute( request, effectivePerson, flag);
+			result = new ActionFlag().execute( request, effectivePerson, flag);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -94,7 +90,7 @@ public class QueryViewAction extends BaseAction {
 		
 		if( check ){
 			try {
-				result = ((ActionExecute)proxy.getProxy(ActionExecute.class)).execute( request, effectivePerson, flag, appId, jsonElement);
+				result = new ActionExecute().execute( request, effectivePerson, flag, appId, jsonElement);
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);

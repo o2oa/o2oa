@@ -1,6 +1,5 @@
 package com.x.organization.assemble.authentication.jaxrs.oauth;
 
-import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.Optional;
@@ -10,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,11 +18,15 @@ import org.apache.commons.text.StringEscapeUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Token.InitialManager;
 import com.x.base.core.project.config.Token.Oauth;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.jaxrs.WoText;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -30,9 +34,6 @@ import com.x.base.core.project.script.ScriptFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.OauthCode;
 import com.x.organization.core.entity.Person;
-import com.x.base.core.project.cache.Cache.CacheCategory;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 
 class ActionInfo extends BaseAction {
 
@@ -42,10 +43,17 @@ class ActionInfo extends BaseAction {
 
 	private static CacheCategory cache = new CacheCategory(Person.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String accessToken) throws Exception {
+	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String accessToken,
+			String contentType) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
+			if (StringUtils.isEmpty(accessToken)) {
+				String bearer = request.getHeader(HttpToken.X_Authorization);
+				if (StringUtils.isNotEmpty(bearer)) {
+					accessToken = StringUtils.substringAfter(bearer, " ");
+				}
+			}
 			if (StringUtils.isEmpty(accessToken)) {
 				throw new ExceptionAccessTokenEmpty();
 			}
@@ -63,6 +71,7 @@ class ActionInfo extends BaseAction {
 			Info info = this.info(business, oauthCode, oauth);
 			Wo wo = new Wo();
 			wo.setText(gson.toJson(info));
+			wo.setContentType(contentType);
 			result.setData(wo);
 			return result;
 		}

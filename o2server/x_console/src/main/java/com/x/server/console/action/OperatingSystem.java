@@ -8,7 +8,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 public class OperatingSystem extends Thread {
 
-	private static Logger logger = LoggerFactory.getLogger(DumpData.class);
+	private static Logger logger = LoggerFactory.getLogger(OperatingSystem.class);
 
 	private Integer count;
 

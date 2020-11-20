@@ -1,3 +1,4 @@
+MWF.xApplication.Selector=MWF.xApplication.Selector||{};
 MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "title": "Select",
     "multiSelectTitle": "Select",
@@ -10,6 +11,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectAppliction": "Select Process Appliction",
     "selectProcess": "Select Process",
     "selectView": "Select View",
+    "selectStatement": "Select Statement",
     "selectCMSApplication": "Select CMS Application",
     "selectCMSCategory": "Select CMS Category",
     "searchDescription" : "search",

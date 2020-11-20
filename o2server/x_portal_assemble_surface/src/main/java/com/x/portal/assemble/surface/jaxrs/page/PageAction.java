@@ -121,4 +121,78 @@ public class PageAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "获取Page.", action = V2Get.class)
+	@GET
+	@Path("v2/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2Get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					  @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<V2Get.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Get().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取PageMobile.", action = V2GetMobile.class)
+	@GET
+	@Path("v2/{id}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2GetMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<V2GetMobile.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2GetMobile().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示属于指定Portal的Page,其中Portal可以用name,alias和id标识,Page为在此Portal下的页面.", action = V2GetWithPortal.class)
+	@GET
+	@Path("v2/{flag}/portal/{portalFlag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2GetWithPortal(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("标识") @PathParam("flag") String flag,
+							  @JaxrsParameterDescribe("门户标识") @PathParam("portalFlag") String portalFlag) {
+		ActionResult<V2GetWithPortal.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2GetWithPortal().execute(effectivePerson, flag, portalFlag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示属于指定Portal的Page,其中Portal可以用name,alias和id标识,Page为在此Portal下的页面Mobile.", action = V2GetWithPortalMobile.class)
+	@GET
+	@Path("v2/{flag}/portal/{portalFlag}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2GetWithPortalMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									@JaxrsParameterDescribe("标识") @PathParam("flag") String flag,
+									@JaxrsParameterDescribe("门户标识") @PathParam("portalFlag") String portalFlag) {
+		ActionResult<V2GetWithPortalMobile.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2GetWithPortalMobile().execute(effectivePerson, flag, portalFlag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

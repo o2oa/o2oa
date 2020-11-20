@@ -1,6 +1,6 @@
 package com.x.cms.assemble.control.jaxrs;
 
-import com.x.base.core.project.jaxrs.ManagerUserJaxrsFilter;
+import com.x.base.core.project.jaxrs.CipherManagerUserJaxrsFilter;
 
 import javax.servlet.annotation.WebFilter;
 
@@ -37,8 +37,9 @@ import javax.servlet.annotation.WebFilter;
         "/jaxrs/permission/*",
         "/jaxrs/docpermission/*",
         "/jaxrs/comment/*",
+        "/jaxrs/commend/*",
         "/servlet/*"
 }, asyncSupported = true)
-public class CmsJaxrsFilter extends ManagerUserJaxrsFilter {
+public class CmsJaxrsFilter extends CipherManagerUserJaxrsFilter {
 
 }

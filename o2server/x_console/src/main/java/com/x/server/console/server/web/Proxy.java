@@ -2,6 +2,7 @@ package com.x.server.console.server.web;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.EscapeStringTools;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.http.HttpHeader;
@@ -20,8 +21,14 @@ public class Proxy extends ProxyServlet {
 
 	@Override
 	protected String rewriteTarget(HttpServletRequest request) {
-		String url = request.getRequestURL().toString();
-		String parameter = request.getQueryString();
+		String url = EscapeStringTools.escapeURLQuery(request.getRequestURL().toString());
+		if(url==null){
+			url = request.getRequestURL().toString();
+		}
+		String parameter = EscapeStringTools.escapeURLQuery(request.getQueryString());
+		if (parameter == null){
+			parameter = request.getQueryString();
+		}
 		return target(url, parameter, this.getServletConfig().getInitParameter("port"));
 
 	}

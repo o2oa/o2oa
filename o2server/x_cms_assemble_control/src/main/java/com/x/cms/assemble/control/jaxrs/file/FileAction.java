@@ -9,10 +9,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.ThisApplication;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -28,7 +26,6 @@ import java.util.List;
 @JaxrsDescribe("资源文件管理")
 public class FileAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static Logger logger = LoggerFactory.getLogger(FileAction.class);
 
 	@JaxrsMethodDescribe(value = "列示文件对象,下一页.", action = ActionListNext.class)
@@ -42,7 +39,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListNext.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListNext)proxy.getProxy(ActionListNext.class)).execute(id, count);
+			result = new ActionListNext().execute(id, count);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -61,7 +58,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPrev.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListPrev)proxy.getProxy(ActionListPrev.class)).execute(id, count);
+			result = new ActionListPrev().execute(id, count);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -79,7 +76,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute(effectivePerson, flag);
+			result = new ActionGet().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -96,7 +93,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionCreate)proxy.getProxy(ActionCreate.class)).execute(effectivePerson, jsonElement);
+			result = new ActionCreate().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -114,7 +111,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionEdit)proxy.getProxy(ActionEdit.class)).execute(effectivePerson, id, jsonElement);
+			result = new ActionEdit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -132,7 +129,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionDelete)proxy.getProxy(ActionDelete.class)).execute(effectivePerson, flag);
+			result = new ActionDelete().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -150,7 +147,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListWithApp.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListWithApp)proxy.getProxy(ActionListWithApp.class)).execute(effectivePerson, appInfoFlag);
+			result = new ActionListWithApp().execute(effectivePerson, appInfoFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -171,7 +168,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<ActionUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionUpload)proxy.getProxy(ActionUpload.class)).execute(effectivePerson, id, fileName, bytes, disposition);
+			result = new ActionUpload().execute(effectivePerson, id, fileName, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -188,7 +185,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<ActionDownload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionDownload)proxy.getProxy(ActionDownload.class)).execute(effectivePerson, id);
+			result = new ActionDownload().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -205,7 +202,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<ActionContent.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionContent)proxy.getProxy(ActionContent.class)).execute(effectivePerson, id);
+			result = new ActionContent().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -223,7 +220,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<ActionCopy.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionCopy)proxy.getProxy(ActionCopy.class)).execute(effectivePerson, flag, appInfoFlag);
+			result = new ActionCopy().execute(effectivePerson, flag, appInfoFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -241,7 +238,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<ActionDownloadWithApp.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionDownloadWithApp)proxy.getProxy(ActionDownloadWithApp.class)).execute(effectivePerson, flag, appInfoFlag);
+			result = new ActionDownloadWithApp().execute(effectivePerson, flag, appInfoFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -259,7 +256,7 @@ public class FileAction extends StandardJaxrsAction {
 		ActionResult<ActionContentWithApp.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionContentWithApp)proxy.getProxy(ActionContentWithApp.class)).execute(effectivePerson, flag, appInfoFlag);
+			result = new ActionContentWithApp().execute(effectivePerson, flag, appInfoFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
