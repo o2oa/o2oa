@@ -492,14 +492,18 @@ MWF.xDesktop.getServiceAddressConfigArray = function(config, callback, error) {
     config.center.each(function(center){
         requests.push(
             MWF.xDesktop.getServiceAddressConfigObject(center, function(serviceAddressList, center){
+                debugger;
                 requests.each(function(res){
-                    if (res) if (res.isRunning && res.isRunning()){res.cancel();}
+                    if (res && res.res) if (res.res.isRunning()){res.res.cancel();}
+                    if (res && res.actionWorker) res.actionWorker.terminate();
                 });
                 if (callback) callback(serviceAddressList, center);
             }.bind(this), function(){
+                debugger;
                 if (requests.length){
                     for (var i=0; i<requests.length; i++){
-                        if (requests[i].isRunning && requests[i].isRunning()) return "";
+                        if (requests[i].res) if (requests[i].res.isRunning()) return "";
+                        if (requests[i].actionWorker && requests[i].actionWorker.terminate) return "";
                     }
                 }
                 if (error) error();
@@ -610,7 +614,9 @@ MWF.org = {
                 "name": data.name,
                 "distinguishedName": data.distinguishedName,
                 "unitLevelName" : data.unitLevelName,
-                "person": data.person
+                "person": data.person,
+                "unit": data.unit,
+                "unitName": data.unitName,
             };
             if( data.ignoreEmpower )rData.ignoreEmpower = true;
             if( data.ignoredEmpower )rData.ignoredEmpower = true;

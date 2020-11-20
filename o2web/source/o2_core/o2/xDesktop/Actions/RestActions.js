@@ -102,6 +102,32 @@ MWF.xDesktop.Actions.RestActions = new Class({
 
             var async = (option.async===false) ? false : true;
 
+            // if (!option.success) option.success = function(v){return v;}.ag();
+            // if (option.success && !option.success.isAG) option.success = option.success.ag();
+            //
+            // if (option.failure && option.failure.failure) option.failure = option.failure.failure;
+            // if (option.failure) {
+            //     option.success.catch(option.failure);
+            //     option.failure.owner = option.success;
+            // }
+            // if (!option.failure && option.success && option.success.failure){
+            //     option.failure = option.success.failure;
+            //     option.failure.owner = option.success;
+            // }
+
+            // if (option.failure && option.failure.failure) option.failure = option.failure.failure;
+            // if (!option.failure && option.success && option.success.failure){
+            //     option.failure = option.success.failure;
+            //     option.failure.owner = option.success;
+            // }
+            // if (!option.success){
+            //     option.success = function(v){return v;}.ag();
+            //     if (option.failure) {
+            //         option.success.catch(option.failure);
+            //         option.failure.owner = option.success;
+            //     }
+            // }
+
             var callback = new MWF.xDesktop.Actions.RestActions.Callback(option.success, option.failure);
             if (action.enctype && (action.enctype.toLowerCase()=="formdata")){
                 res = this.invokeFormData(method, uri, option.data, option.file, callback, async, progress);
@@ -565,16 +591,16 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
 			switch(responseJSON.type) {
 			   case "success":
 				   if (this.appendSuccess) this.appendSuccess(responseJSON);
-				   if (this.success) this.success(responseJSON, responseText);
+				   if (this.success) return this.success(responseJSON, responseText);
 			       break;
 			   case "warn":
 				   MWF.xDesktop.notice("info", {x: "right", y:"top"}, responseJSON.errorMessage.join("\n"));
 				   
 				   if (this.appendSuccess) this.appendSuccess(responseJSON);
-				   if (this.success) this.success(responseJSON);
+				   if (this.success) return this.success(responseJSON);
 			       break;
 			   case "error":
-				   this.doError(null, responseText, responseJSON.message);
+				   return this.doError(null, responseText, responseJSON.message);
 				   break;
 			}
 		}else{
@@ -592,7 +618,14 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
 	},
 	doError: function(xhr, text, error){
 		if (this.appendFailure) this.appendFailure(xhr, text, error);
-		if (this.failure) this.failure(xhr, text, error);
+		if (this.failure && this.failure.owner){
+            if (this.failure.reject || (this.failure.rejectList && this.failure.rejectList.length)){
+                return this.failure(xhr, text, error);
+            }
+            this.failure = null;
+        }else{
+            if (this.failure) return this.failure(xhr, text, error);
+        }
 		if (!this.failure && !this.appendFailure){
             if (xhr.status!=0){
                 var errorText = error;
