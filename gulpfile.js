@@ -629,14 +629,14 @@ function build_concat_basework_body() {
         'o2web/source/x_component_Template/MTooltips.js',
         'o2web/source/x_component_Template/MSelector.js',
 
-        'o2web/source/x_desktop/js/base_work_actions_temp.js',
-
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
         'o2web/source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
+
+        'o2web/source/x_desktop/js/base_work_actions_temp.js',
 
         'o2web/source/x_desktop/js/base.js'
     ];
@@ -731,13 +731,13 @@ function build_concat_baseportal_body() {
         'o2web/source/o2_core/o2/xScript/Actions/PortalScriptActions.js',
         'o2web/source/o2_core/o2/xScript/PageEnvironment.js',
 
-        'o2web/source/x_desktop/js/base_portal_actions_temp.js',
-
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
         'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
+
+        'o2web/source/x_desktop/js/base_portal_actions_temp.js',
 
         'o2web/source/x_desktop/js/base.js'
     ];
