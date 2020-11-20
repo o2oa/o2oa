@@ -1,4 +1,4 @@
-package com.x.general.assemble.control.jaxrs.result;
+package com.x.general.assemble.control.jaxrs.file;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -17,22 +17,22 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-@Path("result")
+@Path("file")
 @JaxrsDescribe("获取附件")
-public class GeneralResultAction extends StandardJaxrsAction {
+public class GeneralFileAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(GeneralResultAction.class);
+	private static Logger logger = LoggerFactory.getLogger(GeneralFileAction.class);
 
-	@JaxrsMethodDescribe(value = "获取附件.", action = ActionGeneralResult.class)
+	@JaxrsMethodDescribe(value = "获取附件.", action = ActionGeneralFile.class)
 	@GET
 	@Path("flag/{flag}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getResult(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 						  @JaxrsParameterDescribe("附件标记") @PathParam("flag") String flag) {
-		ActionResult<ActionGeneralResult.Wo> result = new ActionResult<>();
+		ActionResult<ActionGeneralFile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGeneralResult().execute(effectivePerson, flag);
+			result = new ActionGeneralFile().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
