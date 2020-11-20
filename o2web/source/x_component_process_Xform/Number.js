@@ -196,8 +196,16 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "0");
     },
     getValue: function(){
+        if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
         return value || "0";
+    },
+    __setValue: function(value){
+        this._setBusinessData(value);
+        if (this.node.getFirst()) this.node.getFirst().set("value", value || "0");
+        if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+        this.moduleValueAG = null;
+        return value;
     }
 });
