@@ -394,7 +394,9 @@ function concat_Style(){
             return cb();
         }
         var content = file.contents.toString();
-        name = ".."+file.path.replace(process.cwd(), "").replace(/\\/g, "/").substring("/source".length);
+        //name = ".."+file.path.replace(process.cwd(), "").replace(/\\/g, "/").substring("/source".length);
+        var name = file.path.replace(process.cwd(), "").replace(/\\/g, "/")
+        name = ".."+name.substring(name.indexOf("/source")+7);
         content = "var csskey = encodeURIComponent(\""+name+"\");\no2.widget.css[csskey]="+content;
 
         file.contents = new Buffer.from(content);
@@ -490,14 +492,15 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
             'source/o2_core/o2/xScript/Environment.js',
             'source/x_component_Template/MTooltips.js',
             'source/x_component_Template/MSelector.js',
+
+            'source/' + path + '/js/base_work_actions_temp.js',
+
             'source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
             'source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
             'source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
             'source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
             'source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
             'source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
-
-            'source/' + path + '/js/base_work_actions_temp.js',
 
             'source/' + path + '/js/base.js'
         ];
@@ -637,13 +640,13 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
             'source/o2_core/o2/xScript/Actions/PortalScriptActions.js',
             'source/o2_core/o2/xScript/PageEnvironment.js',
 
+            'source/' + path + '/js/base_portal_actions_temp.js',
+
             'source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
             'source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
             'source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
             'source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
             'source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
-
-            'source/' + path + '/js/base_portal_actions_temp.js',
 
             'source/' + path + '/js/base.js'
         ];
