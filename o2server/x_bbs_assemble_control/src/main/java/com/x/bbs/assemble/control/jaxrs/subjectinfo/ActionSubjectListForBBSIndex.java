@@ -136,7 +136,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		if( check ){
 			if( selectTotal > 0 ){
 				try{
-					total = subjectInfoServiceAdv.countSubjectInSectionForPage( wrapIn.getSearchContent(), wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), wrapIn.getNeedPicture(), null, viewSectionIds );
+					total = subjectInfoServiceAdv.countSubjectInSectionForPage( wrapIn.getSearchContent(), wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), wrapIn.getNeedPicture(), null, viewSectionIds,null,null);
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionSubjectFilter( e );
@@ -155,7 +155,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 
 				try{
 					//内存分页
-					subjectInfoList = subjectInfoServiceAdv.listSubjectInSectionForPage( wrapIn.getSearchContent(), wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), wrapIn.getNeedPicture(), null, selectTotal, viewSectionIds );
+					subjectInfoList = subjectInfoServiceAdv.listSubjectInSectionForPage( wrapIn.getSearchContent(), wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), wrapIn.getNeedPicture(), null, selectTotal, viewSectionIds ,null,null);
 					if(ListTools.isNotEmpty( subjectInfoList ) ){
 						try {
 							wraps_out = Wo.copier.copy( subjectInfoList );
