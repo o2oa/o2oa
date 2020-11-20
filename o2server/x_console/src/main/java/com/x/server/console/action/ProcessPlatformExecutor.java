@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ProcessPlatformExecutor {
 
-	private static Logger logger = LoggerFactory.getLogger(RestoreData.class);
+	private static Logger logger = LoggerFactory.getLogger(ProcessPlatformExecutor.class);
 
 	 
 	public void execute() throws Exception {

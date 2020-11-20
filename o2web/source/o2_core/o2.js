@@ -692,6 +692,7 @@
             }
         }
     };
+
     this.o2.loadCss = _loadCss;
     this.o2.removeCss = _removeCss;
     if (window.Element) Element.prototype.loadCss = function(modules, options, callback){
@@ -739,11 +740,11 @@
         }else{
             dom.insertAdjacentHTML(op.position, data);
         }
-        var els = dom.querySelectorAll("[data-o2-element]");
+        var els = dom.querySelectorAll("[data-o2-element],[data-o2-events]");
         for (var i=0; i<els.length; i++){
             var el = els.item(i);
-            var name = el.getAttribute("data-o2-element").toString();
-            if (name) _bindToModule(op.module, el, name);
+            var name = el.getAttribute("data-o2-element");
+            if (name) _bindToModule(op.module, el, name.toString());
             if (el.hasAttribute("data-o2-events")){
                 var events = el.getAttribute("data-o2-events").toString();
                 if (events) _bindToEvents(op.module, el, events);
@@ -763,12 +764,15 @@
     };
 
     var _bindToEvents = function(m, node, events){
+        var p = node.getParent("div[data-o2-$binddatadd]");
+        var data = (p) ? _parseDataCache[p.dataset["o2-$binddataid"]]: null;
+
         var eventList = events.split(/\s*;\s*/);
         eventList.forEach(function(ev){
             var evs = ev.split(/\s*:\s*/);
             if (evs.length>1){
                 node.addEventListener(evs[0], function(e){
-                    if (m[evs[1]]) m[evs[1]].apply(m, [e]);
+                    if (m[evs[1]]) m[evs[1]].apply(m, [e,data]);
                 }, false);
             }
         });
@@ -888,8 +892,15 @@
         return {"codeIndex": v.length-1, "lastIndex": v.length-1};
     }
 
-    var _parseHtml = function(str, json){
+    var _parseDataCache = {};
+    var _parseHtml = function(str, json, i){
         var v = str;
+        if (i){
+            var r = (Math.random()*1000000).toInt().toString();
+            while (_parseDataCache[r]) r = (Math.random()*1000000).toInt().toString();
+            _parseDataCache[r] = json;
+            v = (i) ? "<div data-o2-$binddataid='"+r+"'>"+str+"</div>" : str;
+        }
         var rex = /(\{\{\s*)[\s\S]*?(\s*\}\})/gmi;
 
         var match;
@@ -929,7 +940,7 @@
                 if (eachValue && _typeOf(eachValue)==="array"){
                     for (var i=0; i<eachValue.length; i++){
                         eachValue[i]._ = json;
-                        eachResult += _parseHtml(parseEachStr, eachValue[i]);
+                        eachResult += _parseHtml(parseEachStr, eachValue[i], i);
                     }
                     var eLeft = v.substring(0, match.index);
                     var eRight = v.substring(rex.lastIndex+endEachIndex.lastIndex, v.length);
@@ -1865,6 +1876,7 @@
     }
     o2.promiseAll = _promiseAll;
 
+    });
 })();
 o2.core = true;
 
@@ -2087,6 +2099,18 @@ o2.core = true;
             return this.some(function(item){ return (arr.indexOf(item)!==-1); })
         }
     });
+    if (!Array.prototype.find){
+        if (Array.implement) Array.implement({
+            "find": this.find || function(callback, thisArg){
+                for (var i=0; i<this.length; i++){
+                    if (callback.apply((thisArg || this), this[i], i, this)){
+                        return this[i];
+                    }
+                }
+                return undefined;
+            }
+        });
+    }
     if (window.Element && Element.implement) Element.implement({
         "isIntoView": function() {
             // var pNode = this.getParent();

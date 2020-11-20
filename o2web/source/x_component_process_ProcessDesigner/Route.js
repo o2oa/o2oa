@@ -1127,6 +1127,8 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
                 this.loadConditionInput();
                 this.loadFormSelect();
                 this.loadOrgEditor();
+
+                this.hideAdvanced();
             }else{
                 this.propertyContent.setStyle("display", "block");
             }

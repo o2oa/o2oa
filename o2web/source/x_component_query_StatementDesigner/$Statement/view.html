@@ -1,0 +1,363 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+<!--            <tr>-->
+<!--                <td class="editTableTitle">隐藏:</td>-->
+<!--                <td class="editTableValue">-->
+<!--                    <input class="editTableRadio" name="display" text{($.display===false)?'checked':''} type="radio" value="false"/>是-->
+<!--                    <input class="editTableRadio" name="display" text{($.display!==false)?'checked':''} type="radio" value="true"/>否-->
+<!--                </td>-->
+<!--            </tr>-->
+            <tr>
+                <td class="editTableTitle">视图样式:</td>
+                <td class="editTableValue">
+                    <select class="MWFViewStyle" name="data.viewStyleType"></select>
+                </td>
+            </tr>
+<!--            <tr>-->
+<!--                <td class="editTableTitle">展开分类:</td>-->
+<!--                <td class="editTableValue">-->
+<!--                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand==='yes')?'checked':''} type="radio" value="yes"/>是-->
+<!--                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand!=='yes')?'checked':''} type="radio" value="no"/>否-->
+<!--                </td>-->
+<!--            </tr>-->
+            <tr>
+                <td class="editTableTitle">显示序号:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.isSequence" text{($.data.isSequence==='yes')?'checked':''} type="radio" value="yes"/>是
+                    <input class="editTableRadio" name="data.isSequence" text{($.data.isSequence!=='yes')?'checked':''} type="radio" value="no"/>否
+                </td>
+            </tr>
+<!--            <tr>-->
+<!--                <td class="editTableTitleNoWidth">最大行数:</td>-->
+<!--                <td class="editTableValue"><input type="number" name="count" value="text{$.count || 600}" class="editTableInput"/></td>-->
+<!--            </tr>-->
+            <tr>
+                <td class="editTableTitleNoWidth">每页行数:</td>
+                <td class="editTableValue">
+                    <input type="number" name="pageSize" value="text{$.pageSize || 20}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">隐藏操作条:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.actionbarHidden" text{($.data.actionbarHidden!==false)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="data.actionbarHidden" text{($.data.actionbarHidden===false)?'checked':''} type="radio" value="false"/>否
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.select" text{($.data.select!=='single' || $.data.select!=='multi' )?'checked':''} type="radio" value="none" onclick="
+                    if (this.checked){
+                        $('text{$.id}selectBoxShowTr').setStyle('display', 'none');
+                        $('text{$.id}allowSelectAllTr').setStyle('display', 'none');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'none');
+                    }"/>无
+                    <input class="editTableRadio" name="data.select" text{($.data.select==='single')?'checked':''} type="radio" value="single" onclick="
+                    if (this.checked){
+                        $('text{$.id}selectBoxShowTr').setStyle('display', 'table-row');
+                        $('text{$.id}allowSelectAllTr').setStyle('display', 'none');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'block');
+                    }"/>单选
+                    <input class="editTableRadio" name="data.select" text{($.data.select==='multi')?'checked':''} type="radio" value="multi" onclick="
+                    if (this.checked){
+                        $('text{$.id}selectBoxShowTr').setStyle('display', 'table-row');
+                        $('text{$.id}allowSelectAllTr').setStyle('display', 'table-row');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'block');
+                    }"/>多选
+                </td>
+            </tr>
+            <tr id="text{$.id}selectBoxShowTr" style="display: text{($.data.select=='single' || $.data.select=='multi')?'':'none'}">
+                <td class="editTableTitle">选择框显示:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow==='always')?'checked':''} type="radio" value="always"/>一直显示
+                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow!=='always')?'checked':''} type="radio" value="mouseover"/>鼠标经过时
+                </td>
+            </tr>
+            <tr id="text{$.id}allowSelectAllTr" style="display: text{($.data.select=='multi')?'':'none'}">
+                <td class="editTableTitle" id="">允许全选:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.allowSelectAll" text{($.data.allowSelectAll===true)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="data.allowSelectAll" text{($.data.allowSelectAll!==true)?'checked':''} type="radio" value="false"/>否
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">无选择隐藏首列</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden===true)?'checked':''} type="radio" value="single"/>是
+                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden!==true)?'checked':''} type="radio" value="multi"/>否
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">无数据显示:</td>
+                <td class="editTableValue">
+                    <input type="text" name="data.noDataText" value="text{$.data.noDataText}" class="editTableInput"/>
+                </td>
+            </tr>
+            <!--<tr>-->
+            <!--<td class="editTableTitle">最大行数:</td>-->
+            <!--<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>-->
+            <!--</tr>-->
+        </table>
+
+        <div class="MWFFormulaArea" name="data.defaultSelectedScript" title="默认选中行脚本"></div>
+        <div class="MWFFormulaArea" name="data.selectedAbleScript" title="允许选择行脚本" id="text{$.id}selectedAbleScript"
+             style="display: text{($.data.select=='single' || $.data.select=='multi')?'':'none'}"></div>
+
+
+
+        <!--<div class="MWFApplicationSelect" title="选择应用"></div>-->
+        <!--<div class="MWFProcessSelect" title="选择流程"></div>-->
+        <!--<div class="MWFCompanySelect" title="选择公司"></div>-->
+        <!--<div class="MWFDepartmentSelect" title="选择部门"></div>-->
+        <!--<div class="MWFPersonSelect" title="选择人员"></div>-->
+        <!--<div class="MWFIdentitySelect" title="选择身份"></div>-->
+    </div>
+
+    <div title="过滤"  class="MWFTab">
+        <div class="MWFViewFilter">
+            <div class="inputAreaNode_vf">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable restrictViewFilterTable_vf" style="table-layout: fixed;">
+                    <tr id="text{$.id}pathInputSelectTr">
+                        <td class="editTableTitle">选择:</td>
+                        <td class="editTableValue">
+                            <select class="pathInputSelect_vf"></select>
+                            <!--                            <div style="line-height: 20px;color:#999;">注：选择路径后，需在选择的值前面加上"表别名."，如：o.</div>-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">标题:</td>
+                        <td class="editTableValue"><input type="text" class="editTableInput titleInput_vf"/></td>
+                    </tr>
+<!--                    <tr id="text{$.id}parameterInputSelectTr" style="display: none">-->
+<!--                        <td class="editTableTitle">选择参数:</td>-->
+<!--                        <td class="editTableValue">-->
+<!--                            <select class="parameterInputSelect_vf"></select>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+                    <tr id="text{$.id}parameterInputTr" style="display: none">
+                        <td class="editTableTitle">参数:</td>
+                        <td class="editTableValue">
+                            <input type="text" class="editTableInput parameterInput_vf"/>
+                            <div style="line-height: 20px;color:#999;">注：参数对应查询语句和总数语句中形如":field"的where条件，填写"field"。</div>
+                        </td>
+                    </tr>
+                    <tr id="text{$.id}pathInputTr">
+                        <td class="editTableTitle">路径:</td>
+                        <td class="editTableValue">
+                            <input type="text" class="editTableInput pathInput_vf"/>
+                            <div style="line-height: 20px;color:#999;">注：路径的写法是"表别名.字段名"，如：o.title</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">数据类型:</td>
+                        <td class="editTableValue"><select class="datatypeInput_vf">
+<!--                                 onchange="if (this.selectedIndex==2){-->
+<!--                                    $('text{$.id}viewParameterDateFormulaSelector').setStyle('display', 'block');-->
+<!--                                    $('text{$.id}viewParameterDateOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterTimeOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                   }else if (this.selectedIndex==3){-->
+<!--                                    $('text{$.id}viewParameterDateFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterDateOnlyFormulaSelector').setStyle('display', 'block');-->
+<!--                                    $('text{$.id}viewParameterTimeOnlyFormulaSelector').setStyle('display', 'none');-->
+
+<!--                                }else if (this.selectedIndex==4){-->
+<!--                                    $('text{$.id}viewParameterDateFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterDateOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterTimeOnlyFormulaSelector').setStyle('display', 'block');-->
+<!--                                }else{-->
+<!--                                    $('text{$.id}viewParameterDateFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterDateOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                    $('text{$.id}viewParameterTimeOnlyFormulaSelector').setStyle('display', 'none');-->
+<!--                                }-->
+
+<!--                                if (this.selectedIndex==0){-->
+<!--                                    $('text{$.id}viewParameterTextFormulaSelector').setStyle('display', 'block');-->
+<!--                                }else{-->
+<!--                                    $('text{$.id}viewParameterTextFormulaSelector').setStyle('display', 'none');-->
+<!--                                }">-->
+
+                            <option value="textValue" selected>文本</option>
+                            <option value="numberValue">数字</option>
+                            <option value="dateTimeValue">日期时间</option>
+                            <option value="dateValue">日期</option>
+                            <option value="timeValue">时间</option>
+                            <option value="booleanValue">布尔</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle"></td>
+                        <td class="editTableValue">
+                            <input type="radio" class="restrictParameterInput_vf" value="restrict" name="text{$.id}viewFilterType" onclick="if (this.checked){
+                                debugger;
+                                $('text{$.id}viewParameterRestrict').setStyle('display', 'block');
+                                $('text{$.id}parameterInputTr').setStyle('display', 'table-row');
+                                // $('text{$.id}parameterInputSelectTr').setStyle('display', 'table-row');
+                                $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'none');
+                                $('text{$.id}pathInputTr').setStyle('display', 'none');
+                                $('text{$.id}pathInputSelectTr').setStyle('display', 'none');
+                            }"/>作为默认过滤条件<br>
+                            <input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
+                                $('text{$.id}viewParameterRestrict').setStyle('display', 'none');
+                                $('text{$.id}parameterInputTr').setStyle('display', 'none');
+                                // $('text{$.id}parameterInputSelectTr').setStyle('display', 'none');
+                                $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'block');
+                                $('text{$.id}pathInputTr').setStyle('display', 'table-row');
+                                $('text{$.id}pathInputSelectTr').setStyle('display', 'table-row');
+                            }" checked/>作为自定义过滤数据
+                        </td>
+                    </tr>
+                </table>
+                 <div id="text{$.id}viewParameterRestrict"  style="display: none">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle" id="text{$.id}viewParameterValueTitleArea">值:</td>
+
+                            <td class="editTableValue">
+                                <input class="editTableRadio"  name="viewParameterValueType" type="radio" value="input" checked onclick="
+                                    if (this.checked){
+                                        $('text{$.id}viewParameterValueScriptDiv').setStyle('display', 'none');
+                                        $('text{$.id}viewParameterValueArea').setStyle('display', 'table-row');
+                                        $('text{$.id}viewParameterFormulaSelector').setStyle('display', 'block');
+                                    }
+                                "/>输入
+                                <input class="editTableRadio" name="viewParameterValueType" type="radio" value="script" onclick="
+                                    if (this.checked){
+                                        $('text{$.id}viewParameterValueScriptDiv').setStyle('display', 'block');
+                                        $('text{$.id}viewParameterValueArea').setStyle('display', 'none');
+                                        $('text{$.id}viewParameterFormulaSelector').setStyle('display', 'none');
+                                    }
+                                "/>脚本
+                            </td>
+                        </tr>
+                        <tr id="text{$.id}viewParameterValueArea">
+                            <td class="editTableTitle"></td>
+                            <td class="editTableValue">
+                                <input type="text" class="editTableInput valueTextInput_vf" style="display: block" onkeypress="$('text{$.id}viewParameterTextFormulaSelector').getElements('input').set('checked', false)"/>
+                                <input type="number" class="editTableInput valueNumberInput_vf" style="display: none"/>
+                                <input type="text" class="editTableInput valueDatetimeInput_vf" style="display: none" readonly/>
+                                <input type="text" class="editTableInput valueDateInput_vf" style="display: none" readonly/>
+                                <input type="text" class="editTableInput valueTimeInput_vf" style="display: none" readonly/>
+                                <select class="valueBooleanInput_vf" style="display: none">
+                                    <option value="true" selected>是(True)</option>
+                                    <option value="false">否(False)</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                    </table>
+                     <div id="text{$.id}viewParameterFormulaSelector">
+                        <div style="display: none" id="text{$.id}viewParameterDateFormulaSelector">
+                            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                                <tr>
+                                    <td class="editTableTitle"></td>
+                                    <td class="editTableValue">
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@year" />当前年度
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@season" />当前季度
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@month" />当前月份<br/>
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@time" />当前时间
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@date" />当天
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="display: none" id="text{$.id}viewParameterDateOnlyFormulaSelector">
+                            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                                <tr>
+                                    <td class="editTableTitle"></td>
+                                    <td class="editTableValue">
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@year" />当前年度
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@season" />当前季度
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@month" />当前月份<br/>
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@date" />当天
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="display: none" id="text{$.id}viewParameterTimeOnlyFormulaSelector">
+                            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                                <tr>
+                                    <td class="editTableTitle"></td>
+                                    <td class="editTableValue">
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueTimeInput_vf').set('value', this.value)" name="text{$.id}viewParameterDateFormula" type="radio" value="@time" />当前时间
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="display: block" id="text{$.id}viewParameterTextFormulaSelector">
+                            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                                <tr>
+                                    <td class="editTableTitle"></td>
+                                    <td class="editTableValue">
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewParameterTextFormula" onclick="" type="radio" value="@person" />当前人
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewParameterTextFormula" type="radio" value="@identityList" />当前身份<br/>
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewParameterTextFormula" type="radio" value="@unitList" />当前人所在直接组织<br/>
+                                        <input onclick="$('text{$.id}viewParameterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewParameterTextFormula" type="radio" value="@unitAllList" />当前人所在所有组织
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                     </div>
+                     <div style="display:none" id="text{$.id}viewParameterValueScriptDiv">
+                         <div name="text{$.id}viewParameterValueScript" title="脚本"></div>
+                     </div>
+                </div>
+
+
+                <div id="text{$.id}viewCustomFilterRestrict"  style="display: block">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle">值:</td>
+                            <td class="editTableValue">
+                                <input class="editTableRadio" onclick="
+                                if (this.checked){
+                                    $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'none');
+                                }" name="viewCustomFilterValueType" checked type="radio" value="input"/>用户输入
+                                <input class="editTableRadio" onclick="
+                                if (this.checked){
+                                    $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'block');
+                                }" name="viewCustomFilterValueType" type="radio" value="script"/>可选
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="display:none" id="text{$.id}viewCustomFilterValueScriptDiv">
+                        <div style="padding: 5px">return ["选项文本|选项值"]</div>
+                        <div name="text{$.id}viewCustomFilterValueScript" title="选项脚本"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="actionAreaNode_vf"></div>
+            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">默认过滤条件</div>
+            <div class="parameterListAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">自定义过滤数据</div>
+            <div class="customFilterListAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+        </div>
+    </div>
+
+    <div title="样式"  class="MWFTab">
+        <div class="MWFViewStylesArea" name="data.viewStyles"></div>
+    </div>
+
+    <div title="事件"  class="MWFTab">
+        <div class="MWFEventsArea" name="data.events"></div>
+    </div>
+
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

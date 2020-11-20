@@ -21,6 +21,7 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.jaxrs.snap.ActionListMyFilterPaging.Wo;
 import com.x.processplatform.core.entity.content.Snap;
 
 class ActionManageListFilterPaging extends BaseAction {

@@ -258,6 +258,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                             var module = this.editModules[index];
                             if( module && module.json.type == "ImageClipper" ){
                                 this._createImage( cell, module, v );
+                            }else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
+                                this._createAttachment( cell, module, v );
                             }else{
                                 text = this._getValueText(index, v);
                                 if( module && module.json.type == "Textarea" ){
@@ -372,6 +374,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                             var module = this.editModules[index];
                             if( module && module.json.type == "ImageClipper" ){
                                 this._createImage( cell, module, v )
+                            }else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
+                                this._createAttachment( cell, module, v );
                             }else{
                                 text = this._getValueText(index, v);
                                 if( module && module.json.type == "Textarea" ){
@@ -481,6 +485,50 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         img.setStyles({
             "max-width": "90%"
         })
+    },
+    _createAttachment: function ( cell, module, data ){
+        cell.empty();
+        var options = {
+            "style": module.json.style || "default",
+            "title": "附件区域",
+            "listStyle": module.json.dg_listStyle || "icon",
+            "size": module.json.dg_size || "min",
+            "resize": (module.json.dg_resize === "y" || this.json.dg_resize === "true"),
+            "attachmentCount": 0,
+            "isUpload": false,
+            "isDelete": false,
+            "isReplace": false,
+            "isDownload": true,
+            "isSizeChange": (module.json.dg_isSizeChange === "y" || module.json.dg_isSizeChange === "true"),
+            "readonly": true,
+            "availableListStyles": module.json.dg_availableListStyles ? module.json.dg_availableListStyles : ["list", "seq", "icon", "preview"],
+            "isDeleteOption": "n",
+            "isReplaceOption": "n",
+            "toolbarGroupHidden": module.json.dg_toolbarGroupHidden || []
+        };
+        if (this.readonly) options.readonly = true;
+
+        var atts = [];
+        data.each(function(d){
+            var att = module.attachmentController.attachments.find(function(a){
+                return d.id == a.data.id;
+            });
+            if (att) module.attachmentController.removeAttachment(att);
+        });
+        module.setAttachmentBusinessData();
+
+
+        var attachmentController = new MWF.xApplication.process.Xform.AttachmentController(cell, this, options);
+        attachmentController.load();
+
+        data.each(function (att) {
+            var attachment = this.form.businessData.attachmentList.find(function(a){
+                return a.id==att.id;
+            });
+            var attData = attachment || att;
+            //if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
+            attachmentController.addAttachment(attData);
+        }.bind(this));
     },
     _createItemTitleNode: function(node, idx){
         var n = idx+1;
@@ -655,6 +703,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 if(datagridDataDiv)datagridDataDiv.destroy();
             }
 
+            datagrid.editModules.each(function(module){
+                if (module && (module.json.type=="Attachment" || module.json.type=="AttachmentDg")){
+                    module.attachmentController.attachments.each(function(att){
+                        datagrid.form.workAction.deleteAttachment(att.data.id, datagrid.form.businessData.work.id);
+                    });
+                    module.attachmentController.clear();
+                }
+            });
+
             datagrid.currentEditLine = null;
 
             if (!_self.gridData.data.length){
@@ -746,6 +803,11 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                         i = this.currentEditLine.getElement("table").getElements("tr")[idx].getElement("td").get("text");
                     }
                     data = {"value": [i], "text": [i]};
+                }else if (module.json.type=="Attachment" || module.json.type == "AttachmentDg"){
+                    var data = module.getTextData();
+                    //data.site = module.json.site;
+                    if (!griddata[id]) griddata[id] = {};
+                    griddata[id][module.json.id] = data;
                 }else{
                     data = module.getTextData();
                     //if (data.value[0]) flag = false;
@@ -765,6 +827,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     cell = dataRow.getElement("td");
                     if( module.json.type == "ImageClipper" ){
                         this._createImage( cell, module, data.text );
+                    }else if( module.json.type == "Attachment" || module.json.type == "AttachmentDg" ){
+                        this._createAttachment( cell, module, data );
                     }else{
                         if( module && module.json.type == "Textarea" ){
                             cell.set("html", text);
@@ -785,6 +849,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     var cellData = data[th.get("id")];
                     if( module.json.type == "ImageClipper" ){
                         this._createImage( cell, module, data.text );
+                    }else if( module.json.type == "Attachment" || module.json.type == "AttachmentDg" ){
+                        this._createAttachment( cell, module, data );
                     }else{
                         if( module && module.json.type == "Textarea" ){
                             cell.set("html", text);
@@ -822,13 +888,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.validationMode();
         this.fireEvent("completeLineEdit", [table]);
 
-        this.addAction.set("text", MWF.xApplication.process.Xform.LP.addLine);
-        this.addAction.removeEvents("click");
-        this.addAction.addEvent("click", function(){
-            this._addLine();
-        }.bind(this));
+        if (this.addAction){
+            this.addAction.set("text", MWF.xApplication.process.Xform.LP.addLine);
+            this.addAction.removeEvents("click");
+            this.addAction.addEvent("click", function(){
+                this._addLine();
+            }.bind(this));
+        }
 
-
+        this.form.saveFormData();
         return true;
     },
     _editorTrGoBack: function(){
@@ -946,6 +1014,21 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteDatagridLine, 300, 120, function(){
                 _self.fireEvent("deleteLine", [currentTable]);
 
+                var data = currentTable.retrieve("data");
+
+                //var attKeys = [];
+                debugger;
+                var titleThs = _self.table.getElements("th");
+                titleThs.each(function(th, i){
+                    var key = th.get("id");
+                    var module = _self.editModules[i];
+                    if (key && module && (module.json.type=="Attachment" || module.json.type=="AttachmentDg")){
+                        data[key][module.json.id].each(function(d){
+                            _self.form.workAction.deleteAttachment(d.id, _self.form.businessData.work.id);
+                        });
+                    }
+                });
+
                 node.destroy();
                 //datagrid._loadZebraStyle();
                 datagrid._loadSequence();
@@ -962,6 +1045,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 this.close();
 
                 _self.fireEvent("afterDeleteLine");
+                _self.form.saveFormData();
+
             }, function(){
                 //var color = currentTr.retrieve("bgcolor");
                 //currentTr.tween("background-color", color);
@@ -1580,6 +1665,13 @@ MWF.xApplication.process.Xform.DatagridMobile$Data =  new Class({
             moduleNodes.each(function(node){
                 var json = this.form._getDomjson(node);
                 var isField = false;
+
+                if (json.type=="Attachment" || json.type=="AttachmentDg" ){
+                    json.type = "AttachmentDg";
+                    //json.site = this.dataGrid.getAttachmentRandomSite();
+                    //json.id = json.site;
+                }
+
                 var module = this.form._loadModule(json, node, function(){
                     isField = this.field;
                     this.field = false;

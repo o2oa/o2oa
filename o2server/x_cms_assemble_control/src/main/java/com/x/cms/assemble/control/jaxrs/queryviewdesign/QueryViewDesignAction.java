@@ -8,9 +8,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.cms.assemble.control.ExceptionWrapInConvert;
-import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.query.Query;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +23,6 @@ import java.util.List;
 @JaxrsDescribe("数据视图设计信息管理")
 public class QueryViewDesignAction extends BaseAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
-
 	@JaxrsMethodDescribe(value = "列示数据视图设计信息对象,下一页.", action = ActionListNext.class)
 	@GET
 	@Path("list/{id}/next/{count}")
@@ -38,7 +34,7 @@ public class QueryViewDesignAction extends BaseAction {
 			) {
 		ActionResult<List<ActionListNext.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListNext)proxy.getProxy(ActionListNext.class)).execute(id, count);
+			result = new ActionListNext().execute(id, count);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -57,7 +53,7 @@ public class QueryViewDesignAction extends BaseAction {
 			) {
 		ActionResult<List<ActionListPrev.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListPrev)proxy.getProxy(ActionListPrev.class)).execute(id, count);
+			result = new ActionListPrev().execute(id, count);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -75,7 +71,7 @@ public class QueryViewDesignAction extends BaseAction {
 		ActionResult<ActionFlag.Wo> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = ((ActionFlag)proxy.getProxy(ActionFlag.class)).execute(effectivePerson, flag);
+			result = new ActionFlag().execute(effectivePerson, flag);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -93,7 +89,7 @@ public class QueryViewDesignAction extends BaseAction {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute(effectivePerson, id);
+			result = new ActionGet().execute(effectivePerson, id);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -112,7 +108,7 @@ public class QueryViewDesignAction extends BaseAction {
 
 		if( check ){
 			try {
-				result = ((ActionCreate)proxy.getProxy(ActionCreate.class)).execute( request, effectivePerson, jsonElement );
+				result = new ActionCreate().execute( request, effectivePerson, jsonElement );
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
@@ -136,7 +132,7 @@ public class QueryViewDesignAction extends BaseAction {
 
 		if( check ){
 			try {
-				result = ((ActionUpdate)proxy.getProxy(ActionUpdate.class)).execute(effectivePerson, id, jsonElement );
+				result = new ActionUpdate().execute(effectivePerson, id, jsonElement );
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
@@ -155,7 +151,7 @@ public class QueryViewDesignAction extends BaseAction {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = ((ActionDelete)proxy.getProxy(ActionDelete.class)).execute( effectivePerson, id );
+			result = new ActionDelete().execute( effectivePerson, id );
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -173,7 +169,7 @@ public class QueryViewDesignAction extends BaseAction {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = ((ActionListWithApplication)proxy.getProxy(ActionListWithApplication.class)).execute(effectivePerson, applicationId);
+			result = new ActionListWithApplication().execute(effectivePerson, applicationId);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -203,7 +199,7 @@ public class QueryViewDesignAction extends BaseAction {
 		}
 		if( check ){
 			try {
-				result = ((ActionSimulate)proxy.getProxy(ActionSimulate.class)).execute(effectivePerson, flag, wrapIn);
+				result = new ActionSimulate().execute(effectivePerson, flag, wrapIn);
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);

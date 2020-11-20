@@ -55,7 +55,7 @@ MWF.xApplication.Empty.Main = new Class({
 
 	},
 	loadTask: function(){
-		alert("loadTask")
+		alert("loadTask");
 	},
 	tabover: function(){
 		//alert("tabover");
@@ -65,8 +65,7 @@ MWF.xApplication.Empty.Main = new Class({
 		//alert("tabout")
 		this.myNode.removeClass("mainColor_bg");
 	},
-	clickNode: function(e){
-		debugger;
-		alert(e.sourceTarget);
+	clickNode: function(e, data){
+		alert(data.title);
 	}
 });

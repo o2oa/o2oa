@@ -1516,6 +1516,8 @@ MWF.xApplication.Selector.Person = new Class({
     },
     setSize : function(){
 
+        debugger;
+
         if( !this.options.width && !this.options.height )return;
 
         var getOffsetX = function(node){
@@ -1580,7 +1582,7 @@ MWF.xApplication.Selector.Person = new Class({
             //if (this.options.count.toInt() !== 1){
             var width = nodeWidth - getOffsetX(this.selectNode) - getOffsetX(this.selectedContainerNode);
 
-            var halfWidth = this.options.noSelectedContainer ? width : Math.floor(width / 2);
+            var halfWidth = this.options.noSelectedContainer ? width : ( Math.floor(width / 2) - 2);
 
             this.selectNode.setStyle("width", halfWidth);
             //this.searchInput.setStyle("width", halfWidth - 6);
@@ -1611,7 +1613,7 @@ MWF.xApplication.Selector.Person = new Class({
                 nodeHeight = this.options.height.toInt();
             }
 
-            nodeHeight = nodeHeight - getOffsetY( this.contentNode );
+            nodeHeight = nodeHeight - getOffsetY( this.contentNode ) - 1;
             if( this.titleNode ){
                 nodeHeight = nodeHeight - getOffsetY( this.titleNode ) - this.titleNode.getStyle("height").toInt();
             }
@@ -1976,6 +1978,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
     selectedSingle: function( checkValid ){
         if (!this.isSelected){
             if (this.selector.currentItem) this.selector.currentItem.unSelectedSingle();
+            this.selector.emptySelectedItems();
             this.getData(function(){
                 this.selector.currentItem = this;
                 this.isSelected = true;
@@ -2247,6 +2250,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
                 }.bind(this));
             }
         }
+        if( this.afterCheck )this.afterCheck();
     },
     destroy: function(){
         if(this.node){

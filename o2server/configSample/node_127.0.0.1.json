@@ -16,6 +16,7 @@
     "statExclusions": "*.js,*.gif,*.jpg,*.png,*.css,*.ico",
     "maxFormContent": 20.0,
     "exposeJest": true,
+    "persistentConnectionsEnable": true,
     "###enable": "是否启用###",
     "###order": "center节点顺序,顺序排列0,1,2...###",
     "###sslEnable": "是否启用ssl传输加密,如果启用将使用config/keystore文件作为密钥文件.使用config/token.json文件中的sslKeyStorePassword字段为密钥密码,sslKeyManagerPassword为管理密码.###",
@@ -30,7 +31,8 @@
     "###statEnable": "启用统计,默认启用统计.###",
     "###statExclusions": "统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico###",
     "###maxFormContent": "最大提交数据限制(M),限制有所上传的内容大小,包括附件.###",
-    "###exposeJest": "暴露jest接口.###"
+    "###exposeJest": "暴露jest接口.###",
+    "###persistentConnectionsEnable": "是否启用长连接,默认false.###"
   },
   "application": {
     "enable": true,
@@ -48,6 +50,7 @@
     "statExclusions": "*.js,*.gif,*.jpg,*.png,*.css,*.ico",
     "maxFormContent": 20.0,
     "exposeJest": true,
+    "persistentConnectionsEnable": true,
     "###enable": "是否启用###",
     "###port": "http/https端口,负责向前端提供数据访问接口.默认为20020端口.###",
     "###sslEnable": "是否启用ssl传输加密,如果启用将使用config/keystore文件作为密钥文件.使用config/token.json文件中的sslKeyStorePassword字段为密钥密码,sslKeyManagerPassword为管理密码.###",
@@ -62,7 +65,8 @@
     "###statEnable": "启用统计,默认启用统计.###",
     "###statExclusions": "统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico###",
     "###maxFormContent": "最大提交数据限制(M),限制有所上传的内容大小,包括附件.###",
-    "###exposeJest": "暴露jest接口.###"
+    "###exposeJest": "暴露jest接口.###",
+    "###persistentConnectionsEnable": "是否启用长连接,默认false.###"
   },
   "web": {
     "enable": true,
@@ -73,6 +77,7 @@
     "statEnable": false,
     "statExclusions": "*.gif,*.jpg,*.png,*.ico",
     "cacheControlMaxAge": 0.0,
+    "persistentConnectionsEnable": true,
     "###enable": "是否启用###",
     "###port": "http/https端口,用户输入网址后实际访问的第一个端口.http协议默认为80端口,https默认为443端口.###",
     "###sslEnable": "是否启用ssl传输加密,如果启用将使用config/keystore文件作为密钥文件.使用config/token.json文件中的sslKeyStorePassword字段为密钥密码,sslKeyManagerPassword为管理密码.###",
@@ -84,7 +89,8 @@
     "###statExclusions": "统计忽略路径,默认忽略*.gif,*.jpg,*.png,*.ico###",
     "###cacheControlMaxAge": "服务器max-age缓存时间(秒)###",
     "###proxyCenterEnable": "是否启用center服务器代理.###",
-    "###proxyApplicationEnable": "是否启用application服务器代理###"
+    "###proxyApplicationEnable": "是否启用application服务器代理###",
+    "###persistentConnectionsEnable": "是否启用长连接,默认true.###"
   },
   "data": {
     "enable": true,
@@ -108,7 +114,7 @@
     "###excludes": "在此节点上不存储的类,和includes一起设置实际存储的类,可以使用通配符*###",
     "###jmxEnable": "是否启动jmx,如果启用,可以通过本地的jmx客户端进行访问,不支持远程jmx客户端.###",
     "###cacheSize": "H2数据库缓存大小,设置H2用于作为缓存的内存大小,以M作为单位,这里默认为512M.###",
-    "###logLevel": "默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完成的配置为DefaultLevel\u003dWARN, Tool\u003dTRACE, Enhance\u003dTRACE, METADATA\u003dTRACE, Runtime\u003dTRACE, Query\u003dTRACE, DataCache\u003dTRACE, JDBC\u003dTRACE, SQL\u003dTRACE###",
+    "###logLevel": "默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完整的配置为DefaultLevel\u003dWARN, Tool\u003dTRACE, Enhance\u003dTRACE, METADATA\u003dTRACE, Runtime\u003dTRACE, Query\u003dTRACE, DataCache\u003dTRACE, JDBC\u003dTRACE, SQL\u003dTRACE###",
     "###maxTotal": "最大使用连接数###",
     "###maxIdle": "最大空闲连接数###",
     "###statEnable": "启用统计,默认启用###",
@@ -135,12 +141,12 @@
   },
   "logLevel": "warn",
   "dumpData": {
-    "enable": true,
+    "enable": false,
     "cron": "",
     "size": 7.0,
     "path": "",
-    "###enable": "是否启用,默认每天凌晨2点进行备份.###",
-    "###cron": "定时任务cron表达式###",
+    "###enable": "是否启用,默认禁用.###",
+    "###cron": "定时任务cron表达式,默认每天凌晨2点进行备份.###",
     "###size": "最大保留份数,超过将自动删除最久的数据.###",
     "###path": "备份路径###"
   },

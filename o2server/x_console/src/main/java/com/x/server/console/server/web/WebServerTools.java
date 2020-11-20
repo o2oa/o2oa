@@ -1,6 +1,7 @@
 package com.x.server.console.server.web;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServer;
@@ -52,31 +54,25 @@ public class WebServerTools extends JettySeverTools {
 
 	public static Server start(WebServer webServer) throws Exception {
 
-		/**
-		 * 更新x_desktop的center指向
-		 */
+		// 更新x_desktop的center指向
 		updateCenterConfigJson();
-		/**
-		 * 更新 favicon.ico
-		 */
+		// 更新 favicon.ico
 		updateFavicon();
-		/**
-		 * 创建index.html
-		 */
+		// 创建index.html
 		createIndexPage();
-		/**
-		 * copyDefaultHtml
-		 */
+		// copyDefaultHtml
 		copyDefaultHtml();
+		// 覆盖 webServer
+		coverToWebServer();
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setMinThreads(WEBSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(WEBSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
 		if (webServer.getSslEnable()) {
-			addHttpsConnector(server, webServer.getPort());
+			addHttpsConnector(server, webServer.getPort(), webServer.getPersistentConnectionsEnable());
 		} else {
-			addHttpConnector(server, webServer.getPort());
+			addHttpConnector(server, webServer.getPort(), webServer.getPersistentConnectionsEnable());
 		}
 		WebAppContext context = new WebAppContext();
 		context.setContextPath("/");
@@ -159,6 +155,11 @@ public class WebServerTools extends JettySeverTools {
 		if (file.exists() && file.isFile()) {
 			FileUtils.copyFile(file, new File(Config.base(), "servers/webServer/default.html"));
 		}
+	}
+
+	private static void updateWeb() throws Exception {
+		Path path = Config.path_servers_webServer_x_desktop_res_config(true);
+		Files.write(path.resolve("web.json"), XGsonBuilder.toJson(Config.web()).getBytes(StandardCharsets.UTF_8));
 	}
 
 	private static void updateFavicon() throws Exception {
@@ -251,7 +252,9 @@ public class WebServerTools extends JettySeverTools {
 				publicKey = new String(Base64.encodeBase64(publicKeyB));
 				map.put("publicKey", publicKey);
 			}
-
+			for (Entry<String, JsonElement> en : Config.web().entrySet()) {
+				map.put(en.getKey(), en.getValue());
+			}
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 		}
 	}
@@ -288,6 +291,13 @@ public class WebServerTools extends JettySeverTools {
 			buffer.append("</html>");
 			File file = new File(Config.base(), "index.html");
 			FileUtils.write(file, buffer.toString(), DefaultCharset.name);
+		}
+	}
+
+	private static void coverToWebServer() throws Exception {
+		Path p = Config.path_config_coverToWebServer(true);
+		if (Files.exists(p)) {
+			FileUtils.copyDirectory(p.toFile(), Config.path_servers_webServer(true).toFile());
 		}
 	}
 }

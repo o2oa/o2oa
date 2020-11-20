@@ -89,12 +89,13 @@ MWF.xApplication.Forum.Attachment = new Class({
                 this.actions.getAttachment(aid, this.options.documentId, function (json) {
                     json = this.transportData(json);
                     if (json.data) {
-                        this.attachmentController.addAttachment(json.data);
+                        this.attachmentController.addAttachment(json.data, o.messageId);
                         //this.attachmentList.push(json.data);
                     }
                     this.attachmentController.checkActions();
 
                     this.fireEvent("upload", [json.data]);
+                    this.fireEvent("change");
                 }.bind(this))
             }
             this.attachmentController.checkActions();
@@ -211,6 +212,12 @@ MWF.xApplication.Forum.Attachment = new Class({
                         this.form.documentAction.getAttachment(attachment.data.id, this.opetions.documentId, function (json) {
                             attachment.data = json.data;
                             attachment.reload();
+
+                            if (o.messageId && this.attachmentController.messageItemList) {
+                                var message = this.attachmentController.messageItemList[o.messageId];
+                                if( message && message.node )message.node.destroy();
+                            }
+
                             this.attachmentController.checkActions();
                         }.bind(this))
                     }.bind(this), null, formData, file);

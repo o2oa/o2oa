@@ -194,5 +194,15 @@
     "icon": "comment.png",
     "text": "评论",
     "className": "Comment"
+  },
+  "statementSelector": {
+    "icon": "statementSelector.png",
+    "text": "选择查询视图",
+    "className": "StatementSelector"
+  },
+  "statement": {
+    "icon": "statement.png",
+    "text": "嵌入查询视图",
+    "className": "Statement"
   }
 }

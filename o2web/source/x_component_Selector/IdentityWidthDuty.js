@@ -75,6 +75,8 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                     if (unitName)unitList.push( unitName )
                 });
 
+                debugger;
+
                 if( !this.options.expandSubEnable ){
                     this.allUnitNames = unitList;
                     loadDuty();
@@ -85,7 +87,13 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                             var unitNames = [];
                             //排序
                             if( this.options.units.length === 1 ){
-                                unitNames = unitList.concat( json1.data );
+                                // unitNames = unitList.concat( json1.data );
+                                unitNames = Array.clone(unitList);
+                                for( var i=0; i<json1.data.length; i++ ){
+                                    if( !unitNames.contains(json1.data[i].distinguishedName) ){
+                                        unitNames.push( json1.data[i].distinguishedName );
+                                    }
+                                }
                             }else{
                                 unitObjectList.each( function ( u ) {
                                     unitNames.push( u.distinguishedName || u.unique || u.id || u.levelName );
@@ -421,13 +429,17 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemUnitCategory = new Class({
     loadSub: function(callback){
         if (!this.loaded){
             this.selector.orgAction.listIdentityWithUnit(function(idJson){
-                idJson.data.each(function(idSubData){
-                    if( !this.selector.isExcluded( idSubData ) ) {
-                        var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-                        this.selector.items.push(item);
-                        if(this.subItems)this.subItems.push( item );
-                    }
-                }.bind(this));
+                if( !this.itemLoaded ){
+                    idJson.data.each(function(idSubData){
+                        if( !this.selector.isExcluded( idSubData ) ) {
+                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+                            this.selector.items.push(item);
+                            if(this.subItems)this.subItems.push( item );
+                        }
+                    }.bind(this));
+                    this.itemLoaded = true;
+                }
+
                 if( !this.selector.options.expandSubEnable ){
                     this.loaded = true;
                     if (callback) callback();
@@ -482,10 +494,10 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemUnitCategory = new Class({
                         this.selector.items.push(item);
                         if(this.subItems)this.subItems.push( item );
                     }
-                    this.itemLoaded = true;
                 }.bind(this));
                 if (callback) callback();
             }.bind(this), null, this.data.distinguishedName);
+            this.itemLoaded = true;
         }else{
             if (callback) callback( );
         }

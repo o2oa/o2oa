@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -125,7 +126,7 @@ public class ActionFileUpdate extends BaseAction {
 		
 		if (check) {
 			try {
-				if ( documentQueryService.getFileInfoManagerAssess( effectivePerson, document, categoryInfo, appInfo ) ) {
+				if ( !documentQueryService.getFileInfoManagerAssess( effectivePerson, document, categoryInfo, appInfo ) ) {
 					check = false;
 					Exception exception = new ExceptionDocumentAccessDenied(effectivePerson.getDistinguishedName(), document.getTitle(), document.getId());
 					result.error(exception);
@@ -191,7 +192,7 @@ public class ActionFileUpdate extends BaseAction {
 				}
 				
 				//文件存储				
-				attachment.saveContent( mapping, bytes, fileName );
+				attachment.updateContent( mapping, bytes, fileName );
 				//完成替换逻辑
 				attachment = fileInfoServiceAdv.updateAttachment( docId, old_attId, attachment, mapping );
 //				
@@ -205,9 +206,9 @@ public class ActionFileUpdate extends BaseAction {
 //				keys.add(  ApplicationCache.concreteCacheKey( document.getId(), "view", isAnonymous, isManager ) ); //清除文档阅读缓存
 //				keys.add( ApplicationCache.concreteCacheKey( document.getId(), "get", isManager )  ); //清除文档信息获取缓存
 //				ApplicationCache.notify( Document.class, keys );
-				
-				ApplicationCache.notify( FileInfo.class );
-				ApplicationCache.notify( Document.class );	
+
+				CacheManager.notify( FileInfo.class );
+				CacheManager.notify( Document.class );
 				
 				Wo wo = new Wo();
 				wo.setId( attachment.getId() );

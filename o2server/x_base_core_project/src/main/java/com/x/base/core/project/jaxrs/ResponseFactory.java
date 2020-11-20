@@ -1,7 +1,6 @@
 package com.x.base.core.project.jaxrs;
 
 import java.net.URI;
-import java.util.Date;
 import java.util.Objects;
 import java.util.zip.CRC32;
 
@@ -81,7 +80,7 @@ public class ResponseFactory {
 			}
 		} else {
 			if ((null != result.getData()) && (result.getData() instanceof WoFile)) {
-				/* 附件,二进制流文件 */
+				// 附件,二进制流文件
 				WoFile wo = (WoFile) result.getData();
 				EntityTag tag = new EntityTag(etagWoFile(wo));
 				if (notModified(request, tag)) {
@@ -91,13 +90,13 @@ public class ResponseFactory {
 						.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
 						.header(Accept_Ranges, "bytes").tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
-				/* 纯文本text */
+				// 纯文本text
 				WoText wo = (WoText) result.getData();
 				EntityTag tag = new EntityTag(etagWoText(wo));
 				if (notModified(request, tag)) {
 					return Response.notModified().tag(tag).build();
 				}
-				return Response.ok(wo.getText()).type(HttpMediaType.TEXT_PLAIN_UTF_8).tag(tag).build();
+				return Response.ok(wo.getText()).type(wo.getContentType()).tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoContentType)) {
 				WoContentType wo = (WoContentType) result.getData();
 				EntityTag tag = new EntityTag(etagWoContentType(wo));
@@ -106,10 +105,10 @@ public class ResponseFactory {
 				}
 				return Response.ok(wo.getBody()).type(wo.getContentType()).tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoCallback)) {
-				/* jsonp callback */
+				// jsonp callback
 				return Response.ok(callback((WoCallback) result.getData())).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoSeeOther)) {
-				/* 303 */
+				// 303
 				WoSeeOther wo = (WoSeeOther) result.getData();
 				try {
 					return Response.seeOther(new URI(wo.getUrl())).build();
@@ -117,7 +116,7 @@ public class ResponseFactory {
 					return Response.serverError().entity(Objects.toString(wo.getUrl(), "")).build();
 				}
 			} else if ((null != result.getData()) && (result.getData() instanceof WoTemporaryRedirect)) {
-				/* 304 */
+				// 304
 				WoTemporaryRedirect wo = (WoTemporaryRedirect) result.getData();
 				try {
 					return Response.temporaryRedirect(new URI(wo.getUrl())).build();
@@ -125,29 +124,35 @@ public class ResponseFactory {
 					return Response.serverError().entity(Objects.toString(wo.getUrl(), "")).build();
 				}
 			} else {
-				/* default */
-				EntityTag tag = new EntityTag(etagDefault(result.getData()));
-				if (notModified(request, tag)) {
-					return Response.notModified().tag(tag).build();
+				// default
+				Integer maxAge = maxAgeDefault(result.getData());
+				if (null != maxAge) {
+					CacheControl cacheControl = new CacheControl();
+					cacheControl.setMaxAge(maxAge);
+					return Response.ok(result.toJson()).cacheControl(cacheControl).build();
+				} else {
+					EntityTag tag = new EntityTag(etagDefault(result.getData()));
+					if (notModified(request, tag)) {
+						return Response.notModified().tag(tag).build();
+					}
+					return Response.ok(result.toJson()).tag(tag).build();
 				}
-				return Response.ok(result.toJson()).tag(tag).build();
 			}
 		}
 	}
 
 	private static boolean notModified(HttpServletRequest request, EntityTag tag) {
-		String If_None_Match = request.getHeader(HttpHeader.IF_NONE_MATCH.toString());
-		if (StringUtils.isNotEmpty(If_None_Match)) {
-			if (StringUtils.equals(If_None_Match, "\"" + tag.getValue() + "\"")) {
-				return true;
-			}
-		}
-		return false;
+		String ifNoneMatch = request.getHeader(HttpHeader.IF_NONE_MATCH.toString());
+		return (StringUtils.isNotEmpty(ifNoneMatch) && StringUtils.equals(ifNoneMatch, "\"" + tag.getValue() + "\""));
 	}
 
 	private static String etagWoFile(WoFile wo) {
 		CRC32 crc = new CRC32();
-		crc.update(wo.getBytes());
+		if (StringUtils.isNotEmpty(wo.getFastETag())) {
+			crc.update(wo.getFastETag().getBytes(DefaultCharset.charset_utf_8));
+		} else {
+			crc.update(wo.getBytes());
+		}
 		return crc.getValue() + "";
 	}
 
@@ -159,14 +164,34 @@ public class ResponseFactory {
 
 	private static String etagWoText(WoText wo) {
 		CRC32 crc = new CRC32();
-		crc.update(wo.getText().getBytes(DefaultCharset.charset_utf_8));
+		if (StringUtils.isNotEmpty(wo.getFastETag())) {
+			crc.update(wo.getFastETag().getBytes(DefaultCharset.charset_utf_8));
+		} else {
+			crc.update(wo.getText().getBytes(DefaultCharset.charset_utf_8));
+		}
 		return crc.getValue() + "";
 	}
 
 	private static String etagDefault(Object o) {
 		CRC32 crc = new CRC32();
-		crc.update(XGsonBuilder.toJson(o).getBytes(DefaultCharset.charset_utf_8));
+		if (o instanceof WoMaxAgeFastETag) {
+			WoMaxAgeFastETag fast = ((WoMaxAgeFastETag) o);
+			if (StringUtils.isNotEmpty(fast.getFastETag())) {
+				crc.update(fast.getFastETag().getBytes(DefaultCharset.charset_utf_8));
+			} else {
+				crc.update(XGsonBuilder.toJson(o).getBytes(DefaultCharset.charset_utf_8));
+			}
+		} else {
+			crc.update(XGsonBuilder.toJson(o).getBytes(DefaultCharset.charset_utf_8));
+		}
 		return crc.getValue() + "";
+	}
+
+	private static Integer maxAgeDefault(Object o) {
+		if (o instanceof WoMaxAgeFastETag) {
+			return ((WoMaxAgeFastETag) o).getMaxAge();
+		}
+		return null;
 	}
 
 	private static String callback(WoCallback woCallback) {

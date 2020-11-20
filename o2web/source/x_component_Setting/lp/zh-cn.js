@@ -206,7 +206,7 @@ MWF.xApplication.Setting.LP = {
 
     "resource_upload":"资源选择",
     "resource_replace":"是否覆盖",
-    "resource_replaceDesc":"覆盖类型：‘是’删除原文件然后上传，‘否’覆盖原文件",
+    "resource_replaceDesc":"覆盖类型：‘否’删除原文件然后上传，‘是’覆盖原文件",
     "resource_replace_yes":"是",
     "resource_replace_no":"否",
     "resource_filePath":"存放目录",

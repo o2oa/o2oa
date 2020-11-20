@@ -65,16 +65,45 @@
             <tr>
                 <td class="editTableTitle">选择:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.select" text{($.data.select!=='single' || $.data.select!=='multi' )?'checked':''} type="radio" value="none"/>无
-                    <input class="editTableRadio" name="data.select" text{($.data.select==='single')?'checked':''} type="radio" value="single"/>单选
-                    <input class="editTableRadio" name="data.select" text{($.data.select==='multi')?'checked':''} type="radio" value="multi"/>多选
+                    <input class="editTableRadio" name="data.select" text{($.data.select!=='single' || $.data.select!=='multi' )?'checked':''} type="radio" value="none" onclick="
+                    if (this.checked){
+                        $('text{$.id}selectBoxShowTr').setStyle('display', 'none');
+                        $('text{$.id}allowSelectAllTr').setStyle('display', 'none');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'none');
+                    }"/>无
+                    <input class="editTableRadio" name="data.select" text{($.data.select==='single')?'checked':''} type="radio" value="single" onclick="
+                    if (this.checked){
+                        $('text{$.id}selectBoxShowTr').setStyle('display', 'table-row');
+                        $('text{$.id}allowSelectAllTr').setStyle('display', 'none');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'block');
+                    }"/>单选
+                    <input class="editTableRadio" name="data.select" text{($.data.select==='multi')?'checked':''} type="radio" value="multi" onclick="
+                    if (this.checked){
+                        $('text{$.id}selectBoxShowTr').setStyle('display', 'table-row');
+                        $('text{$.id}allowSelectAllTr').setStyle('display', 'table-row');
+                        $('text{$.id}selectedAbleScript').setStyle('display', 'block');
+                    }"/>多选
+                </td>
+            </tr>
+            <tr id="text{$.id}selectBoxShowTr" style="display: text{($.data.select=='single' || $.data.select=='multi')?'':'none'}">
+                <td class="editTableTitle">选择框显示:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow==='always')?'checked':''} type="radio" value="always"/>一直显示
+                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow!=='always')?'checked':''} type="radio" value="mouseover"/>鼠标经过时
+                </td>
+            </tr>
+            <tr id="text{$.id}allowSelectAllTr" style="display: text{($.data.select=='multi')?'':'none'}">
+                <td class="editTableTitle" id="">允许全选:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.allowSelectAll" text{($.data.allowSelectAll===true)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="data.allowSelectAll" text{($.data.allowSelectAll!==true)?'checked':''} type="radio" value="false"/>否
                 </td>
             </tr>
             <tr>
                 <td class="editTableTitle">无分类和选择隐藏首列</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden===true)?'checked':''} type="radio" value="single"/>是
-                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden!==true)?'checked':''} type="radio" value="multi"/>否
+                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden===true)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden!==true)?'checked':''} type="radio" value="false"/>否
                 </td>
             </tr>
             <tr>
@@ -83,13 +112,22 @@
                     <input type="text" name="data.noDataText" value="text{$.data.noDataText}" class="editTableInput"/>
                 </td>
             </tr>
+
+            <tr>
+                <td class="editTableTitle">启用缓存:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="cacheAccess" text{($.cacheAccess===true)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="cacheAccess" text{($.cacheAccess!==true)?'checked':''} type="radio" value="false"/>否
+                    <div style="color:#999;">注：启用缓存则范围中的权限失效！</div>
+                </td>
+            </tr>
             <!--<tr>-->
             <!--<td class="editTableTitle">最大行数:</td>-->
             <!--<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>-->
             <!--</tr>-->
         </table>
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">权限</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">可执行者</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>
                 <td class="editTableTitle">可执行人:</td>
@@ -118,6 +156,8 @@
         </table>
 
         <div class="MWFFormulaArea" name="data.defaultSelectedScript" title="默认选中行脚本"></div>
+        <div class="MWFFormulaArea" name="data.selectedAbleScript" title="允许选择行脚本" id="text{$.id}selectedAbleScript"
+             style="display: text{($.data.select=='single' || $.data.select=='multi')?'':'none'}"></div>
 
 
 
@@ -131,124 +171,8 @@
 
 
     <div title="范围"  class="MWFTab">
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">范围</div>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableValue" colspan="2" align="center">
-                    <input class="editTableRadio" onclick="
-                    if (this.checked){
-                        $('text{$.id}dateRangeType_process').setStyle('display', 'block');
-                        $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
-                        $$('.text{$.id}dataPathSelectedProcessArea').setStyle('display', '');
-                        $$('.text{$.id}dataPathSelectedCMSArea').setStyle('display', 'none');
-                    }" name="text{$.id}*type" text{($.type!='cms')?'checked':''} type="radio" value="process"/>流程平台数据
-                    <input class="editTableRadio" onclick="
-                    if (this.checked){
-                        $('text{$.id}dateRangeType_process').setStyle('display', 'none');
-                        $('text{$.id}dateRangeType_cms').setStyle('display', 'block');
-                        $$('.text{$.id}dataPathSelectedProcessArea').setStyle('display', 'none');
-                        $$('.text{$.id}dataPathSelectedCMSArea').setStyle('display', '');
-                     }" name="text{$.id}*type" text{($.type=='cms')?'checked':''} type="radio" value="cms"/>内容管理数据
-                </td>
-            </tr>
-        </table>
-
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">权限:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="text{$.id}*data.where.accessible" text{($.data.where.accessible)?'checked':''} type="radio" value="true"/>带权限
-                    <input class="editTableRadio" name="text{$.id}*data.where.accessible" text{(!$.data.where.accessible)?'checked':''} type="radio" value="false"/>忽略
-                </td>
-            </tr>
-        </table>
-        <div id="text{$.id}dateRangeType_process" style="display: text{($.type!='cms')?'block':'none'}">
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">流转状态:</td>
-                    <td class="editTableValue">
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='workCompleted' && $.data.where.scope!='all' && $.data.where.scope!='cms_info' && $.data.where.scope!='cms_data')?'checked':''} type="radio" value="work"/>流转中
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='workCompleted')?'checked':''} type="radio" value="workCompleted"/>已完成
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部
-                    </td>
-                </tr>
-                <tr>
-                    <td class="editTableValue" colspan="2">取应用和流程的并集</td>
-                </tr>
-                <tr>
-                    <td class="editTableTitle">选择应用:</td>
-                    <td class="editTableValue">
-                        <div class="MWFSelectApplication" name="data.where.applicationList"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="editTableTitle">选择流程:</td>
-                    <td class="editTableValue">
-                        <div class="MWFSelectProcess" name="data.where.processList"></div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div id="text{$.id}dateRangeType_cms" style="display: text{($.type=='cms')?'block':'none'}">
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">数据类型:</td>
-                    <td class="editTableValue">
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='cms_data' && $.data.where.scope!='all' && $.data.where.scope!='workCompleted' && $.data.where.scope!='work')?'checked':''} type="radio" value="cms_info"/>信息类
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='cms_data')?'checked':''} type="radio" value="cms_data"/>数据类
-                        <!--                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部-->
-                    </td>
-                </tr>
-                <tr>
-                    <td class="editTableTitle">返回草稿:</td>
-                    <td class="editTableValue">
-                        <input class="editTableRadio" name="text{$.id}*data.where.draft" text{($.data.where.draft)?'checked':''} type="radio" value="true"/>是
-                        <input class="editTableRadio" name="text{$.id}*data.where.draft" text{(!$.data.where.draft)?'checked':''} type="radio" value="false"/>否
-                    </td>
-                </tr>
-                <tr>
-                    <td class="editTableValue" colspan="2">取栏目和分类的并集：</td>
-                </tr>
-                <tr>
-                    <td class="editTableTitle">选择栏目:</td>
-                    <td class="editTableValue">
-                        <div class="MWFSelectCMSApplication" name="data.where.appInfoList"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="editTableTitle">选择分类:</td>
-                    <td class="editTableValue">
-                        <div class="MWFSelecCMStCategory" name="data.where.categoryInfoList"></div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableValue" colspan="2">取组织、人员和身份的并集：</td>
-            </tr>
-            <tr>
-                <td class="editTableTitle">拟稿组织:</td>
-                <td class="editTableValue">
-                    <div class="MWFSelectUnit" name="data.where.creatorUnitList"></div>
-                </td>
-            </tr>
-            <tr>
-                <td class="editTableTitle">拟稿人员:</td>
-                <td class="editTableValue">
-                    <div class="MWFSelectPerson" name="data.where.creatorPersonList"></div>
-                </td>
-            </tr>
-            <tr>
-                <td class="editTableTitle">拟稿身份:</td>
-                <td class="editTableValue">
-                    <div class="MWFSelectIdentity" name="data.where.creatorIdentityList"></div>
-                </td>
-            </tr>
-        </table>
-
-
         <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">时段</div>
+        <div style="height:24px; line-height: 24px; padding:5px;border-bottom: 1px dashed rgb(204, 204, 204);">注：建议设定时间范围有助于提高效率！</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr><td class="editTableTitle">时段类型:</td><td class="editTableValue">
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
@@ -425,6 +349,122 @@
                 </tr>
             </table>
         </div>
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">范围</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue" colspan="2" align="center">
+                    <input class="editTableRadio" onclick="
+                    if (this.checked){
+                        $('text{$.id}dateRangeType_process').setStyle('display', 'block');
+                        $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
+                        $$('.text{$.id}dataPathSelectedProcessArea').setStyle('display', '');
+                        $$('.text{$.id}dataPathSelectedCMSArea').setStyle('display', 'none');
+                    }" name="text{$.id}*type" text{($.type!='cms')?'checked':''} type="radio" value="process"/>流程平台数据
+                    <input class="editTableRadio" onclick="
+                    if (this.checked){
+                        $('text{$.id}dateRangeType_process').setStyle('display', 'none');
+                        $('text{$.id}dateRangeType_cms').setStyle('display', 'block');
+                        $$('.text{$.id}dataPathSelectedProcessArea').setStyle('display', 'none');
+                        $$('.text{$.id}dataPathSelectedCMSArea').setStyle('display', '');
+                     }" name="text{$.id}*type" text{($.type=='cms')?'checked':''} type="radio" value="cms"/>内容管理数据
+                </td>
+            </tr>
+        </table>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">权限:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="text{$.id}*data.where.accessible" text{($.data.where.accessible)?'checked':''} type="radio" value="true"/>带权限
+                    <input class="editTableRadio" name="text{$.id}*data.where.accessible" text{(!$.data.where.accessible)?'checked':''} type="radio" value="false"/>忽略
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.id}dateRangeType_process" style="display: text{($.type!='cms')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">流转状态:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='workCompleted' && $.data.where.scope!='all' && $.data.where.scope!='cms_info' && $.data.where.scope!='cms_data')?'checked':''} type="radio" value="work"/>流转中
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='workCompleted')?'checked':''} type="radio" value="workCompleted"/>已完成
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableValue" colspan="2">取应用和流程的并集:</td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">选择应用:</td>
+                    <td class="editTableValue">
+                        <div class="MWFSelectApplication" name="data.where.applicationList"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">选择流程:</td>
+                    <td class="editTableValue">
+                        <div class="MWFSelectProcess" name="data.where.processList"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="text{$.id}dateRangeType_cms" style="display: text{($.type=='cms')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">数据类型:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='cms_data' && $.data.where.scope!='all' && $.data.where.scope!='workCompleted' && $.data.where.scope!='work')?'checked':''} type="radio" value="cms_info"/>信息类
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='cms_data')?'checked':''} type="radio" value="cms_data"/>数据类
+                        <!--                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部-->
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">返回草稿:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="text{$.id}*data.where.draft" text{($.data.where.draft)?'checked':''} type="radio" value="true"/>是
+                        <input class="editTableRadio" name="text{$.id}*data.where.draft" text{(!$.data.where.draft)?'checked':''} type="radio" value="false"/>否
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableValue" colspan="2">取栏目和分类的并集：</td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">选择栏目:</td>
+                    <td class="editTableValue">
+                        <div class="MWFSelectCMSApplication" name="data.where.appInfoList"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">选择分类:</td>
+                    <td class="editTableValue">
+                        <div class="MWFSelecCMStCategory" name="data.where.categoryInfoList"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue" colspan="2">取组织、人员和身份的并集：</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">拟稿组织:</td>
+                <td class="editTableValue">
+                    <div class="MWFSelectUnit" name="data.where.creatorUnitList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">拟稿人员:</td>
+                <td class="editTableValue">
+                    <div class="MWFSelectPerson" name="data.where.creatorPersonList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">拟稿身份:</td>
+                <td class="editTableValue">
+                    <div class="MWFSelectIdentity" name="data.where.creatorIdentityList"></div>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div title="过滤"  class="MWFTab">
@@ -531,6 +571,7 @@
                                 <option value="like">匹配(like)</option>
                                 <option value="notLike">不匹配(not-like)</option>
                                 <option value="range">范围(range)</option>
+                                <option value="in">包含(in)</option>
                             </select></td>
                         </tr>
                         <tr>
@@ -545,6 +586,7 @@
                                     <option value="true" selected>是(True)</option>
                                     <option value="false">否(False)</option>
                                 </select>
+                                <div class="multiValueNotice_vf" style="display: none;color: #999;line-height: 24px;">多值用半角逗号(,)隔开</div>
                             </td>
                         </tr>
 

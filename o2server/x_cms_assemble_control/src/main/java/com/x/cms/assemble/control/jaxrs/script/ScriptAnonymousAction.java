@@ -8,8 +8,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
-import com.x.cms.assemble.control.ThisApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -23,8 +21,6 @@ import java.util.List;
 @JaxrsDescribe("可匿名访问的脚本信息管理服务")
 public class ScriptAnonymousAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
-
 	@JaxrsMethodDescribe(value = "根据ID获取指定的脚本信息.", action = ActionGet.class)
 	@GET
 	@Path("{id}")
@@ -35,7 +31,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute( effectivePerson, id );
+			result = new ActionGet().execute( effectivePerson, id );
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -53,7 +49,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListWithApplication)proxy.getProxy(ActionListWithApplication.class)).execute( effectivePerson, appId );
+			result = new ActionListWithApplication().execute( effectivePerson, appId );
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -72,7 +68,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 		ActionResult<ActionGetWithAppAndName.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionGetWithAppAndName)proxy.getProxy(ActionGetWithAppAndName.class)).execute( effectivePerson, appId, name );
+			result = new ActionGetWithAppAndName().execute( effectivePerson, appId, name );
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -92,7 +88,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListNext.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListNext)proxy.getProxy(ActionListNext.class)).execute( effectivePerson, id, count );
+			result = new ActionListNext().execute( effectivePerson, id, count );
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -112,7 +108,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPrev.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListPrev)proxy.getProxy(ActionListPrev.class)).execute( effectivePerson, id, count );
+			result = new ActionListPrev().execute( effectivePerson, id, count );
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -131,7 +127,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionListPaging)proxy.getProxy(ActionListPaging.class)).execute(effectivePerson, page, size);
+			result = new ActionListPaging().execute(effectivePerson, page, size);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);

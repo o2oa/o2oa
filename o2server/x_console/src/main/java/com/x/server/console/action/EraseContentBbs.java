@@ -1,6 +1,8 @@
 package com.x.server.console.action;
 
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.bbs.entity.BBSOperationRecord;
 import com.x.bbs.entity.BBSReplyInfo;
 import com.x.bbs.entity.BBSSubjectAttachment;
@@ -13,6 +15,8 @@ import com.x.bbs.entity.BBSVoteRecord;
 
 public class EraseContentBbs extends EraseContent {
 
+	private static Logger logger = LoggerFactory.getLogger(EraseContentBbs.class);
+	
 	@Override
 	public boolean execute() throws Exception {
 		this.init("bbs", ItemCategory.bbs);

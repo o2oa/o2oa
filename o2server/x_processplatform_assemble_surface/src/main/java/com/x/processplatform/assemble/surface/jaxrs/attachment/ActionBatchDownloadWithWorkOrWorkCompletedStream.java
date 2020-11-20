@@ -78,6 +78,9 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 				}
 			}
 			if (StringUtils.isBlank(fileName)) {
+				if(title.length()>60){
+					title = title.substring(0, 60);
+				}
 				fileName = title + DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss) + ".zip";
 			} else {
 				String extension = FilenameUtils.getExtension(fileName);
@@ -101,6 +104,8 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 				}
 			}
 
+			fileName = StringUtils.replaceEach(fileName,
+					new String[] { "/",":","*","?","<<",">>","|","<",">","\\" }, new String[] { "","","","","","","","","","" });
 			logger.info("batchDown to {}，att size {}, from work {}, has form {}", fileName, attachmentList.size(),
 					workId, map.size());
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -128,9 +129,9 @@ public class ActionFileUploadCallback extends BaseAction {
 //				keys.add(  ApplicationCache.concreteCacheKey( document.getId(), "view", isAnonymous, isManager ) ); //清除文档阅读缓存
 //				keys.add( ApplicationCache.concreteCacheKey( document.getId(), "get", isManager )  ); //清除文档信息获取缓存
 //				ApplicationCache.notify( Document.class, keys );
-				
-				ApplicationCache.notify( FileInfo.class );
-				ApplicationCache.notify( Document.class );	
+
+				CacheManager.notify( FileInfo.class );
+				CacheManager.notify( Document.class );
 				
 				WoObject woObject = new WoObject();
 				woObject.setId(attachment.getId());

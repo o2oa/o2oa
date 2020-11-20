@@ -35,6 +35,23 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
         var data, mobileDataStr;
         if (pageData) data = MWF.encodeJsonString(JSON.encode(pageData));
         if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
+
+        var relatedScriptMap = null;
+        if (pageData && pageData.json.includeScripts && pageData.json.includeScripts.length){
+            relatedScriptMap = {};
+            pageData.json.includeScripts.each(function(s){
+                relatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+            });
+        };
+
+        var mobileRelatedScriptMap = null;
+        if (mobileData && mobileData.json.includeScripts && mobileData.json.includeScripts.length){
+            mobileRelatedScriptMap = {};
+            mobileData.json.includeScripts.each(function(s){
+                mobileRelatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+            });
+        }
+
         var json = {
             "id": pageData.json.id,
             "name": pageData.json.name,
@@ -43,7 +60,11 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
             "description": pageData.json.description,
             "portal": pageData.json.application,
             "icon": pageData.json.formIcon,
-            "formFieldList": fieldList
+            "formFieldList": fieldList,
+            "relatedScriptMap": relatedScriptMap,
+            "relatedWidgetList": (pageData && pageData.json.widgetList) ? pageData.json.widgetList : [],
+            "mobileRelatedScriptMap": mobileRelatedScriptMap,
+            "mobileRelatedWidgetList": (mobileData && mobileData.json.widgetList) ? mobileData.json.widgetList : []
         };
         if (mobileData && mobileData.json.moduleList){
             if (Object.keys(mobileData.json.moduleList).length){
@@ -78,6 +99,22 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
                 if (pageData) data = MWF.encodeJsonString(JSON.encode(pageData));
                 if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
 
+                var relatedScriptMap = null;
+                if (pageData && pageData.json.includeScripts && pageData.json.includeScripts.length){
+                    relatedScriptMap = {};
+                    pageData.json.includeScripts.each(function(s){
+                        relatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+                    });
+                };
+
+                var mobileRelatedScriptMap = null;
+                if (mobileData && mobileData.json.includeScripts && mobileData.json.includeScripts.length){
+                    mobileRelatedScriptMap = {};
+                    mobileData.json.includeScripts.each(function(s){
+                        mobileRelatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+                    });
+                }
+
                 var json = {
                     "id": pageData.json.id,
                     "name": pageData.json.name,
@@ -86,7 +123,11 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
                     "description": pageData.json.description,
                     "portal": pageData.json.application,
                     "icon": pageData.json.formIcon,
-                    "formFieldList": fieldList
+                    "formFieldList": fieldList,
+                    "relatedScriptMap": relatedScriptMap,
+                    "relatedWidgetList": (pageData && pageData.json.widgetList) ? pageData.json.widgetList : [],
+                    "mobileRelatedScriptMap": mobileRelatedScriptMap,
+                    "mobileRelatedWidgetList": (mobileData && mobileData.json.widgetList) ? mobileData.json.widgetList : []
                 };
                 if (mobileData && mobileData.json.moduleList){
                     if (Object.keys(mobileData.json.moduleList).length){

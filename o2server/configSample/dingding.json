@@ -19,7 +19,7 @@
   "###agentId": "agentId###",
   "###appKey": "应用的key,唯一标识###",
   "###appSecret": "应用的密钥###",
-  "###syncCron": "组织同步cron,默认每10分钟同步一次.###",
+  "###syncCron": "回调信号触发同步检查,默认每10分钟运行一次,如果期间内有钉钉回调信号接收到,那么触发同步任务进行人员同步.###",
   "###forceSyncCron": "强制拉入同步cron,默认在每天的8点和12点强制进行同步.###",
   "###oapiAddress": "oapi服务器地址###",
   "###workUrl": "钉钉消息打开工作的url地址，如：http://dev.o2oa.net/x_desktop/###",

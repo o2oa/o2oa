@@ -22,6 +22,7 @@ public class WebServer extends ConfigObject {
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
 		this.cacheControlMaxAge = DEFAULT_CACHECONTROLMAXAGE;
+		this.persistentConnectionsEnable = DEFAULT_PERSISTENTCONNECTIONSENABLE;
 	}
 
 	private static final Integer DEFAULT_HTTP_PORT = 80;
@@ -33,6 +34,7 @@ public class WebServer extends ConfigObject {
 	private static final Integer DEFAULT_CACHECONTROLMAXAGE = 0;
 	private static final Boolean DEFAULT_PROXYCENTERENABLE = true;
 	private static final Boolean DEFAULT_PROXYAPPLICATIONENABLE = true;
+	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -60,6 +62,14 @@ public class WebServer extends ConfigObject {
 
 	@FieldDescribe("是否启用application服务器代理")
 	private Boolean proxyApplicationEnable;
+
+	@FieldDescribe("是否启用长连接,默认true.")
+	private Boolean persistentConnectionsEnable;
+
+	public Boolean getPersistentConnectionsEnable() {
+		return persistentConnectionsEnable == null ? DEFAULT_PERSISTENTCONNECTIONSENABLE
+				: this.persistentConnectionsEnable;
+	}
 
 	public Boolean getProxyCenterEnable() {
 		return proxyCenterEnable == null ? DEFAULT_PROXYCENTERENABLE : this.proxyCenterEnable;

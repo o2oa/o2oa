@@ -117,4 +117,32 @@ public class ExternalDataSources extends CopyOnWriteArrayList<ExternalDataSource
 		throw new Exception("hasSchema error.");
 	}
 
+	public String getTransactionIsolation() {
+		for (ExternalDataSource o : this) {
+			return o.getTransactionIsolation();
+		}
+		return null;
+	}
+
+	public Boolean getTestConnectionOnCheckin() {
+		for (ExternalDataSource o : this) {
+			return o.getTestConnectionOnCheckin();
+		}
+		return null;
+	}
+
+	public Boolean getTestConnectionOnCheckout() {
+		for (ExternalDataSource o : this) {
+			return o.getTestConnectionOnCheckout();
+		}
+		return null;
+	}
+
+	public Integer getMaxIdleTime() {
+		for (ExternalDataSource o : this) {
+			return o.getMaxIdleTime();
+		}
+		return null;
+	}
+
 }

@@ -5,6 +5,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -76,12 +77,12 @@ public class ActionDelete extends BaseAction {
 			keys.add( "file.all" ); //清除文档的附件列表缓存
 			keys.add( "file." + id  ); //清除指定ID的附件信息缓存
 			keys.add( ApplicationCache.concreteCacheKey( "document", document.getId(), isAnonymous, isManager ) ); //清除文档的附件列表缓存
-			ApplicationCache.notify( FileInfo.class, keys );
+			CacheManager.notify( FileInfo.class, keys );
 			
 			keys.clear();
 			keys.add(  ApplicationCache.concreteCacheKey( document.getId(), "view", isAnonymous, isManager ) ); //清除文档阅读缓存
 			keys.add( ApplicationCache.concreteCacheKey( document.getId(), "get", isManager )  ); //清除文档信息获取缓存
-			ApplicationCache.notify( Document.class, keys );
+			CacheManager.notify( Document.class, keys );
 			
 			// 成功删除一个附件信息
 			logService.log(emc, effectivePerson.getDistinguishedName(), fileInfo.getName(), fileInfo.getAppId(),

@@ -21,12 +21,27 @@
         <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">执行权限</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>
+                <td class="editTableTitle">匿名访问:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="anonymousAccessible" text{($.anonymousAccessible===true)?'checked':''} type="radio" value="true"
+                           onclick="if(this.checked){
+                               $('text{$.pid}executePersonListTr').setStyle('display', 'none');
+                               $('text{$.pid}executeUnitListTr').setStyle('display', 'none');
+                            }"/>允许
+                    <input class="editTableRadio" name="anonymousAccessible" text{($.anonymousAccessible!==true)?'checked':''} type="radio" value="false"
+                           onclick="if(this.checked){
+                               $('text{$.pid}executePersonListTr').setStyle('display', '');
+                               $('text{$.pid}executeUnitListTr').setStyle('display', '');
+                            }"/>不允许
+                </td>
+            </tr>
+            <tr id="text{$.pid}executePersonListTr" style="display:text{($.anonymousAccessible==true)?'none':''}">
                 <td class="editTableTitle">执行人:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonIdentity" name="executePersonList"></div>
                 </td>
             </tr>
-            <tr>
+            <tr id="text{$.pid}executeUnitListTr" style="display:text{($.anonymousAccessible==true)?'none':''}">
                 <td class="editTableTitle">执行组织:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonUnit" name="executeUnitList"></div>
@@ -34,9 +49,8 @@
             </tr>
         </table>
     </div>
-</div>
 
-<div title="JSON"  class="MWFTab">
-    <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
-</div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
 </div>

@@ -44,41 +44,53 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	private final static String READCOMPLETEDLIST_FIELDNAME = "readCompletedList";
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
-
 			Business business = new Business(emc);
+			job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
+		}
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
-				throw new ExceptionAccessDenied(effectivePerson);
+		final String workLogJob = job;
+
+		CompletableFuture<List<WoTask>> _tasks = CompletableFuture.supplyAsync(() -> {
+			return this.tasks(workLogJob);
+		});
+		CompletableFuture<List<WoTaskCompleted>> _taskCompleteds = CompletableFuture.supplyAsync(() -> {
+			return this.taskCompleteds(workLogJob);
+		});
+		CompletableFuture<List<WoRead>> _reads = CompletableFuture.supplyAsync(() -> {
+			return this.reads(workLogJob);
+		});
+		CompletableFuture<List<WoReadCompleted>> _readCompleteds = CompletableFuture.supplyAsync(() -> {
+			return this.readCompleteds(workLogJob);
+		});
+		CompletableFuture<List<WorkLog>> _workLogs = CompletableFuture.supplyAsync(() -> {
+			return this.workLogs(workLogJob);
+		});
+		CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+			Boolean value = false;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+						new ExceptionEntityNotExist(workOrWorkCompleted));
+			} catch (Exception e) {
+				logger.error(e);
 			}
+			return value;
+		});
 
-			final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
+		if (BooleanUtils.isFalse(_control.get())) {
+			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+		}
+		List<WoTask> tasks = _tasks.get();
+		List<WoTaskCompleted> taskCompleteds = _taskCompleteds.get();
+		List<WoRead> reads = _reads.get();
+		List<WoReadCompleted> readCompleteds = _readCompleteds.get();
+		List<WorkLog> workLogs = _workLogs.get();
 
-			CompletableFuture<List<WoTask>> future_tasks = CompletableFuture.supplyAsync(() -> {
-				return this.tasks(business, job);
-			});
-			CompletableFuture<List<WoTaskCompleted>> future_taskCompleteds = CompletableFuture.supplyAsync(() -> {
-				return this.taskCompleteds(business, job);
-			});
-			CompletableFuture<List<WoRead>> future_reads = CompletableFuture.supplyAsync(() -> {
-				return this.reads(business, job);
-			});
-			CompletableFuture<List<WoReadCompleted>> future_readCompleteds = CompletableFuture.supplyAsync(() -> {
-				return this.readCompleteds(business, job);
-			});
-			CompletableFuture<List<WorkLog>> future_workLogs = CompletableFuture.supplyAsync(() -> {
-				return this.workLogs(business, job);
-			});
-			List<WoTask> tasks = future_tasks.get();
-			List<WoTaskCompleted> taskCompleteds = future_taskCompleteds.get();
-			List<WoRead> reads = future_reads.get();
-			List<WoReadCompleted> readCompleteds = future_readCompleteds.get();
-			List<WorkLog> workLogs = future_workLogs.get();
-
+		if (!workLogs.isEmpty()) {
 			WorkLogTree tree = new WorkLogTree(workLogs);
-
 			List<Wo> wos = new ArrayList<>();
 			for (WorkLog o : workLogs.stream().filter(o -> Objects.equals(ActivityType.manual, o.getFromActivityType()))
 					.collect(Collectors.toList())) {
@@ -129,21 +141,15 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			ListTools.groupStick(wos, readCompleteds, WorkLog.fromActivityToken_FIELDNAME,
 					ReadCompleted.activityToken_FIELDNAME, READCOMPLETEDLIST_FIELDNAME);
 			result.setData(wos);
-			result.setData(wos);
-			return result;
 		}
+		return result;
 	}
 
-	private List<WoTask> tasks(Business business, String job) {
+	private List<WoTask> tasks(String job) {
 		List<WoTask> os = new ArrayList<>();
-		try {
-			// os = business.entityManagerContainer().fetchEqual(Task.class, WoTask.copier,
-			// WoTask.job_FIELDNAME, job)
-			// .stream().sorted(Comparator.comparing(Task::getStartTime,
-			// Comparator.nullsLast(Date::compareTo)))
-			// .collect(Collectors.toList());
-			os = WoTask.copier.copy(business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, job)
-					.stream().sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			os = WoTask.copier.copy(emc.listEqual(Task.class, Task.job_FIELDNAME, job).stream()
+					.sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList()));
 		} catch (Exception e) {
 			logger.error(e);
@@ -151,11 +157,10 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		return os;
 	}
 
-	private List<WoTaskCompleted> taskCompleteds(Business business, String job) {
+	private List<WoTaskCompleted> taskCompleteds(String job) {
 		List<WoTaskCompleted> os = new ArrayList<>();
-		try {
-			os = business.entityManagerContainer()
-					.fetchEqual(TaskCompleted.class, WoTaskCompleted.copier, TaskCompleted.job_FIELDNAME, job).stream()
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			os = emc.fetchEqual(TaskCompleted.class, WoTaskCompleted.copier, TaskCompleted.job_FIELDNAME, job).stream()
 					.sorted(Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
@@ -164,11 +169,11 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		return os;
 	}
 
-	private List<WoRead> reads(Business business, String job) {
+	private List<WoRead> reads(String job) {
 		List<WoRead> os = new ArrayList<>();
-		try {
-			os = business.entityManagerContainer().fetchEqual(Read.class, WoRead.copier, Read.job_FIELDNAME, job)
-					.stream().sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			os = emc.fetchEqual(Read.class, WoRead.copier, Read.job_FIELDNAME, job).stream()
+					.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
 			logger.error(e);
@@ -176,11 +181,10 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		return os;
 	}
 
-	private List<WoReadCompleted> readCompleteds(Business business, String job) {
+	private List<WoReadCompleted> readCompleteds(String job) {
 		List<WoReadCompleted> os = new ArrayList<>();
-		try {
-			os = business.entityManagerContainer()
-					.fetchEqual(ReadCompleted.class, WoReadCompleted.copier, ReadCompleted.job_FIELDNAME, job).stream()
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			os = emc.fetchEqual(ReadCompleted.class, WoReadCompleted.copier, ReadCompleted.job_FIELDNAME, job).stream()
 					.sorted(Comparator.comparing(ReadCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
@@ -189,10 +193,10 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		return os;
 	}
 
-	private List<WorkLog> workLogs(Business business, String job) {
+	private List<WorkLog> workLogs(String job) {
 		List<WorkLog> os = new ArrayList<>();
-		try {
-			os = business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME, job);
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			os = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, job);
 			return os.stream()
 					.sorted(Comparator.comparing(WorkLog::getFromTime, Comparator.nullsLast(Date::compareTo))
 							.thenComparing(WorkLog::getArrivedTime, Comparator.nullsLast(Date::compareTo)))

@@ -414,9 +414,9 @@
 			},
 			"shap": {
 				"cursor": "pointer",
-				"fill": "#c5ebb8",
+				"fill": "#afefeb",
 				"stroke-width": "1",
-				"stroke": "#7cb58a",
+				"stroke": "#8fc2bf",
 				"radius": 0,
 				"z-index": 100
 			},
@@ -428,7 +428,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/invoke.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/invoke.png",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100

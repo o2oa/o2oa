@@ -3,30 +3,26 @@ package com.x.base.core.project.script;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
 
 import javax.script.Compilable;
 import javax.script.CompiledScript;
-import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import javax.script.SimpleScriptContext;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.tools.StringTools;
+import com.x.base.core.project.tools.PropertyTools;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jdk.nashorn.internal.runtime.ScriptObject;
 
 public class ScriptFactory {
 
@@ -242,10 +238,7 @@ public class ScriptFactory {
 						if (obj instanceof CharSequence) {
 							list.add(Objects.toString(obj, ""));
 						} else {
-							Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
-							if (null != d) {
-								list.add(Objects.toString(d, ""));
-							}
+							list.add(PropertyTools.getOrElse(obj, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 						}
 					}
 				}
@@ -258,19 +251,23 @@ public class ScriptFactory {
 							if (obj instanceof CharSequence) {
 								list.add(Objects.toString(obj, ""));
 							} else {
-								Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
-								if (null != d) {
-									list.add(Objects.toString(d, ""));
+								if (obj instanceof ScriptObject) {
+									ScriptObject so = (ScriptObject) obj;
+									if (so.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+										list.add(Objects.toString(so.get(JpaObject.DISTINGUISHEDNAME), ""));
+									}
+								} else {
+									list.add(PropertyTools.getOrElse(obj, JpaObject.DISTINGUISHEDNAME, String.class,
+											""));
 								}
 							}
 						}
 					}
 				} else {
-					Object d = PropertyUtils.getProperty(o, JpaObject.DISTINGUISHEDNAME);
-					if (null != d) {
-						list.add(Objects.toString(d, ""));
-					}
+					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 				}
+			} else {
+				list.add(Objects.toString(o, ""));
 			}
 		}
 		return list;

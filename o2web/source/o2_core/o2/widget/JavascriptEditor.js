@@ -371,6 +371,22 @@ o2.widget.JavascriptEditor = new Class({
     setValue: function(v){
         if (this.editor) this.editor.setValue(v);
     },
+    insertValue : function(v){
+        if (this.editor){
+            switch (this.options.type.toLowerCase()) {
+                case "ace":
+                    this.editor.insert(v);
+                    break;
+                case "monaco":
+                    // this.editor.getModel().applyEdits([{
+                    this.editor.executeEdits("", [{
+                        range: monaco.Range.fromPositions(this.editor.getPosition()),
+                        text: v
+                    }]);
+                    break;
+            }
+        }
+    },
     getValue: function(){
         return (this.editor) ? this.editor.getValue() : "";
     },
