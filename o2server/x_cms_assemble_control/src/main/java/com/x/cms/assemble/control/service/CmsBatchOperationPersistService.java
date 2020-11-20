@@ -46,8 +46,6 @@ public class CmsBatchOperationPersistService {
 			emc.beginTransaction( CmsBatchOperation.class );
 			emc.persist( cmsBatchOperation, CheckPersistType.all ); 
 			emc.commit();
-		} catch ( Exception e ) {
-			throw e;
 		}
 		//将批量操作信息压入队列
 		ThisApplication.queueBatchOperation.send( cmsBatchOperation );

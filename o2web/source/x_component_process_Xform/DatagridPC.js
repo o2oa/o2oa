@@ -38,19 +38,20 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			this._loadDatagridDataModules();
 			this._addTitleActionColumn();
 
-			this._loadEditDatagrid();
-
-			this.fireEvent("postLoad");
-			this.fireEvent("load");
+			this._loadEditDatagrid(function(){
+				this.fireEvent("postLoad");
+				this.fireEvent("load");
+			}.bind(this));
 			//this._loadReadDatagrid();
 		}else{
 			this._loadDatagridDataModules();
 			this._getDatagridEditorTr();
-			this._loadReadDatagrid();
-			if(this.editorTr)this.editorTr.setStyle("display", "none");
+			this._loadReadDatagrid(function(){
+				if(this.editorTr)this.editorTr.setStyle("display", "none");
+				this.fireEvent("postLoad");
+				this.fireEvent("load");
+			}.bind(this));
 
-			this.fireEvent("postLoad");
-			this.fireEvent("load");
 		}
 	},
 	_loadStyles: function(){
@@ -58,13 +59,17 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this.node.setStyles(this.json.styles);
 	},
 	_getValue: function(){
+		if (this.moduleValueAG) return this.moduleValueAG;
 		var value = [];
 		value = this._getBusinessData();
 		if (!value){
 			if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
-			value = {"data": value || []};
+			if (!value.then) if (o2.typeOf(value)=="array") value = {"data": value || []};
 		}
 		return value || {};
+	},
+	getValue: function(){
+		return this._getValue();
 	},
 	_getDatagridTr: function(){
 		this._getDatagridTitleTr();
@@ -109,7 +114,31 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		//}
 	},
 
-	_loadEditDatagrid: function(){
+	_loadEditDatagrid: function(callback){
+		var p = o2.promiseAll(this.gridData).then(function(v){
+			this.gridData = v;
+			if (o2.typeOf(this.gridData)=="array") this.gridData = {"data": this.gridData};
+			this.__loadEditDatagrid(callback);
+			this.moduleValueAG = null;
+			return v;
+		}.bind(this));
+		this.moduleValueAG = p;
+		if (this.moduleValueAG) this.moduleValueAG.then(function(){
+			this.moduleValueAG = null;
+		}.bind(this));
+		// if (this.gridData && this.gridData.isAG){
+		// 	this.moduleValueAG = this.gridData;
+		// 	this.gridData.addResolve(function(v){
+		// 		this.gridData = v;
+		// 		this._loadEditDatagrid(callback);
+		// 	}.bind(this));
+		// }else{
+		// 	if (o2.typeOf(this.gridData)=="array") this.gridData = {"data": this.gridData};
+		// 	this.__loadEditDatagrid(callback);
+		// 	this.moduleValueAG = null;
+		// }
+	},
+	__loadEditDatagrid: function(callback){
 		var titleThs = this.titleTr.getElements("th");
 		var editorTds = this.editorTr.getElements("td");
 
@@ -129,10 +158,10 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				}.bind(this));
 			}.bind(this));
 		}
-
-
 		this.editorTr.setStyle("display", "none");
+		if (callback) callback();
 	},
+
 
 	_getValueText: function(idx, value){
 		debugger;
@@ -791,9 +820,34 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		drag.start(e);
 		tr.setStyle("display", "none");
 	},
-	_loadReadDatagrid: function(){
-		this.gridData = this._getValue();
+	_loadReadDatagrid: function(callback){
+		var p = o2.promiseAll(this.gridData).then(function(v){
+			this.gridData = v;
+			if (o2.typeOf(this.gridData)=="array") this.gridData = {"data": this.gridData};
+			this.__loadReadDatagrid(callback);
+			this.moduleValueAG = null;
+			return v;
+		}.bind(this));
+		this.moduleValueAG = p;
+		if (this.moduleValueAG) this.moduleValueAG.then(function(){
+			this.moduleValueAG = null;
+		}.bind(this));
 
+		// if (this.gridData && this.gridData.isAG){
+		// 	this.moduleValueAG = this.gridData;
+		// 	this.gridData.addResolve(function(v){
+		// 		this.gridData = v;
+		// 		this._loadReadDatagrid(callback);
+		// 	}.bind(this));
+		// }else{
+		// 	if (o2.typeOf(this.gridData)=="array") this.gridData = {"data": this.gridData};
+		// 	this.__loadReadDatagrid(callback);
+		// 	this.moduleValueAG = null;
+		// }
+	},
+
+	__loadReadDatagrid: function(callback){
+		//this.gridData = this._getValue();
 		if (!this.titleTr) this._getDatagridTitleTr();
 		//var titleTr = this.table.getElement("tr");
 		var titleHeaders = this.titleTr.getElements("th");
@@ -827,23 +881,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 									cell.set("text", text);
 								}
 							}
-
-
-							// if (typeOf(v)==="array"){
-							// 	var textArray = [];
-							// 	v.each( function( item ){
-							// 		if (typeOf(item)==="object"){
-							// 			textArray.push( item.name+((item.unitName) ? "("+item.unitName+")" : "") );
-							// 		}else{
-							// 			textArray.push(item);
-							// 		}
-							// 	}.bind(this));
-							// 	cell.set("text", textArray.join(", "));
-							// }else if (typeOf(v)==="object"){
-							//    cell.set("text", v.name+((v.unitName) ? "("+v.unitName+")" : ""));
-							// }else{
-							//    cell.set("text", v);
-							// }
 							break;
 						}
 					}else{ //Sequence
@@ -854,14 +891,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				}.bind(this));
 			}.bind(this));
 		}
-
-
-		//lastTr.destroy();
-
 		this._loadTotal();
-		//   this._loadSequenceRead();
 
-
+		if (callback) callback();
 	},
 
 	_loadDatagridStyle: function(){
@@ -1049,13 +1081,39 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this.setData(this._getValue());
 	},
 	setData: function(data){
-		// if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
-		if (data){
-			this._setBusinessData(data);
-			this.gridData = data;
-		}else{
-			this.gridData = this._getValue();
+		if (!data){
+			data = this._getValue();
 		}
+		this._setData(data);
+	},
+	_setData: function(data){
+		var p = o2.promiseAll(this.data).then(function(v){
+			this.gridData = v;
+			if (o2.typeOf(data)=="array") data = {"data": data};
+			this.__setData(data);
+			this.moduleValueAG = null;
+			return v;
+		}.bind(this));
+		this.moduleValueAG = p;
+		if (this.moduleValueAG) this.moduleValueAG.then(function(){
+			this.moduleValueAG = null;
+		}.bind(this));
+
+		// if (data && data.isAG){
+		// 	this.moduleValueAG = data;
+		// 	data.addResolve(function(v){
+		// 		this._setData(v);
+		// 	}.bind(this));
+		// }else{
+		// 	if (o2.typeOf(data)=="array") data = {"data": data};
+		// 	this.__setData(data);
+		// 	this.moduleValueAG = null;
+		// }
+	},
+	__setData: function(data){
+		// if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
+		this._setBusinessData(data);
+		this.gridData = data;
 
 		// if (this.isEdit) this._completeLineEdit();
 		if( this.isEdit ){ //如果有在编辑的，取消编辑行
@@ -1098,9 +1156,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			}
 			this._loadDatagridStyle();
 		}
-
-
 	},
+
 	getTotal: function(){
 		this._loadTotal();
 		return this.totalResaults;
