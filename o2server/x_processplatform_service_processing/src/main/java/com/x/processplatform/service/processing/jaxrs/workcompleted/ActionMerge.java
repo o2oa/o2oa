@@ -93,14 +93,14 @@ class ActionMerge extends BaseAction {
 					Form form = business.element().get(workCompleted.getForm(), Form.class);
 					if (null != form) {
 						StoreForm storeForm = new StoreForm();
-						StoreForm storeFormMobile = new StoreForm();
+						StoreForm mobileStoreForm = new StoreForm();
 						storeForm.setForm(new RelatedForm(form, form.getDataOrMobileData()));
-						storeFormMobile.setForm(new RelatedForm(form, form.getMobileDataOrData()));
+						mobileStoreForm.setForm(new RelatedForm(form, form.getMobileDataOrData()));
 						CompletableFuture.allOf(relateForm(business, form, storeForm),
 								relateScript(business, form, storeForm), relateFormMobile(business, form, storeForm),
 								relateScriptMobile(business, form, storeForm)).get();
 						workCompleted.getProperties().setStoreForm(storeForm);
-						workCompleted.getProperties().setStoreFormMobile(storeFormMobile);
+						workCompleted.getProperties().setMobileStoreForm(mobileStoreForm);
 					}
 					CompletableFuture.allOf(mergeItem(business, workCompleted, items),
 							mergeTaskCompleted(business, workCompleted, taskCompleteds),

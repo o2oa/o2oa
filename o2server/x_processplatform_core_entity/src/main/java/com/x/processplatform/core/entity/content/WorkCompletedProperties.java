@@ -35,7 +35,7 @@ public class WorkCompletedProperties extends JsonProperties {
 	private StoreForm storeForm;
 
 	@FieldDescribe("合并工作Form,移动端.")
-	private StoreForm storeFormMobile;
+	private StoreForm mobileStoreForm;
 
 	@FieldDescribe("标题")
 	private String title;
@@ -98,7 +98,7 @@ public class WorkCompletedProperties extends JsonProperties {
 
 	public StoreForm storeForm(boolean mobile) throws Exception {
 		if (mobile) {
-			return this.getStoreFormMobile();
+			return this.getMobileStoreForm();
 		} else {
 			return this.getStoreForm();
 		}
@@ -112,12 +112,12 @@ public class WorkCompletedProperties extends JsonProperties {
 		this.storeForm = storeForm;
 	}
 
-	public StoreForm getStoreFormMobile() {
-		return storeFormMobile;
+	public StoreForm getMobileStoreForm() {
+		return mobileStoreForm;
 	}
 
-	public void setStoreFormMobile(StoreForm storeFormMobile) {
-		this.storeFormMobile = storeFormMobile;
+	public void setMobileStoreForm(StoreForm mobileStoreForm) {
+		this.mobileStoreForm = mobileStoreForm;
 	}
 
 	public static class StoreForm extends GsonPropertyObject {
