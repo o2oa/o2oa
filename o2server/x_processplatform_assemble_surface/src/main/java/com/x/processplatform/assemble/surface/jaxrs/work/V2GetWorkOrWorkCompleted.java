@@ -74,6 +74,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			CompletableFuture<Void> creatorPersonFuture = this.creatorPersonFuture(work.getCreatorPerson(), wo);
 			CompletableFuture<Void> creatorUnitFuture = this.creatorUnitFuture(work.getCreatorUnit(), wo);
 			CompletableFuture<Void> attachmentFuture = this.attachmentFuture(effectivePerson, work.getJob(), wo);
+			CompletableFuture<Void> recordFuture = this.recordFuture(effectivePerson, work.getJob(), wo);
 			workJsonFuture.get(10, TimeUnit.SECONDS);
 			activityRouteFuture.get(10, TimeUnit.SECONDS);
 			dataFuture.get(10, TimeUnit.SECONDS);
@@ -83,6 +84,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			creatorPersonFuture.get(10, TimeUnit.SECONDS);
 			creatorUnitFuture.get(10, TimeUnit.SECONDS);
 			attachmentFuture.get(10, TimeUnit.SECONDS);
+			recordFuture.get(10, TimeUnit.SECONDS);
 			for (WoTask woTask : wo.getTaskList()) {
 				wo.getRecordList().add(taskToRecord(woTask));
 			}
@@ -95,6 +97,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			CompletableFuture<Void> creatorPersonFuture = creatorPersonFuture(workCompleted.getCreatorPerson(), wo);
 			CompletableFuture<Void> creatorUnitFuture = creatorUnitFuture(workCompleted.getCreatorUnit(), wo);
 			CompletableFuture<Void> attachmentFuture = attachmentFuture(effectivePerson, workCompleted.getJob(), wo);
+			CompletableFuture<Void> workCompletedRecordFuture = this.workCompletedRecordFuture(effectivePerson,
+					workCompleted, wo);
 			workCompletedJsonFuture.get(10, TimeUnit.SECONDS);
 			workCompletedDataFuture.get(10, TimeUnit.SECONDS);
 			readFuture.get(10, TimeUnit.SECONDS);
@@ -102,6 +106,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			creatorPersonFuture.get(10, TimeUnit.SECONDS);
 			creatorUnitFuture.get(10, TimeUnit.SECONDS);
 			attachmentFuture.get(10, TimeUnit.SECONDS);
+			workCompletedRecordFuture.get(10, TimeUnit.SECONDS);
 		}
 
 		if (BooleanUtils.isFalse(checkControlFuture.get(10, TimeUnit.SECONDS))) {
@@ -145,8 +150,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			}
 		});
 	}
-
- 
 
 	private CompletableFuture<Void> taskFuture(EffectivePerson effectivePerson, String job, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
@@ -271,6 +274,35 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		return CompletableFuture.runAsync(() -> {
 			try {
 				wo.setWork(gson.toJsonTree(WoWorkCompleted.copier.copy(workCompleted)));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private CompletableFuture<Void> recordFuture(EffectivePerson effectivePerson, String job, Wo wo) {
+		return CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				wo.setRecordList(emc.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, job).stream()
+						.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private CompletableFuture<Void> workCompletedRecordFuture(EffectivePerson effectivePerson,
+			WorkCompleted workCompleted, Wo wo) {
+		return CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
+					wo.setRecordList(WoRecord.copier.copy(workCompleted.getProperties().getRecordList()).stream()
+							.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+				} else {
+					wo.setRecordList(emc
+							.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, workCompleted.getJob())
+							.stream().sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+				}
 			} catch (Exception e) {
 				logger.error(e);
 			}
