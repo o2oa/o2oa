@@ -20,7 +20,13 @@
                 <input type="radio" name="hideSystemTools" value="true" text{($.hideSystemTools)?'checked':''}/>不显示
             </td>
           </tr>
-
+			<tr>
+			<td class="editTableTitle">已阅:</td>
+			<td class="editTableValue">
+				<input type="radio" name="hideReadedAction" value="false" text{(!$.hideReadedAction)?'checked':''}/>显示
+				<input type="radio" name="hideReadedAction" value="true" text{($.hideReadedAction)?'checked':''}/>不显示
+			</td>
+		</tr>
 		</table>
 	</div>
     <div title="操作"  class="MWFTab" style="overflow: hidden">
