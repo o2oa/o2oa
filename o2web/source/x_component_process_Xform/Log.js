@@ -1420,14 +1420,14 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         var logReadNode = new Element("div", {"styles": this.form.css.logReadTextNode}).inject(node);
         if (readNames.length){
             var readStrTitle = readNames.join(", ");
-            var readStr = (readNames.length>20) ? readNames.slice(0,20).join(", ") : readStrTitle;
+            var readStr = (readNames.length>20) ? (readNames.slice(0,20).join(", ") + MWF.xApplication.process.Xform.LP.andSoForth ): readStrTitle;
             html = "<span style='color: #0000ff'>"+(this.json.showReadTitle || MWF.xApplication.process.Xform.LP.showReadTitle)+": </span>"+readStr+"<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
 
             //var logReadPersonNode = new Element("div", {"styles": this.form.css.logReadTextNode}).inject(logReadNode);
         }
         if (readCompletedNames.length){
             var readCompletedStrTitle = readCompletedNames.join(", ");
-            var readCompletedStr = (readCompletedNames.length>20) ? readCompletedNames.slice(0,20).join(", ") : readCompletedStrTitle;
+            var readCompletedStr = (readCompletedNames.length>20) ? (readCompletedNames.slice(0,20).join(", ") + MWF.xApplication.process.Xform.LP.andSoForth ): readCompletedStrTitle;
             html += "<span style='color: #0000ff'>"+(this.json.showReadCompletedTitle || MWF.xApplication.process.Xform.LP.showReadCompletedTitle)+": </span>"+readCompletedStr+"<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
         }
         if (html) logReadNode.set("html", html);
