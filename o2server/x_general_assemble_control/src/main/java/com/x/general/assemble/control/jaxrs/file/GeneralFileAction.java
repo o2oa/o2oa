@@ -17,7 +17,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-@Path("file")
+@Path("generalfile")
 @JaxrsDescribe("获取附件")
 public class GeneralFileAction extends StandardJaxrsAction {
 
