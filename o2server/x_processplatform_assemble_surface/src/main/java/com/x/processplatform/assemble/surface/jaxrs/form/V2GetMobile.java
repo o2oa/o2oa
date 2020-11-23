@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.form;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -17,10 +18,12 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.WorkCompletedProperties;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.RelatedForm;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.RelatedScript;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormProperties;
+import com.x.processplatform.core.entity.element.Script;
 
 class V2GetMobile extends BaseAction {
 
@@ -92,6 +95,38 @@ class V2GetMobile extends BaseAction {
 			}
 			return map;
 		});
+	}
+	
+	private Map<String, RelatedScript> convertScript(Business bus, FormProperties properties) throws Exception {
+		Map<String, RelatedScript> map = new TreeMap<>();
+		for (Entry<String, String> entry : properties.getMobileRelatedScriptMap().entrySet()) {
+			switch (entry.getValue()) {
+			case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
+				Script pp = bus.script().pick(entry.getKey());
+				if (null != pp) {
+					map.put(entry.getKey(),
+							new RelatedScript(pp.getId(), pp.getName(), pp.getAlias(), pp.getText(), entry.getValue()));
+				}
+				break;
+			case WorkCompletedProperties.RelatedScript.TYPE_CMS:
+				com.x.cms.core.entity.element.Script cms = bus.cms().script().pick(entry.getKey());
+				if (null != cms) {
+					map.put(entry.getKey(), new RelatedScript(cms.getId(), cms.getName(), cms.getAlias(), cms.getText(),
+							entry.getValue()));
+				}
+				break;
+			case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
+				com.x.portal.core.entity.Script p = bus.portal().script().pick(entry.getKey());
+				if (null != p) {
+					map.put(entry.getKey(),
+							new RelatedScript(p.getId(), p.getName(), p.getAlias(), p.getText(), entry.getValue()));
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		return map;
 	}
 
 	public static class Wo extends AbstractWo {
