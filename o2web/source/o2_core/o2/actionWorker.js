@@ -70,7 +70,6 @@ function V(httpRequest) {
 })();
 
 onmessage = function(e) {
-    debugger;
     this.action.sendRequest(e.data);
     //
     //

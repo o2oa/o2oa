@@ -236,7 +236,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }.bind(this));
     },
     loadRelatedScript: function () {
-        debugger;
+
         if (this.json.includeScripts && this.json.includeScripts.length) {
             var includeScriptText = "";
             var includedIds = [];
@@ -1015,7 +1015,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var data = this.businessData.data;
         Object.each(this.forms, function (module, id) {
             if (module.json.type === "Opinion") {
-                debugger;
+
                 if (issubmit) {
                     this.saveOpinion(module);
 
@@ -1151,7 +1151,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
 
     saveWork: function (callback, silent) {
-        debugger;
+
         if (this.businessData.control["allowSave"]) {
             this.fireEvent("beforeSave");
 
@@ -1333,7 +1333,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         if (!this.options.readonly) {
             if (this.businessData.work && this.businessData.work.id) {
                 if (this.app.inBrowser && navigator.sendBeacon) {
-                    debugger;
+
                     var obj = this.workAction.action.actions["checkDraft"];
                     var url = this.workAction.action.address + obj.uri;
                     url = url.replace("{id}", this.businessData.work.id);
@@ -1544,7 +1544,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     //    return this;
     //},
     getIgnoreImpowerIdentity: function (processorOrgList) {
-        debugger;
+
         var list = [];
         var check = function (org, isProcessOrg) {
             var moduleData = isProcessOrg ? org.getValue() : org.getData();
@@ -1786,7 +1786,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         var _work = this;
         options.onPostLoad = function () {
-            debugger;
+
             var dialog = this;
             dialog.node.setStyle("display", "block");
             var nodeSize = div.getSize();
@@ -1920,7 +1920,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
     processWork: function () {
         var _self = this;
-        debugger;
+
         if (!this.businessData.work.startTime) {
             this.startDraftProcess();
         } else if (this.json.submitFormType === "select") {
@@ -1953,7 +1953,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             return false;
         }
 
-        debugger;
+
         if (!this.submitFormModule) {
             if (!MWF["APPSubmitform"]) {
                 MWF.xDesktop.requireApp("process.Xform", "Subform", null, false);
@@ -1989,7 +1989,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
 
         var setSize = function (notRecenter) {
-            debugger;
+
             var dlg = this;
             if (!dlg || !dlg.node) return;
             dlg.node.setStyle("display", "block");
@@ -1998,7 +1998,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 "height": size.y,
                 "width": size.x
             });
-            debugger;
+
             var s = dlg.setContentSize();
             // if ( dlg.content.getStyle("overflow-y") === "auto" && dlg.content.getStyle("overflow-x") !== "auto" ) {
             //     var paddingRight = (dlg.content.getStyle("padding-right").toInt() || 0 );

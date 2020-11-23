@@ -111,7 +111,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     },
 
     logPlay: function(){
-        debugger;
+
         if (this.process){
             this.isPlaying = true;
             this.toolbar.childrenButton[0].setDisable(true);
@@ -159,7 +159,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }
     },
     playMoveByRoutePoint: function(points, callback){
-        debugger;
+
         var p = {"x": this.playIcon.attr("x").toFloat(), "y": this.playIcon.attr("y").toFloat()};
         var toP = points.shift();
 
@@ -327,7 +327,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                 route.point.attr(this.css.passedRouteFillShap);
                 route.arrow.attr(this.css.passedRouteFillShap);
             }
-            debugger;
+
 
             if (log.taskCompletedList && log.taskCompletedList.length){
                 log.taskCompletedList.each(function(tc){

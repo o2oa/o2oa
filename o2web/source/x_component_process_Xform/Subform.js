@@ -13,7 +13,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
             this.form.checkSubformLoaded();
             this.checked = true;
         } else {
-            debugger;
+
             this.getSubform(function () {
                 this.loadSubform();
             }.bind(this));

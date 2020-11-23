@@ -580,7 +580,7 @@ MWF.xScript.CMSEnvironment = function(ev){
         },
         //查询组织的下级--返回组织的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
-        listSubUnit: function(name, nested){
+        listSubUnit: function(name, nested, async){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
@@ -795,7 +795,7 @@ MWF.xScript.CMSEnvironment = function(ev){
             var data = {"identityList":getNameFlag(name)};
             var v = null;
             var cb = function(json){
-                v = json.data;
+                v = json.data.nameList;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             };
@@ -2330,9 +2330,9 @@ MWF.xScript.createCMSDict = function(application){
             if (path){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async);
+                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
             }else{
-                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async);
+                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async, false);
             }
             return (!!async) ? promise : value;
 

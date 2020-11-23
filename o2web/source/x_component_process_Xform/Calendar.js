@@ -70,7 +70,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
     },
 
 	clickSelect: function(){
-	    debugger;
+
         var _self = this;
         if (!this.calendar){
             MWF.require("MWF.widget.Calendar", function(){
