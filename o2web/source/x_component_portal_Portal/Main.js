@@ -91,7 +91,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         var loadModuleFlag = false;
         var check = function(){
             if (!!pageJson && loadModuleFlag){
-                layout.sessionPromise.then(function(){
+                layout.sessionPromise.finally(function(){
                     this.pageInfor = pageJson.data;
                     this.setTitle(this.portal.name+"-"+pageJson.data.name);
                     var page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
@@ -156,7 +156,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         var loadModuleFlag = false;
         var check = function(){
             if (!!pageJson && loadModuleFlag){
-                layout.sessionPromise.then(function(){
+                layout.sessionPromise.finally(function(){
                     this.setTitle(pageJson.data.name);
                     if (pageJson.data.page){
                         this.page = (pageJson.data.page.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.page.data)): null;
