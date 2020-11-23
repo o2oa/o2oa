@@ -91,6 +91,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         var loadModuleFlag = false;
         var check = function(){
             if (!!pageJson && loadModuleFlag){
+                this.pageJson = pageJson;
                 layout.sessionPromise.finally(function(){
                     this.pageInfor = pageJson.data;
                     this.setTitle(this.portal.name+"-"+pageJson.data.name);
@@ -156,8 +157,9 @@ MWF.xApplication.portal.Portal.Main = new Class({
         var loadModuleFlag = false;
         var check = function(){
             if (!!pageJson && loadModuleFlag){
+                this.pageJson = pageJson;
                 layout.sessionPromise.finally(function(){
-                    this.setTitle(pageJson.data.name);
+                    this.setTitle((this.portal.name) ? this.portal.name+"-"+pageJson.data.page.name : pageJson.data.page.name);
                     if (pageJson.data.page){
                         this.page = (pageJson.data.page.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.page.data)): null;
                         this.relatedFormMap = pageJson.data.relatedWidgetMap;
@@ -197,7 +199,8 @@ MWF.xApplication.portal.Portal.Main = new Class({
         }
         this.action.getApplication(this.options.portalId, function(json){
             this.portal = json.data;
-            this.setTitle(this.portal.name);
+            if (this.pageJson) this.setTitle(this.portal.name+"-"+this.pageJson.data.page.name);
+
             if (this.portal.icon){
                 if (this.taskitem){
                     this.taskitem.iconNode.setStyles({
