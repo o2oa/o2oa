@@ -117,7 +117,7 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
                             "text": MWF.LP.process.button.ok,
                             "action": function(){
                                 //if (callback) callback(_self.view.selectedItems);
-                                debugger;
+
                                 if (callback) callback(_self.view.getData());
                                 this.close();
                             }
