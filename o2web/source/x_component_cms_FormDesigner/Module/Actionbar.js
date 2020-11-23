@@ -24,6 +24,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 		this.containerNode = null;
 		this.systemTools = [];
 		this.customTools = [];
+        this.multiTools = [];
 	},
 	setTemplateStyles: function(styles){
 		this.json.style = styles.style;
@@ -60,7 +61,8 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
 
 			MWF.getJSON(this.path+"toolbars.json", function(json){
-			    this.json.defaultTools = json;
+			    //this.json.defaultTools = json;
+			    this.json.multiTools = json.map( function (d) { d.system = true; return d; });
 				this.setToolbars(json, this.toolbarNode);
 				this.toolbarWidget.load();
 				this._setEditStyle_custom( "hideSystemTools" );
@@ -90,63 +92,34 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
             if (!this.json.actionStyles) this.json.actionStyles = Object.clone(this.toolbarWidget.css);
             this.toolbarWidget.css = this.json.actionStyles;
 
-			if (this.json.defaultTools){
-				var json = Array.clone(this.json.defaultTools);
-				this.setToolbars(json, this.toolbarNode);
-				//if (this.json.tools) json.append(this.json.tools);
-				//this.setToolbars(json, this.toolbarNode);
-				if (this.json.tools){
-					this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-				}
-				this.toolbarWidget.load();
-				this._setEditStyle_custom( "hideSystemTools" );
-				this._setEditStyle_custom( "hideSetPopularDocumentTool" );
-				//json = null;
-			}else{
-				MWF.getJSON(this.path+"toolbars.json", function(json){
-					this.json.defaultTools = json;
-					var json = Array.clone(this.json.defaultTools);
-					this.setToolbars(json, this.toolbarNode);
-					//if (this.json.tools) json.append(this.json.tools);
-					//this.setToolbars(json, this.toolbarNode);
-					if (this.json.tools){
-						this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-					}
-					this.toolbarWidget.load();
-					this._setEditStyle_custom( "hideSystemTools" );
-					this._setEditStyle_custom( "hideSetPopularDocumentTool" );
-					//json = null;
-				}.bind(this), false);
-			}
+            this.loadMultiToolbar();
 
-			//   if (this.json.sysTools.editTools){
-			//       this.setToolbars(this.json.sysTools.editTools, this.toolbarNode);
-			////       this.setToolbars(this.json.tools.editTools, this.toolbarNode);
-			//   }else{
-			//       this.setToolbars(this.json.sysTools, this.toolbarNode);
-			////       this.setToolbars(this.json.tools, this.toolbarNode);
-			//   }
+			// if (this.json.defaultTools){
+			// 	var json = Array.clone(this.json.defaultTools);
+			// 	this.setToolbars(json, this.toolbarNode);
+			// 	if (this.json.tools){
+			// 		this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+			// 	}
+			// 	this.toolbarWidget.load();
+			// 	this._setEditStyle_custom( "hideSystemTools" );
+			// 	this._setEditStyle_custom( "hideSetPopularDocumentTool" );
+			// }else{
+			// 	MWF.getJSON(this.path+"toolbars.json", function(json){
+			// 		this.json.defaultTools = json;
+			// 		var json = Array.clone(this.json.defaultTools);
+			// 		this.setToolbars(json, this.toolbarNode);
+			// 		if (this.json.tools){
+			// 			this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+			// 		}
+			// 		this.toolbarWidget.load();
+			// 		this._setEditStyle_custom( "hideSystemTools" );
+			// 		this._setEditStyle_custom( "hideSetPopularDocumentTool" );
+			// 	}.bind(this), false);
+			// }
 
 		}
 
 	},
-	//_refreshActionbar: function(){
-	//	if (this.form.options.mode == "Mobile"){
-	//		this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
-	//		this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
-	//	}else{
-	//		this.toolbarNode = this.node.getFirst("div");
-	//		this.toolbarNode.empty();
-	//		this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
-    //
-	//		MWF.getJSON(this.path+"toolbars.json", function(json){
-	//			this.setToolbars(json, this.toolbarNode);
-	//			this.toolbarWidget.load();
-	//			this._setEditStyle_custom( "hideSetPopularDocumentTool" );
-	//		}.bind(this), false);
-	//	}
-    //
-	//},
 	_resetActionbar: function(){
         if (this.form.options.mode == "Mobile"){
             this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
@@ -163,30 +136,66 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
                 this.json.actionStyles = Object.clone(this.toolbarWidget.css);
             }
 
-            if (this.json.defaultTools){
-                var json = Array.clone(this.json.defaultTools);
-                //if (this.json.tools) json.append(this.json.tools);
-                this.setToolbars(json, this.toolbarNode);
-                if (this.json.tools){
-                    this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                }
-                this.toolbarWidget.load();
-                //json = null;
-            }else{
-                MWF.getJSON(this.path+"toolbars.json", function(json){
-                    this.json.defaultTools = json;
-                    var json = Array.clone(this.json.defaultTools);
-                    //if (this.json.tools) json.append(this.json.tools);
-                    this.setToolbars(json, this.toolbarNode);
-                    if (this.json.tools){
-                        this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                    }
-                    this.toolbarWidget.load();
-                    //json = null;
-                }.bind(this), false);
-            }
+            this.loadMultiToolbar();
+
+            // if (this.json.defaultTools){
+            //     var json = Array.clone(this.json.defaultTools);
+            //     this.setToolbars(json, this.toolbarNode);
+            //     if (this.json.tools){
+            //         this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            //     }
+            //     this.toolbarWidget.load();
+            // }else{
+            //     MWF.getJSON(this.path+"toolbars.json", function(json){
+            //         this.json.defaultTools = json;
+            //         var json = Array.clone(this.json.defaultTools);
+            //         this.setToolbars(json, this.toolbarNode);
+            //         if (this.json.tools){
+            //             this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            //         }
+            //         this.toolbarWidget.load();
+            //     }.bind(this), false);
+            // }
         }
     },
+    loadMultiToolbar : function(){
+        if( this.json.multiTools ){
+            var json = Array.clone(this.json.multiTools);
+            this.setMultiToolbars(json, this.toolbarNode);
+            this.toolbarWidget.load();
+			this._setEditStyle_custom( "hideSystemTools" );
+			this._setEditStyle_custom( "hideSetPopularDocumentTool" );
+        }else if( this.json.defaultTools ){
+            this.json.multiTools = this.json.defaultTools.map( function (d) { d.system = true; return d; });
+            if (this.json.tools){
+                this.json.multiTools = this.json.multiTools.concat( this.json.tools )
+            }
+            this.setMultiToolbars( Array.clone(this.json.multiTools), this.toolbarNode);
+            this.toolbarWidget.load();
+			this._setEditStyle_custom( "hideSystemTools" );
+			this._setEditStyle_custom( "hideSetPopularDocumentTool" );
+        }else{
+            MWF.getJSON(this.path+"toolbars.json", function(json){
+                this.json.multiTools = json.map( function (d) { d.system = true; return d; });
+                if (this.json.tools){
+                    this.json.multiTools = this.json.multiTools.concat( this.json.tools )
+                }
+                this.setMultiToolbars(Array.clone(this.json.multiTools), this.toolbarNode);
+                this.toolbarWidget.load();
+				this._setEditStyle_custom( "hideSystemTools" );
+				this._setEditStyle_custom( "hideSetPopularDocumentTool" );
+            }.bind(this), false);
+        }
+    },
+	setMultiToolbars: function(tools, node){
+		tools.each(function(tool){
+			if( tool.system ){
+				this.setToolbars( [tool], node );
+			}else{
+				this.setCustomToolbars( [tool], node );
+			}
+		}.bind(this));
+	},
 	setToolbars: function(tools, node){
 		tools.each(function(tool){
 			var actionNode = new Element("div", {
@@ -198,6 +207,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 				"MWFButtonText": tool.text
 			}).inject(node);
 			this.systemTools.push(actionNode);
+			this.multiTools.push( actionNode );
 			if (tool.sub){
 				var subNode = node.getLast();
 				this.setToolbars(tool.sub, subNode);
@@ -223,6 +233,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 				"MWFButtonText": tool.text
 			}).inject(node);
 			this.customTools.push(actionNode);
+			this.multiTools.push( actionNode );
 			if (tool.sub){
 				var subNode = node.getLast();
 				this.setToolbars(tool.sub, subNode);
@@ -256,7 +267,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 				});
 			}
 		}
-		if (name=="defaultTools" || name=="tools" || name==="actionStyles"){
+		if (name=="defaultTools" || name=="tools" || name=="multiTools" || name==="actionStyles"){
 			this._refreshActionbar();
 		}
 	}

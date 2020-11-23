@@ -75,6 +75,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
                 array.each( function(tool){
                     for( var i=0; i<list.length; i++ ){
                         if( list[i].id === tool.data.id ){
+                            list[i].system = true;
                             this.data.push( list[i] );
                             var action = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction(this);
                             action.load(list[i]);
@@ -139,7 +140,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
             this.conditionButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/code_empty.png)");
         }
 
-        if (!this.editor.options.noEditShow){
+        if (!this.editor.options.noEditShow && !this.data.system){
             this.editButton = new Element("div", {"styles": this.css.actionEditButtonNode, "title": this.editor.designer.lp.actionbar.edithide}).inject(this.titleNode);
             if (this.data.editShow){
                 this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit.png)");
@@ -148,7 +149,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
             }
         }
 
-        if (!this.editor.options.noReadShow){
+        if (!this.editor.options.noReadShow && !this.data.system){
             this.readButton = new Element("div", {"styles": this.css.actionReadButtonNode, "title": this.editor.designer.lp.actionbar.readhide}).inject(this.titleNode);
             if (this.data.readShow){
                 this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read.png)");
@@ -162,7 +163,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
         var icon = this.editor.path+this.editor.options.style+"/tools/"+this.data.img;
         this.iconNode.setStyle("background-image", "url("+icon+")");
 
-        if (!this.editor.options.noCode) {
+        if (!this.editor.options.noCode && !this.data.system ) {
             this.scriptNode = new Element("div", {"styles": this.css.actionScriptNode}).inject(this.node);
             this.scriptArea = new MWF.widget.ScriptArea(this.scriptNode, {
                 "title": this.editor.designer.lp.actionbar.editScript,
