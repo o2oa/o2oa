@@ -101,7 +101,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         }
     },
     _computeValue: function(){
-        debugger;
+
         var simple = this.json.storeRange === "simple";
         var values = [];
         if (this.json.identityValue) {
@@ -493,7 +493,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         }
     },
     resetData: function(){
-        debugger;
+
         var v = this.getValue();
         //this.setData((v) ? v.join(", ") : "");
         this.setData(v);
@@ -702,7 +702,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         this.node = node;
     },
     _loadNodeInputEdit: function(){
-        debugger;
+
         this.node.setStyle("overflow","visible");
         var input=null;
         MWF.require("MWF.widget.Combox", function(){
@@ -1331,7 +1331,7 @@ MWF.APPOrg.EmpowerChecker = new Class({
         return array;
     },
     setIgnoreEmpowerFlag : function(data, callback){
-        debugger;
+
         var ignoreList = this.getIgnoreEmpowerArray();
         for( var i=0; i<data.length; i++ ){
             var d = data[i];
@@ -1344,7 +1344,7 @@ MWF.APPOrg.EmpowerChecker = new Class({
         if( callback )callback( data );
     },
     replaceEmpowerIdentity : function(data, callback){
-        debugger;
+
         var empowerData = {};
         this.empowerSelectNodes.each(function(node){
             if( node.retrieve("isSelected") ){
@@ -1389,7 +1389,7 @@ MWF.APPOrg.EmpowerChecker = new Class({
     },
     openSelectEmpowerDlg_mobile : function( data, orginData, callback, container ){
 
-        debugger;
+
 
         var that = this;
 
@@ -1440,7 +1440,7 @@ MWF.APPOrg.EmpowerChecker = new Class({
                 "zIndex" : 3001,
                 "closeOnclickOk" : true,
                 "onComplete": function (items) {
-                    debugger;
+
                     var arr = [];
                     items.each(function (item) {
                         arr.push( item.data.id )

@@ -80,7 +80,7 @@ o2.widget.Maplist = new Class({
         }.bind(this));
 	},
 	showCode: function(){
-		debugger;
+
 		// var display = this.contentNode.getStyle("display");
 		// if (display=="none") this.expand();
 			

@@ -158,7 +158,7 @@ MWF.xDesktop.Layout = new Class({
         }
     },
     initNode: function(node){
-        debugger;
+
 
         this.loadCss();
 
@@ -633,7 +633,7 @@ MWF.xDesktop.Layout = new Class({
                 if (!this.notRecordStatus) this.recordDesktopStatus();
                 if (this.socket && this.socket.webSocket) {
                     //console.log("websocket is onbeforeunload close ...");
-                    debugger;
+
                     this.socket.reConnect = false;
                     this.socket.webSocket.close();
                     //return false;
@@ -668,7 +668,7 @@ MWF.xDesktop.Layout = new Class({
             "widgets": {}
         };
         Object.each(this.apps, function(app, id){
-            debugger;
+
             if (app.window){
                 if (app.options.desktopReload){
                     var appStatus ={

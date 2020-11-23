@@ -214,7 +214,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
         }
     },
     _setBusinessSectionData: function(v){
-        debugger;
         switch (this.json.sectionBy){
             case "person":
                 this._setBusinessSectionDataByPerson(v);
