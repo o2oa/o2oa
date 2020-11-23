@@ -19,6 +19,8 @@ import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.content.Data;
 
 public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
+
+	private CmsBatchOperationProcessService cmsBatchOperationProcessService = new CmsBatchOperationProcessService();
 	
 	public void execute( ImportDataRow dataRow ) throws Exception {
 		int curRow = dataRow.getCurRow();
@@ -114,9 +116,10 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 				}
 
 				if(flag) {
-					new CmsBatchOperationPersistService().addOperation(
+					cmsBatchOperationProcessService.refreshDocumentReview(document.getId());
+					/*new CmsBatchOperationPersistService().addOperation(
 							CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
-							CmsBatchOperationProcessService.OPT_TYPE_PERMISSION, document.getId(), document.getId(), "导入新文档：ID=" + document.getId());
+							CmsBatchOperationProcessService.OPT_TYPE_PERMISSION, document.getId(), document.getId(), "导入新文档：ID=" + document.getId());*/
 				}
 			}else {
 				System.out.println("数据导入不成功，propertyNames为空，无法识别数据列对应的属性！");
