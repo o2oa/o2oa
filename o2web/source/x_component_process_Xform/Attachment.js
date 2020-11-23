@@ -558,7 +558,6 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if (this.closeOfficeAction) this.setActionDisabled(this.closeOfficeAction);
     },
     loadMinActions: function () {
-        debugger;
         var hiddenGroup = this.options.toolbarGroupHidden;
         if (!hiddenGroup.contains("edit")) {
             this.min_uploadAction = this.createAction(this.minActionAreaNode, "upload", MWF.LP.widget.upload, function (e, node) {
@@ -701,7 +700,6 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
     },
     setAttachmentConfig: function (readInput, editInput, controllerInput) {
-        debugger;
         if (this.selectedAttachments.length) {
             var readList = readInput.retrieve("data-value");
             var editList = editInput.retrieve("data-value");
@@ -754,7 +752,6 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 o2.Actions.get("x_processplatform_assemble_surface").configAttachment(att.data.id, this.module.form.businessData.work.id, att.data, function () {
                     //刷新附件权限，以后要加一个刷新附件的功能
                     o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.getWithWorkOrWorkCompleted(att.data.id, this.module.form.businessData.work.id, function (json) {
-                        debugger;
                         var attachment = this.getAttachmentById( att.data.id );
                         if( attachment ){
                             attachment.data = json.data;
@@ -1050,7 +1047,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
         this.json = json;
         this.form = form;
         this.field = true;
-        debugger;
     },
 
     _loadUserInterface: function () {
@@ -1119,7 +1115,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
     },
 
     _loadEvents: function (editorConfig) {
-        debugger;
         Object.each(this.json.events, function (e, key) {
             if (e.code) {
                 if (this.options.moduleEvents.indexOf(key) !== -1) {

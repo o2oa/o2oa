@@ -184,14 +184,12 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "");
     },
 	getValue: function(){
-        debugger;
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
 		return value || "";
 	},
     _setValue: function(value){
-	    debugger;
 	    // if (value && value.isAG){
 	    //     var ag = o2.AG.all(value).then(function(v){
 	    //         if (o2.typeOf(v)=="array") v = v[0];
@@ -393,7 +391,6 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     },
     notValidationMode: function(text){
         if (!this.isNotValidationMode){
-            debugger;
             this.isNotValidationMode = true;
             this.node.store("borderStyle", this.node.getStyles("border-left", "border-right", "border-top", "border-bottom"));
             this.node.setStyle("border-color", "red");
