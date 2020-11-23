@@ -1391,8 +1391,8 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         widgetList = [];
 
         Object.each(data.moduleList, function(moudle){
-            if (moudle.moduleName.toLowerCase()=="widget"){
-                if (moudle.widgetType == "select"){
+            if (moudle.type.toLowerCase()=="widget"){
+                if (moudle.widgetType == "select" && moudle.widgetSelected ){
                     widgetList.push(moudle.widgetSelected);
                 }
             }
