@@ -265,7 +265,7 @@ o2.xDesktop.Default = new Class({
     },
 
     loadStatus: function(){
-        debugger;
+
         if (this.status){
             var keys = Object.keys(this.status.apps);
             if (this.status.apps && keys.length){
@@ -511,7 +511,7 @@ o2.xDesktop.Default = new Class({
                 var appStatus = this.getAppStatusData(app, id);
                 if (appStatus) status.apps[id] = appStatus;
             }
-            debugger;
+
             if (app.isIndex){
                 if (!status.apps[id]) status.apps[id] = {};
                 status.apps[id].isIndex = true;
@@ -1181,8 +1181,8 @@ o2.xDesktop.Default.StartMenu = new Class({
     },
 
     checkMenuItem: function(value, currentNames){
-        debugger;
-        debugger;
+
+
         if (value.visible===false) return false;
         var isAllow = true;
         if (value.allowList) isAllow = (value.allowList.length) ? (value.allowList.isIntersect(currentNames)) : true;

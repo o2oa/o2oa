@@ -95,7 +95,7 @@ MWF.xAction.RestActions = MWF.Actions = {
 
     //actions: [{"action": "", "name": "list", "par": [], "body": "",  "urlEncode"： false, "cache": false}]
     invokeAsync2: function(actions, callback){
-        debugger;
+
         var cbs = (o2.typeOf(callback)==="function") ? callback : callback.success;
         var cbf = (o2.typeOf(callback)==="function") ? null : callback.failure;
         var res = [];

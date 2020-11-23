@@ -430,7 +430,7 @@ o2.addReady(function () {
         layout.desktop.centerServer = center;
     };
     var _getDistribute = function (callback) {
-        debugger;
+
         if (layout.config.app_protocol === "auto") {
             layout.config.app_protocol = window.location.protocol;
         }

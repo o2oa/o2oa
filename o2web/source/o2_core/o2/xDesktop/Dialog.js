@@ -142,7 +142,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                         button = new Element( bt.tag, {}).inject(this.button);
                     }
                 }
-                debugger;
+
                 if( button.get("type") === "button" ){
                     button.set({
                         "value": bt.text,
@@ -780,7 +780,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
 
     },
     setContentSize: function(height, width){
-        debugger;
+
         //this.content.setStyle("height", this.getContentSize(height));
         // if (!this.options.height && !height){
         //    this.content.setStyle("height", "auto");
@@ -822,7 +822,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
     }
 });
 o2.DL.open = function(options){
-    debugger;
+
     if (!options) options = {};
     if (!options.style) options.style = "user";
     //if (!options.transition) options.transition = Fx.Transitions.Back.easeOut;
