@@ -276,6 +276,54 @@ public class CmsBatchOperationProcessService {
 		CacheManager.notify( Document.class );
 	}
 
+	/**
+	 * 根据数据库中的文档的信息，重新计算文档的Review信息
+	 * 全部删除，然后再重新插入Review记录
+	 * @param docId
+	 * @throws Exception
+	 */
+	public void refreshDocumentReview(String docId ) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			reviewService.refreshDocumentReview( emc, docId );
+
+			Document document = emc.find( docId, Document.class );
+			if( document != null ) {
+				emc.beginTransaction( Document.class );
+				document.setReviewed( true );
+
+				if( StringUtils.isEmpty( document.getAppAlias()  )) {
+					document.setAppAlias( document.getAppName() );
+				}
+
+				document.setSequenceAppAlias( document.getAppAlias() + document.getId() );
+				document.setSequenceCategoryAlias( document.getCategoryAlias() + document.getId() );
+				if( StringUtils.isNotEmpty( document.getTitle() ) && document.getTitle().length() > 30 ) {
+					document.setSequenceTitle( document.getTitle().substring(0, 30) + document.getId() );
+				}else {
+					document.setSequenceTitle( document.getTitle() + document.getId() );
+				}
+				if( StringUtils.isNotEmpty( document.getCreatorPerson() ) && document.getCreatorPerson().length() > 50 ) {
+					document.setSequenceCreatorPerson( document.getCreatorPerson().substring(0, 50) + document.getId() );
+				}else {
+					document.setSequenceCreatorPerson( document.getCreatorPerson() + document.getId() );
+				}
+				if( StringUtils.isNotEmpty( document.getCreatorUnitName() ) && document.getCreatorUnitName().length() > 50 ) {
+					document.setSequenceCreatorUnitName( document.getCreatorUnitName().substring(0, 50) + document.getId() );
+				}else {
+					document.setSequenceCreatorUnitName( document.getCreatorUnitName() + document.getId() );
+				}
+
+				emc.check( document, CheckPersistType.all );
+				emc.commit();
+			}
+		} catch (Exception e) {
+			logger.warn("refreshDocumentReview error:{}",e.getMessage());
+		}finally {
+			CacheManager.notify( Review.class );
+			CacheManager.notify( Document.class );
+		}
+	}
+
 
 	/**
 	 * 将栏目下所有的文档删除，最后删除当前的批处理信息
