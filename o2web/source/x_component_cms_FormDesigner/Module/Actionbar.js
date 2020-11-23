@@ -267,7 +267,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 				});
 			}
 		}
-		if (name=="defaultTools" || name=="tools" || name==="actionStyles"){
+		if (name=="defaultTools" || name=="tools" || name=="multiTools" || name==="actionStyles"){
 			this._refreshActionbar();
 		}
 	}
