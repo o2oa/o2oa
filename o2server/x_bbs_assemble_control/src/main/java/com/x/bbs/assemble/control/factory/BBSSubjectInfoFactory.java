@@ -263,7 +263,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 	}
 	
 	//@MethodDescribe( "根据版块ID, 主版块ID，版块ID，创建者姓名查询符合要求所有主题列表，不包括子版块内的主题数量" )
-	public Long countSubjectInSectionForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, List<String> viewSectionIds ) throws Exception {
+	public Long countSubjectInSectionForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, List<String> viewSectionIds , Date startTime , Date endTime) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(BBSSubjectInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
@@ -298,13 +298,22 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( searchTitle ) ){
 			p = cb.and( p, cb.like( root.get( BBSSubjectInfo_.title ), searchTitle ) );
 		}
+		
+		if(startTime!= null) {
+			   p = cb.and(p, cb.greaterThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), startTime));
+		}
+			
+		if(endTime!= null) {
+			   p = cb.and(p, cb.lessThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), endTime));
+		}
+		
 		cq.select( cb.count( root ) );
 		//SELECT COUNT(b) FROM BBSSubjectInfo b WHERE ((b.id IS NOT NULL AND b.sectionId IN ('1c1d9dfc-0034-4d9a-adc7-bb4b3925bbd5')) AND b.title LIKE 'Count')
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 	
 	//@MethodDescribe( "根据版块ID, 主版块ID，版块ID，创建者姓名查询符合要求所有主题列表，不包括子版块内的主题" )
-	public List<BBSSubjectInfo> listSubjectInSectionForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, Integer maxRecordCount, List<String> viewSectionIds ) throws Exception {
+	public List<BBSSubjectInfo> listSubjectInSectionForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, Integer maxRecordCount, List<String> viewSectionIds, Date startTime , Date endTime) throws Exception {
 		if( maxRecordCount == null ){
 			throw new Exception( "maxRecordCount is null." );
 		}
@@ -341,6 +350,15 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( searchTitle ) ){
 			p = cb.and( p, cb.like( root.get( BBSSubjectInfo_.title ), searchTitle ) );
 		}
+		
+		if(startTime!= null) {
+			   p = cb.and(p, cb.greaterThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), startTime));
+		}
+			
+		if(endTime!= null) {
+			   p = cb.and(p, cb.lessThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), endTime));
+		}
+			
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.latestReplyTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults( maxRecordCount ).getResultList();
 	}	

@@ -279,7 +279,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
             messageItem.status = "completed";
         }
         //@upload message
-        debugger;
+
         if (messageItem && messageItem.moduleMessage){
             if (messageItem.moduleMessage.transferComplete) messageItem.moduleMessage.transferComplete();
         }
@@ -317,7 +317,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
             }
         }
         //@upload message
-        debugger;
+
         if (messageItem && messageItem.moduleMessage){
             if (messageItem.moduleMessage.updateProgress) messageItem.moduleMessage.updateProgress(percent);
         }
@@ -460,7 +460,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
         return xhr;
 	},
 	addFormDataMessage: function(file, noProgress, xhr, showMsg){
-        debugger;
+
         if (layout.desktop.message){
             var contentHTML = "";
             if (noProgress){
@@ -497,7 +497,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
                 }
             };
         }
-debugger;
+
         //@upload message
         if (this.targetModule){
             var moduleMessage = this.targetModule.module.addFormDataMessage(this.targetModule.file);

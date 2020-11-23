@@ -178,7 +178,7 @@ o2.addReady(function () {
         });
     };
     var _createNewApplication = function (e, appNamespace, appName, options, statusObj) {
-        debugger;
+
         var app = new appNamespace["Main"](this, options);
         app.desktop = layout;
         app.inBrowser = true;
@@ -340,7 +340,7 @@ o2.addReady(function () {
             } else {
                 var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
 
-                debugger;
+
                 if (layout.app.$openWithSelf) {
                     return window.location = o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : ""));
                 } else {

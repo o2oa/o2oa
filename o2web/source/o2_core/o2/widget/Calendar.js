@@ -431,7 +431,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	show: function(){
-		debugger;
+		;
 		if (!this.visible){
 			var dStr = this.node.get("value");
 			if (dStr && Date.isValid(dStr)){
@@ -884,7 +884,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	_setTimeDate: function(node, h, m, s){
-		debugger;
+		;
 		if( !this.options.secondEnable ){
 			var div = this.contentTimeTable.getElement(".MWF_calendar_time_s");
 			if( div )div.hide();

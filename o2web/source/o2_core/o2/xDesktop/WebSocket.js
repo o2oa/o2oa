@@ -236,7 +236,7 @@ MWF.xDesktop.WebSocket = new Class({
         }
     },
     receiveCMSPublishMessage: function(data){
-        debugger;
+
         var content = "<font style='color: #ea621f'>"+(data.body.creatorPerson||"").split("@")[0]+"</font>"+MWF.LP.desktop.messsage.publishDocument+data.body.title;
 
         var msg = {
@@ -286,7 +286,7 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveTaskMessage: function(data){
-        debugger;
+
         var task = data.body;
         //var content = MWF.LP.desktop.messsage.receiveTask+"《"+task.title+"》, "+MWF.LP.desktop.messsage.activity+": <font style='color: #ea621f'>"+(task.activityName || "")+"</font>";
         var content = data.title;
@@ -406,7 +406,7 @@ MWF.xDesktop.WebSocket = new Class({
     },
 
     receiveFileEditorMessage: function(data){
-        debugger;
+
         var content = "<font style='color: #ea621f; font-weight: bold'>"+MWF.name.cn(data.body.person)+"</font> "+MWF.LP.desktop.messsage.receiveFileEditor+"“"+data.body.name+"”. ";
         var msg = {
             "subject": MWF.LP.desktop.messsage.fileEditorMessage,
@@ -437,7 +437,7 @@ MWF.xDesktop.WebSocket = new Class({
     },
 
     receiveFileShareMessage: function(data){
-        debugger;
+
         var content = "<font style='color: #ea621f; font-weight: bold'>"+MWF.name.cn(data.body.person)+"</font> "+MWF.LP.desktop.messsage.receiveFileShare+"“"+data.body.name+"”. ";
         var msg = {
             "subject": MWF.LP.desktop.messsage.fileShareMessage,
@@ -492,7 +492,7 @@ MWF.xDesktop.WebSocket = new Class({
         }
     },
     receiveMeetingInviteMessage: function(data){
-        debugger;
+
         this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingInvite;
             content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
@@ -520,7 +520,7 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveMeetingCancelMessage: function(data){
-        debugger;
+
         this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingCancel;
             content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
@@ -548,7 +548,7 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveMeetingAcceptMessage: function(data){
-        debugger;
+
         this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingAccept;
             //content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
@@ -577,7 +577,7 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveMeetingRejectMessage: function(data){
-        debugger;
+
         this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingReject;
             //content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
@@ -669,7 +669,7 @@ MWF.xDesktop.WebSocket = new Class({
         });
     },
     receiveCalendarAlarmMessage: function(data){
-        debugger;
+
         var content = MWF.LP.desktop.messsage.canlendarAlarm;
         content = content.replace(/{title}/g, data.title);
 
@@ -715,7 +715,7 @@ MWF.xDesktop.WebSocket = new Class({
         });
     },
     receiveTeamWorkMessage: function(data){
-        debugger;
+
         var task = data.body;
         //var content = MWF.LP.desktop.messsage.receiveTask+"《"+task.title+"》, "+MWF.LP.desktop.messsage.activity+": <font style='color: #ea621f'>"+(task.activityName || "")+"</font>";
         var content = data.title;
