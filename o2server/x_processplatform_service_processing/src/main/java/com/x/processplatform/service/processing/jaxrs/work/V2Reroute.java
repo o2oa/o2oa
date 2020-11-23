@@ -67,8 +67,10 @@ class V2Reroute extends BaseAction {
 				emc.beginTransaction(Task.class);
 				emc.beginTransaction(Read.class);
 				emc.beginTransaction(WorkLog.class);
-				/** 重新设置表单 */
+				// 重新设置表单
 				setForm(business, work, activity);
+				// 调度强制把这个标志设置为true,这样可以避免在拟稿状态就调度,系统认为是拟稿状态,默认不创建待办.
+				work.setWorkThroughManual(true);
 				work.setDestinationActivity(activity.getId());
 				work.setDestinationActivityType(activity.getActivityType());
 				work.setDestinationRoute("");
