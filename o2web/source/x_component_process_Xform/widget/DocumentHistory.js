@@ -7,7 +7,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         "inforTime": 2000
     },
     initialize: function(documentEditor, options){
-        debugger;
+
         this.setOptions(options);
         this.documentEditor = documentEditor;
         this.css = this.documentEditor.css;
@@ -24,7 +24,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                     if (!layout.mobile || this.is_iPad()) this.createHistoryListNode();
 
                     this.documentEditor.options.pageShow = "single";
-                    debugger;
+
                     this.documentEditor.resetData();
 
                     this.beginDiffHistory();

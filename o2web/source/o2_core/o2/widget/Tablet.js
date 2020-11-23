@@ -1173,7 +1173,7 @@ o2.widget.Tablet.ImageMover = new Class({
         var	y=offset.y;
         if( y == 0 )return;
 
-        debugger;
+
 
         var coordinates = this.dragNode.getCoordinates( this.node );
         var containerSize = this.node.getSize();

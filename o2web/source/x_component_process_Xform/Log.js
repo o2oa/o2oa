@@ -378,7 +378,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }
     },
     loadRecordTaskLine_default: function(task, node, isTask, margin, isZebra, nodeStyle, noIconNode){
-        debugger;
+
         var style = "logTaskNode";
         var textStyle = "logTaskFloatTextNode";
         if (nodeStyle){
@@ -446,7 +446,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
 
             switch (task.type) {
                 case "empower":
-                    debugger;
+
                     router = MWF.xApplication.process.Xform.LP.empower;
                     var empowerTo = (task.properties.nextManualTaskIdentityList && task.properties.nextManualTaskIdentityList.length) ? o2.name.cns(task.properties.nextManualTaskIdentityList).join(",") : "";
                     opinion = MWF.xApplication.process.Xform.LP.empowerTo + empowerTo;

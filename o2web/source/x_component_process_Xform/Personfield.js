@@ -388,7 +388,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
     },
 
 	clickSelect: function( ev ){
-        debugger;
+
         var options = this.getOptions();
         if( this.selector && this.selector.loading ) {
         }else if( this.selector && this.selector.selector && this.selector.selector.active ){
@@ -648,7 +648,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         var values = [];
         var comboxValues = [];
 
-        debugger;
+
         var simple = this.json.storeRange === "simple";
 
         var type = typeOf(value);
