@@ -1873,6 +1873,7 @@ MWF.xScript.CMSJSONData = function(data, callback, key, parent){
         var o = {};
         for (var k in data) o[k] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, k, this]),"set": setter.apply(this, [data, callback, k, this])};
         o["length"] = {"get": function(){return Object.keys(data).length;}};
+        o["some"] = {"get": function(){return data.some;}};
         MWF.defineProperties(this, o);
 
         var methods = {
