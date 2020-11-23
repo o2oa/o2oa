@@ -3,7 +3,7 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class({
     Extends: MWF.APP$Module,
 
     _loadUserInterface: function(){
-        debugger;
+
         this.node.empty();
         this.getWidget(function(){
             this.loadWidget();

@@ -1017,7 +1017,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 var data = currentTable.retrieve("data");
 
                 //var attKeys = [];
-                debugger;
+
                 var titleThs = _self.table.getElements("th");
                 titleThs.each(function(th, i){
                     var key = th.get("id");

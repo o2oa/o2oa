@@ -69,7 +69,7 @@ o2.widget.ScriptArea = new Class({
         }
     },
     maxSize: function(){
-        debugger;
+
         var obj = this.options.maxObj;
         var coordinates = obj.getCoordinates(obj.getOffsetParent());
 

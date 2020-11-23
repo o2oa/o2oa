@@ -1406,7 +1406,6 @@ if (!window.Promise){
         var useWebWorker = (window.layout && layout.config && layout.config.useWebWorker);
         //var noCache = false;
         if (!loadAsync || !useWebWorker){
-            debugger;
             var res;
             var p = new Promise(function(s,f){
                 res = new Request.JSON({

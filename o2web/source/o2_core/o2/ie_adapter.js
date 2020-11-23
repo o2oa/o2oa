@@ -1,5 +1,4 @@
 (function(){
-    debugger;
     if (Browser.iecomp){
         // if (!document.body.addEvent){
         //     document.body.addEvent = function(type, fn){
