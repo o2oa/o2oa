@@ -941,7 +941,10 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "systemToolsAddress": "../x_component_query_ViewDesigner/$View/toolbars.json",
                     "isSystemTool" : true,
+                    "noEditShow": true,
+                    "noReadShow": true,
                     "onChange": function(){
                         this.data[name] = actionEditor.data;
                         this.changeData(name);

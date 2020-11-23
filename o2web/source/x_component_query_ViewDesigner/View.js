@@ -1883,36 +1883,28 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             this.toolbarWidget.css = Object.clone(this.json.actionStyles);
         }
 
-        //MWF.getJSON(this.path+"toolbars.json", function(json){
-        //    this.json.defaultTools = json;
-        //    this.setToolbars(json, this.toolbarNode);
-        //    debugger;
-        //    this.toolbarWidget.load();
-        //}.bind(this), false);
-        if (this.json.defaultTools){
-            var json = Array.clone(this.json.defaultTools);
-            //if (this.json.tools) json.append(this.json.tools);
-            this.setToolbars(json, this.toolbarNode);
-            if (this.json.tools){
-                this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-            }
-            this.toolbarWidget.load();
-            this._setEditStyle_custom("hideSystemTools");
-            //json = null;
-        }else{
-            MWF.getJSON( this.getJsonPath(), function(json){
-                this.json.defaultTools = json;
-                var json = Array.clone(this.json.defaultTools);
-                //if (this.json.tools) json.append(this.json.tools);
-                this.setToolbars(json, this.toolbarNode);
-                if (this.json.tools){
-                    this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                }
-                this.toolbarWidget.load();
-                this._setEditStyle_custom("hideSystemTools");
-                //json = null;
-            }.bind(this), false);
-        }
+        this.loadMultiToolbar();
+
+        // if (this.json.defaultTools){
+        //     var json = Array.clone(this.json.defaultTools);
+        //     this.setToolbars(json, this.toolbarNode);
+        //     if (this.json.tools){
+        //         this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+        //     }
+        //     this.toolbarWidget.load();
+        //     this._setEditStyle_custom("hideSystemTools");
+        // }else{
+        //     MWF.getJSON( this.getJsonPath(), function(json){
+        //         this.json.defaultTools = json;
+        //         var json = Array.clone(this.json.defaultTools);
+        //         this.setToolbars(json, this.toolbarNode);
+        //         if (this.json.tools){
+        //             this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+        //         }
+        //         this.toolbarWidget.load();
+        //         this._setEditStyle_custom("hideSystemTools");
+        //     }.bind(this), false);
+        // }
     },
 
     _refreshActionbar: function(){
@@ -1926,28 +1918,26 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             if (!this.json.actionStyles) this.json.actionStyles = Object.clone(this.toolbarWidget.css);
             this.toolbarWidget.css = this.json.actionStyles;
 
-            if (this.json.defaultTools){
-                var json = Array.clone(this.json.defaultTools);
-                //if (this.json.tools) json.append(this.json.tools);
-                this.setToolbars(json, this.toolbarNode);
-                if (this.json.tools){
-                    this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                }
-                this.toolbarWidget.load();
-                //json = null;
-            }else{
-                MWF.getJSON( this.getJsonPath(), function(json){
-                    this.json.defaultTools = json;
-                    var json = Array.clone(this.json.defaultTools);
-                    //if (this.json.tools) json.append(this.json.tools);
-                    this.setToolbars(json, this.toolbarNode);
-                    if (this.json.tools){
-                        this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                    }
-                    this.toolbarWidget.load();
-                    //json = null;
-                }.bind(this), false);
-            }
+            this.loadMultiToolbar();
+
+            // if (this.json.defaultTools){
+            //     var json = Array.clone(this.json.defaultTools);
+            //     this.setToolbars(json, this.toolbarNode);
+            //     if (this.json.tools){
+            //         this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            //     }
+            //     this.toolbarWidget.load();
+            // }else{
+            //     MWF.getJSON( this.getJsonPath(), function(json){
+            //         this.json.defaultTools = json;
+            //         var json = Array.clone(this.json.defaultTools);
+            //         this.setToolbars(json, this.toolbarNode);
+            //         if (this.json.tools){
+            //             this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            //         }
+            //         this.toolbarWidget.load();
+            //     }.bind(this), false);
+            // }
         //}
 
     },
@@ -1966,29 +1956,62 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
                 this.json.actionStyles = Object.clone(this.toolbarWidget.css);
             }
 
-            if (this.json.defaultTools){
-                var json = Array.clone(this.json.defaultTools);
-                //if (this.json.tools) json.append(this.json.tools);
-                this.setToolbars(json, this.toolbarNode);
-                if (this.json.tools){
-                    this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                }
-                this.toolbarWidget.load();
-                //json = null;
-            }else{
-                MWF.getJSON(this.path+"toolbars.json", function(json){
-                    this.json.defaultTools = json;
-                    var json = Array.clone(this.json.defaultTools);
-                    //if (this.json.tools) json.append(this.json.tools);
-                    this.setToolbars(json, this.toolbarNode);
-                    if (this.json.tools){
-                        this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                    }
-                    this.toolbarWidget.load();
-                    //json = null;
-                }.bind(this), false);
-            }
+            this.loadMultiToolbar();
+
+            // if (this.json.defaultTools){
+            //     var json = Array.clone(this.json.defaultTools);
+            //     this.setToolbars(json, this.toolbarNode);
+            //     if (this.json.tools){
+            //         this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            //     }
+            //     this.toolbarWidget.load();
+            // }else{
+            //     MWF.getJSON(this.path+"toolbars.json", function(json){
+            //         this.json.defaultTools = json;
+            //         var json = Array.clone(this.json.defaultTools);
+            //         this.setToolbars(json, this.toolbarNode);
+            //         if (this.json.tools){
+            //             this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            //         }
+            //         this.toolbarWidget.load();
+            //     }.bind(this), false);
+            // }
         //}
+    },
+    loadMultiToolbar : function(){
+        if( this.json.multiTools ){
+            var json = Array.clone(this.json.multiTools);
+            this.setMultiToolbars(json, this.toolbarNode);
+            this.toolbarWidget.load();
+            this._setEditStyle_custom("hideSystemTools");
+        }else if( this.json.defaultTools ){
+            this.json.multiTools = this.json.defaultTools.map( function (d) { d.system = true; return d; });
+            if (this.json.tools){
+                this.json.multiTools = this.json.multiTools.concat( this.json.tools )
+            }
+            this.setMultiToolbars( Array.clone(this.json.multiTools), this.toolbarNode);
+            this.toolbarWidget.load();
+            this._setEditStyle_custom("hideSystemTools");
+        }else{
+            MWF.getJSON(this.path+"toolbars.json", function(json){
+                this.json.multiTools = json.map( function (d) { d.system = true; return d; });
+                if (this.json.tools){
+                    this.json.multiTools = this.json.multiTools.concat( this.json.tools )
+                }
+                this.setMultiToolbars(Array.clone(this.json.multiTools), this.toolbarNode);
+                this.toolbarWidget.load();
+                this._setEditStyle_custom("hideSystemTools");
+            }.bind(this), false);
+        }
+    },
+    setMultiToolbars: function(tools, node){
+        tools.each(function(tool){
+            if( tool.system ){
+                this.setToolbars( [tool], node );
+            }else{
+                this.setCustomToolbars( [tool], node );
+            }
+        }.bind(this));
     },
     setToolbars: function(tools, node){
         tools.each(function(tool){
@@ -2046,7 +2069,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
                 });
             }
         }
-        if (name=="defaultTools" || name=="tools" || name==="actionStyles"){
+        if (name=="defaultTools" || name=="tools" || name=="multiTools" || name==="actionStyles"){
             this._refreshActionbar();
         }
 
