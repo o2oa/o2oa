@@ -36,31 +36,43 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
             //this.setCustomToolbars(this.json.tools, this.toolbarNode);
             //
             //this.toolbarWidget.load();
-            if (this.json.hideSystemTools){
-                this.setCustomToolbars(this.json.tools, this.toolbarNode);
+            if( this.json.multiTools ){
+                this.json.multiTools.each( function (tool) {
+                    if( tool.system ){
+                        if( !this.json.hideSystemTools ){
+                            this.setToolbars( [tool], this.toolbarNode, this.readonly);
+                        }
+                    }else{
+                        this.setCustomToolbars([tool], this.toolbarNode);
+                    }
+                }.bind(this));
                 this.toolbarWidget.load();
             }else{
-                if (this.json.defaultTools){
-                    this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
+                if (this.json.hideSystemTools){
                     this.setCustomToolbars(this.json.tools, this.toolbarNode);
                     this.toolbarWidget.load();
                 }else{
-                    MWF.getJSON("../x_component_cms_Xform/$Form/toolbars.json", function(json){
-                        this.setToolbars(json, this.toolbarNode, this.readonly, true);
+                    if (this.json.defaultTools){
+                        this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
                         this.setCustomToolbars(this.json.tools, this.toolbarNode);
-
                         this.toolbarWidget.load();
-                    }.bind(this), false);
+                    }else{
+                        MWF.getJSON("../x_component_cms_Xform/$Form/toolbars.json", function(json){
+                            this.setToolbars(json, this.toolbarNode, this.readonly, true);
+                            this.setCustomToolbars(this.json.tools, this.toolbarNode);
+
+                            this.toolbarWidget.load();
+                        }.bind(this), false);
+                    }
+
+                    //MWF.getJSON("../x_component_cms_Xform/$Form/toolbars.json", function(json){
+                    //    this.setToolbars(json, this.toolbarNode, this.readonly);
+                    //    this.setCustomToolbars(this.json.tools, this.toolbarNode);
+                    //
+                    //    this.toolbarWidget.load();
+                    //}.bind(this), false);
                 }
-
-                //MWF.getJSON("../x_component_cms_Xform/$Form/toolbars.json", function(json){
-                //    this.setToolbars(json, this.toolbarNode, this.readonly);
-                //    this.setCustomToolbars(this.json.tools, this.toolbarNode);
-                //
-                //    this.toolbarWidget.load();
-                //}.bind(this), false);
             }
-
         }.bind(this));
         //}
     },

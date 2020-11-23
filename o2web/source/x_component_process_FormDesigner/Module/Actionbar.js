@@ -28,6 +28,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
         this.containerNode = null;
         this.systemTools = [];
         this.customTools = [];
+        this.multiTools = [];
         //this.containers = [];
         //this.elements = [];
 	},
@@ -79,7 +80,8 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
 
             MWF.getJSON(this.path+"toolbars.json", function(json){
-                this.json.defaultTools = json;
+                // this.json.defaultTools = json;
+                this.json.multiTools = json.map( function (d) { d.system = true; return d; });
                 this.setToolbars(json, this.toolbarNode);
                 this.toolbarWidget.load();
             }.bind(this), false);
@@ -119,28 +121,26 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             if (!this.json.actionStyles) this.json.actionStyles = Object.clone(this.toolbarWidget.css);
             this.toolbarWidget.css = this.json.actionStyles;
 
-            if (this.json.defaultTools){
-                var json = Array.clone(this.json.defaultTools);
-                //if (this.json.tools) json.append(this.json.tools);
-                this.setToolbars(json, this.toolbarNode);
-                if (this.json.tools){
-                    this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                }
-                this.toolbarWidget.load();
-                //json = null;
-            }else{
-                MWF.getJSON(this.path+"toolbars.json", function(json){
-                    this.json.defaultTools = json;
-                    var json = Array.clone(this.json.defaultTools);
-                    //if (this.json.tools) json.append(this.json.tools);
-                    this.setToolbars(json, this.toolbarNode);
-                    if (this.json.tools){
-                        this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                    }
-                    this.toolbarWidget.load();
-                    //json = null;
-                }.bind(this), false);
-            }
+            this.loadMultiToolbar();
+
+            // if (this.json.defaultTools){
+            //     var json = Array.clone(this.json.defaultTools);
+            //     this.setToolbars(json, this.toolbarNode);
+            //     if (this.json.tools){
+            //         this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            //     }
+            //     this.toolbarWidget.load();
+            // }else{
+            //     MWF.getJSON(this.path+"toolbars.json", function(json){
+            //         this.json.defaultTools = json;
+            //         var json = Array.clone(this.json.defaultTools);
+            //         this.setToolbars(json, this.toolbarNode);
+            //         if (this.json.tools){
+            //             this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            //         }
+            //         this.toolbarWidget.load();
+            //     }.bind(this), false);
+            // }
         }
 
     },
@@ -159,29 +159,60 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
                 this.json.actionStyles = Object.clone(this.toolbarWidget.css);
             }
 
-            if (this.json.defaultTools){
-                var json = Array.clone(this.json.defaultTools);
-                //if (this.json.tools) json.append(this.json.tools);
-                this.setToolbars(json, this.toolbarNode);
-                if (this.json.tools){
-                    this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                }
-                this.toolbarWidget.load();
-                //json = null;
-            }else{
-                MWF.getJSON(this.path+"toolbars.json", function(json){
-                    this.json.defaultTools = json;
-                    var json = Array.clone(this.json.defaultTools);
-                    //if (this.json.tools) json.append(this.json.tools);
-                    this.setToolbars(json, this.toolbarNode);
-                    if (this.json.tools){
-                        this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-                    }
-                    this.toolbarWidget.load();
-                    //json = null;
-                }.bind(this), false);
-            }
+            this.loadMultiToolbar();
+
+            // if (this.json.defaultTools){
+            //     var json = Array.clone(this.json.defaultTools);
+            //     this.setToolbars(json, this.toolbarNode);
+            //     if (this.json.tools){
+            //         this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            //     }
+            //     this.toolbarWidget.load();
+            // }else{
+            //     MWF.getJSON(this.path+"toolbars.json", function(json){
+            //         this.json.defaultTools = json;
+            //         var json = Array.clone(this.json.defaultTools);
+            //         this.setToolbars(json, this.toolbarNode);
+            //         if (this.json.tools){
+            //             this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            //         }
+            //         this.toolbarWidget.load();
+            //         //json = null;
+            //     }.bind(this), false);
+            // }
         }
+    },
+    loadMultiToolbar : function(){
+        if( this.json.multiTools ){
+            var json = Array.clone(this.json.multiTools);
+            this.setMultiToolbars(json, this.toolbarNode);
+            this.toolbarWidget.load();
+        }else if( this.json.defaultTools ){
+            this.json.multiTools = this.json.defaultTools.map( function (d) { d.system = true; return d; });
+            if (this.json.tools){
+                this.json.multiTools = this.json.multiTools.concat( this.json.tools )
+            }
+            this.setMultiToolbars( Array.clone(this.json.multiTools), this.toolbarNode);
+            this.toolbarWidget.load();
+        }else{
+            MWF.getJSON(this.path+"toolbars.json", function(json){
+                this.json.multiTools = json.map( function (d) { d.system = true; return d; });
+                if (this.json.tools){
+                    this.json.multiTools = this.json.multiTools.concat( this.json.tools )
+                }
+                this.setMultiToolbars(Array.clone(this.json.multiTools), this.toolbarNode);
+                this.toolbarWidget.load();
+            }.bind(this), false);
+        }
+    },
+    setMultiToolbars: function(tools, node){
+        tools.each(function(tool){
+            if( tool.system ){
+                this.setToolbars( [tool], node );
+            }else{
+                this.setCustomToolbars( [tool], node );
+            }
+        }.bind(this));
     },
     setToolbars: function(tools, node){
         tools.each(function(tool){
@@ -195,7 +226,9 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             if( this.json.iconOverStyle ){
                 actionNode.set("MWFButtonImageOver" , this.path+""+this.options.style+"/tools/"+this.json.iconOverStyle+"/"+tool.img );
             }
+            actionNode.isSystemTool = true;
             this.systemTools.push(actionNode);
+            this.multiTools.push( actionNode );
             if (tool.sub){
                 var subNode = node.getLast();
                 this.setToolbars(tool.sub, subNode);
@@ -221,6 +254,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
                 actionNode.set("MWFButtonImageOver" , this.path+""+this.options.style +"/custom/"+this.json.customIconOverStyle+ "/" +tool.img );
             }
             this.customTools.push(actionNode);
+            this.multiTools.push( actionNode );
             if (tool.sub){
                 var subNode = node.getLast();
                 this.setToolbars(tool.sub, subNode);
@@ -239,7 +273,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
                 });
             }
         }
-        if (name=="defaultTools" || name=="tools" || name==="actionStyles"){
+        if (name=="defaultTools" || name=="tools" || name=="multiTools" || name==="actionStyles"){
             this._refreshActionbar();
         }
 
