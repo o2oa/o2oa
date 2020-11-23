@@ -2,6 +2,7 @@ package com.x.base.core.project.utils.time;
 
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -196,7 +197,11 @@ public class BaseWorkTime {
 		return false;
 	}
 
-	private boolean inDefinedHoliday(Calendar c) {
+	public boolean inDefinedHoliday(Date d) {
+		return this.inDefinedHoliday(DateUtils.toCalendar(d));
+	}
+
+	public boolean inDefinedHoliday(Calendar c) {
 		if (ArrayUtils.isNotEmpty(this.definedHolidays)) {
 			if (ArrayUtils.indexOf(this.definedHolidays,
 					DateFormatUtils.format(c, DATEPARTFORMATPATTERN[0])) > ArrayUtils.INDEX_NOT_FOUND) {
@@ -206,7 +211,11 @@ public class BaseWorkTime {
 		return false;
 	}
 
-	private boolean inDefinedWorkday(Calendar c) {
+	public boolean inDefinedWorkday(Date d) {
+		return this.inDefinedWorkday(DateUtils.toCalendar(d));
+	}
+
+	public boolean inDefinedWorkday(Calendar c) {
 		if (ArrayUtils.isNotEmpty(this.definedWorkdays)) {
 			if (ArrayUtils.indexOf(this.definedWorkdays,
 					DateFormatUtils.format(c, DATEPARTFORMATPATTERN[0])) > ArrayUtils.INDEX_NOT_FOUND) {
