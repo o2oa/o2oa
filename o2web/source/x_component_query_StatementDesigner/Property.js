@@ -75,5 +75,98 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
                 });
             }.bind(this));
         }.bind(this));
+    },
+    loadActionArea: function () {
+        debugger;
+        MWF.xApplication.process = MWF.xApplication.process || {};
+        MWF.APPFD = MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
+        MWF.xDesktop.requireApp("process.FormDesigner", "lp." + o2.language, null, false);
+
+        var multiActionArea = this.propertyContent.getElements(".MWFMultiActionArea");
+        multiActionArea.each(function(node){
+            debugger;
+            var name = node.get("name");
+            var actionContent = this.data[name];
+            MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
+                var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "systemToolsAddress": "../x_component_query_StatementDesigner/$Statement/toolbars.json",
+                    "isSystemTool" : false,
+                    "noEditShow": true,
+                    "noReadShow": true,
+                    "onChange": function(){
+                        this.data[name] = actionEditor.data;
+                        this.changeData(name);
+                    }.bind(this)
+                });
+                actionEditor.load(actionContent);
+            }.bind(this));
+        }.bind(this));
+
+        var actionAreas = this.propertyContent.getElements(".MWFActionArea");
+        actionAreas.each(function (node) {
+            var name = node.get("name");
+            var actionContent = this.data[name];
+            MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function () {
+
+                // debugger;
+                // var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, {
+                //     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                //     "noCreate": true,
+                //     "noDelete": true,
+                //     "noCode": true,
+                //     "onChange": function(){
+                //         this.data[name] = actionEditor.data;
+                //     }.bind(this)
+                // });
+                // actionEditor.load(this.module.defaultToolBarsData);
+
+                var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                    "maxObj": this.propertyNode.parentElement.parentElement,
+                    "noEditShow": true,
+                    "noReadShow": true,
+                    "onChange": function () {
+                        this.data[name] = actionEditor.data;
+                        this.changeData(name);
+                    }.bind(this)
+                });
+                actionEditor.load(actionContent);
+            }.bind(this));
+
+        }.bind(this));
+
+        var actionAreas = this.propertyContent.getElements(".MWFDefaultActionArea");
+        actionAreas.each(function (node) {
+            var name = node.get("name");
+            var actionContent = this.data[name] || this.module.defaultToolBarsData;
+            MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function () {
+
+                var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                    "maxObj": this.propertyNode.parentElement.parentElement,
+                    "isSystemTool": true,
+                    "systemToolsAddress": "../x_component_query_StatementDesigner/$Statement/toolbars.json",
+                    "noCreate": true,
+                    "noDelete": false,
+                    "noCode": true,
+                    "noReadShow": true,
+                    "noEditShow": true,
+                    "onChange": function () {
+                        this.data[name] = actionEditor.data;
+                        this.changeData(name);
+                    }.bind(this)
+                });
+                actionEditor.load(actionContent);
+
+                // var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, {
+                //     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                //     "onChange": function(){
+                //         this.data[name] = actionEditor.data;
+                //     }.bind(this)
+                // });
+                // actionEditor.load(actionContent);
+            }.bind(this));
+
+        }.bind(this));
+
     }
 });
