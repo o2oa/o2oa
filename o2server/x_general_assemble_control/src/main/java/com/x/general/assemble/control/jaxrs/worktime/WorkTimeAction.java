@@ -156,4 +156,40 @@ public class WorkTimeAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "返回指定时间是否定义为节假日.", action = ActionInDefinedHoliday.class)
+	@GET
+	@Path("indefinedholiday/{date}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void inDefinedHoliday(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("指定日期") @PathParam("date") String date) {
+		ActionResult<ActionInDefinedHoliday.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionInDefinedHoliday().execute(effectivePerson, date);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "返回指定时间是否定义为工作日.", action = ActionInDefinedWorkDay.class)
+	@GET
+	@Path("indefinedworkday/{date}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void inDefinedWorkDay(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("指定日期") @PathParam("date") String date) {
+		ActionResult<ActionInDefinedWorkDay.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionInDefinedWorkDay().execute(effectivePerson, date);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
