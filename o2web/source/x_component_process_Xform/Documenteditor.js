@@ -564,7 +564,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.layout_meetingRecordContent = this.contentNode.getElement(".doc_layout_meeting_record_content");
     },
     _loadCustom: function(){
-        debugger;
+
         var nodes = this.contentNode.getElements(".doc_layout");
         nodes.each(function(node){
             var name = node.get("data-doc-layout");
@@ -606,7 +606,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         //自定义
         this._loadCustom();
 
-        debugger;
+
 
         this.reSetShow(control);
         this.reSetEdit();
@@ -665,7 +665,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_fileNoUpTable) this.layout_fileNoUpTable[m("signer")]();
         if (this.layout_filenoArea) this.layout_filenoArea[(!control.signer) ? "show" : "hide"]();
 
-        debugger;
+
         if (this.layout_signerTitle) this.layout_signerTitle[m("signer")]();
         if (this.layout_signer) this.layout_signer[m("signer")]();
 
@@ -677,7 +677,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_issuanceUnit) this.layout_issuanceUnit[m("issuanceUnit")]();
         if (this.layout_issuanceDate) this.layout_issuanceDate[m("issuanceDate")]();
 
-        debugger;
+
         if (this.layout_issuanceUnit && this.layout_issuanceDate){
             var table = this.layout_issuanceUnit.getParent("table")
             if (table && !table.hasClass("doc_layout_headIssuance")) {
@@ -988,7 +988,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     checkSaveNewEdition: function(callback){
-        debugger;
+
         if (!this.allowEdit || !this.data.filetext || this.data.filetext == this.json.defaultValue.filetext) return false;
         if (this.form.businessData.work){
             var originaData = this.form.businessData.originalData[this.json.id];
@@ -1667,7 +1667,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }.bind(this));
 
         this.zoomAddAction.addEvent("click", function(){
-            debugger;
+
             var i = (this.scale/0.05).toInt();
             if (i*0.05<this.scale) i++;
             var v = i*0.05;
@@ -1944,7 +1944,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         // ];
 
         //CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://ckeditor.com/docs/ckeditor4/4.13.0/examples/assets/plugins/ckeditor_wiris/', 'plugin.js');
-debugger;
+
         var editorConfig = {
             qtRows: 20, // Count of rows
             qtColumns: 20, // Count of columns
@@ -2306,7 +2306,7 @@ debugger;
                         case "issuanceDate":
                         case "editionDate":
                             var d = new Date(v);
-                            debugger;
+
                             if (d.isValid() && d.getFullYear()!=1970){
                                 var y = d.getFullYear();
                                 var m = d.getMonth();
@@ -2426,7 +2426,7 @@ debugger;
                 this._computeItemFieldData(name, null, dataItem);
                 //if (this.data[name]){
                 if (this[dom]){
-                    debugger;
+
                     if (dom=="layout_redHeader" || dom=="layout_subject" || dom=="layout_issuanceUnit"){
                         this[dom].set("html", this.data[name]|| "");
                     }else if (dom=="layout_attachment"){
@@ -2500,7 +2500,7 @@ debugger;
 
             this.setData(this.data, diffFiletext);
             //this._checkSplitPage(this.pages[0]);
-debugger;
+
             this._repage();
         }.bind(this));
     },
@@ -2511,7 +2511,7 @@ debugger;
     },
     getData: function(){
         //if (this.editMode){
-        debugger;
+
         if (this.layout_copies) this.data.copies = this.layout_copies.get("text");
         if (this.layout_secret) this.data.secret = this.layout_secret.get("text");
         if (this.layout_priority) this.data.priority = this.layout_priority.get("text");
@@ -2664,7 +2664,7 @@ debugger;
                 }.bind(this))
             }
 
-            debugger;
+
 
             if (this.layout_issuanceUnit && this.layout_issuanceDate ){
                 var table = this.layout_issuanceUnit.getParent("table")
@@ -2923,7 +2923,7 @@ debugger;
         return "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+htmlStr+"</body></html>";
     },
     toWord: function(callback, name){
-        debugger;
+
         var docNmae = name || "";
         if (!docNmae){
             try{

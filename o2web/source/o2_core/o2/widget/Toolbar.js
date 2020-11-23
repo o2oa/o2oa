@@ -272,7 +272,7 @@ o2.widget.ToolbarButton = new Class({
 		if (this.modifiyStyle) if (!this.options.disable){this.node.set("styles", this.toolbar.css.buttonUp);};
 	},
 	_buttonClick: function(e){
-		debugger;
+
 		if (!this.options.disable){
 			if (this.options.action){
 				if (typeOf(this.options.action)==="string"){

@@ -318,7 +318,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 		return (value.length==1) ? value[0] : value;
 	},
     resetData: function(){
-		debugger;
+
         this.setData(this.getValue());
     },
 	getOptionsObj : function(){

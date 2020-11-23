@@ -520,7 +520,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 		this._setValue(this.getValue());
 	},
 	clickSelect: function( ev ){
-        debugger;
+
         this.validationMode();
 		var count = (this.json.count) ? this.json.count : 0;
 

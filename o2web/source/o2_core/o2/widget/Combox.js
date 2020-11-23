@@ -218,7 +218,7 @@ o2.widget.Combox = new Class({
         }
     },
     createItem: function(values, i, data, callback){
-	    debugger;
+	    ;
         if (values[i]){
             var value = values[i];
 
@@ -741,7 +741,7 @@ o2.widget.Combox.Input = new Class({
                 "offset": {"y": 3}
             });
         }
-        debugger;
+
         var p = this.optionListNode.getPosition(pNode);
         if (p.y<10){
             var top = this.optionListNode.getStyle("top").toInt();

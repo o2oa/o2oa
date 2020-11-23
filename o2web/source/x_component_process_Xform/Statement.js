@@ -42,7 +42,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class({
             }.bind(this));
         }
 
-        debugger;
+
 
         //var data = JSON.parse(this.json.data);
         var viewJson = {

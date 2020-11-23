@@ -164,7 +164,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 
 
 	_getValueText: function(idx, value){
-		debugger;
+
 		var module = this.editModules[idx];
 		if (module){
 			switch (module.json.type){
@@ -348,7 +348,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 					if (module.json.type=="sequence"){
 						module.node.set("text", module.node.getParent("tr").rowIndex);
 					}else {
-						debugger;
+
 						if (data[id]) {
 							module.setData(data[id][module.json.id]);
 						} else {
