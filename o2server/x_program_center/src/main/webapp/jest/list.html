@@ -123,6 +123,7 @@
 				if (json.type == 'success') {
 					if (json.data) {
 						var str = '<table border="1" id = "apiTable" >';
+                        str += '<tr><td colspan="3"><center id="title" style="font-size:32px; font-weight:bold;">O2OA Service API URL</center></td></tr>';
 						$.each(json.data, function(index, o) {
 							str += '<tr>';
 							str += '<td>' + o.name + '</td>';
@@ -149,9 +150,9 @@
 
 </head>
 
-<body style="font-size: 12px; font-family: Microsoft Yahei; margin: 0px">
-<center id="title" style="font-size:32px; font-weight:bold;">O2OA Service API URL</center>
-<div id="content" style="margin-top:10px;margin-left: 50px;float: left;">&nbsp;</div>
-<div id="contentTable" style="margin-top:20px;margin-left: 50px;float: left;">&nbsp;</div>
+<body style="font-size: 12px; font-family: Microsoft Yahei; margin-top: 50px">
+<center id="title" style="font-size:32px; font-weight:bold;"></center>
+<div id="content" style="margin-top:10px;margin-left: 50px;">&nbsp;</div>
+<div id="contentTable" style="margin-top:20px;margin-left: 50px;">&nbsp;</div>
 </body>
 </html>

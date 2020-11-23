@@ -115,7 +115,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                         "identity": null,
                         "latest": false,
                         "onStarted": function (data, title, processName) {
-                            debugger;
+
                             if (data.work){
                                 layout.startProcessDraft(data, title, processName, redirect);
                             }else{
@@ -145,7 +145,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 history.replaceState(null, "startProcess", "../x_desktop/appMobile.html?app=process.TaskCenter");
                 
             }
-            debugger;
+
             // layout.openApplication(null, "process.Work", options);
             layout.openWorkIn(options);
         });

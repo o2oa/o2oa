@@ -38,6 +38,8 @@ MWF.xApplication.process.Xform.LP = {
     "rollbackTo": "流程回溯到",
     "in": "在",
 
+    "andSoForth" : "等",
+
     "noIdentitySelectRange" : "无法确定身份的选择范围",
     "noIdentityDutySelectRange" : "无法确定职务的选择范围",
     "noUnitSelectRange" : "无法确定组织的选择范围",

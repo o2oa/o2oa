@@ -747,7 +747,7 @@ MWF.xScript.Environment = function(ev){
         },
         //查询组织的下级--返回组织的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
-        listSubUnit: function(name, nested){
+        listSubUnit: function(name, nested, async){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
@@ -962,7 +962,7 @@ MWF.xScript.Environment = function(ev){
             var data = {"identityList":getNameFlag(name)};
             var v = null;
             var cb = function(json){
-                v = json.data;
+                v = json.data.nameList;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             };
@@ -1457,7 +1457,7 @@ MWF.xScript.Environment = function(ev){
                 }
                 break;
         }
-debugger;
+
         scriptAction.getScriptByName( application, name, includedScripts, function(json){
             if (json.data){
                 includedScripts.push( key );
@@ -1982,7 +1982,7 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
     };
     var setter = function(data, callback, k, _self){
         return function(v){
-            debugger;
+
             data[k] = v;
             //debugger;
             //this.add(k, v, true);
@@ -2010,7 +2010,7 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
                         }
                         if (path.length) _form.sectionListObj[path.join(".")] = newKey;
                     }catch(e){
-                        debugger;
+
                     }
                 }},
             "add": {"value": function(newKey, newValue, overwrite){
@@ -2417,9 +2417,9 @@ MWF.xScript.createDict = function(application){
             if (path){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async);
+                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
             }else{
-                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async);
+                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async, false);
             }
             return (!!async) ? promise : value;
 

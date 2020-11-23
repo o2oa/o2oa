@@ -1406,7 +1406,6 @@ if (!window.Promise){
         var useWebWorker = (window.layout && layout.config && layout.config.useWebWorker);
         //var noCache = false;
         if (!loadAsync || !useWebWorker){
-            debugger;
             var res;
             var p = new Promise(function(s,f){
                 res = new Request.JSON({
@@ -1869,7 +1868,7 @@ if (!window.Promise){
                 return { "then": function(s){ s(p); return this;} };
             }
         }else{
-            if (o2.typeOf(p.then)=="function"){
+            if (p && o2.typeOf(p.then)=="function"){
                 return Promise.resolve(p);
             }else{
                 return { "then": function(s){ s(p); return this;} };

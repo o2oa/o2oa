@@ -1,14 +1,13 @@
 package com.x.processplatform.assemble.surface.jaxrs.form;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -16,8 +15,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -27,171 +24,115 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkCompletedProperties;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.StoreForm;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Script;
+import com.x.processplatform.core.entity.element.FormProperties;
 
 class V2LookupWorkOrWorkCompleted extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(V2LookupWorkOrWorkCompleted.class);
 
+	private Form form = null;
+	private Wo wo = new Wo();
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 
 		ActionResult<Wo> result = new ActionResult<>();
 
-		CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
-			Wo wo = new Wo();
-			try {
-				Work work = null;
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					work = emc.fetch(workOrWorkCompleted, Work.class, ListTools.toList(JpaObject.id_FIELDNAME,
-							Work.form_FIELDNAME, Work.activity_FIELDNAME, Work.activityType_FIELDNAME));
-				}
-				if (null != work) {
-					wo = this.work(work);
-				} else {
-					WorkCompleted workCompleted = null;
-					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-						workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
-					}
-					if (null != workCompleted) {
-						wo = this.workCompleted(workCompleted);
-					}
-				}
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			return wo;
-		});
+		this.getWorkWorkCompletedForm(workOrWorkCompleted);
 
-		CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
-			Boolean value = false;
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-						new ExceptionEntityNotExist(workOrWorkCompleted));
-			} catch (Exception e) {
-				logger.error(e);
+		if (null != this.form) {
+			CacheKey cacheKey = new CacheKey(this.getClass(), this.form.getId());
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				this.wo = (Wo) optional.get();
+			} else {
+				List<String> list = new ArrayList<>();
+				CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.form.getProperties());
+				CompletableFuture<List<String>> relatedScriptFuture = this
+						.relatedScriptFuture(this.form.getProperties());
+				list.add(this.form.getId() + this.form.getUpdateTime().getTime());
+				list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
+				list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
+				list = list.stream().sorted().collect(Collectors.toList());
+				this.wo.setId(this.form.getId());
+				CRC32 crc = new CRC32();
+				crc.update(StringUtils.join(list, "#").getBytes());
+				this.wo.setCacheTag(crc.getValue() + "");
+				CacheManager.put(cacheCategory, cacheKey, wo);
 			}
-			return value;
-		});
-
-		if (BooleanUtils.isFalse(_control.get())) {
-			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
-		result.setData(_wo.get());
+		result.setData(wo);
 		return result;
 	}
 
-	private Wo work(Work work) throws Exception {
-		Form form = null;
+	private void getWorkWorkCompletedForm(String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			form = business.form().pick(work.getForm());
-			if (null == form) {
-				Activity activity = business.getActivity(work);
-				if (null != activity) {
-					form = business.form().pick(activity.getForm());
+			WorkCompleted workCompleted = null;
+			Work work = emc.fetch(flag, Work.class, ListTools.toList(JpaObject.id_FIELDNAME, Work.form_FIELDNAME,
+					Work.activity_FIELDNAME, Work.activityType_FIELDNAME));
+			if (null == work) {
+				workCompleted = emc.flag(flag, WorkCompleted.class);
+			}
+			if (null != work) {
+				this.form = business.form().pick(work.getForm());
+				if (null == this.form) {
+					Activity activity = business.getActivity(work);
+					if (null != activity) {
+						this.form = business.form().pick(activity.getForm());
+					}
+				}
+			} else if (null != workCompleted) {
+				this.form = business.form().pick(workCompleted.getForm());
+				if (null == this.form) {
+					StoreForm storeForm = workCompleted.getProperties().getStoreForm();
+					this.wo = XGsonBuilder.convert(storeForm, Wo.class);
 				}
 			}
 		}
-		if (null != form) {
-			return this.get(form);
-		}
-		return new Wo();
 	}
 
-	private Wo get(Form form) throws Exception {
-		CacheKey cacheKey = new CacheKey(this.getClass(), form.getId());
-		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-		if (optional.isPresent()) {
-			return (Wo) optional.get();
-		} else {
-			final List<String> list = new CopyOnWriteArrayList<>();
-			CompletableFuture<Void> _relatedForm = CompletableFuture.runAsync(() -> {
-				if (ListTools.isNotEmpty(form.getProperties().getRelatedFormList())) {
-					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-						Business business = new Business(emc);
-						Form _f;
-						for (String _id : form.getProperties().getRelatedFormList()) {
-							_f = business.form().pick(_id);
-							if (null != _f) {
-								list.add(_f.getId() + _f.getUpdateTime().getTime());
-							}
+	private CompletableFuture<List<String>> relatedFormFuture(FormProperties properties) {
+		return CompletableFuture.supplyAsync(() -> {
+			List<String> list = new ArrayList<>();
+			if (ListTools.isNotEmpty(properties.getRelatedFormList())) {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					Business business = new Business(emc);
+					Form f;
+					for (String id : properties.getRelatedFormList()) {
+						f = business.form().pick(id);
+						if (null != f) {
+							list.add(f.getId() + f.getUpdateTime().getTime());
 						}
-					} catch (Exception e) {
-						logger.error(e);
 					}
+				} catch (Exception e) {
+					logger.error(e);
 				}
-			});
-			CompletableFuture<Void> _relatedScript = CompletableFuture.runAsync(() -> {
-				if ((null != form.getProperties().getRelatedScriptMap())
-						&& (form.getProperties().getRelatedScriptMap().size() > 0)) {
-					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-						Business business = new Business(emc);
-						for (Entry<String, String> entry : form.getProperties().getRelatedScriptMap().entrySet()) {
-							switch (entry.getValue()) {
-							case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
-								Script _pp = business.script().pick(entry.getKey());
-								if (null != _pp) {
-									list.add(_pp.getId() + _pp.getUpdateTime().getTime());
-								}
-								break;
-							case WorkCompletedProperties.RelatedScript.TYPE_CMS:
-								com.x.cms.core.entity.element.Script _cms = business.cms().script()
-										.pick(entry.getKey());
-								if (null != _cms) {
-									list.add(_cms.getId() + _cms.getUpdateTime().getTime());
-								}
-								break;
-							case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
-								com.x.portal.core.entity.Script _p = business.portal().script().pick(entry.getKey());
-								if (null != _p) {
-									list.add(_p.getId() + _p.getUpdateTime().getTime());
-								}
-								break;
-							default:
-								break;
-							}
-						}
-					} catch (Exception e) {
-						logger.error(e);
-					}
-				}
-			});
-			_relatedForm.get();
-			_relatedScript.get();
-			list.add(form.getId() + form.getUpdateTime().getTime());
-			List<String> sortList = list.stream().sorted().collect(Collectors.toList());
-			Wo wo = new Wo();
-			wo.setId(form.getId());
-			CRC32 crc = new CRC32();
-			crc.update(StringUtils.join(sortList, "#").getBytes());
-			wo.setCacheTag(crc.getValue() + "");
-			return wo;
-		}
+			}
+			return list;
+		});
 	}
 
-	private Wo workCompleted(WorkCompleted workCompleted) throws Exception {
-		// 先使用当前库的表单,如果不存在使用储存的表单.
-		Wo wo = new Wo();
-		Form form = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			form = business.form().pick(workCompleted.getForm());
-		}
-		if (null != form) {
-			return this.get(form);
-		} else if (null != workCompleted.getProperties().getStoreForm()) {
-			StoreForm storeForm = workCompleted.getProperties().getStoreForm();
-			wo = XGsonBuilder.convert(storeForm, Wo.class);
-		}
-		return wo;
+	private CompletableFuture<List<String>> relatedScriptFuture(FormProperties properties) {
+		return CompletableFuture.supplyAsync(() -> {
+			List<String> list = new ArrayList<>();
+			if ((null != properties.getRelatedScriptMap()) && (properties.getRelatedScriptMap().size() > 0)) {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					Business business = new Business(emc);
+					list = convertScriptToCacheTag(business, properties.getMobileRelatedScriptMap());
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			}
+			return list;
+		});
 	}
 
 	public static class Wo extends AbstractWo {
+
+		private static final long serialVersionUID = -6321756621818503364L;
 
 		private String id;
 

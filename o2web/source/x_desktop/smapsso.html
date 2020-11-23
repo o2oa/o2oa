@@ -74,7 +74,7 @@
                 window.layout = {};
                 window.layout.config = config;
                 getServiceAddress(config, function(address){
-                    debugger;
+
                     var uri = new URI(window.location.toString());
                     var xtoken = uri.getData("SMAP_SESSION_DATA");
                     var appID = uri.getData("appID");

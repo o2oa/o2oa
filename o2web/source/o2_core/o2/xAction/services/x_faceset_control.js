@@ -13,7 +13,7 @@ MWF.xAction.RestActions.Action["x_faceset_control"] = new Class({
         }.bind(this));
     },
     invoke: function(service, options){
-        debugger;
+
         if (this.faceKeys){
             if(service.enctype && (service.enctype.toLowerCase()==="formdata")){
                 options.data.append("api_key", this.faceKeys.api_key);
