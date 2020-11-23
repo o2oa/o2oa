@@ -27,7 +27,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
-	
 	CacheCategory cacheCategory = new CacheCategory(Form.class, Script.class, com.x.portal.core.entity.Script.class,
 			com.x.cms.core.entity.element.Script.class);
 
@@ -67,38 +66,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	protected Map<String, RelatedScript> convertScript(Business bus, FormProperties properties) throws Exception {
-		Map<String, RelatedScript> map = new TreeMap<>();
-		for (Entry<String, String> entry : properties.getMobileRelatedScriptMap().entrySet()) {
-			switch (entry.getValue()) {
-			case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
-				Script pp = bus.script().pick(entry.getKey());
-				if (null != pp) {
-					map.put(entry.getKey(),
-							new RelatedScript(pp.getId(), pp.getName(), pp.getAlias(), pp.getText(), entry.getValue()));
-				}
-				break;
-			case WorkCompletedProperties.RelatedScript.TYPE_CMS:
-				com.x.cms.core.entity.element.Script cms = bus.cms().script().pick(entry.getKey());
-				if (null != cms) {
-					map.put(entry.getKey(), new RelatedScript(cms.getId(), cms.getName(), cms.getAlias(), cms.getText(),
-							entry.getValue()));
-				}
-				break;
-			case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
-				com.x.portal.core.entity.Script p = bus.portal().script().pick(entry.getKey());
-				if (null != p) {
-					map.put(entry.getKey(),
-							new RelatedScript(p.getId(), p.getName(), p.getAlias(), p.getText(), entry.getValue()));
-				}
-				break;
-			default:
-				break;
-			}
-		}
-		return map;
-	}
-
 	protected List<String> convertScriptToCacheTag(Business business, Map<String, String> map) throws Exception {
 		List<String> list = new ArrayList<>();
 		for (Entry<String, String> entry : map.entrySet()) {
@@ -127,6 +94,5 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		return list;
 	}
-
 
 }

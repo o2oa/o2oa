@@ -1,11 +1,15 @@
 package com.x.base.core.project.bean;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.tools.ListTools;
 
 public class WrapCopier<T, W> {
@@ -46,9 +50,19 @@ public class WrapCopier<T, W> {
 		}
 		copyFields.stream().forEach(f -> {
 			try {
-				Object o = propertyUtilsBean.getProperty(orig, f);
-				if (null != o || (!ignoreNull)) {
-					propertyUtilsBean.setProperty(dest, f, o);
+				if (StringUtils.equals(f, JpaObject.IDCOLUMN)) {
+					Field field = FieldUtils.getField(orig.getClass(), f, true);
+					if (null != field) {
+						Object o = FieldUtils.readField(field, orig, true);
+						if (null != o || (!ignoreNull)) {
+							propertyUtilsBean.setProperty(dest, f, o);
+						}
+					}
+				} else {
+					Object o = propertyUtilsBean.getProperty(orig, f);
+					if (null != o || (!ignoreNull)) {
+						propertyUtilsBean.setProperty(dest, f, o);
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
