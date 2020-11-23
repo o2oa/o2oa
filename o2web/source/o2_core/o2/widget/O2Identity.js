@@ -12,7 +12,7 @@ o2.widget.O2Identity = new Class({
         "disableInfor" : false
 	},
 	initialize: function(data, container, options){
-	    debugger;
+
 		this.setOptions(options);
 		this.loadedInfor = false;
 

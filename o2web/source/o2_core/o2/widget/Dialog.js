@@ -36,7 +36,7 @@ o2.widget.Dialog = o2.DL = new Class({
         "container": null
 	},
 	initialize: function(options){
-		debugger;
+
 		this.setOptions(options);
 
 		this.path = o2.session.path+"/widget/$Dialog/";

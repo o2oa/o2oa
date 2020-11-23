@@ -396,7 +396,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         return max - min;
     },
     checkCameraLogin: function () {
-        debugger;
+
         if (this.cameraLoginConfig.errorCount > this.cameraLoginConfig.errorMax) {
             this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login.camera_loginError);
         } else {
