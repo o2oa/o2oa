@@ -1869,7 +1869,7 @@ if (!window.Promise){
                 return { "then": function(s){ s(p); return this;} };
             }
         }else{
-            if (o2.typeOf(p.then)=="function"){
+            if (p && o2.typeOf(p.then)=="function"){
                 return Promise.resolve(p);
             }else{
                 return { "then": function(s){ s(p); return this;} };
