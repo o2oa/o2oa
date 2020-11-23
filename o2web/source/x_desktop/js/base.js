@@ -57,9 +57,11 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             app.appId = (options.appId) ? options.appId : ((appNamespace.options.multitask) ? appName + "-" + (new o2.widget.UUID()) : appName);
             app.options.appId = app.appId;
 
-            if (!taskitem) taskitem = layout.desktop.createTaskItem(app);
-            app.taskitem = taskitem;
-            app.taskitem.app = app;
+            if (layout.desktop.createTaskItem){
+                if (!taskitem) taskitem = layout.desktop.createTaskItem(app);
+                app.taskitem = taskitem;
+                app.taskitem.app = app;
+            }
 
             app.isLoadApplication = true;
             app.load(!notCurrent);
@@ -72,10 +74,11 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 layout.desktop.apps[app.appId] = app;
             }
 
-            layout.desktop.appArr.push(app);
-            layout.desktop.appCurrentList.push(app);
-            if (!notCurrent) layout.desktop.currentApp = app;
-
+            //if (layout.desktop.appArr){
+                layout.desktop.appArr.push(app);
+                layout.desktop.appCurrentList.push(app);
+                if (!notCurrent) layout.desktop.currentApp = app;
+            //}
             //app.taskitem = new MWF.xDesktop.Layout.Taskitem(app, this);
         } else {
             app.load(true);
@@ -484,64 +487,78 @@ o2.addReady(function () {
             Cookie.write("x-token", options["x-token"]);
         }
 
-        layout.sessionPromise = {
-            "resolveList": [],
-            "rejectList": [],
-            "init": function(resolve, reject){
-                if (resolve) this.resolveList.push(resolve);
-                if (reject) this.rejectList.push(reject);
-                this.status = "pending";
-                this.resolveReturn = this;
+        layout.sessionPromise = new Promise(function(resolve, reject){
+            o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
+                if (resolve) resolve(json.data);
+                //this.status = "fulfilled";
+                // this.resolveReturn = json.data;
+                // this.runResolve(this.resolveReturn);
+            }.bind(this), function (xhr, text, error) {
+                if (reject) reject({"xhr": xhr, "text": text, "error": error});
+                // this.status = "rejected";
+                // this.resolveReturn = {"xhr": xhr, "text": text, "error": error};
+                // this.runReject(this.resolveReturn);
+            }.bind(this));
+        });
 
-                //先判断用户是否登录
-                console.log("layout.sessionPromise.init")
-                o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
-                    this.status = "fulfilled";
-                    this.resolveReturn = json.data;
-                    this.runResolve(this.resolveReturn);
-                }.bind(this), function (xhr, text, error) {
-                    this.status = "rejected";
-                    this.resolveReturn = {"xhr": xhr, "text": text, "error": error};
-                    this.runReject(this.resolveReturn);
-                }.bind(this));
-            },
-            "runResolve": function(json){
-                while (this.resolveList.length){
-                    var r = this.resolveList.shift()(this.resolveReturn);
-                    if (r) this.resolveReturn = r;
-                }
-            },
-            "runReject": function(json){
-                while (this.rejectList.length){
-                    var r = this.rejectList.shift()(json);
-                    if (r) this.resolveReturn = r;
-                }
-            },
-            "then": function(resolve, reject){
-                if (resolve) this.resolveList.push(resolve);
-                if (reject) this.rejectList.push(reject);
-                switch (this.status){
-                    case "fulfilled":
-                        this.runResolve();
-                        break;
-                    case "rejected":
-                        this.runReject();
-                        break;
-                    default:
-                    //nothing
-                }
-                return this;
-            }
-        }
+        // layout.sessionPromise = {
+        //     "resolveList": [],
+        //     "rejectList": [],
+        //     "init": function(resolve, reject){
+        //         if (resolve) this.resolveList.push(resolve);
+        //         if (reject) this.rejectList.push(reject);
+        //         this.status = "pending";
+        //         this.resolveReturn = this;
+        //
+        //         //先判断用户是否登录
+        //         console.log("layout.sessionPromise.init")
+        //         o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
+        //             this.status = "fulfilled";
+        //             this.resolveReturn = json.data;
+        //             this.runResolve(this.resolveReturn);
+        //         }.bind(this), function (xhr, text, error) {
+        //             this.status = "rejected";
+        //             this.resolveReturn = {"xhr": xhr, "text": text, "error": error};
+        //             this.runReject(this.resolveReturn);
+        //         }.bind(this));
+        //     },
+        //     "runResolve": function(json){
+        //         while (this.resolveList.length){
+        //             var r = this.resolveList.shift()(this.resolveReturn);
+        //             if (r) this.resolveReturn = r;
+        //         }
+        //     },
+        //     "runReject": function(json){
+        //         while (this.rejectList.length){
+        //             var r = this.rejectList.shift()(json);
+        //             if (r) this.resolveReturn = r;
+        //         }
+        //     },
+        //     "then": function(resolve, reject){
+        //         if (resolve) this.resolveList.push(resolve);
+        //         if (reject) this.rejectList.push(reject);
+        //         switch (this.status){
+        //             case "fulfilled":
+        //                 this.runResolve();
+        //                 break;
+        //             case "rejected":
+        //                 this.runReject();
+        //                 break;
+        //             default:
+        //             //nothing
+        //         }
+        //         return this;
+        //     }
+        // }
 
-        layout.sessionPromise.init(function(data){
+        layout.sessionPromise.then(function(data){
             //已经登录
             layout.user = data;
             layout.session = layout.session || {};
             layout.session.user = data;
             layout.session.token = data.token;
             layout.desktop.session = layout.session;
-
+            //_loadApp();
         }, function(){
             //允许匿名访问
             if (layout.anonymous) {
@@ -604,6 +621,7 @@ o2.addReady(function () {
 
 
         layout.openLogin = function () {
+            layout.desktop.type = "app";
             layout.authentication = new o2.xDesktop.Authentication({
                 "style": "flat",
                 "onLogin": _load.bind(layout)
