@@ -556,7 +556,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         },
         //查询组织的下级--返回组织的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
-        listSubUnit: function(name, nested){
+        listSubUnit: function(name, nested, async){
             getOrgActions();
             var data = {"unitList": getNameFlag(name)};
             var v = null;
@@ -771,7 +771,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
             var data = {"identityList":getNameFlag(name)};
             var v = null;
             var cb = function(json){
-                v = json.data;
+                v = json.data.nameList;
                 if (async && o2.typeOf(async)=="function") return async(v);
                 return v;
             };
@@ -1588,7 +1588,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
             })
         },
         "startProcess": function (app, process, data, identity, callback, target, latest) {
-            debugger;
+
             if (arguments.length > 2) {
                 for (var i = 2; i < arguments.length; i++) {
                     if (typeOf(arguments[i]) == "boolean") {

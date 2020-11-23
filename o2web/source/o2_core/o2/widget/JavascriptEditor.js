@@ -238,7 +238,7 @@ o2.widget.JavascriptEditor = new Class({
         }.bind(this));
     },
     registerCompletion: function(){
-        debugger;
+
         if (this.editor){
             switch (this.options.type.toLowerCase()) {
                 case "ace": this.registerCompletionAce(); break;
@@ -323,7 +323,7 @@ o2.widget.JavascriptEditor = new Class({
         }
     },
     changeEditor: function(type){
-	    debugger;
+
         if (this.editor){
             var value = this.getValue();
             this.destroyEditor();
@@ -569,7 +569,7 @@ o2.widget.JavascriptEditor = new Class({
 
 o2.widget.JavascriptEditor.runtimeEnvironment = {};
 o2.widget.JavascriptEditor.getCompletionEnvironment = function(runtime, callback) {
-    debugger;
+
     if (!o2.widget.JavascriptEditor.runtimeEnvironment[runtime]) {
         o2.require("o2.xScript.Macro", function() {
             switch (runtime) {
