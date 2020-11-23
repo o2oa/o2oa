@@ -38,6 +38,23 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
         }
     },
     loadActionArea: function(){
+        var multiActionArea = this.propertyContent.getElements(".MWFMultiActionArea");
+        multiActionArea.each(function(node){
+            var name = node.get("name");
+            var actionContent = this.data[name];
+            MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
+                var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "isSystemTool" : true,
+                    "onChange": function(){
+                        this.data[name] = actionEditor.data;
+                        this.changeData(name);
+                    }.bind(this)
+                });
+                actionEditor.load(actionContent);
+            }.bind(this));
+        }.bind(this));
+
         var actionAreas = this.propertyContent.getElements(".MWFActionArea");
         actionAreas.each(function(node){
             var name = node.get("name");

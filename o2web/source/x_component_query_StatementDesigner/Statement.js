@@ -1828,6 +1828,19 @@ MWF.xApplication.query.StatementDesigner.View.Actionbar = new Class({
         //this._hideActions();
         this.hideProperty();
     },
+    showProperty: function(){
+        if (!this.property){
+            this.property = new MWF.xApplication.query.StatementDesigner.Property(this, this.view.designer.propertyContentArea, this.view.designer, {
+                "path": this.propertyPath,
+                "onPostLoad": function(){
+                    this.property.show();
+                }.bind(this)
+            });
+            this.property.load();
+        }else{
+            this.property.show();
+        }
+    }
 });
 
 MWF.xApplication.query.StatementDesigner.View.Paging = new Class({
