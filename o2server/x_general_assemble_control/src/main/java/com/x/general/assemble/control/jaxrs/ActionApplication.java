@@ -8,6 +8,7 @@ import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.general.assemble.control.jaxrs.area.AreaAction;
 import com.x.general.assemble.control.jaxrs.ecnet.EcnetAction;
 import com.x.general.assemble.control.jaxrs.office.OfficeAction;
+import com.x.general.assemble.control.jaxrs.file.GeneralFileAction;
 import com.x.general.assemble.control.jaxrs.worktime.WorkTimeAction;
 
 @ApplicationPath("jaxrs")
@@ -18,6 +19,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(EcnetAction.class);
 		classes.add(OfficeAction.class);
 		classes.add(WorkTimeAction.class);
+		classes.add(GeneralFileAction.class);
 		return classes;
 	}
 
