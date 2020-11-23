@@ -130,8 +130,8 @@ if( !MWF.CMSProperty_Process ){
             multiActionArea.each(function(node){
                 var name = node.get("name");
                 var actionContent = this.data[name];
-                MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
-                    var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ActionsEditor", function(){
+                    var actionEditor = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                         "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                         "isSystemTool" : true,
                         "onChange": function(){
