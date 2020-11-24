@@ -370,7 +370,7 @@ public class ActionExportAll extends BaseAction {
 			EntityManagerContainer emc = business.entityManagerContainer();
 			// 创建新的表格
 			Sheet sheet = wb.createSheet(sheetName);
-			
+			int forNumber = 0;
 			// 先创建表头
 			row = sheet.createRow(0);
 			row.createCell(0).setCellValue("群组名称 *");
@@ -382,15 +382,19 @@ public class ActionExportAll extends BaseAction {
 
 			for (int i = 0; i < groupList.size(); i++) {
 				group = groupList.get(i);
-				row = sheet.createRow(i + 1);
-				int forNumber = i+1;
+				//forNumber = i;
 				List<String> personList = group.getPersonList();
 				List<String> unitList = group.getUnitList();
 				List<String> groupsList = group.getGroupList();
-				/*System.out.println("personList="+personList.size());
+				List<String> identityList = group.getIdentityList();
+
+				System.out.println("personList="+personList.size());
 				System.out.println("unitList="+unitList.size());
-				System.out.println("groupsList="+groupsList.size());*/
+				System.out.println("groupsList="+groupsList.size());
+				System.out.println("identityList="+identityList.size());
 				if(ListTools.isEmpty(personList) && ListTools.isEmpty(unitList) && ListTools.isEmpty(groupsList)){
+					forNumber = forNumber+1;
+					row = sheet.createRow(forNumber);
 					row.createCell(0).setCellValue(group.getName());
 					row.createCell(1).setCellValue(group.getUnique());
 					row.createCell(2).setCellValue("");
@@ -401,6 +405,8 @@ public class ActionExportAll extends BaseAction {
 					if(ListTools.isNotEmpty(personList)){
 						for(String personId : personList){
 							Person person = emc.flag(personId, Person.class);
+							forNumber = forNumber+1;
+							row = sheet.createRow(forNumber);
 							if(person != null){
 								row.createCell(0).setCellValue(group.getName());
 								row.createCell(1).setCellValue(group.getUnique());
@@ -415,12 +421,12 @@ public class ActionExportAll extends BaseAction {
 								row.createCell(4).setCellValue("");
 							}
 							row.createCell(5).setCellValue(group.getDescription());
-						} 
-						
+						}
+
 					}
 					if(ListTools.isNotEmpty(unitList)){
 						for(String unitId : unitList){
-							forNumber++;
+							forNumber = forNumber+1;
 							row = sheet.createRow(forNumber);
 							Unit unit = emc.flag(unitId, Unit.class);
 							if(unit != null){
@@ -441,7 +447,7 @@ public class ActionExportAll extends BaseAction {
 					}
 					if(ListTools.isNotEmpty(groupsList)){
 						for(String groupId : groupsList){
-							forNumber++;
+							forNumber = forNumber+1;
 							row = sheet.createRow(forNumber);
 							Group grouptemp = emc.flag(groupId, Group.class);
 							if(grouptemp != null){
