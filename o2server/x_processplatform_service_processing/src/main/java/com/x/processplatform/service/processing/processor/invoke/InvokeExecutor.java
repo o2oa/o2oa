@@ -68,9 +68,11 @@ public class InvokeExecutor {
 	}
 
 	private String jaxrsHttpPut(JaxrsObject jaxrsObject) throws Exception {
+		String value = "";
 		if (jaxrsObject.getInternal()) {
-			return CipherConnectionAction.post(true, jaxrsObject.getAddress(), jaxrsObject.getBody()).getData()
+			value =  CipherConnectionAction.post(true, jaxrsObject.getAddress(), jaxrsObject.getBody()).getData()
 					.toString();
+		
 		} else {
 			List<NameValuePair> heads = new ArrayList<>();
 			heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
@@ -79,8 +81,9 @@ public class InvokeExecutor {
 					heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
 				}
 			}
-			return HttpConnection.postAsString(jaxrsObject.getAddress(), heads, jaxrsObject.getBody());
+			value =  HttpConnection.postAsString(jaxrsObject.getAddress(), heads, jaxrsObject.getBody());
 		}
+		return value;
 	}
 
 	private String jaxrsHttpGet(JaxrsObject jaxrsObject) throws Exception {
