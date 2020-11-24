@@ -74,9 +74,14 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 	private byte[] workConvert(EffectivePerson effectivePerson, Wi wi, String application, String process,
 			String activity, String job) throws Exception {
 		byte[] bytes = null;
-		Optional<WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents().getWorkDocToWordEvents()
-				.bind(application, process, activity);
-
+		Optional<WorkExtensionEvent> event;
+		if(wi.getFileName().toLowerCase().endsWith(OFD_ATT_KEY)){
+			event = Config.processPlatform().getExtensionEvents().getWorkDocToOfdEvents()
+					.bind(application, process, activity);
+		}else{
+			event = Config.processPlatform().getExtensionEvents().getWorkDocToWordEvents()
+					.bind(application, process, activity);
+		}
 		if (event.isPresent()) {
 			bytes = this.workExtensionService(effectivePerson, wi.getContent(), event.get(), job);
 		} else {
@@ -107,8 +112,14 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 	private byte[] workCompletedConvert(EffectivePerson effectivePerson, Wi wi, String application, String process, String job)
 			throws Exception {
 		byte[] bytes = null;
-		Optional<WorkCompletedExtensionEvent> event = Config.processPlatform().getExtensionEvents()
-				.getWorkCompletedDocToWordEvents().bind(application, process);
+		Optional<WorkCompletedExtensionEvent> event;
+		if(wi.getFileName().toLowerCase().endsWith(OFD_ATT_KEY)){
+			event = Config.processPlatform().getExtensionEvents()
+					.getWorkCompletedDocToOfdEvents().bind(application, process);
+		}else{
+			event = Config.processPlatform().getExtensionEvents()
+					.getWorkCompletedDocToWordEvents().bind(application, process);
+		}
 		if (event.isPresent()) {
 			bytes = this.workCompletedExtensionService(effectivePerson, wi.getContent(), event.get(), job);
 		} else {
