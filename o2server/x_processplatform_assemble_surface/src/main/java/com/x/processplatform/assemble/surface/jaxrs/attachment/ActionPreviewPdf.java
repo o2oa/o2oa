@@ -2,7 +2,6 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.general.core.entity.file.GeneralFile;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.commons.io.FilenameUtils;
 
@@ -20,6 +19,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DocumentTools;
 import com.x.base.core.project.tools.StringTools;
+import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Attachment;
 
