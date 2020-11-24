@@ -17,8 +17,8 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class({
     },
     reload: function(){
         if (this.view){
-            if (this.view.loadViewRes) if (this.view.loadViewRes.isRunning()) this.view.loadViewRes.cancel();
-            if (this.view.getViewRes) if (this.view.getViewRes.isRunning()) this.view.getViewRes.cancel();
+            if (this.view.loadViewRes && this.view.loadViewRes.res) if (this.view.loadViewRes.res.isRunning()) this.view.loadViewRes.res.cancel();
+            if (this.view.getViewRes && this.view.getViewRes.res) if (this.view.getViewRes.res.isRunning()) this.view.getViewRes.res.cancel();
         }
         this.node.empty();
         this.loadView();

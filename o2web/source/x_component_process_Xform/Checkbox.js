@@ -156,23 +156,28 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 	},
 
     _setValue: function(value){
-        var p = o2.promiseAll(value).then(function(v){
-            //if (o2.typeOf(v)=="array") v = v[0];
-            if (this.moduleSelectAG){
-                this.moduleValueAG = this.moduleSelectAG;
-                this.moduleSelectAG.then(function(){
-                    this.__setValue(v);
-                    return v;
-                }.bind(this));
-            }else{
-                this.__setValue(v)
-            }
-            return v;
-        }.bind(this));
-        this.moduleValueAG = p;
-        if (this.moduleValueAG) this.moduleValueAG.then(function(){
-            this.moduleValueAG = null;
-        }.bind(this));
+	    if (!!value){
+            var p = o2.promiseAll(value).then(function(v){
+                //if (o2.typeOf(v)=="array") v = v[0];
+                if (this.moduleSelectAG){
+                    this.moduleValueAG = this.moduleSelectAG;
+                    this.moduleSelectAG.then(function(){
+                        this.__setValue(v);
+                        return v;
+                    }.bind(this));
+                }else{
+                    this.__setValue(v)
+                }
+                return v;
+            }.bind(this));
+            this.moduleValueAG = p;
+            if (this.moduleValueAG) this.moduleValueAG.then(function(){
+                this.moduleValueAG = null;
+            }.bind(this));
+        }else{
+            this.__setValue(value);
+        }
+
 
         // this.moduleValueAG = o2.AG.all(value).then(function(v){
         //     if (this.moduleSelectAG){
