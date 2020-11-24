@@ -24,6 +24,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
 
 
     _setValue: function(value){
+	    if (!value) value = "";
         var p = o2.promiseAll(value).then(function(v){
             if (o2.typeOf(v)=="array") v = v[0];
             this._setBusinessData(v);
