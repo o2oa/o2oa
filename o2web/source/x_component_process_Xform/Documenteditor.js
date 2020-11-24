@@ -2973,8 +2973,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             var fileName = docNmae || this.json.toWordFilename || "$doc";
             var n = fileName.lastIndexOf(".");
-            var ex = fileName.substring(n, fileName.length).toLowerCase();
-            if (ex!==".doc" && ex!==".docx") fileName = fileName+".doc";
+            if (n==-1) fileName = fileName+".doc";
+            // var ex = fileName.substring(n, fileName.length).toLowerCase();
+            // if (ex!==".doc" && ex!==".docx") fileName = fileName+".doc";
 
             var body = {
                 "fileName": fileName,
