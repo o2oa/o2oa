@@ -167,26 +167,34 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             "styles": this.css.elementContentListNode
         }).inject(this.elementContentNode);
 
-        this.setContentSize();
-        this.app.addEvent("resize", this.setContentSize.bind(this));
+        this.setContentSizeFun = this.setContentSize.bind(this);
+        this.app.addEvent("resize", this.setContentSizeFun);
+        this.app.addEvent("close", function(){
+            if (this.setContentSizeFun){
+                this.app.removeEvent("resize", this.setContentSizeFun);
+                this.setContentSizeFun = null;
+            }
+        }.bind(this));
     },
     setContentSize: function(){
-        var toolbarSize = (this.toolbarNode) ? this.toolbarNode.getSize() : {"x": 0, "y": 0};
-        var nodeSize = this.node.getSize();
-        var pt = this.elementContentNode.getStyle("padding-top").toFloat();
-        var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
+        if (this.elementContentListNode){
+            var toolbarSize = (this.toolbarNode) ? this.toolbarNode.getSize() : {"x": 0, "y": 0};
+            var nodeSize = (this.node) ? this.node.getSize() : {"x": 0, "y": 0};
+            var pt = this.elementContentNode.getStyle("padding-top").toFloat();
+            var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
 
-        var height = nodeSize.y-toolbarSize.y-pt-pb;
-        this.elementContentNode.setStyle("height", ""+height+"px");
+            var height = nodeSize.y-toolbarSize.y-pt-pb;
+            this.elementContentNode.setStyle("height", ""+height+"px");
 
-        var count = (nodeSize.x/282).toInt();
-        var x = count*282;
-        var m = (nodeSize.x-x)/2-10;
+            var count = (nodeSize.x/282).toInt();
+            var x = count*282;
+            var m = (nodeSize.x-x)/2-10;
 
-        this.elementContentListNode.setStyles({
-            "width": ""+x+"px",
-            "margin-left": "" + m + "px"
-        });
+            this.elementContentListNode.setStyles({
+                "width": ""+x+"px",
+                "margin-left": "" + m + "px"
+            });
+        }
     },
     setNodeScroll: function(){
         MWF.require("MWF.widget.DragScroll", function(){

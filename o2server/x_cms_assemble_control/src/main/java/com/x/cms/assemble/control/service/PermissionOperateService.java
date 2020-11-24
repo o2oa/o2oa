@@ -2,13 +2,8 @@ package com.x.cms.assemble.control.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
-import com.google.gson.JsonElement;
-import com.x.base.core.entity.dataitem.DataItemConverter;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.cms.assemble.control.DocumentDataHelper;
-import com.x.cms.core.entity.content.Data;
-import com.x.query.core.entity.Item;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.lib.util.StringUtil;
 
@@ -26,6 +21,8 @@ import com.x.cms.core.entity.Document;
 public class PermissionOperateService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PermissionOperateService.class);
+
+	private static ReentrantLock lock = new ReentrantLock();
 	/**
 	 * 根据文档ID，为文档设置用户访问和管理权限
 	 * @param docId
@@ -35,11 +32,12 @@ public class PermissionOperateService {
 	 */
 	public Document refreshDocumentPermission( String docId, List<PermissionInfo> readerList, List<PermissionInfo> authorList ) throws Exception {
 		List<PermissionInfo> permissionList = composeDocmentAllPermissions(readerList, authorList);
+		lock.lock();
 		try {
 			//将读者以及作者信息持久化到数据库中
 			return refreshDocumentPermission( docId, permissionList );
-		} catch (Exception e) {
-			throw e;
+		} finally {
+			lock.unlock();
 		}
 	}
 	
@@ -145,11 +143,10 @@ public class PermissionOperateService {
 		if( StringUtils.isEmpty(docId) ){
 			throw new Exception( "docId is empty！" );
 		}
+		logger.info("dear refreshDocumentPermission doc:{}",docId);
 		Document document = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			emc.beginTransaction( Document.class );
 			document = emc.find( docId, Document.class );
-			
 			if( document != null ) {
 				//清空文档权限信息
 				document.setManagerList( null );
@@ -205,11 +202,12 @@ public class PermissionOperateService {
 					document.addToReadPersonList( document.getCreatorPerson() );
 					document.addToManagerList( document.getCreatorPerson() );
 				}
-		
+				emc.beginTransaction( Document.class );
 				emc.check( document , CheckPersistType.all );
 				emc.commit();
 			}		
 		} catch ( Exception e ) {
+			logger.warn("refreshDocumentPermission doc error:{}",document);
 			throw e;
 		}
 

@@ -2,6 +2,8 @@ package com.x.cms.assemble.control.queue;
 
 import java.util.List;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -20,8 +22,8 @@ import com.x.cms.core.entity.content.Data;
 
 public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 
-	private CmsBatchOperationProcessService cmsBatchOperationProcessService = new CmsBatchOperationProcessService();
-	
+	private static Logger logger = LoggerFactory.getLogger( QueueDataRowImport.class );
+
 	public void execute( ImportDataRow dataRow ) throws Exception {
 		int curRow = dataRow.getCurRow();
 		List<String> colmlist = dataRow.getColmlist(); 
@@ -35,34 +37,34 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 //		System.out.println(">>>>>>>>>>>>>>>>>>>QueueDataRowImport.execute正在处理第" + curRow + "行数据：" + printData( colmlist ) );
 		if( ListTools.isNotEmpty( colmlist ) ){
 			Data data = null;
-			Document document = null;
+
 			List<String> propertyNames = excelReadRuntime.propertyNames;
 			if( ListTools.isNotEmpty( propertyNames )) {
-				document = composeDocumentFormTemplate( excelReadRuntime.template );
-				if( StringUtils.isEmpty( document.getId()  )) {
-					document.setId( Document.createId() );
-				}
-				document.setImportBatchName( batchName );
-				document.setDocStatus("checking"); //待校验
-				document.setSummary( null );
-				document.addToReadPersonList( "所有人" );
-				document.addToAuthorPersonList( excelReadRuntime.operatorName );
-						
-				if( StringUtils.isNotEmpty( colmlist.get( titleColIndex )+"" )) {
-					if( StringUtils.isNotEmpty( titleFlag )) {
-						document.setTitle( titleFlag + colmlist.get( titleColIndex )+""  );
-					}else {
-						document.setTitle( colmlist.get( titleColIndex )+""  );
-					}					
-				}else {
-					if( StringUtils.isNotEmpty( titleFlag )) {
-						document.setTitle( titleFlag + "无标题"  );
-					}else {
-						document.setTitle( "无标题"  );
-					}					
-				}
-				boolean flag = false;
+				String docId = null;
 				try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+					Document document = composeDocumentFormTemplate( excelReadRuntime.template );
+					if( StringUtils.isEmpty( document.getId()  )) {
+						document.setId( Document.createId() );
+					}
+					document.setImportBatchName( batchName );
+					document.setDocStatus("checking"); //待校验
+					document.setSummary( null );
+					document.addToReadPersonList( "所有人" );
+					document.addToAuthorPersonList( excelReadRuntime.operatorName );
+
+					if( StringUtils.isNotEmpty( colmlist.get( titleColIndex )+"" )) {
+						if( StringUtils.isNotEmpty( titleFlag )) {
+							document.setTitle( titleFlag + colmlist.get( titleColIndex )+""  );
+						}else {
+							document.setTitle( colmlist.get( titleColIndex )+""  );
+						}
+					}else {
+						if( StringUtils.isNotEmpty( titleFlag )) {
+							document.setTitle( titleFlag + "无标题"  );
+						}else {
+							document.setTitle( "无标题"  );
+						}
+					}
 					emc.beginTransaction( Document.class );
 					document.setDocStatus( excelReadRuntime.template.getDocStatus() ); //已发布
 					emc.persist( document, CheckPersistType.all );
@@ -98,31 +100,30 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 //					if( StringUtils.isEmpty( document.getTitle() )) {
 //						document.setTitle( "无标题" );
 //					}
-							
-					emc.check( document, CheckPersistType.all );
-							
+
 					data.setDocument( document );
 					documentDataHelper.update( data );
 					emc.commit();
-					flag = true;
+					docId = document.getId();
 					dataImportStatus.addDocumentId( document.getId() );
 					dataImportStatus.increaseSuccessTotal(1);
-					System.out.println( "第" + curRow + "行数据导入成功，已经成功提交到数据库！导入成功共"+ excelReadRuntime.wo.getSuccess_count() +"条");
+					logger.print( "第" + curRow + "行数据导入成功，已经成功提交到数据库！导入成功共"+ excelReadRuntime.wo.getSuccess_count() +"条.");
 				} catch ( Exception e ) {
-					System.out.println( "第" + curRow + "行数据导入成功，保存失败！导入失败共"+ excelReadRuntime.wo.getError_count() +"条");
+					logger.print( "第" + curRow + "行数据导入成功，保存失败！导入失败共"+ excelReadRuntime.wo.getError_count() +"条.");
 					dataImportStatus.appendErorrData( colmlist );
 					dataImportStatus.increaseErrorTotal(1);
 					e.printStackTrace();
-				}
-
-				if(flag) {
-					cmsBatchOperationProcessService.refreshDocumentReview(document.getId());
+				} finally {
+                    if(docId!=null) {
+                        new CmsBatchOperationProcessService().refreshDocumentReview(docId);
 					/*new CmsBatchOperationPersistService().addOperation(
 							CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
 							CmsBatchOperationProcessService.OPT_TYPE_PERMISSION, document.getId(), document.getId(), "导入新文档：ID=" + document.getId());*/
-				}
+                    }
+                }
+
 			}else {
-				System.out.println("数据导入不成功，propertyNames为空，无法识别数据列对应的属性！");
+				logger.print("数据导入不成功，propertyNames为空，无法识别数据列对应的属性！");
 			}
 		}
 		

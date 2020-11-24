@@ -156,6 +156,9 @@ public class WrapInQueryDocumentCommentInfo {
 		if( StringUtils.isNotEmpty( this.getAppId() )) {
 			queryFilter.addEqualsTerm( new EqualsTerm( "appId", this.getAppId() ) );
 		}
+		if( StringUtils.isNotEmpty( this.getCategoryId() )) {
+			queryFilter.addEqualsTerm( new EqualsTerm( "categoryId", this.getCategoryId() ) );
+		}
 		if( StringUtils.isNotEmpty( this.getDocumentId() )) {
 			queryFilter.addEqualsTerm( new EqualsTerm( "documentId", this.getDocumentId() ) );
 		}
