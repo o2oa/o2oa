@@ -9,9 +9,9 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.general.core.entity.GeneralFile;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.general.core.entity.file.GeneralFile;
 import com.x.organization.assemble.control.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 
