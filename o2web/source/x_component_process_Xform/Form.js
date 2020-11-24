@@ -1332,21 +1332,23 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         if (!this.options.readonly) {
             if (this.businessData.work && this.businessData.work.id) {
-                if (this.app.inBrowser && navigator.sendBeacon) {
-
-                    var obj = this.workAction.action.actions["checkDraft"];
-                    var url = this.workAction.action.address + obj.uri;
-                    url = url.replace("{id}", this.businessData.work.id);
-                    navigator.sendBeacon(url);
-                } else {
-                    this.workAction.checkDraft(this.businessData.work.id, function () {
-                        if (layout.desktop.apps) {
-                            if (layout.desktop.apps["TaskCenter"] && layout.desktop.apps["TaskCenter"].window) {
-                                layout.desktop.apps["TaskCenter"].content.unmask();
-                                layout.desktop.apps["TaskCenter"].refreshAll();
+                if (!this.isSendBeacon) {
+                    if (this.app.inBrowser && navigator.sendBeacon) {
+                        var obj = this.workAction.action.actions["checkDraft"];
+                        var url = this.workAction.action.address + obj.uri;
+                        url = url.replace("{id}", this.businessData.work.id);
+                        navigator.sendBeacon(url);
+                    } else {
+                        this.workAction.checkDraft(this.businessData.work.id, function () {
+                            if (layout.desktop.apps) {
+                                if (layout.desktop.apps["TaskCenter"] && layout.desktop.apps["TaskCenter"].window) {
+                                    layout.desktop.apps["TaskCenter"].content.unmask();
+                                    layout.desktop.apps["TaskCenter"].refreshAll();
+                                }
                             }
-                        }
-                    }.bind(this), null, false);
+                        }.bind(this), null, false);
+                    }
+                    this.isSendBeacon = true;
                 }
             }
         } else {
