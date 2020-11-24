@@ -639,7 +639,7 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
                 }
                 errorText = errorText.replace(/\</g, "&lt;");
                 errorText = errorText.replace(/\</g, "&gt;");
-                MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+                if (layout.session && layout.session.user) MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
             }
 		//	throw "request error: "+errorText;
 		}
