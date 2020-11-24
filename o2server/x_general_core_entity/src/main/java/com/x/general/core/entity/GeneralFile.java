@@ -1,4 +1,4 @@
-package com.x.general.core.entity.file;
+package com.x.general.core.entity;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.Storage;
@@ -8,7 +8,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
-import com.x.general.core.entity.PersistenceProperties;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,8 +19,8 @@ import java.util.Date;
 
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.General.File.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.General.File.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.GeneralFile.table, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.GeneralFile.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -29,7 +29,7 @@ public class GeneralFile extends StorageObject {
 
 	private static final long serialVersionUID = -8883987079043800355L;
 
-	private static final String TABLE = PersistenceProperties.General.File.table;
+	private static final String TABLE = PersistenceProperties.GeneralFile.table;
 
 	public String getId() {
 		return id;

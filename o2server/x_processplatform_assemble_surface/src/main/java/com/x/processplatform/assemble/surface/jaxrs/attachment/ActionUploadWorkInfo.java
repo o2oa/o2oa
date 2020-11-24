@@ -9,7 +9,6 @@ import java.io.InputStream;
 
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.general.core.entity.file.GeneralFile;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
@@ -36,6 +35,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.StringTools;
+import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
