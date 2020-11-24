@@ -601,12 +601,16 @@ public class ProcessPlatform extends ConfigObject {
 		private WorkExtensionEvents workAttachmentDownloadEvents = new WorkExtensionEvents();
 		@FieldDescribe("工作版式文件转word.")
 		private WorkExtensionEvents workDocToWordEvents = new WorkExtensionEvents();
+		@FieldDescribe("工作版式文件转OFD.")
+		private WorkExtensionEvents workDocToOfdEvents = new WorkExtensionEvents();
 		@FieldDescribe("已完成工作附件上传.")
 		private WorkCompletedExtensionEvents workCompletedAttachmentUploadEvents = new WorkCompletedExtensionEvents();
 		@FieldDescribe("已完成工作附件下载.")
 		private WorkCompletedExtensionEvents workCompletedAttachmentDownloadEvents = new WorkCompletedExtensionEvents();
 		@FieldDescribe("已完成工作版式文件转word.")
 		private WorkCompletedExtensionEvents workCompletedDocToWordEvents = new WorkCompletedExtensionEvents();
+		@FieldDescribe("已完成工作版式文件转OFD.")
+		private WorkCompletedExtensionEvents workCompletedDocToOfdEvents = new WorkCompletedExtensionEvents();
 
 		public WorkExtensionEvents getWorkAttachmentUploadEvents() {
 			if (null == this.workAttachmentUploadEvents) {
@@ -629,6 +633,13 @@ public class ProcessPlatform extends ConfigObject {
 			return workDocToWordEvents;
 		}
 
+		public WorkExtensionEvents getWorkDocToOfdEvents() {
+			if (null == this.workDocToOfdEvents) {
+				this.workDocToOfdEvents = new WorkExtensionEvents();
+			}
+			return workDocToOfdEvents;
+		}
+
 		public WorkCompletedExtensionEvents getWorkCompletedAttachmentUploadEvents() {
 			if (null == this.workCompletedAttachmentUploadEvents) {
 				this.workCompletedAttachmentUploadEvents = new WorkCompletedExtensionEvents();
@@ -648,6 +659,13 @@ public class ProcessPlatform extends ConfigObject {
 				this.workCompletedDocToWordEvents = new WorkCompletedExtensionEvents();
 			}
 			return workCompletedDocToWordEvents;
+		}
+
+		public WorkCompletedExtensionEvents getWorkCompletedDocToOfdEvents() {
+			if (null == this.workCompletedDocToOfdEvents) {
+				this.workCompletedDocToOfdEvents = new WorkCompletedExtensionEvents();
+			}
+			return workCompletedDocToOfdEvents;
 		}
 
 	}

@@ -32,6 +32,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
+	protected final static String OFD_ATT_KEY = ".ofd";
+
 	public static class WiExtraParam {
 		private String site;
 
