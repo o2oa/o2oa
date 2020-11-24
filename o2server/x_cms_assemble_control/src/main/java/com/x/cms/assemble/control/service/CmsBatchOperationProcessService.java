@@ -231,16 +231,16 @@ public class CmsBatchOperationProcessService {
 			cmsBatchOperation = emc.find( id, CmsBatchOperation.class );
 			
 			reviewService.refreshDocumentReview( emc, docId );
-			
-			Document document = emc.find( docId, Document.class );
+
+			/*Document document = emc.find( docId, Document.class );
 			if( document != null ) {
 				emc.beginTransaction( Document.class );
 				document.setReviewed( true );
-				
+
 				if( StringUtils.isEmpty( document.getAppAlias()  )) {
 					document.setAppAlias( document.getAppName() );
 				}
-				
+
 				document.setSequenceAppAlias( document.getAppAlias() + document.getId() );
 				document.setSequenceCategoryAlias( document.getCategoryAlias() + document.getId() );
 				if( StringUtils.isNotEmpty( document.getTitle() ) && document.getTitle().length() > 30 ) {
@@ -258,10 +258,10 @@ public class CmsBatchOperationProcessService {
 				}else {
 					document.setSequenceCreatorUnitName( document.getCreatorUnitName() + document.getId() );
 				}
-				
+
 				emc.check( document, CheckPersistType.all );
 				emc.commit();
-			}
+			}*/
 			
 			if( cmsBatchOperation != null ) {
 				emc.beginTransaction( CmsBatchOperation.class );
@@ -283,6 +283,7 @@ public class CmsBatchOperationProcessService {
 	 * @throws Exception
 	 */
 	public void refreshDocumentReview(String docId ) throws Exception {
+		logger.debug( "refreshDocumentReview {}", docId);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			reviewService.refreshDocumentReview( emc, docId );
 
