@@ -27,6 +27,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Attachment;
@@ -86,6 +87,10 @@ class ActionAssignCreate extends BaseAction {
 			work.setCreatorIdentity(identityDn);
 			work.setCreatorPerson(business.organization().person().getWithIdentity(identityDn));
 			work.setCreatorUnit(business.organization().unit().getWithIdentity(identityDn));
+			if (StringUtils.isNotEmpty(work.getCreatorUnit())) {
+				Unit unit = business.organization().unit().getObject(work.getCreatorUnit());
+				work.setCreatorUnitLevelName(unit.getLevelName());
+			}
 			/* 通过赋值调用的是不能被作为草稿删除的 */
 			work.setDataChanged(true);
 			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
