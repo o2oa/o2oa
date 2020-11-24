@@ -56,10 +56,13 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class({
         }
     },
     setText: function(text){
-        o2.promiseAll(text).then(function(v){
+	    if (!!text){
+            o2.promiseAll(text).then(function(v){
+                this.node.set("text", v || "");
+            }.bind(this));
+        }else{
             this.node.set("text", v || "");
-        }.bind(this));
-
+        }
         //this.node.set("text", text);
     }
 });
