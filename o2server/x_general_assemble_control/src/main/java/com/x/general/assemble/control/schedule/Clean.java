@@ -1,5 +1,17 @@
 package com.x.general.assemble.control.schedule;
 
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.StorageMapping;
@@ -10,18 +22,8 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.general.assemble.control.ThisApplication;
-import com.x.general.core.entity.file.GeneralFile;
-import com.x.general.core.entity.file.GeneralFile_;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.Date;
-import java.util.List;
+import com.x.general.core.entity.GeneralFile;
+import com.x.general.core.entity.GeneralFile_;
 
 public class Clean extends AbstractJob {
 
