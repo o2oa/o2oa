@@ -1,4 +1,4 @@
-package com.x.general.assemble.control.jaxrs.file;
+package com.x.general.assemble.control.jaxrs.generalfile;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -9,12 +9,12 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.general.assemble.control.ThisApplication;
-import com.x.general.core.entity.file.GeneralFile;
+import com.x.general.core.entity.GeneralFile;
 
 
-public class ActionGeneralFile extends BaseAction {
+public class ActionGet extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionGeneralFile.class);
+    private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
 
     protected ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
         logger.debug(effectivePerson, "flag:{}.", flag);
@@ -40,7 +40,6 @@ public class ActionGeneralFile extends BaseAction {
         }
         result.setData(wo);
         return result;
-
     }
 
     public static class Wo extends WoFile {
