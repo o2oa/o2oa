@@ -128,7 +128,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
             return false;
         }
     },
-    checkValid( obj, silence ){
+    checkValid: function( obj, silence ){
         if( typeOf(obj) !== "object" ){
             return true;
         }
