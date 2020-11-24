@@ -370,8 +370,8 @@ MWF.xApplication.AppCenter.Exporter = new Class({
                         "text": this.lp.cancel,
                         "action": function(){
                             this.close();
-                            if (_self.structureRes){
-                                if (_self.structureRes.isRunning()){_self.structureRes.cancel();}
+                            if (_self.structureRes && _self.structureRes.res){
+                                if (_self.structureRes.res.isRunning()){_self.structureRes.res.cancel();}
                                 _self.structureRes = null;
                             }
                         }
