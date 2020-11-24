@@ -622,6 +622,9 @@ o2.addReady(function () {
 
         layout.openLogin = function () {
             layout.desktop.type = "app";
+            layout.app = null;
+            var content = $("appContent") || $("layout");
+            if (content) content.empty();
             layout.authentication = new o2.xDesktop.Authentication({
                 "style": "flat",
                 "onLogin": _load.bind(layout)
