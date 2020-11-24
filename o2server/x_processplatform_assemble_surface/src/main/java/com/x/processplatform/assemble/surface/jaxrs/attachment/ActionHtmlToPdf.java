@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.general.core.entity.file.GeneralFile;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +26,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import com.x.general.core.entity.GeneralFile;
 
 class ActionHtmlToPdf extends BaseAction {
 
