@@ -102,13 +102,13 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			if ((StringUtils.isNotEmpty(invoke.getJaxwsResponseScript()))
 					|| (StringUtils.isNotEmpty(invoke.getJaxwsResponseScriptText()))) {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
-				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXWSRESPONSE,
-						response);
-				/* 重新注入对象需要重新运行 */
-				ScriptFactory.initialScriptText().eval(scriptContext);
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
 						Business.EVENT_INVOKEJAXWSRESPONSE);
+				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXWSRESPONSE,
+						response);
+//				/* 重新注入对象需要重新运行 */
+//				ScriptFactory.initialScriptText().eval(scriptContext);
 				cs.eval(scriptContext);
 			}
 		}
@@ -119,12 +119,12 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		if ((StringUtils.isNotEmpty(invoke.getJaxwsParameterScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxwsParameterScriptText()))) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
-					parameters);
-			/* 重新注入对象需要重新运行 */
-			ScriptFactory.initialScriptText().eval(scriptContext);
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXWSPARAMETER);
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
+					parameters);
+//			/* 重新注入对象需要重新运行 */
+//			ScriptFactory.initialScriptText().eval(scriptContext);
 			cs.eval(scriptContext);
 		}
 		return parameters.toArray();
@@ -225,15 +225,14 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			jaxrsResponse.set(gson.toJson(resp.getData()));
 			if ((StringUtils.isNotEmpty(invoke.getJaxrsResponseScript()))
 					|| (StringUtils.isNotEmpty(invoke.getJaxrsResponseScriptText()))) {
-
 				ScriptContext scriptContext = aeiObjects.scriptContext();
-				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
-						jaxrsResponse);
-				/* 重新注入对象需要重新运行 */
-				ScriptFactory.initialScriptText().eval(scriptContext);
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
 						Business.EVENT_INVOKEJAXRSRESPONSE);
+				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
+						jaxrsResponse);
+//				/* 重新注入对象需要重新运行 */
+//				ScriptFactory.initialScriptText().eval(scriptContext);
 				cs.eval(scriptContext);
 			}
 		}
@@ -315,13 +314,13 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			if ((StringUtils.isNotEmpty(invoke.getJaxrsResponseScript()))
 					|| (StringUtils.isNotEmpty(invoke.getJaxrsResponseScriptText()))) {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
-				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
-						jaxrsResponse);
-				/* 重新注入对象需要重新运行 */
-				ScriptFactory.initialScriptText().eval(scriptContext);
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
 						Business.EVENT_INVOKEJAXRSRESPONSE);
+				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
+						jaxrsResponse);
+//				/* 重新注入对象需要重新运行 */
+//				ScriptFactory.initialScriptText().eval(scriptContext);
 				cs.eval(scriptContext);
 			}
 		}
@@ -334,12 +333,12 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsParameterScriptText()))) {
 
 			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
-					parameters);
-			/* 重新注入对象需要重新运行 */
-			ScriptFactory.initialScriptText().eval(scriptContext);
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSPARAMETER);
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
+					parameters);
+//			/* 重新注入对象需要重新运行 */
+//			ScriptFactory.initialScriptText().eval(scriptContext);
 			cs.eval(scriptContext);
 		}
 		for (Entry<String, String> entry : parameters.entrySet()) {
@@ -352,14 +351,17 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		JaxrsBody jaxrsBody = new JaxrsBody();
 		if ((StringUtils.isNotEmpty(invoke.getJaxrsBodyScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsBodyScriptText()))) {
-
 			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSBODY, jaxrsBody);
-			/* 重新注入对象需要重新运行 */
-			ScriptFactory.initialScriptText().eval(scriptContext);
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSBODY);
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSBODY, jaxrsBody);
 			cs.eval(scriptContext);
+//			ScriptContext scriptContext = aeiObjects.scriptContext();
+//			/* 重新注入对象需要重新运行 */
+//			ScriptFactory.initialScriptText().eval(scriptContext);
+//			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+//					aeiObjects.getActivity(), Business.);
+//			cs.eval(scriptContext);
 		}
 		return jaxrsBody.get();
 	}
@@ -368,14 +370,18 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		Map<String, String> map = new LinkedHashMap<>();
 		if ((StringUtils.isNotEmpty(invoke.getJaxrsHeadScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsHeadScriptText()))) {
-
 			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSHEAD, map);
-			/* 重新注入对象需要重新运行 */
-			ScriptFactory.initialScriptText().eval(scriptContext);
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSHEAD);
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSHEAD, map);
 			cs.eval(scriptContext);
+//			ScriptContext scriptContext = aeiObjects.scriptContext();
+//			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSHEAD, map);
+//			/* 重新注入对象需要重新运行 */
+//			ScriptFactory.initialScriptText().eval(scriptContext);
+//			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+//					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSHEAD);
+//			cs.eval(scriptContext);
 
 		}
 		return map;
