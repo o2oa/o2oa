@@ -2270,7 +2270,7 @@ MWF.xScript.createCMSDict = function(application){
             options = { name : options };
         }
         var name = this.name = options.name;
-        var type = ( options.type && options.application ) ?  options.type : "process";
+        var type = ( options.type && options.application ) ?  options.type : "cms";
         var applicationId = options.application || application;
         var enableAnonymous = options.enableAnonymous || false;
 
