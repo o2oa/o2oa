@@ -11,7 +11,6 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
                 this.form.subformLoadedCount = 1
             }
             this.form.checkSubformLoaded();
-            this.checked = true;
         } else {
 
             this.getSubform(function () {
@@ -19,18 +18,18 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
             }.bind(this));
         }
     },
-    active: function ( callback ) {
+    active: function (callback) {
         if (!this.loaded) {
-            this.reload( callback )
-        }else{
-            if(callback)callback();
+            this.reload(callback)
+        } else {
+            if (callback) callback();
         }
     },
-    reload: function ( callback ) {
+    reload: function (callback) {
         this.node.empty();
         this.getSubform(function () {
             this.loadSubform();
-            if(callback)callback();
+            if (callback) callback();
         }.bind(this));
     },
     loadCss: function () {
@@ -68,21 +67,20 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
                 styleNode.appendChild(cssTextNode);
             }
         }
-    }
-    ,
+    },
     checkSubformNested: function (id) {
+        if (!id) return true;
         if (this.parentformIdList) {
             return !this.parentformIdList.contains(id);
         } else {
             return ![this.form.json.id].contains(id);
         }
-    }
-    ,
+    },
     checkSubformUnique: function (id) {
-        if (!this.form.subformLoaded)return true;
+        if (!id) return true;
+        if (!this.form.subformLoaded) return true;
         return !this.form.subformLoaded.contains(id);
-    }
-    ,
+    },
     getParentformIdList: function () {
         var parentformIdList;
         if (this.parentformIdList) {
@@ -92,8 +90,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
             parentformIdList = [this.form.json.id, this.subformData.json.id];
         }
         return parentformIdList;
-    }
-    ,
+    },
     loadSubform: function () {
         if (this.subformData) {
             if (!this.checkSubformNested(this.subformData.json.id)) {
@@ -158,11 +155,11 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
                     if (typeOf(data) === "string") {
                         formName = data;
                     } else {
-                        if (data.application)app = data.application;
-                        if (data.subform)formName = data.subform;
+                        if (data.application) app = data.application;
+                        if (data.subform) formName = data.subform;
                     }
                     if (formName) {
-                        if (!app)app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
+                        if (!app) app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
                         MWF.Actions.get("x_processplatform_assemble_surface")[method](formName, app, function (json) {
                             this.getSubformData(json.data);
                             if (callback) callback();
@@ -177,10 +174,10 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
         } else {
             if (this.json.subformSelected && this.json.subformSelected !== "none") {
                 var subformData = (this.form.app.relatedFormMap) ? this.form.app.relatedFormMap[this.json.subformSelected] : null;
-                if (subformData){
+                if (subformData) {
                     this.getSubformData({"data": subformData.data});
                     if (callback) callback();
-                }else{
+                } else {
                     var app;
                     if (this.json.subformAppSelected) {
                         app = this.json.subformAppSelected;
@@ -198,7 +195,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
         }
     },
     getSubformData: function (data) {
-        if (!data || typeOf(data) !== "object")return;
+        if (!data || typeOf(data) !== "object") return;
         var subformDataStr = null;
         // if ( this.form.json.mode !== "Mobile" && !layout.mobile){
         //     subformDataStr = data.data;
@@ -304,11 +301,11 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                     if (typeOf(data) === "string") {
                         formName = data;
                     } else {
-                        if (data.application)app = data.application;
-                        if (data.form)formName = data.form;
+                        if (data.application) app = data.application;
+                        if (data.form) formName = data.form;
                     }
                     if (formName) {
-                        if (!app)app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
+                        if (!app) app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
                         MWF.Actions.get("x_processplatform_assemble_surface")[method](formName, app, function (json) {
                             this.getSubformData(json.data);
                             if (callback) callback();
