@@ -490,14 +490,8 @@ o2.addReady(function () {
         layout.sessionPromise = new Promise(function(resolve, reject){
             o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
                 if (resolve) resolve(json.data);
-                //this.status = "fulfilled";
-                // this.resolveReturn = json.data;
-                // this.runResolve(this.resolveReturn);
             }.bind(this), function (xhr, text, error) {
                 if (reject) reject({"xhr": xhr, "text": text, "error": error});
-                // this.status = "rejected";
-                // this.resolveReturn = {"xhr": xhr, "text": text, "error": error};
-                // this.runReject(this.resolveReturn);
             }.bind(this));
         });
 

@@ -154,9 +154,13 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 				}.bind(this));
 				this.fireEvent("setOptions", [options])
 			}
+		}.bind(this), function(){
+			this.moduleSelectAG = null;
 		}.bind(this));
 		this.moduleSelectAG = p;
 		if (p) p.then(function(){
+			this.moduleSelectAG = null;
+		}.bind(this), function(){
 			this.moduleSelectAG = null;
 		}.bind(this));
 
@@ -216,15 +220,17 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 					this.moduleSelectAG.then(function(){
 						this[mothed](v);
 						return v;
-					}.bind(this));
+					}.bind(this), function(){});
 				}else{
 					this[mothed](v)
 				}
 				return v;
-			}.bind(this));
+			}.bind(this), function(){});
 
 			this.moduleValueAG = p;
 			if (this.moduleValueAG) this.moduleValueAG.then(function(){
+				this.moduleValueAG = null;
+			}.bind(this), function(){
 				this.moduleValueAG = null;
 			}.bind(this));
 		}else{
