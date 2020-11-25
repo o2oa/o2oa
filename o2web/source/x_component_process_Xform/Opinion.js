@@ -22,6 +22,10 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
     },
     _loadNodeRead: function(){
         this.node.empty();
+        this.node.set({
+            "nodeId": this.json.id,
+            "MWFType": this.json.type
+        });
         this.node.setStyle("display", "none");
     },
     validationConfigItem: function(routeName, data){

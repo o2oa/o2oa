@@ -20,6 +20,10 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
     },
     _loadNodeRead: function(){
         this.node.empty();
+		this.node.set({
+			"nodeId": this.json.id,
+			"MWFType": this.json.type
+		});
         var optionItems = this.getOptions();
         var value = this.getValue();
         if (value){
