@@ -79,6 +79,10 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
     },
     _loadNodeRead: function(){
         this.node.empty();
+        this.node.set({
+            "nodeId": this.json.id,
+            "MWFType": this.json.type
+        });
     },
 
     _resetNodeEdit: function(){

@@ -68,6 +68,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     },
     _loadNodeRead: function(){
         this.node.empty();
+        this.node.set({
+            "nodeId": this.json.id,
+            "MWFType": this.json.type
+        });
     },
     loadDescription: function(){
         if (this.readonly || this.json.isReadonly)return;
