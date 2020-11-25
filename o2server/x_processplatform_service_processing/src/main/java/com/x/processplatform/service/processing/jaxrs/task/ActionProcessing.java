@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.task;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -60,7 +61,7 @@ class ActionProcessing extends BaseAction {
 			job = task.getJob();
 		}
 
-		return ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get();
+		return ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get(300, TimeUnit.SECONDS);
 
 	}
 

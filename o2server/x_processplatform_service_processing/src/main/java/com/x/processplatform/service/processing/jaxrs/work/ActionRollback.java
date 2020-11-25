@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.work;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -134,7 +135,7 @@ class ActionRollback extends BaseAction {
 			}
 		};
 
-		ActionResult<Wo> result = ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		ActionResult<Wo> result = ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
 		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 				Applications.joinQueryUri("work", workId, "processing"), null, job);
