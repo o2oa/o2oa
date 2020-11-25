@@ -23,6 +23,10 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class({
     },
     _loadNodeRead: function(){
         this.node.empty();
+        this.node.set({
+            "nodeId": this.json.id,
+            "MWFType": this.json.type
+        });
         //new Element("select").inject(this.node);
     },
     _loadNodeEdit: function(){
