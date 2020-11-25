@@ -229,7 +229,7 @@ MWF.xApplication.ConfigDesigner.Script = new Class({
                     this.lisNode.getLast().set("text", this.data.name);
                 }
                 this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
-                this.data.id = json.data.id;
+                //this.data.id = json.data.id;
                 if (callback) callback();
             }.bind(this), function(xhr, text, error){
                 this.isSave = false;
