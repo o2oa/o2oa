@@ -97,6 +97,11 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
                 pageData.json.id = id;
 
                 if (pageData) data = MWF.encodeJsonString(JSON.encode(pageData));
+
+
+                if ( mobileData && !mobileData.json.id ){
+                    mobileData.json.id = id;
+                }
                 if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
 
                 var relatedScriptMap = null;
@@ -143,6 +148,9 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
             }.bind(this));
         }else{
             if (pageData) data = MWF.encodeJsonString(JSON.encode(pageData));
+            if ( mobileData && !mobileData.json.id ){
+                mobileData.json.id = pageData.json.id;
+            }
             if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
 
             var json = {
