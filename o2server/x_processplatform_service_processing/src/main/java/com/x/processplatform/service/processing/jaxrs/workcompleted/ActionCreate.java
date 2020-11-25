@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.workcompleted;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -102,7 +103,7 @@ class ActionCreate extends BaseAction {
 				}
 			}
 		};
-		ActionResult<Wo> result = ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		ActionResult<Wo> result = ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 		return result;
 	}
 

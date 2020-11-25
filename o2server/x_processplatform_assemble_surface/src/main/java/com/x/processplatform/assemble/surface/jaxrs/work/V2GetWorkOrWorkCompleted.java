@@ -119,6 +119,12 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 	private WoRecord taskToRecord(WoTask woTask) {
 		WoRecord o = new WoRecord();
+		// id必须设置为空,否则会影响每次输出的内容都不同,那么会导致etag每次不同.
+		o.setId("");
+		// order设置为task的最后修改时间,否则会影响每次输出的内容都不同,那么会导致etag每次不同.
+		o.setOrder(woTask.getUpdateTime().getTime());
+		// recordTime设置为task的最后修改时间,否则会影响每次输出的内容都不同,那么会导致etag每次不同.
+		o.setRecordTime(woTask.getUpdateTime());
 		o.setType(Record.TYPE_CURRENTTASK);
 		o.setFromActivity(woTask.getActivity());
 		o.setFromActivityAlias(woTask.getActivityAlias());

@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.jaxrs.applicationdict;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -34,7 +35,7 @@ class ActionDeleteDataPath0 extends BaseAction {
 			}
 		};
 
-		return ProcessPlatformExecutorFactory.get(id).submit(callable).get();
+		return ProcessPlatformExecutorFactory.get(id).submit(callable).get(300, TimeUnit.SECONDS);
 	}
 
 	public static class Wo extends WoId {
