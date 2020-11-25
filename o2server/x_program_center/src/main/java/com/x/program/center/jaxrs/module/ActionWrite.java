@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.program.center.core.entity.Structure;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,263 +44,286 @@ public class ActionWrite extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionWrite.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Wo wo = new Wo();
-			ActionResult<Wo> result = new ActionResult<>();
-			CacheCategory cacheCategory = new CacheCategory(CacheObject.class);
-			CacheKey cacheKey = new CacheKey(flag);
-			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-			if (!optional.isPresent()) {
-				throw new ExceptionFlagNotExist(flag);
-			}
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Wo wo = new Wo();
+		ActionResult<Wo> result = new ActionResult<>();
+		CacheCategory cacheCategory = new CacheCategory(CacheObject.class);
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		WrapModule module;
+		String name = "";
+		if (optional.isPresent()) {
 			CacheObject cacheObject = (CacheObject) optional.get();
-			WrapModule module = cacheObject.getModule();
-			List<WrapPair> replaces = new ArrayList<>();
-			for (WiCommand cmd : wi.getProcessPlatformList()) {
-				WrapProcessPlatform o = module.getProcessPlatform(cmd.getId());
-				if (null != o) {
-					switch (cmd.getMethod()) {
-					case "create":
-						replaces.addAll(ThisApplication.context().applications()
-								.putQuery(x_processplatform_assemble_designer.class,
-										Applications.joinQueryUri("input", "prepare", "create"), o)
-								.getDataAsList(WrapPair.class));
-						break;
-					case "cover":
-						replaces.addAll(ThisApplication.context().applications()
-								.putQuery(x_processplatform_assemble_designer.class,
-										Applications.joinQueryUri("input", "prepare", "cover"), o)
-								.getDataAsList(WrapPair.class));
-						break;
-					default:
-						break;
-					}
+			module = cacheObject.getModule();
+		}else{
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Structure structure = emc.find(flag, Structure.class);
+				if(structure!=null){
+					StorageMapping gfMapping = ThisApplication.context().storageMappings().get(Structure.class,
+							structure.getStorage());
+					String json = new String(structure.readContent(gfMapping), DefaultCharset.charset);
+					module = XGsonBuilder.instance().fromJson(json, WrapModule.class);
+					name = structure.getName();
+					structure.deleteContent(gfMapping);
+					emc.beginTransaction(Structure.class);
+					emc.delete(Structure.class, structure.getId());
+					emc.commit();
+				}else{
+					throw new ExceptionFlagNotExist(flag);
 				}
 			}
-			for (WiCommand cmd : wi.getCmsList()) {
-				WrapCms o = module.getCms(cmd.getId());
-				if (null != o) {
-					switch (cmd.getMethod()) {
-					case "create":
-						replaces.addAll(ThisApplication.context().applications()
-								.putQuery(x_cms_assemble_control.class,
-										Applications.joinQueryUri("input", "prepare", "create"), o)
-								.getDataAsList(WrapPair.class));
-						break;
-					case "cover":
-						replaces.addAll(ThisApplication.context().applications()
-								.putQuery(x_cms_assemble_control.class,
-										Applications.joinQueryUri("input", "prepare", "cover"), o)
-								.getDataAsList(WrapPair.class));
-						break;
-					default:
-						break;
-					}
-				}
-			}
-			for (WiCommand cmd : wi.getPortalList()) {
-				WrapPortal o = module.getPortal(cmd.getId());
-				if (null != o) {
-					switch (cmd.getMethod()) {
-					case "create":
-						replaces.addAll(ThisApplication.context().applications()
-								.putQuery(x_portal_assemble_designer.class,
-										Applications.joinQueryUri("input", "prepare", "create"), o)
-								.getDataAsList(WrapPair.class));
-						break;
-					case "cover":
-						replaces.addAll(ThisApplication.context().applications()
-								.putQuery(x_portal_assemble_designer.class,
-										Applications.joinQueryUri("input", "prepare", "cover"), o)
-								.getDataAsList(WrapPair.class));
-						break;
-					default:
-						break;
-					}
-				}
-			}
-			for (WiCommand cmd : wi.getQueryList()) {
-				WrapQuery o = module.getQuery(cmd.getId());
-				if (null != o) {
-					switch (cmd.getMethod()) {
-					case "create":
-						replaces.addAll(ThisApplication.context().applications()
-								.putQuery(x_query_assemble_designer.class,
-										Applications.joinQueryUri("input", "prepare", "create"), o)
-								.getDataAsList(WrapPair.class));
-						break;
-					case "cover":
-						replaces.addAll(ThisApplication.context().applications()
-								.putQuery(x_query_assemble_designer.class,
-										Applications.joinQueryUri("input", "prepare", "cover"), o)
-								.getDataAsList(WrapPair.class));
-						break;
-					default:
-						break;
-					}
-				}
-			}
-			for (WiCommand cmd : wi.getServiceModuleList()) {
-				WrapServiceModule o = module.getServiceModule(cmd.getId());
-				if (null != o) {
-					switch (cmd.getMethod()) {
-						case "create":
-							replaces.addAll(CipherConnectionAction.put(false,
-									Config.url_x_program_center_jaxrs("input", "prepare", "create"), o)
-									.getDataAsList(WrapPair.class));
-							break;
-						case "cover":
-							replaces.addAll(CipherConnectionAction.put(false,
-									Config.url_x_program_center_jaxrs("input", "prepare", "cover"), o)
-									.getDataAsList(WrapPair.class));
-							break;
-						default:
-							break;
-					}
-				}
-			}
-			for (WiCommand cmd : wi.getProcessPlatformList()) {
-				WrapProcessPlatform o = module.getProcessPlatform(cmd.getId());
-				if (null != o) {
-					String json = gson.toJson(o);
-					for (WrapPair re : replaces) {
-						json = StringUtils.replace(json, re.getFirst(), re.getSecond());
-					}
-					WrapProcessPlatform obj = gson.fromJson(json, WrapProcessPlatform.class);
-					switch (cmd.getMethod()) {
-					case "create":
-						wo.getProcessPlatformList()
-								.add(ThisApplication.context().applications()
-										.putQuery(x_processplatform_assemble_designer.class,
-												Applications.joinQueryUri("input", "create"), obj)
-										.getData(WoId.class).getId());
-						break;
-					case "cover":
-						wo.getProcessPlatformList()
-								.add(ThisApplication.context().applications()
-										.putQuery(x_processplatform_assemble_designer.class,
-												Applications.joinQueryUri("input", "cover"), obj)
-										.getData(WoId.class).getId());
-						break;
-					default:
-						break;
-					}
-				}
-			}
-			for (WiCommand cmd : wi.getCmsList()) {
-				WrapCms o = module.getCms(cmd.getId());
-				if (null != o) {
-					String json = gson.toJson(o);
-					for (WrapPair re : replaces) {
-						json = StringUtils.replace(json, re.getFirst(), re.getSecond());
-					}
-					WrapCms obj = gson.fromJson(json, WrapCms.class);
-					switch (cmd.getMethod()) {
-					case "create":
-						wo.getCmsList()
-								.add(ThisApplication.context().applications()
-										.putQuery(x_cms_assemble_control.class,
-												Applications.joinQueryUri("input", "create"), obj)
-										.getData(WoId.class).getId());
-						break;
-					case "cover":
-						wo.getCmsList()
-								.add(ThisApplication.context().applications()
-										.putQuery(x_cms_assemble_control.class,
-												Applications.joinQueryUri("input", "cover"), obj)
-										.getData(WoId.class).getId());
-						break;
-					default:
-						break;
-					}
-				}
-			}
-			for (WiCommand cmd : wi.getPortalList()) {
-				WrapPortal o = module.getPortal(cmd.getId());
-				if (null != o) {
-					String json = gson.toJson(o);
-					for (WrapPair re : replaces) {
-						json = StringUtils.replace(json, re.getFirst(), re.getSecond());
-					}
-					WrapPortal obj = gson.fromJson(json, WrapPortal.class);
-					switch (cmd.getMethod()) {
-					case "create":
-						wo.getPortalList()
-								.add(ThisApplication.context().applications()
-										.putQuery(x_portal_assemble_designer.class,
-												Applications.joinQueryUri("input", "create"), obj)
-										.getData(WoId.class).getId());
-						break;
-					case "cover":
-						wo.getPortalList()
-								.add(ThisApplication.context().applications()
-										.putQuery(x_portal_assemble_designer.class,
-												Applications.joinQueryUri("input", "cover"), obj)
-										.getData(WoId.class).getId());
-						break;
-					default:
-						break;
-					}
-				}
-			}
-			for (WiCommand cmd : wi.getQueryList()) {
-				WrapQuery o = module.getQuery(cmd.getId());
-				if (null != o) {
-					String json = gson.toJson(o);
-					for (WrapPair re : replaces) {
-						json = StringUtils.replace(json, re.getFirst(), re.getSecond());
-					}
-					WrapQuery obj = gson.fromJson(json, WrapQuery.class);
-					switch (cmd.getMethod()) {
-					case "create":
-						wo.getQueryList()
-								.add(ThisApplication.context().applications()
-										.putQuery(x_query_assemble_designer.class,
-												Applications.joinQueryUri("input", "create"), obj)
-										.getData(WoId.class).getId());
-						break;
-					case "cover":
-						wo.getQueryList()
-								.add(ThisApplication.context().applications()
-										.putQuery(x_query_assemble_designer.class,
-												Applications.joinQueryUri("input", "cover"), obj)
-										.getData(WoId.class).getId());
-						break;
-					default:
-						break;
-					}
-				}
-			}
-			for (WiCommand cmd : wi.getServiceModuleList()) {
-				WrapServiceModule o = module.getServiceModule(cmd.getId());
-				if (null != o) {
-					String json = gson.toJson(o);
-					for (WrapPair re : replaces) {
-						json = StringUtils.replace(json, re.getFirst(), re.getSecond());
-					}
-					WrapServiceModule obj = gson.fromJson(json, WrapServiceModule.class);
-					switch (cmd.getMethod()) {
-						case "create":
-							wo.getServiceModuleList()
-									.add(CipherConnectionAction.put(false,
-											Config.url_x_program_center_jaxrs("input", "create"), obj)
-											.getData(WoId.class).getId());
-							break;
-						case "cover":
-							wo.getServiceModuleList()
-									.add(CipherConnectionAction.put(false,
-											Config.url_x_program_center_jaxrs("input", "cover"), obj)
-											.getData(WoId.class).getId());
-							break;
-						default:
-							break;
-					}
-				}
-			}
-			result.setData(wo);
-			return result;
 		}
+		if(StringUtils.isNotBlank(name)) {
+			logger.print("开始安装模块：{}", name);
+		}
+		List<WrapPair> replaces = new ArrayList<>();
+		for (WiCommand cmd : wi.getProcessPlatformList()) {
+			WrapProcessPlatform o = module.getProcessPlatform(cmd.getId());
+			if (null != o) {
+				switch (cmd.getMethod()) {
+				case "create":
+					replaces.addAll(ThisApplication.context().applications()
+							.putQuery(x_processplatform_assemble_designer.class,
+									Applications.joinQueryUri("input", "prepare", "create"), o)
+							.getDataAsList(WrapPair.class));
+					break;
+				case "cover":
+					replaces.addAll(ThisApplication.context().applications()
+							.putQuery(x_processplatform_assemble_designer.class,
+									Applications.joinQueryUri("input", "prepare", "cover"), o)
+							.getDataAsList(WrapPair.class));
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		for (WiCommand cmd : wi.getCmsList()) {
+			WrapCms o = module.getCms(cmd.getId());
+			if (null != o) {
+				switch (cmd.getMethod()) {
+				case "create":
+					replaces.addAll(ThisApplication.context().applications()
+							.putQuery(x_cms_assemble_control.class,
+									Applications.joinQueryUri("input", "prepare", "create"), o)
+							.getDataAsList(WrapPair.class));
+					break;
+				case "cover":
+					replaces.addAll(ThisApplication.context().applications()
+							.putQuery(x_cms_assemble_control.class,
+									Applications.joinQueryUri("input", "prepare", "cover"), o)
+							.getDataAsList(WrapPair.class));
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		for (WiCommand cmd : wi.getPortalList()) {
+			WrapPortal o = module.getPortal(cmd.getId());
+			if (null != o) {
+				switch (cmd.getMethod()) {
+				case "create":
+					replaces.addAll(ThisApplication.context().applications()
+							.putQuery(x_portal_assemble_designer.class,
+									Applications.joinQueryUri("input", "prepare", "create"), o)
+							.getDataAsList(WrapPair.class));
+					break;
+				case "cover":
+					replaces.addAll(ThisApplication.context().applications()
+							.putQuery(x_portal_assemble_designer.class,
+									Applications.joinQueryUri("input", "prepare", "cover"), o)
+							.getDataAsList(WrapPair.class));
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		for (WiCommand cmd : wi.getQueryList()) {
+			WrapQuery o = module.getQuery(cmd.getId());
+			if (null != o) {
+				switch (cmd.getMethod()) {
+				case "create":
+					replaces.addAll(ThisApplication.context().applications()
+							.putQuery(x_query_assemble_designer.class,
+									Applications.joinQueryUri("input", "prepare", "create"), o)
+							.getDataAsList(WrapPair.class));
+					break;
+				case "cover":
+					replaces.addAll(ThisApplication.context().applications()
+							.putQuery(x_query_assemble_designer.class,
+									Applications.joinQueryUri("input", "prepare", "cover"), o)
+							.getDataAsList(WrapPair.class));
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		for (WiCommand cmd : wi.getServiceModuleList()) {
+			WrapServiceModule o = module.getServiceModule(cmd.getId());
+			if (null != o) {
+				switch (cmd.getMethod()) {
+					case "create":
+						replaces.addAll(CipherConnectionAction.put(false,
+								Config.url_x_program_center_jaxrs("input", "prepare", "create"), o)
+								.getDataAsList(WrapPair.class));
+						break;
+					case "cover":
+						replaces.addAll(CipherConnectionAction.put(false,
+								Config.url_x_program_center_jaxrs("input", "prepare", "cover"), o)
+								.getDataAsList(WrapPair.class));
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		for (WiCommand cmd : wi.getProcessPlatformList()) {
+			WrapProcessPlatform o = module.getProcessPlatform(cmd.getId());
+			if (null != o) {
+				String json = gson.toJson(o);
+				for (WrapPair re : replaces) {
+					json = StringUtils.replace(json, re.getFirst(), re.getSecond());
+				}
+				WrapProcessPlatform obj = gson.fromJson(json, WrapProcessPlatform.class);
+				switch (cmd.getMethod()) {
+				case "create":
+					wo.getProcessPlatformList()
+							.add(ThisApplication.context().applications()
+									.putQuery(x_processplatform_assemble_designer.class,
+											Applications.joinQueryUri("input", "create"), obj)
+									.getData(WoId.class).getId());
+					break;
+				case "cover":
+					wo.getProcessPlatformList()
+							.add(ThisApplication.context().applications()
+									.putQuery(x_processplatform_assemble_designer.class,
+											Applications.joinQueryUri("input", "cover"), obj)
+									.getData(WoId.class).getId());
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		for (WiCommand cmd : wi.getCmsList()) {
+			WrapCms o = module.getCms(cmd.getId());
+			if (null != o) {
+				String json = gson.toJson(o);
+				for (WrapPair re : replaces) {
+					json = StringUtils.replace(json, re.getFirst(), re.getSecond());
+				}
+				WrapCms obj = gson.fromJson(json, WrapCms.class);
+				switch (cmd.getMethod()) {
+				case "create":
+					wo.getCmsList()
+							.add(ThisApplication.context().applications()
+									.putQuery(x_cms_assemble_control.class,
+											Applications.joinQueryUri("input", "create"), obj)
+									.getData(WoId.class).getId());
+					break;
+				case "cover":
+					wo.getCmsList()
+							.add(ThisApplication.context().applications()
+									.putQuery(x_cms_assemble_control.class,
+											Applications.joinQueryUri("input", "cover"), obj)
+									.getData(WoId.class).getId());
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		for (WiCommand cmd : wi.getPortalList()) {
+			WrapPortal o = module.getPortal(cmd.getId());
+			if (null != o) {
+				String json = gson.toJson(o);
+				for (WrapPair re : replaces) {
+					json = StringUtils.replace(json, re.getFirst(), re.getSecond());
+				}
+				WrapPortal obj = gson.fromJson(json, WrapPortal.class);
+				switch (cmd.getMethod()) {
+				case "create":
+					wo.getPortalList()
+							.add(ThisApplication.context().applications()
+									.putQuery(x_portal_assemble_designer.class,
+											Applications.joinQueryUri("input", "create"), obj)
+									.getData(WoId.class).getId());
+					break;
+				case "cover":
+					wo.getPortalList()
+							.add(ThisApplication.context().applications()
+									.putQuery(x_portal_assemble_designer.class,
+											Applications.joinQueryUri("input", "cover"), obj)
+									.getData(WoId.class).getId());
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		for (WiCommand cmd : wi.getQueryList()) {
+			WrapQuery o = module.getQuery(cmd.getId());
+			if (null != o) {
+				String json = gson.toJson(o);
+				for (WrapPair re : replaces) {
+					json = StringUtils.replace(json, re.getFirst(), re.getSecond());
+				}
+				WrapQuery obj = gson.fromJson(json, WrapQuery.class);
+				switch (cmd.getMethod()) {
+				case "create":
+					wo.getQueryList()
+							.add(ThisApplication.context().applications()
+									.putQuery(x_query_assemble_designer.class,
+											Applications.joinQueryUri("input", "create"), obj)
+									.getData(WoId.class).getId());
+					break;
+				case "cover":
+					wo.getQueryList()
+							.add(ThisApplication.context().applications()
+									.putQuery(x_query_assemble_designer.class,
+											Applications.joinQueryUri("input", "cover"), obj)
+									.getData(WoId.class).getId());
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		for (WiCommand cmd : wi.getServiceModuleList()) {
+			WrapServiceModule o = module.getServiceModule(cmd.getId());
+			if (null != o) {
+				String json = gson.toJson(o);
+				for (WrapPair re : replaces) {
+					json = StringUtils.replace(json, re.getFirst(), re.getSecond());
+				}
+				WrapServiceModule obj = gson.fromJson(json, WrapServiceModule.class);
+				switch (cmd.getMethod()) {
+					case "create":
+						wo.getServiceModuleList()
+								.add(CipherConnectionAction.put(false,
+										Config.url_x_program_center_jaxrs("input", "create"), obj)
+										.getData(WoId.class).getId());
+						break;
+					case "cover":
+						wo.getServiceModuleList()
+								.add(CipherConnectionAction.put(false,
+										Config.url_x_program_center_jaxrs("input", "cover"), obj)
+										.getData(WoId.class).getId());
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		if(StringUtils.isNotBlank(name)) {
+			logger.print("完成安装模块：{}", name);
+		}
+		result.setData(wo);
+		return result;
+
 	}
 
 	public static class Wi extends GsonPropertyObject {

@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -50,7 +51,7 @@ class ActionProcessing extends BaseAction {
 
 		try {
 			open(id, wi);
-			Wo wo = ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get();
+			Wo wo = ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get(300, TimeUnit.SECONDS);
 			persistSignalStack(id, job, wi);
 			result.setData(wo);
 			return result;
