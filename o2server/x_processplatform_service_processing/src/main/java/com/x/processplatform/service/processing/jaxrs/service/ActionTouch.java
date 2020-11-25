@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
@@ -35,7 +36,7 @@ class ActionTouch extends BaseAction{
 			}
 			job = work.getJob();
 		}
-		return ProcessPlatformExecutorFactory.get(job).submit(new CallableAction(id, jsonElement)).get();
+		return ProcessPlatformExecutorFactory.get(job).submit(new CallableAction(id, jsonElement)).get(300, TimeUnit.SECONDS);
 	}
 
 	public class CallableAction implements Callable<ActionResult<Wo>> {

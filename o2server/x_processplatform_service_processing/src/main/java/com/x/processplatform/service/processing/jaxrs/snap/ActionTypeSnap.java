@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.snap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -42,7 +43,7 @@ class ActionTypeSnap extends BaseAction {
 			}
 			job = work.getJob();
 		}
-		return ProcessPlatformExecutorFactory.get(job).submit(new CallableImpl(workId)).get();
+		return ProcessPlatformExecutorFactory.get(job).submit(new CallableImpl(workId)).get(300, TimeUnit.SECONDS);
 	}
 
 	public class CallableImpl implements Callable<ActionResult<Wo>> {

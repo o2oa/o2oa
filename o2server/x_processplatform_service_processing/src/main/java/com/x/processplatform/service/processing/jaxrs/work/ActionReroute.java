@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -82,7 +83,7 @@ class ActionReroute extends BaseAction {
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(job).submit(callable).get();
+		ProcessPlatformExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
 
 		wo = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
