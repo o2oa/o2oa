@@ -9,7 +9,7 @@ import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.general.core.entity.GeneralFile;
+import com.x.program.center.core.entity.Structure;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import org.apache.commons.lang3.StringUtils;
 
@@ -57,16 +57,16 @@ public class ActionWrite extends BaseAction {
 			module = cacheObject.getModule();
 		}else{
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				GeneralFile generalFile = emc.find(flag, GeneralFile.class);
-				if(generalFile!=null){
-					StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
-							generalFile.getStorage());
-					String json = new String(generalFile.readContent(gfMapping), DefaultCharset.charset);
+				Structure structure = emc.find(flag, Structure.class);
+				if(structure!=null){
+					StorageMapping gfMapping = ThisApplication.context().storageMappings().get(Structure.class,
+							structure.getStorage());
+					String json = new String(structure.readContent(gfMapping), DefaultCharset.charset);
 					module = XGsonBuilder.instance().fromJson(json, WrapModule.class);
-					name = generalFile.getName();
-					generalFile.deleteContent(gfMapping);
-					emc.beginTransaction(GeneralFile.class);
-					emc.delete(GeneralFile.class, generalFile.getId());
+					name = structure.getName();
+					structure.deleteContent(gfMapping);
+					emc.beginTransaction(Structure.class);
+					emc.delete(Structure.class, structure.getId());
 					emc.commit();
 				}else{
 					throw new ExceptionFlagNotExist(flag);

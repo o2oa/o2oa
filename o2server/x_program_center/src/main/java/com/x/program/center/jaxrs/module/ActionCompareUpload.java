@@ -6,11 +6,10 @@ import java.util.List;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.CipherConnectionAction;
-import com.x.general.core.entity.GeneralFile;
+import com.x.program.center.core.entity.Structure;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -22,8 +21,6 @@ import com.x.base.core.project.x_portal_assemble_designer;
 import com.x.base.core.project.x_processplatform_assemble_designer;
 import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.Cache.CacheCategory;
-import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -32,7 +29,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.StringTools;
 import com.x.cms.core.entity.element.wrap.WrapCms;
 import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -59,13 +55,13 @@ class ActionCompareUpload extends BaseAction {
 			fileName = fileName + ".xapp";
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
-			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), fileName, effectivePerson.getDistinguishedName());
-			generalFile.saveContent(gfMapping, bytes, fileName);
-			emc.beginTransaction(GeneralFile.class);
-			emc.persist(generalFile, CheckPersistType.all);
+			StorageMapping mapping = ThisApplication.context().storageMappings().random(Structure.class);
+			Structure structure = new Structure(mapping.getName(), fileName);
+			structure.saveContent(mapping, bytes, fileName);
+			emc.beginTransaction(Structure.class);
+			emc.persist(structure, CheckPersistType.all);
 			emc.commit();
-			wo.setFlag(generalFile.getId());
+			wo.setFlag(structure.getId());
 		}
 		for (WrapProcessPlatform o : module.getProcessPlatformList()) {
 			ActionResponse r = ThisApplication.context().applications().putQuery(effectivePerson.getDebugger(),
