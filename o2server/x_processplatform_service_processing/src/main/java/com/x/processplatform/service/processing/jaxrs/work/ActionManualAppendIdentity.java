@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -105,7 +106,7 @@ class ActionManualAppendIdentity extends BaseAction {
 				return "";
 			}
 		};
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
 		result.setData(wo);
 		return result;
