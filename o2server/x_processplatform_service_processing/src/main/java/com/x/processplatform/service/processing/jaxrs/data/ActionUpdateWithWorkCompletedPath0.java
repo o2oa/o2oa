@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -60,7 +61,7 @@ class ActionUpdateWithWorkCompletedPath0 extends BaseAction {
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
 		result.setData(wo);
 		return result;
