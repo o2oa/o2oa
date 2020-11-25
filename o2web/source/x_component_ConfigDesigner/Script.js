@@ -36,7 +36,7 @@ MWF.xApplication.ConfigDesigner.Script = new Class({
         if(this.designer.application) this.data.application = this.designer.application.id;
 
         this.isNewScript = (this.data.id) ? false : true;
-    //    this.createProperty();
+        //    this.createProperty();
 
         this.autoSave();
         this.designer.addEvent("queryClose", function(){
@@ -135,7 +135,7 @@ MWF.xApplication.ConfigDesigner.Script = new Class({
 
             var options = this.designer.styleSelectNode.options;
             for (var i=0; i<options.length; i++){
-                    var option = options[i];
+                var option = options[i];
                 if (option.value==this.editor.theme){
                     option.set("selected", true);
                     break;
@@ -220,7 +220,7 @@ MWF.xApplication.ConfigDesigner.Script = new Class({
             this.data.nodePort = this.designer.propertyServerNode.getElement("option:selected").get("value");
 
             this.isSave = true;
-            this.designer.actions.EditConfigAction.save(this.data, function(json){
+            this.designer.actions.ConfigAction.save(this.data, function(json){
                 this.isSave = false;
                 this.data.isNewScript = false;
                 this.isChanged = false;
