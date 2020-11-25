@@ -35,7 +35,7 @@ class ActionCloseCheck extends BaseAction {
 				process = business.process().pick(work.getProcess());
 			}
 		}
-		if (null != work && null != process) {
+		if ((null != work) && (null != process)) {
 			wo.setDraft(this.draft(effectivePerson, work, process));
 		} else {
 			WoDraft woDraft = new WoDraft();
