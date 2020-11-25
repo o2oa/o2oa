@@ -75,6 +75,10 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
 		this.node.empty();
 		this.node.setStyle("overflow" , "hidden");
         var node = new Element("div").inject(this.node);
+        this.node.set({
+            "nodeId": this.json.id,
+            "MWFType": this.json.type
+        });
 	},
     _searchConfirmPerson: function(item){
         var inforNode = item.inforNode || new Element("div");
