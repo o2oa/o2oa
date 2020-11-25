@@ -37,16 +37,15 @@ layout.addReady(function(){
             });
         };
 
-        layout.sessionPromise.then(function(){
+        if (layout.session && layout.session.user){
             _load();
-        });
-        // if (layout.session && layout.session.user){
-        //     _load();
-        // }else{
-        //     if (layout.sessionPromise){
-        //
-        //     }
-        // }
+        }else{
+            if (layout.sessionPromise){
+                layout.sessionPromise.then(function(){
+                    _load();
+                },function(){});
+            }
+        }
     })(layout);
 });
 
