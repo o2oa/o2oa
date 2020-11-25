@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.jaxrs.attachment;
 
 import java.util.Arrays;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -56,7 +57,7 @@ class ActionEdit extends BaseAction {
 			}
 		};
 
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
 	}
 
