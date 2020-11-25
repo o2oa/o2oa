@@ -144,7 +144,7 @@ o2.xApplication.ConfigDesigner.Main = new Class({
     },
 
     loadScriptList: function() {
-        this.actions.EditConfigAction.getList(function( json ){
+        this.actions.ConfigAction.getList(function( json ){
             data = json.data;
             var config = JSON.parse(data.config);
             this.config = config;
@@ -727,7 +727,7 @@ o2.xApplication.ConfigDesigner.Main = new Class({
         this.loadScriptData(id, callback);
     },
     loadScriptData: function(id, callback, notSetTile){
-        this.actions.EditConfigAction.open({fileName:id}, function(json){
+        this.actions.ConfigAction.open({fileName:id}, function(json){
             if (json){
                 var data = json.data;
                 data.id = id;
