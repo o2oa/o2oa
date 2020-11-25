@@ -417,6 +417,10 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
     },
     _loadNodeRead: function(){
         this.node.empty();
+        this.node.set({
+            "nodeId": this.json.id,
+            "MWFType": this.json.type
+        });
         var node = new Element("div").inject(this.node);
     },
     _searchConfirmPerson: function(item){
