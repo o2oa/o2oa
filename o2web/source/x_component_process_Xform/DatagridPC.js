@@ -121,9 +121,13 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			this.__loadEditDatagrid(callback);
 			this.moduleValueAG = null;
 			return v;
+		}.bind(this), function(){
+			this.moduleValueAG = null;
 		}.bind(this));
 		this.moduleValueAG = p;
 		if (this.moduleValueAG) this.moduleValueAG.then(function(){
+			this.moduleValueAG = null;
+		}.bind(this), function(){
 			this.moduleValueAG = null;
 		}.bind(this));
 		// if (this.gridData && this.gridData.isAG){
@@ -827,9 +831,13 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			this.__loadReadDatagrid(callback);
 			this.moduleValueAG = null;
 			return v;
+		}.bind(this), function(){
+			this.moduleValueAG = null;
 		}.bind(this));
 		this.moduleValueAG = p;
 		if (this.moduleValueAG) this.moduleValueAG.then(function(){
+			this.moduleValueAG = null;
+		}.bind(this), function(){
 			this.moduleValueAG = null;
 		}.bind(this));
 
@@ -1093,9 +1101,13 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			this.__setData(data);
 			this.moduleValueAG = null;
 			return v;
+		}.bind(this), function(){
+			this.moduleValueAG = null;
 		}.bind(this));
 		this.moduleValueAG = p;
 		if (this.moduleValueAG) this.moduleValueAG.then(function(){
+			this.moduleValueAG = null;
+		}.bind(this), function(){
 			this.moduleValueAG = null;
 		}.bind(this));
 
