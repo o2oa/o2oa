@@ -14,6 +14,10 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
     },
     _loadNodeRead: function(){
         this.node.empty();
+        this.node.set({
+            "nodeId": this.json.id,
+            "MWFType": this.json.type
+        });
         var radioValues = this.getOptions();
         var value = this.getValue();
         if (value){

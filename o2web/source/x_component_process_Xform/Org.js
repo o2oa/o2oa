@@ -518,6 +518,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     _loadNodeRead: function(){
         this.node.empty();
         var node = new Element("div").inject(this.node);
+        this.node.set({
+            "nodeId": this.json.id,
+            "MWFType": this.json.type
+        });
     },
     _searchConfirmPerson: function(item){
         var inforNode = item.inforNode || new Element("div");
