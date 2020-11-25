@@ -95,7 +95,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         if (o2.typeOf(v)=="function"){
             return v.then(function(re){
                 this._valueMerge(values, re)
-            }.bind(this));
+            }.bind(this), function(){});
         }else{
             return values.concat(v);
         }
@@ -133,9 +133,9 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                                 });
                                 return arr;
                             }.bind(this)).catch(function(){
-                                console.log("catch error : get duty")
+                                console.log("catch error : can not get duty : " + duty.name, + "-" + uName);
                             });
-                        }.bind(this));
+                        }.bind(this), function(){});
                         values.push(promise);
                     }
                 }.bind(this));
@@ -884,7 +884,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         promise.then(function(values){
             o2.promiseAll(values).then(function(v){
                 this.checkChange(oldValues, v)
-            }.bind(this));
+            }.bind(this), function(){});
 
             // if (values && values.isAG){
             //     values.then(function(v){
@@ -893,7 +893,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             // }else{
             //     this.checkChange(oldValues, values)
             // }
-        }.bind(this));
+        }.bind(this), function(){});
     },
     // __setData: function(value){
     //     if (!value) return false;
@@ -1058,16 +1058,18 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                     flag = true;
                     this.__setValue(values);
                     return values;
-                }.bind(this));
+                }.bind(this), function(){});
             }else{
                 flag = true;
                 this.__setValue(values);
                 return values
             }
-        }.bind(this));
+        }.bind(this), function(){});
 
         this.moduleValueAG = p;
         if (p) p.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this), function(){
             this.moduleValueAG = null;
         }.bind(this));
         return p;

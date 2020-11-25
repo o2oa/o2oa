@@ -51,7 +51,7 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class({
         }else{
             o2.promiseAll(value).then(function(v){
                 this.node.set("text", v || "");
-            }.bind(this));
+            }.bind(this), function(){});
             //this.node.set("text", value || "");
         }
     },
@@ -59,7 +59,7 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class({
 	    if (!!text){
             o2.promiseAll(text).then(function(v){
                 this.node.set("text", v || "");
-            }.bind(this));
+            }.bind(this), function(){});
         }else{
             this.node.set("text", v || "");
         }
