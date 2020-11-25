@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.task;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -105,7 +106,7 @@ class ActionReset extends BaseAction {
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
 		return result;
 	}

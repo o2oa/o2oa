@@ -562,7 +562,7 @@ o2.addReady(function () {
         }, function(){
             //允许匿名访问
             if (layout.anonymous) {
-                var data = { user: "anonymous", session: { user: { name: "anonymous", roleList: [] } } };
+                var data = { name: "anonymous", roleList: [] };
                 layout.user = data;
                 layout.session = layout.session || {};
                 layout.session.user = data;

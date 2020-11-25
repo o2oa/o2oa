@@ -121,6 +121,10 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
                 formData.json.id = id;
 
                 if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
+
+                if ( mobileData && !mobileData.json.id ){
+                    mobileData.json.id = id;
+                }
                 if (mobileData) mobileData = MWF.encodeJsonString(JSON.encode(mobileData));
 
                 var json = {
@@ -137,6 +141,10 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             }.bind(this));
         }else{
             if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
+
+            if ( mobileData && !mobileData.json.id ){
+                mobileData.json.id = formData.json.id;
+            }
             if (mobileData) mobileData = MWF.encodeJsonString(JSON.encode(mobileData));
 
             var json = {

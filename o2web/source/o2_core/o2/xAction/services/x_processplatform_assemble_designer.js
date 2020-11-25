@@ -258,6 +258,10 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
                 //if (mobileData) mobileData.isNewForm = false;
 
                 if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
+
+                if (mobileData && !mobileData.json.id){
+                    mobileData.json.id = id;
+                }
                 if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
 
                 var relatedScriptMap = null;
@@ -309,6 +313,10 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
             //if (formData) formData.isNewForm = false;
             //if (mobileData) mobileData.isNewForm = false;
             if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
+
+            if ( mobileData && !mobileData.json.id ){
+                mobileData.json.id = formData.json.id;
+            }
             if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
 
             var json = {

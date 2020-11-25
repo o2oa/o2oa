@@ -159,7 +159,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
             if (!!pageJson && loadModuleFlag){
                 this.pageJson = pageJson;
                 layout.sessionPromise.finally(function(){
-                    this.setTitle((this.portal.name) ? this.portal.name+"-"+pageJson.data.page.name : pageJson.data.page.name);
+                    this.setTitle((this.portal && this.portal.name) ? this.portal.name+"-"+pageJson.data.page.name : pageJson.data.page.name);
                     if (pageJson.data.page){
                         this.page = (pageJson.data.page.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.page.data)): null;
                         this.relatedFormMap = pageJson.data.relatedWidgetMap;
