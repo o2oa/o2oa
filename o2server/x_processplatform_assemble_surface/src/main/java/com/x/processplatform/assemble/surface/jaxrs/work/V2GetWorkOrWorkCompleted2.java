@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
@@ -21,6 +21,7 @@ import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -45,86 +46,69 @@ import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.query.core.entity.Item;
 
-class V2GetWorkOrWorkCompleted extends BaseAction {
+class V2GetWorkOrWorkCompleted2 extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(V2GetWorkOrWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
-		ActionResult<Wo> result = new ActionResult<>();
-
-		Wo wo = new Wo();
-		Work work = null;
-		WorkCompleted workCompleted = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			work = emc.find(workOrWorkCompleted, Work.class);
-			if (null == work) {
-				workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
+			ActionResult<Wo> result = new ActionResult<>();
+			Business business = new Business(emc);
+
+			CompletableFuture<Wo> _wo = CompletableFuture.supplyAsync(() -> {
+				Wo wo = null;
+				try {
+					Work work = business.entityManagerContainer().find(workOrWorkCompleted, Work.class);
+					if (null != work) {
+						wo = this.work(effectivePerson, business, work);
+					} else {
+						WorkCompleted workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
+						if (null != workCompleted) {
+							wo = this.workCompleted(business, effectivePerson, workCompleted);
+						}
+					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return wo;
+			});
+
+			CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+				Boolean value = false;
+				try {
+					value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+							new ExceptionEntityNotExist(workOrWorkCompleted));
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				return value;
+			});
+
+			result.setData(_wo.get());
+			if (BooleanUtils.isFalse(_control.get())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
+			return result;
 		}
+	}
 
-		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, workOrWorkCompleted);
-
-		if (null != work) {
-			CompletableFuture<Void> workJsonFuture = this.workJsonFuture(work, wo);
-			CompletableFuture<Void> activityRouteFuture = this.activityRouteFuture(work, wo);
-			CompletableFuture<Void> dataFuture = this.dataFuture(work, wo);
-			CompletableFuture<Void> taskFuture = this.taskFuture(effectivePerson, work.getJob(), wo);
-			CompletableFuture<Void> readFuture = this.readFuture(effectivePerson, work.getJob(), wo);
-			CompletableFuture<Void> creatorIdentityFuture = this.creatorIdentityFuture(work.getCreatorIdentity(), wo);
-			CompletableFuture<Void> creatorPersonFuture = this.creatorPersonFuture(work.getCreatorPerson(), wo);
-			CompletableFuture<Void> creatorUnitFuture = this.creatorUnitFuture(work.getCreatorUnit(), wo);
-			CompletableFuture<Void> attachmentFuture = this.attachmentFuture(effectivePerson, work.getJob(), wo);
-			CompletableFuture<Void> recordFuture = this.recordFuture(effectivePerson, work.getJob(), wo);
-			workJsonFuture.get(10, TimeUnit.SECONDS);
-			activityRouteFuture.get(10, TimeUnit.SECONDS);
-			dataFuture.get(10, TimeUnit.SECONDS);
-			taskFuture.get(10, TimeUnit.SECONDS);
-			readFuture.get(10, TimeUnit.SECONDS);
-			creatorIdentityFuture.get(10, TimeUnit.SECONDS);
-			creatorPersonFuture.get(10, TimeUnit.SECONDS);
-			creatorUnitFuture.get(10, TimeUnit.SECONDS);
-			attachmentFuture.get(10, TimeUnit.SECONDS);
-			recordFuture.get(10, TimeUnit.SECONDS);
-			for (WoTask woTask : wo.getTaskList()) {
-				wo.getRecordList().add(taskToRecord(woTask));
-			}
-		} else if (null != workCompleted) {
-			CompletableFuture<Void> workCompletedJsonFuture = this.workCompletedJsonFuture(workCompleted, wo);
-			CompletableFuture<Void> workCompletedDataFuture = this.workCompletedDataFuture(workCompleted, wo);
-			CompletableFuture<Void> readFuture = readFuture(effectivePerson, workCompleted.getJob(), wo);
-			CompletableFuture<Void> creatorIdentityFuture = creatorIdentityFuture(workCompleted.getCreatorIdentity(),
-					wo);
-			CompletableFuture<Void> creatorPersonFuture = creatorPersonFuture(workCompleted.getCreatorPerson(), wo);
-			CompletableFuture<Void> creatorUnitFuture = creatorUnitFuture(workCompleted.getCreatorUnit(), wo);
-			CompletableFuture<Void> attachmentFuture = attachmentFuture(effectivePerson, workCompleted.getJob(), wo);
-			CompletableFuture<Void> workCompletedRecordFuture = this.workCompletedRecordFuture(effectivePerson,
-					workCompleted, wo);
-			workCompletedJsonFuture.get(10, TimeUnit.SECONDS);
-			workCompletedDataFuture.get(10, TimeUnit.SECONDS);
-			readFuture.get(10, TimeUnit.SECONDS);
-			creatorIdentityFuture.get(10, TimeUnit.SECONDS);
-			creatorPersonFuture.get(10, TimeUnit.SECONDS);
-			creatorUnitFuture.get(10, TimeUnit.SECONDS);
-			attachmentFuture.get(10, TimeUnit.SECONDS);
-			workCompletedRecordFuture.get(10, TimeUnit.SECONDS);
+	private Wo work(EffectivePerson effectivePerson, Business business, Work work)
+			throws InterruptedException, ExecutionException {
+		Wo wo = new Wo();
+		CompletableFuture.allOf(workJson(work, wo), activity(business, work, wo), data(business, work, wo),
+				task(effectivePerson, business, work, wo), read(effectivePerson, business, work.getJob(), wo),
+				creatorIdentity(business, work.getCreatorIdentity(), wo),
+				creatorPerson(business, work.getCreatorPerson(), wo), creatorUnit(business, work.getCreatorUnit(), wo),
+				attachment(effectivePerson, business, work.getJob(), wo),
+				record(effectivePerson, business, work.getJob(), wo)).get();
+		for (WoTask woTask : wo.getTaskList()) {
+			wo.getRecordList().add(taskToRecord(woTask));
 		}
-
-		if (BooleanUtils.isFalse(checkControlFuture.get(10, TimeUnit.SECONDS))) {
-			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
-		}
-
-		result.setData(wo);
-		return result;
+		return wo;
 	}
 
 	private WoRecord taskToRecord(WoTask woTask) {
 		WoRecord o = new WoRecord();
-		// id必须设置为空,否则会影响每次输出的内容都不同,那么会导致etag每次不同.
-		o.setId("");
-		// order设置为task的最后修改时间,否则会影响每次输出的内容都不同,那么会导致etag每次不同.
-		o.setOrder(woTask.getUpdateTime().getTime());
-		// recordTime设置为task的最后修改时间,否则会影响每次输出的内容都不同,那么会导致etag每次不同.
-		o.setRecordTime(woTask.getUpdateTime());
 		o.setType(Record.TYPE_CURRENTTASK);
 		o.setFromActivity(woTask.getActivity());
 		o.setFromActivityAlias(woTask.getActivityAlias());
@@ -139,11 +123,11 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		return o;
 	}
 
-	private CompletableFuture<Void> dataFuture(Work work, Wo wo) {
+	private CompletableFuture<Void> data(Business business, Work work, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				List<Item> list = emc.listEqualAndEqual(Item.class, DataItem.bundle_FIELDNAME, work.getJob(),
-						DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
+			try {
+				List<Item> list = business.entityManagerContainer().listEqualAndEqual(Item.class,
+						DataItem.bundle_FIELDNAME, work.getJob(), DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
 				if (!list.isEmpty()) {
 					JsonElement jsonElement = itemConverter.assemble(list);
 					// 必须是Object对象
@@ -157,10 +141,59 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Void> taskFuture(EffectivePerson effectivePerson, String job, Wo wo) {
+	private CompletableFuture<Void> record(EffectivePerson effectivePerson, Business business, String job, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				wo.setTaskList(WoTask.copier.copy(emc.listEqual(Task.class, Task.job_FIELDNAME, job)));
+			try {
+				wo.setRecordList(business.entityManagerContainer()
+						.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, job).stream()
+						.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private CompletableFuture<Void> completedRecord(EffectivePerson effectivePerson, Business business,
+			WorkCompleted workCompleted, Wo wo) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
+					wo.setRecordList(WoRecord.copier.copy(workCompleted.getProperties().getRecordList()).stream()
+							.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+				} else {
+					wo.setRecordList(business.entityManagerContainer()
+							.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, workCompleted.getJob())
+							.stream().sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private CompletableFuture<Void> activity(Business business, Work work, Wo wo) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				Activity activity = business.getActivity(work);
+				if (null != activity) {
+					WoActivity woActivity = new WoActivity();
+					activity.copyTo(woActivity);
+					wo.setActivity(woActivity);
+					if (Objects.equals(ActivityType.manual, activity.getActivityType())) {
+						wo.setRouteList(WoRoute.copier.copy(business.route().pick(((Manual) activity).getRouteList())));
+					}
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private CompletableFuture<Void> task(EffectivePerson effectivePerson, Business business, Work work, Wo wo) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				wo.setTaskList(WoTask.copier.copy(
+						business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, work.getJob())));
 				wo.setCurrentTaskIndex(
 						ListUtils.indexOf(wo.getTaskList(), e -> effectivePerson.isPerson(e.getPerson())));
 			} catch (Exception e) {
@@ -169,10 +202,9 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Void> attachmentFuture(EffectivePerson effectivePerson, String job, Wo wo) {
+	private CompletableFuture<Void> attachment(EffectivePerson effectivePerson, Business business, String job, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
+			try {
 				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 				List<WoAttachment> wos = new ArrayList<>();
@@ -202,10 +234,11 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Void> readFuture(EffectivePerson effectivePerson, String job, Wo wo) {
+	private CompletableFuture<Void> read(EffectivePerson effectivePerson, Business business, String job, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				wo.setReadList(WoRead.copier.copy(emc.listEqual(Read.class, Read.job_FIELDNAME, job)));
+			try {
+				wo.setReadList(WoRead.copier
+						.copy(business.entityManagerContainer().listEqual(Read.class, Read.job_FIELDNAME, job)));
 				wo.setCurrentReadIndex(
 						ListUtils.indexOf(wo.getReadList(), e -> effectivePerson.isPerson(e.getPerson())));
 			} catch (Exception e) {
@@ -214,7 +247,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Void> workJsonFuture(Work work, Wo wo) {
+	private CompletableFuture<Void> workJson(Work work, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
 				wo.setWork(gson.toJsonTree(WoWork.copier.copy(work)));
@@ -224,29 +257,9 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Void> activityRouteFuture(Work work, Wo wo) {
+	private CompletableFuture<Void> creatorIdentity(Business business, String creatorIdentity, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
-			WoActivity woActivity = new WoActivity();
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				Activity activity = business.getActivity(work);
-				if (null != activity) {
-					activity.copyTo(woActivity);
-					wo.setActivity(woActivity);
-					if (Objects.equals(ActivityType.manual, activity.getActivityType())) {
-						wo.setRouteList(WoRoute.copier.copy(business.route().pick(((Manual) activity).getRouteList())));
-					}
-				}
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
-	}
-
-	private CompletableFuture<Void> creatorIdentityFuture(String creatorIdentity, Wo wo) {
-		return CompletableFuture.runAsync(() -> {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
+			try {
 				wo.setCreatorIdentity(business.organization().identity().getObject(creatorIdentity));
 			} catch (Exception e) {
 				logger.error(e);
@@ -254,10 +267,9 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Void> creatorPersonFuture(String creatorPerson, Wo wo) {
+	private CompletableFuture<Void> creatorPerson(Business business, String creatorPerson, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
+			try {
 				wo.setCreatorPerson(business.organization().person().getObject(creatorPerson));
 			} catch (Exception e) {
 				logger.error(e);
@@ -265,10 +277,9 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Void> creatorUnitFuture(String creatorUnit, Wo wo) {
+	private CompletableFuture<Void> creatorUnit(Business business, String creatorUnit, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
+			try {
 				wo.setCreatorUnit(business.organization().unit().getObject(creatorUnit));
 			} catch (Exception e) {
 				logger.error(e);
@@ -276,7 +287,20 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Void> workCompletedJsonFuture(WorkCompleted workCompleted, Wo wo) {
+	private Wo workCompleted(Business business, EffectivePerson effectivePerson, WorkCompleted workCompleted)
+			throws InterruptedException, ExecutionException {
+		Wo wo = new Wo();
+		CompletableFuture.allOf(completedJson(workCompleted, wo), completedData(business, workCompleted, wo),
+				read(effectivePerson, business, workCompleted.getJob(), wo),
+				creatorIdentity(business, workCompleted.getCreatorIdentity(), wo),
+				creatorPerson(business, workCompleted.getCreatorPerson(), wo),
+				creatorUnit(business, workCompleted.getCreatorUnit(), wo),
+				attachment(effectivePerson, business, workCompleted.getJob(), wo),
+				completedRecord(effectivePerson, business, workCompleted, wo)).get();
+		return wo;
+	}
+
+	private CompletableFuture<Void> completedJson(WorkCompleted workCompleted, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try {
 				wo.setWork(gson.toJsonTree(WoWorkCompleted.copier.copy(workCompleted)));
@@ -286,43 +310,15 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Void> recordFuture(EffectivePerson effectivePerson, String job, Wo wo) {
-		return CompletableFuture.runAsync(() -> {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				wo.setRecordList(emc.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, job).stream()
-						.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
-	}
-
-	private CompletableFuture<Void> workCompletedRecordFuture(EffectivePerson effectivePerson,
-			WorkCompleted workCompleted, Wo wo) {
-		return CompletableFuture.runAsync(() -> {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
-					wo.setRecordList(WoRecord.copier.copy(workCompleted.getProperties().getRecordList()).stream()
-							.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
-				} else {
-					wo.setRecordList(emc
-							.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, workCompleted.getJob())
-							.stream().sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
-				}
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
-	}
-
-	private CompletableFuture<Void> workCompletedDataFuture(WorkCompleted workCompleted, Wo wo) {
+	private CompletableFuture<Void> completedData(Business business, WorkCompleted workCompleted, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			if (BooleanUtils.isTrue(workCompleted.getMerged())) {
 				wo.setData(workCompleted.getProperties().getData());
 			} else {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					List<Item> list = emc.listEqualAndEqual(Item.class, DataItem.bundle_FIELDNAME,
-							workCompleted.getJob(), DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
+				try {
+					List<Item> list = business.entityManagerContainer().listEqualAndEqual(Item.class,
+							DataItem.bundle_FIELDNAME, workCompleted.getJob(), DataItem.itemCategory_FIELDNAME,
+							ItemCategory.pp);
 					if (!list.isEmpty()) {
 						JsonElement jsonElement = itemConverter.assemble(list);
 						// 必须是Object对象
@@ -396,7 +392,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 	public static class Wo extends GsonPropertyObject {
 
-		private static final long serialVersionUID = -2651851022553574012L;
 		// work和workCompleted都有
 		private JsonElement work;
 		// work和workCompleted都有
@@ -418,8 +413,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		// work和workCompleted都有
 		private List<WoAttachment> attachmentList;
 
-		// work和workCompleted都有,需要先行初始化,因为record可能为空
-		private List<WoRecord> recordList = new ArrayList<>();
+		// work和workCompleted都有
+		private List<WoRecord> recordList;
 
 		// 只有work有
 		private WoActivity activity;
@@ -682,9 +677,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	}
 
 	public static class WoAttachment extends Attachment {
-
-		private static final long serialVersionUID = -5323646346508661416L;
-
 		static WrapCopier<Attachment, WoAttachment> copier = WrapCopierFactory.wo(Attachment.class, WoAttachment.class,
 				null, JpaObject.FieldsInvisibleIncludeProperites);
 
@@ -701,7 +693,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 	public static class WoAttachmentControl extends GsonPropertyObject {
 
-		private static final long serialVersionUID = -1159880170066584166L;
 		private Boolean allowRead = false;
 		private Boolean allowEdit = false;
 		private Boolean allowControl = false;
@@ -742,3 +733,4 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	}
 
 }
+
