@@ -12,14 +12,14 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.program.center.core.entity.Structure", "com.x.program.center.core.entity.WarnLog",
 		"com.x.program.center.core.entity.validation.Meta", "com.x.program.center.core.entity.InstallLog",
 		"com.x.program.center.core.entity.Application", "com.x.program.center.core.entity.Attachment",
-		"com.x.portal.core.entity.Page",
+		"com.x.portal.core.entity.Page", "com.x.general.core.entity.GeneralFile",
 		"com.x.portal.core.entity.Portal", "com.x.organization.core.entity.Group",
 		"com.x.organization.core.entity.Custom", "com.x.organization.core.entity.Role",
 		"com.x.organization.core.entity.Person", "com.x.organization.core.entity.Identity",
 		"com.x.organization.core.entity.PersonAttribute", "com.x.organization.core.entity.Unit",
 		"com.x.organization.core.entity.UnitAttribute", "com.x.organization.core.entity.UnitDuty",
 		"com.x.general.core.entity.area.District", "com.x.program.center.core.entity.ScheduleLog" },
-		storageTypes = { StorageType.structure }, storeJars = {
+		storageTypes = { StorageType.structure, StorageType.general}, storeJars = {
 		"x_organization_core_express", "x_program_center_core_entity", "x_attendance_core_entity",
 		"x_cms_core_entity", "x_message_core_entity", "x_component_core_entity", "x_file_core_entity",
 		"x_meeting_core_entity", "x_okr_core_entity", "x_organization_core_entity",

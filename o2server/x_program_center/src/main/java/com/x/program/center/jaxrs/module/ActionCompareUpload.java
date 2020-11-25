@@ -3,10 +3,16 @@ package com.x.program.center.jaxrs.module;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.general.core.entity.GeneralFile;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import com.google.gson.JsonElement;
@@ -38,20 +44,29 @@ class ActionCompareUpload extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCompareUpload.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, String fileName, FormDataContentDisposition disposition)
 			throws Exception {
 		logger.debug(effectivePerson, "name: {}.", disposition.getName());
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String json = new String(bytes, DefaultCharset.charset);
 		WrapModule module = XGsonBuilder.instance().fromJson(json, WrapModule.class);
-		CacheObject cacheObject = new CacheObject();
-		cacheObject.setModule(module);
-		String flag = StringTools.uniqueToken();
-		CacheCategory cacheCategory = new CacheCategory(CacheObject.class);
-		CacheKey cacheKey = new CacheKey(flag);
-		CacheManager.put(cacheCategory, cacheKey, cacheObject);
-		wo.setFlag(flag);
+
+		if (StringUtils.isEmpty(fileName)) {
+			fileName = this.fileName(disposition);
+		}
+		if(fileName.indexOf(".")==-1){
+			fileName = fileName + ".xapp";
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), fileName, effectivePerson.getDistinguishedName());
+			generalFile.saveContent(gfMapping, bytes, fileName);
+			emc.beginTransaction(GeneralFile.class);
+			emc.persist(generalFile, CheckPersistType.all);
+			emc.commit();
+			wo.setFlag(generalFile.getId());
+		}
 		for (WrapProcessPlatform o : module.getProcessPlatformList()) {
 			ActionResponse r = ThisApplication.context().applications().putQuery(effectivePerson.getDebugger(),
 					x_processplatform_assemble_designer.class, Applications.joinQueryUri("input", "compare"), o);
