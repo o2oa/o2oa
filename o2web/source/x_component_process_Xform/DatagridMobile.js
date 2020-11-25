@@ -199,9 +199,11 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.__loadReadDatagrid(callback);
             this.moduleValueAG = null;
             return v;
-        }.bind(this));
+        }.bind(this), function(){});
         this.moduleValueAG = p;
         if (this.moduleValueAG) this.moduleValueAG.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this), function(){
             this.moduleValueAG = null;
         }.bind(this));
 
@@ -310,9 +312,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.__loadEditDatagrid(callback);
             this.moduleValueAG = null;
             return v;
+        }.bind(this), function(){
+            this.moduleValueAG = null;
         }.bind(this));
         this.moduleValueAG = p;
         if (this.moduleValueAG) this.moduleValueAG.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this), function(){
             this.moduleValueAG = null;
         }.bind(this));
 
@@ -1319,9 +1325,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.__setData(data);
             this.moduleValueAG = null;
             return v;
+        }.bind(this), function(){
+            this.moduleValueAG = null;
         }.bind(this));
         this.moduleValueAG = p;
         if (this.moduleValueAG) this.moduleValueAG.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this), function(){
             this.moduleValueAG = null;
         }.bind(this));
 
