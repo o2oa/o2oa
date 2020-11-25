@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.task;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import javax.script.Bindings;
 import javax.script.CompiledScript;
@@ -140,7 +141,7 @@ class ActionAppend extends BaseAction {
 			}
 		};
 
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 	}
 
 	public static ScriptContext scriptContext(Business business, Work work, Data data, Activity activity, Task task)
