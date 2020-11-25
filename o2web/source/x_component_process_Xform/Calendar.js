@@ -27,7 +27,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
         if (value && value.isAG){
             return value.then(function(v){
                 this._getValueAg(v, isDate);
-            }.bind(this));
+            }.bind(this), function(){});
         }else{
             var d = (!!value) ? Date.parse(value) : "";
             if (isDate){

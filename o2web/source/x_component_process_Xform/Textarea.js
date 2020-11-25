@@ -41,9 +41,11 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
                 this.node.set("html", text);
             }
             //this.__setValue(v);
-        }.bind(this));
+        }.bind(this), function(){});
         this.moduleValueAG = p;
         p.then(function(){
+            this.moduleValueAG = null;
+        }.bind(this), function(){
             this.moduleValueAG = null;
         }.bind(this));
 
