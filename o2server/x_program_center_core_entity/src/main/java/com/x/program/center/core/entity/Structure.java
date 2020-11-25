@@ -166,7 +166,7 @@ public class Structure extends StorageObject {
 	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("名称.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + name_FIELDNAME)
-	@CheckPersist(allowEmpty = false, simplyString = true)
+	@CheckPersist(allowEmpty = false)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	private String name;
 
