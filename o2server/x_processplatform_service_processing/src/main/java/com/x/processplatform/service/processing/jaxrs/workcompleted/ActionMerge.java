@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonElement;
@@ -60,7 +61,7 @@ class ActionMerge extends BaseAction {
 			executorSeed = workCompleted.getJob();
 		}
 
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableAction(id)).get();
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableAction(id)).get(300, TimeUnit.SECONDS);
 	}
 
 	public static class Wo extends WoId {

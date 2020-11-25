@@ -1,25 +1,5 @@
-package com.x.program.center.jaxrs.edit;
+package com.x.program.center.jaxrs.config;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.Socket;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.FileUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
@@ -32,8 +12,15 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.program.center.jaxrs.command.ActionCommand.Wi;
-import com.x.program.center.jaxrs.command.ActionCommand.Wo;
+import org.apache.commons.io.FileUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ActionSave extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionSave.class);
@@ -41,30 +28,17 @@ public class ActionSave extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
-		String curServer = request.getLocalAddr();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String fileName = wi.getFileName();
 		
 		if(fileName == null) {
-			wo.setTime(df.format(new Date()));
-			wo.setStatus("failure");
-			wo.setMessage("文件名为null");
-			result.setData(wo);
-			return result;
+			throw new ExceptionNameEmpty();
 		}
 		
 		String data = wi.getFileContent();
-		
-		if(fileName.equalsIgnoreCase("node_127.0.0.1.json")) {
-			fileName = "node_"+ curServer +".json";
-		}
 
 		if(!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
-			wo.setTime(df.format(new Date()));
-			wo.setStatus("failure");
-			wo.setMessage("禁止编辑");
-			result.setData(wo);
-			return result;
+			throw new ExceptionModifyConfig();
 		}
 
 		File configFold = new File(Config.base(),Config.DIR_CONFIG);
@@ -86,16 +60,16 @@ public class ActionSave extends BaseAction {
 		Nodes nodes = Config.nodes();
 		//同步config文件
 		for (String node : nodes.keySet()){
-			//其他服务器
-			if(!node.equalsIgnoreCase(curServer)) {
-				if(!node.equalsIgnoreCase("127.0.0.1")) {
-					if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
-						boolean Syncflag = executeSyncFile(Config.DIR_CONFIG+"/"+fileName , node ,nodes.get(node).nodeAgentPort());
-					}
-				}
+			if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
+				boolean Syncflag = executeSyncFile(Config.DIR_CONFIG+"/"+fileName , node ,nodes.get(node).nodeAgentPort());
 			}
 		}
-		
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
+		this.configFlush(effectivePerson);
 	
 		wo.setTime(df.format(new Date()));
 		wo.setStatus("success");

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -44,7 +45,7 @@ class ActionWill extends BaseAction {
 			executorSeed = task.getJob();
 		}
 
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableImpl(id)).get();
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableImpl(id)).get(300, TimeUnit.SECONDS);
 	}
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
