@@ -76,7 +76,7 @@ public class ActionSubjectListTop extends BaseAction {
 		}
 		if (check) {
 			try {
-				subjectInfoList = subjectInfoServiceAdv.listAllTopSubject(sectionInfo, null, viewSectionIds);
+				subjectInfoList = subjectInfoServiceAdv.listAllTopSubject(sectionInfo, null, viewSectionIds,null,null);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionSubjectFilter(e);
