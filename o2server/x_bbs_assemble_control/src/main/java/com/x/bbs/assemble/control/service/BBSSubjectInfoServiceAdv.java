@@ -160,12 +160,12 @@ public class BBSSubjectInfoServiceAdv {
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<BBSSubjectInfo> listAllTopSubject( BBSSectionInfo sectionInfo, String creatorName, List<String> viewSectionIds ) throws Exception {
+	public List<BBSSubjectInfo> listAllTopSubject( BBSSectionInfo sectionInfo, String creatorName, List<String> viewSectionIds , Date startTime , Date endTime ) throws Exception {
 		if( sectionInfo == null ){
 			throw new Exception( "sectionInfo is null." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			return subjectInfoService.listAllTopSubject( emc, sectionInfo, creatorName, viewSectionIds );
+			return subjectInfoService.listAllTopSubject( emc, sectionInfo, creatorName, viewSectionIds ,  startTime , endTime);
 		}catch( Exception e ){
 			throw e;
 		}
