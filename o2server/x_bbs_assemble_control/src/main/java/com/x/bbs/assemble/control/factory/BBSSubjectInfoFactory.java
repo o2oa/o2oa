@@ -55,7 +55,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 	}
 	
 	//@MethodDescribe( "根据版块信息查询所有需要展现的所有置顶主题列表" )
-	public List<String> listAllTopSubject( String forumId, String mainSectionId, String sectionId, String creatorName ) throws Exception {
+	public List<String> listAllTopSubject( String forumId, String mainSectionId, String sectionId, String creatorName, Date startTime , Date endTime  ) throws Exception {
 		if( forumId == null || forumId.isEmpty() ){
 			throw new Exception( "forumId is null!" );
 		}
@@ -69,6 +69,14 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		
 		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p,  cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
+		}
+		
+		if(startTime!= null) {
+			   p = cb.and(p, cb.greaterThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), startTime));
+		}
+			
+		if(endTime!= null) {
+			   p = cb.and(p, cb.lessThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), endTime));
 		}
 		
 		Predicate top_or = null;
@@ -100,6 +108,8 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 				top_or = top_tosection_or;
 			}
 		}
+		
+		
 		
 		if( top_or != null ){
 			p = cb.and( p, top_or );
