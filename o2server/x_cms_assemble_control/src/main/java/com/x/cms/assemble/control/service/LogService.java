@@ -80,7 +80,7 @@ public class LogService {
 			total = business.getLogFactory().getTotal();
 			if( total > stay_count_operationLog ) {
 				//将记录条目数减到stay_count_operationLog的60%
-				ids = business.getLogFactory().getRecordIdsWithCount( Integer.parseInt(( stay_count_operationLog * 0.6 )+""));
+				ids = business.getLogFactory().getRecordIdsWithCount( (int)( stay_count_operationLog * 0.6 ));
 			}
 			if( ids != null && !ids.isEmpty() ) {
 				//取最后一个，以确定最早可以保留下来的创建时间
