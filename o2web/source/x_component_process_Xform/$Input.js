@@ -207,9 +207,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         if (!!value && o2.typeOf(value.then)=="function"){
             var p = o2.promiseAll(value).then(function(v){
                 this.__setValue(v);
-            }.bind(this));
+            }.bind(this), function(){});
             this.moduleValueAG = p;
             p.then(function(){
+                this.moduleValueAG = null;
+            }.bind(this), function(){
                 this.moduleValueAG = null;
             }.bind(this));
         }else{
@@ -306,9 +308,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         if (!!data && o2.typeOf(data.then)=="function"){
             var p = o2.promiseAll(data).then(function(v){
                 this.__setValue(v);
-            }.bind(this));
+            }.bind(this), function(){});
             this.moduleValueAG = p;
             p.then(function(){
+                this.moduleValueAG = null;
+            }.bind(this), function(){
                 this.moduleValueAG = null;
             }.bind(this));
         }else{

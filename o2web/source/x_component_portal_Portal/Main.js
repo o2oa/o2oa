@@ -152,26 +152,31 @@ MWF.xApplication.portal.Portal.Main = new Class({
             }.bind(this));
         }
     },
+    openPage: function(pageJson, par, callback){
+        this.setTitle((this.portal && this.portal.name) ? this.portal.name+"-"+pageJson.data.page.name : pageJson.data.page.name);
+        if (pageJson.data.page){
+            this.page = (pageJson.data.page.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.page.data)): null;
+            this.relatedFormMap = pageJson.data.relatedWidgetMap;
+            this.relatedScriptMap = pageJson.data.relatedScriptMap;
+            delete pageJson.data.page.data;
+            this.pageInfor = pageJson.data.page;
+        }else{
+            this.page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
+            delete pageJson.data.data;
+            this.pageInfor = pageJson.data;
+        }
+        this.openPortal(par, callback);
+    },
     loadPortalPage: function(par, callback){
         var pageJson = null;
         var loadModuleFlag = false;
         var check = function(){
             if (!!pageJson && loadModuleFlag){
                 this.pageJson = pageJson;
-                layout.sessionPromise.finally(function(){
-                    this.setTitle((this.portal.name) ? this.portal.name+"-"+pageJson.data.page.name : pageJson.data.page.name);
-                    if (pageJson.data.page){
-                        this.page = (pageJson.data.page.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.page.data)): null;
-                        this.relatedFormMap = pageJson.data.relatedWidgetMap;
-                        this.relatedScriptMap = pageJson.data.relatedScriptMap;
-                        delete pageJson.data.page.data;
-                        this.pageInfor = pageJson.data.page;
-                    }else{
-                        this.page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
-                        delete pageJson.data.data;
-                        this.pageInfor = pageJson.data;
-                    }
-                    this.openPortal(par, callback);
+                layout.sessionPromise.then(function(){
+                    this.openPage(pageJson, par, callback);
+                }.bind(this), function(){
+                    this.openPage(pageJson, par, callback);
                 }.bind(this));
             }
         }.bind(this);

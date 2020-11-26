@@ -158,12 +158,9 @@ o2.addReady(function () {
             if (layout.anonymous) {
                 _loadProgressBar(true);
                 _loadApp({
-                    user: "anonymous",
-                    session: {
-                        user: {
-                            name: "anonymous",
-                            roleList: []
-                        }
+                    data: {
+                        name: "anonymous",
+                        roleList: []
                     }
                 });
             } else {

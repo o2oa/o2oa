@@ -154,9 +154,13 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 				}.bind(this));
 				this.fireEvent("setOptions", [options])
 			}
+		}.bind(this), function(){
+			this.moduleSelectAG = null;
 		}.bind(this));
 		this.moduleSelectAG = p;
 		if (p) p.then(function(){
+			this.moduleSelectAG = null;
+		}.bind(this), function(){
 			this.moduleSelectAG = null;
 		}.bind(this));
 
@@ -206,28 +210,31 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 		this.fireEvent("addOption", [text, value])
 	},
 
-	_setValue: function(value){
+	_setValue: function(value, m){
+		var mothed = m || "__setValue";
 		if (!!value){
 			var p = o2.promiseAll(value).then(function(v){
 				if (o2.typeOf(v)=="array") v = v[0];
 				if (this.moduleSelectAG){
 					this.moduleValueAG = this.moduleSelectAG;
 					this.moduleSelectAG.then(function(){
-						this.__setValue(v);
+						this[mothed](v);
 						return v;
-					}.bind(this));
+					}.bind(this), function(){});
 				}else{
-					this.__setValue(v)
+					this[mothed](v)
 				}
 				return v;
-			}.bind(this));
+			}.bind(this), function(){});
 
 			this.moduleValueAG = p;
 			if (this.moduleValueAG) this.moduleValueAG.then(function(){
 				this.moduleValueAG = null;
+			}.bind(this), function(){
+				this.moduleValueAG = null;
 			}.bind(this));
 		}else{
-			this.__setValue(value);
+			this[mothed](value);
 		}
 
 
@@ -346,7 +353,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 	},
 
 	setData: function(data){
-		return this._setValue(data);
+		return this._setValue(data, "__setData");
 		// if (data && data.isAG){
 		// 	this.moduleValueAG = o2.AG.all(data).then(function(v){
 		// 		if (o2.typeOf(v)=="array") v = v[0];
