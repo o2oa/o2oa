@@ -50,7 +50,8 @@ public class WrapCopier<T, W> {
 		}
 		copyFields.stream().forEach(f -> {
 			try {
-				if (StringUtils.equals(f, JpaObject.IDCOLUMN)) {
+				//openjpa在访问主键(getId()会执行pcGetId())会发起一个锁定所以在这里对id(xid column)进行单独的处理
+				if (StringUtils.equals(f, JpaObject.id_FIELDNAME)) {
 					Field field = FieldUtils.getField(orig.getClass(), f, true);
 					if (null != field) {
 						Object o = FieldUtils.readField(field, orig, true);
