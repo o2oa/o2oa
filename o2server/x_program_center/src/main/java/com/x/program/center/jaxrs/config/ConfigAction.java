@@ -1,11 +1,7 @@
 package com.x.program.center.jaxrs.config;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -249,6 +245,57 @@ public class ConfigAction extends StandardJaxrsAction {
 			result = new ActionSetPortal().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取所有配置文件信息", action = ActionList.class)
+	@GET
+	@Path("list")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getList(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionList.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionList().execute(request,effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "打开config文件", action = ActionOpen.class)
+	@POST
+	@Path("open")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void open(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionOpen.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionOpen().execute(request,effectivePerson, jsonElement);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "保存config文件", action = ActionSave.class)
+	@POST
+	@Path("save")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<ActionSave.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSave().execute(request , effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

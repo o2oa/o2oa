@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.jaxrs.readcompleted;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -54,7 +55,7 @@ class ActionDelete extends BaseAction {
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
 		result.setData(wo);
 		return result;

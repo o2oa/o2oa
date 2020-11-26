@@ -194,6 +194,7 @@ public class Data extends ListOrderedMap<String, Object> {
 		private Date completedTime;
 		/** 来自workCompleted的结束时间月份 */
 		private String completedTimeMonth;
+		private Date updateTime;
 
 		public String getTitle() {
 			return title;
@@ -385,6 +386,14 @@ public class Data extends ListOrderedMap<String, Object> {
 
 		public void setActivityArrivedTime(Date activityArrivedTime) {
 			this.activityArrivedTime = activityArrivedTime;
+		}
+
+		public Date getUpdateTime() {
+			return updateTime;
+		}
+
+		public void setUpdateTime(Date updateTime) {
+			this.updateTime = updateTime;
 		}
 	}
 

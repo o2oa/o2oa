@@ -490,14 +490,8 @@ o2.addReady(function () {
         layout.sessionPromise = new Promise(function(resolve, reject){
             o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
                 if (resolve) resolve(json.data);
-                //this.status = "fulfilled";
-                // this.resolveReturn = json.data;
-                // this.runResolve(this.resolveReturn);
             }.bind(this), function (xhr, text, error) {
                 if (reject) reject({"xhr": xhr, "text": text, "error": error});
-                // this.status = "rejected";
-                // this.resolveReturn = {"xhr": xhr, "text": text, "error": error};
-                // this.runReject(this.resolveReturn);
             }.bind(this));
         });
 
@@ -562,7 +556,7 @@ o2.addReady(function () {
         }, function(){
             //允许匿名访问
             if (layout.anonymous) {
-                var data = { user: "anonymous", session: { user: { name: "anonymous", roleList: [] } } };
+                var data = { name: "anonymous", roleList: [] };
                 layout.user = data;
                 layout.session = layout.session || {};
                 layout.session.user = data;

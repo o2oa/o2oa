@@ -33,7 +33,7 @@ layout.addReady(function(){
             if (layout.sessionPromise){
                 layout.sessionPromise.then(function(){
                     _load();
-                });
+                },function(){});
             }
         }
 
