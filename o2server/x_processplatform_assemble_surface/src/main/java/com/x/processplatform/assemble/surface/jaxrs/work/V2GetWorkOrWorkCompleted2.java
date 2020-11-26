@@ -84,10 +84,12 @@ class V2GetWorkOrWorkCompleted2 extends BaseAction {
 				return value;
 			});
 
+ 
 			if (BooleanUtils.isFalse(_control.get())) {
 				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
 			result.setData(_wo.get());
+ 
 			return result;
 		}
 	}
