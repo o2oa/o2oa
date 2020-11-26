@@ -1502,8 +1502,8 @@ MWF.xScript.Environment = function(ev){
             }else{
                 optionsOrName.each(function(option){
                     _includeSingle.apply(this, [option]);
-                    if (callback) callback.apply(this);
                 }.bind(this));
+                if (callback) callback.apply(this);
             }
         }else{
             _includeSingle.apply(this, [optionsOrName , callback, async])
@@ -1523,7 +1523,8 @@ MWF.xScript.Environment = function(ev){
     //在异步调用结束后 执行 resolve.cb()；
     //目前只有表单的queryload事件支持此方法。
     this.wait = function(){
-        resolve = {};
+        var _self = this;
+        resolve = {"cb":  _self.goon.bind(_self)};
         var setResolve = function(callback){
             resolve.cb = callback;
         }.bind(this);
