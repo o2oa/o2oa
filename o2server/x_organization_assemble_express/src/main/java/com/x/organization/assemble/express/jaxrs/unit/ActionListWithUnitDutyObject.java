@@ -91,7 +91,9 @@ class ActionListWithUnitDutyObject extends BaseAction {
 			List<String> unitIds = em.createQuery(cq.select(root.get(UnitDuty_.unit)).where(p))
 					.getResultList().stream().distinct().collect(Collectors.toList());
 			unitIds = ListTools.trim(unitIds, true, true);
-			for (Unit o : business.unit().pick(unitIds)) {
+			List<Unit> units = business.unit().pick(unitIds);
+			units = business.unit().sort(units);
+			for (Unit o : units) {
 				wos.add(this.convert(business, o, Wo.class));
 			}
 		}
