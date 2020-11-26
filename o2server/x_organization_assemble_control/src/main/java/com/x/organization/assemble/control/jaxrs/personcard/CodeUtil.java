@@ -214,9 +214,9 @@ public class CodeUtil {
 	 */
 	public static File decoderBase64File(String targetPath, String base64Code) throws Exception {
 		byte[] buffer = Base64.decodeBase64(base64Code);
-		FileOutputStream out = new FileOutputStream(targetPath);
-		out.write(buffer);
-		out.close();
+		try (FileOutputStream out = new FileOutputStream(targetPath)) {
+			out.write(buffer);
+		}
 		File file = new File(targetPath);
 		return file;
 	}
