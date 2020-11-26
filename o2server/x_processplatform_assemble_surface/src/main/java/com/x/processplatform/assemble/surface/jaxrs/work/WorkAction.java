@@ -1275,7 +1275,8 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
-	@JaxrsMethodDescribe(value = "V2_根据Work或workCompleted取得内容.", action = V2GetWorkOrWorkCompleted2.class)
+ 
+	@JaxrsMethodDescribe(value = "V2_根据Work或workCompleted取得内容2.", action = V2GetWorkOrWorkCompleted2.class)
 	@GET
 	@Path("v2/workorworkcompleted2/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
