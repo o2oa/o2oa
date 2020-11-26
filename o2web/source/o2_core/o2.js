@@ -1451,7 +1451,7 @@ if (!window.Promise){
                 }
                 //Content-Type	application/x-www-form-urlencoded; charset=utf-8
                 res.send(data);
-            }.bind(this));
+            }.bind(this)).catch(function(){});
 
             //var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
             var oReturn = p;
