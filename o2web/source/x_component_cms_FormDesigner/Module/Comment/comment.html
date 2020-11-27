@@ -25,9 +25,16 @@
 			</tr>
 			<tr>
 				<td class="editTableValue" colspan="2">
-					<b>发布后允许修改:</b>
-					<input class="editTableRadio" name="isAllowModified" text{($.isAllowModified==true)?'checked':''} type="radio" value="true"/>是
+					<b>发表后允许修改:</b>
+					<input class="editTableRadio" name="isAllowModified" text{($.isAllowModified!=false)?'checked':''} type="radio" value="true"/>是
 					<input class="editTableRadio" name="isAllowModified" text{($.isAllowModified==false)?'checked':''} type="radio" value="false"/>否
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableValue" colspan="2">
+					<b>允许发表评论:</b>
+					<input class="editTableRadio" name="isAllowPublish" text{($.isAllowPublish!=false)?'checked':''} type="radio" value="true"/>是
+					<input class="editTableRadio" name="isAllowPublish" text{($.isAllowPublish==false)?'checked':''} type="radio" value="false"/>否
 				</td>
 			</tr>
 		</table>
