@@ -40,6 +40,7 @@ MWF.xApplication.portal.PageDesigner.Module.Image = MWF.PCImage = new Class({
             if (value){
                 if (typeOf(value)==="object"){
                     var url = MWF.xDesktop.getPortalFileUr(value.id, value.portal);
+                    url = o2.filterUrl(url);
                     try{
                         this.node.set("src", url);
                     }catch(e){}
@@ -50,7 +51,7 @@ MWF.xApplication.portal.PageDesigner.Module.Image = MWF.PCImage = new Class({
                     uri = uri.replace("{flag}", value);
                     uri = uri.replace("{applicationFlag}", this.form.json.application);
                     value = host+"/x_portal_assemble_surface"+uri;
-
+                    value = o2.filterUrl(value);
                     try{
                         this.node.set("src", value);
                     }catch(e){}
