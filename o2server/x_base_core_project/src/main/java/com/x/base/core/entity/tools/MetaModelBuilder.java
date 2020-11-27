@@ -1,6 +1,7 @@
 package com.x.base.core.entity.tools;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -40,7 +41,7 @@ public class MetaModelBuilder {
 			File sourcedir = new File(args[1]);
 			File outputdir = new File(args[2]);
 
-			File o2oadir = basedir.getParentFile().getParentFile();
+			File o2oadir = basedir.getParentFile();
 
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, Charset.forName("UTF-8"));
@@ -72,12 +73,17 @@ public class MetaModelBuilder {
 	}
 
 	private static List<File> classpath(File o2oadir, File outputdir) {
+
 		List<File> cp = new ArrayList<>();
 
 		cp.add(outputdir);
 
 		IOFileFilter filter = new WildcardFileFilter("x_base_core_project.jar");
-		for (File o : FileUtils.listFiles(new File(o2oadir, "o2server/store/jars"), filter, null)) {
+		File storeDir = new File(o2oadir, "store/jars");
+		if(!storeDir.exists() || !storeDir.isDirectory()){
+			storeDir = new File(o2oadir.getParent(), "o2server/store/jars");
+		}
+		for (File o : FileUtils.listFiles(storeDir, filter, null)) {
 			cp.add(o);
 		}
 
