@@ -23,6 +23,7 @@ MWF.xApplication.process.Xform.Image = MWF.APPImage =  new Class({
                 }else if (value.indexOf("x_cms_assemble_control")!==-1){
                     value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
                 }
+                value = o2.filterUrl(value);
             }
             try{
                 this.node.set("src", value);
@@ -31,6 +32,7 @@ MWF.xApplication.process.Xform.Image = MWF.APPImage =  new Class({
             value = this.json.srcfile;
             if (typeOf(value)==="object"){
                 var url = (value.portal) ? MWF.xDesktop.getPortalFileUr(value.id, value.portal) : MWF.xDesktop.getProcessFileUr(value.id, value.application);
+                url = o2.filterUrl(url);
                 this.node.set("src", url);
             }else{
                 var host = MWF.Actions.getHost("x_portal_assemble_surface");
@@ -39,6 +41,7 @@ MWF.xApplication.process.Xform.Image = MWF.APPImage =  new Class({
                 uri = uri.replace("{flag}", value);
                 uri = uri.replace("{applicationFlag}", this.form.json.application);
                 value = host+"/x_portal_assemble_surface"+uri;
+                value = o2.filterUrl(value);
                 this.node.set("src", value);
             }
         }else if (typeOf(this.json.src)=="object"){

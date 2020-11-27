@@ -1265,6 +1265,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
                 }else if (pic.indexOf("x_portal_assemble_surface")!==-1){
                     pic = pic.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                 }
+				pic = o2.filterUrl(pic);
             }
             pic = "url('"+pic+"')";
             var len2 = pic.length;
@@ -1275,7 +1276,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         return css;
     },
     reloadCss: function(){
-        cssText = (this.json.css) ? this.json.css.code : "";
+        var cssText = (this.json.css) ? this.json.css.code : "";
         //var head = (document.head || document.getElementsByTagName("head")[0] || document.documentElement);
 
         var styleNode = $("style"+this.json.id);
