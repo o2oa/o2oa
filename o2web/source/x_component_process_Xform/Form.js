@@ -84,6 +84,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 } else if (pic.indexOf("x_portal_assemble_surface") !== -1) {
                     pic = pic.replace("x_portal_assemble_surface", host2 + "/x_portal_assemble_surface");
                 }
+                pic = o2.filterUrl(pic);
             }
             pic = "url('" + pic + "')";
             var len2 = pic.length;
@@ -824,6 +825,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     value = value.replace("x_portal_assemble_surface", host2 + "/x_portal_assemble_surface");
                 }
             }
+            value = o2.filterUrl(value);
             this.node.setStyle(key, value);
         }.bind(this));
         //this.node.setStyles(this.json.styles);

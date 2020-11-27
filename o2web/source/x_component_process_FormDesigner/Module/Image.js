@@ -116,6 +116,7 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
                 }else if (value.indexOf("x_portal_assemble_surface")!==-1){
                     value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                 }
+                value = o2.filterUrl(value);
             }
             if (value){
                 this.node.set("src", value);
