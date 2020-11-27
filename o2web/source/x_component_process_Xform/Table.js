@@ -114,6 +114,7 @@ MWF.xApplication.process.Xform.Table$Td = MWF.APPTable$Td =  new Class({
                 }else if (value.indexOf("x_portal_assemble_surface")!==-1){
                     value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                 }
+                value = o2.filterUrl(value);
                 this.node.setStyle(key, value);
             }else{
                 if (!this.json.preprocessing) this.node.setStyle(key, value);
@@ -135,6 +136,7 @@ MWF.xApplication.process.Xform.Table$Td = MWF.APPTable$Td =  new Class({
                 }else if (value.indexOf("x_portal_assemble_surface")!==-1){
                     value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                 }
+                value = o2.filterUrl(value);
             }
             this.node.setStyle(key, value);
         }.bind(this));
