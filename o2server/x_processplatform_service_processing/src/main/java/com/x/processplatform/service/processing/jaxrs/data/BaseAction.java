@@ -91,6 +91,41 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
+	// 将data中的Title 和 serial 字段同步到work中
+	void updateTitleSerial(Business business, WorkCompleted workCompleted, JsonElement jsonElement) throws Exception {
+		String title = XGsonBuilder.extractString(jsonElement, WorkCompleted.title_FIELDNAME);
+		String serial = XGsonBuilder.extractString(jsonElement, WorkCompleted.serial_FIELDNAME);
+		// 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中
+		if (((null != title) && (!Objects.equals(title, workCompleted.getTitle())))
+				|| ((null != serial) && (!Objects.equals(serial, workCompleted.getSerial())))) {
+			business.entityManagerContainer().beginTransaction(WorkCompleted.class);
+			business.entityManagerContainer().beginTransaction(Task.class);
+			business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+			business.entityManagerContainer().beginTransaction(Read.class);
+			business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+			business.entityManagerContainer().beginTransaction(Review.class);
+
+			List<Task> tasks = business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME,
+					workCompleted.getJob());
+			List<TaskCompleted> taskCompleteds = business.entityManagerContainer().listEqual(TaskCompleted.class,
+					TaskCompleted.job_FIELDNAME, workCompleted.getJob());
+			List<Read> reads = business.entityManagerContainer().listEqual(Read.class, Read.job_FIELDNAME,
+					workCompleted.getJob());
+			List<ReadCompleted> readCompleteds = business.entityManagerContainer().listEqual(ReadCompleted.class,
+					ReadCompleted.job_FIELDNAME, workCompleted.getJob());
+			List<Review> reviews = business.entityManagerContainer().listEqual(Review.class, Review.job_FIELDNAME,
+					workCompleted.getJob());
+
+			this.updateTitle(title, workCompleted, tasks, taskCompleteds, reads, readCompleteds, reviews);
+			this.updateSerial(serial, workCompleted, tasks, taskCompleteds, reads, readCompleteds, reviews);
+			// 这里必须先提交掉,不然后面的获取会得到不一致的状态
+			// <openjpa-2.4.3-SNAPSHOT-r422266:1777109 nonfatal user error>
+			// org.apache.openjpa.persistence.InvalidStateException: Opera tion attempted on
+			// a deleted instance.
+			business.entityManagerContainer().commit();
+		}
+	}
+
 	private void updateTitle(String title, Work work, List<Task> tasks, List<TaskCompleted> taskCompleteds,
 			List<Read> reads, List<ReadCompleted> readCompleteds, List<Review> reviews) {
 		if ((null != title) && (!Objects.equals(title, work.getTitle()))) {
@@ -114,10 +149,56 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
+	private void updateTitle(String title, WorkCompleted workCompleted, List<Task> tasks,
+			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
+			List<Review> reviews) {
+		if ((null != title) && (!Objects.equals(title, workCompleted.getTitle()))) {
+			workCompleted.setTitle(title);
+			for (Task o : tasks) {
+				o.setTitle(title);
+			}
+			for (TaskCompleted o : taskCompleteds) {
+				o.setTitle(title);
+			}
+			for (Read o : reads) {
+				o.setTitle(title);
+			}
+			for (ReadCompleted o : readCompleteds) {
+				o.setTitle(title);
+			}
+			for (Review o : reviews) {
+				o.setTitle(title);
+			}
+		}
+
+	}
+
 	private void updateSerial(String serial, Work work, List<Task> tasks, List<TaskCompleted> taskCompleteds,
 			List<Read> reads, List<ReadCompleted> readCompleteds, List<Review> reviews) {
 		if ((null != serial) && (!Objects.equals(serial, work.getSerial()))) {
 			work.setSerial(serial);
+			for (Task o : tasks) {
+				o.setSerial(serial);
+			}
+			for (TaskCompleted o : taskCompleteds) {
+				o.setSerial(serial);
+			}
+			for (Read o : reads) {
+				o.setSerial(serial);
+			}
+			for (ReadCompleted o : readCompleteds) {
+				o.setSerial(serial);
+			}
+			for (Review o : reviews) {
+				o.setSerial(serial);
+			}
+		}
+	}
+	
+	private void updateSerial(String serial, WorkCompleted workCompleted, List<Task> tasks, List<TaskCompleted> taskCompleteds,
+			List<Read> reads, List<ReadCompleted> readCompleteds, List<Review> reviews) {
+		if ((null != serial) && (!Objects.equals(serial, workCompleted.getSerial()))) {
+			workCompleted.setSerial(serial);
 			for (Task o : tasks) {
 				o.setSerial(serial);
 			}
