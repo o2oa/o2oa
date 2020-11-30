@@ -1425,11 +1425,25 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
 MWF.xApplication.Meeting.MeetingTooltip = new Class({
     Extends: MTooltips,
     _loadCustom : function( callback ){
-        this.loadRoom( function(){
-            this.loadInvite();
-            this.loadAttachment();
-            if(callback)callback();
-        }.bind(this) );
+        var fun = function () {
+            this.loadRoom( function(){
+                this.loadInvite();
+                this.loadAttachment();
+                if(callback)callback();
+            }.bind(this) );
+        }.bind(this)
+        if( this.options.isResetData ){
+            if( this.data && this.data.id ){
+                ( this.app.actions || this.actions ).getMeeting( this.data.id, function( json ){
+                    this.data = json.data;
+                    fun();
+                }.bind(this))
+            }else{
+                fun();
+            }
+        }else{
+            fun();
+        }
     },
     _getHtml : function(){
         var data = this.data;
@@ -1906,12 +1920,13 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
             r.send();
         }
     },
-    loadTooltip : function( isHideAttachment ){
+    loadTooltip : function( isHideAttachment, isResetData ){
         this.tooltip = new MWF.xApplication.Meeting.MeetingTooltip(this.app.content, this.node, this.app, this.data, {
             axis : "x",
             hiddenDelay : 300,
             displayDelay : 300,
-            isHideAttachment : isHideAttachment
+            isHideAttachment : isHideAttachment,
+            isResetData : isResetData
         });
     },
     showTooltip: function(  ){
