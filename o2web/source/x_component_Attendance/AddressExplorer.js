@@ -170,7 +170,7 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
         //var apiPath = "http://api.map.baidu.com/api?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
         var apiPath;
         var accountkey = ak || "Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
-        if( window.location.protocol.toLowerCase() === "https" ){
+        if( window.location.protocol.toLowerCase() === "https:" ){
             apiPath = "https://api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&services=&t=20161219171637";
         }else{
             apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&services=&t=20161219171637";
