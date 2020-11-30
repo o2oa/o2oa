@@ -71,12 +71,12 @@ MWF.xApplication.Minder.Main = new Class({
                 "title": "回收站",
                 "action": "openRecycleExplorer",
                 "icon": "navi_recycle"
-            },
-            {
-                "title": "来自应用",
-                "action": "personConfig",
-                "icon": "navi_fromapp"
             }
+            // {
+            //     "title": "来自应用",
+            //     "action": "personConfig",
+            //     "icon": "navi_fromapp"
+            // }
         ];
         naviJson.each( function( d ){
             this.createNaviNode( d );
