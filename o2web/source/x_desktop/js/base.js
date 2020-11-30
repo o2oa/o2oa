@@ -225,7 +225,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
     };
 
     var _openApplicationPC = function (appNames, options, statusObj) {
-        delete options.docTitle;
+        if (options) delete options.docTitle;
         var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
         switch (appNames) {
             case "process.Work":
