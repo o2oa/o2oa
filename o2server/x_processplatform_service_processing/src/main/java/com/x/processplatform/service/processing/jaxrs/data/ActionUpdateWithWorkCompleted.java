@@ -11,14 +11,17 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWork.Wo;
 
 class ActionUpdateWithWorkCompleted extends BaseAction {
 
@@ -31,6 +34,11 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 		Wo wo = new Wo();
 		String executorSeed = null;
 
+		// 防止提交空数据清空data
+		if (null == jsonElement || (!jsonElement.isJsonObject())) {
+			throw new ExceptionNotJsonObject();
+		}
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			WorkCompleted workCompleted = emc.fetch(id, WorkCompleted.class,
 					ListTools.toList(WorkCompleted.job_FIELDNAME));
@@ -40,16 +48,11 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 			executorSeed = workCompleted.getJob();
 		}
 
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
+		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
+			public ActionResult<Wo> call() throws Exception {
+				ActionResult<Wo> result = new ActionResult<>();
+				Wo wo = new Wo();
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					/** 防止提交空数据清空data */
-					if (null == jsonElement || (!jsonElement.isJsonObject())) {
-						throw new ExceptionNotJsonObject();
-					}
-					if (jsonElement.getAsJsonObject().entrySet().isEmpty()) {
-						throw new ExceptionEmptyData();
-					}
 					Business business = new Business(emc);
 					WorkCompleted workCompleted = emc.find(id, WorkCompleted.class);
 					if (null == workCompleted) {
@@ -58,11 +61,19 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 					if (BooleanUtils.isTrue(workCompleted.getMerged())) {
 						throw new ExceptionModifyMerged(workCompleted.getId());
 					}
-					wo.setId(workCompleted.getId());
-					updateData(business, workCompleted, jsonElement);
+
+					JsonElement source = getData(business, workCompleted.getJob());
+
+					JsonElement merge = XGsonBuilder.merge(jsonElement, source);
+
+					/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
+					updateTitleSerial(business, workCompleted, merge);
+					updateData(business, workCompleted, merge);
 					/* updateTitleSerial 和 updateData 方法内进行了提交 */
+					wo.setId(workCompleted.getId());
 				}
-				return "";
+				result.setData(wo);
+				return result;
 			}
 		};
 
