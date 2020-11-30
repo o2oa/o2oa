@@ -1655,8 +1655,14 @@ MWF.xApplication.Meeting.MeetingTooltip.AttachmentMin = new Class({
     Extends : MWF.widget.AttachmentController.AttachmentMin,
     setEvent: function(){
         this.node.addEvents({
-            "mouseover": function(){if (!this.isSelected) this.node.setStyles(this.css["minAttachmentNode_list_over"])}.bind(this),
-            "mouseout": function(){if (!this.isSelected) this.node.setStyles(this.css["minAttachmentNode_list"])}.bind(this),
+            "mouseover": function(){
+                var styleName = "attachmentNode_"+this.controller.options.listStyle+"_over";
+                if (!this.isSelected) this.node.setStyles(this.css[styleName])
+            }.bind(this),
+            "mouseout": function(){
+                var styleName = "attachmentNode_"+this.controller.options.listStyle;
+                if (!this.isSelected) this.node.setStyles(this.css[styleName])
+            }.bind(this),
             "mousedown": function(e){this.selected(e);}.bind(this),
             "click": function(e){this.downloadAttachment(e);}.bind(this)
         });
