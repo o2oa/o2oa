@@ -742,7 +742,7 @@ MWF.xApplication.Meeting.RoomView.Meeting = new Class({
         this.resetNodeSize();
 
         if( available ){
-            this.loadTooltip( true );
+            this.loadTooltip( false, true );
         }
 
     }
