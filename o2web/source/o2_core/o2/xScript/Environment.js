@@ -2056,8 +2056,13 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
             }},
             "del": {"value": function(delKey){
                 if (!this.hasOwnProperty(delKey)) return null;
-                delete data[delKey];
-                delete this[delKey];
+                if( typeOf(delKey) === "number" ){
+                    delete data[delKey];
+                    delete this[delKey];
+                }else{
+                    data[delKey] = "";
+                    this[delKey] = "";
+                }
                 return this;
             }}
         };
