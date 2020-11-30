@@ -16,6 +16,7 @@ var gulp = require('gulp'),
 //let uglify = require('gulp-uglify-es').default;
 var through2 = require('through2');
 var path = require('path');
+var sourceMap = require('gulp-sourcemaps');
 
 
 var assetRev = require('gulp-tm-asset-rev');
@@ -506,6 +507,7 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)
+            .pipe(sourceMap.init())
             .pipe(concat('js/base_work.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
@@ -523,8 +525,10 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest))
+
             .pipe(uglify())
             .pipe(rename({ extname: '.min.js' }))
+            .pipe( sourceMap.write("") )
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
                 host: option.host,

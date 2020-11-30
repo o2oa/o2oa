@@ -6,14 +6,11 @@ MWF.xScript.Macro = MWF.Macro = {
     expression: function(code, bind){},
     runEvent: function(code, bind, arg){},
 
-    run: function(code, bind){
-
-    },
     exec: function(code, bind){
-        debugger;
         var returnValue;
         //try{
         if (!bind) bind = window;
+        //this.bind = bind || window;
 
         var n = 0;
         var o = "f"+"_"+n;
