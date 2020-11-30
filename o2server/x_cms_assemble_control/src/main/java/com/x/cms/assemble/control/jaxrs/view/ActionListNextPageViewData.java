@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ActionListNextPageViewData extends BaseAction {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( ActionListNextPageViewData.class );
-	
+
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String lastDocId, Integer pageSize, JsonElement jsonElement ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
@@ -54,15 +54,15 @@ public class ActionListNextPageViewData extends BaseAction {
 		List<String> sortableFieldNames = null;
 		List<String> sortableFieldNames_upperCase = null;
 		QueryFilter queryFilter = null;
-		
+
 		if( pageSize <= 0 || pageSize == null ){
 			pageSize = 12;
 		}
-		
+
 		if( "(0)".equals( lastDocId ) || StringUtils.isEmpty( lastDocId ) ){
 			lastDocId = null;
 		}
-		
+
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
 		} catch (Exception e ) {
@@ -71,19 +71,19 @@ public class ActionListNextPageViewData extends BaseAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null );
 		}
-		
+
 		if( StringUtils.isEmpty( wi.getCategoryId() ) ) {
 			check = false;
 			Exception exception = new ExceptionViewDateQueryCategoryIdEmpty();
 			result.error( exception );
 		}
-		
+
 		if( StringUtils.isEmpty( wi.getViewId() ) ) {
 			check = false;
 			Exception exception = new ExceptionViewDataQueryViewIdEmpty();
 			result.error( exception );
 		}
-		
+
 		try {
 			isManager = userManagerService.isManager(effectivePerson );
 		} catch (Exception e) {
@@ -108,7 +108,7 @@ public class ActionListNextPageViewData extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){
 			try{
 				view = viewServiceAdv.get( wi.getViewId() );
@@ -133,7 +133,7 @@ public class ActionListNextPageViewData extends BaseAction {
 				result.error( exception );
 			}
 		}
-		
+
 		if( check ){
 			try{
 				//检查当前Category与View的关联是否存在
@@ -151,7 +151,7 @@ public class ActionListNextPageViewData extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){//设置查询条件的默认值，如果不传入则使用列表设置的值
 			if( StringUtils.isEmpty( wi.getOrderField() ) ) {
 				wi.setOrderField(view.getOrderField());
@@ -184,7 +184,7 @@ public class ActionListNextPageViewData extends BaseAction {
 				}
 			}
 		}
-		
+
 		if (check) {
 			try {
 				queryFilter = wi.getQueryFilter();
@@ -195,12 +195,12 @@ public class ActionListNextPageViewData extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ) {
 			if( StringUtils.isNotEmpty( lastDocId )) {
 				document = documentQueryService.get( lastDocId );
 			}
-			
+
 			//判断一下，如果排序的列不是Document的常规列, 需要从Item里查出符合条件的DocumentID列表
 			//从正常的Document属性列和全大写的属性列中都需要判断一下， sortableFieldNames and sortableFieldNames_upperCase
 			//如果sortableFieldNames and sortableFieldNames_upperCase都没有，那么就属性业务属性数据了，需要从item里去查询
@@ -209,20 +209,20 @@ public class ActionListNextPageViewData extends BaseAction {
 				List<String> viewableDocList = null;
 				if( isManager ) {
 					documentCount = documentQueryService.countWithConditionOutofPermission( queryFilter );
-					viewableDocList = documentQueryService.listIdsByCategoryId( category.getId(), wi.getOrderField(), wi.getOrderField(), 2000 );
+					viewableDocList = documentQueryService.listIdsByCategoryId( category.getId(), wi.getOrderField(), wi.getOrderType(), 2000 );
 				}else {
 					documentCount = documentQueryService.countWithConditionInReview( personName, queryFilter );
-					viewableDocList = documentQueryService.listDocIdsWithConditionInReview( personName, wi.getOrderField(), wi.getOrderField(), queryFilter, 2000 );
+					viewableDocList = documentQueryService.listDocIdsWithConditionInReview( personName, wi.getOrderField(), wi.getOrderType(), queryFilter, 2000 );
 				}
-				
+				logger.debug("documentCount:{}===viewableDocListCount:{}",documentCount,viewableDocList.size());
 				//以所有可见的DocId为基准，从Item里查询出2000个排序好的对象，拼成 dataObjList ( docId, sortFieldValue )返回
 				List<SimpleItemObj> simpleItems = documentQueryService.listSortObjWithOrderFieldInData( viewableDocList, wi.getOrderField(), wi.getOrderField(), wi.getOrderType() );
-			
+
 				if( ListTools.isNotEmpty( simpleItems )) {
 					String sequence = null;
 					Boolean  pickDocument = false;
-					documentList = new ArrayList<>();
-					for( SimpleItemObj item : simpleItems ) {				
+					searchResultList = new ArrayList<>();
+					for( SimpleItemObj item : simpleItems ) {
 						//填充Document数据
 						sequence = documentQueryService.getSequence( item.getId() );
 						if( StringUtils.isNotEmpty( sequence)) {
@@ -232,10 +232,10 @@ public class ActionListNextPageViewData extends BaseAction {
 								}
 							}else {
 								pickDocument = true;//取第1页的pageSize个document
-							}							
+							}
 							if( pickDocument ) {
-								if( documentList.size() < pageSize ) {
-									documentList.add( documentQueryService.get( item.getId() ));
+								if( searchResultList.size() < pageSize ) {
+									searchResultList.add( documentQueryService.get( item.getId() ));
 								}else {//数据够一页了
 									break;
 								}
@@ -297,10 +297,10 @@ public class ActionListNextPageViewData extends BaseAction {
 							}
 						}
 					}
-				}	
+				}
 			}
-		}		
-		
+		}
+
 		if( check ){
 			//补充业务数据
 			if( searchResultList != null && searchResultList.size() > 0 ){
@@ -334,7 +334,7 @@ public class ActionListNextPageViewData extends BaseAction {
 							result.error( exception );
 							logger.error( e, effectivePerson, request, null);
 						}
-					}					
+					}
 					wos.add( wo );
 				}
 			}
@@ -342,36 +342,36 @@ public class ActionListNextPageViewData extends BaseAction {
 			result.setData( wos );
 			result.setCount( documentCount );
 		}
-		
+
 		return result;
 	}
 
 	public class Wi {
-		
+
 		@FieldDescribe( "是否置顶：ALL|TOP|UNTOP." )
 		private String topFlag = "ALL";
-		
+
 		@FieldDescribe("需要过滤文档的分类ID")
 		private String categoryId;
 
 		@FieldDescribe("需要查询的列表ID")
 		private String viewId;
-		
+
 		@FieldDescribe("当前查询用于排序的列名，默认以列表配置为主")
 		private String orderField;
 
 		@FieldDescribe("当前排序方式：DESC|ASC，默认以列表配置为主")
 		private String orderType;
-		
+
 		@FieldDescribe("值类别：支持string | date | time | datetime | boolean | boolean | text")
 		private String fieldType;
-		
+
 		@FieldDescribe("查询文档类型: 全部 | 信息 | 数据 ")
 		private String documentType;
-		
+
 		@FieldDescribe("需要查询的文档状态：published | draft | archived")
 		private String docStatus;
-		
+
 		public String getFieldType() {
 			return fieldType;
 		}
@@ -427,7 +427,7 @@ public class ActionListNextPageViewData extends BaseAction {
 		public void setDocumentType(String documentType) {
 			this.documentType = documentType;
 		}
-		
+
 		public String getTopFlag() {
 			return topFlag;
 		}
@@ -439,27 +439,27 @@ public class ActionListNextPageViewData extends BaseAction {
 		/**
 		 * 根据传入的查询参数，组织一个完整的QueryFilter对象
 		 * @return
-		 * @throws Exception 
+		 * @throws Exception
 		 */
 		public QueryFilter getQueryFilter() throws Exception {
-			QueryFilter queryFilter = new QueryFilter();		
+			QueryFilter queryFilter = new QueryFilter();
 			queryFilter.setJoinType( "and" );
-			
+
 			if( StringUtils.isNotEmpty( this.getCategoryId() )) {
 				queryFilter.addEqualsTerm( new EqualsTerm( "categoryId", this.getCategoryId() ) );
 			}
-			
+
 			//文档类型：全部 | 信息 | 数据
-			if( StringUtils.isNotEmpty( this.getDocumentType())) {			
+			if( StringUtils.isNotEmpty( this.getDocumentType())) {
 				if( "信息".equals( this.getDocumentType() )) {
 					queryFilter.addEqualsTerm( new EqualsTerm( "documentType", this.getDocumentType() ) );
 				}else if( "数据".equals( this.getDocumentType() )) {
 					queryFilter.addEqualsTerm( new EqualsTerm( "documentType", this.getDocumentType() ) );
 				}
 			}
-			
+
 			//是否置顶：ALL|TOP|UNTOP
-			if( StringUtils.isNotEmpty( this.getTopFlag())) {			
+			if( StringUtils.isNotEmpty( this.getTopFlag())) {
 				if( "TOP".equals( this.getTopFlag() )) {
 					queryFilter.addIsTrueTerm( new IsTrueTerm( "isTop" ) );
 				}else if( "UNTOP".equals( this.getDocumentType() )) {
@@ -470,20 +470,20 @@ public class ActionListNextPageViewData extends BaseAction {
 			if( StringUtils.isNotEmpty( this.getDocStatus())) {
 				queryFilter.addEqualsTerm( new EqualsTerm( "docStatus", this.getDocStatus() ) );
 			}
-			
+
 			return queryFilter;
 		}
 
 	}
-	
+
 	public static class Wo extends GsonPropertyObject {
-		
+
 		@FieldDescribe( "文档对象的序列." )
 		private String sequence = null;
-		
+
 		@FieldDescribe( "文档对象的ID." )
 		private String id = null;
-		
+
 		@FieldDescribe( "排序列的值." )
 		private String orderFieldValue = null;
 
@@ -531,21 +531,21 @@ public class ActionListNextPageViewData extends BaseAction {
 
 		public void setOrderFieldValue(String orderFieldValue) {
 			this.orderFieldValue = orderFieldValue;
-		}		
+		}
 	}
-	
+
 	public static class WoDocument extends Document {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static WrapCopier<Document, WoDocument> copier = WrapCopierFactory.wo( Document.class, WoDocument.class, null, JpaObject.FieldsInvisible);
 
 		@FieldDescribe("创建者姓名（简称）")
 		private String creatorPersonShort = null;
-		
+
 		@FieldDescribe("创建者所属组织（简称）")
 		private String creatorUnitNameShort = null;
-		
+
 		@FieldDescribe("创建者顶层组织（简称）")
 		private String creatorTopUnitNameShort = null;
 
@@ -571,6 +571,6 @@ public class ActionListNextPageViewData extends BaseAction {
 
 		public void setCreatorTopUnitNameShort(String creatorTopUnitNameShort) {
 			this.creatorTopUnitNameShort = creatorTopUnitNameShort;
-		}		
+		}
 	}
 }
