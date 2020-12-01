@@ -9,10 +9,18 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Review_;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 class V2ManageListPaging extends V2Base {
@@ -23,7 +31,21 @@ class V2ManageListPaging extends V2Base {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Predicate p = this.toFilterPredicate(effectivePerson, business, wi, wi.getPersonList());
+			EntityManager em = emc.get(Review.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+			Root<Review> root = cq.from(Review.class);
+			Predicate p = this.toFilterPredicate(effectivePerson, business, wi, true);
+			if(ListTools.isNotEmpty(wi.getPersonList())) {
+				List<String> person_ids = business.organization().person().list(wi.getPersonList());
+				p = cb.and(p, root.get(Review_.person).in(person_ids));
+			}
+			if (ListTools.isNotEmpty(wi.getJobList())) {
+				p = cb.and(p, root.get(Review_.job).in(wi.getJobList()));
+			}
+			if (ListTools.isNotEmpty(wi.getIdList())) {
+				p = cb.and(p, root.get(Review_.id).in(wi.getIdList()));
+			}
 			List<Wo> wos = emc.fetchDescPaging(Review.class, Wo.copier, p, page, size, Review.sequence_FIELDNAME);
 			result.setData(wos);
 			result.setCount(emc.count(Review.class, p));
@@ -35,7 +57,29 @@ class V2ManageListPaging extends V2Base {
 	public static class Wi extends RelateFilterWi {
 
 		@FieldDescribe("参阅用户")
-		private List<String> personList;
+		private List<String> personList = new ArrayList<>();
+
+		@FieldDescribe("job标识")
+		private List<String> jobList = new ArrayList<>();
+
+		@FieldDescribe("标识")
+		private List<String> idList = new ArrayList<>();
+
+		public List<String> getJobList() {
+			return jobList;
+		}
+
+		public void setJobList(List<String> jobList) {
+			this.jobList = jobList;
+		}
+
+		public List<String> getIdList() {
+			return idList;
+		}
+
+		public void setIdList(List<String> idList) {
+			this.idList = idList;
+		}
 
 		public List<String> getPersonList() {
 			return personList;
