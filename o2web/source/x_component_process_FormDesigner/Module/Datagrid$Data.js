@@ -64,7 +64,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Data = MWF.FCDatagrid$Data
 			"MWFType": "datagrid$Data",
 			"id": this.json.id
 		});
-		
+
 		if (!this.form.json.moduleList[this.json.id]){
 			this.form.json.moduleList[this.json.id] = this.json;
 		}
@@ -76,6 +76,11 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Data = MWF.FCDatagrid$Data
         this._setEditStyle_custom("id");
         this.checkSequence();
         this.json.moduleName = this.moduleName;
+
+        debugger;
+		if( this.json.isShow === false ){
+			this._switchShow();
+		}
 	},
     _setEditStyle_custom: function(name, obj, oldValue) {
         if (name == "cellType") this.checkSequence(obj, oldValue);
@@ -118,6 +123,10 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Data = MWF.FCDatagrid$Data
         }.bind(this));
 
 		this.setCustomNodeStyles(this.node, this.parentContainer.json.contentStyles);
+
+		if( this.json.isShow === false ){
+			this._switchShow();
+		}
 	},
     checkSequence: function(obj, oldValue){
         if ((this.json.cellType == "sequence") && (oldValue != "sequence")){
@@ -251,6 +260,14 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Data = MWF.FCDatagrid$Data
 			}
 			
 		}
+	},
+	_switchShow : function (isShow) {
+		if( typeOf(isShow) === "boolean" ){
+			this.json.isShow = isShow;
+		}else{
+			isShow = this.json.isShow !== false ;
+		}
+		this.node.setStyle("opacity", isShow ? "1" : "0.3");
 	}
 	
 });
