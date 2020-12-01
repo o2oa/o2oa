@@ -21,6 +21,13 @@
                     <input class="editTableRadio" name="total" text{($.total=='count')?'checked':''} type="radio" value="count"/>合计数量 <br/>
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">隐藏:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isShow" text{($.isShow!==false)?'checked':''} type="radio" value="true"/>显示该列 <br/>
+                    <input class="editTableRadio" name="isShow" text{($.isShow==false)?'checked':''} type="radio" value="false"/>隐藏该列 <br/>
+                </td>
+            </tr>
         </table>
 
         <div class="MWFMaplist" name="styles" title="样式"></div>
