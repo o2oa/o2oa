@@ -40,6 +40,7 @@
     "gulp-uglify-es": "^2.0.0",
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
-    "readline-sync": "^1.4.10"
+    "readline-sync": "^1.4.10",
+    "gulp-sourcemaps": "^3.0.0"
   }
 }
