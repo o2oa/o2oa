@@ -715,7 +715,55 @@ function createBasePortalConcatTask(path, isMin, thisOptions){
     createBasePortalConcatDelTempTask(path);
     gulp.task( path+".base_portal", gulp.series(path+".base_portal : action", path+".base_portal : style", path+".base_portal : concat", path+".base_portal : clean"));
 }
-
+function createBaseConcatTask(path, isMin, thisOptions){
+    gulp.task(path+".base", function(){
+        var option = thisOptions || options;
+        var src = [
+            'source/' + path + '/js/base.js'
+        ];
+        var dest = option.dest+'/' + path + '/';
+        return gulp.src(src)
+            .pipe(sourceMap.init())
+            .pipe(concat('js/base.js'))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+            // .pipe(gulp.src(src))
+            .pipe(concat('js/base.min.js'))
+            .pipe(uglify())
+            .pipe( sourceMap.write("") )
+            // .pipe(rename({ extname: '.min.js' }))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+    });
+}
 
 function getAppTask(path, isMin, thisOptions) {
     if (path==="x_component_process_Xform"){
@@ -730,7 +778,8 @@ function getAppTask(path, isMin, thisOptions) {
         createDefaultTask(path, isMin, thisOptions);
         createBaseWorkConcatTask(path, isMin, thisOptions);
         createBasePortalConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path+".base_work", path+".base_portal");
+        createBaseConcatTask(path, isMin, thisOptions);
+        return gulp.series(path, path+".base_work", path+".base_portal", path+".base");
         //return gulp.series(path, path+".base_work : concat");
     }else{
         createDefaultTask(path, isMin, thisOptions);
