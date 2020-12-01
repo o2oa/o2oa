@@ -345,6 +345,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
         this.loadElementList();
     },
     resort : function(th){
+        debugger;
         this.orderField = th.retrieve("field");
         var orderType = th.retrieve("orderType");
         //th.eliminate(orderType);
@@ -757,16 +758,20 @@ MWF.xApplication.cms.Module.ListExplorer.List = new Class({
         }.bind(this));
     },
     resort : function(th){
+        debugger;
         this.orderField = th.retrieve("field");
         this.orderType = ( th.retrieve("orderType") || "" ).toLowerCase();
-        //th.eliminate(orderType);
-        if( this.orderType == "" ){
-            this.orderType = "asc";
-        }else if( this.orderType == "asc" ){
-            this.orderType = "desc";
+        if( this.orderField === this.data.orderField ){
+            this.orderType = this.orderType === "asc" ? "desc" : "asc";
         }else{
-            this.orderField = this.data.orderField ? this.data.orderField : "";
-            this.orderType = this.data.orderType ? this.data.orderType : "";
+            if( this.orderType == "" ){
+                this.orderType = "asc";
+            }else if( this.orderType == "asc" ){
+                this.orderType = "desc";
+            }else{
+                this.orderField = this.data.orderField ? this.data.orderField : "";
+                this.orderType = this.data.orderType ? this.data.orderType : "";
+            }
         }
         this.reload();
     },
