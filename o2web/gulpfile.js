@@ -12,10 +12,11 @@ var gulp = require('gulp'),
     JSFtp = require('jsftp'),
     gutil = require('gulp-util'),
     fs = require("fs");
-    concat = require('gulp-concat');
+concat = require('gulp-concat');
 //let uglify = require('gulp-uglify-es').default;
 var through2 = require('through2');
 var path = require('path');
+var sourceMap = require('gulp-sourcemaps');
 
 
 var assetRev = require('gulp-tm-asset-rev');
@@ -165,6 +166,7 @@ function createXFormConcatTask(path, isMin, thisOptions) {
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)
+            .pipe(sourceMap.init())
             .pipe(concat('$all.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
@@ -182,8 +184,9 @@ function createXFormConcatTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest))
+            .pipe(concat('$all.min.js'))
             .pipe(uglify())
-            .pipe(rename({ extname: '.min.js' }))
+            .pipe(sourceMap.write(""))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
                 host: option.host,
@@ -213,6 +216,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)
+            .pipe(sourceMap.init())
             .pipe(concat('o2.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
@@ -230,8 +234,10 @@ function createO2ConcatTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest))
+            .pipe(concat('o2.min.js'))
             .pipe(uglify())
-            .pipe(rename({ extname: '.min.js' }))
+            //.pipe(rename({ extname: '.min.js' }))
+            .pipe(sourceMap.write(""))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
                 host: option.host,
@@ -271,6 +277,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
         ];
         var dest = option.dest+'/' + path + '/o2/xDesktop/';
         return gulp.src(src)
+            .pipe(sourceMap.init())
             .pipe(concat('$all.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/o2/xDesktop/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
@@ -288,8 +295,10 @@ function createO2ConcatTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path+"/o2/xDesktop/"
             })))
             .pipe(gulp.dest(dest))
+            .pipe(concat('$all.min.js'))
             .pipe(uglify())
-            .pipe(rename({ extname: '.min.js' }))
+            //.pipe(rename({ extname: '.min.js' }))
+            .pipe(sourceMap.write(""))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/o2/xDesktop/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
                 host: option.host,
@@ -319,6 +328,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)
+            .pipe(sourceMap.init())
             .pipe(concat('bundle.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
@@ -336,8 +346,10 @@ function createO2ConcatTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest))
+            .pipe(concat('bundle.min.js'))
             .pipe(uglify())
-            .pipe(rename({ extname: '.min.js' }))
+            //.pipe(rename({ extname: '.min.js' }))
+            .pipe(sourceMap.write(""))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
                 host: option.host,
@@ -506,6 +518,7 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)
+            .pipe(sourceMap.init())
             .pipe(concat('js/base_work.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
@@ -523,8 +536,10 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest))
+
             .pipe(uglify())
-            .pipe(rename({ extname: '.min.js' }))
+            .pipe(concat('js/base_work.min.js'))
+            .pipe( sourceMap.write("") )
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
                 host: option.host,
@@ -652,6 +667,7 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)
+            .pipe(sourceMap.init())
             .pipe(concat('js/base_portal.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
@@ -672,6 +688,7 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
             // .pipe(gulp.src(src))
             .pipe(concat('js/base_portal.min.js'))
             .pipe(uglify())
+            .pipe( sourceMap.write("") )
             // .pipe(rename({ extname: '.min.js' }))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
