@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -68,7 +69,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			CompletableFuture<Void> workJsonFuture = this.workJsonFuture(work, wo);
 			CompletableFuture<Void> activityRouteFuture = this.activityRouteFuture(work, wo);
 			CompletableFuture<Void> dataFuture = this.dataFuture(work, wo);
-			CompletableFuture<Void> taskFuture = this.taskFuture(effectivePerson, work.getJob(), wo);
+			CompletableFuture<Void> taskFuture = this.taskFuture(effectivePerson, work.getJob(), work.getId(), wo);
 			CompletableFuture<Void> readFuture = this.readFuture(effectivePerson, work.getJob(), wo);
 			CompletableFuture<Void> creatorIdentityFuture = this.creatorIdentityFuture(work.getCreatorIdentity(), wo);
 			CompletableFuture<Void> creatorPersonFuture = this.creatorPersonFuture(work.getCreatorPerson(), wo);
@@ -157,12 +158,12 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Void> taskFuture(EffectivePerson effectivePerson, String job, Wo wo) {
+	private CompletableFuture<Void> taskFuture(EffectivePerson effectivePerson, String job, String workId, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				wo.setTaskList(WoTask.copier.copy(emc.listEqual(Task.class, Task.job_FIELDNAME, job)));
-				wo.setCurrentTaskIndex(
-						ListUtils.indexOf(wo.getTaskList(), e -> effectivePerson.isPerson(e.getPerson())));
+				wo.setCurrentTaskIndex(ListUtils.indexOf(wo.getTaskList(),
+						e -> effectivePerson.isPerson(e.getPerson()) && (StringUtils.equals(e.getWork(), workId))));
 			} catch (Exception e) {
 				logger.error(e);
 			}

@@ -31,7 +31,7 @@ class ActionListFilterPaging extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Predicate p = this.toFilterPredicate(business, wi);
 			List<Wo> wos = emc.fetchAscPaging(Person.class, Wo.copier, p, page, size, Person.pinyin_FIELDNAME);
-
+			this.hide(effectivePerson, business, wos);
 			result.setData(wos);
 			result.setCount(emc.count(Person.class, p));
 			return result;

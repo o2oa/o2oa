@@ -3,6 +3,11 @@ package com.x.organization.assemble.express.jaxrs.person;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.ListTools;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -72,6 +77,37 @@ class BaseAction extends StandardJaxrsAction {
 		t.setWeLinkId(person.getWeLinkId());
 		return t;
 
+	}
+
+	protected static List<String> person_fieldsInvisible = ListTools.toList(JpaObject.FieldsInvisible,
+			Person.password_FIELDNAME, Person.icon_FIELDNAME);
+
+	protected <T extends Person> void hide(EffectivePerson effectivePerson, Business business, List<T> list)
+			throws Exception {
+		if (!effectivePerson.isManager() && (!effectivePerson.isCipher())) {
+			if (!business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
+					OrganizationDefinition.Manager)) {
+				for (Person o : list) {
+					if (BooleanUtils.isTrue(o.getHiddenMobile()) && (!StringUtils
+							.equals(effectivePerson.getDistinguishedName(), o.getDistinguishedName()))) {
+						o.setMobile(Person.HIDDENMOBILESYMBOL);
+					}
+				}
+			}
+		}
+	}
+
+	protected <T extends Person> void hide(EffectivePerson effectivePerson, Business business, T t)
+			throws Exception {
+		if (!effectivePerson.isManager() && (!effectivePerson.isCipher())) {
+			if (!business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
+					OrganizationDefinition.Manager)) {
+				if (BooleanUtils.isTrue(t.getHiddenMobile())
+						&& (!StringUtils.equals(effectivePerson.getDistinguishedName(), t.getDistinguishedName()))) {
+					t.setMobile(Person.HIDDENMOBILESYMBOL);
+				}
+			}
+		}
 	}
 
 }
