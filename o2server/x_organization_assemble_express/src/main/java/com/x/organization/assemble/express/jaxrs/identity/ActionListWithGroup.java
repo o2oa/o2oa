@@ -68,11 +68,13 @@ class ActionListWithGroup extends BaseAction {
 		}
 		List<String> personIds = new ArrayList<>();
 		List<String> unitIds = new ArrayList<>();
+		List<String> identityIds = new ArrayList<>();
 		for (Group o : list) {
 			personIds.addAll(o.getPersonList());
 			if (ListTools.isNotEmpty(o.getUnitList())) {
 				unitIds.addAll(o.getUnitList());
 			}
+			identityIds.addAll(o.getIdentityList());
 		}
 		/* 先解析组织 */
 		List<Identity> identities = new ArrayList<>();
@@ -91,6 +93,10 @@ class ActionListWithGroup extends BaseAction {
 				identities.add(o);
 			}
 		}
+
+		/* 最后把身份解析处理 */
+		identities.addAll(business.identity().pick(identityIds));
+
 		identities = ListTools.trim(identities, true, true);
 		Wo wo = new Wo();
 		wo.getIdentityList().addAll(ListTools.extractProperty(business.identity().sort(identities),

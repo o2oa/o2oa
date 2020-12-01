@@ -27,6 +27,24 @@ public class PersonAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(PersonAction.class);
 
+	@JaxrsMethodDescribe(value = "获取个人,附带身份,身份所在的组织,个人所在群组,个人拥有角色.", action = ActionGet.class)
+	@GET
+	@Path("{flag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGet().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "判断个人是否拥有指定角色中的一个或者多个", action = ActionHasRole.class)
 	@POST
 	@Path("has/role")
