@@ -76,7 +76,7 @@ public class ExternalDataSource extends ConfigObject {
 	@FieldDescribe("空闲阈值,默认300秒.")
 	private Integer maxIdleTime;
 
-	public static final Integer DEFAULT_MAXTOTAL = 50;
+	public static final Integer DEFAULT_MAXTOTAL = 100;
 
 	public static final Integer DEFAULT_MAXIDLE = 0;
 
