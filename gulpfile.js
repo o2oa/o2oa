@@ -424,6 +424,21 @@ function build_concat_o2(){
         .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest))
 }
+function build_concat_base(){
+    var src = [
+        'o2web/source/x_desktop/js/base.js'
+    ];
+    var dest = 'target/o2server/servers/webServer/x_desktop/js/';
+    return gulp.src(src)
+        .pipe(sourceMap.init())
+        //.pipe(concat('o2.js'))
+        .pipe(gulp.dest(dest))
+        .pipe(concat('base.min.js'))
+        .pipe(uglify())
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest))
+}
 function build_concat_desktop(){
     let path = "o2_core";
     var src = [
@@ -771,6 +786,7 @@ function build_concat_baseportal_body() {
 
 exports.build_concat = gulp.parallel(
     build_concat_o2,
+    build_concat_base,
     build_concat_desktop,
     build_concat_xform,
     build_bundle,
@@ -873,6 +889,7 @@ exports.build_web = gulp.series(
     build_web_move,
     gulp.parallel(
         build_concat_o2,
+        build_concat_base,
         build_concat_desktop,
         build_concat_xform,
         gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
