@@ -14,13 +14,14 @@ var gulp = require('gulp'),
     changed = require('gulp-changed'),
     gulpif = require('gulp-if'),
     http = require('http');
-    concat = require('gulp-concat');
+concat = require('gulp-concat');
 var fg = require('fast-glob');
 var logger = require('gulp-logger');
 var assetRev = require('gulp-tm-asset-rev');
 const os = require('os');
 var through2 = require('through2');
 var path = require('path');
+var sourceMap = require('gulp-sourcemaps');
 
 //var downloadHost = "download.o2oa.net";
 // var downloadHost = "release.o2oa.net";
@@ -114,49 +115,49 @@ function downloadFile_progress(path, filename, headcb, progresscb, cb){
     //         progresscb({transferred:1});
     //         cb();
     //     }else{
-            let stream = fs.createWriteStream(dest);
-            var options = { url:protocol+"://"+downloadHost+path };
-            var fileHost = downloadHost;
-            var filePath =  path;
-            stream.on('finish', () => {
-                //gutil.log("download", ":", gutil.colors.green(filename), " completed!");
-                cb();
+    let stream = fs.createWriteStream(dest);
+    var options = { url:protocol+"://"+downloadHost+path };
+    var fileHost = downloadHost;
+    var filePath =  path;
+    stream.on('finish', () => {
+        //gutil.log("download", ":", gutil.colors.green(filename), " completed!");
+        cb();
+    });
+    stream.on('error', (err) => {
+        gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), err);
+    });
+
+    var req = http.request({
+        host:fileHost,
+        path:filePath,
+        method:'HEAD'
+    },function (res){
+        if (res.statusCode == 200) {
+            res.setEncoding(null);
+            var time = 0;
+            var l = res.headers['content-length'];
+            var str = progress({
+                length: l,
+                time: 100 /* ms */
             });
-            stream.on('error', (err) => {
-                gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), err);
-            });
+            headcb(l);
 
-            var req = http.request({
-                host:fileHost,
-                path:filePath,
-                method:'HEAD'
-            },function (res){
-                if (res.statusCode == 200) {
-                    res.setEncoding(null);
-                    var time = 0;
-                    var l = res.headers['content-length'];
-                    var str = progress({
-                        length: l,
-                        time: 100 /* ms */
-                    });
-                    headcb(l);
-
-                    str.on('progress', function(progress) {
-                        if (pb){
-                            progresscb(progress);
-                            pb.render({ completed: currentLength, total: totalLength, time: time+=100 });
-                        }
-
-                    });
-                    request.get(options).pipe(str).pipe(stream);
-                } else {
-                    gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
+            str.on('progress', function(progress) {
+                if (pb){
+                    progresscb(progress);
+                    pb.render({ completed: currentLength, total: totalLength, time: time+=100 });
                 }
-            })
-            req.on('error', (e) => {
-                gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), e);
+
             });
-            req.end();
+            request.get(options).pipe(str).pipe(stream);
+        } else {
+            gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
+        }
+    })
+    req.on('error', (e) => {
+        gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), e);
+    });
+    req.end();
     //    }
     //});
 }
@@ -203,7 +204,7 @@ function downloadFile(path, filename, headcb, progresscb, cb){
     //             }
     //
     //         });
-             request.get(options).pipe(stream);
+    request.get(options).pipe(stream);
     //     } else {
     //         gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
     //     }
@@ -285,11 +286,11 @@ function decompress_commons_and_jvm(cb){
             src: 'o2server/commons_git.tar.gz',
             dest: 'o2server',
             tar: {map: function(header){
-                count++;
+                    count++;
                     var d = new Date();
                     slog("["+dateFormat(d, "HH:MM:ss")+"] " + count +" "+ header.name+" ...");
-                //gutil.log(gutil.colors.cyan(header.name), gutil.colors.yellow("..."));
-            }}
+                    //gutil.log(gutil.colors.cyan(header.name), gutil.colors.yellow("..."));
+                }}
         }, function(err){
             if(err) {
                 gutil.log(gutil.colors.red("decompress error"), ":", gutil.colors.red("common.tar.gz "), err);
@@ -414,10 +415,13 @@ function build_concat_o2(){
     ];
     var dest = 'target/o2server/servers/webServer/o2_core/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('o2.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('o2.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest))
 }
 function build_concat_desktop(){
@@ -441,10 +445,13 @@ function build_concat_desktop(){
     ];
     var dest = 'target/o2server/servers/webServer/o2_core/o2/xDesktop/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('$all.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('$all.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest))
 }
 function build_concat_xform(){
@@ -471,10 +478,13 @@ function build_concat_xform(){
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('$all.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('$all.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest))
 }
 
@@ -489,10 +499,13 @@ function build_bundle(){
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('bundle.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('bundle.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest))
 }
 
@@ -642,10 +655,13 @@ function build_concat_basework_body() {
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('base_work.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('base_work.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest));
 }
 
@@ -743,10 +759,13 @@ function build_concat_baseportal_body() {
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('base_portal.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('base_portal.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest));
 }
 
