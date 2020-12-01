@@ -83,6 +83,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 "id": contentTds[i].get("id"),
                 "mwftype": contentTds[i].get("mwftype")
             });
+
+            var json = this.form._getDomjson(titleTd);
+            if( json && json.isShow === false )mobileTr.hide();
         }.bind(this));
         this.table.destroy();
         this.table = null;
@@ -298,6 +301,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                         cell.set("text", idx+1);
                     }
 
+                    var json = this.form._getDomjson(th);
+                    if( json && json.isShow === false )tr.hide();
+
                 }.bind(this));
             }.bind(this));
         }
@@ -407,6 +413,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                         cell.set("text", idx+1);
                     }
 
+                    var json = this.form._getDomjson(th);
+                    if( json && json.isShow === false )tr.hide();
                 }.bind(this));
                 var size = dataDiv.getSize();
                 //dataDiv.setStyle("height", ""+size.y+"px");
@@ -1224,6 +1232,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 }else{
                     tr.getElement("td").set("text", totalResaults[i] || "");
                 }
+
+                if( m.isShow === false )tr.hide();
+
                 this.totalResaults[m.module.json.id] = totalResaults[i];
             }.bind(this));
             if (this.totalTable){
@@ -1641,7 +1652,8 @@ MWF.xApplication.process.Xform.DatagridMobile$Title =  new Class({
             this.dataGrid.totalModules.push({
                 "module": this,
                 "index": this.node.getParent("tr").rowIndex,
-                "type": this.json.total
+                "type": this.json.total,
+                "isShow": this.json.isShow
             })
         }
         //	this.form._loadModules(this.node);
