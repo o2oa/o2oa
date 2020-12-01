@@ -43,161 +43,166 @@ import java.util.regex.Pattern;
 class ActionExecuteV2 extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionExecuteV2.class);
-	private final static String[] keys = {"group by","GROUP BY","order by","ORDER BY","limit","LIMIT"};
+	private final static String[] keys = { "group by", "GROUP BY", "order by", "ORDER BY", "limit", "LIMIT" };
 	private final static String JOIN_KEY = " JOIN ";
 	private final static String JOIN_ON_KEY = " ON ";
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
-
+		Statement statement = null;
+		ActionResult<Object> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Object> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Statement statement = emc.flag(flag, Statement.class);
+			statement = emc.flag(flag, Statement.class);
 			if (null == statement) {
 				throw new ExceptionEntityNotExist(flag, Statement.class);
 			}
 			if (!business.executable(effectivePerson, statement)) {
 				throw new ExceptionAccessDenied(effectivePerson, statement);
 			}
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Runtime runtime = this.runtime(effectivePerson, wi.getParameter(), business, page, size);
-
-			Object data = null;
-			Object count = null;
-			switch (mode){
-				case Statement.MODE_DATA:
-					switch (Objects.toString(statement.getFormat(), "")) {
-						case Statement.FORMAT_SCRIPT:
-							data = this.script(effectivePerson, business, statement, runtime, mode, wi);
-							break;
-						default:
-							data = this.jpql(effectivePerson, business, statement, runtime, mode, wi);
-							break;
-					}
-					result.setData(data);
-					break;
-				case Statement.MODE_COUNT:
-					switch (Objects.toString(statement.getFormat(), "")) {
-						case Statement.FORMAT_SCRIPT:
-							count = this.script(effectivePerson, business, statement, runtime, mode, wi);
-							break;
-						default:
-							count = this.jpql(effectivePerson, business, statement, runtime, mode, wi);
-							break;
-					}
-					result.setData(count);
-					result.setCount((Long)count);
-					break;
-				default:
-					switch (Objects.toString(statement.getFormat(), "")) {
-						case Statement.FORMAT_SCRIPT:
-							data = this.script(effectivePerson, business, statement, runtime, Statement.MODE_DATA, wi);
-							count = this.script(effectivePerson, business, statement, runtime, Statement.MODE_COUNT, wi);
-							break;
-						default:
-							data = this.jpql(effectivePerson, business, statement, runtime, Statement.MODE_DATA, wi);
-							count = this.jpql(effectivePerson, business, statement, runtime, Statement.MODE_COUNT, wi);
-							break;
-					}
-					result.setData(data);
-					result.setCount((Long)count);
-			}
-			return result;
 		}
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Runtime runtime = this.runtime(effectivePerson, wi.getParameter(), page, size);
+
+		Object data = null;
+		Object count = null;
+		switch (mode) {
+		case Statement.MODE_DATA:
+			switch (Objects.toString(statement.getFormat(), "")) {
+			case Statement.FORMAT_SCRIPT:
+				data = this.script(effectivePerson, statement, runtime, mode, wi);
+				break;
+			default:
+				data = this.jpql(effectivePerson, statement, runtime, mode, wi);
+				break;
+			}
+			result.setData(data);
+			break;
+		case Statement.MODE_COUNT:
+			switch (Objects.toString(statement.getFormat(), "")) {
+			case Statement.FORMAT_SCRIPT:
+				count = this.script(effectivePerson, statement, runtime, mode, wi);
+				break;
+			default:
+				count = this.jpql(effectivePerson, statement, runtime, mode, wi);
+				break;
+			}
+			result.setData(count);
+			result.setCount((Long) count);
+			break;
+		default:
+			switch (Objects.toString(statement.getFormat(), "")) {
+			case Statement.FORMAT_SCRIPT:
+				data = this.script(effectivePerson, statement, runtime, Statement.MODE_DATA, wi);
+				count = this.script(effectivePerson, statement, runtime, Statement.MODE_COUNT, wi);
+				break;
+			default:
+				data = this.jpql(effectivePerson, statement, runtime, Statement.MODE_DATA, wi);
+				count = this.jpql(effectivePerson, statement, runtime, Statement.MODE_COUNT, wi);
+				break;
+			}
+			result.setData(data);
+			result.setCount((Long) count);
+		}
+		return result;
 	}
 
-	private Object script(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime, String mode, Wi wi)
+	private Object script(EffectivePerson effectivePerson, Statement statement, Runtime runtime, String mode, Wi wi)
 			throws Exception {
 		Object data = null;
-		ScriptContext scriptContext = this.scriptContext(effectivePerson, business, runtime);
-		ScriptFactory.initialServiceScriptText().eval(scriptContext);
-		String scriptText = statement.getScriptText();
-		if(Statement.MODE_COUNT.equals(mode)) {
-			scriptText = statement.getCountScriptText();
-		}
-		Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(scriptText),
-				scriptContext);
-		String jpql = ScriptFactory.asString(o);
-		Class<? extends JpaObject> cls = this.clazz(business, statement);
-		EntityManager em;
-		if(StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
-				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)){
-			em = business.entityManagerContainer().get(DynamicBaseEntity.class);
-		}else{
-			em = business.entityManagerContainer().get(cls);
-		}
-		jpql = joinSql(jpql, wi, business);
-		logger.info("执行的sql：{}",jpql);
-		Query query;
-		String upJpql = jpql.toUpperCase();
-		if(upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1){
-			query = em.createNativeQuery(jpql);
-		}else{
-			query = em.createQuery(jpql);
-		}
-		for (Parameter<?> p : query.getParameters()) {
-			if (runtime.hasParameter(p.getName())) {
-				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			ScriptContext scriptContext = this.scriptContext(effectivePerson, business, runtime);
+			ScriptFactory.initialServiceScriptText().eval(scriptContext);
+			String scriptText = statement.getScriptText();
+			if (Statement.MODE_COUNT.equals(mode)) {
+				scriptText = statement.getCountScriptText();
 			}
-		}
-		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			if(Statement.MODE_COUNT.equals(mode)) {
-				data = query.getSingleResult();
-			}else{
-				query.setFirstResult((runtime.page - 1) * runtime.size);
-				query.setMaxResults(runtime.size);
-				data = query.getResultList();
+			Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(scriptText), scriptContext);
+			String jpql = ScriptFactory.asString(o);
+			Class<? extends JpaObject> cls = this.clazz(business, statement);
+			EntityManager em;
+			if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
+					&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
+				em = business.entityManagerContainer().get(DynamicBaseEntity.class);
+			} else {
+				em = business.entityManagerContainer().get(cls);
 			}
-		} else {
-			business.entityManagerContainer().beginTransaction(cls);
-			data = query.executeUpdate();
-			business.entityManagerContainer().commit();
+			jpql = joinSql(jpql, wi, business);
+			logger.info("执行的sql：{}", jpql);
+			Query query;
+			String upJpql = jpql.toUpperCase();
+			if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
+				query = em.createNativeQuery(jpql);
+			} else {
+				query = em.createQuery(jpql);
+			}
+			for (Parameter<?> p : query.getParameters()) {
+				if (runtime.hasParameter(p.getName())) {
+					query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+				}
+			}
+			if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
+				if (Statement.MODE_COUNT.equals(mode)) {
+					data = query.getSingleResult();
+				} else {
+					query.setFirstResult((runtime.page - 1) * runtime.size);
+					query.setMaxResults(runtime.size);
+					data = query.getResultList();
+				}
+			} else {
+				business.entityManagerContainer().beginTransaction(cls);
+				data = query.executeUpdate();
+				business.entityManagerContainer().commit();
+			}
 		}
 		return data;
 	}
 
-	private Object jpql(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime, String mode, Wi wi)
+	private Object jpql(EffectivePerson effectivePerson, Statement statement, Runtime runtime, String mode, Wi wi)
 			throws Exception {
 		Object data = null;
-		Class<? extends JpaObject> cls = this.clazz(business, statement);
-		EntityManager em;
-		if(StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
-				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)){
-			em = business.entityManagerContainer().get(DynamicBaseEntity.class);
-		}else{
-			em = business.entityManagerContainer().get(cls);
-		}
-		String jpql = statement.getData();
-		if(Statement.MODE_COUNT.equals(mode)) {
-			jpql = statement.getCountData();
-		}
-		jpql = joinSql(jpql, wi, business);
-		logger.info("执行的sql：{}",jpql);
-		Query query;
-		String upJpql = jpql.toUpperCase();
-		if(upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1){
-			query = em.createNativeQuery(jpql);
-		}else{
-			query = em.createQuery(jpql);
-		}
-		for (Parameter<?> p : query.getParameters()) {
-			if (runtime.hasParameter(p.getName())) {
-				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Class<? extends JpaObject> cls = this.clazz(business, statement);
+			EntityManager em;
+			if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
+					&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
+				em = business.entityManagerContainer().get(DynamicBaseEntity.class);
+			} else {
+				em = business.entityManagerContainer().get(cls);
 			}
-		}
-		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			if(Statement.MODE_COUNT.equals(mode)) {
-				data = query.getSingleResult();
-			}else{
-				query.setFirstResult((runtime.page - 1) * runtime.size);
-				query.setMaxResults(runtime.size);
-				data = query.getResultList();
+			String jpql = statement.getData();
+			if (Statement.MODE_COUNT.equals(mode)) {
+				jpql = statement.getCountData();
 			}
-		} else {
-			business.entityManagerContainer().beginTransaction(cls);
-			data = Integer.valueOf(query.executeUpdate());
-			business.entityManagerContainer().commit();
+			jpql = joinSql(jpql, wi, business);
+			logger.info("执行的sql：{}", jpql);
+			Query query;
+			String upJpql = jpql.toUpperCase();
+			if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
+				query = em.createNativeQuery(jpql);
+			} else {
+				query = em.createQuery(jpql);
+			}
+			for (Parameter<?> p : query.getParameters()) {
+				if (runtime.hasParameter(p.getName())) {
+					query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+				}
+			}
+			if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
+				if (Statement.MODE_COUNT.equals(mode)) {
+					data = query.getSingleResult();
+				} else {
+					query.setFirstResult((runtime.page - 1) * runtime.size);
+					query.setMaxResults(runtime.size);
+					data = query.getResultList();
+				}
+			} else {
+				business.entityManagerContainer().beginTransaction(cls);
+				data = Integer.valueOf(query.executeUpdate());
+				business.entityManagerContainer().commit();
+			}
 		}
 		return data;
 	}
@@ -234,8 +239,8 @@ class ActionExecuteV2 extends BaseAction {
 		return scriptContext;
 	}
 
-	private String joinSql(String sql, Wi wi, Business business) throws Exception{
-		if(wi.getFilterList()!=null && !wi.getFilterList().isEmpty()) {
+	private String joinSql(String sql, Wi wi, Business business) throws Exception {
+		if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
 			List<String> list = new ArrayList<>();
 			String whereSql = sql.replaceAll("\\s{1,}", " ");
 			String rightSql = "";
@@ -251,7 +256,7 @@ class ActionExecuteV2 extends BaseAction {
 				hasWhere = true;
 			}
 			String matchKey = "";
-			for(String key : keys){
+			for (String key : keys) {
 				if (whereSql.indexOf(key) > -1) {
 					matchKey = key;
 					rightSql = StringUtils.substringAfter(whereSql, key);
@@ -260,50 +265,52 @@ class ActionExecuteV2 extends BaseAction {
 				}
 			}
 			List<String> filterList = new ArrayList<>();
-			for (FilterEntry filterEntry : wi.getFilterList()){
-				if(StringUtils.isNotBlank(filterEntry.path) && StringUtils.isNotBlank(filterEntry.value)){
+			for (FilterEntry filterEntry : wi.getFilterList()) {
+				if (StringUtils.isNotBlank(filterEntry.path) && StringUtils.isNotBlank(filterEntry.value)) {
 					StringBuilder sb = new StringBuilder();
 					sb.append(filterEntry.path);
 					sb.append(" ");
 					sb.append(Comparison.getMatchCom(filterEntry.comparison));
 					sb.append(" ");
-					sb.append(":"+filterEntry.value);
+					sb.append(":" + filterEntry.value);
 					filterList.add(sb.toString());
 				}
 			}
-			if(hasWhere){
+			if (hasWhere) {
 				list.add(leftSql);
 				list.add("WHERE");
-			}else{
+			} else {
 				list.add(whereSql);
-				if(!filterList.isEmpty()){
+				if (!filterList.isEmpty()) {
 					list.add("WHERE");
 				}
 			}
-			if(!filterList.isEmpty()){
+			if (!filterList.isEmpty()) {
 				list.add("(");
 				list.add(StringUtils.join(filterList, " AND "));
 				list.add(")");
 			}
-			if(hasWhere){
+			if (hasWhere) {
 				list.add("AND");
 				list.add("(");
 				list.add(whereSql);
 				list.add(")");
 			}
-			if(StringUtils.isNotBlank(matchKey)){
+			if (StringUtils.isNotBlank(matchKey)) {
 				list.add(matchKey);
 				list.add(rightSql);
 			}
 			sql = StringUtils.join(list, " ");
 		}
 		String upSql = sql.toUpperCase();
-		if(upSql.indexOf(JOIN_KEY) > -1 && upSql.indexOf(JOIN_ON_KEY) > -1){
+		if (upSql.indexOf(JOIN_KEY) > -1 && upSql.indexOf(JOIN_ON_KEY) > -1) {
 			sql = sql.replaceAll("\\.", ".x");
 			sql = sql.replaceAll("\\.x\\*", ".*");
-			List<Table> tables = business.entityManagerContainer().fetchEqual(Table.class, ListTools.toList(Table.name_FIELDNAME), Table.status_FIELDNAME, Table.STATUS_build);
-			for (Table table : tables){
-				sql = sql.replaceAll(" "+table.getName()+" ", " "+DynamicEntity.TABLE_PREFIX + table.getName().toUpperCase()+" ");
+			List<Table> tables = business.entityManagerContainer().fetchEqual(Table.class,
+					ListTools.toList(Table.name_FIELDNAME), Table.status_FIELDNAME, Table.STATUS_build);
+			for (Table table : tables) {
+				sql = sql.replaceAll(" " + table.getName() + " ",
+						" " + DynamicEntity.TABLE_PREFIX + table.getName().toUpperCase() + " ");
 			}
 		}
 		return sql;
@@ -325,10 +332,8 @@ class ActionExecuteV2 extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 		@FieldDescribe("过滤")
-		@FieldTypeDescribe(fieldType="class",fieldTypeName = "com.x.query.core.express.plan.FilterEntry",
-				fieldValue="{\"logic\": \"and\", \"path\": \"o.name\", \"comparison\": \"equals\", \"value\": \"name\", \"formatType\": \"textValue\"}",
-				fieldSample="{\"logic\":\"逻辑运算:and\",\"path\":\"data数据的路径:o.title\",\"comparison\":\"比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo\"," +
-						"\"value\":\"7月\",\"formatType\":\"textValue|numberValue|dateTimeValue|booleanValue\"}")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldValue = "{\"logic\": \"and\", \"path\": \"o.name\", \"comparison\": \"equals\", \"value\": \"name\", \"formatType\": \"textValue\"}", fieldSample = "{\"logic\":\"逻辑运算:and\",\"path\":\"data数据的路径:o.title\",\"comparison\":\"比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo\","
+				+ "\"value\":\"7月\",\"formatType\":\"textValue|numberValue|dateTimeValue|booleanValue\"}")
 		private List<FilterEntry> filterList = new TreeList<>();
 
 		@FieldDescribe("参数")
