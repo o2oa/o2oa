@@ -1,6 +1,7 @@
 package com.x.organization.assemble.express;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.factory.GroupFactory;
 import com.x.organization.assemble.express.factory.IdentityFactory;
@@ -27,6 +29,7 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
 import com.x.organization.core.entity.Unit;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class Business {
 
@@ -364,6 +367,30 @@ public class Business {
 
 	public List<String> expendUnitToPerson(List<String> unitList) throws Exception {
 		return this.person().listPersonDistinguishedNameSorted(expendUnitToPersonId(unitList));
+	}
+
+	public boolean hasAnyRole(EffectivePerson effectivePerson, String... roleFlags) throws Exception {
+		/** 如果不加这个xadmin会报错 */
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		Person person = this.person().pick(effectivePerson.getDistinguishedName());
+		if (null != person) {
+			List<String> groupIds = this.group().listSupNestedWithPerson(person.getId());
+			if (null != person) {
+				List<Role> roles = this.role().pick(Arrays.asList(roleFlags));
+				for (Role o : roles) {
+					if (o.getPersonList().contains(person.getId())) {
+						return true;
+					}
+					if (CollectionUtils.containsAny(o.getGroupList(), groupIds)) {
+						return true;
+					}
+				}
+
+			}
+		}
+		return false;
 	}
 
 }
