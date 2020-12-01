@@ -19,6 +19,7 @@ import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.Business;
@@ -80,7 +81,7 @@ class ActionCreateWithApplicationProcessForce extends BaseAction {
 			if (StringUtils.isEmpty(workId)) {
 				WoId woId = ThisApplication.context().applications()
 						.postQuery(x_processplatform_service_processing.class,
-								"work/process/" + URLEncoder.encode(process.getId(), DefaultCharset.name), wi.getData())
+								Applications.joinQueryUri("work", "process", process.getId()), wi.getData(), null)
 						.getData(WoId.class);
 				workId = woId.getId();
 			}
@@ -360,21 +361,22 @@ class ActionCreateWithApplicationProcessForce extends BaseAction {
 				return ObjectUtils.compare(o1.getCompletedTime(), o2.getCompletedTime(), true);
 			}
 		});
-		/* 补充召回 */
-		List<WoTaskCompleted> results = new ArrayList<>();
-		for (WoTaskCompleted o : list) {
-			results.add(o);
-			if (o.getProcessingType().equals(ProcessingType.retract)) {
-				WoTaskCompleted retract = new WoTaskCompleted();
-				o.copyTo(retract);
-				retract.setRouteName("撤回");
-				retract.setOpinion("撤回");
-				retract.setStartTime(retract.getRetractTime());
-				retract.setCompletedTime(retract.getRetractTime());
-				results.add(retract);
-			}
-		}
-		wo.setTaskCompletedList(results);
+		wo.setTaskCompletedList(list);
+//		/* 补充召回 */
+//		List<WoTaskCompleted> results = new ArrayList<>();
+//		for (WoTaskCompleted o : list) {
+//			results.add(o);
+//			if (o.getProcessingType().equals(ProcessingType.retract)) {
+//				WoTaskCompleted retract = new WoTaskCompleted();
+//				o.copyTo(retract);
+//				retract.setRouteName("撤回");
+//				retract.setOpinion("撤回");
+//				retract.setStartTime(retract.getRetractTime());
+//				retract.setCompletedTime(retract.getRetractTime());
+//				results.add(retract);
+//			}
+//		}
+//		wo.setTaskCompletedList(results);
 	}
 
 }
