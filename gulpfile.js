@@ -21,6 +21,7 @@ var assetRev = require('gulp-tm-asset-rev');
 const os = require('os');
 var through2 = require('through2');
 var path = require('path');
+var sourceMap = require('gulp-sourcemaps');
 
 //var downloadHost = "download.o2oa.net";
 // var downloadHost = "release.o2oa.net";
@@ -414,10 +415,13 @@ function build_concat_o2(){
     ];
     var dest = 'target/o2server/servers/webServer/o2_core/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('o2.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('o2.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest))
 }
 function build_concat_desktop(){
@@ -441,10 +445,13 @@ function build_concat_desktop(){
     ];
     var dest = 'target/o2server/servers/webServer/o2_core/o2/xDesktop/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('$all.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('$all.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest))
 }
 function build_concat_xform(){
@@ -471,10 +478,13 @@ function build_concat_xform(){
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('$all.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('$all.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest))
 }
 
@@ -489,10 +499,13 @@ function build_bundle(){
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('bundle.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('bundle.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest))
 }
 
@@ -642,10 +655,13 @@ function build_concat_basework_body() {
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('base_work.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('base_work.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest));
 }
 
@@ -743,10 +759,13 @@ function build_concat_baseportal_body() {
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
     return gulp.src(src)
+        .pipe(sourceMap.init())
         .pipe(concat('base_portal.js'))
         .pipe(gulp.dest(dest))
+        .pipe(concat('base_portal.min.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
         .pipe(gulp.dest(dest));
 }
 
