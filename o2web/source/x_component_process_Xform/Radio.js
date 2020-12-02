@@ -360,6 +360,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
 					inputs[i].set("checked", false);
 				}
 			}
+            this.validationMode();
 		}
         this.fireEvent("setData");
 	},
