@@ -968,16 +968,8 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
             //     }
             // }else{
 
-                this.selector.orgAction.listIdentityWithUnit(function(idJson){
-                    idJson.data.each(function(idSubData){
-                        if( !this.selector.isExcluded( idSubData ) ) {
-                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-                            this.selector.items.push(item);
-                            if(this.subItems)this.subItems.push( item );
-                        }
-                    }.bind(this));
-
-                    if( this.selector.options.expandSubEnable ){
+                var loadSubUnit = function () {
+                    if( this.selector.options.expandSubEnable && !this.categoryLoaded ){
                         this.selector.orgAction.listSubUnitDirect(function(json){
                             json.data.each(function(subData){
                                 if( !this.selector.isExcluded( subData ) ) {
@@ -992,7 +984,23 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                         this.loaded = true;
                         if (callback) callback( true );
                     }
-                }.bind(this), null, this.data.distinguishedName);
+                }.bind(this);
+
+                if( !this.itemLoaded ){
+                    this.selector.orgAction.listIdentityWithUnit(function(idJson){
+                        idJson.data.each(function(idSubData){
+                            if( !this.selector.isExcluded( idSubData ) ) {
+                                var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+                                this.selector.items.push(item);
+                                if(this.subItems)this.subItems.push( item );
+                            }
+                        }.bind(this));
+                        loadSubUnit();
+                    }.bind(this), null, this.data.distinguishedName);
+                }else{
+                    loadSubUnit();
+                }
+
             // }
         }else{
             if (callback) callback( );
