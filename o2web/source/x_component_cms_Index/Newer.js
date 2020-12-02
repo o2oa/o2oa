@@ -503,7 +503,24 @@ MWF.xApplication.cms.Index.Newer = new Class({
             };
             if( typeOf(this.options.autoSave) == "boolean" )options.autoSave = this.options.autoSave;
             if( typeOf(this.options.saveOnClose) == "boolean" )options.saveOnClose = this.options.saveOnClose;
-            this.app.desktop.openApplication(el, "cms.Document", options);
+            if( layout.inBrowser ){
+                debugger;
+                if( !window.o2RefreshCMSView ){
+                    window.o2CreateCMSDocumentCount = ( window.o2CreateCMSDocumentCount || 0 ) + 1;
+                    window.o2RefreshCMSView = function () {
+                        try{
+                            if(_self.view && _self.view.reload )_self.view.reload();
+                        }catch (e) {}
+                        if( window.o2CreateCMSDocumentCount )window.o2CreateCMSDocumentCount--;
+                        if( !window.o2CreateCMSDocumentCount || window.o2CreateCMSDocumentCount<0 ){
+                            window.o2RefreshCMSView = null;
+                        }
+                    }.bind(this)
+                }
+                this.app.desktop.openApplication(el, "cms.Document", options);
+            }else{
+                this.app.desktop.openApplication(el, "cms.Document", options);
+            }
         }
     },
     _createProcessDocument:function(e){
