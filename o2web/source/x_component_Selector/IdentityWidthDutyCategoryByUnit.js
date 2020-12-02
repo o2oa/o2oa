@@ -568,19 +568,22 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
                 this.itemLoaded = true;
             }
 
-            if (this.data.unitList && this.data.unitList.length) {
-                this.data.unitList.sort(function (a, b) {
-                    if( a.orderNumber === 0 )a.orderNumber = -1;
-                    if( b.orderNumber === 0 )b.orderNumber = -1;
-                    return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
-                });
-                this.data.unitList.each(function (subData) {
-                    // if( !this.selector.isExcluded( subData ) ) {
-                    var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level + 1, this);
-                    this.subCategorys.push(category);
-                    category.loadSub()
-                    // }
-                }.bind(this));
+            if( !this.categoryLoaded ){
+                if (this.data.unitList && this.data.unitList.length) {
+                    this.data.unitList.sort(function (a, b) {
+                        if( a.orderNumber === 0 )a.orderNumber = -1;
+                        if( b.orderNumber === 0 )b.orderNumber = -1;
+                        return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
+                    });
+                    this.data.unitList.each(function (subData) {
+                        // if( !this.selector.isExcluded( subData ) ) {
+                        var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level + 1, this);
+                        this.subCategorys.push(category);
+                        category.loadSub()
+                        // }
+                    }.bind(this));
+                }
+                this.categoryLoaded = true;
             }
 
             this.loaded = true;
