@@ -52,6 +52,7 @@ public class Main {
 	private static final String MANIFEST_FILENAME = "manifest.cfg";
 	private static final String GITIGNORE_FILENAME = ".gitignore";
 	private static final LinkedBlockingQueue<String> commandQueue = new LinkedBlockingQueue<>();
+	private static NodeAgent nodeAgent;
 
 	private static final Thread swapCommandThread = new Thread(() -> {
 		// 文件中的命令输出到解析器
@@ -122,7 +123,7 @@ public class Main {
 		swapCommandThread.start();
 		consoleCommandThread.start();
 		if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEnable())) {
-			NodeAgent nodeAgent = new NodeAgent();
+			nodeAgent = new NodeAgent();
 			nodeAgent.setCommandQueue(commandQueue);
 			nodeAgent.setDaemon(true);
 			nodeAgent.start();
@@ -233,6 +234,12 @@ public class Main {
 			matcher = CommandFactory.exit_pattern.matcher(cmd);
 			if (matcher.find()) {
 				exit();
+			}
+
+			matcher = CommandFactory.restart_pattern.matcher(cmd);
+			if (matcher.find()) {
+				restart();
+				continue;
 			}
 			System.out.println("unknown command:" + cmd);
 		}
@@ -421,6 +428,69 @@ public class Main {
 		System.exit(0);
 	}
 
+	private static void restart() {
+		try {
+			System.out.println("ready to restart...");
+			stopAll();
+			stopAllThreads();
+			String osName = System.getProperty("os.name");
+			System.out.println("当前操作系统是："+osName);
+			File file = new File(Config.base(), "start_linux.sh");
+			if (osName.toLowerCase().startsWith("mac")){
+				file = new File(Config.base(), "start_macos.sh");
+			}else if (osName.toLowerCase().startsWith("windows")) {
+				file = new File(Config.base(), "start_windows.bat");
+			}else if(!file.exists()) {
+				file  = new File("start_aix.sh");
+				if(!file.exists()) {
+					file  = new File("start_arm.sh");
+					if(!file.exists()) {
+						file  = new File("start_mips.sh");
+						if(!file.exists()) {
+							file  = new File("start_raspi.sh");
+						}
+					}
+				}
+			}
+			if(file.exists()) {
+				Process ps = Runtime.getRuntime().exec(file.getAbsolutePath());
+				System.out.println("server has start in new process...wait to exit!");
+				Thread.sleep(1000);
+			}else{
+				System.out.println("not support restart in current operating system!");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			System.exit(0);
+		}
+	}
+
+	private static void stopAllThreads(){
+		if(nodeAgent!=null){
+			try {
+				nodeAgent.interrupt();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(swapCommandThread!=null){
+			try {
+				swapCommandThread.interrupt();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(consoleCommandThread!=null){
+			try {
+				consoleCommandThread.interrupt();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
 	private static void stopAll() {
 		try {
 			WebServer webServer = Config.currentNode().getWeb();
@@ -466,7 +536,7 @@ public class Main {
 
 	/**
 	 * 检查store目录下的war文件是否全部在manifest.cfg中
-	 * 
+	 *
 	 * @param base o2server的根目录
 	 */
 	private static void scanWar(String base) throws Exception {
