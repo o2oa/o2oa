@@ -539,7 +539,7 @@
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-server</artifactId>
-				<version>9.4.20.v20190813</version>
+				<version>9.4.35.v20201120</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
