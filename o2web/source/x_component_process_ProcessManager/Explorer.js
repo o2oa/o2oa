@@ -177,13 +177,10 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         }.bind(this));
     },
     setContentSize: function(){
-        debugger;
         if (this.elementContentListNode){
             var toolbarSize = (this.toolbarNode) ? this.toolbarNode.getSize() : {"x": 0, "y": 0};
             var nodeSize = (this.node) ? this.node.getSize() : {"x": 0, "y": 0};
             var categorySize = this.categoryElementNode ? this.categoryElementNode.getSize() : {"x": 0, "y": 0};
-
-            console.log("categorySize.y="+categorySize.y);
 
             var pt = this.elementContentNode.getStyle("padding-top").toFloat();
             var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
