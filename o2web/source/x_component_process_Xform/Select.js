@@ -401,6 +401,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 					}
 				}
 			});
+			this.validationMode();
 		}
 		this.fireEvent("setData", [data]);
 	}
