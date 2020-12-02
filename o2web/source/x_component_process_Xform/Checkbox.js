@@ -306,6 +306,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 					}
 				}
 			});
+            this.validationMode();
 		}
         this.fireEvent("setData");
 	},
