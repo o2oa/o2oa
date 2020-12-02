@@ -251,6 +251,10 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
                     }.bind(this));
                 }
             }
+            if( !this.isSetContentSize ){
+                this.setContentSize();
+                this.isSetContentSize = true;
+            }
         }.bind(this));
     },
     deleteItems: function(){
