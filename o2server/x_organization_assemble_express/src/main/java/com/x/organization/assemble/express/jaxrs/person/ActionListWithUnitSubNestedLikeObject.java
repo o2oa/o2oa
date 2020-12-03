@@ -82,17 +82,20 @@ class ActionListWithUnitSubNestedLikeObject extends BaseAction {
 
 	private List<Wo> list(Business business, Wi wi, List<Identity> identityList) throws Exception {
 		List<Wo> wos = new ArrayList<>();
-		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		Predicate p = cb.conjunction();
+		if(StringUtils.isNotBlank(wi.getKey())) {
+			String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
+			p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
+			p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		}
 		Map<String,Integer> map = new HashMap<>();
 		if(ListTools.isNotEmpty(identityList)) {
 			for(Identity identity : identityList){
@@ -117,17 +120,19 @@ class ActionListWithUnitSubNestedLikeObject extends BaseAction {
 	}
 
 	private List<Identity> people(Business business, Wi wi) throws Exception {
-		List<Unit> os = business.unit().pick(wi.getUnitList());
-		List<String> unitIds = new ArrayList<>();
-		for (Unit o : os) {
-			unitIds.add(o.getId());
-			unitIds.addAll(business.unit().listSubNested(o.getId()));
-		}
-		unitIds = ListTools.trim(unitIds, true, true);
 		List<Identity> list = new ArrayList<>();
-		if(ListTools.isNotEmpty(unitIds)) {
-			list = business.entityManagerContainer().fetchIn(Identity.class,
-					ListTools.toList(Identity.id_FIELDNAME, Identity.person_FIELDNAME, Identity.orderNumber_FIELDNAME), Identity.unit_FIELDNAME, unitIds);
+		if(ListTools.isNotEmpty(wi.getUnitList())) {
+			List<Unit> os = business.unit().pick(wi.getUnitList());
+			List<String> unitIds = new ArrayList<>();
+			for (Unit o : os) {
+				unitIds.add(o.getId());
+				unitIds.addAll(business.unit().listSubNested(o.getId()));
+			}
+			unitIds = ListTools.trim(unitIds, true, true);
+			if (ListTools.isNotEmpty(unitIds)) {
+				list = business.entityManagerContainer().fetchIn(Identity.class,
+						ListTools.toList(Identity.id_FIELDNAME, Identity.person_FIELDNAME, Identity.orderNumber_FIELDNAME), Identity.unit_FIELDNAME, unitIds);
+			}
 		}
 		/*EntityManager em = business.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
