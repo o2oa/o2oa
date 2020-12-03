@@ -67,7 +67,7 @@ public class ExternalDataSource extends ConfigObject {
 	private List<String> excludes;
 	@FieldDescribe("默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完成的配置为DefaultLevel=WARN, Tool=TRACE, Enhance=TRACE, METADATA=TRACE, Runtime=TRACE, Query=TRACE, DataCache=TRACE, JDBC=TRACE, SQL=TRACE")
 	private String logLevel = DEFAULT_LOGLEVEL;
-	@FieldDescribe("事务隔离级别:default,none,read-committed,read-uncommitted,repeatable-read,serializable.默认使用default(数据库设置的事务级别).")
+	@FieldDescribe("事务隔离级别:default,none,read-uncommitted,read-committed,repeatable-read,serializable.默认使用default(数据库设置的事务级别).")
 	private String transactionIsolation;
 	@FieldDescribe("测试入池连接,默认false.")
 	private Boolean testConnectionOnCheckin;
@@ -88,7 +88,7 @@ public class ExternalDataSource extends ConfigObject {
 
 	public static final String DEFAULT_LOGLEVEL = "WARN";
 
-	public static final String DEFAULT_TRANSACTIONISOLATION = "default";
+	public static final String DEFAULT_TRANSACTIONISOLATION = "read-committed";
 
 	public static final Boolean DEFAULT_TESTCONNECTIONONCHECKIN = false;
 
