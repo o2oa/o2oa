@@ -1240,7 +1240,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
     },
     compareObjects: function(o, p, deep){
-        debugger;
         if( !deep )deep = 0;
         if( deep > 15 )return false; //最大层数，避免相互嵌套
         var type1 = typeOf( o ), type2 = typeOf( p );
