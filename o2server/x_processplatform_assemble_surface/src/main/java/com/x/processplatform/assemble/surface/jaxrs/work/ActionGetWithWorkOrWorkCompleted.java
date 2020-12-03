@@ -64,12 +64,14 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 			wo.setReadList(readFuture.get(10, TimeUnit.SECONDS));
 			this.setCurrentReadIndex(effectivePerson, wo);
 			this.setCurrentTaskIndex(effectivePerson, wo);
+			wo.setWork(gson.toJsonTree(work));
 		} else if (null != workCompleted) {
 			CompletableFuture<Data> dataFuture = this.dataFuture(workCompleted);
 			CompletableFuture<List<WoRead>> readFuture = this.readFuture(workCompleted.getJob());
 			wo.setData(dataFuture.get(10, TimeUnit.SECONDS));
 			wo.setReadList(readFuture.get(10, TimeUnit.SECONDS));
 			this.setCurrentReadIndex(effectivePerson, wo);
+			wo.setWork(gson.toJsonTree(workCompleted));
 		}
 
 		if (BooleanUtils.isFalse(checkControlFuture.get(10, TimeUnit.SECONDS))) {

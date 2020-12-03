@@ -479,7 +479,19 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
                 }
                 this.options.saveOnClose = false;
             }
-            this.app.close();
+            debugger;
+            if( layout.inBrowser ){
+                try{
+                    if( window.opener && window.opener.o2RefreshCMSView ){
+                        window.opener.o2RefreshCMSView();
+                    }
+                }catch (e) {}
+                window.setTimeout(function () {
+                    this.app.close();
+                }.bind(this), 1500)
+            }else{
+                this.app.close();
+            }
         }.bind(this));
 
         //}.bind(this))
