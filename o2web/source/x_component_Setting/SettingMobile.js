@@ -82,6 +82,14 @@ MWF.xApplication.Setting.MobileModuleDocument = new Class({
             "options": options
         });
 
+        //移动端简易模式
+        var simpleModeTitle = this.lp.mobile_module_simple_mode;
+        var simpleModeInfor = this.lp.mobile_module_simple_mode_infor;
+        new MWF.xApplication.Setting.Document.Check(this.explorer, this.node, {
+            "lp": {"title": simpleModeTitle, "infor": simpleModeInfor},
+            "data": {"key": "nativeData", "valueKey": "simpleMode", "notEmpty": false },
+            "value": this.explorer.nativeData.simpleMode
+        });
 
         this.explorer.nativeData.nativeAppList.each(function(app, i){
             var title = this.lp.mobile_module.replace("{name}", app.name);
