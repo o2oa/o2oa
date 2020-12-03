@@ -307,11 +307,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         // }else{
         if (!!data && o2.typeOf(data.then)=="function"){
             var p = o2.promiseAll(data).then(function(v){
-                this.__setValue(v);
-                if (this.node.getFirst() && !this.readonly && !this.json.isReadonly) {
-                    this.checkDescription();
-                    this.validationMode();
-                }
+                this.__setData(v);
+                // if (this.node.getFirst() && !this.readonly && !this.json.isReadonly) {
+                //     this.checkDescription();
+                //     this.validationMode();
+                // }
             }.bind(this), function(){});
             this.moduleValueAG = p;
             p.then(function(){
@@ -321,11 +321,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             }.bind(this));
         }else{
             this.moduleValueAG = null;
-            this.__setValue(data);
-            if (this.node.getFirst() && !this.readonly && !this.json.isReadonly) {
-                this.checkDescription();
-                this.validationMode();
-            }
+            this.__setData(data);
+            // if (this.node.getFirst() && !this.readonly && !this.json.isReadonly) {
+            //     this.checkDescription();
+            //     this.validationMode();
+            // }
         }
             //this.__setData(data);
         //}
