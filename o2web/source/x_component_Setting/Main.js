@@ -354,7 +354,7 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
             checkData();
         }.bind(this));
         this.actions.mobile_currentStyle(function(json){
-            this.nativeData = {"indexType": json.data.indexType, "indexPortal": json.data.indexPortal, "nativeAppList": Array.clone(json.data.nativeAppList)};
+            this.nativeData = {"indexType": json.data.indexType, "indexPortal": json.data.indexPortal, "simpleMode": json.data.simpleMode, "nativeAppList": Array.clone(json.data.nativeAppList)};
             this.imagesData = {"images": Array.clone(json.data.images)};
             //this.indexData = {"indexType": json.data.indexType, "indexId": json.data.indexId};
             this.portalData = {"portalList": Array.clone(json.data.portalList)};
