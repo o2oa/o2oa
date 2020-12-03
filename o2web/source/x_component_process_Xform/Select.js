@@ -322,16 +322,20 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 		return {"value": value, "text": text};
 	},
     getInputData: function(){
-		var ops = this.node.getElements("option");
-		var value = [];
-		ops.each(function(op){
-			if (op.selected){
-				var v = op.get("value");
-				if (v) value.push(v);
-			}
-		});
-        if (!value.length) return null;
-		return (value.length==1) ? value[0] : value;
+		if( this.readonly || this.json.isReadonly ){
+			return this._getBusinessData();
+		}else{
+			var ops = this.node.getElements("option");
+			var value = [];
+			ops.each(function(op){
+				if (op.selected){
+					var v = op.get("value");
+					if (v) value.push(v);
+				}
+			});
+			if (!value.length) return null;
+			return (value.length==1) ? value[0] : value;
+		}
 	},
     resetData: function(){
 
