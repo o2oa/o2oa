@@ -873,7 +873,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         }else if (values.length || oldValues.length) {
             change = true;
         }
-        // if (change) this.fireEvent("change");
+        if (change) this.fireEvent("change");
     },
     setData: function(value){
         if (!value) return false;
