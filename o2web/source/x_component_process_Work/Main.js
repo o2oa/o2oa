@@ -685,8 +685,8 @@ MWF.xApplication.process.Work.Main = new Class({
             this.formNode.setStyles(this.css.formNode);
             var uri = window.location.href;
             //var cl = (uri.indexOf("$all")!=-1) ? "$all" : "Form";
-           // var cl = "$all";
-           // MWF.xDesktop.requireApp("process.Xform", cl, function(){
+            var cl = "$all";
+            MWF.xDesktop.requireApp("process.Xform", cl, function(){
             //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.form, {});
                 this.appForm.businessData = {
@@ -735,7 +735,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     }
                     this.fireEvent("postLoadForm");
                 }.bind(this));
-            //}.bind(this));
+            }.bind(this));
         }
     },
 
