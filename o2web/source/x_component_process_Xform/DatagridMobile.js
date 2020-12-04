@@ -1382,7 +1382,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     var moduleTd = td.retrieve("module");
                     if (moduleTd){
                         this.form.modules.erase(moduleTd);
-                        delete moduleTd;
+                        moduleTd = null;
                     }
                 }
                 var ths = table.getElements("th");
@@ -1391,7 +1391,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     var moduleTh = th.retrieve("module");
                     if (moduleTh){
                         this.form.modules.erase(moduleTh);
-                        delete moduleTh;
+                        moduleTh = null;
                     }
                 }
             }

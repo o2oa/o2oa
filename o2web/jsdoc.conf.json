@@ -1,8 +1,16 @@
 {
+    "opts": {
+        "encoding": "utf8",               // same as -e utf8
+        "destination": "./o2web/jsdoc/",          // same as -d ./out/
+        "recurse": true                  // same as -r
+//        "template": "templates/default",  // same as -t templates/default
+//        "tutorials": "path/to/tutorials" // same as -u path/to/tutorials
+    },
     "tags": {
         "allowUnknownTags": true
     },
     "source": {
+        "include": ["./o2web/source/x_component_process_Xform"],
         "includePattern": ".+\\.js(doc|x)?$",
         "excludePattern": "(^|\\/|\\\\)_"
     },
@@ -18,3 +26,4 @@
         }
     }
 }
+//执行命令: jsdoc -c ./o2web/jsdoc.conf.json
