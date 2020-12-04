@@ -46,7 +46,7 @@ class ActionEdit extends BaseAction {
 			Unit unit = business.unit().pick(flag);
 			Unit oldUnit = unit;
 			boolean checkFlag = false;
-			
+
 			if (null == unit) {
 				throw new ExceptionUnitNotExist(flag);
 			}
@@ -62,15 +62,16 @@ class ActionEdit extends BaseAction {
 			unit = emc.find(unit.getId(), Unit.class);
 			Gson gsontool = new Gson();
 			String strOriginalUnit = gsontool.toJson(unit);
-			
-			unit.setControllerList(ListTools.extractProperty(business.person().pick(ListTools.trim(unit.getControllerList(), true, true)),
+
+			unit.setControllerList(ListTools.extractProperty(
+					business.person().pick(ListTools.trim(unit.getControllerList(), true, true)),
 					JpaObject.id_FIELDNAME, String.class, true, true));
 			Wi.copier.copy(wi, unit);
 			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
 			if (this.duplicateUniqueWhenNotEmpty(business, unit)) {
 				throw new ExceptionDuplicateUnique(unit.getName(), unit.getUnique());
 			}
-			if (this.checkNameInvalid(business,unit)){
+			if (this.checkNameInvalid(business, unit)) {
 				throw new ExceptionNameInvalid(unit.getName());
 			}
 			/** 判断同一级别下name不重复 */
@@ -78,23 +79,23 @@ class ActionEdit extends BaseAction {
 				throw new ExceptionDuplicateName(unit.getName());
 			}
 			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织的组织级别 */
-			checkFlag = this.checkUnitTypeName(oldUnit,unit);
-			if(checkFlag){
+			checkFlag = this.checkUnitTypeName(oldUnit, unit);
+			if (checkFlag) {
 				business.unit().adjustInherit(unit);
 			}
 			emc.check(unit, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Unit.class);
-			
+
 			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织成员的身份（组织名称，组织级别名称） */
-			if(checkFlag){
+			if (checkFlag) {
 				this.updateIdentityUnitNameAndUnitLevelName(effectivePerson, flag, jsonElement);
 			}
 
-			/**创建 组织变更org消息通信 */
-			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
-			orgMessageFactory.createMessageCommunicate("modfiy", "unit",strOriginalUnit, unit, effectivePerson);
-			
+			/** 创建 组织变更org消息通信 */
+			OrgMessageFactory orgMessageFactory = new OrgMessageFactory();
+			orgMessageFactory.createMessageCommunicate("modfiy", "unit", strOriginalUnit, unit, effectivePerson);
+
 			Wo wo = new Wo();
 			wo.setId(unit.getId());
 			result.setData(wo);
@@ -111,18 +112,23 @@ class ActionEdit extends BaseAction {
 
 		private static final long serialVersionUID = -7527954993386512109L;
 
-		//		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
-		//				ListTools.toList(JpaObject.FieldsUnmodify, Unit.superior_FIELDNAME, Unit.pinyin_FIELDNAME,
-		//						Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME, Unit.levelName_FIELDNAME,
-		//						Unit.inheritedControllerList_FIELDNAME));
+		// static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class,
+		// Unit.class, null,
+		// ListTools.toList(JpaObject.FieldsUnmodify, Unit.superior_FIELDNAME,
+		// Unit.pinyin_FIELDNAME,
+		// Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME, Unit.levelName_FIELDNAME,
+		// Unit.inheritedControllerList_FIELDNAME));
+//		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
+//				ListTools.toList(JpaObject.FieldsUnmodify, Unit.pinyin_FIELDNAME, Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME,
+//						Unit.levelName_FIELDNAME, Unit.inheritedControllerList_FIELDNAME));
 		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, Unit.pinyin_FIELDNAME, Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME,
-						Unit.levelName_FIELDNAME, Unit.inheritedControllerList_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsUnmodify, Unit.pinyin_FIELDNAME, Unit.pinyinInitial_FIELDNAME,
+						Unit.level_FIELDNAME, Unit.levelName_FIELDNAME));
 	}
 
-	//根据组织标志列出身份列表
+	// 根据组织标志列出身份列表
 	private List<Identity> listIdentityByUnitFlag(Business business, Unit unit) throws Exception {
-		//Unit unit = business.unit().pick(unitFlag);
+		// Unit unit = business.unit().pick(unitFlag);
 		if (null == unit.getId() || StringUtils.isEmpty(unit.getId()) || null == unit) {
 			throw new ExceptionUnitNotExist(unit.getId());
 		}
@@ -135,9 +141,9 @@ class ActionEdit extends BaseAction {
 		return os;
 	}
 
-	//列出所有递归下级组织（包含当前组织）
+	// 列出所有递归下级组织（包含当前组织）
 	private List<Unit> listUnit(Business business, String flag) throws Exception {
-		//Unit unit = business.unit().pick(flag);
+		// Unit unit = business.unit().pick(flag);
 
 		EntityManager em = business.entityManagerContainer().get(Unit.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -158,17 +164,18 @@ class ActionEdit extends BaseAction {
 			throw new ExceptionUnitNotExist(flag);
 		}
 
-		//所有下级组织
+		// 所有下级组织
 		List<Unit> os = business.unit().listSubNestedObject(unit);
 
-		//把当前组织加入到os
+		// 把当前组织加入到os
 		List<Unit> _currentUnitSingleArray = new ArrayList<Unit>();
 		_currentUnitSingleArray.add(unit);
 		os = ListTools.add(_currentUnitSingleArray, true, true, os);
 		return os;
 	}
 
-	void updateIdentityUnitNameAndUnitLevelName(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
+	void updateIdentityUnitNameAndUnitLevelName(EffectivePerson effectivePerson, String flag, JsonElement jsonElement)
+			throws Exception {
 		CacheManager.notify(Unit.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -185,7 +192,7 @@ class ActionEdit extends BaseAction {
 			}
 			/*
 			 * 同时更新unit下的所有身份的UnitLevelName，UnitName
-			 * */
+			 */
 			List<Unit> unitList = this.listUnit(business, flag);
 
 			for (Unit u : unitList) {
@@ -209,17 +216,16 @@ class ActionEdit extends BaseAction {
 
 		}
 	}
-	
+
 	private boolean checkUnitTypeName(Unit oldUnit, Unit unit) throws Exception {
 		List<String> oldUnitType = oldUnit.getTypeList();
 		List<String> unitType = unit.getTypeList();
-		//判断两个list是否相同
-		if (oldUnitType.retainAll(unitType) || (!StringUtils.equals(oldUnit.getName(), unit.getName())) || (!StringUtils.equals(oldUnit.getSuperior(), unit.getSuperior()))) {
+		// 判断两个list是否相同
+		if (oldUnitType.retainAll(unitType) || (!StringUtils.equals(oldUnit.getName(), unit.getName()))
+				|| (!StringUtils.equals(oldUnit.getSuperior(), unit.getSuperior()))) {
 			return true;
 		}
 		return false;
 	}
-	
-	
 
 }
