@@ -61,7 +61,7 @@ public class Custom extends SliceJpaObject {
 
 	public static final String person_FIELDNAME = "person";
 	@FieldDescribe("属性所属个人,不可为空.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + person_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String person;
