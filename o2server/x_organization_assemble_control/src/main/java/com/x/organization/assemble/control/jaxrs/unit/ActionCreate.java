@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
-	
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
@@ -55,7 +55,7 @@ class ActionCreate extends BaseAction {
 			if (this.duplicateUniqueWhenNotEmpty(business, unit)) {
 				throw new ExceptionDuplicateUnique(unit.getName(), unit.getUnique());
 			}
-			if (this.checkNameInvalid(business,unit)){
+			if (this.checkNameInvalid(business, unit)) {
 				throw new ExceptionNameInvalid(unit.getName());
 			}
 			/** 判断同一级别下name不重复 */
@@ -64,14 +64,14 @@ class ActionCreate extends BaseAction {
 			}
 			emc.beginTransaction(Unit.class);
 			business.unit().adjustInherit(unit);
-			emc.persist(unit,CheckPersistType.all);
+			emc.persist(unit, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Unit.class);
-			
-			/**创建 组织变更org消息通信 */
-			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
+
+			/** 创建 组织变更org消息通信 */
+			OrgMessageFactory orgMessageFactory = new OrgMessageFactory();
 			orgMessageFactory.createMessageCommunicate("add", "unit", unit, effectivePerson);
-			
+
 			Wo wo = new Wo();
 			wo.setId(unit.getId());
 			result.setData(wo);
@@ -86,11 +86,14 @@ class ActionCreate extends BaseAction {
 
 		private static final long serialVersionUID = -6314932919066148113L;
 
+//		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
+//				ListTools.toList(JpaObject.FieldsUnmodify, Unit.pinyin_FIELDNAME,
+//						Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME, Unit.levelName_FIELDNAME,
+//						Unit.inheritedControllerList_FIELDNAME));
+
 		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, Unit.pinyin_FIELDNAME,
-						Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME, Unit.levelName_FIELDNAME,
-						Unit.inheritedControllerList_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsUnmodify, Unit.pinyin_FIELDNAME, Unit.pinyinInitial_FIELDNAME,
+						Unit.level_FIELDNAME, Unit.levelName_FIELDNAME));
 	}
-	
 
 }
