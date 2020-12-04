@@ -153,7 +153,7 @@ class ActionDelete extends BaseAction {
 		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		for (Unit o : os) {
 			o.getControllerList().remove(person.getId());
-			o.getInheritedControllerList().remove(person.getId());
+			//o.getInheritedControllerList().remove(person.getId());
 		}
 	}
 
