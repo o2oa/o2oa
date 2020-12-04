@@ -1,14 +1,10 @@
 package com.x.server.console;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Method;
+import java.net.Socket;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.MappedByteBuffer;
@@ -19,12 +15,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.Crypto;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -453,11 +449,33 @@ public class Main {
 				}
 			}
 			if(file.exists()) {
+                System.out.println("server will start in new process!");
 				Process ps = Runtime.getRuntime().exec(file.getAbsolutePath());
-				System.out.println("server has start in new process...wait to exit!");
 				Thread.sleep(1000);
+				if(!Config.currentNode().autoStart()) {
+					for (int i = 0; i < 5; i++) {
+						try (Socket socket = new Socket(Config.node(), Config.currentNode().nodeAgentPort())) {
+							socket.setKeepAlive(true);
+							socket.setSoTimeout(2000);
+							try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+								 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
+								Map<String, Object> commandObject = new HashMap<>();
+								commandObject.put("command", "command:start");
+								commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+								dos.writeUTF(XGsonBuilder.toJson(commandObject));
+								dos.flush();
+								break;
+							}
+						} catch (Exception ex) {
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+							}
+						}
+					}
+				}
 			}else{
-				System.out.println("not support restart in current operating system!");
+				System.out.println("not support restart in current operating system!start server failure!");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -469,23 +487,22 @@ public class Main {
 	private static void stopAllThreads(){
 		if(nodeAgent!=null){
 			try {
+				nodeAgent.stopAgent();
 				nodeAgent.interrupt();
+				nodeAgent = null;
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		if(swapCommandThread!=null){
 			try {
 				swapCommandThread.interrupt();
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		if(consoleCommandThread!=null){
 			try {
 				consoleCommandThread.interrupt();
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 
