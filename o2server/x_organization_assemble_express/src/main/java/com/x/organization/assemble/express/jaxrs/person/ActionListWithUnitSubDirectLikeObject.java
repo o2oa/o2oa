@@ -1,8 +1,6 @@
 package com.x.organization.assemble.express.jaxrs.person;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -82,38 +80,62 @@ class ActionListWithUnitSubDirectLikeObject extends BaseAction {
 
 	}
 
-	private List<Wo> list(Business business, Wi wi, List<String> ids) throws Exception {
+	private List<Wo> list(Business business, Wi wi, List<Identity> identityList) throws Exception {
 		List<Wo> wos = new ArrayList<>();
-		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.and(p, cb.isMember(root.get(Person_.id), cb.literal(ids)));
+		Predicate p = cb.conjunction();
+		if(StringUtils.isNotBlank(wi.getKey())) {
+			String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
+			p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
+			p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		}
+		Map<String,Integer> map = new HashMap<>();
+		if(ListTools.isNotEmpty(identityList)) {
+			for(Identity identity : identityList){
+				map.put(identity.getPerson(), identity.getOrderNumber());
+			}
+			p = cb.and(p, cb.isMember(root.get(Person_.id), cb.literal(map.keySet())));
+		}
 		List<String> list = em.createQuery(cq.select(root.get(Person_.id)).where(p))
 				.getResultList().stream().distinct().collect(Collectors.toList());
 		for (Person o : business.person().pick(list)) {
+			if(!map.isEmpty()){
+				o.setOrderNumber(map.get(o.getId()));
+			}
 			wos.add(this.convert(business, o, Wo.class));
 		}
+		wos = wos.stream()
+				.sorted(Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
+						.thenComparing(Comparator
+								.comparing(Wo::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
+				.collect(Collectors.toList());
 		return wos;
 	}
 
-	private List<String> people(Business business, Wi wi) throws Exception {
-		List<Unit> os = business.unit().pick(wi.getUnitList());
-		List<String> unitIds = ListTools.extractField(os, Unit.id_FIELDNAME, String.class, true, true);
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
+	private List<Identity> people(Business business, Wi wi) throws Exception {
+		List<Identity> list = new ArrayList<>();
+		if(ListTools.isNotEmpty(wi.getUnitList())) {
+			List<Unit> os = business.unit().pick(wi.getUnitList());
+			List<String> unitIds = ListTools.extractField(os, Unit.id_FIELDNAME, String.class, true, true);
+			if (ListTools.isNotEmpty(unitIds)) {
+				list = business.entityManagerContainer().fetchIn(Identity.class,
+						ListTools.toList(Identity.id_FIELDNAME, Identity.person_FIELDNAME, Identity.orderNumber_FIELDNAME), Identity.unit_FIELDNAME, unitIds);
+			}
+		}
+		/*EntityManager em = business.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = root.get(Identity_.unit).in(unitIds);
 		List<String> list = em.createQuery(cq.select(root.get(Identity_.person)).where(p))
-				.getResultList().stream().distinct().collect(Collectors.toList());
+				.getResultList().stream().distinct().collect(Collectors.toList());*/
 		return list;
 	}
 
