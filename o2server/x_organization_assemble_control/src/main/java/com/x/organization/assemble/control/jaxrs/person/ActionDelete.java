@@ -149,11 +149,11 @@ class ActionDelete extends BaseAction {
 		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 		Root<Unit> root = cq.from(Unit.class);
 		Predicate p = cb.isMember(person.getId(), root.get(Unit_.controllerList));
-		p = cb.or(cb.isMember(person.getId(), root.get(Unit_.inheritedControllerList)));
+		//p = cb.or(cb.isMember(person.getId(), root.get(Unit_.inheritedControllerList)));
 		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		for (Unit o : os) {
 			o.getControllerList().remove(person.getId());
-			o.getInheritedControllerList().remove(person.getId());
+			//o.getInheritedControllerList().remove(person.getId());
 		}
 	}
 
