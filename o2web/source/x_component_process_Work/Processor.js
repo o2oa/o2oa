@@ -2051,7 +2051,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                 if (this.ignoreOldData) {
                     identityOpt.values = this._computeValue() || [];
                 } else {
-                    identityOpt.values = this.getValue();
+                    identityOpt.values = this.getValue() || [];
                 }
                 identityOpt.exclude = exclude;
             }
@@ -2069,7 +2069,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                 if (this.ignoreOldData) {
                     unitOpt.values = this._computeValue() || [];
                 } else {
-                    unitOpt.values = this.getValue();
+                    unitOpt.values = this.getValue() || [];
                 }
                 unitOpt.exclude = exclude;
             }
@@ -2355,7 +2355,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
         resetSelectorData: function () {
             if (this.selector && this.selector.selector) {
                 this.selector.selector.emptySelectedItems();
-                this.selector.selector.options.values = this.getValue();
+                this.selector.selector.options.values = this.getValue() || [];
                 this.selector.selector.setSelectedItem();
             }
         },
@@ -2364,7 +2364,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
             this.setData(v || "");
         },
         resetData: function () {
-            var v = this.getValue();
+            var v = this.getValue() || [];
             //this.setData((v) ? v.join(", ") : "");
             this.setData(v);
         },
