@@ -1223,7 +1223,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
         } else if (typeOf(data) === "array") {
             var od = this.getOrigianlPathData(pathList);
-            if (typeOf(od) !== "array" || od.length !== data.length || JSON.stringify(od) !== JSON.stringify(data)) {
+            // if (typeOf(od) !== "array" || od.length !== data.length || JSON.stringify(od) !== JSON.stringify(data)) {
+            if (typeOf(od) !== "array" || od.length !== data.length || !this.compareObjects( od, data ) ) {
                 this.setModifedDataByPathList(data, pathList);
             }
             //}else{
@@ -1237,6 +1238,47 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 this.setModifedDataByPathList(data, pathList);
             }
         }
+    },
+    compareObjects: function(o, p, deep){
+        if( !deep )deep = 0;
+        if( deep > 15 )return false; //最大层数，避免相互嵌套
+        var type1 = typeOf( o ), type2 = typeOf( p );
+        if( type1 !== type2 )return false;
+
+        if( type1 === "object" ){
+            for( var k in o ){
+                if( o[k] === null || o[k] === undefined )delete o[k]
+            }
+            for( var k in p ){
+                if( p[k] === null || p[k] === undefined )delete p[k]
+            }
+        }
+        switch (type1) {
+            case "object":
+            case "array":
+                var i, keysO = Object.keys(o), keysP = Object.keys(p);
+                if (keysO.length !== keysP.length){
+                    return false;
+                }
+                keysO.sort();
+                keysP.sort();
+                for ( i=0; i<keysO.length; i++ ){
+                    var key = keysO[i];
+                    if( type1 === "array" )key = key.toInt();
+                    var valueO = o[key], valueP = p[key];
+                    if( this.compareObjects( valueO, valueP, deep++ ) === false ){
+                        return false;
+                    }
+                }
+                break;
+            case "function":
+               break;
+            default:
+                if  (o!==p){
+                    return false;
+                }
+        }
+        return true;
     },
 
     saveFormData: function (callback, failure, history, data, issubmit, isstart) {
