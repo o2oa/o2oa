@@ -83,6 +83,11 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.subCategorys = []; //直接的分类
         this.subItems = []; //直接的选择项
+
+        if( !this.options.values ){
+            this.options.values = [];
+        }
+
         this._init();
     },
     _init : function(){
