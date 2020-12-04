@@ -33,7 +33,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 						}.getType());
 			}
 			runtime.page = this.adjustPage(page);
-			runtime.size = this.adjustSize(size);
+			runtime.size = this.adjustSize2(size);
 			Set<String> keys = runtime.parameters.keySet();
 			if (keys.contains(Runtime.PARAMETER_PERSON)) {
 				runtime.parameters.put(Runtime.PARAMETER_PERSON, effectivePerson.getDistinguishedName());
@@ -60,5 +60,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 		}
 		return runtime;
+	}
+
+	public Integer adjustSize2(Integer pageSize) {
+		return (pageSize == null || pageSize < 1)
+				? EntityManagerContainer.DEFAULT_PAGESIZE.intValue()
+				: pageSize;
 	}
 }
