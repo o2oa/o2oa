@@ -53,8 +53,8 @@ public class Business {
 
 	public Business(EntityManagerContainer emc) throws Exception {
 		this.emc = emc;
-		this.cacheCategory = new CacheCategory(Group.class, Role.class, Person.class, PersonAttribute.class,
-				Unit.class, UnitDuty.class, UnitAttribute.class, Identity.class);
+		this.cacheCategory = new CacheCategory(Group.class, Role.class, Person.class, PersonAttribute.class, Unit.class,
+				UnitDuty.class, UnitAttribute.class, Identity.class);
 	}
 
 	public EntityManagerContainer entityManagerContainer() {
@@ -128,9 +128,9 @@ public class Business {
 
 	public RoleFactory role() throws ExceptionRoleFactory {
 		if (null == this.role) {
-			try{
+			try {
 				this.role = new RoleFactory(this);
-			} catch (Exception e){
+			} catch (Exception e) {
 				throw new ExceptionRoleFactory(e);
 			}
 		}
@@ -214,8 +214,8 @@ public class Business {
 				return true;
 			}
 		}
-		if (ListTools.isNotEmpty(unit.getInheritedControllerList())) {
-			List<Person> os = this.person().pick(unit.getInheritedControllerList());
+		for (Unit u : unit().pick(unit().listSupNested(unit.getId()))) {
+			List<Person> os = this.person().pick(u.getControllerList());
 			List<String> list = ListTools.extractProperty(os, JpaObject.DISTINGUISHEDNAME, String.class, true, true);
 			if (ListTools.contains(list, effectivePerson.getDistinguishedName())) {
 				return true;

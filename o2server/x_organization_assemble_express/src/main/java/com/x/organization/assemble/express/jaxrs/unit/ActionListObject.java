@@ -34,6 +34,7 @@ import javax.persistence.criteria.Root;
 
 class ActionListObject extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionListObject.class);
+
 	@SuppressWarnings("unchecked")
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
@@ -81,8 +82,11 @@ class ActionListObject extends BaseAction {
 		@FieldDescribe("直接下级身份数量")
 		private Long subDirectIdentityCount = 0L;
 
+//		static WrapCopier<Unit, Wo> copier = WrapCopierFactory.wo(Unit.class, Wo.class, null,
+//				ListTools.toList(JpaObject.FieldsInvisible,Unit.controllerList_FIELDNAME,Unit.inheritedControllerList_FIELDNAME));
+
 		static WrapCopier<Unit, Wo> copier = WrapCopierFactory.wo(Unit.class, Wo.class, null,
-				ListTools.toList(JpaObject.FieldsInvisible,Unit.controllerList_FIELDNAME,Unit.inheritedControllerList_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsInvisible, Unit.controllerList_FIELDNAME));
 
 		public String getMatchKey() {
 			return matchKey;
@@ -114,7 +118,7 @@ class ActionListObject extends BaseAction {
 		List<Wo> wos = new ArrayList<>();
 		for (String str : wi.getUnitList()) {
 			Unit o = business.unit().pick(str);
-			if(o!=null){
+			if (o != null) {
 				Wo wo = Wo.copier.copy(o);
 				wo.setMatchKey(str);
 				if (StringUtils.isNotEmpty(wo.getSuperior())) {
