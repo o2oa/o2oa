@@ -1862,16 +1862,18 @@ if (!window.Promise){
 
     var _promiseAll = function(p){
         if (o2.typeOf(p)=="array"){
-            if (p.some(function(e){ return (o2.typeOf(e.then)=="function") })){
+            if (p.some(function(e){ return (e && o2.typeOf(e.then)=="function") })){
                 return Promise.all(p);
             }else{
-                return { "then": function(s){ s(p); return this;} };
+                //return { "then": function(s){ s(p); return this;} };
+                return new Promise(function(s){s(p); return this;});
             }
         }else{
             if (p && o2.typeOf(p.then)=="function"){
                 return Promise.resolve(p);
             }else{
-                return { "then": function(s){ s(p); return this;} };
+                //return { "then": function(s){ s(p); return this;} };
+                return new Promise(function(s){s(p); return this;});
             }
         }
         // var method = (o2.typeOf(p)=="array") ? "all" : "resolve";
