@@ -358,7 +358,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         this.fireEvent("postSave", [documentData]);
         if (this.officeList) {
             this.officeList.each(function (module) {
-                module.save(history);
+                module.save();
             });
         }
         this.documentAction.saveDocument(documentData, function () {
@@ -460,7 +460,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         if (this.app) if (this.app.fireEvent) this.app.fireEvent("postPublish",[documentData]);
         if (this.officeList) {
             this.officeList.each(function (module) {
-                module.save(history);
+                module.save();
             });
         }
         this.documentAction.publishDocumentComplex(documentData, function (json) {

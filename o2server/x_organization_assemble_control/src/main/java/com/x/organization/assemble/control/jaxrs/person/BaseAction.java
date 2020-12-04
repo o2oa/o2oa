@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -162,12 +163,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 			if (null != person && t.getControllerList().contains(person.getId())) {
 				List<Identity> identities = this.listIdentity(business, t);
 				List<Unit> units = this.listUnit(business, identities);
+				List<Unit> supUnits = new ArrayList<>();
+				for (Unit u : units) {
+					supUnits.addAll(business.unit().listSupNestedObject(u));
+				}
+				units.addAll(supUnits);
 				if (ListTools.isNotEmpty(units)) {
 					allowEdit = false;
 					allowDelete = true;
 					for (Unit o : units) {
-						if (o.getControllerList().contains(person.getId())
-								|| o.getInheritedControllerList().contains(person.getId())) {
+						if (o.getControllerList().contains(person.getId())) {
 							allowEdit = true;
 						} else {
 							allowDelete = false;
