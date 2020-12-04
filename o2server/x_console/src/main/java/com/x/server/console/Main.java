@@ -451,7 +451,7 @@ public class Main {
 			if(file.exists()) {
                 System.out.println("server will start in new process!");
 				Process ps = Runtime.getRuntime().exec(file.getAbsolutePath());
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				if(!Config.currentNode().autoStart()) {
 					for (int i = 0; i < 5; i++) {
 						try (Socket socket = new Socket(Config.node(), Config.currentNode().nodeAgentPort())) {
@@ -485,14 +485,6 @@ public class Main {
 	}
 
 	private static void stopAllThreads(){
-		if(nodeAgent!=null){
-			try {
-				nodeAgent.stopAgent();
-				nodeAgent.interrupt();
-				nodeAgent = null;
-			} catch (Exception e) {
-			}
-		}
 		if(swapCommandThread!=null){
 			try {
 				swapCommandThread.interrupt();
@@ -502,6 +494,18 @@ public class Main {
 		if(consoleCommandThread!=null){
 			try {
 				consoleCommandThread.interrupt();
+			} catch (Exception e) {
+			}
+		}
+		if(nodeAgent!=null){
+			try {
+				nodeAgent.stopAgent();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
+				nodeAgent.interrupt();
+				nodeAgent = null;
 			} catch (Exception e) {
 			}
 		}
