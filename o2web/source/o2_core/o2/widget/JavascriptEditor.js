@@ -251,6 +251,7 @@ o2.widget.JavascriptEditor = new Class({
         var macro = o2.widget.JavascriptEditor.runtimeEnvironment[runtime];
         var o = null;
         if (macro){
+            prefix = ["(", "{", ""];
             code = "try {return "+textPrefix+";}catch(e){return null;}";
             o = macro.exec(code);
         }
@@ -261,8 +262,11 @@ o2.widget.JavascriptEditor = new Class({
             monaco.languages.registerCompletionItemProvider('javascript', {
                 "triggerCharacters": ["."],
                 provideCompletionItems: function (model, position, context, token) {
+                    debugger;
                     var textUntilPosition = model.getValueInRange({ startLineNumber: position.lineNumber, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column });
                     var textPrefix = textUntilPosition.substr(0, textUntilPosition.lastIndexOf("."));
+
+
                     var o = this.getCompletionObject(textPrefix, model.o2Editor.options.runtime);
 
                     var word = model.getWordUntilPosition(position);
