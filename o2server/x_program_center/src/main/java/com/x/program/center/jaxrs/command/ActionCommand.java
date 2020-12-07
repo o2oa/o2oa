@@ -1,6 +1,5 @@
 package com.x.program.center.jaxrs.command;
 
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -11,8 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,32 +27,24 @@ import com.x.base.core.project.tools.Crypto;
 
 /*执行服务器命令*/
 public class ActionCommand extends BaseAction {
-	
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ActionCommand.class);
+
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String ctl = wi.getCtl();
 		String nodeName = wi.getNodeName() ;
-		String curServer = request.getLocalAddr();
 		Wo wo = null;
 		if(nodeName.equalsIgnoreCase("*")) {
 			Nodes nodes = Config.nodes();
 			if (ctl.indexOf("create encrypt")>-1) {
 				//生成key文件
-				for (String node : nodes.keySet()){
-					 //当前服务器
-					if(node.equalsIgnoreCase(curServer)) {
-					    if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
-					    	  wo = executeCommand(ctl, node, nodes.get(node).nodeAgentPort());
-				        }
-					}
-				}
+				wo = executeCommand(ctl, Config.node(), nodes.get(Config.node()).nodeAgentPort());
 				//同步key文件
 				for (String node : nodes.keySet()){
 					//其他服务器
-					if(!node.equalsIgnoreCase(curServer)) {
+					if(!node.equalsIgnoreCase(Config.node())) {
 						if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
 							boolean Syncflag = executeSyncFile("config/public.key" , node ,nodes.get(node).nodeAgentPort());
 							        Syncflag = executeSyncFile("config/private.key" , node ,nodes.get(node).nodeAgentPort());
@@ -63,35 +52,26 @@ public class ActionCommand extends BaseAction {
 						}
 					}
 				}
-				
 			 }else {
-				
+				//先其他服务器再当前服务器
 				for (String node : nodes.keySet()){
-					//先其他服务器
-					if(!node.equalsIgnoreCase(curServer)) {
-						if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
-							 wo = executeCommand(ctl, node, nodes.get(node).nodeAgentPort());
-						}
+					if(!node.equalsIgnoreCase(Config.node())) {
+						logger.print("{} executeCommand {} on node {}",effectivePerson.getDistinguishedName(), ctl, node);
+						wo = executeCommand(ctl, node, nodes.get(node).nodeAgentPort());
 					}
 				}
-				
-				for (String node : nodes.keySet()){
-					 //后当前服务器
-					if(node.equalsIgnoreCase(curServer)) {
-					    if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
-					    	  wo = executeCommand(ctl, node, nodes.get(node).nodeAgentPort());
-				        }
-					}
-				}
+				logger.print("{} executeCommand {} on node {}",effectivePerson.getDistinguishedName(), ctl, Config.node());
+				wo = executeCommand(ctl, Config.node(), nodes.get(Config.node()).nodeAgentPort());
 			}
 		}else {
-		   wo = executeCommand(ctl, nodeName, Integer.parseInt(wi.getNodePort()));
+			logger.print("{} executeCommand {} on node {}",effectivePerson.getDistinguishedName(), ctl, nodeName);
+			wo = executeCommand(ctl, nodeName, Integer.parseInt(wi.getNodePort()));
 		}
-		
+
 		result.setData(wo);
 		return result;
 	}
-	
+
 	synchronized private Wo executeCommand(String ctl , String nodeName ,int nodePort) throws Exception{
 		Wo wo = new Wo();
 		wo.setNode(nodeName);
@@ -106,7 +86,7 @@ public class ActionCommand extends BaseAction {
 				commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
 				dos.writeUTF(XGsonBuilder.toJson(commandObject));
 				dos.flush();
-				
+
 				if (ctl.indexOf("create encrypt")>-1) {
 					String createEncrypt = dis.readUTF();
 					logger.info(createEncrypt);
@@ -120,18 +100,18 @@ public class ActionCommand extends BaseAction {
 		wo.setTime(df.format(new Date()));
 		return wo;
 	}
-   
-	
+
+
 	 private boolean executeSyncFile(String syncFilePath , String nodeName ,int nodePort){
 			  boolean syncFileFlag = false;
 			  File syncFile;
 			  InputStream fileInputStream = null;
-			 
+
 			try (Socket socket = new Socket(nodeName, nodePort)) {
-				
+
 				syncFile = new File(Config.base(), syncFilePath);
 				fileInputStream= new FileInputStream(syncFile);
-				 
+
 				socket.setKeepAlive(true);
 				socket.setSoTimeout(5000);
 				DataOutputStream dos = null;
@@ -139,17 +119,17 @@ public class ActionCommand extends BaseAction {
 				try {
 					dos = new DataOutputStream(socket.getOutputStream());
 				    dis = new DataInputStream(socket.getInputStream());
-				    
+
 					Map<String, Object> commandObject = new HashMap<>();
 					commandObject.put("command", "syncFile:"+ syncFilePath);
 					commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
 					dos.writeUTF(XGsonBuilder.toJson(commandObject));
 					dos.flush();
-					
+
 					dos.writeUTF(syncFilePath);
 					dos.flush();
-					
-			
+
+
 					logger.info("同步文件starting.......");
 					byte[] bytes = new byte[1024];
 					int length =0;
@@ -158,14 +138,14 @@ public class ActionCommand extends BaseAction {
 						dos.flush();
 					}
 					logger.info("同步文件end.......");
-					
+
 				}finally {
 					dos.close();
 					dis.close();
 					socket.close();
 					fileInputStream.close();
 				}
-				
+
 				syncFileFlag = true;
 			} catch (Exception ex) {
 				logger.error(ex);
@@ -173,7 +153,7 @@ public class ActionCommand extends BaseAction {
 			}
 			return syncFileFlag;
 		}
-	
+
 	public static class Wi  extends GsonPropertyObject{
 		@FieldDescribe("命令名称")
 		private String ctl;
@@ -181,7 +161,7 @@ public class ActionCommand extends BaseAction {
 		private String nodeName;
 		@FieldDescribe("服务端口")
 		private String nodePort;
-		
+
 		public String getCtl() {
 			return ctl;
 		}
@@ -201,9 +181,9 @@ public class ActionCommand extends BaseAction {
 			this.nodePort = nodePort;
 		}
 	}
-	
+
 	public static class Wo extends GsonPropertyObject {
-		
+
 		@FieldDescribe("执行时间")
 		private String time;
 		@FieldDescribe("执行结束")
@@ -214,11 +194,11 @@ public class ActionCommand extends BaseAction {
 		public String getTime() {
 			return time;
 		}
-		
+
 		public void setTime(String time) {
 			this.time = time;
 		}
-		
+
 		public String getNode() {
 			return node;
 		}
@@ -235,7 +215,7 @@ public class ActionCommand extends BaseAction {
 			this.status = status;
 		}
 	}
-	
-	
+
+
 
 }
