@@ -25,6 +25,10 @@
                     }
                     var redirect = uri.getData("redirect");
                     redirect = redirect + "&uniqueId=" + uniqueId + "&flushPortalUrl="+flushPortalUrl;
+
+                    var nav = uri.getData("nav");
+                    if(nav)redirect = redirect + "&nav=" + nav;
+
                     if (xtoken){
                         var res = new Request.JSON({
                             url: o2.filterUrl(address+"?SMAP_SESSION_DATA="+encodeURIComponent(xtoken)+"&appID="+appID+"&date="+(new Date()).getTime()),
