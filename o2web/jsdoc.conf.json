@@ -2,10 +2,12 @@
     "opts": {
         "encoding": "utf8",               // same as -e utf8
         "destination": "./o2web/jsdoc/",          // same as -d ./out/
-        "recurse": true                  // same as -r
-//        "template": "templates/default",  // same as -t templates/default
+        "recurse": true,                  // same as -r
+        "template" : "./node_modules/ink-docstrap/template"
+        //"template": "templates/default"  // same as -t templates/default
 //        "tutorials": "path/to/tutorials" // same as -u path/to/tutorials
     },
+
     "tags": {
         "allowUnknownTags": true
     },
@@ -21,9 +23,23 @@
     "templates": {
         "cleverLinks": false,
         "monospaceLinks": false,
-        "default": {
-            "outputSourceFiles": true
-        }
+        "dateFormat": "YYYY-MM-dd",
+        "outputSourceFiles": true,
+        "outputSourcePath": true,
+        "systemName": "O2前台组件API",
+        "footer": "",
+        "copyright": "o2 group",
+        "navType": "vertical",
+        "theme": "readable", //readable lumen cosmo
+        "linenums": true,
+        "collapseSymbols": false,
+        "inverseNav": true,
+        "protocol": "html://",
+        "methodHeadingReturns": false
+    },
+    "markdown": {
+        "parser": "gfm",
+        "hardwrap": true
     }
 }
 //执行命令: jsdoc -c ./o2web/jsdoc.conf.json
