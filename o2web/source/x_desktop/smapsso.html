@@ -79,18 +79,15 @@
                     var xtoken = uri.getData("SMAP_SESSION_DATA");
                     var appID = uri.getData("appID");
                     var uniqueId = uri.getData("uniqueId");
-
-                    var redirect = uri.getData("redirect");
-                    redirect = redirect + "&uniqueId=" + uniqueId;
-
                     var flushPortalUrl = uri.getData("flushPortalUrl") || "";
                     if( flushPortalUrl && flushPortalUrl.indexOf("%2F") === -1 ){
                         flushPortalUrl = encodeURIComponent(flushPortalUrl);
                     }
-                    if(flushPortalUrl)redirect = redirect + "&flushPortalUrl="+flushPortalUrl;
+                    var redirect = uri.getData("redirect");
+                    redirect = redirect + "&uniqueId=" + uniqueId + "&flushPortalUrl="+flushPortalUrl;
 
                     var nav = uri.getData("nav");
-                    if(nav)redirect = redirect + "&nav=" + navi;
+                    if(nav)redirect = redirect + "&nav=" + nav;
 
                     if (xtoken){
                         var res = new Request.JSON({
