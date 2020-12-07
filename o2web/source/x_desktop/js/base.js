@@ -122,6 +122,18 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         return false;
     };
     var _openWorkHTML = function (options) {
+        // var uri = new URI(window.location.href);
+        // var redirectlink = uri.getData("redirectlink");
+        // if (!redirectlink) {
+        //     redirectlink = encodeURIComponent(locate.pathname + locate.search);
+        // } else {
+        //     redirectlink = encodeURIComponent(redirectlink);
+        // }
+        // if (options.workId) {
+        //     window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
+        // } else if (options.workCompletedId) {
+        //     window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
+        // }
         var uri = new URI(window.location.href);
         var redirectlink = uri.getData("redirectlink");
         if (!redirectlink) {
@@ -129,11 +141,19 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         } else {
             redirectlink = encodeURIComponent(redirectlink);
         }
-        if (options.workId) {
-            window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
-        } else if (options.workCompletedId) {
-            window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
+        var docurl = "../x_desktop/workmobilewithaction.html".toURI();
+        if (options.draft){
+            var par = "draft="+encodeURIComponent(JSON.stringify(options.draft));
+            docurl = "../x_desktop/workmobilewithaction.html?" + par;
+        }else{
+            docurl = docurl.setData(options).toString();
         }
+        var job = (options.jobid || options.jobId || options.job);
+        if (job) docurl += ((docurl.indexOf("?")!=-1) ? "&" : "?") + "jobid="+job;
+        docurl += ((redirectlink) ? "&redirectlink=" + redirectlink : "");
+        docurl +=((layout.debugger) ? "&debugger" : "");
+
+        window.location = o2.filterUrl(docurl);
     };
     var _openWork = function (options) {
         if (!_openWorkAndroid(options)) if (!_openWorkIOS(options)) _openWorkHTML(options);
