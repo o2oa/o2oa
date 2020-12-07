@@ -3,22 +3,23 @@
         "encoding": "utf8",               // same as -e utf8
         "destination": "./o2web/jsdoc/",          // same as -d ./out/
         "recurse": true,                  // same as -r
-        "template" : "./node_modules/ink-docstrap/template"
+        "template" : "./node_modules/better-docs"
         //"template": "templates/default"  // same as -t templates/default
-//        "tutorials": "path/to/tutorials" // same as -u path/to/tutorials
+        //        "tutorials": "path/to/tutorials" // same as -u path/to/tutorials
     },
 
     "tags": {
-        "allowUnknownTags": true
+        "allowUnknownTags": ["optional"]
     },
     "source": {
         "include": ["./o2web/source/x_component_process_Xform"],
-        "includePattern": ".+\\.js(doc|x)?$",
+        "includePattern": "\\.(jsx|js|ts|tsx)$",
         "excludePattern": "(^|\\/|\\\\)_"
     },
     "plugins": [
         "plugins/markdown",
-        "plugins/summarize"
+        "plugins/summarize",
+        "./node_modules/better-docs/typescript"
     ],
     "templates": {
         "cleverLinks": false,
@@ -43,3 +44,4 @@
     }
 }
 //执行命令: jsdoc -c ./o2web/jsdoc.conf.json
+
