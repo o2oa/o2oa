@@ -164,7 +164,7 @@ MWF.xApplication.process.Work.Main = new Class({
                             layout.sessionPromise.then(function(){
                                 this.openWork();
                                 this.unLoading();
-                            }.bind(this));
+                            }.bind(this), function(){});
                         }
                     }
                 } else{
@@ -376,8 +376,19 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.parseData(workData, control, json_form.data, [], [], []);
                 if (this.mask) this.mask.hide();
                 //if (layout.mobile) this.loadMobileActions();
-                this.openWork();
-                this.unLoading();
+                if (layout.session && layout.session.user){
+                    this.openWork();
+                    this.unLoading();
+                }else{
+                    if (layout.sessionPromise){
+                        layout.sessionPromise.then(function(){
+                            this.openWork();
+                            this.unLoading();
+                        }.bind(this), function(){});
+                    }
+                }
+                // this.openWork();
+                // this.unLoading();
 
             }
         }.bind(this), "failure": function(){}}, [work.form, work.application]);
@@ -672,9 +683,9 @@ MWF.xApplication.process.Work.Main = new Class({
             this.formNode.setStyles(this.css.formNode);
             var uri = window.location.href;
             //var cl = (uri.indexOf("$all")!=-1) ? "$all" : "Form";
-           // var cl = "$all";
+            var cl = "$all";
            // MWF.xDesktop.requireApp("process.Xform", cl, function(){
-            //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
+            MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.form, {});
                 this.appForm.businessData = {
                     "data": this.data,
@@ -722,7 +733,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     }
                     this.fireEvent("postLoadForm");
                 }.bind(this));
-            //}.bind(this));
+            }.bind(this));
         }
     },
 
