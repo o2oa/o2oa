@@ -388,9 +388,21 @@ MWF.xApplication.process.Work.Main = new Class({
 
                 this.parseData(workData, control, json_form.data, [], [], []);
                 if (this.mask) this.mask.hide();
-                //if (layout.mobile) this.loadMobileActions();
-                this.openWork();
-                this.unLoading();
+
+                if (layout.session && layout.session.user){
+                    this.openWork();
+                    this.unLoading();
+                }else{
+                    if (layout.sessionPromise){
+                        layout.sessionPromise.then(function(){
+                            this.openWork();
+                            this.unLoading();
+                        }.bind(this), function(){});
+                    }
+                }
+
+                // this.openWork();
+                // this.unLoading();
 
             }
         }.bind(this), "failure": function(){}}, [work.form, work.application]);
