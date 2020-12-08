@@ -71,12 +71,12 @@ public class OauthAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "POST方法实现oauth认证token方法", action = ActionToken.class)
+	@JaxrsMethodDescribe(value = "POST方法实现oauth认证token方法,是配jira.", action = ActionToken.class)
 	@POST
 	@Path("token/jira")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON })
-	public void postTokenJson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void postTokenJira(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@Context HttpServletResponse response, @FormParam("code") String code,
 			@FormParam("grant_type") String grant_type) {
 		ActionResult<ActionToken.Wo> result = new ActionResult<>();
