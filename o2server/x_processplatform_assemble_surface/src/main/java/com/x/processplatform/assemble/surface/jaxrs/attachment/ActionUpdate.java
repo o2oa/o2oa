@@ -72,6 +72,8 @@ class ActionUpdate extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 
+			this.verifyConstraint(bytes.length, fileName, null);
+
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 					attachment.getStorage());
 			emc.beginTransaction(Attachment.class);
