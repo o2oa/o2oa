@@ -367,13 +367,19 @@ MWF.xDesktop.Actions.RestActions = new Class({
                         }, xhr.responseText]);
                         break;
                     case "error":
+                        var messageId = (messageItem && messageItem.moduleMessage) ? messageItem.moduleMessage.data.id : "";
+                        if( messageId && xhr )xhr.messageId = messageId;
                         MWF.runCallback(callback, "failure", [xhr]);
                         break;
                 }
             }else{
+                var messageId = (messageItem && messageItem.moduleMessage) ? messageItem.moduleMessage.data.id : "";
+                if( messageId && xhr )xhr.messageId = messageId;
                 MWF.runCallback(callback, "failure", [xhr]);
             }
         }else{
+            var messageId = (messageItem && messageItem.moduleMessage) ? messageItem.moduleMessage.data.id : "";
+            if( messageId && xhr )xhr.messageId = messageId;
             MWF.runCallback(callback, "failure", [xhr]);
         }
     },
