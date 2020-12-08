@@ -2,6 +2,7 @@
 /coverage/
 /dest/
 /out/
+/jsdoc/
 /node_modules/
 npm-debug.log
 /test/
