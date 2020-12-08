@@ -203,7 +203,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			return flag;
 		}
 	}
-    
+
 	protected String objectToString(Object object) {
 		String  str = "";
 		if (object instanceof Integer) {
@@ -222,7 +222,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		return str;
 	}
-	
+
 	protected Runtime runtime(EffectivePerson effectivePerson, Business business, View view,
 			List<FilterEntry> filterList, Map<String, String> parameter, Integer count, boolean isBundle) throws Exception {
 		Runtime runtime = new Runtime();
@@ -258,7 +258,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			runtime.unitAllList.addAll(list);
 			list.clear();
 		}
-		runtime.groupList = business.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
+		runtime.groupList = business.organization().group().listWithPersonReference(
+				ListTools.toList(effectivePerson.getDistinguishedName()), true, true, true);
 		if(runtime.groupList!=null){
 			for(String item : runtime.groupList){
 				if(item.indexOf("@")>-1) {

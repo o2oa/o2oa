@@ -85,7 +85,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			runtime.unitAllList.addAll(list);
 			list.clear();
 		}
-		runtime.groupList = business.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
+		runtime.groupList = business.organization().group().listWithPersonReference(
+				ListTools.toList(effectivePerson.getDistinguishedName()), true, true, true);
 		if(runtime.groupList!=null){
 			for(String item : runtime.groupList){
 				if(item.indexOf("@")>-1) {
