@@ -115,7 +115,8 @@ public class Person extends SliceJpaObject {
 	@FieldDescribe("性别.男:m,女:f,未知:d")
 	@Enumerated(EnumType.STRING)
 	@Column(length = GenderType.length, name = ColumnNamePrefix + genderType_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + genderType_FIELDNAME)
+	//Enum类型不需要进行索引
+	//@Index(name = TABLE + IndexNameMiddle + genderType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private GenderType genderType;
 
