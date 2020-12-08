@@ -48,6 +48,8 @@ class ActionUploadCallback extends BaseAction {
 			// if (StringUtils.isEmpty(fileName)) {
 			// throw new ExceptionEmptyExtension(fileName);
 			// }
+			this.verifyConstraint(bytes.length, fileName, callback);
+
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			Attachment attachment = this.concreteAttachment(work, effectivePerson, site);
 			attachment.saveContent(mapping, bytes, fileName);
