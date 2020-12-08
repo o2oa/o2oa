@@ -1225,7 +1225,7 @@ public class Business {
 		if (attachmentList != null) {
 			for (Attachment att : attachmentList) {
 				if(filePathMap.containsKey(att.getName())) {
-					filePathMap.put(att.getName()+"-"+att.getSite(), att);
+					filePathMap.put(att.getSite()+"-"+att.getName(), att);
 				}else{
 					filePathMap.put(att.getName(), att);
 				}
