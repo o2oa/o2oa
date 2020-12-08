@@ -203,6 +203,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         }
         var size = 0;
         if (this.json.attachmentSize) size = this.json.attachmentSize.toFloat();
+        debugger;
         this.attachmentController.doUploadAttachment({ "site": this.json.id }, this.form.documentAction.action, "uploadAttachment", { "id": this.form.businessData.document.id }, null, function (o) {
             if (o.id) {
                 this.form.documentAction.getAttachment(o.id, this.form.businessData.document.id, function (json) {
@@ -227,7 +228,12 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                 }
             }
             return true;
-        }.bind(this), true, accept, size);
+        }.bind(this), true, accept, size, function (o) { //错误的回调
+            if (o.messageId && this.attachmentController.messageItemList) {
+                var message = this.attachmentController.messageItemList[o.messageId];
+                if( message && message.node )message.node.destroy();
+            }
+        }.bind(this));
 
         // this.uploadFileAreaNode = new Element("div");
         // var html = "<input name=\"file\" type=\"file\" multiple/>";
@@ -366,7 +372,12 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
 
                     this.attachmentController.checkActions();
                 }.bind(this))
-            }.bind(this), null);
+            }.bind(this), null, true, accept, size, function (o) { //错误的回调
+                if (o.messageId && this.attachmentController.messageItemList) {
+                    var message = this.attachmentController.messageItemList[o.messageId];
+                    if( message && message.node )message.node.destroy();
+                }
+            }.bind(this));
 
         // this.replaceFileAreaNode = new Element("div");
         // var html = "<input name=\"file\" type=\"file\" multiple/>";
