@@ -3,23 +3,22 @@
         "encoding": "utf8",               // same as -e utf8
         "destination": "./o2web/jsdoc/",          // same as -d ./out/
         "recurse": true,                  // same as -r
-        "template" : "./node_modules/better-docs"
+        "template" : "./node_modules/ink-docstrap/template"
         //"template": "templates/default"  // same as -t templates/default
         //        "tutorials": "path/to/tutorials" // same as -u path/to/tutorials
     },
 
     "tags": {
-        "allowUnknownTags": ["optional"]
+        "allowUnknownTags": true
     },
     "source": {
         "include": ["./o2web/source/x_component_process_Xform"],
-        "includePattern": "\\.(jsx|js|ts|tsx)$",
+        "includePattern": ".+\\.js(doc|x)?$",
         "excludePattern": "(^|\\/|\\\\)_"
     },
     "plugins": [
         "plugins/markdown",
-        "plugins/summarize",
-        "./node_modules/better-docs/typescript"
+        "plugins/summarize"
     ],
     "templates": {
         "cleverLinks": false,
@@ -31,7 +30,7 @@
         "footer": "",
         "copyright": "o2 group",
         "navType": "vertical",
-        "theme": "readable", //readable lumen cosmo
+        "theme": "cosmo", //readable lumen cosmo
         "linenums": true,
         "collapseSymbols": false,
         "inverseNav": true,
@@ -44,4 +43,3 @@
     }
 }
 //执行命令: jsdoc -c ./o2web/jsdoc.conf.json
-
