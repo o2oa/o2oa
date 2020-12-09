@@ -610,6 +610,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			"toolbarGroupHidden": module.json.dg_toolbarGroupHidden || []
 		};
 		if (this.readonly) options.readonly = true;
+		if(!this.editable && !this.addable)options.readonly = true;
 
 		var atts = [];
 		data.each(function(d){
@@ -621,7 +622,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		module.setAttachmentBusinessData();
 
 
-		var attachmentController = new MWF.xApplication.process.Xform.AttachmentController(cell, this, options);
+		var attachmentController = new MWF.xApplication.process.Xform.AttachmentController(cell, module, options);
 		attachmentController.load();
 
 		data.each(function (att) {
@@ -880,8 +881,10 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 							var v = cellData[key];
 
 							var module = this.editModules[index];
-							if( module && module.json.type == "ImageClipper" ){
-								this._createImage( cell, module, v );
+							if( module && module.json.type == "ImageClipper" ) {
+								this._createImage(cell, module, v);
+							}else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
+								this._createAttachment( cell, module, v );
 							}else{
 								var text = this._getValueText(index, v);
 								if( module && module.json.type == "Textarea" ){
