@@ -1156,7 +1156,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 					var module = td.retrieve("module");
 					if (module){
 						this.form.modules.erase(module);
-						delete module;
+						module = null;
 					}
 				}
 			}
