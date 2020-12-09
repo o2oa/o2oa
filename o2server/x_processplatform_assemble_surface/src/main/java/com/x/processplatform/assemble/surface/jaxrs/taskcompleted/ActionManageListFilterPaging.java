@@ -317,7 +317,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		private static final long serialVersionUID = 2279846765261247910L;
 
 		static WrapCopier<TaskCompleted, Wo> copier = WrapCopierFactory.wo(TaskCompleted.class, Wo.class,
-				JpaObject.singularAttributeField(TaskCompleted.class, true, true), null);
+				JpaObject.singularAttributeField(TaskCompleted.class, true, false), null);
 
 	}
 
