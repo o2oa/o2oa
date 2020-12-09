@@ -226,6 +226,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
     __loadReadDatagrid: function(callback){
         //this.gridData = this._getValue();
 
+
         var titleHeaders = this.table.getElements("th");
         var tds = this.table.getElements("td");
 
@@ -521,6 +522,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             "toolbarGroupHidden": module.json.dg_toolbarGroupHidden || []
         };
         if (this.readonly) options.readonly = true;
+        if(!this.editable && !this.addable)options.readonly = true;
 
         var atts = [];
         data.each(function(d){
@@ -532,7 +534,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         module.setAttachmentBusinessData();
 
 
-        var attachmentController = new MWF.xApplication.process.Xform.AttachmentController(cell, this, options);
+        var attachmentController = new MWF.xApplication.process.Xform.AttachmentController(cell, module, options);
         attachmentController.load();
 
         data.each(function (att) {
@@ -835,7 +837,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 }
 
                 var cell;
-                var text = this._getValueText(idx, data.text.join(", "));
+                // var text = this._getValueText(idx, data.text.join(", "));
 
                 if (dataRow){
                     cell = dataRow.getElement("td");
@@ -844,6 +846,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     }else if( module.json.type == "Attachment" || module.json.type == "AttachmentDg" ){
                         this._createAttachment( cell, module, data );
                     }else{
+                        var text = this._getValueText(idx, data.text.join(", "));
                         if( module && module.json.type == "Textarea" ){
                             cell.set("html", text);
                         }else{
@@ -866,6 +869,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     }else if( module.json.type == "Attachment" || module.json.type == "AttachmentDg" ){
                         this._createAttachment( cell, module, data );
                     }else{
+                        var text = this._getValueText(idx, data.text.join(", "));
                         if( module && module.json.type == "Textarea" ){
                             cell.set("html", text);
                         }else{
