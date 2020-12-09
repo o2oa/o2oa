@@ -9,6 +9,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 
 class ActionListMyPaging extends BaseAction {
@@ -29,7 +30,7 @@ class ActionListMyPaging extends BaseAction {
 		private static final long serialVersionUID = 2279846765261247910L;
 
 		static WrapCopier<Task, Wo> copier = WrapCopierFactory.wo(Task.class, Wo.class,
-				JpaObject.singularAttributeField(Task.class, true, true), null);
+				JpaObject.singularAttributeField(Task.class, true, false), null);
 
 	}
 
