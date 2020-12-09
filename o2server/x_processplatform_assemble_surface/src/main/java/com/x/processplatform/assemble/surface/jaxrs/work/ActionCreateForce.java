@@ -45,9 +45,9 @@ class ActionCreateForce extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String processFlag, JsonElement jsonElement)
 			throws Exception {
 		Audit audit = logger.audit(effectivePerson);
-		/* 新建工作id */
+		// 新建工作id
 		String workId = "";
-		/* 已存在草稿id */
+		// 已存在草稿id
 		String lastestWorkId = "";
 		String identity = null;
 		Process process = null;
@@ -69,20 +69,20 @@ class ActionCreateForce extends BaseAction {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(), application.getId());
 			}
 			if (BooleanUtils.isTrue(wi.getLatest())) {
-				/* 判断是否是要直接打开之前创建的草稿,草稿的判断标准:有待办无任何已办 */
+				// 判断是否是要直接打开之前创建的草稿,草稿的判断标准:有待办无任何已办
 				lastestWorkId = this.latest(business, process, identity);
 				workId = lastestWorkId;
 			}
 		}
 		if (StringUtils.isEmpty(workId)) {
 			WoId woId = ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", "process", process.getId()), wi.getData(), process.getId())
+					Applications.joinQueryUri("work", "process", process.getId()), wi.getData(), null)
 					.getData(WoId.class);
 			workId = woId.getId();
 		}
-		/* 设置Work信息 */
+		// 设置Work信息
 		if (BooleanUtils.isFalse(wi.getLatest()) || (StringUtils.isEmpty(lastestWorkId))) {
-			/* 如果不是草稿那么需要进行设置 */
+			// 如果不是草稿那么需要进行设置
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				Organization organization = business.organization();
@@ -101,25 +101,25 @@ class ActionCreateForce extends BaseAction {
 				}
 				emc.commit();
 			}
-			/* 驱动工作,使用非队列方式 */
+			// 驱动工作,使用非队列方式
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", workId, "processing", "nonblocking"), null, processFlag);
+					Applications.joinQueryUri("work", workId, "processing", "nonblocking"), null, null);
 		} else {
-			/* 如果是草稿,准备后面的直接打开 */
+			// 如果是草稿,准备后面的直接打开
 			workId = lastestWorkId;
 		}
-		/* 拼装返回结果 */
+		// 拼装返回结果
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Work work = emc.find(workId, Work.class);
-			/* 如果work是从开始->执行任务->结束,这里work已经结束那么有可能这里已经没有work了. */
+			// 如果work是从开始->执行任务->结束,这里work已经结束那么有可能这里已经没有work了.
 			if (null != work) {
 				List<String> ids = business.workLog()
 						.listWithFromActivityTokenForwardNotConnected(work.getActivityToken());
-				/* 先取得没有结束的WorkLog */
+				// 先取得没有结束的WorkLog
 				List<WorkLog> list = emc.list(WorkLog.class, ids);
 				wos = this.refercenceWorkLog(business, list);
-				/* 标识当前用户的待办 */
+				// 标识当前用户的待办
 				for (Wo o : wos) {
 					o.setCurrentTaskIndex(-1);
 					for (int i = 0; i < o.getTaskList().size(); i++) {
@@ -317,7 +317,7 @@ class ActionCreateForce extends BaseAction {
 			if (BooleanUtils.isNotTrue(o.getConnected())) {
 				this.referenceTask(business, wo);
 			} else {
-				/** 已经完成的不会有待办，返回一个空数组 */
+				// 已经完成的不会有待办，返回一个空数组
 				wo.setTaskList(new ArrayList<WoTask>());
 			}
 			this.referenceTaskCompleted(business, wo);
@@ -338,7 +338,7 @@ class ActionCreateForce extends BaseAction {
 			} else if (identities.size() == 1) {
 				return identities.get(0);
 			} else {
-				/* 有多个身份需要逐一判断是否包含. */
+				// 有多个身份需要逐一判断是否包含.
 				for (String o : identities) {
 					if (StringUtils.equals(o, wi.getIdentity())) {
 						return o;
@@ -371,21 +371,22 @@ class ActionCreateForce extends BaseAction {
 				return ObjectUtils.compare(o1.getCompletedTime(), o2.getCompletedTime(), true);
 			}
 		});
-		/* 补充召回 */
-		List<WoTaskCompleted> results = new ArrayList<>();
-		for (WoTaskCompleted o : list) {
-			results.add(o);
-			if (o.getProcessingType().equals(ProcessingType.retract)) {
-				WoTaskCompleted retract = new WoTaskCompleted();
-				o.copyTo(retract);
-				retract.setRouteName("撤回");
-				retract.setOpinion("撤回");
-				retract.setStartTime(retract.getRetractTime());
-				retract.setCompletedTime(retract.getRetractTime());
-				results.add(retract);
-			}
-		}
-		wo.setTaskCompletedList(results);
+		wo.setTaskCompletedList(list);
+//		/* 补充召回 */
+//		List<WoTaskCompleted> results = new ArrayList<>();
+//		for (WoTaskCompleted o : list) {
+//			results.add(o);
+//			if (o.getProcessingType().equals(ProcessingType.retract)) {
+//				WoTaskCompleted retract = new WoTaskCompleted();
+//				o.copyTo(retract);
+//				retract.setRouteName("撤回");
+//				retract.setOpinion("撤回");
+//				retract.setStartTime(retract.getRetractTime());
+//				retract.setCompletedTime(retract.getRetractTime());
+//				results.add(retract);
+//			}
+//		}
+//		wo.setTaskCompletedList(results);
 	}
 
 }

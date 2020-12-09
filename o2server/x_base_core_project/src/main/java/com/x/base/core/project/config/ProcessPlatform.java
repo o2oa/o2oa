@@ -75,6 +75,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.deleteDraft = new DeleteDraft();
 		this.passExpired = new PassExpired();
 		this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
+		this.attachmentConfig = new AttachmentConfig();
 	}
 
 	public Integer getExecutorCount() {
@@ -170,6 +171,10 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("是否保存工作处理信号内容,默认false.")
 	private Boolean processingSignalPersistEnable;
 
+	@FieldDescribe("流程附件上传限制大小或者类型.")
+	private AttachmentConfig attachmentConfig;
+
+
 	public Boolean getProcessingSignalPersistEnable() {
 		if (processingSignalPersistEnable == null) {
 			this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
@@ -182,6 +187,14 @@ public class ProcessPlatform extends ConfigObject {
 			this.extensionEvents = new ExtensionEvents();
 		}
 		return extensionEvents;
+	}
+
+	public AttachmentConfig getAttachmentConfig() {
+		return this.attachmentConfig == null ? new AttachmentConfig() : attachmentConfig;
+	}
+
+	public void setAttachmentConfig(AttachmentConfig attachmentConfig) {
+		this.attachmentConfig = attachmentConfig;
 	}
 
 	public Urge getUrge() {
@@ -591,6 +604,49 @@ public class ProcessPlatform extends ConfigObject {
 			this.count = count;
 		}
 
+	}
+
+	public static class AttachmentConfig extends ConfigObject {
+
+		public static AttachmentConfig defaultInstance() {
+			AttachmentConfig o = new AttachmentConfig();
+			return o;
+		}
+
+		public static final Integer DEFAULT_FILE_SIZE = 0;
+
+		@FieldDescribe("附件大小限制（单位M，默认不限制）.")
+		private Integer fileSize = DEFAULT_FILE_SIZE;
+
+		@FieldDescribe("只允许上传的文件后缀")
+		private List<String> fileTypeIncludes = new ArrayList<>();
+
+		@FieldDescribe("不允许上传的文件后缀")
+		private List<String> fileTypeExcludes = new ArrayList<>();
+
+		public Integer getFileSize() {
+			return fileSize;
+		}
+
+		public void setFileSize(Integer fileSize) {
+			this.fileSize = fileSize;
+		}
+
+		public List<String> getFileTypeIncludes() {
+			return fileTypeIncludes;
+		}
+
+		public void setFileTypeIncludes(List<String> fileTypeIncludes) {
+			this.fileTypeIncludes = fileTypeIncludes;
+		}
+
+		public List<String> getFileTypeExcludes() {
+			return fileTypeExcludes;
+		}
+
+		public void setFileTypeExcludes(List<String> fileTypeExcludes) {
+			this.fileTypeExcludes = fileTypeExcludes;
+		}
 	}
 
 	public static class ExtensionEvents {

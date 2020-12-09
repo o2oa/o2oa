@@ -268,9 +268,12 @@ MWF.xApplication.Common.Main = new Class({
 		window.addEventListener("beforeunload", function (e) {
 			this.fireAppEvent("queryClose");
 		}.bind(this));
-		// window.addEventListener("pagehide", function (e) {
-		// 	this.fireAppEvent("queryClose");
-		// }.bind(this));
+
+		if(layout.mobile){
+			window.addEventListener("pagehide", function (e) {
+				this.fireAppEvent("queryClose");
+			}.bind(this));
+		}
 
 		// window.onbeforeunload = function(e){
 		//     this.fireAppEvent("queryClose");

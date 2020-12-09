@@ -84,6 +84,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 }else if (value.indexOf("x_cms_assemble_control")!==-1){
                     value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
                 }
+                value = o2.filterUrl(value);
             }
             this.node.setStyle(key, value);
         }.bind(this));

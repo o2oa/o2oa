@@ -5,8 +5,8 @@
 	<property name="targetdir" value="target"/>
 	<target name="default" depends="md5code" />
 	<target name="md5code" depends="default_zip">
-		<checksum file="${preName}-${VERSION}-windows.zip" property="build_win.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-windows.zip" property="length_win"/>
+		<checksum file="${preName}-${VERSION}-windows-x64.zip" property="build_win.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-windows-x64.zip" property="length_win"/>
 		<script language="javascript">
 			<![CDATA[
 			var length_win_bytes = project.getProperty("length_win");
@@ -15,8 +15,8 @@
 			project.setNewProperty("length_win_mb", length_win_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-${VERSION}-linux-x86.zip" property="build_linux.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-linux-x86.zip" property="length_linux"/>
+		<checksum file="${preName}-${VERSION}-linux-x64.zip" property="build_linux.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-linux-x64.zip" property="length_linux"/>
 		<script language="javascript">
 			<![CDATA[
 			var length_linux_bytes = project.getProperty("length_linux");
@@ -82,20 +82,20 @@
 			{
 			"windows": {
 			"system": "windows",
-			"name": "o2server-${VERSION}-windows",
-			"fileName": "o2server-${VERSION}-windows.zip",
+			"name": "o2server-${VERSION}-windows-x64",
+			"fileName": "o2server-${VERSION}-windows-x64.zip",
 			"fileSize": "${length_win_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-${VERSION}-windows.zip",
+			"url": "/download/o2server-${VERSION}-windows-x64.zip",
 			"sha256": "${build_win.sha}"
 			},
 			"linux": {
 			"system": "linux",
-			"name": o2server-${VERSION}-linux-x86",
-			"fileName": "o2server-${VERSION}-linux-x86.zip",
+			"name": o2server-${VERSION}-linux-x64",
+			"fileName": "o2server-${VERSION}-linux-x64.zip",
 			"fileSize": "${length_linux_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-${VERSION}-linux-x86.zip",
+			"url": "/download/o2server-${VERSION}-linux-x64.zip",
 			"sha256": "${build_linux.sha}"
 			},
 			"macos": {
@@ -151,20 +151,20 @@
 			"publishTime": "${TODAY}",
 			"windows": {
 			"system": "windows",
-			"name": "o2server-${VERSION}-windows",
-			"fileName": "o2server-${VERSION}-windows.zip",
+			"name": "o2server-${VERSION}-windows-x64",
+			"fileName": "o2server-${VERSION}-windows-x64.zip",
 			"fileSize": "${length_win_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-${VERSION}-windows.zip",
+			"url": "/download/o2server-${VERSION}-windows-x64.zip",
 			"sha256": "${build_win.sha}"
 			},
 			"linux": {
 			"system": "linux",
-			"name": "o2server-${VERSION}-linux-x86",
-			"fileName": "o2server-${VERSION}-linux-x86.zip",
+			"name": "o2server-${VERSION}-linux-x64",
+			"fileName": "o2server-${VERSION}-linux-x64.zip",
 			"fileSize": "${length_linux_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-${VERSION}-linux-x86.zip",
+			"url": "/download/o2server-${VERSION}-linux-x64.zip",
 			"sha256": "${build_linux.sha}"
 			},
 			"macos": {
@@ -228,7 +228,7 @@
 		<echo file="${targetdir}/o2server/version.o2">{"version":"${VERSION}","date":"${TODAY}"}</echo>
 	</target>
 	<target name="zip_windows">
-		<zip encoding="utf-8" destfile="${preName}-${VERSION}-windows.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-windows-x64.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -249,7 +249,7 @@
 		</zip>
 	</target>
 	<target name="zip_linux">
-		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-x86.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-x64.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>

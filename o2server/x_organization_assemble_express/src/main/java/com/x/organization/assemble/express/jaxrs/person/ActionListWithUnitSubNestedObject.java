@@ -1,8 +1,6 @@
 package com.x.organization.assemble.express.jaxrs.person;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -76,16 +74,25 @@ class ActionListWithUnitSubNestedObject extends BaseAction {
 			unitIds.addAll(business.unit().listSubNested(o.getId()));
 		}
 		unitIds = ListTools.trim(unitIds, true, true);
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = root.get(Identity_.unit).in(unitIds);
-		List<String> personIds = em.createQuery(cq.select(root.get(Identity_.person)).where(p))
-				.getResultList().stream().distinct().collect(Collectors.toList());
-		personIds = ListTools.trim(personIds, true, true);
-		for (Person o : business.person().pick(personIds)) {
-			wos.add(this.convert(business, o, Wo.class));
+		List<Identity> list = new ArrayList<>();
+		if(ListTools.isNotEmpty(unitIds)) {
+			list = business.entityManagerContainer().fetchIn(Identity.class,
+					ListTools.toList(Identity.id_FIELDNAME, Identity.person_FIELDNAME, Identity.orderNumber_FIELDNAME), Identity.unit_FIELDNAME, unitIds);
+		}
+		if(ListTools.isNotEmpty(list)) {
+			Map<String,Integer> map = new HashMap<>();
+			for(Identity identity : list){
+				map.put(identity.getPerson(), identity.getOrderNumber());
+			}
+			for (Person o : business.person().pick(new ArrayList<>(map.keySet()))) {
+				o.setOrderNumber(map.get(o.getId()));
+				wos.add(this.convert(business, o, Wo.class));
+			}
+			wos = wos.stream()
+					.sorted(Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
+							.thenComparing(Comparator
+									.comparing(Wo::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
+					.collect(Collectors.toList());
 		}
 		return wos;
 	}
