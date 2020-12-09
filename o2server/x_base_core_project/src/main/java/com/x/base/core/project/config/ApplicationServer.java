@@ -73,7 +73,7 @@ public class ApplicationServer extends ConfigObject {
 	@FieldDescribe("暴露jest接口.")
 	private Boolean exposeJest;
 
-	@FieldDescribe("是否启用长连接,默认false.")
+	@FieldDescribe("是否启用长连接,默认true.")
 	private Boolean persistentConnectionsEnable;
 
 	public Boolean getPersistentConnectionsEnable() {
