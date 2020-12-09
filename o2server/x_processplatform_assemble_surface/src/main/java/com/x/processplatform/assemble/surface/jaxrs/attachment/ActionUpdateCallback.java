@@ -51,6 +51,8 @@ class ActionUpdateCallback extends BaseAction {
 			// attachment.getExtension())) {
 			// throw new ExceptionExtensionNotMatch(fileName, attachment.getExtension());
 			// }
+			this.verifyConstraint(bytes.length, fileName, null);
+
 			/** 统计待办数量判断用户是否可以上传附件 */
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowProcessing())) {

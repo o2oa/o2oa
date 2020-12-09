@@ -25,14 +25,14 @@ import com.x.cms.core.entity.Review;
  * 批处理操作执行
  */
 public class CmsBatchOperationProcessService {
-	
+
 	public static String OPT_OBJ_DOCUMENT = "DOCUMENT";
 	public static String OPT_OBJ_CATEGORY = "CATEGORY";
 	public static String OPT_OBJ_APPINFO = "APPINFO";
 	public static String OPT_TYPE_PERMISSION = "PERMISSION";
 	public static String OPT_TYPE_UPDATENAME = "UPDATENAME";
 	public static String OPT_TYPE_DELETE = "DELETE";
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( CmsBatchOperationProcessService.class );
 	private DocumentInfoService documentInfoService = new DocumentInfoService();
 	private ReviewService reviewService = new ReviewService();
@@ -40,7 +40,7 @@ public class CmsBatchOperationProcessService {
 	 * 批处理操作执行
 	 * @param cmsBatchOperation
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public String process( CmsBatchOperation cmsBatchOperation ) throws Exception {
 		logger.debug( "process -> Cms processing batch operation: " + cmsBatchOperation.toString() );
@@ -53,11 +53,11 @@ public class CmsBatchOperationProcessService {
 				emc.check( cmsBatchOperation, CheckPersistType.all );
 				emc.commit();
 				logger.debug( "process -> cms change batch operation running......: " );
-			}			
+			}
 		} catch (Exception e) {
 			throw e;
 		}
-		
+
 		if( "DOCUMENT".equalsIgnoreCase( cmsBatchOperation.getObjType() )) {
 			if( "PERMISSION".equalsIgnoreCase( cmsBatchOperation.getOptType() )) {//文档处理
 				//将categoryName是旧分类名称的所有文档的分类和栏目相关的信息更新掉，最后删除当前的批处理信息
@@ -75,7 +75,7 @@ public class CmsBatchOperationProcessService {
 				}
 			}else if( "PERMISSION".equalsIgnoreCase( cmsBatchOperation.getOptType()  )) {
 				//分类修改权限
-				refreshDocumentReviewInCagetory( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );				
+				refreshDocumentReviewInCagetory( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );
 			}else if( "DELETE".equalsIgnoreCase( cmsBatchOperation.getOptType()  )) {
 				//删除文档，并且修改分类所属的栏目中的分类数量和文档数量
 				deleteDocumentInCategory( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );
@@ -89,7 +89,7 @@ public class CmsBatchOperationProcessService {
 				}
 			}else if( "PERMISSION".equalsIgnoreCase( cmsBatchOperation.getOptType()  )) {
 				//栏目修改权限
-				refreshDocumentReviewInAppInfo( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );		
+				refreshDocumentReviewInAppInfo( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );
 			}else if( "DELETE".equalsIgnoreCase( cmsBatchOperation.getOptType()  )) {
 				//删除分类以及文档，并且修改分类所属的栏目中的分类数量和文档数量
 				deleteDocumentInApp( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );
@@ -130,12 +130,12 @@ public class CmsBatchOperationProcessService {
 							document.setAppAlias( appInfo.getAppName() );
 						}
 						emc.check( document, CheckPersistType.all );
-						emc.commit();						
-						cmsBatchOperationPersistService.addOperation( 
-								CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+						emc.commit();
+						cmsBatchOperationPersistService.addOperation(
+								CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
 								CmsBatchOperationProcessService.OPT_TYPE_PERMISSION, document.getId(), document.getId(), "栏目权限变更引起文档Review变更：ID=" + document.getId() );
 					}
-					
+
 				}
 				ids = null;
 				documentList = null;
@@ -164,7 +164,7 @@ public class CmsBatchOperationProcessService {
 			Long count = business.getDocumentFactory().countByCategoryId(categoryId);
 			Long maxTimes = count/maxQueryCount + 2;
 			logger.info( "refreshDocumentReviewInCagetory -> There are : " + count + " documents need to refresh review, maxTimes=" + maxTimes  );
-			
+
 			for( int i=0; i<=maxTimes; i++ ) {
 				ids = business.getDocumentFactory().listReviewedIdsByCategoryId(categoryId, maxQueryCount );
 				if(ListTools.isNotEmpty( ids )) {
@@ -177,13 +177,13 @@ public class CmsBatchOperationProcessService {
 						document.setReviewed( false );
 						emc.check( document, CheckPersistType.all );
 						emc.commit();
-						
+
 						logger.info( "refreshDocumentReviewInCagetory -> Send docment permission operation to queue[queueBatchOperation], document:" + document.getTitle()  );
-						cmsBatchOperationPersistService.addOperation( 
-								CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+						cmsBatchOperationPersistService.addOperation(
+								CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
 								CmsBatchOperationProcessService.OPT_TYPE_PERMISSION, document.getId(), document.getId(), "分类权限变更引起文档Review变更：ID=" + document.getId() );
 					}
-					
+
 				}
 				ids = null;
 				documentList = null;
@@ -200,7 +200,7 @@ public class CmsBatchOperationProcessService {
 	}
 
 	private void deleteDocumentReview(String id, String docId) throws Exception {
-		CmsBatchOperation cmsBatchOperation = null;		
+		CmsBatchOperation cmsBatchOperation = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			cmsBatchOperation = emc.find( id, CmsBatchOperation.class );
 			logger.info( "deleteDocumentReview -> delete all reviews for document: " + docId );
@@ -223,16 +223,16 @@ public class CmsBatchOperationProcessService {
 	 * 全部删除，然后再重新插入Review记录
 	 * @param id
 	 * @param docId
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void refreshDocumentReview( String id, String docId ) throws Exception {
 		CmsBatchOperation cmsBatchOperation = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			cmsBatchOperation = emc.find( id, CmsBatchOperation.class );
-			
+
 			reviewService.refreshDocumentReview( emc, docId );
 
-			/*Document document = emc.find( docId, Document.class );
+			Document document = emc.find( docId, Document.class );
 			if( document != null ) {
 				emc.beginTransaction( Document.class );
 				document.setReviewed( true );
@@ -261,8 +261,8 @@ public class CmsBatchOperationProcessService {
 
 				emc.check( document, CheckPersistType.all );
 				emc.commit();
-			}*/
-			
+			}
+
 			if( cmsBatchOperation != null ) {
 				emc.beginTransaction( CmsBatchOperation.class );
 				emc.remove( cmsBatchOperation, CheckRemoveType.all );
@@ -330,7 +330,7 @@ public class CmsBatchOperationProcessService {
 	 * 将栏目下所有的文档删除，最后删除当前的批处理信息
 	 * @param id
 	 * @param bundle
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void deleteDocumentInApp(String id, String bundle) throws Exception {
 		Long docCount = 0L;
@@ -341,12 +341,12 @@ public class CmsBatchOperationProcessService {
 		List<String> categoryIds = null;
 		CmsBatchOperation cmsBatchOperation = null;
 		CategoryInfo categoryInfo = null;
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			cmsBatchOperation = emc.find( id, CmsBatchOperation.class );
 			categoryIds = business.getCategoryInfoFactory().listByAppId( bundle );
-			
+
 			if( ListTools.isNotEmpty( categoryIds )) {
 				for( String categoryId : categoryIds ) {
 					categoryInfo = emc.find( categoryId, CategoryInfo.class );
@@ -356,19 +356,19 @@ public class CmsBatchOperationProcessService {
 						logger.info( "deleteDocumentInApp -> Cms processing batch operation: remove category: " + categoryInfo.getId() + ", alias: " + categoryInfo.getCategoryAlias() );
 						emc.commit();
 					}
-					
+
 					//将该目录下所有的文档删除
 					docCount = business.getDocumentFactory().countByCategoryId( categoryId );
 					if( docCount > 0 ) {
 						totalWhileCount = (int) (docCount/queryMaxCount) + 1;
 						if( totalWhileCount > 0 ) {
-							while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {//查询1000个文档进行操作						
-								document_ids = business.getDocumentFactory().listByCategoryId( bundle, queryMaxCount );														
-								for( String docId : document_ids ){									
+							while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {//查询1000个文档进行操作
+								document_ids = business.getDocumentFactory().listByCategoryId( bundle, queryMaxCount );
+								for( String docId : document_ids ){
 									try {
 										documentInfoService.delete( emc, docId );
-										new CmsBatchOperationPersistService().addOperation( 
-												CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+										new CmsBatchOperationPersistService().addOperation(
+												CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
 												CmsBatchOperationProcessService.OPT_TYPE_DELETE, id, id, "栏目删除引起文档删除：ID=" + id );
 										logger.info( "deleteDocumentInApp -> cms processing batch operation: remove document("+ currenteWhileCount +"/" + totalWhileCount + "): " + docId );
 									}catch( Exception e ) {
@@ -403,7 +403,7 @@ public class CmsBatchOperationProcessService {
 	 * @param id
 	 * @param bundle
 	 * @param oldInfo
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void changeAppNameInCategory( String id, String bundle, String oldName ) throws Exception {
 		Long docCount = 0L;
@@ -415,7 +415,7 @@ public class CmsBatchOperationProcessService {
 		AppInfo appInfo = null;
 		CategoryInfo categoryInfo = null;
 		CmsBatchOperation cmsBatchOperation = null;
-		
+
 		//先查询该栏目下的所有分类信息列表
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -432,7 +432,7 @@ public class CmsBatchOperationProcessService {
 						categoryInfo.setAppName( appInfo.getAppName() );
 						if( StringUtils.isEmpty( categoryInfo.getCategoryAlias() )) {
 							categoryInfo.setCategoryAlias( appInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
-						}						
+						}
 						emc.beginTransaction( CategoryInfo.class );
 						emc.check( categoryInfo, CheckPersistType.all );
 						logger.info( "changeAppNameInCategory -> cms processing batch operation: change category: " + categoryInfo.getId() + ", app_name: " + oldName + " -> " + categoryInfo.getAppName() );
@@ -445,7 +445,7 @@ public class CmsBatchOperationProcessService {
 						if( totalWhileCount > 0 ) {
 							while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {
 								//查询1000个文档进行操作
-								document_ids = business.getDocumentFactory().listByCategoryIdAndNotEqualAppName( categoryInfo.getId(), appInfo.getAppName(), queryMaxCount );							
+								document_ids = business.getDocumentFactory().listByCategoryIdAndNotEqualAppName( categoryInfo.getId(), appInfo.getAppName(), queryMaxCount );
 								changeDocumentInfoWithCategory( emc, document_ids, categoryInfo );
 								logger.info( "changeAppNameInCategory -> cms processing batch operation: update app and category info for document, batch("+ currenteWhileCount +"/" + totalWhileCount + ") " );
 								//当前循环次数+1
@@ -472,7 +472,7 @@ public class CmsBatchOperationProcessService {
 	 * 将分类下所有的文档删除，最后删除当前的批处理信息
 	 * @param id
 	 * @param bundle
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void deleteDocumentInCategory( String id, String bundle ) throws Exception {
 		Long docCount = 0L;
@@ -482,31 +482,31 @@ public class CmsBatchOperationProcessService {
 		List<String> document_ids = null;
 		CmsBatchOperation cmsBatchOperation = null;
 		CategoryInfo categoryInfo = null;
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			cmsBatchOperation = emc.find( id, CmsBatchOperation.class );
 			categoryInfo = emc.find( bundle, CategoryInfo.class );
-			
+
 			if( categoryInfo != null ) {
 				emc.beginTransaction( CategoryInfo.class );
 				emc.remove( categoryInfo, CheckRemoveType.all );
 				logger.info( "deleteDocumentInCategory -> cms processing batch operation: remove category, id:"+ bundle );
 				emc.commit();
 			}
-			
+
 			//将该目录下所有的文档删除
 			docCount = business.getDocumentFactory().countByCategoryId( bundle );
 			if( docCount > 0 ) {
 				totalWhileCount = (int) (docCount/queryMaxCount) + 1;
 				if( totalWhileCount > 0 ) {
-					while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {//查询1000个文档进行操作						
+					while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {//查询1000个文档进行操作
 						document_ids = business.getDocumentFactory().listByCategoryId( bundle, queryMaxCount );
 						for( String docId : document_ids ){
 							try {
 								documentInfoService.delete( emc, docId );
-								new CmsBatchOperationPersistService().addOperation( 
-										CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+								new CmsBatchOperationPersistService().addOperation(
+										CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
 										CmsBatchOperationProcessService.OPT_TYPE_DELETE, id, id, "分类删除引起文档删除：ID=" + id );
 								logger.info( "deleteDocumentInCategory -> cms processing batch operation: remove document("+ currenteWhileCount +"/" + totalWhileCount + "): " + docId );
 							}catch( Exception e ) {
@@ -519,7 +519,7 @@ public class CmsBatchOperationProcessService {
 						docCount = business.getDocumentFactory().countByCategoryId( categoryInfo.getId() );
 					}
 				}
-			}			
+			}
 			if( cmsBatchOperation != null ) {
 				emc.beginTransaction( CmsBatchOperation.class );
 				emc.remove( cmsBatchOperation, CheckRemoveType.all );
@@ -538,7 +538,7 @@ public class CmsBatchOperationProcessService {
 	 * @param id 批处理信息ID
 	 * @param bundle  绑定的分类信息ID
 	 * @param oldName 分类使用的旧名称
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void changeCategoryNameInDocument( String id, String bundle, String oldName ) throws Exception {
 		Long docCount = 0L;
@@ -560,8 +560,8 @@ public class CmsBatchOperationProcessService {
 					if( totalWhileCount > 0 ) {
 						while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {
 							//查询1000个文档进行操作
-							document_ids = business.getDocumentFactory().listByCategoryIdAndCategoryName(bundle, categoryInfo.getCategoryName(), queryMaxCount );							
-							changeDocumentInfoWithCategory( emc, document_ids, categoryInfo );			
+							document_ids = business.getDocumentFactory().listByCategoryIdAndCategoryName(bundle, categoryInfo.getCategoryName(), queryMaxCount );
+							changeDocumentInfoWithCategory( emc, document_ids, categoryInfo );
 							logger.info( "changeCategoryNameInDocument -> cms processing batch operation: update app and category info for document, batch("+ currenteWhileCount +"/" + totalWhileCount + ") " );
 							//当前循环次数+1
 							currenteWhileCount ++;

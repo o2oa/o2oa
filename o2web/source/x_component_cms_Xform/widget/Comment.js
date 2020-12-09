@@ -8,7 +8,8 @@ var O2CMSComment = MWF.xApplication.cms.Xform.widget.Comment = new Class({
         "style": "simple",
         "documentId" : "",
         "anonymousAccess" : false,
-        "countPerPage" : 10
+        "countPerPage" : 10,
+        "isAllowPublish" : true
     },
     initialize: function (app, node, options) {
         this.setOptions(options);
@@ -44,7 +45,9 @@ var O2CMSComment = MWF.xApplication.cms.Xform.widget.Comment = new Class({
         this.loadContent();
         //this.loadElementList();
         //this.loadBottom();
-        this.loadEditor();
+        if( this.options.isAllowPublish !== false ){
+            this.loadEditor();
+        }
     },
     loadTitle : function(){
         this.titleNode = new Element("div", {"styles": this.css.titleNode, "text": this.lp.commentTitle}).inject(this.container);

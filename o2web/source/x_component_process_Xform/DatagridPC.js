@@ -280,6 +280,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			var module = this.form._loadModule(json, cell);
 			cell.store("module", module);
 			this.form.modules.push(module);
+			if( json.isShow === false )cell.hide();
 		}
 
 	},
@@ -896,6 +897,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 						cell.set("text", tr.rowIndex);
 					}
 
+					var json = this.form._getDomjson(th);
+					if( json && json.isShow === false )cell.hide();
 				}.bind(this));
 			}.bind(this));
 		}
@@ -968,6 +971,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		ths.each(function(th, idx){
 			var td = new Element("td", {"text": "", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
 			if (this.json.amountStyles) td.setStyles(this.json.amountStyles);
+
+			var json = this.form._getDomjson(th);
+			if( json && json.isShow === false )td.hide();
 		}.bind(this));
 	},
 	_loadTotal: function(){
@@ -1060,6 +1066,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			if (json){
 				var module = this.form._loadModule(json, th);
 				this.form.modules.push(module);
+				if( json.isShow === false )th.hide();
 			}
 		}.bind(this));
 	},
@@ -1079,6 +1086,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				}
 				td.store("module", module);
 				this.form.modules.push(module);
+				if( json.isShow === false )td.hide();
 			}
 		}.bind(this));
 	},

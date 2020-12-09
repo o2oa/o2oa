@@ -43,6 +43,7 @@ MWF.xAction.RestActions.Action["x_organization_assemble_authentication"] = new C
         this.action.invoke({"name": "getAuthentication",
             "success": function(json, responseText){
                 if (json.data.tokenType!=="anonymous" || layout.anonymous){
+                    if (json.data && !json.data.roleList) json.data.roleList = [];
                     if (success) success(json);
                 }else{
                     if (failure) failure(null, responseText, json.message);

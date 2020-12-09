@@ -25,6 +25,7 @@ MWF.xApplication.cms.Xform.Comment = MWF.CMSComment =  new Class({
             "documentId" : this.form.businessData.document.id,
             "countPerPage" : this.json.countPerPage || 10,
             "isAllowModified" : this.json.isAllowModified,
+            "isAllowPublish" : this.json.isAllowPublish,
             "isAdmin" : this.form.app.isAdmin,
             "editorProperties" : config
         });
