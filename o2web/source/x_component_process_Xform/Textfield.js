@@ -1,5 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
-/** @class Textfield 文本输入框类，此类继承至$Input。
+/** @class Textfield 文本输入框类。
  * @extends MWF.xApplication.process.Xform.$Input
  */
 MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
