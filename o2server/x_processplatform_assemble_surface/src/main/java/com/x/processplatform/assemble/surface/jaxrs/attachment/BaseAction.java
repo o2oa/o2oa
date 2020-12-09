@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import javax.persistence.EntityManager;
@@ -10,6 +11,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.ProcessPlatform;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -242,5 +247,45 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 			return value;
 		});
+	}
+
+	/**
+	 * 判断附件是否符合大小、文件类型的约束
+	 * @param size
+	 * @param fileName
+	 * @param callback
+	 * @throws Exception
+	 */
+	protected void verifyConstraint(long size, String fileName, String callback) throws Exception{
+		ProcessPlatform.AttachmentConfig attConfig = Config.processPlatform().getAttachmentConfig();
+		if(attConfig.getFileSize()!=null && attConfig.getFileSize()>0) {
+			size = size / (1024 * 1024);
+			if (size > attConfig.getFileSize()) {
+				if (StringUtils.isNotEmpty(callback)){
+					throw new ExceptionAttachmentInvalidCallback(callback, fileName, attConfig.getFileSize());
+				}else{
+					throw new ExceptionAttachmentInvalid(fileName, attConfig.getFileSize());
+				}
+			}
+		}
+		String fileType = FilenameUtils.getExtension(fileName).toLowerCase();
+		if(attConfig.getFileTypeIncludes()!=null && !attConfig.getFileTypeIncludes().isEmpty()){
+			if(!ListTools.contains(attConfig.getFileTypeIncludes(), fileType)){
+				if (StringUtils.isNotEmpty(callback)){
+					throw new ExceptionAttachmentInvalidCallback(callback, fileName);
+				}else{
+					throw new ExceptionAttachmentInvalid(fileName);
+				}
+			}
+		}
+		if(attConfig.getFileTypeExcludes()!=null && !attConfig.getFileTypeExcludes().isEmpty()){
+			if(ListTools.contains(attConfig.getFileTypeExcludes(), fileType)){
+				if (StringUtils.isNotEmpty(callback)){
+					throw new ExceptionAttachmentInvalidCallback(callback, fileName);
+				}else{
+					throw new ExceptionAttachmentInvalid(fileName);
+				}
+			}
+		}
 	}
 }

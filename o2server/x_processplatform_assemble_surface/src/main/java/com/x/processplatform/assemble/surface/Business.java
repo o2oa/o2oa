@@ -1212,7 +1212,7 @@ public class Business {
 
 	/**
 	 * 下载附件并打包为zip
-	 * 
+	 *
 	 * @param attachmentList
 	 * @param os
 	 * @throws Exception
@@ -1224,7 +1224,11 @@ public class Business {
 		/* 生成zip压缩文件内的目录结构 */
 		if (attachmentList != null) {
 			for (Attachment att : attachmentList) {
-				filePathMap.put(att.getName(), att);
+				if(filePathMap.containsKey(att.getName())) {
+					filePathMap.put(att.getSite()+"-"+att.getName(), att);
+				}else{
+					filePathMap.put(att.getName(), att);
+				}
 			}
 		}
 		try (ZipOutputStream zos = new ZipOutputStream(os)) {

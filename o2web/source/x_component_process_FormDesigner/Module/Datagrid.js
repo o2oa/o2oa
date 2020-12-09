@@ -315,13 +315,17 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
         if (name=="titleStyles"){
             var ths = this.table.getElements("th");
             ths.each(function(th){
+            	var opacity = th.getStyle("opacity");
                 this.setCustomNodeStyles(th, this.json.titleStyles);
+                if(opacity)th.setStyle("opacity", opacity);
             }.bind(this));
         }
         if (name=="contentStyles"){
             var tds = this.table.getElements("td");
             tds.each(function(td){
+				var opacity = td.getStyle("opacity");
                 this.setCustomNodeStyles(td, this.json.contentStyles);
+				if(opacity)td.setStyle("opacity", opacity);
             }.bind(this));
         }
         //if (name=="sequence") this.checkSequenceShow();
@@ -330,13 +334,17 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
         if (this.json.titleStyles){
             var ths = this.table.getElements("th");
             ths.each(function(th){
+				var opacity = th.getStyle("opacity");
                 this.setCustomNodeStyles(th, this.json.titleStyles);
+				if(opacity)th.setStyle("opacity", opacity);
             }.bind(this));
         }
         if (this.json.contentStyles){
             var tds = this.table.getElements("td");
             tds.each(function(td){
+				var opacity = td.getStyle("opacity");
                 this.setCustomNodeStyles(td, this.json.contentStyles);
+				if(opacity)td.setStyle("opacity", opacity);
             }.bind(this));
         }
     },

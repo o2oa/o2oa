@@ -276,7 +276,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
 
         if( this.selectTypeList.length === 0 )return false;
 
-        var values = this.getInputData();
+        var values = this.getInputData() || [];
 
         var exclude = [];
         if( this.json.exclude ){

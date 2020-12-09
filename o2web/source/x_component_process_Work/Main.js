@@ -142,6 +142,7 @@ MWF.xApplication.process.Work.Main = new Class({
         }
     },
     loadWorkByWork: function(id){
+	    debugger;
         //var getWorkLogMothed = "getWorkLog";    //以前使用worklog，现在改成record了
         //var getWorkLogMothed = (this.options.worklogType.toLowerCase()==="worklog") ? "getWorkLog" : "getRecordLog";
         var loadFormFlag = false;
@@ -151,7 +152,7 @@ MWF.xApplication.process.Work.Main = new Class({
         var json_work, json_log, json_control, json_form;
 
         var check = function(){
-            if (loadWorkFlag && loadFormFlag && loadModuleFlag){
+             if (loadWorkFlag && loadFormFlag && loadModuleFlag){
                 if (json_work && json_control && json_form && json_log){
                     this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_work.data.recordList, json_work.data.attachmentList);
                     if (this.mask) this.mask.hide();
@@ -164,7 +165,7 @@ MWF.xApplication.process.Work.Main = new Class({
                             layout.sessionPromise.then(function(){
                                 this.openWork();
                                 this.unLoading();
-                            }.bind(this));
+                            }.bind(this), function(){});
                         }
                     }
                 } else{
@@ -175,6 +176,9 @@ MWF.xApplication.process.Work.Main = new Class({
                         delete this.options.workcompletedid;
                         this.loadWork();
                     }else{
+                        layout.sessionPromise.then(function(){
+                            this.close();
+                        }.bind(this), function(){});
                         //this.close();
                     }
                 }
@@ -196,6 +200,9 @@ MWF.xApplication.process.Work.Main = new Class({
                     loadFormFlag = true;
                     check();
                 }.bind(this), "failure": function(){
+                    layout.sessionPromise.then(function(){
+                        this.close();
+                    }.bind(this), function(){});
                     //this.close();
                 }.bind(this)}, id, id, id, [this.options.formid || this.options.form.id]);
         }else{
@@ -242,6 +249,9 @@ MWF.xApplication.process.Work.Main = new Class({
                         loadWorkFlag = true;
                         check();
                     }.bind(this), "failure": function(){
+                        layout.sessionPromise.then(function(){
+                            this.close();
+                        }.bind(this), function(){});
                         //this.close();
                     }.bind(this)}, id
             );
@@ -348,6 +358,9 @@ MWF.xApplication.process.Work.Main = new Class({
                     }
                 }
             }else{
+                layout.sessionPromise.then(function(){
+                    this.close();
+                }.bind(this), function(){});
                 //this.close();
             }
         }.bind(this), function(){
@@ -375,9 +388,21 @@ MWF.xApplication.process.Work.Main = new Class({
 
                 this.parseData(workData, control, json_form.data, [], [], []);
                 if (this.mask) this.mask.hide();
-                //if (layout.mobile) this.loadMobileActions();
-                this.openWork();
-                this.unLoading();
+
+                if (layout.session && layout.session.user){
+                    this.openWork();
+                    this.unLoading();
+                }else{
+                    if (layout.sessionPromise){
+                        layout.sessionPromise.then(function(){
+                            this.openWork();
+                            this.unLoading();
+                        }.bind(this), function(){});
+                    }
+                }
+
+                // this.openWork();
+                // this.unLoading();
 
             }
         }.bind(this), "failure": function(){}}, [work.form, work.application]);
@@ -672,8 +697,8 @@ MWF.xApplication.process.Work.Main = new Class({
             this.formNode.setStyles(this.css.formNode);
             var uri = window.location.href;
             //var cl = (uri.indexOf("$all")!=-1) ? "$all" : "Form";
-           // var cl = "$all";
-           // MWF.xDesktop.requireApp("process.Xform", cl, function(){
+            var cl = "$all";
+            MWF.xDesktop.requireApp("process.Xform", cl, function(){
             //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.form, {});
                 this.appForm.businessData = {
@@ -722,7 +747,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     }
                     this.fireEvent("postLoadForm");
                 }.bind(this));
-            //}.bind(this));
+            }.bind(this));
         }
     },
 
