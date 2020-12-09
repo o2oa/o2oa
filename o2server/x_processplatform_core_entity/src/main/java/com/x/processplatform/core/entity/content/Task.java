@@ -477,7 +477,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	private String mediaOpinion;
 
 	public static final String first_FIELDNAME = "first";
-	@FieldDescribe("是否是第一条待办.")
+	@FieldDescribe("是否是第一条待办,用于却别待办和草稿.")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + first_FIELDNAME)
 	private Boolean first;
