@@ -86,6 +86,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                 if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
                     if (COMMON.Browser.safari) w = w-20;
                 }
+
+                /**
+                 * 描述信息节点，select\radio\checkbox无此节点，只读情况下无此节点.
+                 * @member {Element}
+                 */
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
                     "width": ""+w+"px",

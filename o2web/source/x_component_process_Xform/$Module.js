@@ -17,7 +17,13 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          */
         this.node = $(node);
         this.node.store("module", this);
+
+        /**
+         * 组件的配置信息，比如id,类型等.
+         * @member {JsonObject}
+         */
         this.json = json;
+
         /**
          * 组件的所在表单对象.
          * @member {MWF.xApplication.process.Xform.Form}
@@ -33,12 +39,18 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         )) parent = parent.getParent();
         return (parent) ? parent.retrieve("module") : null;
     },
+    /**
+     * 隐藏组件.
+     */
     hide: function(){
         var dsp = this.node.getStyle("display");
         if (dsp!=="none") this.node.store("mwf_display", dsp);
         this.node.setStyle("display", "none");
         if (this.iconNode) this.iconNode.setStyle("display", "none");
     },
+    /**
+     * 显示组件.
+     */
     show: function(){
         var dsp = this.node.retrieve("mwf_display", dsp);
         this.node.setStyle("display", dsp);
