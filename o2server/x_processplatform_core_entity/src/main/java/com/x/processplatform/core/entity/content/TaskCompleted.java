@@ -623,7 +623,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	private Date retractTime;
 
 	public static final String latest_FIELDNAME = "latest";
-	@FieldDescribe("同一Job中同一用户是否是最新的.")
+	@FieldDescribe("同一Job中同一用户是否是最新的,多人可以有多条已办,页面显示的时候可以通过此标记仅显示一条最新的.")
 	@Column(name = ColumnNamePrefix + latest_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + latest_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
