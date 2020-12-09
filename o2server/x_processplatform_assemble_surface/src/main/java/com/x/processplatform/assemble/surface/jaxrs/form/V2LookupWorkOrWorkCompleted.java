@@ -48,19 +48,26 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 			if (optional.isPresent()) {
 				this.wo = (Wo) optional.get();
 			} else {
-				List<String> list = new ArrayList<>();
-				CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.form.getProperties());
-				CompletableFuture<List<String>> relatedScriptFuture = this
-						.relatedScriptFuture(this.form.getProperties());
-				list.add(this.form.getId() + this.form.getUpdateTime().getTime());
-				list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
-				list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
-				list = list.stream().sorted().collect(Collectors.toList());
-				this.wo.setId(this.form.getId());
-				CRC32 crc = new CRC32();
-				crc.update(StringUtils.join(list, "#").getBytes());
-				this.wo.setCacheTag(crc.getValue() + "");
-				CacheManager.put(cacheCategory, cacheKey, wo);
+				// 必须重新取出,因为getWorkWorkCompletedForm的form是从缓存中取出,关联值是老的,要重新计算etag需要重新获取更新后的值.
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					this.form = emc.find(form.getId(), Form.class);
+				}
+				if (null != this.form) {
+					List<String> list = new ArrayList<>();
+					CompletableFuture<List<String>> relatedFormFuture = this
+							.relatedFormFuture(this.form.getProperties());
+					CompletableFuture<List<String>> relatedScriptFuture = this
+							.relatedScriptFuture(this.form.getProperties());
+					list.add(this.form.getId() + this.form.getUpdateTime().getTime());
+					list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
+					list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
+					list = list.stream().sorted().collect(Collectors.toList());
+					this.wo.setId(this.form.getId());
+					CRC32 crc = new CRC32();
+					crc.update(StringUtils.join(list, "#").getBytes());
+					this.wo.setCacheTag(crc.getValue() + "");
+					CacheManager.put(cacheCategory, cacheKey, wo);
+				}
 			}
 		}
 		result.setData(wo);
@@ -99,10 +106,9 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 			List<String> list = new ArrayList<>();
 			if (ListTools.isNotEmpty(properties.getRelatedFormList())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
 					Form f;
 					for (String id : properties.getRelatedFormList()) {
-						f = business.form().pick(id);
+						f = emc.find(id, Form.class);
 						if (null != f) {
 							list.add(f.getId() + f.getUpdateTime().getTime());
 						}
@@ -121,7 +127,7 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 			if ((null != properties.getRelatedScriptMap()) && (properties.getRelatedScriptMap().size() > 0)) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
-					list = convertScriptToCacheTag(business, properties.getMobileRelatedScriptMap());
+					list = convertScriptToCacheTag(business, properties.getRelatedScriptMap());
 				} catch (Exception e) {
 					logger.error(e);
 				}
