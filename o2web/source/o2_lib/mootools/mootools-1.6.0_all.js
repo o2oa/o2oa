@@ -23,6 +23,10 @@ provides: [Core, MooTools, Type, typeOf, instanceOf, Native]
 
 ...
 */
+
+if (window.Request){
+	window.NativeRequest = window.Request;
+}
 /*! MooTools: the javascript framework. license: MIT-style license. copyright: Copyright (c) 2006-2015 [Valerio Proietti](http://mad4milk.net/).*/
 (function(){
 
@@ -6933,7 +6937,7 @@ Element.Events.load = {
 };
 
 // This is based on the custom load event
-window.addEvent('load', function(){
+if (window) window.addEvent('load', function(){
 	loaded = true;
 });
 

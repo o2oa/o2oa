@@ -1,61 +1,82 @@
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.Macro = MWF.Macro = {
-	"swapSpace": {},
-	
-	expression: function(code, bind){},
-	runEvent: function(code, bind, arg){},
-	
-	exec: function(code, bind){
+    "swapSpace": {},
+    "scriptSpace": {},
+
+    expression: function(code, bind){},
+    runEvent: function(code, bind, arg){},
+
+    exec: function(code, bind){
         var returnValue;
         //try{
-            if (!bind) bind = window;
-            if (o2.session.isDebugger){
-                try {
-                    var f = eval("(function(){return function(){\n"+code+"\n}})();");
-                    returnValue = f.apply(bind);
-                }catch(e){
-                    console.log(o2.LP.script.error);
-                    if (code.length>500){
-                        var t = code.substr(0,500)+"\n...\n";
-                        console.log(t);
-                    }else{
-                        console.log(code);
-                    }
+        if (!bind) bind = window;
+        //this.bind = bind || window;
 
-                    console.log(e);
-                    //throw e;
-                }
-            }else{
-                try {
-                    var f = eval("(function(){return function(){\n"+code+"\n}})();");
-                    returnValue = f.apply(bind);
-                }catch(e){
-                    console.log(o2.LP.script.error);
-                    if (code.length>500){
-                        var t = code.substr(0,500)+"\n...\n";
-                        console.log(t);
-                    }else{
-                        console.log(code);
-                    }
+        var n = 0;
+        var o = "f"+"_"+n;
+        while (MWF.Macro.scriptSpace[o]){ n++; o = "f"+"_"+n; }
+        //MWF.Macro.scriptSpace[o] = bind;
 
-                    console.log(e);
-                    //throw e;
-                }
-            }
+        if (o2.session.isDebugger){
+            var f = "MWF.Macro.scriptSpace[\""+o+"\"] = function(){\n"+code+"\n}";
+            Browser.exec(f);
+            returnValue = (o2.Macro.scriptSpace[o]) ? o2.Macro.scriptSpace[o].apply(bind) : null;
+        }else{
+            var f = "MWF.Macro.scriptSpace[\""+o+"\"] = function(){try{\n"+code+"\n}catch(e){console.error(e)}}";
+            Browser.exec(f);
+            returnValue = (o2.Macro.scriptSpace[o]) ? o2.Macro.scriptSpace[o].apply(bind) : null;
+        }
+        o2.Macro.scriptSpace[o] = null;
 
-        //}catch(e){}//
-
-
-	//	var macroCode = "MWF.Macro.swapSpace.tmpMacroFunction = function (){"+code+"};";
-	//	Browser.exec(macroCode);
-	//	var returnValue;
-	//	if (!bind) bind = window;
-  ////      try {
-  //          returnValue = MWF.Macro.swapSpace.tmpMacroFunction.apply(bind);
-  ////      }catch(e){};
-		return returnValue;
-	}
+        // if (o2.session.isDebugger){
+        //     this.run(code, bind)
+        // }else{
+        //     try {
+        //         var n = 0;
+        //         var o = "o"+"_"+n;
+        //         while (MWF.Macro.swapSpace[o]){
+        //             n++;
+        //             o = "o"+"_"+n;
+        //         }
+        //         MWF.Macro.swapSpace[o] = bind;
+        //         var f = "try {(function(){\n"+code+"\n}).apply(MWF.Macro.swapSpace[\""+o+"\"])} catch(e){console.log(e);}";
+        //         Browser.exec(f);
+        //         o2.Macro.swapSpace[o] = null;
+        //     }catch(e){
+        //         console.log(o2.LP.script.error);
+        //         if (code.length>500){
+        //             var t = code.substr(0,500)+"\n...\n";
+        //             console.log(t);
+        //         }else{
+        //             console.log(code);
+        //         }
+        //
+        //         console.log(e);
+        //         //throw e;
+        //     }
+        // }
+        return returnValue;
+    }
 };
+//try {
+
+
+// var f = eval("(function(){return function(){\n"+code+"\n}})();");
+// returnValue = f.apply(bind);
+// }catch(e){
+//     console.log(o2.LP.script.error);
+//     if (code.length>500){
+//         var t = code.substr(0,500)+"\n...\n";
+//         console.log(t);
+//     }else{
+//         console.log(code);
+//     }
+//
+//     console.log(e);
+//     debugger;
+//     throw e;
+// }
+MWF.Macro
 
 MWF.Macro.FormContext = new Class({
     macroFunction: null,
