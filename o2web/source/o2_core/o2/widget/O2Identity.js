@@ -159,7 +159,7 @@ o2.widget.O2Identity = new Class({
             }).inject(this.inforNode);
 
             var uri = "/jaxrs/person/{flag}/icon";
-            uri = uri.replace("{flag}", person.id);
+            uri = uri.replace("{flag}", person.id || person.unique || person.distinguishedName );
             this.action.getAddress();
             uri = this.action.address+uri;
 
