@@ -250,7 +250,7 @@ MWF.xApplication.Common.Main = new Class({
 			this.window.titleText.set("text", this.options.title);
 		} catch (e) { }
 
-		if (content && O2.typeOf(content)==="element") this.window.content = content;
+		if (content && o2.typeOf(content)==="element") this.window.content = content;
 		if (!this.window.content) this.window.content = $("appContent") || $("layout");
 		if (!this.window.content) {
 			this.window.content = new Element("div", {"styles": {"width": 0, "height": 0}}).inject(document.body);
