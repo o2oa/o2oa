@@ -1,6 +1,6 @@
 
 MWF.require("MWF.widget.Common", null, false);
-/** @class $Module 组件类，此类为所有组件的父类。 */
+/** @class $Module 组件类，此类为所有组件的父类。*/
 MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     /** @lends MWF.xApplication.process.Xform.$Module# */
     {
@@ -12,7 +12,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     initialize: function(node, json, form, options){
         /**
          * 组件的节点
-         * {@link https://mootools.net/core/docs/1.6.0/Element/Element MootoolsElement }
+         * @see https://mootools.net/core/docs/1.6.0/Element/Element
          * @member {Element}
          */
         this.node = $(node);
