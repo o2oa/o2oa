@@ -71,6 +71,25 @@ public class OauthAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "POST方法实现oauth认证token方法,适配jira.", action = ActionToken.class)
+	@POST
+	@Path("token/jira")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON })
+	public void postTokenJira(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response, @FormParam("code") String code,
+			@FormParam("grant_type") String grant_type) {
+		ActionResult<ActionToken.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionToken().execute(effectivePerson, code, grant_type, MediaType.APPLICATION_JSON);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "GET方法实现oauth认证token方法", action = ActionToken.class)
 	@GET
 	@Path("token")
@@ -107,6 +126,24 @@ public class OauthAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "POST方法实现oauth认证info方法,适配jira.", action = ActionInfo.class)
+	@POST
+	@Path("info/jira")
+	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void postInfoJira(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response, @FormParam("access_token") String access_token) {
+		ActionResult<ActionInfo.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionInfo().execute(request, effectivePerson, access_token, MediaType.APPLICATION_JSON);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "GET方法实现oauth认证info方法.", action = ActionInfo.class)
 	@GET
 	@Path("info")
@@ -118,6 +155,24 @@ public class OauthAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionInfo().execute(request, effectivePerson, access_token, contentType);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "GET方法实现oauth认证info方法,适配jira.", action = ActionInfo.class)
+	@GET
+	@Path("info/jira")
+	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void getInfoJira(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response, @QueryParam("access_token") String access_token) {
+		ActionResult<ActionInfo.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionInfo().execute(request, effectivePerson, access_token, MediaType.APPLICATION_JSON);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

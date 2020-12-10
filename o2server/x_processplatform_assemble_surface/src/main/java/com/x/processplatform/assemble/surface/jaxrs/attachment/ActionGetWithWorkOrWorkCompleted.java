@@ -13,8 +13,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 
 import java.util.List;
 
@@ -23,20 +21,13 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(workId, Work.class);
-			if(work == null){
-				WorkCompleted workCompleted = emc.find(workId, WorkCompleted.class);
-				if (null == workCompleted) {
-					throw new ExceptionEntityNotExist(workId, Work.class);
-				}
-			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, work.getId(),
-					new ExceptionEntityNotExist(work.getId()))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workId,
+					new ExceptionEntityNotExist(workId))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 

@@ -22,7 +22,7 @@ import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Custom.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Custom.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -61,7 +61,7 @@ public class Custom extends SliceJpaObject {
 
 	public static final String person_FIELDNAME = "person";
 	@FieldDescribe("属性所属个人,不可为空.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + person_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String person;

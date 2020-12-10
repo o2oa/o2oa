@@ -152,6 +152,11 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	}
 
 	public List<String> getSplitValueList() {
+		//这里调用必须重新指向一次,如果使用
+		//Work copy = XGsonBuilder.convert(work, Work.class);
+		//copy.copyTo(this, JpaObject.id_FIELDNAME);
+		//这样的方法调用,那么在运行完成以后copy.splitValueList不再指向this.getProperties().getSplitValueList()
+		this.splitValueList = this.getProperties().getSplitValueList();
 		return this.splitValueList;
 	}
 

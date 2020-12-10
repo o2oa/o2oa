@@ -59,6 +59,14 @@
     "###thresholdMinutes": "当工作滞留设定时间后,将尝试触发工作流转,可以自动处理由于人员变动的引起的工作滞留,默认24*60分钟.###"
   },
   "processingSignalPersistEnable": false,
+  "attachmentConfig": {
+    "fileSize": 0.0,
+    "fileTypeIncludes": [],
+    "fileTypeExcludes": [],
+    "###fileSize": "附件大小限制（单位M，默认不限制）.###",
+    "###fileTypeIncludes": "只允许上传的文件后缀###",
+    "###fileTypeExcludes": "不允许上传的文件后缀###"
+  },
   "###maintenanceIdentity": "维护身份,当工作发生意外错误,无法找到对应的处理人情况下,先尝试将工作分配给创建身份,如果创建身份也不可获取,那么分配给指定人员,默认情况下这个值为空.###",
   "###formVersionCount": "表单历史版本保留数量,0为不保留.###",
   "###processVersionCount": "流程历史版本保留数量,0为不保留.###",
@@ -96,5 +104,6 @@
     "###count": "提醒数量限制.###"
   },
   "###extensionEvents": "事件扩充.###",
-  "###processingSignalPersistEnable": "是否保存工作处理信号内容,默认false.###"
+  "###processingSignalPersistEnable": "是否保存工作处理信号内容,默认false.###",
+  "###attachmentConfig": "流程附件上传限制大小或者类型.###"
 }

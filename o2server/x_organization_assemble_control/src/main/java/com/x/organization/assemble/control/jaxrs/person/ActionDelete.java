@@ -33,20 +33,7 @@ import com.x.organization.assemble.control.ThisApplication;
 import com.x.organization.assemble.control.message.OrgBodyMessage;
 import com.x.organization.assemble.control.message.OrgMessage;
 import com.x.organization.assemble.control.message.OrgMessageFactory;
-import com.x.organization.core.entity.Group;
-import com.x.organization.core.entity.Group_;
-import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Identity_;
-import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.PersonAttribute;
-import com.x.organization.core.entity.PersonAttribute_;
-import com.x.organization.core.entity.Person_;
-import com.x.organization.core.entity.Role;
-import com.x.organization.core.entity.Role_;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.UnitDuty;
-import com.x.organization.core.entity.UnitDuty_;
-import com.x.organization.core.entity.Unit_;
+import com.x.organization.core.entity.*;
 
 class ActionDelete extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
@@ -80,6 +67,9 @@ class ActionDelete extends BaseAction {
 				/** 删除个人属性 */
 				emc.beginTransaction(PersonAttribute.class);
 				this.removePersonAttribute(business, person);
+				/** 删除个人自定义信息 */
+				emc.beginTransaction(Custom.class);
+				this.removePersonCustom(business, person);
 				/** 删除群组成员 */
 				emc.beginTransaction(Group.class);
 				this.removeMemberOfGroup(business, person);
@@ -102,12 +92,12 @@ class ActionDelete extends BaseAction {
 				CacheManager.notify(Person.class);
 				/** 通知x_collect_service_transmit同步数据到collect */
 				business.instrument().collect().person();
-				
+
 				/**创建 组织变更org消息通信 */
 				//createMessageCommunicate(person,  effectivePerson);
 				OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
 				orgMessageFactory.createMessageCommunicate("delete", "person", person, effectivePerson);
-				
+
 				Wo wo = new Wo();
 				wo.setId(person.getId());
 				result.setData(wo);
@@ -149,11 +139,11 @@ class ActionDelete extends BaseAction {
 		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 		Root<Unit> root = cq.from(Unit.class);
 		Predicate p = cb.isMember(person.getId(), root.get(Unit_.controllerList));
-		p = cb.or(cb.isMember(person.getId(), root.get(Unit_.inheritedControllerList)));
+		//p = cb.or(cb.isMember(person.getId(), root.get(Unit_.inheritedControllerList)));
 		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		for (Unit o : os) {
 			o.getControllerList().remove(person.getId());
-			o.getInheritedControllerList().remove(person.getId());
+			//o.getInheritedControllerList().remove(person.getId());
 		}
 	}
 
@@ -193,6 +183,19 @@ class ActionDelete extends BaseAction {
 		}
 	}
 
+	private void removePersonCustom(Business business, Person person) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Custom.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Custom> cq = cb.createQuery(Custom.class);
+		Root<Custom> root = cq.from(Custom.class);
+		Predicate p = cb.equal(root.get(Custom_.person), person.getId());
+		p = cb.or(p, cb.equal(root.get(Custom_.person), person.getDistinguishedName()));
+		List<Custom> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		for (Custom o : os) {
+			business.entityManagerContainer().remove(o, CheckRemoveType.all);
+		}
+	}
+
 	private void removeMemberOfGroup(Business business, Person person) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Group.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -216,14 +219,14 @@ class ActionDelete extends BaseAction {
 			o.getPersonList().remove(person.getId());
 		}
 	}
-	
+
 	/**创建 组织变更org消息通信 */
 	private boolean createMessageCommunicate(Person person, EffectivePerson effectivePerson) {
 		try{
 			Gson gson = new Gson();
 			String strPerson = gson.toJson(person);
 			OrgMessage orgMessage = new OrgMessage();
-			
+
 			orgMessage.setOperType("delete");
 			orgMessage.setOrgType("person");
 			orgMessage.setOperUerId(effectivePerson.getDistinguishedName());
@@ -231,26 +234,26 @@ class ActionDelete extends BaseAction {
 			orgMessage.setReceiveSystem("");
 			orgMessage.setConsumed(false);
 			orgMessage.setConsumedModule("");
-			
+
 			OrgBodyMessage orgBodyMessage = new OrgBodyMessage();
 			orgBodyMessage.setOriginalData(strPerson);
 			orgMessage.setBody( gson.toJson(orgBodyMessage));
-			
+
 			Applications applications = new Applications();
 			String path ="org/create";
 		     //String address = "http://127.0.0.1:20020/x_message_assemble_communicate/jaxrs/org/create";
 		     //ActionResponse resp = CipherConnectionAction.post(false, address, body);
-		     
+
 			ActionResponse resp =  ThisApplication.context().applications()
 						.postQuery(x_message_assemble_communicate.class, path, orgMessage);
-		
+
 			String mess = resp.getMessage();
 			String data = resp.getData().toString();
 			return true;
 			}catch(Exception e) {
 				logger.print(e.toString());
 				return false;
-			}	
+			}
 	}
 
 }

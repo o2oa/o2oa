@@ -209,6 +209,7 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
                 }else if (value.indexOf("x_portal_assemble_surface")!==-1){
                     value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                 }
+                value = o2.filterUrl(value);
             }
 
             var reg = /^border\w*/ig;
@@ -250,6 +251,7 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
                     }else if (value.indexOf("x_portal_assemble_surface")!==-1){
                         value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                     }
+                    value = o2.filterUrl(value);
                 }
 
                 var reg = /^border\w*/ig;

@@ -122,6 +122,18 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         return false;
     };
     var _openWorkHTML = function (options) {
+        // var uri = new URI(window.location.href);
+        // var redirectlink = uri.getData("redirectlink");
+        // if (!redirectlink) {
+        //     redirectlink = encodeURIComponent(locate.pathname + locate.search);
+        // } else {
+        //     redirectlink = encodeURIComponent(redirectlink);
+        // }
+        // if (options.workId) {
+        //     window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
+        // } else if (options.workCompletedId) {
+        //     window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
+        // }
         var uri = new URI(window.location.href);
         var redirectlink = uri.getData("redirectlink");
         if (!redirectlink) {
@@ -129,16 +141,6 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         } else {
             redirectlink = encodeURIComponent(redirectlink);
         }
-
-        // if (options.workId) {
-        //     window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
-        // } else if (options.workCompletedId) {
-        //     window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
-        // }else if(options.draft){
-        //     var par = "draft="+encodeURIComponent(JSON.stringify(options.draft));
-        //     docurl = "../x_desktop/workmobilewithaction.html?" + par;
-        // }
-
         var docurl = "../x_desktop/workmobilewithaction.html".toURI();
         if (options.draft){
             var par = "draft="+encodeURIComponent(JSON.stringify(options.draft));
@@ -152,7 +154,6 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         docurl +=((layout.debugger) ? "&debugger" : "");
 
         window.location = o2.filterUrl(docurl);
-
     };
     var _openWork = function (options) {
         if (!_openWorkAndroid(options)) if (!_openWorkIOS(options)) _openWorkHTML(options);
@@ -244,7 +245,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
     };
 
     var _openApplicationPC = function (appNames, options, statusObj) {
-        delete options.docTitle;
+        if (options) delete options.docTitle;
         var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
         switch (appNames) {
             case "process.Work":

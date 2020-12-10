@@ -99,10 +99,9 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 			List<String> list = new ArrayList<>();
 			if (ListTools.isNotEmpty(properties.getRelatedFormList())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
 					Form f;
 					for (String id : properties.getRelatedFormList()) {
-						f = business.form().pick(id);
+						f = emc.find(id, Form.class);
 						if (null != f) {
 							list.add(f.getId() + f.getUpdateTime().getTime());
 						}
@@ -121,7 +120,7 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 			if ((null != properties.getRelatedScriptMap()) && (properties.getRelatedScriptMap().size() > 0)) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
-					list = convertScriptToCacheTag(business, properties.getMobileRelatedScriptMap());
+					list = convertScriptToCacheTag(business, properties.getRelatedScriptMap());
 				} catch (Exception e) {
 					logger.error(e);
 				}
