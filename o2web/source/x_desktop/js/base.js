@@ -407,9 +407,11 @@ o2.addReady(function () {
     // layout.desktop.load = layout.load;
 
     //兼容方法
-    Element.implement({
-        "makeLnk": function (options) { }
-    });
+    if (window.Element){
+        Element.implement({
+            "makeLnk": function (options) { }
+        });
+    }
     layout.desktop.addEvent = function (type, e, d) {
         window.addEvent(type, e, d);
     };
@@ -417,10 +419,10 @@ o2.addReady(function () {
         window.addEvents(e);
     };
 
-    var loadingNode = $("loaddingArea");
+    var loadingNode = (window.$) ? $("loaddingArea") : null;
     var loadeds = 0;
     var loadCount = 4;
-    var size = document.body.getSize();
+    var size = (window.document && document.body) ? document.body.getSize() : null;
     var _closeLoadingNode = function () {
         if (loadingNode) {
             loadingNode.destroy();
@@ -684,7 +686,7 @@ o2.addReady(function () {
     var lp = o2.session.path + "/lp/" + o2.language + ".js";
 
     if (o2.session.isDebugger && (o2.session.isMobile || layout.mobile)) o2.load("../o2_lib/eruda/eruda.js");
-
+    debugger;
     var loadModuls = function () {
         _loadProgressBar();
         lpLoaded = true;
