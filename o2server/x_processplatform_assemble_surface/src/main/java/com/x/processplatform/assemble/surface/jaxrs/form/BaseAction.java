@@ -5,11 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.concurrent.CompletableFuture;
 
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoMaxAgeFastETag;
@@ -20,7 +16,6 @@ import com.x.processplatform.core.entity.content.WorkCompletedProperties;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.RelatedForm;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.RelatedScript;
 import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.FormProperties;
 import com.x.processplatform.core.entity.element.Script;
 
 abstract class BaseAction extends StandardJaxrsAction {

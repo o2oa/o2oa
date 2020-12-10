@@ -274,6 +274,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
                 }else if (value.indexOf("x_portal_assemble_surface")!==-1){
                     value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                 }
+				value = o2.filterUrl(value);
             }
 
             var reg = /^border\w*/ig;
@@ -307,6 +308,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
                 }else if (value.indexOf("x_portal_assemble_surface")!==-1){
                     value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                 }
+				value = o2.filterUrl(value);
             }
             var reg = /^border\w*/ig;
             if (!key.test(reg)){

@@ -104,14 +104,18 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 		this.parentContainer = this.treeNode.parentNode.module;
         this._setEditStyle_custom("id");
         this.json.moduleName = this.moduleName;
+
+		if( this.json.isShow === false ){
+			this._switchShow();
+		}
 	},
 	
 	_createMoveNode: function(){
 		return false;
 	},
-	_setEditStyle_custom: function(name){
-
-	},
+	// _setEditStyle_custom: function(name){
+	//
+	// },
 	_dragInLikeElement: function(module){
 		return false;
 	},
@@ -134,6 +138,10 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 		}.bind(this));
 
 		this.setCustomNodeStyles(this.node, this.parentContainer.json.titleStyles);
+
+		if( this.json.isShow === false ){
+			this._switchShow();
+		}
 	},
 
 	insertCol: function(){
@@ -263,6 +271,31 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 				this.node.set("text", "DataTitle");
 			}else{
 				this.node.set("text", this.json.name);
+			}
+		}
+		if( name=="isShow" ){
+			this._switchShow( true );
+		}
+	},
+	_switchShow: function( isChangeTd ){
+		debugger;
+		var tr = this.node.getParent("tr");
+		var table = tr.getParent("table");
+		var colIndex = this.node.cellIndex;
+		var isShow = this.json.isShow !== false;
+
+		var titleTr = table.rows[0];
+		var currentTh = titleTr.cells[colIndex];
+		if( currentTh ){
+			currentTh.setStyle("opacity", isShow ? "1" : "0.3")
+		}
+
+		if(isChangeTd){
+			var dataTr = table.rows[1];
+			var currentTd = dataTr.cells[colIndex];
+			if( currentTd ){
+				var module = currentTd.retrieve("module");
+				if( module )module._switchShow( isShow );
 			}
 		}
 	}

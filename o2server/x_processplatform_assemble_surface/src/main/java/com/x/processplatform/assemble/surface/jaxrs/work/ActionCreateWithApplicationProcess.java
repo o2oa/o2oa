@@ -1,10 +1,13 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -24,24 +27,18 @@ import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Unit;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
-import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /*
  * 根据应用名称和流程名称进行创建,和直接用process创建基本相同
@@ -89,7 +86,7 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 			if (StringUtils.isEmpty(workId)) {
 				WoId woId = ThisApplication.context().applications()
 						.postQuery(x_processplatform_service_processing.class,
-								"work/process/" + URLEncoder.encode(process.getId(), DefaultCharset.name), wi.getData())
+								Applications.joinQueryUri("work", "process", process.getId()), wi.getData(), null)
 						.getData(WoId.class);
 				workId = woId.getId();
 			}
@@ -117,7 +114,7 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 			}
 			/* 驱动工作,使用非队列方式 */
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", workId, "processing", "nonblocking"), null,processFlag);
+					Applications.joinQueryUri("work", workId, "processing", "nonblocking"), null, null);
 		} else {
 			/* 如果是草稿,准备后面的直接打开 */
 			workId = lastestWorkId;
@@ -336,7 +333,7 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 			} else if (identities.size() == 1) {
 				return identities.get(0);
 			} else {
-				/* 有多个身份需要逐一判断是否包含. */
+				// 有多个身份需要逐一判断是否包含.
 				for (String o : identities) {
 					if (StringUtils.equals(o, wi.getIdentity())) {
 						return o;
@@ -369,21 +366,22 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 				return ObjectUtils.compare(o1.getCompletedTime(), o2.getCompletedTime(), true);
 			}
 		});
-		/* 补充召回 */
-		List<WoTaskCompleted> results = new ArrayList<>();
-		for (WoTaskCompleted o : list) {
-			results.add(o);
-			if (o.getProcessingType().equals(ProcessingType.retract)) {
-				WoTaskCompleted retract = new WoTaskCompleted();
-				o.copyTo(retract);
-				retract.setRouteName("撤回");
-				retract.setOpinion("撤回");
-				retract.setStartTime(retract.getRetractTime());
-				retract.setCompletedTime(retract.getRetractTime());
-				results.add(retract);
-			}
-		}
-		wo.setTaskCompletedList(results);
+		wo.setTaskCompletedList(list);
+//		/* 补充召回 */
+//		List<WoTaskCompleted> results = new ArrayList<>();
+//		for (WoTaskCompleted o : list) {
+//			results.add(o);
+//			if (o.getProcessingType().equals(ProcessingType.retract)) {
+//				WoTaskCompleted retract = new WoTaskCompleted();
+//				o.copyTo(retract);
+//				retract.setRouteName("撤回");
+//				retract.setOpinion("撤回");
+//				retract.setStartTime(retract.getRetractTime());
+//				retract.setCompletedTime(retract.getRetractTime());
+//				results.add(retract);
+//			}
+//		}
+//		wo.setTaskCompletedList(results);
 	}
 
 }

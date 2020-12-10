@@ -62,6 +62,8 @@ class ActionUploadWithWork extends BaseAction {
 			/* 调整可能的附件名称 */
 			fileName = this.adjustFileName(business, work.getJob(), fileName);
 
+			this.verifyConstraint(bytes.length, fileName, null);
+
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			Attachment attachment = this.concreteAttachment(work, effectivePerson, site);
 			attachment.saveContent(mapping, bytes, fileName);
@@ -73,7 +75,7 @@ class ActionUploadWithWork extends BaseAction {
 				logger.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
 						attachment.getText());
 			}
-			
+
 			emc.beginTransaction(Attachment.class);
 			emc.persist(attachment, CheckPersistType.all);
 			emc.commit();

@@ -12,7 +12,7 @@ var gulp = require('gulp'),
     JSFtp = require('jsftp'),
     gutil = require('gulp-util'),
     fs = require("fs");
-    concat = require('gulp-concat');
+concat = require('gulp-concat');
 //let uglify = require('gulp-uglify-es').default;
 var through2 = require('through2');
 var path = require('path');
@@ -764,7 +764,6 @@ function createBaseConcatTask(path, isMin, thisOptions){
             .pipe(gulp.dest(dest))
     });
 }
-
 
 function getAppTask(path, isMin, thisOptions) {
     if (path==="x_component_process_Xform"){

@@ -99,10 +99,9 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 			List<String> list = new ArrayList<>();
 			if (ListTools.isNotEmpty(properties.getMobileRelatedFormList())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
 					Form f;
 					for (String id : properties.getMobileRelatedFormList()) {
-						f = business.form().pick(id);
+						f = emc.find(id, Form.class);
 						if (null != f) {
 							list.add(f.getId() + f.getUpdateTime().getTime());
 						}

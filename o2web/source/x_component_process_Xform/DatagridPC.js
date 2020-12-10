@@ -280,6 +280,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			var module = this.form._loadModule(json, cell);
 			cell.store("module", module);
 			this.form.modules.push(module);
+			if( json.isShow === false )cell.hide();
 		}
 
 	},
@@ -609,6 +610,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			"toolbarGroupHidden": module.json.dg_toolbarGroupHidden || []
 		};
 		if (this.readonly) options.readonly = true;
+		if(!this.editable && !this.addable)options.readonly = true;
 
 		var atts = [];
 		data.each(function(d){
@@ -620,7 +622,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		module.setAttachmentBusinessData();
 
 
-		var attachmentController = new MWF.xApplication.process.Xform.AttachmentController(cell, this, options);
+		var attachmentController = new MWF.xApplication.process.Xform.AttachmentController(cell, module, options);
 		attachmentController.load();
 
 		data.each(function (att) {
@@ -879,8 +881,10 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 							var v = cellData[key];
 
 							var module = this.editModules[index];
-							if( module && module.json.type == "ImageClipper" ){
-								this._createImage( cell, module, v );
+							if( module && module.json.type == "ImageClipper" ) {
+								this._createImage(cell, module, v);
+							}else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
+								this._createAttachment( cell, module, v );
 							}else{
 								var text = this._getValueText(index, v);
 								if( module && module.json.type == "Textarea" ){
@@ -896,6 +900,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 						cell.set("text", tr.rowIndex);
 					}
 
+					var json = this.form._getDomjson(th);
+					if( json && json.isShow === false )cell.hide();
 				}.bind(this));
 			}.bind(this));
 		}
@@ -968,6 +974,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		ths.each(function(th, idx){
 			var td = new Element("td", {"text": "", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
 			if (this.json.amountStyles) td.setStyles(this.json.amountStyles);
+
+			var json = this.form._getDomjson(th);
+			if( json && json.isShow === false )td.hide();
 		}.bind(this));
 	},
 	_loadTotal: function(){
@@ -1060,6 +1069,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			if (json){
 				var module = this.form._loadModule(json, th);
 				this.form.modules.push(module);
+				if( json.isShow === false )th.hide();
 			}
 		}.bind(this));
 	},
@@ -1079,6 +1089,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				}
 				td.store("module", module);
 				this.form.modules.push(module);
+				if( json.isShow === false )td.hide();
 			}
 		}.bind(this));
 	},
@@ -1148,7 +1159,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 					var module = td.retrieve("module");
 					if (module){
 						this.form.modules.erase(module);
-						delete module;
+						module = null;
 					}
 				}
 			}

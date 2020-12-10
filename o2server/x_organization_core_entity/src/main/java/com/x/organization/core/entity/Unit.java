@@ -35,7 +35,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Unit.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Unit.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -189,17 +189,17 @@ public class Unit extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Person.class))
 	private List<String> controllerList;
 
-	public static final String inheritedControllerList_FIELDNAME = "inheritedControllerList";
-	@FieldDescribe("继承自上级组织的管理人员.")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ inheritedControllerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ inheritedControllerList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + inheritedControllerList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + inheritedControllerList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Person.class))
-	private List<String> inheritedControllerList;
+//	public static final String inheritedControllerList_FIELDNAME = "inheritedControllerList";
+//	@FieldDescribe("继承自上级组织的管理人员.")
+//	@PersistentCollection(fetch = FetchType.EAGER)
+//	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+//	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+//			+ inheritedControllerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+//					+ inheritedControllerList_FIELDNAME + JoinIndexNameSuffix))
+//	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + inheritedControllerList_FIELDNAME)
+//	@ElementIndex(name = TABLE + IndexNameMiddle + inheritedControllerList_FIELDNAME + ElementIndexNameSuffix)
+//	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Person.class))
+//	private List<String> inheritedControllerList;
 
 	public static final String dingdingId_FIELDNAME = "dingdingId";
 	@FieldDescribe("钉钉部门ID.")
@@ -351,13 +351,13 @@ public class Unit extends SliceJpaObject {
 		this.distinguishedName = distinguishedName;
 	}
 
-	public List<String> getInheritedControllerList() {
-		return inheritedControllerList;
-	}
-
-	public void setInheritedControllerList(List<String> inheritedControllerList) {
-		this.inheritedControllerList = inheritedControllerList;
-	}
+//	public List<String> getInheritedControllerList() {
+//		return inheritedControllerList;
+//	}
+//
+//	public void setInheritedControllerList(List<String> inheritedControllerList) {
+//		this.inheritedControllerList = inheritedControllerList;
+//	}
 
 	public String getDescription() {
 		return description;

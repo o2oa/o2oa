@@ -41,6 +41,7 @@ MWF.xApplication.cms.FormDesigner.Module.Common = MWF.CMSFCCommon = new Class({
                 }else if (value.indexOf("x_cms_assemble_control")!==-1){
                     value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
                 }
+                value = o2.filterUrl(value);
             }
 
             var reg = /^border\w*/ig;
