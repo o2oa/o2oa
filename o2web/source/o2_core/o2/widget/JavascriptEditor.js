@@ -19,6 +19,7 @@ o2.widget.JavascriptEditor = new Class({
 		this.setOptions(options);
 		this.unbindEvents = [];
 		this.node = $(node);
+		this.id = o2.uuid();
 	},
     getDefaultEditorData: function(){
 	    switch (this.options.type) {
@@ -147,11 +148,11 @@ o2.widget.JavascriptEditor = new Class({
                 }.bind(this));
 
 
-                o2.widget.JavascriptEditor.getCompletionEnvironment(this.options.runtime, function(){
+                //o2.widget.JavascriptEditor.getCompletionEnvironment(this.options.runtime, function(){
                     this.monacoModel = this.editor.getModel();
                     this.monacoModel.o2Editor = this;
                     this.registerCompletion();
-                }.bind(this));
+                //}.bind(this));
 
                 this.fireEvent("postLoad");
                 if (callback) callback();
@@ -228,9 +229,9 @@ o2.widget.JavascriptEditor = new Class({
                     this.setFontSize( this.fontSize );
                 }
 
-                o2.widget.JavascriptEditor.getCompletionEnvironment(this.options.runtime, function(){
+                //o2.widget.JavascriptEditor.getCompletionEnvironment(this.options.runtime, function(){
                     this.registerCompletion();
-                }.bind(this));
+                //}.bind(this));
 
                 this.fireEvent("postLoad");
                 if (callback) callback();
@@ -238,7 +239,6 @@ o2.widget.JavascriptEditor = new Class({
         }.bind(this));
     },
     registerCompletion: function(){
-
         if (this.editor){
             switch (this.options.type.toLowerCase()) {
                 case "ace": this.registerCompletionAce(); break;
@@ -247,47 +247,86 @@ o2.widget.JavascriptEditor = new Class({
         }
     },
 
-    getCompletionObject: function(textPrefix, runtime){
-        var macro = o2.widget.JavascriptEditor.runtimeEnvironment[runtime];
-        var o = null;
-        if (macro){
-            prefix = ["(", "{", ""];
-            code = "try {return "+textPrefix+";}catch(e){return null;}";
-            o = macro.exec(code);
+    filterRangeScript: function(s, f1, f2){
+        var textScript = "";
+        var n = 0;
+        for (var i=s.length-1; i>=0; i--){
+            var char = s.charAt(i);
+            if (char==f2) n++;
+            if (char==f1){
+                n--;
+                if (n<0) break;
+            }
+            textScript = char+textScript;
         }
-        return o;
+        return textScript;
+    },
+
+    getCompletionObject: function(textPrefix, preCode, range, runtime, callback){
+        textPrefix = this.filterRangeScript(textPrefix, "(", ")");
+        textPrefix = this.filterRangeScript(textPrefix, "{", "}");
+        textPrefix = this.filterRangeScript(textPrefix, "[", "]");
+
+        if (textPrefix.lastIndexOf("=")!=-1) textPrefix = textPrefix.substr(textPrefix.lastIndexOf("=")+1);
+        if (textPrefix.lastIndexOf(" new ")!=-1) textPrefix = textPrefix.substr(textPrefix.lastIndexOf(" new ")+5);
+
+        var codeObj = {
+            "code": textPrefix,
+            "preCode": preCode,
+            "runtime": runtime,
+            "id": this.id,
+            "type": this.options.type,
+            "range": range
+        }
+
+        return o2.JSEditorCWE.exec(codeObj, callback);
     },
     registerCompletionMonaco: function(){
         if (!o2.widget.monaco.registeredCompletion){
             monaco.languages.registerCompletionItemProvider('javascript', {
                 "triggerCharacters": ["."],
                 provideCompletionItems: function (model, position, context, token) {
-                    debugger;
                     var textUntilPosition = model.getValueInRange({ startLineNumber: position.lineNumber, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column });
                     var textPrefix = textUntilPosition.substr(0, textUntilPosition.lastIndexOf("."));
 
+                    if (textPrefix){
+                        var preCode = "";
+                        var endLineNumber = (position.lineNumber>1) ? position.lineNumber-1 : 0;
+                        if (endLineNumber>0){
+                            var range = {
+                                endColumn: model.getLineMaxColumn(endLineNumber),
+                                endLineNumber: endLineNumber,
+                                startColumn: 1,
+                                startLineNumber: 1
+                            };
+                            var preCode = model.getValueInRange(range);
+                        }
 
-                    var o = this.getCompletionObject(textPrefix, model.o2Editor.options.runtime);
+                        var word = model.getWordUntilPosition(position);
+                        var insertRange = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: word.startColumn, endColumn: word.endColumn };
 
-                    var word = model.getWordUntilPosition(position);
-                    var range = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: word.startColumn, endColumn: word.endColumn };
+                        return new Promise(function(s){
+                            this.getCompletionObject(textPrefix, preCode, insertRange, model.o2Editor.options.runtime, function(o){
 
-                    if (o) {
-                        var arr = [];
-                        Object.keys(o).each(function (key) {
-                            var keyType = typeOf(o[key]);
-                            if (keyType === "function") {
-                                var count = o[key].length;
-                                var v = key + "(";
-                                for (var i = 1; i <= count; i++) v += (i == count) ? "par" + i : "par" + i + ", ";
-                                v += ")";
-                                arr.push({ label: key, kind: monaco.languages.CompletionItemKind.Function, insertText: v, range: range, detail: keyType });
-                            } else {
-                                arr.push({ label: key, kind: monaco.languages.CompletionItemKind.Interface, insertText: key, range: range, detail: keyType });
-                            }
-                        });
+                                // if (o) {
+                                //     var arr = [];
+                                //     Object.keys(o).each(function (key) {
+                                //         var keyType = typeOf(o[key]);
+                                //         if (keyType === "function") {
+                                //             var count = o[key].length;
+                                //             var v = key + "(";
+                                //             for (var i = 1; i <= count; i++) v += (i == count) ? "par" + i : "par" + i + ", ";
+                                //             v += ")";
+                                //             arr.push({ label: key, kind: monaco.languages.CompletionItemKind.Function, insertText: v, range: range, detail: keyType });
+                                //         } else {
+                                //             arr.push({ label: key, kind: monaco.languages.CompletionItemKind.Interface, insertText: key, range: range, detail: keyType });
+                                //         }
+                                //     });
+                                // }
+                                s({suggestions: o});
+                            }.bind(this));
+                        }.bind(this));
                     }
-                    return {suggestions: arr}
                 }.bind(this)
             });
             o2.widget.monaco.registeredCompletion = true;
@@ -299,27 +338,31 @@ o2.widget.JavascriptEditor = new Class({
             var exports = ace.require("ace/ext/language_tools");
             exports.addCompleter({
                 identifierRegexps: [
-                    /[a-zA-Z_0-9\$\-\u00A2-\uFFFF\.]/
+                    /[a-zA-Z_0-9\$\-\u00A2-\uFFFF]/
                 ],
                 getCompletions: function(editor, session, pos, prefix, callback){
-                    var x = prefix.substr(0, prefix.lastIndexOf("."));
-                    var o = this.getCompletionObject(x, editor.o2Editor.options.runtime);
+                    debugger;
+                    var codeRange = session.getWordRange(pos.row, 0);
+                    codeRange.setEnd(pos.row, pos.column);
+                    var x = session.getTextRange(codeRange);
+                    x = x.substr(0, x.lastIndexOf("."));
 
-                    if (o){
-                        var arr = [];
-                        Object.keys(o).each(function(key){
-                            var keyType = typeOf(o[key]);
-                            if (keyType==="function") {
-                                var count = o[key].length;
-                                var v = x+"."+key+"(";
-                                for (var i=1; i<=count; i++) v+= (i==count) ? "par"+i :  "par"+i+", ";
-                                v+=");";
-                                arr.push({ caption: key, value: v, score: 3, meta: keyType });
-                            }else{
-                                arr.push({ caption: key, value: x+"."+key, score: 3, meta: keyType });
-                            }
-                        });
-                        callback(null, arr);
+                    if (x){
+                        var endLineNumber = (pos.row>0) ? pos.row-1 : -1;
+                        var preCode = "";
+
+                        if (endLineNumber>-1){
+                            var range = session.getWordRange(0,0);
+                            range.setEnd(endLineNumber, session.getLine(endLineNumber).length);
+                            preCode = session.getTextRange(range);
+                        }
+
+                        return new Promise(function(s){
+                            this.getCompletionObject(x, preCode, null, editor.o2Editor.options.runtime, function(o){
+                                callback(null, o);
+                                if (s) s(o);
+                            }.bind(this));
+                        }.bind(this));
                     }
                 }.bind(this)
             });
@@ -571,132 +614,163 @@ o2.widget.JavascriptEditor = new Class({
     }
 });
 
-o2.widget.JavascriptEditor.runtimeEnvironment = {};
-o2.widget.JavascriptEditor.getCompletionEnvironment = function(runtime, callback) {
+// o2.widget.JavascriptEditor.runtimeEnvironment = {};
+// o2.widget.JavascriptEditor.getCompletionEnvironment = function(runtime, callback) {
+//
+//     if (!o2.widget.JavascriptEditor.runtimeEnvironment[runtime]) {
+//         o2.require("o2.xScript.Macro", function() {
+//             switch (runtime) {
+//                 case "service":
+//                     o2.widget.JavascriptEditor.getServiceCompletionEnvironment(runtime,callback);
+//                     break;
+//                 case "server":
+//                     o2.widget.JavascriptEditor.getServerCompletionEnvironment(runtime,callback);
+//                     break;
+//                 case "all":
+//                     o2.widget.JavascriptEditor.getAllCompletionEnvironment(runtime,callback);
+//                     break;
+//                 default:
+//                     o2.widget.JavascriptEditor.getDefaultCompletionEnvironment(runtime,callback);
+//             }
+//         });
+//     } else {
+//         if (callback) callback();
+//     }
+// };
+//
+// o2.widget.JavascriptEditor.getServiceCompletionEnvironment = function(runtime, callback) {
+//     //var serviceScriptText = null;
+//     var serviceScriptSubstitute = null;
+//     var check = function () {
+//         //if (o2.typeOf(serviceScriptText) !== "null" && o2.typeOf(serviceScriptSubstitute) !== "null") {
+//         if (o2.typeOf(serviceScriptSubstitute) !== "null") {
+//             //var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + serviceScriptSubstitute + "\n" + serviceScriptText + "\nreturn bind;" + "\n};";
+//             var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + serviceScriptSubstitute + "\nreturn bind;" + "\n};";
+//             Browser.exec(code);
+//             var ev = o2.Macro.swapSpace.tmpMacroCompletionFunction() ;
+//             o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = {
+//                 "environment": ev,
+//                 exec: function(code){
+//                     return o2.Macro.exec(code, this.environment);
+//                 }
+//             }
+//             if (callback) callback();
+//         }
+//     }
+//
+//     // o2.xhr_get("../x_desktop/js/initialServiceScriptText.js", function (xhr) {
+//     //     serviceScriptText = xhr.responseText;
+//     //     check();
+//     // }, function () {
+//     //     serviceScriptText = "";
+//     //     check();
+//     // });
+//     o2.xhr_get("../x_desktop/js/initalServiceScriptSubstitute.js", function (xhr) {
+//         serviceScriptSubstitute = xhr.responseText;
+//         check();
+//     }, function () {
+//         serviceScriptSubstitute = "";
+//         check();
+//     });
+// };
+//
+// o2.widget.JavascriptEditor.getServerCompletionEnvironment = function(runtime, callback) {
+//    //var serverScriptText = null;
+//     var serverScriptSubstitute = null;
+//     var check = function () {
+//         // if (o2.typeOf(serverScriptText) !== "null" && o2.typeOf(serverScriptSubstitute) !== "null") {
+//         //     var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + serverScriptSubstitute + "\n" + serverScriptText + "\nreturn bind;" + "\n};";
+//         if (o2.typeOf(serverScriptSubstitute) !== "null") {
+//             var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + serverScriptSubstitute + "\nreturn bind;" + "\n};";
+//             Browser.exec(code);
+//             var ev = o2.Macro.swapSpace.tmpMacroCompletionFunction();
+//             o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = {
+//                 "environment": ev,
+//                 exec: function(code){
+//                     return o2.Macro.exec(code, this.environment);
+//                 }
+//             }
+//             if (callback) callback();
+//         }
+//     }
+//
+//     // o2.xhr_get("../x_desktop/js/initialScriptText.js", function (xhr) {
+//     //     serverScriptText = xhr.responseText;
+//     //     check();
+//     // }, function () {
+//     //     serverScriptText = "";
+//     //     check();
+//     // });
+//     o2.xhr_get("../x_desktop/js/initalScriptSubstitute.js", function (xhr) {
+//         serverScriptSubstitute = xhr.responseText;
+//         check();
+//     }, function () {
+//         serverScriptSubstitute = "";
+//         check();
+//     });
+// };
+//
+// o2.widget.JavascriptEditor.getDefaultCompletionEnvironment = function(runtime, callback){
+//     var json = null;
+//     o2.getJSON("../o2_core/o2/widget/$JavascriptEditor/environment.json", function (data) {
+//         json = data;
+//         o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = new o2.Macro.FormContext(json);
+//         if (callback) callback();
+//     });
+// }
+//
+// o2.widget.JavascriptEditor.getAllCompletionEnvironment = function(runtime, callback){
+//     var check = function(){
+//         if (o2.widget.JavascriptEditor.runtimeEnvironment["service"] && o2.widget.JavascriptEditor.runtimeEnvironment["server"] && o2.widget.JavascriptEditor.runtimeEnvironment["web"] ){
+//         //if (o2.widget.JavascriptEditor.runtimeEnvironment["web"] ){
+//             var ev = Object.merge(o2.widget.JavascriptEditor.runtimeEnvironment["service"].environment,
+//                 o2.widget.JavascriptEditor.runtimeEnvironment["server"].environment,
+//                 o2.widget.JavascriptEditor.runtimeEnvironment["web"].environment)
+//
+//             //var ev = o2.widget.JavascriptEditor.runtimeEnvironment["web"].environment;
+//
+//             o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = {
+//                 "environment": ev,
+//                 exec: function(code){
+//                     return o2.Macro.exec(code, this.environment);
+//                 }
+//             }
+//             if (callback) callback();
+//         }
+//     }
+//     o2.widget.JavascriptEditor.getServiceCompletionEnvironment("service", check);
+//     o2.widget.JavascriptEditor.getServerCompletionEnvironment("server", check);
+//     o2.widget.JavascriptEditor.getDefaultCompletionEnvironment("web", check);
+//
+// }
 
-    if (!o2.widget.JavascriptEditor.runtimeEnvironment[runtime]) {
-        o2.require("o2.xScript.Macro", function() {
-            switch (runtime) {
-                case "service":
-                    o2.widget.JavascriptEditor.getServiceCompletionEnvironment(runtime,callback);
-                    break;
-                case "server":
-                    o2.widget.JavascriptEditor.getServerCompletionEnvironment(runtime,callback);
-                    break;
-                case "all":
-                    o2.widget.JavascriptEditor.getAllCompletionEnvironment(runtime,callback);
-                    break;
-                default:
-                    o2.widget.JavascriptEditor.getDefaultCompletionEnvironment(runtime,callback);
+o2.widget.JavascriptEditor.completionWorkerEnvironment = o2.JSEditorCWE = {
+    init: function(){
+        this.callbackPool = {};
+        this.scriptWorker = new Worker("../o2_core/scriptWorker.js");
+        this.scriptWorker.onmessage = function(e) {
+            if (e.data && e.data.type=="ready") this.setOnMessage();
+        }.bind(this);
+        return this;
+    },
+    setOnMessage: function(){
+        this.scriptWorker.onmessage = function(e) {
+            var o = e.data;
+            if (o){
+                var bo = this.callbackPool[o.id];
+                if (bo.uuid==o.uuid) if (bo.callback) bo.callback(o.o);
             }
-        });
-    } else {
-        if (callback) callback();
-    }
-};
-
-o2.widget.JavascriptEditor.getServiceCompletionEnvironment = function(runtime, callback) {
-    //var serviceScriptText = null;
-    var serviceScriptSubstitute = null;
-    var check = function () {
-        //if (o2.typeOf(serviceScriptText) !== "null" && o2.typeOf(serviceScriptSubstitute) !== "null") {
-        if (o2.typeOf(serviceScriptSubstitute) !== "null") {
-            //var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + serviceScriptSubstitute + "\n" + serviceScriptText + "\nreturn bind;" + "\n};";
-            var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + serviceScriptSubstitute + "\nreturn bind;" + "\n};";
-            Browser.exec(code);
-            var ev = o2.Macro.swapSpace.tmpMacroCompletionFunction() ;
-            o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = {
-                "environment": ev,
-                exec: function(code){
-                    return o2.Macro.exec(code, this.environment);
-                }
+        }.bind(this);
+    },
+    exec: function(o, callback){
+        if (this.scriptWorker){
+            var uuid = o2.uuid();
+            o.uuid = uuid;
+            this.callbackPool[o.id] = {
+                "callback": callback,
+                "uuid": uuid
             }
-            if (callback) callback();
+            this.scriptWorker.postMessage(o);
         }
     }
-
-    // o2.xhr_get("../x_desktop/js/initialServiceScriptText.js", function (xhr) {
-    //     serviceScriptText = xhr.responseText;
-    //     check();
-    // }, function () {
-    //     serviceScriptText = "";
-    //     check();
-    // });
-    o2.xhr_get("../x_desktop/js/initalServiceScriptSubstitute.js", function (xhr) {
-        serviceScriptSubstitute = xhr.responseText;
-        check();
-    }, function () {
-        serviceScriptSubstitute = "";
-        check();
-    });
-};
-
-o2.widget.JavascriptEditor.getServerCompletionEnvironment = function(runtime, callback) {
-   //var serverScriptText = null;
-    var serverScriptSubstitute = null;
-    var check = function () {
-        // if (o2.typeOf(serverScriptText) !== "null" && o2.typeOf(serverScriptSubstitute) !== "null") {
-        //     var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + serverScriptSubstitute + "\n" + serverScriptText + "\nreturn bind;" + "\n};";
-        if (o2.typeOf(serverScriptSubstitute) !== "null") {
-            var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + serverScriptSubstitute + "\nreturn bind;" + "\n};";
-            Browser.exec(code);
-            var ev = o2.Macro.swapSpace.tmpMacroCompletionFunction();
-            o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = {
-                "environment": ev,
-                exec: function(code){
-                    return o2.Macro.exec(code, this.environment);
-                }
-            }
-            if (callback) callback();
-        }
-    }
-
-    // o2.xhr_get("../x_desktop/js/initialScriptText.js", function (xhr) {
-    //     serverScriptText = xhr.responseText;
-    //     check();
-    // }, function () {
-    //     serverScriptText = "";
-    //     check();
-    // });
-    o2.xhr_get("../x_desktop/js/initalScriptSubstitute.js", function (xhr) {
-        serverScriptSubstitute = xhr.responseText;
-        check();
-    }, function () {
-        serverScriptSubstitute = "";
-        check();
-    });
-};
-
-o2.widget.JavascriptEditor.getDefaultCompletionEnvironment = function(runtime, callback){
-    var json = null;
-    o2.getJSON("../o2_core/o2/widget/$JavascriptEditor/environment.json", function (data) {
-        json = data;
-        o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = new o2.Macro.FormContext(json);
-        if (callback) callback();
-    });
-}
-
-o2.widget.JavascriptEditor.getAllCompletionEnvironment = function(runtime, callback){
-    var check = function(){
-        if (o2.widget.JavascriptEditor.runtimeEnvironment["service"] && o2.widget.JavascriptEditor.runtimeEnvironment["server"] && o2.widget.JavascriptEditor.runtimeEnvironment["web"] ){
-        //if (o2.widget.JavascriptEditor.runtimeEnvironment["web"] ){
-            var ev = Object.merge(o2.widget.JavascriptEditor.runtimeEnvironment["service"].environment,
-                o2.widget.JavascriptEditor.runtimeEnvironment["server"].environment,
-                o2.widget.JavascriptEditor.runtimeEnvironment["web"].environment)
-
-            //var ev = o2.widget.JavascriptEditor.runtimeEnvironment["web"].environment;
-
-            o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = {
-                "environment": ev,
-                exec: function(code){
-                    return o2.Macro.exec(code, this.environment);
-                }
-            }
-            if (callback) callback();
-        }
-    }
-    o2.widget.JavascriptEditor.getServiceCompletionEnvironment("service", check);
-    o2.widget.JavascriptEditor.getServerCompletionEnvironment("server", check);
-    o2.widget.JavascriptEditor.getDefaultCompletionEnvironment("web", check);
-
-}
+}.init();

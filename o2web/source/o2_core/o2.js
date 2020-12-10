@@ -434,6 +434,7 @@ if (!window.Promise){
         "raphael": ["../o2_lib/raphael/raphael.js"],
         "d3": ["../o2_lib/d3/d3.min.js"],
         "ace": ["../o2_lib/ace/src-min-noconflict/ace.js","../o2_lib/ace/src-min-noconflict/ext-language_tools.js"],
+        //"ace": ["../o2_lib/ace/src-noconflict/ace.js","../o2_lib/ace/src-noconflict/ext-language_tools.js"],
         "monaco": ["../o2_lib/vs/loader.js"],
         "JSBeautifier": ["../o2_lib/JSBeautifier/beautify.js"],
         "JSBeautifier_css": ["../o2_lib/JSBeautifier/beautify-css.js"],
@@ -507,32 +508,44 @@ if (!window.Promise){
     };
 
     var _load = function(urls, options, callback){
-        var ms = (_typeOf(urls)==="array") ? urls : [urls];
-        var op =  (_typeOf(options)==="object") ? _getJsOptions(options) : _getJsOptions(null);
-        var cbk = (_typeOf(options)==="function") ? options : callback;
+        if (window.document && !window.importScripts){
+            var ms = (_typeOf(urls)==="array") ? urls : [urls];
+            var op =  (_typeOf(options)==="object") ? _getJsOptions(options) : _getJsOptions(null);
+            var cbk = (_typeOf(options)==="function") ? options : callback;
 
-        var cb = cbk;
-        if (typeof define === 'function' && define.amd){
-            define.amd = false;
-            cb = (cbk) ? function(){define.amd = true; cbk();} : function(){define.amd = true;}
-        }
+            var cb = cbk;
+            if (typeof define === 'function' && define.amd){
+                define.amd = false;
+                cb = (cbk) ? function(){define.amd = true; cbk();} : function(){define.amd = true;}
+            }
 
-        var modules = [];
-        for (var i=0; i<ms.length; i++){
-            var url = ms[i];
-            var module = _frameworks[url] || url;
-            if (_typeOf(module)==="array"){
-                modules = modules.concat(module)
+            var modules = [];
+            for (var i=0; i<ms.length; i++){
+                var url = ms[i];
+                var module = _frameworks[url] || url;
+                if (_typeOf(module)==="array"){
+                    modules = modules.concat(module)
+                }else{
+                    modules.push(module)
+                }
+            }
+            var thisLoaded = [];
+            if (op.sequence){
+                _loadSequence(modules, cb, op, 0, thisLoaded, _loadSingle);
             }else{
-                modules.push(module)
+                _loadDisarray(modules, cb, op, thisLoaded, _loadSingle);
+            }
+        }else{
+            if (window.importScripts){
+                var ms = (_typeOf(urls)==="array") ? urls : [urls];
+                ms.each(function(url){
+                    window.importScripts(o2.filterUrl(url));
+                });
+                var cbk = (_typeOf(options)==="function") ? options : callback;
+                if (cbk) cbk();
             }
         }
-        var thisLoaded = [];
-        if (op.sequence){
-            _loadSequence(modules, cb, op, 0, thisLoaded, _loadSingle);
-        }else{
-            _loadDisarray(modules, cb, op, thisLoaded, _loadSingle);
-        }
+
     };
     this.o2.load = _load;
 
@@ -1059,31 +1072,36 @@ if (!window.Promise){
         var jsPath = (compression || !this.o2.session.isDebugger) ? url.replace(/\.js/, ".min.js") : url;
         jsPath = (jsPath.indexOf("?")!==-1) ? jsPath+"&v="+this.o2.version.v : jsPath+"?v="+this.o2.version.v;
 
-        var xhr = new Request({
-            url: o2.filterUrl(jsPath), async: async, method: "get",
-            onSuccess: function(){
-                //try{
-                _loaded[key] = true;
-                o2.runCallback(callback, "success", [module]);
-                //}catch (e){
-                //    o2.runCallback(callback, "failure", [e]);
-                //}
-            },
-            onFailure: function(r){
-                var rex = /lp\/.+\.js/;
-                if (rex.test(url)){
-                    var zhcnUrl = url.replace(rex, "lp/zh-cn.js");
-                    if (zhcnUrl!==url){
-                        _requireJs(zhcnUrl, callback, async, compression, module)
+        if (window.importScripts){
+            window.importScripts(o2.filterUrl(jsPath));
+            o2.runCallback(callback, "success", [module]);
+        }else{
+            var xhr = new Request({
+                url: o2.filterUrl(jsPath), async: async, method: "get",
+                onSuccess: function(){
+                    //try{
+                    _loaded[key] = true;
+                    o2.runCallback(callback, "success", [module]);
+                    //}catch (e){
+                    //    o2.runCallback(callback, "failure", [e]);
+                    //}
+                },
+                onFailure: function(r){
+                    var rex = /lp\/.+\.js/;
+                    if (rex.test(url)){
+                        var zhcnUrl = url.replace(rex, "lp/zh-cn.js");
+                        if (zhcnUrl!==url){
+                            _requireJs(zhcnUrl, callback, async, compression, module)
+                        }else{
+                            o2.runCallback(callback, "failure", [r]);
+                        }
                     }else{
                         o2.runCallback(callback, "failure", [r]);
                     }
-                }else{
-                    o2.runCallback(callback, "failure", [r]);
                 }
-            }
-        });
-        xhr.send();
+            });
+            xhr.send();
+        }
     };
     var _requireSingle = function(module, callback, async, compression){
         if (o2.typeOf(module)==="array"){
@@ -2604,97 +2622,142 @@ o2.more = true;
 //o2.addReady
 (function(){
     //dom ready
-    var _dom = {
-        ready: false,
-        loaded: false,
-        checks: [],
-        shouldPoll: false,
-        timer: null,
-        testElement: document.createElement('div'),
-        readys: [],
+    var _dom;
+    if (window.document){
+        _dom = {
+            ready: false,
+            loaded: false,
+            checks: [],
+            shouldPoll: false,
+            timer: null,
+            testElement: document.createElement('div'),
+            readys: [],
 
-        domready: function(){
-            clearTimeout(_dom.timer);
-            if (_dom.ready) return;
-            _dom.loaded = _dom.ready = true;
-            o2.removeListener(document, 'DOMContentLoaded', _dom.checkReady);
-            o2.removeListener(document, 'readystatechange', _dom.check);
-            _dom.onReady();
-        },
-        check: function(){
-            for (var i = _dom.checks.length; i--;) if (_dom.checks[i]() && window.MooTools && o2.core && o2.more){
-                _dom.domready();
-                return true;
+            domready: function(){
+                clearTimeout(_dom.timer);
+                if (_dom.ready) return;
+                _dom.loaded = _dom.ready = true;
+                o2.removeListener(document, 'DOMContentLoaded', _dom.checkReady);
+                o2.removeListener(document, 'readystatechange', _dom.check);
+                _dom.onReady();
+            },
+            check: function(){
+                for (var i = _dom.checks.length; i--;) if (_dom.checks[i]() && window.MooTools && o2.core && o2.more){
+                    _dom.domready();
+                    return true;
+                }
+                return false;
+            },
+            poll: function(){
+                clearTimeout(_dom.timer);
+                if (!_dom.check()) _dom.timer = setTimeout(_dom.poll, 10);
+            },
+
+            /*<ltIE8>*/
+            // doScroll technique by Diego Perini http://javascript.nwbox.com/IEContentLoaded/
+            // testElement.doScroll() throws when the DOM is not ready, only in the top window
+            doScrollWorks: function(){
+                try {
+                    _dom.testElement.doScroll();
+                    return true;
+                } catch (e){}
+                return false;
+            },
+            /*</ltIE8>*/
+
+            onReady: function(){
+                for (var i=0; i<_dom.readys.length; i++){
+                    this.readys[i].apply(window);
+                }
+            },
+            addReady: function(fn){
+                if (_dom.loaded){
+                    if (fn) fn.apply(window);
+                }else{
+                    if (fn) _dom.readys.push(fn);
+                }
+                return _dom;
+            },
+            checkReady: function(){
+                _dom.checks.push(function(){return true});
+                _dom.check();
             }
-            return false;
-        },
-        poll: function(){
-            clearTimeout(_dom.timer);
-            if (!_dom.check()) _dom.timer = setTimeout(_dom.poll, 10);
-        },
+        };
+
+
+        o2.addListener(document, 'DOMContentLoaded', _dom.checkReady);
 
         /*<ltIE8>*/
-        // doScroll technique by Diego Perini http://javascript.nwbox.com/IEContentLoaded/
-        // testElement.doScroll() throws when the DOM is not ready, only in the top window
-        doScrollWorks: function(){
-            try {
-                _dom.testElement.doScroll();
-                return true;
-            } catch (e){}
-            return false;
-        },
+        // If doScroll works already, it can't be used to determine domready
+        //   e.g. in an iframe
+        if (_dom.testElement.doScroll && !_dom.doScrollWorks()){
+            _dom.checks.push(_dom.doScrollWorks);
+            _dom.shouldPoll = true;
+        }
         /*</ltIE8>*/
 
-        onReady: function(){
-            for (var i=0; i<_dom.readys.length; i++){
-                this.readys[i].apply(window);
+        if (document.readyState) _dom.checks.push(function(){
+            var state = document.readyState;
+            return (state == 'loaded' || state == 'complete');
+        });
+
+        if ('onreadystatechange' in document) o2.addListener(document, 'readystatechange', _dom.check);
+        else _dom.shouldPoll = true;
+
+        if (_dom.shouldPoll) _dom.poll();
+    }else{
+        _dom = {
+            ready: false,
+            loaded: false,
+            checks: [],
+            shouldPoll: false,
+            timer: null,
+            readys: [],
+
+            domready: function(){
+                clearTimeout(_dom.timer);
+                if (_dom.ready) return;
+                _dom.loaded = _dom.ready = true;
+                _dom.onReady();
+            },
+            check: function(){
+                if (window.MooTools && o2.core && o2.more){
+                    _dom.domready();
+                    return true;
+                }
+                return false;
+            },
+            onReady: function(){
+                for (var i=0; i<_dom.readys.length; i++){
+                    this.readys[i].apply(window);
+                }
+            },
+            addReady: function(fn){
+                if (_dom.loaded){
+                    if (fn) fn.apply(window);
+                }else{
+                    if (fn) _dom.readys.push(fn);
+                }
+                return _dom;
+            },
+            checkReady: function(){
+                _dom.checks.push(function(){return true});
+                _dom.check();
             }
-        },
-        addReady: function(fn){
-            if (_dom.loaded){
-                if (fn) fn.apply(window);
-            }else{
-                if (fn) _dom.readys.push(fn);
-            }
-            return _dom;
-        },
-        checkReady: function(){
-            _dom.checks.push(function(){return true});
-            _dom.check();
-        }
-    };
+        };
+    }
     var _loadO2 = function(){
         (!o2.core) ? this.o2.load("o2.core", _dom.check) : _dom.check();
         (!o2.more) ? this.o2.load("o2.more", _dom.check) : _dom.check();
     };
-
-    o2.addListener(document, 'DOMContentLoaded', _dom.checkReady);
-
-    /*<ltIE8>*/
-    // If doScroll works already, it can't be used to determine domready
-    //   e.g. in an iframe
-    if (_dom.testElement.doScroll && !_dom.doScrollWorks()){
-        _dom.checks.push(_dom.doScrollWorks);
-        _dom.shouldPoll = true;
-    }
-    /*</ltIE8>*/
-
-    if (document.readyState) _dom.checks.push(function(){
-        var state = document.readyState;
-        return (state == 'loaded' || state == 'complete');
-    });
-
-    if ('onreadystatechange' in document) o2.addListener(document, 'readystatechange', _dom.check);
-    else _dom.shouldPoll = true;
-
-    if (_dom.shouldPoll) _dom.poll();
-
     if (!window.MooTools){
         this.o2.load("mootools", function(){ _loadO2(); _dom.check(); });
     }else{
         _loadO2();
     }
     this.o2.addReady = function(fn){ _dom.addReady.call(_dom, fn); };
+
+
 })();
 
 //compatible
@@ -2704,7 +2767,7 @@ COMMON = {
         COMMON.contentPath = path;
     },
     "JSON": o2.JSON,
-    "Browser": Browser,
+    "Browser": window.Browser,
     "Class": o2.Class,
     "XML": o2.xml,
     "AjaxModule": {
@@ -2721,7 +2784,7 @@ COMMON = {
     "Request": Request,
     "typeOf": o2.typeOf
 };
-COMMON.Browser.Platform.isMobile = o2.session.isMobile;
+if (COMMON.Browser) COMMON.Browser.Platform.isMobile = o2.session.isMobile;
 COMMON.DOM.addReady = o2.addReady;
 MWF = o2;
 MWF.getJSON = o2.JSON.get;
