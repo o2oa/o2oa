@@ -267,34 +267,98 @@ layout.addReady(function(){
         });
     };
 
-    _worker.getMonacoCompletions = function(o){
+    _worker.getMonacoCompletions = function(o, range, code){
         var arr = [];
+        o = (o2.typeOf(o)=="array") ? o[0] : o;
         Object.keys(o).each(function (key) {
-            var keyType = typeOf(o[key]);
-            if (keyType === "function") {
-                var count = o[key].length;
-                var v = key + "(";
-                for (var i = 1; i <= count; i++) v += (i == count) ? "par" + i : "par" + i + ", ";
-                v += ")";
-                arr.push({ label: key, kind: 1, insertText: v, detail: keyType });
-            } else {
-                arr.push({ label: key, kind: 7, insertText: key, detail: keyType });
+            if (key!="__type__"){
+                var keyType = typeOf(o[key]);
+                var oRange = Object.clone(range);
+                switch (keyType){
+                    case "function":
+                        var count = o[key].length;
+                        var v = key + "(";
+                        for (var i = 1; i <= count; i++) v += (i == count) ? "par" + i : "par" + i + ", ";
+                        v += ")";
+                        key = key+"()";
+                        arr.push({ label: key, kind: 1, insertText: v, detail: keyType, range: oRange });
+                        break;
+                    default:
+                        var insertText = key;
+                        var filterText = key;
+                        var kind = 3;
+                        if (o[key]){
+                            var text = (keyType=="array" &&  o[key][0]["__type__"]) ?  o[key][0]["__type__"] : o[key].toString();
+                            var flagCount = text.indexOf(":");
+                            if (flagCount!=-1){
+                                keyType = text.substr(0,flagCount);
+                                text = text.substr(flagCount+1);
+                            }
+                            var oType = (o["__type__"]) ? o["__type__"].substr(0, o["__type__"].indexOf(":")) : o2.typeOf(o);
+                            if (oType=="object array"){
+                                if (code.substr(-1)!=="]"){
+                                    insertText =  "[0]."+key;
+                                    oRange.startColumn = oRange.startColumn-1;
+                                }
+                                filterText="."+filterText;
+                            }
+                        }
+                        switch (keyType){
+                            case "array":
+                                kind = 15;
+                                key = key+"[]";
+                                break;
+                            case "object array":
+                                kind = 15;
+                                key = key+"[]";
+                                break;
+                        }
+                        arr.push({ label: key, filterText: filterText, key, kind: kind, insertText: insertText, detail: keyType, documentation: text, range: oRange});
+                }
             }
         });
         return arr;
     };
-    _worker.getAceCompletions = function(o){
+    _worker.getAceCompletions = function(o, range, code){
         var arr = [];
+        o = (o2.typeOf(o)=="array") ? o[0] : o;
         Object.keys(o).each(function(key){
-            var keyType = typeOf(o[key]);
-            if (keyType==="function") {
-                var count = o[key].length;
-                var v = x+"."+key+"(";
-                for (var i=1; i<=count; i++) v+= (i==count) ? "par"+i :  "par"+i+", ";
-                v+=")";
-                arr.push({ caption: x+"."+key, value: v, score: 3, meta: keyType, type: keyType, docText: o[key] });
-            }else{
-                arr.push({ caption: x+"."+key, value: x+"."+key, score: 3, meta: keyType, type: keyType, docText: o[key] });
+            if (key!="__type__"){
+                var keyType = typeOf(o[key]);
+                var oRange = (range) ? Object.clone(range): null;
+                var offset = 0;
+                switch (keyType){
+                    case "function":
+                        var count = o[key].length;
+                        var v = key + "(";
+                        for (var i = 1; i <= count; i++) v += (i == count) ? "par" + i : "par" + i + ", ";
+                        v += ")";
+                        key = key+"()";
+                        arr.push({ caption: key, value: v, score: 3, meta: keyType, type: keyType, docText: key });
+                        break;
+                    default:
+                        var insertText = key;
+                        var filterText = key;
+                        var kind = 3;
+                        if (o[key]){
+                            var text = (keyType=="array" &&  o[key][0]["__type__"]) ?  o[key][0]["__type__"] : o[key].toString();
+                            var flagCount = text.indexOf(":");
+                            if (flagCount!=-1){
+                                keyType = text.substr(0,flagCount);
+                                text = text.substr(flagCount+1);
+                            }
+                            var oType = (o["__type__"]) ? o["__type__"].substr(0, o["__type__"].indexOf(":")) : o2.typeOf(o);
+                            if (oType=="object array"){
+                                if (code.substr(-1)!=="]"){
+                                    insertText =  "[0]."+key;
+                                    offset = -1;
+                                }
+                                filterText="."+filterText;
+                            }
+                        }
+                        if (keyType=="array" || keyType=="object array") key = key+"[]";
+                        arr.push({ caption: key, value: insertText, score: 3, meta: keyType, type: keyType, docText: text, offset: offset });
+                }
             }
         });
         return arr;
@@ -348,7 +412,8 @@ layout.addReady(function(){
         }
     };
 
-    _worker.exec = function(id, uuid, code, preCode, runtime, type){
+    _worker.exec = function(id, uuid, code, preCode, range, runtime, type){
+        var codeText = code;
         var promise = _worker.getCompletionEnvironment(runtime);
         promise.then(function(){
             _worker.overwriteRequest();
@@ -361,7 +426,7 @@ layout.addReady(function(){
                 code = "try {\n"+code+"\n}catch(e){return null;}";
                 var o = _worker.runtimeEnvironment[runtime].exec(code);
                 if (o) {
-                    var completions = (type=="ace") ? _worker.getAceCompletions(o) : _worker.getMonacoCompletions(o);
+                    var completions = (type=="ace") ? _worker.getAceCompletions(o, range, codeText) : _worker.getMonacoCompletions(o ,range, codeText);
                     _worker.postMessage({"o": completions, "id": id, "uuid": uuid});
                 }
             }
@@ -377,8 +442,9 @@ onmessage = function(e) {
         var runtime = e.data.runtime;
         var type = e.data.type;
         var preCode = e.data.preCode;
+        var range = e.data.range;
         if (id && code && runtime && uuid && type){
-            _worker.exec(id, uuid, code, preCode, runtime, type)
+            _worker.exec(id, uuid, code, preCode, range, runtime, type)
         }
     }
 }

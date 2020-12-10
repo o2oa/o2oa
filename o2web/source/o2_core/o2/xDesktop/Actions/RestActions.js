@@ -69,6 +69,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
         MWF.restful(method, uri, data, callback, async, credentials);
     },
 	invoke: function(option){
+        if (window.importScripts && window.isCompletionEnvironment) return null;
         if (!this.address) this.getAddress();
         var res = null;
         this.getActions(function(){

@@ -20,11 +20,11 @@ MWF.xScript.Macro = MWF.Macro = {
         if (o2.session.isDebugger){
             var f = "MWF.Macro.scriptSpace[\""+o+"\"] = function(){\n"+code+"\n}";
             Browser.exec(f);
-            returnValue = o2.Macro.scriptSpace[o].apply(bind);
+            returnValue = (o2.Macro.scriptSpace[o]) ? o2.Macro.scriptSpace[o].apply(bind) : null;
         }else{
             var f = "MWF.Macro.scriptSpace[\""+o+"\"] = function(){try{\n"+code+"\n}catch(e){console.error(e)}}";
             Browser.exec(f);
-            returnValue = o2.Macro.scriptSpace[o].apply(bind);
+            returnValue = (o2.Macro.scriptSpace[o]) ? o2.Macro.scriptSpace[o].apply(bind) : null;
         }
         o2.Macro.scriptSpace[o] = null;
 
