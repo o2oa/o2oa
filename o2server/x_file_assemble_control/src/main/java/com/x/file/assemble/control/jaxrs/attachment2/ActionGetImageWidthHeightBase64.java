@@ -11,6 +11,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapString;
 import com.x.file.assemble.control.ThisApplication;
+import com.x.file.core.entity.open.FileType;
 import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
 import org.apache.commons.codec.binary.Base64;
@@ -36,7 +37,7 @@ class ActionGetImageWidthHeightBase64 extends BaseAction {
 				throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} access attachment{id:"
 						+ id + "} denied.");
 			}
-			if (!ArrayUtils.contains(IMAGE_EXTENSIONS, attachment.getExtension())) {
+			if (!FileType.getExtType(attachment.getExtension()).equals(FileType.image.name())) {
 				throw new Exception("attachment not image file.");
 			}
 			if (width < 0 || width > 5000) {

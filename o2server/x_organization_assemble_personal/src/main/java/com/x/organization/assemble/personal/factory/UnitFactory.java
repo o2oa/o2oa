@@ -210,11 +210,11 @@ public class UnitFactory extends AbstractFactory {
 			// Collections.reverse(names);
 			names.add(o.getName());
 			o.setLevelName(StringUtils.join(names, PersistenceProperties.Unit.levelNameSplit));
-			List<String> inheritControllerList = new ArrayList<>();
-			for (Unit u : list) {
-				inheritControllerList.addAll(u.getControllerList());
-			}
-			o.setInheritedControllerList(ListTools.trim(inheritControllerList, true, true));
+//			List<String> inheritControllerList = new ArrayList<>();
+//			for (Unit u : list) {
+//				inheritControllerList.addAll(u.getControllerList());
+//			}
+//			o.setInheritedControllerList(ListTools.trim(inheritControllerList, true, true));
 		}
 	}
 

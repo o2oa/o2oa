@@ -92,11 +92,16 @@ public class NodeAgent extends Thread {
 		this.commandQueue = commandQueue;
 	}
 
+	private volatile boolean runFlag = true;
+
+	private ServerSocket serverSocket = null;
+
 	@Override
 	public void run() {
-		try (ServerSocket serverSocket = new ServerSocket(Config.currentNode().nodeAgentPort())) {
+		try{
+			serverSocket = new ServerSocket(Config.currentNode().nodeAgentPort());
 			Matcher matcher;
-			while (true) {
+			while (runFlag) {
 				try (Socket socket = serverSocket.accept()) {
 					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 							DataInputStream dis = new DataInputStream(socket.getInputStream())) {
@@ -261,6 +266,24 @@ public class NodeAgent extends Thread {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if(serverSocket!=null){
+				try {
+					serverSocket.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+	}
+
+	public void stopAgent(){
+		try {
+			this.runFlag = false;
+			if(serverSocket!=null) {
+				this.serverSocket.close();
+				this.serverSocket = null;
+			}
+		} catch (Exception e) {
 		}
 	}
 

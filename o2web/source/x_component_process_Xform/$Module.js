@@ -1,16 +1,27 @@
 
 MWF.require("MWF.widget.Common", null, false);
-MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
+/** @class $Module 组件类，此类为所有组件的父类。 */
+MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
+    /** @lends MWF.xApplication.process.Xform.$Module# */
+    {
     Implements: [Events],
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"]
     },
 
     initialize: function(node, json, form, options){
-
+        /**
+         * 组件的节点
+         * {@link https://mootools.net/core/docs/1.6.0/Element/Element MootoolsElement }
+         * @member {Element}
+         */
         this.node = $(node);
         this.node.store("module", this);
         this.json = json;
+        /**
+         * 组件的所在表单对象.
+         * @member {MWF.xApplication.process.Xform.Form}
+         */
         this.form = form;
     },
     _getSource: function(){
@@ -73,6 +84,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
                 }else if (value.indexOf("x_cms_assemble_control")!==-1){
                     value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
                 }
+                value = o2.filterUrl(value);
             }
             this.node.setStyle(key, value);
         }.bind(this));

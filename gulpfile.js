@@ -14,7 +14,7 @@ var gulp = require('gulp'),
     changed = require('gulp-changed'),
     gulpif = require('gulp-if'),
     http = require('http');
-    concat = require('gulp-concat');
+concat = require('gulp-concat');
 var fg = require('fast-glob');
 var logger = require('gulp-logger');
 var assetRev = require('gulp-tm-asset-rev');
@@ -115,49 +115,49 @@ function downloadFile_progress(path, filename, headcb, progresscb, cb){
     //         progresscb({transferred:1});
     //         cb();
     //     }else{
-            let stream = fs.createWriteStream(dest);
-            var options = { url:protocol+"://"+downloadHost+path };
-            var fileHost = downloadHost;
-            var filePath =  path;
-            stream.on('finish', () => {
-                //gutil.log("download", ":", gutil.colors.green(filename), " completed!");
-                cb();
+    let stream = fs.createWriteStream(dest);
+    var options = { url:protocol+"://"+downloadHost+path };
+    var fileHost = downloadHost;
+    var filePath =  path;
+    stream.on('finish', () => {
+        //gutil.log("download", ":", gutil.colors.green(filename), " completed!");
+        cb();
+    });
+    stream.on('error', (err) => {
+        gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), err);
+    });
+
+    var req = http.request({
+        host:fileHost,
+        path:filePath,
+        method:'HEAD'
+    },function (res){
+        if (res.statusCode == 200) {
+            res.setEncoding(null);
+            var time = 0;
+            var l = res.headers['content-length'];
+            var str = progress({
+                length: l,
+                time: 100 /* ms */
             });
-            stream.on('error', (err) => {
-                gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), err);
-            });
+            headcb(l);
 
-            var req = http.request({
-                host:fileHost,
-                path:filePath,
-                method:'HEAD'
-            },function (res){
-                if (res.statusCode == 200) {
-                    res.setEncoding(null);
-                    var time = 0;
-                    var l = res.headers['content-length'];
-                    var str = progress({
-                        length: l,
-                        time: 100 /* ms */
-                    });
-                    headcb(l);
-
-                    str.on('progress', function(progress) {
-                        if (pb){
-                            progresscb(progress);
-                            pb.render({ completed: currentLength, total: totalLength, time: time+=100 });
-                        }
-
-                    });
-                    request.get(options).pipe(str).pipe(stream);
-                } else {
-                    gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
+            str.on('progress', function(progress) {
+                if (pb){
+                    progresscb(progress);
+                    pb.render({ completed: currentLength, total: totalLength, time: time+=100 });
                 }
-            })
-            req.on('error', (e) => {
-                gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), e);
+
             });
-            req.end();
+            request.get(options).pipe(str).pipe(stream);
+        } else {
+            gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
+        }
+    })
+    req.on('error', (e) => {
+        gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), e);
+    });
+    req.end();
     //    }
     //});
 }
@@ -204,7 +204,7 @@ function downloadFile(path, filename, headcb, progresscb, cb){
     //             }
     //
     //         });
-             request.get(options).pipe(stream);
+    request.get(options).pipe(stream);
     //     } else {
     //         gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
     //     }
@@ -286,11 +286,11 @@ function decompress_commons_and_jvm(cb){
             src: 'o2server/commons_git.tar.gz',
             dest: 'o2server',
             tar: {map: function(header){
-                count++;
+                    count++;
                     var d = new Date();
                     slog("["+dateFormat(d, "HH:MM:ss")+"] " + count +" "+ header.name+" ...");
-                //gutil.log(gutil.colors.cyan(header.name), gutil.colors.yellow("..."));
-            }}
+                    //gutil.log(gutil.colors.cyan(header.name), gutil.colors.yellow("..."));
+                }}
         }, function(err){
             if(err) {
                 gutil.log(gutil.colors.red("decompress error"), ":", gutil.colors.red("common.tar.gz "), err);
@@ -419,6 +419,21 @@ function build_concat_o2(){
         .pipe(concat('o2.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('o2.min.js'))
+        .pipe(uglify())
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest))
+}
+function build_concat_base(){
+    var src = [
+        'o2web/source/x_desktop/js/base.js'
+    ];
+    var dest = 'target/o2server/servers/webServer/x_desktop/js/';
+    return gulp.src(src)
+        .pipe(sourceMap.init())
+        //.pipe(concat('o2.js'))
+        .pipe(gulp.dest(dest))
+        .pipe(concat('base.min.js'))
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
         .pipe(sourceMap.write(""))
@@ -771,6 +786,7 @@ function build_concat_baseportal_body() {
 
 exports.build_concat = gulp.parallel(
     build_concat_o2,
+    build_concat_base,
     build_concat_desktop,
     build_concat_xform,
     build_bundle,
@@ -873,6 +889,7 @@ exports.build_web = gulp.series(
     build_web_move,
     gulp.parallel(
         build_concat_o2,
+        build_concat_base,
         build_concat_desktop,
         build_concat_xform,
         gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),

@@ -1,14 +1,10 @@
 package com.x.server.console;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Method;
+import java.net.Socket;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.MappedByteBuffer;
@@ -19,12 +15,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.Crypto;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -52,6 +48,7 @@ public class Main {
 	private static final String MANIFEST_FILENAME = "manifest.cfg";
 	private static final String GITIGNORE_FILENAME = ".gitignore";
 	private static final LinkedBlockingQueue<String> commandQueue = new LinkedBlockingQueue<>();
+	private static NodeAgent nodeAgent;
 
 	private static final Thread swapCommandThread = new Thread(() -> {
 		// 文件中的命令输出到解析器
@@ -122,7 +119,7 @@ public class Main {
 		swapCommandThread.start();
 		consoleCommandThread.start();
 		if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEnable())) {
-			NodeAgent nodeAgent = new NodeAgent();
+			nodeAgent = new NodeAgent();
 			nodeAgent.setCommandQueue(commandQueue);
 			nodeAgent.setDaemon(true);
 			nodeAgent.start();
@@ -233,6 +230,12 @@ public class Main {
 			matcher = CommandFactory.exit_pattern.matcher(cmd);
 			if (matcher.find()) {
 				exit();
+			}
+
+			matcher = CommandFactory.restart_pattern.matcher(cmd);
+			if (matcher.find()) {
+				restart();
+				continue;
 			}
 			System.out.println("unknown command:" + cmd);
 		}
@@ -421,6 +424,94 @@ public class Main {
 		System.exit(0);
 	}
 
+	private static void restart() {
+		try {
+			System.out.println("ready to restart...");
+			stopAll();
+			stopAllThreads();
+			String osName = System.getProperty("os.name");
+			//System.out.println("当前操作系统是："+osName);
+			File file = new File(Config.base(), "start_linux.sh");
+			if (osName.toLowerCase().startsWith("mac")){
+				file = new File(Config.base(), "start_macos.sh");
+			}else if (osName.toLowerCase().startsWith("windows")) {
+				file = new File(Config.base(), "start_windows.bat");
+			}else if(!file.exists()) {
+				file  = new File("start_aix.sh");
+				if(!file.exists()) {
+					file  = new File("start_arm.sh");
+					if(!file.exists()) {
+						file  = new File("start_mips.sh");
+						if(!file.exists()) {
+							file  = new File("start_raspi.sh");
+						}
+					}
+				}
+			}
+			if(file.exists()) {
+                System.out.println("server will start in new process!");
+				Process ps = Runtime.getRuntime().exec(file.getAbsolutePath());
+				Thread.sleep(2000);
+				if(!Config.currentNode().autoStart()) {
+					for (int i = 0; i < 5; i++) {
+						try (Socket socket = new Socket(Config.node(), Config.currentNode().nodeAgentPort())) {
+							socket.setKeepAlive(true);
+							socket.setSoTimeout(2000);
+							try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+								 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
+								Map<String, Object> commandObject = new HashMap<>();
+								commandObject.put("command", "command:start");
+								commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+								dos.writeUTF(XGsonBuilder.toJson(commandObject));
+								dos.flush();
+								break;
+							}
+						} catch (Exception ex) {
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+							}
+						}
+					}
+				}
+			}else{
+				System.out.println("not support restart in current operating system!start server failure!");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			System.exit(0);
+		}
+	}
+
+	private static void stopAllThreads(){
+		if(swapCommandThread!=null){
+			try {
+				swapCommandThread.interrupt();
+			} catch (Exception e) {
+			}
+		}
+		if(consoleCommandThread!=null){
+			try {
+				consoleCommandThread.interrupt();
+			} catch (Exception e) {
+			}
+		}
+		if(nodeAgent!=null){
+			try {
+				nodeAgent.stopAgent();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
+				nodeAgent.interrupt();
+				nodeAgent = null;
+			} catch (Exception e) {
+			}
+		}
+
+	}
+
 	private static void stopAll() {
 		try {
 			WebServer webServer = Config.currentNode().getWeb();
@@ -466,7 +557,7 @@ public class Main {
 
 	/**
 	 * 检查store目录下的war文件是否全部在manifest.cfg中
-	 * 
+	 *
 	 * @param base o2server的根目录
 	 */
 	private static void scanWar(String base) throws Exception {

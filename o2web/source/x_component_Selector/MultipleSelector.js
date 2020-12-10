@@ -649,9 +649,10 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
     },
     getValueByType : function( values, type ){
         var result = [];
-        values = typeOf( values == "array" ) ?  values : [values];
-        var types = typeOf( type == "array" ) ?  type : [type];
+        values = typeOf(values) == "array" ?  values : [values];
+        var types = typeOf(type)== "array"  ?  type : [type];
         values.each( function( data ){
+            if( !data )return;
             if( typeOf( data ) == "string" ){
                 var dn = data;
             }else{
