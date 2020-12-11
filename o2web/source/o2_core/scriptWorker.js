@@ -2,8 +2,8 @@ window = self;
 window.addEvent = function(){};
 self.window = window;
 window.execScript = function(text){
-    return eval(text)
-}
+    return eval(text);
+};
 
 if (!this.document) document = {
     "window": self,
@@ -421,9 +421,9 @@ layout.addReady(function(){
 
                 code = "return "+code+";";
                 if (preCode){
-                    code = preCode+"\n"+code;
+                    code = "try{\n"+preCode+"\n}catch(e){}\n"+"try{\n"+code+"\n}catch(e){return null;}";
                 }
-                code = "try {\n"+code+"\n}catch(e){return null;}";
+                //code = "try {\n"+code+"\n}catch(e){return null;}";
                 var o = _worker.runtimeEnvironment[runtime].exec(code);
                 if (o) {
                     var completions = (type=="ace") ? _worker.getAceCompletions(o, range, codeText) : _worker.getMonacoCompletions(o ,range, codeText);
