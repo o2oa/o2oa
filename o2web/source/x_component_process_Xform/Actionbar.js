@@ -1,11 +1,28 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //MWF.require("MWF.widget.Tree", null, false);
 //MWF.require("MWF.widget.Toolbar", null, false);
-MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
+
+/** @class Actionbar 操作条类。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var actionbar = this.form.get("name"); //获取操作条
+ * //方法2
+ * var actionbar = this.target; //在操作条和操作本身的事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ */
+MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Actionbar# */
+    {
 	Extends: MWF.APP$Module,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
     },
+    /**
+     * 重新加载操作条.
+     * @example
+     * this.form.get("name").reload(); //显示操作条
+     */
     reload : function(){
 	    this._loadUserInterface();
     },
@@ -200,6 +217,32 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                 this.setToolbars(tool.sub, subNode, readonly, noCondition);
             }
         }
+    },
+    /**
+     * 根据操作id获取操作，该方法在操作条的afterLoad事件中有效，操作的操作脚本有效。
+     *  @param {string} id - 必选，操作id.
+     *  @return {o2.widget.ToolbarButton} 操作
+     *  @example
+     *  var actionbar = this.form.get("name"); //获取操作条
+     *  var item = actionbar.getItem( "action_delete" ); //获取删除操作
+     *  item.node.hide(); //隐藏删除操作的节点
+     *  item.node.click(); //触发操作的click事件
+     */
+    getItem : function( id ){
+        if( this.toolbarWidget && id ){
+            return this.toolbarWidget.items[id]
+        }
+    },
+    /**
+     * 获取所有操作，该方法在操作条的afterLoad事件中有效，操作的操作脚本有效。
+     *  @return {Array} 操作数组
+     *  @example
+     *  var actionbar = this.form.get("name"); //获取操作条
+     *  var itemList = actionbar.getAllItem(); //获取操作数组
+     *  itemList[1].node.hide(); //隐藏第一个操作
+     */
+    getAllItem : function(){
+        return this.toolbarWidget ? this.toolbarWidget.childrenButton : [];
     },
     setToolbars: function(tools, node, readonly, noCondition){
         tools.each(function(tool){
