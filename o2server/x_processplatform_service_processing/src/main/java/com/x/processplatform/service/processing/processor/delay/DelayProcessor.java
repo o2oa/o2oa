@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -15,7 +16,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.DelayMode;
+import com.x.processplatform.core.entity.element.DelayType;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
@@ -38,6 +39,7 @@ public class DelayProcessor extends AbstractDelayProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Delay delay) throws Exception {
+		// nothing
 	}
 
 	@Override
@@ -46,11 +48,11 @@ public class DelayProcessor extends AbstractDelayProcessor {
 		aeiObjects.getProcessingAttributes().push(Signal.delayExecute(aeiObjects.getWork().getActivityToken(), delay));
 		List<Work> results = new ArrayList<>();
 		Date limit = null;
-		if (null != delay.getDelayMode() && Objects.equals(DelayMode.until, delay.getDelayMode())) {
+		if (null != delay.getDelayType() && Objects.equals(DelayType.until, delay.getDelayType())) {
 			limit = this.until(aeiObjects, delay);
 		} else {
 			Integer minutes = this.minute(aeiObjects, delay);
-			if (delay.getWorkMinute()) {
+			if (BooleanUtils.isTrue(delay.getWorkMinute())) {
 				limit = Config.workTime().forwardMinutes(aeiObjects.getWork().getStartTime(), minutes);
 			} else {
 				limit = DateUtils.addMinutes(aeiObjects.getWork().getStartTime(), minutes);
@@ -72,28 +74,38 @@ public class DelayProcessor extends AbstractDelayProcessor {
 		if (null != delay.getDelayTime()) {
 			return delay.getDelayTime();
 		} else if (StringUtils.isNotEmpty(delay.getDelayDataPath())) {
-			Object o = aeiObjects.getData().find(delay.getDelayDataPath());
-			if (null != o) {
-				if (o instanceof Date) {
-					return (Date) o;
-				} else {
-					if (o instanceof String) {
-						return DateTools.parse(o.toString());
-					}
-				}
-			}
+			return untilDelayDataPath(aeiObjects, delay);
 		} else if (StringUtils.isNotEmpty(delay.getDelayScript())
 				|| StringUtils.isNotEmpty(delay.getDelayScriptText())) {
-			Object o = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), delay, Business.EVENT_DELAY)
-					.eval(aeiObjects.scriptContext());
-			if (null != o) {
-				if (o instanceof Date) {
-					return (Date) o;
-				} else {
-					if (o instanceof String) {
-						return DateTools.parse(o.toString());
-					}
+			return untilDelayScript(aeiObjects, delay);
+		}
+		return null;
+	}
+
+	private Date untilDelayDataPath(AeiObjects aeiObjects, Delay delay) throws Exception {
+		Object o = aeiObjects.getData().find(delay.getDelayDataPath());
+		if (null != o) {
+			if (o instanceof Date) {
+				return (Date) o;
+			} else {
+				if (o instanceof String) {
+					return DateTools.parse(o.toString());
+				}
+			}
+		}
+		return null;
+	}
+
+	private Date untilDelayScript(AeiObjects aeiObjects, Delay delay) throws Exception {
+		Object o = aeiObjects.business().element()
+				.getCompiledScript(aeiObjects.getWork().getApplication(), delay, Business.EVENT_DELAY)
+				.eval(aeiObjects.scriptContext());
+		if (null != o) {
+			if (o instanceof Date) {
+				return (Date) o;
+			} else {
+				if (o instanceof String) {
+					return DateTools.parse(o.toString());
 				}
 			}
 		}
@@ -117,6 +129,7 @@ public class DelayProcessor extends AbstractDelayProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Delay delay) throws Exception {
+		// nothing
 	}
 
 	@Override
@@ -130,5 +143,6 @@ public class DelayProcessor extends AbstractDelayProcessor {
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Delay delay) throws Exception {
+		// nothing
 	}
 }
