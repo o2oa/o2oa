@@ -1,7 +1,8 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class $Input 组件类，此类为所有输入组件的父类
 * @extends MWF.xApplication.process.Xform.$Module
-*/
+ * @abstract
+ */
 MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     /** @lends MWF.xApplication.process.Xform.$Input# */
     {
@@ -86,6 +87,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                 if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
                     if (COMMON.Browser.safari) w = w-20;
                 }
+
+                /**
+                 * 描述信息节点，select\radio\checkbox无此节点，只读情况下无此节点.
+                 * @member {Element}
+                 */
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
                     "width": ""+w+"px",
