@@ -1035,7 +1035,33 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     }
 
 });
-MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
+
+/**
+ * 附件数据结构.
+ * @typedef {Object} AttachmentData
+ * @property {String} id - 附件id.
+ * @property {String} name - 附件标题.
+ * @property {String} person - 上传人.
+ * @property {Number} orderNumber - 排序号.
+ * @property {String} activityName - 上传的节点.
+ * @property {Object} control - 当前登录人员对附件拥有的权限.
+ * @property {Number} length - 附件大小.
+ * @property {String} createTime - 创建时间.
+ * @property {String} updateTime - 修改时间.
+ * @property {String} extension - 附件扩展名.
+ */
+/** @class Actionbar 附件组件类。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var attachment = this.form.get("name"); //获取组件
+ * //方法2
+ * var attachment = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ */
+MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
+    /** @lends MWF.xApplication.process.Xform.Attachment# */
+{
     Extends: MWF.APP$Module,
     options: {
         "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open"]
@@ -1091,6 +1117,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
         }
         //this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
 
+        /**
+         * 附件容器.
+         * @member {MWF.xApplication.process.Xform.AttachmentController}
+         * @example
+         * var attachmentController = this.form.get("fieldName").AttachmentController; //获取附件容器
+         * var attachmentList = attachmentController.attachments; //获取所有的附件
+         * var attachmentData = attachment[0].data; //获取第一个附件的数据
+         */
         this.attachmentController = new MWF.xApplication.process.Xform.AttachmentController(this.node, this, options);
         this.attachmentController.load();
 
@@ -1138,6 +1172,12 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
             return !data;
         }
     },
+    /**
+     * 获取当前组件所有附件的标题.如果没有附件返回null
+     * @example
+     * var getAttachmentNames = this.form.get("name").getData();
+     * @return {StringArray|Null}.
+     */
     getData: function () {
         return (this.attachmentController) ? this.attachmentController.getAttachmentNames() : null;
     },
@@ -1615,6 +1655,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
         });
         return data;
     },
+    /**
+     * 为组件重新设置附件，该附件必须已经上传。
+     *  @param data{AttachmentData} .
+     */
     setData: function(data){
         this.attachmentController.clear();
         data.each(function (att) {
@@ -1754,6 +1798,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
         }
         return true;
     },
+    /**
+     * 根据组件的校验设置进行校验。
+     *  @param {String} routeName - 可选，路由名称.
+     *  @return {Boolean} 是否通过校验
+     */
     validation: function (routeName, opinion) {
         if (!this.validationConfig(routeName, opinion)) return false;
 
