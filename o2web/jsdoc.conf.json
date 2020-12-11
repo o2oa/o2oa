@@ -4,8 +4,7 @@
         "destination": "./o2web/jsdoc/",          // same as -d ./out/
         "recurse": true,                  // same as -r
         "template" : "./node_modules/ink-docstrap/template"
-        //"template": "templates/default"  // same as -t templates/default
-        //        "tutorials": "path/to/tutorials" // same as -u path/to/tutorials
+//        "tutorials": "./o2web/tutorials" // same as -u path/to/tutorials
     },
 
     "tags": {
