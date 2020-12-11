@@ -220,7 +220,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
     },
     /**
      * 根据操作id获取操作，该方法在操作条的afterLoad事件中有效，操作的操作脚本有效。
-     *  @param {string} id - 必选，操作id.
+     *  @param {String} id - 必选，操作id.
      *  @return {o2.widget.ToolbarButton} 操作
      *  @example
      *  var actionbar = this.form.get("name"); //获取操作条
