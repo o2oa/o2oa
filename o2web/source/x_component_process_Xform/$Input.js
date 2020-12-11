@@ -272,7 +272,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	},
     /**
      * 判断组件值是否为空.
-     * @return {boolean}.
+     * @return {Boolean}.
      */
     isEmpty : function(){
 	    var data = this.getData();
@@ -280,7 +280,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
     /**
      * 获取组件值.
-     * @return {object/string}.
+     * @return {Array|Object|String|Number|Boolean}.
      */
 	getData: function(when){
         if (this.json.compute == "save") this._setValue(this._computeValue());
@@ -301,7 +301,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
     /**
      * 为控件赋值。
-     *  @param data{string/number/jsonObject/array} .
+     *  @param data{String|Number|JsonObject|Array} .
      */
 	setData: function(data){
         // if (data && data.isAG){
@@ -535,8 +535,8 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
     /**
      * 根据组件的校验设置进行校验。
-     *  @param {string} routeName - 可选，路由名称.
-     *  @return {boolean} 是否通过校验
+     *  @param {String} routeName - 可选，路由名称.
+     *  @return {Boolean} 是否通过校验
      */
     validation: function(routeName, opinion){
         if (!this.readonly && !this.json.isReadonly){
