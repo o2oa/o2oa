@@ -322,6 +322,8 @@
   .chat-sender {
     clear: both;
     /* font-size: 80%; */
+    float: left;
+    width: 75%;
   }
 
   .chat-sender div:nth-of-type(1) {
@@ -360,6 +362,8 @@
   .chat-receiver {
     clear: both;
     /* font-size: 80%; */
+    float: right;
+    width: 75%;
   }
 
   .chat-receiver div:nth-of-type(1) {

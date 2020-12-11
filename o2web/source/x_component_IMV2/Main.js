@@ -435,6 +435,12 @@ MWF.xApplication.IMV2.Main = new Class({
 			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width": 24, "height": 24 }).inject(mapBox);
 			var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
 			new Element("a", { "href": url, "target": "_blank", "text": msgBody.address }).inject(mapBox);
+		} else if (msgBody.type == "file") { //文件
+			var mapBox = new Element("span").inject(lastNode);
+			var fileIcon = this._getFileIcon(msgBody.fileExtension);
+			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/"+fileIcon, "width": 48, "height": 48 }).inject(mapBox);
+			var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
+			new Element("a", { "href": downloadUrl, "target": "_blank", "text": msgBody.fileName }).inject(mapBox);
 		} else {//text
 			new Element("span", { "text": msgBody.body }).inject(lastNode);
 		}
@@ -489,6 +495,12 @@ MWF.xApplication.IMV2.Main = new Class({
 			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width": 24, "height": 24 }).inject(mapBox);
 			var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
 			new Element("a", { "href": url, "target": "_blank", "text": msgBody.address }).inject(mapBox);
+		} else if (msgBody.type == "file") { //文件
+			var mapBox = new Element("span").inject(lastNode);
+			var fileIcon = this._getFileIcon(msgBody.fileExtension);
+			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/"+fileIcon, "width": 48, "height": 48 }).inject(mapBox);
+			var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
+			new Element("a", { "href": downloadUrl, "target": "_blank", "text": msgBody.fileName }).inject(mapBox);
 		} else {//text
 			new Element("span", { "text": msgBody.body }).inject(lastNode);
 		}
@@ -501,7 +513,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	//图片 根据大小 url
 	_getFileUrlWithWH: function (id, width, height) {
 		var action = MWF.Actions.get("x_message_assemble_communicate").action;
-		var url = action.address + action.actions.imgFileDownloadWithWH.uri;
+		var url = action.getAddress() + action.actions.imgFileDownloadWithWH.uri;
 		url = url.replace("{id}", encodeURIComponent(id));
 		url = url.replace("{width}", encodeURIComponent(width));
 		url = url.replace("{height}", encodeURIComponent(height));
@@ -510,7 +522,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	//file 下载的url
 	_getFileDownloadUrl: function (id) {
 		var action = MWF.Actions.get("x_message_assemble_communicate").action;
-		var url = action.address + action.actions.imgFileDownload.uri;
+		var url = action.getAddress() + action.actions.imgFileDownload.uri;
 		url = url.replace("{id}", encodeURIComponent(id));
 		return url;
 	},
@@ -524,6 +536,76 @@ MWF.xApplication.IMV2.Main = new Class({
 		var orgAction = MWF.Actions.get("x_organization_assemble_control")
 		var url = (id) ? orgAction.getPersonIcon(id) : "../x_component_IMV2/$Main/default/icons/group.png";
 		return url + "?" + (new Date().getTime());
+	},
+	// 文件类型icon图
+	_getFileIcon: function (ext) {
+		if (ext) {
+			if (ext === "jpg" || ext === "jpeg") {
+				return "icon_file_jpeg.png";
+			} else if (ext === "gif") {
+				return "icon_file_gif.png";
+			} else if (ext === "png") {
+				return "icon_file_png.png";
+			} else if (ext === "tiff") {
+				return "icon_file_tiff.png";
+			} else if (ext === "bmp" || ext === "webp") {
+				return "icon_file_img.png";
+			} else if (ext === "ogg" || ext === "mp3" || ext === "wav" || ext === "wma") {
+				return "icon_file_mp3.png";
+			} else if (ext === "mp4") {
+				return "icon_file_mp4.png";
+			} else if (ext === "avi") {
+				return "icon_file_avi.png";
+			} else if (ext === "mov" || ext === "rm" || ext === "mkv") {
+				return "icon_file_rm.png";
+			} else if (ext === "doc" || ext === "docx") {
+				return "icon_file_word.png";
+			} else if (ext === "xls" || ext === "xlsx") {
+				return "icon_file_excel.png";
+			} else if (ext === "ppt" || ext === "pptx") {
+				return "icon_file_ppt.png";
+			} else if (ext === "html") {
+				return "icon_file_html.png";
+			} else if (ext === "pdf") {
+				return "icon_file_pdf.png";
+			} else if (ext === "txt" || ext === "json") {
+				return "icon_file_txt.png";
+			} else if (ext === "zip") {
+				return "icon_file_zip.png";
+			} else if (ext === "rar") {
+				return "icon_file_rar.png";
+			} else if (ext === "7z") {
+				return "icon_file_arch.png";
+			} else if (ext === "ai") {
+				return "icon_file_ai.png";
+			} else if (ext === "att") {
+				return "icon_file_att.png";
+			} else if (ext === "au") {
+				return "icon_file_au.png";
+			} else if (ext === "cad") {
+				return "icon_file_cad.png";
+			} else if (ext === "cdr") {
+				return "icon_file_cdr.png";
+			} else if (ext === "eps") {
+				return "icon_file_eps.png";
+			} else if (ext === "exe") {
+				return "icon_file_exe.png";
+			} else if (ext === "iso") {
+				return "icon_file_iso.png";
+			} else if (ext === "link") {
+				return "icon_file_link.png";
+			} else if (ext === "swf") {
+				return "icon_file_flash.png";
+			} else if (ext === "psd") {
+				return "icon_file_psd.png";
+			} else if (ext === "tmp") {
+				return "icon_file_tmp.png";
+			}else {
+				return "icon_file_unkown.png";
+			}
+		}else {
+			return "icon_file_unkown.png";
+		}
 	},
 	//输出特殊的时间格式
 	_friendlyTime: function (date) {
