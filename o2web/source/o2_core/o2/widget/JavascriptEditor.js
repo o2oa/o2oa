@@ -269,7 +269,8 @@ o2.widget.JavascriptEditor = new Class({
 
         if (textPrefix.lastIndexOf("=")!=-1) textPrefix = textPrefix.substr(textPrefix.lastIndexOf("=")+1);
         if (textPrefix.lastIndexOf(" new ")!=-1) textPrefix = textPrefix.substr(textPrefix.lastIndexOf(" new ")+5);
-
+        //if (preCode.lastIndexOf("{")!=-1) preCode = preCode.substr(preCode.lastIndexOf("{")+1);
+debugger;
         var codeObj = {
             "code": textPrefix,
             "preCode": preCode,
@@ -299,14 +300,28 @@ o2.widget.JavascriptEditor = new Class({
                                 startColumn: 1,
                                 startLineNumber: 1
                             };
-                            var preCode = model.getValueInRange(range);
+                            preCode = model.getValueInRange(range);
+
+                        }
+
+                        var sufCode = "";
+                        var lineCount = model.getLineCount();
+                        var nextLineNumber = position.lineNumber+1;
+                        if (nextLineNumber<=lineCount){
+                            range = {
+                                endColumn: model.getLineMaxColumn(lineCount),
+                                endLineNumber: lineCount,
+                                startColumn: 1,
+                                startLineNumber: nextLineNumber
+                            };
+                            sufCode = model.getValueInRange(range);
                         }
 
                         var word = model.getWordUntilPosition(position);
                         var insertRange = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: word.startColumn, endColumn: word.endColumn };
 
                         return new Promise(function(s){
-                            this.getCompletionObject(textPrefix, preCode, insertRange, model.o2Editor.options.runtime, function(o){
+                            this.getCompletionObject(textPrefix, preCode+"\n"+sufCode, insertRange, model.o2Editor.options.runtime, function(o){
 
                                 // if (o) {
                                 //     var arr = [];
@@ -350,15 +365,24 @@ o2.widget.JavascriptEditor = new Class({
                     if (x){
                         var endLineNumber = (pos.row>0) ? pos.row-1 : -1;
                         var preCode = "";
-
                         if (endLineNumber>-1){
                             var range = session.getWordRange(0,0);
                             range.setEnd(endLineNumber, session.getLine(endLineNumber).length);
                             preCode = session.getTextRange(range);
                         }
 
+                        var sufCode = "";
+                        var lineCount = session.getLength()-1;
+                        var nextLineNumber = pos.row+1;
+                        if (nextLineNumber<=lineCount){
+                            var range = session.getWordRange(nextLineNumber,0);
+                            range.setEnd(lineCount, session.getLine(lineCount).length);
+                            sufCode = session.getTextRange(range);
+                        }
+
+
                         return new Promise(function(s){
-                            this.getCompletionObject(x, preCode, null, editor.o2Editor.options.runtime, function(o){
+                            this.getCompletionObject(x, preCode+"\n"+sufCode, null, editor.o2Editor.options.runtime, function(o){
                                 callback(null, o);
                                 if (s) s(o);
                             }.bind(this));
