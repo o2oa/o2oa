@@ -1,5 +1,17 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
-MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
+/** @class process.Calendar 日期组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var field = this.form.get("fieldName"); //获取组件对象
+ * //方法2
+ * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
+ * @extends MWF.xApplication.process.Xform.$Input
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Calendar# */
+{
 	Implements: [Events],
 	Extends: MWF.APP$Input,
 	iconStyle: "calendarIcon",
@@ -141,6 +153,13 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
                     }.bind(this)
                 };
                 options.baseDate = this.getBaseDate();
+                /**
+                 * 日期弹出选择组件，只读情况下无此节点.
+                 * @member {MWF.widget.Calendar}
+                 * @example
+                 * var calendar = this.form.get("fieldName").calendar; //获取组件
+                 * if(calendar)calendar.show(); //弹出选择组件
+                 */
                 this.calendar = new MWF.widget.Calendar(this.node.getFirst(), options);
                 if( this.form.json && this.form.json.canlendarStyle && typeOf( this.form.json.canlendarStyle.zIndex ) !== "null" && typeOf( this.form.json.canlendarStyle.zIndex ) !== "undefined" ){
                     this.calendar.container.setStyle("z-index", this.form.json.canlendarStyle.zIndex );

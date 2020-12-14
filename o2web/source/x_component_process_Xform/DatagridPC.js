@@ -1,5 +1,17 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.DatagridPC = new Class({
+/** @class process.Button 数据网格组件（PC端）。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var attachment = this.form.get("name"); //获取组件
+ * //方法2
+ * var attachment = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.DatagridPC = new Class(
+	/** @lends MWF.xApplication.process.Xform.DatagridPC# */
+	{
 	Implements: [Events],
 	Extends: MWF.APP$Module,
 	isEdit: false,
@@ -1096,9 +1108,18 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 	_afterLoaded: function(){
 		this._loadDatagridStyle();
 	},
+	/**
+	 * 重置组件的值为默认值或置空。
+	 *  @example
+	 * this.form.get('fieldName').resetData();
+	 */
 	resetData: function(){
 		this.setData(this._getValue());
 	},
+	/**
+	 * 为数据网格赋值。
+	 *  @param data{Array}  - 必选，数组.
+	 */
 	setData: function(data){
 		if (!data){
 			data = this._getValue();
@@ -1180,11 +1201,24 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			this._loadDatagridStyle();
 		}
 	},
-
+	/**
+	 * 获取总计数据.
+	 * @example
+	 * var totalObject = this.form.get('fieldName').getTotal();
+	 * @return {Object} 总计数据
+	 */
 	getTotal: function(){
 		this._loadTotal();
 		return this.totalResaults;
 	},
+	/**
+	 * 判断数据网格是否为空.
+	 * @example
+	 * if( this.form.get('fieldName').isEmpty() ){
+	 *     this.form.notice('至少需要添加一条数据', 'warn');
+	 * }
+	 * @return {Boolean} 是否为空
+	 */
 	isEmpty: function(){
 		var data = this.getData();
 		if( !data )return true;
@@ -1194,6 +1228,12 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		}
 		return false;
 	},
+	/**
+	 * 获取数据网格数据.
+	 *  @example
+	 * var data = this.form.get('fieldName').getData();
+	 * @return {Object} - 格式如下{ data : [] }.
+	 */
 	getData: function(){
 		if (this.editable!=false){
 			if (this.isEdit) this._completeLineEdit();
@@ -1350,7 +1390,15 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		}
 		return true;
 	},
-
+	/**
+	 * 根据组件的校验设置进行校验。
+	 *  @param {String} routeName - 可选，路由名称.
+	 *  @example
+	 *  if( !this.form.get('fieldName').validation() ){
+	 *      return false;
+	 *  }
+	 *  @return {Boolean} 是否通过校验
+	 */
 	validation: function(routeName, opinion){
 		if (this.isEdit){
 			if (!this.editValidation()){
