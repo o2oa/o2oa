@@ -1,0 +1,21 @@
+.o2_findDesigner_content{
+    height: 100%;
+}
+.o2_findDesigner_filterNode {
+    height: 30px;
+}
+.o2_findDesigner_keywordNode {
+    height: 30px;
+}
+.o2_findDesigner_rangeNode {
+    height: 30px;
+}
+.o2_findDesigner_resultNode {
+    overflow: hidden;
+}
+.o2_findDesigner_listNode {
+    min-height: 300px;
+}
+.o2_findDesigner_previewNode {
+    min-height: 300px;
+}
