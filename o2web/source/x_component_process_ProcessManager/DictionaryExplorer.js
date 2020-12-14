@@ -23,15 +23,17 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
         this.initData();
     },
     setContentSize: function(){
-        var toolbarSize = this.toolbarNode.getSize();
-        var nodeSize = this.node.getSize();
-        var pt = this.elementContentNode.getStyle("padding-top").toFloat();
-        var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
+	    if (this.toolbarNode){
+            var toolbarSize = this.toolbarNode.getSize();
+            var nodeSize = this.node.getSize();
+            var pt = this.elementContentNode.getStyle("padding-top").toFloat();
+            var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
 
-        var height = nodeSize.y-toolbarSize.y-pt-pb;
-        this.elementContentNode.setStyle("height", ""+height+"px");
+            var height = nodeSize.y-toolbarSize.y-pt-pb;
+            this.elementContentNode.setStyle("height", ""+height+"px");
+        }
 
-        if (this.options.noCreate) this.createElementNode.destroy();
+        if (this.options.noCreate) if (this.createElementNode) this.createElementNode.destroy();
     },
     showDeleteAction: function(){
         if (!this.deleteItemsAction){
