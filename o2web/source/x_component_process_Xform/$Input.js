@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class $Input 组件类，此类为所有输入组件的父类
+/** @class process.$Input 组件类，此类为所有输入组件的父类
+ * @hideconstructor
 * @extends MWF.xApplication.process.Xform.$Module
  * @abstract
  */
@@ -9,6 +10,9 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	Implements: [Events],
 	Extends: MWF.APP$Module,
 	iconStyle: "personfieldIcon",
+    /**
+     * @hideconstructor
+     */
     initialize: function(node, json, form, options){
         this.node = $(node);
         this.node.store("module", this);
@@ -272,7 +276,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	},
     /**
      * 判断组件值是否为空.
-     * @return {Boolean}.
+     * @example
+     * if( this.form.get('subject').isEmpty() ){
+     *     this.form.notice('标题不能为空', 'warn');
+     * }
+     * @return {Boolean} 值是否为空.
      */
     isEmpty : function(){
 	    var data = this.getData();
@@ -280,7 +288,9 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
     /**
      * 获取组件值.
-     * @return {Array|Object|String|Number|Boolean}.
+     *  @example
+     * var data = this.form.get('subject').getData();
+     * @return {Array|Object|String|Number|Boolean} 组件的数据.
      */
 	getData: function(when){
         if (this.json.compute == "save") this._setValue(this._computeValue());
@@ -295,6 +305,8 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
     /**
      * 重置组件的值为默认值或置空。
+     *  @example
+     * this.form.get('subject').resetData();
      */
     resetData: function(){
         this.setData(this.getValue());
@@ -536,6 +548,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     /**
      * 根据组件的校验设置进行校验。
      *  @param {String} routeName - 可选，路由名称.
+     *  @example
+     *  if( !this.form.get('fieldName').validation() ){
+     *      return false;
+     *  }
      *  @return {Boolean} 是否通过校验
      */
     validation: function(routeName, opinion){
