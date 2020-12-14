@@ -1,5 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
-/** @class Textfield 文本输入框类。
+/** @class process.Textfield 文本输入框。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -14,6 +14,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
  * var flag = field.isEmpty(); //字段是否为空
  * field.resetData();  //重置字段的值为默认值或置空
  * @extends MWF.xApplication.process.Xform.$Input
+ * @hideconstructor
  */
 MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
 	Implements: [Events],

@@ -1,7 +1,9 @@
 
 MWF.require("MWF.widget.Common", null, false);
-/** @class $Module 组件类，此类为所有组件的父类。
- * @abstract*/
+/** @classdesc process.$Module 组件类，此类为所有组件的父类。
+ * @class
+ * @hideconstructor
+ * */
 MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     /** @lends MWF.xApplication.process.Xform.$Module# */
     {
@@ -9,7 +11,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"]
     },
-
     initialize: function(node, json, form, options){
         /**
          * 组件的节点

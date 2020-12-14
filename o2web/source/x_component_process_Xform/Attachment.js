@@ -1037,6 +1037,13 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 });
 
 /**
+ * 当前登录人员的附件权限数据结构.
+ * @typedef {Object} AttachmentControl
+ * @property {Boolean} allowRead - 是否允许阅读.
+ * @property {Boolean} allowEdit - 是否允许编辑.
+ * @property {Boolean} allowControl - 是否允许设置.
+ */
+/**
  * 附件数据结构.
  * @typedef {Object} AttachmentData
  * @property {String} id - 附件id.
@@ -1044,13 +1051,13 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
  * @property {String} person - 上传人.
  * @property {Number} orderNumber - 排序号.
  * @property {String} activityName - 上传的节点.
- * @property {Object} control - 当前登录人员对附件拥有的权限.
+ * @property {AttachmentControl} control - 当前登录人员对附件拥有的权限.
  * @property {Number} length - 附件大小.
  * @property {String} createTime - 创建时间.
  * @property {String} updateTime - 修改时间.
  * @property {String} extension - 附件扩展名.
  */
-/** @class Actionbar 附件组件类。
+/** @class process.Actionbar 附件组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -1058,6 +1065,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
  * //方法2
  * var attachment = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
+ * @hideconstructor
  */
 MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     /** @lends MWF.xApplication.process.Xform.Attachment# */
@@ -1176,7 +1184,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
      * 获取当前组件所有附件的标题.如果没有附件返回null
      * @example
      * var getAttachmentNames = this.form.get("name").getData();
-     * @return {StringArray|Null}.
+     * @return {StringArray|Null} 附件标题.
      */
     getData: function () {
         return (this.attachmentController) ? this.attachmentController.getAttachmentNames() : null;
@@ -1801,6 +1809,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     /**
      * 根据组件的校验设置进行校验。
      *  @param {String} routeName - 可选，路由名称.
+     *  @example
+     *  if( !this.form.get('fieldName').validation() ){
+     *      return false;
+     *  }
      *  @return {Boolean} 是否通过校验
      */
     validation: function (routeName, opinion) {
