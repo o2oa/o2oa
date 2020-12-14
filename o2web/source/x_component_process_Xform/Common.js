@@ -1,4 +1,14 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
+/** @class process.Common 通用组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var attachment = this.form.get("name"); //获取组件
+ * //方法2
+ * var attachment = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @hideconstructor
+ */
 MWF.xApplication.process.Xform.Common = MWF.APPCommon =  new Class({
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){

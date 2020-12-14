@@ -53,6 +53,7 @@
         "license": "ISC",
         "dependencies": {
                 "dateformat": "^3.0.3",
+                "docdash": "^1.2.0",
                 "fast-glob": "^3.2.2",
                 "gulp": "^4.0.2",
                 "gulp-changed": "^3.2.0",
@@ -68,11 +69,17 @@
                 "gulp-uglify-es": "^2.0.0",
                 "gulp-util": "^3.0.8",
                 "ink-docstrap": "^1.3.2",
+                "jsdoc-template": "git+https://github.com/braintree/jsdoc-template.git",
                 "minimist": "^1.2.0",
                 "progress-stream": "^2.0.0",
                 "request": "^2.88.2",
                 "single-line-log": "^1.1.2",
-                "targz": "^1.0.1",
-                "gulp-sourcemaps": "^3.0.0"
+                "targz": "^1.0.1"
+        },
+        "devDependencies": {
+                "jsdoc": "^3.6.6",
+                "minami": "^1.2.3",
+                "tidy-jsdoc": "^1.4.0",
+                "tui-jsdoc-template": "^1.2.2"
         }
 }
