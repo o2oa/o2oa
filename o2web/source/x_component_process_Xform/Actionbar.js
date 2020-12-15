@@ -20,7 +20,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
         "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
     },
     /**
-     * 重新加载操作条.
+     * @summary 重新加载操作条.
      * @example
      * this.form.get("name").reload(); //显示操作条
      */
@@ -220,7 +220,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
         }
     },
     /**
-     * 根据操作id获取操作，该方法在操作条的afterLoad事件中有效，操作的操作脚本有效。
+     * @summary 根据操作id获取操作，该方法在操作条的afterLoad事件中有效，操作的操作脚本有效。
      *  @param {String} id - 必选，操作id.
      *  @return {o2.widget.ToolbarButton} 操作
      *  @example
@@ -235,7 +235,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
         }
     },
     /**
-     * 获取所有操作，该方法在操作条的afterLoad事件中有效，操作的操作脚本有效。
+     * @summary 获取所有操作，该方法在操作条的afterLoad事件中有效，操作的操作脚本有效。
      *  @return {Array} 操作数组
      *  @example
      *  var actionbar = this.form.get("name"); //获取操作条

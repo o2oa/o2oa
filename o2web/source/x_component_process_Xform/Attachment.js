@@ -1035,14 +1035,6 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     }
 
 });
-
-/**
- * 当前登录人员的附件权限数据结构.
- * @typedef {Object} AttachmentControl
- * @property {Boolean} allowRead - 是否允许阅读.
- * @property {Boolean} allowEdit - 是否允许编辑.
- * @property {Boolean} allowControl - 是否允许设置.
- */
 /**
  * 附件数据结构.
  * @typedef {Object} AttachmentData
@@ -1051,7 +1043,10 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
  * @property {String} person - 上传人.
  * @property {Number} orderNumber - 排序号.
  * @property {String} activityName - 上传的节点.
- * @property {AttachmentControl} control - 当前登录人员对附件拥有的权限.
+ * @property {Object} control - 当前登录人员对附件拥有的权限.
+ * @property {Boolean} control.allowRead - 是否允许阅读.
+ * @property {Boolean} control.allowEdit - 是否允许编辑.
+ * @property {Boolean} control.allowControl - 是否允许设置.
  * @property {Number} length - 附件大小.
  * @property {String} createTime - 创建时间.
  * @property {String} updateTime - 修改时间.
