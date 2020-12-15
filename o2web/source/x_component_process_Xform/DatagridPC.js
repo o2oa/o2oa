@@ -934,7 +934,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		this._loadBorderStyle();
 		this._loadZebraStyle();
 		this._loadSequence();
-
 	},
 	loadGridEditStyle: function(){
 		if (this.editorTr){
@@ -1106,7 +1105,13 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		}.bind(this));
 	},
 	_afterLoaded: function(){
-		this._loadDatagridStyle();
+		if (this.moduleValueAG){
+			this.moduleValueAG.then(function(){
+				this._loadDatagridStyle();
+			}.bind(this));
+		}else{
+			this._loadDatagridStyle();
+		}
 	},
 	/**
 	 * 重置组件的值为默认值或置空。
