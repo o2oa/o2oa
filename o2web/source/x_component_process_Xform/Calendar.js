@@ -154,7 +154,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                 };
                 options.baseDate = this.getBaseDate();
                 /**
-                 * 日期弹出选择组件，只读情况下无此节点.
+                 * @summary 日期弹出选择界面，只读情况下无此成员.
                  * @member {MWF.widget.Calendar}
                  * @example
                  * var calendar = this.form.get("fieldName").calendar; //获取组件
