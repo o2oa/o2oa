@@ -1121,7 +1121,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         //this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
 
         /**
-         * 附件容器.
+         * @summary 附件容器.
          * @member {MWF.xApplication.process.Xform.AttachmentController}
          * @example
          * var attachmentController = this.form.get("fieldName").AttachmentController; //获取附件容器
@@ -1176,7 +1176,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
     },
     /**
-     * 获取当前组件所有附件的标题.如果没有附件返回null
+     * @summary 获取当前组件所有附件的标题.如果没有附件返回null
      * @example
      * var getAttachmentNames = this.form.get("name").getData();
      * @return {StringArray|Null} 附件标题.
@@ -1659,7 +1659,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         return data;
     },
     /**
-     * 为组件重新设置附件，该附件必须已经上传。
+     * @summary 为组件重新设置附件，该附件必须已经上传。
      *  @param data{AttachmentData} .
      */
     setData: function(data){
@@ -1802,7 +1802,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         return true;
     },
     /**
-     * 根据组件的校验设置进行校验。
+     * @summary 根据组件的校验设置进行校验。
      *  @param {String} routeName - 可选，路由名称.
      *  @example
      *  if( !this.form.get('fieldName').validation() ){

@@ -98,7 +98,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         }
     },
     /**
-     * 重新计算下拉选项，该功能通常用在下拉选项为动态计算的情况.
+     * @summary 重新计算下拉选项，该功能通常用在下拉选项为动态计算的情况.
      * @example
      * this.form.get('fieldName').resetOption();
      */
@@ -107,7 +107,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         this.setOptions();
     },
     /**
-     * 获取选择项数组.
+     * @summary 获取选择项数组.
      * @example
      * var array = this.form.get('fieldName').getOptions();
      * @return {Array} 选择项数组，如果是脚本返回计算结果.
@@ -239,7 +239,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         }
     },
     /**
-     * 获取选中的值和文本.
+     * @summary 获取选中的值和文本.
      * @example
      * var array = this.form.get('fieldName').getTextData();
      * @return {Object} 返回选中项值和文本，格式为 { 'value' : value, 'text' : text }.
@@ -302,7 +302,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         this.setData(this.getValue());
     },
     /**
-     * 为字段赋值，并且使值对应的选项选中。
+     * @summary 为字段赋值，并且使值对应的选项选中。
      *  @param data{String} .
      */
     setData: function(data){
