@@ -90,7 +90,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                 }
 
                 /**
-                 * 描述信息节点，select\radio\checkbox无此节点，只读情况下无此节点.
+                 * @summary 描述信息节点，允许用户手工输入的组件才有此节点，只读情况下无此节点.
                  * @member {Element}
                  */
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
@@ -284,12 +284,22 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	    return !data || !data.trim();
     },
     /**
-     *  该方法和 this.data.{fieldName} 在绝大部分的时候效果一样。区别如下：
-     * 当使用异步函数生成器（Promise）为组件赋值的时候，getData立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。
-     * this.data.{fieldName} 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。{@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}
+     *  该方法和 this.data.{fieldName} 在绝大部分的时候效果一样。区别如下：<br/>
+     * 当使用异步函数生成器（Promise）为组件赋值的时候，getData立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。<br/>
+     * this.data.{fieldName} 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
+     * {@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}
      * @summary 获取组件值。
      *  @example
-     * var data = this.form.get('subject').getData();
+     * var data = this.form.get('subject').getData(); //没有使用promise的情况
+     * @example
+     *  //使用Promise的情况
+     *  var field = this.form.get("fieldName");
+     *  var dict = new this.Dict("test"); //test为数据字典名称
+     *  var promise = dict.get("tools", true); //异步使用数据字典的get方法时返回Promise，参数true表示异步
+     *  promise.then( function(){
+     *      var data = field.getData(); //此时由于异步请求已经执行完毕，getData方法获取到了数据字典的值
+     *  })
+     *  field.setData( promise );
      * @return 组件的数据.
      */
 	getData: function(when){
@@ -311,9 +321,17 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     resetData: function(){
         this.setData(this.getValue());
     },
-    /**
-     * @summary 为控件赋值。
-     *  @param data{String|Number|JsonObject|Array} .
+    /**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}
+     * @summary 为组件赋值。
+     *  @param data{String|Promise} .
+     *  @example
+     *  this.form.get("fieldName").setData("test"); //赋文本值
+     *  @example
+     *  //使用Promise
+     *  var field = this.form.get("fieldName");
+     *  var dict = new this.Dict("test"); //test为数据字典名称
+     *  var promise = dict.get("tools", true); //异步使用数据字典的get方法时返回Promise，参数true表示异步
+     *  field.setData( promise );
      */
 	setData: function(data){
         // if (data && data.isAG){
