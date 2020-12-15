@@ -1114,7 +1114,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		}
 	},
 	/**
-	 * 重置组件的值为默认值或置空。
+	 * @summary 重置数据网格的值为默认值或置空。
 	 *  @example
 	 * this.form.get('fieldName').resetData();
 	 */
@@ -1122,7 +1122,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		this.setData(this._getValue());
 	},
 	/**
-	 * 为数据网格赋值。
+	 * @summary 为数据网格赋值。
 	 *  @param data{Array}  - 必选，数组.
 	 */
 	setData: function(data){
@@ -1207,7 +1207,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		}
 	},
 	/**
-	 * 获取总计数据.
+	 * @summary 获取总计数据.
 	 * @example
 	 * var totalObject = this.form.get('fieldName').getTotal();
 	 * @return {Object} 总计数据
@@ -1217,7 +1217,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		return this.totalResaults;
 	},
 	/**
-	 * 判断数据网格是否为空.
+	 * @summary 判断数据网格是否为空.
 	 * @example
 	 * if( this.form.get('fieldName').isEmpty() ){
 	 *     this.form.notice('至少需要添加一条数据', 'warn');
@@ -1234,7 +1234,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		return false;
 	},
 	/**
-	 * 获取数据网格数据.
+	 * @summary 获取数据网格数据.
 	 *  @example
 	 * var data = this.form.get('fieldName').getData();
 	 * @return {Object} - 格式如下{ data : [] }.
@@ -1396,7 +1396,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		return true;
 	},
 	/**
-	 * 根据组件的校验设置进行校验。
+	 * @summary 根据组件的校验设置进行校验。
 	 *  @param {String} routeName - 可选，路由名称.
 	 *  @example
 	 *  if( !this.form.get('fieldName').validation() ){
