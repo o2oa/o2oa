@@ -13,7 +13,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     initialize: function(node, json, form, options){
         /**
-         * 组件的节点
+         * @summary 组件的节点
          * @see https://mootools.net/core/docs/1.6.0/Element/Element
          * @member {Element}
          * @example
@@ -26,7 +26,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         this.node.store("module", this);
 
         /**
-         * 组件的配置信息，比如id,类型等.
+         * @summary 组件的配置信息，比如id,类型等.
          * @member {JsonObject}
          * @example
          *  //可以在脚本中获取该组件
@@ -37,7 +37,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         this.json = json;
 
         /**
-         * 组件的所在表单对象.
+         * @summary 组件的所在表单对象.
          * @member {MWF.xApplication.process.Xform.Form}
          * @example
          * var form = this.form.get("fieldName").form; //获取组件所在表单对象
@@ -55,7 +55,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         return (parent) ? parent.retrieve("module") : null;
     },
     /**
-     * 隐藏组件.
+     * @summary 隐藏组件.
      * @example
      * this.form.get("fieldName").hide(); //隐藏组件
      */
@@ -66,7 +66,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         if (this.iconNode) this.iconNode.setStyle("display", "none");
     },
     /**
-     * 显示组件.
+     * @summary 显示组件.
      * @example
      * this.form.get("fieldName").show(); //显示组件
      */
