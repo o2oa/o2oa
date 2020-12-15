@@ -1317,8 +1317,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }.bind(this));
     },
     _afterLoaded: function(){
-        this._loadDatagridStyle();
-        if (this.table) this.table.setStyle("display", "none");
+        if (this.moduleValueAG){
+            this.moduleValueAG.then(function(){
+                this._loadDatagridStyle();
+                if (this.table) this.table.setStyle("display", "none");
+            }.bind(this));
+        }else{
+            this._loadDatagridStyle();
+            if (this.table) this.table.setStyle("display", "none");
+        }
     },
     resetData: function(){
         this.setData(this._getValue());
