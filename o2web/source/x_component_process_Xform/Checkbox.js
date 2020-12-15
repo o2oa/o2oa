@@ -1,6 +1,18 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 MWF.require("MWF.widget.UUID", null, false);
-MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
+/** @class process.Calendar 多选按钮组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var field = this.form.get("fieldName"); //获取组件对象
+ * //方法2
+ * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
+ * @extends MWF.xApplication.process.Xform.$Input
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Checkbox# */
+    {
 	Implements: [Events],
 	Extends: MWF.APP$Input,
 
@@ -85,10 +97,21 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
             }.bind(this));
         }
     },
+    /**
+     * 重新计算下拉选项，该功能通常用在下拉选项为动态计算的情况.
+     * @example
+     * this.form.get('fieldName').resetOption();
+     */
     resetOption: function(){
         this.node.empty();
         this.setOptions();
     },
+    /**
+     * 获取选择项数组.
+     * @example
+     * var array = this.form.get('fieldName').getOptions();
+     * @return {Array} 选择项数组，如果是脚本返回计算结果.
+     */
 	getOptions: function(){
 		if (this.json.itemType == "values"){
 			return this.json.itemValues;
@@ -215,6 +238,12 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
             radio.checked = value.indexOf(radio.value) != -1;
         }
     },
+    /**
+     * 获取选中的值和文本.
+     * @example
+     * var array = this.form.get('fieldName').getTextData();
+     * @return {Object} 返回选中项值和文本，格式为 { 'value' : value, 'text' : text }.
+     */
 	getTextData: function(){
 		var inputs = this.node.getElements("input");
 		var value = [];
@@ -272,7 +301,10 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
     resetData: function(){
         this.setData(this.getValue());
     },
-
+    /**
+     * 为字段赋值，并且使值对应的选项选中。
+     *  @param data{String} .
+     */
     setData: function(data){
 	    return this._setValue(data, "__setData");
         // if (data && data.isAG){
