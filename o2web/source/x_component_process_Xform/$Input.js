@@ -10,9 +10,6 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	Implements: [Events],
 	Extends: MWF.APP$Module,
 	iconStyle: "personfieldIcon",
-    /**
-     * @hideconstructor
-     */
     initialize: function(node, json, form, options){
         this.node = $(node);
         this.node.store("module", this);
@@ -287,10 +284,12 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	    return !data || !data.trim();
     },
     /**
-     * 获取组件值.
+     * 获取组件值。该方法和 this.data.{fieldName} 在绝大部分的时候效果一样。区别如下：
+     * 当使用异步函数生成器（Promise）为组件赋值的时候，getData立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。
+     * this.data.{fieldName} 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。{@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}
      *  @example
      * var data = this.form.get('subject').getData();
-     * @return {Array|Object|String|Number|Boolean} 组件的数据.
+     * @return 组件的数据.
      */
 	getData: function(when){
         if (this.json.compute == "save") this._setValue(this._computeValue());
