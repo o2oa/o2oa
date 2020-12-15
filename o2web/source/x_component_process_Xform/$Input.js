@@ -272,7 +272,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 		return {"value": [value || ""] , "text": [text || value || ""]};
 	},
     /**
-     * 判断组件值是否为空.
+     * @summary 判断组件值是否为空.
      * @example
      * if( this.form.get('subject').isEmpty() ){
      *     this.form.notice('标题不能为空', 'warn');
@@ -284,9 +284,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	    return !data || !data.trim();
     },
     /**
-     * 获取组件值。该方法和 this.data.{fieldName} 在绝大部分的时候效果一样。区别如下：
+     *  该方法和 this.data.{fieldName} 在绝大部分的时候效果一样。区别如下：
      * 当使用异步函数生成器（Promise）为组件赋值的时候，getData立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。
      * this.data.{fieldName} 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。{@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}
+     * @summary 获取组件值。
      *  @example
      * var data = this.form.get('subject').getData();
      * @return 组件的数据.
@@ -303,7 +304,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         }
     },
     /**
-     * 重置组件的值为默认值或置空。
+     * @summary 重置组件的值为默认值或置空。
      *  @example
      * this.form.get('subject').resetData();
      */
@@ -311,7 +312,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         this.setData(this.getValue());
     },
     /**
-     * 为控件赋值。
+     * @summary 为控件赋值。
      *  @param data{String|Number|JsonObject|Array} .
      */
 	setData: function(data){
@@ -545,7 +546,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         return true;
     },
     /**
-     * 根据组件的校验设置进行校验。
+     * @summary 根据组件的校验设置进行校验。
      *  @param {String} routeName - 可选，路由名称.
      *  @example
      *  if( !this.form.get('fieldName').validation() ){

@@ -1938,15 +1938,15 @@ MWF.xApplication.Selector.Person.Item = new Class({
         });
     },
     clickItem: function( callback, checkValid ){
-        if ( layout.mobile && this.selector.options.count.toInt()===1){
-            this.selectedSingle( checkValid );
-        }else{
+        // if ( layout.mobile && this.selector.options.count.toInt()===1){
+        //     this.selectedSingle( checkValid );
+        // }else{
             if (this.isSelected){
                 this.unSelected( checkValid );
             }else{
                 this.selected( checkValid );
             }
-        }
+        // }
     },
     overItem: function(){
         if (!this.isSelected ){
@@ -2004,6 +2004,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
 
             }.bind(this));
         }else {
+            this.selector.emptySelectedItems();
             this.unSelectedSingle( checkValid );
         }
     },
