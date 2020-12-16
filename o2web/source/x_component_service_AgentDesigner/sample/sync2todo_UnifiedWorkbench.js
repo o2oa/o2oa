@@ -16,11 +16,11 @@ print("----发送待办开始---------");
 //var Read_Service_URL ='http://10.11.198.224:9083/UnifiedWorkbench/ProcessReadService';
 //WSDL http://10.11.198.224:9083/UnifiedWorkbench/ProcessReadService/ProcessReadService.wsdl
 
-var Todo_Service_URL = 'http://10.11.198.209:9083/UnifiedWorkbench/ProcessTaskService';
-var Read_Service_URL ='http://10.11.198.209:9083/UnifiedWorkbench/ProcessReadService';
+var Todo_Service_URL = 'http://hostname/UnifiedWorkbench/ProcessTaskService';
+var Read_Service_URL ='http://hostname/UnifiedWorkbench/ProcessReadService';
 
-var Project_Name = '安徽智和';
-var Project_Password = 'ahzh';
+var Project_Name = '测试';
+var Project_Password = 'password';
 
 function getServerHost(){
     return "http://zhtest.ah.unicom.local";

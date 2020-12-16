@@ -1,5 +1,53 @@
+/**
+ * 数据网格数据结构.
+ * @typedef {Object} DatagridData
+ * @property {Array} data - 数据网格列表数据
+ * @property {Object} total - 统计数据
+ * @example
+ * 	{
+	  "data": [ //数据网格条目
+		{
+		  "datagrid_datagrid$Title": { //数据网格第1列title标识
+			"org_20": {  //数据网格第1列字段标识
+			  "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
+			  "id": "bf007525-99a3-4178-a474-32865bdddec8",
+			  "name": "张三",
+			  "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
+			  "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
+			  "unitLevelName": "兰德纵横/市场营销部",
+			  "unitName": "市场营销部"
+			}
+		  },
+		  "datagrid_datagrid$Title_1": { //数据网格第2列title标识
+			"number": "111" //数据网格第2列字段标识和值
+		  },
+		  "datagrid_datagrid$Title_2": { //数据网格第3列title标识
+			"textfield_2": "杭州" //数据网格第3列字段标识和值
+		  },
+		  "datagrid_datagrid$Title_3": { //数据网格第4列title标识
+			"attachment_1": [  //数据网格第4列字段标识
+			  {
+				"activityName": "拟稿",
+				"extension": "jpg",
+				"id": "9514758e-9e28-4bfe-87d7-824f2811f173",
+				"lastUpdateTime": "2020-12-09 21:48:03",
+				"length": 452863.0,
+				"name": "111.jpg",
+				"person": "李四@lisi@P"
+			  }
+			]
+		  }
+		},
+		...
+	  ],
+	  "total": {  //统计数据，列title设置了总计
+		"datagrid_datagrid$Title_1": "333", //总计列1
+		"datagrid_datagrid$Title_2": "2" //总计列2
+	  }
+	}
+ */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class process.Button 数据网格组件（PC端）。
+/** @class process.DatagridPC 数据网格组件（PC端）。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -1121,9 +1169,34 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 	resetData: function(){
 		this.setData(this._getValue());
 	},
-	/**
+	/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
+	 * 当表单上没有对应组件的时候，可以使用this.data[fieldName] = data赋值。
 	 * @summary 为数据网格赋值。
-	 *  @param data{Array}  - 必选，数组.
+	 * @param data{DatagridData|Promise|Array} 必选，数组或Promise.
+	 * @example
+	 *  this.form.get("fieldName").setData([]); //赋空值
+	 * @example
+	 *  //如果无法确定表单上是否有组件，需要判断
+	 *  if( this.form.get('fieldName') ){ //判断表单是否有无对应组件
+	 *      this.form.get('fieldName').setData( data );
+	 *  }else{
+	 *      this.data['fieldName'] = data;
+	 *  }
+	 *@example
+	 *  //使用Promise
+	 *  var field = this.form.get("fieldName");
+	 *  var promise = new Promise(function(resolve, reject){ //发起异步请求
+	 *    var oReq = new XMLHttpRequest();
+	 *    oReq.addEventListener("load", function(){ //绑定load事件
+	 *      resolve(oReq.responseText);
+	 *    });
+	 *    oReq.open("GET", "/data.json"); //假设数据存放在data.json
+	 *    oReq.send();
+	 *  });
+	 *  promise.then( function(){
+	 *    var data = field.getData(); //此时由于异步请求已经执行完毕，getData方法获得data.json的值
+	 * })
+	 *  field.setData( promise );
 	 */
 	setData: function(data){
 		if (!data){
@@ -1233,11 +1306,42 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		}
 		return false;
 	},
+
 	/**
+	 * 在脚本中使用 this.data[fieldName] 也可以获取组件值。
+	 * 区别如下：<br/>
+	 * 1、当使用Promise的时候<br/>
+	 * 使用异步函数生成器（Promise）为组件赋值的时候，用getData方法立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。<br/>
+	 * this.data[fieldName] 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
+	 * {@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}<br/>
+	 * 2、当表单上没有对应组件的时候，可以使用this.data[fieldName]获取值，但是this.form.get('fieldName')无法获取到组件。
 	 * @summary 获取数据网格数据.
-	 *  @example
+	 * @example
 	 * var data = this.form.get('fieldName').getData();
-	 * @return {Object} - 格式如下{ data : [] }.
+	 *@example
+	 *  //如果无法确定表单上是否有组件，需要判断
+	 *  var data;
+	 *  if( this.form.get('fieldName') ){ //判断表单是否有无对应组件
+	 *      data = this.form.get('fieldName').getData();
+	 *  }else{
+	 *      data = this.data['fieldName']; //直接从数据中获取字段值
+	 *  }
+	 *  @example
+	 *  //使用Promise
+	 *  var field = this.form.get("fieldName");
+	 *  var promise = new Promise(function(resolve, reject){ //发起异步请求
+	 *    var oReq = new XMLHttpRequest();
+	 *    oReq.addEventListener("load", function(){ //绑定load事件
+	 *      resolve(oReq.responseText);
+	 *    });
+	 *    oReq.open("GET", "/data.json"); //假设数据存放在data.json
+	 *    oReq.send();
+	 *  });
+	 *  promise.then( function(){
+	 *    var data = field.getData(); //此时由于异步请求已经执行完毕，getData方法获得data.json的值
+	 * })
+	 *  field.setData( promise );
+	 * @return {DatagridData}
 	 */
 	getData: function(){
 		if (this.editable!=false){
