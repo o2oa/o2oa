@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" charset="UTF-8" />
+    <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />
+    <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />
+    <title>O2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <div id="layout_main" style="overflow: hidden; height: 100%; background-position-x: center; background-size: cover;">
+        <div id="layout_top_shim"></div>
+        <div id="layout_top"></div>
+        <div id="layout_desktop">
+            <div id="desktop_content"></div>
+            <div id="desktop_navi"></div>
+        </div>
+    </div>
+
+    <div id="loaddingArea" style="z-index: 200001;overflow: hidden;width:0px; height:2px; background-color:#999999; position: absolute; top: 0;"></div>
+    <div id="browser_loading" style="z-index: 200000;background-image: url(img/loading_home3.gif); background-position: center center; background-repeat: no-repeat; overflow: hidden; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;background-color: #ffffff"></div>
+
+    <div id="appContent" style="overflow: hidden; height: 100%;"></div>
+
+    <div id="browser_error" style="overflow: hidden; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; display: none;background: #f1f1f1">
+        <div style="height:540px; width: 920px; overflow: hidden;  margin: 8% auto;">
+            <div id="browser_error_area" style="height:540px; width: 920px;"></div>
+            <div style="height:540px; width: 920px; position: relative; top: -540px">
+                <div style="background-image: url(img/warn1.png); background-repeat: no-repeat; background-position:center center; width: 90px; height: 80px; float:left; margin-left: 144px; margin-top: 74px"></div>
+                <div style="color: #333333; width: 530px; height: 80px; float:left; margin-left: 30px; margin-top: 74px; font-size: 28px; line-height: 40px;" id="browser_error_area_text">
+                    您的浏览器版本过低啦！~系统已经不支持IE9及以下版本了!
+                </div>
+                <div style="color: #666666; width: 650px; text-align:center; height: 50px; float:left; margin-left: 144px; margin-top: 60px; font-size: 28px; line-height: 40px; border-bottom: 2px solid #999999" id="browser_error_area_up_text">
+                    请升级您的浏览器：
+                </div>
+                <div style="width: 100px; height: 100px; float:left; margin-left: 144px; margin-top: 20px">
+                    <div style="background-position: center; background-repeat: no-repeat; background-image: url(img/logo_edge.png); width: 100px; height: 100px;"></div>
+                    <div style="width: 100px; height: 40px; font-size: 24px; color: #666666; line-height: 40px; text-align: center">Edge</div>
+                </div>
+
+                <div style="width: 100px; height: 100px; float:left; margin-left: 80px; margin-top: 20px">
+                    <div style="background-position: center; background-repeat: no-repeat;background-image: url(img/logo_chrome.png); width: 100px; height: 100px;"></div>
+                    <div style="width: 100px; height: 40px; font-size: 24px; color: #666666; line-height: 40px; text-align: center">Chrome</div>
+                </div>
+
+                <div style="width: 100px; height: 100px; float:left; margin-left: 80px; margin-top: 20px">
+                    <div style="background-position: center; background-repeat: no-repeat;background-image: url(img/logo_firefox.png); width: 100px; height: 100px;"></div>
+                    <div style="width: 100px; height: 40px; font-size: 24px; color: #666666; line-height: 40px; text-align: center">Firefox</div>
+                </div>
+
+                <div style="width: 100px; height: 100px; float:left; margin-left: 80px; margin-top: 20px">
+                    <div style="background-position: center; background-repeat: no-repeat;background-image: url(img/logo_safari.png); width: 100px; height: 100px;"></div>
+                    <div style="width: 100px; height: 40px; font-size: 24px; color: #666666; line-height: 40px; text-align: center">Safari</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="javascript">
+        if (!window.FormData || !window.WebSocket || !window.JSON){
+            var loadingNode = document.getElementById("browser_loading");
+            var errorNode = document.getElementById("browser_error");
+            if (loadingNode) loadingNode.style.display = "none";
+            if (errorNode) errorNode.style.display = "block";
+        }
+    </script>
+
+    <script src="../o2_core/o2.min.js"></script>
+    <script src="js/base.min.js"></script>
+    <script src="js/x.min.js"></script>
+    <script src="../o2_lib/Decimal.js"></script>
+</body>
+</html>
