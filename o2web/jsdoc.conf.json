@@ -3,13 +3,17 @@
         "encoding": "utf8",               // same as -e utf8
         "destination": "./o2web/jsdoc/",          // same as -d ./out/
         "recurse": true,                 // same as -r
-        "template" : "./node_modules/docdash"
+        "template" : "./node_modules/tidy-jsdoc",
+        "prism-theme": "prism-custom"
         //        "tutorials": "./o2web/tutorials" // same as -u path/to/tutorials
     },
 
     "tags": {
         "allowUnknownTags": true,
-        "dictionaries": ["jsdoc"]
+        "dictionaries": [
+            "jsdoc",
+            "closure"
+        ]
     },
     "source": {
         "include": ["./o2web/source/x_component_process_Xform","./o2web/source/x_component_cms_Xform"],
@@ -22,48 +26,10 @@
     ],
     "templates": {
         "cleverLinks": false,
-        "monospaceLinks": false,
-        "default" : {
-            "useLongnameInNav": false
-        }
+        "monospaceLinks": false
     },
-    "docdash": {
-        "static": true,         // Display the static members inside the navbar
-        "sort": true,           // Sort the methods in the navbar
-        "sectionOrder": [               // Order the main section in the navbar (default order shown here)
-            "Classes",
-            "Modules",
-            "Externals",
-            "Events",
-            "Namespaces",
-            "Mixins",
-            "Tutorials",
-            "Interfaces"
-        ],
-        "disqus": "",                   // Shortname for your disqus (subdomain during site creation)
-        "openGraph": {                  // Open Graph options (mostly for Facebook and other sites to easily extract meta information)
-            "title": "",                // Title of the website
-            "type": "website",          // Type of the website
-            "image": "",                // Main image/logo
-            "site_name": "",            // Site name
-            "url": ""                   // Main canonical URL for the main page of the site
-        },
-        "meta": {                       // Meta information options (mostly for search engines that have not indexed your site yet)
-            "title": "",                // Also will be used as postfix to actualy page title, prefixed with object/document name
-            "description": "",          // Description of overal contents of your website
-            "keyword": ""               // Keywords for search engines
-        },
-        "search": true,         // Display seach box above navigation which allows to search/filter navigation items
-        "collapse": true,       // Collapse navigation by default except current object's navigation of the current page
-        "wrap": true,           // Wrap long navigation names instead of trimming them
-        "typedefs": true,       // Include typedefs in menu
-        "navLevel": 3,          // depth level to show in navbar, starting at 0 (false or -1 to disable)
-        "private": false,        // set to false to not show @private in navbar
-        "removeQuotes": true,// Remove single and double quotes, trim removes only surrounding ones
-        "scripts": [],                  // Array of external (or relative local copied using templates.default.staticFiles.include) js or css files to inject into HTML,
-        "scopeInOutputPath": true, // Add scope from package file (if present) to the output path, true by default.
-        "nameInOutputPath": true, // Add name from package file to the output path, true by default.
-        "versionInOutputPath": true // Add package version to the output path, true by default.
+    "metadata": {
+        "title": "O2OA前台API"
     }
 }
 //执行命令: jsdoc -c ./o2web/jsdoc.conf.json
