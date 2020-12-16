@@ -3,6 +3,7 @@ package com.x.query.service.processing.jaxrs.design;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -16,8 +17,7 @@ import com.x.base.core.project.x_processplatform_assemble_designer;
 import com.x.query.service.processing.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 class ActionSearch extends BaseAction {
@@ -49,69 +49,62 @@ class ActionSearch extends BaseAction {
 	}
 
 	private List<ScriptWo> searchScript(final Wi wi) throws Exception{
+		final Map<String, List<String>> moduleMap = new HashMap<>();
+		if(!ListTools.isEmpty(wi.getModuleList())){
+			for (Module module: wi.getModuleList()){
+				if(module.getModuleType().equalsIgnoreCase(ModuleType.cms.toString())){
+					moduleMap.put(ModuleType.cms.toString(), module.getFlagList());
+				}
+				if(module.getModuleType().equalsIgnoreCase(ModuleType.portal.toString())){
+					moduleMap.put(ModuleType.portal.toString(), module.getFlagList());
+				}
+				if(module.getModuleType().equalsIgnoreCase(ModuleType.processPlatform.toString())){
+					moduleMap.put(ModuleType.processPlatform.toString(), module.getFlagList());
+				}
+			}
+		}else{
+			List<String> list = new ArrayList<>();
+			moduleMap.put(ModuleType.cms.toString(), list);
+			moduleMap.put(ModuleType.portal.toString(), list);
+			moduleMap.put(ModuleType.processPlatform.toString(), list);
+		}
+
+		CompletableFuture<List<ScriptWo>> processPlatformCf = scriptSearchAsync(wi, moduleMap, ModuleType.processPlatform.toString(), x_processplatform_assemble_designer.class);
+		CompletableFuture<List<ScriptWo>> portalCf = scriptSearchAsync(wi, moduleMap, ModuleType.portal.toString(), x_portal_assemble_designer.class);
+		CompletableFuture<List<ScriptWo>> cmsCf = scriptSearchAsync(wi, moduleMap, ModuleType.cms.toString(), x_cms_assemble_control.class);
+
 		List<ScriptWo> scriptWoList = new ArrayList<>();
-		CompletableFuture<List<ScriptWo>> cmsCf = CompletableFuture.supplyAsync(() -> {
-			List<ScriptWo> swList = new ArrayList<>();
-			try {
-				List<WrapScript> scriptList = ThisApplication.context().applications().getQuery(x_cms_assemble_control.class,
-						Applications.joinQueryUri("script", "list", "manager"), null).getDataAsList(WrapScript.class);
-				logger.print("CMS的脚本个数：{}",scriptList.size());
-				getScriptSearchRes(wi,"cms",  swList, scriptList);
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			if (swList.size()>2){
-				try {
-					SortTools.desc(swList, "appId");
-				} catch (Exception e) {
-				}
-			}
-			return swList;
-		});
-
-		CompletableFuture<List<ScriptWo>> portalCf = CompletableFuture.supplyAsync(() -> {
-			List<ScriptWo> swList = new ArrayList<>();
-			try {
-				List<WrapScript> scriptList = ThisApplication.context().applications().getQuery(x_portal_assemble_designer.class,
-						Applications.joinQueryUri("script", "list", "manager"), null).getDataAsList(WrapScript.class);
-				logger.print("门户的脚本个数：{}",scriptList.size());
-				getScriptSearchRes(wi,"portal",  swList, scriptList);
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			if (swList.size()>2){
-				try {
-					SortTools.desc(swList, "appId");
-				} catch (Exception e) {
-				}
-			}
-			return swList;
-		});
-
-		CompletableFuture<List<ScriptWo>> processPlatformCf = CompletableFuture.supplyAsync(() -> {
-			List<ScriptWo> swList = new ArrayList<>();
-			try {
-				List<WrapScript> scriptList = ThisApplication.context().applications().getQuery(x_processplatform_assemble_designer.class,
-						Applications.joinQueryUri("script", "list", "manager"), null).getDataAsList(WrapScript.class);
-				logger.print("流程平台的脚本个数：{}",scriptList.size());
-				getScriptSearchRes(wi,"processPlatform", swList, scriptList);
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			if (swList.size()>2){
-				try {
-					SortTools.desc(swList, "appId");
-				} catch (Exception e) {
-				}
-			}
-			return swList;
-		});
-
 		scriptWoList.addAll(processPlatformCf.get());
 		scriptWoList.addAll(portalCf.get());
 		scriptWoList.addAll(cmsCf.get());
 
 		return scriptWoList;
+	}
+
+	private CompletableFuture<List<ScriptWo>> scriptSearchAsync(final Wi wi, final Map<String, List<String>> moduleMap, final String moduleType, final Class<?> applicationClass){
+		CompletableFuture<List<ScriptWo>> cf = CompletableFuture.supplyAsync(() -> {
+			List<ScriptWo> swList = new ArrayList<>();
+			if(moduleMap.containsKey(moduleType)) {
+				try {
+					Map<String, List<String>> map = new HashMap<>();
+					map.put("appIdList", moduleMap.get(moduleType));
+					List<WrapScript> scriptList = ThisApplication.context().applications().postQuery(applicationClass,
+							Applications.joinQueryUri("script", "list", "manager"), map).getDataAsList(WrapScript.class);
+					logger.print("设计搜索关联{}的脚本个数：{}", moduleType, scriptList.size());
+					getScriptSearchRes(wi, moduleType, swList, scriptList);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+				if (swList.size() > 2) {
+					try {
+						SortTools.desc(swList, "appId");
+					} catch (Exception e) {
+					}
+				}
+			}
+			return swList;
+		});
+		return cf;
 	}
 
 	private void getScriptSearchRes(final Wi wi, String moduleType, List<ScriptWo> swList, List<WrapScript> scriptList){
@@ -149,6 +142,7 @@ class ActionSearch extends BaseAction {
 		@FieldDescribe("是否正则表达式匹配.")
 		private Boolean matchRegExp;
 		@FieldDescribe("限制查询的模块列表.")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "Module", fieldValue = "{\"moduleType\": \"cms\", \"flagList\": []}")
 		private List<Module> moduleList;
 
 		public String getKeyword() {
@@ -201,17 +195,17 @@ class ActionSearch extends BaseAction {
 	}
 
 	public static class Module extends GsonPropertyObject {
-		@FieldDescribe("模块的应用关键字.")
-		private String flag;
+		@FieldDescribe("模块的应用id列表.")
+		private List<String> flagList;
 		@FieldDescribe("模块类型：processPlatform|cms|portal|query|service")
 		private String moduleType;
 
-		public String getFlag() {
-			return flag;
+		public List<String> getFlagList() {
+			return flagList == null ? new ArrayList<>() : flagList;
 		}
 
-		public void setFlag(String flag) {
-			this.flag = flag;
+		public void setFlagList(List<String> flagList) {
+			this.flagList = flagList;
 		}
 
 		public String getModuleType() {
