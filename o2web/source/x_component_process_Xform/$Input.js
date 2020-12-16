@@ -263,7 +263,15 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             this.loadDescription();
         }
 	},
-	
+    /**
+     * @summary 判断组件是否只读.
+     * @example
+     * var readonly = this.form.get('subject').isReadonly();
+     * @return {Boolean} 是否只读.
+     */
+	isReadonly : function(){
+        return !!(this.readonly || this.json.isReadonly);
+    },
 	getTextData: function(){
 		//var value = this.node.get("value");
 		//var text = this.node.get("text");
@@ -284,13 +292,24 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	    return !data || !data.trim();
     },
     /**
-     *  该方法和 this.data.{fieldName} 在绝大部分的时候效果一样。区别如下：<br/>
-     * 当使用异步函数生成器（Promise）为组件赋值的时候，getData立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。<br/>
-     * this.data.{fieldName} 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
-     * {@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}
+     * 在脚本中使用 this.data[fieldName] 也可以获取组件值。
+     * 区别如下：<br/>
+     * 1、当使用Promise的时候<br/>
+     * 使用异步函数生成器（Promise）为组件赋值的时候，用getData方法立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。<br/>
+     * this.data[fieldName] 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
+     * {@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}<br/>
+     * 2、当表单上没有对应组件的时候，可以使用this.data[fieldName]获取值，但是this.form.get('fieldName')无法获取到组件。
      * @summary 获取组件值。
-     *  @example
-     * var data = this.form.get('subject').getData(); //没有使用promise的情况
+     * @example
+     * var data = this.form.get('fieldName').getData(); //没有使用promise的情况、
+     * @example
+     *  //如果无法确定表单上是否有组件，需要判断
+     *  var data;
+     *  if( this.form.get('fieldName') ){ //判断表单是否有无对应组件
+     *      data = this.form.get('fieldName').getData();
+     *  }else{
+     *      data = this.data['fieldName']; //直接从数据中获取字段值
+     *  }
      * @example
      *  //使用Promise的情况
      *  var field = this.form.get("fieldName");
@@ -321,12 +340,20 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     resetData: function(){
         this.setData(this.getValue());
     },
-    /**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}
+    /**当参数为Promise的时候，请参考文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
+     * 当表单上没有对应组件的时候，可以使用this.data[fieldName] = data赋值。
      * @summary 为组件赋值。
-     *  @param data{String|Promise} .
-     *  @example
+     * @param data{String|Promise} .
+     * @example
      *  this.form.get("fieldName").setData("test"); //赋文本值
-     *  @example
+     * @example
+     *  //如果无法确定表单上是否有组件，需要判断
+     *  if( this.form.get('fieldName') ){ //判断表单是否有无对应组件
+     *      this.form.get('fieldName').setData( data );
+     *  }else{
+     *      this.data['fieldName'] = data;
+     *  }
+     * @example
      *  //使用Promise
      *  var field = this.form.get("fieldName");
      *  var dict = new this.Dict("test"); //test为数据字典名称

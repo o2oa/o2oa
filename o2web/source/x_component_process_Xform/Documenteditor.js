@@ -1,5 +1,17 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Class({
+/** @class process.Documenteditor 公文编辑器。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var attachment = this.form.get("name"); //获取组件
+ * //方法2
+ * var attachment = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Class(
+/** @lends MWF.xApplication.process.Xform.Documenteditor# */
+{
     Extends: MWF.APP$Module,
     options: {
         "moduleEvents": ["load", "queryLoad", "beforeLoad", "postLoad", "afterLoad", "loadPage"],
@@ -42,6 +54,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.active();
         }
     },
+    /**激活板式文件编辑
+     * 设置了延迟加载的时候，可以通过这个方法来激活
+    */
     active: function(){
         this._loadModuleEvents();
         if (this.fireEvent("queryLoad")){
@@ -2482,6 +2497,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     _loadValue: function(){
         var data = this._getBusinessData();
     },
+
+    /**重新计算板式文件的所有字段，当字段是脚本时可以使用该方法立即更新
+     */
     reload: function(){
         this.resetData();
     },
@@ -2509,6 +2527,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if( typeOf(data) !== "object" )return true;
         return !data.filetext || data.filetext===this.json.defaultValue.filetext;
     },
+    /*获取板式文件数据，返回Object
+    */
     getData: function(){
         //if (this.editMode){
 
@@ -2592,6 +2612,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             tmpdiv.destroy();
         }
     },
+    /**设置
+    */
     setData: function(data, diffFiletext){
         if (data){
             this.data = data;
@@ -2898,6 +2920,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         return node;
     },
+    /*将板式文件内容以html形式输出
+    */
     getDocumentHtml: function(){
         var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
         var htmlNode = tmpNode.getLast();
@@ -2922,6 +2946,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         tmpNode.destroy();
         return "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+htmlStr+"</body></html>";
     },
+    /*将板式文件转换成附件，转换的文件名和格式等信息与配置有关
+    * */
     toWord: function(callback, name){
 
         var docNmae = name || "";
