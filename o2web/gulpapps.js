@@ -89,7 +89,7 @@ var apps = [
     { "folder": "x_desktop", "tasks": ["move", "min"] },
     { "folder": "x_component_IMV2", "tasks": ["move", "min"] },
     { "folder": "x_component_ConfigDesigner", "tasks": ["move", "min"] },
-
+    { "folder": "x_test", "tasks": ["move"] }
 ];
 
 module.exports = apps;
