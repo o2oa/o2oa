@@ -1422,14 +1422,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 if (data.signalStack && data.signalStack.length) {
                     var activityUsers = [];
                     data.signalStack.each(function (stack) {
-                        var ids = [];
+                        var idList = [];
                         if (stack.splitExecute) {
-                            ids = stack.splitExecute.splitValueList || [];
+                            idList = stack.splitExecute.splitValueList || [];
                         }
                         if (stack.manualExecute) {
-                            ids = stack.manualExecute.identities || [];
+                            idList = stack.manualExecute.identities || [];
                         }
                         var count = 0;
+                        var ids = [];
+                        idList.each( function(i){
+                            var cn = o2.name.cn(i);
+                            if( !ids.contains( cn ) ){
+                                ids.push(cn)
+                            }
+                        });
                         if (ids.length > 8) {
                             count = ids.length;
                             ids = ids.slice(0, 8);
@@ -1449,7 +1456,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     data.properties.nextManualList.each(function (a) {
                         var ids = [];
                         a.taskIdentityList.each(function (i) {
-                            ids.push(o2.name.cn(i))
+                            var cn = o2.name.cn(i);
+                            if( !ids.contains( cn ) ){
+                                ids.push(cn)
+                            }
                         });
                         var t = "<b>" + MWF.xApplication.process.Xform.LP.nextActivity + "</b><span style='color: #ea621f'>" + a.activityName + "</span>；<b>" + MWF.xApplication.process.Xform.LP.nextUser + "</b><span style='color: #ea621f'>" + ids.join(",") + "</span>";
                         activityUsers.push(t);
