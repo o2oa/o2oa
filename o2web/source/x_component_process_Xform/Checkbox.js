@@ -301,9 +301,17 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     resetData: function(){
         this.setData(this.getValue());
     },
-    /**
+    /**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}
      * @summary 为字段赋值，并且使值对应的选项选中。
-     *  @param data{String} .
+     *  @param data{String|Promise} .
+     *  @example
+     *  this.form.get("fieldName").setData("test"); //赋文本值
+     *  @example
+     *  //使用Promise
+     *  var field = this.form.get("fieldName");
+     *  var dict = new this.Dict("test"); //test为数据字典名称
+     *  var promise = dict.get("tools", true); //异步使用数据字典的get方法时返回Promise，参数true表示异步
+     *  field.setData( promise );
      */
     setData: function(data){
 	    return this._setValue(data, "__setData");
