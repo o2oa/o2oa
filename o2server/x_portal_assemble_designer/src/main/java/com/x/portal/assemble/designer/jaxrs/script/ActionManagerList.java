@@ -1,5 +1,6 @@
 package com.x.portal.assemble.designer.jaxrs.script;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -7,21 +8,30 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Script;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class ActionManagerList extends BaseAction {
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		if(!effectivePerson.isManager()){
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			List<Wo> wos = emc.fetchAll(Script.class,  Wo.copier);
+			List<Wo> wos;
+			if(ListTools.isEmpty(wi.getAppIdList())){
+				wos = emc.fetchAll(Script.class,  Wo.copier);
+			}else{
+				wos = emc.fetchIn(Script.class, Wo.copier, Script.portal_FIELDNAME, wi.getAppIdList());
+			}
 			wos.stream().forEach(wo -> {
 				try {
 					Portal portal = emc.find(wo.getPortal(), Portal.class);
@@ -35,6 +45,19 @@ class ActionManagerList extends BaseAction {
 			result.setData(wos);
 			result.setCount((long)wos.size());
 			return result;
+		}
+	}
+
+	public static class Wi extends GsonPropertyObject {
+		@FieldDescribe("应用ID列表.")
+		private List<String> appIdList = new ArrayList<>();
+
+		public List<String> getAppIdList() {
+			return appIdList;
+		}
+
+		public void setAppIdList(List<String> appIdList) {
+			this.appIdList = appIdList;
 		}
 	}
 
