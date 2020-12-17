@@ -47,7 +47,7 @@
 	}
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class process.DatagridPC 数据网格组件（PC端）。
+/** @class DatagridPC 数据网格组件（PC端）。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
