@@ -27,6 +27,7 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.helpers.MessageFormatter;
@@ -547,5 +548,41 @@ public class StringTools {
 			sb.append(StringUtils.capitalize(name));
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * 文本搜索
+	 * @param keyword 搜索关键字
+	 * @param content 文本
+	 * @param caseSensitive 大小写敏感
+	 * @param matchWholeWord 是否全字匹配
+	 * @param matchRegExp 正则表达式搜索
+	 * @return
+	 */
+	public static boolean matchKeyword(String keyword, String content, Boolean caseSensitive, Boolean matchWholeWord, Boolean matchRegExp){
+		if(StringUtils.isBlank(keyword) || StringUtils.isBlank(content)){
+			return false;
+		}
+		if(BooleanUtils.isTrue(matchRegExp)){
+			Pattern pattern = Pattern.compile(keyword);
+			Matcher matcher = pattern.matcher(content);
+			return matcher.find();
+		}else if(BooleanUtils.isTrue(matchWholeWord)){
+			if(BooleanUtils.isTrue(caseSensitive)) {
+				Pattern pattern = Pattern.compile("\\b(" + keyword + ")\\b");
+				Matcher matcher = pattern.matcher(content);
+				return matcher.find();
+			}else{
+				Pattern pattern = Pattern.compile("\\b(" + keyword + ")\\b", Pattern.CASE_INSENSITIVE);
+				Matcher matcher = pattern.matcher(content);
+				return matcher.find();
+			}
+		}else{
+			if(BooleanUtils.isTrue(caseSensitive)) {
+				return (content.indexOf(keyword) > -1);
+			}else{
+				return (content.toLowerCase().indexOf(keyword.toLowerCase()) > -1);
+			}
+		}
 	}
 }
