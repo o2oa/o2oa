@@ -11,6 +11,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.base.core.project.x_cms_assemble_control;
 import com.x.base.core.project.x_portal_assemble_designer;
 import com.x.base.core.project.x_processplatform_assemble_designer;
@@ -86,11 +87,15 @@ class ActionSearch extends BaseAction {
 			List<ScriptWo> swList = new ArrayList<>();
 			if(moduleMap.containsKey(moduleType)) {
 				try {
-					Map<String, List<String>> map = new HashMap<>();
+					Map<String, Object> map = new HashMap<>();
 					map.put("appIdList", moduleMap.get(moduleType));
+					map.put("keyword", wi.getKeyword());
+					map.put("caseSensitive", wi.getCaseSensitive());
+					map.put("matchWholeWord", wi.getMatchWholeWord());
+					map.put("matchRegExp", wi.getMatchRegExp());
 					List<WrapScript> scriptList = ThisApplication.context().applications().postQuery(applicationClass,
 							Applications.joinQueryUri("script", "list", "manager"), map).getDataAsList(WrapScript.class);
-					logger.print("设计搜索关联{}的脚本个数：{}", moduleType, scriptList.size());
+					logger.print("设计搜索关联{}的匹配脚本个数：{}", moduleType, scriptList.size());
 					getScriptSearchRes(wi, moduleType, swList, scriptList);
 				} catch (Exception e) {
 					logger.error(e);
@@ -110,7 +115,7 @@ class ActionSearch extends BaseAction {
 	private void getScriptSearchRes(final Wi wi, String moduleType, List<ScriptWo> swList, List<WrapScript> scriptList){
 		if (!ListTools.isEmpty(scriptList)){
 			for (WrapScript script:scriptList) {
-				if (keywordMatch(wi.getKeyword(), script.getText(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+				if (StringTools.matchKeyword(wi.getKeyword(), script.getText(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 					List<Integer> list = patternLines(script.getId()+"-"+script.getUpdateTime().getTime(),
 							wi.getKeyword(), script.getText(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!ListTools.isEmpty(list)){

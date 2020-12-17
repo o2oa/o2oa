@@ -12,8 +12,10 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Script;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ class ActionManagerList extends BaseAction {
 			}else{
 				wos = emc.fetchIn(Script.class, Wo.copier, Script.application_FIELDNAME, wi.getAppIdList());
 			}
+			final List<Wo> resWos = new ArrayList<>();
 			wos.stream().forEach(wo -> {
 				try {
 					Application app = emc.find(wo.getApplication(), Application.class);
@@ -41,16 +44,64 @@ class ActionManagerList extends BaseAction {
 					}
 				} catch (Exception e) {
 				}
+				if(StringUtils.isNotBlank(wi.getKeyword())){
+					if(StringTools.matchKeyword(wi.getKeyword(), wo.getText(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+						resWos.add(wo);
+					}
+				}else{
+					resWos.add(wo);
+				}
 			});
-			result.setData(wos);
-			result.setCount((long)wos.size());
+			wos.clear();
+			result.setData(resWos);
+			result.setCount((long)resWos.size());
 			return result;
 		}
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	public static class Wi extends GsonPropertyObject{
+		@FieldDescribe("搜索关键字.")
+		private String keyword;
+		@FieldDescribe("是否区分大小写.")
+		private Boolean caseSensitive;
+		@FieldDescribe("是否全字匹配.")
+		private Boolean matchWholeWord;
+		@FieldDescribe("是否正则表达式匹配.")
+		private Boolean matchRegExp;
 		@FieldDescribe("应用ID列表.")
 		private List<String> appIdList = new ArrayList<>();
+
+		public String getKeyword() {
+			return keyword;
+		}
+
+		public void setKeyword(String keyword) {
+			this.keyword = keyword;
+		}
+
+		public Boolean getCaseSensitive() {
+			return caseSensitive;
+		}
+
+		public void setCaseSensitive(Boolean caseSensitive) {
+			this.caseSensitive = caseSensitive;
+		}
+
+		public Boolean getMatchWholeWord() {
+			return matchWholeWord;
+		}
+
+		public void setMatchWholeWord(Boolean matchWholeWord) {
+			this.matchWholeWord = matchWholeWord;
+		}
+
+		public Boolean getMatchRegExp() {
+			return matchRegExp;
+		}
+
+		public void setMatchRegExp(Boolean matchRegExp) {
+			this.matchRegExp = matchRegExp;
+		}
 
 		public List<String> getAppIdList() {
 			return appIdList;
