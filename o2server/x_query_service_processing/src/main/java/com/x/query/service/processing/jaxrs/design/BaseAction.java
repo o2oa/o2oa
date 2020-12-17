@@ -4,6 +4,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.FileTools;
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,33 +18,6 @@ import java.util.regex.Pattern;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-    protected boolean keywordMatch(String keyword, String content, Boolean caseSensitive, Boolean matchWholeWord, Boolean matchRegExp){
-        if(StringUtils.isBlank(keyword) || StringUtils.isBlank(content)){
-            return false;
-        }
-        if(BooleanUtils.isTrue(matchRegExp)){
-            Pattern pattern = Pattern.compile(keyword);
-            Matcher matcher = pattern.matcher(content);
-            return matcher.find();
-        }else if(BooleanUtils.isTrue(matchWholeWord)){
-            if(BooleanUtils.isTrue(caseSensitive)) {
-                Pattern pattern = Pattern.compile("\\b(" + keyword + ")\\b");
-                Matcher matcher = pattern.matcher(content);
-                return matcher.find();
-            }else{
-                Pattern pattern = Pattern.compile("\\b(" + keyword + ")\\b", Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(content);
-                return matcher.find();
-            }
-        }else{
-            if(BooleanUtils.isTrue(caseSensitive)) {
-                return (content.indexOf(keyword) > -1);
-            }else{
-                return (content.toLowerCase().indexOf(keyword.toLowerCase()) > -1);
-            }
-        }
-    }
-
     protected List<Integer> patternLines(String id, String keyword, String content, Boolean caseSensitive, Boolean matchWholeWord, Boolean matchRegExp){
         List<Integer> list = new ArrayList<>();
         File file = readFile(id, content);
@@ -56,7 +30,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                     byte[] bytes = tmp.getBytes("ISO8859-1");
                     String lineStr = new String(bytes);
                     if(StringUtils.isNotBlank(lineStr) && lineStr.length()>=keyword.length()){
-                        if(keywordMatch(keyword, lineStr, caseSensitive, matchWholeWord, matchRegExp)){
+                        if(StringTools.matchKeyword(keyword, lineStr, caseSensitive, matchWholeWord, matchRegExp)){
                             list.add(curReadLine);
                         }
                     }
