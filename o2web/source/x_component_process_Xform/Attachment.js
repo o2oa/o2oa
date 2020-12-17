@@ -1052,7 +1052,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
  * @property {String} updateTime - 修改时间.
  * @property {String} extension - 附件扩展名.
  */
-/** @class process.Actionbar 附件组件。
+/** @class Actionbar 附件组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
