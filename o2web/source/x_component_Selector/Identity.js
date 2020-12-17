@@ -1637,6 +1637,8 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 this.selector.items.push(item);
                 if( category && category.subItems ){
                     category.subItems.push( item );
+                }else if(this.selector.subItems){
+                    this.selector.subItems.push( item )
                 }
             }
         }.bind(this));
@@ -1657,6 +1659,8 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 this.selector.items.push(item);
                 if( category && category.subItems ){
                     category.subItems.push( item );
+                }else if(this.selector.subItems){
+                    this.selector.subItems.push( item )
                 }
             }
         }.bind(this));
