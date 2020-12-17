@@ -1,5 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class process.DatagridMobile 数据网格组件（移动端）。
+/** @class DatagridMobile 数据网格组件（移动端）。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
