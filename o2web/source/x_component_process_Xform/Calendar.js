@@ -1,5 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
-/** @class process.Calendar 日期组件。
+/** @class Calendar 日期组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

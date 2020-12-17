@@ -1,5 +1,5 @@
 MWF.require("MWF.widget.Common", null, false);
-/** @classdesc process.$Module 组件类，此类为所有组件的父类。
+/** @classdesc $Module 组件类，此类为所有组件的父类。
  * @class
  * @hideconstructor
  * */

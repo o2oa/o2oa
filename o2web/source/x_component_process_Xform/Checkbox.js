@@ -1,6 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 MWF.require("MWF.widget.UUID", null, false);
-/** @class process.Calendar 多选按钮组件。
+/** @class Calendar 多选按钮组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
