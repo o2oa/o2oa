@@ -18,6 +18,8 @@ import java.util.List;
 
 class ActionSaveToFolder extends BaseAction {
 
+	private long usedSize;
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String shareId, String fileId, String folderId, String password) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
@@ -55,60 +57,75 @@ class ActionSaveToFolder extends BaseAction {
 			if(StringUtils.isEmpty(fileId)){
 				throw new Exception("fileId can not be empty.");
 			}
+
 			/* 转存文件或目录到指定的目录下 */
-			long usedSize = business.attachment2().getUseCapacity(effectivePerson.getDistinguishedName());
-			if("attachment".equals(share.getFileType())){
-				Attachment2 att = emc.find(fileId, Attachment2.class);
-				if(att!=null) {
-					usedSize = usedSize + att.getLength();
-					int vResult = business.verifyConstraint(effectivePerson.getDistinguishedName(), usedSize);
-					if(vResult > 0){
-						long usedCapacity = usedSize / (1024 * 1024);
-						throw new ExceptionCapacityOut(usedCapacity, vResult);
-					}
-					Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
-							folderId, att.getOriginFile(), att.getLength(), att.getType());
-					emc.check(newAtt, CheckPersistType.all);
-					emc.beginTransaction(Attachment2.class);
-					emc.persist(newAtt);
-					emc.commit();
-				}
-			}else{
-				Folder2 folder = emc.find(fileId, Folder2.class);
-				Folder2 newFolder = new Folder2(folder.getName(),effectivePerson.getDistinguishedName(),folderId,folder.getStatus());
-				EntityManager em = emc.beginTransaction(Folder2.class);
-				emc.check(newFolder, CheckPersistType.all);
-				em.persist(newFolder);
-				em.getTransaction().commit();
-				List<String> subIds = business.folder2().listSubNested(folder.getId(), FileStatus.VALID.getName());
-				for(String subFold : subIds){
-					folder = emc.find(subFold, Folder2.class);
-					Folder2 newSubFolder = new Folder2(folder.getName(),effectivePerson.getDistinguishedName(),folderId,folder.getStatus());
-					EntityManager em1 = emc.beginTransaction(Folder2.class);
-					em1.persist(newSubFolder);
-					em1.getTransaction().commit();
-					List<Attachment2> attachments = business.attachment2().listWithFolder2(subFold,FileStatus.VALID.getName());
-					for (Attachment2 att : attachments) {
-						usedSize = usedSize + att.getLength();
-						int vResult = business.verifyConstraint(effectivePerson.getDistinguishedName(), usedSize);
-						if(vResult > 0){
-							long usedCapacity = usedSize / (1024 * 1024);
-							throw new ExceptionCapacityOut(usedCapacity, vResult);
-						}
-						Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
-								folderId, att.getOriginFile(), att.getLength(), att.getType());
-						EntityManager em2 = emc.beginTransaction(Attachment2.class);
-						em2.persist(newAtt);
-						em2.getTransaction().commit();
-					}
-				}
-			}
+			saveToFolder(business, share, fileId, folderId, effectivePerson);
 
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);
 			return result;
 		}
+	}
+
+	private void saveToFolder(Business business, Share share, String fileId, String folderId, EffectivePerson effectivePerson) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+
+		this.usedSize = business.attachment2().getUseCapacity(effectivePerson.getDistinguishedName());
+		if("attachment".equals(share.getFileType())){
+			Attachment2 att = emc.find(fileId, Attachment2.class);
+			if(att!=null) {
+				usedSize = usedSize + att.getLength();
+				int vResult = business.verifyConstraint(effectivePerson.getDistinguishedName(), usedSize);
+				if(vResult > 0){
+					long usedCapacity = usedSize / (1024 * 1024);
+					throw new ExceptionCapacityOut(usedCapacity, vResult);
+				}
+				Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
+						folderId, att.getOriginFile(), att.getLength(), att.getType());
+				emc.check(newAtt, CheckPersistType.all);
+				emc.beginTransaction(Attachment2.class);
+				emc.persist(newAtt);
+				emc.commit();
+			}
+		}else{
+			Folder2 folder = emc.find(fileId, Folder2.class);
+			Folder2 newFolder = new Folder2(folder.getName(),effectivePerson.getDistinguishedName(),folderId,folder.getStatus());
+			EntityManager em = emc.beginTransaction(Folder2.class);
+			emc.check(newFolder, CheckPersistType.all);
+			em.persist(newFolder);
+			em.getTransaction().commit();
+			saveSubFolder(business, folder.getId(), newFolder.getId(), effectivePerson);
+		}
+	}
+
+	private void saveSubFolder(Business business, String folderId, String newFolderId, EffectivePerson effectivePerson) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+
+		List<Attachment2> attachments = business.attachment2().listWithFolder2(folderId,FileStatus.VALID.getName());
+		for (Attachment2 att : attachments) {
+			usedSize = usedSize + att.getLength();
+			int vResult = business.verifyConstraint(effectivePerson.getDistinguishedName(), usedSize);
+			if(vResult > 0){
+				long usedCapacity = usedSize / (1024 * 1024);
+				throw new ExceptionCapacityOut(usedCapacity, vResult);
+			}
+			Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
+					newFolderId, att.getOriginFile(), att.getLength(), att.getType());
+			EntityManager em2 = emc.beginTransaction(Attachment2.class);
+			em2.persist(newAtt);
+			em2.getTransaction().commit();
+		}
+
+		List<Folder2> subFolders = business.folder2().listSubDirect1(folderId, FileStatus.VALID.getName());
+		for(Folder2 folder : subFolders){
+			Folder2 newSubFolder = new Folder2(folder.getName(),effectivePerson.getDistinguishedName(),newFolderId,folder.getStatus());
+			EntityManager em1 = emc.beginTransaction(Folder2.class);
+			em1.persist(newSubFolder);
+			em1.getTransaction().commit();
+			saveSubFolder(business, folder.getId(), newSubFolder.getId(), effectivePerson);
+		}
+
 	}
 
 	public static class Wo extends WrapBoolean {
