@@ -18,7 +18,13 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
     layout.readys = [];
     layout.addReady = function () {
         for (var i = 0; i < arguments.length; i++) {
-            if (o2.typeOf(arguments[i]) === "function") layout.readys.push(arguments[i]);
+            if (o2.typeOf(arguments[i]) === "function"){
+                if (layout.isReady){
+                    arguments[i].apply(window);
+                }else{
+                    layout.readys.push(arguments[i]);
+                }
+            }
         }
     };
     var _requireApp = function (appNames, callback, clazzName) {
