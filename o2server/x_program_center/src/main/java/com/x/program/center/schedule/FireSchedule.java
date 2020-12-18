@@ -79,22 +79,21 @@ public class FireSchedule extends BaseAction {
 
 	private Date getLastStartTime(ScheduleRequest request) throws Exception {
 		Date lastStartTime = request.getLastStartTime();
-		if (null == lastStartTime) {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				EntityManager em = emc.get(ScheduleLog.class);
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<ScheduleLog> cq = cb.createQuery(ScheduleLog.class);
-				Root<ScheduleLog> root = cq.from(ScheduleLog.class);
-				Predicate p = cb.equal(root.get(ScheduleLog_.className), request.getClassName());
-				List<ScheduleLog> os = em
-						.createQuery(cq.select(root).where(p).orderBy(cb.desc(root.get(ScheduleLog_.fireTime))))
-						.setMaxResults(1).getResultList();
-				if (!os.isEmpty()) {
-					lastStartTime = os.get(0).getFireTime();
-				}
+		// if (null == lastStartTime) {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			EntityManager em = emc.get(ScheduleLog.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<ScheduleLog> cq = cb.createQuery(ScheduleLog.class);
+			Root<ScheduleLog> root = cq.from(ScheduleLog.class);
+			Predicate p = cb.equal(root.get(ScheduleLog_.className), request.getClassName());
+			List<ScheduleLog> os = em
+					.createQuery(cq.select(root).where(p).orderBy(cb.desc(root.get(ScheduleLog_.fireTime))))
+					.setMaxResults(1).getResultList();
+			if (!os.isEmpty()) {
+				lastStartTime = os.get(0).getFireTime();
 			}
-
 		}
+		// }
 		return lastStartTime;
 	}
 }

@@ -44,6 +44,7 @@ class ActionExecuteV2 extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionExecuteV2.class);
 	private final static String[] keys = { "group by", "GROUP BY", "order by", "ORDER BY", "limit", "LIMIT" };
+	private final static String[] pageKeys = { "GROUP BY", " COUNT(" };
 	private final static String JOIN_KEY = " JOIN ";
 	private final static String JOIN_ON_KEY = " ON ";
 
@@ -146,8 +147,10 @@ class ActionExecuteV2 extends BaseAction {
 				if (Statement.MODE_COUNT.equals(mode)) {
 					data = query.getSingleResult();
 				} else {
-					query.setFirstResult((runtime.page - 1) * runtime.size);
-					query.setMaxResults(runtime.size);
+					if(isPageSql(jpql)) {
+						query.setFirstResult((runtime.page - 1) * runtime.size);
+						query.setMaxResults(runtime.size);
+					}
 					data = query.getResultList();
 				}
 			} else {
@@ -194,8 +197,10 @@ class ActionExecuteV2 extends BaseAction {
 				if (Statement.MODE_COUNT.equals(mode)) {
 					data = query.getSingleResult();
 				} else {
-					query.setFirstResult((runtime.page - 1) * runtime.size);
-					query.setMaxResults(runtime.size);
+					if(isPageSql(jpql)) {
+						query.setFirstResult((runtime.page - 1) * runtime.size);
+						query.setMaxResults(runtime.size);
+					}
 					data = query.getResultList();
 				}
 			} else {
@@ -205,6 +210,16 @@ class ActionExecuteV2 extends BaseAction {
 			}
 		}
 		return data;
+	}
+
+	private boolean isPageSql(String sql){
+		sql = sql.toUpperCase().replaceAll("\\s{1,}", " ");
+		for (String key : pageKeys) {
+			if (sql.indexOf(key) > -1) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private Class<? extends JpaObject> clazz(Business business, Statement statement) throws Exception {
