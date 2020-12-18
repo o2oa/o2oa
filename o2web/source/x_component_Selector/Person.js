@@ -1458,20 +1458,16 @@ MWF.xApplication.Selector.Person = new Class({
     },
     _selectSingleItem : function(){
         var _self = this;
-        var isSingleItem = false;
         var checkItem = function () {
             if(this.items.length === 1 || this.subItems.length === 1 ){
                 if( this.items.length === 1 && this.subItems.length === 0 ){
-                    isSingleItem = true;
                     if( !this.items[0].isSelected )this.items[0].clickItem();
                     this.fireEvent("afterSelectSingleItem",[this, this.items[0]]);
                 }else if( this.items.length === 0 && this.subItems.length === 1 ){
-                    isSingleItem = true;
                     if( !this.items[0].isSelected )this.subItems[0].clickItem();
                     this.fireEvent("afterSelectSingleItem",[this, this.items[0]])
                 }else if( this.items.length === 1 && this.subItems.length === 1 ){
                     if( this.items[0] === this.subItems[0] ){
-                        isSingleItem = true;
                         if( !this.items[0].isSelected )this.items[0].clickItem();
                         this.fireEvent("afterSelectSingleItem",[this, this.items[0]])
                     }else{
