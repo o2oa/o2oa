@@ -2052,7 +2052,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.selector.fireEvent("unselectItem",[this]);
         if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
     },
-    selected: function( checkValid, callback, selectedNode, byelectAll ){
+    selected: function( checkValid, callback, selectedNode, bySelectAll ){
         debugger;
         var count = this.selector.options.maxCount || this.selector.options.count;
         count = count.toInt();
