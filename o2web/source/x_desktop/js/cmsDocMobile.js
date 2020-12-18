@@ -32,7 +32,7 @@ o2.addReady(function () {
                         //var preview = window.frameElement.retrieve("preview");
                         //layout.desktop = window.frameElement.ownerDocument.window.layout.desktop;
                         //
-                        this.node = $("layout");
+                        this.node = $("appContent")||$("layout");
                         this.content = $(document.body);
                         this.path = "../x_component_cms_Document/$Main/";
                         this.cssPath = "../x_component_cms_Document/$Main/default/css.wcss";
@@ -279,6 +279,7 @@ o2.addReady(function () {
                 layout.openDocument = function () {
                     if (this.form) {
                         MWF.xDesktop.requireApp("cms.Xform", "Form", function () {
+
                             this.appForm = new MWF.CMSForm(this.node, this.form, {
                                 "readonly": this.readonly,
                                 "autoSave": !this.readonly,

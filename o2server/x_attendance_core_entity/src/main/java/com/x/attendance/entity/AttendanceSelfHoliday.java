@@ -92,7 +92,7 @@ public class AttendanceSelfHoliday extends SliceJpaObject {
 	private String employeeNumber;
 
 	public static final String leaveType_FIELDNAME = "leaveType";
-	@FieldDescribe("请假类型:带薪年休假|带薪病假|带薪福利假|扣薪事假|其他")
+	@FieldDescribe("请假类型:带薪年休假|带薪病假|带薪福利假|扣薪事假|出差|培训|其他")
 	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + leaveType_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String leaveType;

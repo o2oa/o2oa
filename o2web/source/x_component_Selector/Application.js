@@ -15,7 +15,7 @@ MWF.xApplication.Selector.Application = new Class({
         this.className = "Application"
     },
     loadSelectItems: function(addToNext){
-        this.processAction.listApplications(function(json){
+        o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.list(function(json){
             json.data.each(function(data){
                 var category = this._newItem(data, this, this.itemAreaNode);
                 this.items.push( category );
