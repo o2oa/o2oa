@@ -1458,32 +1458,47 @@ MWF.xApplication.Selector.Person = new Class({
     },
     _selectSingleItem : function(){
         var _self = this;
+        var isSingleItem = false;
         var checkItem = function () {
             if(this.items.length === 1 || this.subItems.length === 1 ){
                 if( this.items.length === 1 && this.subItems.length === 0 ){
+                    isSingleItem = true;
                     if( !this.items[0].isSelected )this.items[0].clickItem();
-                    this.fireEvent("afterSelectSingleItem",[this, this.items[0]])
+                    this.fireEvent("afterSelectSingleItem",[this, this.items[0]]);
                 }else if( this.items.length === 0 && this.subItems.length === 1 ){
+                    isSingleItem = true;
                     if( !this.items[0].isSelected )this.subItems[0].clickItem();
                     this.fireEvent("afterSelectSingleItem",[this, this.items[0]])
                 }else if( this.items.length === 1 && this.subItems.length === 1 ){
                     if( this.items[0] === this.subItems[0] ){
+                        isSingleItem = true;
                         if( !this.items[0].isSelected )this.items[0].clickItem();
                         this.fireEvent("afterSelectSingleItem",[this, this.items[0]])
+                    }else{
+                        _self.fireEvent("afterCheckSelectSingleItem",[_self])
                     }
+                }else{
+                    _self.fireEvent("afterCheckSelectSingleItem",[_self])
                 }
+            }else{
+                _self.fireEvent("afterCheckSelectSingleItem",[_self])
             }
         }.bind(this);
 
         var checkCategoryItem = function (category) {
             if( !category.subCategorys || category.subCategorys.length === 0 ){
                 if( category.subItems && category.subItems.length === 1 ){
+                    isSingleItem = true;
                     if( !category.subItems[0].isSelected )category.subItems[0].clickItem();
                     _self.fireEvent("afterSelectSingleItem",[_self, category.subItems[0]])
+                }else{
+                    _self.fireEvent("afterCheckSelectSingleItem",[_self])
                 }
             }else if(category.subCategorys.length === 1){
                 if( category.subItems && category.subItems.length > 0 ){
+                    _self.fireEvent("afterCheckSelectSingleItem",[_self])
                 }else if( !category.subCategorys[0]._hasChild || !category.subCategorys[0]._hasChild() ){ //category.subCategorys[0].isItem &&
+                    isSingleItem = true;
                     if( !category.subItems[0].isSelected )category.subItems[0].clickItem();
                     _self.fireEvent("afterSelectSingleItem",[_self, category.subItems[0]])
                 }else{
@@ -1503,9 +1518,14 @@ MWF.xApplication.Selector.Person = new Class({
                 }
                 if( list.length === 0 ){
                     if( category.subItems && category.subItems.length === 1 ){
+                        isSingleItem = true;
                         if( !category.subItems[0].isSelected )category.subItems[0].clickItem();
                         _self.fireEvent("afterSelectSingleItem",[_self, category.subItems[0]])
+                    }else{
+                        _self.fireEvent("afterCheckSelectSingleItem",[_self])
                     }
+                }else{
+                    _self.fireEvent("afterCheckSelectSingleItem",[_self])
                 }
             }
         };
@@ -1521,10 +1541,12 @@ MWF.xApplication.Selector.Person = new Class({
             }
         };
 
-        if( this.subCategorys.length === 1 ) {
+        if( this.subCategorys.length === 1 && this.subItems.length === 0) {
             checkCategory( this.subCategorys[0] );
         }else if( this.subCategorys.length === 0 ){
             checkItem();
+        }else{
+            _self.fireEvent("afterCheckSelectSingleItem",[_self])
         }
     },
     setSize : function(){
