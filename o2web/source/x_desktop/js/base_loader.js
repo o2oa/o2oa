@@ -89,6 +89,7 @@ o2.addReady(function () {
             }
 
             _loadProgressBar(true);
+            layout.isReady = true;
             while (layout.readys && layout.readys.length) {
                 layout.readys.shift().apply(window);
             }

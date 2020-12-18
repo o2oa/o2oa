@@ -5,7 +5,7 @@
   "main": "o2.js",
   "scripts": {
     "build": "gulp",
-    "report-coverage": "codecov"
+    "test": "karma start source/x_test/karma.FindDesigner.js --auto-watch"
   },
   "repository": {
     "type": "git",
