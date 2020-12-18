@@ -1,186 +1,3 @@
-o2test = window.o2test || {};
-
-layout.config = {
-    "center": [
-        {
-            "port": "20030",
-            "host": "develop.o2oa.net"
-        }
-    ],
-    "initManagerChanged": true,
-    "initManagerName": "",
-    "initManagerPassword": "",
-    "footer": "开发系统Local",
-    "title": "o2oa开发平台local",
-    "app_protocol": "auto",
-    "loginPage": {
-        "enable": false,
-        "portal": "b82d7669-85d6-4c10-8151-c4d1f18ba6ef",
-        "page": ""
-    },
-    "configMapping": {
-        "localhost": {
-            "center": {
-                "port": "20030",
-                "host": "develop.o2oa.net"
-            },
-            "servers": {
-                "x_portal_assemble_designer": {
-                    "name": "门户设计",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_portal_assemble_designer"
-                },
-                "x_portal_assemble_surface": {
-                    "name": "门户",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_portal_assemble_surface"
-                },
-                "x_query_assemble_surface": {
-                    "name": "数据查询",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_query_assemble_surface"
-                },
-                "x_file_assemble_control": {
-                    "name": "云文件",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_file_assemble_control"
-                },
-                "x_organization_assemble_control": {
-                    "name": "组织管理",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_organization_assemble_control"
-                },
-                "x_cms_assemble_control": {
-                    "name": "内容管理",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_cms_assemble_control"
-                },
-                "x_mind_assemble_control": {
-                    "name": "脑图",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_mind_assemble_control"
-                },
-                "x_query_assemble_designer": {
-                    "name": "数据查询设计",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_query_assemble_designer"
-                },
-                "x_general_assemble_control": {
-                    "name": "公共模块",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_general_assemble_control"
-                },
-                "x_processplatform_assemble_surface": {
-                    "name": "流程",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_processplatform_assemble_surface"
-                },
-                "x_processplatform_assemble_designer": {
-                    "name": "流程设计",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_processplatform_assemble_designer"
-                },
-                "x_meeting_assemble_control": {
-                    "name": "会议管理",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_meeting_assemble_control"
-                },
-                "x_processplatform_assemble_bam": {
-                    "name": "流程监控",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_processplatform_assemble_bam"
-                },
-                "x_hotpic_assemble_control": {
-                    "name": "热点图片",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_hotpic_assemble_control"
-                },
-                "x_jpush_assemble_control": {
-                    "name": "极光推送服务模块",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_jpush_assemble_control"
-                },
-                "x_attendance_assemble_control": {
-                    "name": "考勤管理",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_attendance_assemble_control"
-                },
-                "x_bbs_assemble_control": {
-                    "name": "论坛",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_bbs_assemble_control"
-                },
-                "x_processplatform_service_processing": {
-                    "name": "流程服务",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_processplatform_service_processing"
-                },
-                "x_organization_assemble_express": {
-                    "name": "组织管理接口服务",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_organization_assemble_express"
-                },
-                "x_organization_assemble_personal": {
-                    "name": "组织管理个人",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_organization_assemble_personal"
-                },
-                "x_component_assemble_control": {
-                    "name": "组件",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_component_assemble_control"
-                },
-                "x_message_assemble_communicate": {
-                    "name": "消息通讯",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_message_assemble_communicate"
-                },
-                "x_query_service_processing": {
-                    "name": "数据查询服务",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_query_service_processing"
-                },
-                "x_organization_assemble_authentication": {
-                    "name": "组织管理认证",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_organization_assemble_authentication"
-                },
-                "x_calendar_assemble_control": {
-                    "name": "日程管理",
-                    "host": "develop.o2oa.net",
-                    "port": 20020,
-                    "context": "/x_calendar_assemble_control"
-                }
-            }
-        }
-
-    }
-};
-
 
 function o2TestLoader() {
     //o2.base = "base/";
@@ -284,11 +101,15 @@ function o2TestLoader() {
                 layout.desktop.session = layout.session;
                 _loadApp();
             } else {
-                o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.login({"credential":o2test.username,"password":o2test.password}, function (json) {
-                    _loadApp(json);
-                }.bind(this), function (xhr, text, error) {
+                if (o2Unit.username){
+                    o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.login({"credential":o2Unit.username,"password":o2Unit.password}, function (json) {
+                        _loadApp(json);
+                    }.bind(this), function (xhr, text, error) {
+                        layout.openLogin();
+                    }.bind(this));
+                }else{
                     layout.openLogin();
-                }.bind(this));
+                }
             }
         });
         //_loadApp();
@@ -363,3 +184,80 @@ function o2TestLoader() {
     //});
 };
 
+o2Unit = {
+    //options: {
+    //  "username": "",
+    //  "password": "",
+    //  "anonymous": false (default) or true,
+    //  "mode": "spa"(default) or "mpa"
+    // }
+    init: function(options, fn){
+        this.username = options.username;
+        this.password = options.password;
+        layout.anonymous = (options.anonymous===true);
+        this.mode = options.mode || "spa";
+        o2.addReady(o2TestLoader);
+        layout.addReady(function(){
+            this["load_"+this.mode](function(){
+                if (fn) fn.apply(window);
+            });
+        }.bind(this));
+        //if (fn) layout.addReady(fn);
+    },
+    load_spa: function(fn){
+        var html = "<div id=\"layout_main\" style=\"overflow: hidden; height: 100%; background-position-x: center; background-size: cover;\">\n" +
+            "        <div id=\"layout_top_shim\"></div>\n" +
+            "        <div id=\"layout_top\"></div>\n" +
+            "        <div id=\"layout_desktop\">\n" +
+            "            <div id=\"desktop_content\"></div>\n" +
+            "            <div id=\"desktop_navi\"></div>\n" +
+            "        </div>\n" +
+            "    </div>"
+        document.body.appendHTML(html);
+        layout.inBrowser = false;
+        debugger;
+        layout.desktop.type = "layout";
+        layout.viewMode = "Default";
+        var _load = function(){
+            layout.userLayout = {};
+            layout.userLayout.apps = {};
+            MWF.require("MWF.xDesktop.Default", function(){
+                layout.desktop = new MWF.xDesktop.Default("layout_main", {});
+                layout.desktop.load(function(){
+                    if (fn) fn();
+                });
+                if (!layout.desktop.openApplication) layout.desktop.openApplication = layout.openApplication;
+                if (!layout.desktop.refreshApp) layout.desktop.refreshApp = layout.refreshApp;
+            });
+        };
+        if (layout.session && layout.session.user){
+            _load();
+        }else{
+            if (layout.sessionPromise){
+                layout.sessionPromise.then(function(){
+                    _load();
+                },function(){});
+            }
+        }
+    },
+    load_mpa: function(fn){
+        var html = "<div id=\"appContent\" style=\"overflow: hidden; height:100%; background-color:#EEE\"></div>";
+        document.body.appendHTML(html);
+        if (fn) fn();
+    },
+    openApplication: function(fn, appNames, options){
+        var option = options || {};
+        option.onPostLoadApplication = function(){
+            this.runPostLoadApplication = true;
+            if (fn) fn();
+        };
+        option.postLoad = function(){
+            if (!this.runPostLoadApplication) if (fn) fn();
+        }
+        var args = Array.from(arguments);
+        args.shift();
+        args.unshift(null);
+        if (!options) args.push(option);
+        layout.openApplication.apply(layout, args);
+    }
+};
