@@ -44,7 +44,22 @@ MWF.xScript.Environment = function(ev){
 
     //workContext
 
+    /**
+     * 你可以通过workContext获取和流程相关的流程实例对象数据。
+     * @namespace
+     * @module workContext
+     * @example
+     * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
+     * var context = this.workContext;
+     */
     this.workContext = {
+        /**
+         * 当前流程实例正在流转中，并且当前用户有待办，则返回当前用户的待办对象，否则返回null。
+         * @summary 获取当前流程与当前用户相关的待办对象：task对象。
+         * @method getTask
+         * @static
+         * @return {string} The blended color.
+         */
         "getTask": function(){return ev.task || null;},
         "getWork": function(){return ev.work || ev.workCompleted;},
         "getActivity": function(){return ev.activity || null;},
@@ -238,9 +253,20 @@ MWF.xScript.Environment = function(ev){
             return [(t==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name];
         }
     };
+
+    /**
+     * 你可以通过workContext获取和流程相关的流程实例对象数据。
+     * @module this.org
+     * @example
+     * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
+     * var context = this.workContext;
+     */
     this.org = {
         //群组***************
         //获取群组--返回群组的对象数组
+        /**
+         根据群组标识获取对应的群组对象数组：group对象数组
+         */
         getGroup: function(name, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};

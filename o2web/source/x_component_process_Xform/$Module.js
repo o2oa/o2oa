@@ -8,6 +8,28 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     {
     Implements: [Events],
     options: {
+        // /**
+        //  * 组件加载前事件。<br/>
+        //  * 平台执行queryLoad事件的时候，组件还没有开始加载，这个时候可以根据条件修改组件的配置信息
+        //  * @event MWF.xApplication.process.Xform.$Module#queryLoad
+        //  * @example
+        //  * var field = this.form.get("fieldName");
+        //  * field.addEvent("queryLoad", function(){
+        //  *
+        //  * };
+        //  */
+        // /**
+        //  * Event reporting that a snowball has been hurled.
+        //  *
+        //  * @event MWF.xApplication.process.Xform.$Module#load
+        //  * @property {number} velocity - The snowball's velocity, in meters per second.
+        //  */
+        // /**
+        //  * Event reporting that a snowball has been hurled.
+        //  *
+        //  * @event MWF.xApplication.process.Xform.$Module#postLoad
+        //  * @property {number} velocity - The snowball's velocity, in meters per second.
+        //  */
         "moduleEvents": ["load", "queryLoad", "postLoad"]
     },
     initialize: function(node, json, form, options){
@@ -19,7 +41,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          *  //可以在脚本中获取该组件
          * var field = this.form.get("fieldName"); //获取组件对象
          * field.node.setStyle("font-size","12px"); //给节点设置样式
-         * @extends MWF.xApplication.process.Xform.$Input
          */
         this.node = $(node);
         this.node.store("module", this);
@@ -75,7 +96,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         if (this.iconNode) this.iconNode.setStyle("display", "block");
     },
     load: function(){
-
         this._loadModuleEvents();
         if (this.fireEvent("queryLoad")){
             this._queryLoaded();
