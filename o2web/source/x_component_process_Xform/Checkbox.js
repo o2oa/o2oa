@@ -110,7 +110,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
      * @summary 获取选择项数组.
      * @example
      * var array = this.form.get('fieldName').getOptions();
-     * @return {Array} 选择项数组，如果是脚本返回计算结果.
+     * @return {Array} 选择项数组，如果配置为脚本返回计算结果.
      */
 	getOptions: function(){
 		if (this.json.itemType == "values"){
