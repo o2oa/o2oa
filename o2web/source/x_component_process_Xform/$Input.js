@@ -592,7 +592,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
     /**
      * @summary 根据组件的校验设置进行校验。
-     *  @param {String} routeName - 可选，路由名称.
+     *  @param {String} [routeName] - 可选，路由名称.
      *  @example
      *  if( !this.form.get('fieldName').validation() ){
      *      return false;
