@@ -1051,7 +1051,23 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
  * @property {String} createTime - 创建时间.
  * @property {String} updateTime - 修改时间.
  * @property {String} extension - 附件扩展名.
+ * @example
+ * {
+    "id": "56c4e86f-a4c8-4cc2-a150-1a0d2c5febcb",   //附件ID
+    "name": "133203a2-92e6-4653-9954-161b72ddb7f9.png", //附件名称
+    "extension": "png",                             //附件扩展名
+    "length": 43864,                                //附件大小
+    "person": "xx@huqi@P",                          //附件上传人
+    "lastUpdateTime": "2018-09-27 15:50:34",        //最后的修改时间
+    "lastUpdatePerson": "xx@huqi@P",                //最后的修改人
+    "activity": "e31ad938-c495-45a6-8d77-b8a9b61a165b", //附件上传的活动ID
+    "activityName": "申请人",                           //附件上传的活动名称
+    "activityType": "manual",                           //附件上传的活动类型
+    "site": "$mediaOpinion",                        //附件存储位置（一般用于区分附件在哪个表单元素中显示）
+    "type": "image/png"                             //附件类型（contentType）
+}
  */
+
 /** @class Actionbar 附件组件。
  * @example
  * //可以在脚本中获取该组件
