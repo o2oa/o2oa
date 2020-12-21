@@ -137,7 +137,7 @@ function o2TestLoader() {
     var lp = o2.session.path + "/lp/" + o2.language + ".js";
 
     if (o2.session.isDebugger && (o2.session.isMobile || layout.mobile)) o2.load("../o2_lib/eruda/eruda.js");
-    debugger;
+
     var loadModuls = function () {
         lpLoaded = true;
 
