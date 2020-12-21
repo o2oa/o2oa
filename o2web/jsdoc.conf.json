@@ -16,7 +16,7 @@
         ]
     },
     "source": {
-        "include": ["./o2web/source/x_component_process_Xform","./o2web/source/x_component_cms_Xform"],
+        "include": ["./o2web/source/x_component_process_Xform","./o2web/source/o2_core/o2/xScript"],
         "includePattern": ".+\\.js(doc|x)?$",
         "excludePattern": "(^|\\/|\\\\)_"
     },

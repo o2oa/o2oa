@@ -1,3 +1,186 @@
+/**
+ * Work 数据结构，流程实例对象
+ * @typedef {Object} Work
+ * @example
+ * {
+    "id": "854e2c22-718e-48bb-98db-96f4b43e7ee8",   //流程实例ID
+    "splitValue": "xxxxxxxxxxxxxx", //流程拆分后的拆分依据
+    "title": "xx7月北京出差报销审批",               //流程实例名称
+    "startTime": "2018-09-07 14:03:22",             //流程启动时间
+    "startTimeMonth": "2018-09",                    //流程启动的月份
+    "creatorPerson": "xx@huqi@P",                   //流程实例创建人
+    "creatorIdentity": "xx@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人身份
+    "creatorUnit": "xx@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",     //流程实例创建人所在组织
+    "creatorUnitLevelName": "浙江兰德纵横/开发部",          //流程实例创建人所在组织层次
+    "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
+    "applicationName": "财务管理",                          //流程应用名称
+    "applicationAlias": "finance",                          //流程应用别名
+    "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
+    "processName": "报销审批流程",                          //流程名称
+    "processAlias": "",                                     //流程别名
+    "activity": "13d15daf-2ac5-4c1b-a669-1607a0e5ed15",     //当前活动ID
+    "activityType": "manual",                               //当前活动类型
+    "activityName": "部门领导审核",                         //当前活动名称
+    "activityAlias": "",                                    //当前活动别名
+    "activityDescription": "",                              //当前活动描述
+    "activityArrivedTime": "2018-09-27 22:49:21",           //当前活动到达时间
+    "serial": "",                                           //编号
+    "workStatus": "processing",                             //流程实例状态
+    "errorRetry": 0,                                        //流转失败重试次数
+    "splitting": false,                                     //流程是否拆分
+    "form": "db3b2766-93a1-4058-b522-0edb922bd84f",          //流程展现所使用的表单
+    "manualTaskIdentityList" : "张三@db3b2766-93a1-4058-b522-0edb922bd84f@I", //预期的处理人
+    "manualTaskIdentityText" : "张三" //当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.
+}
+ */
+
+/**
+ * WorkCompleted 数据结构，已结束流程实例对象
+ * @typedef {Object} WorkCompleted
+ * @example
+ * {
+    "id": "be0195f1-f2e2-4eac-911c-99897a43ff8f",   //流程实例ID
+    "title": "xx7月北京出差报销审批",               //流程实例名称
+    "startTime": "2018-09-19 16:14:16",             //流程启动时间
+    "startTimeMonth": "2018-09",                    //流程启动的月份
+    "completedTime": "2018-09-19 16:15:28",         //流程完成时间
+    "completedTimeMonth": "2018-09",                //流程完成的月份
+    "creatorPerson": "xx@huqi@P",                   //流程实例创建人
+    "creatorIdentity": "xx@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人身份
+    "creatorUnit": "xx@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",     //流程实例创建人所在组织
+    "creatorUnitLevelName": "浙江兰德纵横/开发部",  //流程实例创建人所在组织层次
+    "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
+    "applicationName": "财务管理",                          //流程应用名称
+    "applicationAlias": "finance",                          //流程应用别名
+    "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
+    "processName": "报销审批流程",                          //流程名称
+    "processAlias": "",                                     //流程别名
+    "serial": "",                                           //编号
+    "form": "320be1ca-ee49-478f-a751-f65ab67cf818",         //流程展现所使用的表单
+}
+ */
+
+/**
+ * Task数据结构，待办任务对象
+ * @typedef {Object} Task
+ * @example
+ * {
+    "id": "dd476045-7c79-44f7-9dba-f51d322de40f",   //待办ID
+    "title": "XX7月北京出差报销审批",               //流程实例标题
+    "startTime": "2018-09-27 22:49:22",             //待办到达时间
+    "startTimeMonth": "2018-09",                    //待办到达的月份
+    "work": "854e2c22-718e-48bb-98db-96f4b43e7ee8", //流程实例ID
+    "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
+    "applicationName": "财务管理",                          //流程应用名称
+    "applicationAlias": "finance",                          //流程应用别名
+    "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
+    "processName": "报销审批流程",                          //流程名称
+    "processAlias": "",                                     //流程别名
+    "serial": "",                                           //流程编号
+    "person": "XXX@huqi@P",                             //待办人名称
+    "identity": "XX@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",    //待办人身份
+    "unit": "XX@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",        //待办人所在组织
+    "activity": "13d15daf-2ac5-4c1b-a669-1607a0e5ed15",         //当前活动的ID
+    "activityName": "部门领导审核",                             //当前活动的名称
+    "activityAlias": "",                                        //当前活动的别名
+    "activityDescription": "",                                  //当前活动描述
+    "activityType": "manual",                                   //当前活动类型
+    "creatorPerson": "XX@huqi@P",                               //流程实例创建人
+    "creatorIdentity": "XX@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人的身份
+    "creatorUnit": "XX@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //流程实例创建人所在组织
+    "expired": false,                                           //是否已超时
+    "urged": false,                                             //是否进行催办
+    "routeList": [                                              //可选的路由ID
+        "89b58fe0-6dcb-4fe7-8c2e-3f77204df6d4",
+        "f3105b7a-2929-4682-aab8-15fef5ea0f23"
+    ],
+    "routeNameList": [                                          //可选的路由名称
+        "退回申请人",
+        "送财务部门复审"
+    ],
+    "routeOpinionList": [                                       //可选路由的默认意见
+        "",
+        ""
+    ],
+    "first" : true,      //是否是第一条待办.
+    "properties": { //属性对象存储字段
+          "prevTaskIdentity": "张三@903dbb04-085c-4bb1-9c24-3009bd5f7372@I", //提交的处理人
+          "prevTaskIdentityList": [  //上一步处理人
+            "张三@903dbb04-085c-4bb1-9c24-3009bd5f7372@I"
+          ],
+          "prevTaskList": [ //上一步任务信息
+            {
+              "routeName": "送办理",
+              "unit": "产品研发组@320189216@U",
+              "identity": "张三@903dbb04-085c-4bb1-9c24-3009bd5f7372@I",
+              "person": "张三@zhangsan@P",
+              "opinion": "",
+              "startTime": "2020-09-29 17:03:14",
+              "completedTime": "2020-09-29 17:04:38"
+            }
+          ],
+          "prevTask": { //提交的任务信息
+            "routeName": "送办理",
+            "unit": "产品研发组@320189216@U",
+            "identity": "张三@903dbb04-085c-4bb1-9c24-3009bd5f7372@I",
+            "person": "张三@zhangsan@P",
+            "opinion": "",
+            "startTime": "2020-09-29 17:03:14",
+            "completedTime": "2020-09-29 17:04:38"
+          }
+        }
+ * }
+ */
+
+/**
+ * Read 数据结构，待阅任务对象
+ * @typedef {Object} Read
+ * @example
+ * {
+    "id": "dd476045-7c79-44f7-9dba-f51d322de40f",   //待阅ID
+    "title": "XX7月北京出差报销审批",               //流程实例标题
+    "startTime": "2018-09-27 22:49:22",             //待阅产生时间
+    "startTimeMonth": "2018-09",                    //待阅产生的月份
+    "work": "854e2c22-718e-48bb-98db-96f4b43e7ee8", //流程实例ID
+    "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
+    "applicationName": "财务管理",                          //流程应用名称
+    "applicationAlias": "finance",                          //流程应用别名
+    "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
+    "processName": "报销审批流程",                          //流程名称
+    "processAlias": "",                                     //流程别名
+    "completed": false,                             //流程是否已完成
+    "serial": "",                                   //流程编号
+    "person": "XXX@huqi@P",                         //待阅人名称
+    "identity": "XX@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",    //待阅人身份
+    "unit": "XX@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",        //待阅人所在组织
+    "activity": "13d15daf-2ac5-4c1b-a669-1607a0e5ed15",         //当前活动的ID
+    "activityName": "部门领导审核",                             //当前活动的名称
+    "activityAlias": "",                                        //当前活动的别名
+    "activityDescription": "",                                  //当前活动描述
+    "activityType": "manual",                                   //当前活动类型
+    "creatorPerson": "XX@huqi@P",                               //流程实例创建人
+    "creatorIdentity": "XX@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人的身份
+    "creatorUnit": "XX@c448d8bb-98b8-4305-9d3f-12537723cfcc@U"  //流程实例创建人所在组织
+}
+ */
+
+/**
+* Activity 数据结构，流程实例所在的活动节点对象
+ * @typedef {Object} Activity
+ * @example
+  *
+     {
+      "id": "801087c5-a4e6-4b91-bf4d-a81cdaa04471", //节点ID
+      "name": "办理",  //节点名称
+      "description": "", //节点描述
+      "alias": "",  //节点别名
+      "resetRange": "department", //重置处理人范围
+      "resetCount": 0,  //重置处理人数字
+      "allowReset": true, //是否允许重置
+      "manualMode": "single" //处理方式 单人single, 并行parallel, 串行queue, grab抢办
+    }
+ */
+
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.Environment = function(ev){
     var _data = ev.data;
@@ -44,10 +227,50 @@ MWF.xScript.Environment = function(ev){
 
     //workContext
 
+    /**
+     * 你可以通过workContext获取和流程相关的流程实例对象数据。
+     * @module workContext
+     * @example
+     * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
+     * var context = this.workContext;
+     */
     this.workContext = {
+        /**
+         * 当前流程实例正在流转中，并且当前用户有待办，则返回当前用户的待办对象，否则返回null。
+         * @summary 获取当前流程与当前用户相关的待办对象：task对象。
+         * @method getTask
+         * @static
+         * @return {(Task|Null)} 当前用户的待办任务对象：task。当前用户没有对此流程实例的待办时，或流程实例已经流转结束，返回null.
+         * @example
+         * var task = this.workContext.getTask();
+         */
         "getTask": function(){return ev.task || null;},
+        /**
+         * 获取当前流程实例对象：work对象或workCompleted对象。
+         * @method getWork
+         * @static
+         * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象.
+         * @example
+         * var work = this.workContext.getWork();
+         */
         "getWork": function(){return ev.work || ev.workCompleted;},
+        /**
+         * 获取当前流程实例所在的活动节点对象：activity对象。
+         * @method getActivity
+         * @static
+         * @return {(Activity|Null)} 当前流程实例所在的活动节点对象，如果当前流程实例已流转完成，则返回null.
+         * @example
+         * var activity = this.workContext.getActivity();
+         */
         "getActivity": function(){return ev.activity || null;},
+        /**
+         * 获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
+         * @method getTaskList
+         * @static
+         * @return {(Task[])} 待办任务列表.
+         * @example
+         * var taskList = this.workContext.getTaskList();
+         */
         "getTaskList": function(callback, error){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
@@ -58,6 +281,14 @@ MWF.xScript.Environment = function(ev){
             }, ecb, !!cb);
             return list;
         },
+        /**
+         * 根据当前工作的job获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
+         * @method getTaskListByJob
+         * @static
+         * @return {(Task[])} 待办任务列表.
+         * @example
+         * var taskList = this.workContext.getTaskListByJob();
+         */
         "getTaskListByJob": function(callback, error){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
@@ -238,9 +469,20 @@ MWF.xScript.Environment = function(ev){
             return [(t==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name];
         }
     };
+
+    /**
+     * 你可以通过workContext获取和流程相关的流程实例对象数据。
+     * @module this.org
+     * @example
+     * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
+     * var context = this.workContext;
+     */
     this.org = {
         //群组***************
         //获取群组--返回群组的对象数组
+        /**
+         根据群组标识获取对应的群组对象数组：group对象数组
+         */
         getGroup: function(name, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
