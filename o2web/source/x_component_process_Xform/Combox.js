@@ -1,5 +1,17 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
-MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class({
+/** @class Combox 组合框组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var field = this.form.get("fieldName"); //获取组件对象
+ * //方法2
+ * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
+ * @extends MWF.xApplication.process.Xform.$Input
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Combox# */
+{
 	Implements: [Events],
 	Extends: MWF.APP$Input,
 	iconStyle: "selectIcon",
@@ -80,6 +92,12 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class({
         	return null;
 		}
 	},
+    /**
+     * @summary 获取选择项数组.
+     * @example
+     * var array = this.form.get('fieldName').getOptions();
+     * @return {Array} 选择项数组，如果配置为脚本返回计算结果.
+     */
     getOptions: function(){
     	var list = [];
         if (this.json.itemType === "values"){
@@ -126,6 +144,20 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class({
 		}
         return [];
     },
+    /**
+     * 当表单上没有对应组件的时候，可以使用this.data[fieldName] = data赋值。
+     * @summary 为组件赋值。
+     * @param value{String} .
+     * @example
+     *  this.form.get("fieldName").setData("test"); //赋文本值
+     * @example
+     *  //如果无法确定表单上是否有组件，需要判断
+     *  if( this.form.get('fieldName') ){ //判断表单是否有无对应组件
+     *      this.form.get('fieldName').setData( data );
+     *  }else{
+     *      this.data['fieldName'] = data;
+     *  }
+     */
     setData: function(value){
         this._setBusinessData(value);
         this._setValue(value);
@@ -166,13 +198,24 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class({
             }.bind(this));
 		}
     },
+    /**
+     * @summary 重新计算下拉选项，该功能通常用在下拉选项为动态计算的情况.
+     * @example
+     * this.form.get('fieldName').resetOption();
+     */
     resetOption: function(){
         if (this.combox){
             var list = this.getOptions();
             this.combox.setOptions({"list": list});
         }
     },
-
+    /**
+     * @summary 添加下拉选项.
+     * @param text  {String} 下拉选项文本
+     * @param value {String} 下拉选项值
+     * @example
+     * this.form.get('fieldName').addOption("秘密","level1");
+     */
 	addOption: function(text, value){
         if (this.combox){
             var list = this.getOptions();
@@ -195,6 +238,12 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class({
         if (this.combox) return this.combox.getData();
         return this._getBusinessData();
     },
+    /**
+     * @summary 获取选中的值和文本.
+     * @example
+     * var array = this.form.get('fieldName').getTextData();
+     * @return {Object} 返回选中项值和文本，格式为 { 'value' : value, 'text' : text }.
+     */
     getTextData: function(){
 	    var v = this.getData();
         return {"value": v, "text": v};
