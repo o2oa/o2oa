@@ -5,7 +5,17 @@ MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
 //MWF.xDesktop.requireApp("process.Xform", "Package", null, false);
 
-MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
+/** @class Form 表单。
+ * @example
+ * //可以在脚本中获取表单
+ * //方法1：
+ * var form = this.form.getApp().appForm; //获取表单
+ * //方法2
+ * var form = this.target; //在表单本身的事件脚本中获取
+ */
+MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
+    /** @lends MWF.xApplication.process.Xform.Form# */
+{
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {
@@ -41,10 +51,27 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     initialize: function (node, data, options) {
         this.setOptions(options);
 
+        /**
+         * @summary 表单容器
+         * @see https://mootools.net/core/docs/1.6.0/Element/Element
+         * @member {Element}
+         * @example
+         *  //可以在脚本中获取表单容器
+         * var formContainer = this.form.getApp().appForm.container;
+         */
         this.container = $(node);
         this.container.setStyle("-webkit-user-select", "text");
         if (Browser.firefox) this.container.setStyle("opacity", 0);
         this.data = data;
+
+        /**
+         * @summary 表单的配置信息，比如表单名称，提交方式等等.
+         * @member {JsonObject}
+         * @example
+         *  //可以在脚本中获取表单配置信息
+         * var json = this.form.getApp().appForm.json; //表单配置信息
+         * var name = json.name; //表单名称
+         */
         this.json = data.json;
         this.html = data.html;
 
@@ -53,7 +80,36 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         this._loadCss();
 
         this.sectionListObj = {};
+
+        /**
+         * @summary 表单中的所有组件数组.
+         * @member {Array}
+         * @example
+         * //下面的样例对表单组件进行循环，并且判断是输入类型的组件
+         * var modules = this.form.getApp().appForm.modules; //获取所有表单组件
+         * for( var i=0; i<modules.length; i++ ){ //循环处理组件
+         *   //获取组件的类型
+            var moduleName = module.json.moduleName;
+            if( !moduleName ){
+                moduleName = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
+            }
+            if( ["calendar","combox","number","textfield"].contains( moduleName )){ //输入类型框
+                //do something
+             }
+         * }
+         */
         this.modules = [];
+
+        /**
+         * 该对象的key是组件标识，value是组件对象，可以使用该对象直接根据组件标识获取组件。<br/>
+         * 需要注意的是，在子表单中嵌入不绑定数据的组件（比如div,common,button等等），系统允许重名。<br/>
+         * 在打开表单的时候，系统会根据重名情况，自动在组件的标识后跟上 "_1", "_2"。
+         * @summary 表单中的所有组件对象.
+         * @member {Object}
+         * @example
+         * var moduleAll = this.form.getApp().appForm.all; //获取组件对象
+         * var subjectField = moduleAll["subject"] //获取名称为subject的组件
+         */
         this.all = {};
         this.allForName = {};
         this.forms = {};
