@@ -147,12 +147,12 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 			index++;
 		}
 		if (null != wrapIn.getUnitNames() && wrapIn.getUnitNames().size()>0) {
-			sql_stringBuffer.append(" and o.unitName in ( ?" + (index) + ")");
+			sql_stringBuffer.append(" and o.unitOu in ( ?" + (index) + ")");
 			vs.add( wrapIn.getUnitNames() );
 			index++;
 		}
 		if (null != wrapIn.getTopUnitNames() && wrapIn.getTopUnitNames().size() > 0 ) {
-			sql_stringBuffer.append(" and o.topUnitName in ( ?" + (index) + ")");
+			sql_stringBuffer.append(" and o.topUnitOu in ( ?" + (index) + ")");
 			vs.add( wrapIn.getTopUnitNames() );
 			index++;
 		}
