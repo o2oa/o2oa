@@ -229,7 +229,6 @@ MWF.xScript.Environment = function(ev){
 
     /**
      * 你可以通过workContext获取和流程相关的流程实例对象数据。
-     * @namespace
      * @module workContext
      * @example
      * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
