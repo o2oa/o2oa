@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.tools.ListTools;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -110,9 +111,21 @@ public class ActionExportAbnormalDetail extends BaseAction {
 			for (int i = 0; i < detailList.size(); i++) {
 				attendanceDetail = detailList.get(i);
 				row = sheet.createRow(i + 1);
-				row.createCell(0).setCellValue(attendanceDetail.getTopUnitName());
-				row.createCell(1).setCellValue(attendanceDetail.getUnitName());
-				row.createCell(2).setCellValue(attendanceDetail.getEmpName());
+				String topUnitName = attendanceDetail.getTopUnitName();
+				String unitName = attendanceDetail.getUnitName();
+				String empName = attendanceDetail.getEmpName();
+				if(StringUtils.isNotEmpty(topUnitName) && StringUtils.contains(topUnitName,"@")){
+					topUnitName = topUnitName.split("@")[0];
+				}
+				if(StringUtils.isNotEmpty(unitName) && StringUtils.contains(unitName,"@")){
+					unitName = unitName.split("@")[0];
+				}
+				if(StringUtils.isNotEmpty(empName) && StringUtils.contains(empName,"@")){
+					empName = empName.split("@")[0];
+				}
+				row.createCell(0).setCellValue(topUnitName);
+				row.createCell(1).setCellValue(unitName);
+				row.createCell(2).setCellValue(empName);
 				row.createCell(3).setCellValue(attendanceDetail.getRecordDateString());
 				if (attendanceDetail.getIsAbsent()) {
 					row.createCell(4).setCellValue("缺勤");
