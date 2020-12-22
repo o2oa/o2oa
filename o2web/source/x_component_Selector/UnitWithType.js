@@ -397,7 +397,6 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
             this.data.woSubDirectUnitList.each(function(subData){
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType)!==-1){
-
                         debugger;
                         var unit = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
                         if(this.subItems)this.subItems.push( unit );
@@ -410,7 +409,7 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
                 }
             }.bind(this));
             this.itemLoaded = true;
-            if (callback) callback()
+            if (callback) callback();
         }else{
             if (callback) callback( );
         }
