@@ -846,10 +846,10 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
             this.selectAllNode.setStyles( styles );
         }
 
-        if( !this.selectedCountNode1 ){
-            this.selectedCountNode1 = new Element("span").inject(this.textNode);
-        }
-        this.selectedCountNode1.set("text",count);
+        // if( !this.selectedCountNode1 ){
+        //     this.selectedCountNode1 = new Element("span").inject(this.textNode);
+        // }
+        // this.selectedCountNode1.set("text",count);
     },
     _getShowName: function(){
         // if( this._getTotalCount && this._getSelectedCount ){
