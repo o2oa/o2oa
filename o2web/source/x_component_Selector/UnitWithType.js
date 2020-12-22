@@ -318,9 +318,8 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
             this.data.woSubDirectUnitList.each(function(subData){
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType)!==-1){
-
-                        debugger;
                         var unit = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
+                        this.selector.items.push( unit );
                         if(this.subItems)this.subItems.push( unit );
                     }else{
                         if (subData.woSubDirectUnitList.length){
@@ -397,8 +396,8 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
             this.data.woSubDirectUnitList.each(function(subData){
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType)!==-1){
-                        debugger;
                         var unit = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
+                        this.selector.items.push( unit );
                         if(this.subItems)this.subItems.push( unit );
                     }
                 }
