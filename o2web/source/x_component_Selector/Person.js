@@ -1963,6 +1963,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         });
     },
     clickItem: function( callback, checkValid ){
+        debugger;
         // if ( layout.mobile && this.selector.options.count.toInt()===1){
         //     this.selectedSingle( checkValid );
         // }else{
@@ -2089,6 +2090,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
     },
     unSelected: function( checkValid, callback ){
+        var isSelected = this.isSelected;
         this.isSelected = false;
         if( this.node ){
             this.node.setStyles(this.selector.css.selectorItem);
@@ -2102,7 +2104,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             }
         }
 
-        if( this.category ){
+        if( this.category && this.selector.options.selectAllRange !== "all" ){
             this.category.checkUnselectAll();
         }
 
@@ -2131,10 +2133,20 @@ MWF.xApplication.Selector.Person.Item = new Class({
             }.bind(this))
         }
 
+        debugger;
+
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
 
             this.selectedItem.items.each(function(item){
+                if( item.isSelected || ( item === this && isSelected ) ){
+                    var flag = this.selector.options.selectAllRange === "all" ||
+                        ( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ));
+                    if( flag ){
+                        if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( -1, true );
+                    }
+                }
+
                 if (item != this){
                     item.isSelected = false;
                     item.node.setStyles(this.selector.css.selectorItem);
@@ -2146,9 +2158,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                         item.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
                     }
-                }
-                if( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ) ){
-                    if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( -1, true );
                 }
             }.bind(this));
 
