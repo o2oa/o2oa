@@ -832,11 +832,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
                         i = this.currentEditLine.getElement("table").getElements("tr")[idx].getElement("td").get("text");
                     }
                     data = {"value": [i], "text": [i]};
-                }else if (module.json.type=="Attachment" || module.json.type == "AttachmentDg"){
+                }else if( module.json.type=="Attachment" || module.json.type == "AttachmentDg" ) {
                     var data = module.getTextData();
                     //data.site = module.json.site;
                     if (!griddata[id]) griddata[id] = {};
                     griddata[id][module.json.id] = data;
+                }else if( ["Orgfield","Personfield","Org","Address"].contains(module.json.type) ){
+                    data = module.getTextData();
+                    if (!griddata[id]) griddata[id] = {};
+                    griddata[id][module.json.id] = data.value;
                 }else{
                     data = module.getTextData();
                     //if (data.value[0]) flag = false;
