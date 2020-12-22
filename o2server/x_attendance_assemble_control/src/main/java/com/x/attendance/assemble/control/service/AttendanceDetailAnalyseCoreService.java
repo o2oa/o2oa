@@ -63,7 +63,7 @@ class AttendanceDetailAnalyseCoreService {
 	}
 
 	static Date getAfternoonOndutyTimeFromDetail(AttendanceDetail detail, Boolean debugger) {
-		if( StringUtils.isNotEmpty( detail.getMorningOffDutyTime()) ){
+		if( StringUtils.isNotEmpty( detail.getAfternoonOnDutyTime()) ){
 			try {
 				logger.debug( debugger, "格式化[下午上班签到时间]afternoonOndutyTime=" +  detail.getRecordDateString() + " " + detail.getAfternoonOnDutyTime() );
 				return dateOperation.getDateFromString( detail.getRecordDateString() + " " + detail.getAfternoonOnDutyTime() );
