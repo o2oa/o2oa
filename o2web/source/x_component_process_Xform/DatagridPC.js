@@ -8,7 +8,7 @@
 	  "data": [ //数据网格条目
 		{
 		  "datagrid_datagrid$Title": { //数据网格第1列title标识
-			"org_20": {  //数据网格第1列字段标识
+			"org_20": [{  //数据网格第1列字段标识
 			  "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
 			  "id": "bf007525-99a3-4178-a474-32865bdddec8",
 			  "name": "张三",
@@ -16,7 +16,7 @@
 			  "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
 			  "unitLevelName": "兰德纵横/市场营销部",
 			  "unitName": "市场营销部"
-			}
+			}]
 		  },
 		  "datagrid_datagrid$Title_1": { //数据网格第2列title标识
 			"number": "111" //数据网格第2列字段标识和值
@@ -564,6 +564,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 					//data.site = module.json.site;
 					if (!griddata[id]) griddata[id] = {};
 					griddata[id][module.json.id] = data;
+				}else if( ["Orgfield","Personfield","Org","Address"].contains(module.json.type) ){
+					data = module.getTextData();
+					if( data.value && data.value.length )flag = false;
+					if (!griddata[id]) griddata[id] = {};
+					griddata[id][module.json.id] = data.value;
 				}else{
 					var data = module.getTextData();
 					if (data.value[0]) flag = false;
