@@ -410,7 +410,7 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
                 }
             }.bind(this));
             this.itemLoaded = true;
-            if (callback) callback();
+            if (callback) callback()
         }else{
             if (callback) callback( );
         }
