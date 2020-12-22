@@ -696,6 +696,12 @@ MWF.xApplication.Selector.Identity.Item = new Class({
             selectedItem[0].addItem(this);
             this.selectedItem = selectedItem[0];
             this.setSelected();
+
+            var flag = this.selector.options.selectAllRange === "all" ||
+                ( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ));
+            if( flag ){
+                if(this.category && this.category._addSelectedCount )this.category._addSelectedCount( 1, true );
+            }
         }
     }
 });
@@ -782,7 +788,9 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();
-                    if( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ) ){
+                    var flag = this.selector.options.selectAllRange === "all" ||
+                        ( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ) );
+                    if( flag ){
                         if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( 1, true );
                     }
                 }.bind(this));
@@ -831,7 +839,17 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                 }
                 this.selectAllNode.setStyles( styles );
             }
+        }else if( count === 0 && this.selector.options.selectAllRange === "all" && this.selectAllNode ){
+            styles = this.selector.css.selectorItemCategoryActionNode_selectAll;
+            this.isSelectedSome = false;
+            this.isSelectedAll = false;
+            this.selectAllNode.setStyles( styles );
         }
+
+        if( !this.selectedCountNode1 ){
+            this.selectedCountNode1 = new Element("span").inject(this.textNode);
+        }
+        this.selectedCountNode1.set("text",count);
     },
     _getShowName: function(){
         // if( this._getTotalCount && this._getSelectedCount ){
