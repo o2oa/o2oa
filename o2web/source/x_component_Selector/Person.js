@@ -2053,7 +2053,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
     },
     selected: function( checkValid, callback, selectedNode, bySelectAll ){
-        debugger;
         var count = this.selector.options.maxCount || this.selector.options.count;
         count = count.toInt();
         if (!count) count = 0;
@@ -2089,6 +2088,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
     },
     unSelected: function( checkValid, callback ){
+        var isSelected = this.isSelected;
         this.isSelected = false;
         if( this.node ){
             this.node.setStyles(this.selector.css.selectorItem);
@@ -2102,7 +2102,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             }
         }
 
-        if( this.category ){
+        if( this.category && this.selector.options.selectAllRange !== "all" ){
             this.category.checkUnselectAll();
         }
 
@@ -2135,6 +2135,14 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selector.selectedItems.erase(this.selectedItem);
 
             this.selectedItem.items.each(function(item){
+                if( item.isSelected || ( item === this && isSelected ) ){
+                    var flag = this.selector.options.selectAllRange === "all" ||
+                        ( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ));
+                    if( flag ){
+                        if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( -1, true );
+                    }
+                }
+
                 if (item != this){
                     item.isSelected = false;
                     item.node.setStyles(this.selector.css.selectorItem);
@@ -2146,9 +2154,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                         item.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
                     }
-                }
-                if( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ) ){
-                    if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( -1, true );
                 }
             }.bind(this));
 
@@ -2266,7 +2271,6 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         if (this.items.indexOf(item)===-1) this.items.push(item);
     },
     check: function(){
-        debugger;
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
                 return item.data.distinguishedName === this.data.distinguishedName;
