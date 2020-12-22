@@ -1963,7 +1963,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
         });
     },
     clickItem: function( callback, checkValid ){
-        debugger;
         // if ( layout.mobile && this.selector.options.count.toInt()===1){
         //     this.selectedSingle( checkValid );
         // }else{
@@ -2054,7 +2053,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
     },
     selected: function( checkValid, callback, selectedNode, bySelectAll ){
-        debugger;
         var count = this.selector.options.maxCount || this.selector.options.count;
         count = count.toInt();
         if (!count) count = 0;
@@ -2132,8 +2130,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 }
             }.bind(this))
         }
-
-        debugger;
 
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
@@ -2275,7 +2271,6 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         if (this.items.indexOf(item)===-1) this.items.push(item);
     },
     check: function(){
-        debugger;
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
                 return item.data.distinguishedName === this.data.distinguishedName;
