@@ -179,7 +179,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 			Business business = new Business(emc);
 			WorkCompleted o = emc.find(workCompletedId, WorkCompleted.class);
 			Data data = this.data(business, o);
-			emc.beginTransaction(Work.class);
+			emc.beginTransaction(WorkCompleted.class);
 			emc.beginTransaction(Task.class);
 			emc.beginTransaction(TaskCompleted.class);
 			emc.beginTransaction(Read.class);
