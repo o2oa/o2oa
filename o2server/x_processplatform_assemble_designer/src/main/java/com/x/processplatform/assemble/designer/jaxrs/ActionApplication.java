@@ -8,6 +8,7 @@ import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.processplatform.assemble.designer.jaxrs.application.ApplicationAction;
 import com.x.processplatform.assemble.designer.jaxrs.applicationcategory.ApplicationCategoryAction;
 import com.x.processplatform.assemble.designer.jaxrs.applicationdict.ApplicationDictAction;
+import com.x.processplatform.assemble.designer.jaxrs.designer.DesignerAction;
 import com.x.processplatform.assemble.designer.jaxrs.elementtool.ElementToolAction;
 import com.x.processplatform.assemble.designer.jaxrs.file.FileAction;
 import com.x.processplatform.assemble.designer.jaxrs.form.FormAction;
@@ -45,6 +46,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(MappingAction.class);
 		classes.add(ElementToolAction.class);
 		classes.add(WorkCompletedAction.class);
+		classes.add(DesignerAction.class);
 		return classes;
 	}
 
