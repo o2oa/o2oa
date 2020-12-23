@@ -2007,20 +2007,21 @@ MWF.xScript.Environment = function(ev){
             op.docTitle = title;
             layout.desktop.openApplication(this.event, "cms.Document", op);
         },
-        "openPortal": function(name, page, par){
+        "openPortal": function (name, page, par) {
             var action = MWF.Actions.get("x_portal_assemble_surface");
-            action.getApplication(name, function(json){
-                if (json.data){
-                    if (page){
-                        action.getPageByName(page, json.data.id, function(pageJson){
+            action.getApplication(name, function (json) {
+                if (json.data) {
+                    if (page) {
+                        action.getPageByName(page, json.data.id, function (pageJson) {
+                            var pageId = (pageJson.data) ? pageJson.data.id : "";
                             layout.desktop.openApplication(null, "portal.Portal", {
                                 "portalId": json.data.id,
-                                "pageId": (pageJson.data) ? pageJson.data.id : "",
+                                "pageId": pageId,
                                 "parameters": par,
-                                "appId": (par && par.appId) || ("portal.Portal" + json.data.id + ( pageJson.data.id || "" ))
+                                "appId": (par && par.appId) || ("portal.Portal" + json.data.id + pageId)
                             })
                         });
-                    }else{
+                    } else {
                         layout.desktop.openApplication(null, "portal.Portal", {
                             "portalId": json.data.id,
                             "parameters": par,
