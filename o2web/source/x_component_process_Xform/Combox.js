@@ -7,6 +7,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
  * //方法2
  * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
  * @extends MWF.xApplication.process.Xform.$Input
+ * @category FormComponents
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
