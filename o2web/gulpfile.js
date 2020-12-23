@@ -50,6 +50,7 @@ function setOptions(op1, op2){
     options.remotePath = op1.remotePath || op2.remotePath || "";
     options.dest = op1.dest || op2.dest || "dest";
     options.lp = op1.lp || op2.lp || "zh-cn";
+    options.src = op1.src || op2.src || "";
 }
 var options = {};
 setOptions(o_options, getEvOptions(o_options.ev));
