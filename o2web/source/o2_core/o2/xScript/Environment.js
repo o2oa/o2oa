@@ -1798,6 +1798,15 @@ MWF.xScript.Environment = function(ev){
         "save": function(callback, silent){_form.saveWork(callback, silent); },
         "close": function(){_form.closeWork();},
 
+        /**本校验不包括校验意见，校验路由；通常用在弹出提交界面时候的校验
+         * @summary 根据表单中所有组件的校验设置和“流转校验”脚本进行校验。
+         * @method verify
+         *  @example
+         *  if( !this.form.verify() ){
+         *      return false;
+         *  }
+         *  @return {Boolean} 是否通过校验
+         */
         "verify": function(){
             return !(!_form.formCustomValidation("", "") || !_form.formValidation("", ""));
         },
