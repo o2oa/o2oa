@@ -1496,18 +1496,19 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 if (json.data) {
                     if (page) {
                         action.getPageByName(page, json.data.id, function (pageJson) {
+                            var pageId = (pageJson.data) ? pageJson.data.id : "";
                             layout.desktop.openApplication(null, "portal.Portal", {
                                 "portalId": json.data.id,
-                                "pageId": (pageJson.data) ? pageJson.data.id : "",
+                                "pageId": pageId,
                                 "parameters": par,
-                                "appId": "portal.Portal" + json.data.id
+                                "appId": (par && par.appId) || ("portal.Portal" + json.data.id + pageId)
                             })
                         });
                     } else {
                         layout.desktop.openApplication(null, "portal.Portal", {
                             "portalId": json.data.id,
                             "parameters": par,
-                            "appId": "portal.Portal" + json.data.id
+                            "appId": (par && par.appId) || ("portal.Portal" + json.data.id)
                         })
                     }
                 }
