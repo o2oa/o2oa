@@ -7,6 +7,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * //方法2
  * var attachment = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
+ * @category FormComponents
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Class(
