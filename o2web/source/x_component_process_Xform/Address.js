@@ -8,6 +8,7 @@ MWF.xDesktop.requireApp("process.Xform", "Combox", null, false);
  * //方法2
  * var address = this.target; //组件本身的事件和脚本中获取
  * @extends MWF.xApplication.process.Xform.Combox
+ * @category FormComponents
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(

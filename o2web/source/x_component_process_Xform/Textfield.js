@@ -14,6 +14,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
  * var flag = field.isEmpty(); //字段是否为空
  * field.resetData();  //重置字段的值为默认值或置空
  * @extends MWF.xApplication.process.Xform.$Input
+ * @category FormComponents
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
