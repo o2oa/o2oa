@@ -762,7 +762,9 @@ if (!window.Promise){
             var el = els.item(i);
             var name = el.getAttribute("data-o2-element");
             if (name) _bindToModule(op.module, el, name.toString());
+            debugger;
             if (el.hasAttribute("data-o2-events")){
+
                 var events = el.getAttribute("data-o2-events").toString();
                 if (events) _bindToEvents(op.module, el, events);
             }
@@ -1832,7 +1834,7 @@ if (!window.Promise){
     //     return Object.appendChain(asyncGeneratorPrototype, "if (this.success) this.success.apply(this, arguments);");
     // }
     //
-    // //@todo
+    //
     // _AsyncGenerator.all = function(arr){
     //     var result = [];
     //     var ag = function (){
