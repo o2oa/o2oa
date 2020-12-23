@@ -1602,14 +1602,14 @@ MWF.xScript.PageEnvironment = function (ev) {
                                 "portalId": json.data.id,
                                 "pageId": (pageJson.data) ? pageJson.data.id : "",
                                 "parameters": par,
-                                "appId": "portal.Portal" + json.data.id
+                                "appId": (par && par.appId) || ("portal.Portal" + json.data.id + ( pageJson.data.id || "" ))
                             })
                         });
                     } else {
                         layout.desktop.openApplication(null, "portal.Portal", {
                             "portalId": json.data.id,
                             "parameters": par,
-                            "appId": "portal.Portal" + json.data.id
+                            "appId": (par && par.appId) || ("portal.Portal" + json.data.id)
                         })
                     }
                 }
