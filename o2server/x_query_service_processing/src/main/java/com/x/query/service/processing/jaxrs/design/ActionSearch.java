@@ -146,7 +146,7 @@ class ActionSearch extends BaseAction {
 		private Boolean matchWholeWord;
 		@FieldDescribe("是否正则表达式匹配.")
 		private Boolean matchRegExp;
-		@FieldDescribe("限制查询的模块列表.")
+		@FieldDescribe("限制查询的模块列表(模块：processPlatform|portal|cms|service).")
 		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "Module", fieldValue = "{\"moduleType\": \"cms\", \"flagList\": []}")
 		private List<Module> moduleList;
 
