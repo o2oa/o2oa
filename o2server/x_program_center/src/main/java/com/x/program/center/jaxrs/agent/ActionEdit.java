@@ -1,6 +1,8 @@
 package com.x.program.center.jaxrs.agent;
 
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.program.center.Business;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -22,6 +24,11 @@ class ActionEdit extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			/* 判断当前用户是否有权限访问 */
+			if(!business.serviceControlAble(effectivePerson)) {
+				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+			}
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Agent agent = emc.flag(flag, Agent.class );

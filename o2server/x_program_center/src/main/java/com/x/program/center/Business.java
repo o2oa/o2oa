@@ -3,10 +3,13 @@ package com.x.program.center;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Nodes;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.Crypto;
+import com.x.organization.core.express.Organization;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -39,6 +42,24 @@ public class Business {
 
 	public EntityManagerContainer entityManagerContainer() {
 		return this.emc;
+	}
+
+	private Organization organization;
+
+	public Organization organization() throws Exception {
+		if (null == this.organization) {
+			this.organization = new Organization(ThisApplication.context());
+		}
+		return organization;
+	}
+
+	public boolean serviceControlAble(EffectivePerson effectivePerson) throws Exception {
+		boolean result = false;
+		if (effectivePerson.isManager()
+				|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.ServiceManager))) {
+			result = true;
+		}
+		return result;
 	}
 
 	public Boolean collectAccountNotEmpty() throws Exception {
