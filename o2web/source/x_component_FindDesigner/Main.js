@@ -62,11 +62,11 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}
 	},
 	setSizeNode: function(){
-		debugger;
 		this.initLayout();
 		this["sizeNode_"+this.options.layoutType]();
 		this["setResizeNode_"+this.options.layoutType]();
 
+		this.sizeNodeFun = null;
 		this.sizeNodeFun = this["sizeNode_"+this.options.layoutType].bind(this);
 		this.addEvent("resize", this.sizeNodeFun);
 	},
@@ -217,6 +217,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 
 			this.options.layoutType="leftRight";
 		}
+		this.resizeDrag.detach();
 		if (this.sizeNodeFun) this.removeEvent("resize", this.sizeNodeFun);
 		this.setSizeNode();
 	}
