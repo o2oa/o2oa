@@ -102,7 +102,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.modules = [];
 
         /**
-         * 该对象的key是组件标识，value是组件对象，可以使用该对象直接根据组件标识获取组件。<br/>
+         * 该对象的key是组件标识，value是组件对象，可以使用该对象根据组件标识获取组件。<br/>
          * 需要注意的是，在子表单中嵌入不绑定数据的组件（比如div,common,button等等），系统允许重名。<br/>
          * 在打开表单的时候，系统会根据重名情况，自动在组件的标识后跟上 "_1", "_2"。
          * @summary 表单中的所有组件对象.
@@ -1069,6 +1069,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }, null, false);
         return data;
     },
+    /**
+     * @summary 获取表单的所有数据.
+     * @example
+     * var data = this.form.getApp().appForm.getData();
+     * @return {Object}
+     */
     getData: function (issubmit) {
         //var data = Object.clone(this.businessData.data);
         var data = this.businessData.data;
@@ -1208,7 +1214,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //if (key) obj[key] = v;
         return obj;
     },
-
     saveWork: function (callback, silent) {
 
         if (this.businessData.control["allowSave"]) {
@@ -1415,6 +1420,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }.bind(this))
         }
     },
+
+    /**
+     * @summary 获取当前工作的路由配置数据.
+     * @example
+     * this.form.getApp().appForm.getRouteDataList();
+     * @return {Object[]}
+     */
     getRouteDataList: function () {
         if (!this.routeDataList) {
             o2.Actions.get("x_processplatform_assemble_surface").listRoute({ "valueList": this.businessData.task.routeList }, function (json) {
@@ -2971,6 +2983,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
 
+    /**
+     * 需要判断权限
+     * @summary 给待办人发送提醒(催促办理).
+     * @example
+     * if( this.workContext.getControl().allowPress ){ //判断流程节点是否设置了催办并且当前人员是否有催办权限
+     *     this.form.getApp().appForm.pressWork();
+     * }
+     */
     pressWork: function (e) {
         if (e && e.setDisable) e.setDisable(true);
         o2.Actions.get("x_processplatform_assemble_surface").press(this.businessData.work.id, function (json) {
@@ -2993,6 +3013,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         });
     },
+    /**
+     * @summary 一键下载.
+     * @example
+     * this.form.getApp().appForm.downloadAll();
+     */
     downloadAll: function () {
         var htmlFormId = "";
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
@@ -3437,7 +3462,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         }
     },
-
+    /**
+     * 如果当前人员没有调度权限或者流程节点未配置调度，则提醒Permission Denied.
+     * @summary 弹出调度界面
+     * @example
+     * this.form.getApp().appForm.rerouteWork();
+     */
     rerouteWork: function (e, ev) {
         if (!this.businessData.control["allowReroute"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
@@ -3964,7 +3994,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form));
         }
     },
+    /**
+     * @summary 将当前处理人的待阅设置为已阅.
+     * @param {Event|Element} [e] - Event 或者Mootools Element，指定提示框弹出的位置
+     * @example
+     * if( this.workContext.getControl().allowReadProcessing ){ //是否有待阅
+     *     this.form.getApp().appForm.readedWork();
+     * }
+     */
     readedWork: function (e) {
+        if( !e )e = new Event(event);
         this.fireEvent("beforeReaded");
         var _self = this;
         var title = this.businessData.work.title;
@@ -4026,7 +4065,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         //window.open("../x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
     },
-
+    /**
+     * @summary 将新上传的附件在指定的附件组件中展现.
+     * @param {String} site - 附件组件的标识
+     * @param {String} id - 新上传的附件id
+     * @example
+     * this.form.getApp().appForm.uploadedAttachment(site, id);
+     */
     uploadedAttachment: function (site, id) {
         this.workAction.getAttachment(id, this.businessData.work.id, function (json) {
             var att = this.all[site];
