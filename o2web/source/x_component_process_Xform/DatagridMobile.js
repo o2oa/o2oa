@@ -838,10 +838,10 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
                     //data.site = module.json.site;
                     if (!griddata[id]) griddata[id] = {};
                     griddata[id][module.json.id] = data;
-                }else if( ["Orgfield","Personfield","Org","Address"].contains(module.json.type) ){
-                    data = module.getTextData();
-                    if (!griddata[id]) griddata[id] = {};
-                    griddata[id][module.json.id] = data.value;
+                // }else if( ["Orgfield","Personfield","Org","Address"].contains(module.json.type) ){
+                //     data = module.getTextData();
+                //     if (!griddata[id]) griddata[id] = {};
+                //     griddata[id][module.json.id] = data.value;
                 }else{
                     data = module.getTextData();
                     //if (data.value[0]) flag = false;
