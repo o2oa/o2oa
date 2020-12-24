@@ -8,7 +8,7 @@
 	  "data": [ //数据网格条目
 		{
 		  "datagrid_datagrid$Title": { //数据网格第1列title标识
-			"org_20": [{  //数据网格第1列字段标识
+			"org_20": {  //数据网格第1列字段标识，人员组件单个对象，存的是对象
 			  "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
 			  "id": "bf007525-99a3-4178-a474-32865bdddec8",
 			  "name": "张三",
@@ -16,16 +16,35 @@
 			  "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
 			  "unitLevelName": "兰德纵横/市场营销部",
 			  "unitName": "市场营销部"
+			}
+		  },
+		  "datagrid_datagrid$Title1": { //数据网格第2列title标识
+			"org_21": [{  //数据网格第2列字段标识，人员组件多个对象，存的是数组
+			  "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
+			  "id": "bf007525-99a3-4178-a474-32865bdddec8",
+			  "name": "张三",
+			  "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
+			  "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
+			  "unitLevelName": "兰德纵横/市场营销部",
+			  "unitName": "市场营销部"
+			},{
+			  "distinguishedName": "李四@bf007525-99a3-4178-a474-32865bdddec8@I",
+			  "id": "bf007525-99a3-4178-a474-32865bdddec8",
+			  "name": "李四",
+			  "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
+			  "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
+			  "unitLevelName": "兰德纵横/市场营销部",
+			  "unitName": "市场营销部"
 			}]
 		  },
-		  "datagrid_datagrid$Title_1": { //数据网格第2列title标识
-			"number": "111" //数据网格第2列字段标识和值
+		  "datagrid_datagrid$Title_2": { //数据网格第2列title标识
+			"number": "111" //数据网格第3列字段标识和值
 		  },
-		  "datagrid_datagrid$Title_2": { //数据网格第3列title标识
-			"textfield_2": "杭州" //数据网格第3列字段标识和值
+		  "datagrid_datagrid$Title_3": { //数据网格第3列title标识
+			"textfield_2": "杭州" //数据网格第4列字段标识和值
 		  },
-		  "datagrid_datagrid$Title_3": { //数据网格第4列title标识
-			"attachment_1": [  //数据网格第4列字段标识
+		  "datagrid_datagrid$Title_4": { //数据网格第4列title标识
+			"attachment_1": [  //数据网格第5列字段标识
 			  {
 				"activityName": "拟稿",
 				"extension": "jpg",
@@ -41,8 +60,8 @@
 		...
 	  ],
 	  "total": {  //统计数据，列title设置了总计
-		"datagrid_datagrid$Title_1": "333", //总计列1
-		"datagrid_datagrid$Title_2": "2" //总计列2
+		"datagrid_datagrid$Title_2": "333", //总计列2
+		"datagrid_datagrid$Title_3": "2" //总计列3
 	  }
 	}
  */
