@@ -11,6 +11,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         if (this.status){
             this.options.portalId = this.status.portalId;
             this.options.pageId = this.status.pageId;
+            this.options.parameters = this.status.parameters;
         }
 	},
 	loadApplication: function(callback){
@@ -156,7 +157,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         }
     },
     recordStatus: function(){
-        return {"portalId": this.options.portalId, "pageId": this.options.pageId};
+        return {"portalId": this.options.portalId, "pageId": this.options.pageId, "parameters" : this.options.parameters};
     },
     onPostClose: function(){
         if (this.appForm){
