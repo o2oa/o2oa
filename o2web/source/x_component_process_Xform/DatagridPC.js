@@ -565,11 +565,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 					//data.site = module.json.site;
 					if (!griddata[id]) griddata[id] = {};
 					griddata[id][module.json.id] = data;
-				}else if( ["Orgfield","Personfield","Org","Address"].contains(module.json.type) ){
-					data = module.getTextData();
-					if( data.value && data.value.length )flag = false;
-					if (!griddata[id]) griddata[id] = {};
-					griddata[id][module.json.id] = data.value;
+				// }else if( ["Orgfield","Personfield","Org","Address"].contains(module.json.type) ){
+				// 	data = module.getTextData();
+				// 	if( data.value && data.value.length )flag = false;
+				// 	if (!griddata[id]) griddata[id] = {};
+				// 	griddata[id][module.json.id] = data.value;
 				}else{
 					var data = module.getTextData();
 					if (data.value[0]) flag = false;
