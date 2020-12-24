@@ -631,7 +631,7 @@ MWF.xApplication.Selector.Identity.Item = new Class({
         var style = this.selector.options.style;
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
     },
-    getData: function(callback){
+    getData: function(callback, isWait){
         if( this.selector.options.resultType === "person" ){
             var isPerson = false;
             if( this.data && this.data.distinguishedName ){
@@ -641,7 +641,7 @@ MWF.xApplication.Selector.Identity.Item = new Class({
             if( isPerson ) {
                 if (callback) callback();
             }else if( this.data.woPerson ){
-                this.data == this.data.woPerson;
+                this.data = this.data.woPerson;
                 if (callback) callback();
             }else if( this.data.person ){
                 this.selector.orgAction.getPerson(function(json){
@@ -652,13 +652,14 @@ MWF.xApplication.Selector.Identity.Item = new Class({
                 if (callback) callback();
             }
         }else{
+            if (!isWait && callback) callback();
             if (!this.data.woPerson && (!this.data.personDn || !this.data.personEmployee || !this.data.personUnique)){
                 this.selector.orgAction.getPerson(function(json){
                     this.data.woPerson = json.data;
-                    if (callback) callback();
+                    if (isWait && callback) callback();
                 }.bind(this), null, this.data.person)
             }else{
-                if (callback) callback();
+                if (isWait && callback) callback();
             }
         }
     },
@@ -714,7 +715,7 @@ MWF.xApplication.Selector.Identity.SearchItem = new Class({
 
 MWF.xApplication.Selector.Identity.ItemSelected = new Class({
     Extends: MWF.xApplication.Selector.Person.ItemSelected,
-    getData: function(callback){
+    getData: function(callback, isWait){
         if( this.selector.options.resultType === "person" ){
             var isPerson = false;
             if( this.data && this.data.distinguishedName ){
@@ -735,10 +736,11 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 if (callback) callback();
             }
         }else if (!this.data.woPerson && (!this.data.personDn || !this.data.personEmployee || !this.data.personUnique) ){
+            if (!isWait && callback) callback();
             if (this.data.person){
                 this.selector.orgAction.getPerson(function(json){
                     this.data.woPerson = json.data;
-                    if (callback) callback();
+                    if (isWait && callback) callback();
                 }.bind(this), function(xhr, text, error){
                     var errorText = error;
                     if (xhr){
@@ -750,11 +752,11 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                         }
                     }
                     MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
-                    if (callback) callback();
+                    if (isWait && callback) callback();
                 }.bind(this), this.data.person)
             }else{
                 MWF.xDesktop.notice("error", {x: "right", y:"top"}, MWF.SelectorLP.noPerson.replace(/{name}/g, this.data.name));
-                if (callback) callback();
+                if (isWait && callback) callback();
             }
         }else{
             if (callback) callback();
@@ -920,6 +922,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
             this.loadSub(function(){
                 this.loading = false;
                 if( firstLoaded ){
+                    this.selector.fireEvent("expand", [this] );
                     if( !this.selector.isFlatCategory ){
                         this.children.setStyles({"display": "block", "height": "auto"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
@@ -929,10 +932,12 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                 }else{
                     var display = this.children.getStyle("display");
                     if (display === "none"){
+                        this.selector.fireEvent("expand", [this] );
                         this.children.setStyles({"display": "block", "height": "auto"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
                         this.isExpand = true;
                     }else{
+                        this.selector.fireEvent("collapse", [this] );
                         this.children.setStyles({"display": "none", "height": "0px"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
                         this.isExpand = false;
