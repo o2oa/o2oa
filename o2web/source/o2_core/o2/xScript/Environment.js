@@ -181,6 +181,26 @@
     }
  */
 
+/**
+Control 　流程实例的权限对象。
+ * @typedef {Object} Control
+ * @example
+ *
+     {
+        "allowVisit": true,             //是否允许访问
+        "allowProcessing": true,        //是否允许流转
+        "allowReadProcessing": false,   //是否有待阅
+        "allowSave": true,              //是否允许保存业务数据
+        "allowReset": false,            //是否允许重置处理人
+        "allowRetract": false,          //是否允许撤回
+        "allowReroute": false,          //是否允许调度
+        "allowDelete": true,             //是否允许删除流程实例
+        "allowRollback": false,         //是否允许流程回溯
+        "allowAddSplit": false,         //是否允许增加分支
+        "allowPress": false,             //是否允许催办
+    }
+ */
+
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.Environment = function(ev){
     var _data = ev.data;
@@ -267,9 +287,17 @@ MWF.xScript.Environment = function(ev){
          * 获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
          * @method getTaskList
          * @static
+         * @param {Function} [callback] 正确获取待办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取待办数组出错时的回调。
          * @return {(Task[])} 待办任务列表.
          * @example
+         * //本样例以同步执行
          * var taskList = this.workContext.getTaskList();
+         * @example
+         * //本样例以异步执行
+         * this.workContext.getTaskList( function(taskList){
+         *     //taskList 为待办数组
+         * });
          */
         "getTaskList": function(callback, error){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
@@ -285,9 +313,17 @@ MWF.xScript.Environment = function(ev){
          * 根据当前工作的job获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
          * @method getTaskListByJob
          * @static
+         * @param {Function} [callback] 正确获取待办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取待办数组出错时的回调。
          * @return {(Task[])} 待办任务列表.
          * @example
+         * //本样例以同步执行
          * var taskList = this.workContext.getTaskListByJob();
+         * @example
+         * //本样例以异步执行
+         * this.workContext.getTaskListByJob( function(taskList){
+         *     //taskList 为待办数组
+         * });
          */
         "getTaskListByJob": function(callback, error){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
@@ -299,6 +335,22 @@ MWF.xScript.Environment = function(ev){
             }, ecb, !!cb);
             return list;
         },
+        /**
+         * @summary 获取当前流程实例的所有待阅对象数组。如果流程实例无待阅，则返回一个空数组。
+         * @method getReadList
+         * @static
+         * @param {Function} [callback] 正确获取待阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取待阅数组出错时的回调。
+         * @return {(Read[])} 当前流程实例的所有待阅对象数组.
+         * @example
+         * //本样例以同步执行
+         * var readList = this.workContext.getReadList();
+         * @example
+         * //本样例以异步执行
+         * this.workContext.getReadList( function(readList){
+         *     //readList 为待阅数组
+         * });
+         */
         "getReadList": function(callback, error){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
@@ -309,6 +361,22 @@ MWF.xScript.Environment = function(ev){
             }, ecb, !!cb);
             return list;
         },
+        /**
+         * @summary 根据当前工作的job获取当前流程实例的所有待阅对象。如果流程实例无待阅，则返回一个空数组。
+         * @method getReadListByJob
+         * @static
+         * @param {Function} [callback] 正确获取待阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取待阅数组出错时的回调。
+         * @return {(Read[])} 当前流程实例的所有待阅对象数组.
+         * @example
+         * //本样例以同步执行
+         * var readList = this.workContext.getReadListByJob();
+         * @example
+         * //本样例以异步执行
+         * this.workContext.getReadListByJob( function(readList){
+         *     //readList 为待阅数组
+         * });
+         */
         "getReadListByJob": function(callback, error){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
@@ -319,6 +387,22 @@ MWF.xScript.Environment = function(ev){
             }, ecb, !!cb);
             return list;
         },
+        /**
+         * 获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
+         * @method getTaskCompletedList
+         * @static
+         * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取已办数组出错时的回调。
+         * @return {(TaskCompleted[])} 已办任务列表.
+         * @example
+         * //本样例以同步执行
+         * var taskCompletedList = this.workContext.getTaskCompletedList();
+         * @example
+         * //本样例以异步执行
+         * this.workContext.getTaskCompletedList( function(taskCompletedList){
+         *     //taskCompletedList 为待办数组
+         * });
+         */
         "getTaskCompletedList": function(callback, error){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
@@ -329,6 +413,22 @@ MWF.xScript.Environment = function(ev){
             }, ecb, !!cb);
             return list;
         },
+        /**
+         * 根据当前工作的job获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
+         * @method getTaskCompletedListByJob
+         * @static
+         * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取已办数组出错时的回调。
+         * @return {(TaskCompleted[])} 已办任务列表.
+         * @example
+         * //本样例以同步执行
+         * var taskCompletedList = this.workContext.getTaskCompletedListByJob();
+         * @example
+         * //本样例以异步执行
+         * this.workContext.getTaskCompletedListByJob( function(taskCompletedList){
+         *     //taskCompletedList 为待办数组
+         * });
+         */
         "getTaskCompletedListByJob": function(callback, error){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
@@ -339,6 +439,22 @@ MWF.xScript.Environment = function(ev){
             }, ecb, !!cb);
             return list;
         },
+        /**
+         * @summary 获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
+         * @method getReadCompletedList
+         * @static
+         * @param {Function} [callback] 正确获取已阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取已阅数组出错时的回调。
+         * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
+         * @example
+         * //本样例以同步执行
+         * var readCompletedList = this.workContext.getReadCompletedList();
+         * @example
+         * //本样例以异步执行
+         * this.workContext.getReadCompletedList( function(readCompletedList){
+         *     //readCompletedList 为已阅数组
+         * });
+         */
         "getReadCompletedList": function(callback, error){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
@@ -349,6 +465,22 @@ MWF.xScript.Environment = function(ev){
             }, ecb, !!cb);
             return list;
         },
+        /**
+         * @summary 根据当前工作的job获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
+         * @method getReadCompletedListByJob
+         * @static
+         * @param {Function} [callback] 正确获取已阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取已阅数组出错时的回调。
+         * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
+         * @example
+         * //本样例以同步执行
+         * var readCompletedList = this.workContext.getReadCompletedListByJob();
+         * @example
+         * //本样例以异步执行
+         * this.workContext.getReadCompletedListByJob( function(readCompletedList){
+         *     //readCompletedList 为已阅数组
+         * });
+         */
         "getReadCompletedListByJob": function(callback, error){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
@@ -364,12 +496,60 @@ MWF.xScript.Environment = function(ev){
         "getJobTaskCompletedList": this.getTaskCompletedListByJob,
         "getJobReadCompletedList": this.getReadCompletedListByJob,
 
+        /**
+         * @summary 获取当前人对流程实例的权限。
+         * @method getControl
+         * @static
+         * @return {Control} 流程实例权限对象.
+         * @example
+         * var control = this.workContext.getControl();
+         */
         "getControl": function(){return ev.control;},
+        /**
+         * @summary 获取当前流程实例的所有流程记录(WorkLog)。
+         * @method getWorkLogList
+         * @static
+         * @return {WorkLog[]} 流程记录对象.
+         * @example
+         * var workLogList = this.workContext.getWorkLogList();
+         */
         "getWorkLogList": function(){return ev.workLogList;},
+        /**
+         * @summary 获取当前流程实例的所有流程记录(Record)。
+         * @method getRecordList
+         * @static
+         * @return {Record[]} 流程记录(Record)对象.
+         * @example
+         * var workLogList = this.workContext.getRecordList();
+         */
         "getRecordList": function(){return ev.recordList;},
+        /**
+         * @summary 获取当前流程实例的附件对象列表。
+         * @method getAttachmentList
+         * @static
+         * @return {AttachmentData[]} 附件数据.
+         * @example
+         * var attachmentList = this.workContext.getAttachmentList();
+         */
         "getAttachmentList": function(){return ev.attachmentList;},
+        /**
+         * @summary 获取当前待办的可选路由。与task对象中的routeNameList取值相同。
+         * @method getRouteList
+         * @static
+         * @return {String[]} 路由字符串数组.
+         * @example
+         * var routeList = this.workContext.getRouteList();
+         */
         "getRouteList": function(){return (ev.task) ? ev.task.routeNameList: null;},
         "getInquiredRouteList": function(){return null;},
+        /**
+         * @summary 重新设置流程实例标题。。
+         * @method setTitle
+         * @static
+         * @param {String} title - 路由字符串数组.
+         * @example
+         * this.workContext.setTitle("标题");
+         */
         "setTitle": function(title){
             if (!this.workAction){
                 MWF.require("MWF.xScript.Actions.WorkActions", null, false);
