@@ -660,7 +660,7 @@ MSelector.Tootips = new Class({
                 var _self = this.obj;
                 var data = this.itemNode.retrieve( "data" );
                 _self.selector.setCurrentItem( this.itemNode );
-                _self.selector._selectItem( this.itemNode, data, ev );
+                // _self.selector._selectItem( this.itemNode, data, ev );
                 _self.selector.fireEvent("selectItem", [ this.itemNode, data, ev ] );
                 _self.hide();
                 ev.stopPropagation();
