@@ -32,7 +32,22 @@ MWF.xScript.CMSEnvironment = function(ev){
     //this.inquiredRouteList = null;
 
     //workContext
+    /**
+     * 你可以通过documentContext获取内容管理实例相关的对象数据。
+     * @module documentContext
+     * @example
+     * //您可以在内容管理表单中，通过this来获取当前实例的documentContext对象，如下：
+     * var context = this.documentContext;
+     */
     this.documentContext = {
+        /**
+         * 获取当前内容管理实例的文档对象：document对象。
+         * @method getDocument
+         * @static
+         * @return {Document} 内容管理实例对象.
+         * @example
+         * var doc = this.documentContext.getDocument();
+         */
         "getDocument": function(){return ev.document },
         "getControl": function(){return ev.control;},
         "getAttachmentList": function(){return ev.attachmentList;}
