@@ -8,8 +8,8 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
     initialize: function(node, app, actions, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "../x_component_Attendance/$SelfHoliday/";
-        this.cssPath = "../x_component_Attendance/$SelfHoliday/"+this.options.style+"/css.wcss";
+        this.path = "/x_component_Attendance/$SelfHoliday/";
+        this.cssPath = "/x_component_Attendance/$SelfHoliday/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;
@@ -40,7 +40,7 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
     },
     _loadFilterContent : function(){
         var _self = this;
-        var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable' width='950'>"+
+        var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable' width='1350'>"+
             "<tr>" +
             "    <td styles='formTableTitle' lable='q_topUnitName'></td>"+
             "    <td styles='formTableValue' item='q_topUnitName'></td>"+
@@ -48,6 +48,10 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
             "    <td styles='formTableValue' item='q_unitName'></td>"+
             "    <td styles='formTableTitle' lable='q_empName'></td>"+
             "    <td styles='formTableValue' item='q_empName'></td>"+
+            "    <td styles='formTableTitle' lable='startdateString'></td>"+
+            "    <td styles='formTableValue' item='startdateString'></td>"+
+            "    <td styles='formTableTitle' lable='enddateString'></td>"+
+            "    <td styles='formTableValue' item='enddateString'></td>"+
             "    <td styles='formTableValue' item='action'></td>"+
             "</tr>" +
             "</table>";
@@ -61,6 +65,8 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
                     q_topUnitName : { "text" : "选择公司", "type" : "org", "orgType" : "unit", style : {"min-width" : "200px"} },
                     q_unitName : { "text" : "选择部门", "type" : "org", "orgType" : "unit", style : {"min-width" : "250px"} },
                     q_empName : {  "text" : "选择人员", "type" : "org", "orgType" : "person", style : {"min-width" : "100px"} },
+                    startdateString : {  "text" : "开始日期", "tType" : "date",style : {"border" : "1px solid rgb(153, 153, 153)","background":'url("../x_component_Template/$MForm/default/icon/calendar.png") 98% center no-repeat',"border-radius":"3px","box-shadow":"rgb(204, 204, 204) 0px 0px 6px","height":"26px","width":"100px"} },
+                    enddateString : { "text" : "结束日期", "tType" : "date" ,style : {"border" : "1px solid rgb(153, 153, 153)","background":'url("../x_component_Template/$MForm/default/icon/calendar.png") 98% center no-repeat',"border-radius":"3px","box-shadow":"rgb(204, 204, 204) 0px 0px 6px","height":"26px","width":"100px"}},
                     action : {
                         "type" : "button",
                         "value" : "查询",
