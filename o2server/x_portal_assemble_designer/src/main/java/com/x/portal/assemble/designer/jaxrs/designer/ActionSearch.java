@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.designer.jaxrs.designer;
+package com.x.portal.assemble.designer.jaxrs.designer;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -16,11 +16,11 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
-import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Script;
-import com.x.processplatform.core.entity.element.wrap.WrapProcess;
+import com.x.portal.assemble.designer.Business;
+import com.x.portal.core.entity.Page;
+import com.x.portal.core.entity.Portal;
+import com.x.portal.core.entity.Script;
+import com.x.portal.core.entity.Widget;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ class ActionSearch extends BaseAction {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		logger.info("{}开始流程平台设计搜索，条件：{}", effectivePerson.getDistinguishedName(), wi);
+		logger.info("{}开始内容管理设计搜索，条件：{}", effectivePerson.getDistinguishedName(), wi);
 		if(StringUtils.isBlank(wi.getKeyword())){
 			throw new ExceptionFieldEmpty("keyword");
 		}
@@ -47,10 +47,13 @@ class ActionSearch extends BaseAction {
 		List<Wo> resWos = new ArrayList<>();
 		List<CompletableFuture<List<Wo>>> list = new ArrayList<>();
 		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.form.toString())){
-			list.add(searchForm(wi, wi.getAppIdList()));
+			list.add(searchPage(wi, wi.getAppIdList()));
 		}
 		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.script.toString())){
 			list.add(searchScript(wi, wi.getAppIdList()));
+		}
+		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.widget.toString())){
+			list.add(searchWidget(wi, wi.getAppIdList()));
 		}
 		for (CompletableFuture<List<Wo>> cf : list){
 			if(resWos.size()<50) {
@@ -73,17 +76,18 @@ class ActionSearch extends BaseAction {
 				if (ListTools.isEmpty(appIdList)) {
 					woScripts = emc.fetchAll(Script.class, WoScript.copier);
 				} else {
-					woScripts = emc.fetchIn(Script.class, WoScript.copier, Script.application_FIELDNAME, appIdList);
+					woScripts = emc.fetchIn(Script.class, WoScript.copier, Script.portal_FIELDNAME, appIdList);
 				}
+
 				for (WoScript woScript : woScripts) {
 					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoScript.copier.getCopyFields(), woScript, wi.getKeyword(),
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						Application app = emc.find(woScript.getApplication(), Application.class);
-						if (app != null) {
-							wo.setAppId(app.getId());
-							wo.setAppName(app.getName());
+						Portal portal = emc.find(woScript.getPortal(), Portal.class);
+						if(portal != null){
+							wo.setAppId(portal.getId());
+							wo.setAppName(portal.getName());
 						}
 						wo.setDesignerId(woScript.getId());
 						wo.setDesignerName(woScript.getName());
@@ -102,33 +106,33 @@ class ActionSearch extends BaseAction {
 		return cf;
 	}
 
-	private CompletableFuture<List<Wo>> searchForm(final Wi wi, final List<String> appIdList) {
+	private CompletableFuture<List<Wo>> searchPage(final Wi wi, final List<String> appIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				List<String> formIds = business.form().listWithApplications(appIdList);
-				for (List<String> partFormIds : ListTools.batch(formIds, 100)) {
-					List<WoForm> woForms = emc.fetchIn(Form.class, WoForm.copier, Form.id_FIELDNAME, partFormIds);
-					for (WoForm woForm : woForms) {
-						Map<String, String> map = PropertyTools.fieldMatchKeyword(WoForm.copier.getCopyFields(), woForm, wi.getKeyword(),
+				List<String> ids = business.page().listWithPortals(appIdList);
+				for (List<String> partIds : ListTools.batch(ids, 100)) {
+					List<WoPage> wos = emc.fetchIn(Page.class, WoPage.copier, Page.id_FIELDNAME, partIds);
+					for (WoPage wopage : wos) {
+						Map<String, String> map = PropertyTools.fieldMatchKeyword(WoPage.copier.getCopyFields(), wopage, wi.getKeyword(),
 								wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 						if (!map.isEmpty()) {
 							Wo wo = new Wo();
-							Application app = emc.find(woForm.getApplication(), Application.class);
-							if (app != null) {
-								wo.setAppId(app.getId());
-								wo.setAppName(app.getName());
+							Portal portal = emc.find(wopage.getPortal(), Portal.class);
+							if(portal != null){
+								wo.setAppId(portal.getId());
+								wo.setAppName(portal.getName());
 							}
-							wo.setDesignerId(woForm.getId());
-							wo.setDesignerName(woForm.getName());
-							wo.setDesignerType(DesignerType.form.toString());
-							wo.setUpdateTime(woForm.getUpdateTime());
+							wo.setDesignerId(wopage.getId());
+							wo.setDesignerName(wopage.getName());
+							wo.setDesignerType(DesignerType.page.toString());
+							wo.setUpdateTime(wopage.getUpdateTime());
 							wo.setPatternList(map);
 							resWos.add(wo);
 						}
 					}
-					woForms.clear();
+					wos.clear();
 				}
 
 			}catch (Exception e){
@@ -139,7 +143,42 @@ class ActionSearch extends BaseAction {
 		return cf;
 	}
 
+	private CompletableFuture<List<Wo>> searchWidget(final Wi wi, final List<String> appIdList) {
+		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
+			List<Wo> resWos = new ArrayList<>();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				List<String> ids = business.widget().listWithPortals(appIdList);
+				for (List<String> partIds : ListTools.batch(ids, 100)) {
+					List<WoWidget> wos = emc.fetchIn(Widget.class, WoWidget.copier, WoWidget.id_FIELDNAME, partIds);
+					for (WoWidget woWidget : wos) {
+						Map<String, String> map = PropertyTools.fieldMatchKeyword(WoWidget.copier.getCopyFields(), woWidget, wi.getKeyword(),
+								wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
+						if (!map.isEmpty()) {
+							Wo wo = new Wo();
+							Portal portal = emc.find(woWidget.getPortal(), Portal.class);
+							if(portal != null){
+								wo.setAppId(portal.getId());
+								wo.setAppName(portal.getName());
+							}
+							wo.setDesignerId(woWidget.getId());
+							wo.setDesignerName(woWidget.getName());
+							wo.setDesignerType(DesignerType.widget.toString());
+							wo.setUpdateTime(woWidget.getUpdateTime());
+							wo.setPatternList(map);
+							resWos.add(wo);
+						}
+					}
+					wos.clear();
+				}
 
+			}catch (Exception e){
+				logger.error(e);
+			}
+			return resWos;
+		});
+		return cf;
+	}
 
 	public static class Wi extends WiDesigner {
 
@@ -156,17 +195,19 @@ class ActionSearch extends BaseAction {
 
 	}
 
-	public static class WoForm extends Form {
+	public static class WoPage extends Page {
 
-		static WrapCopier<Form, WoForm> copier = WrapCopierFactory.wo(Form.class, WoForm.class,
-				JpaObject.singularAttributeField(Form.class, true, false),null);
+		static WrapCopier<Page, WoPage> copier = WrapCopierFactory.wo(Page.class, WoPage.class,
+				JpaObject.singularAttributeField(WoPage.class, true, false),null);
+
+	}
+
+	public static class WoWidget extends Widget {
+
+		static WrapCopier<Widget, WoWidget> copier = WrapCopierFactory.wo(Widget.class, WoWidget.class,
+				JpaObject.singularAttributeField(WoWidget.class, true, false),null);
 
 	}
 
-	public static class WoProcess extends WrapProcess {
-
-		private static final long serialVersionUID = -8507786999314667403L;
-
-	}
 
 }

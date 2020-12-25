@@ -1,9 +1,11 @@
 package com.x.base.core.project.jaxrs;
 
+import com.x.base.core.entity.enums.DesignerType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +25,8 @@ public class WrapDesigner extends GsonPropertyObject {
 
 	@FieldDescribe("设计类型.")
 	private String designerType;
+
+	private Date updateTime;
 
 	@FieldDescribe("匹配信息.")
 	private List<DesignerPattern> patternList = new ArrayList<>();
@@ -67,6 +71,14 @@ public class WrapDesigner extends GsonPropertyObject {
 		this.designerType = designerType;
 	}
 
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
 	public List<DesignerPattern> getPatternList() {
 		return patternList;
 	}
@@ -86,7 +98,6 @@ public class WrapDesigner extends GsonPropertyObject {
 			}
 			this.patternList = patternList;
 		}
-		this.patternList = patternList;
 	}
 
 	public DesignerPattern getPatternInstant(){
@@ -96,11 +107,27 @@ public class WrapDesigner extends GsonPropertyObject {
 
 	public void clearPatternValue(){
 		for (DesignerPattern pattern : this.patternList){
-			pattern.propertyValue = null;
+			pattern.setPropertyValue(null);
 		}
 	}
 
-	class DesignerPattern extends GsonPropertyObject {
+	public DesignerPattern getScriptDesigner(){
+		DesignerPattern designerPattern = null;
+		if(DesignerType.script.toString().equals(this.getDesignerType())){
+			for (DesignerPattern pattern : this.patternList){
+				if ("text".equals(pattern.getProperty())){
+					designerPattern = pattern;
+				}else{
+					pattern.setPropertyValue(null);
+				}
+			}
+		}else{
+			this.clearPatternValue();
+		}
+		return designerPattern;
+	}
+
+	public class DesignerPattern extends GsonPropertyObject {
 
 		@FieldDescribe("元素类型（activity | process）.")
 		private String elementType;

@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.designer.jaxrs;
+package com.x.portal.assemble.designer.jaxrs;
 
 import com.x.base.core.project.jaxrs.CipherManagerJaxrsFilter;
 

@@ -12,6 +12,7 @@ import com.x.cms.assemble.control.jaxrs.categoryinfo.CategoryInfoAnonymousAction
 import com.x.cms.assemble.control.jaxrs.commend.DocumentCommendAction;
 import com.x.cms.assemble.control.jaxrs.comment.DocumentCommentInfoAction;
 import com.x.cms.assemble.control.jaxrs.data.DataAction;
+import com.x.cms.assemble.control.jaxrs.designer.DesignerAction;
 import com.x.cms.assemble.control.jaxrs.document.DocumentAction;
 import com.x.cms.assemble.control.jaxrs.document.DocumentAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.document.DocumentCipherAction;
@@ -46,7 +47,7 @@ import java.util.Set;
 public class ActionApplication extends AbstractActionApplication {
 
 	public Set<Class<?>> getClasses() {
-		
+
 		this.classes.add(TemplateFormAction.class);
 		this.classes.add(AppInfoAction.class);
 		this.classes.add(AppInfoConfigAction.class);
@@ -77,7 +78,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(SearchFilterAction.class);
 		this.classes.add(InputAction.class);
 		this.classes.add(OutputAction.class);
-		
+
 		this.classes.add(AppInfoAnonymousAction.class);
 		this.classes.add(AppDictAnonymousAction.class);
 		this.classes.add(CategoryInfoAnonymousAction.class);
@@ -87,7 +88,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(ScriptAnonymousAction.class);
 		this.classes.add(DocumentCommentInfoAction.class);
 		this.classes.add(DocumentCommendAction.class);
-
+		this.classes.add(DesignerAction.class);
 		return this.classes;
 	}
 
