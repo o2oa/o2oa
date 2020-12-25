@@ -1,0 +1,10 @@
+[
+	{
+		"url" : "jdbc:kingbase://127.0.0.1:54321/X",
+		"username" : "system",
+		"password" :"krms",
+		"includes": [],
+		"excludes": [],
+		"enable" : true
+	}
+]
