@@ -2737,7 +2737,6 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             if (!this.fx.isRunning()){
                 var display = this.children.getStyle("display");
                 if (display === "none"){
-                    this.selector.fireEvent("expand", [this] );
                     this.children.setStyles({
                         "display": "block",
                         "height": "0px"
@@ -2745,8 +2744,8 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                     this.fx.start("height", "0px", ""+this.childrenHeight+"px");
                     this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
                     this.isExpand = true;
+                    this.selector.fireEvent("expand", [this] );
                 }else{
-                    this.selector.fireEvent("collapse", [this] );
                     if (!this.childrenHeight) this.childrenHeight = this.children.getStyle("height").toFloat();
                     this.fx.start("height", ""+this.childrenHeight+"px", "0px").chain(function(){
                         this.children.setStyles({
@@ -2756,6 +2755,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                     }.bind(this));
                     this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
                     this.isExpand = false;
+                    this.selector.fireEvent("collapse", [this] );
                 }
             }
             if(callback)callback()
