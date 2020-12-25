@@ -1,10 +1,12 @@
 package com.x.attendance.assemble.control.jaxrs.selfholiday;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.attendance.assemble.common.date.DateOperation;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,7 +28,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class ActionListNextWithFilter extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger( ActionListNextWithFilter.class );
-	
+	protected DateOperation dateOperation = new DateOperation();
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id, Integer count, JsonElement jsonElement ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = new ArrayList<>();
@@ -36,11 +38,29 @@ public class ActionListNextWithFilter extends BaseAction {
 		List<String> topUnitNames = new ArrayList<String>();
 		List<String> unitNames = new ArrayList<String>();
 		List<String> unitNameList = null;
-		WrapInFilter wrapIn = null;
+		WrapIn wrapIn = null;
 		Boolean check = true;
+		Date startDate = null;
+		Date endDate = null;
 		
 		try {
-			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
+			wrapIn = this.convertToWrapIn( jsonElement, WrapIn.class );
+			startDate = dateOperation.getDateFromString( wrapIn.getStartdateString() + " 00:00:00");
+			endDate = dateOperation.getDateFromString( wrapIn.getEnddateString() + " 23:59:59");
+
+			if( endDate == null ){
+				endDate = dateOperation.getLastDateInMonth( new Date() );
+			}
+
+			if( startDate == null ){
+				startDate = dateOperation.getFirstDateInMonth( new Date() );
+			}
+
+			if( startDate.after( endDate ) ){
+				startDate = dateOperation.getFirstDateInMonth( new Date() );
+			}
+			wrapIn.setStartdate(startDate);
+			wrapIn.setEnddate(endDate);
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new ExceptionWrapInConvert( e, jsonElement );
@@ -116,7 +136,44 @@ public class ActionListNextWithFilter extends BaseAction {
 		result.setData(wraps);
 		return result;
 	}
+	public static class WrapIn extends WrapInFilter{
+		String startdateString;
+		String enddateString;
+		Date startdate = null;
+		Date enddate = null;
 
+		public String getStartdateString() {
+			return startdateString;
+		}
+
+		public void setStartdateString(String startdateString) {
+			this.startdateString = startdateString;
+		}
+
+		public String getEnddateString() {
+			return enddateString;
+		}
+
+		public void setEnddateString(String enddateString) {
+			this.enddateString = enddateString;
+		}
+
+		public Date getStartdate() {
+			return startdate;
+		}
+
+		public void setStartdate(Date startdate) {
+			this.startdate = startdate;
+		}
+
+		public Date getEnddate() {
+			return enddate;
+		}
+
+		public void setEnddate(Date enddate) {
+			this.enddate = enddate;
+		}
+	}
 	public static class Wo extends AttendanceSelfHoliday  {
 		
 		private static final long serialVersionUID = -5076990764713538973L;
