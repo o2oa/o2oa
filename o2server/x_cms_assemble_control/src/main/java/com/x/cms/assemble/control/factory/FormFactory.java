@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * 分类表单模板信息管理表基础功能服务类
- * 
+ *
  * @author O2LEE
  */
 public class FormFactory extends AbstractFactory {
@@ -37,7 +37,7 @@ public class FormFactory extends AbstractFactory {
 	public Form get( String id ) throws Exception {
 		return this.entityManagerContainer().find( id, Form.class, ExceptionWhen.none );
 	}
-	
+
 	/**
 	 * @return List：String
 	 * @throws Exception
@@ -51,9 +51,9 @@ public class FormFactory extends AbstractFactory {
 		cq.select(root.get(Form_.id));
 		return em.createQuery(cq).getResultList();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param ids 需要查询的ID列表
 	 * @return List：Form
 	 * @throws Exception
@@ -70,15 +70,15 @@ public class FormFactory extends AbstractFactory {
 //		Predicate p = root.get(Form_.id).in(ids);
 //		return em.createQuery(cq.where(p)).getResultList();
 //	}
-	
+
 	/**
 	 * 列示指定应用的所有表单模板信息ID列表
-	 * @param doucmentId 指定的文档ID
+	 * @param appId 指定的文档ID
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	//@MethodDescribe("列示指定分类的所有表单模板信息ID列表")
-	public List<String> listByAppId( String appId ) throws Exception {		
+	public List<String> listByAppId( String appId ) throws Exception {
 		if( StringUtils.isEmpty(appId) ){
 			throw new Exception("内容管理listByAppId方法不接受appId为空的查询操作！");
 		}
@@ -90,8 +90,21 @@ public class FormFactory extends AbstractFactory {
 		Predicate p = cb.equal(root.get( Form_.appId ), appId);
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
-	public List<Form> listFormByAppId( String appId ) throws Exception {		
+
+	public List<String> listByAppIds(List<String> appIds) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Form.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Form> root = cq.from(Form.class);
+		Predicate p = cb.conjunction();
+		if(ListTools.isNotEmpty(appIds)) {
+			p = cb.isMember(root.get(Form_.appId), cb.literal(appIds));
+		}
+		cq.select(root.get(Form_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<Form> listFormByAppId( String appId ) throws Exception {
 		if( StringUtils.isEmpty(appId) ){
 			throw new Exception("内容管理listByAppId方法不接受appId为空的查询操作！");
 		}
@@ -123,9 +136,9 @@ public class FormFactory extends AbstractFactory {
 		Root<Form> root = cq.from( Form.class );
 		Predicate appPre = cb.equal( root.get( Form_.appId ), appId );
 		Predicate p = CriteriaBuilderTools.predicate_or( cb, cb.equal( root.get( Form_.id ), formFlag ), cb.equal( root.get( Form_.name ), formFlag ) );
-//		p = CriteriaBuilderTools.predicate_or( cb, cb.equal( root.get( Form_.alias ), formFlag ), p );				
+//		p = CriteriaBuilderTools.predicate_or( cb, cb.equal( root.get( Form_.alias ), formFlag ), p );
 		p = CriteriaBuilderTools.predicate_and( cb, appPre, p );
-		List<Form> list = em.createQuery(cq.where(p)).getResultList();		
+		List<Form> list = em.createQuery(cq.where(p)).getResultList();
 		return ListTools.isEmpty( list ) ? null : list.get( 0 );
 	}
 }
