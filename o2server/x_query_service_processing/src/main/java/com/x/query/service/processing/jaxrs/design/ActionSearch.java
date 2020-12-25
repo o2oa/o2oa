@@ -5,7 +5,6 @@ import com.x.base.core.project.Applications;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WiDesigner;
@@ -14,7 +13,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
-import com.x.base.core.project.tools.StringTools;
 import com.x.base.core.project.x_cms_assemble_control;
 import com.x.base.core.project.x_portal_assemble_designer;
 import com.x.base.core.project.x_processplatform_assemble_designer;
@@ -36,7 +34,7 @@ class ActionSearch extends BaseAction {
 		if(StringUtils.isBlank(wi.getKeyword())){
 			throw new ExceptionFieldEmpty("keyword");
 		}
-		logger.print("{}搜索全局设计：{}，关键字：{}", effectivePerson.getDistinguishedName(), wi.getModuleList(), wi.getKeyword());
+		logger.print("{}搜索全局设计：{}", effectivePerson.getDistinguishedName(), wi);
 		result.setData(search(wi));
 		return result;
 	}
@@ -67,17 +65,17 @@ class ActionSearch extends BaseAction {
 		CompletableFuture<List<WrapDesigner>> cmsCf = searchAsync(wi, moduleMap, ModuleType.cms.toString(), x_cms_assemble_control.class, executor);
 		Wo wo = new Wo();
 		try {
-			wo.setProcessPlatformDesigners(processPlatformCf.get(200, TimeUnit.SECONDS));
+			wo.setProcessPlatformList(processPlatformCf.get(200, TimeUnit.SECONDS));
 		} catch (Exception e) {
 			logger.warn("搜索流程平台设计异常：{}",e.getMessage());
 		}
 		try {
-			wo.setPortalDesigners(portalCf.get(200, TimeUnit.SECONDS));
+			wo.setPortalList(portalCf.get(200, TimeUnit.SECONDS));
 		} catch (Exception e) {
 			logger.warn("搜索门户平台设计异常：{}",e.getMessage());
 		}
 		try {
-			wo.setCmsDesigners(cmsCf.get(200, TimeUnit.SECONDS));
+			wo.setCmsList(cmsCf.get(200, TimeUnit.SECONDS));
 		} catch (Exception e) {
 			logger.warn("搜索内容管理平台设计异常：{}",e.getMessage());
 		}
@@ -94,7 +92,7 @@ class ActionSearch extends BaseAction {
 					wiDesigner.setAppIdList(moduleMap.get(moduleType));
 					List<WrapDesigner> designerList = ThisApplication.context().applications().postQuery(applicationClass,
 							Applications.joinQueryUri("designer", "search"), wiDesigner).getDataAsList(WrapDesigner.class);
-					logger.print("设计搜索关联{}的匹配设计个数：{}", moduleType, designerList.size());
+					logger.info("设计搜索关联{}的匹配设计个数：{}", moduleType, designerList.size());
 					getSearchRes(wi, designerList);
 					swList = designerList;
 				} catch (Exception e) {
@@ -219,34 +217,34 @@ class ActionSearch extends BaseAction {
 
 		private static final long serialVersionUID = 8169092162410529422L;
 
-		private List<WrapDesigner> processPlatformDesigners;
+		private List<WrapDesigner> processPlatformList;
 
-		private List<WrapDesigner> cmsDesigners;
+		private List<WrapDesigner> cmsList;
 
-		private List<WrapDesigner> portalDesigners;
+		private List<WrapDesigner> portalList;
 
-		public List<WrapDesigner> getProcessPlatformDesigners() {
-			return processPlatformDesigners;
+		public List<WrapDesigner> getProcessPlatformList() {
+			return processPlatformList;
 		}
 
-		public void setProcessPlatformDesigners(List<WrapDesigner> processPlatformDesigners) {
-			this.processPlatformDesigners = processPlatformDesigners;
+		public void setProcessPlatformList(List<WrapDesigner> processPlatformList) {
+			this.processPlatformList = processPlatformList;
 		}
 
-		public List<WrapDesigner> getCmsDesigners() {
-			return cmsDesigners;
+		public List<WrapDesigner> getCmsList() {
+			return cmsList;
 		}
 
-		public void setCmsDesigners(List<WrapDesigner> cmsDesigners) {
-			this.cmsDesigners = cmsDesigners;
+		public void setCmsList(List<WrapDesigner> cmsList) {
+			this.cmsList = cmsList;
 		}
 
-		public List<WrapDesigner> getPortalDesigners() {
-			return portalDesigners;
+		public List<WrapDesigner> getPortalList() {
+			return portalList;
 		}
 
-		public void setPortalDesigners(List<WrapDesigner> portalDesigners) {
-			this.portalDesigners = portalDesigners;
+		public void setPortalList(List<WrapDesigner> portalList) {
+			this.portalList = portalList;
 		}
 	}
 
