@@ -27,6 +27,7 @@
 }
 .listNode {
     background-color: #ffffff;
+    overflow: auto;
 }
 .previewNode {
     background-color: #f0f0f0;
@@ -173,9 +174,11 @@
 
 .previewNode_content {
     background-color: #ffffff;
+    overflow: auto;
 }
 .previewNode_content_lr {
     background-color: #ffffff;
+    overflow: auto;
 }
 .previewNode_title_icon {
     height: 20px;
@@ -207,4 +210,15 @@
     line-height: 20px;
     margin-left: 24px;
     margin-right: 24px;
+}
+.inforNode {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+.inforNode div{
+    display: table-cell;
+    vertical-align: middle;
+    color: #bbbbbb;
+    text-align: center;
 }
