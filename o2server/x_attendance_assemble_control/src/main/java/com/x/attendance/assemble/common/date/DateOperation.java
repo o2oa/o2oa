@@ -711,8 +711,9 @@ public class DateOperation {
 	 */
 	public static Date getLastDayOfMonth(Date date) {  
         Calendar calendar = convert(date);  
-        calendar.set(Calendar.DATE, calendar.getMaximum(Calendar.DATE));  
-        return calendar.getTime();  
+        //calendar.set(Calendar.DATE, calendar.getMaximum(Calendar.DATE));
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		return calendar.getTime();
     }  
 	/** 
      * 将日期转换为日历 

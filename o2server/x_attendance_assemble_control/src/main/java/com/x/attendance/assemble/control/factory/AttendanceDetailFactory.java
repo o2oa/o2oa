@@ -965,7 +965,125 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		for (int i = 0; i < vs.size(); i++) {
 			query.setParameter(i + 1, vs.get(i));
 		}
+		System.out.println("query=" +query.toString());
 		return query.setMaxResults(count).getResultList();
+	}
+
+	/**
+	 * 根据条件查询考勤信息ids(排除不参加考勤的人员)
+	 * @param wrapIn
+	 * @return
+	 * @throws Exception
+	 */
+	//根据人员和打卡日期查找打卡记录
+	public List<AttendanceDetail> listIdsWithFilterUn( WrapInFilter wrapIn ,List<String> unUnitNameList,List<String> personNameList )  throws Exception {
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
+		String order = wrapIn.getOrder();//排序方式
+		List<Object> vs = new ArrayList<>();
+		StringBuffer sql_stringBuffer = new StringBuffer();
+
+		if( order == null || order.isEmpty() ){
+			order = "DESC";
+		}
+
+		Integer index = 1;
+		sql_stringBuffer.append( "SELECT o FROM "+AttendanceDetail.class.getCanonicalName()+" o where 1=1" );
+
+		if ((null != wrapIn.getQ_empName()) && (!wrapIn.getQ_empName().isEmpty())) {
+			sql_stringBuffer.append(" and o.empName = ?" + (index));
+			vs.add( wrapIn.getQ_empName() );
+			index++;
+		}
+		if (null != wrapIn.getUnitNames() && wrapIn.getUnitNames().size()>0) {
+			sql_stringBuffer.append(" and o.unitName in ( ?" + (index) + ")");
+			vs.add( wrapIn.getUnitNames() );
+			index++;
+		}
+		if (null != wrapIn.getTopUnitNames() && wrapIn.getTopUnitNames().size() > 0 ) {
+			sql_stringBuffer.append(" and o.topUnitName in ( ?" + (index) + ")");
+			vs.add( wrapIn.getTopUnitNames() );
+			index++;
+		}
+		if ((null != wrapIn.getCycleYear() ) && (!wrapIn.getCycleYear().isEmpty())) {
+			sql_stringBuffer.append(" and o.cycleYear = ?" + (index));
+			vs.add( wrapIn.getCycleYear() );
+			index++;
+		}
+		if ((null != wrapIn.getCycleMonth()) && (!wrapIn.getCycleMonth().isEmpty())) {
+			sql_stringBuffer.append(" and o.cycleMonth = ?" + (index));
+			vs.add( wrapIn.getCycleMonth() );
+			index++;
+		}
+		if ((null != wrapIn.getQ_year() ) && (!wrapIn.getQ_year().isEmpty())) {
+			sql_stringBuffer.append(" and o.yearString = ?" + (index));
+			vs.add( wrapIn.getQ_year() );
+			index++;
+		}
+		if ((null != wrapIn.getQ_month()) && (!wrapIn.getQ_month().isEmpty())) {
+			sql_stringBuffer.append(" and o.monthString = ?" + (index));
+			vs.add( wrapIn.getQ_month() );
+			index++;
+		}
+		if ((null != wrapIn.getQ_date()) && (!wrapIn.getQ_date().isEmpty())) {
+			sql_stringBuffer.append(" and o.recordDateString = ?" + (index));
+			vs.add( wrapIn.getQ_date() );
+			index++;
+		}
+
+		if ( wrapIn.getRecordStatus() != 999 ) {
+			sql_stringBuffer.append(" and o.recordStatus = ?" + (index));
+			vs.add( wrapIn.getRecordStatus() );
+			index++;
+		}
+
+		if (wrapIn.getIsAbsent() != null ) {
+			sql_stringBuffer.append(" and o.isAbsent = ?" + (index));
+			vs.add( wrapIn.getIsAbsent() );
+			index++;
+		}
+
+		if (wrapIn.getIsLate() != null ) {
+			sql_stringBuffer.append(" and o.isLate = ?" + (index));
+			vs.add( wrapIn.getIsLate() );
+			index++;
+		}
+
+		if (wrapIn.getIsLackOfTime() != null ) {
+			sql_stringBuffer.append(" and o.isLackOfTime = ?" + (index));
+			vs.add( wrapIn.getIsLackOfTime() );
+			index++;
+		}
+
+		if (wrapIn.getIsLeaveEarlier() != null ) {
+			sql_stringBuffer.append(" and o.isLeaveEarlier = ?" + (index));
+			vs.add( wrapIn.getIsLeaveEarlier() );
+			index++;
+		}
+
+		if (ListTools.isNotEmpty(unUnitNameList)) {
+			sql_stringBuffer.append(" and o.unitName not in ( ?" + (index) + ")");
+			vs.add( unUnitNameList );
+			index++;
+		}
+		if (ListTools.isNotEmpty(personNameList)) {
+			sql_stringBuffer.append(" and o.empName not in ( ?" + (index) + ")");
+			vs.add( personNameList );
+			index++;
+		}
+
+		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
+			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
+		}else{
+			sql_stringBuffer.append(" order by o.sequence " + order );
+		}
+		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceDetail.class );
+		for (int i = 0; i < vs.size(); i++) {
+			query.setParameter(i + 1, vs.get(i));
+		}
+		System.out.println("query=" +query.toString());
+		return query.getResultList();
+		/*cq.select( root.get(AttendanceDetail_.id ));
+		return em.createQuery(cq.where(p)).getResultList();*/
 	}
 	
 	/**

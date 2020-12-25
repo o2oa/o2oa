@@ -169,8 +169,8 @@ class AttendanceDetailAnalyseSignProxy2 {
 				if( middleDutyTime == null){
 					if ( isSelfHoliday_Afternoon || isSelfHoliday_Afternoon || isNotWorkDay ) {
 						logger.debug(debugger, "请假不计考勤，不算出勤");
-						detail.setIsAbsent(false);
-						detail.setAbsence(0.0);
+						/*detail.setIsAbsent(false);
+						detail.setAbsence(0.0);*/
 					} else {
 						logger.debug(debugger, "没请假，中午缺卡");
 						if( StringUtils.equals( "上午", detail.getAbnormalDutyDayTime()) ){
@@ -185,8 +185,8 @@ class AttendanceDetailAnalyseSignProxy2 {
 					if(middleDutyTime.before( morningEndTime )){
 						if(isSelfHoliday_Morning || isSelfHoliday_Afternoon || isNotWorkDay){
 							logger.debug( debugger, "请假、休息天不计考勤，不算出勤，不算早退" );
-							detail.setLeaveEarlierTimeDuration( 0L );
-							detail.setIsLeaveEarlier( false );
+							/*detail.setLeaveEarlierTimeDuration( 0L );
+							detail.setIsLeaveEarlier( false );*/
 						}else{
 							minutes = dateOperation.getMinutes( middleDutyTime, morningEndTime );//计算早退时长
 							detail.setLeaveEarlierTimeDuration(minutes); //早退时长
@@ -197,8 +197,8 @@ class AttendanceDetailAnalyseSignProxy2 {
 					if(middleDutyTime.after( afternoonStartTime )){
 						if( isSelfHoliday_Morning || isSelfHoliday_Afternoon || isNotWorkDay ){
 							logger.debug( debugger, "请过假了不算迟到" );
-							detail.setLateTimeDuration( 0L ); //请假了不算迟到
-							detail.setIsLate( false );//请假了不算迟到
+							/*detail.setLateTimeDuration( 0L ); //请假了不算迟到
+							detail.setIsLate( false );//请假了不算迟到*/
 						}else{
 							//迟到计算从上班时间开始计算，不是迟到起算时间
 							minutes = dateOperation.getMinutes( afternoonStartTime, middleDutyTime );
