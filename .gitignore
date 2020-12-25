@@ -30,11 +30,12 @@
 /o2server/configSample/person.json
 /o2server/configSample/portal.json
 /o2server/configSample/processPlatform.json
-/o2server/configSample/pushConfig.json
+/o2server/configSample/jpushConfig.json
 /o2server/configSample/qiyeweixin.json
 /o2server/configSample/query.json
 /o2server/configSample/token.json
 /o2server/configSample/vfs.json
+/o2server/configSample/weLink.json
 /o2server/configSample/workTime.json
 /o2server/configSample/zhengwuDingding.json
 /o2server/*/src/main/webapp/describe/
