@@ -1050,19 +1050,6 @@ public class Config {
 		return instance().logLevel;
 	}
 
-	private ClientInit clientInit;
-
-	public static synchronized ClientInit clientInit() throws Exception {
-		if (null == instance().clientInit) {
-			ClientInit obj = BaseTools.readConfigObject(PATH_CONFIG_CLIENTINIT, ClientInit.class);
-			if (null == obj) {
-				obj = ClientInit.defaultInstance();
-			}
-			instance().clientInit = obj;
-		}
-		return instance().clientInit;
-	}
-
 	private byte[] bindLogo;
 
 	public static synchronized byte[] bindLogo() throws Exception {
