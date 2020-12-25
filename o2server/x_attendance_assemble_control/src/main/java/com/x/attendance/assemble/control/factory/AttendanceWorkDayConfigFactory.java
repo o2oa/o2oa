@@ -13,6 +13,7 @@ import javax.persistence.criteria.Root;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.service.AttendanceSettingServiceAdv;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
 import com.x.attendance.entity.AttendanceWorkDayConfig_;
 import com.x.base.core.project.exception.ExceptionWhen;
@@ -23,7 +24,8 @@ import com.x.base.core.project.exception.ExceptionWhen;
 public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 
 	private DateOperation dateOperation = new DateOperation();
-	
+	private AttendanceSettingServiceAdv attendanceSettingServiceAdv = new AttendanceSettingServiceAdv();
+
 	public AttendanceWorkDayConfigFactory(Business business) throws Exception {
 		super(business);
 	}
@@ -32,8 +34,8 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 	public AttendanceWorkDayConfig get( String id ) throws Exception {
 		return this.entityManagerContainer().find(id, AttendanceWorkDayConfig.class, ExceptionWhen.none);
 	}
-	
-//	@MethodDescribe("列示全部的AttendanceWorkDayConfig信息列表")
+
+	//	@MethodDescribe("列示全部的AttendanceWorkDayConfig信息列表")
 	@SuppressWarnings("unused")
 	public List<AttendanceWorkDayConfig> listAll() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceWorkDayConfig.class);
@@ -42,7 +44,7 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 		Root<AttendanceWorkDayConfig> root = cq.from( AttendanceWorkDayConfig.class);
 		return em.createQuery(cq).getResultList();
 	}
-	
+
 	//@MethodDescribe("列示指定Id的AttendanceWorkDayConfig信息列表")
 	public List<AttendanceWorkDayConfig> list(List<String> ids) throws Exception {
 		if( ids == null || ids.size() == 0 ){
@@ -55,7 +57,7 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 		Predicate p = root.get(AttendanceWorkDayConfig_.id).in(ids);
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
+
 	//@MethodDescribe("根据年份月份列示全部的AttendanceWorkDayConfig信息列表")
 	public List<String> listByYearAndMonth( String year, String month ) throws Exception {
 		if( year == null ){
@@ -64,20 +66,20 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 		if( "0".equals(month) || "00".equals(month) || "(0)".equals(month)){
 			month = null;
 		}
-		
+
 		EntityManager em = this.entityManagerContainer().get(AttendanceWorkDayConfig.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceWorkDayConfig> root = cq.from( AttendanceWorkDayConfig.class);
 		cq.select(root.get(AttendanceWorkDayConfig_.id));
-		
+
 		Predicate p = cb.equal( root.get(AttendanceWorkDayConfig_.configYear), year);
 		if( month != null ){
 			p = cb.and( p, cb.equal( root.get(AttendanceWorkDayConfig_.configMonth), month));
 		}
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
+
 	//@MethodDescribe("根据年份和节假日名称列示全部的AttendanceWorkDayConfig信息列表")
 	public List<String> listByYearAndName( String year, String configName ) throws Exception {
 		if( year == null ){
@@ -88,14 +90,14 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceWorkDayConfig> root = cq.from( AttendanceWorkDayConfig.class);
 		cq.select(root.get(AttendanceWorkDayConfig_.id));
-		
+
 		Predicate p = cb.equal( root.get(AttendanceWorkDayConfig_.configYear), year);
 		if( configName != null ){
 			p = cb.and( p, cb.equal( root.get(AttendanceWorkDayConfig_.configName), configName));
 		}
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
+
 	//@MethodDescribe("根据节假日名称列示全部的AttendanceWorkDayConfig信息列表")
 	public List<String> listByName( String configName ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceWorkDayConfig.class);
@@ -103,9 +105,9 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceWorkDayConfig> root = cq.from( AttendanceWorkDayConfig.class);
 		cq.select(root.get(AttendanceWorkDayConfig_.id));
-		
+
 		Predicate p = cb.equal( root.get(AttendanceWorkDayConfig_.configName), configName);
-		
+
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
@@ -129,7 +131,8 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 			isHoliday = true;
 			dateString = s_year + "-" + _month + "-" + (i<10?"0"+i:i);
 			//判断当天是否周末
-			if( !dateOperation.isWeekend( dateOperation.getDateFromString( dateString )) ){
+			//if( !dateOperation.isWeekend( dateOperation.getDateFromString( dateString )) ){
+			if( !attendanceSettingServiceAdv.isWeekend( dateOperation.getDateFromString( dateString )) ){
 				//如果不是周末
 				if( workDayConfigList != null && workDayConfigList.size() > 0 ){
 					//遍历所有的节假日配置进行判断，是否法定节假日
@@ -161,7 +164,7 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 		}
 		return workDaysCountForMonth;
 	}
-	
+
 	//@MethodDescribe("根据节假日配置计算一个周期内的应出勤天数")
 	public Integer getWorkDaysCountForMonth( Date startDate, Date endDate, List<AttendanceWorkDayConfig> workDayConfigList ) throws Exception {
 		/**
@@ -181,7 +184,7 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 			workDaysCountForMonth = dateStringList.size();
 			for( String dateString : dateStringList){
 				//判断当天是否周末
-				if( !dateOperation.isWeekend( dateOperation.getDateFromString( dateString )) ){
+				if(!attendanceSettingServiceAdv.isWeekend( dateOperation.getDateFromString( dateString ))  ){
 					//如果不是周末
 					if( workDayConfigList != null && workDayConfigList.size() > 0 ){
 						//遍历所有的节假日配置进行判断，是否法定节假日
