@@ -1315,10 +1315,18 @@ if (!window.Promise){
         r.send();
     };
 
-    var _cacheUrls = [
+    var _cacheUrls = (Browser.name == "ie") ? [
         /jaxrs\/form\/workorworkcompleted\/.+/ig,
         /jaxrs\/form\/.+/ig,
-        //    /jaxrs\/script/ig,
+        /jaxrs\/script\/.+\/app\/.+\/imported/ig,
+        /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
+        /jaxrs\/script\/.+\/application\/.+\/imported/ig,
+        /jaxrs\/page\/.+\/portal\/.+/ig,
+        /jaxrs\/document\/.+/ig,
+        /jaxrs\/custom\/.+/ig
+    ]:[
+        /jaxrs\/form\/workorworkcompleted\/.+/ig,
+        /jaxrs\/form\/.+/ig,
         /jaxrs\/script\/.+\/app\/.+\/imported/ig,
         /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
         /jaxrs\/script\/.+\/application\/.+\/imported/ig,
@@ -1328,15 +1336,6 @@ if (!window.Promise){
         /jaxrs\/custom\/.+/ig,
         /jaxrs\/definition\/idea.+/ig,
         /jaxrs\/distribute\/assemble\/source\/.+/ig,
-
-        ///jaxrs\/form\/workorworkcompleted\/.+/ig,
-        //    /jaxrs\/script/ig,
-        // /jaxrs\/script\/.+\/app\/.+\/imported/ig,
-        // /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
-        // /jaxrs\/script\/.+\/application\/.+\/imported/ig,
-        // /jaxrs\/page\/.+\/portal\/.+/ig
-        // /jaxrs\/authentication/ig
-        // /jaxrs\/statement\/.*\/execute\/page\/.*\/size\/.*/ig
     ];
     // _restful_bak = function(method, address, data, callback, async, withCredentials, cache){
     //     var loadAsync = (async !== false);
