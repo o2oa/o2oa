@@ -54,27 +54,33 @@ MWF.xApplication.IMV2.Main = new Class({
 		}.bind(this));
 	},
 	startListening: function () {
-		this.messageNumber = layout.desktop.message.items.length;
-		//查询ws消息 如果增加
-		if (this.listener) {
-			clearInterval(this.listener);
-		}
-		this.listener = setInterval(function () {
-			var newNumber = layout.desktop.message.items.length;
-			//判断是否有新的ws消息
-			if (newNumber > this.messageNumber) {
-				//查询会话数据
-				this._checkConversationMessage();
-				//查询聊天数据
-				this._checkNewMessage();
-				this.messageNumber = newNumber;
+		if (layout.desktop && layout.desktop.message) {
+			this.messageNumber = layout.desktop.message.items.length;
+			//查询ws消息 如果增加
+			if (this.listener) {
+				clearInterval(this.listener);
 			}
-		}.bind(this), 1000);
+			this.listener = setInterval(function () {
+				var newNumber = layout.desktop.message.items.length;
+				//判断是否有新的ws消息
+				if (newNumber > this.messageNumber) {
+					this.reciveNewMessage();
+					this.messageNumber = newNumber;
+				}
+			}.bind(this), 1000);
+		}
 	},
 	closeListening: function () {
 		if (this.listener) {
 			clearInterval(this.listener);
 		}
+	},
+	// 接收新的消息 会话列表更新 或者 聊天窗口更新
+	reciveNewMessage: function() {
+		//查询会话数据
+		this._checkConversationMessage();
+		//查询聊天数据
+		this._checkNewMessage();
 	},
 	//加载会话列表
 	loadConversationList: function (list) {
@@ -180,6 +186,49 @@ MWF.xApplication.IMV2.Main = new Class({
 		this.hideFun = this.hideEmojiBox.bind(this);
 		document.body.addEvent("mousedown", this.hideFun);
 	},
+	// 点击发送文件消息
+	showChooseFile: function() {
+		if (!this.uploadFileAreaNode){
+			this.createUploadFileNode();
+		}
+		this.fileUploadNode.click();
+	},
+	//创建文件选择框
+	createUploadFileNode: function(){
+		this.uploadFileAreaNode = new Element("div");
+		var html = "<input name=\"file\" type=\"file\" multiple/>";
+		this.uploadFileAreaNode.set("html", html);
+		this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+		this.fileUploadNode.addEvent("change", function(){
+				var files = this.fileUploadNode.files;
+				if (files.length) {
+						var file = files.item(0);
+						var formData = new FormData();
+						formData.append('file', file);
+						formData.append('fileName', file.name);
+						var fileExt = file.name.substring(file.name.lastIndexOf("."));
+						// 图片消息
+						var type = "file"
+						if (fileExt.toLowerCase() == ".bmp" || fileExt.toLowerCase() == ".jpeg" 
+								|| fileExt.toLowerCase() == ".png" || fileExt.toLowerCase() == ".jpg") {
+								type = "image"
+						}else { // 文件消息
+								type = "file"
+						}
+						//上传文件
+						o2.Actions.load("x_message_assemble_communicate").ImAction.uploadFile(this.conversationId, type, formData, "{}", function (json) {
+							if (json.data) {
+								var fileId = json.data.id
+								var fileExtension = json.data.fileExtension
+								var fileName = json.data.fileName
+								this._newImageOrFileMsgAndSend(type, fileId, fileName, fileExtension)
+							}
+						}.bind(this), function (error) {
+							console.log(error);
+						}.bind(this))
+				}
+		}.bind(this));
+	},
 	hideEmojiBox: function () {
 		//关闭emojiBoxNode
 		this.emojiBoxNode.setStyle("display", "none");
@@ -283,6 +332,38 @@ MWF.xApplication.IMV2.Main = new Class({
 				item.removeCheckClass();
 			}
 		}
+	},
+	//创建图片或文件消息
+	_newImageOrFileMsgAndSend: function(type, fileId, fileName, fileExt) {
+		var distinguishedName = layout.session.user.distinguishedName;
+		var time = this._currentTime();
+		var body = {
+			"body": "[文件]", 
+			"type": type, 
+			"fileId": fileId, 
+			"fileExtension": fileExt, 
+			"fileName": fileName
+		};
+		var bodyJson = JSON.stringify(body);
+		var uuid = (new MWF.widget.UUID).toString();
+		var message = {
+			"id": uuid,
+			"conversationId": this.conversationId,
+			"body": bodyJson,
+			"createPerson": distinguishedName,
+			"createTime": time,
+			"sendStatus": 1
+		};
+		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(message,
+			function (json) {
+				console.log("消息发送成功！");
+			}.bind(this),
+			function (error) {
+				console.log(error);
+			}.bind(this));
+		this.messageList.push(message);
+		this._buildSender(body, distinguishedName, false);
+		this._refreshConvMessage(message);
 	},
 	//创建文本消息 并发送
 	_newAndSendTextMsg: function (text, type) {
