@@ -1,17 +1,13 @@
 package com.x.attendance.assemble.control.jaxrs.attachment;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.google.gson.JsonElement;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -26,6 +22,8 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+
+import java.util.List;
 
 @Path("file")
 @JaxrsDescribe("附件操作")
@@ -105,6 +103,32 @@ public class FileImportExportAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionExportHolidayDetail().execute(request, effectivePerson, startdate, enddate, stream);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "导出符合过滤条件的打卡记录明细", action = ActionExportDetailWithFilter.class)
+	@GET
+	@Path("export/filter/{q_topUnitName}/{q_unitName}/{q_empName}/{cycleYear}/{cycleMonth}/{q_date}/{isAbsent}/{isLackOfTime}/{isLate}/stream/{stream}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void detailsExportStream(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									@JaxrsParameterDescribe("公司,为空时输入0") @PathParam("q_topUnitName") String q_topUnitName,
+									@JaxrsParameterDescribe("部门,为空时输入0") @PathParam("q_unitName") String q_unitName,
+									@JaxrsParameterDescribe("员工,为空时输入0") @PathParam("q_empName") String q_empName,
+									@JaxrsParameterDescribe("统计周期年份,为空时输入0") @PathParam("cycleYear") String cycleYear,
+									@JaxrsParameterDescribe("统计周期月份,为空时输入0") @PathParam("cycleMonth") String cycleMonth,
+									@JaxrsParameterDescribe("统计具体日期,为空时输入0") @PathParam("q_date") String q_date,
+									@JaxrsParameterDescribe("是否缺勤,为空时输入0") @PathParam("isAbsent") String isAbsent,
+									@JaxrsParameterDescribe("是否工时不足,为空时输入0") @PathParam("isLackOfTime") String isLackOfTime,
+									@JaxrsParameterDescribe("是否迟到,为空时输入0") @PathParam("isLate") String isLate,
+								   @JaxrsParameterDescribe("用.APPLICATION_OCTET_STREAM头输出") @PathParam("stream") Boolean stream) {
+		ActionResult<ActionExportDetailWithFilter.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExportDetailWithFilter().execute(request, effectivePerson, q_topUnitName, q_unitName,q_empName,cycleYear,cycleMonth,q_date,isAbsent,isLackOfTime,isLate, stream);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
