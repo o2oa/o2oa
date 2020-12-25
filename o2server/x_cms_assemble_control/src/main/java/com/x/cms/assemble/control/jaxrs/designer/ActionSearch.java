@@ -37,7 +37,7 @@ class ActionSearch extends BaseAction {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		logger.info("{}开始内容管理设计搜索，条件：{}", effectivePerson.getDistinguishedName(), wi);
+		logger.info("{}开始内容管理设计搜索，关键字：{}", effectivePerson.getDistinguishedName(), wi.getKeyword());
 		if(StringUtils.isBlank(wi.getKeyword())){
 			throw new ExceptionFieldEmpty("keyword");
 		}
