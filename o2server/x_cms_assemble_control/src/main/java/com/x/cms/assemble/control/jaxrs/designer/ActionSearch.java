@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.designer.jaxrs.designer;
+package com.x.cms.assemble.control.jaxrs.designer;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -16,11 +16,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
-import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Script;
-import com.x.processplatform.core.entity.element.wrap.WrapProcess;
+import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.element.Form;
+import com.x.cms.core.entity.element.Script;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -38,10 +37,11 @@ class ActionSearch extends BaseAction {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		logger.info("{}开始流程平台设计搜索，条件：{}", effectivePerson.getDistinguishedName(), wi);
+		logger.info("{}开始内容管理设计搜索，条件：{}", effectivePerson.getDistinguishedName(), wi);
 		if(StringUtils.isBlank(wi.getKeyword())){
 			throw new ExceptionFieldEmpty("keyword");
 		}
+
 		ActionResult<List<Wo>> result = new ActionResult<>();
 
 		List<Wo> resWos = new ArrayList<>();
@@ -73,17 +73,18 @@ class ActionSearch extends BaseAction {
 				if (ListTools.isEmpty(appIdList)) {
 					woScripts = emc.fetchAll(Script.class, WoScript.copier);
 				} else {
-					woScripts = emc.fetchIn(Script.class, WoScript.copier, Script.application_FIELDNAME, appIdList);
+					woScripts = emc.fetchIn(Script.class, WoScript.copier, Script.appId_FIELDNAME, appIdList);
 				}
+
 				for (WoScript woScript : woScripts) {
 					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoScript.copier.getCopyFields(), woScript, wi.getKeyword(),
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						Application app = emc.find(woScript.getApplication(), Application.class);
-						if (app != null) {
-							wo.setAppId(app.getId());
-							wo.setAppName(app.getName());
+						AppInfo appInfo = emc.find( wo.getAppId(), AppInfo.class );
+						if(appInfo != null){
+							wo.setAppId(appInfo.getId());
+							wo.setAppName(appInfo.getAppName());
 						}
 						wo.setDesignerId(woScript.getId());
 						wo.setDesignerName(woScript.getName());
@@ -107,7 +108,7 @@ class ActionSearch extends BaseAction {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				List<String> formIds = business.form().listWithApplications(appIdList);
+				List<String> formIds = business.getFormFactory().listByAppIds(appIdList);
 				for (List<String> partFormIds : ListTools.batch(formIds, 100)) {
 					List<WoForm> woForms = emc.fetchIn(Form.class, WoForm.copier, Form.id_FIELDNAME, partFormIds);
 					for (WoForm woForm : woForms) {
@@ -115,10 +116,10 @@ class ActionSearch extends BaseAction {
 								wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 						if (!map.isEmpty()) {
 							Wo wo = new Wo();
-							Application app = emc.find(woForm.getApplication(), Application.class);
-							if (app != null) {
-								wo.setAppId(app.getId());
-								wo.setAppName(app.getName());
+							AppInfo appInfo = emc.find( wo.getAppId(), AppInfo.class );
+							if(appInfo != null){
+								wo.setAppId(appInfo.getId());
+								wo.setAppName(appInfo.getAppName());
 							}
 							wo.setDesignerId(woForm.getId());
 							wo.setDesignerName(woForm.getName());
@@ -160,12 +161,6 @@ class ActionSearch extends BaseAction {
 
 		static WrapCopier<Form, WoForm> copier = WrapCopierFactory.wo(Form.class, WoForm.class,
 				JpaObject.singularAttributeField(Form.class, true, false),null);
-
-	}
-
-	public static class WoProcess extends WrapProcess {
-
-		private static final long serialVersionUID = -8507786999314667403L;
 
 	}
 
