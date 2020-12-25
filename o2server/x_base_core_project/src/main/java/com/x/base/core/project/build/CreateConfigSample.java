@@ -33,7 +33,6 @@ public class CreateConfigSample {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(AppStyle.class);
 		classes.add(CenterServer.class);
-		classes.add(ClientInit.class);
 		classes.add(Collect.class);
 		classes.add(Communicate.class);
 		classes.add(Components.class);
