@@ -2,6 +2,8 @@ MWF.xApplication.FindDesigner.LP = {
 	"title": "在设计中查找",
 
 	"filter": "在设计中查找",
+	"range": "查找范围",
+
 	"script": "脚本",
 	"form": "表单",
 	"process": "流程",
@@ -13,5 +15,7 @@ MWF.xApplication.FindDesigner.LP = {
 
 	"search_placeholder": "请输入搜索内容",
 	"dockToBottom": "固定到下方",
-	"dockToRight": "固定到右侧"
+	"dockToRight": "固定到右侧",
+	"nothingFind": "未找到任何结果\n请输入搜索关键字",
+	"nothingPreview": "选择查找结果列表，可在此处预览"
 };
