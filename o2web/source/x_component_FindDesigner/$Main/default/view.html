@@ -28,12 +28,21 @@
         </div>
     </div>
     <div class="rangeNode" data-o2-element="rangeNode">
-        <div class="rangeContentNode" data-o2-element="rangeContentNode">
-
+        <div class="filterNode_title">{{$.lp.range}}</div>
+        <div class="filterNode_content" data-o2-element="rangeContentNode">
+            <div class="rangeType">
+                <div class="rangeType_Item"><input checked type="checkbox" value="script" />{{$.lp.processPlatform}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="script" />{{$.lp.cms}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="script" />{{$.lp.portal}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="script" />{{$.lp.query}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="script" />{{$.lp.service}}</div>
+            </div>
         </div>
     </div>
     <div class="resultNode" data-o2-element="resultNode">
-        <div class="listNode_lr" data-o2-element="listNode"></div>
+        <div class="listNode_lr" data-o2-element="listNode">
+            <div class="inforNode"><div>{{$.lp.nothingFind}}</div></div>
+        </div>
         <div class="previewNode_lr" data-o2-element="previewNode">
             <div class="previewNode_separator_lr" data-o2-element="previewSeparatorNode"></div>
             <div class="previewNode_title_lr" data-o2-element="previewTitleNode">
@@ -41,7 +50,9 @@
                 <div class="previewNode_title_action_lr" data-o2-element="previewTitleActionNode" title="{{$.lp.dockToBottom}}" data-o2-events="click:changeLayout"></div>
                 <div class="previewNode_title_content"></div>
             </div>
-            <div class="previewNode_content_lr" data-o2-element="previewContentNode"></div>
+            <div class="previewNode_content_lr" data-o2-element="previewContentNode">
+                <div class="inforNode"><div>{{$.lp.nothingPreview}}</div></div>
+            </div>
         </div>
     </div>
 

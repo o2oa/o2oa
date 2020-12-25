@@ -12,7 +12,10 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		"height": "800",
 		"isResize": true,
 		"isMax": true,
-		"layoutType": "leftRight",
+		"layout": {
+			"type": "leftRight",
+			"percent": 0.4
+		},
 		"title": MWF.xApplication.FindDesigner.LP.title
 	},
 	onQueryLoad: function(){
@@ -25,10 +28,10 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			"matchRegExp": false,
 			"moduleList": []
 		}
-		this.heightPercent = {
-			"list": 0.4,
-			"preview": 0.6
-		}
+		debugger;
+		o2.UD.getDataJson("findDesignerLayout", function(json){
+			this.setOptions(json);
+		}.bind(this), false);
 	},
 	loadApplication: function(callback){
 		var url = this.path+this.options.style+"/view.html";
@@ -39,35 +42,24 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}.bind(this));
 	},
 	initLayout: function(){
-		if (this.options.layoutType=="leftRight"){
-			this.listNode.setStyles({
-				"height":"100%",
-				"width": "auto"
-			});
-			this.previewNode.setStyles({
-				"height": "100%",
-				"margin-left": ""
-			});
-			this.previewContentNode.setStyle("height", "auto");
-		}else {
-			this.listNode.setStyles({
-				"height":"auto",
-				"width": "auto"
-			});
-			this.previewNode.setStyles({
-				"height": "auto",
-				"margin-left": ""
-			});
-			this.previewContentNode.setStyle("height", "auto");
+		this.listNode.set("style", "");
+		this.previewNode.set("style", "");
+		if (this.resizeDrag) this.resizeDrag.detach();
+		if (this.sizeNodeFun) this.removeEvent("resize", this.sizeNodeFun);
+
+		if (this.options.layout.type=="leftRight"){
+			this.toLeftRight();
+		}else{
+			this.toTopBottom();
 		}
 	},
 	setSizeNode: function(){
 		this.initLayout();
-		this["sizeNode_"+this.options.layoutType]();
-		this["setResizeNode_"+this.options.layoutType]();
+		this["sizeNode_"+this.options.layout.type]();
+		this["setResizeNode_"+this.options.layout.type]();
 
 		this.sizeNodeFun = null;
-		this.sizeNodeFun = this["sizeNode_"+this.options.layoutType].bind(this);
+		this.sizeNodeFun = this["sizeNode_"+this.options.layout.type].bind(this);
 		this.addEvent("resize", this.sizeNodeFun);
 	},
 	sizeResultNode: function(){
@@ -82,9 +74,9 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	sizeNode_topBottom: function(){
 		var h = this.sizeResultNode();
 
-		var listHeight = h*this.heightPercent.list;
+		var listHeight = h*this.options.layout.percent;
 		this.listNode.setStyle("height", ""+listHeight+"px");
-		var previewHeight = h*this.heightPercent.preview;;
+		var previewHeight = h*(1-this.options.layout.percent);
 		this.previewNode.setStyle("height", ""+previewHeight+"px");
 
 		var previewSeparatorSize = this.previewSeparatorNode.getSize();
@@ -96,7 +88,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		var h = this.sizeResultNode();
 		var w = this.resultNode.getSize().x;
 
-		var listWidth = w*this.heightPercent.list;
+		var listWidth = w*this.options.layout.percent;
 		this.listNode.setStyle("width", ""+listWidth+"px");
 		this.previewNode.setStyle("margin-left", ""+listWidth+"px");
 
@@ -121,11 +113,13 @@ MWF.xApplication.FindDesigner.Main = new Class({
 					var height = initialSize.y-dy;
 
 					var size = this.resultNode.getSize();
-					this.heightPercent.list = height/size.y;
-					if (this.heightPercent.list<0.1) this.heightPercent.list = 0.1;
-					if (this.heightPercent.list>0.85) this.heightPercent.list = 0.85;
-					this.heightPercent.preview = 1-this.heightPercent.list;
+					this.options.layout.percent = height/size.y;
+					if (this.options.layout.percent<0.1) this.options.layout.percent = 0.1;
+					if (this.options.layout.percent>0.85) this.options.layout.percent = 0.85;
 					this.sizeNode_topBottom();
+				}.bind(this),
+				"onComplete": function(){
+					o2.UD.putData("findDesignerLayout", {"layout": this.options.layout});
 				}.bind(this)
 			});
 		}
@@ -145,11 +139,14 @@ MWF.xApplication.FindDesigner.Main = new Class({
 					var width = initialSize.x-dx;
 
 					var size = this.resultNode.getSize();
-					this.heightPercent.list = width/size.x;
-					if (this.heightPercent.list<0.1) this.heightPercent.list = 0.1;
-					if (this.heightPercent.list>0.85) this.heightPercent.list = 0.85;
-					this.heightPercent.preview = 1-this.heightPercent.list;
+					this.options.layout.percent = width/size.x;
+					if (this.options.layout.percent<0.1) this.options.layout.percent = 0.1;
+					if (this.options.layout.percent>0.85) this.options.layout.percent = 0.85;
+
 					this.sizeNode_leftRight();
+				}.bind(this),
+				"onComplete": function(){
+					o2.UD.putData("findDesignerLayout", {"layout": this.options.layout});
 				}.bind(this)
 			});
 		}
@@ -183,42 +180,44 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		this.matchRegExpNode.removeClass("matchRegExpNode_"+!this.filterOption.matchRegExp);
 		this.matchRegExpNode.addClass("matchRegExpNode_"+this.filterOption.matchRegExp);
 	},
+
+	layoutAddClass: function(flag){
+		flag = flag || "";
+		this.listNode.addClass("listNode"+flag);
+		this.previewNode.addClass("previewNode"+flag);
+		this.previewSeparatorNode.addClass("previewNode_separator"+flag);
+		this.previewTitleNode.addClass("previewNode_title"+flag);
+		this.previewTitleActionNode.addClass("previewNode_title_action"+flag);
+		this.previewContentNode.addClass("previewNode_content"+flag);
+	},
+
+	layoutRemoveClass: function(flag){
+		flag = flag || "";
+		this.listNode.removeClass("listNode"+flag);
+		this.previewNode.removeClass("previewNode"+flag);
+		this.previewSeparatorNode.removeClass("previewNode_separator"+flag);
+		this.previewTitleNode.removeClass("previewNode_title"+flag);
+		this.previewTitleActionNode.removeClass("previewNode_title_action"+flag);
+		this.previewContentNode.removeClass("previewNode_content"+flag);
+	},
+	toLeftRight: function(){
+		this.layoutAddClass("_lr");
+		this.layoutRemoveClass();
+		this.options.layout.type="leftRight";
+	},
+	toTopBottom: function(){
+		this.layoutAddClass();
+		this.layoutRemoveClass("_lr");
+		this.options.layout.type="topBottom";
+	},
 	changeLayout: function(){
-		if (this.options.layoutType=="leftRight"){
-			this.listNode.addClass("listNode");
-			this.previewNode.addClass("previewNode");
-			this.previewSeparatorNode.addClass("previewNode_separator");
-			this.previewTitleNode.addClass("previewNode_title");
-			this.previewTitleActionNode.addClass("previewNode_title_action");
-			this.previewContentNode.addClass("previewNode_content");
-
-			this.listNode.removeClass("listNode_lr");
-			this.previewNode.removeClass("previewNode_lr");
-			this.previewSeparatorNode.removeClass("previewNode_separator_lr");
-			this.previewTitleNode.removeClass("previewNode_title_lr");
-			this.previewTitleActionNode.removeClass("previewNode_title_action_lr");
-			this.previewContentNode.removeClass("previewNode_content_lr");
-
-			this.options.layoutType="topBottom";
+		if (this.options.layout.type=="leftRight"){
+			this.options.layout.type="topBottom";
 		}else{
-			this.listNode.removeClass("listNode");
-			this.previewNode.removeClass("previewNode");
-			this.previewSeparatorNode.removeClass("previewNode_separator");
-			this.previewTitleNode.removeClass("previewNode_title");
-			this.previewTitleActionNode.removeClass("previewNode_title_action");
-			this.previewContentNode.removeClass("previewNode_content");
-
-			this.listNode.addClass("listNode_lr");
-			this.previewNode.addClass("previewNode_lr");
-			this.previewSeparatorNode.addClass("previewNode_separator_lr");
-			this.previewTitleNode.addClass("previewNode_title_lr");
-			this.previewTitleActionNode.addClass("previewNode_title_action_lr");
-			this.previewContentNode.addClass("previewNode_content_lr");
-
-			this.options.layoutType="leftRight";
+			this.options.layout.type="leftRight";
 		}
-		this.resizeDrag.detach();
-		if (this.sizeNodeFun) this.removeEvent("resize", this.sizeNodeFun);
+		debugger;
 		this.setSizeNode();
+		o2.UD.putData("findDesignerLayout", {"layout": this.options.layout});
 	}
 });
