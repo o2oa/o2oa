@@ -1,5 +1,5 @@
 {
-  "enable": true,
+  "enable": false,
   "mq":"kafka",
   "kafka":{
 	  "bootstrap_servers": "localhost:9092",
