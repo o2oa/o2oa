@@ -3,6 +3,7 @@ package com.x.base.core.project.jaxrs;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +18,10 @@ public class WiDesigner extends GsonPropertyObject {
     private Boolean matchWholeWord;
     @FieldDescribe("是否正则表达式匹配.")
     private Boolean matchRegExp;
-    @FieldDescribe("模块的应用ID信息.")
-    private Map<String, List<String>> moduleApps = new HashMap<>();
+    @FieldDescribe("设计类型：script|form|page|widget|process")
+    private List<String> designerTypes = new ArrayList<>();
+    @FieldDescribe("应用ID列表.")
+    private List<String> appIdList = new ArrayList<>();
 
     public String getKeyword() {
         return keyword;
@@ -52,11 +55,19 @@ public class WiDesigner extends GsonPropertyObject {
         this.matchRegExp = matchRegExp;
     }
 
-    public Map<String, List<String>> getModuleApps() {
-        return moduleApps;
+    public List<String> getDesignerTypes() {
+        return designerTypes == null ? new ArrayList<>() : designerTypes;
     }
 
-    public void setModuleApps(Map<String, List<String>> moduleApps) {
-        this.moduleApps = moduleApps;
+    public void setDesignerTypes(List<String> designerTypes) {
+        this.designerTypes = designerTypes;
+    }
+
+    public List<String> getAppIdList() {
+        return appIdList == null ? new ArrayList<>() : appIdList;
+    }
+
+    public void setAppIdList(List<String> appIdList) {
+        this.appIdList = appIdList;
     }
 }

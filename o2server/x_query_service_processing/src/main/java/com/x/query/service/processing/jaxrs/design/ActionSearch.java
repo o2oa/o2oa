@@ -5,8 +5,11 @@ import com.x.base.core.project.Applications;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WiDesigner;
+import com.x.base.core.project.jaxrs.WrapDesigner;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -16,10 +19,11 @@ import com.x.base.core.project.x_cms_assemble_control;
 import com.x.base.core.project.x_portal_assemble_designer;
 import com.x.base.core.project.x_processplatform_assemble_designer;
 import com.x.query.service.processing.ThisApplication;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
 
 class ActionSearch extends BaseAction {
 
@@ -29,27 +33,15 @@ class ActionSearch extends BaseAction {
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		Wo wo = new Wo();
-		wo.setType(wi.getType());
 		if(StringUtils.isBlank(wi.getKeyword())){
 			throw new ExceptionFieldEmpty("keyword");
 		}
-		if(StringUtils.isBlank(wi.getType())){
-			throw new ExceptionFieldEmpty("type");
-		}
-		logger.print("{}搜索全局设计：{}，关键字：{}", effectivePerson.getDistinguishedName(), wi.getType(), wi.getKeyword());
-		switch (wi.getType()) {
-			case "script":
-				wo.setScriptWrapList(searchScript(wi));
-				break;
-			default:
-				throw new ExceptionFieldEmpty("type");
-		}
-		result.setData(wo);
+		logger.print("{}搜索全局设计：{}，关键字：{}", effectivePerson.getDistinguishedName(), wi.getModuleList(), wi.getKeyword());
+		result.setData(search(wi));
 		return result;
 	}
 
-	private List<ScriptWo> searchScript(final Wi wi) throws Exception{
+	private Wo search(final Wi wi) {
 		final Map<String, List<String>> moduleMap = new HashMap<>();
 		if(!ListTools.isEmpty(wi.getModuleList())){
 			for (Module module: wi.getModuleList()){
@@ -69,65 +61,66 @@ class ActionSearch extends BaseAction {
 			moduleMap.put(ModuleType.portal.toString(), list);
 			moduleMap.put(ModuleType.processPlatform.toString(), list);
 		}
-
-		CompletableFuture<List<ScriptWo>> processPlatformCf = scriptSearchAsync(wi, moduleMap, ModuleType.processPlatform.toString(), x_processplatform_assemble_designer.class);
-		CompletableFuture<List<ScriptWo>> portalCf = scriptSearchAsync(wi, moduleMap, ModuleType.portal.toString(), x_portal_assemble_designer.class);
-		CompletableFuture<List<ScriptWo>> cmsCf = scriptSearchAsync(wi, moduleMap, ModuleType.cms.toString(), x_cms_assemble_control.class);
-
-		List<ScriptWo> scriptWoList = new ArrayList<>();
-		scriptWoList.addAll(processPlatformCf.get());
-		scriptWoList.addAll(portalCf.get());
-		scriptWoList.addAll(cmsCf.get());
-
-		return scriptWoList;
+		Executor executor = Executors.newFixedThreadPool(5);
+		CompletableFuture<List<WrapDesigner>> processPlatformCf = searchAsync(wi, moduleMap, ModuleType.processPlatform.toString(), x_processplatform_assemble_designer.class, executor);
+		CompletableFuture<List<WrapDesigner>> portalCf = searchAsync(wi, moduleMap, ModuleType.portal.toString(), x_portal_assemble_designer.class, executor);
+		CompletableFuture<List<WrapDesigner>> cmsCf = searchAsync(wi, moduleMap, ModuleType.cms.toString(), x_cms_assemble_control.class, executor);
+		Wo wo = new Wo();
+		try {
+			wo.setProcessPlatformDesigners(processPlatformCf.get(200, TimeUnit.SECONDS));
+		} catch (Exception e) {
+			logger.warn("搜索流程平台设计异常：{}",e.getMessage());
+		}
+		try {
+			wo.setPortalDesigners(portalCf.get(200, TimeUnit.SECONDS));
+		} catch (Exception e) {
+			logger.warn("搜索门户平台设计异常：{}",e.getMessage());
+		}
+		try {
+			wo.setCmsDesigners(cmsCf.get(200, TimeUnit.SECONDS));
+		} catch (Exception e) {
+			logger.warn("搜索内容管理平台设计异常：{}",e.getMessage());
+		}
+		return wo;
 	}
 
-	private CompletableFuture<List<ScriptWo>> scriptSearchAsync(final Wi wi, final Map<String, List<String>> moduleMap, final String moduleType, final Class<?> applicationClass){
-		CompletableFuture<List<ScriptWo>> cf = CompletableFuture.supplyAsync(() -> {
-			List<ScriptWo> swList = new ArrayList<>();
+	private CompletableFuture<List<WrapDesigner>> searchAsync(final Wi wi, final Map<String, List<String>> moduleMap, final String moduleType, final Class<?> applicationClass, Executor executor){
+		CompletableFuture<List<WrapDesigner>> cf = CompletableFuture.supplyAsync(() -> {
+			List<WrapDesigner> swList = new ArrayList<>();
 			if(moduleMap.containsKey(moduleType)) {
 				try {
-					Map<String, Object> map = new HashMap<>();
-					map.put("appIdList", moduleMap.get(moduleType));
-					map.put("keyword", wi.getKeyword());
-					map.put("caseSensitive", wi.getCaseSensitive());
-					map.put("matchWholeWord", wi.getMatchWholeWord());
-					map.put("matchRegExp", wi.getMatchRegExp());
-					List<WrapScript> scriptList = ThisApplication.context().applications().postQuery(applicationClass,
-							Applications.joinQueryUri("script", "list", "manager"), map).getDataAsList(WrapScript.class);
-					logger.print("设计搜索关联{}的匹配脚本个数：{}", moduleType, scriptList.size());
-					getScriptSearchRes(wi, moduleType, swList, scriptList);
+					WiDesigner wiDesigner = new WiDesigner();
+					BeanUtils.copyProperties(wiDesigner, wi);
+					wiDesigner.setAppIdList(moduleMap.get(moduleType));
+					List<WrapDesigner> designerList = ThisApplication.context().applications().postQuery(applicationClass,
+							Applications.joinQueryUri("designer", "search"), wiDesigner).getDataAsList(WrapDesigner.class);
+					logger.print("设计搜索关联{}的匹配设计个数：{}", moduleType, designerList.size());
+					getSearchRes(wi, designerList);
+					swList = designerList;
 				} catch (Exception e) {
 					logger.error(e);
 				}
 				if (swList.size() > 2) {
 					try {
-						SortTools.desc(swList, "appId");
+						SortTools.desc(swList, "designerType","appId");
 					} catch (Exception e) {
 					}
 				}
 			}
 			return swList;
-		});
+		}, executor);
 		return cf;
 	}
 
-	private void getScriptSearchRes(final Wi wi, String moduleType, List<ScriptWo> swList, List<WrapScript> scriptList){
-		if (!ListTools.isEmpty(scriptList)){
-			for (WrapScript script:scriptList) {
-				if (StringTools.matchKeyword(wi.getKeyword(), script.getText(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
-					List<Integer> list = patternLines(script.getId()+"-"+script.getUpdateTime().getTime(),
-							wi.getKeyword(), script.getText(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
-					if (!ListTools.isEmpty(list)){
-						ScriptWo scriptWo = new ScriptWo();
-						scriptWo.setModuleType(moduleType);
-						scriptWo.setAppId(script.getAppId());
-						scriptWo.setAppName(script.getAppName());
-						scriptWo.setScriptId(script.getId());
-						scriptWo.setScriptName(script.getName());
-						scriptWo.setPatternLines(list);
-						swList.add(scriptWo);
-					}
+	private void getSearchRes(final Wi wi, List<WrapDesigner> designerList){
+		if (!ListTools.isEmpty(designerList)){
+			for (WrapDesigner designer : designerList) {
+				WrapDesigner.DesignerPattern pattern = designer.getScriptDesigner();
+				if(pattern!=null) {
+					List<Integer> lines = patternLines(designer.getDesignerId() + "-" + designer.getUpdateTime().getTime(),
+							wi.getKeyword(), pattern.getPropertyValue(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
+					pattern.setLines(lines);
+					pattern.setPropertyValue(null);
 				}
 			}
 		}
@@ -138,15 +131,15 @@ class ActionSearch extends BaseAction {
 
 		@FieldDescribe("搜索关键字.")
 		private String keyword;
-		@FieldDescribe("搜索类型：script|form|process")
-		private String type;
+		@FieldDescribe("搜索设计类型：script|form|page|widget|process")
+		private List<String> designerTypes;
 		@FieldDescribe("是否区分大小写.")
 		private Boolean caseSensitive;
 		@FieldDescribe("是否全字匹配.")
 		private Boolean matchWholeWord;
 		@FieldDescribe("是否正则表达式匹配.")
 		private Boolean matchRegExp;
-		@FieldDescribe("限制查询的模块列表(模块：processPlatform|portal|cms|service).")
+		@FieldDescribe("限制查询的模块列表(模块类型：processPlatform|cms|portal|query|service).")
 		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "Module", fieldValue = "{\"moduleType\": \"cms\", \"flagList\": []}")
 		private List<Module> moduleList;
 
@@ -158,12 +151,12 @@ class ActionSearch extends BaseAction {
 			this.keyword = keyword;
 		}
 
-		public String getType() {
-			return type;
+		public List<String> getDesignerTypes() {
+			return designerTypes;
 		}
 
-		public void setType(String type) {
-			this.type = type;
+		public void setDesignerTypes(List<String> designerTypes) {
+			this.designerTypes = designerTypes;
 		}
 
 		public Boolean getCaseSensitive() {
@@ -202,7 +195,7 @@ class ActionSearch extends BaseAction {
 	public static class Module extends GsonPropertyObject {
 		@FieldDescribe("模块的应用id列表.")
 		private List<String> flagList;
-		@FieldDescribe("模块类型：processPlatform|cms|portal|query|service")
+		@FieldDescribe("模块类型.")
 		private String moduleType;
 
 		public List<String> getFlagList() {
@@ -223,88 +216,37 @@ class ActionSearch extends BaseAction {
 	}
 
 	public static class Wo extends GsonPropertyObject {
-		@FieldDescribe("搜索类型：script|form|process")
-		private String type;
-		@FieldDescribe("脚本搜索结果集")
-		private List<ScriptWo> scriptWrapList = new ArrayList<>();
 
-		public String getType() {
-			return type;
+		private static final long serialVersionUID = 8169092162410529422L;
+
+		private List<WrapDesigner> processPlatformDesigners;
+
+		private List<WrapDesigner> cmsDesigners;
+
+		private List<WrapDesigner> portalDesigners;
+
+		public List<WrapDesigner> getProcessPlatformDesigners() {
+			return processPlatformDesigners;
 		}
 
-		public void setType(String type) {
-			this.type = type;
+		public void setProcessPlatformDesigners(List<WrapDesigner> processPlatformDesigners) {
+			this.processPlatformDesigners = processPlatformDesigners;
 		}
 
-		public List<ScriptWo> getScriptWrapList() {
-			return scriptWrapList;
+		public List<WrapDesigner> getCmsDesigners() {
+			return cmsDesigners;
 		}
 
-		public void setScriptWrapList(List<ScriptWo> scriptWrapList) {
-			this.scriptWrapList = scriptWrapList;
-		}
-	}
-
-	public static class ScriptWo extends GsonPropertyObject {
-		@FieldDescribe("模块类型：processPlatform|cms|portal|query|service")
-		private String moduleType;
-		@FieldDescribe("应用ID")
-		private String appId;
-		@FieldDescribe("应用名称")
-		private String appName;
-		@FieldDescribe("脚本Id")
-		private String scriptId;
-		@FieldDescribe("脚本名称")
-		private String scriptName;
-		@FieldDescribe("匹配行")
-		private List<Integer> patternLines;
-
-		public String getModuleType() {
-			return moduleType;
+		public void setCmsDesigners(List<WrapDesigner> cmsDesigners) {
+			this.cmsDesigners = cmsDesigners;
 		}
 
-		public void setModuleType(String moduleType) {
-			this.moduleType = moduleType;
+		public List<WrapDesigner> getPortalDesigners() {
+			return portalDesigners;
 		}
 
-		public String getAppId() {
-			return appId;
-		}
-
-		public void setAppId(String appId) {
-			this.appId = appId;
-		}
-
-		public String getAppName() {
-			return appName;
-		}
-
-		public void setAppName(String appName) {
-			this.appName = appName;
-		}
-
-		public String getScriptId() {
-			return scriptId;
-		}
-
-		public void setScriptId(String scriptId) {
-			this.scriptId = scriptId;
-		}
-
-		public String getScriptName() {
-			return scriptName;
-		}
-
-		public void setScriptName(String scriptName) {
-			this.scriptName = scriptName;
-		}
-
-		public List<Integer> getPatternLines() {
-			return patternLines;
-		}
-
-		public void setPatternLines(List<Integer> patternLines) {
-			this.patternLines = patternLines;
+		public void setPortalDesigners(List<WrapDesigner> portalDesigners) {
+			this.portalDesigners = portalDesigners;
 		}
 	}
 
