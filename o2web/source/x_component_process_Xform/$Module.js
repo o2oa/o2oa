@@ -13,6 +13,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          * 组件加载前事件。<br/>
          * 平台执行queryLoad事件的时候，组件还没有开始加载，这个时候可以根据条件修改组件的配置信息以改变加载细节。
          * @event MWF.xApplication.process.Xform.$Module#queryLoad
+         * {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|事件的使用}
          * @example
          * var field = this.form.get("fieldName");
          * field.addEvent("queryLoad", function(){
@@ -22,10 +23,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         /**
          * 组件加载事件.
          * @event MWF.xApplication.process.Xform.$Module#load
+         * {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|事件的使用}
          */
         /**
          * 组件加载后事件.
          * @event MWF.xApplication.process.Xform.$Module#postLoad
+         * {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|事件的使用}
          */
         "moduleEvents": ["load", "queryLoad", "postLoad"]
     },
