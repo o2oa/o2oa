@@ -154,6 +154,13 @@
         "target": "_blank",
         "title": "申诉设置",
         "action": "openAppSetting"
+      },
+      {
+        "id" : "40.45",
+        "access" : "admin",
+        "target" : "_blank",
+        "title" : "周末设置",
+        "action" : "openWeekendSetting"
       }
     ]
   }
