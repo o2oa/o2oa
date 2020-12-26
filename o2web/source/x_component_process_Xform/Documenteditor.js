@@ -15,6 +15,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 {
     Extends: MWF.APP$Module,
     options: {
+        /**
+         * 当公文编辑器内容每次被渲染的时候都会触发。
+         * @event MWF.xApplication.process.Xform.Documenteditor#loadPage
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["load", "queryLoad", "beforeLoad", "postLoad", "afterLoad", "loadPage"],
         "docPageHeight": 850.4,
         "docPageFullWidth": 794,
