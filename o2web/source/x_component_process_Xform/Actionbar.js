@@ -18,6 +18,26 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
     {
 	Extends: MWF.APP$Module,
     options: {
+        /**
+         * 组件加载前触发。
+         * @event MWF.xApplication.process.Xform.Actionbar#queryLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 组件加载时触发。
+         * @event MWF.xApplication.process.Xform.Actionbar#load
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 组件加载后事件.由于加载过程中有异步处理，这个时候操作条有可能还未生成。
+         * @event MWF.xApplication.process.Xform.Actionbar#postLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 组件加载后事件。这个时候操作条已生成
+         * @event MWF.xApplication.process.Xform.Actionbar#afterLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
     },
     /**
