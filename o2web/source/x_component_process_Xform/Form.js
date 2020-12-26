@@ -25,28 +25,139 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         "cssPath": "",
         "macro": "FormContext",
         "parameters": null,
-        "moduleEvents": ["queryLoad",
+        "moduleEvents": [
+            /**
+             * 表单加载前触发。数据（businessData）、预加载脚本和表单html已经就位。
+             * @event MWF.xApplication.process.Xform.Form#queryLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "queryLoad",
+            /**
+             * 表单加载前触发。已提示抢办锁定。
+             * @event MWF.xApplication.process.Xform.Form#beforeLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "beforeLoad",
-            "postLoad",
-            "afterLoad",
-            "beforeSave",
-            "afterSave",
-            "beforeClose",
-            "beforeProcess",
-            "beforeProcessWork",
-            "afterProcess",
-            "beforeReset",
-            "afterReset",
-            "beforeRetract",
-            "afterRetract",
-            "beforeReroute",
-            "afterReroute",
-            "beforeDelete",
-            "afterDelete",
+            /**
+             * 表单的所有组件加载前触发，此时表单的样式和js head已经加载。
+             * @event MWF.xApplication.process.Xform.Form#beforeModulesLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "beforeModulesLoad",
-            "resize",
+            /**
+             * 表单加载后触发。主表单的组件加载完成，但不保证子表单、子页面、部件加载完成。
+             * @event MWF.xApplication.process.Xform.Form#postLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "postLoad",
+            /**
+             * 表单的所有组件后触发。表单包含有子表单、子页面、部件时，此事件会在这些组件加载后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterModulesLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "afterModulesLoad",
+            /**
+             * 表单加载后触发。表单包含有子表单、子页面、部件时，此事件会在这些组件加载后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterLoad",
+            /**
+             * 保存前触发。流转前也会触发本事件。
+             * @event MWF.xApplication.process.Xform.Form#beforeSave
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeSave",
+            /**
+             * 保存后触发。流转后也会触发本事件。
+             * @event MWF.xApplication.process.Xform.Form#afterSave
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterSave",
+            /**
+             * 关闭前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeClose
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeClose",
+            /**
+             * 弹出提交界面前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeProcessWork
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeProcessWork",
+            /**
+             * 流转前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeProcess
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeProcess",
+            /**
+             * 流转后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterProcess
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterProcess",
+            /**
+             * 重置处理人前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeReset
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeReset",
+            /**
+             * 重置处理人后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterReset
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterReset",
+            /**
+             * 撤回前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeRetract
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeRetract",
+            /**
+             * 撤回后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterRetract
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterRetract",
+            /**
+             * 调度前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeReroute
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeReroute",
+            /**
+             * 调度后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterReroute
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterReroute",
+            /**
+             * 删除工作前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeDelete
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeDelete",
+            /**
+             * 删除工作后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterDelete
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterDelete",
+            "resize",
+            /**
+             * 已阅前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeReaded
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "beforeReaded",
+            /**
+             * 已阅后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterReaded
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "afterReaded"]
     },
     initialize: function (node, data, options) {
