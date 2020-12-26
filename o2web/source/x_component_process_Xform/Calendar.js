@@ -17,6 +17,31 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
 	Extends: MWF.APP$Input,
 	iconStyle: "calendarIcon",
     options: {
+        /**
+         * 日期选择完成时触发.
+         * @event MWF.xApplication.process.Xform.Calendar#complete
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 日期选择器上点清空时触发.
+         * @event MWF.xApplication.process.Xform.Calendar#clear
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 值改变时触发.
+         * @event MWF.xApplication.process.Xform.Calendar#change
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 显示日期选择器时触发.
+         * @event MWF.xApplication.process.Xform.Calendar#show
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 隐藏日期选择器时触发.
+         * @event MWF.xApplication.process.Xform.Calendar#hide
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["queryLoad","postLoad","load","complete", "clear", "change","show","hide"]
     },
     _loadNode: function(){

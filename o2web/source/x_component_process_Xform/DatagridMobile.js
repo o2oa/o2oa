@@ -17,6 +17,31 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
     Extends: MWF.APP$Module,
     isEdit: false,
     options: {
+        /**
+         * 当前条目编辑完成时触发。通过this.event可以获取对应的table。
+         * @event MWF.xApplication.process.Xform.DatagridMobile#completeLineEdit
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 添加条目时触发。通过this.event可以获取对应的table。
+         * @event MWF.xApplication.process.Xform.DatagridMobile#addLine
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 删除条目前触发。通过this.event可以获取对应的table。
+         * @event MWF.xApplication.process.Xform.DatagridMobile#deleteLine
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 删除条目后触发。
+         * @event MWF.xApplication.process.Xform.DatagridMobile#afterDeleteLine
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 编辑条目时触发。
+         * @event MWF.xApplication.process.Xform.DatagridMobile#editLine
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["queryLoad","postLoad","load","completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine"]
     },
 
