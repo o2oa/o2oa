@@ -1,5 +1,18 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
+/** @class ImageClipper 图片编辑组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var attachment = this.form.get("name"); //获取组件
+ * //方法2
+ * var attachment = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @category FormComponents
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
+    /** @lends MWF.xApplication.process.Xform.ImageClipper# */
+    {
 	Implements: [Events],
 	Extends: MWF.APP$Module,
     initialize: function(node, json, form, options){
@@ -86,9 +99,24 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
         var value = this._getBusinessData() || "";
         return {"value": [value], "text": [value]};
     },
+    /**
+     * @summary 判断组件值是否为空.
+     * @example
+     * if( this.form.get('fieldName').isEmpty() ){
+     *     this.form.notice('请上传图片', 'warn');
+     * }
+     * @return {Boolean} 值是否为空.
+     */
     isEmpty : function(){
         return !this.getData();
     },
+    /**
+     * 获取上传的图片ID。
+     * @summary 获取上传的图片ID。
+     * @example
+     * var id = this.form.get('fieldName').getData(); //获取上传的图片id
+     * var url = MWF.xDesktop.getImageSrc( id ); //获取图片的url
+     */
     getData: function( data ){
         return this._getBusinessData() || "";
     },
@@ -279,6 +307,15 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
         }
         return true;
     },
+    /**
+     * @summary 根据组件的校验设置进行校验。
+     *  @param {String} [routeName] - 可选，路由名称.
+     *  @example
+     *  if( !this.form.get('fieldName').validation() ){
+     *      return false;
+     *  }
+     *  @return {Boolean} 是否通过校验
+     */
     validation: function(routeName, opinion){
         if (!this.validationConfig(routeName, opinion))  return false;
 

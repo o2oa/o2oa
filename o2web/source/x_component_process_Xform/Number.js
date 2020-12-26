@@ -1,4 +1,15 @@
 MWF.xDesktop.requireApp("process.Xform", "Textfield", null, false);
+/** @class Number 数字输入组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var attachment = this.form.get("name"); //获取组件
+ * //方法2
+ * var attachment = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.Textfield
+ * @category FormComponents
+ * @hideconstructor
+ */
 MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     Implements: [Events],
     Extends: MWF.APPTextfield,
