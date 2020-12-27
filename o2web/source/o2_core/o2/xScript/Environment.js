@@ -243,8 +243,138 @@ MWF.xScript.Environment = function(ev){
             if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
         }, "", null, _form);
     };
+
+
     this.setData = function(data){
+
+        /**
+         * data对象是流程平台中，流程实例的业务数据，以及内容管理平台中，实例的业务数据。<br/>
+         * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本创建和增删改查。<br/>
+         * data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问他对象的所有数据，但增加和删除数据时略有不同。
+         * @module data
+         * @example
+         * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前实例的业务数据，如下：
+         * var data = this.data;
+         */
         this.data = getJSONData(data);
+
+        /**
+         * 访问或修改data对象的数据。<br/><br/>
+         * data数据用于存储表单获取的数据，所有属性都是动态的，其格式和访问方式都和JSON类似。<br/>
+         * 在表单脚本中使用data对象，实现了data和表单可编辑元素的双向绑定。<br/>
+         * 改变data对象，会自动更新表单元素，修改表单可编辑元素，也会自动修改data对象。
+         * @member {String|Number} [[property]]
+         * @memberOf module:data
+         * @instance
+         * @example
+         * var value = this.data.subject;  //获取名为subject的数据值
+         *
+         * //将subject的值修改为'123'。
+         * //需要注意的是，用这种方式创建新字段，必须要在当前表单上有一个名为‘subject’的字段组件。
+         * //如果表单上没有该组件，可以使用this.data.add('subject','123',true)。给已有字段赋值则没有这个限制。
+         * this.data.subject = '123';
+         *
+         * @example
+         * <caption>
+         * <b>获取流程文档中的数据网格的值</b>：<br/>
+         * 如有以下数据网格：
+         *     <img src="img/module/data/datagrid.jpg">
+         * 其数据网格设计如下(数据网格id为：datagrid)：
+         *     <img src="img/module/data/datagridDesign.jpg">
+         * </caption>
+         * //获取流程文档中的数据网格的值
+         * var data = this.data.datagrid;
+         *
+         * //获取到的data值格式如下：
+         * {
+         *   "data": [
+         *       {
+         *           "amountCol": { "amount": "12000" },
+         *          "countCol": { "number": "10" },
+         *          "nameCol": { "name": "手机" },
+         *          "priceCol": { "price": "1200" }
+         *      },
+         *      {
+         *          "amountCol": { "amount": "15000" },
+         *          "countCol": { "number": "5" },
+         *          "nameCol": { "name": "电脑" },
+         *          "priceCol": { "price": "3000" }
+         *      }
+         *  ],
+         *  "total": {
+         *      "amountCol": "27000",
+         *      "countCol": "15"
+         *  }
+         * }
+         *
+         *
+         * //获取到数据网格中的其他数据：
+         *
+         * //获取数据网格中的第一条数据
+         * var data = this.data.datagrid.data[0];
+         *
+         * //获取数据网格中的第一条数据的 nameCol 列的值
+         * var data = this.data.datagrid.data[0].nameCol.name;
+         *
+         * //获取数据网格中的 amountCol 列的总计值
+         * var data = this.data.datagrid.total.amountCol;
+         *
+         *@example
+         * <caption>
+         * <b>修改数据网格中的数据</b></br>
+         * 经过本样例修改后，数据网格将变为：</br>
+         *     <img src="img/module/data/datagrid2.jpg">
+         * </caption>
+         * //修改数据网格中的第一条数据的 nameCol 列的值
+         * this.data.datagrid.data[0].nameCol.name='平板电脑';
+         */
+
+        /**保存data对象。
+         * @instance
+         * @method add
+         * @memberOf module:data
+         * @param {(String|Number)} key - 要添加的新的数据节点名称或数组索引号。
+         * @param {(String|Number|Array|JsonObject)} value - 新的数据节点的值。
+         * @param {Boolean} [overwrite] - 如果要添加的节点已经存在，是否覆盖。默认为 false。
+         * @return {(String|Number|Array|JsonObject)} 新添加的数据节点或原有的同名节点。
+         * @example
+         * var newData = this.data.add(key, value, overwrite);
+         * @example
+         * //为data添加一个名为"remark"值为"I am remark"的数据
+         * this.data.add("remark", "I am remark");
+         * @example
+         * //为data添加一个名为"person"的Object对象数据
+         * var person = this.data.add("person", {});
+         * person.add("name", "Tom");
+         * person.add("age", 23);
+         *
+         * //或者可以这样
+         * var person = this.data.add("person", {name: "Tom", "age": "23"});
+         * @example
+         * //为data添加一个名为"orders"的数组对象数据
+         * var orders = this.data.add("orders", []);
+         * orders.add({name: "phone", count: 5});
+         * orders.add({name: "computer", count: 10});
+         * orders[0].add("count", 10, true);  //将第一条数据的count修改为10
+         *
+         * //或者可以这样
+         * var orders = this.data.add("orders", [
+         *  {name: "phone", count: 5},
+         *  {name: "computer", count: 10}
+         * ]);
+         * //将第一条数据修改为name为mobile; count为10
+         * orders.add(0, {name: "mobile", count: 10}, true);
+         */
+
+        /**保存data对象。
+         * @method save
+         * @memberOf module:data
+         * @param {Function} [callback] - 保存成功后的回调函数。
+         * @example
+         * this.data.save(function(json){
+         *   this.form.notice("save success!", "success")
+         *});
+         */
         this.data.save = function(callback){
             _form.saveFormData(callback)
             // var formData = {
@@ -2154,7 +2284,7 @@ MWF.xScript.Environment = function(ev){
      * @method process
      * @param {Object} [option] - 流程的相关数据，如果不带此参数，则弹出路由选择和意见填写框<br/>
      * 格式如下：
-     <pre><code>
+     <pre><code class="language-js">
      {
             "routeName": "", //流转到下一步要选择的路由名称
             "opinion": "", //流转意见
@@ -2191,7 +2321,7 @@ MWF.xScript.Environment = function(ev){
          * @method reset
          * @param {Object} [option] - 进行重置处理人的相关参数，如果不带此参数，弹出重置处理人对话框<br/>
          * 格式如下：
-         <pre><code>
+         <pre><code class="language-js">
          {
             "names": "", //{Array|String} 要重置给哪些身份
             "opinion": "", //流转意见
@@ -2233,7 +2363,7 @@ MWF.xScript.Environment = function(ev){
          * @method retract
          * @param {Object} [option] - 进行撤回的相关参数，如果不提供option参数，则弹出撤回对话框。<br/>
          * 格式如下：
-         <pre><code>
+         <pre><code class="language-js">
          {
             "success ": function(){}, //撤回成功后的回调方法
             "failure ": function(){} //撤回失败后的回调方法
@@ -2269,7 +2399,7 @@ MWF.xScript.Environment = function(ev){
          * @method addSplit
          * @param {Object} [option] - 添加分支的相关参数，如果不提供option参数，则弹出添加分支对话框。<br/>
          * 格式如下：
-         <pre><code>
+         <pre><code class="language-js">
          {
             "value" : [], //splitValueList 添加的拆分值，拆分值取决于流程拆分节点的设置
             "trimExist" : true, //排除已经存在的拆分值.
@@ -2318,7 +2448,7 @@ MWF.xScript.Environment = function(ev){
          * @method deleteWork
          * @param {Object} [option] - 删除相关参数，如果不提供option参数，则弹出删除对话框。<br/>
          * 格式如下：
-         <pre><code>
+         <pre><code class="language-js">
          {
             "success ": function(){}, //执行成功后的回调方法
             "failure ": function(){} //执行失败后的回调方法
@@ -2349,6 +2479,91 @@ MWF.xScript.Environment = function(ev){
             }
         },
 
+        /**弹出一个确认框，带确认和关闭按钮
+         * @method confirm
+         * @param {String} type - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
+         * @param {String} title - 确认框标题栏显示文本。
+         * @param {String} text - 确认框的内容显示文本。
+         * @param {Number} width - 确认框的宽度。
+         * @param {String} height - 确认框的高度。
+         * @param {Function} ok - 点击“确定”按钮后的回调函数。
+         * @param {Function} cancel - 点击“取消”按钮后的回调函数。
+         * @example
+         this.form.confirm("wran", "删除确认", "您确定要删除吗？", 300, 100,function(){
+            //执行删除代码
+            this.close();
+        }, function(){
+            this.close();
+        });
+         */
+        "confirm": function(type, title, text, width, height, ok, cancel, callback, mask, style){
+            if ((arguments.length<=1) || o2.typeOf(arguments[1])==="string"){
+                var p = MWF.getCenter({"x": width, "y": height});
+                e = {"event": {"clientX": p.x,"x": p.x,"clientY": p.y,"y": p.y}};
+                _form.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style);
+            }else{
+                e = (arguments.length>1) ? arguments[1] : null;
+                title = (arguments.length>2) ? arguments[2] : null;
+                text = (arguments.length>3) ? arguments[3] : null;
+                width = (arguments.length>4) ? arguments[4] : null;
+                height = (arguments.length>5) ? arguments[5] : null;
+                ok = (arguments.length>6) ? arguments[6] : null;
+                cancel = (arguments.length>7) ? arguments[7] : null;
+                callback = (arguments.length>8) ? arguments[8] : null;
+                mask = (arguments.length>9) ? arguments[9] : null;
+                style = (arguments.length>10) ? arguments[10] : null;
+
+                // var p = MWF.getCenter({"x": width, "y": height});
+                // e = {"event": {"clientX": p.x,"x": p.x,"clientY": p.y,"y": p.y}};
+                _form.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style);
+            }
+        },
+
+        /**弹出一个带关闭按钮的信息框
+         * @method alert
+         * @param {String} type - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
+         * @param {String} title - 信息框标题栏显示文本。
+         * @param {String} text - 信息框的内容显示文本。
+         * @param {Number} width - 信息框宽度。
+         * @param {String} height - 信息框的高度。
+         * @example
+         this.form.alert("wran", "必填提醒", "请填写标题？", 300, 100);
+         */
+        "alert": function(type, title, text, width, height){
+            _form.alert(type, title, text, width, height);
+        },
+
+        /**弹出一个提示框
+         * @method notice
+         * @param {String} content - 要显示的信息文本
+         * @param {String} [type] - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
+         * @param {Element} [target] - 信息框显示位置的参考DOM对象。
+         * @param {Object} [where] - 信息框显示相对于target的x轴和y轴位置。<br/>
+         * 如： {"x": "center", "y": "center"}<br/>
+         x : <br/>
+         　水平位置，可用“left”、“right”和“center”；可以用数组定义外部（outside）位置和内部（inside）位置，如：['right', 'inside']<br/>
+         y :<br/>
+         　垂直位置，可用“top”、“bottom”和“center”；可以用数组定义外部（outside）位置和内部（inside）位置，如：['top', 'outside']。
+         * @param {Object} [offset] - 相对位置的偏移量，允许负值。如：{"x": 10, "y": -10}
+         * @param {Object} [option] - 其他选项。如： { delayClose: 5000 } 在5秒后关闭
+         * @example
+         this.form.notice("this is my information", "info");
+         */
+        "notice": function(content, type, target, where, offset, option){
+            _form.notice(content, type, target, where, offset, option);
+        },
+
+        /**给表单添加事件。
+         * @method addEvent
+         * @param {String} type - 事件名称，参考本API Classer->FormComponents->Form的事件
+         * @param {Function} event - 事件方法。
+         * @example
+         this.form.addEvent("load", function(){
+            this.form.notice("表单载入完成", "success");
+        }.bind(this));
+         */
+        "addEvent": function(type, event ){_form.addEvent(type, event );},
+
         /**用一个新的浏览器窗口来打开当前文档，用于打印。<b>（仅流程表单中可用）</b><br/>
          * 如不指定表单，则使用表单设计中指定的打印表单。<br/>
          * @method print
@@ -2374,35 +2589,14 @@ MWF.xScript.Environment = function(ev){
             }
         },
 
-        "confirm": function(type, title, text, width, height, ok, cancel, callback, mask, style){
-            if ((arguments.length<=1) || o2.typeOf(arguments[1])==="string"){
-                var p = MWF.getCenter({"x": width, "y": height});
-                e = {"event": {"clientX": p.x,"x": p.x,"clientY": p.y,"y": p.y}};
-                _form.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style);
-            }else{
-                e = (arguments.length>1) ? arguments[1] : null;
-                title = (arguments.length>2) ? arguments[2] : null;
-                text = (arguments.length>3) ? arguments[3] : null;
-                width = (arguments.length>4) ? arguments[4] : null;
-                height = (arguments.length>5) ? arguments[5] : null;
-                ok = (arguments.length>6) ? arguments[6] : null;
-                cancel = (arguments.length>7) ? arguments[7] : null;
-                callback = (arguments.length>8) ? arguments[8] : null;
-                mask = (arguments.length>9) ? arguments[9] : null;
-                style = (arguments.length>10) ? arguments[10] : null;
-
-                // var p = MWF.getCenter({"x": width, "y": height});
-                // e = {"event": {"clientX": p.x,"x": p.x,"clientY": p.y,"y": p.y}};
-                _form.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style);
-            }
-        },
-        "alert": function(type, title, text, width, height){
-            _form.alert(type, title, text, width, height);
-        },
-        "notice": function(content, type, target, where, offset, option){
-            _form.notice(content, type, target, where, offset, option);
-        },
-        "addEvent": function(e, f){_form.addEvent(e, f);},
+        /**同print方法。<b>（仅流程表单中可用）</b><br/>
+         * @method openWindow
+         * @see this.form.print()
+         * @param {String} [application] - 指定表单所在的流程应用ID或名称。省略此参数表示当前应用。
+         * @param {String} [form] - 指定表单ID或名称。
+         * @example
+         this.form.openWindow();
+         */
         "openWindow": function(application, form){
             if (arguments.length){
                 var app = (arguments.length>1) ? arguments[0] : null;
@@ -2412,14 +2606,31 @@ MWF.xScript.Environment = function(ev){
                 _form.openWindow();
             }
         },
-        "openWork": function(id, completedId, title, options){
+
+        /**　打开一个在流转或已完成的流程实例。<br/>
+         * @method openWork
+         * @param {String} [workId] - 在流转的流程实例ID。workId和workCompletedId两个参数必须提供其中一个
+         * @param {String} [workCompletedId] - 已完成的流程实例ID。
+         * @param {String} [title] - 手机端打开时的窗口标题。
+         * @example
+         this.form.openWork(id, "", "work title");
+         */
+        "openWork": function(workId, workCompletedId, title, options){
             var op = options || {};
-            op.workId = id;
-            op.workCompletedId = completedId;
+            op.workId = workId;
+            op.workCompletedId = workCompletedId;
             op.docTitle = title;
             op.appId = "process.Work"+(op.workId || op.workCompletedId);
             return layout.desktop.openApplication(this.event, "process.Work", op);
         },
+
+        /**　使用流程的jobId打开工作。<br/>
+         * @method openJob
+         * @param {String} id - 流程的jobId，如果流程拆分后，有多个流程实例（workId会有多个），但jobId是唯一的。
+         * @param {Boolean} [choice] - 如果有多个流程实例，是否弹出界面选择。如果传入false,则直接打开第一个工作。
+         * @example
+         this.form.openJob(jobId, true);
+         */
         "openJob": function(id, choice, options){
             var workData = null;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
@@ -2518,15 +2729,47 @@ MWF.xScript.Environment = function(ev){
             // op.appId = "process.Work"+(op.workId || op.workCompletedId);
             // layout.desktop.openApplication(this.event, "process.Work", op);
         },
+
+        /**　打开一个内容管理文档。<br/>
+         * @method openDocument
+         * @param {String} id - 内容管理文档实例的ID。
+         * @param {Boolean} [title] - 手机APP端打开时的窗口标题。
+         * @param {Object} [options] - 其他参数，内容如下<br>
+         * <pre><code class="language-js">
+         {
+            "readonly": true, //是否以只读方式打开，默认为true
+             "saveOnClose" : true, //关闭的时候是否自动保存
+             "postPublish" : function( documentData ){ //发布前执行方法，但数据已经准备好
+                //documentData 为文档数据
+             },
+             "afterPublish" : function( form, documentData ){ //发布后执行的方法
+                //form为内容管理Form对象，documentData 为文档数据
+             },
+             "postDelete" : function(){ //删除文档后执行的方法
+             }
+         }
+         * </code></pre>
+         * @example
+         this.form.openDocument(id, "document title");
+         */
         "openDocument": function(id, title, options){
             var op = options || {};
             op.documentId = id;
             op.docTitle = title;
             layout.desktop.openApplication(this.event, "cms.Document", op);
         },
-        "openPortal": function (name, page, par) {
+
+        /**打开一个门户页面。<br/>
+         * @method openPortal
+         * @param {String} portal - 要打开的门户应用名称、别名或ID。
+         * @param {String} [page] - 要打开的页面名称、别名或ID。如果忽略，则打开门户的默认首页
+         * @param {Object} [par] - 打开页面可以传入参数。<br>在被打开的页面中，可以通过脚本this.page.parameters访问到此参数。
+         * @example
+         this.form.openPortal(id, "", {"type": "my type"});
+         */
+        "openPortal": function (portal, page, par) {
             var action = MWF.Actions.get("x_portal_assemble_surface");
-            action.getApplication(name, function (json) {
+            action.getApplication(portal, function (json) {
                 if (json.data) {
                     if (page) {
                         action.getPageByName(page, json.data.id, function (pageJson) {
@@ -2549,6 +2792,14 @@ MWF.xScript.Environment = function(ev){
 
             });
         },
+
+
+        /**打开一个内容管理栏目（应用）。<br/>
+         * @method openCMS
+         * @param {String} name - 内容管理栏目的名称、别名或ID。
+         * @example
+         this.form.openCMS("通知公告");
+         */
         "openCMS": function(name){
             var action = MWF.Actions.get("x_cms_assemble_control");
             action.getColumn(name, function(json){
@@ -2560,6 +2811,13 @@ MWF.xScript.Environment = function(ev){
                 }
             });
         },
+
+        /**打开一个流程应用。<br/>
+         * @method openProcess
+         * @param {String} name - 流程应用的名称、别名或ID。
+         * @example
+         this.form.openProcess("财务审批");
+         */
         "openProcess": function(name){
             var action = MWF.Actions.get("x_processplatform_assemble_surface");
             action.getApplication(name, function(json){
@@ -2571,9 +2829,73 @@ MWF.xScript.Environment = function(ev){
                 }
             });
         },
+
+        /**打开任意一个component应用。<br/>
+         * @method openApplication
+         * @param {String} name - 要打开的component的名称。component对应的名称可以在“控制面板-系统设置-界面设置-模块部署”中找到（即“组件路径”）。
+         * @param {Object} options - 打开的component的相关参数
+         * @example
+         //打开会议管理
+         this.form.openApplication("Meeting");
+         * @example
+         //打开一个流转中的流程实例。与 this.form.openWork(id, "", "work title");效果相同
+         this.form.openApplication("process.Work", {
+            "workId": id,   //流程实例ID
+            "width": "1200",    //宽度
+            "height": "800",    //高度
+            "docTitle": "work title",   //APP端窗口标题
+            "appId": "process.Work"+id  //给新打开的component实例一个唯一名称
+        });
+         */
         "openApplication":function(name, options){
             layout.desktop.openApplication(null, name, options);
         },
+
+        /**创建一条内容管理文档。
+         * @method createDocument
+         * @param {(String|Object)} [columnOrOptions]
+         * 如果不传参数，则弹出范围为平台所有栏目的选中界面。<br/>
+         * 当使用String时为内容管理应用（栏目）的名称、别名或ID。<br/>
+         * 当使用Object时，本参数后面的参数省略，传入如下格式的内容:
+         * <pre><code class="language-js">
+         {
+            "column" : column, //（string）可选，内容管理应用（栏目）的名称、别名或ID
+            "category" : category, //（string）可选，要创建的文档所属的分类的名称、别名或ID
+            "data" : data, //（json object）可选，创建文档时默认的业务数据
+            "identity" : identity, //（string）可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
+            "callback" : callback, //（funcation）可选，文档创建后的回调函数。
+            "target" : target, //（boolean）可选，为true时，在当前页面打开创建的文档；否则打开新窗口。默认false。
+            "latest" : latest, //（boolean）可选，为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
+            "selectColumnEnable" : selectColumnEnable, //（boolean）可选，是否可以选择应用和分类进行创建文档。有category参数时为默认false,否则默认为true。
+            "ignoreTitle" : ignoreTitle //（boolean）可选，值为false时，创建的时候需要强制填写标题，默认为false。
+        }
+         </code></pre>
+         * @param {String} [category] - 要创建的文档所属的分类的名称、别名或ID
+         * @param {Object} [data] - 创建文档时默认的业务数据
+         * @param {String} [identity] - 可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
+         * @param {Function} [callback] - 文档创建后的回调函数
+         * @param {Boolean} [target] - 为true时，在当前页面打开创建的文档；否则打开新窗口。默认false
+         * @param {Boolean} [latest] - 为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
+         * @param {Boolean} [selectColumnEnable] - 为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
+         * @param {Boolean} [ignoreTitle] - 值为false时，创建的时候需要强制填写标题，默认为false。
+         * @example
+         //启动一个通知公告
+         this.form.createDocument("", "通知公告");
+         * @example
+         //启动一个通知公告，标题为：关于XX的通知，启动后提示
+         this.form.createDocument("", "通知公告", {"subject": "关于XX的通知"}, function(json){
+            this.form.notice("创建成功!", "success");
+        }.bind(this));
+         * @example
+         //启动一个通知公告，标题为：关于XX的通知，启动后提示
+         this.form.createDocument({
+            category : "通知公告",
+            data : {"subject": "关于XX的通知"},
+            callback : function(json){
+                this.form.notice("创建成功!", "success");
+            }.bind(this)
+         });
+         */
         "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
             var column = columnOrOptions;
             var onAfterPublish, onPostPublish;
@@ -2622,6 +2944,25 @@ MWF.xScript.Environment = function(ev){
                 starter.load();
             })
         },
+
+        /**启动一个流程实例。<br/>
+         * @method startProcess
+         * @param {String} app  - 流程应用的名称、别名或ID。
+         * @param {String} process  - 要启动的流程的名称、别名或ID。
+         * @param {Object} [data]   - 流程启动时默认的业务数据。
+         * @param {String} [identity]  - 流程启动所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。。
+         * @param {Function} [callback]  - 流程启动后的回调函数。
+         * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。
+         * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
+         * @example
+         //启动一个发文管理实例
+         this.form.startProcess("公文管理", "发文管理");
+         * @example
+         //启动一个发文管理实例，标题为：my file title，启动后提示
+         this.form.startProcess("公文管理", "发文管理", {"title": "my file title"}, function(json){
+            this.form.notice("create file success!", "success");
+        });
+         */
         "startProcess": function(app, process, data, identity, callback, target, latest){
             if (arguments.length>2){
                 for (var i=2; i<arguments.length; i++){
@@ -2671,8 +3012,38 @@ MWF.xScript.Environment = function(ev){
             });
         }
     };
+    /**
+     * 在用户提交的时候，选择的路由。仅在表单的“校验意见”和“校验路由”脚本中可用。只读。<b>（仅流程表单中可用）</b>。
+     * @member currentRouteName
+     * @memberOf module:form
+     * @static
+     * @return {String} 用户选择的路由。
+     * @example
+     * var currentRouteName = this.form.currentRouteName;
+     */
     this.form.currentRouteName = _form.json.currentRouteName;
+
+    /**
+     * 在用户提交的时候，输入的意见。仅在表单的“校验意见”和“校验路由”脚本中可用。只读。<b>（仅流程表单中可用）</b>。
+     * @member opinion
+     * @memberOf module:form
+     * @static
+     * @return {String} 用户填写的意见.
+     * @example
+     * var opinion = this.form.opinion;
+     */
     this.form.opinion = _form.json.opinion;
+
+    /**
+     * 在提交的时候，用户的手写意见以及录音意见，仅在表单的“校验意见”和“校验路由”脚本中可用。只读。<b>（仅流程表单中可用）</b>。
+     * @member medias
+     * @memberOf module:form
+     * @static
+     * @return {Blob[]} 手写意见以及录音意见数组。手写意见和录音意见都是 HTML5的blob类型文件。
+     * @example
+     * var medias = this.form.medias;
+     */
+    this.form.medias = [];
 
     this.target = ev.target;
     this.event = ev.event;
@@ -2737,6 +3108,8 @@ MWF.xScript.createTable = function(){
         };
     }
 };
+
+
 MWF.xScript.JSONData = function(data, callback, key, parent, _form){
     var getter = function(data, callback, k, _self){
         return function(){return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);};
@@ -2775,6 +3148,7 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
 
                     }
                 }},
+
             "add": {"value": function(newKey, newValue, overwrite){
                 var flag = true;
                 var type = typeOf(data);
