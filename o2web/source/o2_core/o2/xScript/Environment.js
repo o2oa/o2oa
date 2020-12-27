@@ -182,8 +182,8 @@
  */
 
 /**
-Control 　流程实例的权限对象。
- * @typedef {Object} Control
+WorkControl 　流程实例的权限对象。
+ * @typedef {Object} WorkControl
  * @example
  *
      {
@@ -198,6 +198,24 @@ Control 　流程实例的权限对象。
         "allowRollback": false,         //是否允许流程回溯
         "allowAddSplit": false,         //是否允许增加分支
         "allowPress": false,             //是否允许催办
+    }
+ */
+
+
+
+/**
+ * FormInfor 　表单的基本信息。
+ * @typedef {Object} FormInfor
+ * @example
+ {
+        "id": "db3b2766-93a1-4058-b522-0edb922bd84f",   //表单ID
+        "name": "报销申请表单",                         //表单名称
+        "alias": "报销申请表单",                        //表单别名
+        "description": "",                              //表单描述
+        "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //应用ID
+        "lastUpdatePerson": "XX@huqi@P",                //最后修改人
+        "lastUpdateTime": "2018-09-30 22:46:30",        //最后修改时间
+        "icon": "...",                                  //表单图标
     }
  */
 
@@ -256,16 +274,6 @@ MWF.xScript.Environment = function(ev){
      */
     this.workContext = {
         /**
-         * 当前流程实例正在流转中，并且当前用户有待办，则返回当前用户的待办对象，否则返回null。
-         * @summary 获取当前流程与当前用户相关的待办对象：task对象。
-         * @method getTask
-         * @static
-         * @return {(Task|Null)} 当前用户的待办任务对象：task。当前用户没有对此流程实例的待办时，或流程实例已经流转结束，返回null.
-         * @example
-         * var task = this.workContext.getTask();
-         */
-        "getTask": function(){return ev.task || null;},
-        /**
          * 获取当前流程实例对象：work对象或workCompleted对象。
          * @method getWork
          * @static
@@ -283,6 +291,18 @@ MWF.xScript.Environment = function(ev){
          * var activity = this.workContext.getActivity();
          */
         "getActivity": function(){return ev.activity || null;},
+
+        /**
+         * 当前流程实例正在流转中，并且当前用户有待办，则返回当前用户的待办对象，否则返回null。
+         * @summary 获取当前流程与当前用户相关的待办对象：task对象。
+         * @method getTask
+         * @static
+         * @return {(Task|Null)} 当前用户的待办任务对象：task。当前用户没有对此流程实例的待办时，或流程实例已经流转结束，返回null.
+         * @example
+         * var task = this.workContext.getTask();
+         */
+        "getTask": function(){return ev.task || null;},
+
         /**
          * 获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
          * @method getTaskList
@@ -335,6 +355,61 @@ MWF.xScript.Environment = function(ev){
             }, ecb, !!cb);
             return list;
         },
+
+        /**
+         * 获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
+         * @method getTaskCompletedList
+         * @static
+         * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取已办数组出错时的回调。
+         * @return {(TaskCompleted[])} 已办任务列表.
+         * @example
+         * //本样例以同步执行
+         * var taskCompletedList = this.workContext.getTaskCompletedList();
+         * @example
+         * //本样例以异步执行
+         * this.workContext.getTaskCompletedList( function(taskCompletedList){
+         *     //taskCompletedList 为待办数组
+         * });
+         */
+        "getTaskCompletedList": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByWork(ev.work.id, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list;
+        },
+
+        /**
+         * 根据当前工作的job获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
+         * @method getTaskCompletedListByJob
+         * @static
+         * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取已办数组出错时的回调。
+         * @return {(TaskCompleted[])} 已办任务列表.
+         * @example
+         * //本样例以同步执行
+         * var taskCompletedList = this.workContext.getTaskCompletedListByJob();
+         * @example
+         * //本样例以异步执行
+         * this.workContext.getTaskCompletedListByJob( function(taskCompletedList){
+         *     //taskCompletedList 为待办数组
+         * });
+         */
+        "getTaskCompletedListByJob": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByJob(ev.work.job, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list;
+        },
+
         /**
          * @summary 获取当前流程实例的所有待阅对象数组。如果流程实例无待阅，则返回一个空数组。
          * @method getReadList
@@ -387,58 +462,7 @@ MWF.xScript.Environment = function(ev){
             }, ecb, !!cb);
             return list;
         },
-        /**
-         * 获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
-         * @method getTaskCompletedList
-         * @static
-         * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
-         * @param {Function} [error] 获取已办数组出错时的回调。
-         * @return {(TaskCompleted[])} 已办任务列表.
-         * @example
-         * //本样例以同步执行
-         * var taskCompletedList = this.workContext.getTaskCompletedList();
-         * @example
-         * //本样例以异步执行
-         * this.workContext.getTaskCompletedList( function(taskCompletedList){
-         *     //taskCompletedList 为待办数组
-         * });
-         */
-        "getTaskCompletedList": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByWork(ev.work.id, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list;
-        },
-        /**
-         * 根据当前工作的job获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
-         * @method getTaskCompletedListByJob
-         * @static
-         * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
-         * @param {Function} [error] 获取已办数组出错时的回调。
-         * @return {(TaskCompleted[])} 已办任务列表.
-         * @example
-         * //本样例以同步执行
-         * var taskCompletedList = this.workContext.getTaskCompletedListByJob();
-         * @example
-         * //本样例以异步执行
-         * this.workContext.getTaskCompletedListByJob( function(taskCompletedList){
-         *     //taskCompletedList 为待办数组
-         * });
-         */
-        "getTaskCompletedListByJob": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByJob(ev.work.job, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list;
-        },
+
         /**
          * @summary 获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
          * @method getReadCompletedList
@@ -500,7 +524,7 @@ MWF.xScript.Environment = function(ev){
          * @summary 获取当前人对流程实例的权限。
          * @method getControl
          * @static
-         * @return {Control} 流程实例权限对象.
+         * @return {WorkControl} 流程实例权限对象.
          * @example
          * var control = this.workContext.getControl();
          */
@@ -527,7 +551,7 @@ MWF.xScript.Environment = function(ev){
          * @summary 获取当前流程实例的附件对象列表。
          * @method getAttachmentList
          * @static
-         * @return {AttachmentData[]} 附件数据.
+         * @return {WorkAttachmentData[]} 附件数据.
          * @example
          * var attachmentList = this.workContext.getAttachmentList();
          */
@@ -1963,19 +1987,150 @@ MWF.xScript.Environment = function(ev){
 
     //仅前台对象-----------------------------------------
     //form
+
+    /**
+     * form对象可在流程表单或内容管理表单中可用。（仅前端脚本可用）。
+     * @module form
+     * @example
+     * //您可以在流程表单和内容管理的前端脚本中，通过this来获取form对象，如下：
+     * var form = this.form;
+     */
     this.page = this.form = {
+        /**
+         * 获取当前表单的基本信息。
+         * @method getInfor
+         * @static
+         * @return {FormInfor} 表单的基本信息.
+         * @example
+         * var form = this.form.getInfor();
+         */
         "getInfor": function(){return ev.formInfor;},
+
         "infor": ev.formInfor,
+
+        /**
+         * 获取打开当前文档的component对象。平台中每一个窗口应用，就是一个component对象。此处获取到的对象为x_component_process_Work。
+         * @method getApp
+         * @static
+         * @return {x_component_process_Work}打开当前文档的component对象.
+         * @example
+         * var app = this.form.getApp();
+        //所有component对象都有以下方法。
+        app.openInNewWindow();  //在新窗口中打开当前应用
+        app.setCurrent();   //将当前应用设置为激活状态
+        app.minSize();      //应用窗口最小化
+        app.maxSize();      //应用窗口最大化
+        app.restoreSize();  //应用窗口还原
+        app.refresh();      //刷新应用
+        app.close();        //关闭应用
+        app.setTitle(str);  //设置应用标题
+        app.dialog(option); //弹出一个对话框（详见MWF.widget.Dialog）
+
+        //显示一个通知消息
+        app.notice(content, type, target, where, offset);
+
+        //显示一个确认框
+        app.confirm(type, e, title, text, width, height, ok, cancel);
+
+        //弹出一个信息框
+        app.alert(type, e, title, text, width, height);
+
+        //为应用绑定一个事件
+        app.addEvent(type, fun);
+         */
         "getApp": function(){return _form.app;},
+
         "app": _form.app,
+
+        /**
+         * 获取Form对应的DOM对象。
+         * @method node
+         * @static
+         * @return {HTMLDivElement} 当前form对应的div对象.
+         * @example
+         * var node = this.form.node();
+         */
         "node": function(){return _form.node;},
+
+        /**
+         * 获取表单是否可编辑。只读。
+         * @member readonly
+         * @static
+         * @return {Boolean} 是否只读.
+         * @example
+         * var readonly = this.form.readonly;
+         */
         "readonly": _form.options.readonly,
+
+        /**
+         * 获取表单元素对象。<br/>
+         * <table>
+         *    <tr><td>Actionbar(操作条)</td><td>Address(地址输入框)</td><td>Attachment(附件框)</td><td>Button(按钮)</td></tr>
+         *    <tr><td>Calendar(日期输入框)</td><td>Checkbox(多选按钮)</td><td>Combox(组合框)</td><td>Datagrid(数据网格)</td></tr>
+         *    <tr><td>Div(容器)</td><td>Htmleditor(富文本编辑框)</td><td>Html(内置html)</td><td>Iframe(嵌入Iframe)</td></tr>
+         *    <tr><td>Image(图片)</td><td>Label(文本)</td><td>Log(流程意见)</td><td>Monitor(流程监控)</td></tr>
+         *    <tr><td>Number(数字输入框)</td><td>Office(office控件)</td><td>Opinion(意见框)</td><td>Org(人员组织选择)</td></tr>
+         *    <tr><td>Radio(单选按钮)</td><td>Select(选择框)</td><td>Sidebar(侧边操作条)</td><td>Stat(统计组件)</td></tr>
+         *    <tr><td>Subform(子表单)</td><td>Tab(分页)</td><td>Table(表格)</td><td>Textarea(多行输入)</td></tr>
+         *    <tr><td>Textfield(文本输入框)</td><td>Tree(树状控件)</td><td>View(视图组件)</td><td>ViewSelector(视图选择组件)</td></tr>
+         *    <tr><td>Documenteditor(公文编辑器)</td><td>ImageClipper(图片编辑器)</td><td></td><td></td></tr>
+         * </table>
+         * @method get
+         * @static
+         * @return {FormComponent} 请查看本文档的Classes导航下的FormComponents。
+         * @param {String} name 字段标识
+         * @example
+         * var field = this.form.get("subject");
+         */
         "get": function(name){return (_form.all) ? _form.all[name] : null;},
+
+        /**
+         * 获取表单中可输入的字段元素对象。<br/>
+         * <table>
+         *    <tr><td>Address(地址输入框)</td><td>Attachment(附件框)</td><td>Calendar(日期输入框)</td><td>Checkbox(多选按钮)</td></tr>
+         *    <tr><td>Combox(组合框)</td><td>Datagrid(数据网格)</td><td>Htmleditor(富文本编辑框)</td><td>Number(数字输入框)</td></tr>
+         *    <tr><td>Org(人员组织选择)</td><td>Radio(单选按钮)</td><td>Select(选择框)</td><td>Textarea(多行输入)</td></tr>
+         *    <tr><td>Textfield(文本输入框)</td><td></td><td></td><td></td></tr>
+         * </table>
+         * @method getField
+         * @static
+         * @return {FormComponent} 请查看本文档的Classes导航下的FormComponents。
+         * @param {String} name 字段标识
+         * @example
+         * var field = this.form.getField("subject");
+         */
         "getField": function(name){return _forms[name];},
+
         "getAction": function(){return _form.workAction},
         "getDesktop": function(){return _form.app.desktop},
+
+        /**获取业务数据
+         * @method getData
+         * @see module:data
+         * @example
+         *  var data = this.form.getData();
+         * @return {Object} 返回表单绑定的业务数据。
+         */
         "getData": function(){return new MWF.xScript.JSONData(_form.getData());},
+
+        /**保存当前表单所绑定的业务数据。<br/>
+         * this.form.save()会触发 beforeSave和afterSave事件，因此在beforeSave和afterSave中不允许使用本方法。
+         * @method save
+         * @param {Function} [callback] - 保存后的回调
+         * @param {Boolean} [silent] - 是否静默，否提示保存成功，默认为false
+         * @example
+         *  this.form.save(function(){
+         *      //do someting
+         *  }, true);
+         */
         "save": function(callback, silent){_form.saveWork(callback, silent); },
+
+        /**
+         *关闭当前表单
+         * @method close
+         * @example
+         * this.form.close();
+         */
         "close": function(){_form.closeWork();},
 
         /**本校验不包括校验意见，校验路由；通常用在弹出提交界面时候的校验
@@ -1991,6 +2146,34 @@ MWF.xScript.Environment = function(ev){
             return !(!_form.formCustomValidation("", "") || !_form.formValidation("", ""));
         },
 
+
+
+    /**对当前表单打开的流程实例进行流转。<b>（仅流程表单中可用）</b><br/>
+     * 可以通过this.workContext.getControl().allowProcessing来判断当前用户是否有权限进行流转。<br/>
+     * this.form.process()会触发 beforeSave、afterSave、beforeProcess、afterProcess事件，因此在上述事件中不允许使用本方法。
+     * @method process
+     * @param {Object} [option] - 流程的相关数据，如果不带此参数，则弹出路由选择和意见填写框<br/>
+     * 格式如下：
+     <pre><code>
+     {
+            "routeName": "", //流转到下一步要选择的路由名称
+            "opinion": "", //流转意见
+            "callback": function(){} //流转完成后的回调方法
+      }
+     </code></pre>
+     * @example
+     //不带参数，弹出路由选择和意见填写框
+     this.form.process();
+     * @example
+     //带参数，流转
+     this.form.process({
+            "routeName": "送审批",
+            "opinion": "同意",
+            "callback": function(json){
+                this.form.notice("process success", "success");
+            }.bind(this)
+      });
+     */
         "process": function(option){
             var op = _form.getOpinion();
             var mds = op.medias;
@@ -2001,6 +2184,40 @@ MWF.xScript.Environment = function(ev){
                 _form.processWork();
             }
         },
+
+        /**对当前文档的待办重新设定处理人。<b>（仅流程表单中可用）</b><br/>
+         * 可以通过this.workContext.getControl().allowReset来判断当前用户是否有权限重置处理人。<br/>
+         * this.form.reset()会触发 beforeReset、afterReset事件，因此在上述事件中不允许使用本方法。
+         * @method reset
+         * @param {Object} [option] - 进行重置处理人的相关参数，如果不带此参数，弹出重置处理人对话框<br/>
+         * 格式如下：
+         <pre><code>
+         {
+            "names": "", //{Array|String} 要重置给哪些身份
+            "opinion": "", //流转意见
+            "success ": function(){}, //重置成功后的回调方法
+            "failure ": function(){} //重置失败后的回调方法
+        }
+         </code></pre>
+         * @example
+         //不带参数，弹出重置处理人对话框
+         this.form.reset();
+         * @example
+         //带参数，直接调用后台服务重置
+         this.form.reset({
+            "names": ["张三(综合部)"],
+            "opinion": "授权处理",
+            "success": function(json){
+                this.form.notice("reset success", "success");
+            }.bind(this),
+            "failure": function(xhr, text, error){
+                //xhr--HttpRequest请求对象
+                //text--HttpResponse内容文本
+                //error--错误信息
+                this.form.notice("reset failure:"+error, "error");
+            }.bind(this)
+        });
+         */
         "reset": function(option){
             if (!option){
                 if (_form.businessData.control["allowReset"]) _form.resetWork();
@@ -2008,20 +2225,86 @@ MWF.xScript.Environment = function(ev){
                 _form.resetWorkToPeson(option.names, option.opinion, option.keep, option.success, option.failure);
             }
         },
+
+        /**撤回文档操作，上一个处理人收回已经流转下去的文件。<b>（仅流程表单中可用）</b><br/>
+         * 这个操作只允许上一个处理人在流转文件之后，下一个处理人未处理的时候执行。<br/>
+         * 可以通过this.workContext.getControl().allowRetract来判断当前用户是否有权限撤回。<br/>
+         * this.form.retract()会触发 beforeRetract、afterRetract事件，因此在上述事件中不允许使用本方法。
+         * @method retract
+         * @param {Object} [option] - 进行撤回的相关参数，如果不提供option参数，则弹出撤回对话框。<br/>
+         * 格式如下：
+         <pre><code>
+         {
+            "success ": function(){}, //撤回成功后的回调方法
+            "failure ": function(){} //撤回失败后的回调方法
+        }
+         </code></pre>
+         * @example
+         //不带参数，则弹出撤回对话框
+         this.form.retract();
+         * @example
+         //带参数，直接调用后台服务撤回
+         this.form.retract({
+            "success": function(json){
+                this.form.notice("retract success", "success");
+            }.bind(this),
+            "failure": function(xhr, text, error){
+                //xhr--HttpRequest请求对象
+                //text--HttpResponse内容文本
+                //error--错误信息
+                this.form.notice("retract failure: "+error, "error");
+            }.bind(this)
+        });
+         */
         "retract": function(option){
             if (!option){
-                if (_form.businessData.control["allowAddSplit"]) _form.addSplit();
+                if (_form.businessData.control["allowRetract"]) _form.retractWork();
             }else{
                 _form.doRetractWork(option.success, option.failure);
             }
         },
+
+        /**在已拆分的工作上添加分支。<b>（仅流程表单中可用）</b><br/>
+         * 可以通过this.workContext.getControl().allowAddSplit来判断当前用户是否有权限。<br/>
+         * @method addSplit
+         * @param {Object} [option] - 添加分支的相关参数，如果不提供option参数，则弹出添加分支对话框。<br/>
+         * 格式如下：
+         <pre><code>
+         {
+            "value" : [], //splitValueList 添加的拆分值，拆分值取决于流程拆分节点的设置
+            "trimExist" : true, //排除已经存在的拆分值.
+            "success ": function(){}, //执行成功后的回调方法
+            "failure ": function(){} //执行失败后的回调方法
+        }
+         </code></pre>
+         * @example
+         //不带参数，则弹出添加分支对话框
+         this.form.addSplit();
+         * @example
+         //带参数，直接添加分支
+         this.form.addSplit({
+            "value" : ["开发部@kfb@U"],
+            "trimExist" : true,
+            "success": function(json){
+                this.form.notice("addSplit success", "success");
+            }.bind(this),
+            "failure": function(xhr, text, error){
+                //xhr--HttpRequest请求对象
+                //text--HttpResponse内容文本
+                //error--错误信息
+                this.form.notice("addSplit failure: "+error, "error");
+            }.bind(this)
+        });
+         */
         "addSplit": function(option){
             if (!option){
-                if (_form.businessData.control["allowRetract"]) _form.retractWork();
+                if (_form.businessData.control["allowAddSplit"]) _form.addSplit();
             }else{
-                _form.addSplitWork(option.value, option.success, option.failure);
+                _form.addSplitWork(option.value, option.trimExist, option.success, option.failure);
             }
         },
+
+
         "rollback": function(option){
             if (!option){
                 if (_form.businessData.control["allowRollback"]) _form.rollback();
@@ -2030,6 +2313,57 @@ MWF.xScript.Environment = function(ev){
             }
         },
 
+        /**删除当前工作文档。<b>（仅流程表单中可用）</b><br/>
+         * 可以通过this.workContext.getControl().allowDeleteWork来判断当前用户是否有权限删除文档。<br/>
+         * @method deleteWork
+         * @param {Object} [option] - 删除相关参数，如果不提供option参数，则弹出删除对话框。<br/>
+         * 格式如下：
+         <pre><code>
+         {
+            "success ": function(){}, //执行成功后的回调方法
+            "failure ": function(){} //执行失败后的回调方法
+        }
+         </code></pre>
+         * @example
+         //不带参数，则弹出添加分支对话框
+         this.form.deleteWork();
+         * @example
+         //带参数，直接调用服务删除
+         this.form.deleteWork({
+            "success": function(json){
+                this.form.notice("deleteWork success", "success");
+            }.bind(this),
+            "failure": function(xhr, text, error){
+                //xhr--HttpRequest请求对象
+                //text--HttpResponse内容文本
+                //error--错误信息
+                this.form.notice("deleteWork failure: "+error, "error");
+            }.bind(this)
+        });
+         */
+        "deleteWork": function(option){
+            if (!option){
+                if (_form.businessData.control["allowDelete"]) _form.deleteWork();
+            }else{
+                _form.doDeleteWork(option.success, option.failure);
+            }
+        },
+
+        /**用一个新的浏览器窗口来打开当前文档，用于打印。<b>（仅流程表单中可用）</b><br/>
+         * 如不指定表单，则使用表单设计中指定的打印表单。<br/>
+         * @method print
+         * @param {String} [application] - 指定表单所在的流程应用ID或名称。省略此参数表示当前应用。
+         * @param {String} [form] - 指定表单ID或名称。
+         * @example
+         //在新窗口中使用当前表单中配置的打印表单打开当前文档
+         this.form.print();
+         * @example
+         //在新窗口中使用“订单打印表单”表单打开当前文档
+         this.form.print("订单打印表单");
+         * @example
+         //在新窗口中使用“订单管理”应用中的“订单打印表单”表单打开当前文档
+         this.form.print("订单管理", "订单打印表单");
+         */
         "print": function(application, form){
             if (arguments.length){
                 var app = (arguments.length>1) ? arguments[0] : null;
@@ -2039,13 +2373,7 @@ MWF.xScript.Environment = function(ev){
                 _form.printWork();
             }
         },
-        "deleteWork": function(option){
-            if (!option){
-                if (_form.businessData.control["allowDelete"]) _form.deleteWork();
-            }else{
-                _form.doDeleteWork(option.success, option.failure);
-            }
-        },
+
         "confirm": function(type, title, text, width, height, ok, cancel, callback, mask, style){
             if ((arguments.length<=1) || o2.typeOf(arguments[1])==="string"){
                 var p = MWF.getCenter({"x": width, "y": height});

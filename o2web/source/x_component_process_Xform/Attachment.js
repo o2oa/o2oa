@@ -1036,8 +1036,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
 });
 /**
- * 附件数据结构.
- * @typedef {Object} AttachmentData
+ * 流程实例的附件数据结构.
+ * @typedef {Object} WorkAttachmentData
  * @property {String} id - 附件id.
  * @property {String} name - 附件标题.
  * @property {String} person - 上传人.
@@ -1720,7 +1720,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     },
     /**
      * @summary 为组件重新设置附件，该附件必须已经上传。
-     *  @param data{AttachmentData} .
+     *  @param data{WorkAttachmentData} .
      */
     setData: function(data){
         this.attachmentController.clear();
