@@ -1555,6 +1555,13 @@ MWF.xScript.CMSEnvironment = function(ev){
             _form.saveDocument(callback);
         },
         "close": function(){_form.closeDocument();},
+
+        /**发布当前文档。<b>（仅内容管理表单中可用）</b>
+         * @method publish
+         * @memberOf module:form
+         * @example
+         this.form.publish();
+         */
         "publish": function(option){
             _form.publishDocument()
         },
