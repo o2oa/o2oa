@@ -1,3 +1,48 @@
+/**
+ * StatementInfor 查询配置信息
+ * @typedef {Object} StatementInfor
+ * @example
+ * {
+    "query": "26d21c71-5114-4496-8ca1-a69e56324841", //所属应用id
+    "id": "ee334220-66d3-4f78-afce-8ccf6b995c8c", //查询id
+    "name": "测试查询", //名称
+    "alias": "", //别名
+    "description": "", //描述
+    "table": "", //自建表的id
+    "entityClassName": "com.x.processplatform.core.entity.content.Task", //系统表表名
+    "entityCategory": "official", //表类型 official(系统表) 或 dynamic(自建表)
+    "format": "jpql", //语句类型,jpql 或者 script(脚本)
+    "type": "select", //select/update/delete
+    "data": "SELECT o FROM Task o where o.person = :person", //查询语句
+    "countData": "SELECT count(o.id) FROM Task o where o.person = :person", //总数语句
+    "countScriptText" : "", //总数语句脚本
+    "scriptText" : "", //查询语句脚本
+    "viewJson": { ... } //视图相关信息
+}
+ */
+
+/**
+ * ViewInfor 视图配置信息
+ * @typedef {Object} ViewInfor
+ * @example
+ * {
+      "application": "db9fc893-7dbc-4e0f-a617-99089d2c6323", //视图所在应用
+      "query": "db9fc893-7dbc-4e0f-a617-99089d2c6323",  //视图所在应用，同application
+      "name": "视图自定义测试", //视图名称
+      "viewName": "视图自定义测试",  //视图名称，同name
+      "isExpand": "no",  //如果有分类，默认是否展开开
+      "id": "705ce967-2f9c-425c-8873-3bd729249e1d", //视图id
+      "alias": "", //视图别名
+      "description": "",  //视图描述
+      "display": true, //视图是否显示
+      "type": "cms", //视图嵌入的数据类型, cms 或 process
+      "count": 2000, //最多返回2000条
+      "pageSize": 20, //每页的条数
+      "createTime": "2019-09-02 10:18:27",
+      "updateTime": "2020-03-26 15:53:03"
+    }
+ */
+
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.ViewEnvironment = function (ev) {
     var _form = ev.view;
@@ -1308,15 +1353,254 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     //仅前台对象-----------------------------------------
     //form
+
+    /**
+     * 当查询设计中使用了select语句，并且配置了视图，可以在查询视图中使用本章API。<br/>
+     * queryStatement对象在查询视图中可用。它的很多方法与queryView类似。<b>（仅前端脚本可用）</b><br/>
+     * @module queryStatement
+     * @example
+     * //您可以在查询视图中，通过this来获取queryStatement对象，如下：
+     * var queryStatement = this.queryStatement;
+     */
+
+    /**
+     * 当查询视图被嵌入到门户页面、流程表单或内容管理表单的时候，可以通过这个方法来获取页面或表单的上下文。
+     * @method getParentEnvironment
+     * @static
+     * @return {MWF.xScript.Environment|MWF.xScript.CMSEnvironment} 页面或表单的上下文.
+     * @example
+     * this.queryStatement.getParentEnvironment();
+     * @example
+     * var env = this.queryStatement.getParentEnvironment(); //当视图被嵌入到页面的时候，可以在视图里获取页面的上下文
+     * env.page.toPortal( "公文门户" ); //调用page的toPage() 跳转到其他门户
+     */
+
+    /**
+     * 获取查询视图当前页的基本信息。
+     * @method getPageInfor
+     * @memberOf module:queryStatement
+     * @static
+     * @return {Object} 当前页的信息，格式如下:
+     *<pre><code class='language-js'>{
+     *     "pages": 3, //总页数
+     *     "perPageCount": 50, //每页的条数
+     *     "currentPageNumber": 1 // 当前页数
+     * }
+     * </pre></code>
+     * @example
+     * this.queryStatement.getPageInfor();
+     */
+
+    /**
+     * 获取当前页的数据。
+     * @method getPageData
+     * @memberOf module:queryStatement
+     * @static
+     * @return {Object} 当前页数据。
+     * <div>数据格式和 jpql 语句的写法有关</div>
+     * 如:  "select o from table o" 返回 json数组
+     *<pre><code class='language-js'>[
+     {
+        "id" : "id1",
+        "title" : "title1"
+    },
+     {
+        "id" : "id2",
+        "title" : "title2"
+    },
+     ...
+     *]
+     * </pre></code>
+     * 如："select id, title from table o" 返回 二维数组：
+     *<pre><code class='language-js'>[
+     ["id1", "title1"],
+     ["id2", "title2"],
+     ...
+     *]
+     *</pre></code>
+     * @example
+     * var data = this.queryStatement.getPageData();
+     */
+
+    /**
+     * 跳转到指定的页面。
+     * @method toPage
+     * @memberOf module:queryStatement
+     * @static
+     * @param {Number} pageNumber - 需要跳转的页码。
+     * @param {Function} [callback ] - 跳转的页面数据加载完成以后的回调方法。
+     * @example
+     * var data = this.queryStatement.toPage( pageNumber, callback );
+     * @example
+     * //　跳转到第2页并且获取该页的数据。
+     * this.queryStatement.toPage( 2, function(){
+     *      var data = this.queryStatement.getPageData();
+     * }.bind(this) )
+     */
+
+    /**
+     * 当查询视图设置了允许多选的时候，可以通过这个方法全部选中当前页面的条目。
+     * @method selectAll
+     * @memberOf module:queryStatement
+     * @static
+     * @example
+     * this.queryStatement.selectAll();
+     */
+
+    /**
+     * 当查询视图设置了允许多选的时候，可以通过这个方法取消选中的条目。
+     * @method unSelectAll
+     * @memberOf module:queryStatement
+     * @static
+     * @example
+     * this.queryStatement.unSelectAll();
+     */
+
+
+
+    /**
+     * queryView对象可在视图中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
+     * @module queryView
+     * @example
+     * //您可以在视图中，通过this来获取queryView对象，如下：
+     * var queryView = this.queryView;
+     */
     this.page = this.form = this.queryView = this.queryStatement = {
+        /**
+         * 当视图被嵌入到门户页面、流程表单或内容管理表单的时候，可以通过这个方法来获取页面或表单的上下文。
+         * @method getParentEnvironment
+         * @static
+         * @return {MWF.xScript.Environment|MWF.xScript.CMSEnvironment} 页面或表单的上下文.
+         * @example
+         * this.queryView.getParentEnvironment();
+         * @example
+         * var env = this.queryView.getParentEnvironment(); //当视图被嵌入到页面的时候，可以在视图里获取页面的上下文
+         * env.page.toPortal( "公文门户" ); //调用page的toPage() 跳转到其他门户
+         */
         "getParentEnvironment" : function () { return _form.getParentEnvironment(); }, //视图嵌入的表单或页面的上下文
+
+        /**
+         * 获取查询的配置信息。
+         * @method getStatementInfor
+         * @memberOf module:queryStatement
+         * @static
+         * @return {StatementInfor} 查询的配置信息.
+         * @example
+         * this.queryStatement.getStatementInfor();
+         */
         "getStatementInfor" : function () { return _form.getStatementInfor ? _form.getStatementInfor() : null; },
+
+        /**
+         * 获取查询的配置信息。
+         * @method getViewInfor
+         * @memberOf module:queryView
+         * @static
+         * @return {ViewInfor} 视图的配置信息.
+         * @example
+         * this.queryView.getViewInfor();
+         */
         "getViewInfor" : function () { return _form.getViewInfor(); },
+
+        /**
+         * 获取视图或查询视图当前页的基本信息。
+         * @method getPageInfor
+         * @memberOf module:queryView
+         * @static
+         * @return {Object} 当前页的信息，格式如下:
+         *<pre><code class='language-js'>{
+         *     "pages": 3, //总页数
+         *     "perPageCount": 50, //每页的条数
+         *     "currentPageNumber": 1 // 当前页数
+         * }
+         * </pre></code>
+         * @example
+         * //视图中的用法
+         * this.queryView.getPageInfor();
+         *
+         * //查询视图中的用法
+         * this.queryStatement.getPageInfor();
+         */
         "getPageInfor" : function () { return _form.getPageInfor(); },
+
+        /**
+         * 获取当前页的数据。
+         * @method getPageData
+         * @memberOf module:queryView
+         * @static
+         * @return {Object} 当前页数据。
+         * <div>没有分类时候，数据格式如下：</div>
+         *<pre><code class='language-js'>[
+         *   {
+         *       "bundle": "099ed3c9-dfbc-4094-a8b7-5bfd6c5f7070", //cms 的 documentId, process 的 jobId
+         *      "data": {  //视图中配置的数据
+         *        "title": "考勤管理-配置-统计周期设置", //列名称及列值
+         *        "time": "2018-08-25 11:29:45"
+         *      }
+         *    },
+         *   ...
+         *]
+         * </pre></code>
+         * 有分类的时候，数据格式如下：
+         *<pre><code class='language-js'>[
+         *  {
+         *   "group": "工作日志",  //分类1
+         *   "list": [  //分类下的数据
+         *     {
+         *       "bundle": "001257be-725a-43cf-9679-3892bbab696a", //cms 的 documentId, process 的 jobId
+         *       "data": { //视图中配置的数据
+         *         "title": "标题",  //列名称及列值
+         *         "time": "2018-07-31 15:39:13",
+         *         "category": "工作日志"
+         *       }
+         *     },
+         *     ...
+         *   ]
+         *  },
+         *  ...
+         *]
+         *</pre></code>
+         * @example
+         * var data = this.queryView.getPageData();
+         */
         "getPageData" : function () { return _form.getPageData(); },
+
+        /**
+         * 跳转到指定的页面。
+         * @method toPage
+         * @memberOf module:queryView
+         * @static
+         * @param {Number} pageNumber - 需要跳转的页码。
+         * @param {Function} [callback ] - 跳转的页面数据加载完成以后的回调方法。
+         * @example
+         * var data = this.queryView.toPage( pageNumber, callback );
+         * @example
+         * //　跳转到第2页并且获取该页的数据。
+         * this.queryView.toPage( 2, function(){
+         *      var data = this.queryView.getPageData();
+         * }.bind(this) )
+         */
         "toPage" : function ( pageNumber, callback ) { return _form.toPage(pageNumber, callback); },
+
+        /**
+         * 当视图设置了允许多选的时候，可以通过这个方法全部选中当前页面的条目。
+         * @method selectAll
+         * @memberOf module:queryView
+         * @static
+         * @example
+         * this.queryView.selectAll();
+         */
         "selectAll" : function () { return _form.selectAll(); },
+
+        /**
+         * 当视图设置了允许多选的时候，可以通过这个方法取消选中的条目。
+         * @method unSelectAll
+         * @memberOf module:queryView
+         * @static
+         * @example
+         * this.queryView.unSelectAll();
+         */
         "unSelectAll" : function () { return _form.unSelectAll(); },
+
         "getSelectedData" : function () { return _form.getSelectedData(); },
         "setFilter" : function ( filter, callback ) { return _form.setFilter(filter, callback); },
         "setStatementFilter" : function ( filter , parameter, callback) { return _form.setFilter(filter, parameter, callback); },

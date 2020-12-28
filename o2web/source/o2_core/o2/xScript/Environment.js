@@ -368,6 +368,7 @@ MWF.xScript.Environment = function(ev){
 
         /**保存data对象。
          * @method save
+         * @static
          * @memberOf module:data
          * @param {Function} [callback] - 保存成功后的回调函数。
          * @example
@@ -2236,6 +2237,7 @@ MWF.xScript.Environment = function(ev){
 
         /**获取业务数据
          * @method getData
+         * @static
          * @see module:data
          * @example
          *  var data = this.form.getData();
@@ -2246,6 +2248,7 @@ MWF.xScript.Environment = function(ev){
         /**保存当前表单所绑定的业务数据。<br/>
          * this.form.save()会触发 beforeSave和afterSave事件，因此在beforeSave和afterSave中不允许使用本方法。
          * @method save
+         * @static
          * @param {Function} [callback] - 保存后的回调
          * @param {Boolean} [silent] - 是否静默，否提示保存成功，默认为false
          * @example
@@ -2258,6 +2261,7 @@ MWF.xScript.Environment = function(ev){
         /**
          *关闭当前表单
          * @method close
+         * @static
          * @example
          * this.form.close();
          */
@@ -2266,6 +2270,7 @@ MWF.xScript.Environment = function(ev){
         /**本校验不包括校验意见，校验路由；通常用在弹出提交界面时候的校验
          * @summary 根据表单中所有组件的校验设置和“流转校验”脚本进行校验。
          * @method verify
+         * @static
          *  @example
          *  if( !this.form.verify() ){
          *      return false;
@@ -2282,6 +2287,7 @@ MWF.xScript.Environment = function(ev){
      * 可以通过this.workContext.getControl().allowProcessing来判断当前用户是否有权限进行流转。<br/>
      * this.form.process()会触发 beforeSave、afterSave、beforeProcess、afterProcess事件，因此在上述事件中不允许使用本方法。
      * @method process
+     * @static
      * @param {Object} [option] - 流程的相关数据，如果不带此参数，则弹出路由选择和意见填写框<br/>
      * 格式如下：
      <pre><code class="language-js">
@@ -2319,6 +2325,7 @@ MWF.xScript.Environment = function(ev){
          * 可以通过this.workContext.getControl().allowReset来判断当前用户是否有权限重置处理人。<br/>
          * this.form.reset()会触发 beforeReset、afterReset事件，因此在上述事件中不允许使用本方法。
          * @method reset
+         * @static
          * @param {Object} [option] - 进行重置处理人的相关参数，如果不带此参数，弹出重置处理人对话框<br/>
          * 格式如下：
          <pre><code class="language-js">
@@ -2361,6 +2368,7 @@ MWF.xScript.Environment = function(ev){
          * 可以通过this.workContext.getControl().allowRetract来判断当前用户是否有权限撤回。<br/>
          * this.form.retract()会触发 beforeRetract、afterRetract事件，因此在上述事件中不允许使用本方法。
          * @method retract
+         * @static
          * @param {Object} [option] - 进行撤回的相关参数，如果不提供option参数，则弹出撤回对话框。<br/>
          * 格式如下：
          <pre><code class="language-js">
@@ -2397,6 +2405,7 @@ MWF.xScript.Environment = function(ev){
         /**在已拆分的工作上添加分支。<b>（仅流程表单中可用）</b><br/>
          * 可以通过this.workContext.getControl().allowAddSplit来判断当前用户是否有权限。<br/>
          * @method addSplit
+         * @static
          * @param {Object} [option] - 添加分支的相关参数，如果不提供option参数，则弹出添加分支对话框。<br/>
          * 格式如下：
          <pre><code class="language-js">
@@ -2446,6 +2455,7 @@ MWF.xScript.Environment = function(ev){
         /**删除当前工作文档。<b>（仅流程表单中可用）</b><br/>
          * 可以通过this.workContext.getControl().allowDeleteWork来判断当前用户是否有权限删除文档。<br/>
          * @method deleteWork
+         * @static
          * @param {Object} [option] - 删除相关参数，如果不提供option参数，则弹出删除对话框。<br/>
          * 格式如下：
          <pre><code class="language-js">
@@ -2481,6 +2491,7 @@ MWF.xScript.Environment = function(ev){
 
         /**弹出一个确认框，带确认和关闭按钮
          * @method confirm
+         * @static
          * @param {String} type - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
          * @param {String} title - 确认框标题栏显示文本。
          * @param {String} text - 确认框的内容显示文本。
@@ -2521,6 +2532,7 @@ MWF.xScript.Environment = function(ev){
 
         /**弹出一个带关闭按钮的信息框
          * @method alert
+         * @static
          * @param {String} type - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
          * @param {String} title - 信息框标题栏显示文本。
          * @param {String} text - 信息框的内容显示文本。
@@ -2535,6 +2547,7 @@ MWF.xScript.Environment = function(ev){
 
         /**弹出一个提示框
          * @method notice
+         * @static
          * @param {String} content - 要显示的信息文本
          * @param {String} [type] - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
          * @param {Element} [target] - 信息框显示位置的参考DOM对象。
@@ -2555,6 +2568,7 @@ MWF.xScript.Environment = function(ev){
 
         /**给表单添加事件。
          * @method addEvent
+         * @static
          * @param {String} type - 事件名称，参考本API Classer->FormComponents->Form的事件
          * @param {Function} event - 事件方法。
          * @example
@@ -2567,6 +2581,7 @@ MWF.xScript.Environment = function(ev){
         /**用一个新的浏览器窗口来打开当前文档，用于打印。<b>（仅流程表单中可用）</b><br/>
          * 如不指定表单，则使用表单设计中指定的打印表单。<br/>
          * @method print
+         * @static
          * @param {String} [application] - 指定表单所在的流程应用ID或名称。省略此参数表示当前应用。
          * @param {String} [form] - 指定表单ID或名称。
          * @example
@@ -2591,6 +2606,7 @@ MWF.xScript.Environment = function(ev){
 
         /**同print方法。<b>（仅流程表单中可用）</b><br/>
          * @method openWindow
+         * @static
          * @see this.form.print()
          * @param {String} [application] - 指定表单所在的流程应用ID或名称。省略此参数表示当前应用。
          * @param {String} [form] - 指定表单ID或名称。
@@ -2609,6 +2625,7 @@ MWF.xScript.Environment = function(ev){
 
         /**　打开一个在流转或已完成的流程实例。<br/>
          * @method openWork
+         * @static
          * @param {String} [workId] - 在流转的流程实例ID。workId和workCompletedId两个参数必须提供其中一个
          * @param {String} [workCompletedId] - 已完成的流程实例ID。
          * @param {String} [title] - 手机端打开时的窗口标题。
@@ -2626,6 +2643,7 @@ MWF.xScript.Environment = function(ev){
 
         /**　使用流程的jobId打开工作。<br/>
          * @method openJob
+         * @static
          * @param {String} id - 流程的jobId，如果流程拆分后，有多个流程实例（workId会有多个），但jobId是唯一的。
          * @param {Boolean} [choice] - 如果有多个流程实例，是否弹出界面选择。如果传入false,则直接打开第一个工作。
          * @example
@@ -2732,6 +2750,7 @@ MWF.xScript.Environment = function(ev){
 
         /**　打开一个内容管理文档。<br/>
          * @method openDocument
+         * @static
          * @param {String} id - 内容管理文档实例的ID。
          * @param {Boolean} [title] - 手机APP端打开时的窗口标题。
          * @param {Object} [options] - 其他参数，内容如下<br>
@@ -2761,6 +2780,7 @@ MWF.xScript.Environment = function(ev){
 
         /**打开一个门户页面。<br/>
          * @method openPortal
+         * @static
          * @param {String} portal - 要打开的门户应用名称、别名或ID。
          * @param {String} [page] - 要打开的页面名称、别名或ID。如果忽略，则打开门户的默认首页
          * @param {Object} [par] - 打开页面可以传入参数。<br>在被打开的页面中，可以通过脚本this.page.parameters访问到此参数。
@@ -2796,6 +2816,7 @@ MWF.xScript.Environment = function(ev){
 
         /**打开一个内容管理栏目（应用）。<br/>
          * @method openCMS
+         * @static
          * @param {String} name - 内容管理栏目的名称、别名或ID。
          * @example
          this.form.openCMS("通知公告");
@@ -2814,6 +2835,7 @@ MWF.xScript.Environment = function(ev){
 
         /**打开一个流程应用。<br/>
          * @method openProcess
+         * @static
          * @param {String} name - 流程应用的名称、别名或ID。
          * @example
          this.form.openProcess("财务审批");
@@ -2832,6 +2854,7 @@ MWF.xScript.Environment = function(ev){
 
         /**打开任意一个component应用。<br/>
          * @method openApplication
+         * @static
          * @param {String} name - 要打开的component的名称。component对应的名称可以在“控制面板-系统设置-界面设置-模块部署”中找到（即“组件路径”）。
          * @param {Object} options - 打开的component的相关参数
          * @example
@@ -2853,6 +2876,7 @@ MWF.xScript.Environment = function(ev){
 
         /**创建一条内容管理文档。
          * @method createDocument
+         * @static
          * @param {(String|Object)} [columnOrOptions]
          * 如果不传参数，则弹出范围为平台所有栏目的选中界面。<br/>
          * 当使用String时为内容管理应用（栏目）的名称、别名或ID。<br/>
@@ -2947,6 +2971,7 @@ MWF.xScript.Environment = function(ev){
 
         /**启动一个流程实例。<br/>
          * @method startProcess
+         * @static
          * @param {String} app  - 流程应用的名称、别名或ID。
          * @param {String} process  - 要启动的流程的名称、别名或ID。
          * @param {Object} [data]   - 流程启动时默认的业务数据。
