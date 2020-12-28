@@ -86,7 +86,14 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 				attendanceDetailMobile.setLongitude( wrapIn.getLongitude() );
 			}
 		}
-
+		if( check ){
+			//是否在范围外打卡，默认否
+			if( wrapIn.getIsExternal() ){
+				attendanceDetailMobile.setIsExternal(true);
+			}else{
+				attendanceDetailMobile.setIsExternal(false);
+			}
+		}
 		if( check ){
 			String distinguishedName = wrapIn.getEmpName();
 			if( StringUtils.isEmpty( distinguishedName )){
@@ -240,6 +247,12 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		@FieldDescribe( "操作设备类别：Mac|Windows|IOS|Android|其他, 可以为空." )
 		private String optSystemName = "其他";
 
+		@FieldDescribe( "工作地点描述, 可以为空." )
+		private String workAddress = "未知";
+
+		@FieldDescribe("是否范围外打卡")
+		private Boolean isExternal = false;
+
 		public String getRecordDateString() {
 			return recordDateString;
 		}
@@ -316,6 +329,18 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		public void setCheckin_type(String checkin_type) { this.checkin_type = checkin_type; }
 		public long getCheckin_time() { return checkin_time; }
 		public void setCheckin_time(long checkin_time) { this.checkin_time = checkin_time; }
+		public String getWorkAddress() {
+			return workAddress;
+		}
+		public void setWorkAddress(String workAddress) {
+			this.workAddress = workAddress;
+		}
+		public Boolean getIsExternal() {
+			return isExternal;
+		}
+		public void setIsExternal(Boolean isExternal) {
+			this.isExternal = isExternal;
+		}
 	}
 	
 	public static class Wo extends WoId {

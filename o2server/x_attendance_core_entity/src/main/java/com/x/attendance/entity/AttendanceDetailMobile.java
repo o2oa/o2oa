@@ -159,6 +159,18 @@ public class AttendanceDetailMobile extends SliceJpaObject {
 	@Column( name = ColumnNamePrefix + recordStatus_FIELDNAME )
 	private Integer recordStatus = 0;
 
+	public static final String workAddress_FIELDNAME = "workAddress";
+	@FieldDescribe("打卡地点描述")
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + workAddress_FIELDNAME )
+	@CheckPersist(allowEmpty = true)
+	private String workAddress;
+
+	public static final String isExternal_FIELDNAME = "isExternal";
+	@FieldDescribe("是否范围外打卡")
+	@Column(name = ColumnNamePrefix + isExternal_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean isExternal = false;
+
 	public String getEmpNo() {
 		return empNo;
 	}
@@ -270,4 +282,20 @@ public class AttendanceDetailMobile extends SliceJpaObject {
 	public long getCheckin_time() { return checkin_time; }
 
 	public void setCheckin_time(long checkin_time) { this.checkin_time = checkin_time; }
+
+	public String getWorkAddress() {
+		return workAddress;
+	}
+
+	public void setWorkAddress(String workAddress) {
+		this.workAddress = workAddress;
+	}
+
+	public Boolean getIsExternal() {
+		return isExternal;
+	}
+
+	public void setIsExternal(Boolean isExternal) {
+		this.isExternal = isExternal;
+	}
 }
