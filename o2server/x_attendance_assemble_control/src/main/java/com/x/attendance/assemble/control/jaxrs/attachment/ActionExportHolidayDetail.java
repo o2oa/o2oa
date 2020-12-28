@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -126,9 +127,13 @@ public class ActionExportHolidayDetail extends BaseAction {
 						attendanceSelfHoliday = holidayList.get(i);
 						if( attendanceSelfHoliday != null ){
 							row = sheet.createRow(i + 1);
+							String empName = attendanceSelfHoliday.getEmployeeName();
+							if(StringUtils.isNotEmpty(empName) && StringUtils.contains(empName,"@")){
+								empName = empName.split("@")[0];
+							}
 							row.createCell(0).setCellValue(attendanceSelfHoliday.getTopUnitName());
 							row.createCell(1).setCellValue(attendanceSelfHoliday.getUnitName());
-							row.createCell(2).setCellValue(attendanceSelfHoliday.getEmployeeName());
+							row.createCell(2).setCellValue(empName);
 							row.createCell(3).setCellValue(attendanceSelfHoliday.getLeaveType());
 							
 							if( attendanceSelfHoliday.getStartTime() != null ){

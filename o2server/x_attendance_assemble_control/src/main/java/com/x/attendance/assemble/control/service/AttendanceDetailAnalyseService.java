@@ -40,6 +40,7 @@ public class AttendanceDetailAnalyseService {
 	private AttendanceDetailAnalyseCoreService attendanceDetailAnalyseCoreService = new AttendanceDetailAnalyseCoreService();
 	private DateOperation dateOperation = new DateOperation();
 	private UserManagerService userManagerService = new UserManagerService();
+	private  AttendanceSettingServiceAdv attendanceSettingServiceAdv = new AttendanceSettingServiceAdv();
 
 	/**
 	 * 根据员工姓名\开始日期\结束日期查询日期范围内所有的打卡记录信息ID列表<br/>
@@ -336,7 +337,8 @@ public class AttendanceDetailAnalyseService {
 
 			if( check ){
 				try{
-					detail.setIsWeekend( dateOperation.isWeekend( detail.getRecordDate() ));
+					System.out.println("isWeekend="+attendanceSettingServiceAdv.isWeekend( detail.getRecordDate()));
+					detail.setIsWeekend( attendanceSettingServiceAdv.isWeekend( detail.getRecordDate() ));
 				}catch( Exception e ){
 					check = false;
 					logger.warn( "system analyse record date may be weekend got an exception." + detail.getRecordDateString() );

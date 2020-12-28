@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.tools.ListTools;
 import com.x.portal.assemble.designer.AbstractFactory;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Page;
@@ -72,6 +73,19 @@ public class PageFactory extends AbstractFactory {
 		Predicate p = cb.equal(root.get(Page_.portal), portalId);
 		List<Page> list = em.createQuery(cq.select(root).where(p)).getResultList();
 		return list;
+	}
+
+	public List<String> listWithPortals(List<String> portalIds) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Page.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Page> root = cq.from(Page.class);
+		Predicate p = cb.conjunction();
+		if(ListTools.isNotEmpty(portalIds)) {
+			p = cb.isMember(root.get(Page_.portal), cb.literal(portalIds));
+		}
+		cq.select(root.get(Page_.id)).where(p);
+		return em.createQuery(cq).getResultList();
 	}
 
 	public boolean isFirstPage(Page page) {
