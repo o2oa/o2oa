@@ -18,6 +18,7 @@ import com.x.program.center.jaxrs.collect.CollectAction;
 import com.x.program.center.jaxrs.command.CommandAction;
 import com.x.program.center.jaxrs.config.ConfigAction;
 import com.x.program.center.jaxrs.datastructure.DataStructureAction;
+import com.x.program.center.jaxrs.designer.DesignerAction;
 import com.x.program.center.jaxrs.dingding.DingdingAction;
 import com.x.program.center.jaxrs.distribute.DistributeAction;
 import com.x.program.center.jaxrs.input.InputAction;
@@ -72,6 +73,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(OutputAction.class);
 		classes.add(InputAction.class);
 		classes.add(MarketAction.class);
+		classes.add(DesignerAction.class);
 		return classes;
 	}
 }
