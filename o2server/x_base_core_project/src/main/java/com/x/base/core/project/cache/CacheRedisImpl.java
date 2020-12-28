@@ -9,12 +9,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.x.base.core.project.tools.RedisTools;
-import org.apache.commons.lang3.StringUtils;
+import javax.script.CompiledScript;
 
-import com.x.base.core.project.config.Cache.Redis;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
+import com.x.base.core.project.tools.RedisTools;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.params.SetParams;
@@ -40,12 +38,12 @@ public class CacheRedisImpl implements Cache {
 
 	@Override
 	public void put(CacheCategory category, CacheKey key, Object o) throws Exception {
-
-		if (null != o) {
+		// 无法序列化CompiledScript类型,在使用Redis缓存无法缓存CompiledScript类型,直接跳过
+		if ((null != o) && (!(o instanceof CompiledScript))) {
 			Jedis jedis = RedisTools.getJedis();
-			if(jedis != null) {
+			if (jedis != null) {
 				try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					 ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+						ObjectOutputStream oos = new ObjectOutputStream(baos)) {
 					oos.writeObject(o);
 					byte[] bytes = baos.toByteArray();
 					jedis.set(concrete(category, key).getBytes(StandardCharsets.UTF_8), bytes, setParams);
@@ -59,12 +57,12 @@ public class CacheRedisImpl implements Cache {
 	@Override
 	public Optional<Object> get(CacheCategory category, CacheKey key) throws Exception {
 		Jedis jedis = RedisTools.getJedis();
-		if(jedis != null) {
+		if (jedis != null) {
 			byte[] bytes = jedis.get(concrete(category, key).getBytes(StandardCharsets.UTF_8));
 			RedisTools.closeJedis(jedis);
 			if ((null != bytes) && bytes.length > 0) {
 				try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-					 ObjectInputStream ois = new ObjectInputStream(bais)) {
+						ObjectInputStream ois = new ObjectInputStream(bais)) {
 					return Optional.ofNullable(ois.readObject());
 				}
 			}
@@ -91,23 +89,13 @@ public class CacheRedisImpl implements Cache {
 		this.notifyQueue.put(wi);
 	}
 
-	/*private Jedis getJedis() throws Exception{
-		Redis redis = Config.cache().getRedis();
-		Jedis jedis = new Jedis(redis.getHost(), redis.getPort(), redis.getConnectionTimeout(), redis.getSocketTimeout(), redis.getSslEnable());
-		if (StringUtils.isNotBlank(redis.getUser()) && StringUtils.isNotBlank(redis.getPassword())) {
-			jedis.auth(redis.getUser(), redis.getPassword());
-		} else if (StringUtils.isNotBlank(redis.getPassword())) {
-			jedis.auth(redis.getPassword());
-		}
-		jedis.select(redis.getIndex());
-		return jedis;
-	}*/
-
 	private String concrete(CacheCategory category, CacheKey key) {
 		return this.application + "&" + category.toString() + "&" + key.toString();
 	}
 
 	public static class Wi extends WrapClearCacheRequest {
+
+		private static final long serialVersionUID = 9200759731216457906L;
 
 	}
 
