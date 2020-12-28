@@ -3,6 +3,7 @@
 /dest/
 /out/
 /jsdoc/
+/jsdoc_static/
 /node_modules/
 npm-debug.log
 /test/
