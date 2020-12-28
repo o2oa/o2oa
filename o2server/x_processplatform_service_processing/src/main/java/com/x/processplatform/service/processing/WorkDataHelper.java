@@ -15,11 +15,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
@@ -43,7 +45,22 @@ public class WorkDataHelper {
 			throw new Exception("can not create DataHelper job is empty.");
 		}
 		this.emc = emc;
-		this.converter = new DataItemConverter<Item>(Item.class);
+		this.converter = new DataItemConverter<>(Item.class);
+		this.gson = XGsonBuilder.instance();
+		this.items = this.load();
+	}
+
+	public WorkDataHelper(EntityManagerContainer emc, WorkCompleted workCompleted) throws Exception {
+		if ((null == emc) || (null == workCompleted)) {
+			throw new Exception("create instance error.");
+		}
+		this.job = workCompleted.getJob();
+		this.distributeFactor = workCompleted.getDistributeFactor();
+		if (StringUtils.isEmpty(this.job)) {
+			throw new Exception("can not create DataHelper job is empty.");
+		}
+		this.emc = emc;
+		this.converter = new DataItemConverter<>(Item.class);
 		this.gson = XGsonBuilder.instance();
 		this.items = this.load();
 	}
@@ -53,11 +70,10 @@ public class WorkDataHelper {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Item> cq = cb.createQuery(Item.class);
 		Root<Item> root = cq.from(Item.class);
-		Path<String> path = root.get(Item.bundle_FIELDNAME);
+		Path<String> path = root.get(DataItem.bundle_FIELDNAME);
 		Predicate p = cb.equal(path, this.job);
 		p = cb.and(p, cb.equal(root.get(Item_.itemCategory), ItemCategory.pp));
-		List<Item> list = em.createQuery(cq.where(p)).getResultList();
-		return list;
+		return em.createQuery(cq.where(p)).getResultList();
 	}
 
 	public Data get() throws Exception {
@@ -69,7 +85,7 @@ public class WorkDataHelper {
 				if (jsonElement.isJsonObject()) {
 					return gson.fromJson(jsonElement, Data.class);
 				} else {
-					/* 如果不是Object强制返回一个Map对象 */
+					// 如果不是Object强制返回一个Map对象
 					return new Data();
 				}
 			}
@@ -80,13 +96,11 @@ public class WorkDataHelper {
 
 	public boolean update(JsonElement jsonElement) throws Exception {
 		if (jsonElement.isJsonNull()) {
-			// throw new Exception("can not update data null.");
-			/** 如果是空数据就不更新,避免数据被清空 */
+			// 如果是空数据就不更新,避免数据被清空
 			return false;
 		}
 		if (jsonElement.isJsonPrimitive()) {
-			// throw new Exception("can not update data primitive.");
-			/** 如果是空数据就不更新,避免数据被清空 */
+			// 如果是空数据就不更新,避免数据被清空 */
 			return false;
 		}
 		if (jsonElement.isJsonObject()) {
