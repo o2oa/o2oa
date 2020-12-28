@@ -43,6 +43,44 @@
     }
  */
 
+/**
+ * @readonly
+ * @enum {String} ViewFilterDataLogic
+ * @property {String} or color for a white square or piece.
+ * @property {String} and color for a black square or piece.
+ */
+
+/**
+ * ViewFilter 视图过滤条件
+ * @typedef {Object} ViewFilter
+ * @property {String} logic - 可选值：“and”或者“or”，表示和前一个条件的逻辑运算关系。
+ * @property {String} path - 要过滤的data数据的路径。
+ * @property {String} comparison - 比较运算符，可选值：<br/>
+ * <div style='padding-left:150px;'>
+ * <b>equals</b> 或 <b>==</b> 或：表示等于。<br/>
+ * <b>notEquals</b> 或 <b>!=</b> ：表示不等于。<br/>
+ * <b>greaterThan</b> 或 <b>></b> ：表示大于。<br/>
+ * <b>greaterThanOrEqualTo</b> 或 <b>=></b> ：表示大于或等于。<br/>
+ * <b>lessThan</b> 或 <b><</b> ：表示小于。<br/>
+ * <b>lessThanOrEqualTo</b> 或 <b><=</b> ：表示小于等于。<br/>
+ * <b>like</b> ：表示部分匹配。<br/>
+ * <b>notLike</b> ：表示不匹配。<br/>
+ * <b>range</b> ：表示一定的范围。<br/>
+ * <b>in</b> ：表示在某几个特定的值当中。<br/>
+ * </div>
+ * @property {String} formatType  - 过滤数据的数据类型，可选值：
+ * @property {(String|Number|Boolean)} value - 过滤的值，根据formatType提供匹配的数据类型的值，如果是dateTimeValue数据类型，则提供日期格式的字符串，格式如“YYYY-MM-DD HH:MM:SS”。当comparison值为“range”时，此值表示范围中的第一个值。当comparison值为“in”时，多个值用半角逗号","分开。
+ * @property {(String|Number|Boolean)} otherValue  - 当comparison值为“range”时，此值表示范围中的第二个值。当comparison值不为“range”时，忽略此值。
+ * @example
+ *  {
+ *    "logic":"and",
+ *    "path":"$work.title",
+ *    "comparison":"like",
+ *    "value":"7月",
+ *    "formatType":"textValue"
+ * }
+ */
+
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.ViewEnvironment = function (ev) {
     var _form = ev.view;
@@ -1358,6 +1396,19 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 当查询设计中使用了select语句，并且配置了视图，可以在查询视图中使用本章API。<br/>
      * queryStatement对象在查询视图中可用。它的很多方法与queryView类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryStatement
+     * @borrows module:queryView.confirm as confirm
+     * @borrows module:queryView.alert as alert
+     * @borrows module:queryView.notice as notice
+     * @borrows module:queryView.addEvent as addEvent
+     * @borrows module:queryView.openWork as openWork
+     * @borrows module:queryView.openJob as openJob
+     * @borrows module:queryView.openDocument as openDocument
+     * @borrows module:queryView.openPortal as openPortal
+     * @borrows module:queryView.openCMS as openCMS
+     * @borrows module:queryView.openProcess as openProcess
+     * @borrows module:queryView.openApplication as openApplication
+     * @borrows module:queryView.createDocument as createDocument
+     * @borrows module:queryView.startProcess as startProcess
      * @example
      * //您可以在查询视图中，通过this来获取queryStatement对象，如下：
      * var queryStatement = this.queryStatement;
@@ -1396,7 +1447,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method getPageData
      * @memberOf module:queryStatement
      * @static
-     * @return {Object} 当前页数据。
+     * @return {Object[]} 当前页数据。
      * <div>数据格式和 jpql 语句的写法有关</div>
      * 如:  "select o from table o" 返回 json数组
      *<pre><code class='language-js'>[
@@ -1456,6 +1507,43 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * this.queryStatement.unSelectAll();
      */
 
+    /**
+     * 获取选中的条目的数据。
+     * @method getSelectedData
+     * @memberOf module:queryStatement
+     * @static
+     * @return {Object[]} 选中的条目的数据。
+     * <div>数据格式和 jpql 语句的写法有关</div>
+     * 如:  "select o from table o" 返回 json数组
+     *<pre><code class='language-js'>[
+     {
+        "id" : "id1",
+        "title" : "title1"
+    },
+     {
+        "id" : "id2",
+        "title" : "title2"
+    },
+     ...
+     *]
+     * </pre></code>
+     * 如："select id, title from table o" 返回 二维数组：
+     *<pre><code class='language-js'>[
+     ["id1", "title1"],
+     ["id2", "title2"],
+     ...
+     *]
+     *</pre></code>
+     * @example
+     * var data = this.queryStatement.getSelectedData();
+     */
+
+    /**获取queryView对应的DOM对象。
+     * @method node
+     * @static
+     * @methodOf module:queryStatement
+     * @see module:form.node
+     */
 
 
     /**
@@ -1527,7 +1615,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @method getPageData
          * @memberOf module:queryView
          * @static
-         * @return {Object} 当前页数据。
+         * @return {Object[]} 当前页数据。
          * <div>没有分类时候，数据格式如下：</div>
          *<pre><code class='language-js'>[
          *   {
@@ -1601,18 +1689,127 @@ MWF.xScript.ViewEnvironment = function (ev) {
          */
         "unSelectAll" : function () { return _form.unSelectAll(); },
 
+        /**
+         * 获取选中的条目的数据。
+         * @method getSelectedData
+         * @memberOf module:queryView
+         * @static
+         * @return {Object[]} 选中的条目的数据。
+         * <div>格式如下：</div>
+         * <pre><code class='language-js'>
+         * [
+            {
+            "bundle": "099ed3c9-dfbc-4094-a8b7-5bfd6c5f7070", //cms 的 documentId, process 的 jobId
+            "data": {  //视图中配置的数据
+              "title": "考勤管理-配置-统计周期设置", //列名称及列值
+              "time": "2018-08-25 11:29:45"
+            }
+          },
+         ...
+         * ]
+         </pre></code>
+         * @example
+         * var data = this.queryView.getSelectedData();
+         */
         "getSelectedData" : function () { return _form.getSelectedData(); },
+
+        /**
+         * 设置视图的过滤条件，该方法不能修改视图中默认的过滤条件（在开发视图的时候添加的过滤条件），而是在这上面新增。
+         * @method setFilter
+         * @memberOf module:queryView
+         * @static
+         * @param {(ViewFilter[]|ViewFilter|Null)} [filter] 过滤条件。<br/>
+         * 当不传参数、参数为null或为空数组的情况下，表示清空非视图默认的过滤条件。<br/>
+         * 如果传入对象或者非空数组的时候，参数如下：
+         * <pre><code class='language-js'>[
+         *    {
+         *       "logic":"and",
+         *       "path":"$work.title",
+         *       "comparison":"like",
+         *       "value":"7月",
+         *       "formatType":"textValue"
+         *   }
+         *]
+         * </pre></code>
+         * @param {Function} [callback] 过滤完成并重新加载数据后的回调方法。
+         * @example
+         * var filter = [
+         *    {
+         *       "logic":"and",
+         *       "path":"$work.title",
+         *       "comparison":"like",
+         *       "value":"7月",
+         *       "formatType":"textValue"
+         *   }
+         *];
+         * this.queryView.setFilter( filter );
+         */
         "setFilter" : function ( filter, callback ) { return _form.setFilter(filter, callback); },
+
         "setStatementFilter" : function ( filter , parameter, callback) { return _form.setFilter(filter, parameter, callback); },
+
+        /**
+         * 把当前视图切换成另外一个视图。
+         * @method switchView
+         * @memberOf module:queryView
+         * @static
+         * @param {Object} options 需要跳转的参数配置。参数说明如下：
+         * <div>下列说明的filter属性参考<a href='global.html#ViewFilter'>ViewFilter</a></div>
+         * <pre><code class='language-js'>{
+         *     "application": application, //必选，视图的所在应用id
+         *     "viewName": viewName, //必选，视图的名称
+         *     "filter": [
+         *         {
+         *            "logic":"and",
+         *             "path":"$work.title",
+         *             "comparison":"like",
+         *             "value":"7月",
+         *             "formatType":"textValue"
+         *         }
+         *     ], //可选，增加视图的过滤条件（ViewFilter），如果不传，则使用原视图的配置；如果需要去掉原视图的配置，则传入空数组 []
+         *     "isTitle": "yes", //可选，是否显示t视图的标题行，可选值有:yes no
+         *     "select": "none", //可选，是否允许新视图选择，如果不传，则使用原视图的配置, 可选值有： 不允许选择 none, 单选 single，多选 multi
+         *     "titleStyles": {
+         *       "color" : "red",
+         *       "font-size" : "14px"
+         *     }, //可选，标题行样式，如果不传，则使用原视图的配置
+         *     "itemStyles": {
+         *       "color" : "#333",
+         *       "font-size" : "12px"
+         *     }, //可选，内容行样式，如果不传，则使用原视图的配置
+         *     "isExpand": "no", //可选，默认是否展开分类，如果不传，则使用原视图的配置, 可选值有:yes no
+         *   }
+         * </pre></code>
+         * @example
+         * this.queryView.switchView( options );
+         */
         "switchView" : function ( options ) { return _form.switchView(options); },
+
         "switchStatement" : function ( options ) { if(_form.switchStatement)_form.switchStatement(options) ; },
+
+        /**
+         * 重新加载视图。
+         * @method reload
+         * @methodOf module:queryView
+         * @static
+         * @example
+         * this.queryView.reload();
+         */
         "reload" : function () { _form.reload(); },
 
         // "getInfor": function () { return ev.pageInfor; },
         // "infor": ev.pageInfor,
         // "getApp": function () { return _form.app; },
         // "app": _form.app,
+
+        /**获取queryView对应的DOM对象。
+         * @method node
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.node
+         */
         "node": function () { return _form.node; },
+
         // "get": function (name) { return (_form.all) ? _form.all[name] : null; },
         // "getWidgetModule": function (widget, moduleName) {
         //     if (!_form.widgetModules || !_form.widgetModules[widget]) return null;
@@ -1630,6 +1827,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
         //     _form.printWork(application, form);
         // },
 
+        /**弹出一个确认框。
+         * @method confirm
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.confirm
+         */
         "confirm": function (type, title, text, width, height, ok, cancel, callback, mask, style) {
             // var p = MWF.getCenter({"x": width, "y": height});
             // e = {"event": {"clientX": p.x,"x": p.x,"clientY": p.y,"y": p.y}};
@@ -1652,13 +1855,35 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 _form.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style);
             }
         },
+
+        /**显示一个带关闭按钮的信息框。
+         * @method alert
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.alert
+         */
         "alert": function(type, title, text, width, height){
             _form.alert(type, title, text, width, height);
         },
+
+        /**显示一个信息框。
+         * @method notice
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.notice
+         */
         "notice": function (content, type, target, where, offset, option) {
             _form.notice(content, type, target, where, offset, option);
         },
+
+        /**　给视图添加事件。
+         * @method addEvent
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.addEvent
+         */
         "addEvent": function (e, f) { _form.addEvent(e, f); },
+
         // "openWindow": function (form, app) {
         //     _form.openWindow(form, app);
         // },
@@ -1668,6 +1893,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
         // "toPortal": function (portal, page, par) {
         //     _form.app.toPortal(portal, page, par);
         // },
+
+        /**打开一个在流转或已完成的流程实例。
+         * @method openWork
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.openWork
+         */
         "openWork": function (id, completedId, title, options) {
             var op = options || {};
             op.workId = id;
@@ -1676,6 +1908,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
             op.appId = "process.Work" + (op.workId || op.workCompletedId);
             return layout.desktop.openApplication(this.event, "process.Work", op);
         },
+
+        /**根据流程的jobId打开工作。
+         * @method openJob
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.openJob
+         */
         "openJob": function (id, choice, options) {
             var workData = null;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function (json) {
@@ -1768,12 +2007,26 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 }
             }
         },
+
+        /**打开一个内容管理文档。
+         * @method openDocument
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.openDocument
+         */
         "openDocument": function (id, title, options) {
             var op = options || {};
             op.documentId = id;
             op.docTitle = title || "";
             layout.desktop.openApplication(this.event, "cms.Document", op);
         },
+
+        /**打开一个门户页面。
+         * @method openPortal
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.openPortal
+         */
         "openPortal": function (name, page, par) {
             var action = MWF.Actions.get("x_portal_assemble_surface");
             action.getApplication(name, function (json) {
@@ -1799,6 +2052,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
             });
         },
+
+        /**打开一个内容管理栏目。
+         * @method openCMS
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.openCMS
+         */
         "openCMS": function (name) {
             var action = MWF.Actions.get("x_cms_assemble_control");
             action.getColumn(name, function (json) {
@@ -1810,6 +2070,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 }
             });
         },
+
+        /**打开一个流程应用。
+         * @method openProcess
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.openProcess
+         */
         "openProcess": function (name) {
             var action = MWF.Actions.get("x_processplatform_assemble_surface");
             action.getApplication(name, function (json) {
@@ -1821,9 +2088,23 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 }
             });
         },
+
+        /**打开一个任意一个component应用。
+         * @method openApplication
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.openApplication
+         */
         "openApplication": function (name, options) {
             layout.desktop.openApplication(null, name, options);
         },
+
+        /**创建一个内容管理文档。
+         * @method createDocument
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.createDocument
+         */
         "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
             var column = columnOrOptions;
             var onAfterPublish, onPostPublish;
@@ -1872,6 +2153,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 starter.load();
             })
         },
+
+        /**　启动一个流程实例。
+         * @method startProcess
+         * @static
+         * @methodOf module:queryView
+         * @see module:form.startProcess
+         */
         "startProcess": function (app, process, data, identity, callback, target, latest) {
 
             if (arguments.length > 2) {

@@ -1434,24 +1434,28 @@ MWF.xScript.PageEnvironment = function (ev) {
     this.page = this.form = {
         /**获取当前页面的基本信息
          * @method getInfor
+         * @static
          * @see module:form.getInfor
          */
         "getInfor": function () { return ev.pageInfor; },
         "infor": ev.pageInfor,
         /**获取打开当前页面的component对象。
          * @method getApp
+         * @static
          * @see module:form.getApp
          */
         "getApp": function () { return _form.app; },
         "app": _form.app,
         /**获取page对应的DOM对象。
          * @method node
+         * @static
          * @see module:form.node
          */
         "node": function () { return _form.node; },
         //"readonly": _form.options.readonly,
         /**获取页面元素对象。
          * @method get
+         * @static
          * @see module:form.get
          */
         "get": function (name) { return (_form.all) ? _form.all[name] : null; },
@@ -1478,6 +1482,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**获取页面中可输入的字段元素对象
          * @method getField
+         * @static
          * @see module:form.getField
          */
         "getField": function (name) { return _forms[name]; },
@@ -1489,6 +1494,7 @@ MWF.xScript.PageEnvironment = function (ev) {
 
         /**关闭当前页面
          * @method close
+         * @static
          * @see module:form.close
          */
         "close": function () { _form.closeWork(); },
@@ -1499,6 +1505,7 @@ MWF.xScript.PageEnvironment = function (ev) {
 
         /**弹出一个确认框
          * @method confirm
+         * @static
          * @see module:form.confirm
          */
         "confirm": function (type, title, text, width, height, ok, cancel, callback, mask, style) {
@@ -1525,6 +1532,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**显示一个带关闭按钮的信息框
          * @method alert
+         * @static
          * @see module:form.alert
          */
         "alert": function(type, title, text, width, height){
@@ -1533,6 +1541,7 @@ MWF.xScript.PageEnvironment = function (ev) {
 
         /**显示一个信息框
          * @method notice
+         * @static
          * @see module:form.notice
          */
         "notice": function (content, type, target, where, offset, option) {
@@ -1540,6 +1549,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**给页面添加事件。
          * @method addEvent
+         * @static
          * @see module:form.addEvent
          */
         "addEvent": function (e, f) { _form.addEvent(e, f); },
@@ -1555,6 +1565,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**打开一个在流转或已完成的流程实例
          * @method openWork
+         * @static
          * @see module:form.openWork
          */
         "openWork": function (id, completedId, title, options) {
@@ -1567,6 +1578,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**使用流程的jobId打开工作
          * @method openJob
+         * @static
          * @see module:form.openJob
          */
         "openJob": function (id, choice, options) {
@@ -1663,6 +1675,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**打开一个内容管理文档
          * @method openDocument
+         * @static
          * @see module:form.openDocument
          */
         "openDocument": function (id, title, options) {
@@ -1673,6 +1686,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**打开一个门户页面
          * @method openPortal
+         * @static
          * @see module:form.openPortal
          */
         "openPortal": function (name, page, par) {
@@ -1702,6 +1716,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**打开一个内容管理栏目（应用）
          * @method openCMS
+         * @static
          * @see module:form.openCMS
          */
         "openCMS": function (name) {
@@ -1717,6 +1732,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**打开一个流程应用
          * @method openProcess
+         * @static
          * @see module:form.openProcess
          */
         "openProcess": function (name) {
@@ -1732,6 +1748,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**打开一个任意一个component应用
          * @method openApplication
+         * @static
          * @see module:form.openApplication
          */
         "openApplication": function (name, options) {
@@ -1739,6 +1756,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**创建一个内容管理文档
          * @method createDocument
+         * @static
          * @see module:form.createDocument
          */
         "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
@@ -1791,6 +1809,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         /**启动一个流程实例
          * @method startProcess
+         * @static
          * @see module:form.startProcess
          */
         "startProcess": function (app, process, data, identity, callback, target, latest) {
