@@ -1,7 +1,7 @@
 package com.x.query.service.processing.jaxrs.design;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.project.Applications;
+import com.x.base.core.project.*;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -13,9 +13,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
-import com.x.base.core.project.x_cms_assemble_control;
-import com.x.base.core.project.x_portal_assemble_designer;
-import com.x.base.core.project.x_processplatform_assemble_designer;
 import com.x.query.service.processing.ThisApplication;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,17 +49,27 @@ class ActionSearch extends BaseAction {
 				if(module.getModuleType().equalsIgnoreCase(ModuleType.processPlatform.toString())){
 					moduleMap.put(ModuleType.processPlatform.toString(), module.getFlagList());
 				}
+				if(module.getModuleType().equalsIgnoreCase(ModuleType.query.toString())){
+					moduleMap.put(ModuleType.query.toString(), module.getFlagList());
+				}
+				if(module.getModuleType().equalsIgnoreCase(ModuleType.service.toString())){
+					moduleMap.put(ModuleType.service.toString(), module.getFlagList());
+				}
 			}
 		}else{
 			List<String> list = new ArrayList<>();
 			moduleMap.put(ModuleType.cms.toString(), list);
 			moduleMap.put(ModuleType.portal.toString(), list);
 			moduleMap.put(ModuleType.processPlatform.toString(), list);
+			moduleMap.put(ModuleType.query.toString(), list);
+			moduleMap.put(ModuleType.service.toString(), list);
 		}
 		Executor executor = Executors.newFixedThreadPool(5);
 		CompletableFuture<List<WrapDesigner>> processPlatformCf = searchAsync(wi, moduleMap, ModuleType.processPlatform.toString(), x_processplatform_assemble_designer.class, executor);
 		CompletableFuture<List<WrapDesigner>> portalCf = searchAsync(wi, moduleMap, ModuleType.portal.toString(), x_portal_assemble_designer.class, executor);
 		CompletableFuture<List<WrapDesigner>> cmsCf = searchAsync(wi, moduleMap, ModuleType.cms.toString(), x_cms_assemble_control.class, executor);
+		CompletableFuture<List<WrapDesigner>> queryCf = searchAsync(wi, moduleMap, ModuleType.query.toString(), x_query_assemble_designer.class, executor);
+		CompletableFuture<List<WrapDesigner>> serviceCf = searchAsync(wi, moduleMap, ModuleType.service.toString(), x_program_center.class, executor);
 		Wo wo = new Wo();
 		try {
 			wo.setProcessPlatformList(processPlatformCf.get(200, TimeUnit.SECONDS));
@@ -78,6 +85,16 @@ class ActionSearch extends BaseAction {
 			wo.setCmsList(cmsCf.get(200, TimeUnit.SECONDS));
 		} catch (Exception e) {
 			logger.warn("搜索内容管理平台设计异常：{}",e.getMessage());
+		}
+		try {
+			wo.setQueryList(queryCf.get(200, TimeUnit.SECONDS));
+		} catch (Exception e) {
+			logger.warn("搜索数据中心平台设计异常：{}",e.getMessage());
+		}
+		try {
+			wo.setServiceList(serviceCf.get(200, TimeUnit.SECONDS));
+		} catch (Exception e) {
+			logger.warn("搜索服务管理平台设计异常：{}",e.getMessage());
 		}
 		return wo;
 	}
@@ -223,6 +240,10 @@ class ActionSearch extends BaseAction {
 
 		private List<WrapDesigner> portalList;
 
+		private List<WrapDesigner> queryList;
+
+		private List<WrapDesigner> serviceList;
+
 		public List<WrapDesigner> getProcessPlatformList() {
 			return processPlatformList;
 		}
@@ -245,6 +266,22 @@ class ActionSearch extends BaseAction {
 
 		public void setPortalList(List<WrapDesigner> portalList) {
 			this.portalList = portalList;
+		}
+
+		public List<WrapDesigner> getQueryList() {
+			return queryList;
+		}
+
+		public void setQueryList(List<WrapDesigner> queryList) {
+			this.queryList = queryList;
+		}
+
+		public List<WrapDesigner> getServiceList() {
+			return serviceList;
+		}
+
+		public void setServiceList(List<WrapDesigner> serviceList) {
+			this.serviceList = serviceList;
 		}
 	}
 

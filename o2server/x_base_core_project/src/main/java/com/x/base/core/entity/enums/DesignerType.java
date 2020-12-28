@@ -9,9 +9,13 @@ import com.x.base.core.entity.JpaObject;
  * page（门户的页面）
  * widget（门户的widget）
  * process（流程平台的流程模板）
+ * view（数据中心视图）
+ * table（数据中心自建表）
+ * stat（数据中心统计）
+ * statement（数据中心查询语句）
  */
 public enum DesignerType {
 
-	script, form, page, widget, process;
+	script, form, page, widget, process, view, table, stat, statement;
 	public static final int length = JpaObject.length_64B;
 }
