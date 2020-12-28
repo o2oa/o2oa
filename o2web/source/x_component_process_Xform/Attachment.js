@@ -1084,6 +1084,49 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
 {
     Extends: MWF.APP$Module,
     options: {
+        /**
+         * @event MWF.xApplication.process.Xform.Attachment#queryLoad
+         * @ignore
+         */
+        /**
+         * @event MWF.xApplication.process.Xform.Attachment#postLoad
+         * @ignore
+         */
+        /**
+         * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
+         * @event MWF.xApplication.process.Xform.Attachment#upload
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 删除附件前触发。本事件中可以通过this.event获取被删附件的数据
+         * @event MWF.xApplication.process.Xform.Attachment#delete
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 删除附件后触发。本事件中可以通过this.event获取被删附件的数据
+         * @event MWF.xApplication.process.Xform.Attachment#afterDelete
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 附件容器加载时触发。
+         * @event MWF.xApplication.process.Xform.Attachment#load
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 附件有变化的时候会被触发，包括上传、删除、排序
+         * @event MWF.xApplication.process.Xform.Attachment#change
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 下载附件后触发。本事件中可以通过this.event获取被下载附件对象
+         * @event MWF.xApplication.process.Xform.Attachment#download
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 打开附件后触发。本事件中可以通过this.event获取被打开附件对象
+         * @event MWF.xApplication.process.Xform.Attachment#open
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open"]
     },
 

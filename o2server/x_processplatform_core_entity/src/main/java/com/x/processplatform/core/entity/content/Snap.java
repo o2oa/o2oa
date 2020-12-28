@@ -44,6 +44,8 @@ public class Snap extends SliceJpaObject {
 
 	public static final String TYPE_ABANDONED = "abandoned";
 
+	public static final String TYPE_ABANDONEDWORKCOMPLETED = "abandonedWorkCompleted";
+
 	public String getId() {
 		return id;
 	}
@@ -106,6 +108,20 @@ public class Snap extends SliceJpaObject {
 		this.setActivityName(work.getActivityName());
 		this.setActivityToken(work.getActivityToken());
 		this.setActivityType(work.getActivityType());
+	}
+
+	public Snap(WorkCompleted workCompleted) {
+		this.setTitle(workCompleted.getTitle());
+		this.setJob(workCompleted.getJob());
+		this.setApplication(workCompleted.getApplication());
+		this.setApplicationName(workCompleted.getApplicationName());
+		this.setApplicationAlias(workCompleted.getApplicationAlias());
+		this.setProcess(workCompleted.getProcess());
+		this.setProcessName(workCompleted.getProcessName());
+		this.setProcessAlias(workCompleted.getProcessAlias());
+		this.setCreatorIdentity(workCompleted.getCreatorIdentity());
+		this.setCreatorPerson(workCompleted.getCreatorPerson());
+		this.setCreatorUnit(workCompleted.getCreatorUnit());
 	}
 
 	public SnapProperties getProperties() {
