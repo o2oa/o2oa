@@ -3,17 +3,22 @@ package com.x.processplatform.core.express.service.processing.jaxrs.taskcomplete
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class WrapUpdateNextTaskIdentity extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -597948505960097189L;
+
+	@FieldDescribe("后续环节待办人")
 	private List<String> nextTaskIdentityList = new ArrayList<>();
 
+	@FieldDescribe("已办标识")
 	private List<String> taskCompletedList = new ArrayList<>();
 
 	public List<String> getNextTaskIdentityList() {
 		if (null == this.nextTaskIdentityList) {
-			this.nextTaskIdentityList = new ArrayList<String>();
+			this.nextTaskIdentityList = new ArrayList<>();
 		}
 		return nextTaskIdentityList;
 	}
@@ -24,7 +29,7 @@ public class WrapUpdateNextTaskIdentity extends GsonPropertyObject {
 
 	public List<String> getTaskCompletedList() {
 		if (null == this.taskCompletedList) {
-			this.taskCompletedList = new ArrayList<String>();
+			this.taskCompletedList = new ArrayList<>();
 		}
 		return taskCompletedList;
 	}
