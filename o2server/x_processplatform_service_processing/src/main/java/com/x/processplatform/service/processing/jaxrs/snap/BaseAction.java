@@ -1,11 +1,14 @@
 package com.x.processplatform.service.processing.jaxrs.snap;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.dataitem.DataItem;
@@ -26,6 +29,7 @@ import com.x.processplatform.core.entity.content.SnapProperties;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
@@ -55,6 +59,35 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return properties;
 	}
 
+	protected SnapProperties snap(Business business, String job, List<Item> items, WorkCompleted workCompleted,
+			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments) {
+		SnapProperties properties = new SnapProperties();
+		properties.setJob(job);
+		properties.setWorkCompleted(workCompleted);
+		properties.setTitle(workCompleted.getTitle());
+		List<CompletableFuture<Void>> futures = new ArrayList<>();
+		futures.add(mergeTaskCompleted(business, job, properties, taskCompleteds));
+		futures.add(mergeRead(business, job, properties, reads));
+		futures.add(mergeReadCompleted(business, job, properties, readCompleteds));
+		futures.add(mergeReview(business, job, properties, reviews));
+		futures.add(mergeWorkLog(business, job, properties, workLogs));
+		futures.add(mergeRecord(business, job, properties, records));
+		futures.add(mergeAttachment(business, job, properties, attachments));
+		if (BooleanUtils.isNotTrue(workCompleted.getMerged())) {
+			futures.add(mergeItem(business, job, properties, items));
+		}
+		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0]));
+//		CompletableFuture.allOf(mergeItem(business, job, properties, items),
+//				mergeTaskCompleted(business, job, properties, taskCompleteds),
+//				mergeRead(business, job, properties, reads),
+//				mergeReadCompleted(business, job, properties, readCompleteds),
+//				mergeReview(business, job, properties, reviews), mergeWorkLog(business, job, properties, workLogs),
+//				mergeRecord(business, job, properties, records),
+//				mergeAttachment(business, job, properties, attachments)).get();
+		return properties;
+	}
+
 	protected void clean(Business business, List<Item> items, List<Work> works, List<Task> tasks,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
 			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments,
@@ -66,6 +99,17 @@ abstract class BaseAction extends StandardJaxrsAction {
 						deleteWorkLog(business, workLogs), deleteRecord(business, records),
 						deleteAttachment(business, attachments), deleteDocumentVersion(business, documentVersions))
 				.get();
+	}
+
+	protected void clean(Business business, List<Item> items, WorkCompleted workCompleted,
+			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments)
+			throws InterruptedException, ExecutionException {
+		CompletableFuture.allOf(deleteItem(business, items), deleteWork(business, workCompleted),
+				deleteTaskCompleted(business, taskCompleteds), deleteRead(business, reads),
+				deleteReadCompleted(business, readCompleteds), deleteReview(business, reviews),
+				deleteWorkLog(business, workLogs), deleteRecord(business, records),
+				deleteAttachment(business, attachments)).get();
 	}
 
 	private CompletableFuture<Void> mergeItem(Business business, String job, SnapProperties snapProperties,
@@ -270,6 +314,17 @@ abstract class BaseAction extends StandardJaxrsAction {
 		});
 	}
 
+	private CompletableFuture<Void> deleteWork(Business business, WorkCompleted workCompleted) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				business.entityManagerContainer().beginTransaction(WorkCompleted.class);
+				business.entityManagerContainer().remove(workCompleted);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
 	private CompletableFuture<Void> deleteTask(Business business, List<Task> tasks) {
 		return CompletableFuture.runAsync(() -> {
 			try {
@@ -405,6 +460,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 			try {
 				business.entityManagerContainer().beginTransaction(Work.class);
 				for (Work o : business.entityManagerContainer().listEqual(Work.class, Work.job_FIELDNAME, job)) {
+					business.entityManagerContainer().remove(o);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	protected CompletableFuture<Void> deleteWorkCompleted(Business business, String job) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				business.entityManagerContainer().beginTransaction(WorkCompleted.class);
+				for (WorkCompleted o : business.entityManagerContainer().listEqual(WorkCompleted.class,
+						WorkCompleted.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
