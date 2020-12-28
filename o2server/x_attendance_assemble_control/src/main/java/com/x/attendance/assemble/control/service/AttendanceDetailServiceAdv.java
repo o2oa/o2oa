@@ -24,6 +24,7 @@ public class AttendanceDetailServiceAdv {
 	private AttendanceDetailService attendanceDetailService = new AttendanceDetailService();
 	private AttendanceDetailMobileService attendanceDetailMobileService = new AttendanceDetailMobileService();
 	private AttendanceScheduleSettingService attendanceScheduleSettingService = new AttendanceScheduleSettingService();
+	private AttendanceSettingService attendanceSettingService = new AttendanceSettingService();
 //	protected AttendanceDetailAnalyseServiceAdv attendanceDetailAnalyseServiceAdv = new AttendanceDetailAnalyseServiceAdv();
 //	protected AttendanceWorkDayConfigServiceAdv attendanceWorkDayConfigServiceAdv = new AttendanceWorkDayConfigServiceAdv();
 //	protected AttendanceStatisticalCycleServiceAdv attendanceStatisticCycleServiceAdv = new AttendanceStatisticalCycleServiceAdv();
@@ -282,6 +283,16 @@ public class AttendanceDetailServiceAdv {
 	 * @throws Exception
 	 */
 	public void pushToDetail(String distinguishedName, String recordDateString, Boolean debugger ) throws Exception {
+		//查询外勤打卡配置
+		Boolean ATTENDANCE_FIELD = false;
+		try (EntityManagerContainer em = EntityManagerContainerFactory.instance().create()) {
+			AttendanceSetting attendanceSettingField = attendanceSettingService.getByCode(em,"ATTENDANCE_FIELD");
+			if(attendanceSettingField !=null &&  StringUtils.equalsIgnoreCase(attendanceSettingField.getConfigValue(),"true")){
+				ATTENDANCE_FIELD = true;
+			}
+		}catch ( Exception e0 ) {
+			throw e0;
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<AttendanceDetailMobile> mobileDetails = attendanceDetailMobileService.listAttendanceDetailMobileWithEmployee( emc, distinguishedName, recordDateString );
 			if( ListTools.isNotEmpty( mobileDetails )) {
@@ -292,7 +303,11 @@ public class AttendanceDetailServiceAdv {
 				if( scheduleSetting == null ){
 					throw new Exception("scheduleSetting is null, empName:" + distinguishedName );
 				}
-
+				for( AttendanceDetailMobile detailMobile : mobileDetails ) {
+					if(detailMobile.getIsExternal()){
+						ATTENDANCE_FIELD = true;
+					}
+				}
 				//获取打卡策略：两次，三次还是四次
 				//根据考勤打卡规则来判断启用何种规则来进行考勤结果分析
 				if( 2 == scheduleSetting.getSignProxy() ){
@@ -305,6 +320,7 @@ public class AttendanceDetailServiceAdv {
 					//1、一天只打上下班两次卡
 					detail = new ComposeDetailWithMobileInSignProxy1().compose( mobileDetails, scheduleSetting, debugger);
 				}
+				detail.setIsExternal(ATTENDANCE_FIELD);
 				if( detail_old == null ) {
 					detail.setBatchName( "FromMobile_" + dateOperation.getNowTimeChar() );
 					detail.setRecordStatus(1);

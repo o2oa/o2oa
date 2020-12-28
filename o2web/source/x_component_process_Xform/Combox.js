@@ -17,6 +17,16 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
 	Extends: MWF.APP$Input,
 	iconStyle: "selectIcon",
     options: {
+        /**
+         * 手工输入完成后触发。
+         * @event MWF.xApplication.process.Xform.Combox#commitInput
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 值改变时触发。
+         * @event MWF.xApplication.process.Xform.Combox#change
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["load", "queryLoad", "postLoad", "commitInput", "change"]
     },
 

@@ -22,6 +22,9 @@ public class SnapProperties extends JsonProperties {
 	@FieldDescribe("工作")
 	private List<Work> workList = new ArrayList<>();
 
+	@FieldDescribe("已完成工作")
+	private WorkCompleted workCompleted;
+
 	@FieldDescribe("待办")
 	private List<Task> taskList = new ArrayList<>();
 
@@ -181,6 +184,14 @@ public class SnapProperties extends JsonProperties {
 
 	public void setDocumentVersionList(List<DocumentVersion> documentVersionList) {
 		documentVersionList = documentVersionList;
+	}
+
+	public WorkCompleted getWorkCompleted() {
+		return workCompleted;
+	}
+
+	public void setWorkCompleted(WorkCompleted workCompleted) {
+		this.workCompleted = workCompleted;
 	}
 
 }

@@ -17,14 +17,17 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Path("design")
-@JaxrsDescribe("设计")
+@JaxrsDescribe("全平台设计")
 public class DesignAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(DesignAction.class);
 
-	@JaxrsMethodDescribe(value = "全局设计搜索.", action = ActionSearch.class)
+	private static ReentrantLock lock = new ReentrantLock();
+
+	@JaxrsMethodDescribe(value = "全平台设计搜索.", action = ActionSearch.class)
 	@POST
 	@Path("search")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -33,11 +36,14 @@ public class DesignAction extends StandardJaxrsAction {
 					   JsonElement jsonElement) {
 		ActionResult<ActionSearch.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
+		lock.lock();
 		try {
 			result = new ActionSearch().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
+		} finally {
+			lock.unlock();
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
