@@ -29,7 +29,14 @@
     ],
     "templates": {  //模板参数
         "cleverLinks": false, //@link标签是否呈现为纯文本
-        "monospaceLinks": false
+        "monospaceLinks": false,
+        "default": {
+            "staticFiles": { //静态文件目录
+                "include": [
+                    "./o2web/jsdoc_static"
+                ]
+            }
+        }
     },
     "metadata": {
         "title": "O2OA前台API" //最终生成的文档中标题
