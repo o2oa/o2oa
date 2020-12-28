@@ -336,6 +336,12 @@ public class AttendanceDetail extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String archiveTime;
 
+	public static final String isExternal_FIELDNAME = "isExternal";
+	@FieldDescribe("是否范围外打卡")
+	@Column(name = ColumnNamePrefix + isExternal_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean isExternal = false;
+
 	public String getMorningOffDutyTime() {
 		return morningOffDutyTime;
 	}
@@ -1168,6 +1174,14 @@ public class AttendanceDetail extends SliceJpaObject {
 
 	public void setWeekend(Boolean weekend) {
 		isWeekend = weekend;
+	}
+
+	public Boolean getIsExternal() {
+		return isExternal;
+	}
+
+	public void setIsExternal(Boolean isExternal) {
+		this.isExternal = isExternal;
 	}
 
 	/**
