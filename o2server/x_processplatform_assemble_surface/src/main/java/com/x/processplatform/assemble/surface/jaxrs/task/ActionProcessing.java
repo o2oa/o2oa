@@ -192,6 +192,14 @@ class ActionProcessing extends BaseAction {
 			this.task.setMediaOpinion(this.wi.getMediaOpinion());
 			business.entityManagerContainer().commit();
 		}
+		// 校验路由选择不能为空
+		if (StringUtils.isBlank(this.task.getRouteName())) {
+			throw new ExceptionEmptyRouteName();
+		}
+		// 校验路由在可选择范围内
+		if (!this.task.getRouteNameList().contains(this.task.getRouteName())) {
+			throw new ExceptionErrorRouteName(this.task.getRouteName());
+		}
 	}
 
 	private void seeManualRoute(Business business) throws Exception {
