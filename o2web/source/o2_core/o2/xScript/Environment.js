@@ -1989,6 +1989,71 @@ MWF.xScript.Environment = function(ev){
     // }else{
     //     var includedScripts = window.includedScripts;
     // }
+
+    /**
+     * 当您在流程、门户或者内容管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
+     * <b>（建议使用表单中的预加载脚本，需要判断加载的时候才使用本方法加载脚本，此时建议异步加载有助于表单加载速度。）</b><br/>
+     * @module include
+     * @param {(String|Object|String[]|Object[])} optionsOrName 可以是脚本标识字符串（数组）或者是对象（数组）。
+     * <pre><code class='language-js'>
+     * //如果需要引用本应用的脚本配置，将options设置为String或者String Array。
+     * this.include("initScript") //脚本配置的名称、别名或id
+     * this.include(["initScript","initScript2"]) //可以是字符串数组
+     *
+     * //如果需要引用其他应用的脚本配置，将options设置为Object或者Object Array;
+     * this.include({
+     *       //type: 应用类型。可以为 portal  process  cms。
+     *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+     *       type : "portal",
+     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用
+     *       name : "initScript" // 脚本配置的名称、别名或id
+     * })
+     * this.include([  //也可以对象和字符串混合数组
+     *  {
+     *       type : "portal",
+     *       application : "首页",
+     *       name : "initScript"
+     *  },
+     *  "initScript2"
+     * ])
+     * </pre></code>
+     * @param {Function} [callback] 加载后执行的回调方法
+     * @param {Boolean} [async] 是否异步加载
+     * @example
+     * //您可以在表单、流程或内容管理的各个嵌入脚本中，通过this.include()来引用本应用或其他应用的脚本配置，如下：
+     * this.include( optionsOrName, callback, async )
+     * @example
+     * <caption>
+     *    <b>样例一：</b>在通用脚本中定义返回当前人员名称的方法，在各个门户应用都使用这个方法显示人员名称。<br/>
+     *     1、在门户应用中有一个commonApp的应用，在该应用中创建一个脚本，命名为initScript，并定义方法。
+     *     <img src='img/module/include/define1.png' />
+     * </caption>
+     * //定义一个方法
+     * this.define("getUserName", function(){
+     *   return ( layout.desktop.session.user || layout.user ).name
+     * }.bind(this))
+     * @example
+     * <caption>
+     *      2、在门户页面中添加事件'queryLoad',在事件中引入 initScript 脚本配置。
+     *     <img src='img/module/include/define2.png' style='max-width:700px;'/>
+     * </caption>
+     * this.include({
+     *      type : "portal",
+     *      application : "commonApp",
+     *      name : "initScript"
+     * })
+     *
+     * @example
+     * <caption>
+     *  3、在门户页面的'load'事件中使用方法。<br/>
+     *     <img src='img/module/include/define3.png' style='max-width:700px;'/>
+     * </caption>
+     * var userNameNode = this.page.get("userName").node; //获取Dom对象
+     * var urerName = this.getUserName(); //使用initScript脚本中的方法
+     * userNameNode.set("text", urerName ); //为DOM对象设置值
+     */
+
     var includedScripts = [];
     var _includeSingle = function( optionsOrName , callback, async){
         var options = optionsOrName;
@@ -2087,6 +2152,45 @@ MWF.xScript.Environment = function(ev){
         }
     };
 
+    /**
+     * 您可以在流程、门户或者内容管理中创建脚本配置，在脚本配置中您可以通过this.define()来定义自己的方法。<br/>
+     * 通过这种方式定义方法，在不同的应用使用相同的方法名称也不会造成冲突。
+     * @module define
+     * @param {(String)} name 定义的方法名称。
+     * @param {Function} fun  定义的方法
+     * @param {Boolean} [overwrite] 定义的方法是否能被覆盖重写。默认值为true。
+     * @example
+     * this.define(name, fun, overwrite)
+     * @example
+     * <caption>
+     *    <b>样例：</b>在通用脚本中定义返回当前人员名称的方法，在各个门户应用都使用这个方法显示人员名称。<br/>
+     *     1、在门户应用中有一个commonApp的应用，在该应用中创建一个脚本，命名为initScript，并定义方法。
+     *     <img src='img/module/include/define1.png' />
+     * </caption>
+     * //定义一个方法
+     * this.define("getUserName", function(){
+     *   return ( layout.desktop.session.user || layout.user ).name
+     * }.bind(this))
+     * @example
+     * <caption>
+     *      2、在门户页面中添加事件'queryLoad',在事件中引入 initScript 脚本配置。
+     *     <img src='img/module/include/define2.png' style='max-width:700px;'/>
+     * </caption>
+     * this.include({
+     *      type : "portal",
+     *      application : "commonApp",
+     *      name : "initScript"
+     * })
+     *
+     * @example
+     * <caption>
+     *  3、在门户页面的'load'事件中使用方法。<br/>
+     *     <img src='img/module/include/define3.png' style='max-width:700px;'/>
+     * </caption>
+     * var userNameNode = this.page.get("userName").node; //获取Dom对象
+     * var urerName = this.getUserName(); //使用initScript脚本中的方法
+     * userNameNode.set("text", urerName ); //为DOM对象设置值
+     */
     this.define = function(name, fun, overwrite){
         var over = true;
         if (overwrite===false) over = false;
@@ -3073,6 +3177,8 @@ MWF.xScript.Environment = function(ev){
     this.target = ev.target;
     this.event = ev.event;
     this.status = ev.status;
+
+
     this.session = layout.desktop.session;
     this.Actions = o2.Actions;
 
