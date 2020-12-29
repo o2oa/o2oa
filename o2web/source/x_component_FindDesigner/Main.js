@@ -14,7 +14,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		"isMax": true,
 		"layout": {
 			"type": "leftRight",
-			"percent": 0.4
+			"percent": 0.3
 		},
 		"title": MWF.xApplication.FindDesigner.LP.title
 	},
@@ -22,13 +22,14 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		this.lp = MWF.xApplication.FindDesigner.LP;
 		this.filterOption = {
 			"keyword": "",
-			"type": [],
+			"designerTypes": [],
 			"caseSensitive": false,
 			"matchWholeWord": false,
 			"matchRegExp": false,
 			"moduleList": []
 		}
-		debugger;
+		this.selectedModules = [];
+		this.selectedRange = [];
 		o2.UD.getDataJson("findDesignerLayout", function(json){
 			this.setOptions(json);
 		}.bind(this), false);
@@ -153,7 +154,11 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	},
 
 	checkFilter: function(e){
-		if (e.target.hasClass("o2_findDesigner_filterNode_item")) e.target.getElement("input").click();
+		if (e.target.hasClass("filterNode_item")) e.target.getElement("input").click();
+		e.stopPropagation();
+	},
+	checkRange: function(e){
+		if (e.target.hasClass("rangeType_Item")) e.target.getElement("input").click();
 		e.stopPropagation();
 	},
 	overKeywordOption: function(e){
@@ -216,8 +221,94 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}else{
 			this.options.layout.type="leftRight";
 		}
-		debugger;
 		this.setSizeNode();
 		o2.UD.putData("findDesignerLayout", {"layout": this.options.layout});
+	},
+
+	getSelectedRange: function(){
+		this.selectedRange = [];
+		var rangeInputs = this.rangeContentNode.getElements("input");
+		rangeInputs.each(function(input){
+			if (input.checked) this.selectedRange.push(input.get("value"));
+		}.bind(this));
+	},
+
+	setSelectedRange: function(){
+		if (this.selectedRange && this.selectedRange.length){
+			var rangeInputs = this.rangeContentNode.getElements("input");
+			rangeInputs.each(function(input){
+				if (this.selectedRange.indexOf(input.get("value"))!=-1) input.set("checked", true);
+			}.bind(this));
+		}
+	},
+	removeRangeItem: function(item){
+		item.destroy();
+		var itemNodes = this.rangeSelectedContentNode.getChildren();
+		if (!itemNodes.length) this.setSelectedRange();
+	},
+	selectFindRange: function(){
+		o2.requireApp("Selector", "package", function(){
+			new o2.O2Selector(this.content, {
+				"values": this.selectedModules,
+				"type": "PlatApp",
+				"selectAllEnable": true,
+				"onComplete": function(list){
+					this.rangeSelectedContentNode.empty();
+					//this.selectedModules = [];
+					if (list.length){
+						this.getSelectedRange();
+						this.rangeContentNode.getElements("input").set("checked", false);
+
+						o2.require("o2.widget.O2Identity", function(){
+							list.each(function(app){
+								//this.selectedModules.push(app.data);
+								app.data.name = this.lp.service + "-" + app.data.name;
+								var item = new o2.widget.O2Other(app.data, this.rangeSelectedContentNode, {"canRemove": true, "style": "find", "onRemove": function(item){this.removeRangeItem(item);}.bind(this)});
+								item.node.store("data", item.data);
+							}.bind(this));
+						}.bind(this));
+
+					}else{
+						this.setSelectedRange();
+					}
+
+				}.bind(this)
+			});
+		}.bind(this));
+	},
+	getFindOption: function(){
+		var filterTypes = [];
+		filterItems = this.filterNode.getElements("input");
+		filterItems.each(function(item){
+			if (item.checked) filterTypes.push(item.get("value"));
+		}.bind(this));
+
+		var keyword = this.keywordInputNode.get("value");
+
+		var moduleList = [];
+		var itemNodes = this.rangeSelectedContentNode.getChildren();
+		if (!itemNodes.length){
+			this.getSelectedRange();
+			this.selectedRange.each(function(type){
+				moduleList.push({"moduleType": type, "flagList": []});
+			});
+		}else{
+			var rangeApp = {};
+			itemNodes.each(function(node){
+				var data = node.retrieve("data");
+				if (!rangeApp[data.moduleType]) rangeApp[data.moduleType] = [];
+				rangeApp[data.moduleType].push(data.id);
+			}.bind(this));
+
+			Object.keys(rangeApp).each(function(k){
+				moduleList.push({"moduleType": k, "flagList": rangeApp[k]});
+			});
+		}
+
+		this.filterOption.keyword = keyword;
+		this.filterOption.designerTypes = filterTypes;
+		this.filterOption.moduleList = moduleList;
+
+		return this.filterOption;
 	}
 });

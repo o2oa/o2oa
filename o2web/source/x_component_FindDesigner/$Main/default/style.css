@@ -15,8 +15,8 @@
     background-color: #ffffff;
 }
 .rangeNode {
-    height: 20px;
-    padding: 10px 0;
+    height: 40px;
+    padding: 0;
     line-height: 20px;
     border-top: 1px solid #cccccc;
     border-bottom: 1px solid #cccccc;
@@ -64,6 +64,65 @@
     display: inline-flex;
     cursor: default;
 }
+.rangeType_Item {
+    margin-left: 5px;
+    float: left;
+    display: inline-flex;
+    cursor: default;
+}
+.rangeNode_title {
+    float: left;
+    padding: 0 10px;
+    text-align: center;
+    width: 75px;
+    font-size: 12px;
+    font-weight: bold;
+    height: 40px;
+    line-height: 40px;
+}
+.rangeNode_content {
+    width: 400px;
+    font-size: 12px;
+    color: #666666;
+    padding: 10px 0;
+    height: 20px;
+    float: left;
+}
+.rangeNode_select {
+    margin-left: 495px;
+    padding: 0;
+    height: 40px;
+}
+.rangeNode_select_area {
+    padding: 5px 0;
+    height: 30px;
+}
+.rangeNode_select_action_area {
+    float: left;
+    width: 100px;
+    padding: 4px 10px;
+    border-right: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    height: 22px;
+}
+.rangeNode_select_action {
+    border: 1px solid #bbbbbb;
+    height: 20px;
+    padding: 0 10px;
+    border-radius: 12px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    font-size: 12px;
+    color: #888888;
+}
+.rangeNode_select_content {
+    margin-left: 120px;
+    background-color: #ffffff;
+    height: 22px;
+    overflow: hidden;
+    padding: 4px 5px;
+}
+
 .keywordNode_inputArea {
     margin-left: 95px;
     height: 30px;
