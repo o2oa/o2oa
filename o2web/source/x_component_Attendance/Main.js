@@ -324,6 +324,12 @@ MWF.xApplication.Attendance.Main = new Class({
 			setting.edit();
 		}.bind(this));
 	},
+	openWeekendSetting : function(){
+		MWF.xDesktop.requireApp("Attendance", "WeekendSetting", function(){
+			var setting = new MWF.xApplication.Attendance.WeekendSetting(this,this.restActions);
+			setting.edit();
+		}.bind(this));
+	},
 	openAddressSetting: function () {
 		MWF.xDesktop.requireApp("Attendance", "AddressExplorer", function () {
 			this.clearContent();
