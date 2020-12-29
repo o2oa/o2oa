@@ -69,6 +69,12 @@
  * <b>in</b> ：表示在某几个特定的值当中。<br/>
  * </div>
  * @property {String} formatType  - 过滤数据的数据类型，可选值：
+ * <div style='padding-left:150px;'>
+ * <b>textValue</b> ：文本。<br/>
+ * <b>numberValue</b> ：数字。<br/>
+ * <b>dateTimeValue</b> ：日期时间。<br/>
+ * <b>booleanValue</b> ：布尔值。<br/>
+ * </div>
  * @property {(String|Number|Boolean)} value - 过滤的值，根据formatType提供匹配的数据类型的值，如果是dateTimeValue数据类型，则提供日期格式的字符串，格式如“YYYY-MM-DD HH:MM:SS”。当comparison值为“range”时，此值表示范围中的第一个值。当comparison值为“in”时，多个值用半角逗号","分开。
  * @property {(String|Number|Boolean)} otherValue  - 当comparison值为“range”时，此值表示范围中的第二个值。当comparison值不为“range”时，忽略此值。
  * @example
@@ -80,6 +86,55 @@
  *    "formatType":"textValue"
  * }
  */
+
+/**
+ * StatementFilter 查询视图的过滤条件
+ * @typedef {Object} StatementFilter
+ * @property {String} path - 要过滤的data数据的路径，形式为查询语句中的"表别名.字段名"，如"o.title"。
+ * @property {String} comparison - 比较运算符，可选值：<br/>
+ * <div style='padding-left:150px;'>
+ * <b>equals</b> 或 <b>==</b> 或：表示等于。<br/>
+ * <b>notEquals</b> 或 <b>!=</b> ：表示不等于。<br/>
+ * <b>greaterThan</b> 或 <b>></b> ：表示大于。<br/>
+ * <b>greaterThanOrEqualTo</b> 或 <b>=></b> ：表示大于或等于。<br/>
+ * <b>lessThan</b> 或 <b><</b> ：表示小于。<br/>
+ * <b>lessThanOrEqualTo</b> 或 <b><=</b> ：表示小于等于。<br/>
+ * <b>like</b> ：表示部分匹配。<br/>
+ * <b>notLike</b> ：表示不匹配。<br/>
+ * </div>
+ * @property {String} formatType  - 过滤数据的数据类型，可选值：
+ * <div style='padding-left:150px;'>
+ * <b>textValue</b> ：文本。<br/>
+ * <b>numberValue</b> ：数字。<br/>
+ * <b>dateTimeValue</b> ：日期时间。<br/>
+ * <b>booleanValue</b> ：布尔值。<br/>
+ * </div>
+ * @property {(String|Number|Boolean)} value - 过滤的值，根据formatType提供匹配的数据类型的值，如果是dateTimeValue数据类型，则提供日期格式的字符串，格式如“YYYY-MM-DD HH:MM:SS”。
+ * @example
+ *{
+ *    "path":"o.title",
+ *    "comparison":"like",
+ *    "value":"关于",
+ *    "formatType":"textValue"
+ *}
+ */
+
+/**
+ * StatementParameter  查询视图的过滤条件值参数，对查询语句where语句的形如":person"的参数部分进行赋值<br/>
+ * 有以下规则：<br/>
+ * 1、参数名称为下列值时，后台自动赋值：person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)。<br/>
+ * 2、如果对比的是日期，需要传入 Date 类型。<br/>
+ * 3、如果运算符用的是 like, noLike，模糊查询，值为 "%{value}%"。
+ * @typedef {Object} StatementParameter
+ * @example
+ * {
+ *    "person" : "",
+ *    "startTime" : (new Date("2020-01-01")),
+ *    "applicationName" : "%test%",
+ *    "processName" : "test流程" //其他写确定的值
+ * }
+ */
+
 
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.ViewEnvironment = function (ev) {
@@ -1037,7 +1092,86 @@ MWF.xScript.ViewEnvironment = function (ev) {
         }
     };
 
+    /**
+     * 你可以通过view对象，获取视图数据或选择视图数据。<br/>
+     * @module view
+     * @example
+     * //您可以在流程表单、内容管理表单或门户页面中，通过this来获取view对象，如下：
+     * var view = this.view;
+     */
     this.view = {
+        /**
+         * 获取指定视图的数据。
+         * @method lookup
+         * @static
+         * @param {Object} view - 要访问的视图信息。数据格式如下：<br/>
+         * <caption>以下的filter参数参考<a href='global.html#ViewFilter'>ViewFilter</a></caption>
+         * <pre><code class='language-js'>
+         * {
+         *  "view" : "testView", //（String）必选，视图的名称、别名或ID
+         *  "application" : "test数据中心应用", //（String）必选，视图所在数据应用的名称、别名或ID
+         *  "filter": [ //（Array of Object）可选，对视图进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件。
+         *       {
+         *           "logic":"and",
+         *           "path":"$work.title",
+         *           "comparison":"like",
+         *           "value":"7月",
+         *           "formatType":"textValue"
+         *       }
+         *  ]
+         * }
+         * </pre></code>
+         * @param {Function} callback - 访问成功后的回调函数
+         * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
+         * @example
+         * this.view.lookup(view, callback, async);
+         * @example
+         * //获取“财务管理”应用中“报销审批数据”视图中的数据
+         * //过滤条件为标题（$work.title）包含包含（like））“7月”。
+         * this.view.lookup({
+         *   "view": "报销审批数据",
+         *   "application": "财务管理",
+         *   "filter": [
+         *       {
+         *           "logic":"and",
+         *           "path":"$work.title",
+         *           "comparison":"like",
+         *           "value":"7月",
+         *           "formatType":"textValue"
+         *       }
+         *   ]
+         *}, function(data){
+         *   var result = data.grid; //得到过滤后的数据
+         *   //......
+         *});
+         * @example
+         * //获取“财务管理”应用中“报销审批数据”视图中的数据
+         * //过滤条件为标题（$work.title）包含包含（like））“7月”，并且总金额大于500小于5000
+         * this.view.lookup({
+         *   "view": "报销审批数据",
+         *   "application": "财务管理",
+         *   "filter": [
+         *       {
+         *           "logic":"and",
+         *           "path":"$work.title",
+         *           "comparison":"like",
+         *           "value":"7月",
+         *           "formatType":"textValue"
+         *       },
+         *       {
+         *           "logic":"and",
+         *           "path":"amount",
+         *           "comparison":"range",
+         *           "value":500,
+         *           "otherValue":5000,
+         *           "formatType":"numberValue"
+         *       },
+         *   ]
+         *}, function(data){
+         *   var result = data.grid; //得到过滤后的数据
+         *   //......
+         *});
+         */
         "lookup": function (view, callback, async) {
             var filterList = { "filterList": (view.filter || null) };
             MWF.Actions.get("x_query_assemble_surface").loadView(view.view, view.application, filterList, function (json) {
@@ -1062,6 +1196,53 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 });
             }.bind(this));
         },
+
+        /**
+         * 通过视图进行数据选择。
+         * @method select
+         * @static
+         * @param {Object} view - 要访问的视图信息。数据格式如下：<br/>
+         * <caption>以下的filter参数参考<a href='global.html#ViewFilter'>ViewFilter</a></caption>
+         * <pre><code class='language-js'>
+         * {
+         *  "view" : "testView", //（String）必选，视图的名称、别名或ID
+         *  "application" : "test数据中心应用", //（String）必选，视图所在数据应用的名称、别名或ID
+         *  "isTitle" : true, //（Boolean）可选，是否显示视图标题。默认true
+         *  "isMulti" : true,  //（Boolean）可选，是否允许多选。默认true
+         *  "width" : 700, //（Number）可选，选择框的宽度。默认700
+         *  "height" : 400,  //（Number）可选，选择框的高度。默认400
+         *  "caption" : "标题", //（String）可选，选择框的标题
+         *  "filter": [ //（Array of Object）可选，对视图进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件。
+         *       {
+         *           "logic":"and",
+         *           "path":"$work.title",
+         *           "comparison":"like",
+         *           "value":"7月",
+         *           "formatType":"textValue"
+         *       }
+         *  ]
+         * }
+         * </pre></code>
+         * @param {Function} callback - 必选，当选择完成，点击“确定”之后的回调函数。
+         * @example
+         * this.view.select(view, callback);
+         * @example
+         * this.view.select({
+         *    "application": "物业材料",  //数据中心中的应用
+         *    "view": "物业材料视图",     //视图的名称
+         *    "isMulti": false,           //只允许单选
+         * }, function(items) {
+         *    //如果选择了某个数据，将数据赋值给表单输入框
+         *    if (items.length) {
+         *        //物料名称，表单中输入框名为“materialName”， 视图中列的名称为“ylmc”
+         *        this.data.materialName = items[0].data.ylmc;
+         *        //规格，表单中输入框名为“specification”， 视图中列的名称为“gg”
+         *        this.data.specification = items[0].data.gg;
+         *        //单价，表单中输入框名为“price”， 视图中列的名称为“dj”
+         *        this.data.price = items[0].data.dj;
+         *    }
+         * }.bind(this));
+         */
         "select": function (view, callback, options) {
             if (view.view) {
                 var viewJson = {
@@ -1150,7 +1331,75 @@ MWF.xScript.ViewEnvironment = function (ev) {
         }
     };
 
+    /**
+     * 你可以通过statement对象，获取执行查询语句或者对查询结果进行选择。<br/>
+     * @module statement
+     * @example
+     * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
+     * var statement = this.statement;
+     */
     this.statement = {
+        /**
+         * 执行指定的查询语句。
+         * @method execute
+         * @static
+         * @param {Object} statement - 要执行的查询语句的信息。数据格式如下：
+         * <div>以下的filter参数参考<a href='global.html#StatementFilter'>StatementFilter</a>,
+         * parameter参数参考<a href='global.html#StatementParameter'>StatementParameter</a></div>
+         * <pre><code class='language-js'>
+         * {
+         *  "name" : "tesStatement", //（String）必选，查询配置的名称、别名或ID
+         *  "mode" : "all", //（String）必选，“all”、“data”或者“count”，all表示同时执行查询语句和总数语句，data表示执行查询语句，count表示执行总数语句
+         *  "page" : 1, //（number）可选，当前页码，默认为1
+         *  "pageSize" : 20, //（number）可选，每页的数据条数，默认为20
+         *  "filter": [ //（Array）可选，对查询进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件，每个元素数据格式如下：
+         *       {
+         *           "path":"o.title",
+         *           "comparison":"like",
+         *           "value":"关于",
+         *           "formatType":"textValue"
+         *       }
+         *  ],
+         *  parameter : {
+         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
+         *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
+         *       "processName" : "test流程" //其他写确定的值
+         *     }
+         * }
+         * </pre></code>
+         * @param {Function} callback - 访问成功后的回调函数
+         * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
+         * @example
+         * this.statement.execute(statement, callback, async);
+         * @example
+         * //获取“task”查询中的数据
+         * //查询语句为 select o from Task o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)
+         * //总数语句为 select count(o.id) from Task o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)
+         * //过滤条件为标题o.title包含包含（like））“7月”。
+         * this.statement.execute({
+         *  "name": "task",
+         *  "mode" : "all",
+         *  "filter": [
+         *      {
+         *      "path":"o.title",
+         *      "comparison":"like",
+         *      "value":"7月",
+         *      "formatType":"textValue"
+         *      }
+         * ],
+         * "parameter" : {
+         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
+         *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
+         *     "processName" : "test流程" //其他写确定的值
+         *   }
+         * }, function(json){
+         *  var count = json.count; //总数语句执行后返回的数字
+         *  var list = json.data; //查询语句后返回的数组
+         *   //......
+         * });
+         */
         "execute": function (statement, callback, async) {
             var parameter = this.parseParameter(statement.parameter);
             var filterList = this.parseFilter(statement.filter, parameter);
@@ -1203,6 +1452,57 @@ MWF.xScript.ViewEnvironment = function (ev) {
             }
             return parameter;
         },
+
+        /**
+         * 如果查询的类型是"select"，并且配置了查询视图，可以通过本方法进行数据选择。
+         * @method select
+         * @static
+         * @param {Object} statement - 要访问的查询配置的信息。数据格式如下：
+         * <div>以下的filter参数参考<a href='global.html#StatementFilter'>StatementFilter</a>,
+         * parameter参数参考<a href='global.html#StatementParameter'>StatementParameter</a></div>
+         * <pre><code class='language-js'>
+         * {
+         *  "name" : "tesStatement", //（String）必选，查询配置的名称、别名或ID
+         *  "isTitle" : true, //（Boolean）可选，是否显示视图标题。默认true
+         *  "isMulti" : true,  //（Boolean）可选，是否允许多选。默认true
+         *  "width" : 700, //（Number）可选，选择框的宽度。默认700
+         *  "height" : 400,  //（Number）可选，选择框的高度。默认400
+         *  "caption" : "标题", //（String）可选，选择框的标题
+         *  "filter": [ //（Array）可选，对查询进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件，每个元素数据格式如下：
+         *       {
+         *           "path":"o.title",
+         *           "comparison":"like",
+         *           "value":"关于",
+         *           "formatType":"textValue"
+         *       }
+         *  ],
+         *  parameter : {
+         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
+         *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
+         *       "processName" : "test流程" //其他写确定的值
+         *     }
+         * }
+         * </pre></code>
+         * @param {Function} callback - 访问成功后的回调函数
+         * @example
+         * this.statement.select(statement, callback);
+         * @example
+         * this.statement.select({
+         *     "name": "物业材料查询",     //查询的名称
+         *     "isMulti": false,           //只允许单选
+         * }, function(items) {
+         *     //如果选择了某个数据，将数据赋值给表单输入框
+         *     if (items.length) {
+         *         //物料名称，表单中输入框名为“materialName”， 查询语句返回的字段名为“ylmc”
+         *         this.data.materialName = items[0].ylmc;
+         *         //规格，表单中输入框名为“specification”， 查询语句返回的字段名为“gg”
+         *         this.data.specification = items[0].gg;
+         *         //单价，表单中输入框名为“price”， 查询语句返回的字段名为“dj”
+         *         this.data.price = items[0].dj;
+         *     }
+         * }.bind(this));
+         */
         "select": function (statement, callback, options) {
             if (statement.name) {
                 // var parameter = this.parseParameter(statement.parameter);
@@ -1417,6 +1717,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 当查询视图被嵌入到门户页面、流程表单或内容管理表单的时候，可以通过这个方法来获取页面或表单的上下文。
      * @method getParentEnvironment
+     * @memberOf module:queryStatement
      * @static
      * @return {MWF.xScript.Environment|MWF.xScript.CMSEnvironment} 页面或表单的上下文.
      * @example
@@ -1538,7 +1839,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * var data = this.queryStatement.getSelectedData();
      */
 
-    /**获取queryView对应的DOM对象。
+    /**获取queryStatement对应的DOM对象。
      * @method node
      * @static
      * @methodOf module:queryStatement
@@ -1590,7 +1891,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         "getViewInfor" : function () { return _form.getViewInfor(); },
 
         /**
-         * 获取视图或查询视图当前页的基本信息。
+         * 获取视图当前页的基本信息。
          * @method getPageInfor
          * @memberOf module:queryView
          * @static
@@ -1602,11 +1903,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * }
          * </pre></code>
          * @example
-         * //视图中的用法
          * this.queryView.getPageInfor();
-         *
-         * //查询视图中的用法
-         * this.queryStatement.getPageInfor();
          */
         "getPageInfor" : function () { return _form.getPageInfor(); },
 
@@ -1733,19 +2030,42 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * </pre></code>
          * @param {Function} [callback] 过滤完成并重新加载数据后的回调方法。
          * @example
-         * var filter = [
-         *    {
-         *       "logic":"and",
-         *       "path":"$work.title",
-         *       "comparison":"like",
-         *       "value":"7月",
-         *       "formatType":"textValue"
-         *   }
-         *];
          * this.queryView.setFilter( filter );
          */
         "setFilter" : function ( filter, callback ) { return _form.setFilter(filter, callback); },
 
+        /**
+         * 增加查询语句where子句的过滤条件。
+         * @method setStatementFilter
+         * @memberOf module:queryStatement
+         * @static
+         * @param {(StatementFilter[]|Null)} [filter] 过滤条件。<br/>
+         * 过滤条件。当不传参数、参数为null或为空数组的情况下，表示清空非视图默认的过滤条件。<br/>
+         * 如果传入非空数组的时候，参数如下：
+         * <pre><code class='language-js'>[
+         *    {
+         *      "path":"o.title",
+         *      "comparison":"like",
+         *      "value":"关于",
+         *      "formatType":"textValue"
+         *  }
+         *]
+         * </pre></code>
+         * @param {StatementParameter} [parameter] 过滤条件。对查询语句where子句的形如":person"的参数部分进行赋值，参数如下：
+         * <pre><code class='language-js'>
+         * //假设语句为 select count(o.id) from Read o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)。
+         * //那么可能的参数如下：
+         * {
+         *    "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *    "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
+         *    "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
+         *    "processName" : "test流程" //其他写确定的值
+         * }
+         * </pre></code>
+         * @param {Function} [callback] 过滤完成并重新加载数据后的回调方法。
+         * @example
+         * this.queryStatement.setStatementFilter( filter, parameter, callback );
+         */
         "setStatementFilter" : function ( filter , parameter, callback) { return _form.setFilter(filter, parameter, callback); },
 
         /**
@@ -1785,6 +2105,41 @@ MWF.xScript.ViewEnvironment = function (ev) {
          */
         "switchView" : function ( options ) { return _form.switchView(options); },
 
+        /**
+         * 把当前查询视图切换成另外一个查询视图。
+         * @method switchStatement
+         * @memberOf module:queryStatement
+         * @static
+         * @param {Object} options 需要跳转的参数配置。参数说明如下：
+         * <div>下列说明的filter属性参考<a href='global.html#StatementFilter'>StatementFilter</a>，
+         * parameter属性参考<a href='global.html#StatementParameter'>StatementParameter</a></div>
+         * <pre><code class='language-js'>this.queryStatement.switchStatement({
+         *     "statementId": statementId, //必选，查询的名称、别名、id
+         *     "isTitle": "yes", //可选，是否显示视图的标题行，可选值有:yes no
+         *     "select": "multi", //可选，是否允许新视图选择，如果不传，则使用原视图的配置, 可选值有： 不允许选择 none, 单选 single，多选 multi
+         *     "showActionbar": false, //可选，是否显示操作条
+         *     "filter": [  //可选，增加查询语句where子句的过滤条件
+         *       {
+         *         "path": "o.title",
+         *         "title": "标题",
+         *         "type": "filter",
+         *         "comparison": "like",
+         *         "formatType": "textValue",
+         *         "value": "测试"
+         *       }
+         *     ],
+         *     //假设语句为 select count(o.id) from Read o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)
+         *     "parameter" : { //可选，对查询语句where语句的形如":person"的参数部分进行赋值
+         *       "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
+         *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
+         *       "processName" : "test流程" //其他写确定的值
+         *     }
+         *   })
+         * </pre></code>
+         * @example
+         * this.queryStatement.switchStatement( options );
+         */
         "switchStatement" : function ( options ) { if(_form.switchStatement)_form.switchStatement(options) ; },
 
         /**
@@ -2227,7 +2582,280 @@ MWF.xScript.ViewEnvironment = function (ev) {
     this.target = ev.target;
     this.event = ev.event;
     this.status = ev.status;
+
+    /**
+     * 在前端脚本中，可以通过this.session.user来获取当前用户信息。<br/>
+     * @module session
+     * @example
+     * //获取当前用户信息
+     * var user = this.session.user
+     * @return {Object} 当前用户信息，内容和格式如下：
+     * <pre><code class='language-js'>{
+     *    "id": "267a7bcc-f27a-49c8-8364-f1c12061085a",       //人员ID
+     *    "genderType": "m",                                  //性别
+     *    "icon": "...",                                      //头像
+     *    "signature": "",                                    //个人签名
+     *    "name": "胡起",                                     //姓名
+     *    "employee": "huqi",                                 //员工号
+     *    "unique": "huqi",                                   //唯一标识
+     *    "distinguishedName": "xx@huqi@P",                   //人员全称
+     *    "superior": "",                                     //上级人员id
+     *    "changePasswordTime": "2017-03-13",                 //修改密码时间
+     *    "lastLoginTime": "2019-01-02",                      //最后登录时间
+     *    "mail": "huqi@zoneland.net",                        //邮件地址
+     *    "weixin": "",                                       //微信号
+     *    "qq": "",                                           //QQ
+     *    "mobile": "18057190078",                            //手机号码
+     *    "officePhone": "",                                  //办公电话
+     *    "createTime": "2017-03-13 12:27:04",                //人员创建时间
+     *    "updateTime": "2019-01-02 13:00:04",                //人员修改时间
+     *    "token": "...",                         //当前用户token
+     *    "roleList": [                                       //人员角色
+     *      "ProcessPlatformCreator@ProcessPlatformCreatorSystemRole@R",
+     *      "ProcessPlatformManager@ProcessPlatformManagerSystemRole@R",
+     *      "Manager@ManagerSystemRole@R"
+     *   ],
+     *    "identityList": [                                   //人员身份列表
+     *      {
+     *        "id": "709328c8-44a0-4f5d-a3fa-3c31208232d5",                       //身份ID
+     *        "name": "xx",                                                       //身份名称
+     *        "unique": "709328c8-44a0-4f5d-a3fa-3c31208232d5",                   //身份唯一标识
+     *        "distinguishedName": "xx@709328c8-44a0-4f5d-a3fa-3c31208232d5@I",   //身份全称
+     *        "person": "267a7bcc-f27a-49c8-8364-f1c12061085a",                   //人员ID
+     *        "unit": "d5356fd4-6675-45ad-9a00-5eff20b83dfa",                     //所属组织ID
+     *        "unitName": "开发部",                                               //所属组织名称
+     *        "unitLevel": 2,                                                     //所属组织层级
+     *        "unitLevelName": "兰德纵横/开发部",                                 //所属组织层次名
+     *        "major": true                                                       //是否是主身份
+     *      },
+     *      {
+     *        "id": "343510af-57c2-4a55-a1f2-f30d7af6d284",
+     *        "description": "",
+     *        "name": "xx",
+     *        "unique": "343510af-57c2-4a55-a1f2-f30d7af6d284",
+     *        "distinguishedName": "xx@343510af-57c2-4a55-a1f2-f30d7af6d284@I",
+     *        "person": "267a7bcc-f27a-49c8-8364-f1c12061085a",
+     *        "unit": "108b1b7c-cc78-49ab-9ab1-e67073bd6541",
+     *        "unitName": "开发部",
+     *        "unitLevel": 2,
+     *        "unitLevelName": "浙江兰德纵横/开发部",
+     *        "major": false
+     *      }
+     *    ]
+     *  }
+     * </pre></code>
+     */
     this.session = layout.desktop.session;
+
+
+
+    /**
+     * 本文档说明如何在前台脚本中使用Actions调用平台的RESTful服务。<br/>
+     * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
+     * @module Actions
+     * @example
+     * //获取Actions
+     * this.Actions
+     * //或者
+     * o2.Actions
+     */
+
+    /**
+     * 您可以使用this.Actions.getHost来获取服务根的host。
+     * @method getHost
+     * @methodOf module:Actions
+     * @static
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     *如:<pre><code class='language-js'>
+     *  "x_processplatform_assemble_surface" //流程平台相关服务根
+     * </pre></code>
+     * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
+     * @example
+     * var actions = this.Actions.getHost( root );
+     */
+
+    /**
+     * 平台预置了Actions对象用于调用平台提供的服务，您可以使用this.Actions.load来获取这些方法。
+     * @method load
+     * @methodOf module:Actions
+     * @static
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * 如:
+     *<pre><code class='language-js'>
+     *  "x_processplatform_assemble_surface" //流程平台相关服务根
+     * </pre></code>
+     * @return {Object} 返回action对象，用于后续服务调用
+     * @example
+     * var actions = o2.Actions.load( root );
+     * //或
+     * var actions = this.Actions.load( root );
+     * @example
+     * //获取流程平台服务对象。
+     * var processAction = this.Actions.load("x_processplatform_assemble_surface");
+     * @example
+     * <caption>
+     *     通过this.Actions.load(root)方法得到的action对象，就可以访问此服务下的方法了。<br/>
+     *     访问方法的规则如下：
+     *  </caption>
+     *  this.Actions.load( root )[actionName][methodName]( arguements );
+     *
+     *  root : 平台服务根
+     *
+     *  actionName : 服务下的Action分类名称，如 TaskAction
+     *
+     *  methodName : Action分类的服务名称，如 get
+     *
+     *  arguements : 需调用的RESTful服务的相关参数。这些参数需要按照先后顺序传入。根据实际情况可以省略某些参数。参数序列分别是:
+     *
+     *      uri的参数, data/formData(Post, Put方法), file(附件), success, failure, async。
+     *
+     *      uri参数：如果有uri有多个参数，需要按先后顺序传入。
+     *
+     *      data（formData）参数：提交到后台的数据，如果是上传附件，传入formData。POST 和 PUT 方法需要传入，GET方法和DELETE方法省略。
+     *
+     *      file参数：POST 或者 PUT方法中有效，当需要上传附件时传入,否则可以省略。
+     *
+     *      success参数：服务执行成功时的回调方法，形如 function(json){
+     *          json为后台服务传回的数据
+     *      }。
+     *
+     *      failure 参数：服务执行失败时的回调方法，形如 function(xhr){
+     *          xhr XmlHttpRequest对象，服务器请求失败时有值
+     *       }
+     *      此参数可以省略，如果省略，系统会自动弹出错误信息。
+     *
+     *      async : 方法同步或者异步执行，默认为true。
+     *  @example
+     * <caption>
+     *     <b>样例1:</b>
+     *     根据x_processplatform_assemble_surface服务获取当前用户的待办列表：<br/>
+     *     可以通过对应服务的查询页面，http://server:20020/x_processplatform_assemble_surface/jest/index.html<br/>
+     *     可以看到以下界面：<img src="img/module/Actions/Actions.png"/>
+     *     我们可以找到TaskAction的V2ListPaging服务是列式当前用户待办的服务。<br/>
+     *     该服务有以下信息：<br/>
+     *     1、actionName是：TaskAction<br/>
+     *     2、methodName是：V2ListPaging<br/>
+     *     2、有两个url参数，分别是 page(分页), size(每页数量)<br/>
+     *     3、有一系列的body参数<br/>
+     *     4、该服务方法类型是POST<br/>
+     *     根据这些信息我们可以组织出下面的方法：
+     * </caption>
+     * var processAction = this.Actions.load("x_processplatform_assemble_surface"); //获取action
+     * var method = processAction.TaskAction.V2ListPaging; //获取列式方法
+     * method(
+     *  1,  //uri 第1个参数，如果无uri参数，可以省略
+     *  20, //uri 第2个参数，如果无uri参数，可以省略，如果还有其他uri参数，可以用逗号, 分隔
+     *  {   //body 参数，对POST和PUT请求，该参数必须传，可以为空对象
+     *      processList : [xxx] //具体参数
+     *  },
+     *  function(json){ //正确调用的回调
+     *       //json.data得到服务返回数据
+     *  },
+     *  function(xhr){ //可选，错误调用的回调
+     *      //xhr为XmlHttpRequest对象，服务器请求失败时有值
+     *      var responseJSON = JSON.parse( xhr.responseText ) //xhr.responseText {String}是后台返回的出错信息
+     *      //responseJSON见下面的说明
+     *
+     *      var message = responseJSON.message; //message为错误提示文本
+     *  },
+     *  true //可选，true为异步调用，false为同步调用，默认为true
+     * );
+     * @example
+     * <caption>出错信息responseJSON的格式</caption>
+     * {
+     *       "type": "error", //类型为错误
+     *       "message": "标识为:343434 的 Task 对象不存在.", //提示文本
+     *       "date": "2020-12-29 17:02:13", //出错时间
+     *       "prompt": "com.x.base.core.project.exception.ExceptionEntityNotExist" //后台错误类
+     *}
+     * @example
+     * <caption>
+     *     <b>样例2:</b>
+     *      已知流程实例的workid，在脚本中获取数据，修改后进行保存。
+     * </caption>
+     * //查询服务列表找到获取data数据服务为DataAction的getWithWork方法
+     * //查询服务列表找到更新data数据服务为DataAction的updateWithWork方法
+     *
+     * var workid = "cce8bc22-225a-4f85-8132-7374d546886e";
+     * var data;
+     * this.Actions.load("x_processplatform_assemble_surface").DataAction.getWithWork( //平台封装好的方法
+     *      workid, //uri的参数
+     *      function( json ){ //服务调用成功的回调函数, json为服务传回的数据
+     *          data = json.data; //为变量data赋值
+     *      }.bind(this),
+     *      false //同步执行
+     * )
+     *
+     * data.subject = "新标题"; //修改数据
+     * this.Actions.load("x_processplatform_assemble_surface").DataAction.updateWithWork(
+     *      workid, //uri的参数
+     *      data, //保存的数据
+     *      function(){ //服务调用成功的回调函数
+     *          o2.xDesktop.notice("success", {"y":"top", "x": "right"}, "保存成功");  //提示，{"y":"top", "x": "right"}指提示框在顶部右边
+     *      }.bind(this)
+     * );
+     */
+
+    /**
+     * <b>已过时。</b>平台预置了Action的调用方法，您可以使用o2.Actions.get来获取这些方法。RESTful配置文件在{服务器目录}/webServer/o2_core/o2/xAction/services下。
+     * @method get
+     * @deprecated
+     * @methodOf module:Actions
+     * @static
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     *如:<pre><code class='language-js'>
+     *  "x_processplatform_assemble_surface" //流程平台相关服务根
+     * </pre></code>
+     * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
+     * @example
+     * var actions = o2.Actions.get( root );
+     * actions[ methodName ]( arguements );
+     *
+     * or
+     *
+     * o2.Actions.get( root )[methodName]( arguements );
+     * @example
+     * methodName :（string）方法名称。
+     * arguements : 见load方法的arguements说明
+     * @example
+     * <caption><b>样例一:</b>已知流程实例的workid，在脚本中获取数据，修改后进行保存。</caption>
+     * //现已知获取数据的方法名称是 getWorkData  uri为： /jaxrs/data/work/{workid}
+     * //已知更新数据的方法名称是 saveData  uri为： /jaxrs/data/work/{workid}
+     * var workid = "cce8bc22-225a-4f85-8132-7374d546886e";
+     * var action = o2.Actions.get("x_processplatform_assemble_surface");
+     * var data;
+     * action.getWorkData( //平台封装好的方法
+     *      workid, //uri的参数
+     *      function( json ){ //服务调用成功的回调函数, json为服务传回的数据
+     *          data = json.data; //为变量data赋值
+     *      }.bind(this),
+     *      false //同步执行
+     * );
+
+     * data.subject = "新标题"; //修改数据
+     * action.saveData(
+     *      workid, //uri的参数
+     *      data, //保存的数据
+     *      function(){ //服务调用成功的回调函数
+     *          o2.xDesktop.notice("success", {"y":"top", "x": "right"}, "保存成功");  //提示，{"y":"top", "x": "right"}指提示框在顶部右边
+     *      }.bind(this)
+     * );
+     * @example
+     * <caption><b>样例二:</b>已知流程应用的workid，分页列式出流程实例。</caption>
+     * //现已知获取数据的方法名称是 listWorkNext  uri为： {"uri": "/jaxrs/work/list/{id}/next/{count}/application/{applicationId}"},
+     * var id = "(0)"; //如果是第一页id是(0)，否则传上一页最后一个流程实例的id
+     * var count = 10;
+     * var applicationId = "dde8bc22-225a-4f85-8132-7374d546886e";
+     * o2.Actions.get("x_processplatform_assemble_surface").listWorkNext(
+     *      id, //listWorkNext服务有3个uri参数，要按先后顺序列出
+     *      count,
+     *      applicationId,
+     *       function( json ){
+     *          //json.data
+     *      }.bind(this)
+     * );
+     */
+
     this.Actions = o2.Actions;
 
     this.query = function (option) {

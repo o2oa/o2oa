@@ -1432,6 +1432,42 @@ MWF.xScript.PageEnvironment = function (ev) {
      * var page = this.page;
      */
     this.page = this.form = {
+        /** 跳转到当前门户的指定页面。<b>（仅门户脚本可用）</b>
+         * @method toPage
+         * @static
+         * @param {String} name - 要跳转的页面名称
+         * @param {Object} [par] - 要传入被打开页面的数据。在被打开的页面可以用this.page.parameters获取
+         * @param {Boolean} [par] - 页面条件的时候，不往History里增加历史状态，默认为false
+         * @example
+         * //跳转到当前门户的指定页面。
+         * this.page.toPage( name, par );
+         * @example
+         * this.page.toPage("列表页面", {"key": "发文列表"});//打开“列表页面”，并传入一个json数据。
+         *
+         * //在列表页面中，通过this.page.parameters获取传入的数据。
+         * var key = this.page.parameters.key; //key="发文列表"
+         */
+        "toPage": function (name, par, nohis) {
+            _form.app.toPage(name, par, nohis);
+        },
+
+        /** 跳转到指定门户页面。<b>（仅门户脚本可用）</b>
+         * @method toPortal
+         * @static
+         * @param {String} portal - 要跳转的门户名称。
+         * @param {String} [page] - 要打开的门户的页面名称。为空则打开指定门户的默认首页。
+         * @param {String} [par] - 在被打开的页面可以用this.page.parameters获取。
+         * @example
+         * this.page.toPortal( portal, page, par );
+         * @example
+         * this.page.toPortal("公文门户", "列表页面", {"key": "发文列表"});//打开“公文门户”的“列表页面”，并传入一个json数据。
+         *
+         * //在列表页面中，通过this.page.parameters获取传入的数据。
+         * var key = this.page.parameters.key; //key="发文列表"
+         */
+        "toPortal": function (portal, page, par) {
+            _form.app.toPortal(portal, page, par);
+        },
         /**获取当前页面的基本信息
          * @method getInfor
          * @static
@@ -1557,12 +1593,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         "openWindow": function (form, app) {
             _form.openWindow(form, app);
         },
-        "toPage": function (name, par, nohis) {
-            _form.app.toPage(name, par, nohis);
-        },
-        "toPortal": function (portal, page, par) {
-            _form.app.toPortal(portal, page, par);
-        },
+
         /**打开一个在流转或已完成的流程实例
          * @method openWork
          * @static
