@@ -932,17 +932,15 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                 }else{
                     var display = this.children.getStyle("display");
                     if (display === "none"){
-                        this.selector.fireEvent("expand", [this] );
                         this.children.setStyles({"display": "block", "height": "auto"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
                         this.isExpand = true;
                         this.selector.fireEvent("expand", [this] );
                     }else{
-                        this.selector.fireEvent("collapse", [this] );
                         this.children.setStyles({"display": "none", "height": "0px"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
                         this.isExpand = false;
-                        this.selector.fireEvent("expand", [this] );
+                        this.selector.fireEvent("collapse", [this] );
                     }
                 }
                 if(callback)callback();
