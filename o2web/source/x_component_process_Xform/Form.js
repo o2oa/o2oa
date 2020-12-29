@@ -5,7 +5,7 @@ MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
 //MWF.xDesktop.requireApp("process.Xform", "Package", null, false);
 
-/** @class Form 表单。
+/** @class Form 流程表单。
  * @category FormComponents
  * @example
  * //可以在脚本中获取表单
@@ -13,6 +13,7 @@ MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
  * var form = this.form.getApp().appForm; //获取表单
  * //方法2
  * var form = this.target; //在表单本身的事件脚本中获取
+ * @hideconstructor
  */
 MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     /** @lends MWF.xApplication.process.Xform.Form# */
