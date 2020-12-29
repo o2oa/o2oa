@@ -22,20 +22,29 @@
             <div class="keywordNode_icon"></div>
             <div class="keywordNode_action"></div>
             <div class="keywordNode_area">
-                <input class="keywordNode_input" type="text" placeholder="{{$.lp.search_placeholder}}"/>
+                <input class="keywordNode_input" data-o2-element="keywordInputNode" type="text" placeholder="{{$.lp.search_placeholder}}"/>
             </div>
 
         </div>
     </div>
     <div class="rangeNode" data-o2-element="rangeNode">
-        <div class="filterNode_title">{{$.lp.range}}</div>
-        <div class="filterNode_content" data-o2-element="rangeContentNode">
-            <div class="rangeType">
-                <div class="rangeType_Item"><input checked type="checkbox" value="script" />{{$.lp.processPlatform}}</div>
-                <div class="rangeType_Item"><input checked type="checkbox" value="script" />{{$.lp.cms}}</div>
-                <div class="rangeType_Item"><input checked type="checkbox" value="script" />{{$.lp.portal}}</div>
-                <div class="rangeType_Item"><input checked type="checkbox" value="script" />{{$.lp.query}}</div>
-                <div class="rangeType_Item"><input checked type="checkbox" value="script" />{{$.lp.service}}</div>
+        <div class="rangeNode_title">{{$.lp.range}}</div>
+        <div class="rangeNode_content" data-o2-element="rangeContentNode">
+            <div class="rangeType" data-o2-events="click:checkRange">
+                <div class="rangeType_Item"><input checked type="checkbox" value="processPlatform" />{{$.lp.processPlatform}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="cms" />{{$.lp.cms}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="portal" />{{$.lp.portal}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="query" />{{$.lp.query}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="service" />{{$.lp.service}}</div>
+            </div>
+
+        </div>
+        <div class="rangeNode_select">
+            <div class="rangeNode_select_area">
+                <div class="rangeNode_select_action_area">
+                    <div class="rangeNode_select_action" data-o2-events="click:selectFindRange">{{$.lp.selectRange}}</div>
+                </div>
+                <div class="rangeNode_select_content" data-o2-element="rangeSelectedContentNode"></div>
             </div>
         </div>
     </div>
