@@ -100,9 +100,30 @@ public class WrapDesigner extends GsonPropertyObject {
 		}
 	}
 
-	public DesignerPattern getPatternInstant(){
-		DesignerPattern pattern = new DesignerPattern();
-		return pattern;
+	public void addPatternList(String elementType, Map<String, String> map) {
+		if(map!=null && !map.isEmpty()){
+			for (String key : map.keySet()){
+				DesignerPattern pattern = new DesignerPattern();
+				pattern.setElementType(elementType);
+				pattern.setProperty(key);
+				pattern.setPropertyValue(map.get(key));
+				this.patternList.add(pattern);
+			}
+		}
+	}
+
+	public void addPatternList(String elementType, String elementId, String elementName, Map<String, String> map) {
+		if(map!=null && !map.isEmpty()){
+			for (String key : map.keySet()){
+				DesignerPattern pattern = new DesignerPattern();
+				pattern.setElementType(elementType);
+				pattern.setElementId(elementId);
+				pattern.setElementName(elementName);
+				pattern.setProperty(key);
+				pattern.setPropertyValue(map.get(key));
+				this.patternList.add(pattern);
+			}
+		}
 	}
 
 	public void clearPatternValue(){
