@@ -135,6 +135,140 @@
  * }
  */
 
+/*********this.org 的 typedef 开始********/
+
+/**
+ * 在this.org中，当使用群组作为检索参数的时候，可以是群组的distinguishedName、name、id、unique属性值，或者包含这些属性值的对象。
+ * @typedef {(String|Object)} GroupFlag
+ * @example
+ * //以下均为合法参数
+ *
+ * //群组属性值
+ * "工作汇报读者@ReportReader@G" //群组识别名
+ * "cce8bc22-225a-4f85-8132-7374d546886e" //id
+ * "ReportReader" //群组unique
+ * "工作汇报读者" //群组名称
+ *
+ * //包含下列属性的对象
+ * { "distinguishedName": "工作汇报读者@ReportReader@G" } //群组识别名
+ * { "unique": "cce8bc22-225a-4f85-8132-7374d546886e" } //群组id
+ * { "unique": "ReportReader" } //群组unique
+ * { "name": "工作汇报读者" } //群组名称
+ */
+
+/**在this.org中返回的群组数据
+ *  @typedef {Object} GroupData
+ *  @category org
+ *  @example
+ * {
+ *   "name": "工作汇报读者", //群组名称
+ *   "unique": "ReportReader",   //群组唯一标志
+ *   "description": "可查看所有部门所有状态的工作汇报", //群组说明
+ *   "distinguishedName": "工作汇报读者@ReportReader@G", //群组全称
+ *   "orderNumber": 13699599,  //排序号
+ *   "identityList": [     //身份成员
+ *       "张三@cce8bc22-225a-4f85-8132-7374d546886e@I",
+ *       "李四@aba8bc22-225a-4f85-8132-7374d546886e@I",
+ *   ],
+ *   "personList": [     //个人成员
+ *       "张三@zhangsan@P",
+ *       "李四@lisi@P",
+ *   ],
+ *   "groupList": [  //群组成员
+ *       "所有部门领导@AllDepartLeader@G",
+ *       "所有部门汇报管理员@AllDepartReportManager@G"
+ *   ],
+ *   "unitList": [  //组织成员
+ *       "开发部@kfb@U",
+ *       "综合部@zhb@U"
+ *   ]
+ * }
+ */
+
+
+/**
+ * 在this.org中，当使用人员(个人)作为检索参数的时候，可以是人员的distinguishedName、name、id、unique属性值或包含这些属性的对象。
+ * @typedef {(String|Object)} PersonFlag
+ * @example
+ * //以下均为合法参数
+ *
+ * //人员属性值
+ * "李四@lisi@P" //人员识别名
+ * "cce8bc22-225a-4f85-8132-7374d546886e" //人员id
+ * "lisi" //人员unique
+ * "李四" //人员名称，不重名时才有效
+ *
+ * //包含下列属性的对象
+ * { "distinguishedName": "李四@lisi@P" } //人员识别名
+ * { "id": "cce8bc22-225a-4f85-8132-7374d546886e" } //人员id
+ * { "unique": "lisi" } //人员unique
+ * { "name": "李四" } //人员名称，不重名时才有效
+ */
+
+/**在this.org中返回的个人数据
+ *  @typedef {Object} PersonData
+ *  @example
+ * {
+ *   "name": "李四",    //姓名
+ *   "genderType": "m", //性别， m为男性， f为女性， d未知
+ *   "signature": "", //签名
+ *   "description": "", //说明
+ *   "employee": "1111", //员工号
+ *   "unique": "lisi", //唯一标识
+ *   "distinguishedName": "李四@lisi@P", //识别名
+ *   "orderNumber": 14214946, //排序号
+ *   "mail": "", //邮箱
+ *   "weixin": "", //微信号
+ *   "qq": "", //qq号码
+ *   "mobile": "85252281460", //手机号码
+ *   "officePhone": "", //办公电话
+ *   "boardDate" : "", //入职日期
+ *   "birthday" : "", //生日
+ *   "age" : "", //年龄
+ *   "qiyeweixinId" : "", //企业微信id
+ *   "dingdingId" : "", //钉钉id
+ *   "zhengwuDingdingId" //政务钉钉id
+ * }
+ */
+
+/**
+ * 在this.org中，当使用角色作为检索参数的时候，可以是角色的distinguishedName、name、id、unique属性值或包含这些属性的对象。
+ * @typedef {(String|Object)} RoleFlag
+ * @example
+ * //以下均为合法参数
+
+ * //角色属性值
+ * "PersonManager@PersonManagerSystemRole@R" //角色识别名
+ * "85874fbc-9af0-4a07-bc2f-0ab899cc4c7d" //角色id
+ * "PersonManagerSystemRole" //角色unique
+ * "PersonManager" //角色名称
+ *
+ * //包含下列属性的对象
+ * { "distinguishedName": "PersonManager@PersonManagerSystemRole@R" } //角色识别名
+ * { "id": "85874fbc-9af0-4a07-bc2f-0ab899cc4c7d" } //角色id
+ * { "unique": "PersonManagerSystemRole" } //角色unique
+ * { "name": "PersonManager" } //角色名称
+ */
+
+/**在this.org中返回的角色数据
+ *  @typedef {Object} RoleData
+ *  @example
+ * {
+ *   "name": "Manager",   //角色名称
+ *   "unique": "ManagerSystemRole", //角色唯一标识
+ *   "description": "", //角色描述
+ *   "distinguishedName": "Manager@ManagerSystemRole@R", //角色识别名
+ *   "orderNumber": 7897556, //排序号
+ *   "personList": [  //人员成员
+ *       "张三@zhangsan@P",
+ *       "李四@lisi@P"
+ *   ],
+ *   "groupList": [  //群组成员
+ *       "测试群组@ceshizu@G"
+ *   ]
+ * }
+ */
+
 
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.ViewEnvironment = function (ev) {
@@ -164,6 +298,473 @@ MWF.xScript.ViewEnvironment = function (ev) {
     // this.setData(_data);
 
     //dict
+    /**
+     * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据进行增删改查操作。<br/>
+     * 通过这种方式定义方法，在不同的应用使用相同的方法名称也不会造成冲突。
+     * @module Dict
+     * @param {(String|Object)} optionsOrName 数据字典标识字符串或者是对象。
+     * <div>如果对本应用的数据字典操作，将optionsOrName设置为string。</div>
+     * <pre><code class='language-js'>
+     *     var dict = new this.Dict("bulletinDictionary"); //数据字典的名称、别名或id
+     * </pre></code>
+     * <div>如果需要对其他应用的数据字典进行操作，将options设置为JsonObject</div>
+     * <pre><code class='language-js'>
+     * var dict = new this.Dict({
+     *     //type: 应用类型。可以为process  cms。
+     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *    type : "cms",
+     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+     *    name : "bulletinDictionary", // 数据字典的名称、别名、id
+     *    enableAnonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为process的时候此参数无效，默认为false
+     * });
+     * </pre></code>
+     * @return {Object} Dict对象
+     * @example
+     * //您可以在页面、表单、流程各个嵌入脚本中，通过this.Dict()对本应用或其他应用的数据字典中的数据进行增删改查，如下：
+     * var dict = new this.Dict( options )
+     */
+
+    /**
+     * 根据路径获取数据字典中的数据。
+     * @method get
+     * @methodOf module:Dict
+     * @static
+     * @param {String} [path] 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。当值为空的时候，表示获取数据字典中的所有数据。
+     * @param {Function} [success] 获取数据成功时的回调函数。
+     * @param {Function} [failure] 获取数据失败时的回调。
+     * @param {Boolean} [async] 是否异步执行，默认为false。
+     * @param {Boolean} [refresh] 是否忽略本地缓存直接从服务器获取，默认为false。
+     * @return {(Promise|Object|Array|String|Number|Boolean)}
+     * 当async为true时返回Promise({@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise说明})；
+     * 否则返回数据字典的数据，类型和配置数据字典时候指定的一致。
+     *
+     * @example
+     * var dict = new this.Dict("bulletinDictionary");
+     *
+     * //没有参数的时候，表示同步获取获取所有数据
+     *  var data = dict.get()
+     *
+     *  //同步执行，获取category下key为subCategory的数据
+     *  var data = dict.get("category.subCategory");
+     *
+     * //异步执行，使用回调处理数据，如果category为数组，获取第0项数据
+     * dict.get("category.0", function(data){
+     *      //data 是数据字典的数据
+     *  }, function(xhr){
+     *      //xhr 为 xmlHttpRequest
+     *  }, true //异步执行
+     * )
+     *
+     * //异步执行，使用Promise处理结果
+     * var promise = dict.get("category", null, null, true);
+     * promise.then( function(data){
+     *     //data 是数据字典的数据
+     * })
+     * @example
+     * <caption>
+     *     已经配置好了如下图所示的数据字典
+     * <img src='img/module/Dict/dict.png' />
+     * </caption>
+     * var dict = new this.Dict({
+     *     //type: 应用类型。可以为process  cms。
+     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *    type : "cms",
+     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+     *    name : "bulletinDictionary", // 数据字典的名称、别名、id
+     *    enableAnonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为process的时候此参数无效，默认为false
+     * });
+     *
+     * var data = dict.get();
+     * //data的值为
+     * {
+     *    "category": [
+     *        {
+     *            "enable": true,
+     *            "sequence": 1.0,
+     *            "text": "公司公告",
+     *            "value": "company"
+     *        },
+     *        {
+     *            "enable": "false",
+     *            "sequence": 2.0,
+     *            "text": "部门公告",
+     *            "value": "department"
+     *        }
+     *    ]
+     * }
+     *
+     *  var category = dict.get("category");
+     *  //category的值为
+     *  [
+     *     {
+     *        "enable": true,
+     *        "sequence": 1.0,
+     *        "text": "公司公告",
+     *        "value": "company"
+     *    },
+     *     {
+     *       "enable": "false",
+     *       "sequence": 2.0,
+     *        "text": "部门公告",
+     *        "value": "department"
+     *    }
+     *  ]
+     *
+     *  var array0 = dict.get("category.0");
+     *  //array0 的值为
+     *  {
+     *    "enable": true,
+     *    "sequence": 1.0,
+     *    "text": "公司公告",
+     *    "value": "company"
+     * }
+     *
+     * var enable = dict.get("category.0.eanble");
+     * //enable 的值为 true
+     */
+
+    /**
+     * 根据路径新增数据字典的数据。
+     * @method add
+     * @methodOf module:Dict
+     * @instance
+     * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果path在数据字典中已有数据，如果原有的数据是数组，则数组添加一项；如果数据不是数组，则报错。
+     * @param {(Object|Array|String|Number|Boolean)} data 需要新增的数据
+     * @param {Function} [success] 增加数据成功时的回调函数。
+     * @param {Function} [failure] 增加数据成功时的回调函数。
+     * @example
+     * dict.add( path, data, success, failure )
+     * @example
+     * var dict = new this.Dict("bulletinDictionary");
+     *
+     * dict.add( "category", { text : "系统公告", value : "system" }, function(data){
+     *    //data 形如
+     *    //{
+     *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
+     *    //}
+     * }, function(xhr){
+     *    //xhr 为 xmlHttpRequest
+     * });
+     * @example
+     * <caption>
+     *     对get方法样例的数据字典进行赋值，如下：
+     * </caption>
+     * var dict = new this.Dict("bulletinDictionary");
+     *
+     * dict.add( "category", { text : "系统公告", value : "system" }, function(data){
+     *    //data 形如
+     *    //{
+     *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
+     *    //}
+     * }, function(xhr, text, error){
+     *    //xhr 为 xmlHttpRequest, text 为错误文本， error为Error对象
+     * });
+     *     //数据字典的值变为
+     * {
+     *    "category": [
+     *        {
+     *            "enable": true,
+     *            "sequence": 1.0,
+     *            "text": "公司公告",
+     *            "value": "company"
+     *        },
+     *        {
+     *            "enable": "false",
+     *            "sequence": 2.0,
+     *            "text": "部门公告",
+     *            "value": "department"
+     *        },
+     *        {
+     *            "text": "系统公告",
+     *            "value": "system"
+     *        }
+     *    ]
+     * }
+     *
+     *  dict.add( "category.2.sequence", 3 );
+     *     //数据字典的值变为
+     * {
+     *    "category": [
+     *        {
+     *            "enable": true,
+     *            "sequence": 1.0,
+     *            "text": "公司公告",
+     *            "value": "company"
+     *        },
+     *        {
+     *            "enable": "false",
+     *            "sequence": 2.0,
+     *            "text": "部门公告",
+     *            "value": "department"
+     *        },
+     *        {
+     *            "sequence" : 3.0,
+     *            "text": "系统公告",
+     *            "value": "system"
+     *        }
+     *    ]
+     * }
+
+     * dict.add( "archiveOptions", {
+     *    "yes" : "是",
+     *    "no" : "否"
+     * });
+     *     //数据字典的值变为
+     * {
+     *    "category": [
+     *        {
+     *            "enable": true,
+     *            "sequence": 1.0,
+     *            "text": "公司公告",
+     *            "value": "company"
+     *        },
+     *        {
+     *            "enable": "false",
+     *            "sequence": 2.0,
+     *            "text": "部门公告",
+     *            "value": "department"
+     *        },
+     *        {
+     *            "sequence" : 3.0,
+     *            "text": "系统公告",
+     *            "value": "system"
+     *        }
+     *
+     *    ],
+     *    "archiveOptions" : {
+     *        "yes" : "是",
+     *        "no" : "否"
+     *    }
+     * }
+     * @example
+     * <caption>下面是错误的赋值，如下：</caption>
+     * dict.add( "category.3", { text : "系统公告", value : "system" }); //出错，因为不能对数组下标直接赋值
+     *
+     * dict.add( "category.1.value", { text : "系统公告" } ); //出错，因为不能对已经存在的非数组路径赋值
+     */
+
+    /**
+     * 根据路径修改数据字典的数据。
+     * @method set
+     * @methodOf module:Dict
+     * @instance
+     * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。
+     * @param {(Object|Array|String|Number|Boolean)} data 修改后的数据
+     * @param {Function} [success] 设置数据成功时的回调函数。
+     * @param {Function} [failure] 设置数据成功时的回调函数。
+     * @example
+     * dict.set( path, data, success, failure )
+     * @example
+     * var dict = new this.Dict("bulletinDictionary");
+     *
+     * dict.set( "category", { text : "系统公告", value : "system" }, function(data){
+     *    //data 形如
+     *    //{
+     *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
+     *    //}
+     * }, function(xhr){
+     *    //xhr 为 xmlHttpRequest
+     * });
+     * @example
+     * <caption>
+     *     对Example add的数据字典进行赋值，如下：
+     * </caption>
+     * var dict = new this.Dict("bulletinDictionary");
+     *
+     * dict.set( "archiveOptions", [ { text : "是" }, { text : "否" } ]);
+     *      //数据字典的值变为
+     *  {
+     *     "category": [
+     *         {
+     *             "enable": true,
+     *             "sequence": 1.0,
+     *             "text": "公司公告",
+     *             "value": "company"
+     *         },
+     *         {
+     *             "enable": "false",
+     *             "sequence": 2.0,
+     *             "text": "部门公告",
+     *             "value": "department"
+     *         },
+     *         {
+     *             "sequence" : 3.0,
+     *             "text": "系统公告",
+     *             "value": "system"
+     *         }
+     *
+     *     ],
+     *     "archiveOptions" : [ { text : "是" }, { text : "否" } ]
+     * }
+     *
+     * dict.set( "category.2", { text : "县级公告", value : "county" }, function(data){
+     *     //data 形如
+     *     //{
+     *     //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
+     *     //}
+     *  }, function(xhr){
+     *     //xhr 为 xmlHttpRequest
+     *  });
+     *
+     *   /数据字典的值变为
+     *  {
+     *     "category": [
+     *         {
+     *             "enable": true,
+     *             "sequence": 1.0,
+     *             "text": "公司公告",
+     *             "value": "company"
+     *         },
+     *         {
+     *             "enable": "false",
+     *             "sequence": 2.0,
+     *             "text": "部门公告",
+     *             "value": "department"
+     *         },
+     *         {
+     *             "text": "县级公告",
+     *             "value": "county"
+     *         }
+     *     ],
+     *     "archiveOptions" : [ { text : "是" }, { text : "否" } ]
+     * }
+     *
+     * dict.set( "category.1.sequence", 3 );
+     * dict.set( "category.2.sequence", 2 );
+     *      //数据字典的值变为
+     *      {
+     *     "category": [
+     *         {
+     *             "enable": true,
+     *             "sequence": 1.0,
+     *             "text": "公司公告",
+     *             "value": "company"
+     *         },
+     *         {
+     *             "enable": "false",
+     *             "sequence": 3.0,
+     *             "text": "部门公告",
+     *             "value": "department"
+     *         },
+     *         {
+     *             "sequence": 2.0,
+     *             "text": "县级公告",
+     *             "value": "county"
+     *         }
+     *     ],
+     *     "archiveOptions" : [ { text : "是" }, { text : "否" } ]
+     * }
+     * @example
+     * <caption>
+     *     下面是错误的赋值：
+     * </caption>
+     * dict.set( "category_1", { text : "公司公告" } ); //出错，因为category_1在数据字典中不存在
+     */
+
+    /**
+     * 根据路径删除数据字典的数据。
+     * @method delete
+     * @methodOf module:Dict
+     * @instance
+     * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。
+     * @param {Function} [success] 删除数据成功时的回调函数。
+     * @param {Function} [failure] 删除数据成功时的回调函数。
+     * @example
+     * dict.delete( path, success, failure )
+     * @example
+     * var dict = new this.Dict("bulletinDictionary");
+     *
+     * dict.delete( "category", function(){
+     * }, function(xhr){
+     *    //xhr 为 xmlHttpRequest
+     * });
+     * @example
+     * <caption>
+     *     对Example set的数据字典进行赋值，如下：
+     * </caption>
+     * var dict = new this.Dict("bulletinDictionary");
+     *
+     * dict.delete( "archiveOptions");
+     * //数据字典的值变为
+     * {
+     *    "category": [
+     *        {
+     *            "enable": true,
+     *            "sequence": 1.0,
+     *            "text": "公司公告",
+     *     *            "value": "company"
+     *        },
+     *        {
+     *            "enable": "false",
+     *            "sequence": 3.0,
+     *            "text": "部门公告",
+     *            "value": "department"
+     *        },
+     *        {
+     *            "sequence": 2.0,
+     *            "text": "县级公告",
+     *            "value": "county"
+     *        }
+     *    ]
+     * }
+     *
+     * dict.delete( "category.2.sequence", function(data){
+     *    //data 形如
+     *    //{
+     *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
+     *    //}
+     * }, function(xhr){
+     *    //xhr 为 xmlHttpRequest
+     * });
+     * //数据字典的值变为
+     * {
+     *    "category": [
+     *        {
+     *            "enable": true,
+     *            "sequence": 1.0,
+     *            "text": "公司公告",
+     *            "value": "company"
+     *        },
+     *        {
+     *            "enable": "false",
+     *            "sequence": 3.0,
+     *            "text": "部门公告",
+     *            "value": "department"
+     *        },
+     *        {
+     *            "text": "县级公告",
+     *            "value": "county"
+     *        }
+     *    ]
+     * }
+     *
+     * dict.delete( "category.2");
+     * //数据字典的值变为
+     * {
+     *    "category": [
+     *        {
+     *            "enable": true,
+     *            "sequence": 1.0,
+     *            "text": "公司公告",
+     *            "value": "company"
+     *        },
+     *        {
+     *            "enable": "false",
+     *            "sequence": 3.0,
+     *            "text": "部门公告",
+     *            "value": "department"
+     *        }
+     *    ]
+     * }
+     * @example
+     * <caption>
+     *     下面是错误的删除：
+     * </caption>
+     * dict.delete( "category_1" ); //出错，因为category_1在数据字典中不存在
+     */
+
     this.Dict = MWF.xScript.createDict();
     //org
     var orgActions = null;
@@ -185,9 +786,43 @@ MWF.xScript.ViewEnvironment = function (ev) {
             return [(t === "object") ? (name.distinguishedName || name.id || name.unique || name.name) : name];
         }
     };
+
+    /**
+     * 你可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。
+     * @module org
+     * @example
+     * //您可以在流程表单、内容管理表单和门户页面中，通过this来获取当前实例的org对象，如下：
+     * var org = this.org;
+     */
     this.org = {
         //群组***************
         //获取群组--返回群组的对象数组
+        /**
+         根据群组标识获取对应的群组对象或数组：group对象或数组
+         * @method getGroup
+         * @membercategory group
+         * @methodOf module:org
+         * @static
+         * @param {GroupFlag|GroupFlag[]} name 可以是群组的distinguishedName、name、id、unique属性值，群组对象，或者是上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|GroupData|GroupData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回群组，单个是Object，多个是Array。
+         * @example
+         * //同步执行，返回群组，单个是Object，多个是Array。
+         * var groupList = this.org.getGroup( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.getGroup( name, true);
+         * promise.then(function(groupList){
+         *     //groupList 为返回的群组，单个是Object，多个是Array。
+         * })
+         *
+         * //异步执行，在回调方法中获取群组
+         * this.org.getGroup( name, function(groupList){
+         *     //groupList 为返回的群组，单个是Object，多个是Array。
+         * })
+         */
         getGroup: function(name, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
@@ -210,6 +845,33 @@ MWF.xScript.ViewEnvironment = function (ev) {
         },
         //查询下级群组--返回群组的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
+        /**
+         根据群组标识获取下级群组的对象数组：group对象数组。
+         * @method listSubGroup
+         * @membercategory group
+         * @methodOf module:org
+         * @static
+         * @param {GroupFlag|GroupFlag[]} name 可以是群组的distinguishedName、name、id、unique属性值，群组对象，或者是上述属性值和对象的数组。
+         * @param {Boolean} [nested]  true嵌套的所有下级群组；false直接下级群组；默认false。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|GroupData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回群组数组。
+         * @example
+         * //同步执行，返回嵌套下级群组数组。
+         * var groupList = this.org.listSubGroup( name, true );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSubGroup( name, false, true);
+         * promise.then(function(groupList){
+         *     //groupList 为返回的直接下级群组数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取群组
+         * this.org.listSubGroup( name, true, function(groupList){
+         *     //groupList 为返回嵌套下级群组数组。
+         * })
+         */
         listSubGroup: function(name, nested, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
@@ -243,6 +905,33 @@ MWF.xScript.ViewEnvironment = function (ev) {
         },
         //查询上级群组--返回群组的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
+        /**
+         根据群组标识获取上级群组的对象数组：group对象数组。
+         * @method listSupGroup
+         * @membercategory group
+         * @methodOf module:org
+         * @static
+         * @param {GroupFlag|GroupFlag[]} name 可以是群组的distinguishedName、name、id、unique属性值，群组对象，或者是上述属性值和对象的数组。
+         * @param {Boolean} [nested]  true嵌套的所有上级群组；false直接上级群组；默认false。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|GroupData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回群组数组。
+         * @example
+         * //同步执行，返回嵌套上级群组数组。
+         * var groupList = this.org.listSupGroup( name, true );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSupGroup( name, false, true);
+         * promise.then(function(groupList){
+         *     //groupList 为返回的直接上级群组数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取群组
+         * this.org.listSupGroup( name, true, function(groupList){
+         *     //groupList 为返回嵌套上级群组数组。
+         * })
+         */
         listSupGroup:function(name, nested, async){
             getOrgActions();
             var data = {"groupList": getNameFlag(name)};
@@ -270,6 +959,32 @@ MWF.xScript.ViewEnvironment = function (ev) {
             // return v;
         },
         //人员所在群组（嵌套）--返回群组的对象数组
+        /**
+         * 根据人员标识获取所有的群组对象数组。如果群组具有群组（group）成员，且群组成员中包含该人员，那么该群组也被返回。
+         * @method listGroupWithPerson
+         * @membercategory group
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name 可以是人员的distinguishedName、name、id、unique属性值，人员对象，或者是上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|GroupData|GroupData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回群组对象数组。
+         * @example
+         * //同步执行，返回群组数组。
+         * var groupList = this.org.listGroupWithPerson( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listGroupWithPerson( name, true);
+         * promise.then(function(groupList){
+         *     //groupList 为返回的群组数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取群组
+         * this.org.listGroupWithPerson( name, function(groupList){
+         *     //groupList 为返回的群组数组。
+         * })
+         */
         listGroupWithPerson:function(name, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
@@ -287,29 +1002,35 @@ MWF.xScript.ViewEnvironment = function (ev) {
             // orgActions.listGroupWithPerson(data, function(json){v = json.data;}, null, false);
             // return v;
         },
-        //群组是否拥有角色--返回true, false
-        groupHasRole: function(name, role, async){
-            getOrgActions();
-            nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
-            var data = {"group":nameFlag,"roleList":getNameFlag(role)};
-
-            var v = false;
-            var cb = function(json){
-                v = json.data.value;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.groupHasRole(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-
-            // var v = false;
-            // orgActions.groupHasRole(data, function(json){v = json.data.value;}, null, false);
-            // return v;
-        },
 
         //角色***************
         //获取角色--返回角色的对象数组
+        /**
+         * 根据角色标识获取对应的角色对象或数组。
+         * @method getRole
+         * @membercategory role
+         * @methodOf module:org
+         * @static
+         * @param {RoleFlag|RoleFlag[]} name 可以是角色的distinguishedName、name、id、unique属性值，角色对象；或者是上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|RoleData|RoleData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回角色，单个为Object，多个为Array。
+         * @example
+         * //同步执行，返回角色，单个为对象，多个为数组。
+         * var roleList = this.org.getRole( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.getRole( name, true);
+         * promise.then(function(roleList){
+         *     //roleList 为返回的角色，单个为对象，多个为数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取角色，单个为对象，多个为数组
+         * this.org.getRole( name, function(roleList){
+         *     //roleList 为返回判断结果。
+         * })
+         */
         getRole: function(name, async){
             getOrgActions();
             var data = {"roleList": getNameFlag(name)};
@@ -330,6 +1051,32 @@ MWF.xScript.ViewEnvironment = function (ev) {
             // return (v && v.length===1) ? v[0] : v;
         },
         //人员所有角色（嵌套）--返回角色的对象数组
+        /**
+         * 根据人员标识获取所有的角色对象数组。如果角色具有群组（group）成员，且群组中包含该人员，那么该角色也被返回。
+         * @method listRoleWithPerson
+         * @membercategory role
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name 可以是人员的distinguishedName、name、id、unique属性值，人员对象，或者是上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|RoleData|RoleData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回角色对象数组。
+         * @example
+         * //同步执行，返回角色数组。
+         * var roleList = this.org.listRoleWithPerson( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listRoleWithPerson( name, true);
+         * promise.then(function(roleList){
+         *     //roleList 为返回的角色数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取角色
+         * this.org.listRoleWithPerson( name, function(roleList){
+         *     //roleList 为返回的角色数组。
+         * })
+         */
         listRoleWithPerson:function(name, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
@@ -350,6 +1097,33 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
         //人员***************
         //人员是否拥有角色--返回true, false
+        /**
+         * 人员是否拥有角色。
+         * @method personHasRole
+         * @membercategory role
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag} name 可以是人员的distinguishedName、name、id、unique属性值，人员对象。
+         * @param {RoleFlag|RoleFlag[]} roleList 可以是角色的distinguishedName、name、id、unique属性值，角色对象；或者是上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|Boolean} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则如果人员拥有角色返回true, 否则返回false。
+         * @example
+         * //同步执行，返回判断结果。
+         * var groupList = this.org.personHasRole( name, roleList );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.personHasRole( name, roleList, true);
+         * promise.then(function(flag){
+         *     //flag 为返回判断结果。
+         * })
+         *
+         * //异步执行，在回调方法中获取判断结果
+         * this.org.personHasRole( name, roleList, function(flag){
+         *     //flag 为返回判断结果。
+         * })
+         */
         personHasRole: function(name, role, async){
             getOrgActions();
             nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
@@ -369,7 +1143,82 @@ MWF.xScript.ViewEnvironment = function (ev) {
             // orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
             // return v;
         },
+        //群组是否拥有角色--返回true, false
+        /**
+         * 群组是否拥有角色。
+         * @method groupHasRole
+         * @membercategory role
+         * @methodOf module:org
+         * @static
+         * @param {GroupFlag} name 可以是群组的distinguishedName、name、id、unique属性值，群组对象。
+         * @param {RoleFlag|RoleFlag[]} roleList 可以是角色的distinguishedName、name、id、unique属性值，角色对象；或者是上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|Boolean} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则如果群组拥有角色返回true, 否则返回false。
+         * @example
+         * //同步执行，返回判断结果。
+         * var groupList = this.org.groupHasRole( name, roleList );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.groupHasRole( name, roleList, true);
+         * promise.then(function(flag){
+         *     //flag 为返回判断结果。
+         * })
+         *
+         * //异步执行，在回调方法中获取判断结果
+         * this.org.groupHasRole( name, roleList, function(flag){
+         *     //flag 为返回判断结果。
+         * })
+         */
+        groupHasRole: function(name, role, async){
+            getOrgActions();
+            nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
+            var data = {"group":nameFlag,"roleList":getNameFlag(role)};
+
+            var v = false;
+            var cb = function(json){
+                v = json.data.value;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.groupHasRole(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var v = false;
+            // orgActions.groupHasRole(data, function(json){v = json.data.value;}, null, false);
+            // return v;
+        },
+
+        //人员
         //获取人员--返回人员的对象数组
+        /**
+         根据人员标识获取对应的人员对象或数组：person对象或数组
+         * @method getPerson
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name 可以是人员的distinguishedName、name、id、unique属性值，人员对象，或者是上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员，单个是Object，多个是Array。
+         * @example
+         * //同步执行，返回人员，单个是对象，多个是数组。
+         * var personList = this.org.getPerson( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.getPerson( name, true);
+         * promise.then(function(personList){
+         *     //personList 为返回的人员，单个是对象，多个是数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取人员
+         * this.org.getPerson( name, function(personList){
+         *     //personList 为返回的人员，单个是对象，多个是数组。
+         * })
+         */
         getPerson: function(name, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
@@ -390,6 +1239,33 @@ MWF.xScript.ViewEnvironment = function (ev) {
         },
         //查询下级人员--返回人员的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
+        /**
+         根据人员标识获取下级人员的对象数组：person对象数组。该上下级关系被人员的汇报对象值（superior）决定。
+         * @method listSubPerson
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name 可以是人员的distinguishedName、name、id、unique属性值，人员对象，或者是上述属性值和对象的数组。
+         * @param {Boolean} [nested]  true嵌套的所有下级人员；false直接下级人员；默认false。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员数组。
+         * @example
+         * //同步执行，返回嵌套下级人员数组。
+         * var personList = this.org.listSubPerson( name, true );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSubPerson( name, false, true);
+         * promise.then(function(personList){
+         *     //personList 为返回的直接下级人员数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取人员
+         * this.org.listSubPerson( name, true, function(personList){
+         *     //personList 为返回嵌套下级人员数组。
+         * })
+         */
         listSubPerson: function(name, nested, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
@@ -411,6 +1287,33 @@ MWF.xScript.ViewEnvironment = function (ev) {
         },
         //查询上级人员--返回人员的对象数组
         //nested  布尔  true嵌套上级；false直接上级；默认false；
+        /**
+         *根据人员标识获取上级人员的对象数组：person对象数组。该上下级关系被人员的汇报对象值（superior）决定。
+         * @method listSupPerson
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name 可以是人员的distinguishedName、name、id、unique属性值，人员对象，或者是上述属性值和对象的数组。
+         * @param {Boolean} [nested]  true嵌套的所有上级人员；false直接上级人员；默认false。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员数组。
+         * @example
+         * //同步执行，返回嵌套上级人员数组。
+         * var personList = this.org.listSupPerson( name, true );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSupPerson( name, false, true);
+         * promise.then(function(personList){
+         *     //personList 为返回的直接上级人员数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取人员
+         * this.org.listSupPerson( name, true, function(personList){
+         *     //personList 为返回嵌套上级人员数组。
+         * })
+         */
         listSupPerson: function(name, nested, async){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
@@ -2697,7 +3600,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *     通过this.Actions.load(root)方法得到的action对象，就可以访问此服务下的方法了。<br/>
      *     访问方法的规则如下：
      *  </caption>
-     *  this.Actions.load( root )[actionName][methodName]( arguements );
+     *  var promise = this.Actions.load( root )[actionName][methodName]( arguements );
+     *
+     *  promise : Promise对象，可以通过promise.then接收返回数据
+     *      promise.then(
+     *        function(json){
+     *             //json为返回的数据
+     *        }
+     *      )
      *
      *  root : 平台服务根
      *
@@ -2726,6 +3636,23 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *
      *      async : 方法同步或者异步执行，默认为true。
      *  @example
+     *  <caption>
+     *  处理返回的数据有两种方式，二选一即可：<br/>
+     *  1、该方法return的结果是Promise对象，可以通过 promise.then() 方法来处理。<br/>
+     *  {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise说明}<br/>
+     *  2、通过success方法作为第一个参数来处理结果
+     *  </caption>
+     *  promise.then(
+     *    function(json){
+     *         //json为返回的数据
+     *    }
+     *  )
+     *
+     *  //success：arguements中的第一个function对象
+     *  function(json){
+     *    //json为后台服务传回的数据
+     *  }
+     *  @example
      * <caption>
      *     <b>样例1:</b>
      *     根据x_processplatform_assemble_surface服务获取当前用户的待办列表：<br/>
@@ -2742,6 +3669,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * </caption>
      * var processAction = this.Actions.load("x_processplatform_assemble_surface"); //获取action
      * var method = processAction.TaskAction.V2ListPaging; //获取列式方法
+     * //执行方法1
      * method(
      *  1,  //uri 第1个参数，如果无uri参数，可以省略
      *  20, //uri 第2个参数，如果无uri参数，可以省略，如果还有其他uri参数，可以用逗号, 分隔
@@ -2760,6 +3688,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *  },
      *  true //可选，true为异步调用，false为同步调用，默认为true
      * );
+     *
+     * //执行方法2
+     * var promise = method( 1, 20, {processList : [xxx]} )
+     * promise.then( function(json){
+     *     //json.data得到服务返回数据
+     * })
      * @example
      * <caption>出错信息responseJSON的格式</caption>
      * {
@@ -2855,7 +3789,6 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *      }.bind(this)
      * );
      */
-
     this.Actions = o2.Actions;
 
     this.query = function (option) {
@@ -3083,16 +4016,21 @@ if( !MWF.xScript.createDict ){
 
             this.get = function(path, success, failure, async, refresh){
                 var value = null;
-                if (!refresh ){
-                    var data = MWF.xScript.getDictFromCache( key, path );
-                    if( data ){
-                        if (success && o2.typeOf(success)=="function") success( data );
+
+            if (success===true) async=true;
+            if (failure===true) async=true;
+
+            if (!refresh ){
+                var data = MWF.xScript.getDictFromCache( key, path );
+                if( data ){
+                    if (success && o2.typeOf(success)=="function") success( data );
+                    if( !!async ){
+                        return Promise.resolve( data );
+                    }else{
                         return data;
                     }
                 }
-
-                if (success===true) async=true;
-                if (failure===true) async=true;
+            }
 
                 // var cb = function(json){
                 //     value = json.data;
