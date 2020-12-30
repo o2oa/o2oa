@@ -805,13 +805,7 @@ MWF.xScript.Environment = function(ev){
         }
     };
 
-    /**
-     * 你可以通过workContext获取和流程相关的流程实例对象数据。
-     * @module this.org
-     * @example
-     * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
-     * var context = this.workContext;
-     */
+
     this.org = {
         //群组***************
         //获取群组--返回群组的对象数组
@@ -1991,7 +1985,7 @@ MWF.xScript.Environment = function(ev){
     // }
 
     /**
-     * 当您在流程、门户或者内容管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
+     * this.include是一个方法，当您在流程、门户或者内容管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
      * <b>（建议使用表单中的预加载脚本，需要判断加载的时候才使用本方法加载脚本，此时建议异步加载有助于表单加载速度。）</b><br/>
      * @module include
      * @param {(String|Object|String[]|Object[])} optionsOrName 可以是脚本标识字符串（数组）或者是对象（数组）。
@@ -2153,7 +2147,7 @@ MWF.xScript.Environment = function(ev){
     };
 
     /**
-     * 您可以在流程、门户或者内容管理中创建脚本配置，在脚本配置中您可以通过this.define()来定义自己的方法。<br/>
+     * this.define是一个方法，您可以在流程、门户或者内容管理中创建脚本配置，在脚本配置中您可以通过this.define()来定义自己的方法。<br/>
      * 通过这种方式定义方法，在不同的应用使用相同的方法名称也不会造成冲突。
      * @module define
      * @param {(String)} name 定义的方法名称。
@@ -3657,16 +3651,21 @@ MWF.xScript.createDict = function(application){
 
         this.get = function(path, success, failure, async, refresh){
             var value = null;
+
+            if (success===true) async=true;
+            if (failure===true) async=true;
+
             if (!refresh ){
                 var data = MWF.xScript.getDictFromCache( key, path );
                 if( data ){
                     if (success && o2.typeOf(success)=="function") success( data );
-                    return data;
+                    if( !!async ){
+                        return Promise.resolve( data );
+                    }else{
+                        return data;
+                    }
                 }
             }
-
-            if (success===true) async=true;
-            if (failure===true) async=true;
 
             // var cb = function(json){
             //     value = json.data;
