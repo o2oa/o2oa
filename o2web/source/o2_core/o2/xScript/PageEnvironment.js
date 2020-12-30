@@ -2299,16 +2299,21 @@ MWF.xScript.createDict = function(application){
 
         this.get = function(path, success, failure, async, refresh){
             var value = null;
+
+            if (success===true) async=true;
+            if (failure===true) async=true;
+
             if (!refresh ){
                 var data = MWF.xScript.getDictFromCache( key, path );
                 if( data ){
                     if (success && o2.typeOf(success)=="function") success( data );
-                    return data;
+                    if( !!async ){
+                        return Promise.resolve( data );
+                    }else{
+                        return data;
+                    }
                 }
             }
-
-            if (success===true) async=true;
-            if (failure===true) async=true;
 
             // var cb = function(json){
             //     value = json.data;
