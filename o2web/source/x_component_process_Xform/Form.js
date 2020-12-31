@@ -2496,11 +2496,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             //     x = x-parseFloat(width);
             // }
             if (x < 0) x = 20;
+            if (!layout.mobile) { // pc上鼠标位置偏移20
+                x = x - 20
+            }
             var dlg = new MWF.xDesktop.Dialog({
                 "title": title,
                 "style": style || "o2",
                 "top": y,
-                "left": x - 20,
+                "left": x,
                 "fromTop": e.event.y,
                 "fromLeft": (Browser.name === "firefox") ? e.event.clientX - 20 : e.event.x - 20,
                 "width": width,
