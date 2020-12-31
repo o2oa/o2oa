@@ -168,7 +168,25 @@ public class ActionGetSectionOperationPermissoin extends BaseAction {
 				wrap.setSectionPermissoinManageAble(true);
 				wrap.setSectionConfigManageAble(true);
 			}
+			//是否是管理员
+			Boolean UserIsManager = UserPermissionService.getUserIsManager(effectivePerson);
+			if(UserIsManager) {
+				wrap.setSubjectPublishAble(true);
+				wrap.setReplyPublishAble(true);
+				wrap.setReplyAuditAble(true);
+				wrap.setSubjectAuditAble(true);
+				wrap.setSubjectManageAble(true);
+				wrap.setSubjectRecommendAble(true);
+				wrap.setSubjectStickAble(true);
+				wrap.setSubjectCreamAble(true);
+				wrap.setReplyManageAble(true);
+				
+				wrap.setSectionManageAble(true);
+				wrap.setSectionPermissoinManageAble(true);
+				wrap.setSectionConfigManageAble(true);
+			}
 		}
+		
 		result.setData(wrap);
 		return result;
 	}
