@@ -170,6 +170,20 @@ public class ActionGetSubjectOperationPermissoin extends BaseAction {
 				}
 			}
 		}
+		
+		//是否是管理员
+		Boolean UserIsManager = UserPermissionService.getUserIsManager(effectivePerson);
+		if(UserIsManager) {
+			wrap.setReplyPublishAble(true);
+			wrap.setAuditAble(true);
+			wrap.setManageAble(true);
+			wrap.setEditAble(true);
+			wrap.setRecommendAble(true);
+			wrap.setStickAble(true);
+			wrap.setCreamAble(true);
+			wrap.setReplyAuditAble(true);
+		    wrap.setReplyManageAble(true);		
+		 }
 
 		result.setData(wrap);
 		return result;
