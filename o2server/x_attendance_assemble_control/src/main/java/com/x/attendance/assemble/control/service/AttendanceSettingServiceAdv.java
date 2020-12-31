@@ -129,8 +129,9 @@ public class AttendanceSettingServiceAdv {
 				if( (configValue.indexOf("周六")>-1 && cal.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY) || (configValue.indexOf("周日")>-1 && cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)){
 					iflag = true;
 				}
-			}else{
-				iflag = true;
+				if(configValue.indexOf("无")>-1 && (cal.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY) ){
+					iflag = true;
+				}
 			}
 
 		}

@@ -431,29 +431,29 @@ Describe.createSampleO2= function(m) {
 			
 			if(m.type=="POST"){
 			   strSample += " \n var string = JSON.stringify(data);" + "\n";
-               strSample += " var applications = this.Action.applications;"+ "\n";
+               strSample += " var apps = this.applications;"+ "\n";
                strSample += " var serviceRoot = \"" + uri + "\";"+ "\n";
                strSample += " var path = \"" + address + "\";"+ "\n"; ;
-               strSample += " var resp = applications.postQuery( serviceRoot, path , string);"+ "\n";
+               strSample += " var resp = apps.postQuery( serviceRoot, path , string);"+ "\n";
 			}
 			if(m.type=="GET"){
-               strSample += " \n var applications = this.Action.applications;"+ "\n";
+               strSample += " \n var apps = this.applications;"+ "\n";
                strSample += " var serviceRoot = \"" + uri + "\";"+ "\n";
                 strSample += " var path = \"" + address + "\";"+ "\n"; ;
-               strSample += " var resp = applications.getQuery( serviceRoot, path );"+ "\n";
+               strSample += " var resp = apps.getQuery( serviceRoot, path );"+ "\n";
 			}
 			if(m.type=="PUT"){
 			   strSample += " \n var string = JSON.stringify(data)"+ "\n";
-               strSample += " var applications = this.Action.applications"+ "\n";
+               strSample += " var apps = this.applications"+ "\n";
                strSample += " var serviceRoot = \"" + uri + "\";"+ "\n";
                strSample += " var path = \"" + address+ "\";"+ "\n"; ;
-               strSample += " var resp = applications.putQuery( serviceRoot, path , string);"+ "\n";
+               strSample += " var resp = apps.putQuery( serviceRoot, path , string);"+ "\n";
 			}
 			if(m.type=="DELETE"){
-			   strSample += " \n var applications = this.Action.applications;"+ "\n";
+			   strSample += " \n var apps = this.applications;"+ "\n";
                strSample += " var serviceRoot = \" "+ uri + "\";"+ "\n";
                  strSample += " var path = \"" + address + "\";"+ "\n"; ;
-               strSample += " var resp = applications.deleteQuery( serviceRoot, path);"+ "\n";
+               strSample += " var resp = apps.deleteQuery( serviceRoot, path);"+ "\n";
 			}
 			
                strSample += " var json = JSON.parse( resp.toString() );"+ "\n";
