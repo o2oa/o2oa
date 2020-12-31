@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.AbstractFactory;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
@@ -27,6 +28,19 @@ public class ProcessFactory extends AbstractFactory {
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.equal(root.get(Process_.application), application);
 		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
+		cq.select(root.get(Process_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplications(List<String> applications) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Process.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Process> root = cq.from(Process.class);
+		Predicate p = cb.conjunction();
+		if(ListTools.isNotEmpty(applications)) {
+			p = cb.isMember(root.get(Process_.application), cb.literal(applications));
+		}
 		cq.select(root.get(Process_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
