@@ -7,6 +7,8 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.bbs.assemble.control.Business;
 import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionPermissionInfoProcess;
 import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionSectionIdEmpty;
 import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionSectionNotExists;
@@ -168,7 +170,27 @@ public class ActionGetSectionOperationPermissoin extends BaseAction {
 				wrap.setSectionPermissoinManageAble(true);
 				wrap.setSectionConfigManageAble(true);
 			}
+			//是否是管理员
+			Business business = new Business(null);
+			Boolean userBBSManager = business.organization().person().hasRole(effectivePerson, OrganizationDefinition.BBSManager);
+			Boolean userManager = business.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager);
+			if(userBBSManager || userManager) {
+				wrap.setSubjectPublishAble(true);
+				wrap.setReplyPublishAble(true);
+				wrap.setReplyAuditAble(true);
+				wrap.setSubjectAuditAble(true);
+				wrap.setSubjectManageAble(true);
+				wrap.setSubjectRecommendAble(true);
+				wrap.setSubjectStickAble(true);
+				wrap.setSubjectCreamAble(true);
+				wrap.setReplyManageAble(true);
+				
+				wrap.setSectionManageAble(true);
+				wrap.setSectionPermissoinManageAble(true);
+				wrap.setSectionConfigManageAble(true);
+			}
 		}
+		
 		result.setData(wrap);
 		return result;
 	}
