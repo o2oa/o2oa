@@ -41,35 +41,6 @@ public class UserPermissionService {
 	private BBSRoleInfoService roleInfoService = new BBSRoleInfoService();
 	private UserManagerService userManagerService = new UserManagerService();
 
-	
-	public Boolean getUserIsManager(EffectivePerson effectivePerson) {
-		boolean userIsManager = false;
-		String distinguishedName = effectivePerson.getDistinguishedName();
-		if(distinguishedName.equalsIgnoreCase("xadmin")) {
-			userIsManager = true;
-			return userIsManager;
-		}
-		String[] arrName = distinguishedName.split("@");
-		String uri = "person/" + arrName[1];
-		Class<x_organization_assemble_express> applicationClass = x_organization_assemble_express.class;
-		ActionResponse resp;
-		try {
-			resp = ThisApplication.context().applications().getQuery(applicationClass, uri);
-			JsonObject jsonObject = resp.getData().getAsJsonObject();
-			JsonArray woRoleList = jsonObject.get("woRoleList").getAsJsonArray();
-			for(JsonElement woRole:woRoleList) {
-				String unique =  woRole.getAsJsonObject().get("unique").getAsString();
-				if(unique.equalsIgnoreCase("ManagerSystemRole") || unique.equalsIgnoreCase("BSSManagerSystemRole")) {
-					userIsManager = true;
-					return userIsManager;
-				}
-			}
-		} catch (Exception e) {
-			logger.warn("系统根据员工查询论坛用户权限角色是否是管理员！");
-			logger.error(e);			
-		}
-		return userIsManager;
-	}
 	public Boolean hasPermission(String userName, String permissionCode) {
 		RoleAndPermission roleAndPermission = null;
 		List<String> permissionCodeList = null;
