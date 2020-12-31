@@ -25,6 +25,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
@@ -99,7 +100,10 @@ class V2Retract extends BaseAction {
 					}
 
 					if (StringUtils.isNotEmpty(activity.getForm())) {
-						work.setForm(activity.getForm());
+						Form form = business.element().get(activity.getForm(), Form.class);
+						if (null != form) {
+							work.setForm(activity.getForm());
+						}
 					}
 
 					update(work, workLog);

@@ -92,14 +92,16 @@ public class ElementFactory extends AbstractFactory {
 			t = (T) optional.get();
 		} else {
 			t = this.entityManagerContainer().find(id, clz);
-			CacheManager.put(cacheCategory, cacheKey, t);
+			if(t != null) {
+				CacheManager.put(cacheCategory, cacheKey, t);
+			}
 		}
 		return t;
 	}
 
 	public Activity getActivity(String id) throws Exception {
 		Activity activity = null;
-		activity = this.get(id, ActivityType.agent);
+		activity = this.get(id, ActivityType.manual);
 		if (null == activity) {
 			activity = this.get(id, ActivityType.begin);
 			if (null == activity) {
@@ -111,11 +113,11 @@ public class ElementFactory extends AbstractFactory {
 						if (null == activity) {
 							activity = this.get(id, ActivityType.embed);
 							if (null == activity) {
-								activity = this.get(id, ActivityType.end);
+								activity = this.get(id, ActivityType.split);
 								if (null == activity) {
 									activity = this.get(id, ActivityType.invoke);
 									if (null == activity) {
-										activity = this.get(id, ActivityType.manual);
+										activity = this.get(id, ActivityType.agent);
 										if (null == activity) {
 											activity = this.get(id, ActivityType.merge);
 											if (null == activity) {
@@ -125,7 +127,7 @@ public class ElementFactory extends AbstractFactory {
 													if (null == activity) {
 														activity = this.get(id, ActivityType.service);
 														if (null == activity) {
-															activity = this.get(id, ActivityType.split);
+															activity = this.get(id, ActivityType.end);
 														}
 													}
 												}
