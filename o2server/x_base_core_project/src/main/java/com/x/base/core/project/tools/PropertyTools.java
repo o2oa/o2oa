@@ -1,10 +1,12 @@
 package com.x.base.core.project.tools;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.x.base.core.project.gson.XGsonBuilder;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -42,7 +44,12 @@ public class PropertyTools {
 			for (String name : properties) {
 				Object o = PropertyUtils.getProperty(t, name);
 				if (o!=null) {
-					String content = String.valueOf(o);
+					String content = "";
+					if (o instanceof Collection<?> || o instanceof Map<?, ?>){
+						content = XGsonBuilder.toJson(o);
+					} else {
+						content = String.valueOf(o);
+					}
 					if (StringTools.matchKeyword(keyword, content, caseSensitive, matchWholeWord, matchRegExp)) {
 						map.put(name, content);
 					}
