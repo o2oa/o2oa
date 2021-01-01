@@ -60,6 +60,13 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
             this.toolbarNode.empty();
 
             MWF.require("MWF.widget.Toolbar", function(){
+                /**
+                 * @summary Toolbar组件，平台使用该组件生成操作条。
+                 * @member {o2.widget.Toolbar}
+                 * @example
+                 *  //可以在脚本中获取该组件
+                 * var toolbarWidget = this.form.get("fieldId").toolbarWidget; //获取组件对象
+                 */
                 this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {
                     "style": this.json.style,
                     "onPostLoad" : function(){
