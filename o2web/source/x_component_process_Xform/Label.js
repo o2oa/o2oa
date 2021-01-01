@@ -3,9 +3,9 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var attachment = this.form.get("name"); //获取组件
+ * var label = this.form.get("name"); //获取组件
  * //方法2
- * var attachment = this.target; //在组件事件脚本中获取
+ * var label = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @category FormComponents
  * @hideconstructor
@@ -72,10 +72,10 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class(
      * @summary 为组件设置文本，该文本不会被保存到后台。
      * @param text{String|Promise} .
      * @example
-     *  this.form.get("fieldName").setText("test"); //赋文本值
+     *  this.form.get("fieldId").setText("test"); //赋文本值
      * @example
      *  //使用Promise
-     *  var field = this.form.get("fieldName");
+     *  var field = this.form.get("fieldId");
      *  var dict = new this.Dict("test"); //test为数据字典名称
      *  var promise = dict.get("tools", true); //异步使用数据字典的get方法时返回Promise，参数true表示异步
      *  field.setText( promise );

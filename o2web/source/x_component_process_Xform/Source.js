@@ -1,7 +1,31 @@
 MWF.xDesktop.requireApp("process.Xform", "Div", null, false);
-MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
+
+/** @class Source 数据源组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var source = this.form.get("name"); //获取操作条
+ * //方法2
+ * var source = this.target; //在操作条和操作本身的事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.Div
+ * @category FormComponents
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Source# */
+    {
 	Extends: MWF.APPDiv,
     options: {
+        /**
+         * 加载数据后执行，但这时还未加载数据源及下属数据文本，可以可以使用this.target.data获取数据进行修改。
+         * @event MWF.xApplication.process.Xform.Org#postLoadData
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 加载数据、子数据源及下属数据文本后执行。
+         * @event MWF.xApplication.process.Xform.Org#loadData
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["queryLoad","postLoad","load", "postLoadData", "loadData"]
     },
 
@@ -92,11 +116,42 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
     setBody: function(data){
         this.body = data;
     },
+    /**
+     * @summary 替换全部的url参数，但不刷新组件
+     * @param {Object} url参数
+     * @example
+     * //如，原来的组件url参数为：
+     * { "page" : 1, "count" : 10  }
+     *
+     * this.form.get("fieldId").setParameters({"id":"662ede34-4e21-428a-9c3b-f1bf14d15650"});
+     *
+     * //执行后变为
+     * {"id":"662ede34-4e21-428a-9c3b-f1bf14d15650"}
+     */
     setParameters: function(json){
         this.json.parameters = json;
         this._getO2Address();
         this._getO2Uri();
     },
+    /**
+     * @summary 新增url参数，但不刷新组件。如果该参数key已经存在，则覆盖
+     * @param {Object} url参数
+     * @example
+     * * //如，原来的组件url参数为：
+     * { "page" : 1, "count" : 10  }
+     *
+     * this.form.get("fieldId").addParameters({
+     *  "page" : 2,
+     *  "id":"662ede34-4e21-428a-9c3b-f1bf14d15650"
+     *  });
+     *
+     * //执行后变为
+     * {
+     *  "page" : 2,
+     *  "count" : 10
+     *  "id":"662ede34-4e21-428a-9c3b-f1bf14d15650"
+     *  }
+     */
     addParameters: function(json){
         if (!this.json.parameters) this.json.parameters={};
         Object.each(json, function(v, k){
@@ -105,6 +160,13 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
         this._getO2Address();
         this._getO2Uri();
     },
+    /**
+     * @summary 重新加载组件。会触发loadData事件
+     * @param {Boolean} notInit - false表示不重新初始化子数据源和数据文本，true表示重新初始化，默认为false
+     * @param {Function} callback 加载完成后的回调
+     * @example
+     * this.form.get("fieldId").reload(); //重新加载组件
+     */
     reload: function(notInit, callback){
 	    this._getO2Uri();
         this._invoke(function(){
