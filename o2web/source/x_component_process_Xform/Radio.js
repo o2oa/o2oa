@@ -1,9 +1,33 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 MWF.require("MWF.widget.UUID", null, false);
-MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
+/** @class process.Radio 单选按钮。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var field = this.form.get("fieldId"); //获取组件对象
+ * //方法2
+ * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
+ *
+ * var data = field.getData(); //获取值
+ * field.setData("字符串值"); //设置值
+ * field.hide(); //隐藏字段
+ * var id = field.json.id; //获取字段标识
+ * var flag = field.isEmpty(); //字段是否为空
+ * field.resetData();  //重置字段的值为默认值或置空
+ * @extends MWF.xApplication.process.Xform.$Input
+ * @category FormComponents
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Radio# */
+    {
 	Implements: [Events],
 	Extends: MWF.APP$Input,
-
+    /**
+     * @ignore
+     * @member {Element} descriptionNode
+     * @memberOf MWF.xApplication.process.Xform.Radio#
+     */
     loadDescription: function(){},
     _loadNode: function(){
         if (this.readonly || this.json.isReadonly ){
@@ -92,10 +116,21 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
             }.bind(this));
         }
     },
+    /**
+     * @summary 刷新选择项，如果选择项是脚本，重新计算。
+     * @example
+     * this.form.get('fieldId').resetOption();
+     */
     resetOption: function(){
         this.node.empty();
         this.setOptions();
     },
+    /**
+     * @summary 获取选择项。
+     * @return {Array} 返回选择项数组，如果使用选择项脚本，根据脚本返回决定
+     * @example
+     * this.form.get('fieldId').getOptions();
+     */
 	getOptions: function(){
 		if (this.json.itemType == "values"){
 			return this.json.itemValues;
@@ -279,6 +314,16 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
 			}
 		}
 	},
+    /**
+     * @summary 获取选中项的value和text。
+     * @return {Object} 返回选中项的value和text，如：
+     * <pre><code class='language-js'>{"value": ["male"], "text": ["男"]}
+     * {"value": [""], "text": [""]}
+     * </code></pre>
+     * @example
+     * var data = this.form.get('fieldId').getTextData();
+     * var text = data.text[0] //获取选中项的文本
+     */
 	getTextData: function(){
 		var inputs = this.node.getElements("input");
 		var value = "";
@@ -316,6 +361,12 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
     resetData: function(){
         this.setData(this.getValue());
     },
+    /**
+     * @summary 获取选中的Dom对象。
+     * @return {Element} 返回选中的Dom对象
+     * @example
+     * var input = this.form.get('fieldId').getSelectedInput();
+     */
     getSelectedInput: function(){
         var inputs = this.node.getElements("input");
         if (inputs.length){

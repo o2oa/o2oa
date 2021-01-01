@@ -293,27 +293,27 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	    return !data || !data.trim();
     },
     /**
-     * 在脚本中使用 this.data[fieldName] 也可以获取组件值。
+     * 在脚本中使用 this.data[fieldId] 也可以获取组件值。
      * 区别如下：<br/>
      * 1、当使用Promise的时候<br/>
      * 使用异步函数生成器（Promise）为组件赋值的时候，用getData方法立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。<br/>
-     * this.data[fieldName] 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
+     * this.data[fieldId] 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
      * {@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}<br/>
-     * 2、当表单上没有对应组件的时候，可以使用this.data[fieldName]获取值，但是this.form.get('fieldName')无法获取到组件。
+     * 2、当表单上没有对应组件的时候，可以使用this.data[fieldId]获取值，但是this.form.get('fieldId')无法获取到组件。
      * @summary 获取组件值。
      * @example
-     * var data = this.form.get('fieldName').getData(); //没有使用promise的情况、
+     * var data = this.form.get('fieldId').getData(); //没有使用promise的情况、
      * @example
      *  //如果无法确定表单上是否有组件，需要判断
      *  var data;
-     *  if( this.form.get('fieldName') ){ //判断表单是否有无对应组件
-     *      data = this.form.get('fieldName').getData();
+     *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
+     *      data = this.form.get('fieldId').getData();
      *  }else{
-     *      data = this.data['fieldName']; //直接从数据中获取字段值
+     *      data = this.data['fieldId']; //直接从数据中获取字段值
      *  }
      * @example
      *  //使用Promise的情况
-     *  var field = this.form.get("fieldName");
+     *  var field = this.form.get("fieldId");
      *  var dict = new this.Dict("test"); //test为数据字典名称
      *  var promise = dict.get("tools", true); //异步使用数据字典的get方法时返回Promise，参数true表示异步
      *  promise.then( function(){
@@ -342,21 +342,21 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         this.setData(this.getValue());
     },
     /**当参数为Promise的时候，请参考文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
-     * 当表单上没有对应组件的时候，可以使用this.data[fieldName] = data赋值。
+     * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
      * @summary 为组件赋值。
      * @param data{String|Promise} .
      * @example
-     *  this.form.get("fieldName").setData("test"); //赋文本值
+     *  this.form.get("fieldId").setData("test"); //赋文本值
      * @example
      *  //如果无法确定表单上是否有组件，需要判断
-     *  if( this.form.get('fieldName') ){ //判断表单是否有无对应组件
-     *      this.form.get('fieldName').setData( data );
+     *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
+     *      this.form.get('fieldId').setData( data );
      *  }else{
-     *      this.data['fieldName'] = data;
+     *      this.data['fieldId'] = data;
      *  }
      * @example
      *  //使用Promise
-     *  var field = this.form.get("fieldName");
+     *  var field = this.form.get("fieldId");
      *  var dict = new this.Dict("test"); //test为数据字典名称
      *  var promise = dict.get("tools", true); //异步使用数据字典的get方法时返回Promise，参数true表示异步
      *  field.setData( promise );
@@ -595,7 +595,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
      * @summary 根据组件的校验设置进行校验。
      *  @param {String} [routeName] - 可选，路由名称.
      *  @example
-     *  if( !this.form.get('fieldName').validation() ){
+     *  if( !this.form.get('fieldId').validation() ){
      *      return false;
      *  }
      *  @return {Boolean} 是否通过校验

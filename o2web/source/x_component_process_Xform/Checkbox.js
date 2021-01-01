@@ -4,7 +4,7 @@ MWF.require("MWF.widget.UUID", null, false);
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var field = this.form.get("fieldName"); //获取组件对象
+ * var field = this.form.get("fieldId"); //获取组件对象
  * //方法2
  * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
  * @extends MWF.xApplication.process.Xform.$Input
@@ -101,7 +101,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     /**
      * @summary 重新计算下拉选项，该功能通常用在下拉选项为动态计算的情况.
      * @example
-     * this.form.get('fieldName').resetOption();
+     * this.form.get('fieldId').resetOption();
      */
     resetOption: function(){
         this.node.empty();
@@ -110,7 +110,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     /**
      * @summary 获取选择项数组.
      * @example
-     * var array = this.form.get('fieldName').getOptions();
+     * var array = this.form.get('fieldId').getOptions();
      * @return {Array} 选择项数组，如果配置为脚本返回计算结果.
      */
 	getOptions: function(){
@@ -242,7 +242,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     /**
      * @summary 获取选中的值和文本.
      * @example
-     * var array = this.form.get('fieldName').getTextData();
+     * var array = this.form.get('fieldId').getTextData();
      * @return {Object} 返回选中项值和文本，格式为 { 'value' : value, 'text' : text }.
      */
 	getTextData: function(){
@@ -306,10 +306,10 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
      * @summary 为字段赋值，并且使值对应的选项选中。
      *  @param data{String|Promise} .
      *  @example
-     *  this.form.get("fieldName").setData("test"); //赋文本值
+     *  this.form.get("fieldId").setData("test"); //赋文本值
      *  @example
      *  //使用Promise
-     *  var field = this.form.get("fieldName");
+     *  var field = this.form.get("fieldId");
      *  var dict = new this.Dict("test"); //test为数据字典名称
      *  var promise = dict.get("tools", true); //异步使用数据字典的get方法时返回Promise，参数true表示异步
      *  field.setData( promise );
