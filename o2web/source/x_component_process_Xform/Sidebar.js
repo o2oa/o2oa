@@ -1,6 +1,19 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //MWF.require("MWF.widget.Tree", null, false);
-MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class({
+/** @class Sidebar 侧边操作条。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var sidebar = this.form.get("name"); //获取操作条
+ * //方法2
+ * var sidebar = this.target; //在操作条和操作本身的事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @category FormComponents
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Sidebar# */
+{
 	Extends: MWF.APP$Module,
 
     _loadUserInterface: function(){
@@ -43,6 +56,14 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class({
                 }.bind(this));
                 this.json.defaultTools = toolbars.concat(this.json.defaultTools);
                 //this.json.defaultTools.unshift(o);
+
+                /**
+                 * @summary Toolbar组件，平台使用该组件生成操作条。
+                 * @member {o2.widget.Toolbar}
+                 * @example
+                 *  //可以在脚本中获取该组件
+                 * var toolbarWidget = this.form.get("fieldId").toolbarWidget; //获取组件对象
+                 */
                 this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
                 //alert(this.readonly)
 

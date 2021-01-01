@@ -3,9 +3,9 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var attachment = this.form.get("name"); //获取组件
+ * var datagrid = this.form.get("name"); //获取组件
  * //方法2
- * var attachment = this.target; //在组件事件脚本中获取
+ * var datagrid = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @category FormComponents
  * @hideconstructor
@@ -1377,27 +1377,27 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
     /**
      * @summary 重置数据网格的值为默认值或置空。
      *  @example
-     * this.form.get('fieldName').resetData();
+     * this.form.get('fieldId').resetData();
      */
     resetData: function(){
         this.setData(this._getValue());
     },
     /**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
-     * 当表单上没有对应组件的时候，可以使用this.data[fieldName] = data赋值。
+     * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
      * @summary 为数据网格赋值。
      * @param data{DatagridData|Promise|Array} 必选，数组或Promise.
      * @example
-     *  this.form.get("fieldName").setData([]); //赋空值
+     *  this.form.get("fieldId").setData([]); //赋空值
      * @example
      *  //如果无法确定表单上是否有组件，需要判断
-     *  if( this.form.get('fieldName') ){ //判断表单是否有无对应组件
-     *      this.form.get('fieldName').setData( data );
+     *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
+     *      this.form.get('fieldId').setData( data );
      *  }else{
-     *      this.data['fieldName'] = data;
+     *      this.data['fieldId'] = data;
      *  }
      *@example
      *  //使用Promise
-     *  var field = this.form.get("fieldName");
+     *  var field = this.form.get("fieldId");
      *  var promise = new Promise(function(resolve, reject){ //发起异步请求
      *    var oReq = new XMLHttpRequest();
      *    oReq.addEventListener("load", function(){ //绑定load事件
@@ -1539,7 +1539,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
     /**
      * @summary 获取总计数据.
      * @example
-     * var totalObject = this.form.get('fieldName').getTotal();
+     * var totalObject = this.form.get('fieldId').getTotal();
      * @return {Object} 总计数据
      */
     getTotal: function(){
@@ -1549,7 +1549,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
     /**
      * @summary 判断数据网格是否为空.
      * @example
-     * if( this.form.get('fieldName').isEmpty() ){
+     * if( this.form.get('fieldId').isEmpty() ){
      *     this.form.notice('至少需要添加一条数据', 'warn');
      * }
      * @return {Boolean} 是否为空
@@ -1564,27 +1564,27 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         return false;
     },
     /**
-     * 在脚本中使用 this.data[fieldName] 也可以获取组件值。
+     * 在脚本中使用 this.data[fieldId] 也可以获取组件值。
      * 区别如下：<br/>
      * 1、当使用Promise的时候<br/>
      * 使用异步函数生成器（Promise）为组件赋值的时候，用getData方法立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。<br/>
-     * this.data[fieldName] 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
+     * this.data[fieldId] 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
      * {@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}<br/>
-     * 2、当表单上没有对应组件的时候，可以使用this.data[fieldName]获取值，但是this.form.get('fieldName')无法获取到组件。
+     * 2、当表单上没有对应组件的时候，可以使用this.data[fieldId]获取值，但是this.form.get('fieldId')无法获取到组件。
      * @summary 获取数据网格数据.
      * @example
-     * var data = this.form.get('fieldName').getData();
+     * var data = this.form.get('fieldId').getData();
      *@example
      *  //如果无法确定表单上是否有组件，需要判断
      *  var data;
-     *  if( this.form.get('fieldName') ){ //判断表单是否有无对应组件
-     *      data = this.form.get('fieldName').getData();
+     *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
+     *      data = this.form.get('fieldId').getData();
      *  }else{
-     *      data = this.data['fieldName']; //直接从数据中获取字段值
+     *      data = this.data['fieldId']; //直接从数据中获取字段值
      *  }
      *  @example
      *  //使用Promise
-     *  var field = this.form.get("fieldName");
+     *  var field = this.form.get("fieldId");
      *  var promise = new Promise(function(resolve, reject){ //发起异步请求
      *    var oReq = new XMLHttpRequest();
      *    oReq.addEventListener("load", function(){ //绑定load事件
@@ -1760,7 +1760,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
      * @summary 根据组件的校验设置进行校验。
      *  @param {String} [routeName] - 可选，路由名称.
      *  @example
-     *  if( !this.form.get('fieldName').validation() ){
+     *  if( !this.form.get('fieldId').validation() ){
      *      return false;
      *  }
      *  @return {Boolean} 是否通过校验
