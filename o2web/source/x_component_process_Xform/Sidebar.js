@@ -4,9 +4,9 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var sidebar = this.form.get("name"); //获取操作条
+ * var sidebar = this.form.get("fieldId"); //获取侧边操作条
  * //方法2
- * var sidebar = this.target; //在操作条和操作本身的事件脚本中获取
+ * var sidebar = this.target; //在侧边操作条和操作本身的事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @category FormComponents
  * @hideconstructor

@@ -1,5 +1,18 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
+/** @class Subform 子表单组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var subform = this.form.get("fieldId"); //获取组件
+ * //方法2
+ * var subform = this.target; //在组件本身的脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @category FormComponents
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
+    /** @lends MWF.xApplication.process.Xform.Subform# */
+{
     Extends: MWF.APP$Module,
 
     _loadUserInterface: function () {
@@ -19,6 +32,15 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
             }.bind(this));
         }
     },
+    /**
+     * @summary 当子表单被设置为延迟加载，通过active方法激活
+     * @param {Function} callback
+     * @example
+     * var subform = this.form.get("fieldId");
+     * subform.active(function(){
+     *     //do someting
+     * })
+     */
     active: function (callback) {
         if (!this.loaded) {
             this.reload(callback)
@@ -26,6 +48,14 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
             if (callback) callback();
         }
     },
+    /**
+     * @summary 重新加载子表单
+     * @param {Function} callback
+     * @example
+     * this.form.get("fieldId").reload(function(){
+     *     //do someting
+     * })
+     */
     reload: function (callback) {
         this.node.empty();
         this.getSubform(function () {

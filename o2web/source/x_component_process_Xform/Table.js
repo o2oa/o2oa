@@ -1,7 +1,28 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class({
+/** @class Table 表格组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var table = this.form.get("fieldId"); //获取组件
+ * //方法2
+ * var table = this.target; //在组件本身的脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @category FormComponents
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Table# */
+{
 	Extends: MWF.APP$Module,
 	_afterLoaded: function(){
+        /**
+         * @summary table，DOM对象
+         * @member {Element} table
+         * @memberOf MWF.xApplication.process.Xform.Table#
+         * @example
+         *  //可以在脚本中获取该组件
+         * var table = this.form.get("fieldId").table; //获取组件对象
+         */
         if (!this.table) this.table = this.node.getElement("table");
 		//var tds = this.node.getElements("td");
 		var rows = this.table.rows;
@@ -80,6 +101,17 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class({
         if (this.form.json["$version"]!=="5.2") this._loadBorderStyle();
     }
 });
+/** @class Table$Td 单元格组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var td = this.form.get("fieldId"); //获取组件
+ * //方法2
+ * var td = this.target; //在组件本身的脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @category FormComponents
+ * @hideconstructor
+ */
 MWF.xApplication.process.Xform.Table$Td = MWF.APPTable$Td =  new Class({
 	Extends: MWF.APP$Module,
     _queryLoaded: function(){
