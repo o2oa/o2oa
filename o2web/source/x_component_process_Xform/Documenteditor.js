@@ -3,7 +3,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var documenteditor = this.form.get("name"); //获取组件
+ * var documenteditor = this.form.get("fieldId"); //获取组件
  * //方法2
  * var documenteditor = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
@@ -2551,8 +2551,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if( typeOf(data) !== "object" )return true;
         return !data.filetext || data.filetext===this.json.defaultValue.filetext;
     },
-    /*
-    * 获取公文编辑器数据
+    /**
+    * @summary 获取公文编辑器数据
      * @return {Object} 公文编辑器的数据
      * @example
      * var data = this.form.get("fieldId").getData();
@@ -2641,11 +2641,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     /**设置公文编辑器数据
-     * @param data{Object}
+     * @param {Object} data
      * @example
      * var data = this.form.get("fieldId").getData();
      * data.filetext = "测试内容";
-     * this.form.get("fieldId").getData(data);
+     * this.form.get("fieldId").setData(data);
     */
     setData: function(data, diffFiletext){
         if (data){

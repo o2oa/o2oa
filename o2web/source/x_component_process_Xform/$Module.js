@@ -55,7 +55,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          * @member {MWF.xApplication.process.Xform.Form}
          * @example
          * var form = this.form.get("fieldId").form; //获取组件所在表单对象
-         * form.saveFormData(); //保存表单数据
+         * var container = form.container; //获取表单容器
          */
         this.form = form;
     },

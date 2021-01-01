@@ -1,6 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 MWF.xDesktop.requireApp("process.Work", "lp."+o2.language, null, false);
-/** @class process.Opinion 意见输入框。
+/** @class Opinion 意见输入框。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
