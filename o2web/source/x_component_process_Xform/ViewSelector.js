@@ -1,5 +1,16 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Button", null, false);
+/** @class ViewSelector 视图选择组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var sourceText = this.form.get("fieldId"); //获取组件
+ * //方法2
+ * var sourceText = this.target; //在组件本身的脚本中获取
+ * @extends MWF.xApplication.process.Xform.Button
+ * @category FormComponents
+ * @hideconstructor
+ */
 MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
 	Implements: [Events],
 	Extends: MWF.xApplication.process.Xform.Button,

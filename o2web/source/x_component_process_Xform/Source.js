@@ -4,9 +4,9 @@ MWF.xDesktop.requireApp("process.Xform", "Div", null, false);
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var source = this.form.get("name"); //获取操作条
+ * var source = this.form.get("fieldId"); //获取数据源组件
  * //方法2
- * var source = this.target; //在操作条和操作本身的事件脚本中获取
+ * var source = this.target; //在组件本身的脚本中获取
  * @extends MWF.xApplication.process.Xform.Div
  * @category FormComponents
  * @hideconstructor
@@ -17,13 +17,13 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class(
 	Extends: MWF.APPDiv,
     options: {
         /**
-         * 加载数据后执行，但这时还未加载数据源及下属数据文本，可以可以使用this.target.data获取数据进行修改。
-         * @event MWF.xApplication.process.Xform.Org#postLoadData
+         * 加载数据后执行，但这时还未加载下属组件，可以可以使用this.target.data获取数据进行修改。
+         * @event MWF.xApplication.process.Xform.Source#postLoadData
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
-         * 加载数据、子数据源及下属数据文本后执行。
-         * @event MWF.xApplication.process.Xform.Org#loadData
+         * 加载数据、下属组件后执行。
+         * @event MWF.xApplication.process.Xform.Source#loadData
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         "moduleEvents": ["queryLoad","postLoad","load", "postLoadData", "loadData"]
