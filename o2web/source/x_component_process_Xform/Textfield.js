@@ -3,7 +3,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var field = this.form.get("fieldName"); //获取组件对象
+ * var field = this.form.get("fieldId"); //获取组件对象
  * //方法2
  * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
  *

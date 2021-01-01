@@ -377,6 +377,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据进行增删改查操作。<br/>
      * 通过这种方式定义方法，在不同的应用使用相同的方法名称也不会造成冲突。
      * @module Dict
+     * @ordernumber 120
      * @param {(String|Object)} optionsOrName 数据字典标识字符串或者是对象。
      * <div>如果对本应用的数据字典操作，将optionsOrName设置为string。</div>
      * <pre><code class='language-js'>
@@ -865,998 +866,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 你可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。
      * @module org
+     * @ordernumber 100
      * @example
      * //您可以在流程表单、内容管理表单和门户页面中，通过this来获取当前实例的org对象，如下：
      * var org = this.org;
      */
     this.org = {
-        //群组***************
-        //获取群组--返回群组的对象数组
-        /**
-         根据群组标识获取对应的群组对象或数组：group对象或数组
-         * @method getGroup
-         * @membercategory group
-         * @methodOf module:org
-         * @static
-         * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|GroupData|GroupData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回群组，单个是Object，多个是Array。
-         * @example
-         * //同步执行，返回群组，单个是Object，多个是Array。
-         * var groupList = this.org.getGroup( name );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.getGroup( name, true);
-         * promise.then(function(groupList){
-         *     //groupList 为返回的群组，单个是Object，多个是Array。
-         * })
-         *
-         * //异步执行，在回调方法中获取群组
-         * this.org.getGroup( name, function(groupList){
-         *     //groupList 为返回的群组，单个是Object，多个是Array。
-         * })
-         */
-        getGroup: function(name, async){
-            getOrgActions();
-            var data = {"groupList": getNameFlag(name)};
-
-            var v = null;
-
-            var cb = function(json){
-                v = json.data;
-                v = (v && v.length===1) ? v[0] : v
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listGroup(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-
-            // var v = null;
-            // orgActions.listGroup(data, function(json){v = json.data;}, null, false);
-            // return (v && v.length===1) ? v[0] : v;
-        },
-        //查询下级群组--返回群组的对象数组
-        //nested  布尔  true嵌套下级；false直接下级；默认false；
-        /**
-         根据群组标识获取下级群组的对象数组：group对象数组。
-         * @method listSubGroup
-         * @membercategory group
-         * @methodOf module:org
-         * @static
-         * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
-         * @param {Boolean} [nested]  true嵌套的所有下级群组；false直接下级群组；默认false。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|GroupData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回群组数组。
-         * @example
-         * //同步执行，返回嵌套下级群组数组。
-         * var groupList = this.org.listSubGroup( name, true );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listSubGroup( name, false, true);
-         * promise.then(function(groupList){
-         *     //groupList 为返回的直接下级群组数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取群组
-         * this.org.listSubGroup( name, true, function(groupList){
-         *     //groupList 为返回嵌套下级群组数组。
-         * })
-         */
-        listSubGroup: function(name, nested, async){
-            getOrgActions();
-            var data = {"groupList": getNameFlag(name)};
-
-            var v = null;
-            // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
-            //     v = json.data;
-            //     return v;
-            // }.ag().catch(function(json){ return json; });
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise;
-            if (nested){
-                promise = orgActions.listSubGroupNested(data, cb, null, !!async);
-            }else{
-                promise = orgActions.listSubGroupDirect(data, cb, null, !!async);
-            }
-            return (!!async) ? promise : v;
-
-            // var v = null;
-            // if (nested){
-            //     orgActions.listSubGroupNested(data, function(json){v = json.data;}, null, false);
-            // }else{
-            //     orgActions.listSubGroupDirect(data, function(json){v = json.data;}, null, false);
-            // }
-            // return v;
-        },
-        //查询上级群组--返回群组的对象数组
-        //nested  布尔  true嵌套上级；false直接上级；默认false；
-        /**
-         根据群组标识获取上级群组的对象数组：group对象数组。
-         * @method listSupGroup
-         * @membercategory group
-         * @methodOf module:org
-         * @static
-         * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
-         * @param {Boolean} [nested]  true嵌套的所有上级群组；false直接上级群组；默认false。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|GroupData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回群组数组。
-         * @example
-         * //同步执行，返回嵌套上级群组数组。
-         * var groupList = this.org.listSupGroup( name, true );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listSupGroup( name, false, true);
-         * promise.then(function(groupList){
-         *     //groupList 为返回的直接上级群组数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取群组
-         * this.org.listSupGroup( name, true, function(groupList){
-         *     //groupList 为返回嵌套上级群组数组。
-         * })
-         */
-        listSupGroup:function(name, nested, async){
-            getOrgActions();
-            var data = {"groupList": getNameFlag(name)};
-
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise
-            if (nested){
-                var promise = orgActions.listSupGroupNested(data, cb, null, !!async);
-            }else{
-                var promise = orgActions.listSupGroupDirect(data, cb, null, !!async);
-            }
-            return (!!async) ? promise : v;
-            // var v = null;
-            // if (nested){
-            //     orgActions.listSupGroupNested(data, function(json){v = json.data;}, null, false);
-            // }else{
-            //     orgActions.listSupGroupDirect(data, function(json){v = json.data;}, null, false);
-            // }
-            // return v;
-        },
-        //人员所在群组（嵌套）--返回群组的对象数组
-        /**
-         * 根据人员标识获取所有的群组对象数组。如果群组具有群组（group）成员，且群组成员中包含该人员，那么该群组也被返回。
-         * @method listGroupWithPerson
-         * @membercategory group
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|GroupData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回群组对象数组。
-         * @example
-         * //同步执行，返回群组数组。
-         * var groupList = this.org.listGroupWithPerson( name );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listGroupWithPerson( name, true);
-         * promise.then(function(groupList){
-         *     //groupList 为返回的群组数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取群组
-         * this.org.listGroupWithPerson( name, function(groupList){
-         *     //groupList 为返回的群组数组。
-         * })
-         */
-        listGroupWithPerson:function(name, async){
-            getOrgActions();
-            var data = {"personList": getNameFlag(name)};
-
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listGroupWithPerson(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-            // var v = null;
-            // orgActions.listGroupWithPerson(data, function(json){v = json.data;}, null, false);
-            // return v;
-        },
-
-        //角色***************
-        //获取角色--返回角色的对象数组
-        /**
-         * 根据角色标识获取对应的角色对象或数组。
-         * @method getRole
-         * @membercategory role
-         * @methodOf module:org
-         * @static
-         * @param {RoleFlag|RoleFlag[]} name - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|RoleData|RoleData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回角色，单个为Object，多个为Array。
-         * @example
-         * //同步执行，返回角色，单个为对象，多个为数组。
-         * var roleList = this.org.getRole( name );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.getRole( name, true);
-         * promise.then(function(roleList){
-         *     //roleList 为返回的角色，单个为对象，多个为数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取角色，单个为对象，多个为数组
-         * this.org.getRole( name, function(roleList){
-         *     //roleList 为返回判断结果。
-         * })
-         */
-        getRole: function(name, async){
-            getOrgActions();
-            var data = {"roleList": getNameFlag(name)};
-
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                v = (v && v.length===1) ? v[0] : v;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listRole(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-
-            // var v = null;
-            // orgActions.listRole(data, function(json){v = json.data;}, null, false);
-            // return (v && v.length===1) ? v[0] : v;
-        },
-        //人员所有角色（嵌套）--返回角色的对象数组
-        /**
-         * 根据人员标识获取所有的角色对象数组。如果角色具有群组（group）成员，且群组中包含该人员，那么该角色也被返回。
-         * @method listRoleWithPerson
-         * @membercategory role
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|RoleData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回角色对象数组。
-         * @example
-         * //同步执行，返回角色数组。
-         * var roleList = this.org.listRoleWithPerson( name );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listRoleWithPerson( name, true);
-         * promise.then(function(roleList){
-         *     //roleList 为返回的角色数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取角色
-         * this.org.listRoleWithPerson( name, function(roleList){
-         *     //roleList 为返回的角色数组。
-         * })
-         */
-        listRoleWithPerson:function(name, async){
-            getOrgActions();
-            var data = {"personList": getNameFlag(name)};
-
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-            // var v = null;
-            // orgActions.listRoleWithPerson(data, function(json){v = json.data;}, null, false);
-            // return v;
-        },
-
-        //人员***************
-        //人员是否拥有角色--返回true, false
-        /**
-         * 人员是否拥有角色。
-         * @method personHasRole
-         * @membercategory role
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag} name - 人员的distinguishedName、name、id、unique属性值，人员对象。
-         * @param {RoleFlag|RoleFlag[]} roleList - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|Boolean} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则如果人员拥有角色返回true, 否则返回false。
-         * @example
-         * //同步执行，返回判断结果。
-         * var groupList = this.org.personHasRole( name, roleList );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.personHasRole( name, roleList, true);
-         * promise.then(function(flag){
-         *     //flag 为返回判断结果。
-         * })
-         *
-         * //异步执行，在回调方法中获取判断结果
-         * this.org.personHasRole( name, roleList, function(flag){
-         *     //flag 为返回判断结果。
-         * })
-         */
-        personHasRole: function(name, role, async){
-            getOrgActions();
-            nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
-            var data = {"person":nameFlag,"roleList":getNameFlag(role)};
-
-            var v = false;
-            var cb = function(json){
-                v = json.data.value;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-
-            // var v = false;
-            // orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
-            // return v;
-        },
-        //群组是否拥有角色--返回true, false
-        /**
-         * 群组是否拥有角色。
-         * @method groupHasRole
-         * @membercategory role
-         * @methodOf module:org
-         * @static
-         * @param {GroupFlag} name - 群组的distinguishedName、name、id、unique属性值，群组对象。
-         * @param {RoleFlag|RoleFlag[]} roleList - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|Boolean} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则如果群组拥有角色返回true, 否则返回false。
-         * @example
-         * //同步执行，返回判断结果。
-         * var groupList = this.org.groupHasRole( name, roleList );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.groupHasRole( name, roleList, true);
-         * promise.then(function(flag){
-         *     //flag 为返回判断结果。
-         * })
-         *
-         * //异步执行，在回调方法中获取判断结果
-         * this.org.groupHasRole( name, roleList, function(flag){
-         *     //flag 为返回判断结果。
-         * })
-         */
-        groupHasRole: function(name, role, async){
-            getOrgActions();
-            nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
-            var data = {"group":nameFlag,"roleList":getNameFlag(role)};
-
-            var v = false;
-            var cb = function(json){
-                v = json.data.value;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.groupHasRole(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-
-            // var v = false;
-            // orgActions.groupHasRole(data, function(json){v = json.data.value;}, null, false);
-            // return v;
-        },
-
-        //人员
-        //获取人员--返回人员的对象数组
-        /**
-         根据人员标识获取对应的人员对象或数组：person对象或数组
-         * @method getPerson
-         * @membercategory person
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|PersonData|PersonData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回人员，单个是Object，多个是Array。
-         * @example
-         * //同步执行，返回人员，单个是对象，多个是数组。
-         * var personList = this.org.getPerson( name );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.getPerson( name, true);
-         * promise.then(function(personList){
-         *     //personList 为返回的人员，单个是对象，多个是数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取人员
-         * this.org.getPerson( name, function(personList){
-         *     //personList 为返回的人员，单个是对象，多个是数组。
-         * })
-         */
-        getPerson: function(name, async){
-            getOrgActions();
-            var data = {"personList": getNameFlag(name)};
-
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                v = (v && v.length===1) ? v[0] : v;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listPerson(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-            // var v = null;
-            // orgActions.listPerson(data, function(json){v = json.data;}, null, false);
-            // return (v && v.length===1) ? v[0] : v;
-        },
-        //查询下级人员--返回人员的对象数组
-        //nested  布尔  true嵌套下级；false直接下级；默认false；
-        /**
-         根据人员标识获取下级人员的对象数组：person对象数组。该上下级关系被人员的汇报对象值（superior）决定。
-         * @method listSubPerson
-         * @membercategory person
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-         * @param {Boolean} [nested]  true嵌套的所有下级人员；false直接下级人员；默认false。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|PersonData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回人员数组。
-         * @example
-         * //同步执行，返回嵌套下级人员数组。
-         * var personList = this.org.listSubPerson( name, true );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listSubPerson( name, false, true);
-         * promise.then(function(personList){
-         *     //personList 为返回的直接下级人员数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.listSubPerson( name, true, function(personList){
-         *     //personList 为返回嵌套下级人员数组。
-         * })
-         */
-        listSubPerson: function(name, nested, async){
-            getOrgActions();
-            var data = {"personList": getNameFlag(name)};
-
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise;
-            if (nested){
-                promise = orgActions.listPersonSubNested(data, cb, null, !!async);
-            }else{
-                promise = orgActions.listPersonSubDirect(data, cb, null, !!async);
-            }
-            return (!!async) ? promise : v;
-        },
-        //查询上级人员--返回人员的对象数组
-        //nested  布尔  true嵌套上级；false直接上级；默认false；
-        /**
-         *根据人员标识获取上级人员的对象数组：person对象数组。该上下级关系被人员的汇报对象值（superior）决定。
-         * @method listSupPerson
-         * @membercategory person
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-         * @param {Boolean} [nested]  true嵌套的所有上级人员；false直接上级人员；默认false。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|PersonData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回人员数组。
-         * @example
-         * //同步执行，返回嵌套上级人员数组。
-         * var personList = this.org.listSupPerson( name, true );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listSupPerson( name, false, true);
-         * promise.then(function(personList){
-         *     //personList 为返回的直接上级人员数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.listSupPerson( name, true, function(personList){
-         *     //personList 为返回嵌套上级人员数组。
-         * })
-         */
-        listSupPerson: function(name, nested, async){
-            getOrgActions();
-            var data = {"personList": getNameFlag(name)};
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise;
-            if (nested){
-                promise = orgActions.listPersonSupNested(data, cb, null, !!async);
-            }else{
-                promise = orgActions.listPersonSupDirect(data, cb, null, !!async);
-            }
-            return (!!async) ? promise : v;
-        },
-        //获取群组的所有人员--返回人员的对象数组
-        /**
-         * 根据群组标识获取人员对象成员：person对象数组。
-         * @method listPersonWithGroup
-         * @membercategory person
-         * @methodOf module:org
-         * @static
-         * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|PersonData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回人员对象数组。
-         * @example
-         * //同步执行，返回人员数组。
-         * var personList = this.org.listPersonWithGroup( group );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listPersonWithGroup( group, true);
-         * promise.then(function(personList){
-         *     //personList 为返回的人员数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.listPersonWithGroup( group, function(personList){
-         *     //personList 为返回的人员数组。
-         * })
-         */
-        listPersonWithGroup: function(name, async){
-            getOrgActions();
-            var data = {"groupList": getNameFlag(name)};
-
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listPersonWithGroup(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-        },
-        //获取角色的所有人员--返回人员的对象数组
-        /**
-         * 根据角色标识获取人员对象数组：person对象数组。
-         * @method listPersonWithRole
-         * @membercategory person
-         * @methodOf module:org
-         * @static
-         * @param {RoleFlag|RoleFlag[]} name - 角色的distinguishedName、name、id、unique属性值，角色对象，或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|PersonData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回人员对象数组。
-         * @example
-         * //同步执行，返回人员数组。
-         * var personList = this.org.listPersonWithRole( role );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listPersonWithRole( role, true);
-         * promise.then(function(personList){
-         *     //personList 为返回的人员数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.listPersonWithRole( role, function(personList){
-         *     //personList 为返回的人员数组。
-         * })
-         */
-        listPersonWithRole: function(name, async){
-            getOrgActions();
-            var data = {"roleList": getNameFlag(name)};
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise
-            promise = orgActions.listPersonWithRole(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-        },
-        //获取身份的所有人员--返回人员的对象数组
-        /**
-         * 根据身份标识获取人员对象成员：person对象数组。
-         * @method listPersonWithIdentity
-         * @membercategory person
-         * @methodOf module:org
-         * @static
-         * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|PersonData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回人员对象数组。
-         * @example
-         * //同步执行，返回人员数组。
-         * var personList = this.org.listPersonWithIdentity( identity );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listPersonWithIdentity( identity, true);
-         * promise.then(function(personList){
-         *     //personList 为返回的人员数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.listPersonWithIdentity( identity, function(personList){
-         *     //personList 为返回的人员数组。
-         * })
-         */
-        listPersonWithIdentity: function(name, async){
-            getOrgActions();
-            var data = {"identityList": getNameFlag(name)};
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listPersonWithIdentity(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-        },
-        //获取身份的所有人员--返回人员的对象数组或人员对象
-        getPersonWithIdentity: function(name, async){
-            getOrgActions();
-            var data = {"identityList": getNameFlag(name)};
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                v =  (v && v.length===1) ? v[0] : v;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listPersonWithIdentity(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-        },
-        //查询组织成员的人员--返回人员的对象数组
-        //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
-        /**
-         * 根据组织标识获取人员对象成员：person对象数组。
-         * @method listPersonWithUnit
-         * @membercategory person
-         * @methodOf module:org
-         * @static
-         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
-         * @param {Boolean} [nested] 是否嵌套获取组织以及下级组织的人员，true表示嵌套，flase表示获取直接组织。默认为false
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|PersonData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回人员对象数组。
-         * @example
-         * //同步执行，返回组织的直接人员数组。
-         * var personList = this.org.listPersonWithUnit( unit );
-         *
-         * //同步执行，返回组织的以及嵌套下级组织所有的人员数组。
-         * var personList = this.org.listPersonWithUnit( unit, true );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listPersonWithUnit( unit, false, true);
-         * promise.then(function(personList){
-         *     //personList 为返回的组织的直接人员数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.listPersonWithUnit( unit, false, function(personList){
-         *     //personList 为返回的群组的直接人员数组。
-         * })
-         */
-        listPersonWithUnit: function(name, nested, async){
-            getOrgActions();
-            var data = {"unitList": getNameFlag(name)};
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise;
-            if (nested){
-                promise = orgActions.listPersonWithUnitNested(data, cb, null, !!async);
-            }else{
-                promise = orgActions.listPersonWithUnitDirect(data, cb, null, !!async);
-            }
-            return (!!async) ? promise : v;
-        },
-        //根据属性查询人员--返回人员的对象数组
-        //name  string 属性名
-        //value  string 属性值
-        /**
-         * 根据人员属性名称和属性值获取人员对象成员：person对象数组。
-         * @method listPersonWithAttribute
-         * @membercategory person
-         * @methodOf module:org
-         * @static
-         * @param {String} name 人员属性名称。
-         * @param {String} value 人员属性值。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|PersonData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回人员对象数组。
-         * @example
-         * //同步执行，返回拥有对应属性名和属性值人员数组。
-         * var personList = this.org.listPersonWithAttribute( name, value );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listPersonWithAttribute( name, value, true);
-         * promise.then(function(personList){
-         *     //personList 返回拥有对应属性名和属性值人员数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.listPersonWithAttribute( name, value, function(personList){
-         *     //personList 返回拥有对应属性名和属性值人员数组。
-         * })
-         */
-        listPersonWithAttribute: function(name, value, async){
-            getOrgActions();
-            var data = {"name": name, "attribute": value};
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listPersonWithAttribute(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-        },
-        //根据属性查询人员--返回人员的全称数组
-        //name  string 属性名
-        //value  string 属性值
-        listPersonNameWithAttribute: function(name, value, async){
-            getOrgActions();
-            var data = {"name": name, "attribute": value};
-            var v = null;
-            var cb = function(json){
-                v = json.data.personList;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listPersonWithAttributeValue(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-        },
-
-        //人员属性************
-        //添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)
-        /**
-         * 添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)
-         * @method appendPersonAttribute
-         * @membercategory personAttribute
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
-         * @param {String} attr 属性名称。
-         * @param {String[]} values 属性值，必须为数组。
-         * @param {Function} [success] 执行成功的回调。
-         * @param {Function} [failure] 执行失败的回调。
-         * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
-         * @example
-         * //同步执行
-         * this.org.appendPersonAttribute( person, attribute, valueArray);
-         *
-         * //异步执行
-         * this.org.appendPersonAttribute( person, attribute, valueArray, function(){
-         *     //执行成功的回调
-         * }, null, true);
-         */
-        appendPersonAttribute: function(person, attr, values, success, failure, async){
-            getOrgActions();
-            var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
-            var data = {"attributeList":values,"name":attr,"person":personFlag};
-
-            var cb = function(json){
-                if (success) return success(json);
-            }.ag().catch(function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            });
-
-            orgActions.appendPersonAttribute(data, cb, null, !!async);
-        },
-        //设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
-        /**
-         * 设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
-         * @method setPersonAttribute
-         * @membercategory personAttribute
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
-         * @param {String} attr 属性名称。
-         * @param {String[]} values 属性值，必须为数组。
-         * @param {Function} [success] 执行成功的回调。
-         * @param {Function} [failure] 执行失败的回调。
-         * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
-         * @example
-         * //同步执行
-         * this.org.setPersonAttribute( person, attribute, valueArray);
-         *
-         * //异步执行
-         * this.org.setPersonAttribute( person, attribute, valueArray, function(){
-         *     //执行成功的回调
-         * }, null, true);
-         */
-        setPersonAttribute: function(person, attr, values, success, failure, async){
-            getOrgActions();
-            var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
-            var data = {"attributeList":values,"name":attr,"person":personFlag};
-
-            var cb = function(json){
-                if (success) return success(json);
-            }.ag().catch(function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            });
-
-            orgActions.setPersonAttribute(data, cb, null, !!async);
-        },
-        //获取人员属性值
-        /**
-         根据人员和属性名称获取属性值数组。
-         * @method getPersonAttribute
-         * @membercategory personAttribute
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
-         * @param {String} attr 属性名称。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {String[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回属性值数组，
-         * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
-         * @example
-         * //同步执行，返回该人员的属性值数组。
-         * var attributeList = this.org.getPersonAttribute( person, attr );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.getPersonAttribute( person, attr, true);
-         * promise.then(function(attributeList){
-         *     //attributeList 为返回该人员的属性值数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.getPersonAttribute( person, attr, function(attributeList){
-         *     //attributeList 为返回该人员的属性值数组。
-         * })
-         */
-        getPersonAttribute: function(person, attr, async){
-            getOrgActions();
-            var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
-            var data = {"name":attr,"person":personFlag};
-            var v = null;
-            var cb = function(json){
-                v = json.data.attributeList;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.getPersonAttribute(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-        },
-        //列出人员所有属性的名称
-        /**
-         列出人员所有属性的名称数组。
-         * @method listPersonAttributeName
-         * @membercategory personAttribute
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {String[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回人员属性名称数组，
-         * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
-         * @example
-         * //同步执行，返回人员所有属性的名称数组。
-         * var attributeNameList = this.org.listPersonAttributeName( person );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listPersonAttributeName( person, true);
-         * promise.then(function(attributeNameList){
-         *     //attributeNameList 为人员所有属性的名称数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.listPersonAttributeName( person, function(attributeNameList){
-         *     //attributeNameList 为人员所有属性的名称数组。
-         * })
-         */
-        listPersonAttributeName: function(name, async){
-            getOrgActions();
-            var data = {"personList":getNameFlag(name)};
-            var v = null;
-            var cb = function(json){
-                v = json.data.nameList;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listPersonAttributeName(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-        },
-        //列出人员的所有属性
-        /**
-         列出人员的所有属性对象数组。
-         * @method listPersonAllAttribute
-         * @membercategory personAttribute
-         * @methodOf module:org
-         * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Object[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回人员属性对象数组，如：
-         * <pre><code class='language-js'>[{
-         *    "name": "住址",
-         *    "person": "张三@zhangsan@P",
-         *    "attributeList": [
-         *        "杭州市","绍兴市"
-         *    ]
-         * }]</code></pre>
-         * @example
-         * //同步执行，返回人员所有属性的对象数组。
-         * var attributeObjectList = this.org.listPersonAllAttribute( person );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listPersonAllAttribute( person, true);
-         * promise.then(function(attributeObjectList){
-         *     //attributeObjectList 为人员所有属性的对象数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.listPersonAllAttribute( person, function(attributeObjectList){
-         *     //attributeObjectList 为人员所有属性的对象数组。
-         * })
-         */
-        listPersonAllAttribute: function(name, async){
-            getOrgActions();
-            var data = {"personList":getNameFlag(name)};
-            var v = null;
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)=="function") return async(v);
-                return v;
-            };
-
-            var promise = orgActions.listPersonAllAttribute(data, cb, null, !!async);
-            return (!!async) ? promise : v;
-        },
-
         //身份**********
         //获取身份
         /**
@@ -2496,6 +1511,394 @@ MWF.xScript.ViewEnvironment = function (ev) {
             return (!!async) ? promise : v;
         },
 
+        //人员
+        //获取人员--返回人员的对象数组
+        /**
+         根据人员标识获取对应的人员对象或数组：person对象或数组
+         * @method getPerson
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员，单个是Object，多个是Array。
+         * @example
+         * //同步执行，返回人员，单个是对象，多个是数组。
+         * var personList = this.org.getPerson( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.getPerson( name, true);
+         * promise.then(function(personList){
+         *     //personList 为返回的人员，单个是对象，多个是数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取人员
+         * this.org.getPerson( name, function(personList){
+         *     //personList 为返回的人员，单个是对象，多个是数组。
+         * })
+         */
+        getPerson: function(name, async){
+            getOrgActions();
+            var data = {"personList": getNameFlag(name)};
+
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                v = (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+            // var v = null;
+            // orgActions.listPerson(data, function(json){v = json.data;}, null, false);
+            // return (v && v.length===1) ? v[0] : v;
+        },
+        //查询下级人员--返回人员的对象数组
+        //nested  布尔  true嵌套下级；false直接下级；默认false；
+        /**
+         根据人员标识获取下级人员的对象数组：person对象数组。该上下级关系被人员的汇报对象值（superior）决定。
+         * @method listSubPerson
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {Boolean} [nested]  true嵌套的所有下级人员；false直接下级人员；默认false。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员数组。
+         * @example
+         * //同步执行，返回嵌套下级人员数组。
+         * var personList = this.org.listSubPerson( name, true );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSubPerson( name, false, true);
+         * promise.then(function(personList){
+         *     //personList 为返回的直接下级人员数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listSubPerson( name, true, function(personList){
+         *     //personList 为返回嵌套下级人员数组。
+         * })
+         */
+        listSubPerson: function(name, nested, async){
+            getOrgActions();
+            var data = {"personList": getNameFlag(name)};
+
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise;
+            if (nested){
+                promise = orgActions.listPersonSubNested(data, cb, null, !!async);
+            }else{
+                promise = orgActions.listPersonSubDirect(data, cb, null, !!async);
+            }
+            return (!!async) ? promise : v;
+        },
+        //查询上级人员--返回人员的对象数组
+        //nested  布尔  true嵌套上级；false直接上级；默认false；
+        /**
+         *根据人员标识获取上级人员的对象数组：person对象数组。该上下级关系被人员的汇报对象值（superior）决定。
+         * @method listSupPerson
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {Boolean} [nested]  true嵌套的所有上级人员；false直接上级人员；默认false。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员数组。
+         * @example
+         * //同步执行，返回嵌套上级人员数组。
+         * var personList = this.org.listSupPerson( name, true );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSupPerson( name, false, true);
+         * promise.then(function(personList){
+         *     //personList 为返回的直接上级人员数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listSupPerson( name, true, function(personList){
+         *     //personList 为返回嵌套上级人员数组。
+         * })
+         */
+        listSupPerson: function(name, nested, async){
+            getOrgActions();
+            var data = {"personList": getNameFlag(name)};
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise;
+            if (nested){
+                promise = orgActions.listPersonSupNested(data, cb, null, !!async);
+            }else{
+                promise = orgActions.listPersonSupDirect(data, cb, null, !!async);
+            }
+            return (!!async) ? promise : v;
+        },
+        //获取群组的所有人员--返回人员的对象数组
+        /**
+         * 根据群组标识获取人员对象成员：person对象数组。
+         * @method listPersonWithGroup
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员对象数组。
+         * @example
+         * //同步执行，返回人员数组。
+         * var personList = this.org.listPersonWithGroup( group );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listPersonWithGroup( group, true);
+         * promise.then(function(personList){
+         *     //personList 为返回的人员数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listPersonWithGroup( group, function(personList){
+         *     //personList 为返回的人员数组。
+         * })
+         */
+        listPersonWithGroup: function(name, async){
+            getOrgActions();
+            var data = {"groupList": getNameFlag(name)};
+
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonWithGroup(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
+        //获取角色的所有人员--返回人员的对象数组
+        /**
+         * 根据角色标识获取人员对象数组：person对象数组。
+         * @method listPersonWithRole
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {RoleFlag|RoleFlag[]} name - 角色的distinguishedName、name、id、unique属性值，角色对象，或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员对象数组。
+         * @example
+         * //同步执行，返回人员数组。
+         * var personList = this.org.listPersonWithRole( role );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listPersonWithRole( role, true);
+         * promise.then(function(personList){
+         *     //personList 为返回的人员数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listPersonWithRole( role, function(personList){
+         *     //personList 为返回的人员数组。
+         * })
+         */
+        listPersonWithRole: function(name, async){
+            getOrgActions();
+            var data = {"roleList": getNameFlag(name)};
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise
+            promise = orgActions.listPersonWithRole(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
+        //获取身份的所有人员--返回人员的对象数组
+        /**
+         * 根据身份标识获取人员对象成员：person对象数组。
+         * @method listPersonWithIdentity
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员对象数组。
+         * @example
+         * //同步执行，返回人员数组。
+         * var personList = this.org.listPersonWithIdentity( identity );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listPersonWithIdentity( identity, true);
+         * promise.then(function(personList){
+         *     //personList 为返回的人员数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listPersonWithIdentity( identity, function(personList){
+         *     //personList 为返回的人员数组。
+         * })
+         */
+        listPersonWithIdentity: function(name, async){
+            getOrgActions();
+            var data = {"identityList": getNameFlag(name)};
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
+        //获取身份的所有人员--返回人员的对象数组或人员对象
+        getPersonWithIdentity: function(name, async){
+            getOrgActions();
+            var data = {"identityList": getNameFlag(name)};
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                v =  (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
+        //查询组织成员的人员--返回人员的对象数组
+        //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
+        /**
+         * 根据组织标识获取人员对象成员：person对象数组。
+         * @method listPersonWithUnit
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {Boolean} [nested] 是否嵌套获取组织以及下级组织的人员，true表示嵌套，flase表示获取直接组织。默认为false
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员对象数组。
+         * @example
+         * //同步执行，返回组织的直接人员数组。
+         * var personList = this.org.listPersonWithUnit( unit );
+         *
+         * //同步执行，返回组织的以及嵌套下级组织所有的人员数组。
+         * var personList = this.org.listPersonWithUnit( unit, true );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listPersonWithUnit( unit, false, true);
+         * promise.then(function(personList){
+         *     //personList 为返回的组织的直接人员数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listPersonWithUnit( unit, false, function(personList){
+         *     //personList 为返回的群组的直接人员数组。
+         * })
+         */
+        listPersonWithUnit: function(name, nested, async){
+            getOrgActions();
+            var data = {"unitList": getNameFlag(name)};
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise;
+            if (nested){
+                promise = orgActions.listPersonWithUnitNested(data, cb, null, !!async);
+            }else{
+                promise = orgActions.listPersonWithUnitDirect(data, cb, null, !!async);
+            }
+            return (!!async) ? promise : v;
+        },
+        //根据属性查询人员--返回人员的对象数组
+        //name  string 属性名
+        //value  string 属性值
+        /**
+         * 根据人员属性名称和属性值获取人员对象成员：person对象数组。
+         * @method listPersonWithAttribute
+         * @membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {String} name 人员属性名称。
+         * @param {String} value 人员属性值。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员对象数组。
+         * @example
+         * //同步执行，返回拥有对应属性名和属性值人员数组。
+         * var personList = this.org.listPersonWithAttribute( name, value );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listPersonWithAttribute( name, value, true);
+         * promise.then(function(personList){
+         *     //personList 返回拥有对应属性名和属性值人员数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listPersonWithAttribute( name, value, function(personList){
+         *     //personList 返回拥有对应属性名和属性值人员数组。
+         * })
+         */
+        listPersonWithAttribute: function(name, value, async){
+            getOrgActions();
+            var data = {"name": name, "attribute": value};
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonWithAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
+        //根据属性查询人员--返回人员的全称数组
+        //name  string 属性名
+        //value  string 属性值
+        listPersonNameWithAttribute: function(name, value, async){
+            getOrgActions();
+            var data = {"name": name, "attribute": value};
+            var v = null;
+            var cb = function(json){
+                v = json.data.personList;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonWithAttributeValue(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
+
         //组织职务***********
         //获取指定的组织职务的身份
         /**
@@ -2676,6 +2079,605 @@ MWF.xScript.ViewEnvironment = function (ev) {
             };
 
             var promise = orgActions.listUnitAllDuty(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
+
+        //群组***************
+        //获取群组--返回群组的对象数组
+        /**
+         根据群组标识获取对应的群组对象或数组：group对象或数组
+         * @method getGroup
+         * @membercategory group
+         * @methodOf module:org
+         * @static
+         * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|GroupData|GroupData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回群组，单个是Object，多个是Array。
+         * @example
+         * //同步执行，返回群组，单个是Object，多个是Array。
+         * var groupList = this.org.getGroup( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.getGroup( name, true);
+         * promise.then(function(groupList){
+         *     //groupList 为返回的群组，单个是Object，多个是Array。
+         * })
+         *
+         * //异步执行，在回调方法中获取群组
+         * this.org.getGroup( name, function(groupList){
+         *     //groupList 为返回的群组，单个是Object，多个是Array。
+         * })
+         */
+        getGroup: function(name, async){
+            getOrgActions();
+            var data = {"groupList": getNameFlag(name)};
+
+            var v = null;
+
+            var cb = function(json){
+                v = json.data;
+                v = (v && v.length===1) ? v[0] : v
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listGroup(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var v = null;
+            // orgActions.listGroup(data, function(json){v = json.data;}, null, false);
+            // return (v && v.length===1) ? v[0] : v;
+        },
+        //查询下级群组--返回群组的对象数组
+        //nested  布尔  true嵌套下级；false直接下级；默认false；
+        /**
+         根据群组标识获取下级群组的对象数组：group对象数组。
+         * @method listSubGroup
+         * @membercategory group
+         * @methodOf module:org
+         * @static
+         * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
+         * @param {Boolean} [nested]  true嵌套的所有下级群组；false直接下级群组；默认false。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|GroupData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回群组数组。
+         * @example
+         * //同步执行，返回嵌套下级群组数组。
+         * var groupList = this.org.listSubGroup( name, true );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSubGroup( name, false, true);
+         * promise.then(function(groupList){
+         *     //groupList 为返回的直接下级群组数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取群组
+         * this.org.listSubGroup( name, true, function(groupList){
+         *     //groupList 为返回嵌套下级群组数组。
+         * })
+         */
+        listSubGroup: function(name, nested, async){
+            getOrgActions();
+            var data = {"groupList": getNameFlag(name)};
+
+            var v = null;
+            // var cb = ((async && o2.typeOf(async)=="function") ? (async.isAG ? async : async.ag()) : null) || function(json){
+            //     v = json.data;
+            //     return v;
+            // }.ag().catch(function(json){ return json; });
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise;
+            if (nested){
+                promise = orgActions.listSubGroupNested(data, cb, null, !!async);
+            }else{
+                promise = orgActions.listSubGroupDirect(data, cb, null, !!async);
+            }
+            return (!!async) ? promise : v;
+
+            // var v = null;
+            // if (nested){
+            //     orgActions.listSubGroupNested(data, function(json){v = json.data;}, null, false);
+            // }else{
+            //     orgActions.listSubGroupDirect(data, function(json){v = json.data;}, null, false);
+            // }
+            // return v;
+        },
+        //查询上级群组--返回群组的对象数组
+        //nested  布尔  true嵌套上级；false直接上级；默认false；
+        /**
+         根据群组标识获取上级群组的对象数组：group对象数组。
+         * @method listSupGroup
+         * @membercategory group
+         * @methodOf module:org
+         * @static
+         * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
+         * @param {Boolean} [nested]  true嵌套的所有上级群组；false直接上级群组；默认false。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|GroupData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回群组数组。
+         * @example
+         * //同步执行，返回嵌套上级群组数组。
+         * var groupList = this.org.listSupGroup( name, true );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSupGroup( name, false, true);
+         * promise.then(function(groupList){
+         *     //groupList 为返回的直接上级群组数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取群组
+         * this.org.listSupGroup( name, true, function(groupList){
+         *     //groupList 为返回嵌套上级群组数组。
+         * })
+         */
+        listSupGroup:function(name, nested, async){
+            getOrgActions();
+            var data = {"groupList": getNameFlag(name)};
+
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise
+            if (nested){
+                var promise = orgActions.listSupGroupNested(data, cb, null, !!async);
+            }else{
+                var promise = orgActions.listSupGroupDirect(data, cb, null, !!async);
+            }
+            return (!!async) ? promise : v;
+            // var v = null;
+            // if (nested){
+            //     orgActions.listSupGroupNested(data, function(json){v = json.data;}, null, false);
+            // }else{
+            //     orgActions.listSupGroupDirect(data, function(json){v = json.data;}, null, false);
+            // }
+            // return v;
+        },
+        //人员所在群组（嵌套）--返回群组的对象数组
+        /**
+         * 根据人员标识获取所有的群组对象数组。如果群组具有群组（group）成员，且群组成员中包含该人员，那么该群组也被返回。
+         * @method listGroupWithPerson
+         * @membercategory group
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|GroupData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回群组对象数组。
+         * @example
+         * //同步执行，返回群组数组。
+         * var groupList = this.org.listGroupWithPerson( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listGroupWithPerson( name, true);
+         * promise.then(function(groupList){
+         *     //groupList 为返回的群组数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取群组
+         * this.org.listGroupWithPerson( name, function(groupList){
+         *     //groupList 为返回的群组数组。
+         * })
+         */
+        listGroupWithPerson:function(name, async){
+            getOrgActions();
+            var data = {"personList": getNameFlag(name)};
+
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listGroupWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+            // var v = null;
+            // orgActions.listGroupWithPerson(data, function(json){v = json.data;}, null, false);
+            // return v;
+        },
+
+        //角色***************
+        //获取角色--返回角色的对象数组
+        /**
+         * 根据角色标识获取对应的角色对象或数组。
+         * @method getRole
+         * @membercategory role
+         * @methodOf module:org
+         * @static
+         * @param {RoleFlag|RoleFlag[]} name - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|RoleData|RoleData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回角色，单个为Object，多个为Array。
+         * @example
+         * //同步执行，返回角色，单个为对象，多个为数组。
+         * var roleList = this.org.getRole( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.getRole( name, true);
+         * promise.then(function(roleList){
+         *     //roleList 为返回的角色，单个为对象，多个为数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取角色，单个为对象，多个为数组
+         * this.org.getRole( name, function(roleList){
+         *     //roleList 为返回判断结果。
+         * })
+         */
+        getRole: function(name, async){
+            getOrgActions();
+            var data = {"roleList": getNameFlag(name)};
+
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                v = (v && v.length===1) ? v[0] : v;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listRole(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var v = null;
+            // orgActions.listRole(data, function(json){v = json.data;}, null, false);
+            // return (v && v.length===1) ? v[0] : v;
+        },
+        //人员所有角色（嵌套）--返回角色的对象数组
+        /**
+         * 根据人员标识获取所有的角色对象数组。如果角色具有群组（group）成员，且群组中包含该人员，那么该角色也被返回。
+         * @method listRoleWithPerson
+         * @membercategory role
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|RoleData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回角色对象数组。
+         * @example
+         * //同步执行，返回角色数组。
+         * var roleList = this.org.listRoleWithPerson( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listRoleWithPerson( name, true);
+         * promise.then(function(roleList){
+         *     //roleList 为返回的角色数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取角色
+         * this.org.listRoleWithPerson( name, function(roleList){
+         *     //roleList 为返回的角色数组。
+         * })
+         */
+        listRoleWithPerson:function(name, async){
+            getOrgActions();
+            var data = {"personList": getNameFlag(name)};
+
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+            // var v = null;
+            // orgActions.listRoleWithPerson(data, function(json){v = json.data;}, null, false);
+            // return v;
+        },
+
+        //人员***************
+        //人员是否拥有角色--返回true, false
+        /**
+         * 人员是否拥有角色。
+         * @method personHasRole
+         * @membercategory role
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag} name - 人员的distinguishedName、name、id、unique属性值，人员对象。
+         * @param {RoleFlag|RoleFlag[]} roleList - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|Boolean} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则如果人员拥有角色返回true, 否则返回false。
+         * @example
+         * //同步执行，返回判断结果。
+         * var groupList = this.org.personHasRole( name, roleList );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.personHasRole( name, roleList, true);
+         * promise.then(function(flag){
+         *     //flag 为返回判断结果。
+         * })
+         *
+         * //异步执行，在回调方法中获取判断结果
+         * this.org.personHasRole( name, roleList, function(flag){
+         *     //flag 为返回判断结果。
+         * })
+         */
+        personHasRole: function(name, role, async){
+            getOrgActions();
+            nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
+            var data = {"person":nameFlag,"roleList":getNameFlag(role)};
+
+            var v = false;
+            var cb = function(json){
+                v = json.data.value;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var v = false;
+            // orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
+            // return v;
+        },
+        //群组是否拥有角色--返回true, false
+        /**
+         * 群组是否拥有角色。
+         * @method groupHasRole
+         * @membercategory role
+         * @methodOf module:org
+         * @static
+         * @param {GroupFlag} name - 群组的distinguishedName、name、id、unique属性值，群组对象。
+         * @param {RoleFlag|RoleFlag[]} roleList - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|Boolean} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则如果群组拥有角色返回true, 否则返回false。
+         * @example
+         * //同步执行，返回判断结果。
+         * var groupList = this.org.groupHasRole( name, roleList );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.groupHasRole( name, roleList, true);
+         * promise.then(function(flag){
+         *     //flag 为返回判断结果。
+         * })
+         *
+         * //异步执行，在回调方法中获取判断结果
+         * this.org.groupHasRole( name, roleList, function(flag){
+         *     //flag 为返回判断结果。
+         * })
+         */
+        groupHasRole: function(name, role, async){
+            getOrgActions();
+            nameFlag = (typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
+            var data = {"group":nameFlag,"roleList":getNameFlag(role)};
+
+            var v = false;
+            var cb = function(json){
+                v = json.data.value;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.groupHasRole(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var v = false;
+            // orgActions.groupHasRole(data, function(json){v = json.data.value;}, null, false);
+            // return v;
+        },
+
+        //人员属性************
+        //添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)
+        /**
+         * 添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)
+         * @method appendPersonAttribute
+         * @membercategory personAttribute
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
+         * @param {String} attr 属性名称。
+         * @param {String[]} values 属性值，必须为数组。
+         * @param {Function} [success] 执行成功的回调。
+         * @param {Function} [failure] 执行失败的回调。
+         * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
+         * @example
+         * //同步执行
+         * this.org.appendPersonAttribute( person, attribute, valueArray);
+         *
+         * //异步执行
+         * this.org.appendPersonAttribute( person, attribute, valueArray, function(){
+         *     //执行成功的回调
+         * }, null, true);
+         */
+        appendPersonAttribute: function(person, attr, values, success, failure, async){
+            getOrgActions();
+            var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
+            var data = {"attributeList":values,"name":attr,"person":personFlag};
+
+            var cb = function(json){
+                if (success) return success(json);
+            }.ag().catch(function(xhr, text, error){
+                if (failure) return failure(xhr, text, error);
+            });
+
+            orgActions.appendPersonAttribute(data, cb, null, !!async);
+        },
+        //设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
+        /**
+         * 设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
+         * @method setPersonAttribute
+         * @membercategory personAttribute
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
+         * @param {String} attr 属性名称。
+         * @param {String[]} values 属性值，必须为数组。
+         * @param {Function} [success] 执行成功的回调。
+         * @param {Function} [failure] 执行失败的回调。
+         * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
+         * @example
+         * //同步执行
+         * this.org.setPersonAttribute( person, attribute, valueArray);
+         *
+         * //异步执行
+         * this.org.setPersonAttribute( person, attribute, valueArray, function(){
+         *     //执行成功的回调
+         * }, null, true);
+         */
+        setPersonAttribute: function(person, attr, values, success, failure, async){
+            getOrgActions();
+            var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
+            var data = {"attributeList":values,"name":attr,"person":personFlag};
+
+            var cb = function(json){
+                if (success) return success(json);
+            }.ag().catch(function(xhr, text, error){
+                if (failure) return failure(xhr, text, error);
+            });
+
+            orgActions.setPersonAttribute(data, cb, null, !!async);
+        },
+        //获取人员属性值
+        /**
+         根据人员和属性名称获取属性值数组。
+         * @method getPersonAttribute
+         * @membercategory personAttribute
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
+         * @param {String} attr 属性名称。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {String[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回属性值数组，
+         * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
+         * @example
+         * //同步执行，返回该人员的属性值数组。
+         * var attributeList = this.org.getPersonAttribute( person, attr );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.getPersonAttribute( person, attr, true);
+         * promise.then(function(attributeList){
+         *     //attributeList 为返回该人员的属性值数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.getPersonAttribute( person, attr, function(attributeList){
+         *     //attributeList 为返回该人员的属性值数组。
+         * })
+         */
+        getPersonAttribute: function(person, attr, async){
+            getOrgActions();
+            var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
+            var data = {"name":attr,"person":personFlag};
+            var v = null;
+            var cb = function(json){
+                v = json.data.attributeList;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.getPersonAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
+        //列出人员所有属性的名称
+        /**
+         列出人员所有属性的名称数组。
+         * @method listPersonAttributeName
+         * @membercategory personAttribute
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {String[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员属性名称数组，
+         * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
+         * @example
+         * //同步执行，返回人员所有属性的名称数组。
+         * var attributeNameList = this.org.listPersonAttributeName( person );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listPersonAttributeName( person, true);
+         * promise.then(function(attributeNameList){
+         *     //attributeNameList 为人员所有属性的名称数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listPersonAttributeName( person, function(attributeNameList){
+         *     //attributeNameList 为人员所有属性的名称数组。
+         * })
+         */
+        listPersonAttributeName: function(name, async){
+            getOrgActions();
+            var data = {"personList":getNameFlag(name)};
+            var v = null;
+            var cb = function(json){
+                v = json.data.nameList;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonAttributeName(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
+        //列出人员的所有属性
+        /**
+         列出人员的所有属性对象数组。
+         * @method listPersonAllAttribute
+         * @membercategory personAttribute
+         * @methodOf module:org
+         * @static
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Object[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员属性对象数组，如：
+         * <pre><code class='language-js'>[{
+         *    "name": "住址",
+         *    "person": "张三@zhangsan@P",
+         *    "attributeList": [
+         *        "杭州市","绍兴市"
+         *    ]
+         * }]</code></pre>
+         * @example
+         * //同步执行，返回人员所有属性的对象数组。
+         * var attributeObjectList = this.org.listPersonAllAttribute( person );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listPersonAllAttribute( person, true);
+         * promise.then(function(attributeObjectList){
+         *     //attributeObjectList 为人员所有属性的对象数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listPersonAllAttribute( person, function(attributeObjectList){
+         *     //attributeObjectList 为人员所有属性的对象数组。
+         * })
+         */
+        listPersonAllAttribute: function(name, async){
+            getOrgActions();
+            var data = {"personList":getNameFlag(name)};
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listPersonAllAttribute(data, cb, null, !!async);
             return (!!async) ? promise : v;
         },
 
@@ -2946,6 +2948,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 你可以通过view对象，获取视图数据或选择视图数据。<br/>
      * @module view
+     * @ordernumber 70
      * @example
      * //您可以在流程表单、内容管理表单或门户页面中，通过this来获取view对象，如下：
      * var view = this.view;
@@ -3185,6 +3188,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 你可以通过statement对象，获取执行查询语句或者对查询结果进行选择。<br/>
      * @module statement
+     * @ordernumber 90
      * @example
      * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
      * var statement = this.statement;
@@ -3547,6 +3551,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 当查询设计中使用了select语句，并且配置了视图，可以在查询视图中使用本章API。<br/>
      * queryStatement对象在查询视图中可用。它的很多方法与queryView类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryStatement
+     * @ordernumber 80
      * @borrows module:queryView.confirm as confirm
      * @borrows module:queryView.alert as alert
      * @borrows module:queryView.notice as notice
@@ -3701,6 +3706,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * queryView对象可在视图中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryView
+     * @ordernumber 60
      * @example
      * //您可以在视图中，通过this来获取queryView对象，如下：
      * var queryView = this.queryView;
@@ -4437,6 +4443,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 在前端脚本中，可以通过this.session.user来获取当前用户信息。<br/>
      * @module session
+     * @ordernumber 110
      * @example
      * //获取当前用户信息
      * var user = this.session.user
@@ -4504,6 +4511,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 本文档说明如何在前台脚本中使用Actions调用平台的RESTful服务。<br/>
      * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
      * @module Actions
+     * @ordernumber 130
      * @example
      * //获取Actions
      * this.Actions
