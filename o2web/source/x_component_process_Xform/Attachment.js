@@ -1068,7 +1068,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 }
  */
 
-/** @class Actionbar 附件组件。
+/** @class Attachment 附件组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
