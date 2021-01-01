@@ -1184,7 +1184,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @summary 附件容器.
          * @member {MWF.xApplication.process.Xform.AttachmentController}
          * @example
-         * var attachmentController = this.form.get("fieldName").AttachmentController; //获取附件容器
+         * var attachmentController = this.form.get("fieldId").AttachmentController; //获取附件容器
          * var attachmentList = attachmentController.attachments; //获取所有的附件
          * var attachmentData = attachment[0].data; //获取第一个附件的数据
          */
@@ -1865,7 +1865,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
      * @summary 根据组件的校验设置进行校验。
      *  @param {String} [routeName] - 可选，路由名称.
      *  @example
-     *  if( !this.form.get('fieldName').validation() ){
+     *  if( !this.form.get('fieldId').validation() ){
      *      return false;
      *  }
      *  @return {Boolean} 是否通过校验

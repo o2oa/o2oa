@@ -1,6 +1,26 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 MWF.xDesktop.requireApp("process.Work", "lp."+o2.language, null, false);
-MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
+/** @class process.Opinion 意见输入框。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var field = this.form.get("fieldId"); //获取组件对象
+ * //方法2
+ * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
+ *
+ * var data = field.getData(); //获取值
+ * field.setData("字符串值"); //设置值
+ * field.hide(); //隐藏字段
+ * var id = field.json.id; //获取字段标识
+ * var flag = field.isEmpty(); //字段是否为空
+ * field.resetData();  //重置字段的值为默认值或置空
+ * @extends MWF.xApplication.process.Xform.$Input
+ * @category FormComponents
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Opinion# */
+    {
 	Implements: [Events],
 	Extends: MWF.APP$Input,
 	
@@ -119,6 +139,10 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         this.mediaActionArea = new Element("div", {"styles": this.form.css.inputOpinionMediaActionArea}).inject(this.node);
 
         if (this.json.isHandwriting!=="no"){
+            /**
+             * @summary 手写意见按钮按钮。
+             * @member {Element}
+             */
             this.handwritingAction = new Element("div", {"styles": this.form.css.inputOpinionHandwritingAction, "text": MWF.xApplication.process.Work.LP.handwriting}).inject(this.mediaActionArea);
             this.handwritingAction.addEvent("click", function(){
                 this.handwriting();
@@ -127,6 +151,10 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
 
         if (this.json.isAudio!=="no"){
             if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia){
+                /**
+                 * @summary 音频按钮.在浏览器支持HTML5的getUserMedia才可用。
+                 * @member {Element}
+                 */
                 this.audioRecordAction = new Element("div", {"styles": this.form.css.inputOpinionAudioRecordAction, "text": MWF.xApplication.process.Work.LP.audioRecord}).inject(this.mediaActionArea);
                 this.audioRecordAction.addEvent("click", function(){
                     this.audioRecord();
@@ -217,6 +245,10 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
 
         this.soundFile = {};
         MWF.require("MWF.widget.AudioRecorder", function () {
+            /**
+             * @summary 音频意见组件.
+             * @member {o2.widget.AudioRecorder}
+             */
             this.audioRecorder = new MWF.widget.AudioRecorder(this.audioRecordNode, {
                 "onSave" : function(audioFile){
                     this.soundFile[layout.session.user.distinguishedName] = audioFile;
@@ -281,6 +313,10 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         });
     },
     createHandwriting: function(){
+        /**
+         * @summary 手写板容器.
+         * @member {Element}
+         */
         this.handwritingNode = new Element("div", {"styles": this.form.css.handwritingNode}).inject(this.node, "after");
         var size = this.node.getSize();
         var x = Math.max( this.json.tabletWidth || size.x , 500);
@@ -308,6 +344,10 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
 
         this.handwritingFile = {};
         MWF.require("MWF.widget.Tablet", function () {
+            /**
+             * @summary 手写板组件.
+             * @member {o2.widget.Tablet}
+             */
             this.tablet = new MWF.widget.Tablet(this.handwritingAreaNode, {
                 "style": "default",
                 "contentWidth" : this.json.tabletWidth || 0,
