@@ -3,9 +3,9 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var attachment = this.form.get("name"); //获取组件
+ * var documenteditor = this.form.get("name"); //获取组件
  * //方法2
- * var attachment = this.target; //在组件事件脚本中获取
+ * var documenteditor = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @category FormComponents
  * @hideconstructor
@@ -63,7 +63,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     /**
      * 激活公文编辑器编辑。设置了延迟加载的时候，可以通过这个方法来激活
      * @example
-     * this.form.get("fieldName").active();
+     * this.form.get("fieldId").active();
     */
     active: function(){
         this._loadModuleEvents();
@@ -1714,7 +1714,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     /**缩放文件内容
      * @param scale{Number} 缩放的比率
      * @example
-     * this.form.get("fieldName").scaleTo(0.5);
+     * this.form.get("fieldId").scaleTo(0.5);
     */
     scaleTo: function(scale){
         this._returnScale();
@@ -2514,7 +2514,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     /**重新计算公文编辑器的所有字段，当字段是脚本时可以使用该方法立即更新
      * @summary 重新计算公文编辑器的所有字段
      * @example
-     * this.form.get("fieldName").reload();
+     * this.form.get("fieldId").reload();
      */
     reload: function(){
         this.resetData();
@@ -2542,7 +2542,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * @summary 判断公文编辑器的正文内容是否已经填写
      * @return {Boolean} 是否为空
      * @example
-     * if( this.form.get("fieldName").isEmpty() ){
+     * if( this.form.get("fieldId").isEmpty() ){
      *     this.form.notice('请填写正文内容')
      * }
      */
@@ -2555,7 +2555,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     * 获取公文编辑器数据
      * @return {Object} 公文编辑器的数据
      * @example
-     * var data = this.form.get("fieldName").getData();
+     * var data = this.form.get("fieldId").getData();
     */
     getData: function(){
         //if (this.editMode){
@@ -2643,9 +2643,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     /**设置公文编辑器数据
      * @param data{Object}
      * @example
-     * var data = this.form.get("fieldName").getData();
+     * var data = this.form.get("fieldId").getData();
      * data.filetext = "测试内容";
-     * this.form.get("fieldName").getData(data);
+     * this.form.get("fieldId").getData(data);
     */
     setData: function(data, diffFiletext){
         if (data){
@@ -2925,7 +2925,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * @summary 根据组件的校验设置进行校验。
      *  @param {String} [routeName] - 可选，路由名称.
      *  @example
-     *  if( !this.form.get('fieldName').validation() ){
+     *  if( !this.form.get('fieldId').validation() ){
      *      return false;
      *  }
      *  @return {Boolean} 是否通过校验
@@ -2964,7 +2964,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     /**将公文编辑器内容以html形式输出
      * @return {String}
      * @example
-     * var html = this.form.get("fieldName").getDocumentHtml();
+     * var html = this.form.get("fieldId").getDocumentHtml();
     */
     getDocumentHtml: function(){
         var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
@@ -2995,7 +2995,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * @param {Function} [callback] 转换后的回调方法，参数是附件数据.
      * @param {string} [name] - 如果为空或者不传，转换的文件名和格式等信息与配置有关.
      * @example
-     * this.form.get("fieldName").toWord( function(attachmentData){
+     * this.form.get("fieldId").toWord( function(attachmentData){
      *     //attachmentData 转换后的附件数据
      * })
     */

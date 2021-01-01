@@ -334,7 +334,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
     /**
      * @summary 允许编辑Office文档
      * @example
-     * this.form.get("fieldName").editEnabled();
+     * this.form.get("fieldId").editEnabled();
      */
     editEnabled: function(){
         try {
@@ -344,7 +344,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
     /**
      * @summary 设置Office文档为只读
      * @example
-     * this.form.get("fieldName").docReadonly();
+     * this.form.get("fieldId").docReadonly();
      */
     docReadonly: function(){
         this.protect(3);
@@ -352,7 +352,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
     /**
      * @summary 设置Office文档状态
      * @example
-     * this.form.get("fieldName").protect(1);
+     * this.form.get("fieldId").protect(1);
      * @param {Number} type 1(批注),2(填写窗体),3(只读),0(修订),-1(限制编辑样式)
      */
     protect: function(type){
@@ -1287,7 +1287,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         @summary Ntko Office 控件对象, 第三方控件
         @see {@link http://ieoffice.ntko.com/pro/show/mid/1_8/pid/2731|NTKO官网 }
          @example
-         var officeOCX = this.form.get("fieldName").officeOCX;
+         var officeOCX = this.form.get("fieldId").officeOCX;
          var activeDocument = officeOCX.ActiveDocument //返回一个Office Document 对象，该对象代表活动文档。
          */
         this.officeOCX = this.officeNode.getFirst().getFirst();
