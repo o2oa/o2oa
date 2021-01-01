@@ -343,7 +343,8 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                     if( this.isSelectedAll ){
                         // this.unselectAll(ev);
                         this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev, null, true) : this.unselectAll(ev, null, true);
-                        this.selector.fireEvent("unselectCatgory",[this])
+                        this.selector.fireEvent("unselectCatgory",[this]);
+                        this.selector.fireEvent("unselectCategory",[this])
                     }else{
                         // this.selectAll(ev);
                         if( this.selector.options.selectAllRange === "all" ){
@@ -352,7 +353,8 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                         }else{
                             this.selectAll(ev ,true)
                         }
-                        this.selector.fireEvent("selectCatgory",[this])
+                        this.selector.fireEvent("selectCatgory",[this]);
+                        this.selector.fireEvent("selectCategory",[this])
                     }
                     ev.stopPropagation();
                 }.bind(this));
@@ -614,10 +616,12 @@ MWF.xApplication.Selector.Unit.Item = new Class({
             this.selectAllNode.addEvent( "click", function(ev){
                 if( this.isSelectedAll ){
                     this.unselectAll(ev);
-                    this.selector.fireEvent("unselectCatgory",[this])
+                    this.selector.fireEvent("unselectCatgory",[this]);
+                    this.selector.fireEvent("unselectCategory",[this])
                 }else{
                     this.selectAll(ev);
-                    this.selector.fireEvent("selectCatgory",[this])
+                    this.selector.fireEvent("selectCatgory",[this]);
+                    this.selector.fireEvent("selectCategory",[this]);
                 }
                 ev.stopPropagation();
             }.bind(this));

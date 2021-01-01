@@ -1,9 +1,34 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
-MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
+/** @class process.Select 下拉选择组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var field = this.form.get("fieldId"); //获取组件对象
+ * //方法2
+ * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
+ *
+ * var data = field.getData(); //获取值
+ * field.setData("字符串值"); //设置值
+ * field.hide(); //隐藏字段
+ * var id = field.json.id; //获取字段标识
+ * var flag = field.isEmpty(); //字段是否为空
+ * field.resetData();  //重置字段的值为默认值或置空
+ * @extends MWF.xApplication.process.Xform.$Input
+ * @category FormComponents
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
+	/** @lends MWF.xApplication.process.Xform.Select# */
+	{
 	Implements: [Events],
 	Extends: MWF.APP$Input,
 	iconStyle: "selectIcon",
 
+	/**
+	 * @ignore
+	 * @member {Element} descriptionNode
+	 * @memberOf MWF.xApplication.process.Xform.Select#
+	 */
     initialize: function(node, json, form, options){
         this.node = $(node);
         this.node.store("module", this);
@@ -120,11 +145,22 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
         }.bind(this));
 
 	},
+	/**
+	 * @summary 刷新选择项，如果选择项是脚本，重新计算。
+	 * @example
+	 * this.form.get('fieldId').resetOption();
+	 */
     resetOption: function(){
         this.node.empty();
         this.setOptions();
 		this.fireEvent("resetOption")
     },
+	/**
+	 * @summary 获取选择项。
+	 * @return {Array} 返回选择项数组，如果使用选择项脚本，根据脚本返回决定
+	 * @example
+	 * this.form.get('fieldId').getOptions();
+	 */
 	getOptions: function(){
 		if (this.json.itemType == "values"){
 			return this.json.itemValues;
@@ -294,6 +330,17 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
     //     }
 	// 	//this.node.set("value", value);
 	// },
+
+	/**
+	 * @summary 获取选中项的value和text。
+	 * @return {Object} 返回选中项的value和text，如：
+	 * <pre><code class='language-js'>{"value": ["male"], "text": ["男"]}
+	 * {"value": [""], "text": [""]}
+	 * </code></pre>
+	 * @example
+	 * var data = this.form.get('fieldId').getTextData();
+	 * var text = data.text[0] //获取选中项的文本
+	 */
 	getTextData: function(){
 		var value = [];
 		var text = [];
@@ -341,6 +388,14 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 
         this.setData(this.getValue());
     },
+	/**
+	 * @summary 获取整理后的选择项。
+	 * @return {Object} 返回整理后的选择项，如：
+	 * <pre><code class='language-js'>{"value": ["","female","male"], "text": ["","女","男"]}
+	 * </code></pre>
+	 * @example
+	 * var optionData = this.form.get('fieldId').getOptionsObj();
+	 */
 	getOptionsObj : function(){
 		var textList = [];
 		var valueList = [];
