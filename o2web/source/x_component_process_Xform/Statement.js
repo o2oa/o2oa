@@ -1,8 +1,36 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //MWF.xDesktop.requireApp("process.Xform", "widget.View", null, false);
-MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class({
+/** @class Statement 查询视图组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var statement = this.form.get("fieldId"); //获取组件
+ * //方法2
+ * var statement = this.target; //在组件本身的脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @category FormComponents
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Statement# */
+{
 	Extends: MWF.APP$Module,
     options: {
+        /**
+         * 异步加载查询视图后完成。
+         * @event MWF.xApplication.process.Xform.Statement#loadView
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 选中查询视图中的一条记录后执行。
+         * @event MWF.xApplication.process.Xform.Statement#select
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 打开查询视图中的一条记录后执行。
+         * @event MWF.xApplication.process.Xform.Statement#openDocument
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["load", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
     },
 
@@ -15,6 +43,11 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class({
             this.loadView();
         }
     },
+    /**
+     * @summary 重新加载查询视图
+     * @example
+     * this.form.get("fieldId").reload()
+     */
     reload: function(){
         if (this.view){
             if (this.view.loadViewRes && this.view.loadViewRes.res) if (this.view.loadViewRes.res.isRunning()) this.view.loadViewRes.res.cancel();
@@ -23,6 +56,11 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class({
         this.node.empty();
         this.loadView();
     },
+    /**
+     * @summary 当查询视图被设置为延迟加载（未立即载入），通过active方法激活
+     * @example
+     * this.form.get("fieldId").active()
+     */
     active: function(){
         if (this.view){
             if (!this.view.loadingAreaNode) this.view.loadView();
@@ -61,6 +99,13 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class({
         };
 
         //MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
+        /**
+         * @summary Statement组件，平台使用该组件实现查询视图的功能
+         * @member {MWF.xApplication.query.Query.Statement}
+         * @example
+         *  //可以在脚本中获取该组件
+         * var view = this.form.get("fieldId").view; //获取组件对象
+         */
             this.view = new MWF.xApplication.query.Query.Statement(this.node, viewJson, {
                 "isload": (this.json.loadView!=="no"),
                 "resizeNode": (this.node.getStyle("height").toString().toLowerCase()!=="auto" && this.node.getStyle("height").toInt()>0),
@@ -81,7 +126,12 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class({
             }, this.form.app, this.form.Macro);
         //}.bind(this));
     },
-
+    /**
+     * @summary 获取查询视图被选中行的数据
+     * @return {Object[]} 被选中行的数据
+     * @example
+     * var data = this.form.get("fieldId").getData();
+     */
     getData: function(){
         if (this.view.selectedItems.length){
             var arr = [];

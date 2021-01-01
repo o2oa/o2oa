@@ -1,6 +1,19 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.require("MWF.widget.Tab", null, false);
-MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class({
+/** @class Tab 分页组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var tab = this.form.get("fieldId"); //获取组件
+ * //方法2
+ * var tab = this.target; //在组件本身的脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @category FormComponents
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Tab# */
+{
 	Extends: MWF.APP$Module,
 
 	_loadUserInterface: function(){
@@ -10,6 +23,21 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class({
         var style = "form";
         if (layout.mobile) style = "mobileForm";
 
+        /**
+         * @summary tab组件，平台使用该组件实现分页组件的功能
+         * @member {MWF.widget.Tab}
+         * @example
+         *  //可以在脚本中获取该组件
+         * var tab = this.form.get("fieldId").tab; //获取组件对象
+         * var pages = tab.pages //获取每个分页
+         * pages[1].addEvent("queryShow", function(){
+         *     //添加显示分页前事件
+         * })
+         * pages[1].addEvent("postShow", function(){
+         *     //添加显示分页后事件
+         * })
+         * pages[1]._showTab(); //显示第2个分页
+         */
 		this.tab = new MWF.widget.Tab(this.node, {"style": style});
 		
 		this._setTabWidgetStyles();
