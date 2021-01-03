@@ -130,6 +130,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 unitList: units,
                 recursiveUnit : !!this.options.expandSubEnable
             }, function (json) {
+                this.allIdentityData = json.data;
                 this._loadSelectItems(json.data)
             }.bind(this))
         }else{
@@ -579,7 +580,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
                         // if( !this.selector.isExcluded( subData ) ) {
                         var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level + 1, this);
                         this.subCategorys.push(category);
-                        category.loadSub()
+                        // category.loadSub()
                         // }
                     }.bind(this));
                 }
