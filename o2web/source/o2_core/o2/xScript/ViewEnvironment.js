@@ -158,7 +158,6 @@
 
 /**在本API的this.org模块中返回的群组数据
  *  @typedef {Object} GroupData
- *  @category org
  *  @example
  * {
  *   "name": "工作汇报读者", //群组名称
@@ -377,7 +376,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据进行增删改查操作。<br/>
      * 通过这种方式定义方法，在不同的应用使用相同的方法名称也不会造成冲突。
      * @module Dict
-     * @ordernumber 120
+     * @o2ordernumber 120
      * @param {(String|Object)} optionsOrName 数据字典标识字符串或者是对象。
      * <div>如果对本应用的数据字典操作，将optionsOrName设置为string。</div>
      * <pre><code class='language-js'>
@@ -866,7 +865,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 你可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。
      * @module org
-     * @ordernumber 100
+     * @o2ordernumber 100
      * @example
      * //您可以在流程表单、内容管理表单和门户页面中，通过this来获取当前实例的org对象，如下：
      * var org = this.org;
@@ -877,7 +876,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据身份标识获取对应的身份对象或数组
          * @method getIdentity
-         * @membercategory identity
+         * @o2membercategory identity
          * @methodOf module:org
          * @static
          * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
@@ -918,7 +917,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据人员标识获取对应的身份对象数组。
          * @method listIdentityWithPerson
-         * @membercategory identity
+         * @o2membercategory identity
          * @methodOf module:org
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
@@ -959,7 +958,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据组织标识获取对应的身份对象数组：identity对象数组。
          * @method listIdentityWithUnit
-         * @membercategory identity
+         * @o2membercategory identity
          * @methodOf module:org
          * @static
          * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
@@ -1022,7 +1021,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据组织标识获取对应的组织：unit对象或数组
          * @method getUnit
-         * @membercategory unit
+         * @o2membercategory unit
          * @methodOf module:org
          * @static
          * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
@@ -1064,7 +1063,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据组织标识获取下级组织的对象数组：unit对象数组。
          * @method listSubUnit
-         * @membercategory unit
+         * @o2membercategory unit
          * @methodOf module:org
          * @static
          * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
@@ -1112,7 +1111,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据组织标识批量获取上级组织的对象数组：unit对象数组。
          * @method listSupUnit
-         * @membercategory unit
+         * @o2membercategory unit
          * @methodOf module:org
          * @static
          * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
@@ -1178,7 +1177,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据个人身份获取组织：unit对象或数组。
          * @method getUnitByIdentity
-         * @membercategory unit
+         * @o2membercategory unit
          * @methodOf module:org
          * @static
          * @param {IdentityFlag} name - 身份的distinguishedName、name、id、unique属性值，身份对象。
@@ -1274,7 +1273,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 批量查询身份所在的组织,并递归查找其上级组织对象.
          * @method listAllSupUnitWithIdentity
-         * @membercategory unit
+         * @o2membercategory unit
          * @methodOf module:org
          * @static
          * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
@@ -1314,7 +1313,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据个人标识批量获取组织对象成员：Unit对象数组。
          * @method listUnitWithPerson
-         * @membercategory unit
+         * @o2membercategory unit
          * @methodOf module:org
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
@@ -1354,7 +1353,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据个人标识批量查询所在组织及所有上级组织：Unit对象数组。
          * @method listAllSupUnitWithPerson
-         * @membercategory unit
+         * @o2membercategory unit
          * @methodOf module:org
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
@@ -1394,7 +1393,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据组织属性，获取所有符合的组织。
          * @method listUnitWithAttribute
-         * @membercategory unit
+         * @o2membercategory unit
          * @methodOf module:org
          * @static
          * @param {String} attributeName 组织属性名称。
@@ -1435,7 +1434,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据组织职务，获取所有符合的组织。
          * @method listUnitWithDuty
-         * @membercategory unit
+         * @o2membercategory unit
          * @methodOf module:org
          * @static
          * @param {String} dutyName 组织职务名称。
@@ -1476,7 +1475,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 列式所有顶层组织。
          * @method listTopUnit
-         * @membercategory unit
+         * @o2membercategory unit
          * @methodOf module:org
          * @static
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
@@ -1516,7 +1515,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据人员标识获取对应的人员对象或数组：person对象或数组
          * @method getPerson
-         * @membercategory person
+         * @o2membercategory person
          * @methodOf module:org
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
@@ -1562,7 +1561,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据人员标识获取下级人员的对象数组：person对象数组。该上下级关系被人员的汇报对象值（superior）决定。
          * @method listSubPerson
-         * @membercategory person
+         * @o2membercategory person
          * @methodOf module:org
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
@@ -1610,7 +1609,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          *根据人员标识获取上级人员的对象数组：person对象数组。该上下级关系被人员的汇报对象值（superior）决定。
          * @method listSupPerson
-         * @membercategory person
+         * @o2membercategory person
          * @methodOf module:org
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
@@ -1656,7 +1655,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据群组标识获取人员对象成员：person对象数组。
          * @method listPersonWithGroup
-         * @membercategory person
+         * @o2membercategory person
          * @methodOf module:org
          * @static
          * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
@@ -1697,7 +1696,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据角色标识获取人员对象数组：person对象数组。
          * @method listPersonWithRole
-         * @membercategory person
+         * @o2membercategory person
          * @methodOf module:org
          * @static
          * @param {RoleFlag|RoleFlag[]} name - 角色的distinguishedName、name、id、unique属性值，角色对象，或上述属性值和对象的数组。
@@ -1738,7 +1737,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据身份标识获取人员对象成员：person对象数组。
          * @method listPersonWithIdentity
-         * @membercategory person
+         * @o2membercategory person
          * @methodOf module:org
          * @static
          * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
@@ -1794,7 +1793,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据组织标识获取人员对象成员：person对象数组。
          * @method listPersonWithUnit
-         * @membercategory person
+         * @o2membercategory person
          * @methodOf module:org
          * @static
          * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
@@ -1845,7 +1844,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据人员属性名称和属性值获取人员对象成员：person对象数组。
          * @method listPersonWithAttribute
-         * @membercategory person
+         * @o2membercategory person
          * @methodOf module:org
          * @static
          * @param {String} name 人员属性名称。
@@ -1904,7 +1903,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据职务名称和组织名称获取身份。
          * @method getDuty
-         * @membercategory duty
+         * @o2membercategory duty
          * @methodOf module:org
          * @static
          * @param {String} dutyName 组织职务名称。
@@ -1946,7 +1945,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 批量获取身份的所有职务名称。
          * @method listDutyNameWithIdentity
-         * @membercategory duty
+         * @o2membercategory duty
          * @methodOf module:org
          * @static
          * @param {IdentityFlag|IdentityFlag[]} identity - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
@@ -1986,7 +1985,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 批量获取组织的所有职务名称。
          * @method listDutyNameWithUnit
-         * @membercategory duty
+         * @o2membercategory duty
          * @methodOf module:org
          * @static
          * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
@@ -2026,7 +2025,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 批量获取组织的所有职务。
          * @method listUnitAllDuty
-         * @membercategory duty
+         * @o2membercategory duty
          * @methodOf module:org
          * @static
          * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
@@ -2087,7 +2086,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据群组标识获取对应的群组对象或数组：group对象或数组
          * @method getGroup
-         * @membercategory group
+         * @o2membercategory group
          * @methodOf module:org
          * @static
          * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
@@ -2135,7 +2134,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据群组标识获取下级群组的对象数组：group对象数组。
          * @method listSubGroup
-         * @membercategory group
+         * @o2membercategory group
          * @methodOf module:org
          * @static
          * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
@@ -2195,7 +2194,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据群组标识获取上级群组的对象数组：group对象数组。
          * @method listSupGroup
-         * @membercategory group
+         * @o2membercategory group
          * @methodOf module:org
          * @static
          * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
@@ -2249,7 +2248,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据人员标识获取所有的群组对象数组。如果群组具有群组（group）成员，且群组成员中包含该人员，那么该群组也被返回。
          * @method listGroupWithPerson
-         * @membercategory group
+         * @o2membercategory group
          * @methodOf module:org
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
@@ -2295,7 +2294,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据角色标识获取对应的角色对象或数组。
          * @method getRole
-         * @membercategory role
+         * @o2membercategory role
          * @methodOf module:org
          * @static
          * @param {RoleFlag|RoleFlag[]} name - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
@@ -2341,7 +2340,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 根据人员标识获取所有的角色对象数组。如果角色具有群组（group）成员，且群组中包含该人员，那么该角色也被返回。
          * @method listRoleWithPerson
-         * @membercategory role
+         * @o2membercategory role
          * @methodOf module:org
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
@@ -2387,7 +2386,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 人员是否拥有角色。
          * @method personHasRole
-         * @membercategory role
+         * @o2membercategory role
          * @methodOf module:org
          * @static
          * @param {PersonFlag} name - 人员的distinguishedName、name、id、unique属性值，人员对象。
@@ -2434,7 +2433,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 群组是否拥有角色。
          * @method groupHasRole
-         * @membercategory role
+         * @o2membercategory role
          * @methodOf module:org
          * @static
          * @param {GroupFlag} name - 群组的distinguishedName、name、id、unique属性值，群组对象。
@@ -2483,7 +2482,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)
          * @method appendPersonAttribute
-         * @membercategory personAttribute
+         * @o2membercategory personAttribute
          * @methodOf module:org
          * @static
          * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
@@ -2518,7 +2517,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
          * @method setPersonAttribute
-         * @membercategory personAttribute
+         * @o2membercategory personAttribute
          * @methodOf module:org
          * @static
          * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
@@ -2553,7 +2552,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据人员和属性名称获取属性值数组。
          * @method getPersonAttribute
-         * @membercategory personAttribute
+         * @o2membercategory personAttribute
          * @methodOf module:org
          * @static
          * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
@@ -2596,7 +2595,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          列出人员所有属性的名称数组。
          * @method listPersonAttributeName
-         * @membercategory personAttribute
+         * @o2membercategory personAttribute
          * @methodOf module:org
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
@@ -2637,7 +2636,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          列出人员的所有属性对象数组。
          * @method listPersonAllAttribute
-         * @membercategory personAttribute
+         * @o2membercategory personAttribute
          * @methodOf module:org
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
@@ -2686,7 +2685,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 添加组织属性值(在属性中添加values值，如果没有此属性，则创建一个)
          * @method appendUnitAttribute
-         * @membercategory unitAttribute
+         * @o2membercategory unitAttribute
          * @methodOf module:org
          * @static
          * @param {UnitFlag} unit - 组织的distinguishedName、name、id、unique属性值，组织对象。
@@ -2731,7 +2730,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          * 设置组织属性值(将属性值修改为values，如果没有此属性，则创建一个)
          * @method setUnitAttribute
-         * @membercategory unitAttribute
+         * @o2membercategory unitAttribute
          * @methodOf module:org
          * @static
          * @param {UnitFlag} unit - 组织的distinguishedName、name、id、unique属性值，组织对象。
@@ -2775,7 +2774,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          根据组织标识和属性名称获取对应属性值。
          * @method getUnitAttribute
-         * @membercategory unitAttribute
+         * @o2membercategory unitAttribute
          * @methodOf module:org
          * @static
          * @param {UnitFlag} unit - 组织的distinguishedName、name、id、unique属性值，组织对象。
@@ -2818,7 +2817,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          列出组织所有属性的名称数组。
          * @method listUnitAttributeName
-         * @membercategory unitAttribute
+         * @o2membercategory unitAttribute
          * @methodOf module:org
          * @static
          * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
@@ -2859,7 +2858,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         /**
          列出组织的所有属性对象数组。
          * @method listUnitAllAttribute
-         * @membercategory unitAttribute
+         * @o2membercategory unitAttribute
          * @methodOf module:org
          * @static
          * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
@@ -2948,7 +2947,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 你可以通过view对象，获取视图数据或选择视图数据。<br/>
      * @module view
-     * @ordernumber 70
+     * @o2ordernumber 70
      * @example
      * //您可以在流程表单、内容管理表单或门户页面中，通过this来获取view对象，如下：
      * var view = this.view;
@@ -3188,7 +3187,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 你可以通过statement对象，获取执行查询语句或者对查询结果进行选择。<br/>
      * @module statement
-     * @ordernumber 90
+     * @o2ordernumber 90
      * @example
      * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
      * var statement = this.statement;
@@ -3551,7 +3550,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 当查询设计中使用了select语句，并且配置了视图，可以在查询视图中使用本章API。<br/>
      * queryStatement对象在查询视图中可用。它的很多方法与queryView类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryStatement
-     * @ordernumber 80
+     * @o2range {QueryStatement}
+     * @o2ordernumber 80
      * @borrows module:queryView.confirm as confirm
      * @borrows module:queryView.alert as alert
      * @borrows module:queryView.notice as notice
@@ -3706,7 +3706,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * queryView对象可在视图中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryView
-     * @ordernumber 60
+     * @o2range {QueryView}
+     * @o2ordernumber 60
      * @example
      * //您可以在视图中，通过this来获取queryView对象，如下：
      * var queryView = this.queryView;
@@ -4443,7 +4444,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 在前端脚本中，可以通过this.session.user来获取当前用户信息。<br/>
      * @module session
-     * @ordernumber 110
+     * @o2ordernumber 110
      * @example
      * //获取当前用户信息
      * var user = this.session.user
@@ -4511,7 +4512,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 本文档说明如何在前台脚本中使用Actions调用平台的RESTful服务。<br/>
      * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
      * @module Actions
-     * @ordernumber 130
+     * @o2ordernumber 130
      * @example
      * //获取Actions
      * this.Actions
