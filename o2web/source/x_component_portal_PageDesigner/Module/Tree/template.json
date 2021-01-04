@@ -32,6 +32,38 @@
 		  "code": "",
 		  "html": ""
 		},
+		"beforeLoadTree": {
+			"code": "",
+			"html": ""
+		},
+		"afterLoadTree": {
+			"code": "",
+			"html": ""
+		},
+		"beforeLoadTreeNode": {
+			"code": "",
+			"html": ""
+		},
+		"afterLoadTreeNode": {
+			"code": "",
+			"html": ""
+		},
+		"expand": {
+			"code": "",
+			"html": ""
+		},
+		"collapse": {
+			"code": "",
+			"html": ""
+		},
+		"beforeSelect": {
+			"code": "",
+			"html": ""
+		},
+		"afterSelect": {
+			"code": "",
+			"html": ""
+		},
 		"click": {
 			"code": "",
 			"html": ""
