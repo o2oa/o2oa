@@ -483,6 +483,7 @@ MWF.xApplication.Attendance.UnitDetail.DetailStaticExplorer = new Class({
             "    <td styles='filterTableTitle' lable='cycleMonth'></td>"+
             "    <td styles='filterTableValue' item='cycleMonth'></td>" +
             "    <td styles='filterTableValue' item='action'></td>" +
+            "    <td styles='filterTableValue' item='export'></td>" +
             "</tr>" +
             "</table>";
         this.fileterNode.set("html",html);
@@ -519,7 +520,14 @@ MWF.xApplication.Attendance.UnitDetail.DetailStaticExplorer = new Class({
                             if( !result )return;
                             this.loadView( result );
                         }.bind(this)
-                    }}
+                    }},
+                    export : { "value" : "导出", type : "button", className : "filterButton", event : {
+                            click : function(){
+                                var result = this.form.getResult(true,",",true,true,false);
+                                if( !result )return;
+                                this.actions.exportUnitStatisticAttachment(result.q_unitName,result.cycleYear,result.cycleMonth,true);
+                            }.bind(this)
+                        }}
                 }
             }, this.app, this.css);
             this.form.load();
