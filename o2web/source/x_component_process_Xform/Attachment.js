@@ -1245,6 +1245,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         return (this.attachmentController) ? this.attachmentController.getAttachmentNames() : null;
     },
     createUploadFileNode: function () {
+        debugger;
         var accept = "*";
         if (!this.json.attachmentExtType || (this.json.attachmentExtType.indexOf("other") != -1 && !this.json.attachmentExtOtherType)) {
         } else {
@@ -1712,7 +1713,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 "length": att.data.length,
                 "extension": att.data.extension,
                 "lastUpdateTime": att.data.lastUpdateTime,
-                "activityName": att.data.activityName
+                "activityName": att.data.activityName,
+                "control" : att.data.control
             }
             data.push(o);
         });
