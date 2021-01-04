@@ -53,6 +53,40 @@ MWF.xAction.RestActions.Action["x_attendance_assemble_control"] = new Class({
             window.open(this.action.address+url , "_blank");
         }.bind(this));
     },
+    //个人出勤率导出
+    exportPersonStatisticAttachment: function(name,year, month, stream){
+        this.action.getActions(function(){
+            var url = this.action.actions.exportPersonStatisticAttachment.uri;
+            url = url.replace("{name}", name);
+            url = url.replace("{year}", year);
+            url = url.replace("{month}", month);
+            url = url.replace("{stream}", stream);
+            window.open(this.action.address+url , "_blank");
+        }.bind(this));
+    },
+    //部门出勤率导出
+    exportUnitStatisticAttachment: function(name,year, month, stream){
+        this.action.getActions(function(){
+            var url = this.action.actions.exportUnitStatisticAttachment.uri;
+            url = url.replace("{name}", name);
+            url = url.replace("{year}", year);
+            url = url.replace("{month}", month);
+            url = url.replace("{stream}", stream);
+            window.open(this.action.address+url , "_blank");
+        }.bind(this));
+    },
+    //公司出勤率导出
+    exportTopUnitStatisticAttachment: function(name,year, month, stream){
+        this.action.getActions(function(){
+            var url = this.action.actions.exportTopUnitStatisticAttachment.uri;
+            url = url.replace("{name}", name);
+            url = url.replace("{year}", year);
+            url = url.replace("{month}", month);
+            url = url.replace("{stream}", stream);
+            window.open(this.action.address+url , "_blank");
+        }.bind(this));
+    },
+
     listHolidayByYearAndName: function(year,name,success, failure, async){
         this.action.invoke({"name": "listHolidayFilter","data": {"q_Year": year, "q_Name" : name },"async": async, "success": success,	"failure": failure});
     },

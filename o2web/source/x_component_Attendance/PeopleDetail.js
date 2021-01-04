@@ -490,6 +490,7 @@ MWF.xApplication.Attendance.PeopleDetail.DetailStaticExplorer = new Class({
             "    <td styles='filterTableTitle' lable='cycleMonth'></td>"+
             "    <td styles='filterTableValue' item='cycleMonth'></td>" +
             "    <td styles='filterTableValue' item='action'></td>" +
+            "    <td styles='filterTableValue' item='export'></td>" +
             "</tr>" +
             "</table>";
         this.fileterNode.set("html",html);
@@ -526,7 +527,15 @@ MWF.xApplication.Attendance.PeopleDetail.DetailStaticExplorer = new Class({
                             if( !result )return;
                             this.loadView( result );
                         }.bind(this)
-                    }}
+                    }},
+                    export : { "value" : "导出", type : "button", className : "filterButton", event : {
+                            click : function(){
+                                var result = this.form.getResult(true,",",true,true,false);
+                                if( !result )return;
+                                debugger;
+                                this.actions.exportPersonStatisticAttachment(result.q_empName,result.cycleYear,result.cycleMonth,true);
+                            }.bind(this)
+                        }}
                 }
             }, this.app, this.css);
             this.form.load();
