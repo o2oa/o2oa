@@ -1,7 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class $Input 组件类，此类为所有输入组件的父类
  * @hideconstructor
- * @category FormComponents
+ * @o2category FormComponents
 * @extends MWF.xApplication.process.Xform.$Module
  * @abstract
  */

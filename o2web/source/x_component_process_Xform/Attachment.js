@@ -1076,7 +1076,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
  * //方法2
  * var attachment = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
- * @category FormComponents
+ * @o2category FormComponents
+ * @o2range {Process|CMS}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
