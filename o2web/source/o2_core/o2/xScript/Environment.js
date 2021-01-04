@@ -428,6 +428,7 @@ MWF.xScript.Environment = function(ev){
         /**
          * 当前流程实例正在流转中，并且当前用户有待办，则返回当前用户的待办对象，否则返回null。
          * @summary 获取当前流程与当前用户相关的待办对象：task对象。
+         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.get
          * @method getTask
          * @static
          * @return {(Task|Null)} 当前用户的待办任务对象：task。当前用户没有对此流程实例的待办时，或流程实例已经流转结束，返回null.
