@@ -7,7 +7,8 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * //方法2
  * var table = this.target; //在组件本身的脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
- * @category FormComponents
+ * @o2category FormComponents
+ * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
@@ -109,7 +110,7 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
  * //方法2
  * var td = this.target; //在组件本身的脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
- * @category FormComponents
+ * @o2category FormComponents
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Table$Td = MWF.APPTable$Td =  new Class({
