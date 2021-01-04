@@ -43,12 +43,15 @@ class ActionSearch extends BaseAction {
 
 		List<Wo> resWos = new ArrayList<>();
 		List<CompletableFuture<List<Wo>>> list = new ArrayList<>();
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.script.toString())){
-			if(wi.getAppIdList().isEmpty() || wi.getAppIdList().contains("invoke")) {
-				list.add(searchInvoke(wi));
+		Map<String, List<String>> designerMap = wi.getAppDesigner();
+		List<String> appList = wi.getAppIdList();
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.script.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.script.toString()))){
+			if(appList.isEmpty() || appList.contains("invoke")) {
+				list.add(searchInvoke(wi, designerMap.get(DesignerType.script.toString())));
 			}
-			if(wi.getAppIdList().isEmpty() || wi.getAppIdList().contains("agent")) {
-				list.add(searchAgent(wi));
+			if(appList.isEmpty() || appList.contains("agent")) {
+				list.add(searchAgent(wi, designerMap.get(DesignerType.script.toString())));
 			}
 		}
 		for (CompletableFuture<List<Wo>> cf : list){
@@ -64,11 +67,16 @@ class ActionSearch extends BaseAction {
 		return result;
 	}
 
-	private CompletableFuture<List<Wo>> searchAgent(final Wi wi) {
+	private CompletableFuture<List<Wo>> searchAgent(final Wi wi, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				List<WoAgent> woAgents = emc.fetchAll(Agent.class, WoAgent.copier);
+				List<WoAgent> woAgents;
+				if (ListTools.isNotEmpty(designerIdList)) {
+					woAgents = emc.fetchIn(Agent.class, WoAgent.copier, Agent.id_FIELDNAME, designerIdList);
+				} else {
+					woAgents = emc.fetchAll(Agent.class, WoAgent.copier);
+				}
 				for (WoAgent woAgent : woAgents) {
 					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoAgent.copier.getCopyFields(), woAgent, wi.getKeyword(),
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
@@ -93,11 +101,16 @@ class ActionSearch extends BaseAction {
 		return cf;
 	}
 
-	private CompletableFuture<List<Wo>> searchInvoke(final Wi wi) {
+	private CompletableFuture<List<Wo>> searchInvoke(final Wi wi, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				List<WoInvoke> woInvokes = emc.fetchAll(Invoke.class, WoInvoke.copier);
+				List<WoInvoke> woInvokes;
+				if (ListTools.isNotEmpty(designerIdList)) {
+					woInvokes = emc.fetchIn(Invoke.class, WoInvoke.copier, Invoke.id_FIELDNAME, designerIdList);
+				} else {
+					woInvokes = emc.fetchAll(Invoke.class, WoInvoke.copier);
+				}
 				for (WoInvoke woInvoke : woInvokes) {
 					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoInvoke.copier.getCopyFields(), woInvoke, wi.getKeyword(),
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
