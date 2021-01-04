@@ -10,7 +10,8 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * //方法2
  * var actionbar = this.target; //在操作条和操作本身的事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
- * @category FormComponents
+ * @o2category FormComponents
+ * @o2range {Process|CMS}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
