@@ -8,7 +8,8 @@ MWF.require("MWF.widget.UUID", null, false);
  * //方法2
  * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
  * @extends MWF.xApplication.process.Xform.$Input
- * @category FormComponents
+ * @o2category FormComponents
+ * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(

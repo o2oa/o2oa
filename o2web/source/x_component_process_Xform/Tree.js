@@ -35,7 +35,8 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * var datagrid = this.target; //在组件事件脚本中获取
  * @see {@link TreeData|树组件数据结构}
  * @extends MWF.xApplication.process.Xform.$Module
- * @category FormComponents
+ * @o2category FormComponents
+ * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Tree = MWF.APPTree =  new Class(

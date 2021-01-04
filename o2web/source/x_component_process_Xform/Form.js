@@ -6,7 +6,8 @@ MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
 //MWF.xDesktop.requireApp("process.Xform", "Package", null, false);
 
 /** @class Form 流程表单。
- * @category FormComponents
+ * @o2category FormComponents
+ * @o2range {Process}
  * @example
  * //可以在脚本中获取表单
  * //方法1：

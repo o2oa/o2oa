@@ -8,7 +8,8 @@ MWF.xDesktop.requireApp("process.Xform", "ViewSelector", null, false);
  * //方法2
  * var statementSelector = this.target; //在组件本身的脚本中获取
  * @extends MWF.xApplication.process.Xform.ViewSelector
- * @category FormComponents
+ * @o2category FormComponents
+ * @o2range {Process|CMS}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  new Class({

@@ -18,6 +18,7 @@
     "source": {
         "include": [ //需要抽取文档的源文件夹
             "./o2web/source/x_component_process_Xform",
+            "./o2web/source/x_component_cms_Xform",
             "./o2web/source/o2_core/o2/xScript"
         ],
         "includePattern": ".+\\.js(doc|x)?$", //抽取的源文件名称正则表达式

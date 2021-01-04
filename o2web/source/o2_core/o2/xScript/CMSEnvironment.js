@@ -64,7 +64,8 @@ MWF.xScript.CMSEnvironment = function(ev){
     /**
      * 你可以通过documentContext获取内容管理实例相关的对象数据。
      * @module documentContext
-     * @ordernumber 30
+     * @o2range {CMS}
+     * @o2ordernumber 30
      * @example
      * //您可以在内容管理表单中，通过this来获取当前实例的documentContext对象，如下：
      * var context = this.documentContext;
