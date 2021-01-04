@@ -7,7 +7,8 @@ MWF.xDesktop.requireApp("process.Xform", "Textfield", null, false);
  * //方法2
  * var field = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.Textfield
- * @category FormComponents
+ * @o2category FormComponents
+ * @o2range {Process|CMS}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({

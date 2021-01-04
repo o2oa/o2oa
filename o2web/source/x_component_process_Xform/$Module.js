@@ -1,7 +1,7 @@
 MWF.require("MWF.widget.Common", null, false);
 /** @classdesc $Module 组件类，此类为所有组件的父类。
  * @class
- * @category FormComponents
+ * @o2category FormComponents
  * @hideconstructor
  * */
 MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
