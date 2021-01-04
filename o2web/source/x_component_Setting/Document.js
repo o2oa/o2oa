@@ -729,6 +729,12 @@ MWF.xApplication.Setting.Document.List.ItemEditor = new Class({
                 }else{
                     values[k] = value;
                 }
+                if(k === "proxyHost"){
+                    if(value.indexOf("http")>-1){
+                        flag = false;
+                        this.app.notice(this.lp.list.infoProxyHost, "error");
+                    }
+                }
             }
         }.bind(this));
 
