@@ -8,7 +8,8 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * //方法2
  * var sidebar = this.target; //在侧边操作条和操作本身的事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
- * @category FormComponents
+ * @o2category FormComponents
+ * @o2range {Process}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
