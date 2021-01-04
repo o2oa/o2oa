@@ -9,7 +9,8 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * //方法2
  * var stat = this.target; //在组件本身的脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
- * @category FormComponents
+ * @o2category FormComponents
+ * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Stat = MWF.APPStat =  new Class(

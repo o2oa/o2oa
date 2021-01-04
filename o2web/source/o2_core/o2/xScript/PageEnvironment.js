@@ -1427,7 +1427,8 @@ MWF.xScript.PageEnvironment = function (ev) {
     /**
      * page对象可在门户页面中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
      * @module page
-     * @ordernumber 50
+     * @o2range {Portal}
+     * @o2ordernumber 50
      * @example
      * //您可以在门户表单中，通过this来获取page对象，如下：
      * var page = this.page;
