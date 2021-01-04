@@ -267,7 +267,9 @@ MWF.xApplication.Setting.LP = {
         "infoParameter": "请求信息方法参数",
         "infoMethod": "请求信息方法（GET或POST）",
         "infoType": "info信息格式（json或form）",
-        "infoCredentialField": "info信息中用于标识个人的字段"
+        "infoCredentialField": "info信息中用于标识个人的字段",
+
+        "infoProxyHost" : "域名不需要包含http"
     },
 
     "module": {
