@@ -382,26 +382,39 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			"listProcessProcess": o2.filterUrl(processHost+"/x_processplatform_assemble_designer/jaxrs/process/application/{applicationId}"),
 			"listProcessForm": o2.filterUrl(processHost+"/x_processplatform_assemble_designer/jaxrs/form/list/application/{applicationId}"),
 			"listProcessScript": o2.filterUrl(processHost+"/x_processplatform_assemble_designer/jaxrs/script/application/{applicationId}"),
+			"getProcessProcess": o2.filterUrl(processHost+"/x_processplatform_assemble_designer/jaxrs/process/{id}"),
+			"getProcessForm": o2.filterUrl(processHost+"/x_processplatform_assemble_designer/jaxrs/form/{id}"),
+			"getProcessScript": o2.filterUrl(processHost+"/x_processplatform_assemble_designer/jaxrs/script/{id}"),
 
 			"listCms": o2.filterUrl(cmsHost+"/x_cms_assemble_control/jaxrs/appinfo/list/manage"),
 			"listCmsForm": o2.filterUrl(cmsHost+"/x_cms_assemble_control/jaxrs/form/list/app/{appId}"),
 			"listCmsScript": o2.filterUrl(cmsHost+"/x_cms_assemble_control/jaxrs/script/list/app/{flag}"),
+			"getCmsForm": o2.filterUrl(cmsHost+"/x_cms_assemble_control/jaxrs/form/{id}"),
+			"getCmsScript": o2.filterUrl(cmsHost+"/x_cms_assemble_control/jaxrs/script/{id}"),
 
 			"listPortal": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/portal/list"),
 			"listPortalPage": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/page/list/portal/{portalId}"),
 			"listPortalScript": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/script/list/portal/{portalId}"),
 			"listPortalWidget": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/widget/list/portal/{portalId}"),
+			"getPortalPage": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/page/{id}"),
+			"getPortalScript": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/script/{id}"),
+			"getPortalWidget": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/widget/{id}"),
 
 			"listQuery": o2.filterUrl(queryHost+"/x_query_assemble_designer/jaxrs/query/list/summary"),
 			"listQueryView": o2.filterUrl(portalHost+"/x_query_assemble_designer/jaxrs/view/list/query/{flag}"),
 			"listQueryStat": o2.filterUrl(portalHost+"/x_query_assemble_designer/jaxrs/stat/list/query/{flag}"),
 			"listQueryStatement": o2.filterUrl(portalHost+"/x_query_assemble_designer/jaxrs/statement/list/query/{flag}"),
+			"getQueryView": o2.filterUrl(portalHost+"/x_query_assemble_designer/jaxrs/view/{id}"),
+			"getQueryStat": o2.filterUrl(portalHost+"/x_query_assemble_designer/jaxrs/stat/{id}"),
+			"getQueryStatement": o2.filterUrl(portalHost+"/x_query_assemble_designer/jaxrs/statement/{id}"),
 
 			"listInvoke": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/invoke"),
 			"listAgent": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/agent"),
+			"getInvoke": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/invoke/{flag}"),
+			"getAgent": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/agent/{flag}"),
 
 			"findAction": o2.filterUrl(findHost+"/x_query_service_processing/jaxrs/design/search")
-		}
+		};
 		return actions;
 	},
 
