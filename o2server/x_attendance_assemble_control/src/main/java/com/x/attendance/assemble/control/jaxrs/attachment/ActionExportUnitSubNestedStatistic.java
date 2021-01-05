@@ -98,7 +98,11 @@ public class ActionExportUnitSubNestedStatistic extends BaseAction {
 			
 			// 将结果组织成EXCEL		
 			if( check ) {
-				fileName = "" + name + "的部门出勤率统计记录_"+year+"年"+month+"月.xls";
+				if(StringUtils.isNotEmpty(name) && StringUtils.contains(name,"@")){
+					fileName = "" + name.split("@")[0] + "的部门出勤率统计记录_"+year+"年"+month+"月.xls";
+				}else{
+					fileName = "" + name + "的部门出勤率统计记录_"+year+"年"+month+"月.xls";
+				}
 				sheetName = "部门出勤率统计记录";
 				wb = composeDetail( fileName, sheetName, statisticPersonForMonth_list );
 			}
