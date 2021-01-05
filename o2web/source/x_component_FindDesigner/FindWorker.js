@@ -301,6 +301,18 @@ _worker._createFindMessageReplyData = function(designer, pattern){
     }
 };
 
+_worker._setFilterOptionRegex = function(){
+    var keyword = _worker.findData.filterOption.keyword;
+    if (_worker.findData.filterOption.matchRegExp){
+        var flag = (_worker.findData.filterOption.caseSensitive) ? "g" : "gi";
+        this.keywordRegexp =  new RegExp(keyword, flag);
+    }else{
+        var flag = (_worker.findData.filterOption.caseSensitive) ? "g" : "gi";
+        keyword = (_worker.findData.filterOption.matchWholeWord) ? "\\b"+keyword+"\\b";
+        this.keywordRegexp = new RegExp(keyword, flag);
+    }
+};
+
 _worker._findProcessPlatformParse_script = function(designer){
     if (designer.patternList && designer.patternList.length){
         var action = this.findData.actions.getProcessScript;
@@ -311,7 +323,18 @@ _worker._findProcessPlatformParse_script = function(designer){
                     var scriptLines = json.data.text.split(/\s*\n\s*/);
                     pattern.lines.each(function(line){
                         var scriptText = scriptLines[line-1];
-
+                        while ((arr = this.keywordRegexp.exec(scriptText)) !== null) {
+                            var col = arr.index;
+                            var key = arr[0];
+                            var value = arr.input;
+                            _worker._findMessageReply(_worker._createFindMessageReplyData(designer, {
+                                "property": pattern.property,
+                                "value": value,
+                                "line": line,
+                                "column": col,
+                                "key": key
+                            }));
+                        }
                     });
                 }else{
                     _worker._findMessageReply(_worker._createFindMessageReplyData(designer, {
@@ -388,6 +411,7 @@ onmessage = function(e) {
     this.findData = e.data;
     var moduleList = this.findData.filterOption.moduleList;
     this.findData.filterOption.moduleList = [];
+    _worker._setFilterOptionRegex();
 
     this.filterOptionTemplete = JSON.stringify(this.findData.filterOption);
     this.filterOptionList = [];

@@ -351,9 +351,49 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			if (e.data && e.data.type=="find") this.doFindResult(e.data);
 		}.bind(this);
 	},
-	doFindResult: function(){
+	doFindResult: function(data){
 		this.findOptionModuleProcessed++;
 		this.updateFindProgress();
+		this.showFindResult(data);
+	},
+
+	getResultTree: function(){
+
+	},
+
+	showFindResult: function(){
+
+		o2.require("o2.widget.Tree", function(){
+			var tree = new o2.widget.Tree(this.listContentNode, {
+				"onQueryExpand": function(item){
+					if (item.designer) this.loadDesignerPattern(item);
+				}.bind(this)
+			});
+			tree.load();
+			if (data.processPlatformList && data.processPlatformList.length){
+				var platformItem = this.createResultCategroyItem(this.lp.processPlatform, this.lp.processPlatform, tree);
+				this.listProcessResult(platformItem, data.processPlatformList, "processPlatform");
+			}
+			if (data.cmsList && data.cmsList.length){
+				var platformItem = this.createResultCategroyItem(this.lp.cms, this.lp.cms, tree);
+				//this.listProcessResult(categroyItem, data.cmsList);
+			}
+			if (data.portalList && data.portalList.length){
+				var platformItem = this.createResultCategroyItem(this.lp.portal, this.lp.portal, tree);
+
+			}
+			if (data.queryList && data.queryList.length){
+				var platformItem = this.createResultCategroyItem(this.lp.query, this.lp.query, tree);
+			}
+			if (data.serviceList && data.serviceList.length){
+				var platformItem = this.createResultCategroyItem(this.lp.service, this.lp.service, tree);
+			}
+
+
+		}.bind(this));
+	},
+
+
 	},
 	setReceiveMessage: function(){
 		this.listTitleInfoNode.set("text", this.lp.receiveToFind);
@@ -427,7 +467,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			filterOption: this.filterOption,
 			debug: (window.layout && layout["debugger"]),
 			token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : ""
-		}
+		};
 		this.findWorker.postMessage(workerMessage);
 	},
 
