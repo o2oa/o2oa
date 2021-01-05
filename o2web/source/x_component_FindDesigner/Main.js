@@ -357,40 +357,25 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		this.showFindResult(data);
 	},
 
-	getResultTree: function(){
-
+	getResultTree: function(callback){
+		if (!this.tree){
+			o2.require("o2.widget.Tree", function(){
+				this.tree = new o2.widget.Tree(this.listContentNode, {
+					// "onQueryExpand": function(item){
+					// 	if (item.designer) this.loadDesignerPattern(item);
+					// }.bind(this)
+				});
+				this.tree.load();
+				if (callback) callback();
+			}.bind(this));
+		}else{
+			if (callback) callback();
+		}
 	},
 
 	showFindResult: function(){
 
-		o2.require("o2.widget.Tree", function(){
-			var tree = new o2.widget.Tree(this.listContentNode, {
-				"onQueryExpand": function(item){
-					if (item.designer) this.loadDesignerPattern(item);
-				}.bind(this)
-			});
-			tree.load();
-			if (data.processPlatformList && data.processPlatformList.length){
-				var platformItem = this.createResultCategroyItem(this.lp.processPlatform, this.lp.processPlatform, tree);
-				this.listProcessResult(platformItem, data.processPlatformList, "processPlatform");
-			}
-			if (data.cmsList && data.cmsList.length){
-				var platformItem = this.createResultCategroyItem(this.lp.cms, this.lp.cms, tree);
-				//this.listProcessResult(categroyItem, data.cmsList);
-			}
-			if (data.portalList && data.portalList.length){
-				var platformItem = this.createResultCategroyItem(this.lp.portal, this.lp.portal, tree);
 
-			}
-			if (data.queryList && data.queryList.length){
-				var platformItem = this.createResultCategroyItem(this.lp.query, this.lp.query, tree);
-			}
-			if (data.serviceList && data.serviceList.length){
-				var platformItem = this.createResultCategroyItem(this.lp.service, this.lp.service, tree);
-			}
-
-
-		}.bind(this));
 	},
 
 
