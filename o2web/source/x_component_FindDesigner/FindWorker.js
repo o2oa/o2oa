@@ -77,7 +77,7 @@ _worker.action = _action;
 
 _worker._receiveMessageReply = function(){
     _worker.postMessage({
-        "type": "receive",
+        "type": "receive"
     });
 };
 _worker._readyMessageReply = function(){
@@ -109,7 +109,7 @@ _worker._createFilterOption = function(moduleType, appId, desingerType, desinger
     var filterOption = JSON.parse(_worker.filterOptionTemplete);
     filterOption.moduleList.push({
         "moduleType": moduleType,
-        "flagList": [{"id": appId, "designerList": [{"desingerType": desingerType, "id": desingerId}]}]
+        "moduleAppList": [{"appId": appId, "designerList": [{"desingerType": desingerType, "designerIdList": desingerId}]}]
     });
     this.filterOptionList.push(filterOption);
     return filterOption;
@@ -285,6 +285,36 @@ _worker._findMessageReply = function(data){
         "data": data
     });
 };
+
+_worker._findProcessPlatformParse_script = function(designer){
+    var action = this.findData.actions.findAction
+};
+
+_worker._findProcessPlatformParse_form = function(designer){
+
+};
+
+_worker._findProcessPlatformParse_process = function(designer){
+
+};
+
+_worker._findProcessPlatformParse = function(resultList){
+    resultList.each(function(designer){
+        switch (designer.designerType){
+            case "script":
+                _worker._findProcessPlatformParse_script(designer);
+                break;
+            case "form":
+                _worker._findProcessPlatformParse_form(designer);
+                break;
+            case "process":
+                _worker._findProcessPlatformParse_process(designer);
+                break;
+        }
+    });
+};
+
+
 _worker._doFindDesigner = function(option){
     var res = _worker._getRequestOption({
         "method": "post",
@@ -294,8 +324,21 @@ _worker._doFindDesigner = function(option){
         "token": this.findData.token
     });
     this.action.sendRequest(res).then(function(json){
-        json.data.processPlatformList
+        if (json.data.processPlatformList && json.data.processPlatformList.length){
 
+        }
+        if (json.data.cmsList && json.data.cmsList.length){
+
+        }
+        if (json.data.portalList && json.data.portalList.length){
+
+        }
+        if (json.data.queryList && json.data.queryList.length){
+
+        }
+        if (json.data.serviceList && json.data.serviceList.length){
+
+        }
         _worker._findMessageReply({"option": option, "data": json.data});
     }, function(xhr){
         _worker._findMessageReply({"option": option, "data": null});
