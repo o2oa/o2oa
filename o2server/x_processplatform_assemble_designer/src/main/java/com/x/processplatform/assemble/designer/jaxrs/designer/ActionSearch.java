@@ -47,14 +47,19 @@ class ActionSearch extends BaseAction {
 
 		List<Wo> resWos = new ArrayList<>();
 		List<CompletableFuture<List<Wo>>> list = new ArrayList<>();
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.form.toString())){
-			list.add(searchForm(wi, wi.getAppIdList()));
+		Map<String, List<String>> designerMap = wi.getAppDesigner();
+		List<String> appList = wi.getAppIdList();
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.form.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.form.toString()))){
+			list.add(searchForm(wi, appList, designerMap.get(DesignerType.form.toString())));
 		}
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.script.toString())){
-			list.add(searchScript(wi, wi.getAppIdList()));
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.script.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.script.toString()))){
+			list.add(searchScript(wi, appList, designerMap.get(DesignerType.script.toString())));
 		}
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.process.toString())){
-			resWos.addAll(searchProcess(wi, wi.getAppIdList()));
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.process.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.process.toString()))){
+			resWos.addAll(searchProcess(wi, appList, designerMap.get(DesignerType.process.toString())));
 		}
 		for (CompletableFuture<List<Wo>> cf : list){
 			if(resWos.size()<50) {
@@ -69,15 +74,17 @@ class ActionSearch extends BaseAction {
 		return result;
 	}
 
-	private CompletableFuture<List<Wo>> searchScript(final Wi wi, final List<String> appIdList) {
+	private CompletableFuture<List<Wo>> searchScript(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<WoScript> woScripts;
-				if (ListTools.isEmpty(appIdList)) {
-					woScripts = emc.fetchAll(Script.class, WoScript.copier);
-				} else {
+				if (ListTools.isNotEmpty(designerIdList)) {
+					woScripts = emc.fetchIn(Script.class, WoScript.copier, Script.id_FIELDNAME, designerIdList);
+				}else if (ListTools.isNotEmpty(appIdList)) {
 					woScripts = emc.fetchIn(Script.class, WoScript.copier, Script.application_FIELDNAME, appIdList);
+				} else {
+					woScripts = emc.fetchAll(Script.class, WoScript.copier);
 				}
 				for (WoScript woScript : woScripts) {
 					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoScript.copier.getCopyFields(), woScript, wi.getKeyword(),
@@ -106,12 +113,15 @@ class ActionSearch extends BaseAction {
 		return cf;
 	}
 
-	private CompletableFuture<List<Wo>> searchForm(final Wi wi, final List<String> appIdList) {
+	private CompletableFuture<List<Wo>> searchForm(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				List<String> formIds = business.form().listWithApplications(appIdList);
+				List<String> formIds = designerIdList;
+				if(ListTools.isEmpty(formIds)) {
+					formIds = business.form().listWithApplications(appIdList);
+				}
 				for (List<String> partFormIds : ListTools.batch(formIds, 100)) {
 					List<WoForm> woForms = emc.fetchIn(Form.class, WoForm.copier, Form.id_FIELDNAME, partFormIds);
 					for (WoForm woForm : woForms) {
@@ -143,12 +153,14 @@ class ActionSearch extends BaseAction {
 		return cf;
 	}
 
-	private List<Wo> searchProcess(final Wi wi, final List<String> appIdList) {
-
+	private List<Wo> searchProcess(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
 		List<List<String>> batchList = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			List<String> processIds = business.process().listWithApplications(appIdList);
+			List<String> processIds = designerIdList;
+			if(ListTools.isEmpty(processIds)) {
+				Business business = new Business(emc);
+				processIds = business.process().listWithApplications(appIdList);
+			}
 			batchList = ListTools.batch(processIds, 20);
 		}catch (Exception e){
 			logger.error(e);
