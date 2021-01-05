@@ -46,14 +46,19 @@ class ActionSearch extends BaseAction {
 
 		List<Wo> resWos = new ArrayList<>();
 		List<CompletableFuture<List<Wo>>> list = new ArrayList<>();
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.form.toString())){
-			list.add(searchPage(wi, wi.getAppIdList()));
+		Map<String, List<String>> designerMap = wi.getAppDesigner();
+		List<String> appList = wi.getAppIdList();
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.page.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.page.toString()))){
+			list.add(searchPage(wi, appList, designerMap.get(DesignerType.page.toString())));
 		}
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.script.toString())){
-			list.add(searchScript(wi, wi.getAppIdList()));
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.script.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.script.toString()))){
+			list.add(searchScript(wi, appList, designerMap.get(DesignerType.script.toString())));
 		}
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.widget.toString())){
-			list.add(searchWidget(wi, wi.getAppIdList()));
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.widget.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.widget.toString()))){
+			list.add(searchWidget(wi, appList, designerMap.get(DesignerType.widget.toString())));
 		}
 		for (CompletableFuture<List<Wo>> cf : list){
 			if(resWos.size()<50) {
@@ -68,15 +73,17 @@ class ActionSearch extends BaseAction {
 		return result;
 	}
 
-	private CompletableFuture<List<Wo>> searchScript(final Wi wi, final List<String> appIdList) {
+	private CompletableFuture<List<Wo>> searchScript(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<WoScript> woScripts;
-				if (ListTools.isEmpty(appIdList)) {
-					woScripts = emc.fetchAll(Script.class, WoScript.copier);
-				} else {
+				if (ListTools.isNotEmpty(designerIdList)) {
+					woScripts = emc.fetchIn(Script.class, WoScript.copier, Script.id_FIELDNAME, designerIdList);
+				}else if (ListTools.isNotEmpty(appIdList)) {
 					woScripts = emc.fetchIn(Script.class, WoScript.copier, Script.portal_FIELDNAME, appIdList);
+				} else {
+					woScripts = emc.fetchAll(Script.class, WoScript.copier);
 				}
 
 				for (WoScript woScript : woScripts) {
@@ -106,12 +113,15 @@ class ActionSearch extends BaseAction {
 		return cf;
 	}
 
-	private CompletableFuture<List<Wo>> searchPage(final Wi wi, final List<String> appIdList) {
+	private CompletableFuture<List<Wo>> searchPage(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				List<String> ids = business.page().listWithPortals(appIdList);
+				List<String> ids = designerIdList;
+				if(ListTools.isEmpty(ids)) {
+					ids = business.page().listWithPortals(appIdList);
+				}
 				for (List<String> partIds : ListTools.batch(ids, 100)) {
 					List<WoPage> wos = emc.fetchIn(Page.class, WoPage.copier, Page.id_FIELDNAME, partIds);
 					for (WoPage wopage : wos) {
@@ -143,12 +153,15 @@ class ActionSearch extends BaseAction {
 		return cf;
 	}
 
-	private CompletableFuture<List<Wo>> searchWidget(final Wi wi, final List<String> appIdList) {
+	private CompletableFuture<List<Wo>> searchWidget(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				List<String> ids = business.widget().listWithPortals(appIdList);
+				List<String> ids = designerIdList;
+				if(ListTools.isEmpty(ids)) {
+					ids = business.widget().listWithPortals(appIdList);
+				}
 				for (List<String> partIds : ListTools.batch(ids, 100)) {
 					List<WoWidget> wos = emc.fetchIn(Widget.class, WoWidget.copier, WoWidget.id_FIELDNAME, partIds);
 					for (WoWidget woWidget : wos) {

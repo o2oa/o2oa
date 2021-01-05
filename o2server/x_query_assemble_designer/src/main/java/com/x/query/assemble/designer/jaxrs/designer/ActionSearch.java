@@ -46,18 +46,26 @@ class ActionSearch extends BaseAction {
 
 		List<Wo> resWos = new ArrayList<>();
 		List<CompletableFuture<List<Wo>>> list = new ArrayList<>();
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.view.toString())){
-			list.add(searchView(wi, wi.getAppIdList()));
+		Map<String, List<String>> designerMap = wi.getAppDesigner();
+		List<String> appList = wi.getAppIdList();
+
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.view.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.view.toString()))){
+			list.add(searchView(wi, appList, designerMap.get(DesignerType.view.toString())));
 		}
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.table.toString())){
-			list.add(searchTable(wi, wi.getAppIdList()));
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.table.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.table.toString()))){
+			list.add(searchTable(wi, appList, designerMap.get(DesignerType.table.toString())));
 		}
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.statement.toString())){
-			list.add(searchStatement(wi, wi.getAppIdList()));
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.statement.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.statement.toString()))){
+			list.add(searchStatement(wi, appList, designerMap.get(DesignerType.statement.toString())));
 		}
-		if (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.stat.toString())){
-			list.add(searchStat(wi, wi.getAppIdList()));
+		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.stat.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.stat.toString()))){
+			list.add(searchStat(wi, appList, designerMap.get(DesignerType.stat.toString())));
 		}
+
 		for (CompletableFuture<List<Wo>> cf : list){
 			if(resWos.size()<50) {
 				resWos.addAll(cf.get(60, TimeUnit.SECONDS));
@@ -71,15 +79,17 @@ class ActionSearch extends BaseAction {
 		return result;
 	}
 
-	private CompletableFuture<List<Wo>> searchView(final Wi wi, final List<String> appIdList) {
+	private CompletableFuture<List<Wo>> searchView(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<WoView> woViews;
-				if (ListTools.isEmpty(appIdList)) {
-					woViews = emc.fetchAll(View.class, WoView.copier);
-				} else {
+				if (ListTools.isNotEmpty(designerIdList)) {
+					woViews = emc.fetchIn(View.class, WoView.copier, View.id_FIELDNAME, designerIdList);
+				}else if (ListTools.isNotEmpty(appIdList)) {
 					woViews = emc.fetchIn(View.class, WoView.copier, View.query_FIELDNAME, appIdList);
+				} else {
+					woViews = emc.fetchAll(View.class, WoView.copier);
 				}
 				for (WoView woView : woViews) {
 					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoView.copier.getCopyFields(), woView, wi.getKeyword(),
@@ -108,15 +118,17 @@ class ActionSearch extends BaseAction {
 		return cf;
 	}
 
-	private CompletableFuture<List<Wo>> searchTable(final Wi wi, final List<String> appIdList) {
+	private CompletableFuture<List<Wo>> searchTable(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<WoTable> woTables;
-				if (ListTools.isEmpty(appIdList)) {
-					woTables = emc.fetchAll(Table.class, WoTable.copier);
-				} else {
+				if (ListTools.isNotEmpty(designerIdList)) {
+					woTables = emc.fetchIn(Table.class, WoTable.copier, Table.id_FIELDNAME, designerIdList);
+				}else if (ListTools.isNotEmpty(appIdList)) {
 					woTables = emc.fetchIn(Table.class, WoTable.copier, Table.query_FIELDNAME, appIdList);
+				} else {
+					woTables = emc.fetchAll(Table.class, WoTable.copier);
 				}
 				for (WoTable woTable : woTables) {
 					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoTable.copier.getCopyFields(), woTable, wi.getKeyword(),
@@ -145,15 +157,17 @@ class ActionSearch extends BaseAction {
 		return cf;
 	}
 
-	private CompletableFuture<List<Wo>> searchStat(final Wi wi, final List<String> appIdList) {
+	private CompletableFuture<List<Wo>> searchStat(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<WoStat> woStats;
-				if (ListTools.isEmpty(appIdList)) {
-					woStats = emc.fetchAll(Stat.class, WoStat.copier);
-				} else {
+				if (ListTools.isNotEmpty(designerIdList)) {
+					woStats = emc.fetchIn(Stat.class, WoStat.copier, Stat.id_FIELDNAME, designerIdList);
+				}else if (ListTools.isNotEmpty(appIdList)) {
 					woStats = emc.fetchIn(Stat.class, WoStat.copier, Stat.query_FIELDNAME, appIdList);
+				} else {
+					woStats = emc.fetchAll(Stat.class, WoStat.copier);
 				}
 				for (WoStat woStat : woStats) {
 					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoStat.copier.getCopyFields(), woStat, wi.getKeyword(),
@@ -182,15 +196,17 @@ class ActionSearch extends BaseAction {
 		return cf;
 	}
 
-	private CompletableFuture<List<Wo>> searchStatement(final Wi wi, final List<String> appIdList) {
+	private CompletableFuture<List<Wo>> searchStatement(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
 		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<WoStatement> woStatements;
-				if (ListTools.isEmpty(appIdList)) {
-					woStatements = emc.fetchAll(Statement.class, WoStatement.copier);
-				} else {
+				if (ListTools.isNotEmpty(designerIdList)) {
+					woStatements = emc.fetchIn(Statement.class, WoStatement.copier, Statement.id_FIELDNAME, designerIdList);
+				}else if (ListTools.isNotEmpty(appIdList)) {
 					woStatements = emc.fetchIn(Statement.class, WoStatement.copier, Statement.query_FIELDNAME, appIdList);
+				} else {
+					woStatements = emc.fetchAll(Statement.class, WoStatement.copier);
 				}
 				for (WoStatement woStatement : woStatements) {
 					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoStatement.copier.getCopyFields(), woStatement, wi.getKeyword(),
