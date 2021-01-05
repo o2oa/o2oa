@@ -19,11 +19,18 @@ MWF.xApplication.FindDesigner.LP = {
 	"query": "数据中心",
 	"service": "服务管理",
 
-	"search_placeholder": "请输入搜索内容",
+	"search_placeholder": "请输入查询内容",
 	"dockToBottom": "固定到下方",
 	"dockToRight": "固定到右侧",
-	"nothingFind": "未找到任何结果\n请输入搜索关键字",
+	"nothingFind": "未找到任何结果",
+	"nothingFind_keyword": "未找到任何结果\n请输入查询关键字",
+	"nothingFind_noFilter": "未找到任何结果\n请输选择查询类型",
+	"nothingFind_noRange": "未找到任何结果\n请确定查询范围",
 	"nothingPreview": "选择查找结果列表，可在此处预览",
 
-	"selectRange": "选择查找范围"
+	"selectRange": "选择查找范围",
+	"patternCount": "{n} 项匹配",
+
+	"receiveToFind": "正在准备查询数据 ...",
+	"readyToFind": "设计元素准备完毕（共{n}个） ..."
 };

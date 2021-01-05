@@ -13,12 +13,12 @@
     line-height: 30px;
     padding: 2px 0;
     background-color: #ffffff;
+    border-bottom: 1px solid #cccccc;
 }
 .rangeNode {
     height: 40px;
     padding: 0;
     line-height: 20px;
-    border-top: 1px solid #cccccc;
     border-bottom: 1px solid #cccccc;
     background-color: #f0f0f0;
 }
@@ -27,7 +27,6 @@
 }
 .listNode {
     background-color: #ffffff;
-    overflow: auto;
 }
 .previewNode {
     background-color: #f0f0f0;
@@ -230,6 +229,22 @@
     background-color: #f0f0f0;
     border-bottom: 1px solid #cccccc;
 }
+.listNode_title {
+    height: 27px;
+    padding-top: 3px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #cccccc;
+}
+.listNode_title_lr {
+    height: 27px;
+    padding-top: 3px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #cccccc;
+}
+.listNode_area {
+    overflow: auto;
+}
+
 
 .previewNode_content {
     background-color: #ffffff;
@@ -280,4 +295,41 @@
     vertical-align: middle;
     color: #bbbbbb;
     text-align: center;
+}
+.listContentNode {
+    overflow: hidden;
+}
+.loadding {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("../x_component_FindDesigner/$Main/default/icons/loading.gif");
+}
+
+.listNode_title_info {
+    margin-left: 10px;
+    margin-right: 40px;
+    font-size: 12px;
+    color: #888888;
+    height: 24px;
+    line-height: 24px;
+}
+.listNode_title_progress {
+    height: 3px;
+}
+.listNode_title_progress_node {
+    height: 3px;
+    background-color: #0b58a2;
+    width: 0%;
+}
+.listNode_title_action {
+    float: right;
+    height: 24px;
+    width: 40px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("../x_component_FindDesigner/$Main/default/icons/stop_gray.png");
+    cursor: pointer;
+}
+.listNode_title_action_enabled {
+    background-image: url("../x_component_FindDesigner/$Main/default/icons/stop.png");
 }
