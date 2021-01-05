@@ -74,6 +74,12 @@ o2.addReady(function () {
         if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
     });
 
+    var _setLayoutService = function(service, center){
+        layout.serviceAddressList = service;
+        layout.centerServer = center;
+        layout.desktop.serviceAddressList = service;
+        layout.desktop.centerServer = center;
+    };
     var _getDistribute = function (callback) {
         if (layout.config.app_protocol === "auto") {
             layout.config.app_protocol = window.location.protocol;
