@@ -31,11 +31,13 @@ class ActionExecute extends BaseAction {
 
 	ActionResult<Plan> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		logger.debug("jsonElement:{}.", jsonElement);
+		ActionResult<Plan> result = new ActionResult<>();
+		View view;
+		Runtime runtime;
+		Business business;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
-			ActionResult<Plan> result = new ActionResult<>();
-			Business business = new Business(emc);
-			View view = business.pick(id, View.class);
+			business = new Business(emc);
+			view = business.pick(id, View.class);
 			if (null == view) {
 				throw new ExceptionEntityNotExist(id, View.class);
 			}
@@ -53,13 +55,13 @@ class ActionExecute extends BaseAction {
 			if (null == wi) {
 				wi = new Wi();
 			}
-			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
 					wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
-			Plan plan = this.accessPlan(business, view, runtime);
-			result.setData(plan);
-			return result;
 		}
+		Plan plan = this.accessPlan(business, view, runtime);
+		result.setData(plan);
+		return result;
 	}
 
 	public static class Wi extends GsonPropertyObject {

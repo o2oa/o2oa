@@ -27,9 +27,12 @@ class ActionBundleWithQuery extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String queryFlag, JsonElement jsonElement)
 			throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		View view;
+		Runtime runtime;
+		Business business;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
+			business = new Business(emc);
 			Query query = business.pick(queryFlag, Query.class);
 			if (null == query) {
 				throw new ExceptionEntityNotExist(queryFlag, Query.class);
@@ -38,7 +41,7 @@ class ActionBundleWithQuery extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, query);
 			}
 			String id = business.view().getWithQuery(flag, query);
-			View view = business.pick(id, View.class);
+			view = business.pick(id, View.class);
 			if (null == view) {
 				throw new ExceptionEntityNotExist(flag, View.class);
 			}
@@ -49,13 +52,13 @@ class ActionBundleWithQuery extends BaseAction {
 			if (null == wi) {
 				wi = new Wi();
 			}
-			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
 					wi.getCount(), true);
-			Wo wo = new Wo();
-			wo.setValueList(this.fetchBundle(business, view, runtime));
-			result.setData(wo);
-			return result;
 		}
+		Wo wo = new Wo();
+		wo.setValueList(this.fetchBundle(business, view, runtime));
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WrapStringList {
