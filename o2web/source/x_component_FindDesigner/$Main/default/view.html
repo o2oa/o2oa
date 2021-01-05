@@ -12,6 +12,7 @@
             <div class="filterNode_item"><input checked type="checkbox" value="stat" />{{$.lp.stat}}(stat)</div>
         </div>
     </div>
+
     <div class="keywordNode" data-o2-element="keywordNode">
         <div class="keywordNode_optionArea" data-o2-events="mouseover:overKeywordOption;mouseout:outKeywordOption">
             <div class="keywordNode_optionItem caseSensitiveNode_false" data-o2-element="caseSensitiveNode" data-o2-events="click:setCaseSensitive" title="区分大小写"></div>
@@ -22,11 +23,12 @@
             <div class="keywordNode_icon"></div>
             <div class="keywordNode_action"></div>
             <div class="keywordNode_area">
-                <input class="keywordNode_input" data-o2-element="keywordInputNode" type="text" placeholder="{{$.lp.search_placeholder}}"/>
+                <input class="keywordNode_input" data-o2-element="keywordInputNode" data-o2-events="keydown:checkFindDesigner" type="text" placeholder="{{$.lp.search_placeholder}}"/>
             </div>
 
         </div>
     </div>
+
     <div class="rangeNode" data-o2-element="rangeNode">
         <div class="rangeNode_title">{{$.lp.range}}</div>
         <div class="rangeNode_content" data-o2-element="rangeContentNode">
@@ -42,15 +44,29 @@
         <div class="rangeNode_select">
             <div class="rangeNode_select_area">
                 <div class="rangeNode_select_action_area">
-                    <div class="rangeNode_select_action" data-o2-events="click:selectFindRange">{{$.lp.selectRange}}</div>
+                    <div class="rangeNode_select_action" data-o2-element="rangeSelectedActionNode" data-o2-events="click:selectFindRange">{{$.lp.selectRange}}</div>
                 </div>
                 <div class="rangeNode_select_content" data-o2-element="rangeSelectedContentNode"></div>
             </div>
         </div>
     </div>
+
     <div class="resultNode" data-o2-element="resultNode">
         <div class="listNode_lr" data-o2-element="listNode">
-            <div class="inforNode"><div>{{$.lp.nothingFind}}</div></div>
+            <div class="listNode_title_lr" data-o2-element="listTitleNode">
+                <div class="listNode_title_action"></div>
+                <div class="listNode_title_info" data-o2-element="listTitleInfoNode"></div>
+                <div class="listNode_title_progress">
+                    <div class="listNode_title_progress_node" data-o2-element="listTitleProgressNode"></div>
+                </div>
+            </div>
+
+            <div class="listNode_area" data-o2-element="listAreaNode">
+                <div class="inforNode" data-o2-element="listInfoNode"><div>{{$.lp.nothingFind_keyword}}</div></div>
+                <div class="listContentNode" data-o2-element="listContentNode"></div>
+            </div>
+
+
         </div>
         <div class="previewNode_lr" data-o2-element="previewNode">
             <div class="previewNode_separator_lr" data-o2-element="previewSeparatorNode"></div>
