@@ -359,7 +359,7 @@ _worker._doFindDesigner = function(option){
     });
     this.action.sendRequest(res).then(function(json){
         if (json.data.processPlatformList && json.data.processPlatformList.length){
-
+            _worker._findProcessPlatformParse(json.data.processPlatformList);
         }
         if (json.data.cmsList && json.data.cmsList.length){
 
