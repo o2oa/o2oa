@@ -34,9 +34,14 @@ public class HttpConnection {
 	public static final String Content_Type = "Content-Type";
 	public static final String Content_Type_Value = "application/json;charset=UTF-8";
 
+	public static final String METHOD_POST = "POST";
+	public static final String METHOD_GET = "GET";
+	public static final String METHOD_PUT = "PUT";
+	public static final String METHOD_DELETE = "DELETE";
+
 	public static String getAsString(String address, List<NameValuePair> heads) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod("GET");
+		connection.setRequestMethod(METHOD_GET);
 		connection.setDoOutput(false);
 		connection.setDoInput(true);
 		String str = readResultString(connection);
@@ -58,7 +63,7 @@ public class HttpConnection {
 
 	public static String postAsString(String address, List<NameValuePair> heads, String body) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod("POST");
+		connection.setRequestMethod(METHOD_POST);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
 		connection.connect();
@@ -84,7 +89,7 @@ public class HttpConnection {
 
 	public static String putAsString(String address, List<NameValuePair> heads, String body) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod("PUT");
+		connection.setRequestMethod(METHOD_PUT);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
 		connection.connect();
@@ -110,7 +115,7 @@ public class HttpConnection {
 
 	public static String deleteAsString(String address, List<NameValuePair> heads) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod("DELETE");
+		connection.setRequestMethod(METHOD_DELETE);
 		connection.setDoOutput(false);
 		connection.setDoInput(true);
 		String str = readResultString(connection);
@@ -169,30 +174,9 @@ public class HttpConnection {
 		try (OutputStream output = connection.getOutputStream()) {
 			if (StringUtils.isNotEmpty(body)) {
 				IOUtils.write(body, output, StandardCharsets.UTF_8);
-				// IOUtils.write(body, output);
 				output.flush();
 			}
 		}
 	}
 
-	// private static void doOutput(HttpURLConnection connection, byte[] bytes)
-	// throws Exception {
-	// try (OutputStream output = connection.getOutputStream()) {
-	// if (null != bytes) {
-	// IOUtils.write(bytes, output);
-	// output.flush();
-	// }
-	// }
-	// }
-
-	// private static void doOutput(HttpURLConnection connection, String body,
-	// List<File> files) throws Exception {
-	// try (OutputStream output = connection.getOutputStream()) {
-	// if (StringUtils.isNotEmpty(body)) {
-	// IOUtils.write(body, output, StandardCharsets.UTF_8);
-	// // IOUtils.write(body, output);
-	// output.flush();
-	// }
-	// }
-	// }
 }
