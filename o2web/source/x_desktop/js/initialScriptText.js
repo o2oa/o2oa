@@ -867,8 +867,24 @@ bind.headers = {
     }
 };
 
-
-bind.parameters = this.parameters || null;
+bind.parameters = {
+    "put": function(name, value){
+        if ((typeof name)==="object"){
+            var _keys = Object.keys(name);
+            for (var i=0; i<_keys.length; i++){
+                if (parameters) parameters.put(_keys[i], name[_keys[i]]);
+            }
+        }else{
+            if (parameters) parameters.put(name, value);
+        }
+    },
+    "remove": function(name){
+        try{
+            if (parameters) parameters.remove(name);
+        }catch(e){}
+    }
+}
+//bind.parameters = this.parameters || null;
 bind.response = (function(){
     if (this.jaxrsResponse){
         if (this.jaxrsResponse.get()){
