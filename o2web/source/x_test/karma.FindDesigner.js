@@ -21,6 +21,7 @@ module.exports = function(config) {
             {pattern:'x_component_Common/**/*.*', included: false, nocache: true, watched: true},
             {pattern:'x_component_Template/**/*.*', included: false, nocache: true, watched: true},
             {pattern:'x_component_Homepage/**/*.*', included: false, nocache: true, watched: true},
+            {pattern:'x_component_Selector/**/*.*', included: false, nocache: true, watched: true},
 
             {pattern:'x_component_FindDesigner/test/*.spec.js', included: true, nocache: true, watched: true},
 

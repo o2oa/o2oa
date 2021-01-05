@@ -80,6 +80,10 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		var previewHeight = h*(1-this.options.layout.percent);
 		this.previewNode.setStyle("height", ""+previewHeight+"px");
 
+		var listTitleSize = this.listTitleNode.getSize();
+		var listContentHeight = listHeight - listTitleSize.y;
+		this.listAreaNode.setStyle("height", ""+listContentHeight+"px");
+
 		var previewSeparatorSize = this.previewSeparatorNode.getSize();
 		var previewTitleSize = this.previewTitleNode.getSize();
 		var previewContentHeight = previewHeight - previewSeparatorSize.y - previewTitleSize.y;
@@ -93,7 +97,10 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		this.listNode.setStyle("width", ""+listWidth+"px");
 		this.previewNode.setStyle("margin-left", ""+listWidth+"px");
 
-		//var previewSeparatorSize = this.previewSeparatorNode.getSize();
+		var listTitleSize = this.listTitleNode.getSize();
+		var listContentHeight = h - listTitleSize.y;
+		this.listAreaNode.setStyle("height", ""+listContentHeight+"px");
+
 		var previewTitleSize = this.previewTitleNode.getSize();
 		var previewContentHeight = h - previewTitleSize.y;
 		this.previewContentNode.setStyle("height", ""+previewContentHeight+"px");
@@ -246,12 +253,15 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		var itemNodes = this.rangeSelectedContentNode.getChildren();
 		if (!itemNodes.length) this.setSelectedRange();
 	},
-	selectFindRange: function(){
+	selectFindRange: function(loadFun){
 		o2.requireApp("Selector", "package", function(){
 			new o2.O2Selector(this.content, {
 				"values": this.selectedModules,
 				"type": "PlatApp",
 				"selectAllEnable": true,
+				"onLoad": function(){
+					if (loadFun && o2.typeOf(loadFun)=="function") loadFun();
+				},
 				"onComplete": function(list){
 					this.rangeSelectedContentNode.empty();
 					//this.selectedModules = [];
@@ -297,7 +307,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			itemNodes.each(function(node){
 				var data = node.retrieve("data");
 				if (!rangeApp[data.moduleType]) rangeApp[data.moduleType] = [];
-				rangeApp[data.moduleType].push(data.id);
+				rangeApp[data.moduleType].push({"id": data.id});
 			}.bind(this));
 
 			Object.keys(rangeApp).each(function(k){
@@ -310,5 +320,353 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		this.filterOption.moduleList = moduleList;
 
 		return this.filterOption;
+	},
+
+	checkFindDesigner: function(e){
+		if (e.keyCode===13){
+			this.getFindOption();
+
+			if (!this.filterOption.keyword){
+				this.listInfoNode.show().removeClass("loadding").getFirst().set("text", this.lp.nothingFind_keyword);
+				return false;
+			}
+			if (!this.filterOption.designerTypes.length){
+				this.listInfoNode.show().removeClass("loadding").getFirst().set("text", this.lp.nothingFind_noFilter);
+				return false;
+			}
+			if (!this.filterOption.moduleList.length){
+				this.listInfoNode.show().removeClass("loadding").getFirst().set("text", this.lp.nothingFind_noRange);
+				return false;
+			}
+
+			this.findDesigner();
+		}
+	},
+
+	getFindWorker: function(){
+		if (!this.findWorker) this.findWorker = new Worker("../x_component_FindDesigner/FindWorker.js");
+		this.findWorker.onmessage = function(e) {
+			if (e.data && e.data.type=="receive") this.setReceiveMessage();
+			if (e.data && e.data.type=="ready") this.setReadyMessage(e.data);
+			if (e.data && e.data.type=="find") this.doFindResult(e.data);
+		}.bind(this);
+	},
+	doFindResult: function(){
+		this.findOptionModuleProcessed++;
+		this.updateFindProgress();
+	},
+	setReceiveMessage: function(){
+		this.listTitleInfoNode.set("text", this.lp.receiveToFind);
+	},
+	setReadyMessage: function(data){
+		this.findOptionModuleCount = data.count;
+		this.findOptionModuleProcessed = 0;
+		this.updateFindProgress();
+		this.listTitleInfoNode.set("text", this.lp.readyToFind.replace("{n}", data.count));
+	},
+	updateFindProgress: function(){
+		var percent = (this.findOptionModuleProcessed/this.findOptionModuleCount)*100;
+		this.listTitleProgressNode.setStyle("width", ""+percent+"%");
+	},
+
+	getActionsUrl:function(){
+		var processHost = o2.Actions.getHost("x_processplatform_assemble_designer");
+		var cmsHost = o2.Actions.getHost("x_cms_assemble_control");
+		var portalHost = o2.Actions.getHost("x_portal_assemble_designer");
+		var queryHost = o2.Actions.getHost("x_query_assemble_designer");
+		var serviceHost = o2.Actions.getHost("x_program_center");
+		var findHost = o2.Actions.getHost("x_query_service_processing");
+
+		var actions = {
+			"listProcess": o2.filterUrl(processHost+"/x_processplatform_assemble_designer/jaxrs/application/list"),
+			"listProcessProcess": o2.filterUrl(processHost+"/x_processplatform_assemble_designer/jaxrs/process/application/{applicationId}"),
+			"listProcessForm": o2.filterUrl(processHost+"/x_processplatform_assemble_designer/jaxrs/form/list/application/{applicationId}"),
+			"listProcessScript": o2.filterUrl(processHost+"/x_processplatform_assemble_designer/jaxrs/script/application/{applicationId}"),
+
+			"listCms": o2.filterUrl(cmsHost+"/x_cms_assemble_control/jaxrs/appinfo/list/manage"),
+			"listCmsForm": o2.filterUrl(cmsHost+"/x_cms_assemble_control/jaxrs/form/list/app/{appId}"),
+			"listCmsScript": o2.filterUrl(cmsHost+"/x_cms_assemble_control/jaxrs/script/list/app/{flag}"),
+
+			"listPortal": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/portal/list"),
+			"listPortalPage": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/page/list/portal/{portalId}"),
+			"listPortalScript": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/script/list/portal/{portalId}"),
+			"listPortalWidget": o2.filterUrl(portalHost+"/x_portal_assemble_designer/jaxrs/widget/list/portal/{portalId}"),
+
+			"listQuery": o2.filterUrl(queryHost+"/x_query_assemble_designer/jaxrs/query/list/summary"),
+			"listQueryView": o2.filterUrl(portalHost+"/x_query_assemble_designer/jaxrs/view/list/query/{flag}"),
+			"listQueryStat": o2.filterUrl(portalHost+"/x_query_assemble_designer/jaxrs/stat/list/query/{flag}"),
+			"listQueryStatement": o2.filterUrl(portalHost+"/x_query_assemble_designer/jaxrs/statement/list/query/{flag}"),
+
+			"listInvoke": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/invoke"),
+			"listAgent": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/agent"),
+
+			"findAction": o2.filterUrl(findHost+"/x_query_service_processing/jaxrs/design/search")
+		}
+		return actions;
+	},
+
+	findDesigner: function(){
+		this.getFindWorker();
+		var actions = this.getActionsUrl();
+
+		var workerMessage = {
+			actions:actions,
+			filterOption: this.filterOption,
+			debug: (window.layout && layout["debugger"]),
+			token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : ""
+		}
+		this.findWorker.postMessage(workerMessage);
+	},
+
+	//------------------------------------------------------------
+
+	findDesigner_bak: function(){
+		this.listContentNode.hide();
+		this.listInfoNode.show().getFirst().set("text", "");
+		this.listInfoNode.addClass("loadding")
+		o2.Actions.load("x_query_service_processing").DesignAction.search(this.filterOption, function(json){
+			if ((json.data.processPlatformList && json.data.processPlatformList.length) ||
+				(json.data.cmsList && json.data.cmsList.length) ||
+				(json.data.portalList && json.data.portalList.length) ||
+				(json.data.queryList && json.data.queryList.length) ||
+				(json.data.serviceList && json.data.serviceList.length)){
+
+				this.listInfoNode.hide();
+				this.listFindResult(json.data);
+
+			}else{
+				this.listInfoNode.show().removeClass("loadding").getFirst().set("text", this.lp.nothingFind);
+			}
+		}.bind(this));
+	},
+
+	createResultCategroyItem: function(text, title, tree){
+		var obj = {
+			"title": title,
+			"text": "<span style='font-weight: bold'>"+text+"</span>",
+			"icon": ""
+		}
+		return tree.appendChild(obj);
+	},
+	createResultAppItem: function(text, title, tree){
+		var obj = {
+			"title": title,
+			"text": "<span style='font-weight: bold; color: #4A90E2'>"+text+"</span>",
+			"icon": ""
+		}
+		return tree.appendChild(obj);
+	},
+	createResultDesignerItem: function(designer, tree){
+		var title = this.lp[designer.designerType]+ ": "+ designer.designerName + " ("+designer.designerId+")";
+		var text = this.lp[designer.designerType]+ ": <b>"+ designer.designerName+"</b>";
+		var obj = {
+			"expand": false,
+			"title": title,
+			"text": text,
+			"icon": ""
+		}
+		var item = tree.appendChild(obj);
+		item.designer = designer;
+		item.appendChild({ "expand": false, "text": "loading...", "icon": "" });
+		return item;
+	},
+	listFindResult: function(data){
+		this.listContentNode.empty();
+		this.listContentNode.show();
+		o2.require("o2.widget.Tree", function(){
+			var tree = new o2.widget.Tree(this.listContentNode, {
+				"onQueryExpand": function(item){
+					if (item.designer) this.loadDesignerPattern(item);
+				}.bind(this)
+			});
+			tree.load();
+			if (data.processPlatformList && data.processPlatformList.length){
+				var platformItem = this.createResultCategroyItem(this.lp.processPlatform, this.lp.processPlatform, tree);
+				this.listProcessResult(platformItem, data.processPlatformList, "processPlatform");
+			}
+			if (data.cmsList && data.cmsList.length){
+				var platformItem = this.createResultCategroyItem(this.lp.cms, this.lp.cms, tree);
+				//this.listProcessResult(categroyItem, data.cmsList);
+			}
+			if (data.portalList && data.portalList.length){
+				var platformItem = this.createResultCategroyItem(this.lp.portal, this.lp.portal, tree);
+
+			}
+			if (data.queryList && data.queryList.length){
+				var platformItem = this.createResultCategroyItem(this.lp.query, this.lp.query, tree);
+			}
+			if (data.serviceList && data.serviceList.length){
+				var platformItem = this.createResultCategroyItem(this.lp.service, this.lp.service, tree);
+			}
+
+
+		}.bind(this));
+	},
+	addPatternCount: function(item, count){
+		if (!item.count) item.count = 0;
+		item.count += count;
+		var t = this.lp.patternCount.replace("{n}", item.count);
+		var textDivNode = item.textNode.getElement("div");
+		if (textDivNode){
+			var html = item.options.text;
+			textDivNode.set("html", html+" <span style=''>( "+t+" )</span>");
+		}
+	},
+	listProcessResult: function(platformItem, list, platform){
+		var applicationItems = {};
+		list.each(function(designer){
+			if (designer.patternList && designer.patternList.length){
+				var appItem = applicationItems[designer.appId];
+				if (!appItem){
+					applicationItems[designer.appId] = appItem = this.createResultAppItem(designer.appName, designer.appName+" ("+designer.appId+")", platformItem);
+				}
+				designer.platform = platform;
+				var designerItem = this.createResultDesignerItem(designer, appItem);
+				var count=0;
+				designer.patternList.each(function(p){
+					if (p.lines && p.lines.length){
+						count += p.lines.length;
+					}else{
+						count++;
+					}
+				});
+				// var count = designer.patternList.length;
+
+				this.addPatternCount(designerItem, count);
+				this.addPatternCount(appItem, count);
+				this.addPatternCount(platformItem, count);
+			}
+		}.bind(this));
+	},
+
+	getDesignerObject: function(designer){
+		switch (designer.platform){
+			case "processPlatform":
+				var action = this.Actions.load("x_processplatform_assemble_designer");
+				switch (designer.designerType){
+					case "script":
+						return action.ScriptAction.get(designer.designerId, function(json){return json.data;});
+					case "form":
+						return action.FomrAction.get(designer.designerId, function(json){return json.data;});
+					case "process":
+						return action.ProcessAction.get(designer.designerId, function(json){return json.data;});
+				}
+			case "cms":
+				var action = this.Actions.load("x_cms_assemble_control");
+				switch (designer.designerType){
+					case "script":
+						return action.ScriptAction.get(designer.designerId, function(json){return json.data;});
+					case "form":
+						return action.FormAction.get(designer.designerId, function(json){return json.data;});
+				}
+
+			case "portal":
+				var action = this.Actions.load("x_portal_assemble_designer");
+				switch (designer.designerType){
+					case "script":
+						return action.ScriptAction.get(designer.designerId, function(json){return json.data;});
+					case "page":
+						return action.PageAction.get(designer.designerId, function(json){return json.data;});
+					case "widget":
+						return action.WidgetAction.get(designer.designerId, function(json){return json.data;});
+				}
+			case "query":
+				var action = this.Actions.load("x_query_assemble_designer");
+				switch (designer.designerType){
+					case "view":
+						return action.ViewAction.get(designer.designerId, function(json){return json.data;});
+					case "statement":
+						return action.StatementAction.get(designer.designerId, function(json){return json.data;});
+					case "stat":
+						return action.StatAction.get(designer.designerId, function(json){return json.data;});
+				}
+			case "service":
+				var action = this.Actions.load("x_program_center");
+				switch (designer.appId){
+					case "invoke":
+						return action.InvokeAction.get(designer.designerId, function(json){return json.data;});
+					case "agent":
+						return action.AgentAction.get(designer.designerId, function(json){return json.data;});
+				}
+		}
+	},
+	loadDesignerPattern: function(item){
+		if (item.firstChild && item.firstChild.options.text==="loading..."){
+			item.firstChild.destroy();
+
+			var root, actionName, fun;
+			switch (designer.platform) {
+				case "processPlatform":
+					root = "x_processplatform_assemble_designer";
+					switch (designer.designerType) {
+						case "script": actionName = "ScriptAction"; fun = "listProcessScriptPattern";
+						case "form": actionName = "FomrAction"; fun = "listProcessFormPattern";
+						case "process": actionName = "ProcessAction"; fun = "listProcessProcessPattern";
+					}
+				case "cms":
+					root = "x_cms_assemble_control";
+					switch (designer.designerType) {
+						case "script": actionName = "ScriptAction"; fun = "listCmsScriptPattern";
+						case "form": actionName = "FormAction"; fun = "listCmsFormPattern";
+					}
+
+				case "portal":
+					root = "x_portal_assemble_designer";
+					switch (designer.designerType) {
+						case "script": actionName = "ScriptAction"; fun = "listPortalScriptPattern";
+						case "page": actionName = "PageAction"; fun = "listPortalPagePattern";
+						case "widget": actionName = "WidgetAction"; fun = "listPortalWidgetPattern";
+					}
+				case "query":
+					root = "x_query_assemble_designer";
+					switch (designer.designerType) {
+						case "view": actionName = "ViewAction"; fun = "listQueryViewPattern";
+						case "statement": actionName = "StatementAction"; fun = "listQueryStatementPattern";
+						case "stat": actionName = "StatAction"; fun = "listQueryStatPattern";
+					}
+				case "service":
+					root = "x_program_center";
+					switch (designer.appId) {
+						case "invoke": actionName = "InvokeAction"; fun = "listServiceInvokePattern";
+						case "agent": actionName = "AgentAction"; fun = "listServiceAgentPattern";
+					}
+			}
+			this.Actions.load(root)[actionName].get(designer.designerId, function(json){
+				this[fun](json.data, designer.patternList, item);
+			}.bind(this))
+		}
+	},
+
+	getFindRegExp: function(){
+		var flag = "gm";
+		var keyword = this.filterOption.keyword;
+		if (!this.filterOption.caseSensitive) flag+="i";
+		if (this.filterOption.matchRegExp){
+			return new RegExp(keyword, flag)
+		}else{
+			if (this.filterOption.matchWholeWord) keyword = "\\b"+keyword+"\\b";
+			return new RegExp(keyword, flag)
+		}
+	},
+
+
+	//启动一个webworker处理
+	listProcessScriptPattern: function (data, patternList, item){
+		patternList.each(function(pattern){
+			if (pattern.property == "text"){
+				var textArr = data.split("\n");
+				var regex = this.getFindRegExp();
+				pattern.lines.each(function(line){
+					var text = textArr[line];
+
+
+
+				}.bind(this));
+			}else{
+
+			}
+		}.bind(this));
 	}
+
+
 });
