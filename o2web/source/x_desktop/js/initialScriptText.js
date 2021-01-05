@@ -883,7 +883,7 @@ bind.parameters = {
             if (parameters) parameters.remove(name);
         }catch(e){}
     }
-}
+};
 //bind.parameters = this.parameters || null;
 bind.response = (function(){
     if (this.jaxrsResponse){
