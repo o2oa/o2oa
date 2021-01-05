@@ -18,7 +18,9 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.exception.RunningException;
+import com.x.base.core.project.http.ActionResult.Type;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.ScriptFactory;
@@ -86,6 +88,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 	}
 
 	private void jaxwsInternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		// nothing
 	}
 
 	private void jaxwsExternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
@@ -107,8 +110,6 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 						Business.EVENT_INVOKEJAXWSRESPONSE);
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXWSRESPONSE,
 						response);
-//				/* 重新注入对象需要重新运行 */
-//				ScriptFactory.initialScriptText().eval(scriptContext);
 				cs.eval(scriptContext);
 			}
 		}
@@ -123,8 +124,6 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXWSPARAMETER);
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
 					parameters);
-//			/* 重新注入对象需要重新运行 */
-//			ScriptFactory.initialScriptText().eval(scriptContext);
 			cs.eval(scriptContext);
 		}
 		return parameters.toArray();
@@ -142,67 +141,18 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		ActionResponse resp = null;
 		Class<?> clz = Class.forName("com.x.base.core.project." + invoke.getInternalProject());
 		String uri = this.jaxrsUrl(aeiObjects, invoke);
-		String body = "";
-		switch (StringUtils.lowerCase(invoke.getJaxrsMethod())) {
-		case "post":
-			body = this.jaxrsEvalBody(aeiObjects, invoke);
-			if (BooleanUtils.isTrue(invoke.getAsync())) {
-				JaxrsObject jaxrsObject = new JaxrsObject();
-				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
-				jaxrsObject.setAddress(
-						StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
-				jaxrsObject.setBody(body);
-				jaxrsObject.setInternal(invoke.getInternal());
-				jaxrsObject.setMethod("post");
-				jaxrsObject.setContentType(invoke.getJaxrsContentType());
-				ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
-			} else {
-				resp = ThisApplication.context().applications().postQuery(clz, uri, body);
-			}
+		switch (StringUtils.upperCase(invoke.getJaxrsMethod())) {
+		case HttpConnection.METHOD_POST:
+			resp = jaxrsInternalPost(aeiObjects, invoke, clz, uri);
 			break;
-		case "put":
-			body = this.jaxrsEvalBody(aeiObjects, invoke);
-			if (BooleanUtils.isTrue(invoke.getAsync())) {
-				JaxrsObject jaxrsObject = new JaxrsObject();
-				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
-				jaxrsObject.setAddress(
-						StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
-				jaxrsObject.setBody(body);
-				jaxrsObject.setInternal(invoke.getInternal());
-				jaxrsObject.setMethod("put");
-				jaxrsObject.setContentType(invoke.getJaxrsContentType());
-				ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
-			} else {
-				resp = ThisApplication.context().applications().putQuery(clz, uri, body);
-			}
+		case HttpConnection.METHOD_PUT:
+			resp = jaxrsInternalPut(aeiObjects, invoke, clz, uri);
 			break;
-		case "get":
-			if (BooleanUtils.isTrue(invoke.getAsync())) {
-				JaxrsObject jaxrsObject = new JaxrsObject();
-				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
-				jaxrsObject.setAddress(
-						StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
-				jaxrsObject.setInternal(invoke.getInternal());
-				jaxrsObject.setMethod("get");
-				jaxrsObject.setContentType(invoke.getJaxrsContentType());
-				ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
-			} else {
-				resp = ThisApplication.context().applications().getQuery(clz, uri);
-			}
+		case HttpConnection.METHOD_GET:
+			resp = jaxrsInternalGet(aeiObjects, invoke, clz, uri);
 			break;
-		case "delete":
-			if (BooleanUtils.isTrue(invoke.getAsync())) {
-				JaxrsObject jaxrsObject = new JaxrsObject();
-				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
-				jaxrsObject.setAddress(
-						StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
-				jaxrsObject.setInternal(invoke.getInternal());
-				jaxrsObject.setMethod("delete");
-				jaxrsObject.setContentType(invoke.getJaxrsContentType());
-				ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
-			} else {
-				resp = ThisApplication.context().applications().deleteQuery(clz, uri);
-			}
+		case HttpConnection.METHOD_DELETE:
+			resp = jaxrsInternalDelete(aeiObjects, invoke, clz, uri);
 			break;
 		case "head":
 			break;
@@ -213,16 +163,18 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		case "trace":
 			break;
 		default:
-			throw new Exception("unknown http method " + invoke.getJaxrsMethod());
+			throw new ExceptionUnknownHttpMethod(invoke.getJaxrsMethod());
 		}
-		/** 进行错误监测 */
+		// 同步执行状态下进行调用判断
+		if ((!BooleanUtils.isTrue(invoke.getAsync()))
+				&& ((null == resp) || (!Objects.equals(Type.success, resp.getType())))) {
+			throw new RunningException("invoke url:{} not success, work:{}.", uri, aeiObjects.getWork().getId());
+		}
 		if (!BooleanUtils.isTrue(invoke.getAsync())) {
-			if (!Objects.equals(resp.getType(), ActionResponse.Type.success)) {
-				throw new RunningException("invoke url:{} not success, because:{}, work:{}.", uri, resp.getMessage(),
-						aeiObjects.getWork().getId());
-			}
 			WrapScriptObject jaxrsResponse = new WrapScriptObject();
-			jaxrsResponse.set(gson.toJson(resp.getData()));
+			if (null != resp) {
+				jaxrsResponse.set(gson.toJson(resp.getData()));
+			}
 			if ((StringUtils.isNotEmpty(invoke.getJaxrsResponseScript()))
 					|| (StringUtils.isNotEmpty(invoke.getJaxrsResponseScriptText()))) {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
@@ -231,71 +183,100 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 						Business.EVENT_INVOKEJAXRSRESPONSE);
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
 						jaxrsResponse);
-//				/* 重新注入对象需要重新运行 */
-//				ScriptFactory.initialScriptText().eval(scriptContext);
 				cs.eval(scriptContext);
 			}
 		}
 	}
 
+	private ActionResponse jaxrsInternalDelete(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
+			throws Exception {
+		if (BooleanUtils.isTrue(invoke.getAsync())) {
+			JaxrsObject jaxrsObject = new JaxrsObject();
+			Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
+			jaxrsObject
+					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
+			jaxrsObject.setInternal(invoke.getInternal());
+			jaxrsObject.setMethod(HttpConnection.METHOD_DELETE);
+			jaxrsObject.setContentType(invoke.getJaxrsContentType());
+			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+		} else {
+			return ThisApplication.context().applications().deleteQuery(clz, uri);
+		}
+		return null;
+	}
+
+	private ActionResponse jaxrsInternalGet(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
+			throws Exception {
+		if (BooleanUtils.isTrue(invoke.getAsync())) {
+			JaxrsObject jaxrsObject = new JaxrsObject();
+			Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
+			jaxrsObject
+					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
+			jaxrsObject.setInternal(invoke.getInternal());
+			jaxrsObject.setMethod(HttpConnection.METHOD_GET);
+			jaxrsObject.setContentType(invoke.getJaxrsContentType());
+			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+		} else {
+			return ThisApplication.context().applications().getQuery(clz, uri);
+		}
+		return null;
+	}
+
+	private ActionResponse jaxrsInternalPut(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
+			throws Exception {
+		String body = this.jaxrsEvalBody(aeiObjects, invoke);
+		if (BooleanUtils.isTrue(invoke.getAsync())) {
+			JaxrsObject jaxrsObject = new JaxrsObject();
+			Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
+			jaxrsObject
+					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
+			jaxrsObject.setBody(body);
+			jaxrsObject.setInternal(invoke.getInternal());
+			jaxrsObject.setMethod(HttpConnection.METHOD_PUT);
+			jaxrsObject.setContentType(invoke.getJaxrsContentType());
+			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+		} else {
+			return ThisApplication.context().applications().putQuery(clz, uri, body);
+		}
+		return null;
+	}
+
+	private ActionResponse jaxrsInternalPost(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
+			throws Exception {
+		String body = this.jaxrsEvalBody(aeiObjects, invoke);
+		if (BooleanUtils.isTrue(invoke.getAsync())) {
+			JaxrsObject jaxrsObject = new JaxrsObject();
+			Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
+			jaxrsObject
+					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
+			jaxrsObject.setBody(body);
+			jaxrsObject.setInternal(invoke.getInternal());
+			jaxrsObject.setMethod(HttpConnection.METHOD_POST);
+			jaxrsObject.setContentType(invoke.getJaxrsContentType());
+			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+		} else {
+			return ThisApplication.context().applications().postQuery(clz, uri, body);
+		}
+		return null;
+	}
+
 	private void jaxrsExternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		String result = "";
-		String address = this.jaxrsUrl(aeiObjects, invoke);
-		String body = "";
+		String uri = this.jaxrsUrl(aeiObjects, invoke);
 		JaxrsObject jaxrsObject = new JaxrsObject();
 		jaxrsObject.setHead(this.jaxrsEvalHead(aeiObjects, invoke));
-		switch (StringUtils.lowerCase(invoke.getJaxrsMethod())) {
-		case "post":
-			body = this.jaxrsEvalBody(aeiObjects, invoke);
-			jaxrsObject.setMethod("post");
-			jaxrsObject.setInternal(false);
-			jaxrsObject.setAddress(address);
-			jaxrsObject.setBody(body);
-			jaxrsObject.setContentType(invoke.getJaxrsContentType());
-			if (BooleanUtils.isTrue(invoke.getAsync())) {
-				ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
-			} else {
-				InvokeExecutor executor = new InvokeExecutor();
-				result = executor.execute(jaxrsObject);
-			}
+		switch (StringUtils.upperCase(invoke.getJaxrsMethod())) {
+		case HttpConnection.METHOD_POST:
+			result = jaxrsExternalPost(aeiObjects, invoke, uri, jaxrsObject);
 			break;
-		case "put":
-			body = this.jaxrsEvalBody(aeiObjects, invoke);
-			jaxrsObject.setMethod("put");
-			jaxrsObject.setInternal(false);
-			jaxrsObject.setAddress(address);
-			jaxrsObject.setBody(body);
-			jaxrsObject.setContentType(invoke.getJaxrsContentType());
-			if (BooleanUtils.isTrue(invoke.getAsync())) {
-				ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
-			} else {
-				InvokeExecutor executor = new InvokeExecutor();
-				result = executor.execute(jaxrsObject);
-			}
+		case HttpConnection.METHOD_PUT:
+			result = jaxrsExternalPut(aeiObjects, invoke, uri, jaxrsObject);
 			break;
-		case "get":
-			jaxrsObject.setMethod("get");
-			jaxrsObject.setInternal(false);
-			jaxrsObject.setAddress(address);
-			jaxrsObject.setContentType(invoke.getJaxrsContentType());
-			if (BooleanUtils.isTrue(invoke.getAsync())) {
-				ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
-			} else {
-				InvokeExecutor executor = new InvokeExecutor();
-				result = executor.execute(jaxrsObject);
-			}
+		case HttpConnection.METHOD_GET:
+			result = jaxrsExternalGet(aeiObjects, invoke, uri, jaxrsObject);
 			break;
-		case "delete":
-			jaxrsObject.setMethod("delete");
-			jaxrsObject.setInternal(false);
-			jaxrsObject.setAddress(address);
-			jaxrsObject.setContentType(invoke.getJaxrsContentType());
-			if (BooleanUtils.isTrue(invoke.getAsync())) {
-				ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
-			} else {
-				InvokeExecutor executor = new InvokeExecutor();
-				result = executor.execute(jaxrsObject);
-			}
+		case HttpConnection.METHOD_DELETE:
+			result = jaxrsExternalDelete(aeiObjects, invoke, uri, jaxrsObject);
 			break;
 		case "head":
 			break;
@@ -306,7 +287,11 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		case "trace":
 			break;
 		default:
-			throw new Exception("unknown http method: " + invoke.getJaxrsMethod());
+			throw new ExceptionUnknownHttpMethod(invoke.getJaxrsMethod());
+		}
+		// 同步执行状态下进行调用判断
+		if ((!BooleanUtils.isTrue(invoke.getAsync())) && (null == result)) {
+			throw new RunningException("invoke address:{} not success, work:{}.", uri, aeiObjects.getWork().getId());
 		}
 		if (!BooleanUtils.isTrue(invoke.getAsync())) {
 			WrapScriptObject jaxrsResponse = new WrapScriptObject();
@@ -319,11 +304,73 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 						Business.EVENT_INVOKEJAXRSRESPONSE);
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
 						jaxrsResponse);
-//				/* 重新注入对象需要重新运行 */
-//				ScriptFactory.initialScriptText().eval(scriptContext);
 				cs.eval(scriptContext);
 			}
 		}
+	}
+
+	private String jaxrsExternalDelete(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
+			throws Exception {
+		jaxrsObject.setMethod(HttpConnection.METHOD_DELETE);
+		jaxrsObject.setInternal(false);
+		jaxrsObject.setAddress(address);
+		jaxrsObject.setContentType(invoke.getJaxrsContentType());
+		if (BooleanUtils.isTrue(invoke.getAsync())) {
+			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+		} else {
+			InvokeExecutor executor = new InvokeExecutor();
+			return executor.execute(jaxrsObject);
+		}
+		return null;
+	}
+
+	private String jaxrsExternalGet(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
+			throws Exception {
+		jaxrsObject.setMethod(HttpConnection.METHOD_GET);
+		jaxrsObject.setInternal(false);
+		jaxrsObject.setAddress(address);
+		jaxrsObject.setContentType(invoke.getJaxrsContentType());
+		if (BooleanUtils.isTrue(invoke.getAsync())) {
+			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+		} else {
+			InvokeExecutor executor = new InvokeExecutor();
+			return executor.execute(jaxrsObject);
+		}
+		return null;
+	}
+
+	private String jaxrsExternalPut(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
+			throws Exception {
+		String body = this.jaxrsEvalBody(aeiObjects, invoke);
+		jaxrsObject.setMethod(HttpConnection.METHOD_PUT);
+		jaxrsObject.setInternal(false);
+		jaxrsObject.setAddress(address);
+		jaxrsObject.setBody(body);
+		jaxrsObject.setContentType(invoke.getJaxrsContentType());
+		if (BooleanUtils.isTrue(invoke.getAsync())) {
+			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+		} else {
+			InvokeExecutor executor = new InvokeExecutor();
+			return executor.execute(jaxrsObject);
+		}
+		return null;
+	}
+
+	private String jaxrsExternalPost(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
+			throws Exception {
+		String body = this.jaxrsEvalBody(aeiObjects, invoke);
+		jaxrsObject.setMethod(HttpConnection.METHOD_POST);
+		jaxrsObject.setInternal(false);
+		jaxrsObject.setAddress(address);
+		jaxrsObject.setBody(body);
+		jaxrsObject.setContentType(invoke.getJaxrsContentType());
+		if (BooleanUtils.isTrue(invoke.getAsync())) {
+			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+		} else {
+			InvokeExecutor executor = new InvokeExecutor();
+			return executor.execute(jaxrsObject);
+		}
+		return null;
 	}
 
 	private String jaxrsUrl(AeiObjects aeiObjects, Invoke invoke) throws Exception {
@@ -337,8 +384,6 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSPARAMETER);
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
 					parameters);
-//			/* 重新注入对象需要重新运行 */
-//			ScriptFactory.initialScriptText().eval(scriptContext);
 			cs.eval(scriptContext);
 		}
 		for (Entry<String, String> entry : parameters.entrySet()) {
@@ -356,12 +401,6 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSBODY);
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSBODY, jaxrsBody);
 			cs.eval(scriptContext);
-//			ScriptContext scriptContext = aeiObjects.scriptContext();
-//			/* 重新注入对象需要重新运行 */
-//			ScriptFactory.initialScriptText().eval(scriptContext);
-//			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-//					aeiObjects.getActivity(), Business.);
-//			cs.eval(scriptContext);
 		}
 		return jaxrsBody.get();
 	}
@@ -375,14 +414,6 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSHEAD);
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSHEAD, map);
 			cs.eval(scriptContext);
-//			ScriptContext scriptContext = aeiObjects.scriptContext();
-//			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSHEAD, map);
-//			/* 重新注入对象需要重新运行 */
-//			ScriptFactory.initialScriptText().eval(scriptContext);
-//			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-//					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSHEAD);
-//			cs.eval(scriptContext);
-
 		}
 		return map;
 	}
@@ -395,7 +426,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			return Objects.toString(value, "");
 		}
 
-		public void set(String value) throws Exception {
+		public void set(String value) {
 			this.value = value;
 		}
 
@@ -403,14 +434,17 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		// nothing
 	}
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		// nothing
 	}
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		// nothing
 	}
 
 }
