@@ -93,7 +93,11 @@ public class ActionExportTopUnitStatistic extends BaseAction {
 			
 			// 将结果组织成EXCEL		
 			if( check ) {
-				fileName = "" + name + "的出勤率统计记录_"+year+"年"+month+"月.xls";
+				if(StringUtils.isNotEmpty(name) && StringUtils.contains(name,"@")){
+					fileName = "" + name.split("@")[0] + "的出勤率统计记录_"+year+"年"+month+"月.xls";
+				}else{
+					fileName = "" + name + "的出勤率统计记录_"+year+"年"+month+"月.xls";
+				}
 				sheetName = "公司出勤率统计记录";
 				wb = composeDetail( fileName, sheetName, statisticUnitForMonth_list );
 			}
