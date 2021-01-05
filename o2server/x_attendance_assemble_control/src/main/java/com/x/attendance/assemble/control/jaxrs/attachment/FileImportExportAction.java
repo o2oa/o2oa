@@ -135,4 +135,67 @@ public class FileImportExportAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "导出个人出勤率统计记录,设定是否使用stream输出", action = ActionExportPersonStatistic.class)
+	@GET
+	@Path("export/person/{name}/{year}/{month}/stream/{stream}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void personStatisticExportStream(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request,
+											@JaxrsParameterDescribe("统计员工姓名") @PathParam("name") String name,
+											@JaxrsParameterDescribe("统计周期年份") @PathParam("year") String year,
+											@JaxrsParameterDescribe("统计周期月份") @PathParam("month") String month,
+											@JaxrsParameterDescribe("用.APPLICATION_OCTET_STREAM头输出") @PathParam("stream") Boolean stream) {
+		ActionResult<ActionExportPersonStatistic.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExportPersonStatistic().execute(request, effectivePerson, name, year, month, stream);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "导出部门出勤率统计记录,设定是否使用stream输出", action = ActionExportUnitSubNestedStatistic.class)
+	@GET
+	@Path("export/unit/{name}/{year}/{month}/stream/{stream}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void unitStatisticExportStream(@Suspended final AsyncResponse asyncResponse,
+										  @Context HttpServletRequest request,
+										  @JaxrsParameterDescribe("统计部门名称") @PathParam("name") String name,
+										  @JaxrsParameterDescribe("统计周期年份") @PathParam("year") String year,
+										  @JaxrsParameterDescribe("统计周期月份") @PathParam("month") String month,
+										  @JaxrsParameterDescribe("用.APPLICATION_OCTET_STREAM头输出") @PathParam("stream") Boolean stream) {
+		ActionResult<ActionExportUnitSubNestedStatistic.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExportUnitSubNestedStatistic().execute(request, effectivePerson, name, year, month, stream);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "导出公司出勤率统计记录,设定是否使用stream输出", action = ActionExportTopUnitStatistic.class)
+	@GET
+	@Path("export/topunit/{name}/{year}/{month}/stream/{stream}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void topunitStatisticExportStream(@Suspended final AsyncResponse asyncResponse,
+										  @Context HttpServletRequest request,
+										  @JaxrsParameterDescribe("统计公司名称") @PathParam("name") String name,
+										  @JaxrsParameterDescribe("统计周期年份") @PathParam("year") String year,
+										  @JaxrsParameterDescribe("统计周期月份") @PathParam("month") String month,
+										  @JaxrsParameterDescribe("用.APPLICATION_OCTET_STREAM头输出") @PathParam("stream") Boolean stream) {
+		ActionResult<ActionExportTopUnitStatistic.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExportTopUnitStatistic().execute(request, effectivePerson, name, year, month, stream);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
