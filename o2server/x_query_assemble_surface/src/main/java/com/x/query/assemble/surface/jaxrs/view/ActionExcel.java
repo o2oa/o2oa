@@ -31,10 +31,13 @@ class ActionExcel extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionExcel.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		View view;
+		Runtime runtime;
+		Business business;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			View view = business.pick(id, View.class);
+			business = new Business(emc);
+			view = business.pick(id, View.class);
 			if (null == view) {
 				throw new ExceptionEntityNotExist(id, View.class);
 			}
@@ -49,16 +52,16 @@ class ActionExcel extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, view);
 			}
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
 					wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
-			Plan plan = this.accessPlan(business, view, runtime);
-			String excelFlag = this.girdWriteToExcel(effectivePerson, business, plan, view);
-			Wo wo = new Wo();
-			wo.setId(excelFlag);
-			result.setData(wo);
-			return result;
 		}
+		Plan plan = this.accessPlan(business, view, runtime);
+		String excelFlag = this.girdWriteToExcel(effectivePerson, business, plan, view);
+		Wo wo = new Wo();
+		wo.setId(excelFlag);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WoId {
