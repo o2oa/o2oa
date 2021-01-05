@@ -902,8 +902,28 @@ bind.response = (function(){
         }else{
             return {"status": this.jaxrsResponse.status};
         }
+    }else{
+        var _self = this;
+        return {
+            "get": function(){
+                if (_self.jaxrsResponse.get()){
+                    if (JSON.validate(_self.jaxrsResponse.get())){
+                        return {
+                            "status": _self.jaxrsResponse.status,
+                            "value": JSON.decode(_self.jaxrsResponse.get())
+                        };
+                    }else{
+                        return {
+                            "status": _self.jaxrsResponse.status,
+                            "value": _self.jaxrsResponse.value
+                        };
+                    }
+                }else{
+                    return {"status": _self.jaxrsResponse.status};
+                }
+            }
+        }
     }
-    return null;
 }).apply(this);
 
 bind.assginData = {
