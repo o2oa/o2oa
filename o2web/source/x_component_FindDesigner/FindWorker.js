@@ -100,8 +100,8 @@ _worker._getRequestOption = function(data, par){
         "credentials": true,
         "address": data.url,
         "body": data.body || "",
-        "debug": data.debug,
-        "token": data.token
+        "debug": data.debug || _worker.findData.debug,
+        "token": data.token || _worker.findData.token
     };
 };
 
@@ -286,8 +286,42 @@ _worker._findMessageReply = function(data){
     });
 };
 
+_worker._createFindMessageReplyData = function(designer, pattern){
+    return {
+        "module": "processPlatform",
+        "appId": designer.appId,
+        "appName": designer.appName,
+        "designerId": designer.designerId,
+        "designerName": designer.designerName,
+        "designerType": designer.designerType,
+        "pattern": {
+            "property": pattern.property,
+            "value": json.data[pattern.property]
+        }
+    }
+};
+
 _worker._findProcessPlatformParse_script = function(designer){
-    var action = this.findData.actions.findAction
+    if (designer.patternList && designer.patternList.length){
+        var action = this.findData.actions.getProcessScript;
+        var p = _worker.action.sendRequest(_worker._getRequestOption({"url": action}, {"id": designer.designerId}););
+        p.then(function(json){
+            designer.patternList.each(function(pattern){
+                if (pattern.property=="text"){
+                    var scriptLines = json.data.text.split(/\s*\n\s*/);
+                    pattern.lines.each(function(line){
+                        var scriptText = scriptLines[line-1];
+
+                    });
+                }else{
+                    _worker._findMessageReply(_worker._createFindMessageReplyData(designer, {
+                        "property": pattern.property,
+                        "value": json.data[pattern.property]
+                    }));
+                }
+            });
+        }, function(){});
+    }
 };
 
 _worker._findProcessPlatformParse_form = function(designer){
