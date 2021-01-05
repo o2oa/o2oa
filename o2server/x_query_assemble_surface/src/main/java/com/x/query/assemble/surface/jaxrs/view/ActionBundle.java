@@ -31,10 +31,13 @@ class ActionBundle extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		logger.debug("jsonElement:{}.", jsonElement);
+		ActionResult<Wo> result = new ActionResult<>();
+		View view;
+		Runtime runtime;
+		Business business;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			View view = business.pick(id, View.class);
+			business = new Business(emc);
+			view = business.pick(id, View.class);
 			if (null == view) {
 				throw new ExceptionEntityNotExist(id, View.class);
 			}
@@ -52,14 +55,14 @@ class ActionBundle extends BaseAction {
 			if (null == wi) {
 				wi = new Wi();
 			}
-			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
 					wi.getCount(), true);
-			List<String> os = this.fetchBundle(business, view, runtime);
-			Wo wo = new Wo();
-			wo.setValueList(os);
-			result.setData(wo);
-			return result;
 		}
+		List<String> os = this.fetchBundle(business, view, runtime);
+		Wo wo = new Wo();
+		wo.setValueList(os);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wi extends GsonPropertyObject {
