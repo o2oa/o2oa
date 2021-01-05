@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.bean.NameValuePair;
@@ -46,74 +47,91 @@ public class InvokeExecutor {
 		return result;
 	}
 
-	public Object execute(JaxwsObject o) throws Exception {
+	public Object execute(JaxwsObject o) {
 		WebservicesClient client = new WebservicesClient();
 		return client.jaxws(o.getAddress(), o.getMethod(), o.getParameters());
 	}
 
-	private String jaxrsHttpPost(JaxrsObject jaxrsObject) throws Exception {
-		if (jaxrsObject.getInternal()) {
-			return CipherConnectionAction.post(true, jaxrsObject.getAddress(), jaxrsObject.getBody()).getData()
-					.toString();
-		} else {
-			List<NameValuePair> heads = new ArrayList<>();
-			heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
-			if (null != jaxrsObject.getHead()) {
-				for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
-					heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+	private String jaxrsHttpPost(JaxrsObject jaxrsObject) {
+		try {
+			if (BooleanUtils.isTrue(jaxrsObject.getInternal())) {
+				return CipherConnectionAction.post(true, jaxrsObject.getAddress(), jaxrsObject.getBody()).getData()
+						.toString();
+			} else {
+				List<NameValuePair> heads = new ArrayList<>();
+				heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+				if (null != jaxrsObject.getHead()) {
+					for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
+						heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+					}
 				}
+				return HttpConnection.postAsString(jaxrsObject.getAddress(), heads, jaxrsObject.getBody());
 			}
-			return HttpConnection.postAsString(jaxrsObject.getAddress(), heads, jaxrsObject.getBody());
+		} catch (Exception e) {
+			logger.error(new ExceptionJaxrsHttpPost(e));
 		}
+		return null;
 	}
 
 	private String jaxrsHttpPut(JaxrsObject jaxrsObject) throws Exception {
-		String value = "";
-		if (jaxrsObject.getInternal()) {
-			value =  CipherConnectionAction.post(true, jaxrsObject.getAddress(), jaxrsObject.getBody()).getData()
-					.toString();
-		
-		} else {
-			List<NameValuePair> heads = new ArrayList<>();
-			heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
-			if (null != jaxrsObject.getHead()) {
-				for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
-					heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+		try {
+			if (BooleanUtils.isTrue(jaxrsObject.getInternal())) {
+				return CipherConnectionAction.put(true, jaxrsObject.getAddress(), jaxrsObject.getBody()).getData()
+						.toString();
+			} else {
+				List<NameValuePair> heads = new ArrayList<>();
+				heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+				if (null != jaxrsObject.getHead()) {
+					for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
+						heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+					}
 				}
+				return HttpConnection.putAsString(jaxrsObject.getAddress(), heads, jaxrsObject.getBody());
 			}
-			value =  HttpConnection.postAsString(jaxrsObject.getAddress(), heads, jaxrsObject.getBody());
+		} catch (Exception e) {
+			logger.error(new ExceptionJaxrsHttpPut(e));
 		}
-		return value;
+		return null;
 	}
 
 	private String jaxrsHttpGet(JaxrsObject jaxrsObject) throws Exception {
-		if (jaxrsObject.getInternal()) {
-			return CipherConnectionAction.get(true, jaxrsObject.getAddress()).getData().toString();
-		} else {
-			List<NameValuePair> heads = new ArrayList<>();
-			heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
-			if (null != jaxrsObject.getHead()) {
-				for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
-					heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+		try {
+			if (BooleanUtils.isTrue(jaxrsObject.getInternal())) {
+				return CipherConnectionAction.get(true, jaxrsObject.getAddress()).getData().toString();
+			} else {
+				List<NameValuePair> heads = new ArrayList<>();
+				heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+				if (null != jaxrsObject.getHead()) {
+					for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
+						heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+					}
 				}
+				return HttpConnection.getAsString(jaxrsObject.getAddress(), heads);
 			}
-			return HttpConnection.getAsString(jaxrsObject.getAddress(), heads);
+		} catch (Exception e) {
+			logger.error(new ExceptionJaxrsHttpGet(e));
 		}
+		return null;
 	}
 
 	private String jaxrsHttpDelete(JaxrsObject jaxrsObject) throws Exception {
-		if (jaxrsObject.getInternal()) {
-			return CipherConnectionAction.delete(true, jaxrsObject.getAddress()).getData().toString();
-		} else {
-			List<NameValuePair> heads = new ArrayList<>();
-			heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
-			if (null != jaxrsObject.getHead()) {
-				for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
-					heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+		try {
+			if (BooleanUtils.isTrue(jaxrsObject.getInternal())) {
+				return CipherConnectionAction.delete(true, jaxrsObject.getAddress()).getData().toString();
+			} else {
+				List<NameValuePair> heads = new ArrayList<>();
+				heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+				if (null != jaxrsObject.getHead()) {
+					for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
+						heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+					}
 				}
+				return HttpConnection.deleteAsString(jaxrsObject.getAddress(), heads);
 			}
-			return HttpConnection.deleteAsString(jaxrsObject.getAddress(), heads);
+		} catch (Exception e) {
+			logger.error(new ExceptionJaxrsHttpDelete(e));
 		}
+		return null;
 	}
 
 }
