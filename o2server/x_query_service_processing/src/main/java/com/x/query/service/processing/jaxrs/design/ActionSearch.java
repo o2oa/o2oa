@@ -37,27 +37,27 @@ class ActionSearch extends BaseAction {
 	}
 
 	private Wo search(final Wi wi) {
-		final Map<String, List<String>> moduleMap = new HashMap<>();
+		final Map<String, List<WiDesigner.ModuleApp>> moduleMap = new HashMap<>();
 		if(!ListTools.isEmpty(wi.getModuleList())){
 			for (Module module: wi.getModuleList()){
 				if(module.getModuleType().equalsIgnoreCase(ModuleType.cms.toString())){
-					moduleMap.put(ModuleType.cms.toString(), module.getFlagList());
+					moduleMap.put(ModuleType.cms.toString(), module.getModuleAppList());
 				}
 				if(module.getModuleType().equalsIgnoreCase(ModuleType.portal.toString())){
-					moduleMap.put(ModuleType.portal.toString(), module.getFlagList());
+					moduleMap.put(ModuleType.portal.toString(), module.getModuleAppList());
 				}
 				if(module.getModuleType().equalsIgnoreCase(ModuleType.processPlatform.toString())){
-					moduleMap.put(ModuleType.processPlatform.toString(), module.getFlagList());
+					moduleMap.put(ModuleType.processPlatform.toString(), module.getModuleAppList());
 				}
 				if(module.getModuleType().equalsIgnoreCase(ModuleType.query.toString())){
-					moduleMap.put(ModuleType.query.toString(), module.getFlagList());
+					moduleMap.put(ModuleType.query.toString(), module.getModuleAppList());
 				}
 				if(module.getModuleType().equalsIgnoreCase(ModuleType.service.toString())){
-					moduleMap.put(ModuleType.service.toString(), module.getFlagList());
+					moduleMap.put(ModuleType.service.toString(), module.getModuleAppList());
 				}
 			}
 		}else{
-			List<String> list = new ArrayList<>();
+			List<WiDesigner.ModuleApp> list = new ArrayList<>();
 			moduleMap.put(ModuleType.cms.toString(), list);
 			moduleMap.put(ModuleType.portal.toString(), list);
 			moduleMap.put(ModuleType.processPlatform.toString(), list);
@@ -99,14 +99,14 @@ class ActionSearch extends BaseAction {
 		return wo;
 	}
 
-	private CompletableFuture<List<WrapDesigner>> searchAsync(final Wi wi, final Map<String, List<String>> moduleMap, final String moduleType, final Class<?> applicationClass, Executor executor){
+	private CompletableFuture<List<WrapDesigner>> searchAsync(final Wi wi, final Map<String, List<WiDesigner.ModuleApp>> moduleMap, final String moduleType, final Class<?> applicationClass, Executor executor){
 		CompletableFuture<List<WrapDesigner>> cf = CompletableFuture.supplyAsync(() -> {
 			List<WrapDesigner> swList = new ArrayList<>();
 			if(moduleMap.containsKey(moduleType)) {
 				try {
 					WiDesigner wiDesigner = new WiDesigner();
 					BeanUtils.copyProperties(wiDesigner, wi);
-					wiDesigner.setAppIdList(moduleMap.get(moduleType));
+					wiDesigner.setModuleAppList(moduleMap.get(moduleType));
 					List<WrapDesigner> designerList = ThisApplication.context().applications().postQuery(applicationClass,
 							Applications.joinQueryUri("designer", "search"), wiDesigner).getDataAsList(WrapDesigner.class);
 					logger.info("设计搜索关联{}的匹配设计个数：{}", moduleType, designerList.size());
@@ -146,7 +146,7 @@ class ActionSearch extends BaseAction {
 
 		@FieldDescribe("搜索关键字.")
 		private String keyword;
-		@FieldDescribe("搜索设计类型：script|form|page|widget|process")
+		@FieldDescribe("搜索设计类型：script|form|page|widget|process|view|table|stat|statement")
 		private List<String> designerTypes;
 		@FieldDescribe("是否区分大小写.")
 		private Boolean caseSensitive;
@@ -154,8 +154,8 @@ class ActionSearch extends BaseAction {
 		private Boolean matchWholeWord;
 		@FieldDescribe("是否正则表达式匹配.")
 		private Boolean matchRegExp;
-		@FieldDescribe("限制查询的模块列表(模块类型：processPlatform|cms|portal|query|service).")
-		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "Module", fieldValue = "{\"moduleType\": \"cms\", \"flagList\": []}")
+		@FieldDescribe("限制查询的模块列表(模块类型：processPlatform|cms|portal|query|service)<br/>\r\n")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "Module", fieldValue = "{\"moduleType\": \"processPlatform\", \"moduleAppList\": [{\"appId\":\"\", \"designerList\": [{\"designerType\":\"process\", \"designerIdList\": []}]}]}")
 		private List<Module> moduleList;
 
 		public String getKeyword() {
@@ -208,17 +208,17 @@ class ActionSearch extends BaseAction {
 	}
 
 	public static class Module extends GsonPropertyObject {
-		@FieldDescribe("模块的应用id列表.")
-		private List<String> flagList;
+		@FieldDescribe("模块的应用列表.")
+		private List<WiDesigner.ModuleApp> moduleAppList = new ArrayList<>();
 		@FieldDescribe("模块类型.")
 		private String moduleType;
 
-		public List<String> getFlagList() {
-			return flagList == null ? new ArrayList<>() : flagList;
+		public List<WiDesigner.ModuleApp> getModuleAppList() {
+			return moduleAppList;
 		}
 
-		public void setFlagList(List<String> flagList) {
-			this.flagList = flagList;
+		public void setModuleAppList(List<WiDesigner.ModuleApp> moduleAppList) {
+			this.moduleAppList = moduleAppList;
 		}
 
 		public String getModuleType() {
