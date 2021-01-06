@@ -281,12 +281,9 @@ _worker._parseFindModule = function(moduleList){
 
 _worker._findMessageReply = function(data, option){
     _worker.setTimeout(function(){
-        _worker.postMessage({
-            "type": "find",
-            "data": data,
-            "option": option
-        });
-    }, 200);
+        _worker.postMessage(data);
+    }, 100);
+
 };
 _worker._findOptionReply = function(){
     _worker.postMessage({
@@ -311,13 +308,13 @@ _worker._createFindMessageReplyData = function(module, designer, aliase, pattern
 };
 
 _worker._setFilterOptionRegex = function(){
-    var keyword = _worker.findData.filterOption.keyword;
-    if (_worker.findData.filterOption.matchRegExp){
-        var flag = (_worker.findData.filterOption.caseSensitive) ? "g" : "gi";
+    var keyword = _worker.findData.option.keyword;
+    if (_worker.findData.option.matchRegExp){
+        var flag = (_worker.findData.option.caseSensitive) ? "g" : "gi";
         this.keywordRegexp =  new RegExp(keyword, flag);
     }else{
-        var flag = (_worker.findData.filterOption.caseSensitive) ? "g" : "gi";
-        keyword = (_worker.findData.filterOption.matchWholeWord) ? "\\b"+keyword+"\\b" : keyword;
+        var flag = (_worker.findData.option.caseSensitive) ? "g" : "gi";
+        keyword = (_worker.findData.option.matchWholeWord) ? "\\b"+keyword+"\\b" : keyword;
         this.keywordRegexp = new RegExp(keyword, flag);
     }
 };
@@ -382,9 +379,7 @@ _worker._findProcessPlatformParse = function(resultList){
 };
 
 
-_worker._doFindDesigner = function(option, idx){
-
-    var option = this.filterOptionList[idx];
+_worker._doFindDesigner = function(option){
 
         var res = _worker._getRequestOption({
             "method": "post",
@@ -395,19 +390,7 @@ _worker._doFindDesigner = function(option, idx){
         });
         this.action.sendRequest(res).then(function(json){
             if (json.data.processPlatformList && json.data.processPlatformList.length){
-
-                // var worker = new Worker("../x_component_FindDesigner/PatternWorker.js");
-                // worker.onmessage = function(e) {
-                //     if (e.data) _worker._findMessageReply(e.data, option);
-                // }.bind(this);
-                // worker.postMessage({
-                //     "parser": "_findProcessPlatformParse",
-                //     "actions": _worker.findData.actions,
-                //     "option": option,
-                //     "pattern": json.data.processPlatformList
-                // });
-
-               _worker._findProcessPlatformParse(json.data.processPlatformList);
+                _worker._findProcessPlatformParse(json.data.processPlatformList);
             }
             if (json.data.cmsList && json.data.cmsList.length){
 
@@ -422,18 +405,10 @@ _worker._doFindDesigner = function(option, idx){
 
             }
             _worker._findOptionReply();
-
-            idx++;
-            if (this.filterOptionList.length>idx)  _worker._doFindDesigner(null, idx);
-            //this.filterOptionList[idx];
-
             //_worker._findMessageReply(json.data, option);
         }, function(xhr){
             _worker._findOptionReply(null);
             _worker._findMessageReply(null);
-
-            idx++;
-            if (this.filterOptionList.length>idx)  _worker._doFindDesigner(null, idx);
         });
 
 
@@ -441,52 +416,16 @@ _worker._doFindDesigner = function(option, idx){
 },
 
 _worker._doFindDesignerFromFilterOption = function(){
-    var idx = 0;
-    //this.filterOptionList.forEach(function(option){
-    //    _worker._doFindDesigner(option, idx);
-    //});
-
-    _worker._doFindDesigner(null, idx);
+    this.filterOptionList.forEach(function(option){
+        _worker._doFindDesigner(option);
+    });
 },
 onmessage = function(e) {
     this.findData = e.data;
-    var moduleList = this.findData.filterOption.moduleList;
-    this.findData.filterOption.moduleList = [];
     _worker._setFilterOptionRegex();
-
-    this.filterOptionTemplete = JSON.stringify(this.findData.filterOption);
-    this.filterOptionList = [];
-
-    Promise.all(_worker._parseFindModule(moduleList)).then(function(){
-        // this.filterOptionList[0].moduleList=[];
-        // //_worker._doFindDesigner(this.filterOptionList[0]);
-        // this.filterOptionList = [this.filterOptionList[0]];
-        _worker._readyMessageReply();
-        _worker._doFindDesignerFromFilterOption();
-    });
-
-    //"moduleType": "cms", "flagList": [];
-    // designerTypes
-    // flagList = [{
-    //     "id": "dddd",
-    //     "desingerList": [
-    //         {
-    //             "desingerType": "脚本(script)表单(form)流程(process)页面(page)部件(widget)视图(view)脚本(statement)统计(stat",
-    //             "id": ""
-    //         },
-    //         {
-    //             "desingerType": "脚本(script)表单(form)流程(process)页面(page)部件(widget)视图(view)脚本(statement)统计(stat",
-    //             "id": ""
-    //         }
-    //     ]
-    // }]
-
-
-
-
-    _worker._receiveMessageReply();
-
-
-
-    //_worker.action.sendRequest(e.data);
+    // "parser": "_findProcessPlatformParse",
+    //     "actions": _worker.findData.actions,
+    //     "option": option,
+    //     "pattern": json.data.processPlatformList
+    _worker[e.data.parser](e.data.pattern);
 }
