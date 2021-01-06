@@ -322,7 +322,7 @@ _worker._setFilterOptionRegex = function(){
     }
 };
 
-_worker._findProcessPlatformParse_script = function(designer){
+_worker._findProcessPlatformParse_script = function(designer, option){
     if (designer.patternList && designer.patternList.length){
         var action = this.findData.actions.getProcessScript;
 
@@ -343,14 +343,14 @@ _worker._findProcessPlatformParse_script = function(designer){
                                 "line": line,
                                 "column": col,
                                 "key": key
-                            }));
+                            }), option);
                         }
                     });
                 }else{
                     _worker._findMessageReply(_worker._createFindMessageReplyData("processPlatform", designer, json.data.aliase, {
                         "property": pattern.property,
                         "value": json.data[pattern.property]
-                    }));
+                    }), option);
                 }
             });
         }, function(){});
@@ -365,17 +365,17 @@ _worker._findProcessPlatformParse_process = function(designer){
 
 };
 
-_worker._findProcessPlatformParse = function(resultList){
+_worker._findProcessPlatformParse = function(resultList, option){
     resultList.forEach(function(designer){
         switch (designer.designerType){
             case "script":
-                _worker._findProcessPlatformParse_script(designer);
+                _worker._findProcessPlatformParse_script(designer, option);
                 break;
             case "form":
-                _worker._findProcessPlatformParse_form(designer);
+                _worker._findProcessPlatformParse_form(designer, option);
                 break;
             case "process":
-                _worker._findProcessPlatformParse_process(designer);
+                _worker._findProcessPlatformParse_process(designer, option);
                 break;
         }
     });
@@ -407,7 +407,7 @@ _worker._doFindDesigner = function(option, idx){
                 //     "pattern": json.data.processPlatformList
                 // });
 
-               _worker._findProcessPlatformParse(json.data.processPlatformList);
+               _worker._findProcessPlatformParse(json.data.processPlatformList, option);
             }
             if (json.data.cmsList && json.data.cmsList.length){
 
