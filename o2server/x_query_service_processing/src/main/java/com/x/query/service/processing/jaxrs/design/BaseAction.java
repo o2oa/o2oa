@@ -2,24 +2,21 @@ package com.x.query.service.processing.jaxrs.design;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.WrapDesigner;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.FileTools;
 import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-    protected List<Integer> patternLines(String id, String keyword, String content, Boolean caseSensitive, Boolean matchWholeWord, Boolean matchRegExp){
-        List<Integer> list = new ArrayList<>();
+    protected Map<Integer, String> patternLines(String id, String keyword, String content, Boolean caseSensitive, Boolean matchWholeWord, Boolean matchRegExp){
+        Map<Integer, String> map = new LinkedHashMap<>();
         File file = readFile(id, content);
         if (file!=null){
             try (RandomAccessFile randomFile = new RandomAccessFile(file, "r")) {
@@ -31,7 +28,10 @@ abstract class BaseAction extends StandardJaxrsAction {
                     String lineStr = new String(bytes);
                     if(StringUtils.isNotBlank(lineStr) && lineStr.length()>=keyword.length()){
                         if(StringTools.matchKeyword(keyword, lineStr, caseSensitive, matchWholeWord, matchRegExp)){
-                            list.add(curReadLine);
+                            if(lineStr.length()>500){
+                                lineStr = lineStr.substring(0, 500);
+                            }
+                            map.put(curReadLine, lineStr);
                         }
                     }
                 }
@@ -39,7 +39,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                 e.printStackTrace();
             }
         }
-        return list;
+        return map;
     }
 
     private synchronized File readFile(String id, String content){
