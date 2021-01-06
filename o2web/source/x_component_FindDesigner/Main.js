@@ -348,38 +348,137 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		this.findWorker.onmessage = function(e) {
 			if (e.data && e.data.type=="receive") this.setReceiveMessage();
 			if (e.data && e.data.type=="ready") this.setReadyMessage(e.data);
+			if (e.data && e.data.type=="done") this.doFindOptionResult(e.data);
 			if (e.data && e.data.type=="find") this.doFindResult(e.data);
 		}.bind(this);
 	},
-	doFindResult: function(data){
+	doFindOptionResult: function(){
+		// this.listInfoNode.hide();
+		// this.listContentNode.show();
+		// moduleNode = this.createResultCategroyItem("xxxx", "", this.tree);
 		this.findOptionModuleProcessed++;
 		this.updateFindProgress();
-		this.showFindResult(data);
+	},
+	doFindResult: function(data){
+		if (data.data) this.showFindResult(data.data);
 	},
 
 	getResultTree: function(callback){
 		if (!this.tree){
 			o2.require("o2.widget.Tree", function(){
 				this.tree = new o2.widget.Tree(this.listContentNode, {
+					"style": "findDesigner"
 					// "onQueryExpand": function(item){
 					// 	if (item.designer) this.loadDesignerPattern(item);
 					// }.bind(this)
 				});
 				this.tree.load();
 				if (callback) callback();
-			}.bind(this));
+			}.bind(this), null, false);
 		}else{
 			if (callback) callback();
 		}
 	},
+	createResultCategroyItem: function(text, title, tree){
+		var obj = {
+			"title": title,
+			"text": "<span style='font-weight: bold'>"+text+"</span>",
+			"icon": ""
+		}
+		return tree.appendChild(obj);
+	},
+	createResultAppItem: function(text, title, tree){
+		var obj = {
+			"title": title,
+			"text": "<span style='font-weight: bold; color: #0b58a2'>"+text+"</span>",
+			"icon": ""
+		}
+		return tree.appendChild(obj);
+	},
+	createResultTypeItem: function(text, title, tree){
+		var obj = {
+			"title": title,
+			"text": "<span>"+text+"</span>",
+			"icon": ""
+		}
+		return tree.appendChild(obj);
+	},
+	createResultPatternItem: function(text, title, tree){
+		var obj = {
+			"title": title,
+			"text": "<span style='color: #666666'>"+text+"</span>",
+			"icon": ""
+		}
+		return tree.appendChild(obj);
+	},
+	showFindResult: function(data){
+		if (!this.patternCount) this.patternCount = 0;
+		this.patternCount++;
+		var t = this.lp.findPatternCount.replace("{n}", this.patternCount);
+		this.listTitleInfoNode.set("text", t);
 
-	showFindResult: function(){
+		this.listInfoNode.hide();
+		this.listContentNode.show();
+		// this.listContentNode.appendHTML("<div>2</div>");
+		//return "";
+		//this.getResultTree(function(){
+			var moduleNode = (this.tree.modules) ? this.tree.modules[data.module] : null;
+			if (!moduleNode){
+				moduleNode = this.createResultCategroyItem(this.lp[data.module], this.lp[data.module], this.tree);
+				if (!this.tree.modules) this.tree.modules = {};
+				this.tree.modules[data.module] = moduleNode;
+			}
+			var appNode = (moduleNode.apps) ? moduleNode.apps[data.appId] : null;
+			if (!appNode){
+				appNode = this.createResultAppItem(data.appName, data.appName, moduleNode);
+				if (!moduleNode.apps) moduleNode.apps = {};
+				moduleNode.apps[data.appId] = appNode;
+			}
 
+			var typeNode = (appNode.types) ? appNode.types[data.designerType] : null;
+			if (!typeNode){
+				typeNode = this.createResultTypeItem(this.lp[data.designerType], this.lp[data.designerType], appNode);
+				if (!appNode.types) appNode.types = {};
+				appNode.types[data.designerType] = typeNode;
+			}
+
+			var designerNode = (typeNode.designers) ? typeNode.designers[data.designerId] : null;
+			if (!designerNode){
+				designerNode = this.createResultTypeItem(data.designerName, data.designerName, typeNode);
+				if (!typeNode.designers) typeNode.designers = {};
+				typeNode.designers[data.designerId] = designerNode;
+			}
+
+
+			switch (data.designerType){
+				case "script":
+					this.createScriptPatternNode(data, designerNode);
+					break;
+				case "form":
+
+					break;
+				case "process":
+
+					break;
+
+			}
+
+		//}.bind(this));
+	},
+	createScriptPatternNode: function(data, node){
+		var patternNode;
+		var text;
+		if (data.pattern.property=="text"){
+			text = data.pattern.line+" "+data.pattern.value;
+			patternNode = this.createResultPatternItem(text, "", node);
+		}else{
+			text = "<b>"+data.pattern.property+"</b> "+data.pattern.value;
+			patternNode = this.createResultPatternItem(text, "", node);
+		}
 
 	},
 
 
-	},
 	setReceiveMessage: function(){
 		this.listTitleInfoNode.set("text", this.lp.receiveToFind);
 	},
@@ -444,16 +543,25 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	},
 
 	findDesigner: function(){
+		this.listContentNode.hide();
+		this.listContentNode.empty();
+		this.listInfoNode.show().getFirst().set("text", "");
+		this.listInfoNode.addClass("loadding");
+		this.patternCount = 0;
+
 		this.getFindWorker();
 		var actions = this.getActionsUrl();
 
-		var workerMessage = {
-			actions:actions,
-			filterOption: this.filterOption,
-			debug: (window.layout && layout["debugger"]),
-			token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : ""
-		};
-		this.findWorker.postMessage(workerMessage);
+		this.tree = null;
+		this.getResultTree(function(){
+			var workerMessage = {
+				actions:actions,
+				filterOption: this.filterOption,
+				debug: (window.layout && layout["debugger"]),
+				token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : ""
+			};
+			this.findWorker.postMessage(workerMessage);
+		}.bind(this));
 	},
 
 	//------------------------------------------------------------
@@ -478,14 +586,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}.bind(this));
 	},
 
-	createResultCategroyItem: function(text, title, tree){
-		var obj = {
-			"title": title,
-			"text": "<span style='font-weight: bold'>"+text+"</span>",
-			"icon": ""
-		}
-		return tree.appendChild(obj);
-	},
+
 	createResultAppItem: function(text, title, tree){
 		var obj = {
 			"title": title,

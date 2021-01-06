@@ -32,5 +32,6 @@ MWF.xApplication.FindDesigner.LP = {
 	"patternCount": "{n} 项匹配",
 
 	"receiveToFind": "正在准备查询数据 ...",
-	"readyToFind": "设计元素准备完毕（共{n}个） ..."
+	"readyToFind": "设计元素准备完毕（共{n}个） ...",
+	"findPatternCount": "已找到{n}项匹配"
 };

@@ -229,8 +229,9 @@ o2.widget.Tree.Node = new Class({
 			"border": "0",
 			"cellpadding": "0",
 			"cellspacing": "0",
-			"styles": this.tree.css.nodeTable
+			"styles": {"width": "fit-content", "table-layout": "fixed"}
 		}).inject(this.itemNode);
+		this.nodeTable.setStyles(this.tree.css.nodeTable);
 
         if (this.options.style){
             if (this.tree.css[this.options.style]){
@@ -312,12 +313,13 @@ o2.widget.Tree.Node = new Class({
         }
 	//	var width = this.tree.container.getSize().x - (this.level*20+40);
 	//	this.textNode.setStyle("width", ""+width+"px");
-		
+
 		var textDivNode = new Element("div", {
-			"styles": this.tree.css.textDivNode,
-		//	"html": this.options.text,
+			"styles": {"display": "inline-block"},
+			//	"html": this.options.text,
 			"title": this.options.title
 		});
+		textDivNode.setStyles(this.tree.css.textDivNode);
         if (this.options.style){
             if (this.tree.css[this.options.style]){
                 textDivNode.setStyles(this.tree.css[this.options.style].textDivNode);
