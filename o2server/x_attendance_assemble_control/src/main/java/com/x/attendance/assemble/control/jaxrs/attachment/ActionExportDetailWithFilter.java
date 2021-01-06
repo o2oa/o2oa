@@ -235,7 +235,11 @@ public class ActionExportDetailWithFilter extends BaseAction {
 				row.createCell(8).setCellValue(attendanceDetail.getOffDutyTime());
 
 				if(attendanceDetail.getIsGetSelfHolidays()){
-					row.createCell(9).setCellValue("请假或外出报备");
+					if(StringUtils.isNotEmpty(attendanceDetail.getLeaveType())){
+						row.createCell(9).setCellValue(attendanceDetail.getLeaveType());
+					}else{
+						row.createCell(9).setCellValue("请假或外出报备");
+					}
 				}else if (attendanceDetail.getIsAbsent()) {
 					row.createCell(9).setCellValue("缺勤");
 				} else if (attendanceDetail.getIsLackOfTime()) {
