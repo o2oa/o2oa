@@ -360,7 +360,8 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		this.updateFindProgress();
 	},
 	doFindResult: function(data){
-		if (data.data) this.showFindResult(data.data);
+		debugger
+		if (data.data) this.showFindResult(data.data, data.option);
 	},
 
 	getResultTree: function(callback){
@@ -403,6 +404,15 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}
 		return tree.appendChild(obj);
 	},
+	createResultDesignerItem: function(text, title, tree){
+		var obj = {
+			"expand": false,
+			"title": title,
+			"text": "<span>"+text+"</span>",
+			"icon": ""
+		}
+		return tree.appendChild(obj);
+	},
 	createResultPatternItem: function(text, title, tree){
 		var obj = {
 			"title": title,
@@ -422,7 +432,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			textDivNode.set("html", t);
 		}
 	},
-	showFindResult: function(data){
+	showFindResult: function(data,option){
 		if (!this.patternCount) this.patternCount = 0;
 		this.patternCount++;
 		var t = this.lp.findPatternCount.replace("{n}", this.patternCount);
@@ -430,73 +440,94 @@ MWF.xApplication.FindDesigner.Main = new Class({
 
 		this.listInfoNode.hide();
 		this.listContentNode.show();
-		// this.listContentNode.appendHTML("<div>2</div>");
-		//return "";
-		//this.getResultTree(function(){
-			var moduleNode = (this.tree.modules) ? this.tree.modules[data.module] : null;
-			if (!moduleNode){
-				moduleNode = this.createResultCategroyItem(this.lp[data.module], this.lp[data.module], this.tree);
-				moduleNode.patternCount = 0;
-				if (!this.tree.modules) this.tree.modules = {};
-				this.tree.modules[data.module] = moduleNode;
-			}
+
+		var regexp = this.getFilterOptionRegex(option);
+		var moduleNode = (this.tree.modules) ? this.tree.modules[data.module] : null;
+		if (!moduleNode){
+			moduleNode = this.createResultCategroyItem(this.lp[data.module], this.lp[data.module], this.tree);
+			moduleNode.patternCount = 0;
+			if (!this.tree.modules) this.tree.modules = {};
+			this.tree.modules[data.module] = moduleNode;
+		}
 		this.updatePatternCount(moduleNode);
 
-			var appNode = (moduleNode.apps) ? moduleNode.apps[data.appId] : null;
-			if (!appNode){
-				appNode = this.createResultAppItem(data.appName, data.appName, moduleNode);
-				appNode.patternCount = 0;
-				if (!moduleNode.apps) moduleNode.apps = {};
-				moduleNode.apps[data.appId] = appNode;
-			}
+		var appNode = (moduleNode.apps) ? moduleNode.apps[data.appId] : null;
+		if (!appNode){
+			appNode = this.createResultAppItem(data.appName, data.appName, moduleNode);
+			appNode.patternCount = 0;
+			if (!moduleNode.apps) moduleNode.apps = {};
+			moduleNode.apps[data.appId] = appNode;
+		}
 		this.updatePatternCount(appNode);
 
-			var typeNode = (appNode.types) ? appNode.types[data.designerType] : null;
-			if (!typeNode){
-				typeNode = this.createResultTypeItem(this.lp[data.designerType], this.lp[data.designerType], appNode);
-				typeNode.patternCount = 0;
-				if (!appNode.types) appNode.types = {};
-				appNode.types[data.designerType] = typeNode;
-			}
+		var typeNode = (appNode.types) ? appNode.types[data.designerType] : null;
+		if (!typeNode){
+			typeNode = this.createResultTypeItem(this.lp[data.designerType], this.lp[data.designerType], appNode);
+			typeNode.patternCount = 0;
+			if (!appNode.types) appNode.types = {};
+			appNode.types[data.designerType] = typeNode;
+		}
 		this.updatePatternCount(typeNode);
 
-			var designerNode = (typeNode.designers) ? typeNode.designers[data.designerId] : null;
-			if (!designerNode){
-				designerNode = this.createResultTypeItem(data.designerName, data.designerName, typeNode);
-				designerNode.patternCount = 0;
-				if (!typeNode.designers) typeNode.designers = {};
-				typeNode.designers[data.designerId] = designerNode;
-			}
+		var designerNode = (typeNode.designers) ? typeNode.designers[data.designerId] : null;
+		if (!designerNode){
+			designerNode = this.createResultDesignerItem(data.designerName, data.designerName, typeNode);
+			designerNode.patternCount = 0;
+			if (!typeNode.designers) typeNode.designers = {};
+			typeNode.designers[data.designerId] = designerNode;
+		}
 		this.updatePatternCount(designerNode);
 
-			switch (data.designerType){
-				case "script":
-					this.createScriptPatternNode(data, designerNode);
-					break;
-				case "form":
+		switch (data.designerType){
+			case "script":
+				this.createScriptPatternNode(data, designerNode, regexp);
+				break;
+			case "form":
 
-					break;
-				case "process":
+				break;
+			case "process":
 
-					break;
+				break;
 
-			}
+		}
 
 		//}.bind(this));
 	},
-	createScriptPatternNode: function(data, node){
+	getPatternValue: function(value, regexp){
+		regexp.lastIndex = 0;
+		var valueHtml = "";
+		var idx = 0;
+		while ((arr = regexp.exec(value)) !== null) {
+			valueHtml += value.substring(idx, arr.index);
+			valueHtml += "<span style='background-color: #ffef8f'>"+value.substring(arr.index, regexp.lastIndex)+"</span>";
+			idx = regexp.lastIndex;
+		}
+		return valueHtml;
+	},
+	createScriptPatternNode: function(data, node, regexp){
+		debugger;
 		var patternNode;
 		var text;
 		if (data.pattern.property=="text"){
-			text = data.pattern.line+" "+data.pattern.value;
+			text = "<b>"+data.pattern.line+"</b> "+this.getPatternValue(data.pattern.value, regexp);
 			patternNode = this.createResultPatternItem(text, "", node);
 		}else{
-			text = "<b>"+data.pattern.property+"</b> "+data.pattern.value;
+			text = this.lp.property+":<b>"+data.pattern.property+"</b> "+this.lp.value+":"+this.getPatternValue(data.pattern.value, regexp);
 			patternNode = this.createResultPatternItem(text, "", node);
 		}
 
 	},
-
+	getFilterOptionRegex: function(option){
+		var keyword = option.keyword;
+		if (option.matchRegExp){
+			var flag = (option.caseSensitive) ? "g" : "gi";
+			return new RegExp(keyword, flag);
+		}else{
+			var flag = (option.caseSensitive) ? "g" : "gi";
+			keyword = (option.matchWholeWord) ? "\\b"+keyword+"\\b" : keyword;
+			return new RegExp(keyword, flag);
+		}
+	},
 
 	setReceiveMessage: function(){
 		this.listTitleInfoNode.set("text", this.lp.receiveToFind);
@@ -614,20 +645,20 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}
 		return tree.appendChild(obj);
 	},
-	createResultDesignerItem: function(designer, tree){
-		var title = this.lp[designer.designerType]+ ": "+ designer.designerName + " ("+designer.designerId+")";
-		var text = this.lp[designer.designerType]+ ": <b>"+ designer.designerName+"</b>";
-		var obj = {
-			"expand": false,
-			"title": title,
-			"text": text,
-			"icon": ""
-		}
-		var item = tree.appendChild(obj);
-		item.designer = designer;
-		item.appendChild({ "expand": false, "text": "loading...", "icon": "" });
-		return item;
-	},
+	// createResultDesignerItem: function(designer, tree){
+	// 	var title = this.lp[designer.designerType]+ ": "+ designer.designerName + " ("+designer.designerId+")";
+	// 	var text = this.lp[designer.designerType]+ ": <b>"+ designer.designerName+"</b>";
+	// 	var obj = {
+	// 		"expand": false,
+	// 		"title": title,
+	// 		"text": text,
+	// 		"icon": ""
+	// 	}
+	// 	var item = tree.appendChild(obj);
+	// 	item.designer = designer;
+	// 	item.appendChild({ "expand": false, "text": "loading...", "icon": "" });
+	// 	return item;
+	// },
 	listFindResult: function(data){
 		this.listContentNode.empty();
 		this.listContentNode.show();

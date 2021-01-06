@@ -12,6 +12,9 @@ MWF.xApplication.FindDesigner.LP = {
 	"view": "视图",
 	"statement": "脚本",
 	"stat": "统计",
+	"property": "属性",
+	"value": "值",
+
 
 	"processPlatform": "流程平台",
 	"cms": "内容管理",
