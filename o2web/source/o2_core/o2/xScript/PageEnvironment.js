@@ -1429,7 +1429,7 @@ MWF.xScript.PageEnvironment = function (ev) {
      * @module page
      * @o2range {Portal}
      * @o2ordernumber 50
-     * @example
+     * @o2syntax
      * //您可以在门户表单中，通过this来获取page对象，如下：
      * var page = this.page;
      */
@@ -1440,7 +1440,7 @@ MWF.xScript.PageEnvironment = function (ev) {
          * @param {String} name - 要跳转的页面名称
          * @param {Object} [par] - 要传入被打开页面的数据。在被打开的页面可以用this.page.parameters获取
          * @param {Boolean} [par] - 页面条件的时候，不往History里增加历史状态，默认为false
-         * @example
+         * @o2syntax
          * //跳转到当前门户的指定页面。
          * this.page.toPage( name, par );
          * @example
@@ -1459,7 +1459,7 @@ MWF.xScript.PageEnvironment = function (ev) {
          * @param {String} portal - 要跳转的门户名称。
          * @param {String} [page] - 要打开的门户的页面名称。为空则打开指定门户的默认首页。
          * @param {String} [par] - 在被打开的页面可以用this.page.parameters获取。
-         * @example
+         * @o2syntax
          * this.page.toPortal( portal, page, par );
          * @example
          * this.page.toPortal("公文门户", "列表页面", {"key": "发文列表"});//打开“公文门户”的“列表页面”，并传入一个json数据。
@@ -1505,6 +1505,8 @@ MWF.xScript.PageEnvironment = function (ev) {
          * @param {String} moduleName  - 部件元素标识。
          * @return {FormComponent} 请查看本文档的Classes导航下的FormComponents。
          * @see module:form.get
+         * @o2syntax
+         * this.page.getWidgetModule( widget, moduleName );
          * @example
          * <caption>
          * 1、设计了一个部件，包含一个设计元素subject。<br/>
@@ -1909,6 +1911,8 @@ MWF.xScript.PageEnvironment = function (ev) {
          * @member parameters
          * @static
          * @return {Boolean} 任意数据类型，根据传入的参数决定。
+         * @o2syntax
+         * var par = this.page.parameters
          * @example
          * //打开页面时传入参数：
          * this.form.openPortal(id, "", {"type": "my type"});
@@ -1924,7 +1928,7 @@ MWF.xScript.PageEnvironment = function (ev) {
          * @method getWidgetPrameters
          * @static
          * @return {Object} 任意数据类型，根据传入的参数决定。
-         * @example
+         * @o2syntax
          * var par = this.page.getWidgetPrameters();
          * @example
          * //在主页面嵌入部件的地方传入参数：
