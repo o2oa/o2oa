@@ -338,7 +338,7 @@ MWF.xScript.Environment = function(ev){
          * @param {(String|Number|Array|JsonObject)} value - 新的数据节点的值。
          * @param {Boolean} [overwrite] - 如果要添加的节点已经存在，是否覆盖。默认为 false。
          * @return {(String|Number|Array|JsonObject)} 新添加的数据节点或原有的同名节点。
-         * @example
+         * @o2syntax
          * var newData = this.data.add(key, value, overwrite);
          * @example
          * //为data添加一个名为"remark"值为"I am remark"的数据
@@ -372,6 +372,8 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @memberOf module:data
          * @param {Function} [callback] - 保存成功后的回调函数。
+         * @o2syntax
+         * this.data.save(callback);
          * @example
          * this.data.save(function(json){
          *   this.form.notice("save success!", "success")
@@ -402,7 +404,7 @@ MWF.xScript.Environment = function(ev){
      * @module workContext
      * @o2range {Process}
      * @o2ordernumber 20
-     * @example
+     * @o2syntax
      * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
      * var context = this.workContext;
      */
@@ -410,9 +412,65 @@ MWF.xScript.Environment = function(ev){
         /**
          * 获取当前流程实例对象：work对象或workCompleted对象。
          * @method getWork
+         * @o2ActionOut x_processplatform_assemble_surface.WorkAction.V2GetWorkOrWorkCompleted
          * @static
          * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象.
-         * @example
+         * <div>Work对象：</div>
+         * <pre><code class='language-js'>{
+         *     "id": "854e2c22-718e-48bb-98db-96f4b43e7ee8",   //流程实例ID
+         *     "splitValue": "xxxxxxxxxxxxxx", //流程拆分后的拆分依据
+         *     "title": "xx7月北京出差报销审批",               //流程实例名称
+         *     "startTime": "2018-09-07 14:03:22",             //流程启动时间
+         *     "startTimeMonth": "2018-09",                    //流程启动的月份
+         *     "creatorPerson": "xx@huqi@P",                   //流程实例创建人
+         *     "creatorIdentity": "xx@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人身份
+         *     "creatorUnit": "xx@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",     //流程实例创建人所在组织
+         *     "creatorUnitLevelName": "浙江兰德纵横/开发部",          //流程实例创建人所在组织层次
+         *     "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
+         *     "applicationName": "财务管理",                          //流程应用名称
+         *     "applicationAlias": "finance",                          //流程应用别名
+         *     "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
+         *     "processName": "报销审批流程",                          //流程名称
+         *     "processAlias": "",                                     //流程别名
+         *     "activity": "13d15daf-2ac5-4c1b-a669-1607a0e5ed15",     //当前活动ID
+         *     "activityType": "manual",                               //当前活动类型
+         *     "activityName": "部门领导审核",                         //当前活动名称
+         *     "activityAlias": "",                                    //当前活动别名
+         *     "activityDescription": "",                              //当前活动描述
+         *     "activityArrivedTime": "2018-09-27 22:49:21",           //当前活动到达时间
+         *     "serial": "",                                           //编号
+         *     "workStatus": "processing",                             //流程实例状态
+         *     "errorRetry": 0,                                        //流转失败重试次数
+         *     "splitting": false,                                     //流程是否拆分
+         *     "form": "db3b2766-93a1-4058-b522-0edb922bd84f",          //流程展现所使用的表单
+         *     "manualTaskIdentityList" : "张三@db3b2766-93a1-4058-b522-0edb922bd84f@I", //预期的处理人
+         *     "manualTaskIdentityText" : "张三" //当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.
+         * }
+         * </pre></code>
+         * WorkCompleted对象：
+         * <pre><code class='language-js'>
+         * {
+         *    "id": "be0195f1-f2e2-4eac-911c-99897a43ff8f",   //流程实例ID
+         *    "title": "xx7月北京出差报销审批",               //流程实例名称
+         *    "startTime": "2018-09-19 16:14:16",             //流程启动时间
+         *    "startTimeMonth": "2018-09",                    //流程启动的月份
+         *    "completedTime": "2018-09-19 16:15:28",         //流程完成时间
+         *    "completedTimeMonth": "2018-09",                //流程完成的月份
+         *    "creatorPerson": "xx@huqi@P",                   //流程实例创建人
+         *    "creatorIdentity": "xx@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人身份
+         *    "creatorUnit": "xx@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",     //流程实例创建人所在组织
+         *    "creatorUnitLevelName": "浙江兰德纵横/开发部",  //流程实例创建人所在组织层次
+         *     "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
+         *     "applicationName": "财务管理",                          //流程应用名称
+         *     "applicationAlias": "finance",                          //流程应用别名
+         *     "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
+         *     "processName": "报销审批流程",                          //流程名称
+         *     "processAlias": "",                                     //流程别名
+         *     "serial": "",                                           //编号
+         *     "form": "320be1ca-ee49-478f-a751-f65ab67cf818",         //流程展现所使用的表单
+         * }
+         * </pre></code>
+         * @o2syntax
          * var work = this.workContext.getWork();
          */
         "getWork": function(){return ev.work || ev.workCompleted;},
@@ -421,7 +479,17 @@ MWF.xScript.Environment = function(ev){
          * @method getActivity
          * @static
          * @return {(Activity|Null)} 当前流程实例所在的活动节点对象，如果当前流程实例已流转完成，则返回null.
-         * @example
+         * <pre><code class='language-js'>{
+         *      "id": "801087c5-a4e6-4b91-bf4d-a81cdaa04471", //节点ID
+         *      "name": "办理",  //节点名称
+         *      "description": "", //节点描述
+         *      "alias": "",  //节点别名
+         *      "resetRange": "department", //重置处理人范围
+         *      "resetCount": 0,  //重置处理人数字
+         *      "allowReset": true, //是否允许重置
+         *      "manualMode": "single" //处理方式 单人single, 并行parallel, 串行queue, grab抢办
+         * }</pre></code>
+         * @o2syntax
          * var activity = this.workContext.getActivity();
          */
         "getActivity": function(){return ev.activity || null;},
@@ -433,7 +501,7 @@ MWF.xScript.Environment = function(ev){
          * @method getTask
          * @static
          * @return {(Task|Null)} 当前用户的待办任务对象：task。当前用户没有对此流程实例的待办时，或流程实例已经流转结束，返回null.
-         * @example
+         * @o2syntax
          * var task = this.workContext.getTask();
          */
         "getTask": function(){return ev.task || null;},
@@ -441,14 +509,15 @@ MWF.xScript.Environment = function(ev){
         /**
          * 获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
          * @method getTaskList
+         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithWork
          * @static
          * @param {Function} [callback] 正确获取待办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待办数组出错时的回调。
          * @return {(Task[])} 待办任务列表.
-         * @example
+         * @o2syntax
          * //本样例以同步执行
          * var taskList = this.workContext.getTaskList();
-         * @example
+         * @o2syntax
          * //本样例以异步执行
          * this.workContext.getTaskList( function(taskList){
          *     //taskList 为待办数组
@@ -467,14 +536,15 @@ MWF.xScript.Environment = function(ev){
         /**
          * 根据当前工作的job获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
          * @method getTaskListByJob
+         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithJob
          * @static
          * @param {Function} [callback] 正确获取待办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待办数组出错时的回调。
          * @return {(Task[])} 待办任务列表.
-         * @example
+         * @o2syntax
          * //本样例以同步执行
          * var taskList = this.workContext.getTaskListByJob();
-         * @example
+         * @o2syntax
          * //本样例以异步执行
          * this.workContext.getTaskListByJob( function(taskList){
          *     //taskList 为待办数组
@@ -498,10 +568,11 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已办数组出错时的回调。
          * @return {(TaskCompleted[])} 已办任务列表.
-         * @example
+         * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithWork
+         * @o2syntax
          * //本样例以同步执行
          * var taskCompletedList = this.workContext.getTaskCompletedList();
-         * @example
+         * @o2syntax
          * //本样例以异步执行
          * this.workContext.getTaskCompletedList( function(taskCompletedList){
          *     //taskCompletedList 为待办数组
@@ -525,10 +596,11 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已办数组出错时的回调。
          * @return {(TaskCompleted[])} 已办任务列表.
-         * @example
+         * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithJob
+         * @o2syntax
          * //本样例以同步执行
          * var taskCompletedList = this.workContext.getTaskCompletedListByJob();
-         * @example
+         * @o2syntax
          * //本样例以异步执行
          * this.workContext.getTaskCompletedListByJob( function(taskCompletedList){
          *     //taskCompletedList 为待办数组
@@ -552,10 +624,11 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取待阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待阅数组出错时的回调。
          * @return {(Read[])} 当前流程实例的所有待阅对象数组.
-         * @example
+         * @o2ActionOut x_processplatform_assemble_surface.ReadAction.get
+         * @o2syntax
          * //本样例以同步执行
          * var readList = this.workContext.getReadList();
-         * @example
+         * @o2syntax
          * //本样例以异步执行
          * this.workContext.getReadList( function(readList){
          *     //readList 为待阅数组
@@ -578,10 +651,11 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取待阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待阅数组出错时的回调。
          * @return {(Read[])} 当前流程实例的所有待阅对象数组.
-         * @example
+         * @o2ActionOut x_processplatform_assemble_surface.ReadAction.listWithJob
+         * @o2syntax
          * //本样例以同步执行
          * var readList = this.workContext.getReadListByJob();
-         * @example
+         * @o2syntax
          * //本样例以异步执行
          * this.workContext.getReadListByJob( function(readList){
          *     //readList 为待阅数组
@@ -605,10 +679,11 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取已阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已阅数组出错时的回调。
          * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
-         * @example
+         * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithWork
+         * @o2syntax
          * //本样例以同步执行
          * var readCompletedList = this.workContext.getReadCompletedList();
-         * @example
+         * @o2syntax
          * //本样例以异步执行
          * this.workContext.getReadCompletedList( function(readCompletedList){
          *     //readCompletedList 为已阅数组
@@ -631,10 +706,11 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取已阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已阅数组出错时的回调。
          * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
-         * @example
+         * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithJob
+         * @o2syntax
          * //本样例以同步执行
          * var readCompletedList = this.workContext.getReadCompletedListByJob();
-         * @example
+         * @o2syntax
          * //本样例以异步执行
          * this.workContext.getReadCompletedListByJob( function(readCompletedList){
          *     //readCompletedList 为已阅数组
@@ -660,7 +736,20 @@ MWF.xScript.Environment = function(ev){
          * @method getControl
          * @static
          * @return {WorkControl} 流程实例权限对象.
-         * @example
+         * <pre><code class='language-js'>{
+         *        "allowVisit": true,             //是否允许访问
+         *        "allowProcessing": true,        //是否允许流转
+         *        "allowReadProcessing": false,   //是否有待阅
+         *        "allowSave": true,              //是否允许保存业务数据
+         *        "allowReset": false,            //是否允许重置处理人
+         *        "allowRetract": false,          //是否允许撤回
+         *        "allowReroute": false,          //是否允许调度
+         *        "allowDelete": true,             //是否允许删除流程实例
+         *        "allowRollback": false,         //是否允许流程回溯
+         *        "allowAddSplit": false,         //是否允许增加分支
+         *        "allowPress": false,             //是否允许催办
+         * }</pre></code>
+         * @o2syntax
          * var control = this.workContext.getControl();
          */
         "getControl": function(){return ev.control;},
@@ -669,16 +758,18 @@ MWF.xScript.Environment = function(ev){
          * @method getWorkLogList
          * @static
          * @return {WorkLog[]} 流程记录对象.
-         * @example
+         * @o2ActionOut x_processplatform_assemble_surface.WorkLogAction.listWithJob
+         * @o2syntax
          * var workLogList = this.workContext.getWorkLogList();
          */
         "getWorkLogList": function(){return ev.workLogList;},
         /**
          * @summary 获取当前流程实例的所有流程记录(Record)。
          * @method getRecordList
+         * @o2ActionOut x_processplatform_assemble_surface.RecordAction.listWithJob
          * @static
          * @return {Record[]} 流程记录(Record)对象.
-         * @example
+         * @o2syntax
          * var workLogList = this.workContext.getRecordList();
          */
         "getRecordList": function(){return ev.recordList;},
@@ -687,7 +778,8 @@ MWF.xScript.Environment = function(ev){
          * @method getAttachmentList
          * @static
          * @return {WorkAttachmentData[]} 附件数据.
-         * @example
+         * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted
+         * @o2syntax
          * var attachmentList = this.workContext.getAttachmentList();
          */
         "getAttachmentList": function(){return ev.attachmentList;},
@@ -696,7 +788,7 @@ MWF.xScript.Environment = function(ev){
          * @method getRouteList
          * @static
          * @return {String[]} 路由字符串数组.
-         * @example
+         * @o2syntax
          * var routeList = this.workContext.getRouteList();
          */
         "getRouteList": function(){return (ev.task) ? ev.task.routeNameList: null;},
@@ -706,6 +798,8 @@ MWF.xScript.Environment = function(ev){
          * @method setTitle
          * @static
          * @param {String} title - 路由字符串数组.
+         * @o2syntax
+         * this.workContext.setTitle(title);
          * @example
          * this.workContext.setTitle("标题");
          */
@@ -2019,7 +2113,7 @@ MWF.xScript.Environment = function(ev){
      * </pre></code>
      * @param {Function} [callback] 加载后执行的回调方法
      * @param {Boolean} [async] 是否异步加载
-     * @example
+     * @o2syntax
      * //您可以在表单、流程或内容管理的各个嵌入脚本中，通过this.include()来引用本应用或其他应用的脚本配置，如下：
      * this.include( optionsOrName, callback, async )
      * @example
@@ -2159,7 +2253,7 @@ MWF.xScript.Environment = function(ev){
      * @param {(String)} name 定义的方法名称。
      * @param {Function} fun  定义的方法
      * @param {Boolean} [overwrite] 定义的方法是否能被覆盖重写。默认值为true。
-     * @example
+     * @o2syntax
      * this.define(name, fun, overwrite)
      * @example
      * <caption>
@@ -2228,7 +2322,7 @@ MWF.xScript.Environment = function(ev){
      * @module form
      * @o2range {Process|CMS}
      * @o2ordernumber 40
-     * @example
+     * @o2syntax
      * //您可以在流程表单和内容管理的前端脚本中，通过this来获取form对象，如下：
      * var form = this.form;
      */
@@ -2238,7 +2332,7 @@ MWF.xScript.Environment = function(ev){
          * @method getInfor
          * @static
          * @return {FormInfor} 表单的基本信息.
-         * @example
+         * @o2syntax
          * var form = this.form.getInfor();
          */
         "getInfor": function(){return ev.formInfor;},
@@ -2250,6 +2344,8 @@ MWF.xScript.Environment = function(ev){
          * @method getApp
          * @static
          * @return {x_component_process_Work}打开当前文档的component对象.
+         * @o2syntax
+         * var app = this.form.getApp();
          * @example
          * var app = this.form.getApp();
         //所有component对象都有以下方法。
@@ -2284,7 +2380,7 @@ MWF.xScript.Environment = function(ev){
          * @method node
          * @static
          * @return {HTMLDivElement} 当前form对应的div对象.
-         * @example
+         * @o2syntax
          * var node = this.form.node();
          */
         "node": function(){return _form.node;},
@@ -2294,7 +2390,7 @@ MWF.xScript.Environment = function(ev){
          * @member readonly
          * @static
          * @return {Boolean} 是否只读.
-         * @example
+         * @o2syntax
          * var readonly = this.form.readonly;
          */
         "readonly": _form.options.readonly,
@@ -2316,6 +2412,8 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @return {FormComponent} 请查看本文档的Classes导航下的FormComponents。
          * @param {String} name 字段标识
+         * @o2syntax
+         * var field = this.form.get(name);
          * @example
          * var field = this.form.get("subject");
          */
@@ -2333,6 +2431,8 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @return {FormComponent} 请查看本文档的Classes导航下的FormComponents。
          * @param {String} name 字段标识
+         * @o2syntax
+         * var field = this.form.getField(name);
          * @example
          * var field = this.form.getField("subject");
          */
@@ -2345,7 +2445,7 @@ MWF.xScript.Environment = function(ev){
          * @method getData
          * @static
          * @see module:data
-         * @example
+         * @o2syntax
          *  var data = this.form.getData();
          * @return {Object} 返回表单绑定的业务数据。
          */
@@ -2357,6 +2457,8 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {Function} [callback] - 保存后的回调
          * @param {Boolean} [silent] - 是否静默，否提示保存成功，默认为false
+         * @o2syntax
+         * this.form.save(callback, silent);
          * @example
          *  this.form.save(function(){
          *      //do someting
@@ -2377,6 +2479,8 @@ MWF.xScript.Environment = function(ev){
          * @summary 根据表单中所有组件的校验设置和“流转校验”脚本进行校验。
          * @method verify
          * @static
+         * @o2syntax
+         * this.form.verify()
          *  @example
          *  if( !this.form.verify() ){
          *      return false;
@@ -3149,7 +3253,7 @@ MWF.xScript.Environment = function(ev){
      * @memberOf module:form
      * @static
      * @return {String} 用户选择的路由。
-     * @example
+     * @o2syntax
      * var currentRouteName = this.form.currentRouteName;
      */
     this.form.currentRouteName = _form.json.currentRouteName;
@@ -3160,7 +3264,7 @@ MWF.xScript.Environment = function(ev){
      * @memberOf module:form
      * @static
      * @return {String} 用户填写的意见.
-     * @example
+     * @o2syntax
      * var opinion = this.form.opinion;
      */
     this.form.opinion = _form.json.opinion;
@@ -3171,7 +3275,7 @@ MWF.xScript.Environment = function(ev){
      * @memberOf module:form
      * @static
      * @return {Blob[]} 手写意见以及录音意见数组。手写意见和录音意见都是 HTML5的blob类型文件。
-     * @example
+     * @o2syntax
      * var medias = this.form.medias;
      */
     this.form.medias = [];
