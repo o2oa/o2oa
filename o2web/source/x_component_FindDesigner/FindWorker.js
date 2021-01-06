@@ -322,64 +322,122 @@ _worker._setFilterOptionRegex = function(){
     }
 };
 
-_worker._findProcessPlatformParse_script = function(designer, option){
+_worker._findProcessPlatformParse_script = function(designer, option, module){
     if (designer.patternList && designer.patternList.length){
-        var action = this.findData.actions.getProcessScript;
-
-        var p = _worker.action.sendRequest(_worker._getRequestOption({"url": action}, {"id": designer.designerId}));
-        p.then(function(json){
+        // var action = this.findData.actions.getProcessScript;
+        //
+        // var p = _worker.action.sendRequest(_worker._getRequestOption({"url": action}, {"id": designer.designerId}));
+        // p.then(function(json){
             designer.patternList.forEach(function(pattern){
                 if (pattern.property=="text"){
-                    var scriptLines = json.data.text.split(/\n/);
+                    //var scriptLines = json.data.text.split(/\n/);
                     pattern.lines.forEach(function(line){
-                        var scriptText = scriptLines[line-1];
-                        while ((arr = this.keywordRegexp.exec(scriptText)) !== null) {
-                            var col = arr.index;
-                            var key = arr[0];
-                            var value = arr.input;
-                            _worker._findMessageReply(_worker._createFindMessageReplyData("processPlatform", designer, json.data.aliase, {
-                                "property": pattern.property,
-                                "value": value,
-                                "line": line,
-                                "column": col,
-                                "key": key
-                            }), option);
-                        }
+                        var scriptText = line.lineValue;
+                        _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                            "property": pattern.property,
+                            "value": scriptText,
+                            "line": line.line
+                        }), option);
+
+                        // var scriptText = scriptLines[line-1];
+                        // while ((arr = this.keywordRegexp.exec(scriptText)) !== null) {
+                        //     var col = arr.index;
+                        //     var key = arr[0];
+                        //     var value = arr.input;
+                        //     _worker._findMessageReply(_worker._createFindMessageReplyData("processPlatform", designer, json.data.aliase, {
+                        //         "property": pattern.property,
+                        //         "value": value,
+                        //         "line": line,
+                        //         "column": col,
+                        //         "key": key
+                        //     }), option);
+                        // }
                     });
                 }else{
-                    _worker._findMessageReply(_worker._createFindMessageReplyData("processPlatform", designer, json.data.aliase, {
+                    _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
                         "property": pattern.property,
-                        "value": json.data[pattern.property]
+                        "value": pattern.propertyValue
                     }), option);
                 }
             });
-        }, function(){});
+        //}, function(){});
     }
 };
 
-_worker._findProcessPlatformParse_form = function(designer){
+_worker._findProcessPlatformParse_form = function(designer, option, module){
+    if (designer.patternList && designer.patternList.length){
+        var patternPropertys = designer.patternList.map(function(a){return a.property;});
 
+
+        //designer.patternList.forEach(function(pattern){
+            //if (pattern.property=="data"){
+
+
+                var action = "";
+                if (module=="processPlatform") action = this.findData.actions.getProcessForm
+                else if (module=="cms") action = this.findData.actions.getCmsForm;
+
+                if (action){
+                    var p = _worker.action.sendRequest(_worker._getRequestOption({"url": action}, {"id": designer.designerId}));
+                    p.then(function(json){
+                        if (patternPropertys.indexOf("data")!=-1){
+                            var formData = JSON.decode(MWF.decodeJsonString(json.data.data));
+
+
+                        }
+
+                        if (patternPropertys.indexOf("mobileData")!=-1){
+
+                        }
+
+                    }, function(){});
+                }
+
+
+
+                //var scriptLines = json.data.text.split(/\n/);
+                // pattern.lines.forEach(function(line){
+                //     var scriptText = line.lineValue;
+                //     _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                //         "property": pattern.property,
+                //         "value": scriptText,
+                //         "line": line.line
+                //     }), option);
+                //
+                //
+                // });
+            //}
+            // else{
+            //     _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+            //         "property": pattern.property,
+            //         "value": pattern.propertyValue
+            //     }), option);
+            // }
+        //});
+    }
 };
 
 _worker._findProcessPlatformParse_process = function(designer){
 
 };
 
-_worker._findProcessPlatformParse = function(resultList, option){
+_worker._findProcessPlatformParse = function(resultList, option, module){
     resultList.forEach(function(designer){
         switch (designer.designerType){
             case "script":
-                _worker._findProcessPlatformParse_script(designer, option);
+                _worker._findProcessPlatformParse_script(designer, option, module);
                 break;
             case "form":
-                _worker._findProcessPlatformParse_form(designer, option);
+                _worker._findProcessPlatformParse_form(designer, option, module);
                 break;
             case "process":
-                _worker._findProcessPlatformParse_process(designer, option);
+                _worker._findProcessPlatformParse_process(designer, option, module);
                 break;
         }
     });
 };
+
+
 
 
 _worker._doFindDesigner = function(option, idx){
@@ -407,19 +465,19 @@ _worker._doFindDesigner = function(option, idx){
                 //     "pattern": json.data.processPlatformList
                 // });
 
-               _worker._findProcessPlatformParse(json.data.processPlatformList, option);
+               _worker._findProcessPlatformParse(json.data.processPlatformList, option, "processPlatform");
             }
             if (json.data.cmsList && json.data.cmsList.length){
-
+                _worker._findProcessPlatformParse(json.data.cmsList, option, "cms");
             }
             if (json.data.portalList && json.data.portalList.length){
-
+                _worker._findProcessPlatformParse(json.data.portalList, option, "portal");
             }
             if (json.data.queryList && json.data.queryList.length){
 
             }
             if (json.data.serviceList && json.data.serviceList.length){
-
+                _worker._findProcessPlatformParse(json.data.serviceList, option, "service");
             }
             _worker._findOptionReply();
 
