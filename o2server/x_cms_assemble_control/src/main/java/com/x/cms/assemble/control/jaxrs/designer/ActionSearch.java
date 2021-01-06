@@ -88,7 +88,7 @@ class ActionSearch extends BaseAction {
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						AppInfo appInfo = emc.find( wo.getAppId(), AppInfo.class );
+						AppInfo appInfo = emc.find( woScript.getAppId(), AppInfo.class );
 						if(appInfo != null){
 							wo.setAppId(appInfo.getId());
 							wo.setAppName(appInfo.getAppName());
@@ -126,7 +126,7 @@ class ActionSearch extends BaseAction {
 								wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 						if (!map.isEmpty()) {
 							Wo wo = new Wo();
-							AppInfo appInfo = emc.find( wo.getAppId(), AppInfo.class );
+							AppInfo appInfo = emc.find( woForm.getAppId(), AppInfo.class );
 							if(appInfo != null){
 								wo.setAppId(appInfo.getId());
 								wo.setAppName(appInfo.getAppName());
