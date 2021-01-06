@@ -416,7 +416,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	createResultPatternItem: function(text, title, tree){
 		var obj = {
 			"title": title,
-			"text": "<span style='color: #666666'>"+text+"</span>",
+			"text": "<span style='color: #000000'>"+text+"</span>",
 			"icon": ""
 		}
 		return tree.appendChild(obj);
@@ -493,7 +493,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 
 		//}.bind(this));
 	},
-	getPatternValue: function(value, regexp){
+	getPatternPropertyValue: function(value, regexp){
 		regexp.lastIndex = 0;
 		var valueHtml = "";
 		var idx = 0;
@@ -502,6 +502,17 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			valueHtml += "<span style='background-color: #ffef8f'>"+value.substring(arr.index, regexp.lastIndex)+"</span>";
 			idx = regexp.lastIndex;
 		}
+		valueHtml += value.substring(idx, value.length);
+		return valueHtml;
+	},
+	getPatternScriptValue: function(pattern, regexp){
+		regexp.lastIndex = 0;
+		var valueHtml = "";
+
+		valueHtml += pattern.value.substring(0, pattern.column);
+		valueHtml += "<span style='background-color: #ffef8f'><b>"+pattern.value.substring(pattern.column, pattern.column+pattern.key.length)+"</b></span>";
+		valueHtml += pattern.value.substring(pattern.column+pattern.key.length, pattern.value.length);
+
 		return valueHtml;
 	},
 	createScriptPatternNode: function(data, node, regexp){
@@ -509,10 +520,10 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		var patternNode;
 		var text;
 		if (data.pattern.property=="text"){
-			text = "<b>"+data.pattern.line+"</b> "+this.getPatternValue(data.pattern.value, regexp);
+			text = "<span style='color: #666666'>"+data.pattern.line+"</span>"+this.getPatternScriptValue(data.pattern, regexp);
 			patternNode = this.createResultPatternItem(text, "", node);
 		}else{
-			text = this.lp.property+":<b>"+data.pattern.property+"</b> "+this.lp.value+":"+this.getPatternValue(data.pattern.value, regexp);
+			text = this.lp.property+":<b>"+data.pattern.property+"</b> "+this.lp.value+":"+this.getPatternPropertyValue(data.pattern.value, regexp);
 			patternNode = this.createResultPatternItem(text, "", node);
 		}
 
