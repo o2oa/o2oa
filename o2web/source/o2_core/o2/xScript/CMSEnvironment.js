@@ -75,25 +75,35 @@ MWF.xScript.CMSEnvironment = function(ev){
          * 获取当前内容管理实例的文档对象：document对象。
          * @method getDocument
          * @static
-         * @return {Document} 内容管理实例对象.
+         * @return {Document} 文档对象.
+         * @o2ActionOut x_cms_assemble_control.WoDocument
          * @o2syntax
          * var doc = this.documentContext.getDocument();
          */
         "getDocument": function(){return ev.document },
         /**
-         * 获取当前人对内容管理实例的权限。
+         * 获取当前人对文档的权限。
          * @method getControl
          * @static
-         * @return {DocumentControl} 当前人对内容管理实例的所拥有的权限.
+         * @return {DocumentControl} 当前人对文档所拥有的权限.
+         * <pre><code class='language-js'>{
+         *    "allowRead": true,              //是否允许阅读文档
+         *    "allowPublishDocument": true,   //是否允许发布文档
+         *    "allowSave": true,              //是否允许保存文档
+         *    "allowPopularDocument": true,   //是否允许设置为热点
+         *    "allowEditDocument": true,      //是否允许编辑文档
+         *    "allowDeleteDocument": true     //是否允许删除文档
+         * }</code></pre>
          * @o2syntax
          * var control = this.documentContext.getControl();
          */
         "getControl": function(){return ev.control;},
         /**
-         * 获取当前流程实例的附件对象列表。
+         * 获取当前文档的附件对象列表。
          * @method getAttachmentList
          * @static
-         * @return {DocumentAttachment[]} 当前人对内容管理实例的所拥有的权限.
+         * @return {DocumentFileInfo[]} 当前文档的附件对象列表.
+         * @o2ActionOut x_cms_assemble_control.FileInfoAction.get
          * @o2syntax
          * var attachmentList = this.documentContext.getAttachmentList();
          */
