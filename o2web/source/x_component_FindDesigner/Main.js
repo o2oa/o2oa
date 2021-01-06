@@ -411,6 +411,17 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}
 		return tree.appendChild(obj);
 	},
+
+	updatePatternCount: function(node){
+		node.patternCount++;
+		var textDivNode = node.textNode.getElement("div");
+		if (textDivNode){
+			var text = this.lp.patternCount.replace("{n}", node.patternCount)
+			var t = node.options.text+"&nbsp;&nbsp;<span style='color: #666666'>("+text+")</span>>";
+			//var html = item.options.text;
+			textDivNode.set("html", t);
+		}
+	},
 	showFindResult: function(data){
 		if (!this.patternCount) this.patternCount = 0;
 		this.patternCount++;
@@ -425,30 +436,38 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			var moduleNode = (this.tree.modules) ? this.tree.modules[data.module] : null;
 			if (!moduleNode){
 				moduleNode = this.createResultCategroyItem(this.lp[data.module], this.lp[data.module], this.tree);
+				moduleNode.patternCount = 0;
 				if (!this.tree.modules) this.tree.modules = {};
 				this.tree.modules[data.module] = moduleNode;
 			}
+		this.updatePatternCount(moduleNode);
+
 			var appNode = (moduleNode.apps) ? moduleNode.apps[data.appId] : null;
 			if (!appNode){
 				appNode = this.createResultAppItem(data.appName, data.appName, moduleNode);
+				appNode.patternCount = 0;
 				if (!moduleNode.apps) moduleNode.apps = {};
 				moduleNode.apps[data.appId] = appNode;
 			}
+		this.updatePatternCount(appNode);
 
 			var typeNode = (appNode.types) ? appNode.types[data.designerType] : null;
 			if (!typeNode){
 				typeNode = this.createResultTypeItem(this.lp[data.designerType], this.lp[data.designerType], appNode);
+				typeNode.patternCount = 0;
 				if (!appNode.types) appNode.types = {};
 				appNode.types[data.designerType] = typeNode;
 			}
+		this.updatePatternCount(typeNode);
 
 			var designerNode = (typeNode.designers) ? typeNode.designers[data.designerId] : null;
 			if (!designerNode){
 				designerNode = this.createResultTypeItem(data.designerName, data.designerName, typeNode);
+				designerNode.patternCount = 0;
 				if (!typeNode.designers) typeNode.designers = {};
 				typeNode.designers[data.designerId] = designerNode;
 			}
-
+		this.updatePatternCount(designerNode);
 
 			switch (data.designerType){
 				case "script":
