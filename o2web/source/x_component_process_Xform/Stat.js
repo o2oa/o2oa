@@ -55,7 +55,7 @@ MWF.xApplication.process.Xform.Stat = MWF.APPStat =  new Class(
                  * @member {MWF.xApplication.query.Query.Statistician}
                  * @example
                  *  //可以在脚本中获取该组件
-                 * var field = this.form.get("moduleId").stat; //获取组件对象
+                 * var field = this.form.get("fieldId").stat; //获取组件对象
                  */
                 this.stat = new MWF.xApplication.query.Query.Statistician(this.form.app, this.node, viewJson, {
                     "resizeNode": (this.node.getStyle("height").toString().toLowerCase()!=="auto" && this.node.getStyle("height").toInt()>0),
