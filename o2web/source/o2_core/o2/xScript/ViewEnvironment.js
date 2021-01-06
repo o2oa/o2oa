@@ -395,7 +395,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * });
      * </pre></code>
      * @return {Object} Dict对象
-     * @example
+     * @o2syntax
      * //您可以在页面、表单、流程各个嵌入脚本中，通过this.Dict()对本应用或其他应用的数据字典中的数据进行增删改查，如下：
      * var dict = new this.Dict( options )
      */
@@ -413,7 +413,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @return {(Promise|Object|Array|String|Number|Boolean)}
      * 当async为true时返回Promise({@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise说明})；
      * 否则返回数据字典的数据，类型和配置数据字典时候指定的一致。
-     *
+     * @o2syntax
+     * var data = dict.get( path, success, failure, async, refresh )
      * @example
      * var dict = new this.Dict("bulletinDictionary");
      *
@@ -509,7 +510,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {(Object|Array|String|Number|Boolean)} data 需要新增的数据
      * @param {Function} [success] 增加数据成功时的回调函数。
      * @param {Function} [failure] 增加数据成功时的回调函数。
-     * @example
+     * @o2syntax
      * dict.add( path, data, success, failure )
      * @example
      * var dict = new this.Dict("bulletinDictionary");
@@ -629,7 +630,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {(Object|Array|String|Number|Boolean)} data 修改后的数据
      * @param {Function} [success] 设置数据成功时的回调函数。
      * @param {Function} [failure] 设置数据成功时的回调函数。
-     * @example
+     * @o2syntax
      * dict.set( path, data, success, failure )
      * @example
      * var dict = new this.Dict("bulletinDictionary");
@@ -746,7 +747,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。
      * @param {Function} [success] 删除数据成功时的回调函数。
      * @param {Function} [failure] 删除数据成功时的回调函数。
-     * @example
+     * @o2syntax
      * dict.delete( path, success, failure )
      * @example
      * var dict = new this.Dict("bulletinDictionary");
@@ -866,7 +867,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 你可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。
      * @module org
      * @o2ordernumber 100
-     * @example
+     * @o2syntax
      * //您可以在流程表单、内容管理表单和门户页面中，通过this来获取当前实例的org对象，如下：
      * var org = this.org;
      */
@@ -884,7 +885,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|IdentityData|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份，单个是Object，多个是Array。
-         * @example
+         * @o2syntax
          * //同步执行，返回身份，单个是对象，多个是数组。
          * var identityList = this.org.getIdentity( name );
          *
@@ -925,7 +926,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份对象数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回身份对象数组。
          * var identityList = this.org.listIdentityWithPerson( person );
          *
@@ -967,7 +968,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份对象数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回直接组织身份对象数组。
          * var identityList = this.org.listIdentityWithUnit( unit );
          *
@@ -1029,7 +1030,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织，单个是Object，多个是Array。
-         * @example
+         * @o2syntax
          * //同步执行，返回组织，单个是对象，多个是数组。
          * var unitList = this.org.getUnit( name );
          *
@@ -1072,7 +1073,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回嵌套下级组织数组。
          * var unitList = this.org.listSubUnit( name, true );
          *
@@ -1120,7 +1121,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回嵌套上级组织数组。
          * var unitList = this.org.listSupUnit( name, true );
          *
@@ -1186,7 +1187,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回对应组织，单个为对象，多个为数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回直接所在组织，单个为对象，多个为数组。
          * var unitList = this.org.getUnitByIdentity( name );
          *
@@ -1281,7 +1282,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回组织数组。
          * var unitList = this.org.listAllSupUnitWithIdentity( name );
          *
@@ -1321,7 +1322,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回组织数组。
          * var unitList = this.org.listUnitWithPerson( name );
          *
@@ -1361,7 +1362,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回个人所在组织及所有上级组织。
-         * @example
+         * @o2syntax
          * //同步执行，返回组织数组。
          * var unitList = this.org.listAllSupUnitWithPerson( name );
          *
@@ -1402,7 +1403,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回组织数组。
          * var unitList = this.org.listUnitWithAttribute( attributeName, attributeName );
          *
@@ -1443,7 +1444,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回组织数组。
          * var unitList = this.org.listUnitWithDuty( dutyName, identity );
          *
@@ -1482,7 +1483,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回顶层组织数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回顶层组织数组。
          * var unitList = this.org.listTopUnit();
          *
@@ -1523,7 +1524,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员，单个是Object，多个是Array。
-         * @example
+         * @o2syntax
          * //同步执行，返回人员，单个是对象，多个是数组。
          * var personList = this.org.getPerson( name );
          *
@@ -1570,7 +1571,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回嵌套下级人员数组。
          * var personList = this.org.listSubPerson( name, true );
          *
@@ -1618,7 +1619,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回嵌套上级人员数组。
          * var personList = this.org.listSupPerson( name, true );
          *
@@ -1663,7 +1664,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回人员数组。
          * var personList = this.org.listPersonWithGroup( group );
          *
@@ -1704,7 +1705,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回人员数组。
          * var personList = this.org.listPersonWithRole( role );
          *
@@ -1745,7 +1746,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回人员数组。
          * var personList = this.org.listPersonWithIdentity( identity );
          *
@@ -1802,7 +1803,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回组织的直接人员数组。
          * var personList = this.org.listPersonWithUnit( unit );
          *
@@ -1853,7 +1854,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回拥有对应属性名和属性值人员数组。
          * var personList = this.org.listPersonWithAttribute( name, value );
          *
@@ -1912,7 +1913,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回身份数组。
          * var identityList = this.org.getDuty( dutyName, unit );
          *
@@ -1953,7 +1954,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|String[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回职务名称数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回职务名称数组。
          * var dutyNameList = this.org.listDutyNameWithIdentity( identity );
          *
@@ -1993,7 +1994,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|String[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回职务名称数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回职务名称数组。
          * var dutyNameList = this.org.listDutyNameWithUnit( unit );
          *
@@ -2052,7 +2053,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *    ]
          * }
          * </pre></code>
-         * @example
+         * @o2syntax
          * //同步执行，返回职务数组。
          * var dutyList = this.org.listUnitAllDuty( unit );
          *
@@ -2094,7 +2095,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|GroupData|GroupData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回群组，单个是Object，多个是Array。
-         * @example
+         * @o2syntax
          * //同步执行，返回群组，单个是Object，多个是Array。
          * var groupList = this.org.getGroup( name );
          *
@@ -2143,7 +2144,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|GroupData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回群组数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回嵌套下级群组数组。
          * var groupList = this.org.listSubGroup( name, true );
          *
@@ -2203,7 +2204,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|GroupData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回群组数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回嵌套上级群组数组。
          * var groupList = this.org.listSupGroup( name, true );
          *
@@ -2256,7 +2257,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|GroupData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回群组对象数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回群组数组。
          * var groupList = this.org.listGroupWithPerson( name );
          *
@@ -2302,7 +2303,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|RoleData|RoleData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回角色，单个为Object，多个为Array。
-         * @example
+         * @o2syntax
          * //同步执行，返回角色，单个为对象，多个为数组。
          * var roleList = this.org.getRole( name );
          *
@@ -2348,7 +2349,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|RoleData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回角色对象数组。
-         * @example
+         * @o2syntax
          * //同步执行，返回角色数组。
          * var roleList = this.org.listRoleWithPerson( name );
          *
@@ -2395,7 +2396,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|Boolean} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则如果人员拥有角色返回true, 否则返回false。
-         * @example
+         * @o2syntax
          * //同步执行，返回判断结果。
          * var groupList = this.org.personHasRole( name, roleList );
          *
@@ -2442,7 +2443,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|Boolean} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则如果群组拥有角色返回true, 否则返回false。
-         * @example
+         * @o2syntax
          * //同步执行，返回判断结果。
          * var groupList = this.org.groupHasRole( name, roleList );
          *
@@ -2491,7 +2492,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @param {Function} [success] 执行成功的回调。
          * @param {Function} [failure] 执行失败的回调。
          * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
-         * @example
+         * @o2syntax
          * //同步执行
          * this.org.appendPersonAttribute( person, attribute, valueArray);
          *
@@ -2526,7 +2527,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @param {Function} [success] 执行成功的回调。
          * @param {Function} [failure] 执行失败的回调。
          * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
-         * @example
+         * @o2syntax
          * //同步执行
          * this.org.setPersonAttribute( person, attribute, valueArray);
          *
@@ -2562,7 +2563,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回属性值数组，
          * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
-         * @example
+         * @o2syntax
          * //同步执行，返回该人员的属性值数组。
          * var attributeList = this.org.getPersonAttribute( person, attr );
          *
@@ -2604,7 +2605,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员属性名称数组，
          * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
-         * @example
+         * @o2syntax
          * //同步执行，返回人员所有属性的名称数组。
          * var attributeNameList = this.org.listPersonAttributeName( person );
          *
@@ -2651,7 +2652,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *        "杭州市","绍兴市"
          *    ]
          * }]</code></pre>
-         * @example
+         * @o2syntax
          * //同步执行，返回人员所有属性的对象数组。
          * var attributeObjectList = this.org.listPersonAllAttribute( person );
          *
@@ -2694,7 +2695,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @param {Function} [success] 执行成功的回调。
          * @param {Function} [failure] 执行失败的回调。
          * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
-         * @example
+         * @o2syntax
          * //同步执行
          * this.org.appendUnitAttribute( unit, attribute, valueArray);
          *
@@ -2739,7 +2740,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @param {Function} [success] 执行成功的回调。
          * @param {Function} [failure] 执行失败的回调。
          * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
-         * @example
+         * @o2syntax
          * //同步执行
          * this.org.setUnitAttribute( unit, attribute, valueArray);
          *
@@ -2784,7 +2785,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回属性值数组，
          * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
-         * @example
+         * @o2syntax
          * //同步执行，返回该组织的属性值数组。
          * var attributeList = this.org.getUnitAttribute( unit, attr );
          *
@@ -2826,7 +2827,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织属性名称数组，
          * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
-         * @example
+         * @o2syntax
          * //同步执行，返回组织所有属性的名称数组。
          * var attributeNameList = this.org.listUnitAttributeName( unit );
          *
@@ -2874,7 +2875,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *        "二级部门"
          *    ]
          * }]</code></pre>
-         * @example
+         * @o2syntax
          * //同步执行，返回组织所有属性的对象数组。
          * var attributeObjectList = this.org.listUnitAllAttribute( unit );
          *
@@ -2948,7 +2949,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 你可以通过view对象，获取视图数据或选择视图数据。<br/>
      * @module view
      * @o2ordernumber 70
-     * @example
+     * @o2syntax
      * //您可以在流程表单、内容管理表单或门户页面中，通过this来获取view对象，如下：
      * var view = this.view;
      */
@@ -2976,7 +2977,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * </pre></code>
          * @param {Function} callback - 访问成功后的回调函数
          * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
-         * @example
+         * @o2syntax
          * this.view.lookup(view, callback, async);
          * @example
          * //获取“财务管理”应用中“报销审批数据”视图中的数据
@@ -3077,7 +3078,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * }
          * </pre></code>
          * @param {Function} callback - 必选，当选择完成，点击“确定”之后的回调函数。
-         * @example
+         * @o2syntax
          * this.view.select(view, callback);
          * @example
          * this.view.select({
@@ -3188,7 +3189,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 你可以通过statement对象，获取执行查询语句或者对查询结果进行选择。<br/>
      * @module statement
      * @o2ordernumber 90
-     * @example
+     * @o2syntax
      * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
      * var statement = this.statement;
      */
@@ -3224,7 +3225,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * </pre></code>
          * @param {Function} callback - 访问成功后的回调函数
          * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
-         * @example
+         * @o2syntax
          * this.statement.execute(statement, callback, async);
          * @example
          * //获取“task”查询中的数据
@@ -3339,7 +3340,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * }
          * </pre></code>
          * @param {Function} callback - 访问成功后的回调函数
-         * @example
+         * @o2syntax
          * this.statement.select(statement, callback);
          * @example
          * this.statement.select({
@@ -3565,7 +3566,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @borrows module:queryView.openApplication as openApplication
      * @borrows module:queryView.createDocument as createDocument
      * @borrows module:queryView.startProcess as startProcess
-     * @example
+     * @o2syntax
      * //您可以在查询视图中，通过this来获取queryStatement对象，如下：
      * var queryStatement = this.queryStatement;
      */
@@ -3576,7 +3577,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @memberOf module:queryStatement
      * @static
      * @return {MWF.xScript.Environment|MWF.xScript.CMSEnvironment} 页面或表单的上下文.
-     * @example
+     * @o2syntax
      * this.queryStatement.getParentEnvironment();
      * @example
      * var env = this.queryStatement.getParentEnvironment(); //当视图被嵌入到页面的时候，可以在视图里获取页面的上下文
@@ -3595,7 +3596,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *     "currentPageNumber": 1 // 当前页数
      * }
      * </pre></code>
-     * @example
+     * @o2syntax
      * this.queryStatement.getPageInfor();
      */
 
@@ -3626,7 +3627,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      ...
      *]
      *</pre></code>
-     * @example
+     * @o2syntax
      * var data = this.queryStatement.getPageData();
      */
 
@@ -3637,7 +3638,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @static
      * @param {Number} pageNumber - 需要跳转的页码。
      * @param {Function} [callback ] - 跳转的页面数据加载完成以后的回调方法。
-     * @example
+     * @o2syntax
      * var data = this.queryStatement.toPage( pageNumber, callback );
      * @example
      * //　跳转到第2页并且获取该页的数据。
@@ -3651,7 +3652,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method selectAll
      * @memberOf module:queryStatement
      * @static
-     * @example
+     * @o2syntax
      * this.queryStatement.selectAll();
      */
 
@@ -3660,7 +3661,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method unSelectAll
      * @memberOf module:queryStatement
      * @static
-     * @example
+     * @o2syntax
      * this.queryStatement.unSelectAll();
      */
 
@@ -3691,7 +3692,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      ...
      *]
      *</pre></code>
-     * @example
+     * @o2syntax
      * var data = this.queryStatement.getSelectedData();
      */
 
@@ -3708,7 +3709,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @module queryView
      * @o2range {QueryView}
      * @o2ordernumber 60
-     * @example
+     * @o2syntax
      * //您可以在视图中，通过this来获取queryView对象，如下：
      * var queryView = this.queryView;
      */
@@ -3718,7 +3719,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @method getParentEnvironment
          * @static
          * @return {MWF.xScript.Environment|MWF.xScript.CMSEnvironment} 页面或表单的上下文.
-         * @example
+         * @o2syntax
          * this.queryView.getParentEnvironment();
          * @example
          * var env = this.queryView.getParentEnvironment(); //当视图被嵌入到页面的时候，可以在视图里获取页面的上下文
@@ -3732,7 +3733,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @memberOf module:queryStatement
          * @static
          * @return {StatementInfor} 查询的配置信息.
-         * @example
+         * @o2syntax
          * this.queryStatement.getStatementInfor();
          */
         "getStatementInfor" : function () { return _form.getStatementInfor ? _form.getStatementInfor() : null; },
@@ -3743,7 +3744,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @memberOf module:queryView
          * @static
          * @return {ViewInfor} 视图的配置信息.
-         * @example
+         * @o2syntax
          * this.queryView.getViewInfor();
          */
         "getViewInfor" : function () { return _form.getViewInfor(); },
@@ -3760,7 +3761,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     "currentPageNumber": 1 // 当前页数
          * }
          * </pre></code>
-         * @example
+         * @o2syntax
          * this.queryView.getPageInfor();
          */
         "getPageInfor" : function () { return _form.getPageInfor(); },
@@ -3802,7 +3803,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  ...
          *]
          *</pre></code>
-         * @example
+         * @o2syntax
          * var data = this.queryView.getPageData();
          */
         "getPageData" : function () { return _form.getPageData(); },
@@ -3814,7 +3815,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @static
          * @param {Number} pageNumber - 需要跳转的页码。
          * @param {Function} [callback ] - 跳转的页面数据加载完成以后的回调方法。
-         * @example
+         * @o2syntax
          * var data = this.queryView.toPage( pageNumber, callback );
          * @example
          * //　跳转到第2页并且获取该页的数据。
@@ -3829,7 +3830,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @method selectAll
          * @memberOf module:queryView
          * @static
-         * @example
+         * @o2syntax
          * this.queryView.selectAll();
          */
         "selectAll" : function () { return _form.selectAll(); },
@@ -3839,7 +3840,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @method unSelectAll
          * @memberOf module:queryView
          * @static
-         * @example
+         * @o2syntax
          * this.queryView.unSelectAll();
          */
         "unSelectAll" : function () { return _form.unSelectAll(); },
@@ -3863,7 +3864,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          ...
          * ]
          </pre></code>
-         * @example
+         * @o2syntax
          * var data = this.queryView.getSelectedData();
          */
         "getSelectedData" : function () { return _form.getSelectedData(); },
@@ -3887,7 +3888,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *]
          * </pre></code>
          * @param {Function} [callback] 过滤完成并重新加载数据后的回调方法。
-         * @example
+         * @o2syntax
          * this.queryView.setFilter( filter );
          */
         "setFilter" : function ( filter, callback ) { return _form.setFilter(filter, callback); },
@@ -3921,7 +3922,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * }
          * </pre></code>
          * @param {Function} [callback] 过滤完成并重新加载数据后的回调方法。
-         * @example
+         * @o2syntax
          * this.queryStatement.setStatementFilter( filter, parameter, callback );
          */
         "setStatementFilter" : function ( filter , parameter, callback) { return _form.setFilter(filter, parameter, callback); },
@@ -3958,7 +3959,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     "isExpand": "no", //可选，默认是否展开分类，如果不传，则使用原视图的配置, 可选值有:yes no
          *   }
          * </pre></code>
-         * @example
+         * @o2syntax
          * this.queryView.switchView( options );
          */
         "switchView" : function ( options ) { return _form.switchView(options); },
@@ -3995,7 +3996,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     }
          *   })
          * </pre></code>
-         * @example
+         * @o2syntax
          * this.queryStatement.switchStatement( options );
          */
         "switchStatement" : function ( options ) { if(_form.switchStatement)_form.switchStatement(options) ; },
@@ -4005,7 +4006,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @method reload
          * @methodOf module:queryView
          * @static
-         * @example
+         * @o2syntax
          * this.queryView.reload();
          */
         "reload" : function () { _form.reload(); },
@@ -4445,6 +4446,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 在前端脚本中，可以通过this.session.user来获取当前用户信息。<br/>
      * @module session
      * @o2ordernumber 110
+     * @o2syntax
+     * var user = this.session.user;
      * @example
      * //获取当前用户信息
      * var user = this.session.user
@@ -4513,7 +4516,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
      * @module Actions
      * @o2ordernumber 130
-     * @example
+     * @o2syntax
      * //获取Actions
      * this.Actions
      * //或者
@@ -4530,7 +4533,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *  "x_processplatform_assemble_surface" //流程平台相关服务根
      * </pre></code>
      * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
-     * @example
+     * @o2syntax
      * var actions = this.Actions.getHost( root );
      */
 
@@ -4545,14 +4548,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *  "x_processplatform_assemble_surface" //流程平台相关服务根
      * </pre></code>
      * @return {Object} 返回action对象，用于后续服务调用
-     * @example
+     * @o2syntax
      * var actions = o2.Actions.load( root );
      * //或
      * var actions = this.Actions.load( root );
-     * @example
+     * @o2syntax
      * //获取流程平台服务对象。
      * var processAction = this.Actions.load("x_processplatform_assemble_surface");
-     * @example
+     * @o2syntax
      * <caption>
      *     通过this.Actions.load(root)方法得到的action对象，就可以访问此服务下的方法了。<br/>
      *     访问方法的规则如下：
@@ -4592,7 +4595,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *      此参数可以省略，如果省略，系统会自动弹出错误信息。
      *
      *      async : 方法同步或者异步执行，默认为true。
-     *  @example
+     *  @o2syntax
      *  <caption>
      *  处理返回的数据有两种方式，二选一即可：<br/>
      *  1、该方法return的结果是Promise对象，可以通过 promise.then() 方法来处理。<br/>
@@ -4698,14 +4701,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *  "x_processplatform_assemble_surface" //流程平台相关服务根
      * </pre></code>
      * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
-     * @example
+     * @o2syntax
      * var actions = o2.Actions.get( root );
      * actions[ methodName ]( arguements );
      *
      * or
      *
      * o2.Actions.get( root )[methodName]( arguements );
-     * @example
+     * @o2syntax
      * methodName :（string）方法名称。
      * arguements : 见load方法的arguements说明
      * @example
