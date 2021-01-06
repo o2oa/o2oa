@@ -493,40 +493,39 @@ MWF.xApplication.FindDesigner.Main = new Class({
 
 		//}.bind(this));
 	},
-	getPatternPropertyValue: function(value, regexp){
+	getPatternValue: function(value, regexp){
 		regexp.lastIndex = 0;
 		var valueHtml = "";
 		var idx = 0;
 		while ((arr = regexp.exec(value)) !== null) {
-			valueHtml += value.substring(idx, arr.index);
-			valueHtml += "<span style='background-color: #ffef8f'>"+value.substring(arr.index, regexp.lastIndex)+"</span>";
+			valueHtml += o2.common.encodeHtml(value.substring(idx, arr.index));
+			valueHtml += "<span style='background-color: #ffef8f'>"+o2.common.encodeHtml(value.substring(arr.index, regexp.lastIndex))+"</span>";
 			idx = regexp.lastIndex;
 		}
-		valueHtml += value.substring(idx, value.length);
+		valueHtml += o2.common.encodeHtml(value.substring(idx, value.length));
 		return valueHtml;
 	},
-	getPatternScriptValue: function(pattern, regexp){
-		regexp.lastIndex = 0;
-		var valueHtml = "";
-
-		valueHtml += pattern.value.substring(0, pattern.column);
-		valueHtml += "<span style='background-color: #ffef8f'><b>"+pattern.value.substring(pattern.column, pattern.column+pattern.key.length)+"</b></span>";
-		valueHtml += pattern.value.substring(pattern.column+pattern.key.length, pattern.value.length);
-
-		return valueHtml;
-	},
+	// getPatternScriptValue: function(pattern, regexp){
+	// 	regexp.lastIndex = 0;
+	// 	var valueHtml = "";
+	//
+	// 	valueHtml += pattern.value.substring(0, pattern.column);
+	// 	valueHtml += "<span style='background-color: #ffef8f'><b>"+pattern.value.substring(pattern.column, pattern.column+pattern.key.length)+"</b></span>";
+	// 	valueHtml += pattern.value.substring(pattern.column+pattern.key.length, pattern.value.length);
+	//
+	// 	return valueHtml;
+	// },
 	createScriptPatternNode: function(data, node, regexp){
 		debugger;
 		var patternNode;
 		var text;
 		if (data.pattern.property=="text"){
-			text = "<span style='color: #666666'>"+data.pattern.line+"</span>"+this.getPatternScriptValue(data.pattern, regexp);
+			text = "<span style='color: #666666'>"+data.pattern.line+"</span>&nbsp;&nbsp;"+this.getPatternValue(data.pattern.value, regexp);
 			patternNode = this.createResultPatternItem(text, "", node);
 		}else{
-			text = this.lp.property+":<b>"+data.pattern.property+"</b> "+this.lp.value+":"+this.getPatternPropertyValue(data.pattern.value, regexp);
+			text = this.lp.property+":&nbsp;<b>"+data.pattern.property+"</b> "+this.lp.value+":&nbsp;"+this.getPatternValue(data.pattern.value, regexp);
 			patternNode = this.createResultPatternItem(text, "", node);
 		}
-
 	},
 	getFilterOptionRegex: function(option){
 		var keyword = option.keyword;
