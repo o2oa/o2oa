@@ -76,7 +76,7 @@ MWF.xScript.CMSEnvironment = function(ev){
          * @method getDocument
          * @static
          * @return {Document} 内容管理实例对象.
-         * @example
+         * @o2syntax
          * var doc = this.documentContext.getDocument();
          */
         "getDocument": function(){return ev.document },
@@ -85,7 +85,7 @@ MWF.xScript.CMSEnvironment = function(ev){
          * @method getControl
          * @static
          * @return {DocumentControl} 当前人对内容管理实例的所拥有的权限.
-         * @example
+         * @o2syntax
          * var control = this.documentContext.getControl();
          */
         "getControl": function(){return ev.control;},
@@ -94,7 +94,7 @@ MWF.xScript.CMSEnvironment = function(ev){
          * @method getAttachmentList
          * @static
          * @return {DocumentAttachment[]} 当前人对内容管理实例的所拥有的权限.
-         * @example
+         * @o2syntax
          * var attachmentList = this.documentContext.getAttachmentList();
          */
         "getAttachmentList": function(){return ev.attachmentList;}
@@ -1561,7 +1561,7 @@ MWF.xScript.CMSEnvironment = function(ev){
         /**发布当前文档。<b>（仅内容管理表单中可用）</b>
          * @method publish
          * @memberOf module:form
-         * @example
+         * @o2syntax
          this.form.publish();
          */
         "publish": function(option){
