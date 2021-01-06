@@ -105,21 +105,21 @@ _worker._getRequestOption = function(data, par){
     };
 };
 
-_worker._createFilterOption = function(moduleType, appId, desingerType, desingerId){
+_worker._createFilterOption = function(moduleType, appId, designerType, desingerId){
     var filterOption = JSON.parse(_worker.filterOptionTemplete);
     filterOption.moduleList.push({
         "moduleType": moduleType,
-        "moduleAppList": [{"appId": appId, "designerList": [{"desingerType": desingerType, "designerIdList": [desingerId]}]}]
+        "moduleAppList": [{"appId": appId, "designerList": [{"designerType": designerType, "designerIdList": [desingerId]}]}]
     });
     this.filterOptionList.push(filterOption);
     return filterOption;
 };
-_worker._getDesingerModule = function(id, restful, par, moduleType, desingerType){
+_worker._getDesingerModule = function(id, restful, par, moduleType, designerType){
     var p = _worker.action.sendRequest(_worker._getRequestOption({"url": restful, "debug": _worker.findData.debug, "token": _worker.findData.token }, par));
     return p.then(function(json){
         list = json.data;
         list.forEach(function(designer){
-            _worker._createFilterOption(moduleType, id, desingerType, designer.id)
+            _worker._createFilterOption(moduleType, id, designerType, designer.id)
         });
     }, function(){});
 };
@@ -232,7 +232,7 @@ _worker._parseFindModule = function(moduleList){
                         promiseArr = promiseArr.concat(_worker["_getDesinger_"+module.moduleType](flag.id));
                     }else{
                         flag.designerList.forEach(function(designer){
-                            var filterOption = _worker._createFilterOption(module.moduleType, flag.id, designer.desingerType, designer.id)
+                            var filterOption = _worker._createFilterOption(module.moduleType, flag.id, designer.designerType, designer.id)
                             promiseArr = promiseArr.concat(Promise.resolve(filterOption));
                         });
                     }
@@ -268,7 +268,7 @@ _worker._parseFindModule = function(moduleList){
                         promiseArr = promiseArr.concat(_worker["_getDesinger_"+module.moduleType](flag.id));
                     }else{
                         flag.designerList.forEach(function(designer){
-                            var filterOption = _worker._createFilterOption(module.moduleType, flag.id, designer.desingerType, designer.id)
+                            var filterOption = _worker._createFilterOption(module.moduleType, flag.id, designer.designerType, designer.id)
                             promiseArr = promiseArr.concat(Promise.resolve(filterOption));
                         });
                     }
