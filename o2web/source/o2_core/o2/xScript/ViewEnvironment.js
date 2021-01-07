@@ -838,9 +838,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|IdentityData|IdentityData[]} 当async为true时，返回
-         * @o2ActionOut x_organization_assemble_express.IdentityAction.listObject
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份，单个是Object，多个是Array。
+         * @o2ActionOut x_organization_assemble_express.IdentityAction.listObject|true|[woUnitDutyList,woUnit,woGroupList]
          * @o2syntax
          * //同步执行，返回身份，单个是对象，多个是数组。
          * var identityList = this.org.getIdentity( name );
@@ -882,6 +882,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份对象数组。
+         * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithPersonObject
          * @o2syntax
          * //同步执行，返回身份对象数组。
          * var identityList = this.org.listIdentityWithPerson( person );
@@ -924,6 +925,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份对象数组。
+         * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithUnitSubNestedObject
          * @o2syntax
          * //同步执行，返回直接组织身份对象数组。
          * var identityList = this.org.listIdentityWithUnit( unit );
@@ -986,6 +988,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织，单个是Object，多个是Array。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listObject
          * @o2syntax
          * //同步执行，返回组织，单个是对象，多个是数组。
          * var unitList = this.org.getUnit( name );
@@ -1029,6 +1032,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSubNestedObject
          * @o2syntax
          * //同步执行，返回嵌套下级组织数组。
          * var unitList = this.org.listSubUnit( name, true );
@@ -1077,6 +1081,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSupNestedObject
          * @o2syntax
          * //同步执行，返回嵌套上级组织数组。
          * var unitList = this.org.listSupUnit( name, true );
@@ -1143,6 +1148,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回对应组织，单个为对象，多个为数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.getWithIdentityWithLevelObject
          * @o2syntax
          * //同步执行，返回直接所在组织，单个为对象，多个为数组。
          * var unitList = this.org.getUnitByIdentity( name );
@@ -1238,6 +1244,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithIdentitySupNestedObject
          * @o2syntax
          * //同步执行，返回组织数组。
          * var unitList = this.org.listAllSupUnitWithIdentity( name );
@@ -1278,6 +1285,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithPersonObject
          * @o2syntax
          * //同步执行，返回组织数组。
          * var unitList = this.org.listUnitWithPerson( name );
@@ -1318,6 +1326,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回个人所在组织及所有上级组织。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithPersonSupNestedObject
          * @o2syntax
          * //同步执行，返回组织数组。
          * var unitList = this.org.listAllSupUnitWithPerson( name );
@@ -1359,6 +1368,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitAttributeObject
          * @o2syntax
          * //同步执行，返回组织数组。
          * var unitList = this.org.listUnitWithAttribute( attributeName, attributeName );
@@ -1400,6 +1410,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitDutyObject
          * @o2syntax
          * //同步执行，返回组织数组。
          * var unitList = this.org.listUnitWithDuty( dutyName, identity );
@@ -1439,6 +1450,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回顶层组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listObject
          * @o2syntax
          * //同步执行，返回顶层组织数组。
          * var unitList = this.org.listTopUnit();
@@ -1480,6 +1492,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员，单个是Object，多个是Array。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listObject
          * @o2syntax
          * //同步执行，返回人员，单个是对象，多个是数组。
          * var personList = this.org.getPerson( name );
@@ -1527,6 +1540,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员数组。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonSubDirectObject
          * @o2syntax
          * //同步执行，返回嵌套下级人员数组。
          * var personList = this.org.listSubPerson( name, true );
@@ -1575,6 +1589,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员数组。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonSupDirectObject
          * @o2syntax
          * //同步执行，返回嵌套上级人员数组。
          * var personList = this.org.listSupPerson( name, true );
@@ -1620,6 +1635,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象数组。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listWithGroupObject
          * @o2syntax
          * //同步执行，返回人员数组。
          * var personList = this.org.listPersonWithGroup( group );
@@ -1661,6 +1677,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象数组。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listWithRoleObject
          * @o2syntax
          * //同步执行，返回人员数组。
          * var personList = this.org.listPersonWithRole( role );
@@ -1702,6 +1719,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象数组。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listWithIdentityObject
          * @o2syntax
          * //同步执行，返回人员数组。
          * var personList = this.org.listPersonWithIdentity( identity );
@@ -1759,6 +1777,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象数组。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listWithUnitSubDirectObject
          * @o2syntax
          * //同步执行，返回组织的直接人员数组。
          * var personList = this.org.listPersonWithUnit( unit );
@@ -1810,6 +1829,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象数组。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonAttributeObject
          * @o2syntax
          * //同步执行，返回拥有对应属性名和属性值人员数组。
          * var personList = this.org.listPersonWithAttribute( name, value );
@@ -1869,6 +1889,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份数组。
+         * @o2ActionOut x_organization_assemble_express.UnitDutyAction.getWithUnitWithName
          * @o2syntax
          * //同步执行，返回身份数组。
          * var identityList = this.org.getDuty( dutyName, unit );
@@ -1989,26 +2010,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|Object[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回职务数组，如：
-         * <pre><code class='language-js'>{
-         *    "name": "正职领导", //职务名称
-         *    "unit": "开发部@kfb@U", //组织识别名
-         *    "identityList": [   //身份对象数组
-         *        {
-         *            "name": "李四",
-         *            "unique": "lisi",
-         *            "description": "",
-         *            "distinguishedName": "李四@6eafc523-b8a7-4a95-ad9e-a5af87c04410@I",
-         *            "person": "李四@lisi@P",
-         *            "unit": "财务部@310088ea-2786-4ed9-8489-f294e9436ce9@U",
-         *            "unitName": "财务部",
-         *            "unitLevel": 2,
-         *            "unitLevelName": "浙江兰德纵横/财务部",
-         *            "orderNumber": 16972237
-         *        }
-         *    ]
-         * }
-         * </code></pre>
+         * 否则返回职务数组
+         * @o2ActionOut x_organization_assemble_express.UnitDutyAction.listWithUnitObject
          * @o2syntax
          * //同步执行，返回职务数组。
          * var dutyList = this.org.listUnitAllDuty( unit );
@@ -2051,6 +2054,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|GroupData|GroupData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回群组，单个是Object，多个是Array。
+         * @o2ActionOut x_organization_assemble_express.GroupAction.listObject
          * @o2syntax
          * //同步执行，返回群组，单个是Object，多个是Array。
          * var groupList = this.org.getGroup( name );
@@ -2100,6 +2104,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|GroupData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回群组数组。
+         * @o2ActionOut x_organization_assemble_express.GroupAction.listWithGroupSubDirectObject
          * @o2syntax
          * //同步执行，返回嵌套下级群组数组。
          * var groupList = this.org.listSubGroup( name, true );
@@ -2160,6 +2165,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|GroupData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回群组数组。
+         * @o2ActionOut x_organization_assemble_express.GroupAction.listWithGroupSupDirectObject
          * @o2syntax
          * //同步执行，返回嵌套上级群组数组。
          * var groupList = this.org.listSupGroup( name, true );
@@ -2213,6 +2219,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|GroupData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回群组对象数组。
+         * @o2ActionOut x_organization_assemble_express.GroupAction.listWithPersonObject
          * @o2syntax
          * //同步执行，返回群组数组。
          * var groupList = this.org.listGroupWithPerson( name );
@@ -2259,6 +2266,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|RoleData|RoleData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回角色，单个为Object，多个为Array。
+         * @o2ActionOut x_organization_assemble_express.RoleAction.listObject
          * @o2syntax
          * //同步执行，返回角色，单个为对象，多个为数组。
          * var roleList = this.org.getRole( name );
@@ -2305,6 +2313,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|RoleData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回角色对象数组。
+         * @o2ActionOut x_organization_assemble_express.RoleAction.listWithPersonObject
          * @o2syntax
          * //同步执行，返回角色数组。
          * var roleList = this.org.listRoleWithPerson( name );
