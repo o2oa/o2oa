@@ -62,7 +62,7 @@
     "title": "考勤状态",
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ status = '请假或外出报备' }else if(d.isLate){ status = '迟到' }else if(d.isLeaveEarlier){ status = '早退' }else if(d.isAbsent){ status = '缺勤' }else if(d.isAbnormalDuty){ status = '异常打卡' }else if(d.isLackOfTime){ status = '工时不足' }else{ status = '正常' }; return status; }",
+    "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ if(d.leaveType && d.leaveType!=''){status =d.leaveType }else{status = '请假或外出报备'}  }else if(d.isLate){ status = '迟到' }else if(d.isLeaveEarlier){ status = '早退' }else if(d.isAbsent){ status = '缺勤' }else if(d.isAbnormalDuty){ status = '异常打卡' }else if(d.isLackOfTime){ status = '工时不足' }else{ status = '正常' }; return status; }",
     "name" : "status",
     "width" : "9%"
   } ,
