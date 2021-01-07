@@ -1035,38 +1035,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     }
 
 });
-/**
- * 流程实例的附件数据结构.
- * @typedef {Object} WorkAttachmentData
- * @property {String} id - 附件id.
- * @property {String} name - 附件标题.
- * @property {String} person - 上传人.
- * @property {Number} orderNumber - 排序号.
- * @property {String} activityName - 上传的节点.
- * @property {Object} control - 当前登录人员对附件拥有的权限.
- * @property {Boolean} control.allowRead - 是否允许阅读.
- * @property {Boolean} control.allowEdit - 是否允许编辑.
- * @property {Boolean} control.allowControl - 是否允许设置.
- * @property {Number} length - 附件大小.
- * @property {String} createTime - 创建时间.
- * @property {String} updateTime - 修改时间.
- * @property {String} extension - 附件扩展名.
- * @example
- * {
-    "id": "56c4e86f-a4c8-4cc2-a150-1a0d2c5febcb",   //附件ID
-    "name": "133203a2-92e6-4653-9954-161b72ddb7f9.png", //附件名称
-    "extension": "png",                             //附件扩展名
-    "length": 43864,                                //附件大小
-    "person": "xx@huqi@P",                          //附件上传人
-    "lastUpdateTime": "2018-09-27 15:50:34",        //最后的修改时间
-    "lastUpdatePerson": "xx@huqi@P",                //最后的修改人
-    "activity": "e31ad938-c495-45a6-8d77-b8a9b61a165b", //附件上传的活动ID
-    "activityName": "申请人",                           //附件上传的活动名称
-    "activityType": "manual",                           //附件上传的活动类型
-    "site": "$mediaOpinion",                        //附件存储位置（一般用于区分附件在哪个表单元素中显示）
-    "type": "image/png"                             //附件类型（contentType）
-}
- */
+
 
 /** @class Attachment 附件组件。
  * @example
@@ -1723,7 +1692,21 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     },
     /**
      * @summary 为组件重新设置附件，该附件必须已经上传。
-     *  @param data{WorkAttachmentData} .
+     *  @param {Object} data.
+     *  <pre><code class='language-js'>{
+     *     "id": "56c4e86f-a4c8-4cc2-a150-1a0d2c5febcb",   //附件ID
+     *     "name": "133203a2-92e6-4653-9954-161b72ddb7f9.png", //附件名称
+     *     "extension": "png",                             //附件扩展名
+     *     "length": 43864,                                //附件大小
+     *     "person": "xx@huqi@P",                          //附件上传人
+     *     "lastUpdateTime": "2018-09-27 15:50:34",        //最后的修改时间
+     *     "lastUpdatePerson": "xx@huqi@P",                //最后的修改人
+     *     "activity": "e31ad938-c495-45a6-8d77-b8a9b61a165b", //附件上传的活动ID
+     *     "activityName": "申请人",                           //附件上传的活动名称
+     *     "activityType": "manual",                           //附件上传的活动类型
+     *     "site": "$mediaOpinion",                        //附件存储位置（一般用于区分附件在哪个表单元素中显示）
+     *     "type": "image/png"                             //附件类型（contentType）
+     * }</code></pre>
      */
     setData: function(data){
         this.attachmentController.clear();

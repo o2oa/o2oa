@@ -35,7 +35,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              */
             "queryLoad",
             /**
-             * 表单加载前触发。已提示抢办锁定。
+             * 表单加载前触发。如果是流程表单，已提示抢办锁定。
              * @event MWF.xApplication.process.Xform.Form#beforeLoad
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
@@ -53,7 +53,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              */
             "postLoad",
             /**
-             * 表单的所有组件后触发。表单包含有子表单、子页面、部件时，此事件会在这些组件加载后触发。
+             * 表单的所有组件加载后触发。表单包含有子表单、子页面、部件时，此事件会在这些组件加载后触发。
              * @event MWF.xApplication.process.Xform.Form#afterModulesLoad
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
@@ -65,13 +65,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              */
             "afterLoad",
             /**
-             * 保存前触发。流转前也会触发本事件。
+             * 保存前触发。如果是流程表单，流转前也会触发本事件。
              * @event MWF.xApplication.process.Xform.Form#beforeSave
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
             "beforeSave",
             /**
-             * 保存后触发。流转后也会触发本事件。
+             * 保存后触发。如果是流程表单，流转后也会触发本事件。
              * @event MWF.xApplication.process.Xform.Form#afterSave
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
@@ -180,7 +180,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         /**
          * @summary 表单的配置信息，比如表单名称，提交方式等等.
-         * @member {JsonObject}
+         * @member {Object}
          * @example
          *  //可以在脚本中获取表单配置信息
          * var json = this.form.getApp().appForm.json; //表单配置信息
@@ -3129,11 +3129,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         });
     },
-    /**
-     * @summary 一键下载.
-     * @example
-     * this.form.getApp().appForm.downloadAll();
-     */
     downloadAll: function () {
         var htmlFormId = "";
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
@@ -4266,3 +4261,94 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     }
 
 });
+
+
+/**
+ * @class PortalPage 门户页面。
+ * @alias PortalPage
+ * @o2category FormComponents
+ * @o2range {Portal}
+ * @extends MWF.xApplication.process.Xform.Form
+ * @example
+ * //可以在脚本中获取页面
+ * //方法1：
+ * var page = this.form.getApp().appForm; //获取页面
+ * //方法2
+ * var page = this.target; //在页面本身的事件脚本中获取
+ * @hideconstructor
+ */
+var PortalPage="";
+
+/**
+ * @event PortalPage#beforeProcessWork
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeProcess
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterProcess
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeReset
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterReset
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeRetract
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterRetract
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeReroute
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterReroute
+ * @ignore
+ */
+/**
+ *  @event PortalPage#beforeDelete
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterDelete
+ * @ignore
+ */
+/**
+ *  @event PortalPage#beforeReaded
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterReaded
+ * @ignore
+ */
+/**
+ * @method PortalPage#getRouteDataList
+ * @ignore
+ */
+/**
+ * @method PortalPage#pressWork
+ * @ignore
+ */
+/**
+ * @method PortalPage#rerouteWork
+ * @ignore
+ */
+/**
+ * @method PortalPage#readedWork
+ * @ignore
+ */
+/**
+ * @method PortalPage#uploadedAttachment
+ * @ignore
+ */
+
