@@ -111,34 +111,6 @@
  * { "name": "工作汇报读者" } //群组名称
  */
 
-/**在本API的this.org模块中返回的群组数据
- *  @typedef {Object} GroupData
- *  @example
- * {
- *   "name": "工作汇报读者", //群组名称
- *   "unique": "ReportReader",   //群组唯一标志
- *   "description": "可查看所有部门所有状态的工作汇报", //群组说明
- *   "distinguishedName": "工作汇报读者@ReportReader@G", //群组全称
- *   "orderNumber": 13699599,  //排序号
- *   "identityList": [     //身份成员
- *       "张三@cce8bc22-225a-4f85-8132-7374d546886e@I",
- *       "李四@aba8bc22-225a-4f85-8132-7374d546886e@I",
- *   ],
- *   "personList": [     //个人成员
- *       "张三@zhangsan@P",
- *       "李四@lisi@P",
- *   ],
- *   "groupList": [  //群组成员
- *       "所有部门领导@AllDepartLeader@G",
- *       "所有部门汇报管理员@AllDepartReportManager@G"
- *   ],
- *   "unitList": [  //组织成员
- *       "开发部@kfb@U",
- *       "综合部@zhb@U"
- *   ]
- * }
- */
-
 
 /**
  * 在本API的this.org模块中，当使用人员(个人)作为检索参数的时候，允许使用人员的distinguishedName、name、id、unique属性值或包含这些属性的对象。
@@ -157,32 +129,6 @@
  * { "id": "cce8bc22-225a-4f85-8132-7374d546886e" } //人员id
  * { "unique": "lisi" } //人员unique
  * { "name": "李四" } //人员名称，不重名时才有效
- */
-
-/**在本API的this.org模块中返回的个人数据
- *  @typedef {Object} PersonData
- *  @example
- * {
- *   "name": "李四",    //姓名
- *   "genderType": "m", //性别， m为男性， f为女性， d未知
- *   "signature": "", //签名
- *   "description": "", //说明
- *   "employee": "1111", //员工号
- *   "unique": "lisi", //唯一标识
- *   "distinguishedName": "李四@lisi@P", //识别名
- *   "orderNumber": 14214946, //排序号
- *   "mail": "", //邮箱
- *   "weixin": "", //微信号
- *   "qq": "", //qq号码
- *   "mobile": "85252281460", //手机号码
- *   "officePhone": "", //办公电话
- *   "boardDate" : "", //入职日期
- *   "birthday" : "", //生日
- *   "age" : "", //年龄
- *   "qiyeweixinId" : "", //企业微信id
- *   "dingdingId" : "", //钉钉id
- *   "zhengwuDingdingId" //政务钉钉id
- * }
  */
 
 /**
@@ -204,25 +150,6 @@
  * { "name": "PersonManager" } //角色名称
  */
 
-/**在本API的this.org模块中返回的角色数据
- *  @typedef {Object} RoleData
- *  @example
- * {
- *   "name": "Manager",   //角色名称
- *   "unique": "ManagerSystemRole", //角色唯一标识
- *   "description": "", //角色描述
- *   "distinguishedName": "Manager@ManagerSystemRole@R", //角色识别名
- *   "orderNumber": 7897556, //排序号
- *   "personList": [  //人员成员
- *       "张三@zhangsan@P",
- *       "李四@lisi@P"
- *   ],
- *   "groupList": [  //群组成员
- *       "测试群组@ceshizu@G"
- *   ]
- * }
- */
-
 /**
  * 在本API的this.org模块中，当使用身份作为检索参数的时候，允许使用身份的distinguishedName、name、id、unique属性值或包含这些属性的对象。
  * @typedef {(String|Object)} IdentityFlag
@@ -242,24 +169,6 @@
  * { "name": "张三" } //身份名称，有可能存在重名，需要精确匹配的请不要使用
  */
 
-/**在本API的this.org模块中返回的身份数据
- *  @typedef {Object} IdentityData
- *  @example
- * {
- *   "name": "李四",  //身份名称，不唯一
- *   "unique": "23dd1b53-feed-485d-8c9c-1a4e64ff58a2", //身份唯一标识
- *   "description": "", //身份描述
- *   "distinguishedName": "李四@23dd1b53-feed-485d-8c9c-1a4e64ff58a2@I", //身份全称
- *   "person": "李四@lisi@P", //人员
- *   "unit": "开发部@kfb@U",  //组织
- *   "unitName": "开发部",   //组织名称, 不唯一
- *   "unitLevel": 2,         //组织层级
- *   "unitLevelName": "浙江兰德纵横/开发部", //组织层级名
- *   "orderNumber": 24920439 //排序号
- *}
- */
-
-
 /**
  * 在本API的this.org模块中，当使用组织作为检索参数的时候，允许使用组织的distinguishedName、name、id、unique属性值或包含这些属性的对象。
  * @typedef {(String|Object)} UnitFlag
@@ -278,26 +187,6 @@
  * { "unique": "kfb" } //组织unique
  * { "name": "开发部" } //组织名称，有可能存在重名，需要精确匹配的请不要使用
  */
-
-/**在本API的this.org模块中返回的组织数据
- *  @typedef {Object} UnitData
- *  @example
- * {
- *   "name": "开发部", //组织名称
- *   "unique": "kfb",  //组织唯一标识
- *   "distinguishedName": "开发部@kfb@U", //组织识别名
- *   "typeList": [   //组织类型
- *       "部门"
- *   ],
- *   "description": "", //组织描述
- *   "shortName": "kfb", //组织简称
- *   "level": 2, //组织层级
- *   "levelName": "浙江兰德纵横/开发部", //层级名
- *   "superior": "浙江兰德纵横@a706f5f0-4a3b-4785-8e1d-0a944bfad4eb@U" //上级组织
- * }
- */
-
-
 
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.ViewEnvironment = function (ev) {
