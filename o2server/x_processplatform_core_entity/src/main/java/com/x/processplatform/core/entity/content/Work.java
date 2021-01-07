@@ -152,10 +152,10 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	}
 
 	public List<String> getSplitValueList() {
-		//这里调用必须重新指向一次,如果使用
-		//Work copy = XGsonBuilder.convert(work, Work.class);
-		//copy.copyTo(this, JpaObject.id_FIELDNAME);
-		//这样的方法调用,那么在运行完成以后copy.splitValueList不再指向this.getProperties().getSplitValueList()
+		// 这里调用必须重新指向一次,如果使用
+		// Work copy = XGsonBuilder.convert(work, Work.class);
+		// copy.copyTo(this, JpaObject.id_FIELDNAME);
+		// 这样的方法调用,那么在运行完成以后copy.splitValueList不再指向this.getProperties().getSplitValueList()
 		this.splitValueList = this.getProperties().getSplitValueList();
 		return this.splitValueList;
 	}
@@ -354,12 +354,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = false)
 	private WorkStatus workStatus;
 
-	// public static final String errorRetry_FIELDNAME = "errorRetry";
-	// @FieldDescribe("重试次数.")
-	// @Column(name = ColumnNamePrefix + errorRetry_FIELDNAME)
-	// @CheckPersist(allowEmpty = false)
-	// private Integer errorRetry;
-
 	public static final String beforeExecuted_FIELDNAME = "beforeExecuted";
 	@FieldDescribe("是否已经通过执行前")
 	@Column(name = ColumnNamePrefix + beforeExecuted_FIELDNAME)
@@ -377,7 +371,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@ElementIndex(name = TABLE + IndexNameMiddle + manualTaskIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> manualTaskIdentityList;
-	// private List<String> manualTaskIdentityList = new ArrayList<>();
 
 	public static final String manualTaskIdentityText_FIELDNAME = "manualTaskIdentityText";
 	@FieldDescribe("当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.")
@@ -448,19 +441,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + destinationActivity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String destinationActivity;
-
-	// public static final String forceRoute_FIELDNAME = "forceRoute";
-	// @FieldDescribe("强制路由，用于调度等需要跳过执行环节直接进行的.")
-	// @Column(name = ColumnNamePrefix + forceRoute_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Boolean forceRoute;
-	//
-	// public static final String forceRouteArriveCurrentActivity_FIELDNAME =
-	// "forceRouteArriveCurrentActivity";
-	// @FieldDescribe("是否是强制路由进入当前节点.")
-	// @Column(name = ColumnNamePrefix + forceRouteArriveCurrentActivity_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Boolean forceRouteArriveCurrentActivity;
 
 	public static final String expireTime_FIELDNAME = "expireTime";
 	@FieldDescribe("任务截止时间.")
