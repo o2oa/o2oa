@@ -6,12 +6,13 @@
 
 * O2OA 前端脚本基于您使用的浏览器的Javascript引擎，使用Javascript语法。
 
-* 您可以通过脚本访问和操作允许的DOM对象；也可以通过平台定义的API操作表单、业务数据、组织、视图等各种对象。
-
+* 本API是O2OA前台脚本的编写说明，您可以通过脚本访问和操作平台内的各种对象。
 
 ## API总览
 
 ### Modules
+
+* 为脚本封装的对象、方法和类
 
 <table>
     <tr>
@@ -20,9 +21,9 @@
         <td><a href="module-documentContext.html">内容管理实例 - documentContext</a></td>
     </tr>
     <tr>
-        <td><a href="module-org.html">组织 - org</a></td>
-        <td><a href="module-form.html">流程表单 - form</a></td>
-        <td><a href="module-page.html">页面 - page</a></td>
+        <td><a href="module-org.html">组织查询 - org</a></td>
+        <td><a href="module-form.html">流程及内容管理表单 - form</a></td>
+        <td><a href="module-page.html">门户页面 - page</a></td>
     </tr>
     <tr>
         <td><a href="module-queryView.html">视图 - queryView</a></td>
@@ -31,13 +32,18 @@
     </tr>
     <tr>
         <td><a href="module-queryStatement.html">查询视图 - queryStatement</a></td>
-        <td><a href="module-statement.html">查询执行 - statement</a></td>
-        <td><a href="module-Actions.html">Actions - Actions</a></td>
+        <td><a href="module-statement.html">查询视图执行 - statement</a></td>
+        <td><a href="module-Actions.html">服务调用 - Actions</a></td>
     </tr>
     <tr>
-        <td><a href="module-include.html">引用 - include</a></td>
+        <td><a href="module-include.html">脚本引用 - include</a></td>
         <td><a href="module-define.html">方法定义 - define</a></td>
-        <td><a href="module-session.html">session - session</a></td>
+        <td><a href="module-session.html">当前用户 - session</a></td>
+    </tr>
+    <tr>
+        <td><a href="module-wait.html">表单等待 - wait</a></td>
+        <td></td>
+        <td></td>
     </tr>
 </table>
 
@@ -119,7 +125,7 @@
 #### CMS 内容管理表单组件
 <table>
     <tr>
-        <td><a href="MWF.xApplication.process.Xform.Form.html">表单 - Form</a></td>
+        <td><a href="CMSForm.html">内容管理表单 - CMSForm</a></td>
         <td><a href="MWF.xApplication.process.Xform.Label.html">文本 - Label</a></td>
         <td><a href="MWF.xApplication.process.Xform.Textfield.html">文本字段 - Textfield</a></td>
     </tr>
@@ -188,7 +194,7 @@
 #### Portal 门户页面组件
 <table>
     <tr>
-        <td><a href="MWF.xApplication.process.Xform.Form.html">表单 - Form</a></td>
+        <td><a href="PortalPage.html">页面 - PortalPage</a></td>
         <td><a href="MWF.xApplication.process.Xform.Div.html">容器 - Div</a></td>
         <td><a href="MWF.xApplication.process.Xform.Label.html">文本 - Label</a></td>
     </tr>
