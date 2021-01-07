@@ -753,6 +753,18 @@ public class Config {
 					"application/vnd.openxmlformats-officedocument.presentationml.presentation");
 			/* 名片 */
 			mimeTypes.addMimeMapping("vcf", "text/x-vcard");
+			/* 流媒体都改为stream输出，不支持浏览器在线播放，如需在线播放请用第三方插件 */
+			mimeTypes.addMimeMapping("mov", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("movie", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mp2", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mp3", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mp4", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mpe", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mpeg", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mpg", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mpga", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("wav", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mid", MediaType.APPLICATION_OCTET_STREAM);
 			instance().mimeTypes = mimeTypes;
 		}
 		return instance().mimeTypes;
