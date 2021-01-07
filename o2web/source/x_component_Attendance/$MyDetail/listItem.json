@@ -14,7 +14,7 @@
     "defaultSort" : "desc",
     "item" : "recordDateString",
     "name" : "recordDateString",
-    "width" : "9%"
+    "width" : "6%"
   },
 
   {
@@ -67,12 +67,20 @@
     "width" : "9%"
   } ,
   {
+    "title": "是否范围外打卡",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( d ){  if(d.isExternal){ return '是' }else{ return '否' }}",
+    "name" : "appealStatus",
+    "width" : "6%"
+  },
+  {
     "title": "申诉状态",
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "function( d ){  if(d.appealStatus==1){ return '申诉中' }else if(d.appealStatus==-1){ return '申诉未通过' }else if(d.appealStatus==9){ return '申诉通过' }else{ return '' } }",
     "name" : "appealStatus",
-    "width" : "9%"
+    "width" : "6%"
   },
   {
     "title": "申诉审核人",
