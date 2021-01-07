@@ -1,49 +1,4 @@
 /**
- * StatementInfor 查询配置信息
- * @typedef {Object} StatementInfor
- * @example
- * {
-    "query": "26d21c71-5114-4496-8ca1-a69e56324841", //所属应用id
-    "id": "ee334220-66d3-4f78-afce-8ccf6b995c8c", //查询id
-    "name": "测试查询", //名称
-    "alias": "", //别名
-    "description": "", //描述
-    "table": "", //自建表的id
-    "entityClassName": "com.x.processplatform.core.entity.content.Task", //系统表表名
-    "entityCategory": "official", //表类型 official(系统表) 或 dynamic(自建表)
-    "format": "jpql", //语句类型,jpql 或者 script(脚本)
-    "type": "select", //select/update/delete
-    "data": "SELECT o FROM Task o where o.person = :person", //查询语句
-    "countData": "SELECT count(o.id) FROM Task o where o.person = :person", //总数语句
-    "countScriptText" : "", //总数语句脚本
-    "scriptText" : "", //查询语句脚本
-    "viewJson": { ... } //视图相关信息
-}
- */
-
-/**
- * ViewInfor 视图配置信息
- * @typedef {Object} ViewInfor
- * @example
- * {
-      "application": "db9fc893-7dbc-4e0f-a617-99089d2c6323", //视图所在应用
-      "query": "db9fc893-7dbc-4e0f-a617-99089d2c6323",  //视图所在应用，同application
-      "name": "视图自定义测试", //视图名称
-      "viewName": "视图自定义测试",  //视图名称，同name
-      "isExpand": "no",  //如果有分类，默认是否展开开
-      "id": "705ce967-2f9c-425c-8873-3bd729249e1d", //视图id
-      "alias": "", //视图别名
-      "description": "",  //视图描述
-      "display": true, //视图是否显示
-      "type": "cms", //视图嵌入的数据类型, cms 或 process
-      "count": 2000, //最多返回2000条
-      "pageSize": 20, //每页的条数
-      "createTime": "2019-09-02 10:18:27",
-      "updateTime": "2020-03-26 15:53:03"
-    }
- */
-
-/**
  * @readonly
  * @enum {String} ViewFilterDataLogic
  * @property {String} or color for a white square or piece.
@@ -381,7 +336,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * <div>如果对本应用的数据字典操作，将optionsOrName设置为string。</div>
      * <pre><code class='language-js'>
      *     var dict = new this.Dict("bulletinDictionary"); //数据字典的名称、别名或id
-     * </pre></code>
+     * </code></pre>
      * <div>如果需要对其他应用的数据字典进行操作，将options设置为JsonObject</div>
      * <pre><code class='language-js'>
      * var dict = new this.Dict({
@@ -393,7 +348,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
      *    enableAnonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为process的时候此参数无效，默认为false
      * });
-     * </pre></code>
+     * </code></pre>
      * @return {Object} Dict对象
      * @o2syntax
      * //您可以在页面、表单、流程各个嵌入脚本中，通过this.Dict()对本应用或其他应用的数据字典中的数据进行增删改查，如下：
@@ -883,6 +838,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|IdentityData|IdentityData[]} 当async为true时，返回
+         * @o2ActionOut x_organization_assemble_express.IdentityAction.listObject
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份，单个是Object，多个是Array。
          * @o2syntax
@@ -2052,7 +2008,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *        }
          *    ]
          * }
-         * </pre></code>
+         * </code></pre>
          * @o2syntax
          * //同步执行，返回职务数组。
          * var dutyList = this.org.listUnitAllDuty( unit );
@@ -2974,7 +2930,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       }
          *  ]
          * }
-         * </pre></code>
+         * </code></pre>
          * @param {Function} callback - 访问成功后的回调函数
          * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
          * @o2syntax
@@ -3076,7 +3032,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       }
          *  ]
          * }
-         * </pre></code>
+         * </code></pre>
          * @param {Function} callback - 必选，当选择完成，点击“确定”之后的回调函数。
          * @o2syntax
          * this.view.select(view, callback);
@@ -3222,7 +3178,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       "processName" : "test流程" //其他写确定的值
          *     }
          * }
-         * </pre></code>
+         * </code></pre>
          * @param {Function} callback - 访问成功后的回调函数
          * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
          * @o2syntax
@@ -3338,7 +3294,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       "processName" : "test流程" //其他写确定的值
          *     }
          * }
-         * </pre></code>
+         * </code></pre>
          * @param {Function} callback - 访问成功后的回调函数
          * @o2syntax
          * this.statement.select(statement, callback);
@@ -3595,7 +3551,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *     "perPageCount": 50, //每页的条数
      *     "currentPageNumber": 1 // 当前页数
      * }
-     * </pre></code>
+     * </code></pre>
      * @o2syntax
      * this.queryStatement.getPageInfor();
      */
@@ -3619,14 +3575,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
     },
      ...
      *]
-     * </pre></code>
+     * </code></pre>
      * 如："select id, title from table o" 返回 二维数组：
      *<pre><code class='language-js'>[
      ["id1", "title1"],
      ["id2", "title2"],
      ...
      *]
-     *</pre></code>
+     *</code></pre>
      * @o2syntax
      * var data = this.queryStatement.getPageData();
      */
@@ -3684,14 +3640,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
     },
      ...
      *]
-     * </pre></code>
+     * </code></pre>
      * 如："select id, title from table o" 返回 二维数组：
      *<pre><code class='language-js'>[
      ["id1", "title1"],
      ["id2", "title2"],
      ...
      *]
-     *</pre></code>
+     *</code></pre>
      * @o2syntax
      * var data = this.queryStatement.getSelectedData();
      */
@@ -3732,7 +3688,24 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @method getStatementInfor
          * @memberOf module:queryStatement
          * @static
-         * @return {StatementInfor} 查询的配置信息.
+         * @return {Object} 查询的配置信息.
+         * <pre><code class='language-js'>{
+         *    "query": "26d21c71-5114-4496-8ca1-a69e56324841", //所属应用id
+         *    "id": "ee334220-66d3-4f78-afce-8ccf6b995c8c", //查询id
+         *    "name": "测试查询", //名称
+         *    "alias": "", //别名
+         *    "description": "", //描述
+         *    "table": "", //自建表的id
+         *    "entityClassName": "com.x.processplatform.core.entity.content.Task", //系统表表名
+         *    "entityCategory": "official", //表类型 official(系统表) 或 dynamic(自建表)
+         *    "format": "jpql", //语句类型,jpql 或者 script(脚本)
+         *    "type": "select", //select/update/delete
+         *    "data": "SELECT o FROM Task o where o.person = :person", //查询语句
+         *    "countData": "SELECT count(o.id) FROM Task o where o.person = :person", //总数语句
+         *    "countScriptText" : "", //总数语句脚本
+         *    "scriptText" : "", //查询语句脚本
+         *    "viewJson": { ... } //视图相关信息
+         * }</code></pre>
          * @o2syntax
          * this.queryStatement.getStatementInfor();
          */
@@ -3743,7 +3716,23 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @method getViewInfor
          * @memberOf module:queryView
          * @static
-         * @return {ViewInfor} 视图的配置信息.
+         * @return {Object} 视图的配置信息.
+         * <pre><code class='language-js'>{
+         *      "application": "db9fc893-7dbc-4e0f-a617-99089d2c6323", //视图所在应用
+         *      "query": "db9fc893-7dbc-4e0f-a617-99089d2c6323",  //视图所在应用，同application
+         *      "name": "视图自定义测试", //视图名称
+         *      "viewName": "视图自定义测试",  //视图名称，同name
+         *      "isExpand": "no",  //如果有分类，默认是否展开开
+         *      "id": "705ce967-2f9c-425c-8873-3bd729249e1d", //视图id
+         *      "alias": "", //视图别名
+         *      "description": "",  //视图描述
+         *      "display": true, //视图是否显示
+         *      "type": "cms", //视图嵌入的数据类型, cms 或 process
+         *      "count": 2000, //最多返回2000条
+         *      "pageSize": 20, //每页的条数
+         *      "createTime": "2019-09-02 10:18:27",
+         *      "updateTime": "2020-03-26 15:53:03"
+         * }</code></pre>
          * @o2syntax
          * this.queryView.getViewInfor();
          */
@@ -3760,7 +3749,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     "perPageCount": 50, //每页的条数
          *     "currentPageNumber": 1 // 当前页数
          * }
-         * </pre></code>
+         * </code></pre>
          * @o2syntax
          * this.queryView.getPageInfor();
          */
@@ -3783,7 +3772,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *    },
          *   ...
          *]
-         * </pre></code>
+         * </code></pre>
          * 有分类的时候，数据格式如下：
          *<pre><code class='language-js'>[
          *  {
@@ -3802,7 +3791,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  },
          *  ...
          *]
-         *</pre></code>
+         *</code></pre>
          * @o2syntax
          * var data = this.queryView.getPageData();
          */
@@ -3863,7 +3852,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
           },
          ...
          * ]
-         </pre></code>
+         </code></pre>
          * @o2syntax
          * var data = this.queryView.getSelectedData();
          */
@@ -3886,7 +3875,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       "formatType":"textValue"
          *   }
          *]
-         * </pre></code>
+         * </code></pre>
          * @param {Function} [callback] 过滤完成并重新加载数据后的回调方法。
          * @o2syntax
          * this.queryView.setFilter( filter );
@@ -3909,7 +3898,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *      "formatType":"textValue"
          *  }
          *]
-         * </pre></code>
+         * </code></pre>
          * @param {StatementParameter} [parameter] 过滤条件。对查询语句where子句的形如":person"的参数部分进行赋值，参数如下：
          * <pre><code class='language-js'>
          * //假设语句为 select count(o.id) from Read o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)。
@@ -3920,7 +3909,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *    "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *    "processName" : "test流程" //其他写确定的值
          * }
-         * </pre></code>
+         * </code></pre>
          * @param {Function} [callback] 过滤完成并重新加载数据后的回调方法。
          * @o2syntax
          * this.queryStatement.setStatementFilter( filter, parameter, callback );
@@ -3958,7 +3947,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     }, //可选，内容行样式，如果不传，则使用原视图的配置
          *     "isExpand": "no", //可选，默认是否展开分类，如果不传，则使用原视图的配置, 可选值有:yes no
          *   }
-         * </pre></code>
+         * </code></pre>
          * @o2syntax
          * this.queryView.switchView( options );
          */
@@ -3995,7 +3984,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       "processName" : "test流程" //其他写确定的值
          *     }
          *   })
-         * </pre></code>
+         * </code></pre>
          * @o2syntax
          * this.queryStatement.switchStatement( options );
          */
@@ -4505,7 +4494,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *      }
      *    ]
      *  }
-     * </pre></code>
+     * </code></pre>
      */
     this.session = layout.desktop.session;
 
@@ -4531,7 +4520,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
      *如:<pre><code class='language-js'>
      *  "x_processplatform_assemble_surface" //流程平台相关服务根
-     * </pre></code>
+     * </code></pre>
      * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
      * @o2syntax
      * var actions = this.Actions.getHost( root );
@@ -4546,7 +4535,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 如:
      *<pre><code class='language-js'>
      *  "x_processplatform_assemble_surface" //流程平台相关服务根
-     * </pre></code>
+     * </code></pre>
      * @return {Object} 返回action对象，用于后续服务调用
      * @o2syntax
      * var actions = o2.Actions.load( root );
@@ -4699,7 +4688,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
      *如:<pre><code class='language-js'>
      *  "x_processplatform_assemble_surface" //流程平台相关服务根
-     * </pre></code>
+     * </code></pre>
      * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
      * @o2syntax
      * var actions = o2.Actions.get( root );
