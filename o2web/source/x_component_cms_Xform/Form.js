@@ -8,7 +8,22 @@ MWF.xDesktop.requireApp("process.Xform", "Form", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
 
 MWF.xDesktop.requireApp("cms.Xform", "Package", null, false);
-MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
+
+/** @class CMSForm 内容管理表单。
+ * @o2category FormComponents
+ * @o2range {CMS}
+ * @alias CMSForm
+ * @example
+ * //可以在脚本中获取表单
+ * //方法1：
+ * var form = this.form.getApp().appForm; //获取表单
+ * //方法2
+ * var form = this.target; //在表单本身的事件脚本中获取
+ * @hideconstructor
+ */
+MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
+    /** @lends CMSForm# */
+{
     Implements: [Options, Events],
     Extends: MWF.APPForm,
     options: {
@@ -18,29 +33,131 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         "autoSave": false,
         "saveOnClose": false,
         "showAttachment": true,
-        "moduleEvents": ["queryLoad",
+        "moduleEvents": [
+             /**
+             * 表单加载前触发。表单html已经就位。
+             * @event CMSForm#queryLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "queryLoad",
+             /**
+             * 表单加载前触发。数据(businessData)已经就绪。
+             * @event CMSForm#beforeLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "beforeLoad",
-            "postLoad",
-            "afterLoad",
-            "beforeSave",
-            "postSave",
-            "afterSave",
-            "beforeClose",
-            "beforePublish",
-            "postPublish",
-            "afterPublish",
-            "beforeDelete",
-            "afterDelete",
+            /**
+             * 表单的所有组件加载前触发，此时表单的样式和js head已经加载。
+             * @event CMSForm#beforeModulesLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "beforeModulesLoad",
-            "resize",
-            "afterModulesLoad"]
+            /**
+             * 表单加载后触发。
+             * @event CMSForm#postLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "postLoad",
+            /**
+             * 表单的所有组件加载后触发。
+             * @event CMSForm#afterModulesLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterModulesLoad",
+            /**
+             * 表单加载后触发。
+             * @event CMSForm#afterLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterLoad",
+            /**
+             * 保存前触发。
+             * @event CMSForm#beforeSave
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeSave",
+            /**
+             * 数据已经整理完成，但还未保存到后台时触发。this.event指向整理完成的数据
+             * @event CMSForm#afterSave
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "postSave",
+            /**
+             * 数据保存到后台后触发。
+             * @event CMSForm#afterSave
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterSave",
+            /**
+             * 关闭前触发。
+             * @event CMSForm#beforeClose
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeClose",
+            /**
+             * 发布前触发。
+             * @event CMSForm#beforePublish
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforePublish",
+            /**
+             * 数据已经整理完成，但还未调用服务发布触发。this.event指向整理完成的数据
+             * @event CMSForm#postPublish
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "postPublish",
+            /**
+             * 执行后台服务发布后触发。
+             * @event CMSForm#afterPublish
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterPublish",
+            /**
+             * 删除前触发。
+             * @event CMSForm#beforeDelete
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeDelete",
+            /**
+             * 删除后触发。
+             * @event CMSForm#afterDelete
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterDelete",
+            "resize"
+        ]
     },
+    /**
+     * @summary 获取表单的所有数据.
+     * @method getData
+     * @memberof CMSForm
+     * @example
+     * var data = this.form.getApp().appForm.getData();
+     * @return {Object}
+     */
     initialize: function (node, data, options) {
         this.setOptions(options);
 
+        /**
+         * @summary 表单容器
+         * @see https://mootools.net/core/docs/1.6.0/Element/Element
+         * @member {Element}
+         * @example
+         *  //可以在脚本中获取表单容器
+         * var formContainer = this.form.getApp().appForm.container;
+         */
         this.container = $(node);
         this.container.setStyle("-webkit-user-select", "text");
         this.data = data;
+
+        /**
+         * @summary 表单的配置信息，比如表单名称等等.
+         * @member {Object}
+         * @example
+         *  //可以在脚本中获取表单配置信息
+         * var json = this.form.getApp().appForm.json; //表单配置信息
+         * var name = json.name; //表单名称
+         */
         this.json = data.json;
         this.html = data.html;
 
@@ -48,7 +165,35 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         this.cssPath = this.options.cssPath || "../x_component_cms_Xform/$Form/" + this.options.style + "/css.wcss";
         this._loadCss();
 
+        /**
+         * @summary 表单中的所有组件数组.
+         * @member {Array}
+         * @example
+         * //下面的样例对表单组件进行循环，并且判断是输入类型的组件
+         * var modules = this.form.getApp().appForm.modules; //获取所有表单组件
+         * for( var i=0; i<modules.length; i++ ){ //循环处理组件
+         *   //获取组件的类型
+            var moduleName = module.json.moduleName;
+            if( !moduleName ){
+                moduleName = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
+            }
+            if( ["calendar","combox","number","textfield"].contains( moduleName )){ //输入类型框
+                //do something
+             }
+         * }
+         */
         this.modules = [];
+
+        /**
+         * 该对象的key是组件标识，value是组件对象，可以使用该对象根据组件标识获取组件。<br/>
+         * 需要注意的是，在子表单中嵌入不绑定数据的组件（比如div,common,button等等），系统允许重名。<br/>
+         * 在打开表单的时候，系统会根据重名情况，自动在组件的标识后跟上 "_1", "_2"。
+         * @summary 表单中的所有组件对象.
+         * @member {Object}
+         * @example
+         * var moduleAll = this.form.getApp().appForm.all; //获取组件对象
+         * var subjectField = moduleAll["subject"] //获取名称为subject的组件
+         */
         this.all = {};
         this.forms = {};
 
@@ -555,6 +700,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
             }.bind(this));
         }
     },
+
+    /**
+     * @summary 弹出删除文档确认框.
+     * @method deleteDocument
+     * @memberof CMSForm
+     * @example
+     * this.form.getApp().appForm.deleteDocument();
+     */
     deleteDocument: function () {
         var _self = this;
         var p = MWF.getCenterPosition(this.app.content, 380, 150);
@@ -593,6 +746,13 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         });
     },
 
+    /**
+     * @summary 编辑文档.
+     * @method editDocument
+     * @memberof CMSForm
+     * @example
+     * this.form.getApp().appForm.editDocument();
+     */
     editDocument: function () {
         if (this.app.inBrowser) {
             this.modules.each(function (module) {
@@ -613,6 +773,13 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
     },
 
     //2019-11-29 移动端 开启编辑模式
+    /**
+     * @summary 移动端开启编辑模式.
+     * @method editDocumentForMobile
+     * @memberof CMSForm
+     * @example
+     * this.form.getApp().appForm.editDocumentForMobile();
+     */
     editDocumentForMobile: function () {
         if (this.app.mobile) {
             this.app.options.readonly = false;
@@ -620,6 +787,13 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         }
     },
 
+    /**
+     * @summary 弹出设置热点的界面.
+     * @method setPopularDocument
+     * @memberof CMSForm
+     * @example
+     * this.form.getApp().appForm.setPopularDocument();
+     */
     setPopularDocument: function () {
         this.app.setPopularDocument();
     },
@@ -644,6 +818,15 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         }
     },
 
+    /**
+     * @summary 将新上传的附件在指定的附件组件中展现.
+     * @method uploadedAttachment
+     * @memberof CMSForm
+     * @param {String} site - 附件组件的标识
+     * @param {String} id - 新上传的附件id
+     * @example
+     * this.form.getApp().appForm.uploadedAttachment(site, id);
+     */
     uploadedAttachment: function (site, id) {
         this.documentAction.getAttachment(id, this.businessData.document.id, function (json) {
             var att = this.all[site];

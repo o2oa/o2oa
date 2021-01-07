@@ -44,7 +44,7 @@
         "title": "O2OA前台API" //最终生成的文档中标题
     },
     "o2" : {
-        "actionDir" : "./o2web/jsdoc/"
+        "actionOutPath" : "./o2web/jsdoc/{actionRoot}/{actionName}.json"
     }
 }
 //执行命令: jsdoc -c ./o2web/jsdoc.conf.json
