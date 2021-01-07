@@ -4,10 +4,7 @@ import com.x.base.core.entity.enums.DesignerType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WrapDesigner extends GsonPropertyObject {
 
@@ -93,7 +90,13 @@ public class WrapDesigner extends GsonPropertyObject {
 			for (String key : map.keySet()){
 				DesignerPattern pattern = new DesignerPattern();
 				pattern.setProperty(key);
-				pattern.setPropertyValue(map.get(key));
+				String propertyValue = map.get(key);
+				if(!DesignerType.script.toString().equals(this.getDesignerType())) {
+					if (propertyValue != null && propertyValue.length() > 255) {
+						propertyValue = propertyValue.substring(0, 255);
+					}
+				}
+				pattern.setPropertyValue(propertyValue);
 				patternList.add(pattern);
 			}
 			this.patternList = patternList;
@@ -106,7 +109,13 @@ public class WrapDesigner extends GsonPropertyObject {
 				DesignerPattern pattern = new DesignerPattern();
 				pattern.setElementType(elementType);
 				pattern.setProperty(key);
-				pattern.setPropertyValue(map.get(key));
+				String propertyValue = map.get(key);
+				if(!DesignerType.script.toString().equals(this.getDesignerType())) {
+					if (propertyValue != null && propertyValue.length() > 255) {
+						propertyValue = propertyValue.substring(0, 255);
+					}
+				}
+				pattern.setPropertyValue(propertyValue);
 				this.patternList.add(pattern);
 			}
 		}
@@ -120,7 +129,13 @@ public class WrapDesigner extends GsonPropertyObject {
 				pattern.setElementId(elementId);
 				pattern.setElementName(elementName);
 				pattern.setProperty(key);
-				pattern.setPropertyValue(map.get(key));
+				String propertyValue = map.get(key);
+				if(!DesignerType.script.toString().equals(this.getDesignerType())) {
+					if (propertyValue != null && propertyValue.length() > 255) {
+						propertyValue = propertyValue.substring(0, 255);
+					}
+				}
+				pattern.setPropertyValue(propertyValue);
 				this.patternList.add(pattern);
 			}
 		}
@@ -138,12 +153,8 @@ public class WrapDesigner extends GsonPropertyObject {
 			for (DesignerPattern pattern : this.patternList){
 				if ("text".equals(pattern.getProperty())){
 					designerPattern = pattern;
-				}else{
-					pattern.setPropertyValue(null);
 				}
 			}
-		}else{
-			this.clearPatternValue();
 		}
 		return designerPattern;
 	}
@@ -160,11 +171,27 @@ public class WrapDesigner extends GsonPropertyObject {
 		@FieldDescribe("设计属性.")
 		private String property;
 
-		@FieldDescribe("设计属性.")
+		@FieldDescribe("设计属性值.")
 		private String propertyValue;
 
-		@FieldDescribe("匹配行")
-		private List<Integer> lines;
+		@FieldDescribe("script匹配行")
+		private List<PatternLine> lines;
+
+		public void setLines(Map<Integer, String> map){
+			if(map!=null){
+				List<PatternLine> lines = new ArrayList<>();
+				Iterator<Map.Entry<Integer, String>> iterator = map.entrySet().iterator();
+				while (iterator.hasNext()){
+					Map.Entry<Integer, String> entry = iterator.next();
+					PatternLine patternLine = new PatternLine();
+					patternLine.setLine(entry.getKey());
+					patternLine.setLineValue(entry.getValue());
+					lines.add(patternLine);
+				}
+				this.lines = lines;
+				map.clear();
+			}
+		}
 
 		public String getElementType() {
 			return elementType;
@@ -198,11 +225,11 @@ public class WrapDesigner extends GsonPropertyObject {
 			this.property = property;
 		}
 
-		public List<Integer> getLines() {
+		public List<PatternLine> getLines() {
 			return lines;
 		}
 
-		public void setLines(List<Integer> lines) {
+		public void setLines(List<PatternLine> lines) {
 			this.lines = lines;
 		}
 
@@ -212,6 +239,29 @@ public class WrapDesigner extends GsonPropertyObject {
 
 		public void setPropertyValue(String propertyValue) {
 			this.propertyValue = propertyValue;
+		}
+	}
+
+	public class PatternLine extends GsonPropertyObject {
+		@FieldDescribe("第几行匹配到")
+		private Integer line;
+		@FieldDescribe("匹配行内容")
+		private String lineValue;
+
+		public Integer getLine() {
+			return line;
+		}
+
+		public void setLine(Integer line) {
+			this.line = line;
+		}
+
+		public String getLineValue() {
+			return lineValue;
+		}
+
+		public void setLineValue(String lineValue) {
+			this.lineValue = lineValue;
 		}
 	}
 

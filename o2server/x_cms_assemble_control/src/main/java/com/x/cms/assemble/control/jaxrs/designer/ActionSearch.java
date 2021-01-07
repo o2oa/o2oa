@@ -37,7 +37,7 @@ class ActionSearch extends BaseAction {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		logger.info("{}开始内容管理设计搜索，关键字：{}", effectivePerson.getDistinguishedName(), wi.getKeyword());
+		logger.debug("{}开始内容管理设计搜索，关键字：{}", effectivePerson.getDistinguishedName(), wi.getKeyword());
 		if(StringUtils.isBlank(wi.getKeyword())){
 			throw new ExceptionFieldEmpty("keyword");
 		}
@@ -88,7 +88,7 @@ class ActionSearch extends BaseAction {
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						AppInfo appInfo = emc.find( wo.getAppId(), AppInfo.class );
+						AppInfo appInfo = emc.find( woScript.getAppId(), AppInfo.class );
 						if(appInfo != null){
 							wo.setAppId(appInfo.getId());
 							wo.setAppName(appInfo.getAppName());
@@ -126,7 +126,7 @@ class ActionSearch extends BaseAction {
 								wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 						if (!map.isEmpty()) {
 							Wo wo = new Wo();
-							AppInfo appInfo = emc.find( wo.getAppId(), AppInfo.class );
+							AppInfo appInfo = emc.find( woForm.getAppId(), AppInfo.class );
 							if(appInfo != null){
 								wo.setAppId(appInfo.getId());
 								wo.setAppName(appInfo.getAppName());
