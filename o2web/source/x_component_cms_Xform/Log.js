@@ -14,7 +14,7 @@ MWF.xDesktop.requireApp("cms.Xform", "widget.Log", null, false);
  * @hideconstructor
  */
 MWF.xApplication.cms.Xform.Log = MWF.CMSLog =  new Class(
-    /** @lends MWF.xApplication.cms.Xform.Log# */
+    /** @lends CMSLog# */
 {
 	Extends: MWF.APP$Module,
 	_loadUserInterface: function(){

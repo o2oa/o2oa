@@ -33,35 +33,6 @@ MWF.xScript.CMSEnvironment = function(ev){
 
     //workContext
     /**
-     * DocumentControl 　内容管理的权限对象。
-     * @typedef {Object} DocumentControl
-     * @example
-     {
-        "allowRead": true,              //是否允许阅读文档
-        "allowPublishDocument": true,   //是否允许发布文档
-        "allowSave": true,              //是否允许保存文档
-        "allowPopularDocument": true,   //是否允许设置为热点
-        "allowEditDocument": true,      //是否允许编辑文档
-        "allowDeleteDocument": true     //是否允许删除文档
-    }
-     */
-    /**
-     * DocumentAttachmentData 　内容管理的权限对象。
-     * @typedef {Object} DocumentAttachmentData
-     * @example
-     {
-        "id": "a5cc5858-cac5-445a-a0a5-888d224eb2f6",   //附件ID
-        "site": "attachment",                           //附件存储位置（一般用于区分附件在哪个表单元素中显示）
-        "name": "13145352_115454884000_2.jpg",          //附件名称
-        "appId": "c295f34c-9ce1-4122-b795-820267e32b68",  //栏目ID
-        "categoryId": "33fb19f0-0670-464d-875c-32fb86148f7a",  //分类ID
-        "documentId": "ca74cbef-2a7f-401a-80e3-577ac9839348",  //文档ID
-        "creatorUid": "XX@huqi@P",                      //附件上传人
-        "extension": "jpg",
-        "length": 364507,                               //附件大小
-    }
-     */
-    /**
      * 你可以通过documentContext获取内容管理实例相关的对象数据。
      * @module documentContext
      * @o2range {CMS}
@@ -75,25 +46,35 @@ MWF.xScript.CMSEnvironment = function(ev){
          * 获取当前内容管理实例的文档对象：document对象。
          * @method getDocument
          * @static
-         * @return {Document} 内容管理实例对象.
+         * @return {Document} 文档对象.
+         * @o2ActionOut x_cms_assemble_control.WoDocument|true
          * @o2syntax
          * var doc = this.documentContext.getDocument();
          */
         "getDocument": function(){return ev.document },
         /**
-         * 获取当前人对内容管理实例的权限。
+         * 获取当前人对文档的权限。
          * @method getControl
          * @static
-         * @return {DocumentControl} 当前人对内容管理实例的所拥有的权限.
+         * @return {DocumentControl} 当前人对文档所拥有的权限.
+         * <pre><code class='language-js'>{
+         *    "allowRead": true,              //是否允许阅读文档
+         *    "allowPublishDocument": true,   //是否允许发布文档
+         *    "allowSave": true,              //是否允许保存文档
+         *    "allowPopularDocument": true,   //是否允许设置为热点
+         *    "allowEditDocument": true,      //是否允许编辑文档
+         *    "allowDeleteDocument": true     //是否允许删除文档
+         * }</code></pre>
          * @o2syntax
          * var control = this.documentContext.getControl();
          */
         "getControl": function(){return ev.control;},
         /**
-         * 获取当前流程实例的附件对象列表。
+         * 获取当前文档的附件对象列表。
          * @method getAttachmentList
          * @static
-         * @return {DocumentAttachment[]} 当前人对内容管理实例的所拥有的权限.
+         * @return {DocumentFileInfo[]} 当前文档的附件对象列表.
+         * @o2ActionOut x_cms_assemble_control.FileInfoAction.get
          * @o2syntax
          * var attachmentList = this.documentContext.getAttachmentList();
          */
@@ -1561,11 +1542,12 @@ MWF.xScript.CMSEnvironment = function(ev){
         /**发布当前文档。<b>（仅内容管理表单中可用）</b>
          * @method publish
          * @memberOf module:form
+         * @param {Function} callback - 发布后的回调方法
          * @o2syntax
-         this.form.publish();
+         this.form.publish( callback );
          */
-        "publish": function(option){
-            _form.publishDocument()
+        "publish": function(callback){
+            _form.publishDocument(callback)
         },
         //"archive": function(option){
         //    _form.archiveDocument()
