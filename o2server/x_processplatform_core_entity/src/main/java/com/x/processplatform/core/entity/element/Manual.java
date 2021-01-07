@@ -85,12 +85,12 @@ public class Manual extends Activity {
 		this.properties = properties;
 	}
 
-	@FieldDescribe("分组")
+	@FieldDescribe("分组.")
 	@CheckPersist(allowEmpty = true)
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + group_FIELDNAME)
 	private String group;
 
-	@FieldDescribe("意见分组")
+	@FieldDescribe("意见分组.")
 	@CheckPersist(allowEmpty = true)
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinionGroup_FIELDNAME)
 	private String opinionGroup;
@@ -478,13 +478,13 @@ public class Manual extends Activity {
 	private List<String> taskDataPathList;
 
 	public static final String allowReset_FIELDNAME = "allowReset";
-	@FieldDescribe("允许重置待办")
+	@FieldDescribe("允许重置处理人")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + allowReset_FIELDNAME)
 	private Boolean allowReset;
 
 	public static final String allowRetract_FIELDNAME = "allowRetract";
-	@FieldDescribe("允许召回")
+	@FieldDescribe("允许工作召回")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + allowRetract_FIELDNAME)
 	private Boolean allowRetract;
@@ -519,6 +519,12 @@ public class Manual extends Activity {
 	@Column(name = ColumnNamePrefix + allowPress_FIELDNAME)
 	private Boolean allowPress;
 
+	public static final String allowPause_FIELDNAME = "allowPause";
+	@FieldDescribe("允许暂停待办的计时.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowPause_FIELDNAME)
+	private Boolean allowPause;
+
 	public static final String resetRange_FIELDNAME = "resetRange";
 	@FieldDescribe("重置范围.")
 	@CheckPersist(allowEmpty = true)
@@ -526,7 +532,7 @@ public class Manual extends Activity {
 	private String resetRange;
 
 	public static final String resetCount_FIELDNAME = "resetCount";
-	@FieldDescribe("允许最大重置次数")
+	@FieldDescribe("允许最大重置次数.")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + resetCount_FIELDNAME)
 	private Integer resetCount;
@@ -1222,5 +1228,13 @@ public class Manual extends Activity {
 
 	public void setResetRangeScriptText(String resetRangeScriptText) {
 		this.resetRangeScriptText = resetRangeScriptText;
+	}
+
+	public Boolean getAllowPause() {
+		return allowPause;
+	}
+
+	public void setAllowPause(Boolean allowPause) {
+		this.allowPause = allowPause;
 	}
 }

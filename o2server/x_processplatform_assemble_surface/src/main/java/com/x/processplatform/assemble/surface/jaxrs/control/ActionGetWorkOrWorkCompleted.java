@@ -3,7 +3,9 @@ package com.x.processplatform.assemble.surface.jaxrs.control;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -45,7 +47,8 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 
 	private Map<String, Boolean> hasTaskCompletedWithActivityToken = new HashMap<>();
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted)
+			throws InterruptedException, ExecutionException, TimeoutException, ExceptionAccessDenied {
 		ActionResult<Wo> result = new ActionResult<>();
 		CompletableFuture<Wo> getFuture = this.getFuture(effectivePerson, workOrWorkCompleted);
 		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, workOrWorkCompleted);
@@ -94,31 +97,31 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 
 		Activity activity = business.getActivity(work);
 
-		/* 是否可以看到 */
+		// 是否可以看到
 		wo.setAllowVisit(true);
-		/* 是否可以直接流转 */
+		// 是否可以直接流转
 		wo.setAllowProcessing(this.hasTaskWithWork(business, effectivePerson, work.getId()));
-		/* 是否可以处理待阅 */
+		// 是否可以处理待阅
 		wo.setAllowReadProcessing(this.hasReadWithJob(business, effectivePerson, work.getJob()));
-		/* 是否可以保存数据 */
+		// 是否可以保存数据
 		wo.setAllowSave(
 				this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(), work.getProcess())
 						|| this.hasTaskWithWork(business, effectivePerson, work.getId()));
-		/* 是否可以重置处理人 */
+		// 是否可以重置处理人
 		wo.setAllowReset(PropertyTools.getOrElse(activity, Manual.allowReset_FIELDNAME, Boolean.class, false)
 				&& wo.getAllowSave());
-
-		/* 是否可以调度 */
+		// 是否可以调度
 		wo.setAllowReroute(PropertyTools.getOrElse(activity, Manual.allowReroute_FIELDNAME, Boolean.class, false)
 				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
 						work.getProcess()));
-
-		/* 是否可以删除 */
+		// 是否可以删除
 		wo.setAllowDelete(PropertyTools.getOrElse(activity, Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
 				&& wo.getAllowSave());
-
-		/* 是否可以增加会签分支 */
-		if (PropertyTools.getOrElse(activity, Manual.allowAddSplit_FIELDNAME, Boolean.class, false)
+		// 是否可以挂起待办,暂停待办计时
+		wo.setAllowPause(PropertyTools.getOrElse(activity, Manual.allowPause_FIELDNAME, Boolean.class, false)
+				&& wo.getAllowPause());
+		// 是否可以增加会签分支
+		if (BooleanUtils.isTrue(PropertyTools.getOrElse(activity, Manual.allowAddSplit_FIELDNAME, Boolean.class, false))
 				&& BooleanUtils.isTrue(work.getSplitting())) {
 			Node node = this.workLogTree(business, work.getJob()).location(work);
 			if (null != node) {
@@ -134,8 +137,9 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				}
 			}
 		}
-		/* 是否可以召回 */
-		if (PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false)) {
+		// 是否可以召回
+		if (BooleanUtils
+				.isTrue(PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false))) {
 			Node node = this.workLogTree(business, work.getJob()).location(work);
 			if (null != node) {
 				Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
@@ -149,14 +153,14 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				}
 			}
 		}
-		/* 是否可以回滚 */
+		// 是否可以回滚
 		wo.setAllowRollback(PropertyTools.getOrElse(activity, Manual.allowRollback_FIELDNAME, Boolean.class, false)
 				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
 						work.getProcess()));
-		/* 是否可以提醒 */
+		// 是否可以提醒
 		wo.setAllowPress(PropertyTools.getOrElse(activity, Manual.allowPress_FIELDNAME, Boolean.class, false)
 				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob()));
-		/* 是否可以看到 */
+		// 是否可以看到
 		wo.setAllowVisit(true);
 
 		return wo;
@@ -164,15 +168,25 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 	}
 
 	private boolean hasTaskCompletedWithActivityToken(Business business, EffectivePerson effectivePerson,
-			String activityToken) throws Exception {
-		Boolean o = this.hasTaskCompletedWithActivityToken.get(activityToken);
-		if (null == o) {
-			o = business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
-					TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-					TaskCompleted.activityToken_FIELDNAME, activityToken) > 0;
-			this.hasTaskCompletedWithActivityToken.put(activityToken, o);
-		}
-		return o;
+			String activityToken) {
+		return this.hasTaskCompletedWithActivityToken.computeIfAbsent(activityToken, k -> {
+			try {
+				return business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
+						TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+						TaskCompleted.activityToken_FIELDNAME, activityToken) > 0;
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return false;
+		});
+//		Boolean o = this.hasTaskCompletedWithActivityToken.get(activityToken);
+//		if (null == o) {
+//			o = business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
+//					TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+//					TaskCompleted.activityToken_FIELDNAME, activityToken) > 0;
+//			this.hasTaskCompletedWithActivityToken.put(activityToken, o);
+//		}
+//		return o;
 	}
 
 	private boolean hasTaskWithWork(Business business, EffectivePerson effectivePerson, String work) throws Exception {
@@ -219,6 +233,8 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 	}
 
 	public static class Wo extends AbstractControl {
+
+		private static final long serialVersionUID = -4677744478291468477L;
 
 	}
 
