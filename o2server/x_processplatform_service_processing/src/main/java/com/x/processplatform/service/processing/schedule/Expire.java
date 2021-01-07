@@ -13,12 +13,14 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.jaxrs.WoId;
@@ -41,6 +43,7 @@ public class Expire extends AbstractJob {
 			String sequence = null;
 			List<Task> targets = new ArrayList<>();
 			AtomicInteger count = new AtomicInteger();
+			AtomicInteger pause = new AtomicInteger();
 			do {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					targets = this.list(emc, sequence);
@@ -48,26 +51,32 @@ public class Expire extends AbstractJob {
 				if (!targets.isEmpty()) {
 					sequence = targets.get(targets.size() - 1).getSequence();
 					for (Task task : targets) {
-						try {
-							try {
-								ThisApplication.context().applications()
-										.getQuery(x_processplatform_service_processing.class,
-												Applications.joinQueryUri("task", task.getId(), "expire"),
-												task.getJob())
-										.getData(WoId.class);
-								count.incrementAndGet();
-							} catch (Exception e) {
-								throw new ExceptionExpire(e, task.getId(), task.getTitle(), task.getSequence());
-							}
-						} catch (Exception e) {
-							logger.error(e);
+						// 如果是挂起状态那么就不再进行标志过期
+						if (BooleanUtils.isNotTrue(task.getPause())) {
+							expire(task);
+							count.incrementAndGet();
+						} else {
+							pause.incrementAndGet();
 						}
 					}
 				}
 			} while (!targets.isEmpty());
-			logger.print("标识{}个过期待办, 耗时:{}.", count.intValue(), stamp.consumingMilliseconds());
+			logger.print("标识{}个过期待办, {}个待办处于挂起状态, 耗时:{}.", count.intValue(), pause.intValue(),
+					stamp.consumingMilliseconds());
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
+		}
+	}
+
+	private void expire(Task task) {
+		try {
+			ThisApplication.context().applications()
+					.getQuery(x_processplatform_service_processing.class,
+							Applications.joinQueryUri("task", task.getId(), "expire"), task.getJob())
+					.getData(WoId.class);
+		} catch (Exception e) {
+			ExceptionExpire exceptionExpire = new ExceptionExpire(e, task.getId(), task.getTitle(), task.getSequence());
+			logger.error(exceptionExpire);
 		}
 	}
 
@@ -76,23 +85,25 @@ public class Expire extends AbstractJob {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Task> root = cq.from(Task.class);
-		Path<String> id_path = root.get(Task_.id);
-		Path<String> job_path = root.get(Task_.job);
-		Path<String> sequence_path = root.get(Task_.sequence);
+		Path<String> idPath = root.get(Task_.id);
+		Path<String> jobPath = root.get(Task_.job);
+		Path<String> sequencePath = root.get(JpaObject_.sequence);
+		Path<Boolean> pausePath = root.get(Task_.pause);
 		Predicate p = cb.or(cb.isNull(root.get(Task_.expired)), cb.equal(root.get(Task_.expired), false));
 		p = cb.and(p, cb.isNotNull(root.get(Task_.expireTime)));
 		p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime), new Date()));
 		if (StringUtils.isNotEmpty(sequence)) {
-			p = cb.and(p, cb.greaterThan(sequence_path, sequence));
+			p = cb.and(p, cb.greaterThan(sequencePath, sequence));
 		}
-		cq.multiselect(id_path, job_path, sequence_path).where(p).orderBy(cb.asc(sequence_path));
+		cq.multiselect(idPath, jobPath, sequencePath, pausePath).where(p).orderBy(cb.asc(sequencePath));
 		List<Tuple> os = em.createQuery(cq).setMaxResults(200).getResultList();
 		List<Task> list = new ArrayList<>();
 		for (Tuple o : os) {
 			Task task = new Task();
-			task.setId(o.get(id_path));
-			task.setJob(o.get(job_path));
-			task.setSequence(o.get(sequence_path));
+			task.setId(o.get(idPath));
+			task.setJob(o.get(jobPath));
+			task.setSequence(o.get(sequencePath));
+			task.setPause(o.get(pausePath));
 			list.add(task);
 		}
 		return list;

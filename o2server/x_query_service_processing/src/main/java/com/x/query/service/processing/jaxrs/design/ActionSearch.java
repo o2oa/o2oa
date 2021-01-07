@@ -19,10 +19,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 class ActionSearch extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionSearch.class);
+	private static ReentrantLock lock = new ReentrantLock();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
@@ -31,8 +33,17 @@ class ActionSearch extends BaseAction {
 		if(StringUtils.isBlank(wi.getKeyword())){
 			throw new ExceptionFieldEmpty("keyword");
 		}
-		logger.print("{}搜索全局设计：{}", effectivePerson.getDistinguishedName(), wi);
-		result.setData(search(wi));
+		logger.info("{}搜索全局设计：{}", effectivePerson.getDistinguishedName(), wi);
+		if (ListTools.isEmpty(wi.getModuleList())) {
+			result.setData(search(wi));
+		}else{
+			lock.lock();
+			try {
+				result.setData(search(wi));
+			} finally {
+				lock.unlock();
+			}
+		}
 		return result;
 	}
 
@@ -132,7 +143,7 @@ class ActionSearch extends BaseAction {
 			for (WrapDesigner designer : designerList) {
 				WrapDesigner.DesignerPattern pattern = designer.getScriptDesigner();
 				if(pattern!=null) {
-					List<Integer> lines = patternLines(designer.getDesignerId() + "-" + designer.getUpdateTime().getTime(),
+					Map<Integer, String> lines = patternLines(designer.getDesignerId() + "-" + designer.getUpdateTime().getTime(),
 							wi.getKeyword(), pattern.getPropertyValue(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					pattern.setLines(lines);
 					pattern.setPropertyValue(null);
