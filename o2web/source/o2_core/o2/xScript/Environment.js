@@ -1,224 +1,3 @@
-/**
- * Work 数据结构，流程实例对象
- * @typedef {Object} Work
- * @example
- * {
-    "id": "854e2c22-718e-48bb-98db-96f4b43e7ee8",   //流程实例ID
-    "splitValue": "xxxxxxxxxxxxxx", //流程拆分后的拆分依据
-    "title": "xx7月北京出差报销审批",               //流程实例名称
-    "startTime": "2018-09-07 14:03:22",             //流程启动时间
-    "startTimeMonth": "2018-09",                    //流程启动的月份
-    "creatorPerson": "xx@huqi@P",                   //流程实例创建人
-    "creatorIdentity": "xx@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人身份
-    "creatorUnit": "xx@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",     //流程实例创建人所在组织
-    "creatorUnitLevelName": "浙江兰德纵横/开发部",          //流程实例创建人所在组织层次
-    "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
-    "applicationName": "财务管理",                          //流程应用名称
-    "applicationAlias": "finance",                          //流程应用别名
-    "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
-    "processName": "报销审批流程",                          //流程名称
-    "processAlias": "",                                     //流程别名
-    "activity": "13d15daf-2ac5-4c1b-a669-1607a0e5ed15",     //当前活动ID
-    "activityType": "manual",                               //当前活动类型
-    "activityName": "部门领导审核",                         //当前活动名称
-    "activityAlias": "",                                    //当前活动别名
-    "activityDescription": "",                              //当前活动描述
-    "activityArrivedTime": "2018-09-27 22:49:21",           //当前活动到达时间
-    "serial": "",                                           //编号
-    "workStatus": "processing",                             //流程实例状态
-    "errorRetry": 0,                                        //流转失败重试次数
-    "splitting": false,                                     //流程是否拆分
-    "form": "db3b2766-93a1-4058-b522-0edb922bd84f",          //流程展现所使用的表单
-    "manualTaskIdentityList" : "张三@db3b2766-93a1-4058-b522-0edb922bd84f@I", //预期的处理人
-    "manualTaskIdentityText" : "张三" //当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.
-}
- */
-
-/**
- * WorkCompleted 数据结构，已结束流程实例对象
- * @typedef {Object} WorkCompleted
- * @example
- * {
-    "id": "be0195f1-f2e2-4eac-911c-99897a43ff8f",   //流程实例ID
-    "title": "xx7月北京出差报销审批",               //流程实例名称
-    "startTime": "2018-09-19 16:14:16",             //流程启动时间
-    "startTimeMonth": "2018-09",                    //流程启动的月份
-    "completedTime": "2018-09-19 16:15:28",         //流程完成时间
-    "completedTimeMonth": "2018-09",                //流程完成的月份
-    "creatorPerson": "xx@huqi@P",                   //流程实例创建人
-    "creatorIdentity": "xx@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人身份
-    "creatorUnit": "xx@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",     //流程实例创建人所在组织
-    "creatorUnitLevelName": "浙江兰德纵横/开发部",  //流程实例创建人所在组织层次
-    "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
-    "applicationName": "财务管理",                          //流程应用名称
-    "applicationAlias": "finance",                          //流程应用别名
-    "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
-    "processName": "报销审批流程",                          //流程名称
-    "processAlias": "",                                     //流程别名
-    "serial": "",                                           //编号
-    "form": "320be1ca-ee49-478f-a751-f65ab67cf818",         //流程展现所使用的表单
-}
- */
-
-/**
- * Task数据结构，待办任务对象
- * @typedef {Object} Task
- * @example
- * {
-    "id": "dd476045-7c79-44f7-9dba-f51d322de40f",   //待办ID
-    "title": "XX7月北京出差报销审批",               //流程实例标题
-    "startTime": "2018-09-27 22:49:22",             //待办到达时间
-    "startTimeMonth": "2018-09",                    //待办到达的月份
-    "work": "854e2c22-718e-48bb-98db-96f4b43e7ee8", //流程实例ID
-    "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
-    "applicationName": "财务管理",                          //流程应用名称
-    "applicationAlias": "finance",                          //流程应用别名
-    "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
-    "processName": "报销审批流程",                          //流程名称
-    "processAlias": "",                                     //流程别名
-    "serial": "",                                           //流程编号
-    "person": "XXX@huqi@P",                             //待办人名称
-    "identity": "XX@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",    //待办人身份
-    "unit": "XX@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",        //待办人所在组织
-    "activity": "13d15daf-2ac5-4c1b-a669-1607a0e5ed15",         //当前活动的ID
-    "activityName": "部门领导审核",                             //当前活动的名称
-    "activityAlias": "",                                        //当前活动的别名
-    "activityDescription": "",                                  //当前活动描述
-    "activityType": "manual",                                   //当前活动类型
-    "creatorPerson": "XX@huqi@P",                               //流程实例创建人
-    "creatorIdentity": "XX@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人的身份
-    "creatorUnit": "XX@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //流程实例创建人所在组织
-    "expired": false,                                           //是否已超时
-    "urged": false,                                             //是否进行催办
-    "routeList": [                                              //可选的路由ID
-        "89b58fe0-6dcb-4fe7-8c2e-3f77204df6d4",
-        "f3105b7a-2929-4682-aab8-15fef5ea0f23"
-    ],
-    "routeNameList": [                                          //可选的路由名称
-        "退回申请人",
-        "送财务部门复审"
-    ],
-    "routeOpinionList": [                                       //可选路由的默认意见
-        "",
-        ""
-    ],
-    "first" : true,      //是否是第一条待办.
-    "properties": { //属性对象存储字段
-          "prevTaskIdentity": "张三@903dbb04-085c-4bb1-9c24-3009bd5f7372@I", //提交的处理人
-          "prevTaskIdentityList": [  //上一步处理人
-            "张三@903dbb04-085c-4bb1-9c24-3009bd5f7372@I"
-          ],
-          "prevTaskList": [ //上一步任务信息
-            {
-              "routeName": "送办理",
-              "unit": "产品研发组@320189216@U",
-              "identity": "张三@903dbb04-085c-4bb1-9c24-3009bd5f7372@I",
-              "person": "张三@zhangsan@P",
-              "opinion": "",
-              "startTime": "2020-09-29 17:03:14",
-              "completedTime": "2020-09-29 17:04:38"
-            }
-          ],
-          "prevTask": { //提交的任务信息
-            "routeName": "送办理",
-            "unit": "产品研发组@320189216@U",
-            "identity": "张三@903dbb04-085c-4bb1-9c24-3009bd5f7372@I",
-            "person": "张三@zhangsan@P",
-            "opinion": "",
-            "startTime": "2020-09-29 17:03:14",
-            "completedTime": "2020-09-29 17:04:38"
-          }
-        }
- * }
- */
-
-/**
- * Read 数据结构，待阅任务对象
- * @typedef {Object} Read
- * @example
- * {
-    "id": "dd476045-7c79-44f7-9dba-f51d322de40f",   //待阅ID
-    "title": "XX7月北京出差报销审批",               //流程实例标题
-    "startTime": "2018-09-27 22:49:22",             //待阅产生时间
-    "startTimeMonth": "2018-09",                    //待阅产生的月份
-    "work": "854e2c22-718e-48bb-98db-96f4b43e7ee8", //流程实例ID
-    "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
-    "applicationName": "财务管理",                          //流程应用名称
-    "applicationAlias": "finance",                          //流程应用别名
-    "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
-    "processName": "报销审批流程",                          //流程名称
-    "processAlias": "",                                     //流程别名
-    "completed": false,                             //流程是否已完成
-    "serial": "",                                   //流程编号
-    "person": "XXX@huqi@P",                         //待阅人名称
-    "identity": "XX@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",    //待阅人身份
-    "unit": "XX@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",        //待阅人所在组织
-    "activity": "13d15daf-2ac5-4c1b-a669-1607a0e5ed15",         //当前活动的ID
-    "activityName": "部门领导审核",                             //当前活动的名称
-    "activityAlias": "",                                        //当前活动的别名
-    "activityDescription": "",                                  //当前活动描述
-    "activityType": "manual",                                   //当前活动类型
-    "creatorPerson": "XX@huqi@P",                               //流程实例创建人
-    "creatorIdentity": "XX@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人的身份
-    "creatorUnit": "XX@c448d8bb-98b8-4305-9d3f-12537723cfcc@U"  //流程实例创建人所在组织
-}
- */
-
-/**
-* Activity 数据结构，流程实例所在的活动节点对象
- * @typedef {Object} Activity
- * @example
-  *
-     {
-      "id": "801087c5-a4e6-4b91-bf4d-a81cdaa04471", //节点ID
-      "name": "办理",  //节点名称
-      "description": "", //节点描述
-      "alias": "",  //节点别名
-      "resetRange": "department", //重置处理人范围
-      "resetCount": 0,  //重置处理人数字
-      "allowReset": true, //是否允许重置
-      "manualMode": "single" //处理方式 单人single, 并行parallel, 串行queue, grab抢办
-    }
- */
-
-/**
-WorkControl 　流程实例的权限对象。
- * @typedef {Object} WorkControl
- * @example
- *
-     {
-        "allowVisit": true,             //是否允许访问
-        "allowProcessing": true,        //是否允许流转
-        "allowReadProcessing": false,   //是否有待阅
-        "allowSave": true,              //是否允许保存业务数据
-        "allowReset": false,            //是否允许重置处理人
-        "allowRetract": false,          //是否允许撤回
-        "allowReroute": false,          //是否允许调度
-        "allowDelete": true,             //是否允许删除流程实例
-        "allowRollback": false,         //是否允许流程回溯
-        "allowAddSplit": false,         //是否允许增加分支
-        "allowPress": false,             //是否允许催办
-    }
- */
-
-
-
-/**
- * FormInfor 　表单的基本信息。
- * @typedef {Object} FormInfor
- * @example
- {
-        "id": "db3b2766-93a1-4058-b522-0edb922bd84f",   //表单ID
-        "name": "报销申请表单",                         //表单名称
-        "alias": "报销申请表单",                        //表单别名
-        "description": "",                              //表单描述
-        "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //应用ID
-        "lastUpdatePerson": "XX@huqi@P",                //最后修改人
-        "lastUpdateTime": "2018-09-30 22:46:30",        //最后修改时间
-        "icon": "...",                                  //表单图标
-    }
- */
-
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.Environment = function(ev){
     var _data = ev.data;
@@ -412,64 +191,10 @@ MWF.xScript.Environment = function(ev){
         /**
          * 获取当前流程实例对象：work对象或workCompleted对象。
          * @method getWork
-         * @o2ActionOut x_processplatform_assemble_surface.WorkAction.V2GetWorkOrWorkCompleted
          * @static
          * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象.
-         * <div>Work对象：</div>
-         * <pre><code class='language-js'>{
-         *     "id": "854e2c22-718e-48bb-98db-96f4b43e7ee8",   //流程实例ID
-         *     "splitValue": "xxxxxxxxxxxxxx", //流程拆分后的拆分依据
-         *     "title": "xx7月北京出差报销审批",               //流程实例名称
-         *     "startTime": "2018-09-07 14:03:22",             //流程启动时间
-         *     "startTimeMonth": "2018-09",                    //流程启动的月份
-         *     "creatorPerson": "xx@huqi@P",                   //流程实例创建人
-         *     "creatorIdentity": "xx@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人身份
-         *     "creatorUnit": "xx@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",     //流程实例创建人所在组织
-         *     "creatorUnitLevelName": "浙江兰德纵横/开发部",          //流程实例创建人所在组织层次
-         *     "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
-         *     "applicationName": "财务管理",                          //流程应用名称
-         *     "applicationAlias": "finance",                          //流程应用别名
-         *     "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
-         *     "processName": "报销审批流程",                          //流程名称
-         *     "processAlias": "",                                     //流程别名
-         *     "activity": "13d15daf-2ac5-4c1b-a669-1607a0e5ed15",     //当前活动ID
-         *     "activityType": "manual",                               //当前活动类型
-         *     "activityName": "部门领导审核",                         //当前活动名称
-         *     "activityAlias": "",                                    //当前活动别名
-         *     "activityDescription": "",                              //当前活动描述
-         *     "activityArrivedTime": "2018-09-27 22:49:21",           //当前活动到达时间
-         *     "serial": "",                                           //编号
-         *     "workStatus": "processing",                             //流程实例状态
-         *     "errorRetry": 0,                                        //流转失败重试次数
-         *     "splitting": false,                                     //流程是否拆分
-         *     "form": "db3b2766-93a1-4058-b522-0edb922bd84f",          //流程展现所使用的表单
-         *     "manualTaskIdentityList" : "张三@db3b2766-93a1-4058-b522-0edb922bd84f@I", //预期的处理人
-         *     "manualTaskIdentityText" : "张三" //当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.
-         * }
-         * </pre></code>
-         * WorkCompleted对象：
-         * <pre><code class='language-js'>
-         * {
-         *    "id": "be0195f1-f2e2-4eac-911c-99897a43ff8f",   //流程实例ID
-         *    "title": "xx7月北京出差报销审批",               //流程实例名称
-         *    "startTime": "2018-09-19 16:14:16",             //流程启动时间
-         *    "startTimeMonth": "2018-09",                    //流程启动的月份
-         *    "completedTime": "2018-09-19 16:15:28",         //流程完成时间
-         *    "completedTimeMonth": "2018-09",                //流程完成的月份
-         *    "creatorPerson": "xx@huqi@P",                   //流程实例创建人
-         *    "creatorIdentity": "xx@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I", //流程实例创建人身份
-         *    "creatorUnit": "xx@c448d8bb-98b8-4305-9d3f-12537723cfcc@U",     //流程实例创建人所在组织
-         *    "creatorUnitLevelName": "浙江兰德纵横/开发部",  //流程实例创建人所在组织层次
-         *     "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //流程应用ID
-         *     "applicationName": "财务管理",                          //流程应用名称
-         *     "applicationAlias": "finance",                          //流程应用别名
-         *     "process": "2207db11-dddf-4ebd-864d-3819f3e173c6",      //流程ID
-         *     "processName": "报销审批流程",                          //流程名称
-         *     "processAlias": "",                                     //流程别名
-         *     "serial": "",                                           //编号
-         *     "form": "320be1ca-ee49-478f-a751-f65ab67cf818",         //流程展现所使用的表单
-         * }
-         * </pre></code>
+         * @o2ActionOut x_processplatform_assemble_surface.WoWork|true|Work对象:
+         * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|[properties]|WorkCompleted对象:
          * @o2syntax
          * var work = this.workContext.getWork();
          */
@@ -488,7 +213,7 @@ MWF.xScript.Environment = function(ev){
          *      "resetCount": 0,  //重置处理人数字
          *      "allowReset": true, //是否允许重置
          *      "manualMode": "single" //处理方式 单人single, 并行parallel, 串行queue, grab抢办
-         * }</pre></code>
+         * }</code></pre>
          * @o2syntax
          * var activity = this.workContext.getActivity();
          */
@@ -748,7 +473,7 @@ MWF.xScript.Environment = function(ev){
          *        "allowRollback": false,         //是否允许流程回溯
          *        "allowAddSplit": false,         //是否允许增加分支
          *        "allowPress": false,             //是否允许催办
-         * }</pre></code>
+         * }</code></pre>
          * @o2syntax
          * var control = this.workContext.getControl();
          */
@@ -2110,7 +1835,7 @@ MWF.xScript.Environment = function(ev){
      *  },
      *  "initScript2"
      * ])
-     * </pre></code>
+     * </code></pre>
      * @param {Function} [callback] 加载后执行的回调方法
      * @param {Boolean} [async] 是否异步加载
      * @o2syntax
@@ -2297,6 +2022,82 @@ MWF.xScript.Environment = function(ev){
     //可在调用前执行 var resolve = this.wait();
     //在异步调用结束后 执行 resolve.cb()；
     //目前只有表单的queryload事件支持此方法。
+
+    /**
+     * this.wait是一个方法，可以用来处理异步调用后的页面加载。<br/>
+     * 该方法使用的具体场景：为了加快速度，需要一次性加载全部外部资源（如：数据字典、外部JS、内容管理文档）后，再进行表单的加载。<br/>
+     * this.wait需和this.goon配合使用。<br/>
+     * <b>目前只有流程表单的queryload事件支持此方法。</b>
+     * @module wait
+     * @o2range {Process}
+     * @o2syntax
+     * var resolve = this.wait(); //让表单停止加载页面
+     *
+     * if (resolve && resolve.cb){
+     *      resolve.cb(); //通过 resolve.cb() 方法继续执行表单加载
+     * }else{
+     *      //如果没有发生异步，则resolve.cb方法不存在，
+     *      //所以在回调中中使用this.goon();使表单继续加载
+     *      this.goon();
+     * }
+     * @example
+     * <caption>需要在加载数据字典，内容管理文档数据，按照条件获取的脚本后，再进行加载表单。</caption>
+     *
+     * var resolve = this.wait(); //this.wait()让表单加载等待回调
+     * var scriptLoaded = false; //脚本是否加载完成标识，按条件判断的脚本才建议用this.include();,否则使用预加载脚本更快。
+     * var documentLoaded = false; //内容管理文档是否加载完成标识
+     * var dictLoaded = true; //数据字典是否加载完成标识
+     *
+     * //检查是否全部资源已加载，如果是继续加载表单
+     * var checkLoad = function(){
+     *     if (scriptLoaded && documentLoaded && dictLoaded){ //各种资源以及加载完成
+     *       if (resolve && resolve.cb){
+     *            resolve.cb(); //通过 resolve.cb() 方法继续执行表单加载
+     *        }else{
+     *            //如果没有发生异步，则resolve.cb方法不存在，
+     *            //所以在回调中中使用this.goon();使表单继续加载
+     *            this.goon();
+     *        }
+     *      }
+     * }.bind(this);
+     *
+     * //判断内容管理文档加载
+     * if( this.data.documentId ){
+     *      //异步载入内容管理文档
+     *      o2.Actions.get("x_cms_assemble_control").getDocument(this.data.documentId, function (json) {
+     *          this.form.documentJson = json; //将数据存在this.form上，以便其他地方使用
+     *          documentLoaded = true; //标记内容管理加载完成
+     *          checkLoad(); //检查全部资源是否完成加载
+     *      }.bind(this));
+     *  }else{
+     *     documentLoaded = true; ////标记内容管理加载完成
+     *     checkLoad(); //检查全部资源是否完成加载
+     * }
+     *
+     * //判断脚本加载
+     * if( this.data.scriptName ){ //假设scriptName为判断条件
+     *      //加载脚本
+     *     this.include( this.data.scriptName, function(){  //第二个参数为异步加载后的回调
+     *         scriptLoaded = true; //标记脚本加载完成
+     *         checkLoad(); //检查全部资源是否完成加载
+     *     }, true ); //第三个参数表示异步
+     * }else{
+     *      scriptLoaded = true; ////标记脚本加载完成
+     *     checkLoad(); //检查全部资源是否完成加载
+     * }
+     *
+     * //加载数据字典bulletinDictionary的category数据
+     * var dict = new Dict("bulletinDictionary");
+     * dict.get("category", function(data){ //成功的回调
+     *          this.form.bulletinCategory = data; //将数据存在this.form上，以便其他地方使用
+     *          dictLoaded = true; //标记数据字典加载完成
+     *          checkLoad(); //检查全部资源是否完成加载
+     *    }.bind(this), function(xhr){ //错误的回调
+     *          dictLoaded = true; ////标记数据字典加载完成
+     *          checkLoad(); //检查全部资源是否完成加载
+     *    }, true //异步执行
+     * )
+     */
     this.wait = function(){
         var _self = this;
         resolve = {"cb":  _self.goon.bind(_self)};
@@ -2331,7 +2132,17 @@ MWF.xScript.Environment = function(ev){
          * 获取当前表单的基本信息。
          * @method getInfor
          * @static
-         * @return {FormInfor} 表单的基本信息.
+         * @return {Object} 表单的基本信息.
+         * <pre><code class='language-js'>{
+         *    "id": "db3b2766-93a1-4058-b522-0edb922bd84f",   //表单ID
+         *    "name": "报销申请表单",                         //表单名称
+         *    "alias": "报销申请表单",                        //表单别名
+         *    "description": "",                              //表单描述
+         *    "application": "1dc23336-6be6-402b-bed6-36e707a1dd17",  //应用ID
+         *    "lastUpdatePerson": "XX@huqi@P",                //最后修改人
+         *    "lastUpdateTime": "2018-09-30 22:46:30",        //最后修改时间
+         *    "icon": "...",                                  //表单图标
+         * }</code></pre>
          * @o2syntax
          * var form = this.form.getInfor();
          */
@@ -2964,20 +2775,18 @@ MWF.xScript.Environment = function(ev){
          * @param {String} id - 内容管理文档实例的ID。
          * @param {Boolean} [title] - 手机APP端打开时的窗口标题。
          * @param {Object} [options] - 其他参数，内容如下<br>
-         * <pre><code class="language-js">
-         {
-            "readonly": true, //是否以只读方式打开，默认为true
-             "saveOnClose" : true, //关闭的时候是否自动保存
-             "postPublish" : function( documentData ){ //发布前执行方法，但数据已经准备好
-                //documentData 为文档数据
-             },
-             "afterPublish" : function( form, documentData ){ //发布后执行的方法
-                //form为内容管理Form对象，documentData 为文档数据
-             },
-             "postDelete" : function(){ //删除文档后执行的方法
-             }
-         }
-         * </code></pre>
+         * <pre><code class="language-js">{
+         *   "readonly": true, //是否以只读方式打开，默认为true
+         *    "saveOnClose" : true, //关闭的时候是否自动保存
+         *    "postPublish" : function( documentData ){ //发布前执行方法，但数据已经准备好
+         *       //documentData 为文档数据
+         *    },
+         *    "afterPublish" : function( form, documentData ){ //发布后执行的方法
+         *       //form为内容管理Form对象，documentData 为文档数据
+         *    },
+         *    "postDelete" : function(){ //删除文档后执行的方法
+         *    }
+         * }</code></pre>
          * @example
          this.form.openDocument(id, "document title");
          */
@@ -3091,19 +2900,17 @@ MWF.xScript.Environment = function(ev){
          * 如果不传参数，则弹出范围为平台所有栏目的选中界面。<br/>
          * 当使用String时为内容管理应用（栏目）的名称、别名或ID。<br/>
          * 当使用Object时，本参数后面的参数省略，传入如下格式的内容:
-         * <pre><code class="language-js">
-         {
-            "column" : column, //（string）可选，内容管理应用（栏目）的名称、别名或ID
-            "category" : category, //（string）可选，要创建的文档所属的分类的名称、别名或ID
-            "data" : data, //（json object）可选，创建文档时默认的业务数据
-            "identity" : identity, //（string）可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
-            "callback" : callback, //（funcation）可选，文档创建后的回调函数。
-            "target" : target, //（boolean）可选，为true时，在当前页面打开创建的文档；否则打开新窗口。默认false。
-            "latest" : latest, //（boolean）可选，为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
-            "selectColumnEnable" : selectColumnEnable, //（boolean）可选，是否可以选择应用和分类进行创建文档。有category参数时为默认false,否则默认为true。
-            "ignoreTitle" : ignoreTitle //（boolean）可选，值为false时，创建的时候需要强制填写标题，默认为false。
-        }
-         </code></pre>
+         * <pre><code class="language-js">{
+         *   "column" : column, //（string）可选，内容管理应用（栏目）的名称、别名或ID
+         *   "category" : category, //（string）可选，要创建的文档所属的分类的名称、别名或ID
+         *   "data" : data, //（json object）可选，创建文档时默认的业务数据
+         *   "identity" : identity, //（string）可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
+         *   "callback" : callback, //（funcation）可选，文档创建后的回调函数。
+         *   "target" : target, //（boolean）可选，为true时，在当前页面打开创建的文档；否则打开新窗口。默认false。
+         *   "latest" : latest, //（boolean）可选，为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
+         *   "selectColumnEnable" : selectColumnEnable, //（boolean）可选，是否可以选择应用和分类进行创建文档。有category参数时为默认false,否则默认为true。
+         *   "ignoreTitle" : ignoreTitle //（boolean）可选，值为false时，创建的时候需要强制填写标题，默认为false。
+         * }</code></pre>
          * @param {String} [category] - 要创建的文档所属的分类的名称、别名或ID
          * @param {Object} [data] - 创建文档时默认的业务数据
          * @param {String} [identity] - 可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
