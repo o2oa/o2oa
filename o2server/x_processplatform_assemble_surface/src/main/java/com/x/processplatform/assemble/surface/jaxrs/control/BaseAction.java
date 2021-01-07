@@ -17,28 +17,41 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
 	protected static class AbstractControl extends GsonPropertyObject {
-		/* 是否可以看到 */
+
+		private static final long serialVersionUID = 4099187125935802183L;
+		// 是否可以看到
 		private Boolean allowVisit = false;
-		/* 是否可以直接流转 */
+		// 是否可以直接流转
 		private Boolean allowProcessing = false;
-		/* 是否可以处理待阅 */
+		// 是否可以处理待阅
 		private Boolean allowReadProcessing = false;
-		/* 是否可以保存数据 */
+		// 是否可以保存数据
 		private Boolean allowSave = false;
-		/* 是否可以重置处理人 */
+		// 是否可以重置处理人
 		private Boolean allowReset = false;
-		/* 是否可以调度 */
+
+		public Boolean getAllowPause() {
+			return allowPause;
+		}
+
+		public void setAllowPause(Boolean allowPause) {
+			this.allowPause = allowPause;
+		}
+
+		// 是否可以调度
 		private Boolean allowReroute = false;
-		/* 是否可以删除 */
+		// 是否可以删除
 		private Boolean allowDelete = false;
-		/* 是否可以增加会签分支 */
+		// 是否可以增加会签分支
 		private Boolean allowAddSplit = false;
-		/* 是否可以召回 */
+		// 是否可以召回
 		private Boolean allowRetract = false;
-		/* 是否可以回滚 */
+		// 是否可以回滚
 		private Boolean allowRollback = false;
-		/* 是否可以回滚 */
+		// 是否可以提醒
 		private Boolean allowPress = false;
+		// 是否可以待办挂起(暂停待办计时)
+		private Boolean allowPause = false;
 
 		public Boolean getAllowSave() {
 			return allowSave;
