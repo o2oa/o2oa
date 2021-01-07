@@ -2022,6 +2022,82 @@ MWF.xScript.Environment = function(ev){
     //可在调用前执行 var resolve = this.wait();
     //在异步调用结束后 执行 resolve.cb()；
     //目前只有表单的queryload事件支持此方法。
+
+    /**
+     * this.wait是一个方法，可以用来处理异步调用后的页面加载。<br/>
+     * 该方法使用的具体场景：为了加快速度，需要一次性加载全部外部资源（如：数据字典、外部JS、内容管理文档）后，再进行表单的加载。<br/>
+     * this.wait需和this.goon配合使用。<br/>
+     * <b>目前只有流程表单的queryload事件支持此方法。</b>
+     * @module wait
+     * @o2range {Process}
+     * @o2syntax
+     * var resolve = this.wait(); //让表单停止加载页面
+     *
+     * if (resolve && resolve.cb){
+     *      resolve.cb(); //通过 resolve.cb() 方法继续执行表单加载
+     * }else{
+     *      //如果没有发生异步，则resolve.cb方法不存在，
+     *      //所以在回调中中使用this.goon();使表单继续加载
+     *      this.goon();
+     * }
+     * @example
+     * <caption>需要在加载数据字典，内容管理文档数据，按照条件获取的脚本后，再进行加载表单。</caption>
+     *
+     * var resolve = this.wait(); //this.wait()让表单加载等待回调
+     * var scriptLoaded = false; //脚本是否加载完成标识，按条件判断的脚本才建议用this.include();,否则使用预加载脚本更快。
+     * var documentLoaded = false; //内容管理文档是否加载完成标识
+     * var dictLoaded = true; //数据字典是否加载完成标识
+     *
+     * //检查是否全部资源已加载，如果是继续加载表单
+     * var checkLoad = function(){
+     *     if (scriptLoaded && documentLoaded && dictLoaded){ //各种资源以及加载完成
+     *       if (resolve && resolve.cb){
+     *            resolve.cb(); //通过 resolve.cb() 方法继续执行表单加载
+     *        }else{
+     *            //如果没有发生异步，则resolve.cb方法不存在，
+     *            //所以在回调中中使用this.goon();使表单继续加载
+     *            this.goon();
+     *        }
+     *      }
+     * }.bind(this);
+     *
+     * //判断内容管理文档加载
+     * if( this.data.documentId ){
+     *      //异步载入内容管理文档
+     *      o2.Actions.get("x_cms_assemble_control").getDocument(this.data.documentId, function (json) {
+     *          this.form.documentJson = json; //将数据存在this.form上，以便其他地方使用
+     *          documentLoaded = true; //标记内容管理加载完成
+     *          checkLoad(); //检查全部资源是否完成加载
+     *      }.bind(this));
+     *  }else{
+     *     documentLoaded = true; ////标记内容管理加载完成
+     *     checkLoad(); //检查全部资源是否完成加载
+     * }
+     *
+     * //判断脚本加载
+     * if( this.data.scriptName ){ //假设scriptName为判断条件
+     *      //加载脚本
+     *     this.include( this.data.scriptName, function(){  //第二个参数为异步加载后的回调
+     *         scriptLoaded = true; //标记脚本加载完成
+     *         checkLoad(); //检查全部资源是否完成加载
+     *     }, true ); //第三个参数表示异步
+     * }else{
+     *      scriptLoaded = true; ////标记脚本加载完成
+     *     checkLoad(); //检查全部资源是否完成加载
+     * }
+     *
+     * //加载数据字典bulletinDictionary的category数据
+     * var dict = new Dict("bulletinDictionary");
+     * dict.get("category", function(data){ //成功的回调
+     *          this.form.bulletinCategory = data; //将数据存在this.form上，以便其他地方使用
+     *          dictLoaded = true; //标记数据字典加载完成
+     *          checkLoad(); //检查全部资源是否完成加载
+     *    }.bind(this), function(xhr){ //错误的回调
+     *          dictLoaded = true; ////标记数据字典加载完成
+     *          checkLoad(); //检查全部资源是否完成加载
+     *    }, true //异步执行
+     * )
+     */
     this.wait = function(){
         var _self = this;
         resolve = {"cb":  _self.goon.bind(_self)};

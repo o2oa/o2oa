@@ -1542,11 +1542,12 @@ MWF.xScript.CMSEnvironment = function(ev){
         /**发布当前文档。<b>（仅内容管理表单中可用）</b>
          * @method publish
          * @memberOf module:form
+         * @param {Function} callback - 发布后的回调方法
          * @o2syntax
-         this.form.publish();
+         this.form.publish( callback );
          */
-        "publish": function(option){
-            _form.publishDocument()
+        "publish": function(callback){
+            _form.publishDocument(callback)
         },
         //"archive": function(option){
         //    _form.archiveDocument()
