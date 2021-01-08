@@ -193,8 +193,8 @@ MWF.xScript.Environment = function(ev){
          * @method getWork
          * @static
          * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象.
-         * @o2ActionOut x_processplatform_assemble_surface.WoWork|ignoreNoDescr=true|Work对象:
-         * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|ignoreProps=[properties]|WorkCompleted对象:
+         * @o2ActionOut x_processplatform_assemble_surface.WoWork|example=Work|ignoreNoDescr=true|Work对象:
+         * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompleted|ignoreProps=[properties]|WorkCompleted对象:
          * @o2syntax
          * var work = this.workContext.getWork();
          */
@@ -222,7 +222,7 @@ MWF.xScript.Environment = function(ev){
         /**
          * 当前流程实例正在流转中，并且当前用户有待办，则返回当前用户的待办对象，否则返回null。
          * @summary 获取当前流程与当前用户相关的待办对象：task对象。
-         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.get
+         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.get|example=Task
          * @method getTask
          * @static
          * @return {(Task|Null)} 当前用户的待办任务对象：task。当前用户没有对此流程实例的待办时，或流程实例已经流转结束，返回null.
@@ -234,7 +234,7 @@ MWF.xScript.Environment = function(ev){
         /**
          * 获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
          * @method getTaskList
-         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithWork
+         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithWork|example=Task
          * @static
          * @param {Function} [callback] 正确获取待办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待办数组出错时的回调。
@@ -261,7 +261,7 @@ MWF.xScript.Environment = function(ev){
         /**
          * 根据当前工作的job获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
          * @method getTaskListByJob
-         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithJob
+         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithJob|example=Task
          * @static
          * @param {Function} [callback] 正确获取待办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待办数组出错时的回调。
@@ -293,7 +293,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已办数组出错时的回调。
          * @return {(TaskCompleted[])} 已办任务列表.
-         * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithWork
+         * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithWork|example=Task
          * @o2syntax
          * //本样例以同步执行
          * var taskCompletedList = this.workContext.getTaskCompletedList();
@@ -321,7 +321,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已办数组出错时的回调。
          * @return {(TaskCompleted[])} 已办任务列表.
-         * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithJob
+         * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithJob|example=Task
          * @o2syntax
          * //本样例以同步执行
          * var taskCompletedList = this.workContext.getTaskCompletedListByJob();
@@ -349,7 +349,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取待阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待阅数组出错时的回调。
          * @return {(Read[])} 当前流程实例的所有待阅对象数组.
-         * @o2ActionOut x_processplatform_assemble_surface.ReadAction.get
+         * @o2ActionOut x_processplatform_assemble_surface.ReadAction.get|example=Read
          * @o2syntax
          * //本样例以同步执行
          * var readList = this.workContext.getReadList();
@@ -376,7 +376,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取待阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待阅数组出错时的回调。
          * @return {(Read[])} 当前流程实例的所有待阅对象数组.
-         * @o2ActionOut x_processplatform_assemble_surface.ReadAction.listWithJob
+         * @o2ActionOut x_processplatform_assemble_surface.ReadAction.listWithJob|example=Read
          * @o2syntax
          * //本样例以同步执行
          * var readList = this.workContext.getReadListByJob();
@@ -404,7 +404,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取已阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已阅数组出错时的回调。
          * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
-         * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithWork
+         * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithWork|example=Read
          * @o2syntax
          * //本样例以同步执行
          * var readCompletedList = this.workContext.getReadCompletedList();
@@ -431,7 +431,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] 正确获取已阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已阅数组出错时的回调。
          * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
-         * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithJob
+         * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithJob|example=Read
          * @o2syntax
          * //本样例以同步执行
          * var readCompletedList = this.workContext.getReadCompletedListByJob();
@@ -503,7 +503,7 @@ MWF.xScript.Environment = function(ev){
          * @method getAttachmentList
          * @static
          * @return {WorkAttachmentData[]} 附件数据.
-         * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted
+         * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment
          * @o2syntax
          * var attachmentList = this.workContext.getAttachmentList();
          */
