@@ -39,13 +39,12 @@ class ActionImageSetupAboutLogo extends BaseAction {
 			String value = Base64.encodeBase64String(baos.toByteArray());
 			Image o = Image.setup_about_logo();
 			o.setValue(value);
-			/* 由于getImages设置了检查,所以只能对images进行处理 */
+			// 由于getImages设置了检查,所以只能对images进行处理
 			Set<Image> images = Config.appStyle().getImages();
-			images = images.stream().filter(img -> {
-				return (!StringUtils.equals(img.getName(), Image.name_setup_about_logo));
-			}).collect(Collectors.toSet());
+			images = images.stream().filter(img -> (!StringUtils.equals(img.getName(), Image.name_setup_about_logo)))
+					.collect(Collectors.toSet());
 			images.add(o);
-			Config.appStyle().setImages(new TreeSet<Image>(images));
+			Config.appStyle().setImages(new TreeSet<>(images));
 			Config.appStyle().save();
 			Wo wo = new Wo();
 			wo.setValue(true);
