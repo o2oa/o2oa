@@ -193,8 +193,8 @@ MWF.xScript.Environment = function(ev){
          * @method getWork
          * @static
          * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象.
-         * @o2ActionOut x_processplatform_assemble_surface.WoWork|true|Work对象:
-         * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|[properties]|WorkCompleted对象:
+         * @o2ActionOut x_processplatform_assemble_surface.WoWork|ignoreNoDescr=true|Work对象:
+         * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|ignoreProps=[properties]|WorkCompleted对象:
          * @o2syntax
          * var work = this.workContext.getWork();
          */
