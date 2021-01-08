@@ -73,23 +73,32 @@ MWF.xApplication.Selector.UnitWithType = new Class({
     },
 
     _listItemByKey: function(callback, failure, key){
-        key = {"key": key};
-        if (this.options.units.length){
-            var units = [];
-            this.options.units.each(function(u){
-                if (typeOf(u)==="string"){
-                    units.push(u);
-                }
-                if (typeOf(u)==="object"){
-                    units.push(u.distinguishedName);
-                }
-            });
-            key.unitList = units;
+        if( this.options.expandSubEnable ){
+            key = {"key": key};
+            if (this.options.units.length){
+                var units = [];
+                this.options.units.each(function(u){
+                    if (typeOf(u)==="string"){
+                        units.push(u);
+                    }
+                    if (typeOf(u)==="object"){
+                        units.push(u.distinguishedName);
+                    }
+                });
+                key.unitList = units;
+            }
+            if (this.options.unitType) key.type = this.options.unitType;
+            this.orgAction.listUnitByKey(function(json){
+                if (callback) callback.apply(this, [json]);
+            }.bind(this), failure, key);
+        }else{
+            if (key){
+                this.initSearchArea(true);
+                this.searchInItems(key);
+            }else{
+                this.initSearchArea(false);
+            }
         }
-        if (this.options.unitType) key.type = this.options.unitType;
-        this.orgAction.listUnitByKey(function(json){
-            if (callback) callback.apply(this, [json]);
-        }.bind(this), failure, key);
     },
     _getItem: function(callback, failure, id, async){
         this.orgAction.getUnit(function(json){
