@@ -31,7 +31,6 @@ import com.x.program.center.jaxrs.pms.PmsAction;
 import com.x.program.center.jaxrs.prompterrorlog.PromptErrorLogAction;
 import com.x.program.center.jaxrs.qiyeweixin.QiyeweixinAction;
 import com.x.program.center.jaxrs.schedule.ScheduleAction;
-import com.x.program.center.jaxrs.test.TestAction;
 import com.x.program.center.jaxrs.unexpectederrorlog.UnexpectedErrorLogAction;
 import com.x.program.center.jaxrs.validation.ValidationAction;
 import com.x.program.center.jaxrs.warnlog.WarnLogAction;
@@ -69,7 +68,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(AuthenticationAction.class);
 		classes.add(ValidationAction.class);
 		classes.add(DataStructureAction.class);
-		classes.add(TestAction.class);
 		classes.add(OutputAction.class);
 		classes.add(InputAction.class);
 		classes.add(MarketAction.class);

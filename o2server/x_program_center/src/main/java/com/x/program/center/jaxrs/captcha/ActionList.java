@@ -34,8 +34,7 @@ class ActionList extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Captcha> cq = cb.createQuery(Captcha.class);
 		Root<Captcha> root = cq.from(Captcha.class);
-		List<Captcha> list = em.createQuery(cq.select(root)).getResultList();
-		return list;
+		return em.createQuery(cq.select(root)).getResultList();
 	}
 
 	public static class Wo extends Captcha {
