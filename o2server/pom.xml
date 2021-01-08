@@ -294,7 +294,7 @@
 			<groupId>com.squareup</groupId>
 			<artifactId>javapoet</artifactId>
 		</dependency>
-		<!-- dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId> 
+		<!-- dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId>
 			</dependency -->
 		<dependency>
 			<groupId>com.github.neuroph</groupId>
@@ -347,6 +347,10 @@
 		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.lingala.zip4j</groupId>
+			<artifactId>zip4j</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -785,7 +789,7 @@
 				<artifactId>javapoet</artifactId>
 				<version>1.11.1</version>
 			</dependency>
-			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId> 
+			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId>
 				<version>20200316</version> </dependency -->
 			<dependency>
 				<groupId>com.github.neuroph</groupId>
@@ -1001,6 +1005,11 @@
 				<groupId>o2oa</groupId>
 				<artifactId>x_workschedu_core_entity</artifactId>
 				<version>5.3</version>
+			</dependency>
+			<dependency>
+				<groupId>net.lingala.zip4j</groupId>
+				<artifactId>zip4j</artifactId>
+				<version>2.3.2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
