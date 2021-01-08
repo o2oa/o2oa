@@ -729,7 +729,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|IdentityData|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份，单个是Object，多个是Array。
-         * @o2ActionOut x_organization_assemble_express.IdentityAction.listObject|true|[woUnitDutyList,woUnit,woGroupList]
+         * @o2ActionOut x_organization_assemble_express.IdentityAction.listObject|typedef=IdentityData|ignoreNoDescr=true|ignoreProps=[woUnitDutyList,woUnit,woGroupList]
          * @o2syntax
          * //同步执行，返回身份，单个是对象，多个是数组。
          * var identityList = this.org.getIdentity( name );

@@ -47,7 +47,7 @@ MWF.xScript.CMSEnvironment = function(ev){
          * @method getDocument
          * @static
          * @return {Document} 文档对象.
-         * @o2ActionOut x_cms_assemble_control.WoDocument|true
+         * @o2ActionOut x_cms_assemble_control.WoDocument|ignoreNoDescr=true
          * @o2syntax
          * var doc = this.documentContext.getDocument();
          */
