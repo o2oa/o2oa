@@ -47,7 +47,7 @@ MWF.xScript.CMSEnvironment = function(ev){
          * @method getDocument
          * @static
          * @return {Document} 文档对象.
-         * @o2ActionOut x_cms_assemble_control.WoDocument|true
+         * @o2ActionOut x_cms_assemble_control.WoDocument|ignoreNoDescr=true|example=Document
          * @o2syntax
          * var doc = this.documentContext.getDocument();
          */
@@ -74,7 +74,7 @@ MWF.xScript.CMSEnvironment = function(ev){
          * @method getAttachmentList
          * @static
          * @return {DocumentFileInfo[]} 当前文档的附件对象列表.
-         * @o2ActionOut x_cms_assemble_control.FileInfoAction.get
+         * @o2ActionOut x_cms_assemble_control.FileInfoAction.get|example=Attachment
          * @o2syntax
          * var attachmentList = this.documentContext.getAttachmentList();
          */
