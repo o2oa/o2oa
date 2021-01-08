@@ -378,7 +378,7 @@ public class NodeAgent extends Thread {
 						FileTools.forceMkdir(dist);
 					}
 					List<String> subs = new ArrayList<>();
-					JarTools.unjar(zipFile, subs, dist, asNew);
+					ZipTools.unZip(zipFile, subs, dist, asNew, null);
 
 					FileUtils.cleanDirectory(tempFile);
 					logger.print("upload resource {} success!", fileName);
@@ -655,7 +655,7 @@ public class NodeAgent extends Thread {
 		FileUtils.writeByteArrayToFile(zipFile, bytes);
 		File dist = Config.dir_custom(true);
 		List<String> subs = new ArrayList<>();
-		JarTools.unjar(zipFile, subs, dist, false);
+		ZipTools.unZip(zipFile, subs, dist, false, null);
 
 		FileUtils.cleanDirectory(tempFile);
 
