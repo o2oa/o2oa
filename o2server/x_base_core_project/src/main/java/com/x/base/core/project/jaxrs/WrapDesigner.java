@@ -86,7 +86,6 @@ public class WrapDesigner extends GsonPropertyObject {
 
 	public void setPatternList(Map<String, String> map) {
 		if(map!=null && !map.isEmpty()){
-			List<DesignerPattern> patternList = new ArrayList<>();
 			for (String key : map.keySet()){
 				DesignerPattern pattern = new DesignerPattern();
 				pattern.setProperty(key);
@@ -97,9 +96,10 @@ public class WrapDesigner extends GsonPropertyObject {
 					}
 				}
 				pattern.setPropertyValue(propertyValue);
-				patternList.add(pattern);
+				this.patternList.add(pattern);
 			}
-			this.patternList = patternList;
+			map.clear();
+			map = null;
 		}
 	}
 
@@ -118,6 +118,8 @@ public class WrapDesigner extends GsonPropertyObject {
 				pattern.setPropertyValue(propertyValue);
 				this.patternList.add(pattern);
 			}
+			map.clear();
+			map = null;
 		}
 	}
 
@@ -138,6 +140,8 @@ public class WrapDesigner extends GsonPropertyObject {
 				pattern.setPropertyValue(propertyValue);
 				this.patternList.add(pattern);
 			}
+			map.clear();
+			map = null;
 		}
 	}
 
@@ -190,6 +194,7 @@ public class WrapDesigner extends GsonPropertyObject {
 				}
 				this.lines = lines;
 				map.clear();
+				map = null;
 			}
 		}
 

@@ -33,8 +33,8 @@ class ActionSearch extends BaseAction {
 		if(StringUtils.isBlank(wi.getKeyword())){
 			throw new ExceptionFieldEmpty("keyword");
 		}
-		logger.info("{}搜索全局设计：{}", effectivePerson.getDistinguishedName(), wi);
-		if (ListTools.isEmpty(wi.getModuleList())) {
+		logger.info("{}搜索设计：{}的关键字：{}", effectivePerson.getDistinguishedName(), wi.getModuleList(), wi.getKeyword());
+		if (ListTools.isNotEmpty(wi.getModuleList())) {
 			result.setData(search(wi));
 		}else{
 			lock.lock();
@@ -112,7 +112,7 @@ class ActionSearch extends BaseAction {
 
 	private CompletableFuture<List<WrapDesigner>> searchAsync(final Wi wi, final Map<String, List<WiDesigner.ModuleApp>> moduleMap, final String moduleType, final Class<?> applicationClass, Executor executor){
 		CompletableFuture<List<WrapDesigner>> cf = CompletableFuture.supplyAsync(() -> {
-			List<WrapDesigner> swList = new ArrayList<>();
+			List<WrapDesigner> swList = null;
 			if(moduleMap.containsKey(moduleType)) {
 				try {
 					WiDesigner wiDesigner = new WiDesigner();
@@ -126,7 +126,7 @@ class ActionSearch extends BaseAction {
 				} catch (Exception e) {
 					logger.error(e);
 				}
-				if (swList.size() > 2) {
+				if (swList!=null && swList.size() > 2) {
 					try {
 						SortTools.desc(swList, "designerType","appId");
 					} catch (Exception e) {
