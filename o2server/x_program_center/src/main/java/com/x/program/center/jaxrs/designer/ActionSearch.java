@@ -93,6 +93,7 @@ class ActionSearch extends BaseAction {
 					}
 				}
 				woAgents.clear();
+				woAgents = null;
 			}catch (Exception e){
 				logger.error(e);
 			}
@@ -127,6 +128,7 @@ class ActionSearch extends BaseAction {
 					}
 				}
 				woInvokes.clear();
+				woInvokes = null;
 			}catch (Exception e){
 				logger.error(e);
 			}
