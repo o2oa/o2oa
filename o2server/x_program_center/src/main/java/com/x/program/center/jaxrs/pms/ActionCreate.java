@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.pms;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ConnectionAction;
@@ -19,7 +21,7 @@ class ActionCreate extends BaseAction {
 		Wi wi = gson.fromJson(jsonElement, Wi.class);
 		Wo wo = new Wo();
 		wo.setValue(false);
-		if (Config.collect().getEnable()) {
+		if (BooleanUtils.isTrue(Config.collect().getEnable())) {
 			wi.setUnit(Config.collect().getName());
 			wi.setPassword(Config.collect().getPassword());
 			String url = Config.collect().url() + "/o2_collect_assemble/jaxrs/collect/pushmessage/transfer";
@@ -33,7 +35,9 @@ class ActionCreate extends BaseAction {
 	public static class Wo extends WrapBoolean {
 	}
 
-	static class Wi extends PmsMessage {
+	public static class Wi extends PmsMessage {
+
+		private static final long serialVersionUID = 6030343450444369146L;
 
 	}
 

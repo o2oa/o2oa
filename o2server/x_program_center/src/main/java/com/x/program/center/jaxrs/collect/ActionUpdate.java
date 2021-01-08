@@ -12,17 +12,17 @@ class ActionUpdate extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, WrapInCollect wrapIn) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
+		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		if (BooleanUtils.isTrue(wrapIn.getEnable())) {
-			if (!this.connect()) {
+			if (BooleanUtils.isNotTrue(this.connect())) {
 				throw new ExceptionUnableConnect();
 			}
 			if (StringUtils.isEmpty(wrapIn.getName())) {
 				throw new ExceptionNameEmpty();
 			}
-			if (!this.validate(wrapIn.getName(), wrapIn.getPassword())) {
+			if (BooleanUtils.isNotTrue(this.validate(wrapIn.getName(), wrapIn.getPassword()))) {
 				throw new ExceptionInvalidCredential();
 			}
 			Config.collect().setEnable(true);

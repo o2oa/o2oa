@@ -54,11 +54,12 @@ public class CaptchaAction extends StandardJaxrsAction {
 	public void create(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@PathParam("width") Integer width, @PathParam("height") Integer height) {
 		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreate().execute(width, height);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
@@ -71,12 +72,12 @@ public class CaptchaAction extends StandardJaxrsAction {
 	public void validate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@PathParam("id") String id, @PathParam("answer") String answer) {
 		ActionResult<ActionValidate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionValidate().execute(effectivePerson, id, answer);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}

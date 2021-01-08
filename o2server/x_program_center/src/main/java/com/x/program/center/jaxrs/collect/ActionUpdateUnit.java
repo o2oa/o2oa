@@ -18,17 +18,17 @@ class ActionUpdateUnit extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
-		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
+		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		String name = wi.getName();
 		String mobile = wi.getMobile();
 		String codeAnswer = wi.getCodeAnswer();
 		String newName = wi.getNewName();
-		if (!this.connect()) {
+		if (BooleanUtils.isNotTrue(this.connect())) {
 			throw new ExceptionUnableConnect();
 		}
-		if (!this.exist(name)) {
+		if (BooleanUtils.isNotTrue(this.exist(name))) {
 			throw new ExceptionNameNotExist(name);
 		}
 		if (!Config.person().isMobile(mobile)) {
