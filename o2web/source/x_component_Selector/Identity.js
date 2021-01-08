@@ -652,6 +652,10 @@ MWF.xApplication.Selector.Identity.Item = new Class({
                 if (callback) callback();
             }
         }else{
+            if( this.selector.options.storeRange === "simple" ){
+                if(callback)callback();
+                return;
+            }
             if (!isWait && callback) callback();
             if (!this.data.woPerson && (!this.data.personDn || !this.data.personEmployee || !this.data.personUnique)){
                 this.selector.orgAction.getPerson(function(json){
@@ -736,6 +740,10 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 if (callback) callback();
             }
         }else if (!this.data.woPerson && (!this.data.personDn || !this.data.personEmployee || !this.data.personUnique) ){
+            if( this.selector.options.storeRange === "simple" ){
+                if(callback)callback();
+                return;
+            }
             if (!isWait && callback) callback();
             if (this.data.person){
                 this.selector.orgAction.getPerson(function(json){
