@@ -652,7 +652,7 @@ MWF.xApplication.Selector.Identity.Item = new Class({
                 if (callback) callback();
             }
         }else{
-            if( this.selector.options.storeRange === "simple" ){
+            if( this.selector.options.ignorePerson || this.selector.options.storeRange === "simple" ){
                 if(callback)callback();
                 return;
             }
@@ -740,7 +740,7 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 if (callback) callback();
             }
         }else if (!this.data.woPerson && (!this.data.personDn || !this.data.personEmployee || !this.data.personUnique) ){
-            if( this.selector.options.storeRange === "simple" ){
+            if( this.selector.options.ignorePerson || this.selector.options.storeRange === "simple" ){
                 if(callback)callback();
                 return;
             }
@@ -887,7 +887,8 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
     },
     _beforeSelectAll : function( _selectAllFun ){
-        if( this.selector.options.ignorePerson ){
+        debugger;
+        if( this.selector.options.ignorePerson || ( this.selector.options.storeRange === "simple" && this.selector.options.resultType !== "person") ){
             _selectAllFun();
             return;
         }
