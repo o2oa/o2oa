@@ -43,6 +43,8 @@ MWF.xApplication.Selector.Person = new Class({
         "itemHeight" : 29,
         "identityItemWidth" : 0, //选项宽度，如果不为0，设置为float:left,
 
+        "storeRange" : "full", //数据是否保存为精简，可选值：full,simple
+
         "showEmptyText" : true
     },
     initialize: function(container, options){

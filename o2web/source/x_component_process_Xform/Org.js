@@ -1839,11 +1839,13 @@ MWF.APPOrg.GroupOptions = new Class({
         if( this.json.groupRange==="group" ){
             return {
                 "count": count,
+                "storeRange" : this.json.storeRange,
                 "include": this.getSelectRange( true )
             }
         }else{
             return {
-                "count": count
+                "count": count,
+                "storeRange" : this.json.storeRange
             }
         }
     },
@@ -1894,6 +1896,7 @@ MWF.APPOrg.UnitOptions = new Class({
             "count": count,
             "units": selectUnits,
             "unitType": (this.json.selectUnitType==="all") ? "" : this.json.selectUnitType,
+            "storeRange" : this.json.storeRange,
             "expandSubEnable" : (this.json.unitExpandSubEnable=="no") ? false : true
         };
     },
@@ -2061,6 +2064,7 @@ MWF.APPOrg.IdentityOptions = new Class({
                 "noUnit" : true,
                 "count": count,
                 "resultType" : this.json.identityResultType,
+                "storeRange" : this.json.storeRange,
                 "include" : this._getInclude()
             };
         }else{
@@ -2074,6 +2078,7 @@ MWF.APPOrg.IdentityOptions = new Class({
                 "resultType" : this.json.identityResultType,
                 "categoryType": this.json.categoryType || "unit",
                 "dutyUnitLevelBy" : this.json.dutyUnitLevelBy || "duty",
+                "storeRange" : this.json.storeRange,
                 "include" : this._getInclude()
             };
         }
