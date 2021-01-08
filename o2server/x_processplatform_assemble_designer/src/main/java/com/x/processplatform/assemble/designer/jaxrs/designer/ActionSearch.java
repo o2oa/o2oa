@@ -25,6 +25,7 @@ import com.x.processplatform.core.entity.element.wrap.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -91,7 +92,8 @@ class ActionSearch extends BaseAction {
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						Application app = emc.find(woScript.getApplication(), Application.class);
+						Application app = emc.fetch(woScript.getApplication(), Application.class,
+								ListTools.toList(Application.id_FIELDNAME, Application.name_FIELDNAME));
 						if (app != null) {
 							wo.setAppId(app.getId());
 							wo.setAppName(app.getName());
@@ -105,6 +107,7 @@ class ActionSearch extends BaseAction {
 					}
 				}
 				woScripts.clear();
+				woScripts = null;
 			}catch (Exception e){
 				logger.error(e);
 			}
@@ -129,7 +132,8 @@ class ActionSearch extends BaseAction {
 								wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 						if (!map.isEmpty()) {
 							Wo wo = new Wo();
-							Application app = emc.find(woForm.getApplication(), Application.class);
+							Application app = emc.fetch(woForm.getApplication(), Application.class,
+									ListTools.toList(Application.id_FIELDNAME, Application.name_FIELDNAME));
 							if (app != null) {
 								wo.setAppId(app.getId());
 								wo.setAppName(app.getName());
@@ -143,6 +147,7 @@ class ActionSearch extends BaseAction {
 						}
 					}
 					woForms.clear();
+					woForms = null;
 				}
 
 			}catch (Exception e){
@@ -184,6 +189,7 @@ class ActionSearch extends BaseAction {
 						}
 					}
 					processList.clear();
+					processList = null;
 				}catch (Exception e){
 					logger.error(e);
 				}
@@ -205,59 +211,28 @@ class ActionSearch extends BaseAction {
 
 	private Wo doProcessSearch(Business business, Process process, Wi wi) throws Exception {
 		Wo wo = null;
-		WrapProcess wrap = WrapProcess.outCopier.copy(process);
-		wrap.setAgentList(WrapAgent.outCopier.copy(business.entityManagerContainer().list(Agent.class,
-				business.agent().listWithProcess(process.getId()))));
-		wrap.setBegin(WrapBegin.outCopier.copy(
-				business.entityManagerContainer().find(business.begin().getWithProcess(process.getId()), Begin.class)));
-		wrap.setCancelList(WrapCancel.outCopier.copy(business.entityManagerContainer().list(Cancel.class,
-				business.cancel().listWithProcess(process.getId()))));
-		wrap.setChoiceList(WrapChoice.outCopier.copy(business.entityManagerContainer().list(Choice.class,
-				business.choice().listWithProcess(process.getId()))));
-		wrap.setDelayList(WrapDelay.outCopier.copy(business.entityManagerContainer().list(Delay.class,
-				business.delay().listWithProcess(process.getId()))));
-		wrap.setEmbedList(WrapEmbed.outCopier.copy(business.entityManagerContainer().list(Embed.class,
-				business.embed().listWithProcess(process.getId()))));
-		wrap.setEndList(WrapEnd.outCopier.copy(
-				business.entityManagerContainer().list(End.class, business.end().listWithProcess(process.getId()))));
-		wrap.setInvokeList(WrapInvoke.outCopier.copy(business.entityManagerContainer().list(Invoke.class,
-				business.invoke().listWithProcess(process.getId()))));
-		wrap.setManualList(WrapManual.outCopier.copy(business.entityManagerContainer().list(Manual.class,
-				business.manual().listWithProcess(process.getId()))));
-		wrap.setMergeList(WrapMerge.outCopier.copy(business.entityManagerContainer().list(Merge.class,
-				business.merge().listWithProcess(process.getId()))));
-		wrap.setMessageList(WrapMessage.outCopier.copy(business.entityManagerContainer().list(Message.class,
-				business.message().listWithProcess(process.getId()))));
-		wrap.setParallelList(WrapParallel.outCopier.copy(business.entityManagerContainer().list(Parallel.class,
-				business.parallel().listWithProcess(process.getId()))));
-		wrap.setServiceList(WrapService.outCopier.copy(business.entityManagerContainer().list(Service.class,
-				business.service().listWithProcess(process.getId()))));
-		wrap.setSplitList(WrapSplit.outCopier.copy(business.entityManagerContainer().list(Split.class,
-				business.split().listWithProcess(process.getId()))));
-		wrap.setRouteList(WrapRoute.outCopier.copy(business.entityManagerContainer().list(Route.class,
-				business.route().listWithProcess(process.getId()))));
 
-		if(!StringTools.matchKeyword(wi.getKeyword(), XGsonBuilder.toJson(wrap), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())) {
-			wrap.getManualList().clear();
-			return null;
+		Map<String, String> map;
+		if(!StringTools.matchKeyword(wi.getKeyword(), XGsonBuilder.toJson(process), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())) {
+			map = PropertyTools.fieldMatchKeyword(WrapProcess.outCopier.getCopyFields(), process, wi.getKeyword(),
+					wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
+			if (!map.isEmpty()) {
+				if(wo == null){
+					wo = this.getProcessWo(business, process);
+				}
+				wo.addPatternList(DesignerType.process.toString(), map);
+			}
 		}
 
-		Map<String, String> pmap = PropertyTools.fieldMatchKeyword(WrapProcess.outCopier.getCopyFields(), process, wi.getKeyword(),
-				wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
-		if (!pmap.isEmpty()) {
+		List<Agent> agentList = business.entityManagerContainer().list(Agent.class,
+				business.agent().listWithProcess(process.getId()));
+		if(!agentList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(agentList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			wo.addPatternList(DesignerType.process.toString(), pmap);
-		}
-
-		if(!wrap.getAgentList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getAgentList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
-			if(wo == null){
-				wo = this.getProcessWo(business, process);
-			}
-			for (WrapAgent active : wrap.getAgentList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapAgent.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Agent active : agentList){
+				map = PropertyTools.fieldMatchKeyword(WrapAgent.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -267,14 +242,17 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		agentList.clear();
+		agentList = null;
 
-		if(wrap.getBegin() != null && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getBegin()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		Begin begin = business.entityManagerContainer().find(business.begin().getWithProcess(process.getId()), Begin.class);
+		if(begin != null && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(begin), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			WrapBegin active = wrap.getBegin();
-			Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapBegin.outCopier.getCopyFields(), active, wi.getKeyword(),
+			Begin active = begin;
+			map = PropertyTools.fieldMatchKeyword(WrapBegin.outCopier.getCopyFields(), active, wi.getKeyword(),
 					wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 			if (!map.isEmpty()) {
 				if(wo == null){
@@ -284,13 +262,15 @@ class ActionSearch extends BaseAction {
 			}
 		}
 
-		if(!wrap.getCancelList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getCancelList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Cancel> cancelList =  business.entityManagerContainer().list(Cancel.class,
+				business.cancel().listWithProcess(process.getId()));
+		if(!cancelList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(cancelList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapCancel active : wrap.getCancelList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapCancel.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Cancel active : cancelList){
+				map = PropertyTools.fieldMatchKeyword(WrapCancel.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -300,14 +280,18 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		cancelList.clear();
+		cancelList = null;
 
-		if(!wrap.getChoiceList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getChoiceList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Choice> choiceList =  business.entityManagerContainer().list(Choice.class,
+				business.choice().listWithProcess(process.getId()));
+		if(!choiceList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(choiceList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapChoice active : wrap.getChoiceList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapChoice.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Choice active : choiceList){
+				map = PropertyTools.fieldMatchKeyword(WrapChoice.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -317,14 +301,18 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		choiceList.clear();
+		choiceList = null;
 
-		if(!wrap.getDelayList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getDelayList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Delay> delayList =  business.entityManagerContainer().list(Delay.class,
+				business.delay().listWithProcess(process.getId()));
+		if(!delayList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(delayList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapDelay active : wrap.getDelayList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapDelay.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Delay active : delayList){
+				map = PropertyTools.fieldMatchKeyword(WrapDelay.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -334,14 +322,18 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		delayList.clear();
+		delayList = null;
 
-		if(!wrap.getEmbedList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getEmbedList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Embed> embedList = business.entityManagerContainer().list(Embed.class,
+				business.embed().listWithProcess(process.getId()));
+		if(!embedList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(embedList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapEmbed active : wrap.getEmbedList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapEmbed.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Embed active : embedList){
+				map = PropertyTools.fieldMatchKeyword(WrapEmbed.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -351,14 +343,17 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		embedList.clear();
+		embedList = null;
 
-		if(!wrap.getEndList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getEndList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<End> endList = business.entityManagerContainer().list(End.class, business.end().listWithProcess(process.getId()));
+		if(!endList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(endList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapEnd active : wrap.getEndList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapEnd.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (End active : endList){
+				map = PropertyTools.fieldMatchKeyword(WrapEnd.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -368,14 +363,17 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		endList.clear();
+		endList = null;
 
-		if(!wrap.getInvokeList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getInvokeList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Invoke> invokeList = business.entityManagerContainer().list(Invoke.class, business.invoke().listWithProcess(process.getId()));
+		if(!invokeList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(invokeList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapInvoke active : wrap.getInvokeList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapInvoke.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Invoke active : invokeList){
+				map = PropertyTools.fieldMatchKeyword(WrapInvoke.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -385,14 +383,17 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		invokeList.clear();
+		invokeList = null;
 
-		if(!wrap.getManualList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getManualList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Manual> manualList = business.entityManagerContainer().list(Manual.class, business.manual().listWithProcess(process.getId()));
+		if(!manualList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(manualList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapManual active : wrap.getManualList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapManual.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Manual active : manualList){
+				map = PropertyTools.fieldMatchKeyword(WrapManual.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -402,14 +403,17 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		manualList.clear();
+		manualList = null;
 
-		if(!wrap.getMergeList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getMergeList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Merge> mergeList = business.entityManagerContainer().list(Merge.class, business.merge().listWithProcess(process.getId()));
+		if(!mergeList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(mergeList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapMerge active : wrap.getMergeList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapMerge.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Merge active : mergeList){
+				map = PropertyTools.fieldMatchKeyword(WrapMerge.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -419,14 +423,17 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		mergeList.clear();
+		mergeList = null;
 
-		if(!wrap.getMessageList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getMessageList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Message> messageList = business.entityManagerContainer().list(Message.class, business.message().listWithProcess(process.getId()));
+		if(!messageList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(messageList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapMessage active : wrap.getMessageList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapMessage.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Message active : messageList){
+				map = PropertyTools.fieldMatchKeyword(WrapMessage.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -436,14 +443,17 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		messageList.clear();
+		messageList = null;
 
-		if(!wrap.getParallelList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getParallelList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Parallel> parallelList = business.entityManagerContainer().list(Parallel.class, business.parallel().listWithProcess(process.getId()));
+		if(!parallelList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(parallelList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapParallel active : wrap.getParallelList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapParallel.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Parallel active : parallelList){
+				map = PropertyTools.fieldMatchKeyword(WrapParallel.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -453,14 +463,17 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		parallelList.clear();
+		parallelList = null;
 
-		if(!wrap.getServiceList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getServiceList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Service> serviceList = business.entityManagerContainer().list(Service.class, business.service().listWithProcess(process.getId()));
+		if(!serviceList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(serviceList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapService active : wrap.getServiceList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapService.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Service active : serviceList){
+				map = PropertyTools.fieldMatchKeyword(WrapService.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -470,14 +483,17 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		serviceList.clear();
+		serviceList = null;
 
-		if(!wrap.getSplitList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getSplitList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Split> splitList = business.entityManagerContainer().list(Split.class, business.split().listWithProcess(process.getId()));
+		if(!splitList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(splitList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapSplit active : wrap.getSplitList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapSplit.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Split active : splitList){
+				map = PropertyTools.fieldMatchKeyword(WrapSplit.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -487,14 +503,17 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		splitList.clear();
+		splitList = null;
 
-		if(!wrap.getRouteList().isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
-				XGsonBuilder.toJson(wrap.getRouteList()), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
+		List<Route> routeList = business.entityManagerContainer().list(Route.class, business.route().listWithProcess(process.getId()));
+		if(!routeList.isEmpty() && StringTools.matchKeyword(wi.getKeyword(),
+				XGsonBuilder.toJson(routeList), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp())){
 			if(wo == null){
 				wo = this.getProcessWo(business, process);
 			}
-			for (WrapRoute active : wrap.getRouteList()){
-				Map<String, String> map = PropertyTools.fieldMatchKeyword(WrapRoute.outCopier.getCopyFields(), active, wi.getKeyword(),
+			for (Route active : routeList){
+				map = PropertyTools.fieldMatchKeyword(WrapRoute.outCopier.getCopyFields(), active, wi.getKeyword(),
 						wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 				if (!map.isEmpty()) {
 					if(wo == null){
@@ -504,14 +523,16 @@ class ActionSearch extends BaseAction {
 				}
 			}
 		}
+		routeList.clear();
+		routeList = null;
 
-		wrap.getManualList().clear();
 		return wo;
 	}
 
 	private Wo getProcessWo(Business business, Process process) throws Exception {
 		Wo wo = new Wo();
-		Application app = business.entityManagerContainer().find(process.getApplication(), Application.class);
+		Application app = business.entityManagerContainer().fetch(process.getApplication(), Application.class,
+				ListTools.toList(Application.id_FIELDNAME, Application.name_FIELDNAME));
 		if (app != null) {
 			wo.setAppId(app.getId());
 			wo.setAppName(app.getName());
