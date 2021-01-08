@@ -161,21 +161,30 @@ MWF.xApplication.Selector.Unit = new Class({
     },
 
     _listItemByKey: function(callback, failure, key){
-        if (this.options.units.length){
-            var units = [];
-            this.options.units.each(function(u){
-                if (typeOf(u)==="string"){
-                    units.push(u);
-                }
-                if (typeOf(u)==="object"){
-                    units.push(u.distinguishedName);
-                }
-            });
-            key = {"key": key, "unitList": units};
+        if( this.options.expandSubEnable ){
+            if (this.options.units.length){
+                var units = [];
+                this.options.units.each(function(u){
+                    if (typeOf(u)==="string"){
+                        units.push(u);
+                    }
+                    if (typeOf(u)==="object"){
+                        units.push(u.distinguishedName);
+                    }
+                });
+                key = {"key": key, "unitList": units};
+            }
+            this.orgAction.listUnitByKey(function(json){
+                if (callback) callback.apply(this, [json]);
+            }.bind(this), failure, key);
+        }else{
+            if (key){
+                this.initSearchArea(true);
+                this.searchInItems(key);
+            }else{
+                this.initSearchArea(false);
+            }
         }
-        this.orgAction.listUnitByKey(function(json){
-            if (callback) callback.apply(this, [json]);
-        }.bind(this), failure, key);
     },
     _getItem: function(callback, failure, id, async){
         this.orgAction.getUnit(function(json){
