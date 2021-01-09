@@ -818,11 +818,11 @@ _worker._findProcessPlatformParse_process = function(designer, option, module){
 
 
 
-                elementId: "7ce87b0e-7fa8-4bea-bc4b-bbf816f584e7"
-                elementName: "开始"
-                elementType: "activity"
-                property: "validationScriptText"
-                propertyValue: "路由校验"
+                // elementId: "7ce87b0e-7fa8-4bea-bc4b-bbf816f584e7"
+                // elementName: "开始"
+                // elementType: "activity"
+                // property: "validationScriptText"
+                // propertyValue: "路由校验"
 
 
 

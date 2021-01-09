@@ -38,5 +38,8 @@ MWF.xApplication.FindDesigner.LP = {
 	"readyToFind": "设计元素准备完毕（共{n}个） ...",
 	"findPatternCount": "已找到{n}项匹配",
 
-	"elementPattern": "<b>元素:</b> {element}, <b>属性:</b> {property}: "
+	"elementPattern": "<b>元素:</b> {element}, <b>属性:</b> {property}: ",
+
+	"saveDesigner": "保存设计元素",
+	"openDesigner": "打开应用"
 };
