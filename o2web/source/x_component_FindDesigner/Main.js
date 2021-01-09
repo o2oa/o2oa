@@ -399,7 +399,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	createResultTypeItem: function(text, title, tree){
 		var obj = {
 			"title": title,
-			"text": "<span>"+text+"</span>",
+			"text": "<span style='color: #333333'>"+text+"</span>",
 			"icon": ""
 		}
 		return tree.appendChild(obj);
@@ -408,16 +408,16 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		var obj = {
 			"expand": false,
 			"title": title,
-			"text": "<span>"+text+"</span>",
+			"text": "<span style='color: #333333'>"+text+"</span>",
 			"icon": ""
 		}
 		return tree.appendChild(obj);
 	},
-	createResultPatternItem: function(text, title, tree){
+	createResultPatternItem: function(text, title, tree, icon){
 		var obj = {
 			"title": title,
 			"text": "<span style='color: #000000'>"+text+"</span>",
-			"icon": ""
+			"icon": icon||""
 		}
 		return tree.appendChild(obj);
 	},
@@ -483,16 +483,34 @@ MWF.xApplication.FindDesigner.Main = new Class({
 				this.createScriptPatternNode(data, designerNode, regexp);
 				break;
 			case "form":
-
+				this.createFormPatternNode(data, designerNode, regexp);
 				break;
 			case "process":
 
 				break;
 
 		}
-
-		//}.bind(this));
 	},
+
+	createFormPatternNode: function(data, node, regexp){
+		debugger;
+		var text = this.lp.elementPattern.replace("{element}", "&lt;"+data.pattern.type+"&gt;"+data.pattern.name).
+			replace("{property}", "{"+data.pattern.key+"}"+data.pattern.propertyName);
+		text = "<span style='color: #666666'>"+text+"</span>&nbsp;&nbsp;"
+
+		if (data.pattern.line){
+			if (data.pattern.evkey){
+				text += "<b>["+data.pattern.evkey+"]</b>&nbsp;"+((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp);
+			}else{
+				text += ((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp);
+			}
+		}else{
+			text += this.getPatternValue(data.pattern.value, regexp);
+		}
+
+		patternNode = this.createResultPatternItem(text, "", node, "icon_"+data.pattern.propertyType+".png");
+	},
+
 	getPatternValue: function(value, regexp){
 		regexp.lastIndex = 0;
 		var valueHtml = "";
@@ -505,35 +523,24 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		valueHtml += o2.common.encodeHtml(value.substring(idx, value.length));
 		return valueHtml;
 	},
-	// getPatternScriptValue: function(pattern, regexp){
-	// 	regexp.lastIndex = 0;
-	// 	var valueHtml = "";
-	//
-	// 	valueHtml += pattern.value.substring(0, pattern.column);
-	// 	valueHtml += "<span style='background-color: #ffef8f'><b>"+pattern.value.substring(pattern.column, pattern.column+pattern.key.length)+"</b></span>";
-	// 	valueHtml += pattern.value.substring(pattern.column+pattern.key.length, pattern.value.length);
-	//
-	// 	return valueHtml;
-	// },
 	createScriptPatternNode: function(data, node, regexp){
-		debugger;
 		var patternNode;
 		var text;
 		if (data.pattern.property=="text"){
 			text = "<span style='color: #666666'>"+data.pattern.line+"</span>&nbsp;&nbsp;"+this.getPatternValue(data.pattern.value, regexp);
-			patternNode = this.createResultPatternItem(text, "", node);
+			patternNode = this.createResultPatternItem(text, "", node, "icon_script.png");
 		}else{
 			text = this.lp.property+":&nbsp;<b>"+data.pattern.property+"</b> "+this.lp.value+":&nbsp;"+this.getPatternValue(data.pattern.value, regexp);
-			patternNode = this.createResultPatternItem(text, "", node);
+			patternNode = this.createResultPatternItem(text, "", node, "icon_text.png");
 		}
 	},
 	getFilterOptionRegex: function(option){
 		var keyword = option.keyword;
 		if (option.matchRegExp){
-			var flag = (option.caseSensitive) ? "g" : "gi";
+			var flag = (option.caseSensitive) ? "gm" : "gmi";
 			return new RegExp(keyword, flag);
 		}else{
-			var flag = (option.caseSensitive) ? "g" : "gi";
+			var flag = (option.caseSensitive) ? "gm" : "gmi";
 			keyword = (option.matchWholeWord) ? "\\b"+keyword+"\\b" : keyword;
 			return new RegExp(keyword, flag);
 		}
