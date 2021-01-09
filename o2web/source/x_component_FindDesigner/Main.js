@@ -125,6 +125,8 @@ MWF.xApplication.FindDesigner.Main = new Class({
 					if (this.options.layout.percent<0.1) this.options.layout.percent = 0.1;
 					if (this.options.layout.percent>0.85) this.options.layout.percent = 0.85;
 					this.sizeNode_topBottom();
+
+					if (this.editor) this.editor.resize();
 				}.bind(this),
 				"onComplete": function(){
 					o2.UD.putData("findDesignerLayout", {"layout": this.options.layout});
@@ -152,6 +154,8 @@ MWF.xApplication.FindDesigner.Main = new Class({
 					if (this.options.layout.percent>0.85) this.options.layout.percent = 0.85;
 
 					this.sizeNode_leftRight();
+
+					if (this.editor) this.editor.resize();
 				}.bind(this),
 				"onComplete": function(){
 					o2.UD.putData("findDesignerLayout", {"layout": this.options.layout});
@@ -413,11 +417,12 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}
 		return tree.appendChild(obj);
 	},
-	createResultPatternItem: function(text, title, tree, icon){
+	createResultPatternItem: function(text, title, tree, icon, action){
 		var obj = {
 			"title": title,
 			"text": "<span style='color: #000000'>"+text+"</span>",
-			"icon": icon||""
+			"icon": icon||"",
+			"action": action || null
 		}
 		return tree.appendChild(obj);
 	},
@@ -493,7 +498,6 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	},
 
 	createFormPatternNode: function(data, node, regexp){
-		debugger;
 		var text = this.lp.elementPattern.replace("{element}", "&lt;"+data.pattern.type+"&gt;"+data.pattern.name).
 			replace("{property}", "{"+data.pattern.key+"}"+data.pattern.propertyName);
 		text = "<span style='color: #666666'>"+text+"</span>&nbsp;&nbsp;"
@@ -507,15 +511,22 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}else{
 			text += this.getPatternValue(data.pattern.value, regexp);
 		}
+		if (data.pattern.mode){
+			text = "<b>["+data.pattern.mode+"]</b>&nbsp;"+text;
+		}
 
 		patternNode = this.createResultPatternItem(text, "", node, "icon_"+data.pattern.propertyType+".png");
 	},
 
-	getPatternValue: function(value, regexp){
+	getPatternValue: function(value, regexp, pattern){
 		regexp.lastIndex = 0;
 		var valueHtml = "";
 		var idx = 0;
 		while ((arr = regexp.exec(value)) !== null) {
+			if (pattern){
+				if (!pattern.cols) pattern.cols = [];
+				pattern.cols.push({"start": arr.index+1, "end": regexp.lastIndex+1});
+			}
 			valueHtml += o2.common.encodeHtml(value.substring(idx, arr.index));
 			valueHtml += "<span style='background-color: #ffef8f'>"+o2.common.encodeHtml(value.substring(arr.index, regexp.lastIndex))+"</span>";
 			idx = regexp.lastIndex;
@@ -526,14 +537,90 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	createScriptPatternNode: function(data, node, regexp){
 		var patternNode;
 		var text;
+
+		var openScript = function(node){
+			this.openPatternScript(node.pattern);
+		}.bind(this);
+
 		if (data.pattern.property=="text"){
-			text = "<span style='color: #666666'>"+data.pattern.line+"</span>&nbsp;&nbsp;"+this.getPatternValue(data.pattern.value, regexp);
-			patternNode = this.createResultPatternItem(text, "", node, "icon_script.png");
+			text = "<span style='color: #666666'>"+data.pattern.line+"</span>&nbsp;&nbsp;"+this.getPatternValue(data.pattern.value, regexp, data.pattern);
+			patternNode = this.createResultPatternItem(text, "", node, "icon_script.png", openScript);
 		}else{
 			text = this.lp.property+":&nbsp;<b>"+data.pattern.property+"</b> "+this.lp.value+":&nbsp;"+this.getPatternValue(data.pattern.value, regexp);
-			patternNode = this.createResultPatternItem(text, "", node, "icon_text.png");
+			patternNode = this.createResultPatternItem(text, "", node, "icon_text.png", openScript);
+		}
+		patternNode.pattern = data;
+	},
+	openPatternScript: function(pattern){
+		// appId: "267d4445-b75c-4627-af26-251e623a5fe8"
+		// appName: "合同"
+		// designerAliase: ""
+		// designerId: "ff1d382f-54af-4bb1-80f9-1e3bc3e4f03c"
+		// designerName: "file"
+		// designerType: "script"
+		// module: "processPlatform"
+		//
+		// appId: "invoke"
+		// appName: "接口"
+		// designerAliase: ""
+		// designerId: "80c08112-afa1-48b1-b693-87ba8504f47c"
+		// designerName: "getService"
+		// designerType: "script"
+		// module: "service"
+debugger;
+		if (this.editor && this.editor.pattern.designerId === pattern.designerId && this.editor.pattern.module === pattern.module){
+			this.reLocationEditor(pattern);
+		}else{
+			if (this.editor) this.editor.destroyEditor();
+			this.editor = null;
+			this.previewInforNode.hide().dispose();
+
+			switch (pattern.module){
+				case "processPlatform":
+					o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.get(pattern.designerId).then(function(json){
+						if (json.data) this.openProcessPlatformPatternScript(json.data, pattern);
+					}.bind(this), function(){});
+
+					break;
+				case "cms":
+
+					break;
+				case "portal":
+
+					break;
+				case "service":
+
+					break;
+			}
 		}
 	},
+	openProcessPlatformPatternScript: function(data, pattern){
+		o2.require("o2.widget.JavascriptEditor", function(){
+
+			this.editor = new o2.widget.JavascriptEditor(this.previewContentNode, {
+				"option": {"value": data.text}
+			});
+			this.editor.pattern = pattern;
+			this.editor.load(function(){
+				this.reLocationEditor(pattern);
+			}.bind(this));
+		}.bind(this));
+	},
+
+	reLocationEditor: function(pattern){
+		this.editor.gotoLine(pattern.pattern.line, 1);
+		if (pattern.pattern.cols && pattern.pattern.cols.length){
+			var rs = [];
+			pattern.pattern.cols.forEach(function(col){
+				rs.push(this.editor.getRange(pattern.pattern.line,col.start, pattern.pattern.line, col.end));
+			}.bind(this));
+			this.editor.selectRange(rs);
+		}else{
+			this.editor.selectRange(this.editor.getRange(pattern.pattern.line,0));
+		}
+	},
+
+
 	getFilterOptionRegex: function(option){
 		var keyword = option.keyword;
 		if (option.matchRegExp){
@@ -615,6 +702,10 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		this.listInfoNode.show().getFirst().set("text", "");
 		this.listInfoNode.addClass("loadding");
 		this.patternCount = 0;
+
+		if (this.editor) this.editor.destroyEditor();
+		this.editor = null;
+		this.previewInforNode.show().inject(this.previewContentNode);
 
 		this.getFindWorker();
 		var actions = this.getActionsUrl();

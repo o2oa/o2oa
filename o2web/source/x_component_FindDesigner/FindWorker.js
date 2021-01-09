@@ -390,7 +390,7 @@ _worker.findScriptLineValue = function(result, code, preLine, preIndex, len){
     return {"value": value, "preLine": preLine, "preIndex": preIndex};
 };
 
-_worker.findInDesigner_script = function(formData, key, module, designer, propertyDefinition, option){
+_worker.findInDesigner_script = function(formData, key, module, designer, propertyDefinition, option, mode){
     var code = formData[key].code || formData[key];
     if (code){
         this.keywordRegexp.lastIndex = 0;
@@ -411,12 +411,13 @@ _worker.findInDesigner_script = function(formData, key, module, designer, proper
                 "name": formData.name || formData.id,
                 "key": key,
                 "value": obj.value,
-                "line": preLine+1
+                "line": preLine+1,
+                "mode": mode
             }), option);
         }
     }
 };
-_worker.findInDesigner_events = function(formData, key, module, designer, propertyDefinition, option){
+_worker.findInDesigner_events = function(formData, key, module, designer, propertyDefinition, option, mode){
     var eventObj = formData[key];
     Object.keys(eventObj).forEach(function(evkey){
         var code = eventObj[evkey].code;
@@ -439,12 +440,13 @@ _worker.findInDesigner_events = function(formData, key, module, designer, proper
                 "key": key,
                 "evkey": evkey,
                 "value": obj.value,
-                "line": preLine+1
+                "line": preLine+1,
+                "mode": mode
             }), option);
         }
     });
 };
-_worker.findInDesigner_map = function(formData, key, module, designer, propertyDefinition, option){
+_worker.findInDesigner_map = function(formData, key, module, designer, propertyDefinition, option, mode){
     var map = formData[key];
     Object.keys(map).forEach(function(evkey) {
         this.keywordRegexp.lastIndex = 0;
@@ -456,12 +458,13 @@ _worker.findInDesigner_map = function(formData, key, module, designer, propertyD
                 "propertyName": propertyDefinition.name,
                 "name": formData.name || formData.id,
                 "key": key,
-                "value": evkey+": "+text
+                "value": evkey+": "+text,
+                "mode": mode
             }), option);
         }
     });
 };
-_worker.findInDesigner_array = function(formData, key, module, designer, propertyDefinition, option){
+_worker.findInDesigner_array = function(formData, key, module, designer, propertyDefinition, option, mode){
     var arr = formData[key];
     arr.forEach(function(v, i) {
         this.keywordRegexp.lastIndex = 0;
@@ -474,12 +477,13 @@ _worker.findInDesigner_array = function(formData, key, module, designer, propert
                 "name": formData.name || formData.id,
                 "line": i+1,
                 "key": key,
-                "value": text
+                "value": text,
+                "mode": mode
             }), option);
         }
     });
 };
-_worker.findInDesigner_objectArray = function(formData, key, module, designer, propertyDefinition, option){
+_worker.findInDesigner_objectArray = function(formData, key, module, designer, propertyDefinition, option, mode){
     var arr = formData[key];
     arr.forEach(function(map, i) {
         Object.keys(map).forEach(function(evkey) {
@@ -493,14 +497,15 @@ _worker.findInDesigner_objectArray = function(formData, key, module, designer, p
                     "name": formData.name || formData.id,
                     "line": i+1,
                     "key": key,
-                    "value": evkey+": "+text
+                    "value": evkey+": "+text,
+                    "mode": mode
                 }), option);
             }
         });
     });
 };
 
-_worker.findInDesigner_duty = function(formData, key, module, designer, propertyDefinition, option){
+_worker.findInDesigner_duty = function(formData, key, module, designer, propertyDefinition, option, mode){
     var text = formData[key];
     var json = JSON.parse(text);
     json.forEach(function(duty, i) {
@@ -514,7 +519,8 @@ _worker.findInDesigner_duty = function(formData, key, module, designer, property
                 "name": formData.name || formData.id,
                 "key": key,
                 "line": i+1,
-                "value": "name:"+text
+                "value": "name:"+text,
+                "mode": mode
             }), option);
         }
 
@@ -539,14 +545,15 @@ _worker.findInDesigner_duty = function(formData, key, module, designer, property
                     "name": formData.name || formData.id,
                     "key": key,
                     "value": obj.value,
-                    "line": preLine+1
+                    "line": preLine+1,
+                    "mode": mode
                 }), option);
             }
         }
     });
 };
 
-_worker.findInDesigner_actions = function(formData, key, module, designer, propertyDefinition, option){
+_worker.findInDesigner_actions = function(formData, key, module, designer, propertyDefinition, option, mode){
     var arr = formData[key];
     arr.forEach(function(action, i) {
         this.keywordRegexp.lastIndex = 0;
@@ -559,7 +566,8 @@ _worker.findInDesigner_actions = function(formData, key, module, designer, prope
                 "name": formData.name || formData.id,
                 "key": key,
                 "line": i+1,
-                "value": "text:"+text
+                "value": "text:"+text,
+                "mode": mode
             }), option);
         }
 
@@ -584,7 +592,8 @@ _worker.findInDesigner_actions = function(formData, key, module, designer, prope
                     "name": formData.name || formData.id,
                     "key": key,
                     "value": obj.value,
-                    "line": preLine+1
+                    "line": preLine+1,
+                    "mode": mode
                 }), option);
             }
         }
@@ -608,14 +617,15 @@ _worker.findInDesigner_actions = function(formData, key, module, designer, prope
                     "name": formData.name || formData.id,
                     "key": key,
                     "value": obj.value,
-                    "line": preLine+1
+                    "line": preLine+1,
+                    "mode": mode
                 }), option);
             }
         }
     });
 };
 
-_worker.findInDesigner_filter = function(formData, key, module, designer, propertyDefinition, option){
+_worker.findInDesigner_filter = function(formData, key, module, designer, propertyDefinition, option, mode){
     var arr = formData[key];
     arr.forEach(function(filter, i) {
         this.keywordRegexp.lastIndex = 0;
@@ -628,7 +638,8 @@ _worker.findInDesigner_filter = function(formData, key, module, designer, proper
                 "name": formData.name || formData.id,
                 "key": key,
                 "line": i+1,
-                "value": "path:"+text
+                "value": "path:"+text,
+                "mode": mode
             }), option);
         }
 
@@ -653,14 +664,15 @@ _worker.findInDesigner_filter = function(formData, key, module, designer, proper
                     "name": formData.name || formData.id,
                     "key": key,
                     "value": obj.value,
-                    "line": preLine+1
+                    "line": preLine+1,
+                    "mode": mode
                 }), option);
             }
         }
     });
 };
 
-_worker.findInDesigner_text = function(formData, key, module, designer, propertyDefinition, option){
+_worker.findInDesigner_text = function(formData, key, module, designer, propertyDefinition, option, mode){
     this.keywordRegexp.lastIndex = 0;
     var text = formData[key];
     if (this.keywordRegexp.test(text)){
@@ -670,49 +682,54 @@ _worker.findInDesigner_text = function(formData, key, module, designer, property
             "propertyName": propertyDefinition.name,
             "name": formData.name || formData.id,
             "key": key,
-            "value": text
+            "value": text,
+            "mode": mode
         }), option);
     }
 };
 
-_worker.findInDesigner = function(formData, option, module, designer){
+_worker.findInDesignerProperty = function(key, propertyDefinition, formData, option, module, designer, mode){
+    if (propertyDefinition){
+        switch (propertyDefinition.type){
+            case "html":
+                _worker.findInDesigner_script(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            case "script":
+            case "css":
+            case "sql":
+                _worker.findInDesigner_script(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            case "events":
+                _worker.findInDesigner_events(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            case "map":
+                _worker.findInDesigner_map(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            case "array":
+                _worker.findInDesigner_array(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            case "object-array":
+                _worker.findInDesigner_objectArray(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            case "duty":
+                _worker.findInDesigner_duty(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            case "actions":
+                _worker.findInDesigner_actions(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            case "filter":
+                _worker.findInDesigner_filter(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            default:
+                _worker.findInDesigner_text(formData, key, module, designer, propertyDefinition, option, mode);
+        }
+    }
+}
+
+_worker.findInDesigner = function(formData, option, module, designer, mode){
     Object.keys(formData).forEach(function(key){
         var propertyDefinition = this.designerPropertysData.form[key];
-        if (propertyDefinition){
-            switch (propertyDefinition.type){
-                case "html":
-                    _worker.findInDesigner_script(formData, key, module, designer, propertyDefinition, option);
-                    break;
-                case "script":
-                case "css":
-                case "sql":
-                    _worker.findInDesigner_script(formData, key, module, designer, propertyDefinition, option);
-                    break;
-                case "events":
-                    _worker.findInDesigner_events(formData, key, module, designer, propertyDefinition, option);
-                    break;
-                case "map":
-                    _worker.findInDesigner_map(formData, key, module, designer, propertyDefinition, option);
-                    break;
-                case "array":
-                    _worker.findInDesigner_array(formData, key, module, designer, propertyDefinition, option);
-                    break;
-                case "object-array":
-                    _worker.findInDesigner_objectArray(formData, key, module, designer, propertyDefinition, option);
-                    break;
-                case "duty":
-                    _worker.findInDesigner_duty(formData, key, module, designer, propertyDefinition, option);
-                    break;
-                case "actions":
-                    _worker.findInDesigner_actions(formData, key, module, designer, propertyDefinition, option);
-                    break;
-                case "filter":
-                    _worker.findInDesigner_filter(formData, key, module, designer, propertyDefinition, option);
-                    break;
-                default:
-                    _worker.findInDesigner_text(formData, key, module, designer, propertyDefinition, option);
-            }
-        }
+        _worker.findInDesignerProperty(key, propertyDefinition, formData, option, module, designer, mode);
     });
 };
 
@@ -724,8 +741,16 @@ _worker.decodeJsonString = function(str){
 
 _worker._getDesignerData = function(designer, module){
     var action = "";
-    if (module=="processPlatform") action = this.findData.actions.getProcessForm
-    else if (module=="cms") action = this.findData.actions.getCmsForm;
+
+    switch (designer.designerType){
+        case "form":
+            if (module=="processPlatform") action = this.findData.actions.getProcessForm
+            else if (module=="cms") action = this.findData.actions.getCmsForm;
+            break;
+        case "process":
+            action = this.findData.actions.getProcessProcess;
+            break;
+    }
 
     if (action){
         var formPromise = _worker.action.sendRequest(_worker._getRequestOption({"url": action}, {"id": designer.designerId}));
@@ -735,9 +760,10 @@ _worker._getDesignerData = function(designer, module){
 };
 
 _worker._findInDesigner_form = function(formData, designer, option, module){
-    _worker.findInDesigner(formData.json, option, module, designer);
+    var mode = formData.json.mode;
+    _worker.findInDesigner(formData.json, option, module, designer, mode);
     for (key in formData.json.moduleList){
-        _worker.findInDesigner(formData.json.moduleList[key], option, module, designer);
+        _worker.findInDesigner(formData.json.moduleList[key], option, module, designer, mode);
     }
 };
 
@@ -762,14 +788,44 @@ _worker._findProcessPlatformParse_form = function(designer, option, module){
     }
 };
 
-_worker._findProcessPlatformParse_process = function(designer){
+_worker._findProcessPlatformParse_process = function(designer, option, module){
     if (designer.patternList && designer.patternList.length){
         var p = _worker._getDesignerData(designer, module);
         if (p){
-            var patternPropertys = designer.patternList.map(function(a){return a.property;});
             p.then(function(arr){
-                var formJson = arr[0];
+                var processData = arr[0].data;
                 this.designerPropertysData = arr[1];
+
+                designer.patternList.forEach(function(pattern){
+                    switch (pattern.elementType){
+                        case "process":
+
+                            break;
+                        case "activity":
+
+                            break;
+                        case "route":
+
+                            break;
+                    }
+
+                    var propertyDefinition = this.designerPropertysData.process[pattern.property];
+
+                   // _worker.findInDesignerProperty(pattern.property, propertyDefinition, option, module, designer);
+                });
+
+                var propertyDefinition = this.designerPropertysData.form[key];
+
+
+
+                elementId: "7ce87b0e-7fa8-4bea-bc4b-bbf816f584e7"
+                elementName: "开始"
+                elementType: "activity"
+                property: "validationScriptText"
+                propertyValue: "路由校验"
+
+
+
                 if (patternPropertys.indexOf("data")!=-1){
                     var formData = JSON.parse(_worker.decodeJsonString(formJson.data.data));
                     _worker._findInDesigner_form(formData, designer, option, module);
