@@ -240,9 +240,10 @@ MWF.xApplication.Org.$Explorer = new Class({
                 }
             }.bind(this)
         });
-        this.searchButtonNode.addEvent("click", function(){this.searchOrg();}.bind(this));
+        // this.searchButtonNode.addEvent("click", function(){this.searchOrg();}.bind(this));
     },
     searchOrg: function(){
+        debugger;
         var key = this.searchInputNode.get("value");
         var isSearchElement = true;
         this.searching = false;
