@@ -223,9 +223,9 @@ _worker._parseFindModule = function(moduleList){
                 });
                 this.filterOptionList.push(filterOption);
 
-                //promiseArr.push(Promise.resolve(""));
-                promiseArr = promiseArr.concat(_worker["_getDesinger_"+module.moduleType]("invoke"));
-                promiseArr = promiseArr.concat(_worker["_getDesinger_"+module.moduleType]("agent"));
+                promiseArr.push(Promise.resolve(""));
+                // promiseArr = promiseArr.concat(_worker["_getDesinger_"+module.moduleType]("invoke"));
+                // promiseArr = promiseArr.concat(_worker["_getDesinger_"+module.moduleType]("agent"));
             }else{
                 module.flagList.forEach(function(flag){
                     if (!flag.designerList || !flag.designerList.length){
@@ -243,23 +243,23 @@ _worker._parseFindModule = function(moduleList){
                 var p = _worker._listApplication(module.moduleType);
                 promiseArr.push(p.then(function(json){
 
-                    // json.data.forEach(function(app){
-                    //     var filterOption = JSON.parse(_worker.filterOptionTemplete);
-                    //     filterOption.moduleList.push({
-                    //         "moduleType": module.moduleType,
-                    //         "moduleAppList": [{"appId": app.id}]
-                    //     });
-                    //     this.filterOptionList.push(filterOption);
-                    // });
-                    // return Promise.resolve("");
+                    json.data.forEach(function(app){
+                        var filterOption = JSON.parse(_worker.filterOptionTemplete);
+                        filterOption.moduleList.push({
+                            "moduleType": module.moduleType,
+                            "moduleAppList": [{"appId": app.id}]
+                        });
+                        this.filterOptionList.push(filterOption);
+                    });
+                    return Promise.resolve("");
                     //临时处理
 
 
-                    var pArr = [];
-                    json.data.forEach(function(app){
-                        pArr = pArr.concat(_worker["_getDesinger_"+module.moduleType](app.id));
-                    });
-                    return Promise.all(pArr);
+                    // var pArr = [];
+                    // json.data.forEach(function(app){
+                    //     pArr = pArr.concat(_worker["_getDesinger_"+module.moduleType](app.id));
+                    // });
+                    // return Promise.all(pArr);
                 }, function(){}));
 
             }else{
@@ -313,10 +313,10 @@ _worker._createFindMessageReplyData = function(module, designer, aliase, pattern
 _worker._setFilterOptionRegex = function(){
     var keyword = _worker.findData.filterOption.keyword;
     if (_worker.findData.filterOption.matchRegExp){
-        var flag = (_worker.findData.filterOption.caseSensitive) ? "g" : "gi";
+        var flag = (_worker.findData.filterOption.caseSensitive) ? "gm" : "gmi";
         this.keywordRegexp =  new RegExp(keyword, flag);
     }else{
-        var flag = (_worker.findData.filterOption.caseSensitive) ? "g" : "gi";
+        var flag = (_worker.findData.filterOption.caseSensitive) ? "gm" : "gmi";
         keyword = (_worker.findData.filterOption.matchWholeWord) ? "\\b"+keyword+"\\b" : keyword;
         this.keywordRegexp = new RegExp(keyword, flag);
     }
@@ -364,11 +364,369 @@ _worker._findProcessPlatformParse_script = function(designer, option, module){
     }
 };
 
+_worker.findScriptLineValue = function(result, code, preLine, preIndex, len){
+    var lineRegexp = /\r\n|\n|\r/g;
+    var preText = code.substring(preIndex, result.index);
+    var m = preText.match(lineRegexp);
+    preLine += (m) ? m.length : 0;
+
+    var value = result[0];
+
+    var n = result.index-1;
+    var char = code.charAt(n);
+    while (!lineRegexp.test(char) && n>=0){
+        value = char+value;
+        n--;
+        char = code.charAt(n);
+    }
+    n =  this.keywordRegexp.lastIndex;
+    char = code.charAt(n);
+    while (!lineRegexp.test(char) && n<len){
+        value = value+char;
+        n++;
+        char = code.charAt(n);
+    }
+    preIndex = this.keywordRegexp.lastIndex = n;
+    return {"value": value, "preLine": preLine, "preIndex": preIndex};
+};
+
+_worker.findInDesigner_script = function(formData, key, module, designer, propertyDefinition, option){
+    var code = formData[key].code || formData[key];
+    if (code){
+        this.keywordRegexp.lastIndex = 0;
+        var len = code.length;
+
+        var preLine = 0;
+        var preIndex = 0;
+        var result;
+        while ((result = this.keywordRegexp.exec(code)) !== null){
+            var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
+            preLine = obj.preLine;
+            preIndex = obj.preIndex;
+
+            _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                "type": formData.type,
+                "propertyType": propertyDefinition.type || "text",
+                "propertyName": propertyDefinition.name,
+                "name": formData.name || formData.id,
+                "key": key,
+                "value": obj.value,
+                "line": preLine+1
+            }), option);
+        }
+    }
+};
+_worker.findInDesigner_events = function(formData, key, module, designer, propertyDefinition, option){
+    var eventObj = formData[key];
+    Object.keys(eventObj).forEach(function(evkey){
+        var code = eventObj[evkey].code;
+        this.keywordRegexp.lastIndex = 0;
+        var len = code.length;
+
+        var preLine = 0;
+        var preIndex = 0;
+        var result;
+        while ((result = this.keywordRegexp.exec(code)) !== null){
+            var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
+            preLine = obj.preLine;
+            preIndex = obj.preIndex;
+
+            _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                "type": formData.type,
+                "propertyType": propertyDefinition.type || "text",
+                "propertyName": propertyDefinition.name,
+                "name": formData.name || formData.id,
+                "key": key,
+                "evkey": evkey,
+                "value": obj.value,
+                "line": preLine+1
+            }), option);
+        }
+    });
+};
+_worker.findInDesigner_map = function(formData, key, module, designer, propertyDefinition, option){
+    var map = formData[key];
+    Object.keys(map).forEach(function(evkey) {
+        this.keywordRegexp.lastIndex = 0;
+        var text = map[evkey];
+        if (this.keywordRegexp.test(text)){
+            _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                "type": formData.type,
+                "propertyType": propertyDefinition.type || "text",
+                "propertyName": propertyDefinition.name,
+                "name": formData.name || formData.id,
+                "key": key,
+                "value": evkey+": "+text
+            }), option);
+        }
+    });
+};
+_worker.findInDesigner_array = function(formData, key, module, designer, propertyDefinition, option){
+    var arr = formData[key];
+    arr.forEach(function(v, i) {
+        this.keywordRegexp.lastIndex = 0;
+        var text = v.toString();
+        if (this.keywordRegexp.test(text)){
+            _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                "type": formData.type,
+                "propertyType": propertyDefinition.type || "text",
+                "propertyName": propertyDefinition.name,
+                "name": formData.name || formData.id,
+                "line": i+1,
+                "key": key,
+                "value": text
+            }), option);
+        }
+    });
+};
+_worker.findInDesigner_objectArray = function(formData, key, module, designer, propertyDefinition, option){
+    var arr = formData[key];
+    arr.forEach(function(map, i) {
+        Object.keys(map).forEach(function(evkey) {
+            this.keywordRegexp.lastIndex = 0;
+            var text = map[evkey];
+            if (this.keywordRegexp.test(text)){
+                _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                    "type": formData.type,
+                    "propertyType": propertyDefinition.type || "text",
+                    "propertyName": propertyDefinition.name,
+                    "name": formData.name || formData.id,
+                    "line": i+1,
+                    "key": key,
+                    "value": evkey+": "+text
+                }), option);
+            }
+        });
+    });
+};
+
+_worker.findInDesigner_duty = function(formData, key, module, designer, propertyDefinition, option){
+    var text = formData[key];
+    var json = JSON.parse(text);
+    json.forEach(function(duty, i) {
+        this.keywordRegexp.lastIndex = 0;
+        var text = duty.name;
+        if (text) if (this.keywordRegexp.test(text)){
+            _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                "type": formData.type,
+                "propertyType": propertyDefinition.type || "text",
+                "propertyName": propertyDefinition.name,
+                "name": formData.name || formData.id,
+                "key": key,
+                "line": i+1,
+                "value": "name:"+text
+            }), option);
+        }
+
+        var code = duty.code;
+        if (code){
+            this.keywordRegexp.lastIndex = 0;
+            var len = code.length;
+            var idx = i+1;
+            var preLine = 0;
+            var preIndex = 0;
+            var result;
+            while ((result = this.keywordRegexp.exec(code)) !== null){
+                var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
+                preLine = obj.preLine;
+                preIndex = obj.preIndex;
+
+
+                _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                    "type": formData.type,
+                    "propertyType": propertyDefinition.type || "text",
+                    "propertyName": propertyDefinition.name+"(code)&nbsp;"+idx+"."+duty.name,
+                    "name": formData.name || formData.id,
+                    "key": key,
+                    "value": obj.value,
+                    "line": preLine+1
+                }), option);
+            }
+        }
+    });
+};
+
+_worker.findInDesigner_actions = function(formData, key, module, designer, propertyDefinition, option){
+    var arr = formData[key];
+    arr.forEach(function(action, i) {
+        this.keywordRegexp.lastIndex = 0;
+        var text = action.text;
+        if (text) if (this.keywordRegexp.test(text)){
+            _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                "type": formData.type,
+                "propertyType": propertyDefinition.type || "text",
+                "propertyName": propertyDefinition.name,
+                "name": formData.name || formData.id,
+                "key": key,
+                "line": i+1,
+                "value": "text:"+text
+            }), option);
+        }
+
+        var code = action.actionScript;
+        if (code){
+            this.keywordRegexp.lastIndex = 0;
+            var len = code.length;
+            var idx = i+1;
+            var preLine = 0;
+            var preIndex = 0;
+            var result;
+            while ((result = this.keywordRegexp.exec(code)) !== null){
+                var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
+                preLine = obj.preLine;
+                preIndex = obj.preIndex;
+
+
+                _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                    "type": formData.type,
+                    "propertyType": propertyDefinition.type || "text",
+                    "propertyName": propertyDefinition.name+"(actionScript)&nbsp;"+action.text,
+                    "name": formData.name || formData.id,
+                    "key": key,
+                    "value": obj.value,
+                    "line": preLine+1
+                }), option);
+            }
+        }
+        code = action.condition;
+        if (code){
+            this.keywordRegexp.lastIndex = 0;
+            var len = code.length;
+            var idx = i+1;
+            var preLine = 0;
+            var preIndex = 0;
+            var result;
+            while ((result = this.keywordRegexp.exec(code)) !== null){
+                var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
+                preLine = obj.preLine;
+                preIndex = obj.preIndex;
+
+                _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                    "type": formData.type,
+                    "propertyType": propertyDefinition.type || "text",
+                    "propertyName": propertyDefinition.name+"(condition)&nbsp;"+action.text,
+                    "name": formData.name || formData.id,
+                    "key": key,
+                    "value": obj.value,
+                    "line": preLine+1
+                }), option);
+            }
+        }
+    });
+};
+
+_worker.findInDesigner_filter = function(formData, key, module, designer, propertyDefinition, option){
+    var arr = formData[key];
+    arr.forEach(function(filter, i) {
+        this.keywordRegexp.lastIndex = 0;
+        var text = filter.path;
+        if (text) if (this.keywordRegexp.test(text)){
+            _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                "type": formData.type,
+                "propertyType": propertyDefinition.type || "text",
+                "propertyName": propertyDefinition.name,
+                "name": formData.name || formData.id,
+                "key": key,
+                "line": i+1,
+                "value": "path:"+text
+            }), option);
+        }
+
+        var code = filter.code.code;
+        if (code){
+            this.keywordRegexp.lastIndex = 0;
+            var len = code.length;
+            var idx = i+1;
+            var preLine = 0;
+            var preIndex = 0;
+            var result;
+            while ((result = this.keywordRegexp.exec(code)) !== null){
+                var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
+                preLine = obj.preLine;
+                preIndex = obj.preIndex;
+
+
+                _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                    "type": formData.type,
+                    "propertyType": propertyDefinition.type || "text",
+                    "propertyName": propertyDefinition.name+"(actionScript)&nbsp;"+filter.path,
+                    "name": formData.name || formData.id,
+                    "key": key,
+                    "value": obj.value,
+                    "line": preLine+1
+                }), option);
+            }
+        }
+    });
+};
+
+_worker.findInDesigner_text = function(formData, key, module, designer, propertyDefinition, option){
+    this.keywordRegexp.lastIndex = 0;
+    var text = formData[key];
+    if (this.keywordRegexp.test(text)){
+        _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+            "type": formData.type,
+            "propertyType": propertyDefinition.type || "text",
+            "propertyName": propertyDefinition.name,
+            "name": formData.name || formData.id,
+            "key": key,
+            "value": text
+        }), option);
+    }
+};
+
+_worker.findInDesigner = function(formData, option, module, designer){
+    Object.keys(formData).forEach(function(key){
+        var propertyDefinition = this.formPropertysData.form[key];
+        if (propertyDefinition){
+            switch (propertyDefinition.type){
+                case "html":
+                    _worker.findInDesigner_script(formData, key, module, designer, propertyDefinition, option);
+                    break;
+                case "script":
+                case "css":
+                case "sql":
+                    _worker.findInDesigner_script(formData, key, module, designer, propertyDefinition, option);
+                    break;
+                case "events":
+                    _worker.findInDesigner_events(formData, key, module, designer, propertyDefinition, option);
+                    break;
+                case "map":
+                    _worker.findInDesigner_map(formData, key, module, designer, propertyDefinition, option);
+                    break;
+                case "array":
+                    _worker.findInDesigner_array(formData, key, module, designer, propertyDefinition, option);
+                    break;
+                case "object-array":
+                    _worker.findInDesigner_objectArray(formData, key, module, designer, propertyDefinition, option);
+                    break;
+                case "duty":
+                    _worker.findInDesigner_duty(formData, key, module, designer, propertyDefinition, option);
+                    break;
+                case "actions":
+                    _worker.findInDesigner_actions(formData, key, module, designer, propertyDefinition, option);
+                    break;
+                case "filter":
+                    _worker.findInDesigner_filter(formData, key, module, designer, propertyDefinition, option);
+                    break;
+                default:
+                    _worker.findInDesigner_text(formData, key, module, designer, propertyDefinition, option);
+            }
+        }
+    });
+};
+
+_worker.decodeJsonString = function(str){
+    var tmp = "[\""+str+"\"]";
+    var dataObj = (JSON.parse(tmp));
+    return dataObj[0];
+};
+
 _worker._findProcessPlatformParse_form = function(designer, option, module){
     if (designer.patternList && designer.patternList.length){
         var patternPropertys = designer.patternList.map(function(a){return a.property;});
 
-
+//@todo
         //designer.patternList.forEach(function(pattern){
             //if (pattern.property=="data"){
 
@@ -378,47 +736,44 @@ _worker._findProcessPlatformParse_form = function(designer, option, module){
                 else if (module=="cms") action = this.findData.actions.getCmsForm;
 
                 if (action){
-                    var p = _worker.action.sendRequest(_worker._getRequestOption({"url": action}, {"id": designer.designerId}));
-                    p.then(function(json){
-                        if (patternPropertys.indexOf("data")!=-1){
-                            var formData = JSON.decode(MWF.decodeJsonString(json.data.data));
+                    var formPromise = _worker.action.sendRequest(_worker._getRequestOption({"url": action}, {"id": designer.designerId}));
+                    if (!this.formPropertysData) this.formPropertysData = _worker.action.sendRequest(_worker._getRequestOption({"url": "../x_component_FindDesigner/propertys.json"}));
 
+                    Promise.all([formPromise, this.formPropertysData]).then(function(arr){
+                        var formJson = arr[0];
+                        this.formPropertysData = arr[1];
+                        if (patternPropertys.indexOf("data")!=-1){
+                            debugger;
+                            var formData = JSON.parse(_worker.decodeJsonString(formJson.data.data));
+                            _worker.findInDesigner(formData.json, option, module, designer);
+                            for (key in formData.json.moduleList){
+                                _worker.findInDesigner(formData.json.moduleList[key], option, module, designer);
+                            }
+
+                            // Object.keys(formData).forEach(function(key){
+                            //     var propertyDefinition = propertysData.form[key];
+                            //     if (propertyDefinition){
+                            //
+                            //     }
+                            // });
 
                         }
 
                         if (patternPropertys.indexOf("mobileData")!=-1){
+                            var formData = JSON.parse(_worker.decodeJsonString(formJson.data.mobileData));
+
 
                         }
+
 
                     }, function(){});
                 }
 
-
-
-                //var scriptLines = json.data.text.split(/\n/);
-                // pattern.lines.forEach(function(line){
-                //     var scriptText = line.lineValue;
-                //     _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
-                //         "property": pattern.property,
-                //         "value": scriptText,
-                //         "line": line.line
-                //     }), option);
-                //
-                //
-                // });
-            //}
-            // else{
-            //     _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
-            //         "property": pattern.property,
-            //         "value": pattern.propertyValue
-            //     }), option);
-            // }
-        //});
     }
 };
 
 _worker._findProcessPlatformParse_process = function(designer){
-
+    
 };
 
 _worker._findProcessPlatformParse = function(resultList, option, module){
