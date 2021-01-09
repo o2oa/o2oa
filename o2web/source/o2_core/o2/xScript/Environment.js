@@ -1840,7 +1840,7 @@ MWF.xScript.Environment = function(ev){
      * @param {Function} [callback] 加载后执行的回调方法
      * @param {Boolean} [async] 是否异步加载
      * @o2syntax
-     * //您可以在表单、流程或内容管理的各个嵌入脚本中，通过this.include()来引用本应用或其他应用的脚本配置，如下：
+     * //您可以在表单、流程、视图和查询视图的各个嵌入脚本中，通过this.include()来引用本应用或其他应用的脚本配置，如下：
      * this.include( optionsOrName, callback, async )
      * @example
      * <caption>
@@ -2025,8 +2025,8 @@ MWF.xScript.Environment = function(ev){
     //目前只有表单的queryload事件支持此方法。
 
     /**
-     * this.wait是一个方法，可以用来处理异步调用后的页面加载。<br/>
-     * 该方法使用的具体场景：为了加快速度，需要一次性加载全部外部资源（如：数据字典、外部JS、内容管理文档）后，再进行表单的加载。<br/>
+     * this.wait是一个方法，可以用来处理异步调用时的页面加载。<br/>
+     * 该方法使用的具体场景：为了加快速度，需要一次性加载全部外部资源（如：数据字典、外部JS、内容管理文档等）后，再进行表单的加载。<br/>
      * this.wait需和this.goon配合使用。<br/>
      * <b>目前只有流程表单的queryload事件支持此方法。</b>
      * @module wait
@@ -2045,7 +2045,7 @@ MWF.xScript.Environment = function(ev){
      * <caption>需要在加载数据字典，内容管理文档数据，按照条件获取的脚本后，再进行加载表单。</caption>
      *
      * var resolve = this.wait(); //this.wait()让表单加载等待回调
-     * var scriptLoaded = false; //脚本是否加载完成标识，按条件判断的脚本才建议用this.include();,否则使用预加载脚本更快。
+     * var scriptLoaded = false; //脚本是否加载完成标识，按条件判断的脚本才建议用this.include(),否则使用预加载脚本更快。
      * var documentLoaded = false; //内容管理文档是否加载完成标识
      * var dictLoaded = true; //数据字典是否加载完成标识
      *
@@ -2069,7 +2069,7 @@ MWF.xScript.Environment = function(ev){
      *          this.form.documentJson = json; //将数据存在this.form上，以便其他地方使用
      *          documentLoaded = true; //标记内容管理加载完成
      *          checkLoad(); //检查全部资源是否完成加载
-     *      }.bind(this));
+     *      }.bind(this), null, true); //true 为异步加载标志
      *  }else{
      *     documentLoaded = true; ////标记内容管理加载完成
      *     checkLoad(); //检查全部资源是否完成加载
