@@ -13,6 +13,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
+import com.x.query.service.processing.Business;
 import com.x.query.service.processing.ThisApplication;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,11 +36,11 @@ class ActionSearch extends BaseAction {
 		}
 		logger.info("{}搜索设计：{}的关键字：{}", effectivePerson.getDistinguishedName(), wi.getModuleList(), wi.getKeyword());
 		if (ListTools.isNotEmpty(wi.getModuleList())) {
-			result.setData(search(wi));
+			result.setData(search(wi, effectivePerson));
 		}else{
 			lock.lock();
 			try {
-				result.setData(search(wi));
+				result.setData(search(wi, effectivePerson));
 			} finally {
 				lock.unlock();
 			}
@@ -47,33 +48,49 @@ class ActionSearch extends BaseAction {
 		return result;
 	}
 
-	private Wo search(final Wi wi) {
+	private Wo search(final Wi wi, EffectivePerson effectivePerson) throws Exception{
+		Business business = new Business();
 		final Map<String, List<WiDesigner.ModuleApp>> moduleMap = new HashMap<>();
 		if(!ListTools.isEmpty(wi.getModuleList())){
 			for (Module module: wi.getModuleList()){
-				if(module.getModuleType().equalsIgnoreCase(ModuleType.cms.toString())){
+				if(module.getModuleType().equalsIgnoreCase(ModuleType.cms.toString())
+						&& business.isCmsManager(effectivePerson)){
 					moduleMap.put(ModuleType.cms.toString(), module.getModuleAppList());
 				}
-				if(module.getModuleType().equalsIgnoreCase(ModuleType.portal.toString())){
+				if(module.getModuleType().equalsIgnoreCase(ModuleType.portal.toString())
+						&& business.isPortalManager(effectivePerson)){
 					moduleMap.put(ModuleType.portal.toString(), module.getModuleAppList());
 				}
-				if(module.getModuleType().equalsIgnoreCase(ModuleType.processPlatform.toString())){
+				if(module.getModuleType().equalsIgnoreCase(ModuleType.processPlatform.toString())
+						&& business.isProcessManager(effectivePerson)){
 					moduleMap.put(ModuleType.processPlatform.toString(), module.getModuleAppList());
 				}
-				if(module.getModuleType().equalsIgnoreCase(ModuleType.query.toString())){
+				if(module.getModuleType().equalsIgnoreCase(ModuleType.query.toString())
+						&& business.isManager(effectivePerson)){
 					moduleMap.put(ModuleType.query.toString(), module.getModuleAppList());
 				}
-				if(module.getModuleType().equalsIgnoreCase(ModuleType.service.toString())){
+				if(module.getModuleType().equalsIgnoreCase(ModuleType.service.toString())
+						&& business.isServiceManager(effectivePerson)){
 					moduleMap.put(ModuleType.service.toString(), module.getModuleAppList());
 				}
 			}
 		}else{
 			List<WiDesigner.ModuleApp> list = new ArrayList<>();
-			moduleMap.put(ModuleType.cms.toString(), list);
-			moduleMap.put(ModuleType.portal.toString(), list);
-			moduleMap.put(ModuleType.processPlatform.toString(), list);
-			moduleMap.put(ModuleType.query.toString(), list);
-			moduleMap.put(ModuleType.service.toString(), list);
+			if(business.isCmsManager(effectivePerson)) {
+				moduleMap.put(ModuleType.cms.toString(), list);
+			}
+			if(business.isPortalManager(effectivePerson)) {
+				moduleMap.put(ModuleType.portal.toString(), list);
+			}
+			if(business.isProcessManager(effectivePerson)) {
+				moduleMap.put(ModuleType.processPlatform.toString(), list);
+			}
+			if(business.isManager(effectivePerson)) {
+				moduleMap.put(ModuleType.query.toString(), list);
+			}
+			if(business.isServiceManager(effectivePerson)) {
+				moduleMap.put(ModuleType.service.toString(), list);
+			}
 		}
 		Executor executor = Executors.newFixedThreadPool(5);
 		CompletableFuture<List<WrapDesigner>> processPlatformCf = searchAsync(wi, moduleMap, ModuleType.processPlatform.toString(), x_processplatform_assemble_designer.class, executor);
