@@ -217,18 +217,15 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     //dict
     /**
-     * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据进行增删改查操作。<br/>
-     * 通过这种方式定义方法，在不同的应用使用相同的方法名称也不会造成冲突。
+     * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。
      * @module Dict
      * @o2ordernumber 120
      * @param {(String|Object)} optionsOrName 数据字典标识字符串或者是对象。
      * <div>如果对本应用的数据字典操作，将optionsOrName设置为string。</div>
-     * <pre><code class='language-js'>
-     *     var dict = new this.Dict("bulletinDictionary"); //数据字典的名称、别名或id
+     * <pre><code class='language-js'>var dict = new this.Dict("bulletinDictionary"); //数据字典的名称、别名或id
      * </code></pre>
      * <div>如果需要对其他应用的数据字典进行操作，将options设置为JsonObject</div>
-     * <pre><code class='language-js'>
-     * var dict = new this.Dict({
+     * <pre><code class='language-js'>var dict = new this.Dict({
      *     //type: 应用类型。可以为process  cms。
      *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
      *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
@@ -350,10 +347,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method add
      * @methodOf module:Dict
      * @instance
-     * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果path在数据字典中已有数据，如果原有的数据是数组，则数组添加一项；如果数据不是数组，则报错。
+     * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果path在数据字典中已有数据，且原有数据是数组，则数组添加一项；如果原有数据不是数组，则报错。
      * @param {(Object|Array|String|Number|Boolean)} data 需要新增的数据
      * @param {Function} [success] 增加数据成功时的回调函数。
-     * @param {Function} [failure] 增加数据成功时的回调函数。
+     * @param {Function} [failure] 增加数据错误时的回调函数。
      * @o2syntax
      * dict.add( path, data, success, failure )
      * @example
@@ -473,7 +470,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。
      * @param {(Object|Array|String|Number|Boolean)} data 修改后的数据
      * @param {Function} [success] 设置数据成功时的回调函数。
-     * @param {Function} [failure] 设置数据成功时的回调函数。
+     * @param {Function} [failure] 设置数据错误时的回调函数。
      * @o2syntax
      * dict.set( path, data, success, failure )
      * @example
@@ -590,7 +587,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @instance
      * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。
      * @param {Function} [success] 删除数据成功时的回调函数。
-     * @param {Function} [failure] 删除数据成功时的回调函数。
+     * @param {Function} [failure] 删除数据错误时的回调函数。
      * @o2syntax
      * dict.delete( path, success, failure )
      * @example
@@ -708,11 +705,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
     };
 
     /**
-     * 你可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。
+     * 您可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。
      * @module org
      * @o2ordernumber 100
      * @o2syntax
-     * //您可以在流程表单、内容管理表单和门户页面中，通过this来获取当前实例的org对象，如下：
+     * //您可以在流程表单、内容管理表单、门户页面、视图和查询视图中，通过this来获取当前实例的org对象，如下：
      * var org = this.org;
      */
     this.org = {
@@ -2800,7 +2797,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     };
 
     /**
-     * 你可以通过view对象，获取视图数据或选择视图数据。<br/>
+     * 您可以通过view对象，获取视图数据或选择视图数据。<br/>
      * @module view
      * @o2ordernumber 70
      * @o2syntax
@@ -3040,7 +3037,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     };
 
     /**
-     * 你可以通过statement对象，获取执行查询语句或者对查询结果进行选择。<br/>
+     * 您可以通过statement对象，获取执行查询语句或者对查询结果进行选择。<br/>
      * @module statement
      * @o2ordernumber 90
      * @o2syntax
@@ -3459,7 +3456,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method getPageData
      * @memberOf module:queryStatement
      * @static
-     * @return {Object[]} 当前页数据。
+     * @return {Object[]|Array[]} 当前页数据。
      * <div>数据格式和 jpql 语句的写法有关</div>
      * 如:  "select o from table o" 返回 json数组
      *<pre><code class='language-js'>[
@@ -3524,7 +3521,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method getSelectedData
      * @memberOf module:queryStatement
      * @static
-     * @return {Object[]} 选中的条目的数据。
+     * @return {Object[]|Array[]} 选中的条目的数据。
      * <div>数据格式和 jpql 语句的写法有关</div>
      * 如:  "select o from table o" 返回 json数组
      *<pre><code class='language-js'>[
@@ -4411,15 +4408,15 @@ MWF.xScript.ViewEnvironment = function (ev) {
      */
 
     /**
-     * 您可以使用this.Actions.getHost来获取服务根的host。
+     * 本平台不同的服务根可能对应不同的域名或端口，您可以使用this.Actions.getHost来获取服务跟对应的host。
      * @method getHost
      * @methodOf module:Actions
      * @static
      * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
      *如:<pre><code class='language-js'>
-     *  "x_processplatform_assemble_surface" //流程平台相关服务根
+     * "x_processplatform_assemble_surface" //流程平台相关服务根
      * </code></pre>
-     * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
+     * @return {String} 对应服务跟对应的host。如：http://127.0.0.1:20020
      * @o2syntax
      * var actions = this.Actions.getHost( root );
      */
@@ -4428,11 +4425,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 平台预置了Actions对象用于调用平台提供的服务，您可以使用this.Actions.load来获取这些方法。
      * @method load
      * @methodOf module:Actions
-     * @static
+     * @instance
      * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
      * 如:
      *<pre><code class='language-js'>
-     *  "x_processplatform_assemble_surface" //流程平台相关服务根
+     * "x_processplatform_assemble_surface" //流程平台相关服务根
      * </code></pre>
      * @return {Object} 返回action对象，用于后续服务调用
      * @o2syntax
@@ -4444,7 +4441,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * var processAction = this.Actions.load("x_processplatform_assemble_surface");
      * @o2syntax
      * <caption>
-     *     通过this.Actions.load(root)方法得到的action对象，就可以访问此服务下的方法了。<br/>
+     *     通过this.Actions.load(root)方法得到action对象，就可以访问此服务下的方法了。<br/>
      *     访问方法的规则如下：
      *  </caption>
      *  var promise = this.Actions.load( root )[actionName][methodName]( arguements );
@@ -4456,11 +4453,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *        }
      *      )
      *
-     *  root : 平台服务根
+     *  root : 平台服务根名称，如果 x_processplatform_assemble_surface
      *
      *  actionName : 服务下的Action分类名称，如 TaskAction
      *
-     *  methodName : Action分类的服务名称，如 get
+     *  methodName : Action分类下的方法名称，如 get
      *
      *  arguements : 需调用的RESTful服务的相关参数。这些参数需要按照先后顺序传入。根据实际情况可以省略某些参数。参数序列分别是:
      *
@@ -4509,9 +4506,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *     该服务有以下信息：<br/>
      *     1、actionName是：TaskAction<br/>
      *     2、methodName是：V2ListPaging<br/>
-     *     2、有两个url参数，分别是 page(分页), size(每页数量)<br/>
-     *     3、有一系列的body参数<br/>
-     *     4、该服务方法类型是POST<br/>
+     *     3、有两个url参数，分别是 page(分页), size(每页数量)<br/>
+     *     4、有一系列的body参数<br/>
+     *     5、该服务方法类型是POST<br/>
      *     根据这些信息我们可以组织出下面的方法：
      * </caption>
      * var processAction = this.Actions.load("x_processplatform_assemble_surface"); //获取action
@@ -4582,7 +4579,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method get
      * @deprecated
      * @methodOf module:Actions
-     * @static
+     * @instance
      * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
      *如:<pre><code class='language-js'>
      *  "x_processplatform_assemble_surface" //流程平台相关服务根
