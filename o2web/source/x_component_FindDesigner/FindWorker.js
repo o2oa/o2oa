@@ -677,7 +677,7 @@ _worker.findInDesigner_text = function(formData, key, module, designer, property
 
 _worker.findInDesigner = function(formData, option, module, designer){
     Object.keys(formData).forEach(function(key){
-        var propertyDefinition = this.formPropertysData.form[key];
+        var propertyDefinition = this.designerPropertysData.form[key];
         if (propertyDefinition){
             switch (propertyDefinition.type){
                 case "html":
@@ -722,58 +722,65 @@ _worker.decodeJsonString = function(str){
     return dataObj[0];
 };
 
+_worker._getDesignerData = function(designer, module){
+    var action = "";
+    if (module=="processPlatform") action = this.findData.actions.getProcessForm
+    else if (module=="cms") action = this.findData.actions.getCmsForm;
+
+    if (action){
+        var formPromise = _worker.action.sendRequest(_worker._getRequestOption({"url": action}, {"id": designer.designerId}));
+        if (!this.designerPropertysData) this.designerPropertysData = _worker.action.sendRequest(_worker._getRequestOption({"url": "../x_component_FindDesigner/propertys.json"}));
+        return Promise.all([formPromise, this.designerPropertysData]);
+    }
+};
+
+_worker._findInDesigner_form = function(formData, designer, option, module){
+    _worker.findInDesigner(formData.json, option, module, designer);
+    for (key in formData.json.moduleList){
+        _worker.findInDesigner(formData.json.moduleList[key], option, module, designer);
+    }
+};
+
 _worker._findProcessPlatformParse_form = function(designer, option, module){
     if (designer.patternList && designer.patternList.length){
-        var patternPropertys = designer.patternList.map(function(a){return a.property;});
-
-//@todo
-        //designer.patternList.forEach(function(pattern){
-            //if (pattern.property=="data"){
-
-
-                var action = "";
-                if (module=="processPlatform") action = this.findData.actions.getProcessForm
-                else if (module=="cms") action = this.findData.actions.getCmsForm;
-
-                if (action){
-                    var formPromise = _worker.action.sendRequest(_worker._getRequestOption({"url": action}, {"id": designer.designerId}));
-                    if (!this.formPropertysData) this.formPropertysData = _worker.action.sendRequest(_worker._getRequestOption({"url": "../x_component_FindDesigner/propertys.json"}));
-
-                    Promise.all([formPromise, this.formPropertysData]).then(function(arr){
-                        var formJson = arr[0];
-                        this.formPropertysData = arr[1];
-                        if (patternPropertys.indexOf("data")!=-1){
-                            debugger;
-                            var formData = JSON.parse(_worker.decodeJsonString(formJson.data.data));
-                            _worker.findInDesigner(formData.json, option, module, designer);
-                            for (key in formData.json.moduleList){
-                                _worker.findInDesigner(formData.json.moduleList[key], option, module, designer);
-                            }
-
-                            // Object.keys(formData).forEach(function(key){
-                            //     var propertyDefinition = propertysData.form[key];
-                            //     if (propertyDefinition){
-                            //
-                            //     }
-                            // });
-
-                        }
-
-                        if (patternPropertys.indexOf("mobileData")!=-1){
-                            var formData = JSON.parse(_worker.decodeJsonString(formJson.data.mobileData));
-
-
-                        }
-
-
-                    }, function(){});
+        var p = _worker._getDesignerData(designer, module);
+        if (p){
+            var patternPropertys = designer.patternList.map(function(a){return a.property;});
+            p.then(function(arr){
+                var formJson = arr[0];
+                this.designerPropertysData = arr[1];
+                if (patternPropertys.indexOf("data")!=-1){
+                    var formData = JSON.parse(_worker.decodeJsonString(formJson.data.data));
+                    _worker._findInDesigner_form(formData, designer, option, module);
                 }
-
+                if (patternPropertys.indexOf("mobileData")!=-1){
+                    var formData = JSON.parse(_worker.decodeJsonString(formJson.data.mobileData));
+                    _worker._findInDesigner_form(formData, designer, option, module)
+                }
+            }, function(){});
+        }
     }
 };
 
 _worker._findProcessPlatformParse_process = function(designer){
-    
+    if (designer.patternList && designer.patternList.length){
+        var p = _worker._getDesignerData(designer, module);
+        if (p){
+            var patternPropertys = designer.patternList.map(function(a){return a.property;});
+            p.then(function(arr){
+                var formJson = arr[0];
+                this.designerPropertysData = arr[1];
+                if (patternPropertys.indexOf("data")!=-1){
+                    var formData = JSON.parse(_worker.decodeJsonString(formJson.data.data));
+                    _worker._findInDesigner_form(formData, designer, option, module);
+                }
+                if (patternPropertys.indexOf("mobileData")!=-1){
+                    var formData = JSON.parse(_worker.decodeJsonString(formJson.data.mobileData));
+                    _worker._findInDesigner_form(formData, designer, option, module)
+                }
+            }, function(){});
+        }
+    }
 };
 
 _worker._findProcessPlatformParse = function(resultList, option, module){
