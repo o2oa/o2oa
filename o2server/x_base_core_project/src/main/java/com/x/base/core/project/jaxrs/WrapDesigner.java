@@ -142,6 +142,12 @@ public class WrapDesigner extends GsonPropertyObject {
 			}
 			map.clear();
 			map = null;
+		}else{
+			DesignerPattern pattern = new DesignerPattern();
+			pattern.setElementType(elementType);
+			pattern.setElementId(elementId);
+			pattern.setElementName(elementName);
+			this.patternList.add(pattern);
 		}
 	}
 
