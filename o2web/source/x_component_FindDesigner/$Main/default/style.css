@@ -255,8 +255,9 @@
     overflow: auto;
 }
 .previewNode_title_icon {
+    background: transparent;
     height: 20px;
-    width: 24px;
+    width: 80px;
     background-position: center center;
     background-repeat: no-repeat;
     float: left;
@@ -279,6 +280,16 @@
     background-image: url("../x_component_FindDesigner/$Main/default/icons/dockBottom.png");
     cursor: pointer;
 }
+.previewNode_title_action_l {
+    float:  left;
+    height: 20px;
+    width: 24px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-image: url("../x_component_FindDesigner/$Main/default/icons/dockBottom.png");
+    cursor: pointer;
+}
+
 .previewNode_title_content {
     height: 20px;
     line-height: 20px;

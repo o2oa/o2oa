@@ -38,9 +38,18 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		var url = this.path+this.options.style+"/view.html";
 		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
 			this.setSizeNode();
-
+			this.createToolbar();
 			if (callback) callback();
 		}.bind(this));
+	},
+	createToolbar: function(){
+		o2.require("o2.widget.Toolbar", function(){
+			this.previewToolbar = new o2.widget.Toolbar(this.previewTitleToolbar, {"style": "findDesigner"}, this);
+			this.previewToolbar.load();
+			this.previewToolbar.childrenButton[0].disable();
+			this.previewToolbar.childrenButton[1].disable();
+		}.bind(this));
+
 	},
 	initLayout: function(){
 		this.listNode.set("style", "");
@@ -596,12 +605,15 @@ debugger;
 	},
 	openProcessPlatformPatternScript: function(data, pattern){
 		o2.require("o2.widget.JavascriptEditor", function(){
-
 			this.editor = new o2.widget.JavascriptEditor(this.previewContentNode, {
 				"option": {"value": data.text}
 			});
 			this.editor.pattern = pattern;
 			this.editor.load(function(){
+				if (this.previewToolbar){
+					this.previewToolbar.childrenButton[0].enable();
+					this.previewToolbar.childrenButton[1].enable();
+				}
 				this.reLocationEditor(pattern);
 			}.bind(this));
 		}.bind(this));
