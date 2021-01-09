@@ -1434,12 +1434,12 @@ MWF.xScript.PageEnvironment = function (ev) {
      * var page = this.page;
      */
     this.page = this.form = {
-        /** 跳转到当前门户的指定页面。<b>（仅门户脚本可用）</b>
+        /** 跳转到当前门户的指定页面。<b>（仅门户页面脚本可用）</b>
          * @method toPage
          * @static
          * @param {String} name - 要跳转的页面名称
          * @param {Object} [par] - 要传入被打开页面的数据。在被打开的页面可以用this.page.parameters获取
-         * @param {Boolean} [par] - 页面条件的时候，不往History里增加历史状态，默认为false
+         * @param {Boolean} [par] - 页面跳转的时候，不往History里增加历史状态，默认为false
          * @o2syntax
          * //跳转到当前门户的指定页面。
          * this.page.toPage( name, par );
@@ -1453,7 +1453,7 @@ MWF.xScript.PageEnvironment = function (ev) {
             _form.app.toPage(name, par, nohis);
         },
 
-        /** 跳转到指定门户页面。<b>（仅门户脚本可用）</b>
+        /** 跳转到指定门户页面。<b>（仅门户页面脚本可用）</b>
          * @method toPortal
          * @static
          * @param {String} portal - 要跳转的门户名称。
@@ -1501,12 +1501,12 @@ MWF.xScript.PageEnvironment = function (ev) {
         /**获取指定部件元素对象。<br/>
          * @method getWidgetModule
          * @static
-         * @param {String} widget  - 在主页面嵌入部件时用的标识。
-         * @param {String} moduleName  - 部件元素标识。
+         * @param {String} widgetId  - 在主页面嵌入部件时用的标识。
+         * @param {String} fieldId  - 部件内组件标识。
          * @return {FormComponent} 请查看本文档的Classes导航下的FormComponents。
          * @see module:form.get
          * @o2syntax
-         * this.page.getWidgetModule( widget, moduleName );
+         * this.page.getWidgetModule( widgetId, fieldId );
          * @example
          * <caption>
          * 1、设计了一个部件，包含一个设计元素subject。<br/>
