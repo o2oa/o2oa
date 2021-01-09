@@ -27,9 +27,9 @@ MWF.xScript.Environment = function(ev){
     this.setData = function(data){
 
         /**
-         * data对象是流程平台中，流程实例的业务数据，以及内容管理平台中，实例的业务数据。<br/>
-         * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本创建和增删改查。<br/>
-         * data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问他对象的所有数据，但增加和删除数据时略有不同。
+         * data对象是流程平台中，流程实例的业务数据；以及内容管理平台中，文档实例的业务数据。<br/>
+         * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本进行创建和增删改查操作。<br/>
+         * data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问data对象的所有数据，但增加和删除数据时略有不同。
          * @module data
          * @o2ordernumber 10
          * @example
@@ -109,7 +109,8 @@ MWF.xScript.Environment = function(ev){
          * this.data.datagrid.data[0].nameCol.name='平板电脑';
          */
 
-        /**保存data对象。
+        /**
+         * 为data对象添加一个数据节点。
          * @instance
          * @method add
          * @memberOf module:data
@@ -179,7 +180,7 @@ MWF.xScript.Environment = function(ev){
     //workContext
 
     /**
-     * 你可以通过workContext获取和流程相关的流程实例对象数据。
+     * 您可以通过workContext获取和流程相关的流程实例对象数据。
      * @module workContext
      * @o2range {Process}
      * @o2ordernumber 20
@@ -2486,7 +2487,7 @@ MWF.xScript.Environment = function(ev){
         }
          </code></pre>
          * @example
-         //不带参数，则弹出添加分支对话框
+         //不带参数，则弹出删除提示对话框
          this.form.deleteWork();
          * @example
          //带参数，直接调用服务删除
@@ -2560,7 +2561,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Number} width - 信息框宽度。
          * @param {String} height - 信息框的高度。
          * @example
-         this.form.alert("wran", "必填提醒", "请填写标题？", 300, 100);
+         this.form.alert("wran", "必填提醒", "请填写标题！", 300, 100);
          */
         "alert": function(type, title, text, width, height){
             _form.alert(type, title, text, width, height);
@@ -2778,13 +2779,13 @@ MWF.xScript.Environment = function(ev){
          * <pre><code class="language-js">{
          *   "readonly": true, //是否以只读方式打开，默认为true
          *    "saveOnClose" : true, //关闭的时候是否自动保存
-         *    "postPublish" : function( documentData ){ //发布前执行方法，但数据已经准备好
+         *    "onPostPublish" : function( documentData ){ //发布前执行方法，但数据已经准备好
          *       //documentData 为文档数据
          *    },
-         *    "afterPublish" : function( form, documentData ){ //发布后执行的方法
+         *    "onAfterPublish" : function( form, documentData ){ //发布后执行的方法
          *       //form为内容管理Form对象，documentData 为文档数据
          *    },
-         *    "postDelete" : function(){ //删除文档后执行的方法
+         *    "onPostDelete" : function(){ //删除文档后执行的方法
          *    }
          * }</code></pre>
          * @example
@@ -2875,7 +2876,7 @@ MWF.xScript.Environment = function(ev){
          * @method openApplication
          * @static
          * @param {String} name - 要打开的component的名称。component对应的名称可以在“控制面板-系统设置-界面设置-模块部署”中找到（即“组件路径”）。
-         * @param {Object} options - 打开的component的相关参数
+         * @param {Object} [options] - 打开的component的相关参数
          * @example
          //打开会议管理
          this.form.openApplication("Meeting");
@@ -2897,7 +2898,7 @@ MWF.xScript.Environment = function(ev){
          * @method createDocument
          * @static
          * @param {(String|Object)} [columnOrOptions]
-         * 如果不传参数，则弹出范围为平台所有栏目的选中界面。<br/>
+         * 如果不传参数，则弹出范围为平台所有栏目的选择界面。<br/>
          * 当使用String时为内容管理应用（栏目）的名称、别名或ID。<br/>
          * 当使用Object时，本参数后面的参数省略，传入如下格式的内容:
          * <pre><code class="language-js">{
