@@ -476,6 +476,7 @@ public class AttendanceDetailAnalyseService {
 							logger.debug( debugger, detail.getEmpName()+"全天请假了");
 							//全天休假
 							detail.setIsGetSelfHolidays(true);
+							detail.setLeaveType(selfHoliday.getLeaveType());
 							detail.setSelfHolidayDayTime("全天");
 							detail.setGetSelfHolidayDays(1.0);
 						}else if( selfHoliday.getEndTime().getTime() <= dayMiddle.getTime() && selfHoliday.getEndTime().getTime() > dayWorkStart.getTime()
@@ -483,6 +484,7 @@ public class AttendanceDetailAnalyseService {
 							//上午休假
 							logger.debug( debugger, detail.getEmpName()+"上午休假了");
 							detail.setIsGetSelfHolidays(true);
+							detail.setLeaveType(selfHoliday.getLeaveType());
 							detail.setSelfHolidayDayTime("上午");
 							detail.setGetSelfHolidayDays(0.5);
 						}else if( selfHoliday.getStartTime().getTime() >= dayMiddle.getTime() && selfHoliday.getStartTime().getTime() <= dayWorkEnd.getTime()
@@ -490,6 +492,7 @@ public class AttendanceDetailAnalyseService {
 							//上午休假
 							logger.debug( debugger, detail.getEmpName()+"下午休假了");
 							detail.setIsGetSelfHolidays( true );
+							detail.setLeaveType(selfHoliday.getLeaveType());
 							detail.setSelfHolidayDayTime("下午");
 							detail.setGetSelfHolidayDays(0.5);
 						}
