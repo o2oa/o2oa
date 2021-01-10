@@ -10,7 +10,7 @@ MWF.xApplication.FindDesigner.LP = {
 	"page": "页面",
 	"widget": "部件",
 	"view": "视图",
-	"statement": "脚本",
+	"statement": "查询语句",
 	"stat": "统计",
 	"property": "属性",
 	"value": "值",
