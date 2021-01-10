@@ -96,7 +96,7 @@ class ActionSearch extends BaseAction {
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						Query query = emc.find(woView.getQuery(), Query.class);
+						Query query = emc.fetch(woView.getQuery(), Query.class, ListTools.toList(Query.id_FIELDNAME, Query.name_FIELDNAME));
 						if (query != null) {
 							wo.setAppId(query.getId());
 							wo.setAppName(query.getName());
@@ -135,7 +135,7 @@ class ActionSearch extends BaseAction {
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						Query query = emc.find(woTable.getQuery(), Query.class);
+						Query query = emc.fetch(woTable.getQuery(), Query.class, ListTools.toList(Query.id_FIELDNAME, Query.name_FIELDNAME));
 						if (query != null) {
 							wo.setAppId(query.getId());
 							wo.setAppName(query.getName());
@@ -149,6 +149,7 @@ class ActionSearch extends BaseAction {
 					}
 				}
 				woTables.clear();
+				woTables = null;
 			}catch (Exception e){
 				logger.error(e);
 			}
@@ -174,7 +175,7 @@ class ActionSearch extends BaseAction {
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						Query query = emc.find(woStat.getQuery(), Query.class);
+						Query query = emc.fetch(woStat.getQuery(), Query.class, ListTools.toList(Query.id_FIELDNAME, Query.name_FIELDNAME));
 						if (query != null) {
 							wo.setAppId(query.getId());
 							wo.setAppName(query.getName());
@@ -188,6 +189,7 @@ class ActionSearch extends BaseAction {
 					}
 				}
 				woStats.clear();
+				woStats = null;
 			}catch (Exception e){
 				logger.error(e);
 			}
@@ -213,7 +215,7 @@ class ActionSearch extends BaseAction {
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						Query query = emc.find(woStatement.getQuery(), Query.class);
+						Query query = emc.fetch(woStatement.getQuery(), Query.class, ListTools.toList(Query.id_FIELDNAME, Query.name_FIELDNAME));
 						if (query != null) {
 							wo.setAppId(query.getId());
 							wo.setAppName(query.getName());
@@ -227,6 +229,7 @@ class ActionSearch extends BaseAction {
 					}
 				}
 				woStatements.clear();
+				woStatements = null;
 			}catch (Exception e){
 				logger.error(e);
 			}
