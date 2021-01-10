@@ -341,6 +341,12 @@
                     <input class="editTableRadio" name="allowPress" text{(!$.allowPress)?'checked':''} type="radio" value="false"/>否</td>
             </tr>
         </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue"  colspan="2"><b>允许挂起：</b><input class="editTableRadio" name="allowPause" text{($.allowPause)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="allowPause" text{(!$.allowPause)?'checked':''} type="radio" value="false"/>否</td>
+            </tr>
+        </table>
 
     </div>
     <div title="事件"  class="MWFTab" data-o2-advanced="yes">
