@@ -95,6 +95,9 @@
 
   "press": {"uri": "/jaxrs/taskcompleted/press/work/{work}"},
 
+  "pauseTask": {"uri": "/jaxrs/task/v2/{id}/pause"},
+  "resumeTask": {"uri": "/jaxrs/task/v2/{id}/resume"},
+
   "getCount": {"uri": "/jaxrs/work/count/{credential}"},
 
   "listApplicationStartable": {"uri": "/jaxrs/application/list/complex"},

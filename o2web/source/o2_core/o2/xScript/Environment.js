@@ -2287,6 +2287,24 @@ MWF.xScript.Environment = function(ev){
          */
         "close": function(){_form.closeWork();},
 
+        /**
+         *挂起当前待办
+         * @method pauseTask
+         * @static
+         * @example
+         * this.form.pauseTask();
+         */
+        "pauseTask": function(){_form.pauseTask();},
+
+        /**
+         *将待办从挂起状态恢复为正常状态
+         * @method resumeTask
+         * @static
+         * @example
+         * this.form.resumeTask();
+         */
+        "resumeTask": function(){_form.resumeTask();},
+
         /**本校验不包括校验意见，校验路由；通常用在弹出提交界面时候的校验
          * @summary 根据表单中所有组件的校验设置和“流转校验”脚本进行校验。
          * @method verify
