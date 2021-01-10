@@ -1,8 +1,6 @@
 package com.x.attendance.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -177,7 +175,10 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 		boolean isHoliday = true;
 		int workDaysCountForMonth = 0;
 		if( endDate.getTime() > new Date().getTime()){
-			endDate = new Date();
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime(new Date());
+			calendar.add(calendar.DATE,-1);
+			endDate = calendar.getTime();
 		}
 		List<String> dateStringList = dateOperation.listDateStringBetweenDate(startDate, endDate);
 		if( dateStringList != null && dateStringList.size() > 0 ){

@@ -88,7 +88,7 @@ class ActionSearch extends BaseAction {
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						AppInfo appInfo = emc.find( woScript.getAppId(), AppInfo.class );
+						AppInfo appInfo = emc.fetch(woScript.getAppId(), AppInfo.class, ListTools.toList(AppInfo.id_FIELDNAME, AppInfo.appName_FIELDNAME));
 						if(appInfo != null){
 							wo.setAppId(appInfo.getId());
 							wo.setAppName(appInfo.getAppName());
@@ -102,6 +102,7 @@ class ActionSearch extends BaseAction {
 					}
 				}
 				woScripts.clear();
+				woScripts = null;
 			}catch (Exception e){
 				logger.error(e);
 			}
@@ -126,7 +127,7 @@ class ActionSearch extends BaseAction {
 								wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 						if (!map.isEmpty()) {
 							Wo wo = new Wo();
-							AppInfo appInfo = emc.find( woForm.getAppId(), AppInfo.class );
+							AppInfo appInfo = emc.fetch(woForm.getAppId(), AppInfo.class, ListTools.toList(AppInfo.id_FIELDNAME, AppInfo.appName_FIELDNAME));
 							if(appInfo != null){
 								wo.setAppId(appInfo.getId());
 								wo.setAppName(appInfo.getAppName());
@@ -140,6 +141,7 @@ class ActionSearch extends BaseAction {
 						}
 					}
 					woForms.clear();
+					woForms = null;
 				}
 
 			}catch (Exception e){
