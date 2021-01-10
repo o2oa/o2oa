@@ -528,6 +528,9 @@ MWF.xApplication.FindDesigner.Main = new Class({
 				this.createScriptPatternNode(data, designerNode, regexp);
 				break;
 			case "form":
+			case "page":
+			case "widget":
+			case "view":
 				this.createFormPatternNode(data, designerNode, regexp);
 				break;
 			case "process":

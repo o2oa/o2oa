@@ -57,7 +57,7 @@
     "editableScript": {"name": "允许编辑脚本", "type":"script"},
     "titleStyles": {"name": "标题样式", "type":"map"},
     "contentStyles": {"name": "内容单元格样式", "type":"map"},
-    "actionStyles": {"name": "操作单元格样式", "type":"map"},
+    "actionStyles": {"name": "样式", "type":"map"},
     "editStyles": {"name": "编辑单元格样式", "type":"map"},
     "amountStyles": {"name": "总计单元格样式", "type":"map"},
     "itemTitleStyles": {"name": "条目标题样式（仅移动端）", "type":"map"},
@@ -274,5 +274,64 @@
     "displayNameScriptText": {"name": "路由显示名称脚本", "type":"script"},
     "hiddenScriptText ": {"name": "隐藏条件脚本", "type":"script"},
     "selectConfig": {"name": "组织选择配置", "type":"selectConfig"}
+  },
+  "view": {
+    "id": {"name": "标识"},
+    "name": {"name": "名称"},
+    "alias": {"name": "别名"},
+    "description": {"name": "描述"},
+    "noDataText": {"name": "无数据显示"},
+    "defaultSelectedScript": {"name": "默认选中脚本", "type":"script"},
+
+    "applicationList": {"name": "流程应用范围", "type":"object-array"},
+    "processList": {"name": "流程范围", "type":"object-array"},
+    "creatorPersonList": {"name": "拟稿人范围", "type":"object-array"},
+    "creatorUnitList": {"name": "拟稿组织范围", "type":"object-array"},
+    "creatorIdentityList": {"name": "拟稿身份范围", "type":"object-array"},
+    "appInfoList": {"name": "栏目范围", "type":"object-array"},
+    "categoryInfoList": {"name": "分类范围", "type":"object-array"},
+
+    "filterList": {"name": "默认过滤", "type":"filter"},
+    "customFilterList": {"name": "自定义过滤", "type":"filter"},
+
+    "events": {"name": "事件", "type": "events"},
+
+    "container": {"name": "container样式", "type": "map"},
+    "table": {"name": "table样式", "type": "map"},
+    "titleTr": {"name": "titleTr样式", "type": "map"},
+    "titleTd": {"name": "titleTd样式", "type": "map"},
+    "contentTr": {"name": "contentTr样式", "type": "map"},
+    "contentSelectedTr": {"name": "contentSelectedTr样式", "type": "map"},
+    "contentTd": {"name": "contentTd样式", "type": "map"},
+    "contentGroupTd": {"name": "contentGroupTd样式", "type": "map"},
+    "groupCollapseNode": {"name": "groupCollapseNode样式", "type": "map"},
+    "groupExpandNode": {"name": "groupExpandNode样式", "type": "map"},
+    "checkboxNode": {"name": "checkboxNode样式", "type": "map"},
+    "checkedCheckboxNode": {"name": "checkedCheckboxNode样式", "type": "map"},
+    "radioNode": {"name": "radioNode样式", "type": "map"},
+    "checkedRadioNode": {"name": "checkedRadioNode样式", "type": "map"},
+    "noDataTextNode": {"name": "noDataTextNode样式", "type": "map"},
+    "tableProperties": {"name": "tableProperties样式", "type": "map"},
+
+    "displayName": {"name": "列标题"},
+    "defaultValue": {"name": "默认值"},
+    "path": {"name": "数据路径"},
+    "clickCode": {"name": "打开文档脚本", "type": "script"},
+    "code": {"name": "显示脚本", "type": "script"},
+
+    "titleStyles": {"name": "标题单元格样式", "type": "map"},
+    "titleProperties": {"name": "标题单元格属性", "type": "map"},
+    "contentStyles": {"name": "内容单元格样式", "type": "map"},
+    "contentProperties": {"name": "内容单元格属性", "type": "map"},
+
+    "actionStyles": {"name": "操作条样式", "type": "map"},
+    "multiTools": {"name": "操作按钮", "type":"actions"},
+
+
+    "prePageText": {"name": "上一页文本"},
+    "nextPageText": {"name": "下一页文本"},
+    "firstPageText": {"name": "首页文本"},
+    "lastPageText": {"name": "末页文本"},
+    "pagingStyles": {"name": "分页栏样式", "type": "map"}
   }
 }
