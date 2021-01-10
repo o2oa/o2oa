@@ -95,14 +95,14 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
         }).inject( this.fileterNode );
         var tr = new Element("tr").inject(table);
 
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.preMonthDate.format(this.app.lp.dateFormatMonth)  }).inject(tr);
+        //var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.preMonthDate.format(this.app.lp.dateFormatMonth)  }).inject(tr);
 
+        this.createYearSelectTd( tr );
+        this.createMonthSelectTd( tr );
         this.createStatusSelectTd(tr);
         this.createAppealReasonTd(tr);
         this.createUnitTd(tr);
         this.createPersonTd( tr );
-        //this.createYearSelectTd( tr );
-        //this.createMonthSelectTd( tr );
         this.createActionTd( tr );
     },
     createStatusSelectTd : function( tr ){
@@ -192,16 +192,16 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             "styles" : this.css.filterButton
         }).inject(td);
         input.addEvent("click", function(){
-            var year = this.preMonthDate.getFullYear().toString();
+            /*var year = this.preMonthDate.getFullYear().toString();
             var month = (this.preMonthDate.getMonth()+1).toString();
-            if( month.length == 1 )month = "0"+month;
+            if( month.length == 1 )month = "0"+month;*/
             var filterData = {
                 status : this.status.getValue(),
                 appealReason : this.appealReason.getValue(),
                 unitName : this.unitName.getValue(),
                 empName : this.empName.getValue(),
-                yearString : year, //this.yearString.getValue(),
-                monthString : month //this.monthString.getValue()
+                yearString : this.yearString.getValue(),
+                monthString : this.monthString.getValue()
             }
             this.loadView( filterData );
         }.bind(this))

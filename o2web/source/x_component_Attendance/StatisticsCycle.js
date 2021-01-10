@@ -105,16 +105,8 @@ MWF.xApplication.Attendance.StatisticsCycle.Form = new Class({
             this.form = new MForm( this.formTableArea, this.data, {
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
-                    topUnitName : { text: "统计公司",  tType : "unit",unsetDefaultEvent : true, event : {
-                        dblclick : function(item, ev){
-                            item.selectPerson(item.getElements()[0],"","unit")
-                        }
-                    }},
-                    unitName : { text: "统计部门", tType : "unit",unsetDefaultEvent : true, event : {
-                        dblclick : function(item, ev){
-                            item.selectPerson(item.getElements()[0],"","unit")
-                        }
-                    } },
+                    topUnitName : { text:"统计公司", type : "org", orgType : "unit" },
+                    unitName : { text: "统计部门", type : "org", orgType : "unit" },
                     cycleYear : { text: "统计周期年份", type : "select", notEmpty:true, defaultValue : new Date().getFullYear(), selectValue : function(){
                         var years = [];
                         var year = new Date().getFullYear() + 5;
