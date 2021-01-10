@@ -91,7 +91,7 @@ class ActionSearch extends BaseAction {
 							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
-						Portal portal = emc.find(woScript.getPortal(), Portal.class);
+						Portal portal = emc.fetch(woScript.getPortal(), Portal.class, ListTools.toList(Portal.id_FIELDNAME, Portal.name_FIELDNAME));
 						if(portal != null){
 							wo.setAppId(portal.getId());
 							wo.setAppName(portal.getName());
@@ -105,6 +105,7 @@ class ActionSearch extends BaseAction {
 					}
 				}
 				woScripts.clear();
+				woScripts = null;
 			}catch (Exception e){
 				logger.error(e);
 			}
@@ -129,7 +130,7 @@ class ActionSearch extends BaseAction {
 								wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 						if (!map.isEmpty()) {
 							Wo wo = new Wo();
-							Portal portal = emc.find(wopage.getPortal(), Portal.class);
+							Portal portal = emc.fetch(wopage.getPortal(), Portal.class, ListTools.toList(Portal.id_FIELDNAME, Portal.name_FIELDNAME));
 							if(portal != null){
 								wo.setAppId(portal.getId());
 								wo.setAppName(portal.getName());
@@ -143,6 +144,7 @@ class ActionSearch extends BaseAction {
 						}
 					}
 					wos.clear();
+					wos = null;
 				}
 
 			}catch (Exception e){
@@ -169,7 +171,7 @@ class ActionSearch extends BaseAction {
 								wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 						if (!map.isEmpty()) {
 							Wo wo = new Wo();
-							Portal portal = emc.find(woWidget.getPortal(), Portal.class);
+							Portal portal = emc.fetch(woWidget.getPortal(), Portal.class, ListTools.toList(Portal.id_FIELDNAME, Portal.name_FIELDNAME));
 							if(portal != null){
 								wo.setAppId(portal.getId());
 								wo.setAppName(portal.getName());
@@ -183,6 +185,7 @@ class ActionSearch extends BaseAction {
 						}
 					}
 					wos.clear();
+					wos = null;
 				}
 
 			}catch (Exception e){
