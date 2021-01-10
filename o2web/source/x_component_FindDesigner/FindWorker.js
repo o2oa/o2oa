@@ -354,10 +354,10 @@ _worker._findProcessPlatformParse_script = function(designer, option, module){
                         // }
                     });
                 }else{
-                    _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
-                        "property": pattern.property,
-                        "value": pattern.propertyValue
-                    }), option);
+                    // _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                    //     "property": pattern.property,
+                    //     "value": pattern.propertyValue
+                    // }), option);
                 }
             });
         //}, function(){});
@@ -417,6 +417,7 @@ _worker.findInDesigner_script = function(formData, key, module, designer, proper
         }
     }
 };
+
 _worker.findInDesigner_events = function(formData, key, module, designer, propertyDefinition, option, mode){
     var eventObj = formData[key];
     Object.keys(eventObj).forEach(function(evkey){
@@ -507,50 +508,52 @@ _worker.findInDesigner_objectArray = function(formData, key, module, designer, p
 
 _worker.findInDesigner_duty = function(formData, key, module, designer, propertyDefinition, option, mode){
     var text = formData[key];
-    var json = JSON.parse(text);
-    json.forEach(function(duty, i) {
-        this.keywordRegexp.lastIndex = 0;
-        var text = duty.name;
-        if (text) if (this.keywordRegexp.test(text)){
-            _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
-                "type": formData.type,
-                "propertyType": propertyDefinition.type || "text",
-                "propertyName": propertyDefinition.name,
-                "name": formData.name || formData.id,
-                "key": key,
-                "line": i+1,
-                "value": "name:"+text,
-                "mode": mode
-            }), option);
-        }
-
-        var code = duty.code;
-        if (code){
+    if (text){
+        var json = JSON.parse(text);
+        json.forEach(function(duty, i) {
             this.keywordRegexp.lastIndex = 0;
-            var len = code.length;
-            var idx = i+1;
-            var preLine = 0;
-            var preIndex = 0;
-            var result;
-            while ((result = this.keywordRegexp.exec(code)) !== null){
-                var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
-                preLine = obj.preLine;
-                preIndex = obj.preIndex;
-
-
+            var text = duty.name;
+            if (text) if (this.keywordRegexp.test(text)){
                 _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
                     "type": formData.type,
                     "propertyType": propertyDefinition.type || "text",
-                    "propertyName": propertyDefinition.name+"(code)&nbsp;"+idx+"."+duty.name,
+                    "propertyName": propertyDefinition.name,
                     "name": formData.name || formData.id,
                     "key": key,
-                    "value": obj.value,
-                    "line": preLine+1,
+                    "line": i+1,
+                    "value": "name:"+text,
                     "mode": mode
                 }), option);
             }
-        }
-    });
+
+            var code = duty.code;
+            if (code){
+                this.keywordRegexp.lastIndex = 0;
+                var len = code.length;
+                var idx = i+1;
+                var preLine = 0;
+                var preIndex = 0;
+                var result;
+                while ((result = this.keywordRegexp.exec(code)) !== null){
+                    var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
+                    preLine = obj.preLine;
+                    preIndex = obj.preIndex;
+
+
+                    _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                        "type": formData.type,
+                        "propertyType": propertyDefinition.type || "text",
+                        "propertyName": propertyDefinition.name+"(code)&nbsp;"+idx+"."+duty.name,
+                        "name": formData.name || formData.id,
+                        "key": key,
+                        "value": obj.value,
+                        "line": preLine+1,
+                        "mode": mode
+                    }), option);
+                }
+            }
+        });
+    }
 };
 
 _worker.findInDesigner_actions = function(formData, key, module, designer, propertyDefinition, option, mode){
@@ -672,6 +675,86 @@ _worker.findInDesigner_filter = function(formData, key, module, designer, proper
     });
 };
 
+_worker.findInDesigner_serial = function(formData, key, module, designer, propertyDefinition, option, mode){
+    var text = formData[key];
+    if (text) {
+        var json = JSON.parse(text);
+
+        json.forEach(function(serial, i) {
+            this.keywordRegexp.lastIndex = 0;
+            switch (serial.key){
+                case "text":
+                case "unitAttribute":
+                    if (this.keywordRegexp.test(serial.value)){
+                        _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                            "type": formData.type,
+                            "propertyType": propertyDefinition.type || "text",
+                            "propertyName": propertyDefinition.name+"&nbsp"+serial.key+"&nbsp",
+                            "name": formData.name || formData.id,
+                            "key": key,
+                            "value": serial.value
+                        }), option);
+                    }
+                    break;
+                case "script":
+                    var code = serial.value;
+                    if (serial.value){
+                        if (code){
+                            this.keywordRegexp.lastIndex = 0;
+                            var len = code.length;
+                            var idx = i+1;
+                            var preLine = 0;
+                            var preIndex = 0;
+                            var result;
+                            while ((result = this.keywordRegexp.exec(code)) !== null){
+                                var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
+                                preLine = obj.preLine;
+                                preIndex = obj.preIndex;
+
+                                _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                                    "type": formData.type,
+                                    "propertyType": propertyDefinition.type || "text",
+                                    "propertyName": propertyDefinition.name+"&nbsp"+serial.key+"&nbsp",
+                                    "name": formData.name || formData.id,
+                                    "key": key,
+                                    "value": obj.value,
+                                    "line": preLine+1
+                                }), option);
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    //nothing
+            }
+        });
+    }
+};
+
+
+_worker.findInDesigner_projection = function(formData, key, module, designer, propertyDefinition, option, mode){
+    var text = formData[key];
+    if (text) {
+        var json = JSON.parse(text);
+        json.forEach(function(projection, i) {
+            this.keywordRegexp.lastIndex = 0;
+            var text = projection.path+"->"+projection.name;
+            if (this.keywordRegexp.test(text)){
+                _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                    "type": formData.type,
+                    "propertyType": propertyDefinition.type || "text",
+                    "propertyName": propertyDefinition.name,
+                    "name": formData.name || formData.id,
+                    "key": key,
+                    "value": text,
+                    "line": i
+                }), option);
+            }
+        });
+    }
+};
+
+
 _worker.findInDesigner_text = function(formData, key, module, designer, propertyDefinition, option, mode){
     this.keywordRegexp.lastIndex = 0;
     var text = formData[key];
@@ -719,6 +802,12 @@ _worker.findInDesignerProperty = function(key, propertyDefinition, formData, opt
                 break;
             case "filter":
                 _worker.findInDesigner_filter(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            case "serial":
+                _worker.findInDesigner_serial(formData, key, module, designer, propertyDefinition, option, mode);
+                break;
+            case "projection":
+                _worker.findInDesigner_projection(formData, key, module, designer, propertyDefinition, option, mode);
                 break;
             default:
                 _worker.findInDesigner_text(formData, key, module, designer, propertyDefinition, option, mode);
@@ -797,6 +886,44 @@ _worker._findProcessPlatformParse_process = function(designer, option, module){
                 this.designerPropertysData = arr[1];
 
                 designer.patternList.forEach(function(pattern){
+                    if (pattern.elementType === "process"){
+                        debugger;
+                        var propertyDefinition = this.designerPropertysData.process[pattern.property];
+                        processData.type = pattern.elementType;
+                        _worker.findInDesignerProperty(pattern.property, propertyDefinition, processData, option, module, designer);
+                    }else if (pattern.elementType === "route") {
+                        for (var i=0; i<processData.routeList.length; i++){
+                            if (processData.routeList[i].id===pattern.elementId) break;
+                        }
+                        Object.keys(processData.routeList[i]).forEach(function(key){
+                            var propertyDefinition = this.designerPropertysData.process[key];
+                            processData.routeList[i].type = pattern.elementType;
+                            _worker.findInDesignerProperty(key, propertyDefinition, processData.routeList[i], option, module, designer);
+                        }.bind(this));
+
+
+                    }else{
+                        if (pattern.elementType=="begin" && pattern.elementId===processData.begin.id){
+                            Object.keys(processData.begin).forEach(function(key){
+                                var propertyDefinition = this.designerPropertysData.process[key];
+                                processData.begin.type = pattern.elementType;
+                                _worker.findInDesignerProperty(key, propertyDefinition, processData.begin, option, module, designer);
+                            }.bind(this));
+                        }else{
+                            var arrKey = pattern.elementType+"List";
+                            for (var i=0; i<processData[arrKey].length; i++){
+                                if (processData[arrKey][i].id===pattern.elementId) break;
+                            }
+                            Object.keys(processData[arrKey][i]).forEach(function(key){
+                                var propertyDefinition = this.designerPropertysData.process[key];
+                                processData[arrKey][i].type = pattern.elementType;
+                                _worker.findInDesignerProperty(key, propertyDefinition, processData[arrKey][i], option, module, designer);
+                            }.bind(this));
+                        }
+
+
+
+                    }
                     switch (pattern.elementType){
                         case "process":
 
@@ -809,12 +936,12 @@ _worker._findProcessPlatformParse_process = function(designer, option, module){
                             break;
                     }
 
-                    var propertyDefinition = this.designerPropertysData.process[pattern.property];
+                   // var propertyDefinition = this.designerPropertysData.process[pattern.property];
 
                    // _worker.findInDesignerProperty(pattern.property, propertyDefinition, option, module, designer);
                 });
 
-                var propertyDefinition = this.designerPropertysData.form[key];
+                //var propertyDefinition = this.designerPropertysData.form[key];
 
 
 
@@ -826,14 +953,14 @@ _worker._findProcessPlatformParse_process = function(designer, option, module){
 
 
 
-                if (patternPropertys.indexOf("data")!=-1){
-                    var formData = JSON.parse(_worker.decodeJsonString(formJson.data.data));
-                    _worker._findInDesigner_form(formData, designer, option, module);
-                }
-                if (patternPropertys.indexOf("mobileData")!=-1){
-                    var formData = JSON.parse(_worker.decodeJsonString(formJson.data.mobileData));
-                    _worker._findInDesigner_form(formData, designer, option, module)
-                }
+                // if (patternPropertys.indexOf("data")!=-1){
+                //     var formData = JSON.parse(_worker.decodeJsonString(formJson.data.data));
+                //     _worker._findInDesigner_form(formData, designer, option, module);
+                // }
+                // if (patternPropertys.indexOf("mobileData")!=-1){
+                //     var formData = JSON.parse(_worker.decodeJsonString(formJson.data.mobileData));
+                //     _worker._findInDesigner_form(formData, designer, option, module)
+                // }
             }, function(){});
         }
     }

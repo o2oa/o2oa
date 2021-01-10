@@ -41,5 +41,9 @@ MWF.xApplication.FindDesigner.LP = {
 	"elementPattern": "<b>元素:</b> {element}, <b>属性:</b> {property}: ",
 
 	"saveDesigner": "保存设计元素",
-	"openDesigner": "打开应用"
+	"openDesigner": "打开应用",
+
+	"notice": {
+		"save_success": "保存成功！"
+	}
 };

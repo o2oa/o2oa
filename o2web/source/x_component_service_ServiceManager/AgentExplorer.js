@@ -263,6 +263,7 @@ MWF.xApplication.service.ServiceManager.AgentExplorer.Agent= new Class({
 	_open: function(e){
         var _self = this;
         var options = {
+            "appId": "service.AgentDesigner"+_self.data.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;
