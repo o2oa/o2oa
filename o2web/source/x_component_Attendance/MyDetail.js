@@ -153,7 +153,10 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='filterTable'>"+
             "<tr>" +
-            "    <td styles='filterTableTitle'>"+ (new Date()).format("%Y年%m月") +"</td>"+
+            "    <td styles='filterTableTitle' lable='cycleYear'></td>"+
+            "    <td styles='filterTableValue' item='cycleYear'></td>" +
+            "    <td styles='filterTableTitle' lable='cycleMonth'></td>"+
+            "    <td styles='filterTableValue' item='cycleMonth'></td>" +
             "    <td styles='filterTableTitle' lable='date'></td>"+
             "    <td styles='filterTableValue' item='date'></td>" +
             "    <td styles='filterTableTitle' lable='isAbsent'></td>"+
@@ -171,6 +174,39 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
             this.form = new MForm( this.fileterNode, {}, {
                 isEdited : true,
                 itemTemplate : {
+                    cycleYear : {
+                        text : "年度",
+                        "type" : "select",
+                        "selectValue" : function(){
+                            var years = [];
+                            var year = new Date().getFullYear();
+                            for(var i=0; i<6; i++ ){
+                                years.push( year-- );
+                            }
+                            return years;
+                        },
+                        "event" : {
+                            "change" : function( item, ev ){
+                                var values = this.getDateSelectValue();
+                                item.form.getItem( "date").resetItemOptions( values , values )
+                            }.bind(this)
+                        }
+                    },
+                    cycleMonth : {
+                        text : "月份",
+                        "type" : "select",
+                        "defaultValue" : function(){
+                            var month = (new Date().getMonth() + 1 ).toString();
+                            return  month.length == 1 ? "0"+month : month;
+                        },
+                        "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"],
+                        "event" : {
+                            "change" : function( item, ev ){
+                                var values = this.getDateSelectValue();
+                                item.form.getItem( "date").resetItemOptions( values , values )
+                            }.bind(this)
+                        }
+                    },
                     date : { text : "日期",  "type" : "select", "selectValue" : function(){
                             var year =  this.preMonthDate.getFullYear() ;
                             var month =  this.preMonthDate.getMonth() ;
@@ -193,11 +229,11 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
                             click : function(){
                                 var result = this.form.getResult(false,null,false,true,false);
 
-                                var year = this.preMonthDate.getFullYear().toString();
+                               /* var year = this.preMonthDate.getFullYear().toString();
                                 var month = (this.preMonthDate.getMonth()+1).toString();
                                 if( month.length == 1 )month = "0"+month;
                                 result.cycleYear = year;
-                                result.cycleMonth = month;
+                                result.cycleMonth = month;*/
 
                                 if( typeOf( result.isAbsent ) == "string" )result.isAbsent = this.getBoolean( result.isAbsent );
                                 if( typeOf( result.isLate ) == "string" )result.isLate = this.getBoolean( result.isLate );
