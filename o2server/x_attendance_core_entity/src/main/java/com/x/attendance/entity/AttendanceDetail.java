@@ -294,6 +294,12 @@ public class AttendanceDetail extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Boolean isGetSelfHolidays = false;
 
+	public static final String leaveType_FIELDNAME = "leaveType";
+	@FieldDescribe("休假类型")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + leaveType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String leaveType;
+
 	public static final String isAbsent_FIELDNAME = "isAbsent";
 	@FieldDescribe("是否缺勤")
 	@Column(name = ColumnNamePrefix + isAbsent_FIELDNAME)
@@ -884,6 +890,14 @@ public class AttendanceDetail extends SliceJpaObject {
 	 */
 	public void setIsGetSelfHolidays(Boolean isGetSelfHolidays) {
 		this.isGetSelfHolidays = isGetSelfHolidays;
+	}
+
+	public String getLeaveType() {
+		return leaveType;
+	}
+
+	public void setLeaveType(String leaveType) {
+		this.leaveType = leaveType;
 	}
 
 	/**
