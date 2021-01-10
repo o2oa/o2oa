@@ -145,8 +145,11 @@ o2.widget.JavascriptEditor = new Class({
                 }.bind(this));
                 this.editor.onDidBlurEditorText(function(e){
                     o2.shortcut.keyboard.activate();
+                    this.fireEvent("blur");
                 }.bind(this));
-
+                this.editor.onDidChangeModelContent(function(e){
+                    this.fireEvent("change");
+                }.bind(this))
 
                 //o2.widget.JavascriptEditor.getCompletionEnvironment(this.options.runtime, function(){
                     this.monacoModel = this.editor.getModel();
@@ -220,6 +223,14 @@ o2.widget.JavascriptEditor = new Class({
                         })
                     }.bind(this)
                 });
+
+                this.editor.on("blur", function(){
+                    this.fireEvent("blur");
+                }.bind(this));
+                this.editor.on("change", function(){
+                    this.fireEvent("change");
+                }.bind(this));
+
 
                 this.node.addEvent("keydown", function(e){
                     e.stopPropagation();
@@ -422,6 +433,11 @@ o2.widget.JavascriptEditor = new Class({
                 case "monaco": this.editor.dispose(); break;
             }
         }
+    },
+    destroy: function(){
+	    this.fireEvent("destroy");
+	    this.destroyEditor();
+	    o2.release(this);
     },
     setTheme: function(theme){
         if (this.editor){

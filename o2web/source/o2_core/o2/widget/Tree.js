@@ -345,6 +345,7 @@ o2.widget.Tree.Node = new Class({
 	
 	selectNode: function(){
 		if (this.tree.currentNode){
+			this.tree.currentNode.fireEvent("unselect");
 			var textDivNode = this.tree.currentNode.textNode.getElement("div");
 			textDivNode.setStyles(this.tree.css.textDivNode);
             if (this.tree.currentNode.options.style){
