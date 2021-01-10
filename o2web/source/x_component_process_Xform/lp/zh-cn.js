@@ -239,7 +239,13 @@ MWF.xApplication.process.Xform.LP = {
     },
     "subjectEmpty": "标题不能为空",
     "issuanceUnitEmpty": "发文单位不能为空",
-    "fullWidth": "已启用半角空格自动转换为全角空格，如需输入半角空格，请使用：SHIFT+空格"
+    "fullWidth": "已启用半角空格自动转换为全角空格，如需输入半角空格，请使用：SHIFT+空格",
+
+    "pauseWork": "当前待办已进入挂起状态",
+    "resumeWork": "当前待办已从挂起状态中恢复",
+
+    "resume": "挂起恢复",
+    "pause": "挂起"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;
