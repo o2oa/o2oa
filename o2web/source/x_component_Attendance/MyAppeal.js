@@ -39,9 +39,12 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
             "styles" : this.css.fileterNode
         }).inject(this.node);
 
-        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' style='width: 560px;font-size: 14px;color:#666'>"+
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' style='width: 580px;font-size: 14px;color:#666'>"+
             "<tr>" +
-            "    <td styles='filterTableTitle' item='date'></td>"+
+            "    <td styles='filterTableTitle' lable='yearString'></td>"+
+            "    <td styles='filterTableValue' item='yearString'></td>" +
+            "    <td styles='filterTableTitle' lable='monthString'></td>"+
+            "    <td styles='filterTableValue' item='monthString'></td>" +
             "    <td styles='filterTableTitle' lable='status'></td>"+
             "    <td styles='filterTableValue' item='status'></td>" +
             "    <td styles='filterTableTitle' lable='appealReason'></td>"+
@@ -55,7 +58,39 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
             this.form = new MForm( this.fileterNode, {}, {
                 isEdited : true,
                 itemTemplate : {
-                    date : { "type" : "innerText", value : (new Date).format(this.app.lp.dateFormatMonth) },
+                    yearString : {
+                        text : "年度",
+                        "type" : "select",
+                        "selectValue" : function(){
+                            var years = [];
+                            var year = new Date().getFullYear();
+                            for(var i=0; i<6; i++ ){
+                                years.push( year-- );
+                            }
+                            return years;
+                        },
+                        "event" : {
+                            "change" : function( item, ev ){
+                                var values = this.getDateSelectValue();
+                                item.form.getItem( "date").resetItemOptions( values , values )
+                            }.bind(this)
+                        }
+                    },
+                    monthString : {
+                        text : "月份",
+                        "type" : "select",
+                        "defaultValue" : function(){
+                            var month = (new Date().getMonth() + 1 ).toString();
+                            return  month.length == 1 ? "0"+month : month;
+                        },
+                        "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"],
+                        "event" : {
+                            "change" : function( item, ev ){
+                                var values = this.getDateSelectValue();
+                                item.form.getItem( "date").resetItemOptions( values , values )
+                            }.bind(this)
+                        }
+                    },
                     status : {
                         "text" : "申述状态",
                         "type" : "select",
@@ -263,10 +298,10 @@ MWF.xApplication.Attendance.MyAppeal.View = new Class({
         var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
         var filter = this.filterData || {};
 
-        var month = (new Date().getMonth()+1).toString();
+        /*var month = (new Date().getMonth()+1).toString();
         if( month.length == 1 )month = "0"+month;
         filter.yearString = new Date().getFullYear().toString();
-        filter.monthString = month;
+        filter.monthString = month;*/
         filter.empName = layout.desktop.session.user.distinguishedName;
 
         this.actions.listAppealFilterNext(id, count, filter, function(json){

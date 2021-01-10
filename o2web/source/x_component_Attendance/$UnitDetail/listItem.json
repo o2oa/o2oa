@@ -72,7 +72,7 @@
     "contentStyles": "normalTdNode",
     "item": "function( d ){  if(d.isExternal){ return '是' }else{ return '否' }}",
     "name" : "appealStatus",
-    "width" : "6%"
+    "width" : "7%"
   },
   {
     "title": "申诉状态",
