@@ -14,7 +14,7 @@
     "defaultSort" : "desc",
     "item" : "recordDateString",
     "name" : "recordDateString",
-    "width" : "9%"
+    "width" : "6%"
   },
 
   {
@@ -62,17 +62,25 @@
     "title": "考勤状态",
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ status = '请假或外出报备' }else if(d.isLate){ status = '迟到' }else if(d.isLeaveEarlier){ status = '早退' }else if(d.isAbsent){ status = '缺勤' }else if(d.isAbnormalDuty){ status = '异常打卡' }else if(d.isLackOfTime){ status = '工时不足' }else{ status = '正常' }; return status; }",
+    "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ if(d.leaveType && d.leaveType!=''){status =d.leaveType }else{status = '请假或外出报备'}  }else if(d.isLate){ status = '迟到' }else if(d.isLeaveEarlier){ status = '早退' }else if(d.isAbsent){ status = '缺勤' }else if(d.isAbnormalDuty){ status = '异常打卡' }else if(d.isLackOfTime){ status = '工时不足' }else{ status = '正常' }; return status; }",
     "name" : "status",
     "width" : "9%"
   } ,
+  {
+    "title": "是否范围外打卡",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( d ){  if(d.isExternal){ return '是' }else{ return '否' }}",
+    "name" : "appealStatus",
+    "width" : "7%"
+  },
   {
     "title": "申诉状态",
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "function( d ){  if(d.appealStatus==1){ return '申诉中' }else if(d.appealStatus==-1){ return '申诉未通过' }else if(d.appealStatus==9){ return '申诉通过' }else{ return '' } }",
     "name" : "appealStatus",
-    "width" : "9%"
+    "width" : "6%"
   },
   {
     "title": "申诉审核人",

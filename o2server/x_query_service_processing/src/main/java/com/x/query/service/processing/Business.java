@@ -24,6 +24,8 @@ public class Business {
 
 	private EntityManagerContainer emc;
 
+	public Business(){}
+
 	public Business(EntityManagerContainer emc) throws Exception {
 		this.emc = emc;
 	}
@@ -54,7 +56,51 @@ public class Business {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		if (this.organization.person().hasRole(effectivePerson, OrganizationDefinition.QueryManager,
+		if (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.QueryManager,
+				OrganizationDefinition.Manager)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isProcessManager(EffectivePerson effectivePerson) throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.ProcessPlatformManager,
+				OrganizationDefinition.Manager)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isServiceManager(EffectivePerson effectivePerson) throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.ServiceManager,
+				OrganizationDefinition.Manager)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isCmsManager(EffectivePerson effectivePerson) throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.CMSManager,
+				OrganizationDefinition.Manager)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isPortalManager(EffectivePerson effectivePerson) throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.PortalManager,
 				OrganizationDefinition.Manager)) {
 			return true;
 		}
