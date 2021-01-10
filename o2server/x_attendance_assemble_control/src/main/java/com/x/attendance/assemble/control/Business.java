@@ -2,7 +2,12 @@ package com.x.attendance.assemble.control;
 
 import com.x.attendance.assemble.control.factory.*;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.core.express.Organization;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public class Business {
 
@@ -203,5 +208,65 @@ public class Business {
 			this.attendanceSelfHolidayFactory = new AttendanceSelfHolidayFactory(this);
 		}
 		return attendanceSelfHolidayFactory;
+	}
+
+	/**
+	 * TODO 判断用户是否管理员权限 1、person.isManager() 2、xadmin 3、CRMManager
+	 *
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isManager(HttpServletRequest request, EffectivePerson person) throws Exception {
+		// 如果用户的身份是平台的超级管理员，那么就是超级管理员权限
+		if (person.isManager()) {
+			return true;
+		}
+		if ("xadmin".equalsIgnoreCase(person.getDistinguishedName())) {
+			return true;
+		}
+		if (isHasPlatformRole(person.getDistinguishedName(), ThisApplication.ROLE_AttendanceManager)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * TODO 判断用户是否管理员权限 1、person.isManager() 2、xadmin 3、CRMManager
+	 * @return
+	 * @throws Exception
+	 */
+
+	public boolean isManager(EffectivePerson person) throws Exception {
+		// 如果用户的身份是平台的超级管理员，那么就是超级管理员权限
+		if (person.isManager()) {
+			return true;
+		}
+		if ("xadmin".equalsIgnoreCase(person.getDistinguishedName())) {
+			return true;
+		}
+		if (isHasPlatformRole(person.getDistinguishedName(), ThisApplication.ROLE_AttendanceManager)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isHasPlatformRole(String personName, String roleName) throws Exception {
+		if (StringUtils.isEmpty(personName)) {
+			throw new Exception("personName is null!");
+		}
+		if (StringUtils.isEmpty(roleName)) {
+			throw new Exception("roleName is null!");
+		}
+		List<String> roleList = null;
+		roleList = organization().role().listWithPerson(personName);
+		if (roleList != null && !roleList.isEmpty()) {
+			if (roleList.stream().filter(r -> roleName.equalsIgnoreCase(r)).count() > 0) {
+				return true;
+			}
+		} else {
+			return false;
+		}
+		return false;
 	}
 }
