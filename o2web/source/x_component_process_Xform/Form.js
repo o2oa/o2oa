@@ -3126,6 +3126,71 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         });
     },
+
+    /**
+     * 需要判断权限
+     * @summary 将待办设置为挂起状态，不计算工作时长.
+     * @example
+     * if( this.workContext.getControl().allowPause ){ //判断流程节点是否设置了允许挂起
+     *     this.form.getApp().appForm.pauseTask();
+     * }
+     */
+    pauseTask: function (e) {
+        if (this.businessData.task){
+            if (e && e.disable) e.disable(true);
+            return o2.Actions.get("x_processplatform_assemble_surface").pauseTask(this.businessData.task.id, function (json) {
+                this.app.notice(MWF.xApplication.process.Xform.LP.pauseWork, "success");
+                if (e && e.enable) e.enable(false);
+            }.bind(this), function (xhr, text, error) {
+                //e.setDisable(false);
+                if (xhr.status != 0) {
+                    var errorText = error;
+                    if (xhr) {
+                        var json = JSON.decode(xhr.responseText);
+                        if (json) {
+                            errorText = json.message.trim() || "request json error";
+                        } else {
+                            errorText = "request json error: " + xhr.responseText;
+                        }
+                    }
+                    MWF.xDesktop.notice("error", { x: "right", y: "top" }, errorText);
+                }
+            });
+        }
+    },
+
+    /**
+     * 需要判断权限
+     * @summary 将待办从挂起状态恢复为正常状态.
+     * @example
+     * if( this.workContext.getControl().allowResume ){ //判断当前待办是否可以进行挂起恢复操作
+     *     this.form.getApp().appForm.resumeTask();
+     * }
+     */
+    resumeTask: function (e) {
+        if (this.businessData.task){
+            if (e && e.disable) e.disable(true);
+            return o2.Actions.get("x_processplatform_assemble_surface").resumeTask(this.businessData.task.id, function (json) {
+                this.app.notice(MWF.xApplication.process.Xform.LP.resumeWork, "success");
+                if (e && e.enable) e.enable(false);
+            }.bind(this), function (xhr, text, error) {
+                //e.setDisable(false);
+                if (xhr.status != 0) {
+                    var errorText = error;
+                    if (xhr) {
+                        var json = JSON.decode(xhr.responseText);
+                        if (json) {
+                            errorText = json.message.trim() || "request json error";
+                        } else {
+                            errorText = "request json error: " + xhr.responseText;
+                        }
+                    }
+                    MWF.xDesktop.notice("error", { x: "right", y: "top" }, errorText);
+                }
+            });
+        }
+    },
+
     downloadAll: function () {
         var htmlFormId = "";
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
