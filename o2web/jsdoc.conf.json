@@ -44,7 +44,8 @@
         "title": "O2OA前台API" //最终生成的文档中标题
     },
     "o2" : {
-        "actionOutPath" : "./o2web/jsdoc/{actionRoot}/{actionName}.json",
+        "actionOutPath" : "./o2server/{actionRoot}/src/main/webapp/describe/jsdoc/{actionName}.json",
+        //"actionOutPath" : "./o2web/jsdoc/{actionRoot}/{actionName}.json",
         "actionOutExamplePath" : "./o2web/jsdoc_static/actionOut_examples/{actionRoot}.json"
     }
 }
