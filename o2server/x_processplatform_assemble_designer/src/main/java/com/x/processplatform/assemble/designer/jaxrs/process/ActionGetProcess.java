@@ -17,7 +17,7 @@ class ActionGetProcess extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			Process process = emc.fetch(id, Process.class);
+			Process process = emc.find(id, Process.class);
 			if (null == process) {
 				throw new ExceptionProcessNotExisted(id);
 			}
@@ -29,7 +29,8 @@ class ActionGetProcess extends BaseAction {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
 						application.getName(), application.getId());
 			}
-			result.setData(Wo.outCopier.copy(process));
+			Wo wo = Wo.outCopier.copy(process);
+			result.setData(wo);
 			return result;
 		}
 	}
