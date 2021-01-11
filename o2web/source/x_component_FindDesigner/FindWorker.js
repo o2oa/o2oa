@@ -118,10 +118,12 @@ _worker._getDesingerModule = function(id, restful, par, moduleType, designerType
     var p = _worker.action.sendRequest(_worker._getRequestOption({"url": restful, "debug": _worker.findData.debug, "token": _worker.findData.token }, par));
     return p.then(function(json){
         list = json.data;
-        list.forEach(function(designer){
+        if (list) list.forEach(function(designer){
             _worker._createFilterOption(moduleType, id, designerType, designer.id)
         });
-    }, function(){});
+    }, function(){
+        return Promise.resolve("");
+    });
 };
 
 _worker._getDesinger_processPlatform = function(id){
@@ -243,7 +245,7 @@ _worker._parseFindModule = function(moduleList){
                 var p = _worker._listApplication(module.moduleType);
                 promiseArr.push(p.then(function(json){
 
-                    json.data.forEach(function(app){
+                    if (json && json.data) json.data.forEach(function(app){
                         var filterOption = JSON.parse(_worker.filterOptionTemplete);
                         filterOption.moduleList.push({
                             "moduleType": module.moduleType,
@@ -260,7 +262,9 @@ _worker._parseFindModule = function(moduleList){
                     //     pArr = pArr.concat(_worker["_getDesinger_"+module.moduleType](app.id));
                     // });
                     // return Promise.all(pArr);
-                }, function(){}));
+                }, function(){
+                    return Promise.resolve("");
+                }));
 
             }else{
                 module.flagList.forEach(function(flag){
@@ -312,6 +316,9 @@ _worker._createFindMessageReplyData = function(module, designer, aliase, pattern
 
 _worker._setFilterOptionRegex = function(){
     var keyword = _worker.findData.filterOption.keyword;
+    keyword = keyword.replace("[", "\\[").replace("]", "\\]").replace("(", "\\(").replace(")", "\\)").replace("{", "\\{").replace("}", "\\}")
+        .replace("^", "\\^").replace("$", "\\$").replace(".", "\\.").replace("?", "\\?").replace("+", "\\+").replace("*", "\\*").replace("|", "\\|");
+
     if (_worker.findData.filterOption.matchRegExp){
         var flag = (_worker.findData.filterOption.caseSensitive) ? "gm" : "gmi";
         this.keywordRegexp =  new RegExp(keyword, flag);
@@ -1076,7 +1083,8 @@ _worker._findProcessPlatformParse_form = function(designer, option, module){
     }
 };
 
-_worker._findProcessPlatformParse_View = function(designer, option, module){
+_worker._findProcessPlatformParse_view = function(designer, option, module){
+    debugger;
     if (designer.patternList && designer.patternList.length){
         if (!this.designerPropertysData) this.designerPropertysData = _worker.action.sendRequest(_worker._getRequestOption({"url": "../x_component_FindDesigner/propertys.json"}));
         var patternPropertys = designer.patternList.map(function(a){return a.property;});
@@ -1119,7 +1127,7 @@ _worker._findProcessPlatformParse_View = function(designer, option, module){
                         });
                     });
                     viewData.actionbarList.forEach(function(item){
-                        item.type = "column";
+                        item.type = "actionbar";
                         item.name =  item.type;
                         Object.keys(item).forEach(function(key){
                             if (key!=="name" && key!=="type"){
@@ -1129,7 +1137,7 @@ _worker._findProcessPlatformParse_View = function(designer, option, module){
                         });
                     });
                     viewData.pagingList.forEach(function(item){
-                        item.type = "column";
+                        item.type = "paging";
                         item.name =  item.type;
                         Object.keys(item).forEach(function(key){
                             if (key!=="name" && key!=="type"){
@@ -1162,6 +1170,97 @@ _worker._findProcessPlatformParse_View = function(designer, option, module){
         }
     }
 }
+
+_worker._findProcessPlatformParse_statement = function(designer, option, module){
+    if (designer.patternList && designer.patternList.length){
+        if (!this.designerPropertysData) this.designerPropertysData = _worker.action.sendRequest(_worker._getRequestOption({"url": "../x_component_FindDesigner/propertys.json"}));
+        var patternPropertys = designer.patternList.map(function(a){return a.property;});
+        if (patternPropertys.indexOf("view")!=-1){
+
+            var p = _worker._getDesignerData(designer, module);
+            if (p) {
+                p.then(function (arr) {
+                    var statementJson = arr[0].data;
+                    this.designerPropertysData = arr[1];
+
+                    if (statementJson.view){
+                        var viewJson = JSON.parse(statementJson.view);
+                        var viewData = viewJson.data;
+                        if (viewData){
+                            viewData.type = "View";
+                            viewData.name = statementJson.name;
+                            Object.keys(viewData).forEach(function(key){
+                                if (key!=="where" && key!=="selectList" && key!=="actionbarList" && key!=="pagingList" && key!=="type" && key!=="name" ){
+                                    var propertyDefinition = this.designerPropertysData.view[key];
+                                    _worker.findInDesignerProperty(key, propertyDefinition, viewData, option, module, designer);
+                                }
+                            });
+
+                            viewData.where.type = "View";
+                            viewData.where.name = viewJson.name;
+                            Object.keys(viewData.where).forEach(function(key){
+                                if ( key!=="type" && key!=="name"){
+                                    var propertyDefinition = this.designerPropertysData.view[key];
+                                    _worker.findInDesignerProperty(key, propertyDefinition, viewData.where, option, module, designer);
+                                }
+                            });
+
+                            viewData.selectList.forEach(function(col){
+                                col.type = "View-column";
+                                col.name =  col.displayName;
+                                Object.keys(col).forEach(function(key){
+                                    if (key!=="name" && key!=="type"){
+                                        var propertyDefinition = this.designerPropertysData.view[key];
+                                        _worker.findInDesignerProperty(key, propertyDefinition, col, option, module, designer);
+                                    }
+                                });
+                            });
+                            viewData.actionbarList.forEach(function(item){
+                                item.type = "View-actionbar";
+                                item.name =  item.type;
+                                Object.keys(item).forEach(function(key){
+                                    if (key!=="name" && key!=="type"){
+                                        var propertyDefinition = this.designerPropertysData.view[key];
+                                        _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer);
+                                    }
+                                });
+                            });
+                            viewData.pagingList.forEach(function(item){
+                                item.type = "View-paging";
+                                item.name =  item.type;
+                                Object.keys(item).forEach(function(key){
+                                    if (key!=="name" && key!=="type"){
+                                        var propertyDefinition = this.designerPropertysData.view[key];
+                                        _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer);
+                                    }
+                                });
+                            });
+
+                        }
+                    }
+                }, function () {
+                });
+            }
+        }else{
+            Promise.resolve(this.designerPropertysData).then(function(data){
+                this.designerPropertysData = data;
+                designer.patternList.forEach(function(pattern){
+                    var propertyDefinition = this.designerPropertysData.statement[pattern.property];
+                    if (propertyDefinition){
+                        _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                            "type": "Statement",
+                            "propertyType": propertyDefinition.type || "text",
+                            "propertyName": propertyDefinition.name,
+                            "name": designer.designerName,
+                            "key": pattern.property,
+                            "value": pattern.propertyValue
+                        }), option);
+                    }
+                });
+            }, function(){});
+        }
+    }
+};
 
 
 _worker._findProcessPlatformParse_process = function(designer, option, module){
@@ -1228,9 +1327,12 @@ _worker._findProcessPlatformParse = function(resultList, option, module){
                 break;
             case "process":
                 _worker._findProcessPlatformParse_process(designer, option, module);
-
+                break;
             case "view":
-                _worker._findProcessPlatformParse_View(designer, option, module);
+                _worker._findProcessPlatformParse_view(designer, option, module);
+                break;
+            case "statement":
+                _worker._findProcessPlatformParse_statement(designer, option, module);
                 break;
         }
     });
