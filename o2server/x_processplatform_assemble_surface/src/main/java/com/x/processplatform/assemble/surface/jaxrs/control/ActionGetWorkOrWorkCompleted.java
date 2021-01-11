@@ -45,6 +45,8 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 
 	private Boolean hasTaskCompletedWithJob = null;
 
+	private Boolean hasPauseTaskWithWork = null;
+
 	private Map<String, Boolean> hasTaskCompletedWithActivityToken = new HashMap<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted)
@@ -118,9 +120,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		wo.setAllowDelete(PropertyTools.getOrElse(activity, Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
 				&& wo.getAllowSave());
 		// 是否可以挂起待办,暂停待办计时
-
-		if (PropertyTools.getOrElse(activity, Manual.allowPause_FIELDNAME, Boolean.class, false)
-				&& wo.getAllowPause()) {
+		if (PropertyTools.getOrElse(activity, Manual.allowPause_FIELDNAME, Boolean.class, false) && wo.getAllowSave()) {
 			// 如果已经处于挂起状态,那么允许恢复
 			if (this.hasPauseTaskWithWork(business, effectivePerson, work.getId())) {
 				wo.setAllowResume(true);
@@ -200,12 +200,12 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 
 	private boolean hasPauseTaskWithWork(Business business, EffectivePerson effectivePerson, String work)
 			throws Exception {
-		if (null == this.hasTaskWithWork) {
-			this.hasTaskWithWork = business.entityManagerContainer().countEqualAndEqualAndEqual(Task.class,
+		if (null == this.hasPauseTaskWithWork) {
+			this.hasPauseTaskWithWork = business.entityManagerContainer().countEqualAndEqualAndEqual(Task.class,
 					Task.person_FIELDNAME, effectivePerson.getDistinguishedName(), Task.work_FIELDNAME, work,
 					Task.pause_FIELDNAME, true) > 0;
 		}
-		return this.hasTaskWithWork;
+		return this.hasPauseTaskWithWork;
 	}
 
 	private boolean hasTaskCompletedWithJob(Business business, EffectivePerson effectivePerson, String job)
