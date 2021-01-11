@@ -30,14 +30,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		// 是否可以重置处理人
 		private Boolean allowReset = false;
 
-		public Boolean getAllowPause() {
-			return allowPause;
-		}
-
-		public void setAllowPause(Boolean allowPause) {
-			this.allowPause = allowPause;
-		}
-
 		// 是否可以调度
 		private Boolean allowReroute = false;
 		// 是否可以删除
@@ -52,9 +44,19 @@ abstract class BaseAction extends StandardJaxrsAction {
 		private Boolean allowPress = false;
 		// 是否可以待办挂起(暂停待办计时)
 		private Boolean allowPause = false;
+		// 是否可以取消待办挂起(恢复待办计时)
+		private Boolean allowResume = false;
 
 		public Boolean getAllowSave() {
 			return allowSave;
+		}
+
+		public Boolean getAllowPause() {
+			return allowPause;
+		}
+
+		public void setAllowPause(Boolean allowPause) {
+			this.allowPause = allowPause;
 		}
 
 		public void setAllowSave(Boolean allowSave) {
@@ -139,6 +141,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public void setAllowPress(Boolean allowPress) {
 			this.allowPress = allowPress;
+		}
+
+		public Boolean getAllowResume() {
+			return allowResume;
+		}
+
+		public void setAllowResume(Boolean allowResume) {
+			this.allowResume = allowResume;
 		}
 
 	}
