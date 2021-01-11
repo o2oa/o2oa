@@ -8,16 +8,12 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -27,13 +23,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.collections4.list.SetUniqueList;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -41,7 +34,6 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -58,6 +50,7 @@ public class DescribeWoBuilder {
 
 	private static Logger logger = LoggerFactory.getLogger(DescribeWoBuilder.class);
     private File  fileDir = null;
+    
 	public static void main(String[] args) throws IOException {
 		
 		String filePath = args[0];
@@ -67,7 +60,7 @@ public class DescribeWoBuilder {
 		
 		File basedir = new File(args[0]);
 		File sourcedir = new File(args[1]);
-		File dir = new File(filePath ,"src/main/webapp/describe/jsdoc");
+		File dir = new File(basedir ,"src/main/webapp/describe/jsdoc");
 		
 		FileUtils.forceMkdir(dir);
 
@@ -80,6 +73,7 @@ public class DescribeWoBuilder {
 		try {
 			this.fileDir = dir;
 			ArrayList List = new ArrayList(); 
+			//x_processplatform_assemble_surface
 			List.add("ApplicationDictAction");
 			List.add("AttachmentAction");
 			List.add("CacheAction");
@@ -92,7 +86,10 @@ public class DescribeWoBuilder {
 			List.add("TaskCompletedAction");
 			List.add("WorkAction");
 			List.add("WorkCompletedAction");
+			List.add("ReadCompletedAction");
+			List.add("WorkLogAction");
 			
+            //x_cms_assemble_control
 			List.add("AppInfoAction");
 			List.add("CategoryInfoAction");
 			List.add("DocumentAction");
@@ -100,6 +97,16 @@ public class DescribeWoBuilder {
 			List.add("DocumentCommentInfoAction");
 			List.add("DocumentViewRecordAction");
 			List.add("FileInfoAction");
+			
+			//x_organization_assemble_express
+			List.add("GroupAction");
+			List.add("IdentityAction");
+			List.add("PersonAction");
+			List.add("PersonAttributeAction");
+			List.add("RoleAction");
+			List.add("UnitAction");
+			List.add("UnitAttributeAction");
+			List.add("UnitDutyAction");
 			
 			List<JaxrsClass> jaxrsClasses = new ArrayList<>();
 			List<Class<?>> classes = this.scanJaxrsClass();
@@ -158,9 +165,9 @@ public class DescribeWoBuilder {
 		for (Method method : clz.getMethods()) {
 			JaxrsMethodDescribe jaxrsMethodDescribe = method.getAnnotation(JaxrsMethodDescribe.class);
 			if (null != jaxrsMethodDescribe) {
-				if (null != method.getAnnotation(GET.class)) {
+				//if (null != method.getAnnotation(GET.class)) {
 				   jaxrsClass.getMethods().add(this.jaxrsMethod(clz, method));
-				}
+				//}
 			}
 		}
 		jaxrsClass.setMethods(jaxrsClass.getMethods().stream().sorted(Comparator.comparing(JaxrsMethod::getName))
@@ -190,77 +197,13 @@ public class DescribeWoBuilder {
 			jaxrsMethod.setType("HEAD");
 		}
 		
-			Class<?> woClass = this.getWoClass(actionClass);
-			if (null != woClass) {
+		Class<?> woClass = this.getWoClass(actionClass);
+			
+		  if (null != woClass) {
 				jaxrsMethod.setOuts(this.jaxrsOutField(woClass));
-			}
+		}
 
-		
-
-//	Class<?> wiClass = this.getWiClass(actionClass);
-//		if (null != wiClass) {
-//			jaxrsMethod.setIns(this.jaxrsInField(wiClass));
-//		} else {
-//			if (StringUtils.equals("POST", jaxrsMethod.getType()) || StringUtils.equals("PUT", jaxrsMethod.getType())) {
-//			/** 如果没有定义Wi对象,那么有可能使用的是jsonElement对象 */
-//				if (ArrayUtils.contains(method.getParameterTypes(), JsonElement.class)) {
-//					jaxrsMethod.setUseJsonElementParameter(true);
-//				} else {
-//				jaxrsMethod.setUseStringParameter(true);
-//				}
-//		}
-//	}
-//		
-		
-//		Consumes consumes = method.getAnnotation(Consumes.class);
-//		if (null != consumes) {
-//			jaxrsMethod.setContentType(consumes.value()[0]);
-//		} else {
-//			jaxrsMethod.setContentType(MediaType.APPLICATION_JSON);
-//		}
-//		Produces produces = method.getAnnotation(Produces.class);
-//		if (null != produces) {
-//			jaxrsMethod.setResultContentType(produces.value()[0]);
-//			jaxrsMethod.setResultContentType(produces.value()[0]);
-//		}
-//		Path path = method.getAnnotation(Path.class);
-//		if (null == path) {
-//			jaxrsMethod.setPath("jaxrs/" + clz.getAnnotation(Path.class).value());
-//		} else {
-//			jaxrsMethod.setPath("jaxrs/" + clz.getAnnotation(Path.class).value() + "/" + path.value());
-//		}
-//		for (Parameter o : method.getParameters()) {
-//			FormDataParam formDataParam = o.getAnnotation(FormDataParam.class);
-//			FormParam formParam = o.getAnnotation(FormParam.class);
-//			PathParam pathParam = o.getAnnotation(PathParam.class);
-//			QueryParam queryParam = o.getAnnotation(QueryParam.class);
-//			if (null != formDataParam) {
-//				jaxrsMethod.getFormParameters().add(this.jaxrsFormDataParameter(clz, method, o));
-//			} else if (null != formParam) {
-//				jaxrsMethod.getFormParameters().add(this.jaxrsFormParameter(clz, method, o));
-//			} else if (null != queryParam) {
-//				jaxrsMethod.getQueryParameters().add(this.jaxrsQueryParameter(clz, method, o));
-//			} else if (null != pathParam) {
-//				jaxrsMethod.getPathParameters().add(this.jaxrsPathParameter(clz, method, o));
-//			}
-//		}
-//		jaxrsMethod.setFormParameters(jaxrsMethod.getFormParameters().stream().filter(Objects::nonNull)
-//				.sorted(Comparator.comparing(JaxrsFormParameter::getName, Comparator.nullsLast(String::compareTo)))
-//				.collect(Collectors.toList()));
-		/*
-		 jaxrsMethod.setQueryParameters(jaxrsMethod.getQueryParameters().stream().filter(Objects::nonNull)
-				.sorted(Comparator.comparing(JaxrsQueryParameter::getName, Comparator.nullsLast(String::compareTo)))
-				.collect(Collectors.toList()));
-		*/
-//		jaxrsMethod.setQueryParameters(jaxrsMethod.getQueryParameters().stream().filter(Objects::nonNull)
-//                                      .collect(Collectors.toList()));
-		/*
-		jaxrsMethod.setPathParameters(jaxrsMethod.getPathParameters().stream().filter(Objects::nonNull)
-				.sorted(Comparator.comparing(JaxrsPathParameter::getName, Comparator.nullsLast(String::compareTo)))
-				.collect(Collectors.toList()));
-		*/
-//		jaxrsMethod.setPathParameters(jaxrsMethod.getPathParameters().stream().filter(Objects::nonNull)
-//				.collect(Collectors.toList()));
+	
 		return jaxrsMethod;
 	}
 
@@ -385,7 +328,8 @@ public class DescribeWoBuilder {
 				JaxrsField jaxrsField = new JaxrsField();
 				jaxrsField.setName(o.getName());
 				jaxrsField.setDescription(fieldDescribe.value());
-				jaxrsField.setType(this.getJaxrsFieldType(o));
+				String className = getClassName(o);
+				jaxrsField.setType(this.getJaxrsFieldType(o,className));
 				jaxrsField.setIsBaseType(false);
 				if (Collection.class.isAssignableFrom(o.getType())) {
 					jaxrsField.setIsCollection(true);
@@ -430,6 +374,7 @@ public class DescribeWoBuilder {
 	}
 
 	private List<JaxrsField> jaxrsOutField(Class<?> clz) throws Exception {
+		
 		List<JaxrsField> list = new ArrayList<>();
 		List<Field> fields = FieldUtils.getAllFieldsList(clz);
 		List<String> copierEraseFields = this.listCopierEraseFields(clz);
@@ -449,7 +394,9 @@ public class DescribeWoBuilder {
 				JaxrsField jaxrsField = new JaxrsField();
 				jaxrsField.setName(o.getName());
 				jaxrsField.setDescription(fieldDescribe.value());
-				jaxrsField.setType(this.getJaxrsFieldType(o));
+				String className = getClassName(o);
+				jaxrsField.setType(this.getJaxrsFieldType(o,className));
+				
 				if (Collection.class.isAssignableFrom(o.getType())) {
 					jaxrsField.setIsCollection(true);
 				} else {
@@ -461,8 +408,47 @@ public class DescribeWoBuilder {
 		return list;
 	}
 
-
-	private String getJaxrsFieldType(Field o) {
+    private String getClassName(Field o) {
+    	String typeName = o.getGenericType().getTypeName();
+    	String value = this.simpleType(typeName);
+    	ArrayList List = new ArrayList(); 
+		List.add("Date");
+		List.add("String");
+		List.add("Boolean");
+		List.add("Long");
+		List.add("long");
+		List.add("int");
+		List.add("Integer");
+		List.add("Double");
+		List.add("List");
+		List.add("List<K>");
+		List.add("Map");
+		List.add("Map<String,String>");
+		List.add("Map<String,Object>");
+		List.add("Map<K,V>");
+		List.add("Map<?,?>");
+		List.add("byte[]");
+		List.add("Class");
+		List.add("Class[]");
+		List.add("Object");
+		List.add("String[]");
+		List.add("List<String>");
+		List.add("List<Date>");
+		List.add("List<Boolean>");
+		List.add("List<Long>");
+		List.add("List<Integer>");
+		List.add("List<Double>");
+		List.add("List<byte[]>");
+		if(!List.contains(value)) {
+				if(typeName.indexOf("java.util.List<")>-1) {
+					String[] ss = typeName.split("[,|<|>]");
+					typeName = ss[ss.length-1];
+					value = typeName;
+				}
+			}
+		return value;
+    }
+	private String getJaxrsFieldType(Field o,String classNameParent) {
 		String typeName = o.getGenericType().getTypeName();
 		String value = this.simpleType(typeName);
 		ArrayList List = new ArrayList(); 
@@ -480,6 +466,7 @@ public class DescribeWoBuilder {
 		List.add("Map<String,String>");
 		List.add("Map<String,Object>");
 		List.add("Map<K,V>");
+		List.add("Map<?,?>");
 		List.add("byte[]");
 		List.add("Class");
 		List.add("Class[]");
@@ -501,6 +488,7 @@ public class DescribeWoBuilder {
 					typeName = ss[ss.length-1];
 					listParam = true;
 				}
+				//logger.print("Class.forName=" + typeName);
 				Class clz = Class.forName(typeName);
 				if(!clz.isEnum()){
 					//不是枚举类型
@@ -513,7 +501,14 @@ public class DescribeWoBuilder {
 						            JaxrsField jaxrsField = new JaxrsField();
 									jaxrsField.setName(field.getName());
 									jaxrsField.setDescription(fieldDescribe.value());
-									jaxrsField.setType(this.getJaxrsFieldType(field));
+									
+									String className = getClassName(field);
+									if(classNameParent.equalsIgnoreCase(getClassName(field))) {
+									     jaxrsField.setType(className);  //防止死循环
+									}else {
+										 jaxrsField.setType(this.getJaxrsFieldType(field,className));
+									}
+									
 									if (Collection.class.isAssignableFrom(field.getType())) {
 										jaxrsField.setIsCollection(true);
 									} else {
@@ -524,7 +519,8 @@ public class DescribeWoBuilder {
 									    JaxrsField jaxrsField = new JaxrsField();
 										jaxrsField.setName(field.getName());
 										jaxrsField.setDescription("");
-										jaxrsField.setType(this.getJaxrsFieldType(field));
+										String className = getClassName(field);
+										jaxrsField.setType(this.getJaxrsFieldType(field,className));
 										if (Collection.class.isAssignableFrom(field.getType())) {
 											jaxrsField.setIsCollection(true);
 										} else {
@@ -533,7 +529,7 @@ public class DescribeWoBuilder {
 										list.add(jaxrsField);
 								}
 						}else {	
-							 //创建List参数中的类型
+							   //创建List参数中的类型
 								FieldDescribe fieldDescribe = field.getAnnotation(FieldDescribe.class);
 								JaxrsField jaxrsField = new JaxrsField();
 								jaxrsField.setName(field.getName());
@@ -542,7 +538,13 @@ public class DescribeWoBuilder {
 								}else {
 									jaxrsField.setDescription("");
 								}
-								jaxrsField.setType(this.getJaxrsFieldType(field));
+								String className = getClassName(o);
+								//jaxrsField.setType(this.getJaxrsFieldType(field,className));
+								if(classNameParent.equalsIgnoreCase(getClassName(field))) {
+								     jaxrsField.setType(className);  //防止死循环
+								}else {
+									 jaxrsField.setType(this.getJaxrsFieldType(field,className));
+								}
 								if (Collection.class.isAssignableFrom(field.getType())) {
 									jaxrsField.setIsCollection(true);
 								} else {
@@ -556,8 +558,7 @@ public class DescribeWoBuilder {
 						File file = new File(this.fileDir, this.simpleType(typeName) + ".json");
 						FileUtils.writeStringToFile(file, XGsonBuilder.toJson(list), DefaultCharset.charset);
 					} catch (IOException e) {
-						  System.out.println("getJaxrsFieldType error............");
-						e.printStackTrace();
+						logger.error(e);
 					}
 					
 				}else {
@@ -584,23 +585,21 @@ public class DescribeWoBuilder {
 							File file = new File(this.fileDir, value + ".json");
 							FileUtils.writeStringToFile(file, XGsonBuilder.toJson(list), DefaultCharset.charset);
 						} catch (IOException e) {
-							 System.out.println("getJaxrsFieldType enum........."+ e.getMessage());
+							logger.info("getJaxrsFieldType enum........."+ e.getMessage());
 						}
 			       }
 				}
 				
 			 } catch (ClassNotFoundException e) {
-			 	System.out.println("getJaxrsFieldType error...="+ e.getMessage());
+			 	logger.info("getJaxrsFieldType error...="+ e.getMessage());
 			 }
 		}
-		//return this.simpleType(value);
 		return value;
 	}
 
 	private String getJaxrsParameterType(Parameter o) {
 		String value = o.getType().getTypeName();
 		return this.simpleType(value);
-		//return value;
 	}
 
 	private String simpleType(String value) {
@@ -694,14 +693,7 @@ public class DescribeWoBuilder {
 		private String description;
 		private String type;
 		private String path;
-//		private String contentType;
-//		private String resultContentType;
-//		private Boolean useJsonElementParameter = false;
-//		private Boolean useStringParameter = false;
-//		private List<JaxrsPathParameter> pathParameters = new ArrayList<>();
-//		private List<JaxrsFormParameter> formParameters = new ArrayList<>();
-//		private List<JaxrsQueryParameter> queryParameters = new ArrayList<>();
-//		private List<JaxrsField> ins = new ArrayList<>();
+
 		private List<JaxrsField> outs = new ArrayList<>();
 
 		public String getType() {
@@ -728,13 +720,6 @@ public class DescribeWoBuilder {
 			this.name = name;
 		}
 
-//		public List<JaxrsField> getIns() {
-//			return ins;
-//		}
-//
-//		public void setIns(List<JaxrsField> ins) {
-//			this.ins = ins;
-//		}
 
 		public List<JaxrsField> getOuts() {
 			return outs;
@@ -744,13 +729,6 @@ public class DescribeWoBuilder {
 			this.outs = outs;
 		}
 
-//		public String getContentType() {
-//			return contentType;
-//		}
-//
-//		public void setContentType(String contentType) {
-//			this.contentType = contentType;
-//		}
 
 		public String getDescription() {
 			return description;
@@ -768,53 +746,6 @@ public class DescribeWoBuilder {
 			this.className = className;
 		}
 
-//		public List<JaxrsPathParameter> getPathParameters() {
-//			return pathParameters;
-//		}
-//
-//		public void setPathParameters(List<JaxrsPathParameter> pathParameters) {
-//			this.pathParameters = pathParameters;
-//		}
-//
-//		public List<JaxrsFormParameter> getFormParameters() {
-//			return formParameters;
-//		}
-//
-//		public void setFormParameters(List<JaxrsFormParameter> formParameters) {
-//			this.formParameters = formParameters;
-//		}
-//
-//		public List<JaxrsQueryParameter> getQueryParameters() {
-//			return queryParameters;
-//		}
-//
-//		public void setQueryParameters(List<JaxrsQueryParameter> queryParameters) {
-//			this.queryParameters = queryParameters;
-//		}
-//
-//		public Boolean getUseJsonElementParameter() {
-//			return useJsonElementParameter;
-//		}
-//
-//		public void setUseJsonElementParameter(Boolean useJsonElementParameter) {
-//			this.useJsonElementParameter = useJsonElementParameter;
-//		}
-//
-//		public String getResultContentType() {
-//			return resultContentType;
-//		}
-//
-//		public void setResultContentType(String resultContentType) {
-//			this.resultContentType = resultContentType;
-//		}
-//
-//		public Boolean getUseStringParameter() {
-//			return useStringParameter;
-//		}
-//
-//		public void setUseStringParameter(Boolean useStringParameter) {
-//			this.useStringParameter = useStringParameter;
-//		}
 
 	}
 
