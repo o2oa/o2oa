@@ -65,9 +65,26 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }
         }.bind(this), 60000);
     },
-
-    load: function () {
-
+    getEditorTheme: function(callback){
+        if (!o2.editorData){
+            o2.UD.getData("editor", function(json){
+                if (json.data){
+                    o2.editorData = JSON.decode(json.data);
+                }else{
+                    o2.editorData = this.getDefaultEditorData();
+                }
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    },
+    load : function(){
+        this.getEditorTheme( function () {
+            this._load();
+        }.bind(this))
+    },
+    _load: function () {
 
         // this.setAreaNodeSize();
         // this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
@@ -446,28 +463,56 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     },
     loadStatementEditor: function () {
         if (!this.editor) {
+            var value;
+            if( !this.json.data ){
+                var table = "table";
+                switch (this.json.type) {
+                    case "update":
+                        value = "UPDATE " + table + " o SET ";
+                        break;
+                    case "delete":
+                        value = "DELETE " + table + " o WHERE ";
+                        break;
+                    default:
+                        value = "SELECT o FROM " + table + " o";
+                }
+                this.json.data = value;
+            }
+            if( this.jpqlEditorNode.offsetParent === null && o2.editorData.javascriptEditor.editor === "monaco" ){
+                var postShowFun = function() {
+                    this._loadStatementEditor();
+                    this.jpqlPage.removeEvent("postShow", postShowFun);
+                }.bind(this);
+                this.jpqlPage.addEvent("postShow", postShowFun);
+            }else{
+                this._loadStatementEditor();
+            }
+        }
+    },
+    _loadStatementEditor: function () {
+        if (!this.editor) {
             o2.require("o2.widget.JavascriptEditor", function () {
                 this.editor = new o2.widget.JavascriptEditor(this.jpqlEditorNode, {
                     "title": "JPQL",
                     "option": {"mode": "sql"}
                 });
                 this.editor.load(function () {
-                    if (this.json.data) {
+                    // if (this.json.data) {
                         this.editor.editor.setValue(this.json.data);
-                    } else {
-                        var table = "table";
-                        switch (this.json.type) {
-                            case "update":
-                                this.editor.editor.setValue("UPDATE " + table + " o SET ");
-                                break;
-                            case "delete":
-                                this.editor.editor.setValue("DELETE " + table + " o WHERE ");
-                                break;
-                            default:
-                                this.editor.editor.setValue("SELECT o FROM " + table + " o");
-                        }
-                    }
-                    this.json.data = this.editor.editor.getValue();
+                    // } else {
+                    //     var table = "table";
+                    //     switch (this.json.type) {
+                    //         case "update":
+                    //             this.editor.editor.setValue("UPDATE " + table + " o SET ");
+                    //             break;
+                    //         case "delete":
+                    //             this.editor.editor.setValue("DELETE " + table + " o WHERE ");
+                    //             break;
+                    //         default:
+                    //             this.editor.editor.setValue("SELECT o FROM " + table + " o");
+                    //     }
+                    // }
+                    // this.json.data = this.editor.editor.getValue();
 
                     this.editor.addEditorEvent("change", function () {
                         debugger;
@@ -486,50 +531,62 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     },
     loadStatementCountEditor: function () {
         if (!this.countEditor) {
-            o2.require("o2.widget.JavascriptEditor", function () {
-                this.countEditor = new o2.widget.JavascriptEditor(this.countJpqlEditorNode, {
-                    "title": "JPQL",
-                    "option": {"mode": "sql"}
-                });
-                this.countEditor.load(function () {
-                    if (this.json.countData) {
-                        this.countEditor.editor.setValue(this.json.countData);
-                    } else {
-                        var table = "table";
-                        this.countEditor.editor.setValue("SELECT count(o.id) FROM " + table + " o");
-                    }
-                    this.json.countData = this.countEditor.editor.getValue();
-
-                    this.countEditor.addEditorEvent("change", function () {
-                        debugger;
-                        this.data.countData = this.countEditor.getValue();
-                    }.bind(this));
-
-                    // this.editor.editor.on("change", function(){
-                    //     this.data.data = this.editor.getValue();
-                    //     this.checkJpqlType();
-                    // }.bind(this));
-                }.bind(this));
-            }.bind(this), false);
+            if( !this.json.countData )this.json.countData = "SELECT count(o.id) FROM table o";
+            if( this.countJpqlEditorNode.offsetParent === null && o2.editorData.javascriptEditor.editor === "monaco" ){
+                var postShowFun = function() {
+                    this._loadStatementCountEditor();
+                    this.countJpqlPage.removeEvent("postShow", postShowFun);
+                }.bind(this);
+                this.countJpqlPage.addEvent("postShow", postShowFun);
+            }else{
+                this._loadStatementCountEditor();
+            }
         }
+    },
+    _loadStatementCountEditor : function(){
+        o2.require("o2.widget.JavascriptEditor", function () {
+            this.countEditor = new o2.widget.JavascriptEditor(this.countJpqlEditorNode, {
+                "title": "JPQL",
+                "option": {"mode": "sql"}
+            });
+            this.countEditor.load(function () {
+                // if (this.json.countData) {
+                    this.countEditor.editor.setValue(this.json.countData);
+                // } else {
+                //     var table = "table";
+                //     this.countEditor.editor.setValue("SELECT count(o.id) FROM " + table + " o");
+                // }
+                // this.json.countData = this.countEditor.editor.getValue();
 
+                this.countEditor.addEditorEvent("change", function () {
+                    this.data.countData = this.countEditor.getValue();
+                }.bind(this));
+
+                // this.editor.editor.on("change", function(){
+                //     this.data.data = this.editor.getValue();
+                //     this.checkJpqlType();
+                // }.bind(this));
+            }.bind(this));
+        }.bind(this), false);
     },
     setSatementTable: function () {
         if (!this.json.type) this.json.type = "select";
         this.changeType(this.json.type, true);
-        if (this.json.data) {
-            this.editor.editor.setValue(this.json.data);
-        } else {
-            var table = (this.json.tableObj) ? this.json.tableObj.name : "table";
-            switch (this.json.type) {
-                case "update":
-                    this.editor.editor.setValue("UPDATE " + table + " o SET ");
-                    break;
-                case "delete":
-                    this.editor.editor.setValue("DELETE " + table + " o WHERE ");
-                    break;
-                default:
-                    this.editor.editor.setValue("SELECT o FROM " + table + " o");
+        if( this.editor && this.editor.editor){
+            if (this.json.data) {
+                this.editor.editor.setValue(this.json.data);
+            } else {
+                var table = (this.json.tableObj) ? this.json.tableObj.name : "table";
+                switch (this.json.type) {
+                    case "update":
+                        this.editor.editor.setValue("UPDATE " + table + " o SET ");
+                        break;
+                    case "delete":
+                        this.editor.editor.setValue("DELETE " + table + " o WHERE ");
+                        break;
+                    default:
+                        this.editor.editor.setValue("SELECT o FROM " + table + " o");
+                }
             }
         }
     },
@@ -701,13 +758,13 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             if( this.countJpqlPage && this.countJpqlPage.isShow && !this.countJpqlPage.disabled ){
                 if( this.data.format === "script" && this.countScriptEditor.jsEditor ){
                     this.countScriptEditor.jsEditor.insertValue( text );
-                }else{
+                }else if(this.countEditor){
                     this.countEditor.insertValue( text );
                 }
             }else{
                 if( this.data.format === "script" && this.scriptEditor.jsEditor ){
                     this.scriptEditor.jsEditor.insertValue( text );
-                }else{
+                }else if( this.editor ){
                     this.editor.insertValue( text );
                 }
             }
