@@ -332,6 +332,18 @@
     "nextPageText": {"name": "下一页文本"},
     "firstPageText": {"name": "首页文本"},
     "lastPageText": {"name": "末页文本"},
-    "pagingStyles": {"name": "分页栏样式", "type": "map"}
+    "pagingStyles": {"name": "分页栏样式", "type": "map"},
+
+    "column": {"name": "列名"}
+  },
+  "statement": {
+    "name": {"name": "名称"},
+    "alias": {"name": "别名"},
+    "description": {"name": "描述"},
+
+    "data": {"name": "JPQL语句", "type": "sql"},
+    "scriptText": {"name": "JPQL脚本", "type": "script"},
+    "countData": {"name": "JPQL总数语句", "type": "sql"},
+    "countScriptText": {"name": "JPQL总数脚本", "type": "script"}
   }
 }
