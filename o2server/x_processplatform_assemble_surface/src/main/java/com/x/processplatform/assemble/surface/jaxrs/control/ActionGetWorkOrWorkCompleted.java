@@ -111,15 +111,24 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		wo.setAllowReset(PropertyTools.getOrElse(activity, Manual.allowReset_FIELDNAME, Boolean.class, false)
 				&& wo.getAllowSave());
 		// 是否可以调度
-		wo.setAllowReroute(PropertyTools.getOrElse(activity, Manual.allowReroute_FIELDNAME, Boolean.class, false)
+		wo.setAllowReroute(PropertyTools.getOrElse(activity, Activity.allowReroute_FIELDNAME, Boolean.class, false)
 				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
 						work.getProcess()));
 		// 是否可以删除
 		wo.setAllowDelete(PropertyTools.getOrElse(activity, Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
 				&& wo.getAllowSave());
 		// 是否可以挂起待办,暂停待办计时
-		wo.setAllowPause(PropertyTools.getOrElse(activity, Manual.allowPause_FIELDNAME, Boolean.class, false)
-				&& wo.getAllowPause());
+
+		if (PropertyTools.getOrElse(activity, Manual.allowPause_FIELDNAME, Boolean.class, false)
+				&& wo.getAllowPause()) {
+			// 如果已经处于挂起状态,那么允许恢复
+			if (this.hasPauseTaskWithWork(business, effectivePerson, work.getId())) {
+				wo.setAllowResume(true);
+			} else {
+				wo.setAllowPause(true);
+			}
+		}
+
 		// 是否可以增加会签分支
 		if (BooleanUtils.isTrue(PropertyTools.getOrElse(activity, Manual.allowAddSplit_FIELDNAME, Boolean.class, false))
 				&& BooleanUtils.isTrue(work.getSplitting())) {
@@ -179,20 +188,22 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 			}
 			return false;
 		});
-//		Boolean o = this.hasTaskCompletedWithActivityToken.get(activityToken);
-//		if (null == o) {
-//			o = business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
-//					TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-//					TaskCompleted.activityToken_FIELDNAME, activityToken) > 0;
-//			this.hasTaskCompletedWithActivityToken.put(activityToken, o);
-//		}
-//		return o;
 	}
 
 	private boolean hasTaskWithWork(Business business, EffectivePerson effectivePerson, String work) throws Exception {
 		if (null == this.hasTaskWithWork) {
 			this.hasTaskWithWork = business.entityManagerContainer().countEqualAndEqual(Task.class,
 					Task.person_FIELDNAME, effectivePerson.getDistinguishedName(), Task.work_FIELDNAME, work) > 0;
+		}
+		return this.hasTaskWithWork;
+	}
+
+	private boolean hasPauseTaskWithWork(Business business, EffectivePerson effectivePerson, String work)
+			throws Exception {
+		if (null == this.hasTaskWithWork) {
+			this.hasTaskWithWork = business.entityManagerContainer().countEqualAndEqualAndEqual(Task.class,
+					Task.person_FIELDNAME, effectivePerson.getDistinguishedName(), Task.work_FIELDNAME, work,
+					Task.pause_FIELDNAME, true) > 0;
 		}
 		return this.hasTaskWithWork;
 	}
