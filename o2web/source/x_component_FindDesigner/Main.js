@@ -451,7 +451,14 @@ MWF.xApplication.FindDesigner.Main = new Class({
 								d = d[path[i]];
 							}
 						}
-						d[path[path.length-1]] = this.editor.getValue();
+						if (path[path.length-1]=="styles"){
+							d["recoveryStyles"] = this.editor.getValue();
+						}else if (path[path.length-1]=="inputStyles"){
+							d["recoveryInputStyles"] = this.editor.getValue();
+						}else{
+							d[path[path.length-1]] = this.editor.getValue();
+						}
+						//d[path[path.length-1]] = this.editor.getValue();
 					}
 				}
 				this.editor.destroy();
