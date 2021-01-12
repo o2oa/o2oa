@@ -1069,11 +1069,19 @@ MWF.xApplication.FindDesigner.Main = new Class({
 						var d = this.designerDataObject[this.editor.pattern.designerId];
 						if (this.editor.pattern.pattern.path){
 							var path = this.editor.pattern.pattern.path;
+
 							for (var i=0; i<path.length-1; i++){
 								d = d[path[i]];
 							}
 						}
-						d[path[path.length-1]] = this.editor.getValue();
+
+						if (path[path.length-1]=="styles"){
+							d["recoveryStyles"] = this.editor.getValue();
+						}else if (path[path.length-1]=="inputStyles"){
+							d["recoveryInputStyles"] = this.editor.getValue();
+						}else{
+							d[path[path.length-1]] = this.editor.getValue();
+						}
 					}
 
 					if (m) m(data.data, data.mobileData, null, function(){

@@ -293,8 +293,11 @@ o2.widget.Maplist = new Class({
 	},
     getValue: function(){
 		return this.toJson();
+	},
+	destroy: function(){
+		this.container.destroy();
+		o2.release(this);
 	}
-	
 });
 
 o2.widget.Maplist.Item = new Class({
