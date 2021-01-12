@@ -49,4 +49,4 @@
         "actionOutExamplePath" : "./o2web/jsdoc_static/actionOut_examples/{actionRoot}.json"
     }
 }
-//执行命令: jsdoc -c ./o2web/jsdoc.conf.json
+//执行命令: jsdoc -c ./o2web/jsdoc.conf.json -q version=v5.3.5
