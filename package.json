@@ -73,6 +73,6 @@
                 "request": "^2.88.2",
                 "single-line-log": "^1.1.2",
                 "targz": "^1.0.1",
-                "tidy-jsdoc-o2": "^0.0.5"
+                "tidy-jsdoc-o2": "latest"
         }
 }
