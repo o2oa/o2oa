@@ -595,7 +595,7 @@ public class AttendanceDetailAnalyseService {
 	 * @param debugger
 	 * @throws Exception
 	 */
-	private void recordStatisticRequireLog( AttendanceDetail detail, Boolean debugger ) throws Exception{
+	public void recordStatisticRequireLog( AttendanceDetail detail, Boolean debugger ) throws Exception{
 		//数据分析完成，那么需要记录一下需要统计的信息数据
 		AttendanceStatisticRequireLog log = null;
 		AttendanceStatisticRequireLogFactory attendanceStatisticRequireLogFactory = null;
