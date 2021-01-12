@@ -3,6 +3,7 @@
 /dest/
 /out/
 /jsdoc/
+/api/
 /node_modules/
 npm-debug.log
 /test/
