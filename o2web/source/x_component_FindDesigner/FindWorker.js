@@ -397,7 +397,8 @@ _worker.findScriptLineValue = function(result, code, preLine, preIndex, len){
     return {"value": value, "preLine": preLine, "preIndex": preIndex};
 };
 
-_worker.findInDesigner_script = function(formData, key, module, designer, propertyDefinition, option, mode){
+_worker.findInDesigner_script = function(formData, key, module, designer, propertyDefinition, option, mode, path){
+    if (formData[key].hasOwnProperty("code")) path.push("code");
     var code = formData[key].code || formData[key];
     if (code){
         this.keywordRegexp.lastIndex = 0;
@@ -419,11 +420,15 @@ _worker.findInDesigner_script = function(formData, key, module, designer, proper
                 "key": key,
                 "value": obj.value,
                 "line": preLine+1,
-                "mode": mode
+                "mode": mode,
+                "path": path
             }), option);
         }
     }
 };
+
+
+
 
 _worker.findInDesigner_events = function(formData, key, module, designer, propertyDefinition, option, mode){
     var eventObj = formData[key];
@@ -964,57 +969,58 @@ _worker.findInDesigner_text = function(formData, key, module, designer, property
     }
 };
 
-_worker.findInDesignerProperty = function(key, propertyDefinition, formData, option, module, designer, mode){
+_worker.findInDesignerProperty = function(key, propertyDefinition, formData, option, module, designer, mode, path){
     if (propertyDefinition){
         switch (propertyDefinition.type){
             case "html":
-                _worker.findInDesigner_script(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_script(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "script":
             case "css":
             case "sql":
-                _worker.findInDesigner_script(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_script(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "events":
-                _worker.findInDesigner_events(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_events(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "map":
-                _worker.findInDesigner_map(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_map(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "array":
-                _worker.findInDesigner_array(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_array(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "object-array":
-                _worker.findInDesigner_objectArray(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_objectArray(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "duty":
-                _worker.findInDesigner_duty(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_duty(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "actions":
-                _worker.findInDesigner_actions(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_actions(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "filter":
-                _worker.findInDesigner_filter(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_filter(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "serial":
-                _worker.findInDesigner_serial(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_serial(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "projection":
-                _worker.findInDesigner_projection(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_projection(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             case "selectConfig":
-                _worker.findInDesigner_selectConfig(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_selectConfig(formData, key, module, designer, propertyDefinition, option, mode, path);
                 break;
             default:
-                _worker.findInDesigner_text(formData, key, module, designer, propertyDefinition, option, mode);
+                _worker.findInDesigner_text(formData, key, module, designer, propertyDefinition, option, mode, path);
         }
     }
 }
 
-_worker.findInDesigner = function(formData, option, module, designer, mode){
+_worker.findInDesigner = function(formData, option, module, designer, mode, path){
     Object.keys(formData).forEach(function(key){
+        path.push(key);
         var propertyDefinition = this.designerPropertysData.form[key];
-        _worker.findInDesignerProperty(key, propertyDefinition, formData, option, module, designer, mode);
+        _worker.findInDesignerProperty(key, propertyDefinition, formData, option, module, designer, mode, path);
     });
 };
 
@@ -1054,11 +1060,11 @@ _worker._getDesignerData = function(designer, module){
 
 _worker._findInDesigner_form = function(formData, designer, option, module){
     var mode = formData.json.mode;
-    _worker.findInDesigner(formData.json, option, module, designer, mode);
+    _worker.findInDesigner(formData.json, option, module, designer, mode, []);
     for (key in formData.json.moduleList){
         if (formData.json.moduleList[key].recoveryStyles) formData.json.moduleList[key].styles = formData.json.moduleList[key].recoveryStyles;
         if (formData.json.moduleList[key].recoveryInputStyles) formData.json.moduleList[key].inputStyles = formData.json.moduleList[key].recoveryInputStyles;
-        _worker.findInDesigner(formData.json.moduleList[key], option, module, designer, mode);
+        _worker.findInDesigner(formData.json.moduleList[key], option, module, designer, mode, ["moduleList", key]);
     }
 };
 
