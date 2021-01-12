@@ -337,7 +337,7 @@ MWF.xApplication.Attendance.AppealExplorer.View = new Class({
     },
     _openDocument: function( documentData ){
 
-        if(!!documentData.appealAuditInfo){
+        /*if(!!documentData.appealAuditInfo){
             var workid = documentData.appealAuditInfo.workId;
             var options = {"workId":workid, "appId": "process.Work"+workid};
             this.app.desktop.openApplication(null, "process.Work", options);
@@ -348,7 +348,17 @@ MWF.xApplication.Attendance.AppealExplorer.View = new Class({
             }else{
                 appeal.open();
             }
+        }*/
+        if(documentData.appealAuditInfo){
+            if(documentData.appealAuditInfo.workId){
+                var workid = documentData.appealAuditInfo.workId;
+                var options = {"workId":workid, "appId": "process.Work"+workid};
+                this.app.desktop.openApplication(null, "process.Work", options);
+                return;
+            }
         }
+        var appeal = new MWF.xApplication.Attendance.AppealExplorer.Appeal(this.explorer, documentData );
+        appeal.open();
 
     }
 
