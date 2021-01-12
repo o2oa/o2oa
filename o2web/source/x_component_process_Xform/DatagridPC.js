@@ -580,6 +580,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		this.isEdit = false;
 
 		var flag = true;
+		var saveFlag = false;
 
 		var griddata = {};
 		var newTr = null;
@@ -605,6 +606,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 					var i = newTr.rowIndex;
 					var data = {"value": [i], "text": [i]};
 				}else if (module.json.type=="Attachment" || module.json.type == "AttachmentDg"){
+					saveFlag = true;
 					flag = false;
 					var data = module.getTextData();
 					//data.site = module.json.site;
@@ -679,7 +681,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		this.validationMode();
 		this.fireEvent("completeLineEdit", [newTr]);
 
-		this.form.saveFormData();
+		if( saveFlag ){
+			this.form.saveFormData();
+		}
 
 		return true;
 	},
@@ -777,6 +781,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 //		}.bind(this));
 	},
 	_deleteLine: function(e){
+		var saveFlag = false;
 		var currentTr = e.target.getParent("tr");
 		if (currentTr){
 			var color = currentTr.getStyle("background");
@@ -798,6 +803,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						data[key][module.json.id].each(function(d){
 							_self.form.workAction.deleteAttachment(d.id, _self.form.businessData.work.id);
 						});
+						saveFlag = true;
 					}
 				});
 
@@ -810,7 +816,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 				_self.fireEvent("afterDeleteLine");
 
-				_self.form.saveFormData();
+				if(saveFlag){
+					_self.form.saveFormData();
+				}
 			}, function(){
 				var color = currentTr.retrieve("bgcolor");
 				currentTr.tween("background", color);
