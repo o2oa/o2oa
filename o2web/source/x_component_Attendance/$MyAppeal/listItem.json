@@ -5,7 +5,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.empName.split('@')[0] }",
     "name" : "empName",
-    "width" : "10%"
+    "width" : "20%"
   },
   {
     "title" : "考勤日期",
@@ -13,7 +13,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "recordDateString",
     "name" : "recordDateString",
-    "width" : "10%"
+    "width" : "20%"
   },
   //  {
   //    "title": "考勤状态",
@@ -29,7 +29,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "appealReason",
     "name" : "appealReason",
-    "width" : "15%"
+    "width" : "20%"
   },
   {
     "title": "申述日期",
@@ -37,7 +37,7 @@
     "contentStyles": "normalTdNode",
     "item": "function( d ){ var date = d.appealDateString.split(' '); return date[0] }",
     "name" : "appealDateString",
-    "width" : "10%"
+    "width" : "20%"
   },
   {
     "title": "审批状态",
@@ -45,16 +45,16 @@
     "contentStyles": "normalTdNode",
     "item": "function( d ){  if(d.status==0){ return '待处理' }else if(d.status==-1){ return '未通过' }else if(d.status==1){ return '通过' }else{ return '' } }",
     "name" : "status",
-    "width" : "10%"
-  },
-  {
-    "title" : "审批意见",
-    "headStyles" : "normalThNode",
-    "contentStyles" : "normalTdNode",
-    "item" : "opinion1",
-    "name" : "opinion1",
-    "width" : "15%"
+    "width" : "20%"
   }
+  //{
+  //  "title" : "审批意见",
+   // "headStyles" : "normalThNode",
+   // "contentStyles" : "normalTdNode",
+   // "item" : "opinion1",
+   // "name" : "opinion1",
+   // "width" : "15%"
+  //}
   //  {
   //    "title" : "操作",
   //    "headStyles" : "normalThNode",
