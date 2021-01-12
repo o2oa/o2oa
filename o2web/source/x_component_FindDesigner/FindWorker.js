@@ -430,7 +430,7 @@ _worker.findInDesigner_script = function(formData, key, module, designer, proper
 
 
 
-_worker.findInDesigner_events = function(formData, key, module, designer, propertyDefinition, option, mode){
+_worker.findInDesigner_events = function(formData, key, module, designer, propertyDefinition, option, mode, path){
     var eventObj = formData[key];
     Object.keys(eventObj).forEach(function(evkey){
         var code = eventObj[evkey].code;
@@ -454,12 +454,13 @@ _worker.findInDesigner_events = function(formData, key, module, designer, proper
                 "evkey": evkey,
                 "value": obj.value,
                 "line": preLine+1,
-                "mode": mode
+                "mode": mode,
+                "path": (path) ? path.concat([evkey, "code"]) : ""
             }), option);
         }
     });
 };
-_worker.findInDesigner_map = function(formData, key, module, designer, propertyDefinition, option, mode){
+_worker.findInDesigner_map = function(formData, key, module, designer, propertyDefinition, option, mode, path){
     var map = formData[key];
     Object.keys(map).forEach(function(evkey) {
         this.keywordRegexp.lastIndex = 0;
@@ -474,7 +475,8 @@ _worker.findInDesigner_map = function(formData, key, module, designer, propertyD
                         "name": formData.name || formData.id,
                         "key": key,
                         "value": evkey + ": " + text,
-                        "mode": mode
+                        "mode": mode,
+                        "path": path
                     }), option);
                 }
             }else{
@@ -489,7 +491,8 @@ _worker.findInDesigner_map = function(formData, key, module, designer, propertyD
                             "name": formData.name || formData.id,
                             "key": key,
                             "value": stylekey + ": " + text,
-                            "mode": mode
+                            "mode": mode,
+                            "path": path.concat(evkey)
                         }), option);
                     }
                 });
@@ -1018,9 +1021,8 @@ _worker.findInDesignerProperty = function(key, propertyDefinition, formData, opt
 
 _worker.findInDesigner = function(formData, option, module, designer, mode, path){
     Object.keys(formData).forEach(function(key){
-        path.push(key);
         var propertyDefinition = this.designerPropertysData.form[key];
-        _worker.findInDesignerProperty(key, propertyDefinition, formData, option, module, designer, mode, path);
+        _worker.findInDesignerProperty(key, propertyDefinition, formData, option, module, designer, mode, path.concat(key));
     });
 };
 
@@ -1058,13 +1060,17 @@ _worker._getDesignerData = function(designer, module){
     }
 };
 
-_worker._findInDesigner_form = function(formData, designer, option, module){
+_worker._findInDesigner_form = function(formData, designer, option, module, path){
     var mode = formData.json.mode;
-    _worker.findInDesigner(formData.json, option, module, designer, mode, []);
+    path.push("json");
+    _worker.findInDesigner(formData.json, option, module, designer, mode, path);
+
+    path.push("moduleList");
     for (key in formData.json.moduleList){
         if (formData.json.moduleList[key].recoveryStyles) formData.json.moduleList[key].styles = formData.json.moduleList[key].recoveryStyles;
         if (formData.json.moduleList[key].recoveryInputStyles) formData.json.moduleList[key].inputStyles = formData.json.moduleList[key].recoveryInputStyles;
-        _worker.findInDesigner(formData.json.moduleList[key], option, module, designer, mode, ["moduleList", key]);
+
+        _worker.findInDesigner(formData.json.moduleList[key], option, module, designer, mode, path.concat(key));
     }
 };
 
@@ -1078,11 +1084,11 @@ _worker._findProcessPlatformParse_form = function(designer, option, module){
                 this.designerPropertysData = arr[1];
                 if (patternPropertys.indexOf("data")!=-1){
                     var formData = JSON.parse(_worker.decodeJsonString(formJson.data.data));
-                    _worker._findInDesigner_form(formData, designer, option, module);
+                    _worker._findInDesigner_form(formData, designer, option, module, ["data"]);
                 }
                 if (patternPropertys.indexOf("mobileData")!=-1){
                     var formData = JSON.parse(_worker.decodeJsonString(formJson.data.mobileData));
-                    _worker._findInDesigner_form(formData, designer, option, module)
+                    _worker._findInDesigner_form(formData, designer, option, module, ["mobileData"])
                 }
             }, function(){});
         }

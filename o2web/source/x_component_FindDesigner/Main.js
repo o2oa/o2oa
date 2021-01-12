@@ -267,6 +267,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		if (!itemNodes.length) this.setSelectedRange();
 	},
 	selectFindRange: function(loadFun){
+		debugger;
 		o2.requireApp("Selector", "package", function(){
 			new o2.O2Selector(this.content, {
 				"values": this.selectedModules,
@@ -426,18 +427,32 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}
 		return tree.appendChild(obj);
 	},
-	createResultPatternItem: function(text, title, tree, icon, action){
+	createResultPatternItem: function(text, title, tree, icon, action, treeNode){
 		var obj = {
 			"title": title,
 			"text": "<span style='color: #000000'>"+text+"</span>",
 			"icon": icon||"",
 			"action": action || null
 		}
-		var node = tree.appendChild(obj);
+
+		var node = (treeNode) ? treeNode.insertChild(obj) : tree.appendChild(obj);
 		node.addEvent("unselect", function(){
 			if (this.editor){
-				if (this.scriptDesignerDataObject && this.scriptDesignerDataObject[this.editor.pattern.designerId]){
-					this.scriptDesignerDataObject[this.editor.pattern.designerId].text = this.editor.getValue();
+				if (this.editor.pattern.designerType === "script"){
+					if (this.scriptDesignerDataObject && this.scriptDesignerDataObject[this.editor.pattern.designerId]){
+						this.scriptDesignerDataObject[this.editor.pattern.designerId].text = this.editor.getValue();
+					}
+				}else{
+					if (this.designerDataObject && this.designerDataObject[this.editor.pattern.designerId]){
+						var d = this.designerDataObject[this.editor.pattern.designerId];
+						if (this.editor.pattern.pattern.path){
+							var path = this.editor.pattern.pattern.path;
+							for (var i=0; i<path.length-1; i++){
+								d = d[path[i]];
+							}
+						}
+						d[path[path.length-1]] = this.editor.getValue();
+					}
 				}
 				this.editor.destroy();
 				this.editor = null;
@@ -480,7 +495,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		var t = this.lp.findPatternCount.replace("{n}", this.patternCount);
 		this.listTitleInfoNode.set("text", t);
 	},
-	showFindResult: function(data,option){
+	showFindResult: function(data,option, treeNode){
 		this.addResultTitle();
 
 		this.listInfoNode.hide();
@@ -525,17 +540,17 @@ MWF.xApplication.FindDesigner.Main = new Class({
 
 		switch (data.designerType){
 			case "script":
-				this.createScriptPatternNode(data, designerNode, regexp);
+				this.createScriptPatternNode(data, designerNode, regexp, treeNode);
 				break;
 			case "form":
 			case "page":
 			case "widget":
 			case "view":
 			case "statement":
-				this.createFormPatternNode(data, designerNode, regexp);
+				this.createFormPatternNode(data, designerNode, regexp, treeNode);
 				break;
 			case "process":
-				this.createProcessPatternNode(data, designerNode, regexp);
+				this.createProcessPatternNode(data, designerNode, regexp, treeNode);
 				break;
 
 		}
@@ -573,18 +588,19 @@ MWF.xApplication.FindDesigner.Main = new Class({
 
 		if (data.pattern.line){
 			if (data.pattern.evkey){
-				text += "<b>["+data.pattern.evkey+"]</b>&nbsp;"+((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp);
+				text += "<b>["+data.pattern.evkey+"]</b>&nbsp;"+((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp, data.pattern);
 			}else{
-				text += ((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp);
+				text += ((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp, data.pattern);
 			}
 		}else{
-			text += this.getPatternValue(data.pattern.value, regexp);
+			text += this.getPatternValue(data.pattern.value, regexp, data.pattern);
 		}
 		if (data.pattern.mode){
 			text = "<b>["+data.pattern.mode+"]</b>&nbsp;"+text;
 		}
 
 		patternNode = this.createResultPatternItem(text, "", node, "icon_"+data.pattern.propertyType+".png", openScript);
+		patternNode.pattern = data;
 	},
 
 	getPatternValue: function(value, regexp, pattern){
@@ -634,7 +650,14 @@ MWF.xApplication.FindDesigner.Main = new Class({
 					}
 				}else{
 					if (this.designerDataObject && this.designerDataObject[this.editor.pattern.designerId]){
-						this.designerDataObject[this.editor.pattern.designerId] = this.editor.designerData;
+						var d = this.designerDataObject[this.editor.pattern.designerId];
+						if (this.editor.pattern.pattern.path){
+							var path = this.editor.pattern.pattern.path;
+							for (var i=0; i<path.length-1; i++){
+								d = d[path[i]];
+							}
+						}
+						d[path[path.length-1]] = this.editor.getValue();
 					}
 				}
 				this.editor.destroy();
@@ -670,74 +693,133 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}
 
 	},
-	resetFormEditor: function(pattern){},
+	resetFormEditor: function(pattern){
+		switch (pattern.pattern.propertyType){
+			case "html":
+			case "script":
+			case "css":
+			case "sql":
+				this.reLocationEditor(pattern);
+				break;
+
+		}
+	},
 	openPatternFormWithData: function(m, node){
 		if (this.designerDataObject && this.designerDataObject[node.pattern.designerId]){
 			this.openPatternFormEditor(this.designerDataObject[node.pattern.designerId], node);
 		}else{
 			if (m) m(node.pattern.designerId).then(function(json){
-				if (!this.designerDataObject) this.designerDataObject = {};
-				this.designerDataObject[node.pattern.designerId] = json.data;
 				if (json.data){
-				} this.openPatternFormEditor(json.data, node);
+					var data = json.data;
+					var pcData = JSON.decode(MWF.decodeJsonString(json.data.data));
+					var mobileData = (json.data.mobileData) ? JSON.decode(MWF.decodeJsonString(json.data.mobileData)) : null;
+					var d = {"data": pcData, "mobileData": mobileData};
+					if (!this.designerDataObject) this.designerDataObject = {};
+					this.designerDataObject[node.pattern.designerId] = d;
+					this.openPatternFormEditor(d, node);
+				}
 			}.bind(this), function(){});
 		}
 	},
 	openPatternFormEditor: function(data, node){
-		switch (node.pattern.propertyType){
+		switch (node.pattern.pattern.propertyType){
 			case "html":
 			case "script":
 			case "css":
 			case "sql":
+			case "events":
 				this.openPatternFormEditor_script(data, node);
+				break;
+			case "map":
+				this.openPatternFormEditor_map(data, node);
 				break;
 
 		}
 	},
+	openPatternFormEditor_map: function(data, node){
+		debugger;
+		var path = node.pattern.pattern.path;
+		var d = data;
+		var i=0;
+		while (i<path.length){
+			if (path[i]=="styles"){
+				d.styles = d.recoveryStyles;
+			}else if (path[i]=="inputStyles"){
+				d.inputStyles = d.recoveryInputStyles;
+			}
+			d = d[path[i]];
+			i++;
+		}
+
+		if (d){
+			o2.require("o2.widget.Maplist", function(){
+				this.editor = new o2.widget.Maplist(this.previewContentNode, {
+					"onChange": function(){
+						//this.reFindInFormDesigner();
+					}.bind(this),
+					"onPostLoad": function(){
+						if (this.previewToolbar){
+							this.previewToolbar.childrenButton[0].enable();
+							this.previewToolbar.childrenButton[1].enable();
+						}
+					}.bind(this),
+				});
+				this.editor.pattern = node.pattern;
+				this.editor.designerNode = node;
+				this.editor.designerData = data;
+
+				this.editor.load(d);
+
+			}.bind(this))
+		}
+	},
 
 	openPatternFormEditor_script: function(data, node){
-		var dataStr = (node.pattern.mode=="Mobile") ? data.mobileData : data.data;
 
-		if (dataStr){
-			var formData = JSON.parse(dataStr);
+		var path = node.pattern.pattern.path;
+		var d = data;
+		var i=0;
+		while (i<path.length){
+			d = d[path[i]];
+			i++;
+		}
 
+		if (d){
+			o2.require("o2.widget.JavascriptEditor", function(){
+				this.editor = new o2.widget.JavascriptEditor(this.previewContentNode, {
+					"option": {
+						"value": d,
+						"mode": (!node.pattern.pattern.propertyType || node.pattern.pattern.propertyType==="script") ? "javascript" : node.pattern.pattern.propertyType
+					}
+				});
+				this.editor.pattern = node.pattern;
+				this.editor.designerNode = node;
+				this.editor.designerData = data;
+				this.editor.load(function(){
+					if (this.previewToolbar){
+						this.previewToolbar.childrenButton[0].enable();
+						this.previewToolbar.childrenButton[1].enable();
+					}
+					this.editor.addEvent("change", function(){
+						this.editor.isRefind = true;
+					}.bind(this));
+					this.editor.addEvent("blur", function(){
+						if (this.editor.isRefind) this.reFindInFormDesigner();
+					}.bind(this));
+					this.editor.addEvent("destroy", function(){
+						this.previewToolbar.childrenButton[0].disable();
+						this.previewToolbar.childrenButton[1].disable();
+					}.bind(this));
+					this.editor.addEvent("save", function(){
+						this.saveDesigner();
+					}.bind(this));
+
+					this.resetFormEditor(node.pattern);
+				}.bind(this));
+			}.bind(this));
 
 		}
 
-
-
-		o2.require("o2.widget.JavascriptEditor", function(){
-			this.editor = new o2.widget.JavascriptEditor(this.previewContentNode, {
-				"option": {
-					"value": data.text,
-					"node": ""
-				}
-			});
-			this.editor.pattern = node.pattern;
-			this.editor.designerNode = node.parentNode;
-			this.editor.designerData = data;
-			this.editor.load(function(){
-				if (this.previewToolbar){
-					this.previewToolbar.childrenButton[0].enable();
-					this.previewToolbar.childrenButton[1].enable();
-				}
-				this.editor.addEvent("change", function(){
-					this.editor.isRefind = true;
-				}.bind(this));
-				this.editor.addEvent("blur", function(){
-					if (this.editor.isRefind) this.reFindInDesigner();
-				}.bind(this));
-				this.editor.addEvent("destroy", function(){
-					this.previewToolbar.childrenButton[0].disable();
-					this.previewToolbar.childrenButton[1].disable();
-				}.bind(this));
-				this.editor.addEvent("save", function(){
-					this.saveDesigner();
-				}.bind(this));
-
-				this.reLocationEditor(node.pattern);
-			}.bind(this));
-		}.bind(this));
 	},
 
 	openPatternScript: function(node){
@@ -850,8 +932,57 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		preIndex = regex.lastIndex = n;
 		return {"value": value, "preLine": preLine, "preIndex": preIndex};
 	},
-	reFindInDesigner: function(){
+	reFindInFormDesigner: function(){
 		debugger;
+		if (this.editor && this.editor.designerNode){
+
+			var pathStr = this.editor.pattern.pattern.path.join(".");
+			var pNode = this.editor.designerNode.parentNode;
+			var removeNodes = [];
+			pNode.children.forEach(function(n){
+				if (n.pattern.pattern.path && n.pattern.pattern.path.join(".")===pathStr) removeNodes.push(n);
+			}.bind(this));
+			for (var i=1; i<removeNodes.length; i++){
+				removeNodes[i].destroy();
+			}
+			flagNode = removeNodes[0];
+
+			var pattern = this.editor.pattern;
+			var code = this.editor.getValue();
+			if (code){
+				var regex = this.getFilterOptionRegex(this.filterOption)
+				regex.lastIndex = 0;
+				var len = code.length;
+
+				var preLine = 0;
+				var preIndex = 0;
+				var result;
+				while ((result = regex.exec(code)) !== null){
+					var obj = this.findScriptLineValue(result, code, preLine, preIndex, len, regex);
+					preLine = obj.preLine;
+					preIndex = obj.preIndex;
+
+					this.showFindResult(this._createFindMessageReplyData( this.editor.pattern.module, this.editor.pattern, "", {
+						"type": pattern.pattern.type,
+						"propertyType": pattern.pattern.propertyType,
+						"propertyName": pattern.pattern.propertyName,
+						"name": pattern.pattern.name,
+						"key": pattern.pattern.key,
+						"evkey": pattern.pattern.evkey,
+						"value": obj.value,
+						"line": preLine+1,
+						"mode": pattern.pattern.mode,
+						"path": pattern.pattern.path
+					}), this.filterOption, flagNode);
+				}
+
+			}
+			if (flagNode) flagNode.destroy();
+		}
+		this.editor.isRefind = false;
+	},
+
+	reFindInDesigner: function(){
 		if (this.editor && this.editor.designerNode){
 			while (this.editor.designerNode.firstChild){
 				this.editor.designerNode.firstChild.destroy();
@@ -895,6 +1026,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	},
 
 	saveDesigner: function(){
+		debugger;
 		if (this.editor && this.editor.pattern){
 			var pattern = this.editor.pattern;
 			var data = this.editor.designerData;
@@ -923,7 +1055,31 @@ MWF.xApplication.FindDesigner.Main = new Class({
 
 					break;
 				case "form":
-					//this.createFormPatternNode(data, designerNode, regexp);
+					switch (pattern.module){
+						case "processPlatform":
+							var action = MWF.Actions.get("x_processplatform_assemble_designer");
+							m = action.saveForm.bind(action);
+							break;
+						case "cms":
+							var action = MWF.Actions.get("x_cms_assemble_control");
+							m = action.saveForm.bind(action);
+							break;
+					}
+					if (this.designerDataObject && this.designerDataObject[this.editor.pattern.designerId]){
+						var d = this.designerDataObject[this.editor.pattern.designerId];
+						if (this.editor.pattern.pattern.path){
+							var path = this.editor.pattern.pattern.path;
+							for (var i=0; i<path.length-1; i++){
+								d = d[path[i]];
+							}
+						}
+						d[path[path.length-1]] = this.editor.getValue();
+					}
+
+					if (m) m(data.data, data.mobileData, null, function(){
+						this.notice(this.lp.notice.save_success, "success", this.previewContentNode, {"x": "left", "y": "bottom"});
+					}.bind(this), function(){});
+
 					break;
 				case "process":
 
@@ -1017,6 +1173,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	},
 
 	reLocationEditor: function(pattern){
+		this.editor.pattern = pattern;
 		this.editor.gotoLine(pattern.pattern.line, 1);
 		if (pattern.pattern.cols && pattern.pattern.cols.length){
 			var rs = [];
@@ -1120,6 +1277,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		this.previewInforNode.show().inject(this.previewContentNode);
 
 		this.scriptDesignerDataObject = null;
+		this.designerDataObject = null;
 
 		this.getFindWorker();
 		var actions = this.getActionsUrl();
