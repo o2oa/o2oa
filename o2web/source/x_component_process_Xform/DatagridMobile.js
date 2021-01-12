@@ -793,6 +793,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         }
 
         this.isEdit = false;
+        var saveFlag = false;
         //var flag = true;
 
         var griddata = {};
@@ -860,6 +861,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
                     }
                     data = {"value": [i], "text": [i]};
                 }else if( module.json.type=="Attachment" || module.json.type == "AttachmentDg" ) {
+                    saveFlag = true;
                     var data = module.getTextData();
                     //data.site = module.json.site;
                     if (!griddata[id]) griddata[id] = {};
@@ -958,7 +960,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
             }.bind(this));
         }
 
-        this.form.saveFormData();
+        if(saveFlag){
+            this.form.saveFormData();
+        }
         return true;
     },
     _editorTrGoBack: function(){
@@ -1068,6 +1072,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         });
     },
     _deleteLine: function(node, e){
+        var saveFlag = false;
         var currentTable = node.getElement("table");
         if (currentTable){
 
@@ -1085,6 +1090,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
                     var key = th.get("id");
                     var module = _self.editModules[i];
                     if (key && module && (module.json.type=="Attachment" || module.json.type=="AttachmentDg")){
+                        saveFlag = true;
                         data[key][module.json.id].each(function(d){
                             _self.form.workAction.deleteAttachment(d.id, _self.form.businessData.work.id);
                         });
@@ -1107,7 +1113,10 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
                 this.close();
 
                 _self.fireEvent("afterDeleteLine");
-                _self.form.saveFormData();
+
+                if(saveFlag){
+                    _self.form.saveFormData();
+                }
 
             }, function(){
                 //var color = currentTr.retrieve("bgcolor");
