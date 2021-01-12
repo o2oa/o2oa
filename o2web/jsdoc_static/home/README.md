@@ -1,4 +1,4 @@
-# O2OA前台API ({@o2version})
+# O2OA前台API {@o2version}
 
 ## 简介
 
