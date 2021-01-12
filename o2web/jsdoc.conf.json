@@ -1,7 +1,7 @@
 {
     "opts": {    //命令行参数，在配置文件中配置了就不要敲命令了
         "encoding": "utf8",               //文件编码utf8
-        "destination": "./o2web/jsdoc/",          //输出目标文件夹
+        "destination": "./o2web/api/",          //输出目标文件夹
         "recurse": true,                 //是否递归抽取sorce/include配置的文件夹
         "template" : "./node_modules/tidy-jsdoc-o2", //模板路径
         "prism-theme": "prism-custom", //模板中的代码块样式主题
