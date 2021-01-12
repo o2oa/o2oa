@@ -1296,6 +1296,7 @@ debugger;
             }.bind(this));
 
             dutyNameNodes.each(function(node){
+                debugger;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "dutyName",
                     "names": this.data[node.get("name")],
