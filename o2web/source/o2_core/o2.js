@@ -225,8 +225,21 @@ if (!window.Promise){
                 cb = (callback[name]) ? callback[name] : ((callback[key]) ? callback[key] : null);
             }
         }
-        if (cb) return (promise_cb) ? promise_cb(cb.apply(b, par)) : cb.apply(b, par) ;
-        return (promise_cb) ? promise_cb.apply(b, par) : null;
+        if (cb){
+            if (promise_cb){
+                var r = cb.apply(b, par);
+
+                return promise_cb(r);
+            }else{
+                return cb.apply(b, par);
+            }
+            //return (promise_cb) ? promise_cb(cb.apply(b, par)) : cb.apply(b, par) ;
+        }
+        if (promise_cb){
+            return promise_cb.apply(b, par);
+        }
+        return null;
+        //return (promise_cb) ? promise_cb.apply(b, par) : null;
 
         // if (key.toLowerCase()==="success" && (type==="function" || type==="o2_async_function")){
         //     (promise_cb) ? promise_cb(callback.apply(b, par)) : callback.apply(b, par) ;
@@ -1424,7 +1437,7 @@ if (!window.Promise){
         //var noCache = false;
         if (!loadAsync || !useWebWorker){
             var res;
-            var p = new Promise(function(s,f){
+            var p = new Promise(function(resolve,reject){
                 res = new Request.JSON({
                     url: o2.filterUrl(address),
                     secure: false,
@@ -1443,13 +1456,15 @@ if (!window.Promise){
                                 layout.session.token = xToken;
                             }
                         }
-                        return o2.runCallback(callback, "success", [responseJSON],null, s);
+                        //resolve();
+                        return o2.runCallback(callback, "success", [responseJSON],null, resolve);
                     },
                     onFailure: function(xhr){
-                        return o2.runCallback(callback, "requestFailure", [xhr], null, f);
+                        //reject();
+                        return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                     }.bind(this),
                     onError: function(text, error){
-                        return o2.runCallback(callback, "error", [text, error], null, f);
+                        return o2.runCallback(callback, "error", [text, error], null, reject);
                     }.bind(this)
                 });
 
@@ -1468,7 +1483,7 @@ if (!window.Promise){
                 }
                 //Content-Type	application/x-www-form-urlencoded; charset=utf-8
                 res.send(data);
-            }.bind(this)).catch(function(){});
+            }.bind(this));
 
             //var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
             var oReturn = p;
