@@ -165,7 +165,7 @@ class ActionListPaging extends BaseAction {
 		private static final long serialVersionUID = 9206739553467260926L;
 
 		static WrapCopier<Application, Wo> copier = WrapCopierFactory.wo(Application.class, Wo.class,
-				JpaObject.singularAttributeField(Application.class, true, false), Arrays.asList("abort", "installSteps"));
+				JpaObject.singularAttributeField(Application.class, true, false), Arrays.asList("abort", "installSteps", "describe"));
 
 		@FieldDescribe("已安装的版本，空表示未安装")
 		private String installedVersion;
