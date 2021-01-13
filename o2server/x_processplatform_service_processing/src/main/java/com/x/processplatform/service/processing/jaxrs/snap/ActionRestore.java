@@ -34,6 +34,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.query.core.entity.Item;
@@ -142,18 +143,23 @@ class ActionRestore extends BaseAction {
 			emc.beginTransaction(Attachment.class);
 			for (Task o : snap.getProperties().getTaskList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.task_create(o);
 			}
 			for (TaskCompleted o : snap.getProperties().getTaskCompletedList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.taskCompleted_create(o);
 			}
 			for (Read o : snap.getProperties().getReadList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.read_create(o);
 			}
 			for (ReadCompleted o : snap.getProperties().getReadCompletedList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.readCompleted_create(o);
 			}
 			for (Review o : snap.getProperties().getReviewList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.review_create(o);
 			}
 			for (WorkLog o : snap.getProperties().getWorkLogList()) {
 				emc.persist(o, CheckPersistType.all);
@@ -191,15 +197,19 @@ class ActionRestore extends BaseAction {
 			emc.beginTransaction(Attachment.class);
 			for (TaskCompleted o : snap.getProperties().getTaskCompletedList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.taskCompleted_create(o);
 			}
 			for (Read o : snap.getProperties().getReadList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.read_create(o);
 			}
 			for (ReadCompleted o : snap.getProperties().getReadCompletedList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.readCompleted_create(o);
 			}
 			for (Review o : snap.getProperties().getReviewList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.review_create(o);
 			}
 			for (WorkLog o : snap.getProperties().getWorkLogList()) {
 				emc.persist(o, CheckPersistType.all);
