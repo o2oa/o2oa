@@ -379,9 +379,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         td = tr.insertCell(8).setStyles(css);
         td.set("html", arrivedUsers);
 
+        var atts = [];
         if (task.properties.mediaOpinion){
             var mediaIds = task.properties.mediaOpinion.split(",");
-            var atts = [];
             if (this.form.businessData.attachmentList){
                 this.form.businessData.attachmentList.each(function(att){
                     if (att.site==="$mediaOpinion"){
@@ -391,6 +391,14 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             }
             if (atts.length) this.loadMediaOpinion(atts, opinionTd.getFirst(), "table");
         }
+
+        this.fireEvent("postLoadLine",[{
+            "data" : task,
+            "node" : tr,
+            "atts" : atts,
+            "log" : this,
+            "type" : isTask ? "task" : "taskCompleted"
+        }]);
     },
     loadRecordLogDefault: function(list, container){
         var logActivityNode = new Element("div", {"styles": this.form.css.logActivityNode_record}).inject(container || this.node);
@@ -450,6 +458,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         }
         var html;
         var company = "";
+        var atts = [];
         if (!isTask){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
             html = this.json.textStyle;
@@ -545,7 +554,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             var imgNode = textNode.getElement(".mwf_log_img");
             if (task.properties.mediaOpinion){
                 var mediaIds = task.properties.mediaOpinion.split(",");
-                var atts = [];
+                // var atts = [];
                 if (this.form.businessData.attachmentList){
                     this.form.businessData.attachmentList.each(function(att){
                         if (att.site==="$mediaOpinion"){
@@ -578,6 +587,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         }
         this.fireEvent("postLoadLine",[{
             "data" : task,
+            "atts" : atts,
             "node" : logTaskNode,
             "log" : this,
             "type" : isTask ? "task" : "taskCompleted"
@@ -604,7 +614,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             this.loadRecordTaskLine_text(log, container || this.node, false);
         }
     },
-    loadRecordTaskLine_text: function(task, node, log, isTask){
+    loadRecordTaskLine_text: function(task, node, isTask){
         this.loadRecordTaskLine_default(task, node, isTask, "0px", false, true, true);
     },
 
@@ -634,8 +644,18 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                     }
                 }.bind(this));
             }
+            var isCompleted = !!task.recordTime;
             task.completedTime = task.recordTime;
-            if (atts.length) this.loadMediaOpinion_show(atts, task, container);
+            var node = new Element("div").inject( container || this.node );
+            if (atts.length) this.loadMediaOpinion_show(atts, task, node);
+
+            this.fireEvent("postLoadLine",[{
+                "data" : task,
+                "atts" : atts,
+                "node" : node,
+                "log" : this,
+                "type" : isCompleted ? "taskCompleted" : "task"
+            }]);
         }
     },
 
@@ -1023,7 +1043,16 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                     }
                 }.bind(this));
             }
-            if (atts.length) this.loadMediaOpinion_show(atts, task, container);
+            var node = new Element("div").inject( container || this.node );
+            if (atts.length) this.loadMediaOpinion_show(atts, task, node);
+
+            this.fireEvent("postLoadLine",[{
+                "data" : task,
+                "atts" : atts,
+                "node" : node,
+                "log" : this,
+                "type" : !!task.completedTime ? "taskCompleted" : "task"
+            }]);
         }
     },
     loadMediaOpinion_show: function(atts, task, container, noName){
@@ -1097,10 +1126,6 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                 }.bind(this)
             }
         }).inject(imgNode);
-
-
-
-
 
         // var size = img.getSize();
         // var x_y = size.x/size.y;
@@ -1276,9 +1301,10 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         opinion = (task.processingType=="empower") ? "授权给"+ o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + (task.opinion || "")+"</div>";
         td.set("html", opinion);
 
+
+        var atts = [];
         if (task.mediaOpinion){
             var mediaIds = task.mediaOpinion.split(",");
-            var atts = [];
             if (this.form.businessData.attachmentList){
                 this.form.businessData.attachmentList.each(function(att){
                     if (att.site==="$mediaOpinion"){
@@ -1288,6 +1314,13 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             }
             if (atts.length) this.loadMediaOpinion(atts, td.getFirst(), "table");
         }
+        this.fireEvent("postLoadLine",[{
+            "data" : task,
+            "atts" : atts,
+            "node" : tr,
+            "log" : this,
+            "type" : isTask ? "task" : "taskCompleted"
+        }]);
     },
 
 
@@ -1504,6 +1537,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         }
         var html;
         var company = "";
+        var atts = [];
         if (!isTask){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
             var html = this.json.textStyle;
@@ -1568,7 +1602,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             var imgNode = textNode.getElement(".mwf_log_img");
             if (task.mediaOpinion){
                 var mediaIds = task.mediaOpinion.split(",");
-                var atts = [];
+                // var atts = [];
                 if (this.form.businessData.attachmentList){
                     this.form.businessData.attachmentList.each(function(att){
                         if (att.site==="$mediaOpinion"){
@@ -1598,6 +1632,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         this.fireEvent("postLoadLine",[{
             "data" : task,
             "node" : logTaskNode,
+            "atts" : atts,
             "log" : this,
             "type" : isTask ? "task" : "taskCompleted"
         }]);
