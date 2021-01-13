@@ -614,17 +614,17 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
 				   break;
 			}
 		}else{
-			this.doError(null, responseText, "");
+            return this.doError(null, responseText, "");
 		}
 	},
 	onRequestFailure: function(xhr){
-		this.doError(xhr, "", "");
+		return this.doError(xhr, "", "");
 	},
 	onFailure: function(xhr){
-		this.doError(xhr, "", "");
+        return this.doError(xhr, "", "");
 	},
 	onError: function(text, error){
-		this.doError(null, text, error);
+        return this.doError(null, text, error);
 	},
 	doError: function(xhr, text, error){
 		if (this.appendFailure) this.appendFailure(xhr, text, error);
@@ -653,5 +653,6 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
             }
 		//	throw "request error: "+errorText;
 		}
+		return xhr;
 	}
 });
