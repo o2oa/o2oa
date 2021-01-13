@@ -1,9 +1,9 @@
-
-
 // o2.require("o2.widget.Common", null, false);
 // o2.require("o2.xDesktop.Common", null, false);
 // o2.require("o2.xDesktop.Actions.RestActions", null, false);
 // o2.require("o2.xDesktop.Authentication", null, false);
+
+o2.require("o2.widget.PinYin", null, false);
 
 o2.xDesktop.Default = new Class({
     Implements: [Options, Events],
@@ -992,7 +992,7 @@ o2.xDesktop.Default.StartMenu = new Class({
     },
     searchQuerys: function(value){
         if (this.queryJson && this.queryJson.length) this.queryJson.each(function(v){
-            if ((v.appName.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.appName.toPY().toLowerCase().indexOf(value)!==-1) || (v.appName.indexOf(value)!==-1)){
+            if ((v.name.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.name.toPY().toLowerCase().indexOf(value)!==-1) || (v.name.indexOf(value)!==-1)){
                 this.createQueryMenuItem(v);
             }
         }.bind(this));
