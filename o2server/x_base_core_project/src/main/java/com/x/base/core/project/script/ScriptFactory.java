@@ -3,7 +3,6 @@ package com.x.base.core.project.script;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.script.Compilable;
@@ -245,16 +244,38 @@ public class ScriptFactory {
 			} else if (o instanceof ScriptObjectMirror) {
 				ScriptObjectMirror som = (ScriptObjectMirror) o;
 				if (som.isArray()) {
-					Object[] objs = (som.to(Object[].class));
-					for (Object obj : objs) {
+					for (Object obj : som.to(Object[].class)) {
+						if (null != obj) {
+							if (obj instanceof CharSequence) {
+								list.add(Objects.toString(obj, ""));
+							} else if (obj instanceof ScriptObject) {
+								ScriptObject so = (ScriptObject) obj;
+								if (so.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+									list.add(Objects.toString(so.get(JpaObject.DISTINGUISHEDNAME), ""));
+								}
+							} else {
+								list.add(PropertyTools.getOrElse(obj, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+							}
+
+						}
+					}
+				} else if (som.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+					list.add(Objects.toString(som.get(JpaObject.DISTINGUISHEDNAME), ""));
+				} else {
+					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+				}
+			} else if (o instanceof ScriptObject) {
+				ScriptObject so = (ScriptObject) o;
+				if (so.isArray()) {
+					for (Object obj : so.getArray().asObjectArray()) {
 						if (null != obj) {
 							if (obj instanceof CharSequence) {
 								list.add(Objects.toString(obj, ""));
 							} else {
 								if (obj instanceof ScriptObject) {
-									ScriptObject so = (ScriptObject) obj;
-									if (so.containsKey(JpaObject.DISTINGUISHEDNAME)) {
-										list.add(Objects.toString(so.get(JpaObject.DISTINGUISHEDNAME), ""));
+									ScriptObject scriptObject = (ScriptObject) obj;
+									if (scriptObject.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+										list.add(Objects.toString(scriptObject.get(JpaObject.DISTINGUISHEDNAME), ""));
 									}
 								} else {
 									list.add(PropertyTools.getOrElse(obj, JpaObject.DISTINGUISHEDNAME, String.class,
@@ -263,6 +284,8 @@ public class ScriptFactory {
 							}
 						}
 					}
+				} else if (so.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+					list.add(Objects.toString(so.get(JpaObject.DISTINGUISHEDNAME), ""));
 				} else {
 					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 				}
