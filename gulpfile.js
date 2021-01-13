@@ -803,6 +803,14 @@ function build_web_v_html() {
         .pipe(gulp.dest(dest))
         .pipe(gutil.noop());
 }
+function build_web_api() {
+    var src = 'o2web/api/**/*';
+    var dest = 'target/o2server/servers/webServer/api/';
+    return gulp.src(src)
+        .pipe(assetRev())
+        .pipe(gulp.dest(dest))
+        .pipe(gutil.noop());
+}
 function build_web_v_o2() {
     var src = 'target/o2server/servers/webServer/o2_core//o2.js';
     var dest = 'target/o2server/servers/webServer/o2_core/';
@@ -897,6 +905,7 @@ exports.build_web = gulp.series(
         build_bundle
     ),
     build_web_v_html,
+    build_web_api,
     build_web_v_o2);
 
 if (os.platform().indexOf("win")==-1){
