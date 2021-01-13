@@ -10,16 +10,17 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.program.center.core.entity.Code;
 import com.x.program.center.core.entity.Code_;
-import org.apache.commons.lang3.StringUtils;
 
 class ActionValidate extends BaseAction {
 	ActionResult<Wo> execute(String mobile, String answer) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		/*try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
 			wo.setValue(false);
@@ -46,7 +47,14 @@ class ActionValidate extends BaseAction {
 			}
 			result.setData(wo);
 			return result;
-		}
+		}*/
+		ActionResult<Wo> result = new ActionResult<>();
+		ActionResponse resp = ConnectionAction.get(Config.collect().url()
+				+ "/o2_collect_assemble/jaxrs/code/validate/mobile/" + mobile + "/answer/" + answer, null);
+		Wo wo = new Wo();
+		wo.setValue(resp.getData(ActionValidateCascade.Wo.class).getValue());
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WrapBoolean {
