@@ -33,31 +33,72 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     //     if ((isNaN(n))) {this.setData('0')};
     //     return (isNaN(n)) ? 0 : n;
     // },
-    validationFormat: function(){
 
+    formatNumber: function(str){
+        var v = str.toFloat();
+        if (v){
+            if (this.json.decimals && (this.json.decimals!="*")){
+
+                var decimals = this.json.decimals.toInt();
+
+                var p = Math.pow(10,decimals);
+                var f_x = Math.round(v*p)/p;
+                str = f_x.toString();
+
+                if (decimals>0){
+                    var pos_decimal = str.indexOf('.');
+                    if (pos_decimal < 0){
+                        pos_decimal = str.length;
+                        str += '.';
+                    }
+                    decimalStr = (str).substr(pos_decimal+1, (str).length);
+                    while (decimalStr.length < decimals){
+                        str += '0';
+                        decimalStr += 0;
+                    }
+                }
+            }
+        }
+        return str;
+    },
+
+    validationFormat: function(){
+debugger;
         if( !this.node.getElement("input") )return true;
         var n = this.node.getElement("input").get("value");
         if (isNaN(n)) {
             this.notValidationMode(MWF.xApplication.process.Xform.LP.notValidation_number);
             return false;
         }
-        var v = n.toFloat();
-        if (v){
-            if (this.json.decimals && (this.json.decimals!="*")){
-                var p = Math.pow(10,this.json.decimals);
-                var f_x = Math.round(v*p)/p;
-                var s_x = f_x.toString();
-                var pos_decimal = s_x.indexOf('.');
-                if (pos_decimal < 0){
-                    pos_decimal = s_x.length;
-                    s_x += '.';
-                }
-                while (s_x.length <= pos_decimal + 2){
-                    s_x += '0';
-                }
-                this.node.getFirst().set("value", s_x);
-            }
-        }
+
+        this.node.getFirst().set("value", this.formatNumber(n));
+
+        // var v = n.toFloat();
+        // if (v){
+        //     if (this.json.decimals && (this.json.decimals!="*")){
+        //
+        //         var decimals = this.json.decimals.toInt();
+        //
+        //         var p = Math.pow(10,decimals);
+        //         var f_x = Math.round(v*p)/p;
+        //         var s_x = f_x.toString();
+        //
+        //         if (decimals>0){
+        //             var pos_decimal = s_x.indexOf('.');
+        //             if (pos_decimal < 0){
+        //                 pos_decimal = s_x.length;
+        //                 s_x += '.';
+        //             }
+        //             decimalStr = (s_x).substr(pos_decimal+1, (s_x).length);
+        //             while (decimalStr.length < decimals){
+        //                 s_x += '0';
+        //                 decimalStr += 0;
+        //             }
+        //         }
+        //
+        //         this.node.getFirst().set("value", s_x);
+        //     }
+        // }
         return true;
     },
     validationConfigItem: function(routeName, data){
@@ -211,6 +252,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
+        value = this.formatNumber(value);
         return value || "0";
     },
     __setValue: function(value){
