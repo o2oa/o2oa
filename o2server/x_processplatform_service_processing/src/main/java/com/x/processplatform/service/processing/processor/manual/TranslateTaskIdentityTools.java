@@ -7,7 +7,6 @@ import java.util.Objects;
 
 import javax.script.CompiledScript;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,6 +20,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.service.processing.Business;
@@ -203,18 +203,22 @@ public class TranslateTaskIdentityTools {
 
 	private static void addObjectToTaskIdentities(TaskIdentities taskIdentities, List<String> units,
 			List<String> groups, Object o) throws Exception {
-		String d = Objects.toString(PropertyUtils.getProperty(o, JpaObject.DISTINGUISHEDNAME), "");
-		if (OrganizationDefinition.isIdentityDistinguishedName(d)) {
-			Boolean ignore = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(
-					Objects.toString(PropertyUtils.getProperty(o, TaskIdentity.IGNOREEMPOWER), "false")));
-			TaskIdentity taskIdentity = new TaskIdentity();
-			taskIdentity.setIdentity(d);
-			taskIdentity.setIgnoreEmpower(ignore);
-			taskIdentities.add(taskIdentity);
-		} else if (OrganizationDefinition.isUnitDistinguishedName(d)) {
-			units.add(d);
-		} else if (OrganizationDefinition.isGroupDistinguishedName(d)) {
-			groups.add(d);
+		// String d = PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME,
+		// String.class, "");
+		for (String d : ScriptFactory.asDistinguishedNameList(o)) {
+			if (OrganizationDefinition.isIdentityDistinguishedName(d)) {
+				Boolean ignore = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(Objects.toString(
+						PropertyTools.getOrElse(o, TaskIdentity.IGNOREEMPOWER, Boolean.class, Boolean.FALSE),
+						"false")));
+				TaskIdentity taskIdentity = new TaskIdentity();
+				taskIdentity.setIdentity(d);
+				taskIdentity.setIgnoreEmpower(ignore);
+				taskIdentities.add(taskIdentity);
+			} else if (OrganizationDefinition.isUnitDistinguishedName(d)) {
+				units.add(d);
+			} else if (OrganizationDefinition.isGroupDistinguishedName(d)) {
+				groups.add(d);
+			}
 		}
 	}
 
