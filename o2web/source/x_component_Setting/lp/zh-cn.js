@@ -125,7 +125,7 @@ MWF.xApplication.Setting.LP = {
     "mobile_connectO2Cloud": "连接到O2云",
     "mobile_connectO2Cloud_infor": "使用移动办公请先连接到O2云，这有助于APP定位到您的企业服务器，可以使用短信服务等",
     "mobile_connectO2Cloud_action": "连接到O2云",
-    "mobile_connectO2Cloud_success": "已连接到O2云",
+    "mobile_connectO2Cloud_success": "连接设置",
     "mobile_connectO2Cloud_error": "还未连接到O2云",
 
     "mobile_httpProtocol": "http协议",
