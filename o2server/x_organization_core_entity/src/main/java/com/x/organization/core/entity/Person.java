@@ -300,7 +300,7 @@ public class Person extends SliceJpaObject {
 	@FieldDescribe("必填,手机号.")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + mobile_FIELDNAME)
 	/** 其他地区手机号不一致,所以这里使用外部校验,不使用mobileString */
-	@Index(name = TABLE + IndexNameMiddle + mobile_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + mobile_FIELDNAME, unique = true)
 	@CheckPersist(allowEmpty = false, citationNotExists = @CitationNotExist(fields = mobile_FIELDNAME, type = Person.class))
 	private String mobile;
 
