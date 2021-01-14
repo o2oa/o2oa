@@ -122,50 +122,50 @@ public class ScriptFactory {
 		return BooleanUtils.toBooleanObject(Objects.toString(o, "false"));
 	}
 
-	public static List<String> asDistinguishedName(Object o) throws Exception {
-		List<String> list = new ArrayList<>();
-		if (null != o) {
-			if (o instanceof CharSequence) {
-				list.add(Objects.toString(o));
-			} else if (o instanceof Iterable) {
-				for (Object obj : (Iterable<?>) o) {
-					if (null != obj) {
-						if (obj instanceof CharSequence) {
-							list.add(Objects.toString(obj));
-						} else {
-							Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
-							if (null != d) {
-								list.add(Objects.toString(d));
-							}
-						}
-					}
-				}
-			} else if (o instanceof ScriptObjectMirror) {
-				ScriptObjectMirror som = (ScriptObjectMirror) o;
-				if (som.isArray()) {
-					Object[] objs = (som.to(Object[].class));
-					for (Object obj : objs) {
-						if (null != obj) {
-							if (obj instanceof CharSequence) {
-								list.add(Objects.toString(obj));
-							} else {
-								Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
-								if (null != d) {
-									list.add(Objects.toString(d));
-								}
-							}
-						}
-					}
-				} else {
-					Object d = PropertyUtils.getProperty(o, JpaObject.DISTINGUISHEDNAME);
-					if (null != d) {
-						list.add(Objects.toString(d));
-					}
-				}
-			}
-		}
-		return list;
-	}
+//	public static List<String> asDistinguishedName(Object o) throws Exception {
+//		List<String> list = new ArrayList<>();
+//		if (null != o) {
+//			if (o instanceof CharSequence) {
+//				list.add(Objects.toString(o));
+//			} else if (o instanceof Iterable) {
+//				for (Object obj : (Iterable<?>) o) {
+//					if (null != obj) {
+//						if (obj instanceof CharSequence) {
+//							list.add(Objects.toString(obj));
+//						} else {
+//							Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
+//							if (null != d) {
+//								list.add(Objects.toString(d));
+//							}
+//						}
+//					}
+//				}
+//			} else if (o instanceof ScriptObjectMirror) {
+//				ScriptObjectMirror som = (ScriptObjectMirror) o;
+//				if (som.isArray()) {
+//					Object[] objs = (som.to(Object[].class));
+//					for (Object obj : objs) {
+//						if (null != obj) {
+//							if (obj instanceof CharSequence) {
+//								list.add(Objects.toString(obj));
+//							} else {
+//								Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
+//								if (null != d) {
+//									list.add(Objects.toString(d));
+//								}
+//							}
+//						}
+//					}
+//				} else {
+//					Object d = PropertyUtils.getProperty(o, JpaObject.DISTINGUISHEDNAME);
+//					if (null != d) {
+//						list.add(Objects.toString(d));
+//					}
+//				}
+//			}
+//		}
+//		return list;
+//	}
 
 	private static List<String> readAsStringList(Object obj) throws Exception {
 		List<String> list = new ArrayList<>();
@@ -264,6 +264,7 @@ public class ScriptFactory {
 				} else {
 					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 				}
+			// ScriptObject or JO
 			} else if (o instanceof ScriptObject) {
 				ScriptObject so = (ScriptObject) o;
 				if (so.isArray()) {
