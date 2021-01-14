@@ -31,7 +31,6 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
  * @author Rui
  *
  */
-@SuppressWarnings("restriction")
 public class TranslateTaskIdentityTools {
 
 	private static Logger logger = LoggerFactory.getLogger(TranslateTaskIdentityTools.class);
@@ -167,35 +166,41 @@ public class TranslateTaskIdentityTools {
 			for (String str : ListTools.trim(manual.getTaskDataPathList(), true, true)) {
 				Object o = data.find(str);
 				if (null != o) {
-					if (o instanceof CharSequence) {
-						if (OrganizationDefinition.isUnitDistinguishedName(str)) {
-							units.add(str);
-						} else if (OrganizationDefinition.isGroupDistinguishedName(str)) {
-							groups.add(str);
-						} else {
-							taskIdentities.addIdentity(o.toString());
-						}
-					} else if (o instanceof Iterable) {
-						for (Object v : (Iterable<?>) o) {
-							if (null != v) {
-								if ((v instanceof CharSequence)) {
-									String vs = v.toString();
-									if (OrganizationDefinition.isUnitDistinguishedName(vs)) {
-										units.add(vs);
-									} else if (OrganizationDefinition.isGroupDistinguishedName(vs)) {
-										groups.add(vs);
-									} else {
-										taskIdentities.addIdentity(vs);
-									}
-								} else {
-									addObjectToTaskIdentities(taskIdentities, units, groups, v);
-								}
-							}
-						}
-					} else {
-						addObjectToTaskIdentities(taskIdentities, units, groups, o);
-					}
+					addObjectToTaskIdentities(taskIdentities, units, groups, o);
 				}
+//				if (null != o) {
+//					if (o instanceof CharSequence) {
+//						if (OrganizationDefinition.isUnitDistinguishedName(str)) {
+//							units.add(str);
+//						} else if (OrganizationDefinition.isGroupDistinguishedName(str)) {
+//							groups.add(str);
+//						} else {
+//							taskIdentities.addIdentity(o.toString());
+//						}
+//					} else if (o instanceof Iterable) {
+//						for (Object v : (Iterable<?>) o) {
+//							System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!v class:" + v.getClass());
+//							System.out.println(XGsonBuilder.toJson(v));
+//							if (null != v) {
+//								if (v instanceof CharSequence) {
+//									String vs = v.toString();
+//									if (OrganizationDefinition.isUnitDistinguishedName(vs)) {
+//										units.add(vs);
+//									} else if (OrganizationDefinition.isGroupDistinguishedName(vs)) {
+//										groups.add(vs);
+//									} else {
+//										taskIdentities.addIdentity(vs);
+//									}
+//									// } else if (v instanceof Entry) {
+//								} else {
+//									addObjectToTaskIdentities(taskIdentities, units, groups, v);
+//								}
+//							}
+//						}
+//					} else {
+//						addObjectToTaskIdentities(taskIdentities, units, groups, o);
+//					}
+//				}
 			}
 		}
 
@@ -221,26 +226,4 @@ public class TranslateTaskIdentityTools {
 			}
 		}
 	}
-
-//	private static void addJsonObjectToTaskIdentities(TaskIdentities taskIdentities, List<String> units,
-//			List<String> group, JsonObject jsonObject) throws Exception {
-//		if (jsonObject.has(JpaObject.DISTINGUISHEDNAME)) {
-//			String d = jsonObject.get(JpaObject.DISTINGUISHEDNAME).getAsString();
-//			if (OrganizationDefinition.isIdentityDistinguishedName(d)) {
-//				boolean ignore = false;
-//				if (jsonObject.has(TaskIdentity.IGNOREEMPOWER)) {
-//					ignore = BooleanUtils.isTrue(
-//							BooleanUtils.toBooleanObject(jsonObject.get(TaskIdentity.IGNOREEMPOWER).getAsString()));
-//				}
-//				TaskIdentity taskIdentity = new TaskIdentity();
-//				taskIdentity.setIdentity(d);
-//				taskIdentity.setIgnoreEmpower(ignore);
-//				taskIdentities.add(taskIdentity);
-//			} else if (OrganizationDefinition.isUnitDistinguishedName(d)) {
-//				units.add(d);
-//			} else if (OrganizationDefinition.isGroupDistinguishedName(d)) {
-//				units.add(d);
-//			}
-//		}
-//	}
 }
