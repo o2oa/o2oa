@@ -490,7 +490,7 @@ _worker.findInDesigner_map = function(formData, key, module, designer, propertyD
                             "propertyName": propertyDefinition.name+"-"+evkey,
                             "name": formData.name || formData.id,
                             "key": key,
-                            "value": stylekey + ": " + text,
+                            "value": stylekey + ": " + text[stylekey],
                             "mode": mode,
                             "path": path.concat(evkey)
                         }), option);
