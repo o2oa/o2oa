@@ -4,6 +4,7 @@ o2.widget.Maplist = new Class({
 	Extends: o2.widget.Common,
 	options: {
 		"title": "maplist",
+		"htmlTitle": "",
 		"style": "default",
 		
 		"collapse": false,
@@ -57,6 +58,9 @@ o2.widget.Maplist = new Class({
 			"styles": this.css.titleTextNode,
 			"text": this.options.title
 		}).inject(this.titleNode);
+
+		if (this.options.htmlTitle) this.titleTextNode.set("html", this.options.htmlTitle);
+
 		this.titleTextNode.addEvent("click", function(){
 			if(this.isShowCode){
 
