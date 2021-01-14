@@ -206,6 +206,113 @@ function createXFormConcatTask(path, isMin, thisOptions) {
     });
 }
 
+
+function createCMSXFormConcatTask(path, isMin, thisOptions) {
+    var processPath = "x_component_process_Xform";
+    gulp.task(path+" : concat", function(){
+        var option = thisOptions || options;
+        var src = [
+            'source/o2_core/o2/widget/AttachmentController.js',
+            'source/o2_core/o2/xScript/CMSMacro.js',
+            'source/o2_core/o2/widget/Tab.js',
+            'source/o2_core/o2/widget/O2Identity.js',
+            'source/' + processPath + '/Form.js',
+            'source/' + processPath + '/$Module.js',
+            'source/' + processPath + '/$Input.js',
+            'source/' + processPath + '/Div.js',
+            'source/' + processPath + '/Combox.js',
+            'source/' + processPath + '/DatagridMobile.js',
+            'source/' + processPath + '/DatagridPC.js',
+            'source/' + processPath + '/Textfield.js',
+            'source/' + processPath + '/Personfield.js',
+            'source/' + processPath + '/Button.js',
+            'source/' + processPath + '/ViewSelector.js',
+            'source/' + processPath + '/Org.js',
+            // 'source/' + processPath + '/*.js',
+            'source/' + processPath + '/Actionbar.js',
+            'source/' + processPath + '/Address.js',
+            'source/' + processPath + '/Attachment.js',
+            'source/' + processPath + '/Calendar.js',
+            'source/' + processPath + '/Checkbox.js',
+            'source/' + processPath + '/Datagrid.js',
+            'source/' + processPath + '/Form.js',
+            'source/' + processPath + '/Html.js',
+            'source/' + processPath + '/Htmleditor.js',
+            'source/' + processPath + '/Iframe.js',
+            'source/' + processPath + '/Label.js',
+            'source/' + processPath + '/Number.js',
+            'source/' + processPath + '/Common.js',
+            'source/' + processPath + '/Image.js',
+            'source/' + processPath + '/Html.js',
+            'source/' + processPath + '/Radio.js',
+            'source/' + processPath + '/Select.js',
+            'source/' + processPath + '/Stat.js',
+            'source/' + processPath + '/Statement.js',
+            'source/' + processPath + '/StatementSelector.js',
+            'source/' + processPath + '/Subform.js',
+            'source/' + processPath + '/Tab.js',
+            'source/' + processPath + '/Table.js',
+            'source/' + processPath + '/Textarea.js',
+            'source/' + processPath + '/Tree.js',
+            'source/' + processPath + '/View.js',
+            // 'source/x_component_process_Work/Processor.js',
+            // '!source/' + processPath + '/Office.js'
+
+            'source/' + path + '/widget/Comment.js',
+            'source/' + path + '/widget/Log.js',
+            'source/' + path + '/Org.js',
+            'source/' + path + '/Personfield.js',
+            'source/' + path + '/Author.js',
+            'source/' + path + '/Reader.js',
+            'source/' + path + '/Personfield.js',
+            'source/' + path + '/Readerfield.js',
+            'source/' + path + '/Authorfield.js',
+            'source/' + path + '/Orgfield.js',
+            'source/' + path + '/*.js',
+            '!source/' + path + '/Office.js'
+        ];
+        var dest = option.dest+'/' + path + '/';
+        return gulp.src(src)
+            .pipe(sourceMap.init())
+            .pipe(concat('$all.js'))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+            .pipe(concat('$all.min.js'))
+            .pipe(uglify())
+            .pipe(sourceMap.write(""))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+    });
+}
+
 function createO2ConcatTask(path, isMin, thisOptions) {
     gulp.task(path+" : concat", function(){
         var option = thisOptions || options;
@@ -766,9 +873,13 @@ function createBaseConcatTask(path, isMin, thisOptions){
 }
 
 function getAppTask(path, isMin, thisOptions) {
-    if (path==="x_component_process_Xform"){
+    if (path==="x_component_process_Xform") {
         createDefaultTask(path, isMin, thisOptions);
         createXFormConcatTask(path, isMin, thisOptions);
+        return gulp.series(path, path + " : concat");
+    }else if (path==="x_component_cms_Xform"){
+        createDefaultTask(path, isMin, thisOptions);
+        createCMSXFormConcatTask(path, isMin, thisOptions);
         return gulp.series(path, path+" : concat");
     }else if (path==="o2_core"){
         createDefaultTask(path, isMin, thisOptions);

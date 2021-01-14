@@ -1,7 +1,6 @@
 MWF.xApplication.cms = MWF.xApplication.cms || {};
 MWF.xApplication.cms.Document = MWF.xApplication.cms.Document || {};
 MWF.xApplication.cms.Document.options.multitask = true;
-MWF.xDesktop.requireApp("cms.Document", "HotLinkForm", null, false);
 MWF.xApplication.cms.Document.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
@@ -351,6 +350,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             };
     },
     setPopularDocument: function(){
+        MWF.xDesktop.requireApp("cms.Document", "HotLinkForm", null, false);
         var form = new MWF.xApplication.cms.Document.HotLinkForm(this, this.document, {
             documentId : this.options.documentId,
             summary :  this.data.explain || "",
