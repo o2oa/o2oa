@@ -231,19 +231,6 @@ public class ScriptFactory {
 						}
 					}
 				}
-				// Map类型也属于Iterable 所以必须在Iterable之前进行判断
-			} else if (o instanceof Map) {
-				list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
-			} else if (o instanceof Iterable) {
-				for (Object obj : (Iterable<?>) o) {
-					if (null != obj) {
-						if (obj instanceof CharSequence) {
-							list.add(Objects.toString(obj, ""));
-						} else {
-							list.add(PropertyTools.getOrElse(obj, JpaObject.DISTINGUISHEDNAME, String.class, ""));
-						}
-					}
-				}
 			} else if (o instanceof ScriptObjectMirror) {
 				ScriptObjectMirror som = (ScriptObjectMirror) o;
 				if (som.isArray()) {
@@ -267,7 +254,7 @@ public class ScriptFactory {
 				} else {
 					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 				}
-				// ScriptObject or JO
+			// ScriptObject or JO
 			} else if (o instanceof ScriptObject) {
 				ScriptObject so = (ScriptObject) o;
 				if (so.isArray()) {
@@ -292,6 +279,30 @@ public class ScriptFactory {
 					list.add(Objects.toString(so.get(JpaObject.DISTINGUISHEDNAME), ""));
 				} else {
 					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+				}
+			// Map类型也属于Iterable 所以必须在Iterable之前进行判断
+			} else if (o instanceof Map) {
+				Map map = (Map) o;
+				if (map.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+				} else {
+					for (Object mapValue : map.values()) {
+						if (mapValue instanceof CharSequence) {
+							list.add(Objects.toString(mapValue, ""));
+						} else {
+							list.add(PropertyTools.getOrElse(mapValue, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+						}
+					}
+				}
+			} else if (o instanceof Iterable) {
+				for (Object obj : (Iterable<?>) o) {
+					if (null != obj) {
+						if (obj instanceof CharSequence) {
+							list.add(Objects.toString(obj, ""));
+						} else {
+							list.add(PropertyTools.getOrElse(obj, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+						}
+					}
 				}
 			} else {
 				list.add(Objects.toString(o, ""));
