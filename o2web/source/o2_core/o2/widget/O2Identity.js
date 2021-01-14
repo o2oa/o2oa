@@ -282,27 +282,29 @@ o2.widget.O2Unit = new Class({
 o2.widget.O2Duty = new Class({
     Extends: o2.widget.O2Identity,
     getPersonData: function(){
-        if (!this.data.woUnit){
-            this.action.actions = {"getUnitduty": {"uri": "/jaxrs/unitduty/{id}"}};
-            this.action.invoke({"name": "getUnitduty", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
-                this.data = json.data;
-            }.bind(this)});
-        }
+        return this.data;
+        // if (!this.data.woUnit){
+        //     this.action.actions = {"getUnitduty": {"uri": "/jaxrs/unitduty/{id}"}};
+        //     this.action.invoke({"name": "getUnitduty", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
+        //         this.data = json.data;
+        //     }.bind(this)});
+        // }
     },
     createInforNode: function(){
-        this.inforNode = new Element("div", {
-            "styles": this.style.identityInforNode
-        });
-        var nameNode = new Element("div", {
-            "styles": this.style.identityInforNameNode,
-            "text": this.data.woUnit.levelName
-        }).inject(this.inforNode);
-        this.tooltip = new mBox.Tooltip({
-            content: this.inforNode,
-            setStyles: {content: {padding: 15, lineHeight: 20}},
-            attach: this.node,
-            transition: 'flyin'
-        });
+        this.tooltip = null;
+        // this.inforNode = new Element("div", {
+        //     "styles": this.style.identityInforNode
+        // });
+        // var nameNode = new Element("div", {
+        //     "styles": this.style.identityInforNameNode,
+        //     "text": this.data.woUnit.levelName
+        // }).inject(this.inforNode);
+        // this.tooltip = new mBox.Tooltip({
+        //     content: this.inforNode,
+        //     setStyles: {content: {padding: 15, lineHeight: 20}},
+        //     attach: this.node,
+        //     transition: 'flyin'
+        // });
     },
     setText: function(){
         this.node.set("text", this.data.displayName || this.data.name);
