@@ -337,7 +337,7 @@ MWF.xApplication.Attendance.AppealExplorer.View = new Class({
     },
     _openDocument: function( documentData ){
 
-        if(!!documentData.appealAuditInfo){
+        /*if(!!documentData.appealAuditInfo){
             var workid = documentData.appealAuditInfo.workId;
             var options = {"workId":workid, "appId": "process.Work"+workid};
             this.app.desktop.openApplication(null, "process.Work", options);
@@ -348,7 +348,17 @@ MWF.xApplication.Attendance.AppealExplorer.View = new Class({
             }else{
                 appeal.open();
             }
+        }*/
+        if(documentData.appealAuditInfo){
+            if(documentData.appealAuditInfo.workId){
+                var workid = documentData.appealAuditInfo.workId;
+                var options = {"workId":workid, "appId": "process.Work"+workid};
+                this.app.desktop.openApplication(null, "process.Work", options);
+                return;
+            }
         }
+        var appeal = new MWF.xApplication.Attendance.AppealExplorer.Appeal(this.explorer, documentData );
+        appeal.open();
 
     }
 
@@ -509,8 +519,8 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
             "    <td styles='formTableValue' item='endTime' colspan='3'></td></tr>" +
             "<tr contain='appealDescription'><td styles='formTableTitle' lable='appealDescription'></td>"+
             "    <td styles='formTableValue' item='appealDescription' colspan='3'></td></tr>" +
-            "<tr contain='opinion1'><td styles='formTableTitle' lable='opinion1'></td>"+
-            "    <td styles='formTableValue' item='opinion1' colspan='3'></td></tr>" +
+            /*"<tr contain='opinion1'><td styles='formTableTitle' lable='opinion1'></td>"+
+            "    <td styles='formTableValue' item='opinion1' colspan='3'></td></tr>" +*/
             "</table>"
         this.createTableArea.set("html",html);
 
@@ -535,8 +545,8 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
                 },
                 startTime : {  text:"开始日期", type : "innertext" },
                 endTime : {  text:"结束日期", type : "innertext" },
-                appealDescription : { text:"事由", type : "innertext" },
-                opinion1 : { text :"审批意见",type : "textarea" }
+                appealDescription : { text:"事由", type : "innertext" }
+                //opinion1 : { text :"审批意见",type : "textarea" }
             }
         }, this.app,this.css);
         this.document.load();
