@@ -192,4 +192,22 @@ public class WorkTimeAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据2个日期计算出节假天数.", action = ActionHolidayCount.class)
+	@GET
+	@Path("betweenholidaycount/start/{startDate}/end/{endDate}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void betweenHolidayCount(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									@JaxrsParameterDescribe("开始日期") @PathParam("startDate") String start,
+									@JaxrsParameterDescribe("结束日期") @PathParam("endDate") String end) {
+		ActionResult<ActionHolidayCount.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionHolidayCount().execute(effectivePerson, start, end);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
