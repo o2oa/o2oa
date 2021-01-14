@@ -3,6 +3,7 @@ package com.x.base.core.project.script;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.script.Compilable;
@@ -10,7 +11,6 @@ import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonArray;
@@ -231,6 +231,9 @@ public class ScriptFactory {
 						}
 					}
 				}
+				// Map类型也属于Iterable 所以必须在Iterable之前进行判断
+			} else if (o instanceof Map) {
+				list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 			} else if (o instanceof Iterable) {
 				for (Object obj : (Iterable<?>) o) {
 					if (null != obj) {
@@ -264,7 +267,7 @@ public class ScriptFactory {
 				} else {
 					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 				}
-			// ScriptObject or JO
+				// ScriptObject or JO
 			} else if (o instanceof ScriptObject) {
 				ScriptObject so = (ScriptObject) o;
 				if (so.isArray()) {
