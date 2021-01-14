@@ -500,7 +500,7 @@ _worker.findInDesigner_map = function(formData, key, module, designer, propertyD
         }
     });
 };
-_worker.findInDesigner_array = function(formData, key, module, designer, propertyDefinition, option, mode){
+_worker.findInDesigner_array = function(formData, key, module, designer, propertyDefinition, option, mode, path){
     var arr = formData[key];
     arr.forEach(function(v, i) {
         this.keywordRegexp.lastIndex = 0;
@@ -520,9 +520,10 @@ _worker.findInDesigner_array = function(formData, key, module, designer, propert
         }
     });
 };
-_worker.findInDesigner_objectArray = function(formData, key, module, designer, propertyDefinition, option, mode){
+_worker.findInDesigner_objectArray = function(formData, key, module, designer, propertyDefinition, option, mode, path){
     var arr = formData[key];
     arr.forEach(function(map, i) {
+        var p = path.concat(i);
         Object.keys(map).forEach(function(evkey) {
             this.keywordRegexp.lastIndex = 0;
             var text = map[evkey];
@@ -535,7 +536,8 @@ _worker.findInDesigner_objectArray = function(formData, key, module, designer, p
                     "line": i+1,
                     "key": key,
                     "value": evkey+": "+text,
-                    "mode": mode
+                    "mode": mode,
+                    "path": p.concat(evkey)
                 }), option);
             }
         });

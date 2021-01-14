@@ -424,6 +424,7 @@ o2.widget.Maplist.Item = new Class({
 	},
 	
 	editItemComplate: function(node, input){
+		var isChangeed = false;
 		var text = input.get("value");
 		if (node == this.keyNode){
 			if (!text){
@@ -438,6 +439,7 @@ o2.widget.Maplist.Item = new Class({
 			}.bind(this));
 			
 			if (flag){
+				if (this.key !== text) isChangeed = true;
 				this.key = text;
 				this.editValue();
 				this.maplist.notAddItem = true;
@@ -451,6 +453,7 @@ o2.widget.Maplist.Item = new Class({
 		
 		var addNewItem = false;
 		if (node == this.valueNode){
+			if (this.value !== text) isChangeed = true;
 			this.value = text;
 			if (this.isEnterKey){
 				if (this.isNewItem){
@@ -464,7 +467,7 @@ o2.widget.Maplist.Item = new Class({
 		this.iconNode.setStyle("background", "transparent ");
 		this.iconNode.title = "";
 
-		this.maplist.fireEvent("change");
+		if (isChangeed) this.maplist.fireEvent("change");
 		
 		if (addNewItem){
 			this.maplist.notAddItem = false;
