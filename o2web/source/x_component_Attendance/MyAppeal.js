@@ -447,7 +447,7 @@ MWF.xApplication.Attendance.MyAppeal.Appeal = new Class({
             appealStatus = "申诉不通过"
         }
         this.data.appealStatusShow = appealStatus;
-
+debugger
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr><td colspan='4' styles='formTableHead'>申诉申请单</td></tr>" +
             "<tr><td styles='formTableTitle'>员工姓名</td>"+
@@ -474,8 +474,8 @@ MWF.xApplication.Attendance.MyAppeal.Appeal = new Class({
             "    <td styles='formTableValue' item='endTime' colspan='3'></td></tr>" +
             "<tr contain='appealDescription'><td styles='formTableTitle' lable='appealDescription'></td>"+
             "    <td styles='formTableValue' item='appealDescription' colspan='3'></td></tr>" +
-            "<tr contain='opinion1'><td styles='formTableTitle' lable='opinion1'></td>"+
-            "    <td styles='formTableValue' item='opinion1' colspan='3'></td></tr>" +
+            /*"<tr contain='opinion1'><td styles='formTableTitle' lable='opinion1'></td>"+
+            "    <td styles='formTableValue' item='opinion1' colspan='3'></td></tr>" +*/
             "</table>";
         this.createTableArea.set("html",html);
 
@@ -488,7 +488,7 @@ MWF.xApplication.Attendance.MyAppeal.Appeal = new Class({
                 offDutyTime : { text:"下班打卡时间",  type : "innertext"},
                 statusShow : {  text:"考勤状态", type : "innertext" },
                 appealStatusShow : { text:"审批状态",type : "innertext"},
-                processPerson1Show : {text:"审核人",type:"innertext", value : this.data.processPerson1?this.data.processPerson1.split("@")[0] :""},
+                processPerson1Show : {text:"审核人",type:"innertext", value : this.data.appealAuditInfo?this.data.appealAuditInfo.currentProcessor.split("@")[0] :""},
                 appealReason : {
                     notEmpty : true,
                     text:"申述原因",
@@ -506,8 +506,8 @@ MWF.xApplication.Attendance.MyAppeal.Appeal = new Class({
                 },
                 startTime : {  text:"开始日期", tType : "datetime" },
                 endTime : {  text:"结束日期", tType : "datetime" },
-                appealDescription : { text:"事由" },
-                opinion1 : { text :"审批意见" }
+                appealDescription : { text:"事由" }
+                //opinion1 : { text :"审批意见" }
             }
         }, this.app,this.css);
         this.document.load();
