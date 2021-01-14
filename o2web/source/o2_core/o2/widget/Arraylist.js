@@ -118,6 +118,7 @@ o2.widget.Arraylist = new Class({
 		return this.toArray();
 	},
 	destroy: function(){
+		this.fireEvent("destroy");
 		this.container.destroy();
 		o2.release(this);
 	}

@@ -775,6 +775,8 @@ MWF.xApplication.FindDesigner.Main = new Class({
 				this.openPatternFormEditor_array(data, node);
 				break;
 
+			default:
+				this.openPatternFormEditor_default(data, node);
 		}
 	},
 	getValueWithPath: function(data, pattern){
@@ -799,6 +801,60 @@ MWF.xApplication.FindDesigner.Main = new Class({
 
 		return "<div style='line-height: 30px'>"+title+"</div>"
 	},
+	getDefaultEditorContent: function(data, pattern){
+		var el = this.lp.elementPattern.replace("{element}", "&lt;"+pattern.pattern.type+"&gt;"+pattern.pattern.name).
+		replace("{property}", pattern.pattern.propertyName+"{"+pattern.pattern.key+"}");
+		var title = "<b>"+this.lp[pattern.module]+":<span style='color: #4A90E2'>"+pattern.appName+"</span></b>->"+": "+"<b>["+pattern.pattern.mode+this.lp[pattern.designerType]+"]</b>&nbsp;"+pattern.designerName+"->"+el;
+
+		return "<div style='line-height: 30px'>"+title+"</div>"
+	},
+
+	commonEditor: new Class({
+		Implements: [Events],
+		initialize: function(node, value){
+			this.node = $(node);
+			this.value = value;
+			this.container = new Element("div", {
+				"styles": {
+					"padding": "10px"
+				}
+			});
+		},
+		load : function(title){
+			this.container.set("html", title).inject(this.node);
+		},
+		destroy: function(){
+			this.fireEvent("destroy");
+			this.container.destroy();
+			o2.release(this);
+		},
+		getValue: function(){
+			return this.value;
+		},
+		getContent: function(){
+
+		}
+	}),
+	openPatternFormEditor_default: function(data, node){
+		debugger;
+		var d = this.getValueWithPath(data, node.pattern);
+		if (d){
+			var title = this.getTitleWithPath(data, node.pattern);
+			this.editor = new this.commonEditor(this.previewContentNode, d);
+			this.editor.addEvent("destroy", function(){
+				this.previewToolbar.childrenButton[0].disable();
+				this.previewToolbar.childrenButton[1].disable();
+			}.bind(this));
+			this.editor.pattern = node.pattern;
+			this.editor.designerNode = node;
+			this.editor.designerData = data;
+			this.editor.load(title);
+
+			this.previewToolbar.childrenButton[0].disable();
+			this.previewToolbar.childrenButton[1].enable();
+		}
+	},
+
 	openPatternFormEditor_array: function(data, node){
 		var d = this.getValueWithPath(data, node.pattern);
 		if (d){
@@ -817,6 +873,11 @@ MWF.xApplication.FindDesigner.Main = new Class({
 						}
 					}.bind(this),
 				});
+				this.editor.addEvent("destroy", function(){
+					this.previewToolbar.childrenButton[0].disable();
+					this.previewToolbar.childrenButton[1].disable();
+				}.bind(this));
+
 				this.editor.pattern = node.pattern;
 				this.editor.designerNode = node;
 				this.editor.designerData = data;
@@ -849,6 +910,11 @@ MWF.xApplication.FindDesigner.Main = new Class({
 						}
 					}.bind(this),
 				});
+				this.editor.addEvent("destroy", function(){
+					this.previewToolbar.childrenButton[0].disable();
+					this.previewToolbar.childrenButton[1].disable();
+				}.bind(this));
+
 				this.editor.pattern = node.pattern;
 				this.editor.designerNode = node;
 				this.editor.designerData = data;
