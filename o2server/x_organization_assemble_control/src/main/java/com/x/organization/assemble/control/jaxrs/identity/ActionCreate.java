@@ -1,6 +1,9 @@
 package com.x.organization.assemble.control.jaxrs.identity;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -88,25 +91,31 @@ class ActionCreate extends BaseAction {
 				emc.beginTransaction(Person.class);
 
 				emc.persist(identity, CheckPersistType.all);
-				List<Unit> topUnits = business.unit().pick(
-						ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId()));
-				person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
+				Set<String> topUnits = new HashSet<>();
+				topUnits.add(this.topUnit(business, unit).getId());
+				for (Identity o : others){
+					Unit u = business.unit().pick(o.getUnit());
+					if(u != null){
+						topUnits.add(this.topUnit(business, u).getId());
+					}
+				}
+				person.setTopUnitList(new ArrayList<>(topUnits));
 				emc.persist(person, CheckPersistType.all);
 
 				emc.commit();
 				wo.setId(identity.getId());
-				
+
 				/**创建 组织变更org消息通信 */
 				OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
 				orgMessageFactory.createMessageCommunicate("add", "identity", identity, effectivePerson);
-				
+
 			}
 			CacheManager.notify(Identity.class);
 			CacheManager.notify(Person.class);
-			
-		
-			
-			
+
+
+
+
 			result.setData(wo);
 			return result;
 		}
