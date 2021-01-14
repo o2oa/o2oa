@@ -544,7 +544,7 @@ _worker.findInDesigner_objectArray = function(formData, key, module, designer, p
     });
 };
 
-_worker.findInDesigner_duty = function(formData, key, module, designer, propertyDefinition, option, mode){
+_worker.findInDesigner_duty = function(formData, key, module, designer, propertyDefinition, option, mode, path){
     var text = formData[key];
     if (text){
         var json = JSON.parse(text);
