@@ -82,7 +82,7 @@
       },
       {
         "access": "admin",
-        "title": "导入错误信息",
+        "title": "移动端接入错误信息",
         "id": "20.4",
         "action": "openImportedInvalidInfor"
       },
