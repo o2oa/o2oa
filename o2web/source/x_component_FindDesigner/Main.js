@@ -717,6 +717,9 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			case "map":
 				this.reLocationMapEditor(pattern);
 				break;
+			case "array":
+				this.reLocationMapEditor(pattern);
+				break;
 
 		}
 	},
@@ -762,9 +765,35 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			case "map":
 				this.openPatternFormEditor_map(data, node);
 				break;
+			case "map":
+				this.openPatternFormEditor_array(data, node);
+				break;
 
 		}
 	},
+	getValueWithPath: function(data, pattern){
+		var path = pattern.pattern.path;
+		var d = data;
+		var i=0;
+		while (i<path.length){
+			if (path[i]=="styles"){
+				d.styles = d.recoveryStyles;
+			}else if (path[i]=="inputStyles"){
+				d.inputStyles = d.recoveryInputStyles;
+			}
+			d = d[path[i]];
+			i++;
+		}
+		return d;
+	},
+	openPatternFormEditor_array: function(data, node){
+		var d = this.getValueWithPath(data, node.pattern);
+
+		if (d){
+
+		}
+	},
+
 	openPatternFormEditor_map: function(data, node){
 		debugger;
 		var path = node.pattern.pattern.path;
@@ -814,7 +843,6 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	},
 
 	openPatternFormEditor_script: function(data, node){
-debugger;
 		var path = node.pattern.pattern.path;
 		var d = data;
 		var i=0;
