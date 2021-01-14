@@ -43,6 +43,9 @@ MWF.xApplication.FindDesigner.LP = {
 	"saveDesigner": "保存设计元素",
 	"openDesigner": "打开应用",
 
+	"findInfor": "您在此设计元素中找到匹配项：",
+	"findInforOpen": "请点击此处开打设计元素",
+
 	"notice": {
 		"save_success": "保存成功！"
 	}
