@@ -718,9 +718,15 @@ MWF.xApplication.FindDesigner.Main = new Class({
 				this.reLocationMapEditor(pattern);
 				break;
 			case "array":
-				this.reLocationMapEditor(pattern);
+				this.reLocationArrayEditor(pattern);
 				break;
 
+		}
+	},
+	reLocationArrayEditor: function(pattern){
+		if (this.editor){
+			var i = pattern.pattern.line-1;
+			if (this.editor.items[i]) this.editor.items[i].editValue();
 		}
 	},
 	reLocationMapEditor: function(pattern){
@@ -765,7 +771,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			case "map":
 				this.openPatternFormEditor_map(data, node);
 				break;
-			case "map":
+			case "array":
 				this.openPatternFormEditor_array(data, node);
 				break;
 
@@ -786,36 +792,49 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}
 		return d;
 	},
+	getTitleWithPath: function(data, pattern){
+		var el = this.lp.elementPattern.replace("{element}", "&lt;"+pattern.pattern.type+"&gt;"+pattern.pattern.name).
+		replace("{property}", pattern.pattern.propertyName+"{"+pattern.pattern.key+"}");
+		var title = "<b>"+this.lp[pattern.module]+":<span style='color: #4A90E2'>"+pattern.appName+"</span></b>->"+": "+"<b>["+pattern.pattern.mode+this.lp[pattern.designerType]+"]</b>&nbsp;"+pattern.designerName+"->"+el;
+
+		return "<div style='line-height: 30px'>"+title+"</div>"
+	},
 	openPatternFormEditor_array: function(data, node){
 		var d = this.getValueWithPath(data, node.pattern);
-
 		if (d){
+			var title = this.getTitleWithPath(data, node.pattern);
+			o2.require("o2.widget.Arraylist", function(){
+				this.editor = new o2.widget.Arraylist(this.previewContentNode, {
+					"htmlTitle": title,
+					"style": "findDesigner",
+					"onChange": function(){
+						this.reFindInFormDesigner();
+					}.bind(this),
+					"onPostLoad": function(){
+						if (this.previewToolbar){
+							this.previewToolbar.childrenButton[0].enable();
+							this.previewToolbar.childrenButton[1].enable();
+						}
+					}.bind(this),
+				});
+				this.editor.pattern = node.pattern;
+				this.editor.designerNode = node;
+				this.editor.designerData = data;
 
+				this.editor.load(d);
+
+				this.resetFormEditor(node.pattern);
+
+			}.bind(this))
 		}
 	},
 
 	openPatternFormEditor_map: function(data, node){
 		debugger;
-		var path = node.pattern.pattern.path;
-		var d = data;
-		var i=0;
-		while (i<path.length){
-			if (path[i]=="styles"){
-				d.styles = d.recoveryStyles;
-			}else if (path[i]=="inputStyles"){
-				d.inputStyles = d.recoveryInputStyles;
-			}
-			d = d[path[i]];
-			i++;
-		}
+		var d = this.getValueWithPath(data, node.pattern);
 
 		if (d){
-			var el = this.lp.elementPattern.replace("{element}", "&lt;"+node.pattern.pattern.type+"&gt;"+node.pattern.pattern.name).
-			replace("{property}", node.pattern.pattern.propertyName+"{"+node.pattern.pattern.key+"}");
-			var title = "<b>"+this.lp[node.pattern.module]+":<span style='color: #4A90E2'>"+node.pattern.appName+"</span></b>->"+": "+"<b>["+node.pattern.pattern.mode+this.lp[node.pattern.designerType]+"]</b>&nbsp;"+node.pattern.designerName+"->"+el;
-
-			title = "<div style='line-height: 30px'>"+title+"</div>"
-
+			var title = this.getTitleWithPath(data, node.pattern);
 			o2.require("o2.widget.Maplist", function(){
 				this.editor = new o2.widget.Maplist(this.previewContentNode, {
 					"htmlTitle": title,
@@ -1047,10 +1066,57 @@ debugger;
 				case "map":
 					this.reFindInFormDesigner_map(removeNodes, pattern);
 					break;
+				case "array":
+					this.reFindInFormDesigner_array(removeNodes, pattern);
+					break;
 			}
 			this.subResultCount(this.editor.pattern);
 		}
 		this.editor.isRefind = false;
+	},
+	reFindInFormDesigner_array: function(removeNodes, pattern){
+		var arr = this.editor.getValue();
+		if (arr){
+			var regex = this.getFilterOptionRegex(this.filterOption)
+			removeNodes.forEach(function(i){
+				var idx = i.pattern.pattern.line.toInt()-1;
+				var value = arr[idx] || "";
+				if (i.pattern.pattern.value!=value){
+					i.pattern.pattern.value = value;
+					var text = this.getFormPatternNodeText(i.pattern, regex)
+					var textDivNode = i.textNode.getElement("div");
+					if (textDivNode){
+						textDivNode.set("html", "<span style='color: #000000'>"+text+"</span>");
+					}
+				}
+			}.bind(this));
+
+			arr.forEach(function(v, i) {
+				regex.lastIndex = 0;
+				var text = v.toString();
+				if (regex.test(text)){
+
+
+					var n = removeNodes.filter(function(n){
+						var idx = n.pattern.pattern.line.toInt()-1;
+						return (idx==i);
+					});
+					if (!n.length){
+						this.showFindResult(this._createFindMessageReplyData(this.editor.pattern.module, this.editor.pattern, "", {
+							"type": pattern.pattern.type,
+							"propertyType": pattern.pattern.propertyType,
+							"propertyName": pattern.pattern.propertyName,
+							"name": pattern.pattern.name,
+							"line": i+1,
+							"key": pattern.pattern.key,
+							"value": text,
+							"mode": pattern.pattern.mode,
+							"path": pattern.pattern.path
+						}), this.filterOption, removeNodes[removeNodes.length-1].nextSibling);
+					}
+				}
+			}.bind(this));
+		}
 	},
 	reFindInFormDesigner_map: function(removeNodes, pattern){
 		var map = this.editor.getValue();
