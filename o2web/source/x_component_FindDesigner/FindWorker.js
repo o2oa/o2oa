@@ -514,7 +514,8 @@ _worker.findInDesigner_array = function(formData, key, module, designer, propert
                 "line": i+1,
                 "key": key,
                 "value": text,
-                "mode": mode
+                "mode": mode,
+                "path": path
             }), option);
         }
     });
