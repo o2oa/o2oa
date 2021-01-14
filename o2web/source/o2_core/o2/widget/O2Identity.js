@@ -291,7 +291,7 @@ o2.widget.O2Duty = new Class({
         // }
     },
     createInforNode: function(){
-        this.tooltip = null;
+        return false;
         // this.inforNode = new Element("div", {
         //     "styles": this.style.identityInforNode
         // });
