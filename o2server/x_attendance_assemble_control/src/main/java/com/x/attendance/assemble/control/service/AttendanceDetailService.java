@@ -23,6 +23,7 @@ import javax.persistence.criteria.Root;
 public class AttendanceDetailService {
 	
 	private static  Logger logger = LoggerFactory.getLogger( AttendanceDetailService.class );
+	private AttendanceDetailAnalyseService attendanceDetailAnalyseService = new AttendanceDetailAnalyseService();
 
 	public AttendanceDetail get( EntityManagerContainer emc, String id ) throws Exception {
 		return emc.find(id, AttendanceDetail.class);
@@ -165,7 +166,18 @@ public class AttendanceDetailService {
 				attendanceDetail.setAppealProcessor( null );
 			}
 			attendanceDetail.setAppealStatus( status );
+			if(status == 9){
+				//若申述通过则更新Detail状态，使得Detail为正常打卡
+				attendanceDetail.setIsGetSelfHolidays(false);
+				attendanceDetail.setIsLate(false);
+				attendanceDetail.setIsAbsent(false);
+				attendanceDetail.setIsAbnormalDuty(false);
+				attendanceDetail.setIsLackOfTime(false);
+				//并对该条考勤数据发起统计请求
+				attendanceDetailAnalyseService.recordStatisticRequireLog(attendanceDetail,true);
+			}
 			emc.check( attendanceDetail, CheckPersistType.all );
+
 		}
 		if( autoCommit ){
 			emc.commit();
