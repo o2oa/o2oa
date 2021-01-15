@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -285,9 +286,8 @@ public class ActionExportAll extends BaseAction {
 				row.createCell(2).setCellValue(person.getMobile());
 				row.createCell(3).setCellValue(person.getEmployee());
 				row.createCell(4).setCellValue(person.getOfficePhone());
-				row.createCell(5).setCellValue(person.getGenderType().toString());
+				row.createCell(5).setCellValue(Objects.toString(person.getGenderType(),""));
 				row.createCell(6).setCellValue(person.getMail());
-				
 			}
 		}
 	}
