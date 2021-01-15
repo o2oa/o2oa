@@ -549,6 +549,7 @@ _worker.findInDesigner_duty = function(formData, key, module, designer, property
     if (text){
         var json = JSON.parse(text);
         json.forEach(function(duty, i) {
+            var p = path.concat(i);
             this.keywordRegexp.lastIndex = 0;
             var text = duty.name;
             if (text) if (this.keywordRegexp.test(text)){
@@ -559,8 +560,10 @@ _worker.findInDesigner_duty = function(formData, key, module, designer, property
                     "name": formData.name || formData.id,
                     "key": key,
                     "line": i+1,
+                    "valueKey": "name",
                     "value": "name:"+text,
-                    "mode": mode
+                    "mode": mode,
+                    "path": p.concat("name")
                 }), option);
             }
 
@@ -584,9 +587,12 @@ _worker.findInDesigner_duty = function(formData, key, module, designer, property
                         "propertyName": propertyDefinition.name+"(code)&nbsp;"+idx+"."+duty.name,
                         "name": formData.name || formData.id,
                         "key": key,
+                        "valueKey": "code",
+                        "idx": i,
                         "value": obj.value,
                         "line": preLine+1,
-                        "mode": mode
+                        "mode": mode,
+                        "path": p.concat("code")
                     }), option);
                 }
             }
