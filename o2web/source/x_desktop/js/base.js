@@ -233,6 +233,14 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         }
     };
 
+    var _openWindow = function(url, par){
+        var a = new Element("a", {
+            "href": url,
+            "target": par
+        });
+        a.click();
+        a.destroy();
+    };
     var _openApplicationPC = function (appNames, options, statusObj) {
         if (options) delete options.docTitle;
         var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
