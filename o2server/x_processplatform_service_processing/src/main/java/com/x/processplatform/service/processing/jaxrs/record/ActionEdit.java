@@ -45,18 +45,9 @@ class ActionEdit extends BaseAction {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Record record = emc.find(id, Record.class);
 					Wi.copier.copy(bag.wi, record);
-					if (StringUtils.isNotEmpty(record.getWorkCompleted())) {
-						WorkCompleted workCompleted = emc.find(record.getWorkCompleted(), WorkCompleted.class);
-						if (null == workCompleted) {
-							throw new ExceptionEntityNotExist(record.getWorkCompleted(), WorkCompleted.class);
-						}
-						record.setJob(workCompleted.getJob());
-					} else {
-						Work work = emc.find(record.getWork(), Work.class);
-						if (null == work) {
-							throw new ExceptionEntityNotExist(record.getWork(), Work.class);
-						}
-						record.setJob(work.getJob());
+					if ((emc.countEqual(Work.class, Work.job_FIELDNAME, record.getJob()) == 0) && (emc
+							.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, record.getJob()) == 0)) {
+						throw new ExceptionWorkOrWorkCompletedNotExist(record.getJob());
 					}
 					emc.beginTransaction(Record.class);
 					emc.check(record, CheckPersistType.all);
