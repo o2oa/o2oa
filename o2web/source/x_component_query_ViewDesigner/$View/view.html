@@ -299,15 +299,15 @@
                     <td class="editTableTitle">月份:</td>
                     <td class="editTableValue"><select name="data.where.dateRange.month">
                         <option value="">当前月份</option>
-                        <option value="1">1月</option>
-                        <option value="2">2月</option>
-                        <option value="3">3月</option>
-                        <option value="4">4月</option>
-                        <option value="5">5月</option>
-                        <option value="6">6月</option>
-                        <option value="7">7月</option>
-                        <option value="8">8月</option>
-                        <option value="9">9月</option>
+                        <option value="01">1月</option>
+                        <option value="02">2月</option>
+                        <option value="03">3月</option>
+                        <option value="04">4月</option>
+                        <option value="05">5月</option>
+                        <option value="06">6月</option>
+                        <option value="07">7月</option>
+                        <option value="08">8月</option>
+                        <option value="09">9月</option>
                         <option value="10">10月</option>
                         <option value="11">11月</option>
                         <option value="12">12月</option>
@@ -333,7 +333,7 @@
                     <td class="editTableTitle">日期:</td>
                     <td class="editTableValue"><select name="data.where.dateRange.date">
                         <option value="">当天</option>
-                        fun{var html = ""; for (var i=1; i<32; i++)html+="<option value='"+i+"'>"+i+"日</option>"; return html;}
+                        fun{var html = ""; for (var i=1; i<32; i++)html+="<option value='"+(i<10 ? ("0"+i) : i)+"'>"+i+"日</option>"; return html;}
                     </select></td>
                 </tr>
             </table>
