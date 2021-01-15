@@ -58,7 +58,8 @@ public class DateRangeEntry extends GsonPropertyObject {
 			if (StringUtils.isEmpty(year)) {
 				year = DateTools.format(now, DateTools.format_yyyy);
 			}
-			if (null == season) {
+			/*0表示当前季度*/
+			if (null == season || season == 0) {
 				season = DateTools.season(now);
 			}
 			this.start = DateTools.floorSeason(year, season, adjust);
@@ -102,13 +103,13 @@ public class DateRangeEntry extends GsonPropertyObject {
 			//2019-07-17 O2LEE 优化：不能全部为空。但如果有一个为空，可能前推或者后延一年。
 			if (null == this.start  && null == this.completed) {
 				throw new Exception("begin and end can not be all null when dateRangeEntry on type appoint.");
-			}			
+			}
 			//2019-07-17 O2LEE 优化：如果开始时间不为空，结束时间为空，那么按开始时间后推一年为结束时间
 			if( null != this.start ) {
 				if( null == this.completed ) {
 					this.completed = DateTools.getDateAfterYearAdjust( this.start , 1, 0, 0);
 				}
-			}			
+			}
 			//2019-07-17 O2LEE 优化：如果结束时间不为空，开始时间为空，那么按结束时间前推一年为开始时间
 			if( null != this.completed ) {
 				if( null == this.start ) {
