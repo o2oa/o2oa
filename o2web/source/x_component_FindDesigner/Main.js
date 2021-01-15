@@ -584,11 +584,8 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		patternNode = this.createResultPatternItem(text, "", node, "icon_"+data.pattern.propertyType+".png");
 	},
 
-	getFormPatternNodeText: function(data, regexp){
-		var text = this.lp.elementPattern.replace("{element}", "&lt;"+data.pattern.type+"&gt;"+data.pattern.name).
-		replace("{property}", "{"+data.pattern.key+"}"+data.pattern.propertyName);
-		text = "<span style='color: #666666'>"+text+"</span>&nbsp;&nbsp;";
-
+	getPatternValueText: function(data, regexp){
+		var text = "";
 		if (data.pattern.line){
 			if (data.pattern.evkey){
 				text += "<b>["+data.pattern.evkey+"]</b>&nbsp;"+((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp, data.pattern);
@@ -598,6 +595,23 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}else{
 			text += this.getPatternValue(data.pattern.value, regexp, data.pattern);
 		}
+		return text;
+	},
+	getFormPatternNodeText: function(data, regexp){
+		var text = this.lp.elementPattern.replace("{element}", "&lt;"+data.pattern.type+"&gt;"+data.pattern.name).
+		replace("{property}", "{"+data.pattern.key+"}"+data.pattern.propertyName);
+		text = "<span style='color: #666666'>"+text+"</span>&nbsp;&nbsp;";
+
+		text += this.getPatternValueText(data, regexp);
+		// if (data.pattern.line){
+		// 	if (data.pattern.evkey){
+		// 		text += "<b>["+data.pattern.evkey+"]</b>&nbsp;"+((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp, data.pattern);
+		// 	}else{
+		// 		text += ((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp, data.pattern);
+		// 	}
+		// }else{
+		// 	text += this.getPatternValue(data.pattern.value, regexp, data.pattern);
+		// }
 		if (data.pattern.mode){
 			text = "<b>["+data.pattern.mode+"]</b>&nbsp;"+text;
 		}
@@ -774,16 +788,20 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			case "array":
 				this.openPatternFormEditor_array(data, node);
 				break;
+			case "duty":
+				this.openPatternFormEditor_duty(data, node);
+				break;
 
 			default:
 				this.openPatternFormEditor_default(data, node);
 		}
 	},
-	getValueWithPath: function(data, pattern){
+	getValueWithPath: function(data, pattern, offset){
 		var path = pattern.pattern.path;
 		var d = data;
 		var i=0;
-		while (i<path.length){
+		var oset = (offset) ? offset.toInt() : 0;
+		while (i<(path.length-oset)){
 			if (path[i]=="styles"){
 				d.styles = d.recoveryStyles;
 			}else if (path[i]=="inputStyles"){
@@ -797,23 +815,32 @@ MWF.xApplication.FindDesigner.Main = new Class({
 	getTitleWithPath: function(data, pattern){
 		var el = this.lp.elementPattern.replace("{element}", "&lt;"+pattern.pattern.type+"&gt;"+pattern.pattern.name).
 		replace("{property}", pattern.pattern.propertyName+"{"+pattern.pattern.key+"}");
-		var title = "<b>"+this.lp[pattern.module]+":<span style='color: #4A90E2'>"+pattern.appName+"</span></b>->"+": "+"<b>["+pattern.pattern.mode+this.lp[pattern.designerType]+"]</b>&nbsp;"+pattern.designerName+"->"+el;
+		var title = "<b>"+this.lp[pattern.module]+":&nbsp;<span style='color: #4A90E2'>"+pattern.appName+"</span></b>->"+": "+"<b>["+pattern.pattern.mode+this.lp[pattern.designerType]+"]</b>&nbsp;"+pattern.designerName+"->"+el;
 
 		return "<div style='line-height: 30px'>"+title+"</div>"
 	},
 	getDefaultEditorContent: function(data, pattern){
 		var el = this.lp.elementPattern.replace("{element}", "&lt;"+pattern.pattern.type+"&gt;"+pattern.pattern.name).
 		replace("{property}", pattern.pattern.propertyName+"{"+pattern.pattern.key+"}");
-		var title = "<b>"+this.lp[pattern.module]+":<span style='color: #4A90E2'>"+pattern.appName+"</span></b>->"+": "+"<b>["+pattern.pattern.mode+this.lp[pattern.designerType]+"]</b>&nbsp;"+pattern.designerName+"->"+el;
 
-		return "<div style='line-height: 30px'>"+title+"</div>"
+		var html = "<div style='padding: 20px;'>" +
+			"<div style='height: 40px; line-height: 40px; font-size: 18px'>"+this.lp.findInfor+"</div>" +
+			"<div style='padding-left: 10px; padding: 30px; border: 1px solid #eeeeee; background-color: #f9f9f9; border-radius: 5px; float: left'>" +
+			"<div style='padding-left: 20px; height: 30px; line-height: 30px'><b>"+this.lp[pattern.module]+":&nbsp;<span style='color: #4A90E2'>"+pattern.appName+"</span></b></div>" +
+			"<div style='padding-left: 40px; height: 30px; line-height: 30px'><b>["+pattern.pattern.mode+this.lp[pattern.designerType]+"]</b>&nbsp;"+pattern.designerName+"</div>" +
+			"<div style='padding-left: 60px; height: 30px; line-height: 30px'><b>"+this.lp.element+":</b>&nbsp;"+"&lt;"+pattern.pattern.type+"&gt;"+pattern.pattern.name+"</div>" +
+			"<div style='padding-left: 80px; height: 30px; line-height: 30px'><div style='float: left'><b>"+this.lp.property+":</b>&nbsp;"+pattern.pattern.propertyName+"{"+pattern.pattern.key+"}:&nbsp;"+"</div>" +
+			"<div style='margin-left: 10px; float:left; height: 30px; padding: 0px 10px; line-height: 30px; border-radius: 5px; background-color: #eeeeee;'>"+this.getPatternValueText(pattern, this.getFindRegExp())+"</div></div></div>" +
+			"<div style='float:left; margin-top:20px; clear:both; height: 40px; line-height: 40px; cursor: pointer; font-size: 18px; color: #0b58a2'>"+this.lp.findInforOpen+"</div>" +
+			"</div>";
+
+		return html;
 	},
 
 	commonEditor: new Class({
 		Implements: [Events],
-		initialize: function(node, value){
+		initialize: function(node){
 			this.node = $(node);
-			this.value = value;
 			this.container = new Element("div", {
 				"styles": {
 					"padding": "10px"
@@ -828,19 +855,20 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			this.container.destroy();
 			o2.release(this);
 		},
-		getValue: function(){
-			return this.value;
-		},
+		// getValue: function(){
+		// 	return this.value;
+		// },
 		getContent: function(){
 
 		}
 	}),
 	openPatternFormEditor_default: function(data, node){
 		debugger;
-		var d = this.getValueWithPath(data, node.pattern);
-		if (d){
-			var title = this.getTitleWithPath(data, node.pattern);
-			this.editor = new this.commonEditor(this.previewContentNode, d);
+		// var d = this.getValueWithPath(data, node.pattern);
+		// if (d){
+			debugger;
+			var content = this.getDefaultEditorContent(data, node.pattern);
+			this.editor = new this.commonEditor(this.previewContentNode);
 			this.editor.addEvent("destroy", function(){
 				this.previewToolbar.childrenButton[0].disable();
 				this.previewToolbar.childrenButton[1].disable();
@@ -848,11 +876,62 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			this.editor.pattern = node.pattern;
 			this.editor.designerNode = node;
 			this.editor.designerData = data;
-			this.editor.load(title);
+			this.editor.load(content);
+			this.editor.container.getFirst().getLast().addEvent("click", function(){
+				this.openDesinger();
+			}.bind(this));
 
 			this.previewToolbar.childrenButton[0].disable();
 			this.previewToolbar.childrenButton[1].enable();
+		// }
+	 },
+	openPatternFormEditor_duty: function(data, node){
+		if (node.pattern.pattern.valueKey=="name"){
+			this.openPatternFormEditor_default(data, node)
+		}else {
+			var d = this.getValueWithPath(data, node.pattern, 2);
+			if (d){
+				var json = JSON.parse(d);
+				var idx = node.pattern.pattern.idx.toInt();
+
+				var code = json[idx].code;
+
+				o2.require("o2.widget.JavascriptEditor", function(){
+					this.editor = new o2.widget.JavascriptEditor(this.previewContentNode, {
+						"option": {
+							"value": code,
+							"mode": (!node.pattern.pattern.propertyType || node.pattern.pattern.propertyType==="script" || node.pattern.pattern.propertyType==="events") ? "javascript" : node.pattern.pattern.propertyType
+						}
+					});
+					this.editor.pattern = node.pattern;
+					this.editor.designerNode = node;
+					this.editor.designerData = data;
+					this.editor.load(function(){
+						if (this.previewToolbar){
+							this.previewToolbar.childrenButton[0].enable();
+							this.previewToolbar.childrenButton[1].enable();
+						}
+						this.editor.addEvent("change", function(){
+							this.editor.isRefind = true;
+						}.bind(this));
+						this.editor.addEvent("blur", function(){
+							if (this.editor.isRefind) this.reFindInFormDesigner();
+						}.bind(this));
+						this.editor.addEvent("destroy", function(){
+							this.previewToolbar.childrenButton[0].disable();
+							this.previewToolbar.childrenButton[1].disable();
+						}.bind(this));
+						this.editor.addEvent("save", function(){
+							this.saveDesigner();
+						}.bind(this));
+
+						this.resetFormEditor(node.pattern);
+					}.bind(this));
+				}.bind(this));
+
+			}
 		}
+		//var d = this.getValueWithPath(data, node.pattern);
 	},
 
 	openPatternFormEditor_array: function(data, node){
@@ -888,6 +967,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 
 			}.bind(this))
 		}
+
 	},
 
 	openPatternFormEditor_map: function(data, node){
@@ -1419,10 +1499,15 @@ debugger;
 				case "form":
 					switch (pattern.module) {
 						case "processPlatform":
+							var _self = this;
 							var options = {
-								"style": layout.desktop.formDesignerStyle,
+								"style": layout.desktop.formDesignerStyle || "default",
 								"appId": "process.FormDesigner"+pattern.designerId,
-								"id": pattern.designerId
+								"id": pattern.designerId,
+								"onPostLoadApplicationCompleted": function(){
+									debugger;
+									_self.checkSelectDesignerElement(this, pattern, 0);
+								}
 							};
 							layout.openApplication(null, "process.FormDesigner", options);
 							break;
@@ -1443,6 +1528,27 @@ debugger;
 
 				this.previewInforNode.show().inject(this.previewContentNode);
 			}.bind(this), 100);
+		}
+	},
+	checkSelectDesignerElement: function(app, pattern, idx){
+		var flag = false;
+		if (app.pcForm){
+			if (pattern.pattern.type.toLowerCase()!="form"){
+				for (var i=0; i<app.pcForm.moduleList.length; i++){
+					var m = app.pcForm.moduleList[i];
+					if (m.json.id==pattern.pattern.name || m.json.name==pattern.pattern.name){
+						m.selected();
+						flag = true;
+						break;
+					}
+				}
+			}
+		}
+		if (!flag){
+			idx++;
+			if (idx<10) window.setTimeout(function(){
+				this.checkSelectDesignerElement(app, pattern, idx);
+			}.bind(this), 300);
 		}
 	},
 
