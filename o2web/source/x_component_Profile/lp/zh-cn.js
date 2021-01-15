@@ -48,7 +48,7 @@ MWF.xApplication.Profile.LP = {
 
     "layoutAction": "界面操作",
     "desktopBackground": "桌面背景",
-    "paswordRule" : "请使用数字和字母组合且长度大于7。不要用常用密码如password、123等",
+    "paswordRule" : "6位以上,包含数字和字母.",
     "weak" : "弱",
     "middle" : "中",
     "high" : "强",
