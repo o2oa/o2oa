@@ -480,12 +480,12 @@ public class ProcessPlatformPlan extends Plan {
 				return null;
 			}
 			if (null == this.dateRange.start) {
-				return cb.lessThanOrEqualTo(root.get(WorkCompleted_.completedTime), this.dateRange.completed);
+				return cb.lessThanOrEqualTo(root.get(WorkCompleted_.startTime), this.dateRange.completed);
 			} else if (null == this.dateRange.completed) {
 				return cb.greaterThanOrEqualTo(root.get(WorkCompleted_.startTime), this.dateRange.start);
 			} else {
 				return cb.and(cb.greaterThanOrEqualTo(root.get(WorkCompleted_.startTime), this.dateRange.start),
-						cb.lessThanOrEqualTo(root.get(WorkCompleted_.completedTime), this.dateRange.completed));
+						cb.lessThanOrEqualTo(root.get(WorkCompleted_.startTime), this.dateRange.completed));
 			}
 		}
 	}
