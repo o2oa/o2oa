@@ -417,6 +417,7 @@ _worker.findInDesigner_script = function(formData, key, module, designer, proper
                 "propertyType": propertyDefinition.type || "text",
                 "propertyName": propertyDefinition.name,
                 "name": formData.name || formData.id,
+                "id": formData.id,
                 "key": key,
                 "value": obj.value,
                 "line": preLine+1,
@@ -450,6 +451,7 @@ _worker.findInDesigner_events = function(formData, key, module, designer, proper
                 "propertyType": propertyDefinition.type || "text",
                 "propertyName": propertyDefinition.name,
                 "name": formData.name || formData.id,
+                "id": formData.id,
                 "key": key,
                 "evkey": evkey,
                 "value": obj.value,
@@ -473,6 +475,7 @@ _worker.findInDesigner_map = function(formData, key, module, designer, propertyD
                         "propertyType": propertyDefinition.type || "text",
                         "propertyName": propertyDefinition.name,
                         "name": formData.name || formData.id,
+                        "id": formData.id,
                         "key": key,
                         "value": evkey + ": " + text,
                         "mode": mode,
@@ -489,6 +492,7 @@ _worker.findInDesigner_map = function(formData, key, module, designer, propertyD
                             "propertyType": propertyDefinition.type || "text",
                             "propertyName": propertyDefinition.name+"-"+evkey,
                             "name": formData.name || formData.id,
+                            "id": formData.id,
                             "key": key,
                             "value": stylekey + ": " + text[stylekey],
                             "mode": mode,
@@ -511,6 +515,7 @@ _worker.findInDesigner_array = function(formData, key, module, designer, propert
                 "propertyType": propertyDefinition.type || "text",
                 "propertyName": propertyDefinition.name,
                 "name": formData.name || formData.id,
+                "id": formData.id,
                 "line": i+1,
                 "key": key,
                 "value": text,
@@ -533,6 +538,7 @@ _worker.findInDesigner_objectArray = function(formData, key, module, designer, p
                     "propertyType": propertyDefinition.type || "text",
                     "propertyName": propertyDefinition.name,
                     "name": formData.name || formData.id,
+                    "id": formData.id,
                     "line": i+1,
                     "key": key,
                     "value": evkey+": "+text,
@@ -558,6 +564,7 @@ _worker.findInDesigner_duty = function(formData, key, module, designer, property
                     "propertyType": propertyDefinition.type || "text",
                     "propertyName": propertyDefinition.name,
                     "name": formData.name || formData.id,
+                    "id": formData.id,
                     "key": key,
                     "line": i+1,
                     "valueKey": "name",
@@ -586,6 +593,7 @@ _worker.findInDesigner_duty = function(formData, key, module, designer, property
                         "propertyType": propertyDefinition.type || "text",
                         "propertyName": propertyDefinition.name+"(code)&nbsp;"+idx+"."+duty.name,
                         "name": formData.name || formData.id,
+                        "id": formData.id,
                         "key": key,
                         "valueKey": "code",
                         "idx": i,
@@ -600,9 +608,10 @@ _worker.findInDesigner_duty = function(formData, key, module, designer, property
     }
 };
 
-_worker.findInDesigner_actions = function(formData, key, module, designer, propertyDefinition, option, mode){
+_worker.findInDesigner_actions = function(formData, key, module, designer, propertyDefinition, option, mode, path){
     var arr = formData[key];
     arr.forEach(function(action, i) {
+        var p = path.concat(i);
         this.keywordRegexp.lastIndex = 0;
         var text = action.text;
         if (text) if (this.keywordRegexp.test(text)){
@@ -611,10 +620,12 @@ _worker.findInDesigner_actions = function(formData, key, module, designer, prope
                 "propertyType": propertyDefinition.type || "text",
                 "propertyName": propertyDefinition.name,
                 "name": formData.name || formData.id,
+                "id": formData.id,
                 "key": key,
                 "line": i+1,
                 "value": "text:"+text,
-                "mode": mode
+                "mode": mode,
+                "path": p.concat("text")
             }), option);
         }
 
@@ -637,10 +648,12 @@ _worker.findInDesigner_actions = function(formData, key, module, designer, prope
                     "propertyType": propertyDefinition.type || "text",
                     "propertyName": propertyDefinition.name+"(actionScript)&nbsp;"+action.text,
                     "name": formData.name || formData.id,
+                    "id": formData.id,
                     "key": key,
                     "value": obj.value,
                     "line": preLine+1,
-                    "mode": mode
+                    "mode": mode,
+                    "path": p.concat("actionScript")
                 }), option);
             }
         }
@@ -662,10 +675,12 @@ _worker.findInDesigner_actions = function(formData, key, module, designer, prope
                     "propertyType": propertyDefinition.type || "text",
                     "propertyName": propertyDefinition.name+"(condition)&nbsp;"+action.text,
                     "name": formData.name || formData.id,
+                    "id": formData.id,
                     "key": key,
                     "value": obj.value,
                     "line": preLine+1,
-                    "mode": mode
+                    "mode": mode,
+                    "path": p.concat("condition")
                 }), option);
             }
         }
@@ -683,6 +698,7 @@ _worker.findInDesigner_filter = function(formData, key, module, designer, proper
                 "propertyType": propertyDefinition.type || "text",
                 "propertyName": propertyDefinition.name,
                 "name": formData.name || formData.id,
+                "id": formData.id,
                 "key": key,
                 "line": i+1,
                 "value": "path:"+text,
@@ -697,6 +713,7 @@ _worker.findInDesigner_filter = function(formData, key, module, designer, proper
                 "propertyType": propertyDefinition.type || "text",
                 "propertyName": propertyDefinition.name,
                 "name": formData.name || formData.id,
+                "id": formData.id,
                 "key": key,
                 "line": i+1,
                 "value": "value:"+value,
@@ -711,6 +728,7 @@ _worker.findInDesigner_filter = function(formData, key, module, designer, proper
                 "propertyType": propertyDefinition.type || "text",
                 "propertyName": propertyDefinition.name,
                 "name": formData.name || formData.id,
+                "id": formData.id,
                 "key": key,
                 "line": i+1,
                 "value": "otherValue:"+otherValue,
@@ -738,6 +756,7 @@ _worker.findInDesigner_filter = function(formData, key, module, designer, proper
                     "propertyType": propertyDefinition.type || "text",
                     "propertyName": propertyDefinition.name+"(code)&nbsp;"+filter.path,
                     "name": formData.name || formData.id,
+                    "id": formData.id,
                     "key": key,
                     "value": obj.value,
                     "line": preLine+1,
@@ -765,6 +784,7 @@ _worker.findInDesigner_filter = function(formData, key, module, designer, proper
                     "propertyType": propertyDefinition.type || "text",
                     "propertyName": propertyDefinition.name+"(valueScript)&nbsp;"+filter.path,
                     "name": formData.name || formData.id,
+                    "id": formData.id,
                     "key": key,
                     "value": obj.value,
                     "line": preLine+1,
@@ -792,6 +812,7 @@ _worker.findInDesigner_serial = function(formData, key, module, designer, proper
                             "propertyType": propertyDefinition.type || "text",
                             "propertyName": propertyDefinition.name+"&nbsp"+serial.key+"&nbsp",
                             "name": formData.name || formData.id,
+                            "id": formData.id,
                             "key": key,
                             "value": serial.value
                         }), option);
@@ -817,6 +838,7 @@ _worker.findInDesigner_serial = function(formData, key, module, designer, proper
                                     "propertyType": propertyDefinition.type || "text",
                                     "propertyName": propertyDefinition.name+"&nbsp"+serial.key+"&nbsp",
                                     "name": formData.name || formData.id,
+                                    "id": formData.id,
                                     "key": key,
                                     "value": obj.value,
                                     "line": preLine+1
@@ -846,6 +868,7 @@ _worker.findInDesigner_projection = function(formData, key, module, designer, pr
                     "propertyType": propertyDefinition.type || "text",
                     "propertyName": propertyDefinition.name,
                     "name": formData.name || formData.id,
+                    "id": formData.id,
                     "key": key,
                     "value": text,
                     "line": i
@@ -872,6 +895,7 @@ _worker.findInDesigner_selectConfig_script = function(formData, key, module, des
                 "propertyType": propertyDefinition.type || "text",
                 "propertyName": propertyName,
                 "name": formData.name || formData.id,
+                "id": formData.id,
                 "key": key,
                 "value": obj.value,
                 "line": preLine+1
@@ -898,6 +922,7 @@ _worker.findInDesigner_selectConfig_events = function(formData, key, module, des
                 "propertyType": propertyDefinition.type || "text",
                 "propertyName": propertyName,
                 "name": formData.name || formData.id,
+                "id": formData.id,
                 "key": key,
                 "evkey": evkey,
                 "value": obj.value,
@@ -951,6 +976,7 @@ _worker.findInDesigner_selectConfig = function(formData, key, module, designer, 
                         "propertyType": propertyDefinition.type || "text",
                         "propertyName": propertyName,
                         "name": formData.name || formData.id,
+                        "id": formData.id,
                         "line": i+1,
                         "key": key,
                         "value": text,
@@ -974,6 +1000,7 @@ _worker.findInDesigner_text = function(formData, key, module, designer, property
             "propertyType": propertyDefinition.type || "text",
             "propertyName": propertyDefinition.name,
             "name": formData.name || formData.id,
+            "id": formData.id,
             "key": key,
             "value": text,
             "mode": mode
@@ -1057,6 +1084,7 @@ _worker._getDesignerData = function(designer, module){
             break;
         case "widget":
             action = this.findData.actions.getPortalWidget;
+            break;
         case "view":
             action = this.findData.actions.getQueryView;
             break;
@@ -1124,7 +1152,7 @@ _worker._findProcessPlatformParse_view = function(designer, option, module){
                     Object.keys(viewData).forEach(function(key){
                         if (key!=="where" && key!=="selectList" && key!=="actionbarList" && key!=="pagingList" && key!=="type" && key!=="name" ){
                             var propertyDefinition = this.designerPropertysData.view[key];
-                            _worker.findInDesignerProperty(key, propertyDefinition, viewData, option, module, designer);
+                            _worker.findInDesignerProperty(key, propertyDefinition, viewData, option, module, designer, null, ["data", key]);
                         }
                     });
 
@@ -1133,37 +1161,37 @@ _worker._findProcessPlatformParse_view = function(designer, option, module){
                     Object.keys(viewData.where).forEach(function(key){
                         if ( key!=="type" && key!=="name"){
                             var propertyDefinition = this.designerPropertysData.view[key];
-                            _worker.findInDesignerProperty(key, propertyDefinition, viewData.where, option, module, designer);
+                            _worker.findInDesignerProperty(key, propertyDefinition, viewData.where, option, module, designer, null, ["data", "where", key]);
                         }
                     });
 
-                    viewData.selectList.forEach(function(col){
+                    viewData.selectList.forEach(function(col, i){
                         col.type = "column";
                         col.name =  col.displayName;
                         Object.keys(col).forEach(function(key){
                             if (key!=="name" && key!=="type"){
                                 var propertyDefinition = this.designerPropertysData.view[key];
-                                _worker.findInDesignerProperty(key, propertyDefinition, col, option, module, designer);
+                                _worker.findInDesignerProperty(key, propertyDefinition, col, option, module, designer, null, ["data", "selectList", i, key]);
                             }
                         });
                     });
-                    viewData.actionbarList.forEach(function(item){
+                    viewData.actionbarList.forEach(function(item, i){
                         item.type = "actionbar";
                         item.name =  item.type;
                         Object.keys(item).forEach(function(key){
                             if (key!=="name" && key!=="type"){
                                 var propertyDefinition = this.designerPropertysData.view[key];
-                                _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer);
+                                _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer, null, ["data", "actionbarList", i, key]);
                             }
                         });
                     });
-                    viewData.pagingList.forEach(function(item){
+                    viewData.pagingList.forEach(function(item, i){
                         item.type = "paging";
                         item.name =  item.type;
                         Object.keys(item).forEach(function(key){
                             if (key!=="name" && key!=="type"){
                                 var propertyDefinition = this.designerPropertysData.view[key];
-                                _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer);
+                                _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer, null, ["data", "pagingList", i, key]);
                             }
                         });
                     });
@@ -1297,7 +1325,7 @@ _worker._findProcessPlatformParse_process = function(designer, option, module){
                         debugger;
                         var propertyDefinition = this.designerPropertysData.process[pattern.property];
                         processData.type = pattern.elementType;
-                        _worker.findInDesignerProperty(pattern.property, propertyDefinition, processData, option, module, designer);
+                        _worker.findInDesignerProperty(pattern.property, propertyDefinition, processData, option, module, designer, null, [pattern.property]);
                     }else if (pattern.elementType === "route") {
                         for (var i=0; i<processData.routeList.length; i++){
                             if (processData.routeList[i].id===pattern.elementId) break;
@@ -1305,7 +1333,7 @@ _worker._findProcessPlatformParse_process = function(designer, option, module){
                         Object.keys(processData.routeList[i]).forEach(function(key){
                             var propertyDefinition = this.designerPropertysData.process[key];
                             processData.routeList[i].type = pattern.elementType;
-                            _worker.findInDesignerProperty(key, propertyDefinition, processData.routeList[i], option, module, designer);
+                            _worker.findInDesignerProperty(key, propertyDefinition, processData.routeList[i], option, module, designer, null,["routeList", i, key]);
                         }.bind(this));
 
 
@@ -1314,7 +1342,7 @@ _worker._findProcessPlatformParse_process = function(designer, option, module){
                             Object.keys(processData.begin).forEach(function(key){
                                 var propertyDefinition = this.designerPropertysData.process[key];
                                 processData.begin.type = pattern.elementType;
-                                _worker.findInDesignerProperty(key, propertyDefinition, processData.begin, option, module, designer);
+                                _worker.findInDesignerProperty(key, propertyDefinition, processData.begin, option, module, designer, null,["begin", key]);
                             }.bind(this));
                         }else{
                             var arrKey = pattern.elementType+"List";
@@ -1324,7 +1352,7 @@ _worker._findProcessPlatformParse_process = function(designer, option, module){
                             Object.keys(processData[arrKey][i]).forEach(function(key){
                                 var propertyDefinition = this.designerPropertysData.process[key];
                                 processData[arrKey][i].type = pattern.elementType;
-                                _worker.findInDesignerProperty(key, propertyDefinition, processData[arrKey][i], option, module, designer);
+                                _worker.findInDesignerProperty(key, propertyDefinition, processData[arrKey][i], option, module, designer, null,[arrKey, i, key]);
                             }.bind(this));
                         }
                     }

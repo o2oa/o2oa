@@ -1,4 +1,4 @@
-MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Class({
+ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Class({
     Extends: MWF.xAction.RestActions.Action,
 
     getId: function(count, success, failure, async){

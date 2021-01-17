@@ -134,6 +134,8 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
             this.designer.addEvent("queryClose", function(){
                 if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
             }.bind(this));
+
+            this.fireEvent("postLoad");
         }.bind(this));
 	},
     removeStyles: function(from, to){
