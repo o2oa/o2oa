@@ -221,6 +221,7 @@ MWF.xApplication.portal.PortalManager.WidgetExplorer.Widget= new Class({
 	_open: function(e){
         var _self = this;
         var options = {
+            "appId": "portal.WidgetDesigner"+_self.data.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

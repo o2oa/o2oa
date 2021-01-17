@@ -160,7 +160,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
 		}.bind(this));
 
-		this.designer.fireEvent("postLoadApplicationCompleted");
+		this.designer.fireEvent("postFormLoad");
 	},
     removeStyles: function(from, to){
         if (this.json[to]){
