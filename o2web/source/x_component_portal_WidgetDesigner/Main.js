@@ -33,17 +33,21 @@ MWF.xApplication.portal.WidgetDesigner.Main = new Class({
     getPageTemplate: function (templateId, callback) {
         this.actions.getWidgetTemplate(templateId, function (page) {
             if (callback) callback(page);
-        }.bind(this))
+        }.bind(this));
     },
     getPage: function (id, callback) {
         this.actions.getWidget(id, function (page) {
             if (callback) callback(page);
-        }.bind(this))
+        }.bind(this));
     },
     loadPage: function () {
         this.getPageData(function () {
             this.pcPage = new MWF.PCPage(this, this.designNode, {
-                "propertyPath": "../x_component_portal_WidgetDesigner/Module/Page/page.html"
+                "propertyPath": "../x_component_portal_WidgetDesigner/Module/Page/page.html",
+                "onPostLoad": function(){
+                    this.fireEvent("postWidgetLoad");
+                }.bind(this)
+
             });
             this.pcPage.load(this.pageData);
 

@@ -443,22 +443,51 @@ MWF.xApplication.FindDesigner.Main = new Class({
 						this.scriptDesignerDataObject[this.editor.pattern.designerId].text = this.editor.getValue();
 					}
 				}else{
+					debugger;
 					if (this.designerDataObject && this.designerDataObject[this.editor.pattern.designerId]){
 						var d = this.designerDataObject[this.editor.pattern.designerId];
-						if (this.editor.pattern.pattern.path){
-							var path = this.editor.pattern.pattern.path;
-							for (var i=0; i<path.length-1; i++){
-								d = d[path[i]];
-							}
-						}
-						if (path[path.length-1]=="styles"){
-							d["recoveryStyles"] = this.editor.getValue();
-						}else if (path[path.length-1]=="inputStyles"){
-							d["recoveryInputStyles"] = this.editor.getValue();
-						}
-						d[path[path.length-1]] = this.editor.getValue();
+						switch (this.editor.pattern.pattern.propertyType){
+							case "duty":
+								if (this.editor.pattern.pattern.path){
+									var path = this.editor.pattern.pattern.path;
+									for (var i=0; i<path.length-1; i++){
+										if (path[i]==this.editor.pattern.pattern.key){
+											d[path[i]] = JSON.parse(d[path[i]]);
+											d = d[path[i]];
+										}else{
+											d = d[path[i]];
+										}
+									}
+									d[path[path.length-1]] = this.editor.getValue();
 
-						//d[path[path.length-1]] = this.editor.getValue();
+									d = this.designerDataObject[this.editor.pattern.designerId];
+									for (var i=0; i<path.length-1; i++){
+										if (path[i]==this.editor.pattern.pattern.key){
+											d[path[i]] = JSON.stringify(d[path[i]]);
+											break;
+										}else{
+											d = d[path[i]];
+										}
+									}
+								}
+								break;
+							default:
+								if (this.editor.getValue){
+									if (this.editor.pattern.pattern.path){
+										var path = this.editor.pattern.pattern.path;
+										for (var i=0; i<path.length-1; i++){
+											d = d[path[i]];
+										}
+									}
+									if (path[path.length-1]=="styles"){
+										d["recoveryStyles"] = this.editor.getValue();
+									}else if (path[path.length-1]=="inputStyles"){
+										d["recoveryInputStyles"] = this.editor.getValue();
+									}
+									d[path[path.length-1]] = this.editor.getValue();
+								}
+						}
+
 					}
 				}
 				this.editor.destroy();
@@ -554,35 +583,36 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			case "widget":
 			case "view":
 			case "statement":
+			case "process":
 				this.createFormPatternNode(data, designerNode, regexp, treeNode);
 				break;
-			case "process":
-				this.createProcessPatternNode(data, designerNode, regexp, treeNode);
-				break;
+			// case "process":
+			// 	this.createProcessPatternNode(data, designerNode, regexp, treeNode);
+			// 	break;
 
 		}
 	},
 
-	createProcessPatternNode: function(data, node, regexp){
-		var text = this.lp.elementPattern.replace("{element}", "&lt;"+data.pattern.type+"&gt;"+data.pattern.name).
-		replace("{property}", "{"+data.pattern.key+"}"+data.pattern.propertyName);
-		text = "<span style='color: #666666'>"+text+"</span>&nbsp;&nbsp;"
-
-		if (data.pattern.line){
-			if (data.pattern.evkey){
-				text += "<b>["+data.pattern.evkey+"]</b>&nbsp;"+((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp);
-			}else{
-				text += ((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp);
-			}
-		}else{
-			text += this.getPatternValue(data.pattern.value, regexp);
-		}
-		if (data.pattern.mode){
-			text = "<b>["+data.pattern.mode+"]</b>&nbsp;"+text;
-		}
-
-		patternNode = this.createResultPatternItem(text, "", node, "icon_"+data.pattern.propertyType+".png");
-	},
+	// createProcessPatternNode: function(data, node, regexp){
+	// 	var text = this.lp.elementPattern.replace("{element}", "&lt;"+data.pattern.type+"&gt;"+data.pattern.name).
+	// 	replace("{property}", "{"+data.pattern.key+"}"+data.pattern.propertyName);
+	// 	text = "<span style='color: #666666'>"+text+"</span>&nbsp;&nbsp;"
+	//
+	// 	if (data.pattern.line){
+	// 		if (data.pattern.evkey){
+	// 			text += "<b>["+data.pattern.evkey+"]</b>&nbsp;"+((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp);
+	// 		}else{
+	// 			text += ((data.pattern.line) ? data.pattern.line+"&nbsp;&nbsp;" : "" )+this.getPatternValue(data.pattern.value, regexp);
+	// 		}
+	// 	}else{
+	// 		text += this.getPatternValue(data.pattern.value, regexp);
+	// 	}
+	// 	if (data.pattern.mode){
+	// 		text = "<b>["+data.pattern.mode+"]</b>&nbsp;"+text;
+	// 	}
+	//
+	// 	patternNode = this.createResultPatternItem(text, "", node, "icon_"+data.pattern.propertyType+".png");
+	// },
 
 	getPatternValueText: function(data, regexp){
 		var text = "";
@@ -674,15 +704,58 @@ MWF.xApplication.FindDesigner.Main = new Class({
 						this.scriptDesignerDataObject[this.editor.pattern.designerId].text = this.editor.getValue();
 					}
 				}else{
+
 					if (this.designerDataObject && this.designerDataObject[this.editor.pattern.designerId]){
 						var d = this.designerDataObject[this.editor.pattern.designerId];
-						if (this.editor.pattern.pattern.path){
-							var path = this.editor.pattern.pattern.path;
-							for (var i=0; i<path.length-1; i++){
-								d = d[path[i]];
-							}
+						switch (this.editor.pattern.pattern.propertyType){
+							case "duty":
+								if (this.editor.pattern.pattern.path){
+									var path = this.editor.pattern.pattern.path;
+									for (var i=0; i<path.length-1; i++){
+										if (path[i]==this.editor.pattern.pattern.key){
+											d[path[i]] = JSON.parse(d[path[i]]);
+											d = d[path[i]];
+										}else{
+											d = d[path[i]];
+										}
+									}
+									d[path[path.length-1]] = this.editor.getValue();
+
+									d = this.designerDataObject[this.editor.pattern.designerId];
+									for (var i=0; i<path.length-1; i++){
+										if (path[i]==this.editor.pattern.pattern.key){
+											d[path[i]] = JSON.stringify(d[path[i]]);
+											break;
+										}else{
+											d = d[path[i]];
+										}
+									}
+								}
+								break;
+							default:
+								if (this.editor.getValue){
+									if (this.editor.pattern.pattern.path){
+										var path = this.editor.pattern.pattern.path;
+										for (var i=0; i<path.length-1; i++){
+											d = d[path[i]];
+										}
+									}
+									if (path[path.length-1]=="styles"){
+										d["recoveryStyles"] = this.editor.getValue();
+									}else if (path[path.length-1]=="inputStyles"){
+										d["recoveryInputStyles"] = this.editor.getValue();
+									}
+									d[path[path.length-1]] = this.editor.getValue();
+								}
 						}
-						d[path[path.length-1]] = this.editor.getValue();
+
+						// if (this.editor.pattern.pattern.path){
+						// 	var path = this.editor.pattern.pattern.path;
+						// 	for (var i=0; i<path.length-1; i++){
+						// 		d = d[path[i]];
+						// 	}
+						// }
+						// d[path[path.length-1]] = this.editor.getValue();
 					}
 				}
 				this.editor.destroy();
@@ -707,8 +780,26 @@ MWF.xApplication.FindDesigner.Main = new Class({
 					//m = o2.Actions.load("x_cms_assemble_control").ScriptAction.get;
 					break;
 				case "portal":
-					//m = o2.Actions.load("x_portal_assemble_designer").ScriptAction.get;
+					if (node.pattern.designerType==="page"){
+						m = o2.Actions.load("x_portal_assemble_designer").PageAction.get;
+						break;
+					}
+					if (node.pattern.designerType==="widget"){
+						m = o2.Actions.load("x_portal_assemble_designer").WidgetAction.get;
+						break;
+					}
 					break;
+				case "query":
+					if (node.pattern.designerType==="view"){
+						m = o2.Actions.load("x_query_assemble_designer").ViewAction.get;
+						break;
+					}
+					if (node.pattern.designerType==="statement"){
+						m = o2.Actions.load("x_portal_assemble_designer").StatementAction.get;
+						break;
+					}
+					break;
+
 				case "service":
 					//m = (node.pattern.appId==="invoke") ? o2.Actions.load("x_program_center").InvokeAction.get : o2.Actions.load("x_program_center").AgentAction.get;
 					break;
@@ -727,6 +818,9 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			case "sql":
 			case "events":
 				this.reLocationEditor(pattern);
+				break;
+			case "duty":
+				if (pattern.pattern.valueKey=="code") this.reLocationEditor(pattern);
 				break;
 			case "map":
 				this.reLocationMapEditor(pattern);
@@ -762,10 +856,19 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		}else{
 			if (m) m(node.pattern.designerId).then(function(json){
 				if (json.data){
-					var data = json.data;
-					var pcData = JSON.decode(MWF.decodeJsonString(json.data.data));
-					var mobileData = (json.data.mobileData) ? JSON.decode(MWF.decodeJsonString(json.data.mobileData)) : null;
-					var d = {"data": pcData, "mobileData": mobileData};
+					var d = json.data;
+					if (node.pattern.designerType=="form" || node.pattern.designerType=="page" || node.pattern.designerType=="widget"){
+						var pcData = JSON.decode(MWF.decodeJsonString(json.data.data));
+						var mobileData = (json.data.mobileData) ? JSON.decode(MWF.decodeJsonString(json.data.mobileData)) : null;
+						d = {"data": pcData, "mobileData": mobileData};
+					}
+					if (node.pattern.designerType=="view"){
+						var dataJson = JSON.decode(json.data.data);
+						d.application = d.query
+						d.applicationName = d.queryName;
+						d.data = dataJson;
+					}
+
 					if (!this.designerDataObject) this.designerDataObject = {};
 					this.designerDataObject[node.pattern.designerId] = d;
 					this.openPatternFormEditor(d, node);
@@ -827,7 +930,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			"<div style='height: 40px; line-height: 40px; font-size: 18px'>"+this.lp.findInfor+"</div>" +
 			"<div style='padding-left: 10px; padding: 30px; border: 1px solid #eeeeee; background-color: #f9f9f9; border-radius: 5px; float: left'>" +
 			"<div style='padding-left: 20px; height: 30px; line-height: 30px'><b>"+this.lp[pattern.module]+":&nbsp;<span style='color: #4A90E2'>"+pattern.appName+"</span></b></div>" +
-			"<div style='padding-left: 40px; height: 30px; line-height: 30px'><b>["+pattern.pattern.mode+this.lp[pattern.designerType]+"]</b>&nbsp;"+pattern.designerName+"</div>" +
+			"<div style='padding-left: 40px; height: 30px; line-height: 30px'><b>["+(pattern.pattern.mode || "")+this.lp[pattern.designerType]+"]</b>&nbsp;"+pattern.designerName+"</div>" +
 			"<div style='padding-left: 60px; height: 30px; line-height: 30px'><b>"+this.lp.element+":</b>&nbsp;"+"&lt;"+pattern.pattern.type+"&gt;"+pattern.pattern.name+"</div>" +
 			"<div style='padding-left: 80px; height: 30px; line-height: 30px'><div style='float: left'><b>"+this.lp.property+":</b>&nbsp;"+pattern.pattern.propertyName+"{"+pattern.pattern.key+"}:&nbsp;"+"</div>" +
 			"<div style='margin-left: 10px; float:left; height: 30px; padding: 0px 10px; line-height: 30px; border-radius: 5px; background-color: #eeeeee;'>"+this.getPatternValueText(pattern, this.getFindRegExp())+"</div></div></div>" +
@@ -886,6 +989,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		// }
 	 },
 	openPatternFormEditor_duty: function(data, node){
+		debugger;
 		if (node.pattern.pattern.valueKey=="name"){
 			this.openPatternFormEditor_default(data, node)
 		}else {
@@ -900,7 +1004,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 					this.editor = new o2.widget.JavascriptEditor(this.previewContentNode, {
 						"option": {
 							"value": code,
-							"mode": (!node.pattern.pattern.propertyType || node.pattern.pattern.propertyType==="script" || node.pattern.pattern.propertyType==="events") ? "javascript" : node.pattern.pattern.propertyType
+							"mode": "javascript"
 						}
 					});
 					this.editor.pattern = node.pattern;
@@ -1209,6 +1313,16 @@ debugger;
 					flagNode = removeNodes[0];
 					this.reFindInFormDesigner_script(flagNode, pattern);
 					break;
+				case "duty":
+					if (removeNodes.length>1){
+						for (var i=1; i<removeNodes.length; i++){
+							removeNodes[i].destroy();
+							this.subResultCount(this.editor.pattern);
+						}
+					}
+					flagNode = removeNodes[0];
+					this.reFindInFormDesigner_duty(flagNode, pattern);
+					break;
 				case "map":
 					this.reFindInFormDesigner_map(removeNodes, pattern);
 					break;
@@ -1219,6 +1333,41 @@ debugger;
 			this.subResultCount(this.editor.pattern);
 		}
 		this.editor.isRefind = false;
+	},
+	reFindInFormDesigner_duty: function(removeNodes, pattern){
+		var code = this.editor.getValue();
+		if (code){
+			var regex = this.getFilterOptionRegex(this.filterOption)
+			regex.lastIndex = 0;
+			var len = code.length;
+
+			var preLine = 0;
+			var preIndex = 0;
+			var result;
+			while ((result = regex.exec(code)) !== null){
+				var obj = this.findScriptLineValue(result, code, preLine, preIndex, len, regex);
+				preLine = obj.preLine;
+				preIndex = obj.preIndex;
+
+				this.showFindResult(this._createFindMessageReplyData( this.editor.pattern.module, this.editor.pattern, "", {
+					"type": pattern.pattern.type,
+					"propertyType": pattern.pattern.propertyType,
+					"propertyName": pattern.pattern.propertyName,
+					"name": pattern.pattern.name,
+					"id": pattern.pattern.id,
+					"key": pattern.pattern.key,
+					"evkey": pattern.pattern.evkey,
+					"idx": pattern.pattern.idx,
+					"valueKey": pattern.pattern.valueKey,
+					"value": obj.value,
+					"line": preLine+1,
+					"mode": pattern.pattern.mode,
+					"path": pattern.pattern.path
+				}), this.filterOption, flagNode);
+			}
+
+		}
+		if (flagNode) flagNode.destroy();
 	},
 	reFindInFormDesigner_array: function(removeNodes, pattern){
 		var arr = this.editor.getValue();
@@ -1253,6 +1402,7 @@ debugger;
 							"propertyType": pattern.pattern.propertyType,
 							"propertyName": pattern.pattern.propertyName,
 							"name": pattern.pattern.name,
+							"id": pattern.pattern.id,
 							"line": i+1,
 							"key": pattern.pattern.key,
 							"value": text,
@@ -1298,6 +1448,7 @@ debugger;
 									"propertyType": pattern.pattern.propertyType,
 									"propertyName": pattern.pattern.propertyName,
 									"name": pattern.pattern.name,
+									"id": pattern.pattern.id,
 									"key": pattern.pattern.key,
 									"value": evkey + ": " + text,
 									"mode": pattern.pattern.mode,
@@ -1326,11 +1477,13 @@ debugger;
 				preLine = obj.preLine;
 				preIndex = obj.preIndex;
 
+				var pattern =  this.editor.pattern;
 				this.showFindResult(this._createFindMessageReplyData( this.editor.pattern.module, this.editor.pattern, "", {
 					"type": pattern.pattern.type,
 					"propertyType": pattern.pattern.propertyType,
 					"propertyName": pattern.pattern.propertyName,
 					"name": pattern.pattern.name,
+					"id": pattern.pattern.id,
 					"key": pattern.pattern.key,
 					"evkey": pattern.pattern.evkey,
 					"value": obj.value,
@@ -1405,6 +1558,8 @@ debugger;
 
 					break;
 				case "form":
+				case "page":
+				case "widget":
 					switch (pattern.module){
 						case "processPlatform":
 							var action = MWF.Actions.get("x_processplatform_assemble_designer");
@@ -1414,24 +1569,54 @@ debugger;
 							var action = MWF.Actions.get("x_cms_assemble_control");
 							m = action.saveForm.bind(action);
 							break;
+						case "portal":
+							var action = MWF.Actions.get("x_portal_assemble_designer");
+							m = (pattern.designerType=="page") ? action.savePage.bind(action) : action.saveWidget.bind(action);
+							break;
 					}
 					if (this.designerDataObject && this.designerDataObject[this.editor.pattern.designerId]){
 						var d = this.designerDataObject[this.editor.pattern.designerId];
-						if (this.editor.pattern.pattern.path){
-							var path = this.editor.pattern.pattern.path;
+						switch (this.editor.pattern.pattern.propertyType){
+							case "duty":
+								if (this.editor.pattern.pattern.path){
+									var path = this.editor.pattern.pattern.path;
+									for (var i=0; i<path.length-1; i++){
+										if (path[i]==this.editor.pattern.pattern.key){
+											d[path[i]] = JSON.parse(d[path[i]]);
+											d = d[path[i]];
+										}else{
+											d = d[path[i]];
+										}
+									}
+									d[path[path.length-1]] = this.editor.getValue();
 
-							for (var i=0; i<path.length-1; i++){
-								d = d[path[i]];
-							}
+									d = this.designerDataObject[this.editor.pattern.designerId];
+									for (var i=0; i<path.length-1; i++){
+										if (path[i]==this.editor.pattern.pattern.key){
+											d[path[i]] = JSON.stringify(d[path[i]]);
+											break;
+										}else{
+											d = d[path[i]];
+										}
+									}
+								}
+								break;
+							default:
+								if (this.editor.getValue){
+									if (this.editor.pattern.pattern.path){
+										var path = this.editor.pattern.pattern.path;
+										for (var i=0; i<path.length-1; i++){
+											d = d[path[i]];
+										}
+									}
+									if (path[path.length-1]=="styles"){
+										d["recoveryStyles"] = this.editor.getValue();
+									}else if (path[path.length-1]=="inputStyles"){
+										d["recoveryInputStyles"] = this.editor.getValue();
+									}
+									d[path[path.length-1]] = this.editor.getValue();
+								}
 						}
-
-						var v = this.editor.getValue();
-						if (path[path.length-1]=="styles"){
-							d["recoveryStyles"] = v;
-						}else if (path[path.length-1]=="inputStyles"){
-							d["recoveryInputStyles"] = v;
-						}
-						d[path[path.length-1]] = v;
 
 					}
 
@@ -1441,6 +1626,47 @@ debugger;
 
 					break;
 				case "process":
+					var action = MWF.Actions.get("x_processplatform_assemble_designer");
+					m = action.saveProcess.bind(action);
+
+					if (this.designerDataObject && this.designerDataObject[this.editor.pattern.designerId]) {
+						var d = this.designerDataObject[this.editor.pattern.designerId];
+						if (this.editor.getValue){
+							if (this.editor.pattern.pattern.path){
+								var path = this.editor.pattern.pattern.path;
+								for (var i=0; i<path.length-1; i++){
+									d = d[path[i]];
+								}
+							}
+							d[path[path.length-1]] = this.editor.getValue();
+						}
+					}
+
+					if (m) m(data, function(){
+						this.notice(this.lp.notice.save_success, "success", this.previewContentNode, {"x": "left", "y": "bottom"});
+					}.bind(this), function(){});
+
+					break;
+				case "view":
+					var action = MWF.Actions.get("x_query_assemble_designer");
+					m = action.saveView.bind(action);
+
+					if (this.designerDataObject && this.designerDataObject[this.editor.pattern.designerId]) {
+						var d = this.designerDataObject[this.editor.pattern.designerId];
+						if (this.editor.getValue){
+							if (this.editor.pattern.pattern.path){
+								var path = this.editor.pattern.pattern.path;
+								for (var i=0; i<path.length-1; i++){
+									d = d[path[i]];
+								}
+							}
+							d[path[path.length-1]] = this.editor.getValue();
+						}
+					}
+
+					if (m) m(data, function(){
+						this.notice(this.lp.notice.save_success, "success", this.previewContentNode, {"x": "left", "y": "bottom"});
+					}.bind(this), function(){});
 
 					break;
 			}
@@ -1504,21 +1730,75 @@ debugger;
 								"style": layout.desktop.formDesignerStyle || "default",
 								"appId": "process.FormDesigner"+pattern.designerId,
 								"id": pattern.designerId,
-								"onPostLoadApplicationCompleted": function(){
-									debugger;
-									_self.checkSelectDesignerElement(this, pattern, 0);
+								"onPostFormLoad": function(){
+									_self.checkSelectDesignerElement_form(this, pattern, 0);
 								}
 							};
 							layout.openApplication(null, "process.FormDesigner", options);
+							break;
+						case "cms":
+							var _self = this;
+							var options = {
+								"style": layout.desktop.formDesignerStyle || "default",
+								"appId": "cms.FormDesigner"+pattern.designerId,
+								"id": pattern.designerId,
+								"onPostFormLoad": function(){
+									_self.checkSelectDesignerElement_form(this, pattern, 0);
+								}
+							};
+							layout.openApplication(null, "cms.FormDesigner", options);
 							break;
 					}
 					//this.createFormPatternNode(data, designerNode, regexp);
 					break;
 				case "process":
-
+					var _self = this;
+					var options = {
+						"appId": "process.ProcessDesigner"+pattern.designerId,
+						"id": pattern.designerId,
+						"onPostProcessLoad": function(){
+							_self.checkSelectDesignerElement_process(this, pattern, 0);
+						}
+					};
+					layout.openApplication(null, "process.ProcessDesigner", options);
+					break;
+				case "page":
+					var _self = this;
+					var options = {
+						"appId": "portal.PageDesigner"+pattern.designerId,
+						"id": pattern.designerId,
+						"onPostPageLoad": function(){
+							_self.checkSelectDesignerElement_form(this, pattern, 0);
+						}
+					};
+					layout.openApplication(null, "portal.PageDesigner", options);
+					break;
+				case "widget":
+					var _self = this;
+					var options = {
+						"appId": "portal.WidgetDesigner"+pattern.designerId,
+						"id": pattern.designerId,
+						"onPostWidgetLoad": function(){
+							_self.checkSelectDesignerElement_form(this, pattern, 0);
+						}
+					};
+					layout.openApplication(null, "portal.WidgetDesigner", options);
+					break;
+				case "view":
+					debugger;
+					var _self = this;
+					var options = {
+						"appId": "query.ViewDesigner"+pattern.designerId,
+						"id": pattern.designerId,
+						"application": pattern.appId,
+						"onPostViewLoad": function(){
+							_self.checkSelectDesignerElement_view(this, pattern, 0);
+						}
+					};
+					layout.openApplication(null, "query.ViewDesigner", options);
 					break;
 			}
-			window.setTimeout(function(){
+			if (this.editor.getValue) window.setTimeout(function(){
 				if (this.scriptDesignerDataObject && this.scriptDesignerDataObject[this.editor.pattern.designerId]){
 					this.scriptDesignerDataObject[this.editor.pattern.designerId] = null;
 					delete this.scriptDesignerDataObject[this.editor.pattern.designerId];
@@ -1530,24 +1810,124 @@ debugger;
 			}.bind(this), 100);
 		}
 	},
-	checkSelectDesignerElement: function(app, pattern, idx){
+	checkSelectDesignerElement_view: function(app, pattern, idx){
 		var flag = false;
-		if (app.pcForm){
+		var view = app.view;
+		if (view){
+			var type = pattern.pattern.type.toLowerCase();
+			switch (type){
+				case "view":
+					flag = true;
+					break;
+				case "column":
+					for (var i=0; i<view.items.length; i++){
+						var m = view.items[i];
+						if (m.json.id==pattern.pattern.id || m.json.name==pattern.pattern.id){
+							window.setTimeout(function(){m.selected()}, 500);
+							flag = true;
+							break;
+						}
+					}
+					break;
+				case "actionbar":
+					for (var i=0; i<view.actionbarList.length; i++){
+						var m = view.actionbarList[i];
+						if (m.json.id==pattern.pattern.id || m.json.name==pattern.pattern.id){
+							window.setTimeout(function(){m.selected()}, 500);
+							flag = true;
+							break;
+						}
+					}
+					break;
+				case "paging":
+					for (var i=0; i<view.pagingList.length; i++){
+						var m = view.pagingList[i];
+						if (m.json.id==pattern.pattern.id || m.json.name==pattern.pattern.id){
+							window.setTimeout(function(){m.selected()}, 500);
+							flag = true;
+							break;
+						}
+					}
+					break;
+			}
+		}
+
+		if (!flag){
+			idx++;
+			if (idx<10) window.setTimeout(function(){
+				this.checkSelectDesignerElement_view(app, pattern, idx);
+			}.bind(this), 300);
+		}
+	},
+	checkSelectDesignerElement_process: function(app, pattern, idx){
+		var flag = false;
+		var process = app.process;
+		if (process){
+			var type = pattern.pattern.type.toLowerCase();
+			switch (type){
+				case "process":
+					flag = true;
+					break;
+				case "route":
+					if (process.routes && process.routes[pattern.pattern.id]){
+						process.routes[pattern.pattern.id].selected();
+						flag = true;
+					}
+					break;
+				case "begin":
+					if (process.begin){
+						process.begin.selected();
+						flag = true;
+					}
+					break;
+				default:
+					if (process[type+"s"] && process[type+"s"][pattern.pattern.id]){
+						process[type+"s"][pattern.pattern.id].selected();
+						flag = true;
+					}
+			}
+		}
+
+		if (!flag){
+			idx++;
+			if (idx<10) window.setTimeout(function(){
+				this.checkSelectDesignerElement_process(app, pattern, idx);
+			}.bind(this), 300);
+		}
+	},
+	checkSelectDesignerElement_form: function(app, pattern, idx){
+		var flag = false;
+		var form;
+		debugger;
+		try{
+			if (pattern.pattern.mode=="PC"){
+				app.changeDesignerModeToPC();
+				form = app.pcForm || app.pcPage;
+			}else{
+				app.changeDesignerModeToMobile();
+				form = app.mobileForm || app.mobilePage;
+			}
+		}catch(e){}
+
+		if (form && pattern.pattern.mode=="PC"){
 			if (pattern.pattern.type.toLowerCase()!="form"){
-				for (var i=0; i<app.pcForm.moduleList.length; i++){
-					var m = app.pcForm.moduleList[i];
+				for (var i=0; i<form.moduleList.length; i++){
+					var m = form.moduleList[i];
 					if (m.json.id==pattern.pattern.name || m.json.name==pattern.pattern.name){
-						m.selected();
+						window.setTimeout(function(){m.selected()}, 500);
 						flag = true;
 						break;
 					}
 				}
+			}else{
+				flag = true;
 			}
 		}
+
 		if (!flag){
 			idx++;
 			if (idx<10) window.setTimeout(function(){
-				this.checkSelectDesignerElement(app, pattern, idx);
+				this.checkSelectDesignerElement_form(app, pattern, idx);
 			}.bind(this), 300);
 		}
 	},
