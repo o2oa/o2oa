@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>5.3</version>
+		<version>5.4</version>
 	</parent>
 	<artifactId>x_message_assemble_communicate</artifactId>
 	<packaging>war</packaging>
@@ -28,23 +28,23 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_message_core_entity</artifactId>
 		</dependency>
-		
+
 		<dependency>
 		     <groupId>org.apache.kafka</groupId>
 			 <artifactId>kafka-clients</artifactId>
 			 <version>2.6.0</version>
         </dependency>
-        <!-- 
+        <!--
         <dependency>
 			  <groupId>org.apache.activemq</groupId>
 			  <artifactId>activemq-all</artifactId>
 			  <version>5.14.5</version>
 			  <exclusions>
-				     <exclusion> 
+				     <exclusion>
 					        <groupId>org.slf4j</groupId>
 					        <artifactId>slf4j-log4j12</artifactId>
 					  </exclusion>
-					  <exclusion> 
+					  <exclusion>
 					        <groupId>log4j</groupId>
 					        <artifactId>log4j</artifactId>
 					  </exclusion>
@@ -56,7 +56,7 @@
 		    <artifactId>activemq-client</artifactId>
 		    <version>5.14.5</version>
 		</dependency>
-		
+
 	</dependencies>
 	<build>
 		<plugins>
