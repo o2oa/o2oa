@@ -350,6 +350,18 @@
                 "text-align": "center",
                 "cursor": "pointer"
             },
+          "titleInforUnlockPersonNode": {
+            "width": "80px",
+            "margin-right" : "10px",
+            "float": "right",
+            "border": "1px solid #999999",
+            "background-color": "#f1f1f1",
+            "height": "24px",
+            "line-height": "24px",
+            "border-radius": "5px",
+            "text-align": "center",
+            "cursor": "pointer"
+          },
             "titleInforSignatureNode": {
                 "height": "55px",
                 "font-size": "14px",
