@@ -113,3 +113,5 @@ MWF.xApplication.cms.Xform.Html = MWF.CMSHtml =  new Class({
 //MWF.xDesktop.requireApp("cms.Xform", "View", null, false);
 //MWF.xDesktop.requireApp("cms.Xform", "ViewSelector", null, false);
 //MWF.xDesktop.requireApp("cms.Xform", "Stat", null, false);
+
+MWF.xApplication.cms.Xform.Package = {};
