@@ -3259,14 +3259,21 @@ var _org = {
     }
 };
 
-var oPrint = print;
+try{
+    oPrint = oPrint;
+}catch(e){
+    oPrint = print
+}
 print = function(str, type){
     var d = new Date();
     var t = (type || "PRINT").toUpperCase();
-    var l = "[ServiceScript]";
+    var l = "[Script]";
     oPrint(d.format("db")+"."+d.getMilliseconds()+" "+t+" "+l+" "+str);
 }
 bind.print = print;
+echo = print;
+bind.echo = print;
+
 bind.org = _org;
 bind.library = library;
 bind.define = _define;
