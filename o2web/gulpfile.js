@@ -50,6 +50,7 @@ function setOptions(op1, op2){
     options.remotePath = op1.remotePath || op2.remotePath || "";
     options.dest = op1.dest || op2.dest || "dest";
     options.lp = op1.lp || op2.lp || "zh-cn";
+    options.src = op1.src || op2.src || "";
 }
 var options = {};
 setOptions(o_options, getEvOptions(o_options.ev));
@@ -324,6 +325,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
             'source/o2_lib/mootools/plugin/mBox.js',
             'source/' + path + '/o2.js',
             'source/x_desktop/js/base.js',
+            'source/x_desktop/js/base_loader.js',
             "source/o2_core/o2/framework.js"
         ];
         var dest = option.dest+'/' + path + '/';
@@ -514,7 +516,8 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
 
             'source/' + path + '/js/base_work_actions_temp.js',
 
-            'source/' + path + '/js/base.js'
+            'source/' + path + '/js/base.js',
+            'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)
@@ -663,7 +666,8 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
 
             'source/' + path + '/js/base_portal_actions_temp.js',
 
-            'source/' + path + '/js/base.js'
+            'source/' + path + '/js/base.js',
+            'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)
@@ -719,7 +723,8 @@ function createBaseConcatTask(path, isMin, thisOptions){
     gulp.task(path+".base", function(){
         var option = thisOptions || options;
         var src = [
-            'source/' + path + '/js/base.js'
+            'source/' + path + '/js/base.js',
+            'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)

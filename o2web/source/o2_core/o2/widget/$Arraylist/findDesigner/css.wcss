@@ -1,0 +1,112 @@
+{
+	"container": {
+		"border-top": "1px solid #999",
+		"border-bottom": "1px solid #999",
+		"overflow": "auto"
+	},
+	
+	"titleNode": {
+		"height": "30px",
+		"line-height": "30px",
+		"background": "#EEE"
+	},
+	
+	"titleActionNode": {
+		"float": "right",
+		"width": "20px",
+		"height": "20px",
+		"background": "url("+o2.session.path+"/widget/$ScriptArea/default/icon/add2.png) center center no-repeat",
+		"cursor": "pointer"
+	},
+	
+	"titleTextNode": {
+		"line-height": "30px",
+		"font-size": "12px",
+		"padding-left": "5px"
+	},
+	"contentNode": {
+		"overflow": "hidden",
+		"font-size": "12px",
+		"cursor": "default",
+		"padding": "3px 3px"
+	},
+	"contentStartNode": {
+		"height": "18px",
+		"line-height": "18px",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"cursor": "default",
+		"background": "transparent"
+	},
+	"contentStartNodeOver": {
+		"height": "18px",
+		"line-height": "18px",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"cursor": "default",
+		"background": "#E9E9E9"
+	},
+	
+	"contentItemsNode": {
+		"margin-left": "2px",
+		"overflow": "hidden",
+		"min-height": "12px"
+	},
+	"contentEndNode": {
+		"height": "18px",
+		"line-height": "18px",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"cursor": "default",
+		"background": "transparent"
+	},
+	"contentEndNodeOver": {
+		"height": "18px",
+		"line-height": "18px",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"cursor": "default",
+		"background": "#E9E9E9"
+	},
+	"contentItemNode": {
+		"height": "22px",
+		"line-height": "22px",
+		"background": "transparent"
+	},
+	"contentItemNodeOver": {
+		"height": "22px",
+		"line-height": "22px",
+		"background": "#E9E9E9"
+	},
+	"contentItemIconNode": {
+		"width": "16px",
+		"height": "22px",
+		"float": "left"
+	},
+	"contentItemKeyNode": {
+		"color": "#C80000",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"cursor": "default"
+	},
+	"contentItemValueNode": {
+		"color": "#395cdf",
+		"margin-left": "3px",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"cursor": "default"
+	},
+	"contentItemColonNode": {
+		"margin-left": "2px"
+	},
+	
+	"editInputDiv": {
+		"border": "1px solid #999",
+		"height": "16px",
+		"line-height": "16px",
+		"overflow": "hidden",
+		"display": "inline",
+		"box-shadow": "0px 2px 5px #999"
+	},
+	
+	"editInput": {
+		"border": "0px",
+		"font-size": "12px",
+		"font-family": "Verdana, Geneva, sans-serif"
+	}
+	
+}
