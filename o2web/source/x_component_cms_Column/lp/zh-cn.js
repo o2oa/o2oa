@@ -18,6 +18,7 @@ MWF.xApplication.cms.Column.LP = {
 	"column" : {
 		"title" :"栏目管理",
 		"create" : "新建栏目",
+		"findDesigner": "查找设计",
 		"searchText": "请输入关键字",
 		"loadding": "正在加载……",
 		"loaded": "栏目加载完毕",

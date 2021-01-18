@@ -573,7 +573,15 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             //this._setBusinessData(values);
             this.validationMode();
             this.validation();
-            this.fireEvent("select");
+            var p = this.getValue();
+            if (p.then){
+                p.then(function(){
+                    this.fireEvent("select");
+                }.bind(this), function(){});
+            }else{
+                this.fireEvent("select");
+            }
+
         }.bind(this))
     },
     selectOnCancel: function(){

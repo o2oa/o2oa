@@ -11,6 +11,16 @@ MWF.xApplication.query.QueryManager.StatExplorer = new Class({
             "noElement": MWF.xApplication.query.QueryManager.LP.stat.noStatNoticeText
         }
     },
+    openFindDesigner: function(){
+        this.app.options.application.moduleType = "query";
+        var options = {
+            "filter": {
+                "moduleList": ["query"],
+                "appList": [this.app.options.application]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     keyCopy: function(e){
         if (this.selectMarkItems.length){
             var items = [];
