@@ -59,6 +59,18 @@
     color: #333333;
     cursor: pointer;
 }
+.o2_process_AppExp_find {
+    float: right;
+    margin-right: 30px;
+    width: 56px;
+    background: url("../x_component_process_ApplicationExplorer/$Main/default/icon/icons_find.png") 0 center no-repeat;
+    padding-left: 22px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 14px;
+    color: #333333;
+    cursor: pointer;
+}
 .o2_process_AppExp_category {
     background: #FAFAFA;
     height: 50px;

@@ -29,6 +29,14 @@ MWF.xApplication.portal.PortalExplorer.Main = new Class({
         this.control.canCreate = MWF.AC.isPortalPlatformCreator();
         this.control.canManage = !!(MWF.AC.isAdministrator() || MWF.AC.isPortalManager());
     },
+    openFindDesigner: function(){
+        var options = {
+            "filter": {
+                "moduleList": ["portal"]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     createApplicationItem: function(appData, where){
         var application = new MWF.xApplication.portal.PortalExplorer.Portal(this, appData, where);
         application.load();

@@ -67,6 +67,8 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		if (this.createNode) this.createNode.addEvent("click", this.createApplication.bind(this));
 
 		this.importNode = this.content.getElement(".o2_process_AppExp_import");
+		this.findNode = this.content.getElement(".o2_process_AppExp_find");
+
 		this.categoryAreaNode = this.content.getElement(".o2_process_AppExp_category");
 		this.contentArea = this.content.getElement(".o2_process_AppExp_contentArea");
 		this.contentNode = this.content.getElement(".o2_process_AppExp_contentNode");
@@ -76,6 +78,20 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 				this.importApplicationNew(e);
 			}.bind(this));
 		}
+
+		if (this.findNode){
+			this.findNode.addEvent("click", function(e){
+				this.openFindDesigner();
+			}.bind(this));
+		}
+	},
+	openFindDesigner: function(){
+		var options = {
+			"filter": {
+				"moduleList": ["processPlatform"]
+			}
+		};
+		layout.openApplication(null, "FindDesigner", options);
 	},
 	importApplicationNew: function(e){
 		MWF.xDesktop.requireApp("AppCenter", "", function(){
