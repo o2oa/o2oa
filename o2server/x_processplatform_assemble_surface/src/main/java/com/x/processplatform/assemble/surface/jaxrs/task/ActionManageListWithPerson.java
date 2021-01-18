@@ -16,7 +16,7 @@ import java.util.List;
 
 class ActionManageListWithPerson extends BaseAction {
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String credential)
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String credential, Boolean isExcludeDraft)
 			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -24,7 +24,7 @@ class ActionManageListWithPerson extends BaseAction {
 			if (BooleanUtils.isTrue(business.canManageApplication(effectivePerson, null))) {
 				String person = business.organization().person().get(credential);
 				if (StringUtils.isNotEmpty(person)) {
-					List<Task> taskList = business.task().listWithPersonObject(person);
+					List<Task> taskList = business.task().listWithPersonObject(person, isExcludeDraft);
 					List<Wo> wos = Wo.copier.copy(taskList);
 					result.setData(wos);
 					result.setCount((long)wos.size());

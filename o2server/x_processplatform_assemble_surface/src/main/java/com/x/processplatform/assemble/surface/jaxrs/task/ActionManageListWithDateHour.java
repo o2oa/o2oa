@@ -27,7 +27,7 @@ class ActionManageListWithDateHour extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionManageListWithDateHour.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String date, Integer hour)
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String date, Integer hour, Boolean isExcludeDraft)
 			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -37,7 +37,7 @@ class ActionManageListWithDateHour extends BaseAction {
 					Date startTime = DateTools.getAdjustTimeDay(DateTools.floorDate(DateTools.parse(date), 0),
 							0, hour, 0, 0);
 					Date endTime = DateTools.getAdjustTimeDay(startTime, 0, 1, 0, 0);
-					List<Task> os = this.list(business, startTime, endTime);
+					List<Task> os = this.list(business, startTime, endTime, isExcludeDraft);
 					List<Wo> wos = Wo.copier.copy(os);
 					result.setData(wos);
 					result.setCount((long)wos.size());
@@ -47,7 +47,7 @@ class ActionManageListWithDateHour extends BaseAction {
 		}
 	}
 
-	private List<Task> list(Business business, Date startTime, Date endTime) throws Exception {
+	private List<Task> list(Business business, Date startTime, Date endTime, Boolean isExcludeDraft) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Task.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
@@ -59,6 +59,11 @@ class ActionManageListWithDateHour extends BaseAction {
 		}
 		if (endTime != null) {
 			p = cb.and(p, cb.lessThan(root.get(Task_.createTime), endTime));
+		}
+		if(BooleanUtils.isTrue(isExcludeDraft)){
+			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)),
+					cb.isNull(root.get(Task_.first)),
+					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
 		}
 
 		cq.select(root).where(p);
