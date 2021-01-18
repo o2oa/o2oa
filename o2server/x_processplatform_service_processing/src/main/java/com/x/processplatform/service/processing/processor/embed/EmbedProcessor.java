@@ -81,8 +81,6 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			wrap.set(gson.toJson(assginData));
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_ASSIGNDATA, wrap);
-			/* 重新注入对象需要重新运行 */
-			ScriptFactory.initialScriptText().eval(scriptContext);
 			aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), embed,
 					Business.EVENT_EMBEDTARGETASSIGNDATA).eval(scriptContext);
 			assginData = gson.fromJson(wrap.get(), AssginData.class);
@@ -140,8 +138,6 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		if (this.hasIdentityScript(embed)) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_IDENTITY, value);
-			/* 重新注入对象需要重新运行 */
-			ScriptFactory.initialScriptText().eval(scriptContext);
 			Object objectValue = aeiObjects.business().element()
 					.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETIDENTITY)
 					.eval(scriptContext);
