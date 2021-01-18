@@ -30,6 +30,14 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
         this.control.canCreate = MWF.AC.isQueryPlatformCreator();
         this.control.canManage = !!(MWF.AC.isAdministrator() || MWF.AC.isQueryManager());
     },
+    openFindDesigner: function(){
+        var options = {
+            "filter": {
+                "moduleList": ["query"]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     createApplicationItem: function(appData, where){
         var application = new MWF.xApplication.query.QueryExplorer.Query(this, appData, where);
         application.load();

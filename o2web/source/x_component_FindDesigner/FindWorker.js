@@ -226,8 +226,8 @@ _worker._parseFindModule = function(moduleList){
                 this.filterOptionList.push(filterOption);
 
                 promiseArr.push(Promise.resolve(""));
-                // promiseArr = promiseArr.concat(_worker["_getDesinger_"+module.moduleType]("invoke"));
-                // promiseArr = promiseArr.concat(_worker["_getDesinger_"+module.moduleType]("agent"));
+                //promiseArr = promiseArr.concat(_worker["_getDesinger_"+module.moduleType]("invoke"));
+                //promiseArr = promiseArr.concat(_worker["_getDesinger_"+module.moduleType]("agent"));
             }else{
                 module.flagList.forEach(function(flag){
                     if (!flag.designerList || !flag.designerList.length){
@@ -245,6 +245,7 @@ _worker._parseFindModule = function(moduleList){
                 var p = _worker._listApplication(module.moduleType);
                 promiseArr.push(p.then(function(json){
 
+                    //按应用进行搜索
                     if (json && json.data) json.data.forEach(function(app){
                         var filterOption = JSON.parse(_worker.filterOptionTemplete);
                         filterOption.moduleList.push({
@@ -254,9 +255,8 @@ _worker._parseFindModule = function(moduleList){
                         this.filterOptionList.push(filterOption);
                     });
                     return Promise.resolve("");
-                    //临时处理
 
-
+                    //按设计元素进行搜索
                     // var pArr = [];
                     // json.data.forEach(function(app){
                     //     pArr = pArr.concat(_worker["_getDesinger_"+module.moduleType](app.id));
@@ -284,18 +284,25 @@ _worker._parseFindModule = function(moduleList){
 }
 
 _worker._findMessageReply = function(data, option){
-    _worker.setTimeout(function(){
+    //_worker.setTimeout(function(){
         _worker.postMessage({
             "type": "find",
             "data": data,
             "option": option
         });
-    }, 200);
+    //}, 10);
 };
 _worker._findOptionReply = function(){
     _worker.postMessage({
         "type": "done"
     });
+};
+_worker._findCompletedReply = function(data, option){
+    _worker.setTimeout(function(){
+        _worker.postMessage({
+            "type": "completed"
+        });
+    }, 100);
 };
 
 
@@ -1088,6 +1095,9 @@ _worker._getDesignerData = function(designer, module){
         case "view":
             action = this.findData.actions.getQueryView;
             break;
+        case "statement":
+            action = this.findData.actions.getQueryStatement;
+            break;
     }
 
     if (action){
@@ -1156,45 +1166,55 @@ _worker._findProcessPlatformParse_view = function(designer, option, module){
                         }
                     });
 
-                    viewData.where.type = "View";
-                    viewData.where.name = viewJson.name;
-                    Object.keys(viewData.where).forEach(function(key){
-                        if ( key!=="type" && key!=="name"){
-                            var propertyDefinition = this.designerPropertysData.view[key];
-                            _worker.findInDesignerProperty(key, propertyDefinition, viewData.where, option, module, designer, null, ["data", "where", key]);
-                        }
-                    });
+                    if (viewData.where) {
+                        viewData.where.type = "View";
+                        viewData.where.name = viewJson.name;
+                        Object.keys(viewData.where).forEach(function (key) {
+                            if (key !== "type" && key !== "name") {
+                                var propertyDefinition = this.designerPropertysData.view[key];
+                                _worker.findInDesignerProperty(key, propertyDefinition, viewData.where, option, module, designer, null, ["data", "where", key]);
+                            }
+                        });
+                    }
 
-                    viewData.selectList.forEach(function(col, i){
-                        col.type = "column";
-                        col.name =  col.displayName;
-                        Object.keys(col).forEach(function(key){
-                            if (key!=="name" && key!=="type"){
-                                var propertyDefinition = this.designerPropertysData.view[key];
-                                _worker.findInDesignerProperty(key, propertyDefinition, col, option, module, designer, null, ["data", "selectList", i, key]);
-                            }
+                    if (viewData.selectList) {
+                        viewData.selectList.forEach(function (col, i) {
+                            col.type = "column";
+                            col.name = col.displayName;
+                            Object.keys(col).forEach(function (key) {
+                                if (key !== "name" && key !== "type") {
+                                    var propertyDefinition = this.designerPropertysData.view[key];
+                                    _worker.findInDesignerProperty(key, propertyDefinition, col, option, module, designer, null, ["data", "selectList", i, key]);
+                                }
+                            });
                         });
-                    });
-                    viewData.actionbarList.forEach(function(item, i){
-                        item.type = "actionbar";
-                        item.name =  item.type;
-                        Object.keys(item).forEach(function(key){
-                            if (key!=="name" && key!=="type"){
-                                var propertyDefinition = this.designerPropertysData.view[key];
-                                _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer, null, ["data", "actionbarList", i, key]);
-                            }
+                    }
+
+                    if (viewData.actionbarList) {
+                        viewData.actionbarList.forEach(function (item, i) {
+                            item.type = "actionbar";
+                            item.name = item.type;
+                            Object.keys(item).forEach(function (key) {
+                                if (key !== "name" && key !== "type") {
+                                    var propertyDefinition = this.designerPropertysData.view[key];
+                                    _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer, null, ["data", "actionbarList", i, key]);
+                                }
+                            });
                         });
-                    });
-                    viewData.pagingList.forEach(function(item, i){
-                        item.type = "paging";
-                        item.name =  item.type;
-                        Object.keys(item).forEach(function(key){
-                            if (key!=="name" && key!=="type"){
-                                var propertyDefinition = this.designerPropertysData.view[key];
-                                _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer, null, ["data", "pagingList", i, key]);
-                            }
+                    }
+
+                    if (viewData.pagingList) {
+                        viewData.pagingList.forEach(function (item, i) {
+                            item.type = "paging";
+                            item.name = item.type;
+                            Object.keys(item).forEach(function (key) {
+                                if (key !== "name" && key !== "type") {
+                                    var propertyDefinition = this.designerPropertysData.view[key];
+                                    _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer, null, ["data", "pagingList", i, key]);
+                                }
+                            });
                         });
-                    });
+                    }
 
                 }, function () {
                 });
@@ -1211,6 +1231,7 @@ _worker._findProcessPlatformParse_view = function(designer, option, module){
                             "propertyName": propertyDefinition.name,
                             "name": designer.designerName,
                             "key": pattern.property,
+                            "path": [pattern.property],
                             "value": pattern.propertyValue
                         }), option);
                     }
@@ -1223,91 +1244,117 @@ _worker._findProcessPlatformParse_view = function(designer, option, module){
 _worker._findProcessPlatformParse_statement = function(designer, option, module){
     if (designer.patternList && designer.patternList.length){
         if (!this.designerPropertysData) this.designerPropertysData = _worker.action.sendRequest(_worker._getRequestOption({"url": "../x_component_FindDesigner/propertys.json"}));
-        var patternPropertys = designer.patternList.map(function(a){return a.property;});
-        if (patternPropertys.indexOf("view")!=-1){
-
+        // var patternPropertys = designer.patternList.map(function(a){return a.property;});
+        // if (patternPropertys.indexOf("view")!=-1){
+debugger;
             var p = _worker._getDesignerData(designer, module);
             if (p) {
                 p.then(function (arr) {
                     var statementJson = arr[0].data;
                     this.designerPropertysData = arr[1];
 
-                    if (statementJson.view){
-                        var viewJson = JSON.parse(statementJson.view);
-                        var viewData = viewJson.data;
-                        if (viewData){
-                            viewData.type = "View";
-                            viewData.name = statementJson.name;
-                            Object.keys(viewData).forEach(function(key){
-                                if (key!=="where" && key!=="selectList" && key!=="actionbarList" && key!=="pagingList" && key!=="type" && key!=="name" ){
-                                    var propertyDefinition = this.designerPropertysData.view[key];
-                                    _worker.findInDesignerProperty(key, propertyDefinition, viewData, option, module, designer);
+                    designer.patternList.forEach(function(pattern){
+                        if (pattern.property=="view"){
+                            if ((typeof statementJson.view)=="string"){
+                                statementJson.view = JSON.parse(statementJson.view);
+                            }
+                            var viewData = statementJson.view.data;
+                            if (viewData){
+                                viewData.type = "View";
+                                viewData.name = statementJson.name;
+                                Object.keys(viewData).forEach(function(key){
+                                    if (key!=="where" && key!=="selectList" && key!=="actionbarList" && key!=="pagingList" && key!=="type" && key!=="name" ){
+                                        var propertyDefinition = this.designerPropertysData.view[key];
+                                        _worker.findInDesignerProperty(key, propertyDefinition, viewData, option, module, designer, null, ["view", "data", key]);
+                                    }
+                                });
+
+                                if (viewData.where) {
+                                    viewData.where.type = "View";
+                                    viewData.where.name = viewJson.name;
+                                    Object.keys(viewData.where).forEach(function(key){
+                                        if ( key!=="type" && key!=="name"){
+                                            var propertyDefinition = this.designerPropertysData.view[key];
+                                            _worker.findInDesignerProperty(key, propertyDefinition, viewData.where, option, module, designer, null, ["view", "data", "where", key]);
+                                        }
+                                    });
                                 }
-                            });
 
-                            viewData.where.type = "View";
-                            viewData.where.name = viewJson.name;
-                            Object.keys(viewData.where).forEach(function(key){
-                                if ( key!=="type" && key!=="name"){
-                                    var propertyDefinition = this.designerPropertysData.view[key];
-                                    _worker.findInDesignerProperty(key, propertyDefinition, viewData.where, option, module, designer);
+                                if (viewData.selectList) {
+                                    viewData.selectList.forEach(function (col, i) {
+                                        col.type = "View-column";
+                                        col.name = col.displayName;
+                                        Object.keys(col).forEach(function (key) {
+                                            if (key !== "name" && key !== "type") {
+                                                var propertyDefinition = this.designerPropertysData.view[key];
+                                                _worker.findInDesignerProperty(key, propertyDefinition, col, option, module, designer, null, ["view", "data", "selectList", i, key]);
+                                            }
+                                        });
+                                    });
                                 }
-                            });
 
-                            viewData.selectList.forEach(function(col){
-                                col.type = "View-column";
-                                col.name =  col.displayName;
-                                Object.keys(col).forEach(function(key){
-                                    if (key!=="name" && key!=="type"){
-                                        var propertyDefinition = this.designerPropertysData.view[key];
-                                        _worker.findInDesignerProperty(key, propertyDefinition, col, option, module, designer);
-                                    }
-                                });
-                            });
-                            viewData.actionbarList.forEach(function(item){
-                                item.type = "View-actionbar";
-                                item.name =  item.type;
-                                Object.keys(item).forEach(function(key){
-                                    if (key!=="name" && key!=="type"){
-                                        var propertyDefinition = this.designerPropertysData.view[key];
-                                        _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer);
-                                    }
-                                });
-                            });
-                            viewData.pagingList.forEach(function(item){
-                                item.type = "View-paging";
-                                item.name =  item.type;
-                                Object.keys(item).forEach(function(key){
-                                    if (key!=="name" && key!=="type"){
-                                        var propertyDefinition = this.designerPropertysData.view[key];
-                                        _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer);
-                                    }
-                                });
-                            });
+                                if (viewData.actionbarList) {
+                                    viewData.actionbarList.forEach(function (item, i) {
+                                        item.type = "View-actionbar";
+                                        item.name = item.type;
+                                        Object.keys(item).forEach(function (key) {
+                                            if (key !== "name" && key !== "type") {
+                                                var propertyDefinition = this.designerPropertysData.view[key];
+                                                _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer, null, ["view", "data", "actionbarList", i, key]);
+                                            }
+                                        });
+                                    });
+                                }
 
+                                if (viewData.pagingList) {
+                                    viewData.pagingList.forEach(function (item, i) {
+                                        item.type = "View-paging";
+                                        item.name = item.type;
+                                        Object.keys(item).forEach(function (key) {
+                                            if (key !== "name" && key !== "type") {
+                                                var propertyDefinition = this.designerPropertysData.view[key];
+                                                _worker.findInDesignerProperty(key, propertyDefinition, item, option, module, designer, null, ["view", "data", "pagingList", i, key]);
+                                            }
+                                        });
+                                    });
+                                }
+                            }
+                        }else{
+                            var propertyDefinition = this.designerPropertysData.statement[pattern.property];
+                            if (propertyDefinition){
+                                _worker.findInDesignerProperty(pattern.property, propertyDefinition, statementJson, option, module, designer, null, [pattern.property]);
+                            }
                         }
-                    }
-                }, function () {
-                });
+                    });
+
+
+                    // if (statementJson.view){
+                    //     var viewJson = JSON.parse(statementJson.view);
+                    //     var viewData = viewJson.data;
+                    //
+                    // }
+                }, function () {});
             }
-        }else{
-            Promise.resolve(this.designerPropertysData).then(function(data){
-                this.designerPropertysData = data;
-                designer.patternList.forEach(function(pattern){
-                    var propertyDefinition = this.designerPropertysData.statement[pattern.property];
-                    if (propertyDefinition){
-                        _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
-                            "type": "Statement",
-                            "propertyType": propertyDefinition.type || "text",
-                            "propertyName": propertyDefinition.name,
-                            "name": designer.designerName,
-                            "key": pattern.property,
-                            "value": pattern.propertyValue
-                        }), option);
-                    }
-                });
-            }, function(){});
-        }
+        // }else{
+        //     Promise.resolve(this.designerPropertysData).then(function(data){
+        //         this.designerPropertysData = data;
+        //         designer.patternList.forEach(function(pattern){
+        //             var propertyDefinition = this.designerPropertysData.statement[pattern.property];
+        //             if (propertyDefinition){
+        //                 _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+        //                     "type": "Statement",
+        //                     "propertyType": propertyDefinition.type || "text",
+        //                     "propertyName": propertyDefinition.name,
+        //                     "name": designer.designerName,
+        //                     "key": pattern.property,
+        //                     "mode": null,
+        //                     "path": [pattern.property],
+        //                     "value": pattern.propertyValue
+        //                 }), option);
+        //             }
+        //         });
+        //     }, function(){});
+        // }
     }
 };
 
@@ -1432,7 +1479,12 @@ _worker._doFindDesigner = function(option, idx){
             _worker._findOptionReply();
 
             idx++;
-            if (this.filterOptionList.length>idx)  _worker._doFindDesigner(null, idx);
+            if (this.filterOptionList.length>idx){
+                _worker._doFindDesigner(null, idx);
+            }else{
+                debugger;
+                _worker._findCompletedReply();
+            }
             //this.filterOptionList[idx];
 
             //_worker._findMessageReply(json.data, option);
@@ -1441,10 +1493,12 @@ _worker._doFindDesigner = function(option, idx){
             _worker._findMessageReply(null);
 
             idx++;
-            if (this.filterOptionList.length>idx)  _worker._doFindDesigner(null, idx);
+            if (this.filterOptionList.length>idx){
+                _worker._doFindDesigner(null, idx);
+            }else{
+                _worker._findCompletedReply();
+            }
         });
-
-
 
 },
 
@@ -1470,6 +1524,7 @@ onmessage = function(e) {
         // //_worker._doFindDesigner(this.filterOptionList[0]);
         // this.filterOptionList = [this.filterOptionList[0]];
         _worker._readyMessageReply();
+        debugger;
         _worker._doFindDesignerFromFilterOption();
     });
 
