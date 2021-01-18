@@ -5,7 +5,7 @@
   "main": "o2.js",
   "scripts": {
     "build": "gulp",
-    "report-coverage": "codecov"
+    "test": "karma start source/x_test/karma.FindDesigner.js --auto-watch"
   },
   "repository": {
     "type": "git",
@@ -35,12 +35,21 @@
     "gulp-if": "^2.0.2",
     "gulp-rename": "^1.4.0",
     "gulp-sftp-up4": "^0.1.8",
+    "gulp-sourcemaps": "^3.0.0",
     "gulp-tm-asset-rev": "0.0.16",
     "gulp-tm-uglify": "3.0.1",
     "gulp-uglify-es": "^2.0.0",
+    "jasmine-core": "^3.6.0",
+    "karma": "^5.2.3",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.3",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-jasmine": "^4.0.1",
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
-    "readline-sync": "^1.4.10",
-    "gulp-sourcemaps": "^3.0.0"
+    "readline-sync": "^1.4.10"
+  },
+  "dependencies": {
+    "gulp-cli": "^2.3.0"
   }
 }

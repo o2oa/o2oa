@@ -11,7 +11,16 @@ MWF.xApplication.portal.PortalManager.ScriptExplorer = new Class({
             "noElement": MWF.xApplication.portal.PortalManager.LP.script.noProcessNoticeText
         }
     },
-
+    openFindDesigner: function(){
+        this.app.options.application.moduleType = "portal";
+        var options = {
+            "filter": {
+                "moduleList": ["portal"],
+                "appList": [this.app.options.application]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     keyCopy: function(e){
         if (this.selectMarkItems.length){
             var items = [];

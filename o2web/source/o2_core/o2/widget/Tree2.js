@@ -62,8 +62,10 @@ o2.widget.Tree2.Node = new Class({
 			"border": "0",
 			"cellpadding": "0",
 			"cellspacing": "0",
-			"styles": this.tree.css.nodeTable
+			"styles": {"width": "fit-content", "table-layout": "fixed"}
 		}).inject(this.itemNode);
+		this.nodeTable.setStyles(this.tree.css.nodeTable);
+
 		var tbody = new Element("tbody").inject(this.nodeTable);
 		this.nodeArea = new Element("tr").inject(tbody);
 		
@@ -130,10 +132,12 @@ o2.widget.Tree2.Node = new Class({
 	//	this.textNode.setStyle("width", ""+width+"px");
 		
 		var textDivNode = new Element("div", {
-			"styles": this.tree.css.textDivNode,
+			"styles": {"display": "inline-block"},
 		//	"html": this.options.text,
 			"title": this.options.title
 		});
+		textDivNode.setStyles(this.tree.css.textDivNode);
+
         if (this.tree.options.text=="html"){
             textDivNode.set("html", this.options.text);
         }else{

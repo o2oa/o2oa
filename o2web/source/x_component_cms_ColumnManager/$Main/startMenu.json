@@ -85,5 +85,15 @@
     "selectedIcon": "icon_lan_mu_click.png",
     "expand": false,
     "sub": []
+  },
+  {
+    "title": "查找设计",
+    "id": "findDesigner",
+    "action": "findDesigner",
+    "icon": "icons_find.png",
+    "selectedIcon": "icons_find.png",
+    "noSelect": true,
+    "expand": false,
+    "sub": []
   }
 ]

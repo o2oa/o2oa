@@ -17,6 +17,8 @@ MWF.xApplication.process.ProcessManager.LP = {
     "copyConfirm_cancel": "取消",
     "copynew": "新",
 
+    "findDesigner": "查找设计",
+
     "ok": "确定",
     "edit": "编辑",
     "save": "保存",

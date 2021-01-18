@@ -716,7 +716,12 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
             this.paper.container = this.paperNode;
 
             MWF.xDesktop.requireApp("process.ProcessDesigner", "Process", function(){
-                this.process = new MWF.APPPD.Process(this.paper, this.processData, this, {"style":"flat"});
+                this.process = new MWF.APPPD.Process(this.paper, this.processData, this, {
+                    "style":"flat",
+                    "onPostLoad": function(){
+                        this.fireEvent("postProcessLoad");
+                    }.bind(this)
+                });
                 this.process.load();
             }.bind(this));
         }.bind(this));

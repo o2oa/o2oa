@@ -4,6 +4,7 @@ MWF.xApplication.portal.PortalExplorer.LP = MWF.PortalLP = {
     "all": "全部",
     "create": "新建门户",
     "import": "导入门户",
+    "find": "查找设计",
 
     "noApplicationCreate": "系统没有门户或没有您有权限管理的门户 <br/> 点击此处创建新门户",
     "noApplication": "系统没有门户或没有您有权限管理的门户",

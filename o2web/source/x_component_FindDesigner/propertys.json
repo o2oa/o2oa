@@ -1,0 +1,349 @@
+{
+  "form": {
+    "id": {"name": "标识"},
+    "name": {"name": "名称"},
+    "description": {"name": "描述"},
+    "category": {"name": "分类"},
+    "formStyleType": {"name": "表单样式"},
+    "includeScripts": {"name": "预加载脚本", "type": "object-array"},
+    "styles": {"name": "样式", "type":"map"},
+    "properties": {"name": "属性", "type":"map"},
+    "css": {"name": "CSS样式", "type": "css"},
+    "submitFormScript": {"name": "提交表单脚本", "type": "script"},
+    "submitScript": {"name": "提交操作脚本", "type": "script"},
+    "afterProcessRedirectScript": {"name": "提交后重定向脚本", "type": "script"},
+    "validationOpinion": {"name": "校验意见脚本", "type": "script"},
+    "validationRoute": {"name": "校验路由脚本", "type": "script"},
+    "validationFormCustom": {"name": "流转校验脚本", "type": "script"},
+    "events": {"name": "事件", "type": "events"},
+
+    "text": {"name": "文本值"},
+    "script": {"name": "脚本", "type": "script"},
+
+    "inputStyles": {"name": "输入框样式", "type":"map"},
+    "defaultValue": {"name": "默认值脚本", "type":"script"},
+    "validation": {"name": "校验脚本", "type":"script"},
+    "sectionByScript": {"name": "区段依据脚本", "type":"script"},
+
+    "identityValue": {"name": "身份默认值", "type": "object-array"},
+    "unitValue": {"name": "组织默认值", "type": "object-array"},
+    "dutyValue": {"name": "职务默认值", "type": "duty"},
+    "displayTextScript": {"name": "组织数据显示脚本", "type":"script"},
+    "rangeDutyKey": {"name": "身份选择职务范围脚本", "type":"script"},
+    "unitRangeKey": {"name": "组织选择职务范围脚本", "type":"script"},
+    "groupRangeKey": {"name": "群组选择职务范围脚本", "type":"script"},
+    "identityIncludeKey": {"name": "增加身份选择脚本", "type":"script"},
+    "exclude": {"name": "排除选择脚本", "type":"script"},
+
+    "itemValues": {"name": "可选值", "type":"array"},
+    "itemScript": {"name": "可选值脚本", "type":"script"},
+
+    "buttonStyles": {"name": "按钮样式", "type":"map"},
+
+    "itemDynamic": {"name": "可选值动态脚本", "type":"map"},
+
+    "multiTools": {"name": "操作按钮", "type":"actions"},
+
+    "tools": {"name": "操作按钮", "type":"actions"},
+
+    "site": {"name": "附件site"},
+
+    "titleTdStyles": {"name": "标题单元格样式", "type":"map"},
+    "contentTdStyles": {"name": "内容单元格样式", "type":"map"},
+    "layoutTdStyles": {"name": "布局单元格样式", "type":"map"},
+
+    "tableStyles": {"name": "表格样式", "type":"map"},
+    "defaultData": {"name": "默认数据脚本", "type":"script"},
+    "editableScript": {"name": "允许编辑脚本", "type":"script"},
+    "titleStyles": {"name": "标题样式", "type":"map"},
+    "contentStyles": {"name": "内容单元格样式", "type":"map"},
+    "actionStyles": {"name": "样式", "type":"map"},
+    "editStyles": {"name": "编辑单元格样式", "type":"map"},
+    "amountStyles": {"name": "总计单元格样式", "type":"map"},
+    "itemTitleStyles": {"name": "条目标题样式（仅移动端）", "type":"map"},
+
+    "subformScript": {"name": "计算子表单脚本", "type":"script"},
+
+    "itemStyles": {"name": "条目样式", "type":"map"},
+    "selectedSetValues": {"name": "选择结果赋值", "type":"map"},
+    "selectedScript": {"name": "选择结果处理脚本", "type":"script"},
+    "defaultSelectedScript": {"name": "默认选择脚本", "type":"script"},
+    "selectedAbleScript": {"name": "允许选择脚本", "type":"script"},
+    "filterList": {"name": "视图过滤脚本", "type":"filter"},
+
+    "innerHTML": {"name": "内置HTML", "type":"html"},
+
+    "tabNodeContainer": {"name": "Tab容器样式", "type":"map"},
+    "contentNodeContainer": {"name": "内容容器样式", "type":"map"},
+    "tabStyles": {"name": "基本Tab样式", "type":"map"},
+    "tabTextStyles": {"name": "基本Tab字体样式", "type":"map"},
+    "tabCurrentStyles": {"name": "当前Tab样式", "type":"map"},
+    "tabTextCurrentStyles": {"name": "当前Tab字体样式", "type":"map"},
+
+    "dataScript": {"name": "数据脚本", "type":"script"},
+    "areaNodeStyle": {"name": "tree区域样式", "type":"map"},
+    "treeItemNodeStyle": {"name": "tree节点样式", "type":"map"},
+    "textDivNodeStyle": {"name": "tree节点字体样式", "type":"map"},
+    "textDivNodeSelectedStyle": {"name": "当前tree节点字体样式", "type":"map"},
+
+    "textStyle": {"name": "流程意见格式"},
+    "textStyleScript": {"name": "流程意见格式脚本", "type":"script"},
+    "filterActivitye": {"name": "活动过滤"},
+    "filterActivityAliase": {"name": "活动别名过滤"},
+    "filterPersone": {"name": "处理人过滤"},
+    "filterRoutee": {"name": "路由过滤"},
+    "filterScript": {"name": "过滤脚本", "type":"script"},
+
+    "src": {"name": "src"},
+
+    "toWordFilename": {"name": "转换文件名"},
+    "toWordSite": {"name": "转换文件site"},
+    "toWordConditionScript": {"name": "文件转换条件脚本", "type":"script"},
+
+    "copiesSecretPriorityShowScript": {"name": "份数密级紧急度显示脚本", "type":"script"},
+    "copiesShowScript": {"name": "份数显示脚本", "type":"script"},
+    "copiesValueData": {"name": "份数绑定表单数据"},
+    "copiesValueScript": {"name": "份数绑定值脚本", "type":"script"},
+
+    "secretShowScript": {"name": "密级显示脚本", "type":"script"},
+    "secretValueData": {"name": "密级绑定表单数据"},
+    "secretValueScript": {"name": "密级绑定值脚本", "type":"script"},
+
+    "priorityShowScript": {"name": "紧急度显示脚本", "type":"script"},
+    "priorityValueData": {"name": "紧急度绑定表单数据"},
+    "priorityValueScript": {"name": "紧急度绑定值脚本", "type":"script"},
+
+    "redHeaderShowScript": {"name": "红头显示脚本", "type":"script"},
+    "redHeaderValueData": {"name": "红头绑定表单数据"},
+    "redHeaderValueScript": {"name": "红头绑定值脚本", "type":"script"},
+
+    "redLineShowScript": {"name": "红线显示脚本", "type":"script"},
+
+    "filenoShowScript": {"name": "文号显示脚本", "type":"script"},
+    "filenoValueData": {"name": "文号绑定表单数据"},
+    "filenoValueScript": {"name": "文号绑定值脚本", "type":"script"},
+
+    "signerShowScript": {"name": "签发人显示脚本", "type":"script"},
+    "signerValueData": {"name": "签发人绑定表单数据"},
+    "signerValueScript": {"name": "签发人绑定值脚本", "type":"script"},
+
+    "subjectShowScript": {"name": "标题显示脚本", "type":"script"},
+    "subjectValueData": {"name": "标题绑定表单数据"},
+    "subjectEditScript": {"name": "标题编辑脚本", "type":"script"},
+    "subjectValueScript": {"name": "标题绑定值脚本", "type":"script"},
+
+    "mainSendShowScript": {"name": "主送显示脚本", "type":"script"},
+    "mainSendValueData": {"name": "主送绑定表单数据"},
+    "mainSendValueScript": {"name": "主送绑定值脚本", "type":"script"},
+
+    "attachmentShowScript": {"name": "附件显示脚本", "type":"script"},
+    "attachmentValueData": {"name": "附件绑定表单数据"},
+    "attachmentValueScript": {"name": "附件绑定值脚本", "type":"script"},
+
+    "issuanceUnitShowScript": {"name": "成文单位显示脚本", "type":"script"},
+    "issuanceUnitEditScript": {"name": "成文单位编辑脚本", "type":"script"},
+    "issuanceUnitValueData": {"name": "成文单位绑定表单数据"},
+    "issuanceUnitValueScript": {"name": "成文单位绑定值脚本", "type":"script"},
+
+    "issuanceDateShowScript": {"name": "成文日期显示脚本", "type":"script"},
+    "issuanceDateValueData": {"name": "成文日期绑定表单数据"},
+    "issuanceDateValueScript": {"name": "成文日期绑定值脚本", "type":"script"},
+
+    "annotationShowScript": {"name": "附注显示脚本", "type":"script"},
+    "annotationValueData": {"name": "附注绑定表单数据"},
+    "annotationValueScript": {"name": "附注绑定值脚本", "type":"script"},
+
+    "copytoShowScript": {"name": "抄送显示脚本", "type":"script"},
+    "copytoValueData": {"name": "抄送绑定表单数据"},
+    "copytoValueScript": {"name": "抄送绑定值脚本", "type":"script"},
+
+    "copyto2ShowScript": {"name": "发送显示脚本", "type":"script"},
+    "copyto2ValueData": {"name": "发送绑定表单数据"},
+    "copyto2ValueScript": {"name": "发送绑定值脚本", "type":"script"},
+
+    "editionUnitShowScript": {"name": "印发单位显示脚本", "type":"script"},
+    "editionUnitValueData": {"name": "印发单位绑定表单数据"},
+    "editionUnitValueScript": {"name": "印发单位绑定值脚本", "type":"script"},
+
+    "editionDateShowScript": {"name": "印发日期显示脚本", "type":"script"},
+    "editionDateValueData": {"name": "印发日期绑定表单数据"},
+    "editionDateValueScript": {"name": "印发日期绑定值脚本", "type":"script"},
+
+    "meetingAttendShowScript": {"name": "会议出席显示脚本", "type":"script"},
+    "meetingAttendValueData": {"name": "会议出席绑定表单数据"},
+    "meetingAttendValueScript": {"name": "会议出席绑定值脚本", "type":"script"},
+
+    "meetingLeaveShowScript": {"name": "会议请假显示脚本", "type":"script"},
+    "meetingLeaveValueData": {"name": "会议请假绑定表单数据"},
+    "meetingLeaveValueScript": {"name": "会议请假绑定值脚本", "type":"script"},
+
+    "meetingSitShowScript": {"name": "会议列席显示脚本", "type":"script"},
+    "meetingSitValueData": {"name": "会议列席绑定表单数据"},
+    "meetingSitValueScript": {"name": "会议列席绑定值脚本", "type":"script"},
+
+    "meetingRecordShowScript": {"name": "会议记录显示脚本", "type":"script"},
+    "meetingRecordValueData": {"name": "会议记录绑定表单数据"},
+    "meetingRecordValueScript": {"name": "会议记录绑定值脚本", "type":"script"},
+
+    "customFields": {"name": "自定义元素配置", "type":"map"},
+
+    "templateCode": {"name": "默认值", "type":"script"},
+    "config": {"name": "配置脚本", "type":"script"},
+
+    "template": {"name": "文件模板"},
+    "readScript": {"name": "只读脚本", "type":"script"},
+    "fileSite": {"name": "读取文件的site脚本", "type":"script"}
+  },
+  "process": {
+    "id": {"name": "标识"},
+    "name": {"name": "名称"},
+    "alias": {"name": "别名"},
+    "description": {"name": "描述"},
+    "controllerList": {"name": "管理者", "type":"array"},
+    "editionDes": {"name": "版本描述"},
+    "startableIdentityList": {"name": "启动者", "type":"array"},
+    "startableUnitList": {"name": "启动组织", "type":"array"},
+    "serialTexture": {"name": "编号规则", "type":"serial"},
+    "expireScriptText": {"name": "超时脚本", "type":"script"},
+    "projection": {"name": "数据映射", "type":"projection"},
+
+    "beforeBeginScriptText": {"name": "流程启动前事件", "type":"script"},
+    "afterBeginScriptText ": {"name": "流程启动后事件", "type":"script"},
+    "beforeEndScriptText ": {"name": "流程结束前事件", "type":"script"},
+    "afterEndScriptText ": {"name": "流程结束后事件", "type":"script"},
+    "beforeArriveScriptText ": {"name": "活动到达前事件", "type":"script"},
+    "afterArriveScriptText ": {"name": "活动到达后事件", "type":"script"},
+    "beforeExecuteScriptText ": {"name": "活动执行前事件", "type":"script"},
+    "afterExecuteScriptText ": {"name": "活动执行后事件", "type":"script"},
+    "beforeInquireScriptText": {"name": "路由查询前事件", "type":"script"},
+    "afterInquireScriptText ": {"name": "路由查询后事件", "type":"script"},
+
+    "readIdentityList": {"name": "待阅人", "type":"array"},
+    "readUnitList": {"name": "待阅组织", "type":"array"},
+    "readGroupList": {"name": "待阅群组", "type":"array"},
+    "readDataPathList": {"name": "待阅人表单数据", "type":"array"},
+    "readScriptText": {"name": "待阅人脚本", "type":"script"},
+    "readDuty": {"name": "待阅人职务", "type":"duty"},
+    "reviewIdentityList": {"name": "可阅读人", "type":"array"},
+    "reviewUnitList": {"name": "可阅读组织", "type":"array"},
+    "reviewGroupList": {"name": "可阅读群组", "type":"array"},
+    "reviewDataPathList": {"name": "可阅读人表单数据", "type":"array"},
+    "reviewScriptText": {"name": "可阅读人脚本", "type":"script"},
+    "reviewDuty": {"name": "可阅读人职务", "type":"duty"},
+
+    "scriptText": {"name": "脚本", "type":"script"},
+
+    "targetTitleScriptText": {"name": "流程调用标题脚本", "type":"script"},
+    "targetAssginDataScriptText": {"name": "流程调用数据脚本", "type":"script"},
+    "targetIdentity": {"name": "流程调用启动者"},
+    "targetIdentityScriptText": {"name": "流程调用启动者脚本", "type":"script"},
+
+    "delayScriptText": {"name": "定时脚本", "type":"script"},
+    "delayDataPath": {"name": "定时数据路径"},
+
+    "jaxwsAddress": {"name": "WSDL地址"},
+    "jaxwsMethod": {"name": "调用方法"},
+    "jaxwsParameterScriptText": {"name": "参数脚本", "type":"script"},
+    "jaxwsResponseScriptText": {"name": "响应脚本", "type":"script"},
+    "jaxrsAddress": {"name": "REST服务地址"},
+    "jaxrsContentType": {"name": "ContentType"},
+    "jaxrsParameterScriptText ": {"name": "参数脚本", "type":"script"},
+    "jaxrsBodyScriptText ": {"name": "消息体脚本", "type":"script"},
+    "jaxrsHeadScriptText ": {"name": "消息头脚本", "type":"script"},
+    "jaxrsResponseScriptText": {"name": "响应脚本", "type":"script"},
+
+    "group": {"name": "活动组"},
+    "opinionGroup": {"name": "意见组"},
+
+    "taskIdentityList": {"name": "待办人", "type":"array"},
+    "taskUnitList": {"name": "待办组织", "type":"array"},
+    "taskGroupList": {"name": "待办群组", "type":"array"},
+    "taskDataPathList": {"name": "待办人表单数据", "type":"array"},
+    "taskScriptText": {"name": "待办人脚本", "type":"script"},
+    "taskDuty": {"name": "待办人职务", "type":"duty"},
+    "taskExpireScriptText": {"name": "超时脚本", "type":"script"},
+
+    "manualStayScriptText": {"name": "等待人工处理事件", "type":"script"},
+    "manualBeforeTaskScriptText ": {"name": "待办处理前事件", "type":"script"},
+    "manualAfterTaskScriptText ": {"name": "待办处理后事件", "type":"script"},
+
+    "opinion": {"name": "默认意见"},
+    "appendTaskIdentityScriptText": {"name": "转交脚本", "type":"script"},
+    "decisionOpinion": {"name": "决策组"},
+    "validationScriptText": {"name": "路由校验脚本", "type":"script"},
+    "displayNameScriptText": {"name": "路由显示名称脚本", "type":"script"},
+    "hiddenScriptText ": {"name": "隐藏条件脚本", "type":"script"},
+    "selectConfig": {"name": "组织选择配置", "type":"selectConfig"}
+  },
+  "view": {
+    "id": {"name": "标识"},
+    "name": {"name": "名称"},
+    "alias": {"name": "别名"},
+    "description": {"name": "描述"},
+    "noDataText": {"name": "无数据显示"},
+    "defaultSelectedScript": {"name": "默认选中脚本", "type":"script"},
+
+    "applicationList": {"name": "流程应用范围", "type":"object-array"},
+    "processList": {"name": "流程范围", "type":"object-array"},
+    "creatorPersonList": {"name": "拟稿人范围", "type":"object-array"},
+    "creatorUnitList": {"name": "拟稿组织范围", "type":"object-array"},
+    "creatorIdentityList": {"name": "拟稿身份范围", "type":"object-array"},
+    "appInfoList": {"name": "栏目范围", "type":"object-array"},
+    "categoryInfoList": {"name": "分类范围", "type":"object-array"},
+
+    "filterList": {"name": "默认过滤", "type":"filter"},
+    "customFilterList": {"name": "自定义过滤", "type":"filter"},
+
+    "events": {"name": "事件", "type": "events"},
+
+    "container": {"name": "container样式", "type": "map"},
+    "table": {"name": "table样式", "type": "map"},
+    "titleTr": {"name": "titleTr样式", "type": "map"},
+    "titleTd": {"name": "titleTd样式", "type": "map"},
+    "contentTr": {"name": "contentTr样式", "type": "map"},
+    "contentSelectedTr": {"name": "contentSelectedTr样式", "type": "map"},
+    "contentTd": {"name": "contentTd样式", "type": "map"},
+    "contentGroupTd": {"name": "contentGroupTd样式", "type": "map"},
+    "groupCollapseNode": {"name": "groupCollapseNode样式", "type": "map"},
+    "groupExpandNode": {"name": "groupExpandNode样式", "type": "map"},
+    "checkboxNode": {"name": "checkboxNode样式", "type": "map"},
+    "checkedCheckboxNode": {"name": "checkedCheckboxNode样式", "type": "map"},
+    "radioNode": {"name": "radioNode样式", "type": "map"},
+    "checkedRadioNode": {"name": "checkedRadioNode样式", "type": "map"},
+    "noDataTextNode": {"name": "noDataTextNode样式", "type": "map"},
+    "tableProperties": {"name": "tableProperties样式", "type": "map"},
+
+    "displayName": {"name": "列标题"},
+    "defaultValue": {"name": "默认值"},
+    "path": {"name": "数据路径"},
+    "clickCode": {"name": "打开文档脚本", "type": "script"},
+    "code": {"name": "显示脚本", "type": "script"},
+
+    "titleStyles": {"name": "标题单元格样式", "type": "map"},
+    "titleProperties": {"name": "标题单元格属性", "type": "map"},
+    "contentStyles": {"name": "内容单元格样式", "type": "map"},
+    "contentProperties": {"name": "内容单元格属性", "type": "map"},
+
+    "actionStyles": {"name": "操作条样式", "type": "map"},
+    "multiTools": {"name": "操作按钮", "type":"actions"},
+
+
+    "prePageText": {"name": "上一页文本"},
+    "nextPageText": {"name": "下一页文本"},
+    "firstPageText": {"name": "首页文本"},
+    "lastPageText": {"name": "末页文本"},
+    "pagingStyles": {"name": "分页栏样式", "type": "map"},
+
+    "column": {"name": "列名"}
+  },
+  "statement": {
+    "name": {"name": "名称"},
+    "alias": {"name": "别名"},
+    "description": {"name": "描述"},
+
+    "data": {"name": "JPQL语句", "type": "sql"},
+    "scriptText": {"name": "JPQL脚本", "type": "script"},
+    "countData": {"name": "JPQL总数语句", "type": "sql"},
+    "countScriptText": {"name": "JPQL总数脚本", "type": "script"}
+  }
+}
