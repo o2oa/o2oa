@@ -156,6 +156,7 @@ class ActionAppend extends BaseAction {
 		bindings.put(ScriptFactory.BINDING_NAME_DICTIONARY,
 				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
 		bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
+		// 重新创建的ScriptContext是需要初始化的
 		ScriptFactory.initialScriptText().eval(scriptContext);
 		return scriptContext;
 	}
