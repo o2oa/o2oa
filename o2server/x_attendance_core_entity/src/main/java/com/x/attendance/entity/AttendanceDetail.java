@@ -294,6 +294,12 @@ public class AttendanceDetail extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Boolean isGetSelfHolidays = false;
 
+	public static final String leaveType_FIELDNAME = "leaveType";
+	@FieldDescribe("休假类型")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + leaveType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String leaveType;
+
 	public static final String isAbsent_FIELDNAME = "isAbsent";
 	@FieldDescribe("是否缺勤")
 	@Column(name = ColumnNamePrefix + isAbsent_FIELDNAME)
@@ -335,6 +341,12 @@ public class AttendanceDetail extends SliceJpaObject {
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + archiveTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String archiveTime;
+
+	public static final String isExternal_FIELDNAME = "isExternal";
+	@FieldDescribe("是否范围外打卡")
+	@Column(name = ColumnNamePrefix + isExternal_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean isExternal = false;
 
 	public String getMorningOffDutyTime() {
 		return morningOffDutyTime;
@@ -880,6 +892,14 @@ public class AttendanceDetail extends SliceJpaObject {
 		this.isGetSelfHolidays = isGetSelfHolidays;
 	}
 
+	public String getLeaveType() {
+		return leaveType;
+	}
+
+	public void setLeaveType(String leaveType) {
+		this.leaveType = leaveType;
+	}
+
 	/**
 	 * 获取休假时段：无，上午，下午，全天（String）
 	 * 
@@ -1168,6 +1188,14 @@ public class AttendanceDetail extends SliceJpaObject {
 
 	public void setWeekend(Boolean weekend) {
 		isWeekend = weekend;
+	}
+
+	public Boolean getIsExternal() {
+		return isExternal;
+	}
+
+	public void setIsExternal(Boolean isExternal) {
+		this.isExternal = isExternal;
 	}
 
 	/**

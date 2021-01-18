@@ -44,6 +44,10 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_cms_core_express</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>o2oa</groupId>
+			<artifactId>x_portal_core_entity</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

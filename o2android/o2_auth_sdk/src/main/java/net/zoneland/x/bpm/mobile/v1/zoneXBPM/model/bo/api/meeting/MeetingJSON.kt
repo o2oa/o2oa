@@ -19,7 +19,7 @@ data class MeetingInfoJson(
         var pinyinInitial: String = "",
         var id: String = "",
         var subject: String = "",//名称
-        var description: String = "",//说明
+        var summary: String = "",//说明
         var room: String = "",//会议室
         var date: String = "",//会议日期
         var startTime: String = "",//开始日期

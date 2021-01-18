@@ -57,9 +57,16 @@ public class LogQueue extends AbstractQueue<NameValuePair> {
 
 	private <T extends JpaObject> void concrete(Class<T> cls, T o) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			emc.beginTransaction(cls);
-			emc.persist(o, CheckPersistType.all);
-			emc.commit();
+			T t = emc.find(o.getId(), cls);
+			if (null != t) {
+				o.copyTo(t, JpaObject.FieldsUnmodify);
+				emc.beginTransaction(cls);
+				emc.commit();
+			} else {
+				emc.beginTransaction(cls);
+				emc.persist(o, CheckPersistType.all);
+				emc.commit();
+			}
 		}
 	}
 

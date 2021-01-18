@@ -21,7 +21,7 @@ MWF.xApplication.service.ServiceManager.AgentExplorer = new Class({
         layout.openApplication(null, "FindDesigner", options);
     },
     createCreateElementNode: function(){
-        if( MWF.AC.isAdministrator() ) {
+        if( MWF.AC.isServiceManager() ) {
             this.createElementNode = new Element("div", {
                 "styles": this.css.createElementNode,
                 "title": this.options.tooltip.create
@@ -49,7 +49,7 @@ MWF.xApplication.service.ServiceManager.AgentExplorer = new Class({
         this.app.desktop.openApplication(e, "service.AgentDesigner", options);
     },
     loadElementList: function(){
-        if( MWF.AC.isAdministrator() ){
+        if( MWF.AC.isServiceManager() ){
             this._loadItemDataList(function(json){
                 if (json.data.length){
                     json.data.each(function(item){

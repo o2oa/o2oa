@@ -1,44 +1,52 @@
 {
-    "opts": {
-        "encoding": "utf8",               // same as -e utf8
-        "destination": "./o2web/jsdoc/",          // same as -d ./out/
-        "recurse": true,                  // same as -r
-        "template" : "./node_modules/ink-docstrap/template"
-//        "tutorials": "./o2web/tutorials" // same as -u path/to/tutorials
+    "opts": {    //命令行参数，在配置文件中配置了就不要敲命令了
+        "encoding": "utf8",               //文件编码utf8
+        "destination": "./o2web/api/",          //输出目标文件夹
+        "recurse": true,                 //是否递归抽取sorce/include配置的文件夹
+        "template" : "./node_modules/tidy-jsdoc-o2", //模板路径
+        "prism-theme": "prism-custom", //模板中的代码块样式主题
+        "readme" : "./o2web/jsdoc_static/home/README.md" //首页
+        //"tutorials": "./o2web/tutorials" //如果有教程，对应教程目录
     },
 
     "tags": {
-        "allowUnknownTags": true
+        "allowUnknownTags": true, //允许jsdoc中未命名的标签
+        "dictionaries": [   //标签库
+            "jsdoc",
+            "closure"
+        ]
     },
     "source": {
-        "include": ["./o2web/source/x_component_process_Xform"],
-        "includePattern": ".+\\.js(doc|x)?$",
-        "excludePattern": "(^|\\/|\\\\)_"
+        "include": [ //需要抽取文档的源文件夹
+            "./o2web/source/x_component_process_Xform",
+            "./o2web/source/x_component_cms_Xform",
+            "./o2web/source/o2_core/o2/xScript"
+        ],
+        "includePattern": ".+\\.js(doc|x)?$", //抽取的源文件名称正则表达式
+        "excludePattern": "(^|\\/|\\\\)_" //排除的源文件正则表达式
     },
-    "plugins": [
-        "plugins/markdown",
-        "plugins/summarize"
+    "plugins": [ //启用插件
+        "plugins/markdown", //把markdown转成html
+        "plugins/summarize" //为每个doclet生成摘要
     ],
-    "templates": {
-        "cleverLinks": false,
+    "templates": {  //模板参数
+        "cleverLinks": false, //@link标签是否呈现为纯文本
         "monospaceLinks": false,
-        "dateFormat": "YYYY-MM-dd",
-        "outputSourceFiles": true,
-        "outputSourcePath": true,
-        "systemName": "O2前台组件API",
-        "footer": "",
-        "copyright": "o2 group",
-        "navType": "vertical",
-        "theme": "cosmo", //readable lumen cosmo
-        "linenums": true,
-        "collapseSymbols": false,
-        "inverseNav": true,
-        "protocol": "html://",
-        "methodHeadingReturns": false
+        "default": {
+            "staticFiles": { //静态文件目录
+                "include": [
+                    "./o2web/jsdoc_static"
+                ]
+            }
+        }
     },
-    "markdown": {
-        "parser": "gfm",
-        "hardwrap": true
+    "metadata": {
+        "title": "O2OA前台API" //最终生成的文档中标题
+    },
+    "o2" : {
+        "actionOutPath" : "./o2server/{actionRoot}/src/main/webapp/describe/jsdoc/{actionName}.json",
+        //"actionOutPath" : "./o2web/jsdoc/{actionRoot}/{actionName}.json",
+        "actionOutExamplePath" : "./o2web/jsdoc_static/actionOut_examples/{actionRoot}.json"
     }
 }
-//执行命令: jsdoc -c ./o2web/jsdoc.conf.json
+//执行命令: jsdoc -c ./o2web/jsdoc.conf.json -q version=v5.3.5

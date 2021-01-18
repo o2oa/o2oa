@@ -125,7 +125,7 @@ MWF.xApplication.Setting.LP = {
     "mobile_connectO2Cloud": "连接到O2云",
     "mobile_connectO2Cloud_infor": "使用移动办公请先连接到O2云，这有助于APP定位到您的企业服务器，可以使用短信服务等",
     "mobile_connectO2Cloud_action": "连接到O2云",
-    "mobile_connectO2Cloud_success": "已连接到O2云",
+    "mobile_connectO2Cloud_success": "连接设置",
     "mobile_connectO2Cloud_error": "还未连接到O2云",
 
     "mobile_httpProtocol": "http协议",
@@ -150,6 +150,9 @@ MWF.xApplication.Setting.LP = {
 
     "mobile_module": "{name}模块",
     "mobile_module_infor": "移动端是否开启{name}模块",
+
+    "mobile_module_simple_mode": "移动端简易模式",
+    "mobile_module_simple_mode_infor": "移动端开启简易模式后只显示首页和设置页面",
 
     "mobile_styleSetting": "移动端图标样式配置",
     "mobile_style": "{name}图片 ",
@@ -264,7 +267,9 @@ MWF.xApplication.Setting.LP = {
         "infoParameter": "请求信息方法参数",
         "infoMethod": "请求信息方法（GET或POST）",
         "infoType": "info信息格式（json或form）",
-        "infoCredentialField": "info信息中用于标识个人的字段"
+        "infoCredentialField": "info信息中用于标识个人的字段",
+
+        "infoProxyHost" : "域名不需要包含http"
     },
 
     "module": {

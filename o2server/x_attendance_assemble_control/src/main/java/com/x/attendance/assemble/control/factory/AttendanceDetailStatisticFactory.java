@@ -301,6 +301,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);	
 		Predicate p = root.get(AttendanceDetail_.empName).in( employeeNames );		
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
+		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isAbsent) ));
 		if( cycleYear == null || cycleYear.isEmpty() ){
 			logger.error( new CycleYearEmptyException() );
 		}else{

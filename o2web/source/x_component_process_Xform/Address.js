@@ -1,6 +1,20 @@
 //MWF.require("MWF.widget.PinYin", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Combox", null, false);
-MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class({
+/** @class Address 地址选择组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var address = this.form.get("name"); //获取组件
+ * //方法2
+ * var address = this.target; //组件本身的事件和脚本中获取
+ * @extends MWF.xApplication.process.Xform.Combox
+ * @o2category FormComponents
+ * @o2range {Process|CMS}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Address# */
+    {
 	Implements: [Events],
 	Extends: MWF.APPCombox,
     options: {

@@ -81,7 +81,7 @@ class MeetingEditActivity : BaseMVPActivity<MeetingEditContract.View, MeetingEdi
         edit_meeting_edit_form_start_day.text = startDay
         edit_meeting_edit_form_start_time.text = startTime
         edit_meeting_edit_form_end_time.text = completeTime
-        edit_meeting_edit_form_desc.setText(meeting.description)
+        edit_meeting_edit_form_desc.setText(meeting.summary)
 
         meetingFileList.addAll(meeting.attachmentList)
         recycler_meeting_edit_form_file_list.layoutManager = LinearLayoutManager(this)
@@ -219,7 +219,7 @@ class MeetingEditActivity : BaseMVPActivity<MeetingEditContract.View, MeetingEdi
             return
         }
         meeting.subject = subject
-        meeting.description = edit_meeting_edit_form_desc.text.toString()
+        meeting.summary = edit_meeting_edit_form_desc.text.toString()
         val savePersonList = invitePersonList
         savePersonList.remove(invitePersonAdd)
         meeting.invitePersonList = savePersonList

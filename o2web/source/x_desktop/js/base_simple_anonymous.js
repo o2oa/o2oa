@@ -74,15 +74,41 @@ o2.addReady(function () {
         if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
     });
 
+    var _setLayoutService = function(service, center){
+        layout.serviceAddressList = service;
+        layout.centerServer = center;
+        layout.desktop.serviceAddressList = service;
+        layout.desktop.centerServer = center;
+    };
     var _getDistribute = function (callback) {
         if (layout.config.app_protocol === "auto") {
             layout.config.app_protocol = window.location.protocol;
         }
-        o2.xDesktop.getServiceAddress(layout.config, function (service, center) {
-            layout.serviceAddressList = service;
-            layout.centerServer = center;
-            if (callback) callback();
-        }.bind(this));
+
+        if (layout.config.configMapping && (layout.config.configMapping[window.location.host] || layout.config.configMapping[window.location.hostname])){
+            var mapping = layout.config.configMapping[window.location.host] || layout.config.configMapping[window.location.hostname];
+            if (mapping.servers){
+                layout.serviceAddressList = mapping.servers;
+                layout.desktop.serviceAddressList = mapping.servers;
+                if (mapping.center) center = (o2.typeOf(mapping.center)==="array") ? mapping.center[0] : mapping.center;
+                layout.centerServer = center;
+                layout.desktop.centerServer = center;
+                if (callback) callback();
+            }else{
+                if (mapping.center) layout.config.center = (o2.typeOf(mapping.center)==="array") ? mapping.center : [mapping.center];
+                o2.xDesktop.getServiceAddress(layout.config, function (service, center) {
+                    _setLayoutService(service, center);
+                    _loadProgressBar();
+                    if (callback) callback();
+                }.bind(this));
+            }
+        }else{
+            o2.xDesktop.getServiceAddress(layout.config, function (service, center) {
+                _setLayoutService(service, center);
+                _loadProgressBar();
+                if (callback) callback();
+            }.bind(this));
+        }
     };
 
     var _load = function () {

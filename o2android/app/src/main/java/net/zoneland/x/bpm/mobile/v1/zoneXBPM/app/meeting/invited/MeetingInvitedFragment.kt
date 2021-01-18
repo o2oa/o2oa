@@ -2,14 +2,14 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.invited
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem
-import com.yanzhenjie.recyclerview.swipe.widget.DefaultItemDecoration
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.yanzhenjie.recyclerview.SwipeMenuCreator
+import com.yanzhenjie.recyclerview.SwipeMenuItem
+import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration
 import kotlinx.android.synthetic.main.fragment_meeting_invited.*
 import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
@@ -70,16 +70,17 @@ class MeetingInvitedFragment : BaseMVPViewPagerFragment<MeetingInvitedFragmentCo
         receive_invite_list.layoutManager = LinearLayoutManager(activity)
         receive_invite_list.addItemDecoration(DefaultItemDecoration(ContextCompat.getColor(activity!!, R.color.z_color_split_line_ddd)))
         receive_invite_list.setSwipeMenuCreator(menuCreator)
-        receive_invite_list.setSwipeMenuItemClickListener { menuBridge ->
+        receive_invite_list.setOnItemMenuClickListener { menuBridge, adapterPosition ->
             menuBridge.closeMenu()// 任何操作必须先关闭菜单，否则可能出现Item菜单打开状态错乱。
-            val menuPosition = menuBridge.position
-            val itemPosition = menuBridge.adapterPosition
-            when (menuPosition) {
+            // 左侧还是右侧菜单：
+//            val direction = menuBridge.direction
+            // 菜单在Item中的Position：
+            when (menuBridge.position) {
                 0 -> {
-                    mPresenter.acceptMeetingInvited(receiveInviteList[itemPosition].id)
+                    mPresenter.acceptMeetingInvited(receiveInviteList[adapterPosition].id)
                 }
                 1 -> {
-                    mPresenter.rejectMeetingInvited(receiveInviteList[itemPosition].id)
+                    mPresenter.rejectMeetingInvited(receiveInviteList[adapterPosition].id)
                 }
             }
         }

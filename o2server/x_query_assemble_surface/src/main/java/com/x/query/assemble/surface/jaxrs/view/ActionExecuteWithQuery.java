@@ -28,9 +28,12 @@ class ActionExecuteWithQuery extends BaseAction {
 
 	ActionResult<Plan> execute(EffectivePerson effectivePerson, String flag, String queryFlag, JsonElement jsonElement)
 			throws Exception {
+		ActionResult<Plan> result = new ActionResult<>();
+		View view;
+		Runtime runtime;
+		Business business;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Plan> result = new ActionResult<>();
-			Business business = new Business(emc);
+			business = new Business(emc);
 			Query query = business.pick(queryFlag, Query.class);
 			if (null == query) {
 				throw new ExceptionEntityNotExist(queryFlag, Query.class);
@@ -39,7 +42,7 @@ class ActionExecuteWithQuery extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, query);
 			}
 			String id = business.view().getWithQuery(flag, query);
-			View view = business.pick(id, View.class);
+			view = business.pick(id, View.class);
 			if (null == view) {
 				throw new ExceptionEntityNotExist(flag, View.class);
 			}
@@ -50,13 +53,13 @@ class ActionExecuteWithQuery extends BaseAction {
 			if (null == wi) {
 				wi = new Wi();
 			}
-			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
 					wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
-			Plan plan = this.accessPlan(business, view, runtime);
-			result.setData(plan);
-			return result;
 		}
+		Plan plan = this.accessPlan(business, view, runtime);
+		result.setData(plan);
+		return result;
 	}
 
 	public static class Wo extends WoId {

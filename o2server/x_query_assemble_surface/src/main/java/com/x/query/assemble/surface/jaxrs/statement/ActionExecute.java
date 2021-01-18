@@ -36,6 +36,8 @@ import com.x.query.core.express.statement.Runtime;
 
 class ActionExecute extends BaseAction {
 
+	private final static String[] pageKeys = { "GROUP BY", " COUNT(" };
+
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
 
@@ -119,8 +121,10 @@ class ActionExecute extends BaseAction {
 				}
 			}
 			if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-				query.setFirstResult((runtime.page - 1) * runtime.size);
-				query.setMaxResults(runtime.size);
+				if(isPageSql(text)) {
+					query.setFirstResult((runtime.page - 1) * runtime.size);
+					query.setMaxResults(runtime.size);
+				}
 				data = query.getResultList();
 			} else {
 				business.entityManagerContainer().beginTransaction(cls);
@@ -151,8 +155,10 @@ class ActionExecute extends BaseAction {
 				}
 			}
 			if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-				query.setFirstResult((runtime.page - 1) * runtime.size);
-				query.setMaxResults(runtime.size);
+				if(isPageSql(statement.getData())) {
+					query.setFirstResult((runtime.page - 1) * runtime.size);
+					query.setMaxResults(runtime.size);
+				}
 				data = query.getResultList();
 			} else {
 				business.entityManagerContainer().beginTransaction(cls);
@@ -161,6 +167,16 @@ class ActionExecute extends BaseAction {
 			}
 		}
 		return data;
+	}
+
+	private boolean isPageSql(String sql){
+		sql = sql.toUpperCase().replaceAll("\\s{1,}", " ");
+		for (String key : pageKeys) {
+			if (sql.indexOf(key) > -1) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")

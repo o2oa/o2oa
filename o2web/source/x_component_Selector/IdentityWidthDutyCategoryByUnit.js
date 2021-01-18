@@ -92,6 +92,12 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     //         }
     //     }
     // },
+    getUnitUniqueFormDn : function(dn){
+        if(!dn)return "";
+        var arr = dn.split("@");
+        if( arr.length === 3 )return arr[1];
+        return dn;
+    },
     loadSelectItems: function (addToNext) {
         //根据组织分类展现职务
         if (this.options.resultType === "person") {
@@ -115,21 +121,26 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             }.bind(this));
 
             var units = [];
+            var unitUniques = [];
             for (var i = 0; i < this.options.units.length; i++) {
                 var unit = this.options.units[i];
                 if (typeOf(unit) === "string") {
-                    units.push(unit)
+                    units.push(unit);
+                    unitUniques.push( this.getUnitUniqueFormDn(unit) );
                 } else {
-                    units.push(unit.distinguishedName || unit.unique || unit.id || unit.levelName)
+                    units.push(unit.distinguishedName || unit.unique || unit.id || unit.levelName);
+                    unitUniques.push( unit.distinguishedName ? this.getUnitUniqueFormDn(unit.distinguishedName) : (unit.unique || unit.id || unit.levelName) );
                 }
             }
             this.unitStringList = units;
+            this.unitUniqueList = unitUniques;
 
             o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listIdentityWithUnitWithNameObject({
                 nameList: this.options.dutys,
                 unitList: units,
                 recursiveUnit : !!this.options.expandSubEnable
             }, function (json) {
+                this.allIdentityData = json.data;
                 this._loadSelectItems(json.data)
             }.bind(this))
         }else{
@@ -223,6 +234,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         if (idx == -1 && unit.id) idx = this.unitStringList.indexOf(unit.id);
         if (idx == -1 && unit.unique) idx = this.unitStringList.indexOf(unit.unique);
         if (idx == -1 && unit.levelName) idx = this.unitStringList.indexOf(unit.levelName);
+        if (idx == -1 && unit.unique ) idx = this.unitUniqueList.indexOf(unit.unique);
+        if (idx == -1 && !unit.unique && unit.distinguishedName ) idx = this.unitUniqueList.indexOf(unit.distinguishedName.split("@")[1]||"");
         return idx
     },
     isUnitContain: function (d) {
@@ -234,27 +247,43 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 this.unitFlagMap[typeOf(e) === "string" ? e : (e.distinguishedName || e.id || e.unique || e.employee || e.levelName)] = true;
             }.bind(this));
         }
+        if (!this.unitUniqueMap) {
+            this.unitUniqueMap = {};
+            this.unitUniqueList.each(function (e) {
+                if (!e) return;
+                this.unitUniqueMap[e] = true;
+            }.bind(this));
+        }
         var map = this.unitFlagMap;
-        return (d.distinguishedName && map[d.distinguishedName]) ||
+        var uniqueMap = this.unitUniqueMap;
+        var flag = (d.distinguishedName && map[d.distinguishedName]) ||
             (d.levelName && map[d.levelName]) ||
             (d.id && map[d.id]) ||
-            (d.unique && map[d.unique]);
-    },
-    listAllIdentityInUnitObject: function () {
-        var unitArray = [];
-        for (var i = 0; i < identityList.length; i++) {
-            unitArray.push(identityList[i].unit || identityList[i].unitLevelName);
+            (d.unique && map[d.unique]) ||
+            (d.unique && uniqueMap[d.unique]);
+        if( !flag && !d.unique && d.distinguishedName ){
+            var arr = d.distinguishedName.split("@");
+            if( arr.length === 3 && arr[1] && uniqueMap[arr[1]] ){
+                flag = true;
+            }
         }
-        o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({
-            unitList: unitArray
-        }, function (json) {
-            this.allIdentityInUnitObject = {};
-            json.data.each(function (u) {
-                this.allIdentityInUnitObject[u.levelName] = u;
-            }.bind(this));
-            if (callback) callback();
-        }.bind(this), null, false)
+        return flag;
     },
+    // listAllIdentityInUnitObject: function () {
+    //     var unitArray = [];
+    //     for (var i = 0; i < identityList.length; i++) {
+    //         unitArray.push(identityList[i].unit || identityList[i].unitLevelName);
+    //     }
+    //     o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({
+    //         unitList: unitArray
+    //     }, function (json) {
+    //         this.allIdentityInUnitObject = {};
+    //         json.data.each(function (u) {
+    //             this.allIdentityInUnitObject[u.levelName] = u;
+    //         }.bind(this));
+    //         if (callback) callback();
+    //     }.bind(this), null, false)
+    // },
     getUnitOrderNumber: function (unit) {
         return this.allIdentityInUnitObject[unit.levelName].orderNumber;
     },
@@ -579,7 +608,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
                         // if( !this.selector.isExcluded( subData ) ) {
                         var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level + 1, this);
                         this.subCategorys.push(category);
-                        category.loadSub()
+                        // category.loadSub()
                         // }
                     }.bind(this));
                 }

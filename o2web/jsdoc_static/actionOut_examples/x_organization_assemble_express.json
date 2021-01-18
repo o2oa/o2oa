@@ -1,0 +1,103 @@
+{
+  "Person" : {
+    "name": "李四",
+    "genderType": "m",
+    "signature": "",
+    "description": "",
+    "employee": "1111",
+    "unique": "lisi",
+    "distinguishedName": "李四@lisi@P",
+    "orderNumber": 14214946,
+    "mail": "",
+    "weixin": "",
+    "qq": "",
+    "mobile": "85252281460",
+    "officePhone": "",
+    "boardDate" : "",
+    "birthday" : "",
+    "age" : "",
+    "qiyeweixinId" : "",
+    "dingdingId" : "",
+    "zhengwuDingdingId" : ""
+  },
+  "PersonAttribute" : {
+    "name": "住址",
+    "person": "张三@zhangsan@P",
+    "attributeList": [
+      "杭州市","绍兴市"
+    ]
+  },
+  "Unit" : {
+    "name": "开发部",
+    "unique": "kfb",
+    "distinguishedName": "开发部@kfb@U",
+    "typeList": [
+      "部门"
+    ],
+    "description": "",
+    "shortName": "kfb",
+    "level": 2,
+    "levelName": "浙江兰德纵横/开发部",
+    "superior": "浙江兰德纵横@a706f5f0-4a3b-4785-8e1d-0a944bfad4eb@U"
+  },
+  "UnitDuty" : {
+    "name": "李四",
+    "unique": "23dd1b53-feed-485d-8c9c-1a4e64ff58a2",
+    "description": "",
+    "distinguishedName": "李四@23dd1b53-feed-485d-8c9c-1a4e64ff58a2@I",
+    "person": "李四@lisi@P",
+    "unit": "开发部@kfb@U",
+    "unitName": "开发部",
+    "unitLevel": 2,
+    "unitLevelName": "浙江兰德纵横/开发部",
+    "orderNumber": 24920439
+  },
+  "UnitAttribute" : {
+    "name": "部门类别",
+    "unit": "开发部@kfb@U",
+    "attributeList": [
+      "生产部门"
+    ]
+  },
+  "Identity" : {
+    "name": "李四",
+    "unique": "23dd1b53-feed-485d-8c9c-1a4e64ff58a2",
+    "description": "",
+    "distinguishedName": "李四@23dd1b53-feed-485d-8c9c-1a4e64ff58a2@I",
+    "person": "李四@lisi@P",
+    "unit": "开发部@kfb@U",
+    "unitName": "开发部",
+    "unitLevel": 2,
+    "unitLevelName": "浙江兰德纵横/开发部",
+    "orderNumber": 24920439
+  },
+  "Role" : {
+    "name": "Manager",
+    "unique": "ManagerSystemRole",
+    "description": "",
+    "distinguishedName": "Manager@ManagerSystemRole@R",
+    "orderNumber": 7897556,
+    "personList": [
+      "张三@zhangsan@P",
+      "李四@lisi@P"
+    ],
+    "groupList": [
+      "测试群组@ceshizu@G"
+    ]
+  },
+  "Group": {
+    "name": "工作汇报读者",
+    "unique": "ReportReader",
+    "description": "可查看所有部门所有状态的工作汇报",
+    "distinguishedName": "工作汇报读者@ReportReader@G",
+    "orderNumber": 13699599,
+    "personList": [
+      "张三@zhangsan@P",
+      "李四@lisi@P"
+    ],
+    "groupList": [
+      "所有部门领导@AllDepartLeader@G",
+      "所有部门汇报管理员@AllDepartReportManager@G"
+    ]
+  }
+}

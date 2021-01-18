@@ -172,15 +172,15 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
                 }
             }
         }
-        val userId = if(isAuthed)  "" else unitId+"^^"+O2SDKManager.instance().cId
+        val userId = if(isAuthed)  "" else unitId+"^^"+O2SDKManager.instance().distinguishedName
 
         O2SDKManager.instance().prefs().edit{
             putString(BioConstants.O2_bio_auth_user_id_prefs_key, userId)
         }
         if (isAuthed) {
-            image_btn_account_security_biometry_enable.setImageResource(R.mipmap.icon_toggle_on_29dp)
-        }else {
             image_btn_account_security_biometry_enable.setImageResource(R.mipmap.icon_toggle_off_29dp)
+        }else {
+            image_btn_account_security_biometry_enable.setImageResource(R.mipmap.icon_toggle_on_29dp)
         }
 
     }

@@ -620,7 +620,7 @@ class ActionInputAll extends BaseAction {
 					validate = false;
 					continue;
 				}
-				this.setUnitMemo(workbook, configurator, o, "校验通过.");
+				//this.setUnitMemo(workbook, configurator, o, "校验通过.");
 			}
 		}
 		return validate;
@@ -633,6 +633,7 @@ class ActionInputAll extends BaseAction {
 		boolean validate = true;
 		for (PersonItem o : person) {
 			//System.out.println("正在校验用户:{}."+ o.getName());
+			this.setPersonMemo(workbook, configurator, o, "校验通过.");
 			if (StringUtils.isEmpty(o.getName())) {
 				this.setPersonMemo(workbook, configurator, o, "人员姓名不能为空.");
 				validate = false;
@@ -658,7 +659,6 @@ class ActionInputAll extends BaseAction {
 				validate = false;
 				continue;
 			}
-			this.setPersonMemo(workbook, configurator, o, "校验通过.");
 			/*if(o.getAttributes().isEmpty()|| StringUtils.isEmpty(o.getAttributes().get("idNumber"))){
 				this.setPersonMemo(workbook, configurator, o, "身份证号不能为空.");
 				validate = false;
@@ -702,7 +702,7 @@ class ActionInputAll extends BaseAction {
 					continue;
 				}
 				
-				this.setPersonMemo(workbook, configurator, o, "校验通过.");
+				//this.setPersonMemo(workbook, configurator, o, "校验通过.");
 			}
 		}
 		return validate;
@@ -732,6 +732,7 @@ class ActionInputAll extends BaseAction {
 				IdentityItem identityItem = new IdentityItem();
 				identityItem.setRow(i);
 				identitys.add(identityItem);
+				this.setIdentityMemo(workbook, configurator, identityItem, "校验通过.");
 				if (StringUtils.isEmpty(unique)) {
 					this.setIdentityMemo(workbook, configurator, identityItem, "员工唯一编码不能为空.");
 					validate = false;
@@ -788,7 +789,7 @@ class ActionInputAll extends BaseAction {
 				}
 				
 				//if (validate) {
-					this.setIdentityMemo(workbook, configurator, identityItem, "校验通过.");
+					//this.setIdentityMemo(workbook, configurator, identityItem, "校验通过.");
 				//}
 				
 			}

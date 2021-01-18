@@ -12,23 +12,32 @@ public class TaskProperties extends JsonProperties {
 
 	private static final long serialVersionUID = 5628694071505848771L;
 
-	@FieldDescribe("上一人工环节处理人")
+	@FieldDescribe("上一人工环节处理人.")
 	private String prevTaskIdentity;
 
-	@FieldDescribe("上一人工环节处理人列表")
+	@FieldDescribe("上一人工环节处理人列表.")
 	private List<String> prevTaskIdentityList;
 
-	@FieldDescribe("标题")
+	@FieldDescribe("标题.")
 	private String title;
 
-	@FieldDescribe("意见")
+	@FieldDescribe("意见.")
 	private String opinion;
 
-	@FieldDescribe("上一人工环节待办对象列表")
+	@FieldDescribe("上一人工环节待办对象列表.")
 	private List<PrevTask> prevTaskList;
 
-	@FieldDescribe("上一人工环节最近待办对象")
+	@FieldDescribe("上一人工环节最近待办对象.")
 	private PrevTask prevTask;
+
+	@FieldDescribe("待办计时暂停工作时间时长(分钟).")
+	private Date pauseStartTime;
+
+	@FieldDescribe("待办计时暂停工作时间时长(分钟).")
+	private Integer pauseWorkTimeMinutes;
+
+	@FieldDescribe("待办计时暂停自然时间时长(分钟).")
+	private Integer pauseMinutes;
 
 	public List<String> getPrevTaskIdentityList() {
 		if (null == prevTaskIdentityList) {
@@ -150,6 +159,30 @@ public class TaskProperties extends JsonProperties {
 
 	public void setPrevTask(PrevTask prevTask) {
 		this.prevTask = prevTask;
+	}
+
+	public Integer getPauseWorkTimeMinutes() {
+		return pauseWorkTimeMinutes;
+	}
+
+	public void setPauseWorkTimeMinutes(Integer pauseWorkTimeMinutes) {
+		this.pauseWorkTimeMinutes = pauseWorkTimeMinutes;
+	}
+
+	public Integer getPauseMinutes() {
+		return pauseMinutes;
+	}
+
+	public void setPauseMinutes(Integer pauseMinutes) {
+		this.pauseMinutes = pauseMinutes;
+	}
+
+	public Date getPauseStartTime() {
+		return pauseStartTime;
+	}
+
+	public void setPauseStartTime(Date pauseStartTime) {
+		this.pauseStartTime = pauseStartTime;
 	}
 
 }

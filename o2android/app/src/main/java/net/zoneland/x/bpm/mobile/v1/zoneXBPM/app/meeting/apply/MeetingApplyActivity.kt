@@ -200,7 +200,7 @@ class MeetingApplyActivity : BaseMVPActivity<MeetingApplyContract.View, MeetingA
                 info.subject = subject
                 info.startTime = "$startDay $startTime:00"
                 info.completedTime = "$startDay $endTime:00"
-                info.description = edit_meeting_create_form_desc.text.toString()
+                info.summary = edit_meeting_create_form_desc.text.toString()
                 val savePersonList = invitePersonList
                 savePersonList.remove(invitePersonAdd)
                 info.invitePersonList = savePersonList
@@ -344,7 +344,7 @@ class MeetingApplyActivity : BaseMVPActivity<MeetingApplyContract.View, MeetingA
             info.subject = subject
             info.startTime = "$startDay $startTime:00"
             info.completedTime = "$startDay $endTime:00"
-            info.description = edit_meeting_create_form_desc.text.toString()
+            info.summary = edit_meeting_create_form_desc.text.toString()
             val savePersonList = invitePersonList
             savePersonList.remove(invitePersonAdd)
             info.invitePersonList = savePersonList

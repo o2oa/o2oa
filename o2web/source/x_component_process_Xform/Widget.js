@@ -1,5 +1,19 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class({
+/** @class Widget 门户的部件组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var widget = this.form.get("fieldId"); //获取组件
+ * //方法2
+ * var widget = this.target; //在组件本身的脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @o2category FormComponents
+ * @o2range {Portal}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Widget# */
+    {
     Extends: MWF.APP$Module,
 
     _loadUserInterface: function(){
@@ -9,6 +23,11 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class({
             this.loadWidget();
         }.bind(this));
     },
+    /**
+     * @summary 重新加载部件
+     * @example
+     * this.form.get("fieldId").reload()
+     */
     reload: function(){
         this.node.empty();
         this.getWidget(function(){
@@ -172,6 +191,12 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class({
             this.widgetData.updateTime = data.updateTime;
         }
     },
+    /**
+     * @summary 获取设计部件时设置的参数
+     * @return 设置的参数
+     * @example
+     * var param = this.form.get("fieldId").getPageParamenters()
+     */
     getPageParamenters : function(){
         var params = null;
         if( this.json.parameterType === "map" ){

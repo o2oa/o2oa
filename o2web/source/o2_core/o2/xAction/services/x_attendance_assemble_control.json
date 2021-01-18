@@ -44,13 +44,13 @@
   "listAttachmentInfo" : {"uri" : "/jaxrs/attendanceimportfileinfo/list/all"},
   "deleteAttachment" : {"uri":"/jaxrs/attendanceimportfileinfo/{id}","method": "DELETE"},
   "getAttachmentInfo" : {"uri":"/jaxrs/attendanceimportfileinfo/{id}"},
-//  "importAttachment" : {"uri":"/jaxrs/fileimport/import/{file_id}"},
-//  "checkAttachment" : {"uri":"/jaxrs/fileimport/check/{file_id}"},
+  //  "importAttachment" : {"uri":"/jaxrs/fileimport/import/{file_id}"},
+  //  "checkAttachment" : {"uri":"/jaxrs/fileimport/check/{file_id}"},
   "getImportStatus" : {"uri":"/jaxrs/fileimport/getStatus/{file_id}"},
   "getImportStatusAll" : {"uri":"/jaxrs/fileimport/getStatus/all"},
   "getImportStatusDetail" : {"uri":"/jaxrs/fileimport/getStatus/{file_id}/detail"},
 
-  "exportAbnormalAttachment" : {"uri":"/jaxrs/file/export/abnormaldetails/year/{year}/month/{month}/stream/true", "method": "GET"},
+  "exportAbnormalAttachment" : {"uri":"/jaxrs/file/export/abnormaldetails/year/{year}/month/{month}/stream/{stream}", "method": "GET"},
 
   "listDetail" : {"uri":"/jaxrs/attendancedetail/list/all"},
   "getDetail" : {"uri":"/jaxrs/attendancedetail/{id}"},
@@ -175,6 +175,15 @@ URL：x_attendance_assemble_control/jaxrs/attendancedetail/filter/list/{id}/prev
   "getWorkplace" : {"uri":"jaxrs/workplace/{id}"},
   "saveWorkplace" : {"uri":"/jaxrs/workplace", "method": "POST"},
   "deleteWorkplace" : {"uri":"/jaxrs/workplace/{id}","method": "DELETE"},
+
+  //统计导出
+  "detailsExportStream" : {"uri" : "/jaxrs/file/export/filter/{q_topUnitName}/{q_unitName}/{q_empName}/{cycleYear}/{cycleMonth}/{q_date}/{isAbsent}/{isLackOfTime}/{isLate}/stream/{stream}", "method": "GET"},
+  //个人出勤率导出
+  "exportPersonStatisticAttachment" : {"uri":"/jaxrs/file/export/person/{name}/{year}/{month}/stream/{stream}", "method": "GET"},
+  //部门出勤率导出
+  "exportUnitStatisticAttachment" : {"uri":"/jaxrs/file/export/unit/{name}/{year}/{month}/stream/{stream}", "method": "GET"},
+  //公司出勤率导出
+  "exportTopUnitStatisticAttachment" : {"uri":"/jaxrs/file/export/topunit/{name}/{year}/{month}/stream/{stream}", "method": "GET"},
 
   "clazz": "x_attendance_assemble_control"
 }

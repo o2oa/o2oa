@@ -219,7 +219,7 @@ class APIAddressHelper private constructor() {
      */
     fun getPortalWebViewUrl(portalId:String): String {
         return webServerData?.let {
-            "$httpHead${webServerData?.host}:${webServerData?.port}/x_desktop/appMobile.html?app=portal.Portal&status={\"portalId\":\"$portalId\"}"
+            "$httpHead${webServerData?.host}:${webServerData?.port}/x_desktop/portalmobile.html?id=$portalId"
         } ?: ""
     }
 

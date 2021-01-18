@@ -1,7 +1,26 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Class({
+/** @class Documenteditor 公文编辑器。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var documenteditor = this.form.get("fieldId"); //获取组件
+ * //方法2
+ * var documenteditor = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @o2category FormComponents
+ * @o2range {Process}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Class(
+/** @lends MWF.xApplication.process.Xform.Documenteditor# */
+{
     Extends: MWF.APP$Module,
     options: {
+        /**
+         * 当公文编辑器内容每次被渲染的时候都会触发。
+         * @event MWF.xApplication.process.Xform.Documenteditor#loadPage
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["load", "queryLoad", "beforeLoad", "postLoad", "afterLoad", "loadPage"],
         "docPageHeight": 850.4,
         "docPageFullWidth": 794,
@@ -42,6 +61,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.active();
         }
     },
+    /**
+     * 激活公文编辑器编辑。设置了延迟加载的时候，可以通过这个方法来激活
+     * @example
+     * this.form.get("fieldId").active();
+    */
     active: function(){
         this._loadModuleEvents();
         if (this.fireEvent("queryLoad")){
@@ -1688,6 +1712,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.scaleTo(v);
         }.bind(this));
     },
+    /**缩放文件内容
+     * @param scale{Number} 缩放的比率
+     * @example
+     * this.form.get("fieldId").scaleTo(0.5);
+    */
     scaleTo: function(scale){
         this._returnScale();
         this.scale = scale;
@@ -2482,6 +2511,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     _loadValue: function(){
         var data = this._getBusinessData();
     },
+
+    /**重新计算公文编辑器的所有字段，当字段是脚本时可以使用该方法立即更新
+     * @summary 重新计算公文编辑器的所有字段
+     * @example
+     * this.form.get("fieldId").reload();
+     */
     reload: function(){
         this.resetData();
     },
@@ -2504,11 +2539,25 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this._repage();
         }.bind(this));
     },
+    /**
+     * @summary 判断公文编辑器的正文内容是否已经填写
+     * @return {Boolean} 是否为空
+     * @example
+     * if( this.form.get("fieldId").isEmpty() ){
+     *     this.form.notice('请填写正文内容')
+     * }
+     */
     isEmpty: function(){
         var data = this.getData();
         if( typeOf(data) !== "object" )return true;
         return !data.filetext || data.filetext===this.json.defaultValue.filetext;
     },
+    /**
+    * @summary 获取公文编辑器数据
+     * @return {Object} 公文编辑器的数据
+     * @example
+     * var data = this.form.get("fieldId").getData();
+    */
     getData: function(){
         //if (this.editMode){
 
@@ -2592,6 +2641,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             tmpdiv.destroy();
         }
     },
+    /**设置公文编辑器数据
+     * @param {Object} data
+     * @example
+     * var data = this.form.get("fieldId").getData();
+     * data.filetext = "测试内容";
+     * this.form.get("fieldId").setData(data);
+    */
     setData: function(data, diffFiletext){
         if (data){
             this.data = data;
@@ -2866,7 +2922,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         return true;
     },
-
+    /**
+     * @summary 根据组件的校验设置进行校验。
+     *  @param {String} [routeName] - 可选，路由名称.
+     *  @example
+     *  if( !this.form.get('fieldId').validation() ){
+     *      return false;
+     *  }
+     *  @return {Boolean} 是否通过校验
+     */
     validation: function(routeName, opinion){
         if (!this.validationConfig(routeName, opinion))  return false;
 
@@ -2898,6 +2962,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         return node;
     },
+    /**将公文编辑器内容以html形式输出
+     * @return {String}
+     * @example
+     * var html = this.form.get("fieldId").getDocumentHtml();
+    */
     getDocumentHtml: function(){
         var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
         var htmlNode = tmpNode.getLast();
@@ -2922,6 +2991,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         tmpNode.destroy();
         return "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+htmlStr+"</body></html>";
     },
+    /**
+     * @summary 将公文编辑器转换成附件，转换的文件名和格式等信息与配置有关
+     * @param {Function} [callback] 转换后的回调方法，参数是附件数据.
+     * @param {string} [name] - 如果为空或者不传，转换的文件名和格式等信息与配置有关.
+     * @example
+     * this.form.get("fieldId").toWord( function(attachmentData){
+     *     //attachmentData 转换后的附件数据
+     * })
+    */
     toWord: function(callback, name){
 
         var docNmae = name || "";

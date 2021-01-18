@@ -40,6 +40,7 @@ public class AttendanceDetailAnalyseService {
 	private AttendanceDetailAnalyseCoreService attendanceDetailAnalyseCoreService = new AttendanceDetailAnalyseCoreService();
 	private DateOperation dateOperation = new DateOperation();
 	private UserManagerService userManagerService = new UserManagerService();
+	private  AttendanceSettingServiceAdv attendanceSettingServiceAdv = new AttendanceSettingServiceAdv();
 
 	/**
 	 * 根据员工姓名\开始日期\结束日期查询日期范围内所有的打卡记录信息ID列表<br/>
@@ -336,7 +337,8 @@ public class AttendanceDetailAnalyseService {
 
 			if( check ){
 				try{
-					detail.setIsWeekend( dateOperation.isWeekend( detail.getRecordDate() ));
+					System.out.println("isWeekend="+attendanceSettingServiceAdv.isWeekend( detail.getRecordDate()));
+					detail.setIsWeekend( attendanceSettingServiceAdv.isWeekend( detail.getRecordDate() ));
 				}catch( Exception e ){
 					check = false;
 					logger.warn( "system analyse record date may be weekend got an exception." + detail.getRecordDateString() );
@@ -474,6 +476,7 @@ public class AttendanceDetailAnalyseService {
 							logger.debug( debugger, detail.getEmpName()+"全天请假了");
 							//全天休假
 							detail.setIsGetSelfHolidays(true);
+							detail.setLeaveType(selfHoliday.getLeaveType());
 							detail.setSelfHolidayDayTime("全天");
 							detail.setGetSelfHolidayDays(1.0);
 						}else if( selfHoliday.getEndTime().getTime() <= dayMiddle.getTime() && selfHoliday.getEndTime().getTime() > dayWorkStart.getTime()
@@ -481,6 +484,7 @@ public class AttendanceDetailAnalyseService {
 							//上午休假
 							logger.debug( debugger, detail.getEmpName()+"上午休假了");
 							detail.setIsGetSelfHolidays(true);
+							detail.setLeaveType(selfHoliday.getLeaveType());
 							detail.setSelfHolidayDayTime("上午");
 							detail.setGetSelfHolidayDays(0.5);
 						}else if( selfHoliday.getStartTime().getTime() >= dayMiddle.getTime() && selfHoliday.getStartTime().getTime() <= dayWorkEnd.getTime()
@@ -488,6 +492,7 @@ public class AttendanceDetailAnalyseService {
 							//上午休假
 							logger.debug( debugger, detail.getEmpName()+"下午休假了");
 							detail.setIsGetSelfHolidays( true );
+							detail.setLeaveType(selfHoliday.getLeaveType());
 							detail.setSelfHolidayDayTime("下午");
 							detail.setGetSelfHolidayDays(0.5);
 						}
@@ -590,7 +595,7 @@ public class AttendanceDetailAnalyseService {
 	 * @param debugger
 	 * @throws Exception
 	 */
-	private void recordStatisticRequireLog( AttendanceDetail detail, Boolean debugger ) throws Exception{
+	public void recordStatisticRequireLog( AttendanceDetail detail, Boolean debugger ) throws Exception{
 		//数据分析完成，那么需要记录一下需要统计的信息数据
 		AttendanceStatisticRequireLog log = null;
 		AttendanceStatisticRequireLogFactory attendanceStatisticRequireLogFactory = null;

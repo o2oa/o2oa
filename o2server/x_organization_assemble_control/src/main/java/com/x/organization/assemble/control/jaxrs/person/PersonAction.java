@@ -364,4 +364,22 @@ public class PersonAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "用户解锁，用于管理员解锁登录多次失败被锁定的用户.", action = ActionUnlock.class)
+	@GET
+	@Path("unlock/{flag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void unlockPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
+		ActionResult<ActionUnlock.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUnlock().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 }

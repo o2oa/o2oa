@@ -10,8 +10,8 @@ MWF.xApplication.Attendance.PeopleDetail = new Class({
     initialize: function(node, app, actions, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "../x_component_Attendance/$PeopleDetail/";
-        this.cssPath = "../x_component_Attendance/$PeopleDetail/"+this.options.style+"/css.wcss";
+        this.path = "/x_component_Attendance/$PeopleDetail/";
+        this.cssPath = "/x_component_Attendance/$PeopleDetail/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;
@@ -126,6 +126,7 @@ MWF.xApplication.Attendance.PeopleDetail.Explorer = new Class({
             "    <td styles='filterTableTitle' lable='isLackOfTime'></td>"+
             "    <td styles='filterTableValue' item='isLackOfTime'></td>" +
             "    <td styles='filterTableValue' item='action'></td>" +
+            "    <td styles='filterTableValue' item='export'></td>" +
             "</tr>" +
             "</table>";
         this.fileterNode.set("html",html);
@@ -185,7 +186,30 @@ MWF.xApplication.Attendance.PeopleDetail.Explorer = new Class({
                             }
                             this.loadView( result );
                         }.bind(this)
-                    }}
+                    }},
+                    export : { "value" : "导出", type : "button", className : "filterButton", event : {
+                            click : function(){
+                                var result = this.form.getResult(true,",",true,true,false);
+                                if( !result )return;
+                                debugger;
+                                if( !result.q_topUnitName )result.q_topUnitName = "0";
+                                if( !result.q_unitName)result.q_unitName = "0";
+                                if( !result.q_empName)result.q_empName = "0";
+                                if( !result.cycleYear )result.cycleYear = "0";
+                                if( !result.cycleMonth )result.cycleMonth = "0";
+                                if( result.date && result.date !="" ){
+                                    result.q_date =  result.cycleYear + "-" + result.cycleMonth + "-" + result.date;
+                                }else{
+                                    result.q_date ="0";
+                                }
+                                //111
+                                if( !result.isAbsent )result.isAbsent = "0";
+                                if( !result.isLackOfTime  )result.isLackOfTime = "0";
+                                if( !result.isLate )result.isLate = "0";
+                                debugger;
+                                this.actions.detailsExportStream(result.q_topUnitName,result.q_unitName,result.q_empName,result.cycleYear,result.cycleMonth,result.q_date,result.isAbsent,result.isLackOfTime,result.isLate,true);
+                            }.bind(this)
+                        }}
                 }
             }, this.app, this.css);
             this.form.load();
@@ -466,6 +490,7 @@ MWF.xApplication.Attendance.PeopleDetail.DetailStaticExplorer = new Class({
             "    <td styles='filterTableTitle' lable='cycleMonth'></td>"+
             "    <td styles='filterTableValue' item='cycleMonth'></td>" +
             "    <td styles='filterTableValue' item='action'></td>" +
+            "    <td styles='filterTableValue' item='export'></td>" +
             "</tr>" +
             "</table>";
         this.fileterNode.set("html",html);
@@ -502,7 +527,15 @@ MWF.xApplication.Attendance.PeopleDetail.DetailStaticExplorer = new Class({
                             if( !result )return;
                             this.loadView( result );
                         }.bind(this)
-                    }}
+                    }},
+                    export : { "value" : "导出", type : "button", className : "filterButton", event : {
+                            click : function(){
+                                var result = this.form.getResult(true,",",true,true,false);
+                                if( !result )return;
+                                debugger;
+                                this.actions.exportPersonStatisticAttachment(result.q_empName,result.cycleYear,result.cycleMonth,true);
+                            }.bind(this)
+                        }}
                 }
             }, this.app, this.css);
             this.form.load();

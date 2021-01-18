@@ -95,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+            <com.yanzhenjie.recyclerview.SwipeRecyclerView
                 android:id="@+id/receive_invite_list"
                 android:background="@android:color/white"
                 android:layout_width="match_parent"

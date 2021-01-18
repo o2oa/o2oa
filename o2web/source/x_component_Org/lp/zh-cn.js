@@ -218,6 +218,11 @@ MWF.xApplication.Org.LP = {
     "roleName": "角色名",
     "roleFullName": "角色全称",
 
+    "unlockPerson" : "解锁登录",
+    "unlockPersonTitle": "解锁登录确认",
+    "unlockPersonText": "“{name}”输错密码已经超过规定次数，允许再次登录？",
+    "unlockPersonSuccess" : "用户 {name} 已经可以登录了！",
+
     "attributeName": "属性",
     "attributeValue": "值",
 

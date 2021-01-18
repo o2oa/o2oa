@@ -96,6 +96,11 @@ class ActionListMyFilterPaging extends BaseAction {
 			}
 			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime), DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
 		}
+		if(BooleanUtils.isTrue(wi.getExcludeDraft())){
+			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)),
+					cb.isNull(root.get(Task_.first)),
+					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
+		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {
 			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 			if (StringUtils.isNotEmpty(key)) {
@@ -160,6 +165,11 @@ class ActionListMyFilterPaging extends BaseAction {
 			}
 			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime), DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
 		}
+		if(BooleanUtils.isTrue(wi.getExcludeDraft())){
+			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)),
+					cb.isNull(root.get(Task_.first)),
+					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
+		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {
 			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 			if (StringUtils.isNotEmpty(key)) {
@@ -185,6 +195,9 @@ class ActionListMyFilterPaging extends BaseAction {
 
 		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
 		private Boolean relateEditionProcess = true;
+
+		@FieldDescribe("是否排除草稿待办：false(默认不查找)|true")
+		private Boolean isExcludeDraft;
 
 		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
 		private String startTime;
@@ -296,6 +309,14 @@ class ActionListMyFilterPaging extends BaseAction {
 
 		public void setUrgeTime(String urgeTime) {
 			this.urgeTime = urgeTime;
+		}
+
+		public Boolean getExcludeDraft() {
+			return isExcludeDraft;
+		}
+
+		public void setExcludeDraft(Boolean excludeDraft) {
+			isExcludeDraft = excludeDraft;
 		}
 	}
 

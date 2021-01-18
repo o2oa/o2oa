@@ -5,7 +5,7 @@ layout.addReady(function(){
         var _load = function(){
             var host = o2.Actions.getHost("x_organization_assemble_authentication");
             var url = host+"/x_organization_assemble_authentication/jaxrs/oauth/auth";
-            var toUri = new URI(url);
+            var toUri = new URI(o2.filterUrl(url));
             toUri.setData(uri.getData());
             toUri.go();
         };

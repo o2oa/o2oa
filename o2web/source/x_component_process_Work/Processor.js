@@ -1167,6 +1167,11 @@ MWF.xApplication.process.Work.Processor = new Class({
         debugger;
         if(this.routeDataList)return this.routeDataList;
         if( this.form && this.form.businessData && this.form.businessData.routeList ){
+            this.form.businessData.routeList.sort( function(a, b){
+                var aIdx = parseInt(a.orderNumber || "9999999");
+                var bIdx = parseInt(b.orderNumber || "9999999");
+                return aIdx - bIdx;
+            }.bind(this));
             this.form.businessData.routeList.each( function(d){
                 d.selectConfigList = JSON.parse(d.selectConfig || "[]");
             }.bind(this));
@@ -1174,6 +1179,11 @@ MWF.xApplication.process.Work.Processor = new Class({
         }
         if (!this.routeDataList) {
             o2.Actions.get("x_processplatform_assemble_surface").listRoute({"valueList": this.task.routeList}, function (json) {
+                json.data.sort(function(a, b){
+                    var aIdx = parseInt(a.orderNumber || "9999999");
+                    var bIdx = parseInt(b.orderNumber || "9999999");
+                    return aIdx - bIdx;
+                }.bind(this));
                 json.data.each(function (d) {
                     d.selectConfigList = JSON.parse(d.selectConfig || "[]");
                 }.bind(this));

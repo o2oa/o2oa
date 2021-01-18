@@ -121,6 +121,28 @@
   },
   {
     "type": "MWFToolBarButton",
+    "img": "pause.png",
+    "title": "待办挂起",
+    "action": "pauseTask",
+    "text": "挂起",
+    "id": "action_pause",
+    "control": "allowPause",
+    "condition": "",
+    "read": true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "resume.png",
+    "title": "挂起恢复",
+    "action": "resumeTask",
+    "text": "挂起恢复",
+    "id": "action_resume",
+    "control": "allowResume",
+    "condition": "",
+    "read": true
+  },
+  {
+    "type": "MWFToolBarButton",
     "img": "downloadAll.png",
     "title": "一键下载",
     "action": "downloadAll",

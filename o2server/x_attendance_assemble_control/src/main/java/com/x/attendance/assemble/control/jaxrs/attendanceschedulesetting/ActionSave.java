@@ -96,6 +96,21 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		if (check) {
+			//计算由于打卡次数发生变化引起的打开时间值变化
+			Integer signProxy = attendanceScheduleSetting.getSignProxy();
+			switch(signProxy){
+				case 1 :
+					attendanceScheduleSetting.setMiddayRestStartTime("");
+					attendanceScheduleSetting.setMiddayRestEndTime("");
+					attendanceScheduleSetting.setLateStartTimeAfternoon("");
+					attendanceScheduleSetting.setLeaveEarlyStartTimeMorning("");
+					break;
+				case 2 :
+					attendanceScheduleSetting.setLateStartTimeAfternoon("");
+					break;
+			}
+
+
 			try {
 				attendanceScheduleSetting = attendanceScheduleSettingServiceAdv.save(attendanceScheduleSetting);
 				result.setData(new Wo(attendanceScheduleSetting.getId()));

@@ -6,13 +6,13 @@ import org.quartz.JobListener;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 public class JobReportListener implements JobListener {
 
 	private static Logger logger = LoggerFactory.getLogger(JobReportListener.class);
+
 	@Override
 	public String getName() {
 		return this.getClass().getName();
@@ -25,7 +25,12 @@ public class JobReportListener implements JobListener {
 
 	@Override
 	public void jobToBeExecuted(JobExecutionContext jobExecutionContext) {
-
+		ScheduleLogRequest request = new ScheduleLogRequest(jobExecutionContext);
+		try {
+			CipherConnectionAction.post(false, Config.url_x_program_center_jaxrs("schedule", "report"), request);
+		} catch (Exception e) {
+			logger.error(e);
+		}
 	}
 
 	@Override

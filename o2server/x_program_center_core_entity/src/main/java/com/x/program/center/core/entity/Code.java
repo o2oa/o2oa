@@ -45,7 +45,9 @@ public class Code extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-
+		if(this.getVerifyNumber() == null){
+			this.setVerifyNumber(0);
+		}
 	}
 
 	/* 更新运行方法 */
@@ -67,6 +69,11 @@ public class Code extends SliceJpaObject {
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + meta_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String meta;
+
+	public static final String verifyNumber_FIELDNAME = "verifyNumber";
+	@FieldDescribe("验证次数")
+	@Column(name = ColumnNamePrefix + verifyNumber_FIELDNAME)
+	private Integer verifyNumber;
 
 	// public static String[] FLAGS = new String[] { "id" };
 
@@ -94,4 +101,11 @@ public class Code extends SliceJpaObject {
 		this.mobile = mobile;
 	}
 
+	public Integer getVerifyNumber() {
+		return verifyNumber;
+	}
+
+	public void setVerifyNumber(Integer verifyNumber) {
+		this.verifyNumber = verifyNumber;
+	}
 }

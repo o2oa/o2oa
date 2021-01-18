@@ -1,9 +1,115 @@
+/**
+ * 数据网格数据结构.
+ * @typedef {Object} DatagridData
+ * @property {Array} data - 数据网格列表数据
+ * @property {Object} total - 统计数据
+ * @example
+ * 	{
+	  "data": [ //数据网格条目
+		{
+		  "datagrid_datagrid$Title": { //数据网格第1列title标识
+			"org_20": {  //数据网格第1列字段标识，人员组件单个对象，存的是对象
+			  "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
+			  "id": "bf007525-99a3-4178-a474-32865bdddec8",
+			  "name": "张三",
+			  "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
+			  "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
+			  "unitLevelName": "兰德纵横/市场营销部",
+			  "unitName": "市场营销部"
+			}
+		  },
+		  "datagrid_datagrid$Title1": { //数据网格第2列title标识
+			"org_21": [{  //数据网格第2列字段标识，人员组件多个对象，存的是数组
+			  "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
+			  "id": "bf007525-99a3-4178-a474-32865bdddec8",
+			  "name": "张三",
+			  "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
+			  "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
+			  "unitLevelName": "兰德纵横/市场营销部",
+			  "unitName": "市场营销部"
+			},{
+			  "distinguishedName": "李四@bf007525-99a3-4178-a474-32865bdddec8@I",
+			  "id": "bf007525-99a3-4178-a474-32865bdddec8",
+			  "name": "李四",
+			  "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
+			  "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
+			  "unitLevelName": "兰德纵横/市场营销部",
+			  "unitName": "市场营销部"
+			}]
+		  },
+		  "datagrid_datagrid$Title_2": { //数据网格第2列title标识
+			"number": "111" //数据网格第3列字段标识和值
+		  },
+		  "datagrid_datagrid$Title_3": { //数据网格第3列title标识
+			"textfield_2": "杭州" //数据网格第4列字段标识和值
+		  },
+		  "datagrid_datagrid$Title_4": { //数据网格第4列title标识
+			"attachment_1": [  //数据网格第5列字段标识
+			  {
+				"activityName": "拟稿",
+				"extension": "jpg",
+				"id": "9514758e-9e28-4bfe-87d7-824f2811f173",
+				"lastUpdateTime": "2020-12-09 21:48:03",
+				"length": 452863.0,
+				"name": "111.jpg",
+				"person": "李四@lisi@P"
+			  }
+			]
+		  }
+		},
+		...
+	  ],
+	  "total": {  //统计数据，列title设置了总计
+		"datagrid_datagrid$Title_2": "333", //总计列2
+		"datagrid_datagrid$Title_3": "2" //总计列3
+	  }
+	}
+ */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.DatagridPC = new Class({
+/** @class DatagridPC 数据网格组件（PC端）。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var datagrid = this.form.get("name"); //获取组件
+ * //方法2
+ * var datagrid = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @o2category FormComponents
+ * @o2range {Process|CMS}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.DatagridPC = new Class(
+	/** @lends MWF.xApplication.process.Xform.DatagridPC# */
+	{
 	Implements: [Events],
 	Extends: MWF.APP$Module,
 	isEdit: false,
 	options: {
+		/**
+		 * 当前条目编辑完成时触发。通过this.event可以获取对应的tr。
+		 * @event MWF.xApplication.process.Xform.DatagridPC#completeLineEdit
+		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+		 */
+		/**
+		 * 添加条目时触发。通过this.event可以获取对应的tr。
+		 * @event MWF.xApplication.process.Xform.DatagridPC#addLine
+		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+		 */
+		/**
+		 * 删除条目前触发。通过this.event可以获取对应的tr。
+		 * @event MWF.xApplication.process.Xform.DatagridPC#deleteLine
+		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+		 */
+		/**
+		 * 删除条目后触发。
+		 * @event MWF.xApplication.process.Xform.DatagridPC#afterDeleteLine
+		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+		 */
+		/**
+		 * 编辑条目时触发。
+		 * @event MWF.xApplication.process.Xform.DatagridPC#editLine
+		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+		 */
 		"moduleEvents": ["queryLoad","postLoad","load","completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine"]
 	},
 
@@ -474,6 +580,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this.isEdit = false;
 
 		var flag = true;
+		var saveFlag = false;
 
 		var griddata = {};
 		var newTr = null;
@@ -499,11 +606,17 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 					var i = newTr.rowIndex;
 					var data = {"value": [i], "text": [i]};
 				}else if (module.json.type=="Attachment" || module.json.type == "AttachmentDg"){
+					saveFlag = true;
 					flag = false;
 					var data = module.getTextData();
 					//data.site = module.json.site;
 					if (!griddata[id]) griddata[id] = {};
 					griddata[id][module.json.id] = data;
+				// }else if( ["Orgfield","Personfield","Org","Address"].contains(module.json.type) ){
+				// 	data = module.getTextData();
+				// 	if( data.value && data.value.length )flag = false;
+				// 	if (!griddata[id]) griddata[id] = {};
+				// 	griddata[id][module.json.id] = data.value;
 				}else{
 					var data = module.getTextData();
 					if (data.value[0]) flag = false;
@@ -568,7 +681,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this.validationMode();
 		this.fireEvent("completeLineEdit", [newTr]);
 
-		this.form.saveFormData();
+		if( saveFlag ){
+			this.form.saveFormData();
+		}
 
 		return true;
 	},
@@ -666,6 +781,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 //		}.bind(this));
 	},
 	_deleteLine: function(e){
+		var saveFlag = false;
 		var currentTr = e.target.getParent("tr");
 		if (currentTr){
 			var color = currentTr.getStyle("background");
@@ -687,6 +803,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 						data[key][module.json.id].each(function(d){
 							_self.form.workAction.deleteAttachment(d.id, _self.form.businessData.work.id);
 						});
+						saveFlag = true;
 					}
 				});
 
@@ -699,7 +816,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 
 				_self.fireEvent("afterDeleteLine");
 
-				_self.form.saveFormData();
+				if(saveFlag){
+					_self.form.saveFormData();
+				}
 			}, function(){
 				var color = currentTr.retrieve("bgcolor");
 				currentTr.tween("background", color);
@@ -922,7 +1041,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this._loadBorderStyle();
 		this._loadZebraStyle();
 		this._loadSequence();
-
 	},
 	loadGridEditStyle: function(){
 		if (this.editorTr){
@@ -1094,11 +1212,51 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		}.bind(this));
 	},
 	_afterLoaded: function(){
-		this._loadDatagridStyle();
+		if (this.moduleValueAG){
+			this.moduleValueAG.then(function(){
+				this._loadDatagridStyle();
+			}.bind(this));
+		}else{
+			this._loadDatagridStyle();
+		}
 	},
+	/**
+	 * @summary 重置数据网格的值为默认值或置空。
+	 *  @example
+	 * this.form.get('fieldId').resetData();
+	 */
 	resetData: function(){
 		this.setData(this._getValue());
 	},
+	/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
+	 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
+	 * @summary 为数据网格赋值。
+	 * @param data{DatagridData|Promise|Array} 必选，数组或Promise.
+	 * @example
+	 *  this.form.get("fieldId").setData([]); //赋空值
+	 * @example
+	 *  //如果无法确定表单上是否有组件，需要判断
+	 *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
+	 *      this.form.get('fieldId').setData( data );
+	 *  }else{
+	 *      this.data['fieldId'] = data;
+	 *  }
+	 *@example
+	 *  //使用Promise
+	 *  var field = this.form.get("fieldId");
+	 *  var promise = new Promise(function(resolve, reject){ //发起异步请求
+	 *    var oReq = new XMLHttpRequest();
+	 *    oReq.addEventListener("load", function(){ //绑定load事件
+	 *      resolve(oReq.responseText);
+	 *    });
+	 *    oReq.open("GET", "/data.json"); //假设数据存放在data.json
+	 *    oReq.send();
+	 *  });
+	 *  promise.then( function(){
+	 *    var data = field.getData(); //此时由于异步请求已经执行完毕，getData方法获得data.json的值
+	 * })
+	 *  field.setData( promise );
+	 */
 	setData: function(data){
 		if (!data){
 			data = this._getValue();
@@ -1180,11 +1338,24 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			this._loadDatagridStyle();
 		}
 	},
-
+	/**
+	 * @summary 获取总计数据.
+	 * @example
+	 * var totalObject = this.form.get('fieldId').getTotal();
+	 * @return {Object} 总计数据
+	 */
 	getTotal: function(){
 		this._loadTotal();
 		return this.totalResaults;
 	},
+	/**
+	 * @summary 判断数据网格是否为空.
+	 * @example
+	 * if( this.form.get('fieldId').isEmpty() ){
+	 *     this.form.notice('至少需要添加一条数据', 'warn');
+	 * }
+	 * @return {Boolean} 是否为空
+	 */
 	isEmpty: function(){
 		var data = this.getData();
 		if( !data )return true;
@@ -1194,6 +1365,43 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		}
 		return false;
 	},
+
+	/**
+	 * 在脚本中使用 this.data[fieldId] 也可以获取组件值。
+	 * 区别如下：<br/>
+	 * 1、当使用Promise的时候<br/>
+	 * 使用异步函数生成器（Promise）为组件赋值的时候，用getData方法立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。<br/>
+	 * this.data[fieldId] 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
+	 * {@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}<br/>
+	 * 2、当表单上没有对应组件的时候，可以使用this.data[fieldId]获取值，但是this.form.get('fieldId')无法获取到组件。
+	 * @summary 获取数据网格数据.
+	 * @example
+	 * var data = this.form.get('fieldId').getData();
+	 *@example
+	 *  //如果无法确定表单上是否有组件，需要判断
+	 *  var data;
+	 *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
+	 *      data = this.form.get('fieldId').getData();
+	 *  }else{
+	 *      data = this.data['fieldId']; //直接从数据中获取字段值
+	 *  }
+	 *  @example
+	 *  //使用Promise
+	 *  var field = this.form.get("fieldId");
+	 *  var promise = new Promise(function(resolve, reject){ //发起异步请求
+	 *    var oReq = new XMLHttpRequest();
+	 *    oReq.addEventListener("load", function(){ //绑定load事件
+	 *      resolve(oReq.responseText);
+	 *    });
+	 *    oReq.open("GET", "/data.json"); //假设数据存放在data.json
+	 *    oReq.send();
+	 *  });
+	 *  promise.then( function(){
+	 *    var data = field.getData(); //此时由于异步请求已经执行完毕，getData方法获得data.json的值
+	 * })
+	 *  field.setData( promise );
+	 * @return {DatagridData}
+	 */
 	getData: function(){
 		if (this.editable!=false){
 			if (this.isEdit) this._completeLineEdit();
@@ -1350,7 +1558,15 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		}
 		return true;
 	},
-
+	/**
+	 * @summary 根据组件的校验设置进行校验。
+	 *  @param {String} [routeName] - 可选，路由名称.
+	 *  @example
+	 *  if( !this.form.get('fieldId').validation() ){
+	 *      return false;
+	 *  }
+	 *  @return {Boolean} 是否通过校验
+	 */
 	validation: function(routeName, opinion){
 		if (this.isEdit){
 			if (!this.editValidation()){
