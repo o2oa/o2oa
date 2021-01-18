@@ -1,0 +1,97 @@
+{
+	"container": {
+		"border": "0px",
+		"word-wrap" : "normal",
+		"word-break" : "keep-all",
+		"cursor": "pointer",
+		"overflow": "hidden",
+		"height": "24px",
+		"display":"block",
+		"font-size": "12px"
+	},
+	"toolbarSeparator": {
+		"display":"block",
+		"float": "left",
+		"margin-bottom": "2px",
+		"margin-top": "2px",
+		"height": "20px",
+		"width": "1px",
+		"background-color": "#888888",
+		"border-right": "1px solid #FFFFFF",
+		"overflow": "hidden"
+	},
+
+	"button": {
+		"display":"block",
+		"position": "static",
+		"float": "left",
+		"border": "1px solid transparent",
+		"background": "transparent",
+		"height": "20px",
+		"margin-right": "5px",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"cursor": "pointer"
+	},
+	"buttonImgDiv": {
+		"display":"block",
+		"float": "left",
+		"padding-top": "1px",
+		"padding-bottom": "1px",
+		"padding-left": "1px",
+		"padding-right": "1px",
+		"cursor": "pointer"
+	},
+	"buttonImg": {
+		"height": "16px",
+		"width": "16px",
+		"cursor": "pointer",
+		"margin-top": "0px"
+	},
+	"buttonTextDiv": {
+		"display":"block",
+		"float": "left",
+		"height": "20px",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"line-height": "20px",
+		"cursor": "pointer"
+	},
+
+	"buttonDisable": {
+		"color": "#999"
+	},
+	"buttonImgDivDisable": {
+		"color": "#999"
+	},
+	"buttonTextDivDisable": {
+		"color": "#999"
+	},
+
+	"buttonOver": {
+		"border": "1px solid #000000",
+		"background": "#b5bed6"
+	},
+	"buttonOut": {
+		"border": "1px solid transparent",
+		"background": "transparent"
+	},
+	"buttonDown": {
+		"border": "1px solid #000000",
+		"background": "#8492b5"
+	},
+	"buttonUp": {
+		"border": "1px solid #000000",
+		"background": "#b5bed6"
+	},
+	"toolbarButtonDownNode": {
+		"display":"block",
+		"float": "left",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"padding-top": "0px",
+		"height": "18px",
+		"color": "#ff0000",
+		"cursor": "pointer"
+	}
+}

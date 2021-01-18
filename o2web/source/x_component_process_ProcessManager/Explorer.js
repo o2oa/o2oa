@@ -96,10 +96,26 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             "text": this.app.options.application.name
         }).inject(this.toolbarNode);
     },
+    openFindDesigner: function(){
+        this.app.options.application.moduleType = "processPlatform";
+        var options = {
+            "filter": {
+                "moduleList": ["processPlatform"],
+                "appList": [this.app.options.application]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     createSearchElementNode: function(){
-        this.searchElementNode = new Element("div", {
-            "styles": this.css.searchElementNode
+        debugger
+        this.searchElementNode = new Element("div.searchElementNode", {
+            "styles": this.css.searchElementNode,
+            "title": this.app.lp.findDesigner
         }).inject(this.toolbarNode);
+
+        this.searchElementNode.addEvent("click", function(){
+            this.openFindDesigner();
+        }.bind(this));
 
         //@todo
         return false;

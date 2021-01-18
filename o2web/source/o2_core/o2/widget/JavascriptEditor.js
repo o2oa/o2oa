@@ -1,5 +1,5 @@
 o2.widget = o2.widget || {};
-o2.require("o2.widget.codemirror", null, false);
+//o2.require("o2.widget.codemirror", null, false);
 o2.require("o2.xDesktop.UserData", null, false);
 o2.widget.JavascriptEditor = new Class({
 	Implements: [Options, Events],
@@ -145,8 +145,11 @@ o2.widget.JavascriptEditor = new Class({
                 }.bind(this));
                 this.editor.onDidBlurEditorText(function(e){
                     o2.shortcut.keyboard.activate();
+                    this.fireEvent("blur");
                 }.bind(this));
-
+                this.editor.onDidChangeModelContent(function(e){
+                    this.fireEvent("change");
+                }.bind(this))
 
                 //o2.widget.JavascriptEditor.getCompletionEnvironment(this.options.runtime, function(){
                     this.monacoModel = this.editor.getModel();
@@ -221,6 +224,14 @@ o2.widget.JavascriptEditor = new Class({
                     }.bind(this)
                 });
 
+                this.editor.on("blur", function(){
+                    this.fireEvent("blur");
+                }.bind(this));
+                this.editor.on("change", function(){
+                    this.fireEvent("change");
+                }.bind(this));
+
+
                 this.node.addEvent("keydown", function(e){
                     e.stopPropagation();
                 });
@@ -270,7 +281,7 @@ o2.widget.JavascriptEditor = new Class({
         if (textPrefix.lastIndexOf("=")!=-1) textPrefix = textPrefix.substr(textPrefix.lastIndexOf("=")+1);
         if (textPrefix.lastIndexOf(" new ")!=-1) textPrefix = textPrefix.substr(textPrefix.lastIndexOf(" new ")+5);
         //if (preCode.lastIndexOf("{")!=-1) preCode = preCode.substr(preCode.lastIndexOf("{")+1);
-debugger;
+
         var codeObj = {
             "code": textPrefix,
             "preCode": preCode,
@@ -423,6 +434,11 @@ debugger;
             }
         }
     },
+    destroy: function(){
+	    this.fireEvent("destroy");
+	    this.destroyEditor();
+	    o2.release(this);
+    },
     setTheme: function(theme){
         if (this.editor){
             switch (this.options.type.toLowerCase()) {
@@ -439,6 +455,67 @@ debugger;
             }
         }
     },
+
+    getRange: function(startLine, startCol, endLine, endCol){
+        if (this.editor){
+            switch (this.options.type.toLowerCase()) {
+                case "ace":
+                    var range = this.editor.getSelection().getWordRange( startLine-1, startCol-1 );
+                    range.setStart(startLine-1, startCol-1);
+                    if (endLine && endCol){
+                        range.setEnd(endLine-1, endCol-1);
+                    }
+                    return range;
+                case "monaco":
+                    return {
+                        "endColumn": endCol,
+                        "endLineNumber": endLine,
+                        "startColumn": startCol,
+                        "startLineNumber": startLine
+                    }
+                    ;
+            }
+        }
+        return null;
+    },
+    selectRange: function(range){
+        if (this.editor){
+            switch (this.options.type.toLowerCase()) {
+                case "ace":
+                    if (o2.typeOf(range)==="array"){
+                        this.editor.getSelection().setSelectionRange( range[0] );
+                        for (var i=1; i<range.length; i++) this.editor.getSelection().addRange( range[i] );
+                    }else{
+                        this.editor.getSelection().setSelectionRange( range );
+                    }
+                    break;
+                case "monaco":
+                    if (o2.typeOf(range)==="array"){
+                        var selections = [];
+                        range.each(function(r){
+                            selections.push({
+                                "positionColumn": r.endColumn,
+                                "positionLineNumber": r.endLineNumber,
+                                "selectionStartColumn": r.startColumn,
+                                "selectionStartLineNumber": r.startLineNumber
+                            });
+                        });
+                        this.editor.setSelections(selections);
+                    }else{
+                        var selection = {
+                            "positionColumn": range.endColumn,
+                            "positionLineNumber": range.endLineNumber,
+                            "selectionStartColumn": range.startColumn,
+                            "selectionStartLineNumber": range.startLineNumber
+                        }
+                        this.editor.setSelection(selection);
+                    }
+                    this.editor.focus();
+                    break;
+            }
+        }
+    },
+
     setValue: function(v){
         if (this.editor) this.editor.setValue(v);
     },
@@ -555,6 +632,18 @@ debugger;
             }
         }
     },
+    gotoLine: function(line, col){
+        if (this.editor){
+            switch (this.options.type.toLowerCase()) {
+                case "ace": this.editor.gotoLine(line-1, col-1, true); break;
+                case "monaco": this.editor.revealPositionInCenterIfOutsideViewport({
+                    "column": col,
+                    "lineNumber": line
+                }, 0);
+            }
+        }
+    },
+
     goto: function(){
         var p = this.editor.getCursorPosition();
         if (p.row==0){

@@ -118,6 +118,19 @@ MWF.xApplication.cms.Column.Main = new Class({
                     this.createColumn();
                 }.bind(this)
             });
+
+            this.findNode = new Element("div.createColumnNode", {
+                "styles": this.css.findNode,
+                "text": this.lp.column.findDesigner
+            }).inject(this.columnToolbarAreaNode);
+            this.findNode.addEvent("click", function(){
+                var options = {
+                    "filter": {
+                        "moduleList": ["cms"]
+                    }
+                };
+                layout.openApplication(null, "FindDesigner", options);
+            }.bind(this));
         }
 
         this.columnTypeListContaienr = new Element("div.columnTop_category", {
