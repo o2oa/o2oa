@@ -1622,6 +1622,7 @@ public class AeiObjects extends GsonPropertyObject {
 					new ApplicationDictHelper(this.entityManagerContainer(), this.getWork().getApplication()));
 			bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
 			bindings.put(ScriptFactory.BINDING_NAME_ROUTES, this.getRoutes());
+			// 重新创建的ScriptContext是需要初始化的
 			ScriptFactory.initialScriptText().eval(this.scriptContext);
 		}
 		return this.scriptContext;
