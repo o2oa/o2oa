@@ -648,8 +648,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 		bindings.put(ScriptFactory.BINDING_NAME_TASK, task);
 		bindings.put(ScriptFactory.BINDING_NAME_EXPIRE, expire);
-		// 重新注入对象需要重新运行
-		ScriptFactory.initialScriptText().eval(scriptContext);
 		aeiObjects.business().element()
 				.getCompiledScript(aeiObjects.getWork().getApplication(), manual, Business.EVENT_MANUALTASKEXPIRE)
 				.eval(scriptContext);
