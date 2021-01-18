@@ -2144,7 +2144,17 @@ debugger;
 			this.findWorker.postMessage(workerMessage);
 		}.bind(this));
 	},
-
+	getFindRegExp: function(){
+		var flag = "gm";
+		var keyword = this.filterOption.keyword;
+		if (!this.filterOption.caseSensitive) flag+="i";
+		if (this.filterOption.matchRegExp){
+			return new RegExp(keyword, flag)
+		}else{
+			if (this.filterOption.matchWholeWord) keyword = "\\b"+keyword+"\\b";
+			return new RegExp(keyword, flag)
+		}
+	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
 	//------------------------------------------------------------
@@ -2370,17 +2380,7 @@ debugger;
 	// 	}
 	// },
 	//
-	// getFindRegExp: function(){
-	// 	var flag = "gm";
-	// 	var keyword = this.filterOption.keyword;
-	// 	if (!this.filterOption.caseSensitive) flag+="i";
-	// 	if (this.filterOption.matchRegExp){
-	// 		return new RegExp(keyword, flag)
-	// 	}else{
-	// 		if (this.filterOption.matchWholeWord) keyword = "\\b"+keyword+"\\b";
-	// 		return new RegExp(keyword, flag)
-	// 	}
-	// },
+
 	//
 	//
 	// //启动一个webworker处理
