@@ -365,7 +365,7 @@ MWF.xApplication.cms.Document.Main = new Class({
     openDocument: function(){
         if (this.form){
             // MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
-            MWF.xDesktop.requireApp("cms.Xform", "$all", function(){
+                MWF.xDesktop.requireApp("cms.Xform", "$all", function(){
                 this.appForm = new MWF.CMSForm(this.formNode, this.form, {
                     "readonly": this.readonly,
                     "autoSave" : this.options.autoSave,
