@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>5.3</version>
+		<version>5.4</version>
 	</parent>
 	<artifactId>x_processplatform_assemble_surface</artifactId>
 	<packaging>war</packaging>
@@ -72,7 +72,7 @@
 							</arguments>
 						</configuration>
 					</execution>
-					
+
 					<execution>
 						<id>describeBuilder</id>
 						<phase>prepare-package</phase>
