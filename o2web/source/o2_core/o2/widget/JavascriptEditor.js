@@ -257,42 +257,6 @@ o2.widget.JavascriptEditor = new Class({
             }
         }
     },
-
-    filterRangeScript: function(s, f1, f2){
-        var textScript = "";
-        var n = 0;
-        for (var i=s.length-1; i>=0; i--){
-            var char = s.charAt(i);
-            if (char==f2) n++;
-            if (char==f1){
-                n--;
-                if (n<0) break;
-            }
-            textScript = char+textScript;
-        }
-        return textScript;
-    },
-
-    getCompletionObject: function(textPrefix, preCode, range, runtime, callback){
-        textPrefix = this.filterRangeScript(textPrefix, "(", ")");
-        textPrefix = this.filterRangeScript(textPrefix, "{", "}");
-        textPrefix = this.filterRangeScript(textPrefix, "[", "]");
-
-        if (textPrefix.lastIndexOf("=")!=-1) textPrefix = textPrefix.substr(textPrefix.lastIndexOf("=")+1);
-        if (textPrefix.lastIndexOf(" new ")!=-1) textPrefix = textPrefix.substr(textPrefix.lastIndexOf(" new ")+5);
-        //if (preCode.lastIndexOf("{")!=-1) preCode = preCode.substr(preCode.lastIndexOf("{")+1);
-
-        var codeObj = {
-            "code": textPrefix,
-            "preCode": preCode,
-            "runtime": runtime,
-            "id": this.id,
-            "type": this.options.type,
-            "range": range
-        }
-
-        return o2.JSEditorCWE.exec(codeObj, callback);
-    },
     registerCompletionMonaco: function(){
         if (!o2.widget.monaco.registeredCompletion){
             monaco.languages.registerCompletionItemProvider('javascript', {
@@ -332,25 +296,10 @@ o2.widget.JavascriptEditor = new Class({
                         var insertRange = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: word.startColumn, endColumn: word.endColumn };
 
                         return new Promise(function(s){
-                            this.getCompletionObject(textPrefix, preCode+"\n"+sufCode, insertRange, model.o2Editor.options.runtime, function(o){
-
-                                // if (o) {
-                                //     var arr = [];
-                                //     Object.keys(o).each(function (key) {
-                                //         var keyType = typeOf(o[key]);
-                                //         if (keyType === "function") {
-                                //             var count = o[key].length;
-                                //             var v = key + "(";
-                                //             for (var i = 1; i <= count; i++) v += (i == count) ? "par" + i : "par" + i + ", ";
-                                //             v += ")";
-                                //             arr.push({ label: key, kind: monaco.languages.CompletionItemKind.Function, insertText: v, range: range, detail: keyType });
-                                //         } else {
-                                //             arr.push({ label: key, kind: monaco.languages.CompletionItemKind.Interface, insertText: key, range: range, detail: keyType });
-                                //         }
-                                //     });
-                                // }
+                            //if (this.getCompletionObject)
+                            o2.widget.JavascriptEditor.getCompletionObject(textPrefix, preCode+"\n"+sufCode, insertRange, model.o2Editor.options.runtime, function(o){
                                 s({suggestions: o});
-                            }.bind(this));
+                            }.bind(this), "monaco");
                         }.bind(this));
                     }
                 }.bind(this)
@@ -393,10 +342,10 @@ o2.widget.JavascriptEditor = new Class({
 
 
                         return new Promise(function(s){
-                            this.getCompletionObject(x, preCode+"\n"+sufCode, null, editor.o2Editor.options.runtime, function(o){
+                            o2.widget.JavascriptEditor.getCompletionObject(x, preCode+"\n"+sufCode, null, editor.o2Editor.options.runtime, function(o){
                                 callback(null, o);
                                 if (s) s(o);
-                            }.bind(this));
+                            }.bind(this), "ace");
                         }.bind(this));
                     }
                 }.bind(this)
@@ -856,6 +805,42 @@ o2.widget.JavascriptEditor = new Class({
 //     o2.widget.JavascriptEditor.getDefaultCompletionEnvironment("web", check);
 //
 // }
+
+o2.widget.JavascriptEditor.filterRangeScript = function(s, f1, f2){
+    var textScript = "";
+    var n = 0;
+    for (var i=s.length-1; i>=0; i--){
+        var char = s.charAt(i);
+        if (char==f2) n++;
+        if (char==f1){
+            n--;
+            if (n<0) break;
+        }
+        textScript = char+textScript;
+    }
+    return textScript;
+},
+
+o2.widget.JavascriptEditor.getCompletionObject = function(textPrefix, preCode, range, runtime, callback, type){
+    textPrefix = o2.widget.JavascriptEditor.filterRangeScript(textPrefix, "(", ")");
+    textPrefix = o2.widget.JavascriptEditor.filterRangeScript(textPrefix, "{", "}");
+    textPrefix = o2.widget.JavascriptEditor.filterRangeScript(textPrefix, "[", "]");
+
+    if (textPrefix.lastIndexOf("=")!=-1) textPrefix = textPrefix.substr(textPrefix.lastIndexOf("=")+1);
+    if (textPrefix.lastIndexOf(" new ")!=-1) textPrefix = textPrefix.substr(textPrefix.lastIndexOf(" new ")+5);
+    //if (preCode.lastIndexOf("{")!=-1) preCode = preCode.substr(preCode.lastIndexOf("{")+1);
+
+    var codeObj = {
+        "code": textPrefix,
+        "preCode": preCode,
+        "runtime": runtime,
+        "id": o2.uuid(),
+        "type": type,
+        "range": range
+    }
+
+    return o2.JSEditorCWE.exec(codeObj, callback);
+},
 
 o2.widget.JavascriptEditor.completionWorkerEnvironment = o2.JSEditorCWE = {
     init: function(){
