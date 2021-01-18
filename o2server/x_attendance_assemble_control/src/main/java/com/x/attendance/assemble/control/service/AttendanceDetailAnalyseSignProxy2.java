@@ -43,23 +43,25 @@ class AttendanceDetailAnalyseSignProxy2 {
 		//先初始化当前打卡信息中的上下班时间要求，该要求是是根据员工所在组织排班信息获取到的
 		onWorkTime = AttendanceDetailAnalyseCoreService.getOnWorkTimeFromDetail( detail, debugger );
 		offWorkTime = AttendanceDetailAnalyseCoreService.getOffWorkTimeFromDetail( detail, debugger );
-		middleDutyTime = AttendanceDetailAnalyseCoreService.getAfternoonOndutyTimeFromDetail( detail, debugger );
 
 		lateStartTime = AttendanceDetailAnalyseCoreService.getLateStartTimeFromDetail( detail, scheduleSetting, debugger );
 		leaveEarlyStartTime = AttendanceDetailAnalyseCoreService.getLeaveEarlyStartTimeFromDetail( detail, scheduleSetting, debugger );
 		absenceStartTime = AttendanceDetailAnalyseCoreService.getAbsenceStartTimeFromDetail( detail, scheduleSetting, debugger );
-		morningEndTime = AttendanceDetailAnalyseCoreService.getMiddleRestStartTimeFromDetail( detail, scheduleSetting, debugger );
-		afternoonStartTime = AttendanceDetailAnalyseCoreService.getMiddleRestEndTimeFromDetail( detail, scheduleSetting, debugger );
+		morningEndTime = AttendanceDetailAnalyseCoreService.getMiddleRestStartTimeFromDetail( detail, scheduleSetting, debugger );//上午结束时间
+		afternoonStartTime = AttendanceDetailAnalyseCoreService.getMiddleRestEndTimeFromDetail( detail, scheduleSetting, debugger );//下午开始时间
+		logger.debug( debugger, "三次打卡时，获排版设置时间：onWorkTime=" +  onWorkTime +  "， offWorkTime="+offWorkTime +  "， morningEndTime="+morningEndTime+  "， afternoonStartTime="+afternoonStartTime);
+		logger.debug( debugger, "三次打卡时，获排版设置时间：lateStartTime=" +  lateStartTime +  "， leaveEarlyStartTime="+leaveEarlyStartTime +  "， absenceStartTime="+absenceStartTime);
 
 		Date now = new Date();
 
 		if ( onWorkTime != null && offWorkTime != null && morningEndTime != null && afternoonStartTime != null ) {
-			logger.debug( debugger, "上下班排班信息获取正常：onWorkTime=" +  onWorkTime + "， morningEndTime="+morningEndTime + "， afternoonStartTime="+afternoonStartTime + "， offWorkTime="+offWorkTime );
-			logger.debug( debugger, "上下班签到信息获取正常：onDutyTime=" +  onDutyTime + "， middleDutyTime="+middleDutyTime + "， offDutyTime="+offDutyTime );
+			/*logger.debug( debugger, "上下班排班信息获取正常：onWorkTime=" +  onWorkTime + "， morningEndTime="+morningEndTime + "， afternoonStartTime="+afternoonStartTime + "， offWorkTime="+offWorkTime );
+			logger.debug( debugger, "上下班签到信息获取正常：onDutyTime=" +  onDutyTime + "， middleDutyTime="+middleDutyTime + "， offDutyTime="+offDutyTime );*/
 
 			onDutyTime = AttendanceDetailAnalyseCoreService.getOnDutyTimeFromDetail( detail, debugger );
 			offDutyTime = AttendanceDetailAnalyseCoreService.getOffDutyTimeFromDetail( detail, debugger );
-
+			middleDutyTime = AttendanceDetailAnalyseCoreService.getAfternoonOndutyTimeFromDetail( detail, debugger );
+			logger.debug( debugger, "三次打卡时，实际打卡时间：onDutyTime=" +  onDutyTime +  "， offDutyTime="+offDutyTime +  "， middleDutyTime="+middleDutyTime);
 			//规则：如果员工没有签到并且没有签退，一条打卡时间都没有，那么可能会是算缺勤的
 			if ( onDutyTime == null && offDutyTime == null ) {
 				//如果员工已经全天请假了，则不算缺勤，考勤结果正常
@@ -149,7 +151,7 @@ class AttendanceDetailAnalyseSignProxy2 {
 				//=========================================================================================================
 				//=====中午  如果员工已经签到， 中午签到只是一个记录 ，如果未签到，则记录中缺卡 ================================================================================
 				//=========================================================================================================
-				if( middleDutyTime == null && morningEndTime.before( now ) ){
+				/*if( middleDutyTime == null && morningEndTime.before( now ) ){
 					if ( isSelfHoliday_Afternoon || isSelfHoliday_Afternoon || isNotWorkDay ) {
 						logger.debug(debugger, "请假不计考勤，不算出勤");
 						detail.setIsAbsent(false);
@@ -162,6 +164,48 @@ class AttendanceDetailAnalyseSignProxy2 {
 							detail.setAbnormalDutyDayTime("中午");
 						}
 						detail.setIsAbnormalDuty(true);
+					}
+				}*/
+				if( middleDutyTime == null){
+					if ( isSelfHoliday_Afternoon || isSelfHoliday_Afternoon || isNotWorkDay ) {
+						logger.debug(debugger, "请假不计考勤，不算出勤");
+						/*detail.setIsAbsent(false);
+						detail.setAbsence(0.0);*/
+					} else {
+						logger.debug(debugger, "没请假，中午缺卡");
+						if( StringUtils.equals( "上午", detail.getAbnormalDutyDayTime()) ){
+							detail.setAbnormalDutyDayTime("上午|中午");
+						}else {
+							detail.setAbnormalDutyDayTime("中午");
+						}
+						detail.setIsAbnormalDuty(true);
+					}
+				}else{
+					long minutes = 0L;
+					if(middleDutyTime.before( morningEndTime )){
+						if(isSelfHoliday_Morning || isSelfHoliday_Afternoon || isNotWorkDay){
+							logger.debug( debugger, "请假、休息天不计考勤，不算出勤，不算早退" );
+							/*detail.setLeaveEarlierTimeDuration( 0L );
+							detail.setIsLeaveEarlier( false );*/
+						}else{
+							minutes = dateOperation.getMinutes( middleDutyTime, morningEndTime );//计算早退时长
+							detail.setLeaveEarlierTimeDuration(minutes); //早退时长
+							detail.setIsLeaveEarlier( true );
+						}
+
+					}
+					if(middleDutyTime.after( afternoonStartTime )){
+						if( isSelfHoliday_Morning || isSelfHoliday_Afternoon || isNotWorkDay ){
+							logger.debug( debugger, "请过假了不算迟到" );
+							/*detail.setLateTimeDuration( 0L ); //请假了不算迟到
+							detail.setIsLate( false );//请假了不算迟到*/
+						}else{
+							//迟到计算从上班时间开始计算，不是迟到起算时间
+							minutes = dateOperation.getMinutes( afternoonStartTime, middleDutyTime );
+							detail.setLateTimeDuration( minutes );//没请假算迟到时长
+							detail.setIsLate( true );//没请假算迟到
+							logger.debug( debugger, "计迟到一次，迟到时长：minutes=" + minutes );
+						}
 					}
 				}
 

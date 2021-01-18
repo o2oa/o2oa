@@ -73,23 +73,32 @@ MWF.xApplication.Selector.UnitWithType = new Class({
     },
 
     _listItemByKey: function(callback, failure, key){
-        key = {"key": key};
-        if (this.options.units.length){
-            var units = [];
-            this.options.units.each(function(u){
-                if (typeOf(u)==="string"){
-                    units.push(u);
-                }
-                if (typeOf(u)==="object"){
-                    units.push(u.distinguishedName);
-                }
-            });
-            key.unitList = units;
+        if( this.options.expandSubEnable ){
+            key = {"key": key};
+            if (this.options.units.length){
+                var units = [];
+                this.options.units.each(function(u){
+                    if (typeOf(u)==="string"){
+                        units.push(u);
+                    }
+                    if (typeOf(u)==="object"){
+                        units.push(u.distinguishedName);
+                    }
+                });
+                key.unitList = units;
+            }
+            if (this.options.unitType) key.type = this.options.unitType;
+            this.orgAction.listUnitByKey(function(json){
+                if (callback) callback.apply(this, [json]);
+            }.bind(this), failure, key);
+        }else{
+            if (key){
+                this.initSearchArea(true);
+                this.searchInItems(key);
+            }else{
+                this.initSearchArea(false);
+            }
         }
-        if (this.options.unitType) key.type = this.options.unitType;
-        this.orgAction.listUnitByKey(function(json){
-            if (callback) callback.apply(this, [json]);
-        }.bind(this), failure, key);
     },
     _getItem: function(callback, failure, id, async){
         this.orgAction.getUnit(function(json){
@@ -181,11 +190,13 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                     if (this.isSelectedAll) {
                         // this.unselectAll(ev);
                         this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev, null, true) : this.unselectAll(ev, null, true);
-                        this.selector.fireEvent("unselectCatgory", [this])
+                        this.selector.fireEvent("unselectCatgory", [this]);
+                        this.selector.fireEvent("unselectCategory", [this])
                     } else {
                         // this.selectAll(ev);
                         this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev, true) : this.selectAll(ev, true);
-                        this.selector.fireEvent("selectCatgory", [this])
+                        this.selector.fireEvent("selectCatgory", [this]);
+                        this.selector.fireEvent("selectCategory", [this])
                     }
                     ev.stopPropagation();
                 });
@@ -315,6 +326,7 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType)!==-1){
                         var unit = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
+                        this.selector.items.push( unit );
                         if(this.subItems)this.subItems.push( unit );
                     }else{
                         if (subData.woSubDirectUnitList.length){
@@ -392,6 +404,7 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType)!==-1){
                         var unit = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
+                        this.selector.items.push( unit );
                         if(this.subItems)this.subItems.push( unit );
                     }
                 }

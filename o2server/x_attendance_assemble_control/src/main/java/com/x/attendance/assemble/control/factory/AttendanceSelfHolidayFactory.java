@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.factory;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.selfholiday.ActionListNextWithFilter;
 import com.x.attendance.assemble.control.jaxrs.selfholiday.WrapInFilter;
 import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.attendance.entity.AttendanceSelfHoliday_;
@@ -122,7 +123,7 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public List<AttendanceSelfHoliday> listIdsNextWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
+	public List<AttendanceSelfHoliday> listIdsNextWithFilter( String id, Integer count, Object sequence, ActionListNextWithFilter.WrapIn wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( AttendanceSelfHoliday.class );
 		String order = wrapIn.getOrder();//排序方式
@@ -147,13 +148,22 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 			index++;
 		}
 		if (null != wrapIn.getUnitNames() && wrapIn.getUnitNames().size()>0) {
-			sql_stringBuffer.append(" and o.unitName in ( ?" + (index) + ")");
+			sql_stringBuffer.append(" and o.unitOu in ( ?" + (index) + ")");
 			vs.add( wrapIn.getUnitNames() );
 			index++;
 		}
 		if (null != wrapIn.getTopUnitNames() && wrapIn.getTopUnitNames().size() > 0 ) {
-			sql_stringBuffer.append(" and o.topUnitName in ( ?" + (index) + ")");
+			sql_stringBuffer.append(" and o.topUnitOu in ( ?" + (index) + ")");
 			vs.add( wrapIn.getTopUnitNames() );
+			index++;
+		}
+		if (null != wrapIn.getStartdate() && null != wrapIn.getEnddate()) {
+			sql_stringBuffer.append(" and o.startTime >  ?" + (index) );
+			vs.add( wrapIn.getStartdate());
+			index++;
+
+			sql_stringBuffer.append(" and o.endTime < ?" + (index));
+			vs.add( wrapIn.getEnddate());
 			index++;
 		}
 		
@@ -164,6 +174,7 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 		}
 		
 		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceSelfHoliday.class );
+		System.out.println("query=" +query.toString());
 		//为查询设置所有的参数值
 		for (int i = 0; i < vs.size(); i++) {
 			query.setParameter(i + 1, vs.get(i));

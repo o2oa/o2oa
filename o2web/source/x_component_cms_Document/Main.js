@@ -69,7 +69,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 
     },
     refreshTaskCenter: function(){
-        if (this.desktop.apps["cms.Explorer"]){
+        if ( this.desktop.apps && this.desktop.apps["cms.Explorer"]){
             if(this.desktop.apps["cms.Explorer"].content){
                 this.desktop.apps["cms.Explorer"].content.unmask();
             }

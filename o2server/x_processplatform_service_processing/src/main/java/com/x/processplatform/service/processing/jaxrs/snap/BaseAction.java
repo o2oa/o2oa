@@ -1,11 +1,14 @@
 package com.x.processplatform.service.processing.jaxrs.snap;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.dataitem.DataItem;
@@ -26,8 +29,10 @@ import com.x.processplatform.core.entity.content.SnapProperties;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.MessageFactory;
 import com.x.query.core.entity.Item;
 
 abstract class BaseAction extends StandardJaxrsAction {
@@ -55,6 +60,29 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return properties;
 	}
 
+	protected SnapProperties snap(Business business, String job, List<Item> items, WorkCompleted workCompleted,
+			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments) {
+		SnapProperties properties = new SnapProperties();
+		properties.setJob(job);
+		properties.setWorkCompleted(workCompleted);
+		properties.setTitle(workCompleted.getTitle());
+		List<CompletableFuture<Void>> futures = new ArrayList<>();
+		futures.add(mergeTaskCompleted(business, job, properties, taskCompleteds));
+		futures.add(mergeRead(business, job, properties, reads));
+		futures.add(mergeReadCompleted(business, job, properties, readCompleteds));
+		futures.add(mergeReview(business, job, properties, reviews));
+		futures.add(mergeWorkLog(business, job, properties, workLogs));
+		futures.add(mergeRecord(business, job, properties, records));
+		futures.add(mergeAttachment(business, job, properties, attachments));
+		if (BooleanUtils.isNotTrue(workCompleted.getMerged())) {
+			futures.add(mergeItem(business, job, properties, items));
+		}
+		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0]));
+
+		return properties;
+	}
+
 	protected void clean(Business business, List<Item> items, List<Work> works, List<Task> tasks,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
 			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments,
@@ -66,6 +94,17 @@ abstract class BaseAction extends StandardJaxrsAction {
 						deleteWorkLog(business, workLogs), deleteRecord(business, records),
 						deleteAttachment(business, attachments), deleteDocumentVersion(business, documentVersions))
 				.get();
+	}
+
+	protected void clean(Business business, List<Item> items, WorkCompleted workCompleted,
+			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments)
+			throws InterruptedException, ExecutionException {
+		CompletableFuture.allOf(deleteItem(business, items), deleteWork(business, workCompleted),
+				deleteTaskCompleted(business, taskCompleteds), deleteRead(business, reads),
+				deleteReadCompleted(business, readCompleteds), deleteReview(business, reviews),
+				deleteWorkLog(business, workLogs), deleteRecord(business, records),
+				deleteAttachment(business, attachments)).get();
 	}
 
 	private CompletableFuture<Void> mergeItem(Business business, String job, SnapProperties snapProperties,
@@ -263,7 +302,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Work.class);
 				for (Work o : works) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.work_delete(o);
 				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private CompletableFuture<Void> deleteWork(Business business, WorkCompleted workCompleted) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				business.entityManagerContainer().beginTransaction(WorkCompleted.class);
+				business.entityManagerContainer().remove(workCompleted);
+				MessageFactory.workCompleted_delete(workCompleted);
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -276,6 +328,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Task.class);
 				for (Task o : tasks) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.task_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -289,6 +342,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(TaskCompleted.class);
 				for (TaskCompleted o : taskCompleteds) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.taskCompleted_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -302,6 +356,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Read.class);
 				for (Read o : reads) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.read_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -315,6 +370,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(ReadCompleted.class);
 				for (ReadCompleted o : readCompleteds) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.readCompleted_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -328,6 +384,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Review.class);
 				for (Review o : reviews) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.review_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -406,6 +463,22 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Work.class);
 				for (Work o : business.entityManagerContainer().listEqual(Work.class, Work.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.work_delete(o);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	protected CompletableFuture<Void> deleteWorkCompleted(Business business, String job) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				business.entityManagerContainer().beginTransaction(WorkCompleted.class);
+				for (WorkCompleted o : business.entityManagerContainer().listEqual(WorkCompleted.class,
+						WorkCompleted.job_FIELDNAME, job)) {
+					business.entityManagerContainer().remove(o);
+					MessageFactory.workCompleted_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -419,6 +492,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Task.class);
 				for (Task o : business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.task_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -433,6 +507,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				for (TaskCompleted o : business.entityManagerContainer().listEqual(TaskCompleted.class,
 						TaskCompleted.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.taskCompleted_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -446,6 +521,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Read.class);
 				for (Read o : business.entityManagerContainer().listEqual(Read.class, Read.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.read_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -460,6 +536,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				for (ReadCompleted o : business.entityManagerContainer().listEqual(ReadCompleted.class,
 						ReadCompleted.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.readCompleted_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -473,6 +550,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Review.class);
 				for (Review o : business.entityManagerContainer().listEqual(Review.class, Review.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.review_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);

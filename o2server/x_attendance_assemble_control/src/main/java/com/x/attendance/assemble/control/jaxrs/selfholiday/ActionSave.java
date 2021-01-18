@@ -204,7 +204,7 @@ public class ActionSave extends BaseAction {
 
 		private String employeeNumber;
 
-		@FieldDescribe("请假类型:带薪年休假|带薪病假|带薪福利假|扣薪事假|其他")
+		@FieldDescribe("请假类型:带薪年休假|带薪病假|带薪福利假|扣薪事假|出差|培训|其他，<font color='red'>必填</font>")
 		private String leaveType;
 
 		@FieldDescribe("开始时间，<font color='red'>必填</font>: yyyy-mm-dd hh24:mi:ss")

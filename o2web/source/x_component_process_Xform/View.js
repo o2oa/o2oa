@@ -1,8 +1,37 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //MWF.xDesktop.requireApp("process.Xform", "widget.View", null, false);
-MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
+/** @class View 视图组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var view = this.form.get("fieldId"); //获取组件
+ * //方法2
+ * var view = this.target; //在组件本身的脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @o2category FormComponents
+ * @o2range {Process|CMS|Portal}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
+    /** @lends MWF.xApplication.process.Xform.View# */
+{
 	Extends: MWF.APP$Module,
     options: {
+        /**
+         * 异步加载视图后完成。
+         * @event MWF.xApplication.process.Xform.View#loadView
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 选中视图中的一条记录后执行。
+         * @event MWF.xApplication.process.Xform.View#select
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 打开视图中的一条记录后执行。
+         * @event MWF.xApplication.process.Xform.View#openDocument
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["load", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
     },
 
@@ -23,6 +52,11 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
             }
         }
     },
+    /**
+     * @summary 重新加载视图
+     * @example
+     * this.form.get("fieldId").reload()
+     */
     reload: function(){
         if (this.view){
             if (this.view.loadViewRes && this.view.loadViewRes.res) if (this.view.loadViewRes.res.isRunning()) this.view.loadViewRes.res.cancel();
@@ -31,6 +65,11 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
         this.node.empty();
         this.loadView();
     },
+    /**
+     * @summary 当视图被设置为延迟加载（未立即载入），通过active方法激活
+     * @example
+     * this.form.get("fieldId").active()
+     */
     active: function(){
         if (this.view){
             if (!this.view.loadingAreaNode) this.view.loadView();
@@ -142,6 +181,13 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
         };
 
         MWF.xDesktop.requireApp("process.Application", "Viewer", function(){
+            /**
+             * @summary view组件，平台使用该组件实现视图的功能
+             * @member {MWF.xApplication.process.Application.Viewer}
+             * @example
+             *  //可以在脚本中获取该组件
+             * var view = this.form.get("fieldId").view; //获取组件对象
+             */
             this.view = new MWF.xApplication.process.Application.Viewer(this.node, viewJson, {
                 "actions": {
                     "lookup": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}/execute", "method":"PUT"},
@@ -155,7 +201,12 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
             });
         }.bind(this));
     },
-
+    /**
+     * @summary 获取视图被选中行的数据
+     * @return {Object[]} 被选中行的数据
+     * @example
+     * var data = this.form.get("fieldId").getData();
+     */
     getData: function(){
         if (this.view.selectedItems.length){
             var arr = [];

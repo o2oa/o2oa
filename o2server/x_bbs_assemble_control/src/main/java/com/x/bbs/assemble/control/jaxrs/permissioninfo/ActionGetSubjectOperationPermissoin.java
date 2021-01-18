@@ -7,6 +7,8 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.bbs.assemble.control.Business;
 import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionPermissionInfoProcess;
 import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionSectionNotExists;
 import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionSubjectIdEmpty;
@@ -170,6 +172,22 @@ public class ActionGetSubjectOperationPermissoin extends BaseAction {
 				}
 			}
 		}
+		
+		//是否是管理员
+		Business business = new Business(null);
+		Boolean userBBSManager = business.organization().person().hasRole(effectivePerson, OrganizationDefinition.BBSManager);
+		Boolean userManager = business.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager);
+		if(userBBSManager || userManager) {
+			wrap.setReplyPublishAble(true);
+			wrap.setAuditAble(true);
+			wrap.setManageAble(true);
+			wrap.setEditAble(true);
+			wrap.setRecommendAble(true);
+			wrap.setStickAble(true);
+			wrap.setCreamAble(true);
+			wrap.setReplyAuditAble(true);
+		    wrap.setReplyManageAble(true);		
+		 }
 
 		result.setData(wrap);
 		return result;

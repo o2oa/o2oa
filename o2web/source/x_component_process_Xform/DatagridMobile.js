@@ -1,9 +1,48 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.DatagridMobile = new Class({
+/** @class DatagridMobile 数据网格组件（移动端）。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var datagrid = this.form.get("name"); //获取组件
+ * //方法2
+ * var datagrid = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @o2category FormComponents
+ * @o2range {Process|CMS}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.DatagridMobile = new Class(
+/** @lends MWF.xApplication.process.Xform.DatagridMobile# */
+{
     Implements: [Events],
     Extends: MWF.APP$Module,
     isEdit: false,
     options: {
+        /**
+         * 当前条目编辑完成时触发。通过this.event可以获取对应的table。
+         * @event MWF.xApplication.process.Xform.DatagridMobile#completeLineEdit
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 添加条目时触发。通过this.event可以获取对应的table。
+         * @event MWF.xApplication.process.Xform.DatagridMobile#addLine
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 删除条目前触发。通过this.event可以获取对应的table。
+         * @event MWF.xApplication.process.Xform.DatagridMobile#deleteLine
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 删除条目后触发。
+         * @event MWF.xApplication.process.Xform.DatagridMobile#afterDeleteLine
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 编辑条目时触发。
+         * @event MWF.xApplication.process.Xform.DatagridMobile#editLine
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["queryLoad","postLoad","load","completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine"]
     },
 
@@ -24,6 +63,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.table = this.node.getElement("table");
 
         this.createMobileTable();
+
 
         this.editable = (!this.readonly);
         if (this.editable) this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
@@ -753,6 +793,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }
 
         this.isEdit = false;
+        var saveFlag = false;
         //var flag = true;
 
         var griddata = {};
@@ -819,11 +860,16 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                         i = this.currentEditLine.getElement("table").getElements("tr")[idx].getElement("td").get("text");
                     }
                     data = {"value": [i], "text": [i]};
-                }else if (module.json.type=="Attachment" || module.json.type == "AttachmentDg"){
+                }else if( module.json.type=="Attachment" || module.json.type == "AttachmentDg" ) {
+                    saveFlag = true;
                     var data = module.getTextData();
                     //data.site = module.json.site;
                     if (!griddata[id]) griddata[id] = {};
                     griddata[id][module.json.id] = data;
+                // }else if( ["Orgfield","Personfield","Org","Address"].contains(module.json.type) ){
+                //     data = module.getTextData();
+                //     if (!griddata[id]) griddata[id] = {};
+                //     griddata[id][module.json.id] = data.value;
                 }else{
                     data = module.getTextData();
                     //if (data.value[0]) flag = false;
@@ -914,7 +960,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             }.bind(this));
         }
 
-        this.form.saveFormData();
+        if(saveFlag){
+            this.form.saveFormData();
+        }
         return true;
     },
     _editorTrGoBack: function(){
@@ -1024,6 +1072,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         });
     },
     _deleteLine: function(node, e){
+        var saveFlag = false;
         var currentTable = node.getElement("table");
         if (currentTable){
 
@@ -1041,6 +1090,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     var key = th.get("id");
                     var module = _self.editModules[i];
                     if (key && module && (module.json.type=="Attachment" || module.json.type=="AttachmentDg")){
+                        saveFlag = true;
                         data[key][module.json.id].each(function(d){
                             _self.form.workAction.deleteAttachment(d.id, _self.form.businessData.work.id);
                         });
@@ -1063,7 +1113,10 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 this.close();
 
                 _self.fireEvent("afterDeleteLine");
-                _self.form.saveFormData();
+
+                if(saveFlag){
+                    _self.form.saveFormData();
+                }
 
             }, function(){
                 //var color = currentTr.retrieve("bgcolor");
@@ -1321,12 +1374,53 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }.bind(this));
     },
     _afterLoaded: function(){
-        this._loadDatagridStyle();
-        if (this.table) this.table.setStyle("display", "none");
+        if (this.moduleValueAG){
+            this.moduleValueAG.then(function(){
+                this._loadDatagridStyle();
+                if (this.table) this.table.setStyle("display", "none");
+            }.bind(this));
+        }else{
+            this._loadDatagridStyle();
+            if (this.table) this.table.setStyle("display", "none");
+        }
     },
+    /**
+     * @summary 重置数据网格的值为默认值或置空。
+     *  @example
+     * this.form.get('fieldId').resetData();
+     */
     resetData: function(){
         this.setData(this._getValue());
     },
+    /**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
+     * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
+     * @summary 为数据网格赋值。
+     * @param data{DatagridData|Promise|Array} 必选，数组或Promise.
+     * @example
+     *  this.form.get("fieldId").setData([]); //赋空值
+     * @example
+     *  //如果无法确定表单上是否有组件，需要判断
+     *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
+     *      this.form.get('fieldId').setData( data );
+     *  }else{
+     *      this.data['fieldId'] = data;
+     *  }
+     *@example
+     *  //使用Promise
+     *  var field = this.form.get("fieldId");
+     *  var promise = new Promise(function(resolve, reject){ //发起异步请求
+     *    var oReq = new XMLHttpRequest();
+     *    oReq.addEventListener("load", function(){ //绑定load事件
+     *      resolve(oReq.responseText);
+     *    });
+     *    oReq.open("GET", "/data.json"); //假设数据存放在data.json
+     *    oReq.send();
+     *  });
+     *  promise.then( function(){
+     *    var data = field.getData(); //此时由于异步请求已经执行完毕，getData方法获得data.json的值
+     * })
+     *  field.setData( promise );
+     */
     setData: function(data){
         if (!data){
             data = this._getValue();
@@ -1452,10 +1546,24 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
 
     },
+    /**
+     * @summary 获取总计数据.
+     * @example
+     * var totalObject = this.form.get('fieldId').getTotal();
+     * @return {Object} 总计数据
+     */
     getTotal: function(){
         this._loadTotal();
         return this.totalResaults;
     },
+    /**
+     * @summary 判断数据网格是否为空.
+     * @example
+     * if( this.form.get('fieldId').isEmpty() ){
+     *     this.form.notice('至少需要添加一条数据', 'warn');
+     * }
+     * @return {Boolean} 是否为空
+     */
     isEmpty: function(){
         var data = this.getData();
         if( !data )return true;
@@ -1465,6 +1573,42 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }
         return false;
     },
+    /**
+     * 在脚本中使用 this.data[fieldId] 也可以获取组件值。
+     * 区别如下：<br/>
+     * 1、当使用Promise的时候<br/>
+     * 使用异步函数生成器（Promise）为组件赋值的时候，用getData方法立即获取数据，可能返回修改前的值，当Promise执行完成以后，会返回修改后的值。<br/>
+     * this.data[fieldId] 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
+     * {@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}<br/>
+     * 2、当表单上没有对应组件的时候，可以使用this.data[fieldId]获取值，但是this.form.get('fieldId')无法获取到组件。
+     * @summary 获取数据网格数据.
+     * @example
+     * var data = this.form.get('fieldId').getData();
+     *@example
+     *  //如果无法确定表单上是否有组件，需要判断
+     *  var data;
+     *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
+     *      data = this.form.get('fieldId').getData();
+     *  }else{
+     *      data = this.data['fieldId']; //直接从数据中获取字段值
+     *  }
+     *  @example
+     *  //使用Promise
+     *  var field = this.form.get("fieldId");
+     *  var promise = new Promise(function(resolve, reject){ //发起异步请求
+     *    var oReq = new XMLHttpRequest();
+     *    oReq.addEventListener("load", function(){ //绑定load事件
+     *      resolve(oReq.responseText);
+     *    });
+     *    oReq.open("GET", "/data.json"); //假设数据存放在data.json
+     *    oReq.send();
+     *  });
+     *  promise.then( function(){
+     *    var data = field.getData(); //此时由于异步请求已经执行完毕，getData方法获得data.json的值
+     * })
+     *  field.setData( promise );
+     * @return {DatagridData}
+     */
     getData: function(){
         if (this.editable!=false){
             if (this.isEdit) this._completeLineEdit();
@@ -1622,7 +1766,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }
         return true;
     },
-
+    /**
+     * @summary 根据组件的校验设置进行校验。
+     *  @param {String} [routeName] - 可选，路由名称.
+     *  @example
+     *  if( !this.form.get('fieldId').validation() ){
+     *      return false;
+     *  }
+     *  @return {Boolean} 是否通过校验
+     */
     validation: function(routeName, opinion){
         if (this.isEdit){
             if (!this.editValidation()){

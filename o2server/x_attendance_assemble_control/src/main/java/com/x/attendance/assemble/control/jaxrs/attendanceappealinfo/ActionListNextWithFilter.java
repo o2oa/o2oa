@@ -37,6 +37,7 @@ public class ActionListNextWithFilter extends BaseAction {
 		List<AttendanceAppealInfo> detailList = null;
 		WrapInFilterAppeal wrapIn = null;
 		Boolean check = true;
+		Boolean isManager = false;
 
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, WrapInFilterAppeal.class);
@@ -60,11 +61,13 @@ public class ActionListNextWithFilter extends BaseAction {
 						sequence = PropertyUtils.getProperty(emc.find(id, AttendanceAppealInfo.class),  JpaObject.sequence_FIELDNAME);
 					}
 				}
-				// 从数据库中查询符合条件的一页数据对象
-				detailList = business.getAttendanceAppealInfoFactory().listIdsNextWithFilter(id, count, sequence,
-						wrapIn);
+
+				isManager = business.isManager(effectivePerson);
+				// 从数据库中查询符合条件的一页数据对象(根据当前审批人查询)
+				detailList = business.getAttendanceAppealInfoFactory().listIdsNextWithFilterWithCurrentProcessor(id, count, sequence,
+						wrapIn,isManager);
 				// 从数据库中查询符合条件的对象总数
-				total = business.getAttendanceAppealInfoFactory().getCountWithFilter(wrapIn);
+				total = business.getAttendanceAppealInfoFactory().getCountWithFilterWithCurrentProcessor(wrapIn,isManager);
 				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 				wraps = Wo.copier.copy(detailList);
 

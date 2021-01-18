@@ -477,6 +477,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             },
             "click": function(e){
                 if (!this.retrieve("disabled")) _self.doAction(e, this, click);
+                e.stopPropagation();
             }
         });
         this.actions.push(actionNode);
@@ -1665,6 +1666,7 @@ o2.widget.AttachmentController.Attachment = new Class({
                 "click": function(e){
                     if (!this.retrieve("disabled")){
                         click.apply(_self.controller, [e, this]);
+                        e.stopPropagation();
                     }
                 }
             });
@@ -1689,6 +1691,7 @@ o2.widget.AttachmentController.Attachment = new Class({
                 "click": function(e){
                     if (!this.retrieve("disabled")){
                         click.apply(_self.controller, [e, this]);
+                        e.stopPropagation();
                     }
                 }
             });

@@ -8,11 +8,13 @@ import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceSetting;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-
+import java.util.Calendar;
+import java.util.Date;
 
 public class AttendanceSettingServiceAdv {
 
 	private AttendanceSettingService attendanceSettingService = new AttendanceSettingService();
+	private DateOperation dateOperation = new DateOperation();
 
 	public List<AttendanceSetting> listAll() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -108,5 +110,31 @@ public class AttendanceSettingServiceAdv {
 		attendanceAppealInfo.setStartTime( startTime );
 		attendanceAppealInfo.setEndTime( endTime );
 		return attendanceAppealInfo;
+	}
+	/**
+	 * 判断是否周末
+	 * @param recordDate
+	 * @return
+	 */
+	public boolean isWeekend( Date recordDate ) throws Exception {
+		boolean iflag = false;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime( recordDate );
+
+
+		if(cal.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY){
+			AttendanceSetting attendanceSetting = this.getByCode("ATTENDANCE_WEEKEND");
+			String configValue =  attendanceSetting.getConfigValue();
+			if(attendanceSetting != null){
+				if( (configValue.indexOf("周六")>-1 && cal.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY) || (configValue.indexOf("周日")>-1 && cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)){
+					iflag = true;
+				}
+				if(configValue.indexOf("无")>-1 && (cal.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY) ){
+					iflag = true;
+				}
+			}
+
+		}
+		return iflag;
 	}
 }

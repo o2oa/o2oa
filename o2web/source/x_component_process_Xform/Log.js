@@ -1,7 +1,45 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
+
+/** @class Log 流程记录组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var log = this.form.get("name"); //获取组件
+ * //方法2
+ * var log = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @o2category FormComponents
+ * @o2range {Process}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Log# */
+    {
 	Extends: MWF.APP$Module,
     options: {
+        /**
+         * 加载数据后事件。
+         * @event MWF.xApplication.process.Xform.Log#postLoadData
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         * @example
+         * //触发该事件的时候可以获取到流程数据workLog
+         * var workLog = this.target.workLog;
+         * //可以修改workLog达到定制化流程记录的效果
+         * do something
+         */
+        /**
+         * 加载每行流程信息以后触发，可以通过this.event获得下列信息：
+         * <pre><code>
+         {
+            "data" : {}, //当前行流程信息
+            "node" : logTaskNode, //当前节点
+            "log" : object, //指向流程记录
+            "type" : "task"  //"task"表示待办，"taskCompleted"表示已办
+        }
+         </code></pre>
+         * @event MWF.xApplication.process.Xform.Log#postLoadLine
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["load", "queryLoad", "postLoad", "postLoadData", "postLoadLine"]
     },
 
@@ -341,9 +379,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         td = tr.insertCell(8).setStyles(css);
         td.set("html", arrivedUsers);
 
+        var atts = [];
         if (task.properties.mediaOpinion){
             var mediaIds = task.properties.mediaOpinion.split(",");
-            var atts = [];
             if (this.form.businessData.attachmentList){
                 this.form.businessData.attachmentList.each(function(att){
                     if (att.site==="$mediaOpinion"){
@@ -353,6 +391,14 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             }
             if (atts.length) this.loadMediaOpinion(atts, opinionTd.getFirst(), "table");
         }
+
+        this.fireEvent("postLoadLine",[{
+            "data" : task,
+            "node" : tr,
+            "atts" : atts,
+            "log" : this,
+            "type" : isTask ? "task" : "taskCompleted"
+        }]);
     },
     loadRecordLogDefault: function(list, container){
         var logActivityNode = new Element("div", {"styles": this.form.css.logActivityNode_record}).inject(container || this.node);
@@ -412,6 +458,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }
         var html;
         var company = "";
+        var atts = [];
         if (!isTask){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
             html = this.json.textStyle;
@@ -507,7 +554,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             var imgNode = textNode.getElement(".mwf_log_img");
             if (task.properties.mediaOpinion){
                 var mediaIds = task.properties.mediaOpinion.split(",");
-                var atts = [];
+                // var atts = [];
                 if (this.form.businessData.attachmentList){
                     this.form.businessData.attachmentList.each(function(att){
                         if (att.site==="$mediaOpinion"){
@@ -540,6 +587,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }
         this.fireEvent("postLoadLine",[{
             "data" : task,
+            "atts" : atts,
             "node" : logTaskNode,
             "log" : this,
             "type" : isTask ? "task" : "taskCompleted"
@@ -566,7 +614,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             this.loadRecordTaskLine_text(log, container || this.node, false);
         }
     },
-    loadRecordTaskLine_text: function(task, node, log, isTask){
+    loadRecordTaskLine_text: function(task, node, isTask){
         this.loadRecordTaskLine_default(task, node, isTask, "0px", false, true, true);
     },
 
@@ -596,8 +644,18 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                     }
                 }.bind(this));
             }
+            var isCompleted = !!task.recordTime;
             task.completedTime = task.recordTime;
-            if (atts.length) this.loadMediaOpinion_show(atts, task, container);
+            var node = new Element("div").inject( container || this.node );
+            if (atts.length) this.loadMediaOpinion_show(atts, task, node);
+
+            this.fireEvent("postLoadLine",[{
+                "data" : task,
+                "atts" : atts,
+                "node" : node,
+                "log" : this,
+                "type" : isCompleted ? "taskCompleted" : "task"
+            }]);
         }
     },
 
@@ -985,7 +1043,16 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                     }
                 }.bind(this));
             }
-            if (atts.length) this.loadMediaOpinion_show(atts, task, container);
+            var node = new Element("div").inject( container || this.node );
+            if (atts.length) this.loadMediaOpinion_show(atts, task, node);
+
+            this.fireEvent("postLoadLine",[{
+                "data" : task,
+                "atts" : atts,
+                "node" : node,
+                "log" : this,
+                "type" : !!task.completedTime ? "taskCompleted" : "task"
+            }]);
         }
     },
     loadMediaOpinion_show: function(atts, task, container, noName){
@@ -1059,10 +1126,6 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                 }.bind(this)
             }
         }).inject(imgNode);
-
-
-
-
 
         // var size = img.getSize();
         // var x_y = size.x/size.y;
@@ -1238,9 +1301,10 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         opinion = (task.processingType=="empower") ? "授权给"+ o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + (task.opinion || "")+"</div>";
         td.set("html", opinion);
 
+
+        var atts = [];
         if (task.mediaOpinion){
             var mediaIds = task.mediaOpinion.split(",");
-            var atts = [];
             if (this.form.businessData.attachmentList){
                 this.form.businessData.attachmentList.each(function(att){
                     if (att.site==="$mediaOpinion"){
@@ -1250,6 +1314,13 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             }
             if (atts.length) this.loadMediaOpinion(atts, td.getFirst(), "table");
         }
+        this.fireEvent("postLoadLine",[{
+            "data" : task,
+            "atts" : atts,
+            "node" : tr,
+            "log" : this,
+            "type" : isTask ? "task" : "taskCompleted"
+        }]);
     },
 
 
@@ -1466,6 +1537,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }
         var html;
         var company = "";
+        var atts = [];
         if (!isTask){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
             var html = this.json.textStyle;
@@ -1530,7 +1602,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             var imgNode = textNode.getElement(".mwf_log_img");
             if (task.mediaOpinion){
                 var mediaIds = task.mediaOpinion.split(",");
-                var atts = [];
+                // var atts = [];
                 if (this.form.businessData.attachmentList){
                     this.form.businessData.attachmentList.each(function(att){
                         if (att.site==="$mediaOpinion"){
@@ -1560,6 +1632,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         this.fireEvent("postLoadLine",[{
             "data" : task,
             "node" : logTaskNode,
+            "atts" : atts,
             "log" : this,
             "type" : isTask ? "task" : "taskCompleted"
         }]);

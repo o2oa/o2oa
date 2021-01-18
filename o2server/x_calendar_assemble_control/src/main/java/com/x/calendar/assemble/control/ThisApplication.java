@@ -38,7 +38,7 @@ public class ThisApplication {
 			// 每30秒检查一次需要推送的消息
 			context.schedule(AlarmTrigger.class, "0/30 * * * * ?");
 			// 每两小时检查一次comment信息的引用情况，删除多余的不必要的数据
-			context.schedule(CheckEventComment.class, "* * */2 * * ?");
+			context.schedule(CheckEventComment.class, "4 4 */2 * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
