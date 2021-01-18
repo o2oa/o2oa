@@ -21,6 +21,16 @@ MWF.xApplication.portal.PortalManager.FileExplorer = new Class({
     //     // this.app.desktop.openApplication(e, "process.FileDesigner", options);
     //     new MWF.xApplication.portal.PortalManager.FileDesigner(this);
     // },
+    openFindDesigner: function(){
+        this.app.options.application.moduleType = "portal";
+        var options = {
+            "filter": {
+                "moduleList": ["portal"],
+                "appList": [this.app.options.application]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     getNewData: function(){
         return {
             "id": "",
