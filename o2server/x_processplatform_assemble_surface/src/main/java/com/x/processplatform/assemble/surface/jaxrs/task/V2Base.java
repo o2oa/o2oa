@@ -74,6 +74,9 @@ abstract class V2Base extends StandardJaxrsAction {
 		@FieldDescribe("是否查找同版本流程待办：true(默认查找)|false")
 		private Boolean relateEditionProcess = true;
 
+		@FieldDescribe("是否排除草稿待办：false(默认不排除)|true")
+		private Boolean isExcludeDraft;
+
 		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
 		private String startTime;
 
@@ -162,6 +165,14 @@ abstract class V2Base extends StandardJaxrsAction {
 
 		public void setCreatorPersonList(List<String> creatorPersonList) {
 			this.creatorPersonList = creatorPersonList;
+		}
+
+		public Boolean getExcludeDraft() {
+			return isExcludeDraft;
+		}
+
+		public void setExcludeDraft(Boolean excludeDraft) {
+			isExcludeDraft = excludeDraft;
 		}
 	}
 
@@ -398,7 +409,11 @@ abstract class V2Base extends StandardJaxrsAction {
 		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
 			p = cb.and(p, root.get(Task_.startTimeMonth).in(wi.getStartTimeMonthList()));
 		}
-
+		if(BooleanUtils.isTrue(wi.getExcludeDraft())){
+			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)),
+					cb.isNull(root.get(Task_.first)),
+					cb.equal(root.get(Task_.workCreateType),  Business.WORK_CREATE_TYPE_ASSIGN)));
+		}
 		String key = StringTools.escapeSqlLikeKey(wi.getKey());
 		if (StringUtils.isNotEmpty(key)) {
 			key = "%" + key + "%";
