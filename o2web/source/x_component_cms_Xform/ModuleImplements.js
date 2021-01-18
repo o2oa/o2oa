@@ -106,3 +106,7 @@ if( !MWF.CMS$Input_Process ){
     });
 
 }
+
+MWF.xApplication.cms = MWF.xApplication.cms || {};
+MWF.xApplication.cms.Xform = MWF.xApplication.cms.Xform || {};
+MWF.xApplication.cms.Xform.ModuleImplements = {};
