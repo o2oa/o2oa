@@ -426,7 +426,8 @@ function build_concat_o2(){
 }
 function build_concat_base(){
     var src = [
-        'o2web/source/x_desktop/js/base.js'
+        'o2web/source/x_desktop/js/base.js',
+        'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
     return gulp.src(src)
@@ -437,7 +438,7 @@ function build_concat_base(){
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
         .pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest))
+        .pipe(gulp.dest(dest));
 }
 function build_concat_desktop(){
     let path = "o2_core";
@@ -510,6 +511,7 @@ function build_bundle(){
         'o2web/source/o2_lib/mootools/plugin/mBox.js',
         'o2web/source/o2_core/o2.js',
         'o2web/source/x_desktop/js/base.js',
+        'o2web/source/x_desktop/js/base_loader.js',
         "o2web/source/o2_core/o2/framework.js"
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
@@ -666,7 +668,8 @@ function build_concat_basework_body() {
 
         'o2web/source/x_desktop/js/base_work_actions_temp.js',
 
-        'o2web/source/x_desktop/js/base.js'
+        'o2web/source/x_desktop/js/base.js',
+        'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
     return gulp.src(src)
@@ -770,7 +773,8 @@ function build_concat_baseportal_body() {
 
         'o2web/source/x_desktop/js/base_portal_actions_temp.js',
 
-        'o2web/source/x_desktop/js/base.js'
+        'o2web/source/x_desktop/js/base.js',
+        'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
     return gulp.src(src)
