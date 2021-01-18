@@ -183,7 +183,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 	},
     getApplication:function(callback){
         if (!this.application){
-            this.actions.getApplication(this.options.application, function(json){
+            this.actions.getApplication((this.options.application), function(json){
                 this.application = {"name": json.data.name, "id": json.data.id};
                 if (callback) callback();
             }.bind(this));
@@ -703,7 +703,11 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
             //if (this.options.readMode){
             //    this.view = new MWF.xApplication.process.DictionaryDesigner.DictionaryReader(this, ddata);
             //}else{
-                this.view = new MWF.xApplication.query.ViewDesigner.View(this, vdata);
+                this.view = new MWF.xApplication.query.ViewDesigner.View(this, vdata, {
+                    "onPostLoad": function(){
+                        this.fireEvent("onPostViewLoad");
+                    }.bind(this)
+                });
             //}
 
 			this.view.load();

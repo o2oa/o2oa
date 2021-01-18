@@ -12,6 +12,14 @@ MWF.xApplication.service.ServiceManager.AgentExplorer = new Class({
             "noElement": MWF.xApplication.service.ServiceManager.LP.agent.noAgentNoticeText
         }
     },
+    openFindDesigner: function(){
+        var options = {
+            "filter": {
+                "moduleList": ["service"]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     createCreateElementNode: function(){
         if( MWF.AC.isServiceManager() ) {
             this.createElementNode = new Element("div", {
@@ -263,6 +271,7 @@ MWF.xApplication.service.ServiceManager.AgentExplorer.Agent= new Class({
 	_open: function(e){
         var _self = this;
         var options = {
+            "appId": "service.AgentDesigner"+_self.data.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

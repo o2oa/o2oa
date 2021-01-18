@@ -4,6 +4,7 @@ o2.widget.Arraylist = new Class({
 	Extends: o2.widget.Common,
 	options: {
 		"title": "arraylist",
+		"htmlTitle": "",
 		"style": "default",
 		
 		"isAdd": true,
@@ -53,7 +54,9 @@ o2.widget.Arraylist = new Class({
 		this.titleTextNode = new Element("div", {
 			"styles": this.css.titleTextNode,
 			"text": this.options.title
-		}).inject(this.titleNode);	
+		}).inject(this.titleNode);
+
+		if (this.options.htmlTitle) this.titleTextNode.set("html", this.options.htmlTitle);
 	},
 	
 	createContent: function(arr){
@@ -110,6 +113,14 @@ o2.widget.Arraylist = new Class({
 			}
 		});
 		return arr;
+	},
+	getValue: function(){
+		return this.toArray();
+	},
+	destroy: function(){
+		this.fireEvent("destroy");
+		this.container.destroy();
+		o2.release(this);
 	}
 	
 });

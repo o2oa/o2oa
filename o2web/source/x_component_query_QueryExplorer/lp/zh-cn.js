@@ -4,6 +4,7 @@ MWF.xApplication.query.QueryExplorer.LP = MWF.QueryLP = {
     "all": "全部",
     "create": "新建应用",
     "import": "导入应用",
+    "find": "查找设计",
 
     "noApplicationCreate": "系统没有数据应用或没有您有权限管理的数据应用 <br/> 点击此处创建新数据应用",
     "noApplication": "系统没有数据应用或没有您有权限管理的数据应用",
