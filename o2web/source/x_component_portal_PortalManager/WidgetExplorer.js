@@ -12,7 +12,16 @@ MWF.xApplication.portal.PortalManager.WidgetExplorer = new Class({
             "noElement": MWF.xApplication.portal.PortalManager.LP.widget.noNoticeText
         }
     },
-
+    openFindDesigner: function(){
+        this.app.options.application.moduleType = "portal";
+        var options = {
+            "filter": {
+                "moduleList": ["portal"],
+                "appList": [this.app.options.application]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     keyCopy: function(e){
         if (this.selectMarkItems.length){
             var items = [];
