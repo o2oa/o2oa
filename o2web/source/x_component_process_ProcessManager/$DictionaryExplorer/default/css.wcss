@@ -53,10 +53,16 @@
         "font-size": "18px",
         "margin-left": "5px"
 	},
-	"searchElementNode": {
-		"margin-left": "362px",
-		"overflow": "hidden"
-	},
+  "searchElementNode": {
+    "float": "right",
+    "margin-right": "30px",
+    "cursor": "pointer",
+    "margin-top": "10px",
+    "overflow": "hidden",
+    "height": "60px",
+    "width": "60px",
+    "background": "url('../x_component_process_ProcessManager/$Explorer/default/icon/find.png') center center no-repeat"
+  },
 	"searchElementButtonNode": {
 		"float": "right",
 		"width": "80px",

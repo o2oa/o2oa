@@ -25,6 +25,18 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         this.lp = MWF.xApplication.cms.ColumnManager.LP;
         this.currentContentNode = null;
     },
+    findDesigner: function(){
+        this.options.column.moduleType = "cms";
+        this.options.column.name = this.options.column.appName;
+        //this.options.column.id = this.options.column.appId;
+        var options = {
+            "filter": {
+                "moduleList": ["cms"],
+                "appList": [this.options.column]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     loadApplication: function(callback){
 
         this.restActions = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
@@ -749,7 +761,8 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
             return;
         }
 
-        if (this.currentNavi){
+        var naviNodeData = (naviNode) ? naviNode.retrieve("naviData") : null;
+        if (this.currentNavi && (!naviNodeData || !naviNodeData.noSelect)){
             this.currentNavi.setStyles(this.app.css.startMenuNaviNode);
             var iconNode = this.currentNavi.retrieve("iconNode");
             var navi = this.currentNavi.retrieve("naviData");
@@ -768,10 +781,11 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
         }
 
         if( naviNode ){
-            var navi = naviNode.retrieve("naviData");
+            //var navi = naviNode.retrieve("naviData");
+            var navi = naviNodeData;
             var action = navi.action;
 
-            if( !navi.unselected ){
+            if( !navi.unselected && !navi.noSelect ){
                 naviNode.setStyles(this.app.css.startMenuNaviNode_current);
                 var iconNode = naviNode.retrieve("iconNode");
                 iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.selectedIcon+")");
@@ -802,7 +816,7 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
             if (this.app[action]) this.app[action].apply( this.app );
         }
 
-        this.currentNavi = naviNode;
+        if (!navi || !navi.noSelect) this.currentNavi = naviNode;
 
     },
     setContentSize : function(){

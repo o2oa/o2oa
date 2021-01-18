@@ -823,6 +823,7 @@ print = function(str, type){
     oPrint(d.format("db")+"."+d.getMilliseconds()+" "+t+" "+l+" "+str);
 }
 bind.print = print;
+bind.oPrint = oPrint;
 
 bind.library = library;
 bind.data = this.data;
