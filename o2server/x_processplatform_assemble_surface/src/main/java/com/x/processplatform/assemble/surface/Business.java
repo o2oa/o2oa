@@ -74,6 +74,8 @@ import com.x.processplatform.core.entity.element.Process;
 
 public class Business {
 
+	public static final String WORK_CREATE_TYPE_ASSIGN = "assign";
+
 	private EntityManagerContainer emc;
 
 	public Business(EntityManagerContainer emc) throws Exception {

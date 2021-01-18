@@ -32,9 +32,52 @@ MWF.xScript.CMSEnvironment = function(ev){
     //this.inquiredRouteList = null;
 
     //workContext
+    /**
+     * 您可以通过documentContext获取内容管理实例相关的对象数据。
+     * @module documentContext
+     * @o2range {CMS}
+     * @o2ordernumber 30
+     * @example
+     * //您可以在内容管理表单中，通过this来获取当前实例的documentContext对象，如下：
+     * var context = this.documentContext;
+     */
     this.documentContext = {
+        /**
+         * 获取当前内容管理实例的文档对象：document对象。
+         * @method getDocument
+         * @static
+         * @return {Document} 文档对象.
+         * @o2ActionOut x_cms_assemble_control.WoDocument|ignoreNoDescr=true|example=Document
+         * @o2syntax
+         * var doc = this.documentContext.getDocument();
+         */
         "getDocument": function(){return ev.document },
+        /**
+         * 获取当前人对文档的权限。
+         * @method getControl
+         * @static
+         * @return {DocumentControl} 当前人对文档所拥有的权限.
+         * <pre><code class='language-js'>{
+         *    "allowRead": true,              //是否允许阅读文档
+         *    "allowPublishDocument": true,   //是否允许发布文档
+         *    "allowSave": true,              //是否允许保存文档
+         *    "allowPopularDocument": true,   //是否允许设置为热点
+         *    "allowEditDocument": true,      //是否允许编辑文档
+         *    "allowDeleteDocument": true     //是否允许删除文档
+         * }</code></pre>
+         * @o2syntax
+         * var control = this.documentContext.getControl();
+         */
         "getControl": function(){return ev.control;},
+        /**
+         * 获取当前文档的附件对象列表。
+         * @method getAttachmentList
+         * @static
+         * @return {DocumentFileInfo[]} 当前文档的附件对象列表.
+         * @o2ActionOut x_cms_assemble_control.FileInfoAction.get|example=Attachment
+         * @o2syntax
+         * var attachmentList = this.documentContext.getAttachmentList();
+         */
         "getAttachmentList": function(){return ev.attachmentList;}
         //"setTitle": function(title){
         //    if (!this.workAction){
@@ -1495,8 +1538,16 @@ MWF.xScript.CMSEnvironment = function(ev){
             _form.saveDocument(callback);
         },
         "close": function(){_form.closeDocument();},
-        "publish": function(option){
-            _form.publishDocument()
+
+        /**发布当前文档。<b>（仅内容管理表单中可用）</b>
+         * @method publish
+         * @memberOf module:form
+         * @param {Function} callback - 发布后的回调方法
+         * @o2syntax
+         this.form.publish( callback );
+         */
+        "publish": function(callback){
+            _form.publishDocument(callback)
         },
         //"archive": function(option){
         //    _form.archiveDocument()
@@ -1639,24 +1690,25 @@ MWF.xScript.CMSEnvironment = function(ev){
             op.docTitle = title;
             layout.desktop.openApplication(this.event, "cms.Document", op);
         },
-        "openPortal": function(name, page, par){
+        "openPortal": function (name, page, par) {
             var action = MWF.Actions.get("x_portal_assemble_surface");
-            action.getApplication(name, function(json){
-                if (json.data){
-                    if (page){
-                        action.getPageByName(page, json.data.id, function(pageJson){
+            action.getApplication(name, function (json) {
+                if (json.data) {
+                    if (page) {
+                        action.getPageByName(page, json.data.id, function (pageJson) {
+                            var pageId = (pageJson.data) ? pageJson.data.id : "";
                             layout.desktop.openApplication(null, "portal.Portal", {
                                 "portalId": json.data.id,
-                                "pageId": (pageJson.data) ? pageJson.data.id : "",
+                                "pageId": pageId,
                                 "parameters": par,
-                                "appId": "portal.Portal"+json.data.id
+                                "appId": (par && par.appId) || ("portal.Portal" + json.data.id + pageId)
                             })
                         });
-                    }else{
+                    } else {
                         layout.desktop.openApplication(null, "portal.Portal", {
                             "portalId": json.data.id,
                             "parameters": par,
-                            "appId": "portal.Portal"+json.data.id
+                            "appId": (par && par.appId) || ("portal.Portal" + json.data.id)
                         })
                     }
                 }
@@ -2302,16 +2354,22 @@ MWF.xScript.createCMSDict = function(application){
 
         this.get = function(path, success, failure, async, refresh){
             var value = null;
+
+            if (success===true) async=true;
+            if (failure===true) async=true;
+
             if (!refresh ){
                 var data = MWF.xScript.getDictFromCache( key, path );
                 if( data ){
                     if (success && o2.typeOf(success)=="function") success( data );
-                    return data;
+                    if( !!async ){
+                        return Promise.resolve( data );
+                    }else{
+                        return data;
+                    }
                 }
             }
 
-            if (success===true) async=true;
-            if (failure===true) async=true;
 
             // var cb = function(json){
             //     value = json.data;

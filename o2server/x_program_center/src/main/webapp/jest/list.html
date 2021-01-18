@@ -118,6 +118,7 @@
 				crossDomain : true,
 				error : function(e){
 					$('#contentTable').hide();
+					$('#content').html("<div align = 'center'>您没有权限查看，请以管理员身份登入！</div>");
 				}
 			}).done(function(json) {
 				if (json.type == 'success') {

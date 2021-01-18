@@ -197,6 +197,18 @@ public class AttendanceSettingService {
 			logger.warn( "system init system config 'APPEAL_CHECKER_VALUE' got an exception." );
 			logger.error(e);
 		}
+
+		value = "无";
+		type = "select";
+		selectContent = "无|周六|周日";
+		isMultiple = false;
+		description = "周末设置描述：选择周六或周日。选中的为周末，未选中的按工作日计算";
+		try {
+			checkAndInitSystemConfig("ATTENDANCE_WEEKEND", "周末计算日期设置", value, description, type, selectContent, isMultiple, ++ordernumber );
+		} catch (Exception e) {
+			logger.warn( "system init system config 'APPEAL_CHECKER_VALUE' got an exception." );
+			logger.error(e);
+		}
 	}
 	
 	/**

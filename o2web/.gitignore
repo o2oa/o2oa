@@ -3,6 +3,7 @@
 /dest/
 /out/
 /jsdoc/
+/api/
 /node_modules/
 npm-debug.log
 /test/
@@ -15,3 +16,4 @@ package-lock.json
 /gulpconfig.js
 ftpconfig.js
 gulpconfig.js
+jsdoc.dev.json

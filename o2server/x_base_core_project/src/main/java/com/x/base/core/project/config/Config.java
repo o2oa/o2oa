@@ -62,7 +62,7 @@ public class Config {
 	public static final String PATH_CONFIG_PROCESSPLATFORM = "config/processPlatform.json";
 	public static final String PATH_CONFIG_QUERY = "config/query.json";
 	public static final String PATH_CONFIG_DINGDING = "config/dingding.json";
-	public static final String PATH_CONFIG_WELINK = "config/welink.json";
+	public static final String PATH_CONFIG_WELINK = "config/weLink.json";
 	public static final String PATH_CONFIG_ZHENGWUDINGDING = "config/zhengwuDingding.json";
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
 	public static final String PATH_CONFIG_MQ = "config/mq.json";
@@ -753,6 +753,18 @@ public class Config {
 					"application/vnd.openxmlformats-officedocument.presentationml.presentation");
 			/* 名片 */
 			mimeTypes.addMimeMapping("vcf", "text/x-vcard");
+			/* 流媒体都改为stream输出，不支持浏览器在线播放，如需在线播放请用第三方插件 */
+			mimeTypes.addMimeMapping("mov", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("movie", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mp2", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mp3", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mp4", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mpe", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mpeg", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mpg", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mpga", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("wav", MediaType.APPLICATION_OCTET_STREAM);
+			mimeTypes.addMimeMapping("mid", MediaType.APPLICATION_OCTET_STREAM);
 			instance().mimeTypes = mimeTypes;
 		}
 		return instance().mimeTypes;
@@ -892,15 +904,15 @@ public class Config {
 		return instance().messageSendRuleScript;
 	}
 
-	private PushConfig pushConfig;
+	private JpushConfig pushConfig;
 
-	public static synchronized PushConfig pushConfig() throws Exception {
+	public static synchronized JpushConfig pushConfig() throws Exception {
 		if (null == instance().pushConfig) {
-			PushConfig custom = BaseTools.readConfigObject(PATH_CONFIG_JPUSH, PushConfig.class);
+			JpushConfig custom = BaseTools.readConfigObject(PATH_CONFIG_JPUSH, JpushConfig.class);
 			if (null != custom) {
 				instance().pushConfig = custom;
 			} else {
-				instance().pushConfig = PushConfig.defaultInstance();
+				instance().pushConfig = JpushConfig.defaultInstance();
 			}
 		}
 		return instance().pushConfig;
@@ -1048,19 +1060,6 @@ public class Config {
 			instance().logLevel = obj;
 		}
 		return instance().logLevel;
-	}
-
-	private ClientInit clientInit;
-
-	public static synchronized ClientInit clientInit() throws Exception {
-		if (null == instance().clientInit) {
-			ClientInit obj = BaseTools.readConfigObject(PATH_CONFIG_CLIENTINIT, ClientInit.class);
-			if (null == obj) {
-				obj = ClientInit.defaultInstance();
-			}
-			instance().clientInit = obj;
-		}
-		return instance().clientInit;
 	}
 
 	private byte[] bindLogo;

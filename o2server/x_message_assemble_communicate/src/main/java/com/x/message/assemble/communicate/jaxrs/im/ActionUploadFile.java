@@ -71,6 +71,7 @@ public class ActionUploadFile extends BaseAction {
             Wo wo = new Wo();
             wo.setId(file.getId());
             wo.setFileExtension(file.getExtension());
+            wo.setFileName(fileName);
             result.setData(wo);
             return result;
         }
@@ -84,12 +85,23 @@ public class ActionUploadFile extends BaseAction {
         @FieldDescribe( "文件扩展名" )
         private String fileExtension;
 
+        @FieldDescribe( "文件名" )
+        private String fileName;
+
         public String getFileExtension() {
             return fileExtension;
         }
 
         public void setFileExtension(String fileExtension) {
             this.fileExtension = fileExtension;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
         }
     }
 }

@@ -5,7 +5,20 @@ MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
 //MWF.xDesktop.requireApp("process.Xform", "Package", null, false);
 
-MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
+/** @class Form 流程表单。
+ * @o2category FormComponents
+ * @o2range {Process}
+ * @example
+ * //可以在脚本中获取表单
+ * //方法1：
+ * var form = this.form.getApp().appForm; //获取表单
+ * //方法2
+ * var form = this.target; //在表单本身的事件脚本中获取
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
+    /** @lends MWF.xApplication.process.Xform.Form# */
+{
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {
@@ -14,37 +27,165 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         "cssPath": "",
         "macro": "FormContext",
         "parameters": null,
-        "moduleEvents": ["queryLoad",
+        "moduleEvents": [
+            /**
+             * 表单加载前触发。数据（businessData）、预加载脚本和表单html已经就位。
+             * @event MWF.xApplication.process.Xform.Form#queryLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "queryLoad",
+            /**
+             * 表单加载前触发。如果是流程表单，已提示抢办锁定。
+             * @event MWF.xApplication.process.Xform.Form#beforeLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "beforeLoad",
-            "postLoad",
-            "afterLoad",
-            "beforeSave",
-            "afterSave",
-            "beforeClose",
-            "beforeProcess",
-            "beforeProcessWork",
-            "afterProcess",
-            "beforeReset",
-            "afterReset",
-            "beforeRetract",
-            "afterRetract",
-            "beforeReroute",
-            "afterReroute",
-            "beforeDelete",
-            "afterDelete",
+            /**
+             * 表单的所有组件加载前触发，此时表单的样式和js head已经加载。
+             * @event MWF.xApplication.process.Xform.Form#beforeModulesLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "beforeModulesLoad",
-            "resize",
+            /**
+             * 表单加载后触发。主表单的组件加载完成，但不保证子表单、子页面、部件加载完成。
+             * @event MWF.xApplication.process.Xform.Form#postLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "postLoad",
+            /**
+             * 表单的所有组件加载后触发。表单包含有子表单、子页面、部件时，此事件会在这些组件加载后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterModulesLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "afterModulesLoad",
+            /**
+             * 表单加载后触发。表单包含有子表单、子页面、部件时，此事件会在这些组件加载后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterLoad",
+            /**
+             * 保存前触发。如果是流程表单，流转前也会触发本事件。
+             * @event MWF.xApplication.process.Xform.Form#beforeSave
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeSave",
+            /**
+             * 保存后触发。如果是流程表单，流转后也会触发本事件。
+             * @event MWF.xApplication.process.Xform.Form#afterSave
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterSave",
+            /**
+             * 关闭前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeClose
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeClose",
+            /**
+             * 弹出提交界面前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeProcessWork
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeProcessWork",
+            /**
+             * 流转前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeProcess
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeProcess",
+            /**
+             * 流转后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterProcess
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterProcess",
+            /**
+             * 重置处理人前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeReset
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeReset",
+            /**
+             * 重置处理人后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterReset
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterReset",
+            /**
+             * 撤回前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeRetract
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeRetract",
+            /**
+             * 撤回后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterRetract
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterRetract",
+            /**
+             * 调度前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeReroute
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeReroute",
+            /**
+             * 调度后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterReroute
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterReroute",
+            /**
+             * 删除工作前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeDelete
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeDelete",
+            /**
+             * 删除工作后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterDelete
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterDelete",
+            "resize",
+            /**
+             * 已阅前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeReaded
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "beforeReaded",
+            /**
+             * 已阅后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterReaded
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "afterReaded"]
     },
     initialize: function (node, data, options) {
         this.setOptions(options);
 
+        /**
+         * @summary 表单容器
+         * @see https://mootools.net/core/docs/1.6.0/Element/Element
+         * @member {Element}
+         * @example
+         *  //可以在脚本中获取表单容器
+         * var formContainer = this.form.getApp().appForm.container;
+         */
         this.container = $(node);
         this.container.setStyle("-webkit-user-select", "text");
         if (Browser.firefox) this.container.setStyle("opacity", 0);
         this.data = data;
+
+        /**
+         * @summary 表单的配置信息，比如表单名称，提交方式等等.
+         * @member {Object}
+         * @example
+         *  //可以在脚本中获取表单配置信息
+         * var json = this.form.getApp().appForm.json; //表单配置信息
+         * var name = json.name; //表单名称
+         */
         this.json = data.json;
         this.html = data.html;
 
@@ -53,7 +194,36 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         this._loadCss();
 
         this.sectionListObj = {};
+
+        /**
+         * @summary 表单中的所有组件数组.
+         * @member {Array}
+         * @example
+         * //下面的样例对表单组件进行循环，并且判断是输入类型的组件
+         * var modules = this.form.getApp().appForm.modules; //获取所有表单组件
+         * for( var i=0; i<modules.length; i++ ){ //循环处理组件
+         *   //获取组件的类型
+            var moduleName = module.json.moduleName;
+            if( !moduleName ){
+                moduleName = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
+            }
+            if( ["calendar","combox","number","textfield"].contains( moduleName )){ //输入类型框
+                //do something
+             }
+         * }
+         */
         this.modules = [];
+
+        /**
+         * 该对象的key是组件标识，value是组件对象，可以使用该对象根据组件标识获取组件。<br/>
+         * 需要注意的是，在子表单中嵌入不绑定数据的组件（比如div,common,button等等），系统允许重名。<br/>
+         * 在打开表单的时候，系统会根据重名情况，自动在组件的标识后跟上 "_1", "_2"。
+         * @summary 表单中的所有组件对象.
+         * @member {Object}
+         * @example
+         * var moduleAll = this.form.getApp().appForm.all; //获取组件对象
+         * var subjectField = moduleAll["subject"] //获取名称为subject的组件
+         */
         this.all = {};
         this.allForName = {};
         this.forms = {};
@@ -1012,6 +1182,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }, null, false);
         return data;
     },
+    /**
+     * @summary 获取表单的所有数据.
+     * @example
+     * var data = this.form.getApp().appForm.getData();
+     * @return {Object}
+     */
     getData: function (issubmit) {
         //var data = Object.clone(this.businessData.data);
         var data = this.businessData.data;
@@ -1151,7 +1327,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         //if (key) obj[key] = v;
         return obj;
     },
-
     saveWork: function (callback, silent) {
 
         if (this.businessData.control["allowSave"]) {
@@ -1321,11 +1496,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 this.businessData.work = json.data.work;
                 this.app.options.draftId = json.data.work.id;
 
-                if (layout.app && layout.app.inBrowser){
+                if (layout.app && layout.app.inBrowser) {
                     if (layout.app) layout.app.$openWithSelf = true;
                     if (callback) callback();
-                    if (!isstart) layout.desktop.openApplication(null, "process.Work", {"draftId": this.app.options.draftId});
-                }else{
+                    if (!isstart) layout.desktop.openApplication(null, "process.Work", { "draftId": this.app.options.draftId });
+                } else {
                     this.app.options.desktopReload = true;
 
                     this.app.appId = "process.Work" + json.data.work.id;
@@ -1358,6 +1533,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }.bind(this))
         }
     },
+
+    /**
+     * @summary 获取当前工作的路由配置数据.
+     * @example
+     * this.form.getApp().appForm.getRouteDataList();
+     * @return {Object[]}
+     */
     getRouteDataList: function () {
         if (!this.routeDataList) {
             o2.Actions.get("x_processplatform_assemble_surface").listRoute({ "valueList": this.businessData.task.routeList }, function (json) {
@@ -1422,14 +1604,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 if (data.signalStack && data.signalStack.length) {
                     var activityUsers = [];
                     data.signalStack.each(function (stack) {
-                        var ids = [];
+                        var idList = [];
                         if (stack.splitExecute) {
-                            ids = stack.splitExecute.splitValueList || [];
+                            idList = stack.splitExecute.splitValueList || [];
                         }
                         if (stack.manualExecute) {
-                            ids = stack.manualExecute.identities || [];
+                            idList = stack.manualExecute.identities || [];
                         }
                         var count = 0;
+                        var ids = [];
+                        idList.each( function(i){
+                            var cn = o2.name.cn(i);
+                            if( !ids.contains( cn ) ){
+                                ids.push(cn)
+                            }
+                        });
                         if (ids.length > 8) {
                             count = ids.length;
                             ids = ids.slice(0, 8);
@@ -1449,7 +1638,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     data.properties.nextManualList.each(function (a) {
                         var ids = [];
                         a.taskIdentityList.each(function (i) {
-                            ids.push(o2.name.cn(i))
+                            var cn = o2.name.cn(i);
+                            if( !ids.contains( cn ) ){
+                                ids.push(cn)
+                            }
                         });
                         var t = "<b>" + MWF.xApplication.process.Xform.LP.nextActivity + "</b><span style='color: #ea621f'>" + a.activityName + "</span>；<b>" + MWF.xApplication.process.Xform.LP.nextUser + "</b><span style='color: #ea621f'>" + ids.join(",") + "</span>";
                         activityUsers.push(t);
@@ -1903,7 +2095,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         layout.notice(MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject));
                     }
                 } else {
-                    if (layout.desktop.message){
+                    if (layout.desktop.message) {
                         var msg = {
                             "subject": MWF.xApplication.process.Xform.LP.processStarted,
                             "content": "<div>" + MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject) + "”</div>"
@@ -1913,9 +2105,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         var item = layout.desktop.message.addMessage(msg);
                     }
                 }
-                if (layout.app && layout.app.inBrowser){
+                if (layout.app && layout.app.inBrowser) {
                     if (layout.app) layout.app.$openWithSelf = true;
-                    layout.desktop.openApplication(null, "process.Work", {"workId": this.app.options.workId, "action": "processTask"});
+                    layout.desktop.openApplication(null, "process.Work", { "workId": this.app.options.workId, "action": "processTask" });
                 }
                 this.app.options.action = "processTask";
                 this.app.reload();
@@ -2904,6 +3096,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
     },
 
+    /**
+     * 需要判断权限
+     * @summary 给待办人发送提醒(催促办理).
+     * @example
+     * if( this.workContext.getControl().allowPress ){ //判断流程节点是否设置了催办并且当前人员是否有催办权限
+     *     this.form.getApp().appForm.pressWork();
+     * }
+     */
     pressWork: function (e) {
         if (e && e.setDisable) e.setDisable(true);
         o2.Actions.get("x_processplatform_assemble_surface").press(this.businessData.work.id, function (json) {
@@ -2926,6 +3126,71 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
         });
     },
+
+    /**
+     * 需要判断权限
+     * @summary 将待办设置为挂起状态，不计算工作时长.
+     * @example
+     * if( this.workContext.getControl().allowPause ){ //判断流程节点是否设置了允许挂起
+     *     this.form.getApp().appForm.pauseTask();
+     * }
+     */
+    pauseTask: function (e) {
+        if (this.businessData.task){
+            if (e && e.disable) e.disable(true);
+            return o2.Actions.get("x_processplatform_assemble_surface").pauseTask(this.businessData.task.id, function (json) {
+                this.app.notice(MWF.xApplication.process.Xform.LP.pauseWork, "success");
+                if (e && e.enable) e.enable(false);
+            }.bind(this), function (xhr, text, error) {
+                //e.setDisable(false);
+                if (xhr.status != 0) {
+                    var errorText = error;
+                    if (xhr) {
+                        var json = JSON.decode(xhr.responseText);
+                        if (json) {
+                            errorText = json.message.trim() || "request json error";
+                        } else {
+                            errorText = "request json error: " + xhr.responseText;
+                        }
+                    }
+                    MWF.xDesktop.notice("error", { x: "right", y: "top" }, errorText);
+                }
+            });
+        }
+    },
+
+    /**
+     * 需要判断权限
+     * @summary 将待办从挂起状态恢复为正常状态.
+     * @example
+     * if( this.workContext.getControl().allowResume ){ //判断当前待办是否可以进行挂起恢复操作
+     *     this.form.getApp().appForm.resumeTask();
+     * }
+     */
+    resumeTask: function (e) {
+        if (this.businessData.task){
+            if (e && e.disable) e.disable(true);
+            return o2.Actions.get("x_processplatform_assemble_surface").resumeTask(this.businessData.task.id, function (json) {
+                this.app.notice(MWF.xApplication.process.Xform.LP.resumeWork, "success");
+                if (e && e.enable) e.enable(false);
+            }.bind(this), function (xhr, text, error) {
+                //e.setDisable(false);
+                if (xhr.status != 0) {
+                    var errorText = error;
+                    if (xhr) {
+                        var json = JSON.decode(xhr.responseText);
+                        if (json) {
+                            errorText = json.message.trim() || "request json error";
+                        } else {
+                            errorText = "request json error: " + xhr.responseText;
+                        }
+                    }
+                    MWF.xDesktop.notice("error", { x: "right", y: "top" }, errorText);
+                }
+            });
+        }
+    },
+
     downloadAll: function () {
         var htmlFormId = "";
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
@@ -3370,7 +3635,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
         }
     },
-
+    /**
+     * 如果当前人员没有调度权限或者流程节点未配置调度，则提醒Permission Denied.
+     * @summary 弹出调度界面
+     * @example
+     * this.form.getApp().appForm.rerouteWork();
+     */
     rerouteWork: function (e, ev) {
         if (!this.businessData.control["allowReroute"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
@@ -3897,7 +4167,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form));
         }
     },
+    /**
+     * @summary 将当前处理人的待阅设置为已阅.
+     * @param {Event|Element} [e] - Event 或者Mootools Element，指定提示框弹出的位置
+     * @example
+     * if( this.workContext.getControl().allowReadProcessing ){ //是否有待阅
+     *     this.form.getApp().appForm.readedWork();
+     * }
+     */
     readedWork: function (e) {
+        if( !e )e = new Event(event);
         this.fireEvent("beforeReaded");
         var _self = this;
         var title = this.businessData.work.title;
@@ -3938,7 +4217,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     confirmDlg.close();
                 }
             }
-            
+
         }, function () {
             this.close();
         }, null, this.app.content, this.json.confirmStyle);
@@ -3959,7 +4238,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         //window.open("../x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
     },
-
+    /**
+     * @summary 将新上传的附件在指定的附件组件中展现.
+     * @param {String} site - 附件组件的标识
+     * @param {String} id - 新上传的附件id
+     * @example
+     * this.form.getApp().appForm.uploadedAttachment(site, id);
+     */
     uploadedAttachment: function (site, id) {
         this.workAction.getAttachment(id, this.businessData.work.id, function (json) {
             var att = this.all[site];
@@ -4038,3 +4323,94 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     }
 
 });
+
+
+/**
+ * @class PortalPage 门户页面。
+ * @alias PortalPage
+ * @o2category FormComponents
+ * @o2range {Portal}
+ * @extends MWF.xApplication.process.Xform.Form
+ * @example
+ * //可以在脚本中获取页面
+ * //方法1：
+ * var page = this.form.getApp().appForm; //获取页面
+ * //方法2
+ * var page = this.target; //在页面本身的事件脚本中获取
+ * @hideconstructor
+ */
+var PortalPage="";
+
+/**
+ * @event PortalPage#beforeProcessWork
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeProcess
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterProcess
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeReset
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterReset
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeRetract
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterRetract
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeReroute
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterReroute
+ * @ignore
+ */
+/**
+ *  @event PortalPage#beforeDelete
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterDelete
+ * @ignore
+ */
+/**
+ *  @event PortalPage#beforeReaded
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterReaded
+ * @ignore
+ */
+/**
+ * @method PortalPage#getRouteDataList
+ * @ignore
+ */
+/**
+ * @method PortalPage#pressWork
+ * @ignore
+ */
+/**
+ * @method PortalPage#rerouteWork
+ * @ignore
+ */
+/**
+ * @method PortalPage#readedWork
+ * @ignore
+ */
+/**
+ * @method PortalPage#uploadedAttachment
+ * @ignore
+ */
+

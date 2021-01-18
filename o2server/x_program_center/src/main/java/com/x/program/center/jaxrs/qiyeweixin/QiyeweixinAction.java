@@ -64,12 +64,30 @@ public class QiyeweixinAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取企业微信回调的EncodingAESKey.", action = ActionCallbackAESKey.class)
+	@GET
+	@Path("get/callback/aes")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void syncOrganizationCallbackEncodingAESKeyGet(@Suspended final AsyncResponse asyncResponse,
+														  @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionCallbackAESKey.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionCallbackAESKey().execute(effectivePerson);
+		}catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+//	@Path("sync/organization/callback")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
 	// msg_signature=ASDFQWEXZCVAQFASDFASDFSS&timestamp=13500001234&nonce=123412323&echostr=ENCRYPT_STR
 	@JaxrsMethodDescribe(value = "接收企业微信通讯录变更回调的验证请求.", action = ActionSyncOrganizationCallbackGet.class)
 	@GET
-	@Path("sync/organization/callback")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
 	public void syncOrganizationCallbackGet(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @QueryParam("msg_signature") String msg_signature,
 			@QueryParam("timestamp") String timestamp, @QueryParam("nonce") String nonce,
@@ -86,20 +104,19 @@ public class QiyeweixinAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	//@Path("sync/organization/callback")
+	//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	//	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "接收企业微信通讯录变更回调.", action = ActionSyncOrganizationCallbackPost.class)
 	@POST
-	@Path("sync/organization/callback")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
 	public void syncOrganizationCallbackPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @QueryParam("msg_signature") String msg_signature,
-			@QueryParam("timestamp") String timestamp, @QueryParam("nonce") String nonce,
-			@QueryParam("echostr") String echostr, String body) {
+			@QueryParam("timestamp") String timestamp, @QueryParam("nonce") String nonce, String body) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionSyncOrganizationCallbackPost.Wo> result = new ActionResult<>();
 		try {
 			result = new ActionSyncOrganizationCallbackPost().execute(effectivePerson, msg_signature, timestamp, nonce,
-					echostr, body);
+					body);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

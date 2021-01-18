@@ -24,6 +24,7 @@ public class AppStyle extends ConfigObject {
 
 		this.indexType = INDEXTYPE_DEFAULT;
 		this.indexPortal = "";
+		this.simpleMode = false;
 
 	}
 
@@ -112,6 +113,9 @@ public class AppStyle extends ConfigObject {
 	@FieldDescribe("门户首页.")
 	private String indexPortal;
 
+	@FieldDescribe("移动端简易模式")
+	private Boolean simpleMode;
+
 	@FieldDescribe("导航设置")
 	private TreeSet<NativeApp> nativeAppList = new TreeSet<>();
 
@@ -124,6 +128,15 @@ public class AppStyle extends ConfigObject {
 
 	public void setIndexPortal(String indexPortal) {
 		this.indexPortal = indexPortal;
+	}
+
+
+	public Boolean getSimpleMode() {
+		return simpleMode;
+	}
+
+	public void setSimpleMode(Boolean simpleMode) {
+		this.simpleMode = simpleMode;
 	}
 
 	public static class Image extends GsonPropertyObject implements Comparable<Image> {

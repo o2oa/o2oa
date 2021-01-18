@@ -123,6 +123,19 @@ public class ActionCheckWithPersonByCycle extends BaseAction {
 			}
 		}
 		if (check) {
+			//由于检查统计周期是用的多线程，造成多份重复无法控制，改为提前检查统计周期
+			for(AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigList){
+				AttendanceStatisticalCycle attendanceStatisticalCycle = attendanceStatisticCycleServiceAdv.getAttendanceDetailStatisticCycle(
+						attendanceEmployeeConfig.getTopUnitName(),
+						attendanceEmployeeConfig.getUnitName(),
+						cycleYear,
+						cycleMonth,
+						topUnitAttendanceStatisticalCycleMap,
+						false
+				);
+				attendanceStatisticCycleServiceAdv.checkAttendanceStatisticCycle(attendanceStatisticalCycle);
+			}
+
 			new SenderForSupplementData().execute( attendanceEmployeeConfigList, topUnitAttendanceStatisticalCycleMap, cycleYear, cycleMonth, effectivePerson.getDebugger() );
 		}
 		

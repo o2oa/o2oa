@@ -105,7 +105,7 @@ public class AttendanceStatisticalCycleServiceAdv {
 				}
 			}
 		}else{
-			logger.info("根据顶层组织["+topUnitName+"]和组织["+unitName+"]未获取到任何周期数据，需要创建新的统计周期数据......");
+			logger.info("根据顶层组织["+topUnitName+"]和组织["+unitName+"]未获取到任何周期数据，需要创建新的统计周期数据......1");
 		}
 		logger.info( "没有查询到适用的统计周期配置信息......" );
 		//如果程序到此仍未返回结果，说明未找到合适的配置记录，那么新建一条
@@ -170,7 +170,6 @@ public class AttendanceStatisticalCycleServiceAdv {
 		Map<String, List<AttendanceStatisticalCycle>> unitAttendanceStatisticalCycleMap = null;
 		Boolean hasConfig = false;
 		String topUnitName = null, unitName = null;
-		
 		if( Integer.parseInt( cycleMonth ) < 10 ){
 			cycleMonth = "0"+Integer.parseInt(cycleMonth);
 		}
@@ -231,7 +230,7 @@ public class AttendanceStatisticalCycleServiceAdv {
 				}
 			}
 		}else{
-			logger.info("根据顶层组织["+topUnitName+"]和组织["+unitName+"]未获取到任何周期数据，需要创建新的统计周期数据......");
+			logger.info("根据顶层组织["+topUnitName+"]和组织["+unitName+"]未获取到任何周期数据，需要创建新的统计周期数据......2");
 		}
 		
 		if( !hasConfig ){
@@ -265,16 +264,16 @@ public class AttendanceStatisticalCycleServiceAdv {
 				unitCycles = new ArrayList<AttendanceStatisticalCycle>();
 				unitAttendanceStatisticalCycleMap.put( unitName, unitCycles);
 			}
-			putDistinctCycleInList( attendanceStatisticalCycle, unitCycles, debugger);			
-			logger.debug( debugger, ">>>>>>>>>>准备保存新创建的统计周期信息......");
+			putDistinctCycleInList( attendanceStatisticalCycle, unitCycles, debugger);
+			/*logger.info(  ">>>>>>>>>>准备保存新创建的统计周期信息......");
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 				emc.beginTransaction(AttendanceStatisticalCycle.class);
 				emc.persist( attendanceStatisticalCycle, CheckPersistType.all);
 				emc.commit();
 			}catch(Exception e){
-				logger.debug( debugger, ">>>>>>>>>>系统在保存新的统计周期信息时发生异常！");
+				logger.info(  ">>>>>>>>>>系统在保存新的统计周期信息时发生异常！");
 				throw e;
-			}
+			}*/
 			return attendanceStatisticalCycle;
 		}
 		return null;
@@ -462,6 +461,45 @@ public class AttendanceStatisticalCycleServiceAdv {
 	 */
 	public AttendanceStatisticalCycle getStatisticCycleByEmployee( AttendanceStatisticRequireLog attendanceStatisticRequireLog, Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap, Boolean debugger ) throws Exception{
 		return attendanceStatisticCycleService.getStatisticCycleByEmployee( attendanceStatisticRequireLog, topUnitAttendanceStatisticalCycleMap, debugger);
+	}
+
+	public void checkAttendanceStatisticCycle(AttendanceStatisticalCycle cycle){
+			if(cycle!=null){
+				List<AttendanceStatisticalCycle> cycles = null;
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					cycles = attendanceStatisticCycleService.listAll( emc );
+					if(cycles.size()>0){
+						for( AttendanceStatisticalCycle attendanceStatisticalCycle : cycles ){
+							System.out.println( ">>>>>>>>>>遍历：cycles="+attendanceStatisticalCycle.getTopUnitName()+", unitName="+attendanceStatisticalCycle.getUnitName()+", cycleYear="+attendanceStatisticalCycle.getCycleYear()+", cycleMonth="+ attendanceStatisticalCycle.getCycleMonth() );
+							if( attendanceStatisticalCycle.getTopUnitName().equals(cycle.getTopUnitName())
+									&& attendanceStatisticalCycle.getUnitName().equals(cycle.getUnitName())
+									&& attendanceStatisticalCycle.getCycleYear().equals(cycle.getCycleYear())
+									&& attendanceStatisticalCycle.getCycleMonth().equals(cycle.getCycleMonth())
+
+							){
+								//对象已经存在，不再保存
+								logger.info( ">>>>>>>>>>查询成功，对象已经存在！");
+							}else{
+								this.saveAttendanceStatisticCycle(cycle);
+							}
+						}
+					}else{
+						this.saveAttendanceStatisticCycle(cycle);
+					}
+				} catch ( Exception e ) {
+					logger.info( "未查询到考勤统计周期信息.......");
+				}
+			}
+	}
+	public void saveAttendanceStatisticCycle(AttendanceStatisticalCycle cycle){
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			logger.info( ">>>>>>>>>>准备保存新创建的统计周期信息......");
+			emc.beginTransaction(AttendanceStatisticalCycle.class);
+			emc.persist( cycle, CheckPersistType.all);
+			emc.commit();
+		}catch ( Exception e ) {
+			logger.info( "保存新创建的统计周期信息出错.......");
+		}
 	}
 }
 

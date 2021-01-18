@@ -1,5 +1,19 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
+/** @class Htmleditor HTML编辑器。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var htmlEditor = this.form.get("name"); //获取组件
+ * //方法2
+ * var htmlEditor = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @o2category FormComponents
+ * @o2range {Process|CMS}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Htmleditor# */
+    {
 	Extends: MWF.APP$Module,
     options: {
         "moduleEvents": ["load", "postLoad", "afterLoad"]
@@ -376,16 +390,58 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
     _loadValue: function(){
         var data = this._getBusinessData();
     },
+    /**
+     * @summary 重置组件的值为默认值或置空。
+     *  @example
+     * this.form.get('fieldId').resetData();
+     */
     resetData: function(){
         this.setData(this._getBusinessData());
     },
+    /**
+     * @summary 判断组件值是否为空.
+     * @example
+     * if( this.form.get('fieldId').isEmpty() ){
+     *     this.form.notice('HTML编辑器不能为空', 'warn');
+     * }
+     * @return {Boolean} 值是否为空.
+     */
     isEmpty : function(){
         return !this.getData().trim();
     },
+    /**
+     * 当表单上没有对应组件的时候，可以使用this.data[fieldId]获取值，但是this.form.get('fieldId')无法获取到组件。
+     * @summary 获取组件值。
+     * @example
+     * var data = this.form.get('fieldId').getData();
+     * @example
+     *  //如果无法确定表单上是否有组件，需要判断
+     *  var data;
+     *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
+     *      data = this.form.get('fieldId').getData();
+     *  }else{
+     *      data = this.data['fieldId']; //直接从数据中获取字段值
+     *  }
+     * @return 组件的数据.
+     */
     getData: function(){
         this.clearEcnetNodes();
         return this.editor ? this.editor.getData() : "";
     },
+    /**
+     * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
+     * @summary 为组件赋值。
+     * @param data{String} .
+     * @example
+     *  this.form.get("fieldId").setData("test"); //赋文本值
+     * @example
+     *  //如果无法确定表单上是否有组件，需要判断
+     *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
+     *      this.form.get('fieldId').setData( data );
+     *  }else{
+     *      this.data['fieldId'] = data;
+     *  }
+     */
     setData: function(data){
         this._setBusinessData(data);
         if (this.editor) this.editor.setData(data);
@@ -519,7 +575,15 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
         }
         return true;
     },
-
+    /**
+     * @summary 根据组件的校验设置进行校验。
+     *  @param {String} [routeName] - 可选，路由名称.
+     *  @example
+     *  if( !this.form.get('fieldId').validation() ){
+     *      return false;
+     *  }
+     *  @return {Boolean} 是否通过校验
+     */
     validation: function(routeName, opinion){
         if (!this.validationConfig(routeName, opinion))  return false;
 

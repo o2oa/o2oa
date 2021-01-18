@@ -21,8 +21,10 @@ class ActionReport extends BaseAction {
 		Wi wi = gson.fromJson(jsonElement, Wi.class);
 		ScheduleLog o = Wi.copier.copy(wi);
 		/** 默认使用传递过来的id,如果不存在那么重新赋值 */
-		if (StringUtils.isEmpty(o.getId())) {
+		if (StringUtils.isEmpty(wi.getScheduleLogId())) {
 			o.setId(StringTools.uniqueToken());
+		} else {
+			o.setId(wi.getScheduleLogId());
 		}
 		NameValuePair pair = new NameValuePair();
 		pair.setName(ScheduleLog.class.getName());
@@ -39,6 +41,17 @@ class ActionReport extends BaseAction {
 		private static final long serialVersionUID = 1996856138701159925L;
 		static WrapCopier<Wi, ScheduleLog> copier = WrapCopierFactory.wi(Wi.class, ScheduleLog.class, null,
 				JpaObject.FieldsUnmodify);
+
+		private String scheduleLogId;
+
+		public String getScheduleLogId() {
+			return scheduleLogId;
+		}
+
+		public void setScheduleLogId(String scheduleLogId) {
+			this.scheduleLogId = scheduleLogId;
+		}
+
 	}
 
 	public static class Wo extends WrapBoolean {

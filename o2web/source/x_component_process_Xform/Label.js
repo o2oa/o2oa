@@ -1,5 +1,19 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class({
+/** @class Label 文本组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var label = this.form.get("name"); //获取组件
+ * //方法2
+ * var label = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @o2category FormComponents
+ * @o2range {Process|CMS|Portal}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Label# */
+    {
 	Implements: [Events],
 	Extends: MWF.APP$Module,
 	
@@ -55,6 +69,18 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class({
             //this.node.set("text", value || "");
         }
     },
+    /**当参数为Promise的时候，请参考文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
+     * @summary 为组件设置文本，该文本不会被保存到后台。
+     * @param text{String|Promise} .
+     * @example
+     *  this.form.get("fieldId").setText("test"); //赋文本值
+     * @example
+     *  //使用Promise
+     *  var field = this.form.get("fieldId");
+     *  var dict = new this.Dict("test"); //test为数据字典名称
+     *  var promise = dict.get("tools", true); //异步使用数据字典的get方法时返回Promise，参数true表示异步
+     *  field.setText( promise );
+     */
     setText: function(text){
 	    if (!!text){
             o2.promiseAll(text).then(function(v){

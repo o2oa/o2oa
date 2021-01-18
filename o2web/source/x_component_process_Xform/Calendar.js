@@ -1,9 +1,48 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
-MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
+/** @class Calendar 日期组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var field = this.form.get("fieldId"); //获取组件对象
+ * //方法2
+ * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
+ * @extends MWF.xApplication.process.Xform.$Input
+ * @o2category FormComponents
+ * @o2range {Process|CMS|Portal}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Calendar# */
+{
 	Implements: [Events],
 	Extends: MWF.APP$Input,
 	iconStyle: "calendarIcon",
     options: {
+        /**
+         * 日期选择完成时触发.
+         * @event MWF.xApplication.process.Xform.Calendar#complete
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 日期选择器上点清空时触发.
+         * @event MWF.xApplication.process.Xform.Calendar#clear
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 值改变时触发.
+         * @event MWF.xApplication.process.Xform.Calendar#change
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 显示日期选择器时触发.
+         * @event MWF.xApplication.process.Xform.Calendar#show
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 隐藏日期选择器时触发.
+         * @event MWF.xApplication.process.Xform.Calendar#hide
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["queryLoad","postLoad","load","complete", "clear", "change","show","hide"]
     },
     _loadNode: function(){
@@ -61,7 +100,12 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
     },
 
     __setValue: function(value){
-        var v = (value) ? ( Date.parse(value)).format(this.json.format) : "";
+        var v;
+        if( typeOf( value ) === "date" ){
+            v = (value) ? ( Date.parse(value)).format(this.json.format) : "";
+        }else{
+            v = value;
+        }
         this._setBusinessData(value);
         if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
         if (this.readonly || this.json.isReadonly) this.node.set("text", v);
@@ -141,6 +185,13 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
                     }.bind(this)
                 };
                 options.baseDate = this.getBaseDate();
+                /**
+                 * @summary 日期弹出选择界面，只读情况下无此成员.
+                 * @member {MWF.widget.Calendar}
+                 * @example
+                 * var calendar = this.form.get("fieldId").calendar; //获取组件
+                 * if(calendar)calendar.show(); //弹出选择组件
+                 */
                 this.calendar = new MWF.widget.Calendar(this.node.getFirst(), options);
                 if( this.form.json && this.form.json.canlendarStyle && typeOf( this.form.json.canlendarStyle.zIndex ) !== "null" && typeOf( this.form.json.canlendarStyle.zIndex ) !== "undefined" ){
                     this.calendar.container.setStyle("z-index", this.form.json.canlendarStyle.zIndex );

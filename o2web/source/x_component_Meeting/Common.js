@@ -1486,7 +1486,7 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
             "   <div style='font-size: 12px;color:#666; float: right'>"+ this.lp.applyPerson  +":" + data.applicant.split("@")[0] +"</div>" +
             "   <div style='font-size: 16px;color:#333;float: left'>"+ this.lp.meetingDetail +"</div>"+
             "</div>"+
-            "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;'>"+ data.subject +"</div>"+
+            "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;overflow:hidden;'>"+ data.subject +"</div>"+
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
             "<tr><td style='"+titleStyle+";' width='70'>"+this.lp.meetingTime+":</td>" +

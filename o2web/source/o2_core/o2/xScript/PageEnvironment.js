@@ -1424,30 +1424,130 @@ MWF.xScript.PageEnvironment = function (ev) {
 
     //仅前台对象-----------------------------------------
     //form
+    /**
+     * page对象可在门户页面中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
+     * @module page
+     * @o2range {Portal}
+     * @o2ordernumber 50
+     * @o2syntax
+     * //您可以在门户表单中，通过this来获取page对象，如下：
+     * var page = this.page;
+     */
     this.page = this.form = {
+        /** 跳转到当前门户的指定页面。<b>（仅门户页面脚本可用）</b>
+         * @method toPage
+         * @static
+         * @param {String} name - 要跳转的页面名称
+         * @param {Object} [par] - 要传入被打开页面的数据。在被打开的页面可以用this.page.parameters获取
+         * @param {Boolean} [par] - 页面跳转的时候，不往History里增加历史状态，默认为false
+         * @o2syntax
+         * //跳转到当前门户的指定页面。
+         * this.page.toPage( name, par );
+         * @example
+         * this.page.toPage("列表页面", {"key": "发文列表"});//打开“列表页面”，并传入一个json数据。
+         *
+         * //在列表页面中，通过this.page.parameters获取传入的数据。
+         * var key = this.page.parameters.key; //key="发文列表"
+         */
+        "toPage": function (name, par, nohis) {
+            _form.app.toPage(name, par, nohis);
+        },
+
+        /** 跳转到指定门户页面。<b>（仅门户页面脚本可用）</b>
+         * @method toPortal
+         * @static
+         * @param {String} portal - 要跳转的门户名称。
+         * @param {String} [page] - 要打开的门户的页面名称。为空则打开指定门户的默认首页。
+         * @param {String} [par] - 在被打开的页面可以用this.page.parameters获取。
+         * @o2syntax
+         * this.page.toPortal( portal, page, par );
+         * @example
+         * this.page.toPortal("公文门户", "列表页面", {"key": "发文列表"});//打开“公文门户”的“列表页面”，并传入一个json数据。
+         *
+         * //在列表页面中，通过this.page.parameters获取传入的数据。
+         * var key = this.page.parameters.key; //key="发文列表"
+         */
+        "toPortal": function (portal, page, par) {
+            _form.app.toPortal(portal, page, par);
+        },
+        /**获取当前页面的基本信息
+         * @method getInfor
+         * @static
+         * @see module:form.getInfor
+         */
         "getInfor": function () { return ev.pageInfor; },
         "infor": ev.pageInfor,
+        /**获取打开当前页面的component对象。
+         * @method getApp
+         * @static
+         * @see module:form.getApp
+         */
         "getApp": function () { return _form.app; },
         "app": _form.app,
+        /**获取page对应的DOM对象。
+         * @method node
+         * @static
+         * @see module:form.node
+         */
         "node": function () { return _form.node; },
         //"readonly": _form.options.readonly,
+        /**获取页面元素对象。
+         * @method get
+         * @static
+         * @see module:form.get
+         */
         "get": function (name) { return (_form.all) ? _form.all[name] : null; },
+
+        /**获取指定部件元素对象。<br/>
+         * @method getWidgetModule
+         * @static
+         * @param {String} widgetId  - 在主页面嵌入部件时用的标识。
+         * @param {String} fieldId  - 部件内组件标识。
+         * @return {FormComponent} 请查看本文档的Classes导航下的FormComponents。
+         * @see module:form.get
+         * @o2syntax
+         * this.page.getWidgetModule( widgetId, fieldId );
+         * @example
+         * <caption>
+         * 1、设计了一个部件，包含一个设计元素subject。<br/>
+         * 2、在主页面里两次嵌入1步骤创建的部件，一个标识是widget_1, widget_2。
+         * </caption>
+         * var module = this.page.getWidgetModule( "widget_1", "subject"); //部件widget_1的subject组件
+         * var data2 = this.page.getWidgetModule( "widget_2", "subject").getData(); //部件widget_2的subject组件的值
+         */
         "getWidgetModule": function (widget, moduleName) {
             if (!_form.widgetModules || !_form.widgetModules[widget]) return null;
             var module = _form.widgetModules[widget][moduleName];
             return module || null;
         },
+        /**获取页面中可输入的字段元素对象
+         * @method getField
+         * @static
+         * @see module:form.getField
+         */
         "getField": function (name) { return _forms[name]; },
         "getAction": function () { return _form.workAction },
         "getDesktop": function () { return _form.app.desktop },
+
         "getData": function () { return new MWF.xScript.JSONData(_form.getData()); },
         //"save": function(callback){_form.saveWork(callback);},
+
+        /**关闭当前页面
+         * @method close
+         * @static
+         * @see module:form.close
+         */
         "close": function () { _form.closeWork(); },
 
         "print": function (application, form) {
             _form.printWork(application, form);
         },
 
+        /**弹出一个确认框
+         * @method confirm
+         * @static
+         * @see module:form.confirm
+         */
         "confirm": function (type, title, text, width, height, ok, cancel, callback, mask, style) {
             // var p = MWF.getCenter({"x": width, "y": height});
             // e = {"event": {"clientX": p.x,"x": p.x,"clientY": p.y,"y": p.y}};
@@ -1470,22 +1570,39 @@ MWF.xScript.PageEnvironment = function (ev) {
                 _form.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style);
             }
         },
+        /**显示一个带关闭按钮的信息框
+         * @method alert
+         * @static
+         * @see module:form.alert
+         */
         "alert": function(type, title, text, width, height){
             _form.alert(type, title, text, width, height);
         },
+
+        /**显示一个信息框
+         * @method notice
+         * @static
+         * @see module:form.notice
+         */
         "notice": function (content, type, target, where, offset, option) {
             _form.notice(content, type, target, where, offset, option);
         },
+        /**给页面添加事件。
+         * @method addEvent
+         * @static
+         * @see module:form.addEvent
+         */
         "addEvent": function (e, f) { _form.addEvent(e, f); },
+
         "openWindow": function (form, app) {
             _form.openWindow(form, app);
         },
-        "toPage": function (name, par, nohis) {
-            _form.app.toPage(name, par, nohis);
-        },
-        "toPortal": function (portal, page, par) {
-            _form.app.toPortal(portal, page, par);
-        },
+
+        /**打开一个在流转或已完成的流程实例
+         * @method openWork
+         * @static
+         * @see module:form.openWork
+         */
         "openWork": function (id, completedId, title, options) {
             var op = options || {};
             op.workId = id;
@@ -1494,6 +1611,11 @@ MWF.xScript.PageEnvironment = function (ev) {
             op.appId = "process.Work" + (op.workId || op.workCompletedId);
             return layout.desktop.openApplication(this.event, "process.Work", op);
         },
+        /**使用流程的jobId打开工作
+         * @method openJob
+         * @static
+         * @see module:form.openJob
+         */
         "openJob": function (id, choice, options) {
             var workData = null;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function (json) {
@@ -1586,36 +1708,52 @@ MWF.xScript.PageEnvironment = function (ev) {
                 }
             }
         },
+        /**打开一个内容管理文档
+         * @method openDocument
+         * @static
+         * @see module:form.openDocument
+         */
         "openDocument": function (id, title, options) {
             var op = options || {};
             op.documentId = id;
             op.docTitle = title || "";
             layout.desktop.openApplication(this.event, "cms.Document", op);
         },
+        /**打开一个门户页面
+         * @method openPortal
+         * @static
+         * @see module:form.openPortal
+         */
         "openPortal": function (name, page, par) {
             var action = MWF.Actions.get("x_portal_assemble_surface");
             action.getApplication(name, function (json) {
                 if (json.data) {
                     if (page) {
                         action.getPageByName(page, json.data.id, function (pageJson) {
+                            var pageId = (pageJson.data) ? pageJson.data.id : "";
                             layout.desktop.openApplication(null, "portal.Portal", {
                                 "portalId": json.data.id,
-                                "pageId": (pageJson.data) ? pageJson.data.id : "",
+                                "pageId": pageId,
                                 "parameters": par,
-                                "appId": "portal.Portal" + json.data.id
+                                "appId": (par && par.appId) || ("portal.Portal" + json.data.id + pageId)
                             })
                         });
                     } else {
                         layout.desktop.openApplication(null, "portal.Portal", {
                             "portalId": json.data.id,
                             "parameters": par,
-                            "appId": "portal.Portal" + json.data.id
+                            "appId": (par && par.appId) || ("portal.Portal" + json.data.id)
                         })
                     }
                 }
 
             });
         },
+        /**打开一个内容管理栏目（应用）
+         * @method openCMS
+         * @static
+         * @see module:form.openCMS
+         */
         "openCMS": function (name) {
             var action = MWF.Actions.get("x_cms_assemble_control");
             action.getColumn(name, function (json) {
@@ -1627,6 +1765,11 @@ MWF.xScript.PageEnvironment = function (ev) {
                 }
             });
         },
+        /**打开一个流程应用
+         * @method openProcess
+         * @static
+         * @see module:form.openProcess
+         */
         "openProcess": function (name) {
             var action = MWF.Actions.get("x_processplatform_assemble_surface");
             action.getApplication(name, function (json) {
@@ -1638,9 +1781,19 @@ MWF.xScript.PageEnvironment = function (ev) {
                 }
             });
         },
+        /**打开一个任意一个component应用
+         * @method openApplication
+         * @static
+         * @see module:form.openApplication
+         */
         "openApplication": function (name, options) {
             layout.desktop.openApplication(null, name, options);
         },
+        /**创建一个内容管理文档
+         * @method createDocument
+         * @static
+         * @see module:form.createDocument
+         */
         "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
             var column = columnOrOptions;
             var onAfterPublish, onPostPublish;
@@ -1689,6 +1842,11 @@ MWF.xScript.PageEnvironment = function (ev) {
                 starter.load();
             })
         },
+        /**启动一个流程实例
+         * @method startProcess
+         * @static
+         * @see module:form.startProcess
+         */
         "startProcess": function (app, process, data, identity, callback, target, latest) {
             if (arguments.length > 2) {
                 for (var i = 2; i < arguments.length; i++) {
@@ -1747,7 +1905,39 @@ MWF.xScript.PageEnvironment = function (ev) {
                 }
             });
         },
+
+        /**
+         * 在打开的页面的任意脚本中，获取传入的参数。
+         * @member parameters
+         * @static
+         * @return {Boolean} 任意数据类型，根据传入的参数决定。
+         * @o2syntax
+         * var par = this.page.parameters
+         * @example
+         * //打开页面时传入参数：
+         * this.form.openPortal(id, "", {"type": "my type"});
+         *
+         * //在打开的页面的任意脚本中，可以获取parameters：
+         * var par = this.page.parameters;
+         * //par的内容：{"type": "my type"}
+         */
         "parameters": _form.options.parameters,
+
+        /**
+         * 在嵌入部件的时候，可以在主页面上传入参数。通过本方法，可以在对应部件或者部件元素的脚本中获取传入的参数。
+         * @method getWidgetPrameters
+         * @static
+         * @return {Object} 任意数据类型，根据传入的参数决定。
+         * @o2syntax
+         * var par = this.page.getWidgetPrameters();
+         * @example
+         * //在主页面嵌入部件的地方传入参数：
+         * return {"type": "my type"};
+         *
+         * //在对应部件脚本中，可以获取parameters：
+         * var par = this.page.getWidgetPrameters();
+         * //par的内容：{"type": "my type"}
+         */
         "getWidgetPrameters": function () {
             if (!this.target) return null;
             if (!this.target.widget) return null;
@@ -2115,16 +2305,21 @@ MWF.xScript.createDict = function(application){
 
         this.get = function(path, success, failure, async, refresh){
             var value = null;
+
+            if (success===true) async=true;
+            if (failure===true) async=true;
+
             if (!refresh ){
                 var data = MWF.xScript.getDictFromCache( key, path );
                 if( data ){
                     if (success && o2.typeOf(success)=="function") success( data );
-                    return data;
+                    if( !!async ){
+                        return Promise.resolve( data );
+                    }else{
+                        return data;
+                    }
                 }
             }
-
-            if (success===true) async=true;
-            if (failure===true) async=true;
 
             // var cb = function(json){
             //     value = json.data;

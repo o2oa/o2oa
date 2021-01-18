@@ -229,6 +229,10 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 "isTime": false,
                 "target": this.module.designer.content,
                 "format": "%Y-%m-%d",
+                "onClear" : function () {
+                    debugger;
+                    this.setValue(jsondata, node.value, node);
+                }.bind(this),
                 "onComplate": function () {
                     this.setValue(jsondata, node.value, node);
                     //this.validationMode();

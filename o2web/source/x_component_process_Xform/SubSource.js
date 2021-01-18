@@ -1,8 +1,32 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //COMMON.AjaxModule.load("JSONTemplate", null, false);
-MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class({
+/** @class SubSource 子数据源。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var subSource = this.form.get("fieldId"); //获取组件
+ * //方法2
+ * var subSource = this.target; //在组件本身的脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @o2category FormComponents
+ * @o2range {Portal}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Subform# */
+{
     Extends: MWF.APP$Module,
     options: {
+        /**
+         * 加载数据后执行，但这时还未加载下属组件，可以可以使用this.target.data获取数据进行修改。
+         * @event MWF.xApplication.process.Xform.SubSource#postLoadData
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 加载数据、下属组件后执行。
+         * @event MWF.xApplication.process.Xform.SubSource#loadData
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["queryLoad","postLoad","load", "postLoadData", "loadData"]
     },
     load: function(){

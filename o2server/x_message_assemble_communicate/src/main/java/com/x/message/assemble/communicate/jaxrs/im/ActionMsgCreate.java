@@ -102,10 +102,20 @@ public class ActionMsgCreate extends BaseAction {
     private String imMessageBody(IMMsg msg) {
         String json  = msg.getBody();
         IMMessageBody body = gson.fromJson(json, IMMessageBody.class);
-        if ("emoji".equals(body.getType())) {
-            return "[表情]";
-        }else {
+        if ("text".equals(body.getType())) {
             return body.getBody();
+        }else if ("emoji".equals(body.getType())) {
+            return "[表情]";
+        }else if ("image".equals(body.getType())) {
+            return "[图片]";
+        }else if ("audio".equals(body.getType())) {
+            return "[声音]";
+        }else if ("location".equals(body.getType())) {
+            return "[位置]";
+        }else if ("file".equals(body.getType())) {
+            return "[文件]";
+        }else {
+            return "[其它]";
         }
     }
 
@@ -119,6 +129,14 @@ public class ActionMsgCreate extends BaseAction {
     }
 
     public static class IMMessageBody {
+        /**
+         *     text
+         *     emoji
+         *     image
+         *     audio
+         *     location
+         *     file
+         */
         private String type;
         private String body;
 

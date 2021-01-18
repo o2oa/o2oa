@@ -33,9 +33,12 @@ import com.x.organization.core.entity.UnitDuty_;
 
 class ActionListIdentityWithUnitWithName extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionListIdentityWithUnitWithName.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			List<String> names = new ArrayList<>();
@@ -143,20 +146,20 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 	private Wo list(Business business, List<String> names, List<String> units, Boolean recursiveUnit) throws Exception {
 		Wo wo = new Wo();
 		List<UnitDuty> os = new ArrayList<>();
-		if(units.isEmpty()){
+		if (units.isEmpty()) {
 			EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 			Root<UnitDuty> root = cq.from(UnitDuty.class);
 			Predicate p = root.get(UnitDuty_.name).in(names);
 			os = em.createQuery(cq.select(root).where(p)).getResultList();
-		}else{
+		} else {
 			List<Unit> unitList = business.unit().pick(units);
-			if(!unitList.isEmpty()){
+			if (!unitList.isEmpty()) {
 				units.clear();
-				for(Unit unit : unitList){
+				for (Unit unit : unitList) {
 					units.add(unit.getId());
-					if(BooleanUtils.isTrue(recursiveUnit)){
+					if (BooleanUtils.isTrue(recursiveUnit)) {
 						units.addAll(business.unit().listSubNested(unit.getId()));
 					}
 				}

@@ -1,9 +1,12 @@
 package com.x.processplatform.service.processing.jaxrs.snap;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -28,8 +31,10 @@ import com.x.processplatform.core.entity.content.Snap;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.query.core.entity.Item;
@@ -66,14 +71,28 @@ class ActionRestore extends BaseAction {
 				if (null == snap) {
 					throw new ExceptionEntityNotExist(id, Snap.class);
 				}
-				CompletableFuture.allOf(deleteItem(business, snap.getJob()), deleteWork(business, snap.getJob()),
-						deleteTask(business, snap.getJob()), deleteTaskCompleted(business, snap.getJob()),
-						deleteRead(business, snap.getJob()), deleteReadCompleted(business, snap.getJob()),
-						deleteReview(business, snap.getJob()), deleteWorkLog(business, snap.getJob()),
-						deleteRecord(business, snap.getJob()), deleteAttachment(business, snap.getJob()),
-						deleteDocumentVersion(business, snap.getJob())).get();
+				if (Objects.equals(Snap.TYPE_ABANDONEDWORKCOMPLETED, snap.getType())) {
+					CompletableFuture.allOf(deleteItem(business, snap.getJob()),
+							deleteWorkCompleted(business, snap.getJob()), deleteTask(business, snap.getJob()),
+							deleteTaskCompleted(business, snap.getJob()), deleteRead(business, snap.getJob()),
+							deleteReadCompleted(business, snap.getJob()), deleteReview(business, snap.getJob()),
+							deleteWorkLog(business, snap.getJob()), deleteRecord(business, snap.getJob()),
+							deleteAttachment(business, snap.getJob()), deleteDocumentVersion(business, snap.getJob()))
+							.get();
+				} else {
+					CompletableFuture.allOf(deleteItem(business, snap.getJob()), deleteWork(business, snap.getJob()),
+							deleteTask(business, snap.getJob()), deleteTaskCompleted(business, snap.getJob()),
+							deleteRead(business, snap.getJob()), deleteReadCompleted(business, snap.getJob()),
+							deleteReview(business, snap.getJob()), deleteWorkLog(business, snap.getJob()),
+							deleteRecord(business, snap.getJob()), deleteAttachment(business, snap.getJob()),
+							deleteDocumentVersion(business, snap.getJob())).get();
+				}
 				emc.commit();
-				restore(business, snap);
+				if (Objects.equals(Snap.TYPE_ABANDONEDWORKCOMPLETED, snap.getType())) {
+					restoreWorkCompleted(business, snap);
+				} else {
+					restore(business, snap);
+				}
 				emc.commit();
 				emc.beginTransaction(Snap.class);
 				emc.remove(snap, CheckRemoveType.all);
@@ -124,18 +143,23 @@ class ActionRestore extends BaseAction {
 			emc.beginTransaction(Attachment.class);
 			for (Task o : snap.getProperties().getTaskList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.task_create(o);
 			}
 			for (TaskCompleted o : snap.getProperties().getTaskCompletedList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.taskCompleted_create(o);
 			}
 			for (Read o : snap.getProperties().getReadList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.read_create(o);
 			}
 			for (ReadCompleted o : snap.getProperties().getReadCompletedList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.readCompleted_create(o);
 			}
 			for (Review o : snap.getProperties().getReviewList()) {
 				emc.persist(o, CheckPersistType.all);
+				MessageFactory.review_create(o);
 			}
 			for (WorkLog o : snap.getProperties().getWorkLogList()) {
 				emc.persist(o, CheckPersistType.all);
@@ -157,6 +181,50 @@ class ActionRestore extends BaseAction {
 				workDataHelper.update(snap.getProperties().getData());
 			}
 			attachment(business, snap);
+			emc.commit();
+		}
+
+		private void restoreWorkCompleted(Business business, Snap snap) throws Exception {
+			EntityManagerContainer emc = business.entityManagerContainer();
+			emc.beginTransaction(WorkCompleted.class);
+			emc.beginTransaction(TaskCompleted.class);
+			emc.beginTransaction(Read.class);
+			emc.beginTransaction(ReadCompleted.class);
+			emc.beginTransaction(Review.class);
+			emc.beginTransaction(WorkLog.class);
+			emc.beginTransaction(Record.class);
+			emc.beginTransaction(Item.class);
+			emc.beginTransaction(Attachment.class);
+			for (TaskCompleted o : snap.getProperties().getTaskCompletedList()) {
+				emc.persist(o, CheckPersistType.all);
+				MessageFactory.taskCompleted_create(o);
+			}
+			for (Read o : snap.getProperties().getReadList()) {
+				emc.persist(o, CheckPersistType.all);
+				MessageFactory.read_create(o);
+			}
+			for (ReadCompleted o : snap.getProperties().getReadCompletedList()) {
+				emc.persist(o, CheckPersistType.all);
+				MessageFactory.readCompleted_create(o);
+			}
+			for (Review o : snap.getProperties().getReviewList()) {
+				emc.persist(o, CheckPersistType.all);
+				MessageFactory.review_create(o);
+			}
+			for (WorkLog o : snap.getProperties().getWorkLogList()) {
+				emc.persist(o, CheckPersistType.all);
+			}
+			for (Record o : snap.getProperties().getRecordList()) {
+				emc.persist(o, CheckPersistType.all);
+			}
+			for (Attachment o : snap.getProperties().getAttachmentList()) {
+				emc.persist(o, CheckPersistType.all);
+			}
+			emc.persist(snap.getProperties().getWorkCompleted(), CheckPersistType.all);
+			if (BooleanUtils.isNotTrue(snap.getProperties().getWorkCompleted().getMerged())) {
+				WorkDataHelper workDataHelper = new WorkDataHelper(emc, snap.getProperties().getWorkCompleted());
+				workDataHelper.update(snap.getProperties().getData());
+			}
 			emc.commit();
 		}
 	}

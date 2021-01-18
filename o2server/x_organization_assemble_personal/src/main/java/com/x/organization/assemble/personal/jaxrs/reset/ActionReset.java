@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -54,7 +55,7 @@ class ActionReset extends BaseAction {
 				if (!password.matches(Config.person().getPasswordRegex())) {
 					throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
 				}
-				if (!business.instrument().code().validate(person.getMobile(), codeAnswer)) {
+				if (BooleanUtils.isFalse(business.instrument().code().validate(person.getMobile(), codeAnswer))) {
 					throw new ExceptionInvalidCode();
 				}
 			}
@@ -72,8 +73,12 @@ class ActionReset extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -575178712890850120L;
+		@FieldDescribe("用户标识")
 		private String credential;
+		@FieldDescribe("密码")
 		private String password;
+		@FieldDescribe("认证码")
 		private String codeAnswer;
 
 		public String getCredential() {
@@ -103,6 +108,8 @@ class ActionReset extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 7576056375014210316L;
 
 	}
 

@@ -35,13 +35,21 @@ class ActionSetProxy extends BaseAction {
 
 			}
 		}
+		
 		for (Application o : wi.getApplicationList()) {
-			Node node = Config.nodes().get(o.getNode());
+			 Node node = null;
+			if(o.getNode().equalsIgnoreCase("")) {
+				node = Config.nodes().get("127.0.0.1");	
+			}else {
+			    node = Config.nodes().get(o.getNode());
+			}
 			if (null != node) {
 				node.getApplication().setProxyHost(o.getProxyHost());
 				node.getApplication().setProxyPort(o.getProxyPort());
 			}
 		}
+		
+		
 		Config.nodes().save();
 		this.configFlush(effectivePerson);
 		Wo wo = new Wo();

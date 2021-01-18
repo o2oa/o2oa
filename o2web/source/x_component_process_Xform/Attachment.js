@@ -1035,9 +1035,68 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     }
 
 });
-MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
+
+
+/** @class Attachment 附件组件。
+ * @example
+ * //可以在脚本中获取该组件
+ * //方法1：
+ * var attachment = this.form.get("name"); //获取组件
+ * //方法2
+ * var attachment = this.target; //在组件事件脚本中获取
+ * @extends MWF.xApplication.process.Xform.$Module
+ * @o2category FormComponents
+ * @o2range {Process|CMS}
+ * @hideconstructor
+ */
+MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
+    /** @lends MWF.xApplication.process.Xform.Attachment# */
+{
     Extends: MWF.APP$Module,
     options: {
+        /**
+         * @event MWF.xApplication.process.Xform.Attachment#queryLoad
+         * @ignore
+         */
+        /**
+         * @event MWF.xApplication.process.Xform.Attachment#postLoad
+         * @ignore
+         */
+        /**
+         * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
+         * @event MWF.xApplication.process.Xform.Attachment#upload
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 删除附件前触发。本事件中可以通过this.event获取被删附件的数据
+         * @event MWF.xApplication.process.Xform.Attachment#delete
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 删除附件后触发。本事件中可以通过this.event获取被删附件的数据
+         * @event MWF.xApplication.process.Xform.Attachment#afterDelete
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 附件容器加载时触发。
+         * @event MWF.xApplication.process.Xform.Attachment#load
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 附件有变化的时候会被触发，包括上传、删除、排序
+         * @event MWF.xApplication.process.Xform.Attachment#change
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 下载附件后触发。本事件中可以通过this.event获取被下载附件对象
+         * @event MWF.xApplication.process.Xform.Attachment#download
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 打开附件后触发。本事件中可以通过this.event获取被打开附件对象
+         * @event MWF.xApplication.process.Xform.Attachment#open
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open"]
     },
 
@@ -1091,6 +1150,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
         }
         //this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
 
+        /**
+         * @summary 附件容器.
+         * @member {MWF.xApplication.process.Xform.AttachmentController}
+         * @example
+         * var attachmentController = this.form.get("fieldId").AttachmentController; //获取附件容器
+         * var attachmentList = attachmentController.attachments; //获取所有的附件
+         * var attachmentData = attachment[0].data; //获取第一个附件的数据
+         */
         this.attachmentController = new MWF.xApplication.process.Xform.AttachmentController(this.node, this, options);
         this.attachmentController.load();
 
@@ -1138,10 +1205,17 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
             return !data;
         }
     },
+    /**
+     * @summary 获取当前组件所有附件的标题.如果没有附件返回null
+     * @example
+     * var getAttachmentNames = this.form.get("name").getData();
+     * @return {StringArray|Null} 附件标题.
+     */
     getData: function () {
         return (this.attachmentController) ? this.attachmentController.getAttachmentNames() : null;
     },
     createUploadFileNode: function () {
+        debugger;
         var accept = "*";
         if (!this.json.attachmentExtType || (this.json.attachmentExtType.indexOf("other") != -1 && !this.json.attachmentExtOtherType)) {
         } else {
@@ -1609,12 +1683,31 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                 "length": att.data.length,
                 "extension": att.data.extension,
                 "lastUpdateTime": att.data.lastUpdateTime,
-                "activityName": att.data.activityName
+                "activityName": att.data.activityName,
+                "control" : att.data.control
             }
             data.push(o);
         });
         return data;
     },
+    /**
+     * @summary 为组件重新设置附件，该附件必须已经上传。
+     *  @param data {Object}.
+     *  <pre><code class='language-js'>{
+     *     "id": "56c4e86f-a4c8-4cc2-a150-1a0d2c5febcb",   //附件ID
+     *     "name": "133203a2-92e6-4653-9954-161b72ddb7f9.png", //附件名称
+     *     "extension": "png",                             //附件扩展名
+     *     "length": 43864,                                //附件大小
+     *     "person": "xx@huqi@P",                          //附件上传人
+     *     "lastUpdateTime": "2018-09-27 15:50:34",        //最后的修改时间
+     *     "lastUpdatePerson": "xx@huqi@P",                //最后的修改人
+     *     "activity": "e31ad938-c495-45a6-8d77-b8a9b61a165b", //附件上传的活动ID
+     *     "activityName": "申请人",                           //附件上传的活动名称
+     *     "activityType": "manual",                           //附件上传的活动类型
+     *     "site": "$mediaOpinion",                        //附件存储位置（一般用于区分附件在哪个表单元素中显示）
+     *     "type": "image/png"                             //附件类型（contentType）
+     * }</code></pre>
+     */
     setData: function(data){
         this.attachmentController.clear();
         data.each(function (att) {
@@ -1754,6 +1847,15 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
         }
         return true;
     },
+    /**
+     * @summary 根据组件的校验设置进行校验。
+     *  @param {String} [routeName] - 可选，路由名称.
+     *  @example
+     *  if( !this.form.get('fieldId').validation() ){
+     *      return false;
+     *  }
+     *  @return {Boolean} 是否通过校验
+     */
     validation: function (routeName, opinion) {
         if (!this.validationConfig(routeName, opinion)) return false;
 
