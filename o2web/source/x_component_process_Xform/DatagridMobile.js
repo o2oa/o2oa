@@ -933,6 +933,10 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
                     cell = dataRow.insertCell(1);
                 }
             }
+
+            var json = this.form._getDomjson(th);
+            if( json && json.isShow === false )dataRow.hide();
+
             module = null;
         }.bind(this));
 
