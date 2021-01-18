@@ -151,7 +151,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         action.exportViewWithQuery(this.json.viewName, this.json.application, {"filterList": filterData}, function(json){
             var uri = action.action.actions.getViewExcel.uri;
             uri = uri.replace("{flag}", json.data.id);
-            uri = action.action.address+uri;
+            uri = o2.filterUrl( action.action.address+uri );
             var a = new Element("a", {"href": uri, "target":"_blank"});
             a.click();
             a.destroy();
