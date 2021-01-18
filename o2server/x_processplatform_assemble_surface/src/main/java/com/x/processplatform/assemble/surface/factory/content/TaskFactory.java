@@ -20,6 +20,7 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Task_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
+import org.apache.commons.lang3.BooleanUtils;
 
 public class TaskFactory extends AbstractFactory {
 
@@ -122,13 +123,18 @@ public class TaskFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	public List<Task> listWithPersonObject(String person) throws Exception {
+	public List<Task> listWithPersonObject(String person, Boolean isExcludeDraft) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Task.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
 		Root<Task> root = cq.from(Task.class);
 		Predicate p = cb.equal(root.get(Task_.person), person);
-		cq.select(root).where(p);
+		if(BooleanUtils.isTrue(isExcludeDraft)){
+			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)),
+					cb.isNull(root.get(Task_.first)),
+					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
+		}
+		cq.select(root).where(p).orderBy(cb.desc(root.get(Task_.createTime)));
 		return em.createQuery(cq).getResultList();
 	}
 

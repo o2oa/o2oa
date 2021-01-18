@@ -982,15 +982,16 @@ public class TaskAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "获取指定用户当前所有待办.", action = ActionManageListWithPerson.class)
 	@GET
-	@Path("list/person/{person}/manage")
+	@Path("list/person/{person}/exclude/draft/{isExcludeDraft}/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void manageListWithPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("用户") @PathParam("person") String person) {
+			@JaxrsParameterDescribe("用户") @PathParam("person") String person,
+			@JaxrsParameterDescribe("是否排除草稿待办：false(不排除)|true") @PathParam("isExcludeDraft") Boolean isExcludeDraft) {
 		ActionResult<List<ActionManageListWithPerson.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionManageListWithPerson().execute(effectivePerson, person);
+			result = new ActionManageListWithPerson().execute(effectivePerson, person, isExcludeDraft);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1000,17 +1001,18 @@ public class TaskAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "按创建时间查询指定时间段内当前所有待办.", action = ActionManageListWithDateHour.class)
 	@GET
-	@Path("list/date/{date}/hour/{hour}/manage")
+	@Path("list/date/{date}/hour/{hour}/exclude/draft/{isExcludeDraft}/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void manageListWithDateHour(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("日期（如:2020-09-11）") @PathParam("date") String date,
-			@JaxrsParameterDescribe("小时（0-23）") @PathParam("hour") Integer hour) {
+			@JaxrsParameterDescribe("小时（0-23）") @PathParam("hour") Integer hour,
+			@JaxrsParameterDescribe("是否排除草稿待办：false(不排除)|true") @PathParam("isExcludeDraft") Boolean isExcludeDraft) {
 		ActionResult<List<ActionManageListWithDateHour.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionManageListWithDateHour().execute(effectivePerson, date, hour);
+			result = new ActionManageListWithDateHour().execute(effectivePerson, date, hour, isExcludeDraft);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
