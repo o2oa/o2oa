@@ -520,6 +520,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
         if (MWF.AC.isOrganizationManager() || MWF.AC.isPersonManager()){
             this.resetPasswordAction = new Element("div", {"styles": this.style.titleInforResetPasswordNode, "text": this.item.explorer.app.lp.resetPassword}).inject(this.nameNode, "before");
             this.resetPasswordAction.addEvent("click", function(e){this.resetPassword(e);}.bind(this));
+
+            this.unlockPersonAction = new Element("div", {"styles": this.style.titleInforUnlockPersonNode, "text": this.item.explorer.app.lp.unlockPerson}).inject(this.nameNode, "before");
+            this.unlockPersonAction.addEvent("click", function(e){this.unlockPerson(e);}.bind(this));
         }
         if (this.data.control.allowEdit){
             this.iconNode.setStyle("cursor", "pointer");
@@ -541,6 +544,24 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
         var action = MWF.Actions.get("x_organization_assemble_control");
         action.resetPassword(this.data.id, function(){
             var text = this.item.explorer.app.lp.resetPasswordSuccess;
+            text = text.replace("{name}", this.data.name);
+            this.item.explorer.app.notice(text, "success");
+        }.bind(this));
+    },
+    unlockPerson : function(e){
+        var _self = this;
+        var text = this.item.explorer.app.lp.unlockPersonText;
+        text = text.replace("{name}", this.data.name);
+        this.item.explorer.app.confirm("info", e, this.item.explorer.app.lp.unlockPersonTitle, text, "360", "120", function(){
+            _self.doUnlockPerson();
+            this.close();
+        }, function(){
+            this.close();
+        });
+    },
+    doUnlockPerson: function(){
+        MWF.Actions.load("x_organization_assemble_control").PersonAction.unlockPerson(this.data.id, function(){
+            var text = this.item.explorer.app.lp.unlockPersonSuccess;
             text = text.replace("{name}", this.data.name);
             this.item.explorer.app.notice(text, "success");
         }.bind(this));
