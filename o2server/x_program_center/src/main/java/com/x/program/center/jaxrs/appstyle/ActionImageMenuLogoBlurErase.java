@@ -20,12 +20,12 @@ class ActionImageMenuLogoBlurErase extends BaseAction {
 		if (!effectivePerson.isManager()) {
 			throw new ExceptionAccessDenied(effectivePerson.getName());
 		}
-		/* 由于getImages设置了检查,所以只能对images进行处理 */
+		// 由于getImages设置了检查,所以只能对images进行处理
 		Set<Image> images = Config.appStyle().getImages();
-		images = images.stream().filter(img -> {
-			return (!StringUtils.equals(img.getName(), Image.name_index_bottom_menu_logo_blur));
-		}).collect(Collectors.toSet());
-		Config.appStyle().setImages(new TreeSet<Image>(images));
+		images = images.stream()
+				.filter(img -> (!StringUtils.equals(img.getName(), Image.name_index_bottom_menu_logo_blur)))
+				.collect(Collectors.toSet());
+		Config.appStyle().setImages(new TreeSet<>(images));
 		Config.appStyle().save();
 		Config.flush();
 		Wo wo = new Wo();

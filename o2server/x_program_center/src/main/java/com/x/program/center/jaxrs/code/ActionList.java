@@ -34,8 +34,7 @@ class ActionList extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Code> cq = cb.createQuery(Code.class);
 		Root<Code> root = cq.from(Code.class);
-		List<Code> list = em.createQuery(cq.select(root)).getResultList();
-		return list;
+		return em.createQuery(cq.select(root)).getResultList();
 	}
 
 	public static class Wo extends Code {
