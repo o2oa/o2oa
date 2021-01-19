@@ -1614,6 +1614,15 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     showFormVersion: function(){
         this.form.showFormVersion();
     },
+    clearNoDomModule: function(){
+	    var _self = this;
+        this.confirm("warn", new Event(),  MWF.APPFD.LP.clearNoDomModuleTitle, MWF.APPFD.LP.clearNoDomModuleContent, 460, 120, function(){
+            _self.form._clearNoDomModule();
+            this.close();
+        }, function(){
+            this.close();
+        });
+    },
     onPostClose: function(){
         if (this.pcForm){
             MWF.release(this.pcForm.moduleList);
