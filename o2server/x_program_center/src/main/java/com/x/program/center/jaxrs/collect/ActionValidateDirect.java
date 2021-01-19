@@ -16,13 +16,13 @@ class ActionValidateDirect extends BaseAction {
 
 	ActionResult<Wo> execute(JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
+		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
 		wo.setValue(true);
-		if (!this.connect()) {
+		if (BooleanUtils.isNotTrue(this.connect())) {
 			throw new ExceptionUnableConnect();
 		}
 		String name = wi.getName();
@@ -33,7 +33,7 @@ class ActionValidateDirect extends BaseAction {
 		if (StringUtils.isEmpty(password)) {
 			throw new ExceptionPasswordEmpty();
 		}
-		if (!this.validate(name, password)) {
+		if (BooleanUtils.isNotTrue(this.validate(name, password))) {
 			wo.setValue(false);
 		}
 		if (BooleanUtils.isTrue(wo.getValue())) {

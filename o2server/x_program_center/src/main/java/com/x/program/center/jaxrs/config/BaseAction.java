@@ -2,7 +2,7 @@ package com.x.program.center.jaxrs.config;
 
 import java.util.List;
 
-import com.x.base.core.project.Applications;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -10,15 +10,21 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.program.center.ThisApplication;
+
 import net.sf.ehcache.Ehcache;
 
 class BaseAction extends StandardJaxrsAction {
 	public static class AbstractWoProxy extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -4901521017475819615L;
+
+		@FieldDescribe("http协议")
 		private String httpProtocol;
 
+		@FieldDescribe("center服务器")
 		private Center center;
 
+		@FieldDescribe("web服务器")
 		private Web web;
 
 		private List<Application> applicationList;
@@ -160,6 +166,7 @@ class BaseAction extends StandardJaxrsAction {
 		private String node;
 
 		private long lastPoint;
+
 		public long getLastPoint() {
 			return lastPoint;
 		}
