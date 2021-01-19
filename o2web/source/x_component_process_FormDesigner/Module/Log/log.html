@@ -169,6 +169,9 @@
 						<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory && $.sortTypeInCategory=='completedTimeDesc')?'checked':''} type="radio" value="completedTimeDesc" onclick="if (this.checked){
 							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
 						}"/>按时间倒序
+						<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory && $.sortTypeInCategory=='none')?'checked':''} type="radio" value="none" onclick="if (this.checked){
+							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
+						}"/>不排序
 						<!--<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory=='script')?'checked':''} type="radio" value="script" onclick="if (this.checked){-->
 						<!--$('text{$.pid}sortInCategoryScript').setStyle('display', 'block');-->
 						<!--}"/>脚本-->
