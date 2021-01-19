@@ -17,7 +17,7 @@ concat = require('gulp-concat');
 var through2 = require('through2');
 var path = require('path');
 var sourceMap = require('gulp-sourcemaps');
-
+var git = require('gulp-git');
 
 var assetRev = require('gulp-tm-asset-rev');
 var apps = require('./gulpapps.js');
@@ -936,72 +936,94 @@ gulp.task("index", function () {
 });
 gulp.task("cleanAll", getCleanTask('/'));
 
+function getGitV(){
+    var tagPromise = new Promise(function(s){
+        git.exec({args : 'describe --tag'}, function (err, stdout) {
+            var v = stdout.substring(0, stdout.indexOf("-"));
+            s(v);
+        });
+    });
+    var revPromise = new Promise(function(s){
+        git.exec({args : 'rev-parse --short HEAD'}, function (err, hash) {
+            s(hash.trim());
+        });
+    });
+    return Promise.all([tagPromise,revPromise])
+}
+
 gulp.task("o2:new-v:html", function () {
     var path = "x_desktop";
-    var src = '/source/x_desktop/*.html';
+    var src = 'source/x_desktop/*.html';
     var dest = options.dest + '/x_desktop/';
-    return gulp.src(src)
-        .pipe(assetRev())
-        .pipe(gulpif((options.upload == 'local' && options.location != ''), gulp.dest(options.location + path + '/')))
-        .pipe(gulpif((options.upload == 'ftp' && options.host != ''), ftp({
-            host: options.host,
-            user: options.user || 'anonymous',
-            pass: options.pass || '@anonymous',
-            port: options.port || 21,
-            remotePath: (options.remotePath || '/') + path
-        })))
-        .pipe(gulpif((options.upload == 'sftp' && options.host != ''), sftp({
-            host: options.host,
-            user: options.user || 'anonymous',
-            pass: options.pass || null,
-            port: options.port || 22,
-            remotePath: (options.remotePath || '/') + path
-        })))
-        .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
 
+    return getGitV().then(function(arr) {
+        return gulp.src(src)
+            .pipe(assetRev({"verConnecter": arr[0], "md5": arr[1]}))
+            .pipe(gulpif((options.upload == 'local' && options.location != ''), gulp.dest(options.location + path + '/')))
+            .pipe(gulpif((options.upload == 'ftp' && options.host != ''), ftp({
+                host: options.host,
+                user: options.user || 'anonymous',
+                pass: options.pass || '@anonymous',
+                port: options.port || 21,
+                remotePath: (options.remotePath || '/') + path
+            })))
+            .pipe(gulpif((options.upload == 'sftp' && options.host != ''), sftp({
+                host: options.host,
+                user: options.user || 'anonymous',
+                pass: options.pass || null,
+                port: options.port || 22,
+                remotePath: (options.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+            .pipe(gutil.noop());
+    });
 });
+
 gulp.task("o2:new-v:o2", function () {
     var path = "o2_core";
     var src = options.dest +'/o2_core/o2.js';
     var dest = options.dest +'/o2_core/';
-    return gulp.src(src)
-        .pipe(assetRev())
-        .pipe(gulpif((options.upload == 'local' && options.location != ''), gulp.dest(options.location + path + '/')))
-        .pipe(gulpif((options.upload == 'ftp' && options.host != ''), ftp({
-            host: options.host,
-            user: options.user || 'anonymous',
-            pass: options.pass || '@anonymous',
-            port: options.port || 21,
-            remotePath: (options.remotePath || '/') + path
-        })))
-        .pipe(gulpif((options.upload == 'sftp' && options.host != ''), sftp({
-            host: options.host,
-            user: options.user || 'anonymous',
-            pass: options.pass || null,
-            port: options.port || 22,
-            remotePath: (options.remotePath || '/') + path
-        })))
-        .pipe(gulp.dest(dest))
-        .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
-        .pipe(gulpif((options.upload == 'local' && options.location != ''), gulp.dest(options.location + path + '/')))
-        .pipe(gulpif((options.upload == 'ftp' && options.host != ''), ftp({
-            host: options.host,
-            user: options.user || 'anonymous',
-            pass: options.pass || '@anonymous',
-            port: options.port || 21,
-            remotePath: (options.remotePath || '/') + path
-        })))
-        .pipe(gulpif((options.upload == 'sftp' && options.host != ''), sftp({
-            host: options.host,
-            user: options.user || 'anonymous',
-            pass: options.pass || null,
-            port: options.port || 22,
-            remotePath: (options.remotePath || '/') + path
-        })))
-        .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
+
+    return getGitV().then(function(arr){
+        var v = arr[0]+"-"+arr[1];
+        return gulp.src(src)
+            .pipe(assetRev({"verConnecter": arr[0], "md5": arr[1], "replace": true}))
+            .pipe(gulpif((options.upload == 'local' && options.location != ''), gulp.dest(options.location + path + '/')))
+            .pipe(gulpif((options.upload == 'ftp' && options.host != ''), ftp({
+                host: options.host,
+                user: options.user || 'anonymous',
+                pass: options.pass || '@anonymous',
+                port: options.port || 21,
+                remotePath: (options.remotePath || '/') + path
+            })))
+            .pipe(gulpif((options.upload == 'sftp' && options.host != ''), sftp({
+                host: options.host,
+                user: options.user || 'anonymous',
+                pass: options.pass || null,
+                port: options.port || 22,
+                remotePath: (options.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+            .pipe(uglify())
+            .pipe(rename({ extname: '.min.js' }))
+            .pipe(gulpif((options.upload == 'local' && options.location != ''), gulp.dest(options.location + path + '/')))
+            .pipe(gulpif((options.upload == 'ftp' && options.host != ''), ftp({
+                host: options.host,
+                user: options.user || 'anonymous',
+                pass: options.pass || '@anonymous',
+                port: options.port || 21,
+                remotePath: (options.remotePath || '/') + path
+            })))
+            .pipe(gulpif((options.upload == 'sftp' && options.host != ''), sftp({
+                host: options.host,
+                user: options.user || 'anonymous',
+                pass: options.pass || null,
+                port: options.port || 22,
+                remotePath: (options.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+            .pipe(gutil.noop());
+    });
 });
 gulp.task("o2:new-v", gulp.parallel("o2:new-v:o2", "o2:new-v:html"));
 
