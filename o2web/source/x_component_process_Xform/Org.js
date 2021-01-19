@@ -240,14 +240,14 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                     if (duty.code) par = this.form.Macro.exec(duty.code, this);
                     if (par){
                         var pars = (o2.typeOf(par)=="array") ? par : [par];
-                        var promise = o2.promiseAll(pars).then(function(p){
+                        var promise = Promise.all(pars).then(function(p){
                             var uName = p.distinguishedName || p;
                             if (o2.typeOf(p)=="array") uName = p[0].distinguishedName || p[0];
                             var code = "return this.org.getDuty(\""+duty.name+"\", \""+uName+"\", true)";
                             var r = (!!uName) ? this.form.Macro.exec(code, this) : "";
 
                             var rs = (o2.typeOf(r)=="array") ? r : [r];
-                            return o2.promiseAll(rs).then(function(d){
+                            return Promise.all(rs).then(function(d){
                                 if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
                                 var arr = [];
                                 d.each(function(dd){
