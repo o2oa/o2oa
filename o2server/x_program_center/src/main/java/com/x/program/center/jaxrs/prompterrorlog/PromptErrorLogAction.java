@@ -136,7 +136,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定应用当前用户的Task对象,下一页.", action = ActionListNextWithLoggerName.class)
+	@JaxrsMethodDescribe(value = "列示指定loggerName错误,下一页.", action = ActionListNextWithLoggerName.class)
 	@GET
 	@Path("list/{id}/next/{count}/loggername/{loggerName}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -156,7 +156,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定应用当前用户的Task对象,上一页.", action = ActionListPrevWithLoggerName.class)
+	@JaxrsMethodDescribe(value = "列示指定loggerName错误,上一页.", action = ActionListPrevWithLoggerName.class)
 	@GET
 	@Path("list/{id}/prev/{count}/loggername/{loggerName}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -176,7 +176,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定应用当前用户的Task对象,下一页.", action = ActionListNextWithExceptionClass.class)
+	@JaxrsMethodDescribe(value = "列示指定exceptionClass错误,下一页.", action = ActionListNextWithExceptionClass.class)
 	@GET
 	@Path("list/{id}/next/{count}/exceptionclass/{exceptionClass}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -196,7 +196,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定应用当前用户的Task对象,上一页.", action = ActionListPrevWithExceptionClass.class)
+	@JaxrsMethodDescribe(value = "列示指定exceptionClass错误,上一页.", action = ActionListPrevWithExceptionClass.class)
 	@GET
 	@Path("list/{id}/prev/{count}/exceptionclass/{exceptionClass}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

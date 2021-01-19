@@ -158,25 +158,6 @@ public class AppStyleAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-//	@JaxrsMethodDescribe(value = "设置图片:所有应用中出现的人员头像默认图片,120x120.", action = ActionImagePeopleAvatarDefault.class)
-//	@PUT
-//	@Path("image/people/avatar/default")
-//	@Consumes(MediaType.MULTIPART_FORM_DATA)
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	public void imagePeopleAvatarDefault(@Suspended final AsyncResponse asyncResponse,
-//			@Context HttpServletRequest request, @FormDataParam(FILE_FIELD) final byte[] bytes,
-//			@JaxrsParameterDescribe("图片文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
-//		ActionResult<ActionImagePeopleAvatarDefault.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionImagePeopleAvatarDefault().execute(effectivePerson, bytes, disposition);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
-
 	@JaxrsMethodDescribe(value = "设置图片:流程、应用的默认图片,90x90.", action = ActionImageProcessDefault.class)
 	@PUT
 	@Path("image/process/default")
@@ -286,24 +267,6 @@ public class AppStyleAction extends BaseAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
-//	@JaxrsMethodDescribe(value = "设置图片:所有应用中出现的人员头像默认图片.", action = ActionImagePeopleAvatarDefaultErase.class)
-//	@GET
-//	@Path("image/people/avatar/default/erase")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void imagePeopleAvatarDefaultErase(@Suspended final AsyncResponse asyncResponse,
-//			@Context HttpServletRequest request) {
-//		ActionResult<ActionImagePeopleAvatarDefaultErase.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionImagePeopleAvatarDefaultErase().execute(effectivePerson);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
 
 	@JaxrsMethodDescribe(value = "设置图片:流程、应用的默认图片.", action = ActionImageProcessDefaultErase.class)
 	@GET

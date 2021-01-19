@@ -18,8 +18,8 @@ class ActionUpdate extends BaseAction {
 			FormDataContentDisposition disposition) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			/* 判断当前用户是否有权限访问 */
-			if(!business.serviceControlAble(effectivePerson)) {
+			// 判断当前用户是否有权限访问
+			if (!business.serviceControlAble(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			ActionResult<Wo> result = new ActionResult<>();
@@ -31,7 +31,6 @@ class ActionUpdate extends BaseAction {
 			String text = new String(bytes, DefaultCharset.name);
 			emc.beginTransaction(Agent.class);
 			agent.setText(text);
-			// this.addComment(agent);
 			emc.commit();
 			wo.setId(agent.getId());
 			result.setData(wo);

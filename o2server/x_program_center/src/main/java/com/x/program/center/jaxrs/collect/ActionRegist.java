@@ -28,10 +28,10 @@ class ActionRegist extends BaseAction {
 		String password = wi.getPassword();
 		String mobile = wi.getMobile();
 		String codeAnswer = wi.getCodeAnswer();
-		if (!this.connect()) {
+		if (BooleanUtils.isNotTrue(this.connect())) {
 			throw new ExceptionUnableConnect();
 		}
-		if (this.exist(name)) {
+		if (BooleanUtils.isTrue(this.exist(name))) {
 			throw new ExceptionNameExist(name);
 		}
 		if (!password.matches(Person.DEFAULT_PASSWORDREGEX)) {
@@ -51,7 +51,7 @@ class ActionRegist extends BaseAction {
 			Config.collect().setPassword(password);
 			Config.collect().save();
 			this.configFlush(effectivePerson);
-			/* 人员和应用市场同步 */
+			// 人员和应用市场同步
 			ThisApplication.context().scheduleLocal(CollectPerson.class);
 			ThisApplication.context().scheduleLocal(CollectMarket.class);
 		}
