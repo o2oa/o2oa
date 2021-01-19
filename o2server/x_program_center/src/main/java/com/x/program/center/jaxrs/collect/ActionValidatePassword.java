@@ -20,16 +20,20 @@ class ActionValidatePassword extends BaseAction {
 		}
 		if (!password.matches(Person.DEFAULT_PASSWORDREGEX)) {
 			wo.setValue(Person.DEFAULT_PASSWORDREGEXHINT);
-		}		
+		}
 		result.setData(wo);
 		return result;
 	}
 
 	public static class Wi extends Collect {
 
+		private static final long serialVersionUID = 2474013087563030882L;
+
 	}
 
 	public static class Wo extends WrapString {
+
+		private static final long serialVersionUID = -4278484613148265915L;
 	}
 
 }

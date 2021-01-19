@@ -33,7 +33,7 @@ import com.x.program.center.Business;
 
 class ActionCurrentStyle extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectiveperson) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -43,11 +43,11 @@ class ActionCurrentStyle extends BaseAction {
 				Portal portal = business.entityManagerContainer().flag(appStyle.getIndexPortal(), Portal.class);
 				if (null != portal && StringUtils.isNotEmpty(portal.getFirstPage())) {
 					Page page = business.entityManagerContainer().find(portal.getFirstPage(), Page.class);
-					/* 设置了indexPortal就不判断hasMobile */
+					// 设置了indexPortal就不判断hasMobile
 					if (null != page) {
 						wo.setIndexType(AppStyle.INDEXTYPE_PORTAL);
 						wo.setIndexPortal(portal.getId());
-						/** 兼容值后期废弃 */
+						// 兼容值后期废弃
 						wo.setIndexId(portal.getId());
 					}
 				}
@@ -60,7 +60,10 @@ class ActionCurrentStyle extends BaseAction {
 	}
 
 	public static class Wo extends AppStyle {
-		/** 兼容值后期废弃 */
+
+		private static final long serialVersionUID = 1100871693389441652L;
+
+		// 兼容值后期废弃
 		private String indexId;
 
 		static WrapCopier<AppStyle, Wo> copier = WrapCopierFactory.wo(AppStyle.class, Wo.class, null,

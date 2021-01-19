@@ -1,12 +1,10 @@
 package com.x.program.center.jaxrs.collect;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.program.center.ThisApplication;
-import com.x.program.center.schedule.CollectMarket;
-import com.x.program.center.schedule.CollectPerson;
-import org.apache.commons.lang3.BooleanUtils;
 
 class ActionValidate extends BaseAction {
 
@@ -14,20 +12,15 @@ class ActionValidate extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		wo.setValue(true);
-		if (!this.connect()) {
+		if (BooleanUtils.isNotTrue(this.connect())) {
 			wo.setValue(false);
 		}
-		if(BooleanUtils.isFalse(Config.collect().getEnable())){
+		if (BooleanUtils.isFalse(Config.collect().getEnable())) {
 			wo.setValue(false);
 		}
-		if (!this.validate(Config.collect().getName(), Config.collect().getPassword())) {
+		if (BooleanUtils.isNotTrue(this.validate(Config.collect().getName(), Config.collect().getPassword()))) {
 			wo.setValue(false);
 		}
-		/*if (BooleanUtils.isTrue(wo.getValue())) {
-			*//* 人员和应用市场同步 *//*
-			ThisApplication.context().scheduleLocal(CollectPerson.class);
-			ThisApplication.context().scheduleLocal(CollectMarket.class);
-		}*/
 		result.setData(wo);
 		return result;
 	}

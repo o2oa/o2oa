@@ -34,7 +34,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					.collect(Collectors.toList());
 			return os;
 		} else {
-			return new ArrayList<Portal>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -44,9 +44,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Page> root = cq.from(Page.class);
 		Predicate p = cb.conjunction();
-		// Predicate p = cb.equal(root.get(Page_.hasMobile), true);
-		List<String> os = em.createQuery(cq.select(root.get(Page_.id)).where(p)).getResultList();
-		return os;
+		return em.createQuery(cq.select(root.get(Page_.id)).where(p)).getResultList();
 	}
 
 }
