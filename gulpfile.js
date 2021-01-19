@@ -23,6 +23,8 @@ var through2 = require('through2');
 var path = require('path');
 var sourceMap = require('gulp-sourcemaps');
 
+var git = require('gulp-git');
+
 //var downloadHost = "download.o2oa.net";
 // var downloadHost = "release.o2oa.net";
 // var protocol = "http";
@@ -798,14 +800,31 @@ exports.build_concat = gulp.parallel(
     gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean)
 );
 
+function getGitV(){
+    var tagPromise = new Promise(function(s){
+        git.exec({args : 'describe --tag'}, function (err, stdout) {
+            var v = stdout.substring(0, stdout.indexOf("-"));
+            s(v);
+        });
+    });
+    var revPromise = new Promise(function(s){
+        git.exec({args : 'rev-parse --short HEAD'}, function (err, hash) {
+            s(hash.trim());
+        });
+    });
+    return Promise.all([tagPromise,revPromise])
+}
 
 function build_web_v_html() {
     var src = 'o2web/source/x_desktop/*.html';
     var dest = 'target/o2server/servers/webServer/x_desktop/';
-    return gulp.src(src)
-        .pipe(assetRev())
-        .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
+
+    return getGitV().then(function(arr){
+        return gulp.src(src)
+            .pipe(assetRev({"verConnecter": arr[0], "md5": arr[1]}))
+            .pipe(gulp.dest(dest))
+            .pipe(gutil.noop());
+    });
 }
 function build_web_api() {
     var src = 'o2web/api/**/*';
@@ -813,16 +832,31 @@ function build_web_api() {
     return gulp.src(src)
         .pipe(gulp.dest(dest))
 }
+
+function build_doc(){
+    return getGitV().then(function(arr){
+        return (shell.task('jsdoc -c o2web/jsdoc.conf.json -q version='+arr[0]+'-'+arr[1]))();
+    });
+}
+exports.build_api = gulp.series(build_doc, build_web_api);
+
+
 function build_web_v_o2() {
-    var src = 'target/o2server/servers/webServer/o2_core//o2.js';
+    var src = [
+        'target/o2server/servers/webServer/o2_core/o2.js',
+        'target/o2server/servers/webServer/o2_core/o2.min.js'
+    ];
     var dest = 'target/o2server/servers/webServer/o2_core/';
-    return gulp.src(src)
-        .pipe(assetRev())
-        .pipe(gulp.dest(dest))
-        .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
-        .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
+
+    return getGitV().then(function(arr){
+        return gulp.src(src)
+            .pipe(assetRev({"verConnecter": arr[0], "md5": arr[1], "replace": true}))
+            //.pipe(gulp.dest(dest))
+            // .pipe(uglify())
+            // .pipe(rename({ extname: '.min.js' }))
+            // .pipe(gulp.dest(dest))
+            .pipe(gutil.noop());
+    });
 }
 
 
@@ -907,7 +941,7 @@ exports.build_web = gulp.series(
         build_bundle
     ),
     build_web_v_html,
-    build_web_api,
+    build_api,
     build_web_v_o2);
 
 if (os.platform().indexOf("win")==-1){
