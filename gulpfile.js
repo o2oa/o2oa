@@ -941,7 +941,7 @@ exports.build_web = gulp.series(
         build_bundle
     ),
     build_web_v_html,
-    build_api,
+    gulp.series(build_doc, build_web_api),
     build_web_v_o2);
 
 if (os.platform().indexOf("win")==-1){
