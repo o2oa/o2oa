@@ -46,7 +46,7 @@ class ActionPostLogin extends BaseAction {
 				throw new ExceptionClientEmpty();
 			}
 			if (StringUtils.isEmpty(wi.getToken())) {
-				throw new ExceptionTokenEmpty();
+				throw new ExceptionEmptyToken();
 			}
 			Sso sso = Config.token().findSso(wi.getClient());
 			if (null == sso) {
@@ -66,7 +66,7 @@ class ActionPostLogin extends BaseAction {
 			flag = URLDecoder.decode(flag, "UTF-8");
 			String timeString = StringUtils.substringAfter(content, "#");
 			if (StringUtils.isEmpty(flag)) {
-				throw new ExceptionTokenFlagEmpty();
+				throw new ExceptionEmptyCredential();
 			}
 			Date date = new Date(Long.parseLong(timeString));
 			Date now = new Date();
