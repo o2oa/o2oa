@@ -246,8 +246,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                             var code = "return this.org.getDuty(\""+duty.name+"\", \""+uName+"\", true)";
                             var r = (!!uName) ? this.form.Macro.exec(code, this) : "";
 
-                            var rs = (o2.typeOf(r)=="array") ? r : [r];
-                            return Promise.all(rs).then(function(d){
+                            var m = (o2.typeOf(r)=="array") ? "all" : "resolve";
+                            return Promise[m](r).then(function(d){
                                 if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
                                 var arr = [];
                                 d.each(function(dd){
