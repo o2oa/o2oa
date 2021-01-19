@@ -16,7 +16,7 @@ class ActionToken extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
-		String value = wi.getName() + "#" + wi.getDate().getTime();
+		String value = wi.getPerson() + "#" + wi.getDate().getTime();
 		wo.setValue(Crypto.encrypt(value, wi.getKey()));
 		result.setData(wo);
 		return result;
@@ -26,8 +26,8 @@ class ActionToken extends BaseAction {
 
 		private static final long serialVersionUID = -251331390296713913L;
 
-		@FieldDescribe("名称")
-		private String name;
+		@FieldDescribe("用户标识")
+		private String person;
 
 		@FieldDescribe("时间,如果为空那么采用当前时间.")
 		private Date date;
@@ -39,12 +39,12 @@ class ActionToken extends BaseAction {
 		@FieldDescribe("密钥")
 		private String key;
 
-		public String getName() {
-			return name;
+		public String getPerson() {
+			return person;
 		}
 
-		public void setName(String name) {
-			this.name = name;
+		public void setPerson(String person) {
+			this.person = person;
 		}
 
 		public String getKey() {
