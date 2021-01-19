@@ -20,12 +20,12 @@ class ActionImageLaunchLogoErase extends BaseAction {
 		if (!effectivePerson.isManager()) {
 			throw new ExceptionAccessDenied(effectivePerson.getName());
 		}
-		/* 由于getImages设置了检查,所以只能对images进行处理 */
+		// 由于getImages设置了检查,所以只能对images进行处理
 		Set<Image> images = Config.appStyle().getImages();
 		images = images.stream().filter(img -> {
 			return (!StringUtils.equals(img.getName(), Image.name_launch_logo));
 		}).collect(Collectors.toSet());
-		Config.appStyle().setImages(new TreeSet<Image>(images));
+		Config.appStyle().setImages(new TreeSet<>(images));
 		Config.appStyle().save();
 		Config.flush();
 		Wo wo = new Wo();

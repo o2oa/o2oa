@@ -30,30 +30,7 @@ class ActionDispatch extends BaseAction {
 		Map<String, List<String>> map = (Map<String, List<String>>) Config.resource(Config.RESOURCE_CONTAINERENTITIES);
 		for (Entry<String, List<String>> entry : map.entrySet()) {
 			if (entry.getValue().contains(wi.getClassName())) {
-				List<Application> apps = ThisApplication.context().applications().get(entry.getKey());
-				if (ListTools.isNotEmpty(apps)) {
-					apps.stream().forEach(o -> {
-						String url = o.getUrlJaxrsRoot() + "cache";
-						logger.debug("dispatch cache request to : {}", url);
-						try {
-							CipherConnectionAction.put(effectivePerson.getDebugger(), url, wi);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					});
-				}else{
-					logger.debug("{}通知center更新自身缓存=={}", wi.getClassName(), entry.getKey());
-					List<Entry<String, CenterServer>> centerList = Config.nodes().centerServers().orderedEntry();
-					for (Entry<String, CenterServer> centerEntry : centerList) {
-						try {
-							CipherConnectionAction.put(effectivePerson.getDebugger(),
-									Config.url_x_program_center_jaxrs(centerEntry, "cache"),wi);
-
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}
+				dispatch(effectivePerson, wi, entry, ThisApplication.context().applications().get(entry.getKey()));
 			}
 		}
 		Wo wo = new Wo();
@@ -62,10 +39,41 @@ class ActionDispatch extends BaseAction {
 		return result;
 	}
 
+	private void dispatch(EffectivePerson effectivePerson, Wi wi, Entry<String, List<String>> entry,
+			List<Application> apps) throws Exception {
+		if (ListTools.isNotEmpty(apps)) {
+			apps.stream().forEach(o -> {
+				String url = o.getUrlJaxrsRoot() + "cache";
+				logger.debug("dispatch cache request to : {}", url);
+				try {
+					CipherConnectionAction.put(effectivePerson.getDebugger(), url, wi);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		} else {
+			logger.debug("{}通知center更新自身缓存:{}", wi.getClassName(), entry.getKey());
+			List<Entry<String, CenterServer>> centerList = Config.nodes().centerServers().orderedEntry();
+			for (Entry<String, CenterServer> centerEntry : centerList) {
+				try {
+					CipherConnectionAction.put(effectivePerson.getDebugger(),
+							Config.url_x_program_center_jaxrs(centerEntry, "cache"), wi);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 	public static class Wi extends WrapClearCacheRequest {
+
+		private static final long serialVersionUID = 2433450688317735973L;
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -7259210154112758607L;
 
 	}
 

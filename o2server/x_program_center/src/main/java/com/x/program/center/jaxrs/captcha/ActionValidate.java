@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -13,7 +14,7 @@ class ActionValidate extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String answer) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			if (effectivePerson.isNotManager()) {
-				throw new Exception("insufficient permissions.");
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
@@ -21,7 +22,7 @@ class ActionValidate extends BaseAction {
 			if (null == captcha) {
 				wo.setValue(false);
 			} else {
-				Boolean match = this.check(captcha.getAnswer(), answer);
+				boolean match = this.check(captcha.getAnswer(), answer);
 				if (match) {
 					emc.beginTransaction(Captcha.class);
 					emc.remove(captcha);

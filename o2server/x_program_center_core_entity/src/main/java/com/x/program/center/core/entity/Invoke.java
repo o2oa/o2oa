@@ -13,6 +13,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.JpaObject;
@@ -22,6 +23,7 @@ import com.x.base.core.entity.annotation.CitationNotExist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.StringTools;
 
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -51,12 +53,10 @@ public class Invoke extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		if (StringUtils.isEmpty(this.key)) {
+			this.key = StringTools.uniqueToken();
+		}
 	}
-
-	/* 更新运行方法 */
-
-	/* flag标志位 */
-	/* Entity 默认字段结束 */
 
 	public static final String name_FIELDNAME = "name";
 	@Flag
@@ -66,12 +66,24 @@ public class Invoke extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	private String name;
 
+	public static final String key_FIELDNAME = "key";
+	@FieldDescribe("进行验证时使用的key.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + key_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String key;
+
+	public static final String enableToken_FIELDNAME = "enableToken";
+	@FieldDescribe("进行验证时使用的key.")
+	@Column(name = ColumnNamePrefix + enableToken_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean enableToken = false;
+
 	public static final String alias_FIELDNAME = "alias";
 	@Flag
 	@FieldDescribe("别名.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
-	/* 检查在同一应用下不能重名 */
+	// 检查在同一应用下不能重名
 	@CitationNotExist(fields = { "name", "id", "alias" }, type = Invoke.class))
 	private String alias;
 
@@ -193,6 +205,22 @@ public class Invoke extends SliceJpaObject {
 
 	public void setRemoteAddrRegex(String remoteAddrRegex) {
 		this.remoteAddrRegex = remoteAddrRegex;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public Boolean getEnableToken() {
+		return enableToken;
+	}
+
+	public void setEnableToken(Boolean enableToken) {
+		this.enableToken = enableToken;
 	}
 
 }
