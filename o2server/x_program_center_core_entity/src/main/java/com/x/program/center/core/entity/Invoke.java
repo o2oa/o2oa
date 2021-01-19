@@ -13,7 +13,6 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.JpaObject;
@@ -23,7 +22,6 @@ import com.x.base.core.entity.annotation.CitationNotExist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.StringTools;
 
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -50,12 +48,8 @@ public class Invoke extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
-	/* 以上为 JpaObject 默认字段 */
-
 	public void onPersist() throws Exception {
-		if (StringUtils.isEmpty(this.key)) {
-			this.key = StringTools.uniqueToken();
-		}
+
 	}
 
 	public static final String name_FIELDNAME = "name";
@@ -66,14 +60,8 @@ public class Invoke extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	private String name;
 
-	public static final String key_FIELDNAME = "key";
-	@FieldDescribe("进行验证时使用的key.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + key_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String key;
-
 	public static final String enableToken_FIELDNAME = "enableToken";
-	@FieldDescribe("进行验证时使用的key.")
+	@FieldDescribe("是否启用token验证.")
 	@Column(name = ColumnNamePrefix + enableToken_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean enableToken = false;
@@ -205,14 +193,6 @@ public class Invoke extends SliceJpaObject {
 
 	public void setRemoteAddrRegex(String remoteAddrRegex) {
 		this.remoteAddrRegex = remoteAddrRegex;
-	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
 	}
 
 	public Boolean getEnableToken() {

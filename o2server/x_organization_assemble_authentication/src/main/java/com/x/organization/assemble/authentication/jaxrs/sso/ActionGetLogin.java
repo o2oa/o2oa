@@ -40,8 +40,8 @@ class ActionGetLogin extends BaseAction {
 			if (StringUtils.isEmpty(client)) {
 				throw new ExceptionClientEmpty();
 			}
-			if (StringUtils.isEmpty(client)) {
-				throw new ExceptionTokenEmpty();
+			if (StringUtils.isEmpty(token)) {
+				throw new ExceptionEmptyToken();
 			}
 			Sso sso = Config.token().findSso(client);
 			if (null == sso) {
@@ -63,7 +63,7 @@ class ActionGetLogin extends BaseAction {
 			flag = URLDecoder.decode(flag, "UTF-8");
 			String timeString = StringUtils.substringAfter(content, "#");
 			if (StringUtils.isEmpty(flag)) {
-				throw new ExceptionTokenFlagEmpty();
+				throw new ExceptionEmptyCredential();
 			}
 			Date date = new Date(Long.parseLong(timeString));
 			Date now = new Date();
