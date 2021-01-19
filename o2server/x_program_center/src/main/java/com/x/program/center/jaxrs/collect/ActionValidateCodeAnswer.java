@@ -1,8 +1,10 @@
 package com.x.program.center.jaxrs.collect;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -23,10 +25,10 @@ class ActionValidateCodeAnswer extends BaseAction {
 		if (StringUtils.isEmpty(codeAnswer)) {
 			throw new CodeAnswerEmptyException();
 		}
-		if (!this.connect()) {
+		if (BooleanUtils.isNotTrue(this.connect())) {
 			throw new ExceptionUnableConnect();
 		}
-		if (!this.validateCodeAnswer(mobile, codeAnswer)) {
+		if (BooleanUtils.isNotTrue(this.validateCodeAnswer(mobile, codeAnswer))) {
 			wo.setValue(false);
 		}
 		result.setData(wo);
@@ -35,8 +37,12 @@ class ActionValidateCodeAnswer extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -2372766347222201401L;
+
+		@FieldDescribe("手机号码")
 		private String mobile;
 
+		@FieldDescribe("短信认证码")
 		private String codeAnswer;
 
 		public String getMobile() {

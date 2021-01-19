@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.invoke;
 
+import java.net.URLDecoder;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,13 +17,16 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Crypto;
 import com.x.program.center.core.entity.Invoke;
 
-class ActionExecute extends BaseAction {
+class ActionExecuteToken extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionExecuteToken.class);
 
-	ActionResult<Object> execute(HttpServletRequest request, EffectivePerson effectivePerson, String flag,
+	private static final String SPLIT = "#";
+
+	ActionResult<Object> execute(HttpServletRequest request, EffectivePerson effectivePerson, String flag, String token,
 			JsonElement jsonElement) throws Exception {
 
 		CacheCategory cacheCategory = new CacheCategory(Invoke.class);
@@ -42,11 +47,26 @@ class ActionExecute extends BaseAction {
 				throw new ExceptionInvalidRemoteAddr(request.getRemoteAddr(), invoke.getName());
 			}
 		}
-		
-		if (BooleanUtils.isTrue(invoke.getEnableToken())) {
-			throw new ExceptionEnableToken(invoke.getName());
+
+		String content = Crypto.decrypt(token, invoke.getKey());
+
+		String name = URLDecoder.decode(StringUtils.substringBefore(content, SPLIT), "UTF-8");
+		String timeString = StringUtils.substringAfter(content, SPLIT);
+		if (StringUtils.isEmpty(name)) {
+			throw new ExceptionTokenNameEmpty();
+		}
+
+		if (!StringUtils.equalsIgnoreCase(name, invoke.getName())) {
+			throw new ExceptionTokenNameNotMatch(name);
+		}
+
+		Date date = new Date(Long.parseLong(timeString));
+		Date now = new Date();
+		if (Math.abs((now.getTime() - date.getTime())) >= (60000 * 15)) {
+			throw new ExceptionTokenExpired();
 		}
 
 		return executeInvoke(request, effectivePerson, jsonElement, cacheCategory, invoke);
 	}
+
 }
