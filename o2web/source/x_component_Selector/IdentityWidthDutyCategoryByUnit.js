@@ -18,6 +18,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         "selectAllEnable": true, //分类是否允许全选下一层
         "exclude": [],
         "dutyUnitLevelBy": "duty", //组织层级是按身份所在群组还是职务,
+        "identitySortBy" : "identityNumber", //身份排序按身份排序号，还是传入的duty
         "selectType": "identity"
     },
     _init: function () {
@@ -368,23 +369,53 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         return unitTree;
     },
     uniqueIdentity: function (tree) {
+
         var map = {};
-        var isExist = function (d) {
+        var indexMap = {};
+
+        var isExist = function (d, index) {
             if ((d.distinguishedName && map[d.distinguishedName]) ||
                 (d.levelName && map[d.levelName]) ||
                 (d.id && map[d.id]) ||
                 (d.unique && map[d.unique])) {
                 return true;
             } else {
-                map[typeOf(d) === "string" ? d : (d.distinguishedName || d.id || d.unique || d.employee || d.levelName)] = true;
+                var key = typeOf(d) === "string" ? d : (d.distinguishedName || d.id || d.unique || d.employee || d.levelName);
+                map[key] = true;
+                indexMap[key] = index+1;
                 return false;
             }
+        };
+
+        var getIndex = function (d){
+            var index = ((d.distinguishedName && indexMap[d.distinguishedName]) ||
+                (d.levelName && indexMap[d.levelName]) ||
+                (d.id && indexMap[d.id]) ||
+                (d.unique && indexMap[d.unique]));
+            if( !index )index = 0;
+            return index-1;
         };
 
         var identityList = [];
         if (tree.identityList) {
             for (var i = 0; i < tree.identityList.length; i++) {
-                if (!isExist(tree.identityList[i])) identityList.push(tree.identityList[i]);
+                if (!isExist(tree.identityList[i], i)){
+                    identityList.push(tree.identityList[i]);
+                }else if( this.options.identitySortBy !== "identityNumber" ){
+                    debugger;
+                    var index = getIndex(tree.identityList[i]);
+                    if( index > -1 ){
+                        var identity = tree.identityList[index];
+                        if( !identity.otherMatchUnitDutyList ){
+                            identity.otherMatchUnitDutyList = []
+                        }
+                        identity.otherMatchUnitDutyList.push({
+                            matchUnitDutyNumber : tree.identityList[i].matchUnitDutyNumber,
+                            matchUnitDutyName : tree.identityList[i].matchUnitDutyName
+                        })
+                    }
+
+                }
             }
         }
         tree.identityList = identityList;
@@ -553,6 +584,47 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
             return false;
         }
     },
+    sortIdentityList : function(){
+        if( this.selector.options.identitySortBy === "identityNumber" ){
+            this.data.identityList.sort(function (a, b) {
+                //this.selector.getUnitOrderNumber( a.unitLevelName )
+                if( a.orderNumber === 0 )a.orderNumber = -1;
+                if( b.orderNumber === 0 )b.orderNumber = -1;
+                return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
+            });
+        }else{
+            debugger;
+            var getOrderNumber = function (d) {
+                var orderNumber = "999";
+                if( d.matchUnitDutyName ){
+                    var idx = this.selector.options.dutys.indexOf( d.matchUnitDutyName );
+                    if( idx > -1 )orderNumber = idx.toString();
+                }
+                if( typeOf(d.matchUnitDutyNumber) === "number" ){
+                    orderNumber += d.matchUnitDutyNumber.toString();
+                }else{
+                    orderNumber += "9999";
+                }
+                return orderNumber.toInt();
+            }.bind(this);
+
+            var getOrder = function (d) {
+                if( d.otherMatchUnitDutyList && d.otherMatchUnitDutyList.length ){
+                    var array = [getOrderNumber(d)];
+                    d.otherMatchUnitDutyList.each(function (duty) {
+                        array.push( getOrderNumber(duty) );
+                    });
+                    return array.min();
+                }else{
+                   return getOrderNumber(d);
+                }
+            }.bind(this);
+
+            this.data.identityList.sort(function (a, b) {
+                return getOrder(a) - getOrder(b);
+            });
+        }
+    },
     loadSub: function (callback) {
         this._loadSub(function (firstLoad) {
             if (firstLoad && (this.selector.options.showSelectedCount || this.selector.options.isCheckStatus)) {
@@ -578,12 +650,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
         if (!this.loaded) {
             if (!this.itemLoaded) {
                 if (this.data.identityList && this.data.identityList.length > 0) {
-                    this.data.identityList.sort(function (a, b) {
-                        //this.selector.getUnitOrderNumber( a.unitLevelName )
-                        if( a.orderNumber === 0 )a.orderNumber = -1;
-                        if( b.orderNumber === 0 )b.orderNumber = -1;
-                        return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
-                    });
+
+                    this.sortIdentityList();
+
                     this.data.identityList.each(function (identity) {
                         // if( !this.selector.isExcluded( identity ) ) {
                         //     if( !this.isExisted( identity ) ){
@@ -636,12 +705,14 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     loadItemChildren: function (callback) {
         if (!this.itemLoaded) {
             if (this.data.identityList && this.data.identityList.length > 0) {
-                this.data.identityList.sort(function (a, b) {
-                    //this.selector.getUnitOrderNumber( a.unitLevelName )
-                    if( a.orderNumber === 0 )a.orderNumber = -1;
-                    if( b.orderNumber === 0 )b.orderNumber = -1;
-                    return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
-                });
+                // this.data.identityList.sort(function (a, b) {
+                //     if( a.orderNumber === 0 )a.orderNumber = -1;
+                //     if( b.orderNumber === 0 )b.orderNumber = -1;
+                //     return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
+                // });
+
+                this.sortIdentityList();
+
                 this.data.identityList.each(function (identity) {
                     // if( !this.selector.isExcluded( identity ) ) {
                     //     if( !this.isExisted( identity ) ){
