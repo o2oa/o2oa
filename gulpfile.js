@@ -941,8 +941,8 @@ exports.build_web = gulp.series(
         build_bundle
     ),
     build_web_v_html,
-    gulp.series(build_doc, build_web_api),
-    build_web_v_o2);
+    build_web_v_o2,
+    gulp.series(build_doc, build_web_api));
 
 if (os.platform().indexOf("win")==-1){
     exports.deploy = gulp.series(deploy_server, chmod_jvm, chmod_commons, chmod_sh, chmod_servers);

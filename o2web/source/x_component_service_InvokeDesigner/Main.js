@@ -582,6 +582,18 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.description+":"}).inject(this.propertyContentArea);
         this.propertyDescriptionNode = new Element("textarea", {"styles": this.css.propertyInputAreaNode, "value": ""}).inject(this.propertyContentArea);
 
+        node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.enableToken+":"}).inject(this.propertyContentArea);
+        this.propertyEnableTokenNode = new Element("select", {"styles": this.css.propertySelectNode }).inject(this.propertyContentArea);
+        new Element("option" , {  "value" : "true", "text" : this.lp.true  }).inject(this.propertyEnableTokenNode);
+        new Element("option" , {  "value" : "false", "text" : this.lp.false  }).inject(this.propertyEnableTokenNode);
+        new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.enableTokenInfo}).setStyles({
+            "word-break":"break-all",
+            "height" : "auto",
+            "line-height": "18px",
+            "margin-top": "10px",
+            "color": "#999999"
+        }).inject(this.propertyContentArea);
+
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.isEnable+":"}).inject(this.propertyContentArea);
         this.propertyEnableNode = new Element("select", {"styles": this.css.propertySelectNode }).inject(this.propertyContentArea);
         new Element("option" , {  "value" : "true", "text" : this.lp.true  }).inject(this.propertyEnableNode);
@@ -774,6 +786,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                 //"dependInvokeList": [],
                 "isNewInvoke": true,
                 "text": "",
+                "enableToken" : true,
                 "enable" : true,
                 "remoteAddrRegex" : "",
                 "lastStartTime" : "",
