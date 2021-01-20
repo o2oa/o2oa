@@ -20,6 +20,8 @@ MWF.xApplication.service.InvokeDesigner.LP = {
         "disable" : "点击禁用",
         "invokeUri" : "调用地址",
         "invokeMethod" : "调用方法",
+        "enableToken": "启用鉴权",
+        "enableTokenInfo": "启用鉴权后，您必须使用鉴权客户端名称和加密后的token来调用服务",
 
 		"notice": {
 			"save_success": "接口保存成功！",
