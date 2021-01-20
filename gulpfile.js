@@ -835,7 +835,7 @@ function build_web_api() {
 
 function build_doc(){
     return getGitV().then(function(arr){
-        return (shell.task('jsdoc -c o2web/jsdoc.conf.json -q version='+arr[0]+'-'+arr[1]))();
+        return (shell.task('jsdoc -c o2web/jsdoc.conf.json -q version=('+arr[0]+'-'+arr[1]+")"))();
     });
 }
 exports.build_api = gulp.series(build_doc, build_web_api);
