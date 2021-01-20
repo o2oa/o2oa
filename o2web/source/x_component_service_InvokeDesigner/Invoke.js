@@ -217,6 +217,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         this.designer.propertyNameNode.set("value", this.data.name || "");
         this.designer.propertyAliasNode.set("value", this.data.alias || "");
 
+        this.designer.propertyEnableTokenNode.getElement("option[value='"+ this.data.enableToken +"']").set("selected", true );
         this.designer.propertyEnableNode.getElement("option[value='"+ this.data.enable +"']").set("selected", true );
 
         this.designer.propertyRemoteAddrRegexNode.set("value", this.data.remoteAddrRegex || "");
@@ -226,11 +227,31 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
 
         this.designer.propertyDescriptionNode.set("value", this.data.description || "");
 
+        this.setInvokeUrlText();
+        this.designer.propertyEnableTokenNode.addEvent("change", this.setInvokeUrlText.bind(this));
+    },
+    setInvokeUrlText: function(){
+        debugger
         var action = this.designer.actions.action;
-        var uri = action.address + action.actions.executeInvoke.uri ;
-        uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
+        var url;
+
+        var enableToken = true;
+        this.designer.propertyEnableTokenNode.getElements("option").each( function(option){
+            if( option.selected ){
+                enableToken =  (option.value == "true");
+            }
+        });
+
+        if (enableToken===true){
+            uri = action.address + action.actions.executeToken.uri ;
+            uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
+        }else{
+            var uri = action.address + action.actions.executeInvoke.uri ;
+            uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
+        }
         this.designer.propertyInvokeUriNode.set("text", uri);
     },
+
     setAreaNodeSize: function(){
         var size = this.node.getSize();
         var tabSize = this.tab.tabNodeContainer.getSize();
@@ -275,6 +296,14 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 }
             });
 
+            var enableToken = true;
+            this.designer.propertyEnableTokenNode.getElements("option").each( function(option){
+                if( option.selected ){
+                    enableToken =  (option.value == "true");
+                }
+            });
+
+
             if (!name){
                 this.designer.notice(this.designer.lp.notice.inputName, "error");
                 return false;
@@ -290,6 +319,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
             this.data.validated = validated;
             this.data.text = this.editor.editor.getValue();
             this.data.enable = enable;
+            this.data.enableToken = enableToken;
 
             this.isSave = true;
             this.saveInvoke(this.data, function(json){
@@ -307,10 +337,12 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 this.data.id = json.data.id;
                 this.designer.propertyIdNode.set("text", this.data.id );
 
-                var action = this.designer.actions.action;
-                var uri = action.address + action.actions.executeInvoke.uri ;
-                uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
-                this.designer.propertyInvokeUriNode.set("text", uri);
+
+                this.setInvokeUrlText()
+                // var action = this.designer.actions.action;
+                // var uri = action.address + action.actions.executeInvoke.uri ;
+                // uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
+                // this.designer.propertyInvokeUriNode.set("text", uri);
 
                 if (callback) callback();
             }.bind(this), function(xhr, text, error){
@@ -385,10 +417,11 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 if( this.designer.currentScript == this ){
                     this.designer.propertyIdNode.set("text", this.data.id );
 
-                    var action = this.designer.actions.action;
-                    var uri = action.address + action.actions.executeInvoke.uri ;
-                    uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
-                    this.designer.propertyInvokeUriNode.set("text", uri);
+                    this.setInvokeUrlText();
+                    // var action = this.designer.actions.action;
+                    // var uri = action.address + action.actions.executeInvoke.uri ;
+                    // uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
+                    // this.designer.propertyInvokeUriNode.set("text", uri);
                 }
 
                 if (callback) callback();
