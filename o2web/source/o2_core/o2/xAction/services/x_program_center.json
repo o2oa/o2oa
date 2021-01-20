@@ -89,6 +89,7 @@
   "deleteInvoke" : {"uri": "/jaxrs/invoke/{flag}", "method": "DELETE"},
   "getInvoke" : {"uri": "/jaxrs/invoke/{flag}"},
   "executeInvoke" : {"uri": "/jaxrs/invoke/{flag}/execute", "method": "POST"},
+  "executeToken" : {"uri": "/jaxrs/invoke/{flag}/client/{client}/token/{token}/execute", "method": "POST"},
 
   "listPromptErrorLog" : {"uri": "/jaxrs/prompterrorlog/list/{id}/next/{count}"},
   "listPromptErrorLogWithDate" : {"uri": "/jaxrs/prompterrorlog/list/{id}/next/{count}/date/{date}"},
