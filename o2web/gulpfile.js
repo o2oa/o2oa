@@ -1050,6 +1050,7 @@ function getAppTask(path, isMin, thisOptions) {
         createDefaultTask(path, isMin, thisOptions);
         createBaseWorkConcatTask(path, isMin, thisOptions);
         createBasePortalConcatTask(path, isMin, thisOptions);
+        createBaseDocumentConcatTask(path, isMin, thisOptions);
         createBaseConcatTask(path, isMin, thisOptions);
         return gulp.series(path, path+".base_work", path+".base_portal", path+".base");
         //return gulp.series(path, path+".base_work : concat");
