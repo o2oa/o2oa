@@ -33,6 +33,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             this.options.formId = this.status.formId;
             this.options.printFormId = this.status.printFormId;
         }
+        if( this.options.readonly === "false" )this.options.readonly = false;
         if( this.options.documentId && this.options.documentId!=""){
             this.options.appId = "cms.Document"+this.options.documentId;
         }
