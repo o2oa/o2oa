@@ -1,5 +1,6 @@
 MWF.xApplication.cms = MWF.xApplication.cms || {};
 MWF.xApplication.cms.Document = MWF.xApplication.cms.Document || {};
+MWF.xApplication.cms.Document.options = MWF.xApplication.cms.Document.options || Object.clone(o2.xApplication.Common.options);
 MWF.xApplication.cms.Document.options.multitask = true;
 MWF.xApplication.cms.Document.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,

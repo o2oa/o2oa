@@ -41,3 +41,4 @@ MWF.xApplication.cms.Document.LP = {
     "cancelHotPicComfirmTitle" : "取消热点",
     "cancelHotPicComfirmContent" : "确定取消该文档的热点？"
 };
+MWF.xApplication.cms.Document["lp."+o2.language] = MWF.xApplication.cms.Document.LP;
