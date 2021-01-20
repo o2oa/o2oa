@@ -225,8 +225,6 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
     },
     _computeValue: function(){
 
-        debugger;
-
         var simple = this.json.storeRange === "simple";
         var values = [];
         if (this.json.identityValue) {
@@ -1173,7 +1171,6 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         return node;
     },
     _setValue: function(value){
-        debugger;
         var values = [];
         var ags = [];
         var simple = this.json.storeRange === "simple";
