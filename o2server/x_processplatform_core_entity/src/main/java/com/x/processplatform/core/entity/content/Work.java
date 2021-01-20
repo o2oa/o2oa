@@ -168,6 +168,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	/* 修改过的Set Get 方法 */
 
 	@Transient
+	@FieldDescribe("要拆分的值")
 	private List<String> splitValueList;
 
 	public static final String job_FIELDNAME = "job";
