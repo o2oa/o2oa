@@ -572,6 +572,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 	},
 	_completeLineEdit: function( ev ){
+
+		debugger;
+
 		//this.currentEditLine.getElemets(td);
 		if (!this.editValidation()){
 			return false;
@@ -985,6 +988,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		var lastTr = lastTrs[lastTrs.length-1];
 		//var tds = lastTr.getElements("td");
 
+		debugger;
+
 		if (this.gridData.data){
 			this.gridData.data.each(function(data, idx){
 				var tr = this.table.insertRow(idx+1);
@@ -994,30 +999,34 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 					var cell = tr.insertCell(index);
 					// cell.set("MWFId", tds[index].get("id"));
 					var cellData = data[th.get("id")];
-					if (cellData){
 
-						for (key in cellData){
-							var v = cellData[key];
+					if( typeOf( cellData ) !== "array" ){
+						if (cellData){
 
-							var module = this.editModules[index];
-							if( module && module.json.type == "ImageClipper" ) {
-								this._createImage(cell, module, v);
-							}else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
-								this._createAttachment( cell, module, v );
-							}else{
-								var text = this._getValueText(index, v);
-								if( module && module.json.type == "Textarea" ){
-									cell.set("html", text);
+							for (key in cellData){
+								var v = cellData[key];
+
+								var module = this.editModules[index];
+								if( module && module.json.type == "ImageClipper" ) {
+									this._createImage(cell, module, v);
+								}else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
+									this._createAttachment( cell, module, v );
 								}else{
-									cell.set("text", text);
+									var text = this._getValueText(index, v);
+									if( module && module.json.type == "Textarea" ){
+										cell.set("html", text);
+									}else{
+										cell.set("text", text);
+									}
 								}
+								break;
 							}
-							break;
+						}else{ //Sequence
+							cell.setStyle("text-align", "center");
+							cell.set("text", tr.rowIndex);
 						}
-					}else{ //Sequence
-						cell.setStyle("text-align", "center");
-						cell.set("text", tr.rowIndex);
 					}
+
 
 					var json = this.form._getDomjson(th);
 					if( json && json.isShow === false )cell.hide();

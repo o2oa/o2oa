@@ -137,14 +137,19 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         var value = this.getValue();
         //var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
         var text = [];
-        value.each(function(v){
-            if( typeOf(v) === "string" ){
-                text.push(v);
-            }else{
-                text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
-            }
-        }.bind(this));
-        return {"value": value || "", "text": [text.join(",")]};
+        if( typeOf( value ) === "object" )value = [value];
+        if( typeOf( value ) === "array" ){
+            value.each(function(v){
+                if( typeOf(v) === "string" ){
+                    text.push(v);
+                }else{
+                    text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
+                }
+            }.bind(this));
+            return {"value": value || "", "text": [text.join(",")]};
+        }else{
+            return {"value": [""], "text": [""]};
+        }
     },
 
     loadDescription: function(){
@@ -219,8 +224,6 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         }
     },
     _computeValue: function(){
-
-        debugger;
 
         var simple = this.json.storeRange === "simple";
         var values = [];
@@ -1168,7 +1171,6 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         return node;
     },
     _setValue: function(value){
-        debugger;
         var values = [];
         var ags = [];
         var simple = this.json.storeRange === "simple";
