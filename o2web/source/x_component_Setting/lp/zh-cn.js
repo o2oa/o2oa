@@ -95,11 +95,11 @@ MWF.xApplication.Setting.LP = {
     "base_indexPortalId_infor": "选择系统首页的门户。(重启服务器后生效)",
 
 
-    "base_ssoSetting": "配置与其它系统的单点登录设置",
-    "base_ssos": "SSO配置",
-    "base_sso_infor": "您可以为多个系统创建SSO配置",
-    "base_sso_action": "添加SSO配置",
-    "base_sso_editAction": "编辑SSO配置",
+    "base_ssoSetting": "配置与其它系统的鉴权和单点登录设置",
+    "base_ssos": "鉴权配置",
+    "base_sso_infor": "您可以为多个系统创建鉴权，用于SSO登录和服务调用",
+    "base_sso_action": "添加鉴权配置",
+    "base_sso_editAction": "编辑鉴权配置",
 
     "base_oauths": "OAUTH客户端配置",
     "base_oauths_infor": "如果本系统作为OAUTH2认证服务器，您可以在此可以配置多个OAUTH客户端，为其他系统实现授权",
@@ -241,7 +241,7 @@ MWF.xApplication.Setting.LP = {
 
     "pleaseInput": "请输入",
     "list": {
-        "client": "SSO名称",
+        "client": "鉴权名称",
         "key": "密钥(最少8位)",
         "clientId": "客户号(ClientId)",
         "mapping": "映射 (Mapping)",

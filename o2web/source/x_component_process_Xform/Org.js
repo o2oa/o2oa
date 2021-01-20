@@ -1212,7 +1212,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             }
         }.bind(this), function(){});
 
-        this.moduleValueAG = Promise.resolve(p);
+        this.moduleValueAG = p;
         if (p && p.then) p.then(function(){
             this.moduleValueAG = null;
         }.bind(this), function(){
