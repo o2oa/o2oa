@@ -882,6 +882,7 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
             'source/' + path + '/js/base_document_style_temp.js',
 
             'source/o2_core/o2/widget/Common.js',
+            'source/o2_core/o2/widget/Dialog.js',
             'source/o2_core/o2/widget/UUID.js',
             'source/o2_core/o2/widget/Menu.js',
             'source/o2_core/o2/widget/Mask.js',
@@ -892,6 +893,7 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
             'source/o2_core/o2/xDesktop/Dialog.js',
             'source/o2_core/o2/xDesktop/Menu.js',
             'source/o2_core/o2/xDesktop/UserData.js',
+            'source/x_component_Template/MPopupForm.js',
             'source/o2_core/o2/xDesktop/Authentication.js',
             'source/o2_core/o2/xDesktop/Window.js',
 
@@ -1052,7 +1054,7 @@ function getAppTask(path, isMin, thisOptions) {
         createBasePortalConcatTask(path, isMin, thisOptions);
         createBaseDocumentConcatTask(path, isMin, thisOptions);
         createBaseConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path+".base_work", path+".base_portal", path+".base");
+        return gulp.series(path, path+".base_work", path+".base_portal", path+".base_document", path+".base");
         //return gulp.series(path, path+".base_work : concat");
     }else{
         createDefaultTask(path, isMin, thisOptions);

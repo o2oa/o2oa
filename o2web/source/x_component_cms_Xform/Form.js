@@ -2,7 +2,7 @@ MWF.xApplication.cms = MWF.xApplication.cms || {};
 MWF.xApplication.cms.Xform = MWF.xApplication.cms.Xform || {};
 
 MWF.require("MWF.widget.Common", null, false);
-MWF.require("MWF.xAction.org.express.RestActions", null, false);
+// MWF.require("MWF.xAction.org.express.RestActions", null, false);
 MWF.xDesktop.requireApp("Selector", "package", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Form", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
