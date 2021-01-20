@@ -174,7 +174,6 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("流程附件上传限制大小或者类型.")
 	private AttachmentConfig attachmentConfig;
 
-
 	public Boolean getProcessingSignalPersistEnable() {
 		if (processingSignalPersistEnable == null) {
 			this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
@@ -451,7 +450,7 @@ public class ProcessPlatform extends ConfigObject {
 
 		public static final Boolean DEFAULT_ENABLE = false;
 
-		public static final Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 60;
+		public static final Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 10;
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
