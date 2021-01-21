@@ -170,42 +170,28 @@ class ActionSearch extends BaseAction {
 		}catch (Exception e){
 			logger.error(e);
 		}
-		Executor executor = Executors.newFixedThreadPool(batchList.size());
-		List<CompletableFuture<List<Wo>>> cfList = new ArrayList<>();
+		List<Wo> resWos = new ArrayList<>();
 		for (List<String> partProcessIds : batchList) {
-			CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
-				List<Wo> resWos = new ArrayList<>();
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					List<Process> processList = emc.list(Process.class, partProcessIds);
-					for (Process process : processList) {
-						try {
-							Wo wo = doProcessSearch(business, process, wi);
-							if (wo!=null){
-								resWos.add(wo);
-							}
-						} catch (Exception e) {
-							logger.error(e);
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				List<Process> processList = emc.list(Process.class, partProcessIds);
+				for (Process process : processList) {
+					try {
+						Wo wo = doProcessSearch(business, process, wi);
+						if (wo!=null){
+							resWos.add(wo);
 						}
+					} catch (Exception e) {
+						logger.error(e);
 					}
-					processList.clear();
-					processList = null;
-				}catch (Exception e){
-					logger.error(e);
 				}
-				return resWos;
-			}, executor);
-			cfList.add(cf);
-		}
-		List<Wo> woList = new ArrayList<>();
-		for (CompletableFuture<List<Wo>> cf : cfList){
-			try {
-				woList.addAll(cf.get(30, TimeUnit.SECONDS));
-			} catch (Exception e){
+				processList.clear();
+				processList = null;
+			}catch (Exception e){
 				logger.error(e);
 			}
 		}
-		return woList;
+		return resWos;
 	}
 
 
