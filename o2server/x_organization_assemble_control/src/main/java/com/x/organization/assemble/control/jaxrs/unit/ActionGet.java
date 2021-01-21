@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.unit;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -252,7 +253,7 @@ class ActionGet extends BaseAction {
 	}
 
 	private void referenceIdentity(Business business, WoUnitDuty woUnitDuty) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
+		/*EntityManager em = business.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 		Root<Identity> root = cq.from(Identity.class);
@@ -263,6 +264,17 @@ class ActionGet extends BaseAction {
 			this.referencePerson(business, woIdentity);
 		}
 		wos = business.identity().sort(wos);
+		*/
+		//职务成员需要保证顺序，但没有顺序号只能一个一个查询
+		List<WoIdentity> wos = new ArrayList<>();
+		if(ListTools.isNotEmpty(woUnitDuty.getIdentityList())){
+			for (String id : woUnitDuty.getIdentityList()){
+				Identity identity = business.identity().pick(id);
+				if(identity!=null) {
+					wos.add(WoIdentity.copier.copy(identity));
+				}
+			}
+		}
 		woUnitDuty.setWoIdentityList(wos);
 	}
 
