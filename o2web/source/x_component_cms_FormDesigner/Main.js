@@ -1558,12 +1558,12 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     saveTemplate: function(markNode, areaNode, iconNode, nameNode, categorySelect, newCategoryNode, descriptionNode){
         var pcData, mobileData;
         if (this.pcForm){
-            this.pcForm._getFormData();
-            pcData = this.pcForm.data;
+            pcData = this.pcForm._getFormData();
+            //pcData = this.pcForm.data;
         }
         if (this.mobileForm){
-            this.mobileForm._getFormData();
-            mobileData = this.mobileForm.data;
+            mobileData = this.mobileForm._getFormData();
+            //mobileData = this.mobileForm.data;
         }
 
         var name = nameNode.get("value");
