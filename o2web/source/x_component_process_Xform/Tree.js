@@ -10,7 +10,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  *    "action": "", //执行的脚本
  *    "default": true, //是否默认选中
  *    "icon": "folder.png", //图标
- *    "sub": [ //改节点的子节点
+ *    "sub": [ //该节点的子节点
  *      {
  *        "expand": true,
  *        "title": "",
@@ -120,6 +120,7 @@ MWF.xApplication.process.Xform.Tree = MWF.APPTree =  new Class(
 			 *  //可以在脚本中获取该组件
 			 * var tree = this.form.get("fieldId").tree; //获取组件对象
 			 * var children = tree.children[]; //获取第一层树叶
+			 * tree.reLoad( json ); //给整颗树重新赋数据，并重新加载
 			 */
 			this.tree = new MWF.widget.Tree(this.node, options);
 			this.tree.form = this.form;
