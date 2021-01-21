@@ -24,9 +24,9 @@ import java.util.List;
 @Path("document/cipher")
 @JaxrsDescribe("信息发布信息文档管理(Cipher)")
 public class DocumentCipherAction extends StandardJaxrsAction{
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( DocumentCipherAction.class );
-	
+
 	@JaxrsMethodDescribe(value = "直接发布文档信息.", action = ActionPersistPublishByWorkFlow.class)
 	@PUT
 	@Path("publish/content")
@@ -94,6 +94,26 @@ public class DocumentCipherAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "添加文档的阅读记录.", action = ActionPersistViewRecord.class)
+	@POST
+	@Path("{id}/persist/view/record")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void persist_documentViewRecord( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+											@JaxrsParameterDescribe("文档ID") @PathParam("id") String id, JsonElement jsonElement ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionPersistViewRecord.Wo> result = new ActionResult<>();
+
+		try {
+			result = new ActionPersistViewRecord().execute( request, id, jsonElement, effectivePerson );
+		} catch (Exception e) {
+			result.error( e );
+			logger.error( e, effectivePerson, request, null);
+		}
+
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }
