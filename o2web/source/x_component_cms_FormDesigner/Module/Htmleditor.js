@@ -3,6 +3,25 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Htmleditor", null, false
 MWF.xApplication.cms.FormDesigner.Module.Htmleditor = MWF.CMSFCHtmleditor = new Class({
 	Extends: MWF.FCHtmleditor,
 	Implements : [MWF.CMSFCMI],
+	_initModule: function(){
+		this.node.empty();
+
+		var config = Object.clone(this.json.editorProperties);
+		if (this.json.config){
+			if (this.json.config.code){
+				MWF.require("MWF.xScript.CMSMacro", null, false);
+				var obj = MWF.CMSMacro.exec(this.json.config.code, this);
+				Object.each(obj, function(v, k){
+					config[k] = v;
+				});
+			}
+		}
+
+		this.loadCkeditor(config);
+		this._setNodeProperty();
+		if (!this.form.isSubform) this._createIconAction() ;
+		this._setNodeEvent();
+	},
 	loadCkeditor: function(config){
 		COMMON.AjaxModule.load("ckeditor", function(){
 			CKEDITOR.disableAutoInline = true;
