@@ -301,7 +301,7 @@ MWF.xScript.Environment = function(ev){
          * @o2syntax
          * //本样例以异步执行
          * this.workContext.getTaskCompletedList( function(taskCompletedList){
-         *     //taskCompletedList 为待办数组
+         *     //taskCompletedList 为已办数组
          * });
          */
         "getTaskCompletedList": function(callback, error){
@@ -329,7 +329,7 @@ MWF.xScript.Environment = function(ev){
          * @o2syntax
          * //本样例以异步执行
          * this.workContext.getTaskCompletedListByJob( function(taskCompletedList){
-         *     //taskCompletedList 为待办数组
+         *     //taskCompletedList 为已办数组
          * });
          */
         "getTaskCompletedListByJob": function(callback, error){
