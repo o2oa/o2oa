@@ -1337,7 +1337,6 @@ if (!window.Promise){
         /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
         /jaxrs\/script\/.+\/application\/.+\/imported/ig,
         /jaxrs\/page\/.+\/portal\/.+/ig,
-        /jaxrs\/document\/.+/ig,
         /jaxrs\/custom\/.+/ig
     ]:[
         /jaxrs\/form\/workorworkcompleted\/.+/ig,
