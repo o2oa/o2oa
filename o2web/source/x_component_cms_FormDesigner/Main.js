@@ -1388,12 +1388,12 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         if (!this.isSave){
             var pcData, mobileData;
             if (this.pcForm){
-                this.pcForm._getFormData();
-                pcData = this.pcForm.data;
+                pcData = this.pcForm._getFormData();
+                // pcData = this.pcForm.data;
             }
             if (this.mobileForm){
-                this.mobileForm._getFormData();
-                mobileData = this.mobileForm.data;
+                mobileData = this.mobileForm._getFormData();
+                // mobileData = this.mobileForm.data;
             }else{
                 if (this.formMobileData) mobileData = this.formMobileData;
             }
