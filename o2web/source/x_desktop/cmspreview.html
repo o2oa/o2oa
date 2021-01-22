@@ -40,6 +40,7 @@
                         MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
                         (function(){
                             layout.load = function(){
+                                debugger;
                                 //        if (this.isAuthentication()){
                                 var preview = window.frameElement.retrieve("preview");
                                 layout.desktop = window.frameElement.ownerDocument.window.layout.desktop;
@@ -54,6 +55,9 @@
                                         "addEvent" : function(){}
                                     };
                                     MWF.getJSON("res/preview/cmsdoc.json", function(data){
+                                        if( preview.form && preview.form.designer && preview.form.designer.application && preview.form.designer.application.id ){
+                                            data.document.appId = preview.form.designer.application.id;
+                                        }
                                         layout.appForm.businessData = {
                                             "data": data.data,
                                             "document": data.document,
