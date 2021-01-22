@@ -98,8 +98,9 @@ public class ActionQueryGetControl extends BaseAction {
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
 		if (optional.isPresent()) {
-			result.setData((Wo) optional.get());
-			woControl = wo.getControl();
+			Wo cacheWo = (Wo) optional.get();
+		 	result.setData(cacheWo);
+		 	woControl = cacheWo.getControl();
 		} else {			
 			if (check) {
 				try {					
