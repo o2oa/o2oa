@@ -254,7 +254,7 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("v2/lookup/document/{docId}/mode/{openMode}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2LookupWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+	public void V2LookupDoc(@Suspended final AsyncResponse asyncResponse,
 											@Context HttpServletRequest request,
 											@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId,
 											@JaxrsParameterDescribe("文档打开模式：read(只读模式)|edit(编辑模式)") @PathParam("openMode") String openMode) {
@@ -274,7 +274,7 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("v2/lookup/document/{docId}/mode/{openMode}/mobile")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2LookupWorkOrWorkCompletedMobile(@Suspended final AsyncResponse asyncResponse,
+	public void V2LookupDocMobile(@Suspended final AsyncResponse asyncResponse,
 												  @Context HttpServletRequest request,
 												  @JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId,
 												  @JaxrsParameterDescribe("文档打开模式：read(只读模式)|edit(编辑模式)") @PathParam("openMode") String openMode) {

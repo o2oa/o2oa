@@ -96,7 +96,7 @@ class V2LookupDocMobile extends BaseAction {
 					Business business = new Business(emc);
 					Form f;
 					for (String id : properties.getMobileRelatedFormList()) {
-						f = business.getFormFactory().pick(id);
+						f = emc.fetch(id, Form.class, ListTools.toList(JpaObject.id_FIELDNAME, JpaObject.updateTime_FIELDNAME));
 						if (null != f) {
 							list.add(f.getId() + f.getUpdateTime().getTime());
 						}
