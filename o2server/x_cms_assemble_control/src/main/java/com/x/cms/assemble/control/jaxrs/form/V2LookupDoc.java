@@ -95,7 +95,7 @@ class V2LookupDoc extends BaseAction {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Form f;
 					for (String id : properties.getRelatedFormList()) {
-						f = emc.find(id, Form.class);
+						f = emc.fetch(id, Form.class, ListTools.toList(JpaObject.id_FIELDNAME, JpaObject.updateTime_FIELDNAME));
 						if (null != f) {
 							list.add(f.getId() + f.getUpdateTime().getTime());
 						}
