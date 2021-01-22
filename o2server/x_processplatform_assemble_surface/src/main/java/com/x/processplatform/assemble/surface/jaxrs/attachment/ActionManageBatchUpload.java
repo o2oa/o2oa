@@ -17,6 +17,8 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.element.ActivityType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -57,23 +59,28 @@ class ActionManageBatchUpload extends BaseAction {
 			if(StringUtils.isNotEmpty(workIds) && bytes!=null && bytes.length>0) {
 				String[] idArray = workIds.split(",");
 				for (String workId : idArray) {
+                    Attachment attachment = null;
 					Work work = emc.find(workId.trim(), Work.class);
-					if(work!=null) {
-						StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-						Attachment attachment = this.concreteAttachment(work, person, site);
-						attachment.saveContent(mapping, bytes, fileName);
-						attachment.setType((new Tika()).detect(bytes, fileName));
-						logger.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
-						if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
-								&& ExtractTextTools.available(bytes)) {
-							attachment.setText(ExtractTextTools.image(bytes));
-							logger.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
-									attachment.getText());
-						}
-						emc.beginTransaction(Attachment.class);
-						emc.persist(attachment, CheckPersistType.all);
-						emc.commit();
-					}
+                    if(work!=null) {
+						attachment = this.concreteAttachment(work, person, site);
+                    }else{
+                        WorkCompleted workCompleted = emc.find(workId, WorkCompleted.class);
+                        if (null != workCompleted) {
+                            attachment = this.concreteAttachment(workCompleted, person, site);
+                        }
+                    }
+                    if(attachment!=null){
+                        StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
+                        attachment.saveContent(mapping, bytes, fileName);
+                        attachment.setType((new Tika()).detect(bytes, fileName));
+                        if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
+                                && ExtractTextTools.available(bytes)) {
+                            attachment.setText(ExtractTextTools.image(bytes));
+                        }
+                        emc.beginTransaction(Attachment.class);
+                        emc.persist(attachment, CheckPersistType.all);
+                        emc.commit();
+                    }
 				}
 			}
 
@@ -101,6 +108,24 @@ class ActionManageBatchUpload extends BaseAction {
 		attachment.setActivityType(work.getActivityType());
 		return attachment;
 	}
+
+    private Attachment concreteAttachment(WorkCompleted workCompleted, String person, String site) throws Exception {
+        Attachment attachment = new Attachment();
+        attachment.setCompleted(true);
+        attachment.setPerson(person);
+        attachment.setLastUpdatePerson(person);
+        attachment.setSite(site);
+        /** 用于判断目录的值 */
+        attachment.setWorkCreateTime(workCompleted.getStartTime());
+        attachment.setApplication(workCompleted.getApplication());
+        attachment.setProcess(workCompleted.getProcess());
+        attachment.setJob(workCompleted.getJob());
+        attachment.setActivity(workCompleted.getActivity());
+        attachment.setActivityName(workCompleted.getActivityName());
+        attachment.setActivityToken(workCompleted.getActivity());
+        attachment.setActivityType(ActivityType.end);
+        return attachment;
+    }
 
 	public static class Wo extends WrapBoolean {
 
