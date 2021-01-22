@@ -1061,23 +1061,23 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员上传附件.", action = ActionManageUpload.class)
+	@JaxrsMethodDescribe(value = "管理员批量上传附件.", action = ActionManageBatchUpload.class)
 	@POST
-	@Path("upload/work/{workId}/manage")
+	@Path("batch/upload/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public void manageUpload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
+	public void manageBatchUpload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识列表，多值逗号隔开") @FormDataParam("workIds") String workIds,
 			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site,
 			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("上传到指定用户") @FormDataParam("person") String person,
 			@JaxrsParameterDescribe("天印扩展字段") @FormDataParam("extraParam") String extraParam,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
-		ActionResult<ActionManageUpload.Wo> result = new ActionResult<>();
+		ActionResult<ActionManageBatchUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionManageUpload().execute(effectivePerson, workId, site, fileName, bytes, disposition,
+			result = new ActionManageBatchUpload().execute(effectivePerson, workIds, site, fileName, bytes, disposition,
 					extraParam, person);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
