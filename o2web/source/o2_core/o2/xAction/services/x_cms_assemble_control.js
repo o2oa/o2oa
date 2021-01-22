@@ -98,7 +98,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
         }
     },
     updateForm: function(formData, mobileData, fieldList, success, failure){ 
-        var data, mobileData;
+        var data, mobileDataStr;
         if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
         if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
 
