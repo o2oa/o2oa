@@ -33,7 +33,7 @@ public class FormAnonymousAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("表单ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
@@ -44,6 +44,46 @@ public class FormAnonymousAction extends StandardJaxrsAction {
 			Exception exception = new ExceptionServiceLogic( e, "系统在根据ID查询表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在那么返回分类的默认Form.", action = V2LookupDoc.class)
+	@GET
+	@Path("v2/lookup/document/{docId}/mode/{openMode}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2LookupWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request,
+											@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId,
+											@JaxrsParameterDescribe("文档打开模式：read(只读模式)|edit(编辑模式)") @PathParam("openMode") String openMode) {
+		ActionResult<V2LookupDoc.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2LookupDoc().execute(effectivePerson, docId, openMode);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在返回分类的默认FormMobile.", action = V2LookupDocMobile.class)
+	@GET
+	@Path("v2/lookup/document/{docId}/mode/{openMode}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2LookupWorkOrWorkCompletedMobile(@Suspended final AsyncResponse asyncResponse,
+												  @Context HttpServletRequest request,
+												  @JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId,
+												  @JaxrsParameterDescribe("文档打开模式：read(只读模式)|edit(编辑模式)") @PathParam("openMode") String openMode) {
+		ActionResult<V2LookupDocMobile.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2LookupDocMobile().execute(effectivePerson, docId, openMode);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
