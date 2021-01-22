@@ -1329,11 +1329,15 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         }.bind(this));
         return fieldList;
     },
-       checkSubform: function(){
+    checkSubform: function(){
         var pcSubforms = [];
         if (this.pcForm){
+            this.pcForm.data.json.subformList = [];
             this.pcForm.moduleList.each(function(module){
                 if (module.moduleName==="subform"){
+                    if (module.json.subformSelected && module.json.subformSelected!=="none" && module.json.subformType!=="script"){
+                        if (this.pcForm.data.json.subformList.indexOf(module.json.subformSelected) === -1) this.pcForm.data.json.subformList.push(module.json.subformSelected);
+                    }
                     if (module.regetSubformData()){
                         module.subformData.updateTime = "";
                         var moduleNames = module.getConflictFields();
@@ -1351,8 +1355,12 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         }
         var mobileSubforms = [];
         if (this.mobileForm){
+            this.mobileForm.data.json.subformList = [];
             this.mobileForm.moduleList.each(function(module){
                 if (module.moduleName==="subform"){
+                    if (module.json.subformSelected && module.json.subformSelected!=="none" && module.json.subformType!=="script"){
+                        if (this.mobileForm.data.json.subformList.indexOf(module.json.subformSelected) === -1) this.mobileForm.data.json.subformList.push(module.json.subformSelected);
+                    }
                     if (module.regetSubformData()){
                         module.subformData.updateTime = "";
                         var moduleNames = module.getConflictFields();
@@ -1385,7 +1393,15 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         return txt;
     },
     saveForm: function(){
+        debugger;
         if (!this.isSave){
+            var txt = this.checkSubform();
+            if (txt){
+                txt = this.lp.checkFormSaveError+txt;
+                this.notice(txt, "error", this.form.node);
+                return false;
+            }
+
             var pcData, mobileData;
             if (this.pcForm){
                 pcData = this.pcForm._getFormData();
