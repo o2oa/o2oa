@@ -171,13 +171,24 @@ MWF.xApplication.cms.Document.Main = new Class({
     },
     loadForm : function( formId, flag ){
         var success = function(json){
-            if( layout.mobile ){
-                this.form = (json.data.mobileData) ? JSON.decode(MWF.decodeJsonString(json.data.mobileData)): null;
-                if( !this.form ){
+            if (json.form){
+                this.form = (json.form.data) ? JSON.decode(MWF.decodeJsonString(json.form.data)): null;
+                this.relatedFormMap = json.relatedFormMap;
+                this.relatedScriptMap = json.relatedScriptMap;
+                if( json.form.data )delete json.form.data;
+                this.formInfor = json.form;
+            }else{
+                if( layout.mobile ){
+                    this.form = (json.data.mobileData) ? JSON.decode(MWF.decodeJsonString(json.data.mobileData)): null;
+                    if( !this.form ){
+                        this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
+                    }
+                }else{
                     this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
                 }
-            }else{
-                this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
+                if( json.data.data )delete json.data.data;
+                if( json.data.mobileData )delete json.data.mobileData;
+                this.formInfor = json.form;
             }
             //this.listAttachment();
             this.openDocument();
