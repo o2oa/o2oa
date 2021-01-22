@@ -2040,13 +2040,14 @@ debugger;
 
 	getFilterOptionRegex: function(option){
 		var keyword = option.keyword;
-		keyword = keyword.replace("[", "\\[").replace("]", "\\]").replace("(", "\\(").replace(")", "\\)").replace("{", "\\{").replace("}", "\\}")
-			.replace("^", "\\^").replace("$", "\\$").replace(".", "\\.").replace("?", "\\?").replace("+", "\\+").replace("*", "\\*").replace("|", "\\|");
-
+debugger;
 		if (option.matchRegExp){
 			var flag = (option.caseSensitive) ? "gm" : "gmi";
 			return new RegExp(keyword, flag);
 		}else{
+			keyword = keyword.replace("[", "\\[").replace("]", "\\]").replace("(", "\\(").replace(")", "\\)").replace("{", "\\{").replace("}", "\\}")
+				.replace("^", "\\^").replace("$", "\\$").replace(".", "\\.").replace("?", "\\?").replace("+", "\\+").replace("*", "\\*").replace("|", "\\|");
+
 			var flag = (option.caseSensitive) ? "gm" : "gmi";
 			keyword = (option.matchWholeWord) ? "\\b"+keyword+"\\b" : keyword;
 			return new RegExp(keyword, flag);
@@ -2151,6 +2152,9 @@ debugger;
 		if (this.filterOption.matchRegExp){
 			return new RegExp(keyword, flag)
 		}else{
+			keyword = keyword.replace("[", "\\[").replace("]", "\\]").replace("(", "\\(").replace(")", "\\)").replace("{", "\\{").replace("}", "\\}")
+				.replace("^", "\\^").replace("$", "\\$").replace(".", "\\.").replace("?", "\\?").replace("+", "\\+").replace("*", "\\*").replace("|", "\\|");
+
 			if (this.filterOption.matchWholeWord) keyword = "\\b"+keyword+"\\b";
 			return new RegExp(keyword, flag)
 		}
