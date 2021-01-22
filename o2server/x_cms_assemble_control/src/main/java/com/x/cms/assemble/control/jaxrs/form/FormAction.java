@@ -39,7 +39,7 @@ public class FormAction extends StandardJaxrsAction {
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
-		}		
+		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
@@ -48,7 +48,7 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("list/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listFormByAppId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void listFormByAppId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByApp.Wo>> result = new ActionResult<>();
@@ -68,7 +68,7 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("表单ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
@@ -101,7 +101,7 @@ public class FormAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "保存表单信息对象.", action = ActionSave.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -110,7 +110,7 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		Boolean check = true;
-		
+
 		if( check ){
 			try {
 				result = new ActionSave().execute( request, effectivePerson, null, jsonElement );
@@ -128,7 +128,7 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void put( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void put( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("表单ID") @PathParam("id") String id, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
@@ -151,7 +151,7 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("表单ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<WrapOutId> result = new ActionResult<>();
@@ -171,10 +171,10 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("filter/list/{id}/next/{count}/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listNextWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
-			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId, 
+	public void listNextWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
+			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId,
 			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListNextWithFilter.Wo>> result = new ActionResult<>();
@@ -185,7 +185,7 @@ public class FormAction extends StandardJaxrsAction {
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
-		}		
+		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
@@ -194,10 +194,10 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("filter/list/{id}/prev/{count}/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listPrevWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
-			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId, 
+	public void listPrevWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
+			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId,
 			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListPrevWithFilter.Wo>> result = new ActionResult<>();
@@ -208,10 +208,10 @@ public class FormAction extends StandardJaxrsAction {
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
-		}		
+		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "根据指定的栏目获取栏目下所有表单包含的字段字段信息.", action = ActionListFormFieldWithAppInfo.class)
 	@GET
 	@Path("list/formfield/appInfo/{appId}")
@@ -242,6 +242,46 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListFormFieldWithForm().execute(id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在那么返回分类的默认Form.", action = V2LookupDoc.class)
+	@GET
+	@Path("v2/lookup/document/{docId}/mode/{openMode}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2LookupWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request,
+											@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId,
+											@JaxrsParameterDescribe("文档打开模式：read(只读模式)|edit(编辑模式)") @PathParam("openMode") String openMode) {
+		ActionResult<V2LookupDoc.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2LookupDoc().execute(effectivePerson, docId, openMode);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在返回分类的默认FormMobile.", action = V2LookupDocMobile.class)
+	@GET
+	@Path("v2/lookup/document/{docId}/mode/{openMode}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2LookupWorkOrWorkCompletedMobile(@Suspended final AsyncResponse asyncResponse,
+												  @Context HttpServletRequest request,
+												  @JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId,
+												  @JaxrsParameterDescribe("文档打开模式：read(只读模式)|edit(编辑模式)") @PathParam("openMode") String openMode) {
+		ActionResult<V2LookupDocMobile.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2LookupDocMobile().execute(effectivePerson, docId, openMode);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

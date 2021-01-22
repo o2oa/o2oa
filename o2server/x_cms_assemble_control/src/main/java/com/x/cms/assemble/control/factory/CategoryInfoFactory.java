@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.factory;
 
+import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
@@ -18,20 +19,29 @@ import java.util.List;
 
 /**
  * 分类信息基础功能服务类
- * 
+ *
  * @author O2LEE
  */
-public class CategoryInfoFactory extends AbstractFactory {
+public class CategoryInfoFactory extends ElementFactory {
 
 	public CategoryInfoFactory(Business business) throws Exception {
 		super(business);
+	}
+
+	public CategoryInfo pick(String flag) throws Exception {
+		return this.pick(flag, ExceptionWhen.none);
+	}
+
+	@Deprecated
+	public CategoryInfo pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
+		return this.pick(flag, CategoryInfo.class);
 	}
 
 	//@MethodDescribe("获取指定Id的CategoryInfo分类信息对象")
 	public CategoryInfo get( String id ) throws Exception {
 		return this.entityManagerContainer().find( id, CategoryInfo.class );
 	}
-	
+
 	//@MethodDescribe("列示全部的CategoryInfo分类信息列表")
 	@SuppressWarnings("unused")
 	public List<CategoryInfo> listAll() throws Exception {
@@ -41,7 +51,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		Root<CategoryInfo> root = cq.from( CategoryInfo.class );
 		return em.createQuery(cq).getResultList();
 	}
-	
+
 	//@MethodDescribe("列示全部的CategoryInfo分类信息列表")
 	public List<String> listAllIds() throws Exception {
 		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
@@ -51,7 +61,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		cq.select(root.get(CategoryInfo_.id));
 		return em.createQuery(cq).getResultList();
 	}
-	
+
 	//@MethodDescribe("列示指定Id的CategoryInfo分类信息列表")
 //	public List<CategoryInfo> list(List<String> ids) throws Exception {
 //		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
@@ -61,7 +71,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 //		Predicate p = root.get( CategoryInfo_.id).in(ids);
 //		return em.createQuery(cq.where(p)).getResultList();
 //	}
-	
+
 	//@MethodDescribe("根据应用ID列示所有的CategoryInfo分类信息列表")
 	public List<String> listByAppId( String appId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
@@ -105,7 +115,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 
 		return em.createQuery( cq.where(p) ).setMaxResults(maxCount).getResultList();
 	}
-	
+
 	public List<CategoryInfo> listCategoryByAppId( String appId, String documentType, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -117,7 +127,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		}
 		return em.createQuery( cq.where(p) ).setMaxResults(maxCount).getResultList();
 	}
-	
+
 	//@MethodDescribe("根据应用ID列示所有的CategoryInfo分类信息数量")
 	public Long countByAppId( String appId, String documentType ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(CategoryInfo.class);
@@ -131,7 +141,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		cq.select(cb.count(root));
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
-	
+
 	//@MethodDescribe("根据分类ID列示所有下级CategoryInfo分类信息列表")
 	public List<String> listByParentId( String categoryId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
@@ -160,7 +170,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		cq.select(root.get( CategoryInfo_.id));
 		return em.createQuery(cq.where(p)).setMaxResults(200).getResultList();
 	}
-	
+
 	public List<String> listMyCategoryWithAppId( List<String> myCategoryIds, String documentType, String appId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -189,7 +199,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		Predicate p = root.get( CategoryInfo_.categoryAlias ).in( categoryAlias );
 		return em.createQuery(cq.where( p )).getResultList();
 	}
-	
+
 	public List<CategoryInfo> listByAliases(List<String> categoryAlias) throws Exception {
 		if(ListTools.isEmpty( categoryAlias )) {
 			return null;
@@ -212,7 +222,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 	 * @param inCategoryIds  - 栏目ID的最大范围
 	 * @param excludCategoryIds - 需要排除的栏目ID
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listPublishableCategoryInfoIdsWithPermission(String personName, List<String> unitNames,
 			List<String> groupNames, List<String> inAppInfoIds, List<String> inCategoryIds,
@@ -221,7 +231,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
-		
+
 		Predicate p = null;
 		Predicate p_filter = null;
 		//限定栏目范围
@@ -243,12 +253,12 @@ public class CategoryInfoFactory extends AbstractFactory {
 			}else {
 				p_filter = cb.and( p_filter, cb.not( root.get( CategoryInfo_.id ).in( excludCategoryIds )));
 			}
-		}		
+		}
 		Predicate p_permission = null;
 		if( StringUtils.isNotEmpty( personName )) {
 			//可以管理的栏目，肯定可以发布信息
-			p_permission = cb.isMember( personName, root.get( CategoryInfo_.manageablePersonList ));	
-			p_permission = cb.or( p_permission, cb.isMember( personName, root.get( CategoryInfo_.publishablePersonList )));			
+			p_permission = cb.isMember( personName, root.get( CategoryInfo_.manageablePersonList ));
+			p_permission = cb.or( p_permission, cb.isMember( personName, root.get( CategoryInfo_.publishablePersonList )));
 		}
 		if( ListTools.isNotEmpty( unitNames )) {
 			if( p_permission == null  ) {
@@ -264,7 +274,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 				p_permission = cb.or( p_permission,  root.get( CategoryInfo_.publishableGroupList).in(groupNames));
 			}
 		}
-		
+
 		//使用新的条件将两个条件组合起来
 		if( p_filter != null ) {
 			p = p_filter;
@@ -295,7 +305,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 	 * @param inCategoryIds  - 栏目ID的最大范围
 	 * @param excludCategoryIds - 需要排除的栏目ID
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listViewableCategoryInfoIdsWithPermission(String personName, List<String> unitNames, List<String> groupNames,
 			List<String> inAppInfoIds, List<String> inCategoryIds, List<String> excludCategoryIds,
@@ -304,7 +314,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
-		
+
 		Predicate p = null;
 		Predicate p_filter = null;
 		//限定栏目范围
@@ -318,7 +328,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 			}else {
 				p_filter = cb.and( p_filter, root.get( CategoryInfo_.id ).in( inCategoryIds ));
 			}
-		}		
+		}
 		//排除指定的ID列表
 		if( ListTools.isNotEmpty( excludCategoryIds )) {
 			if( p_filter == null ) {
@@ -327,11 +337,11 @@ public class CategoryInfoFactory extends AbstractFactory {
 				p_filter = cb.and( p_filter, cb.not( root.get( CategoryInfo_.id ).in( excludCategoryIds )));
 			}
 		}
-		
+
 		Predicate p_permission = null;
 		if( StringUtils.isNotEmpty( personName )) {
 			//可以管理的栏目，肯定可以发布信息
-			p_permission = cb.isMember( personName, root.get( CategoryInfo_.manageablePersonList ));	
+			p_permission = cb.isMember( personName, root.get( CategoryInfo_.manageablePersonList ));
 			p_permission = cb.or( p_permission, cb.isMember( personName, root.get( CategoryInfo_.publishablePersonList )));
 		}
 		if( ListTools.isNotEmpty( unitNames )) {
@@ -352,7 +362,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 				p_permission = cb.or( p_permission,  root.get( CategoryInfo_.viewableGroupList).in(groupNames));
 			}
 		}
-		
+
 		//使用新的条件将两个条件组合起来
 		if( p_filter != null ) {
 			p = p_filter;
@@ -379,7 +389,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 	 * @param inCategoryIds
 	 * @param excludCategoryIds
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listAllPeoplePublishableCategoryInfoIds(List<String> inAppInfoIds, List<String> inCategoryIds,
 			List<String> excludCategoryIds, String documentType, Integer maxCount ) throws Exception {
@@ -403,14 +413,14 @@ public class CategoryInfoFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq.where( p )).setMaxResults(maxCount).getResultList();
 	}
-	
+
 	/**
 	 * 查询所有用户都可以发布的分类ID列表(检测allPeopleView和allPeoplePublish)
 	 * @param inAppInfoIds
 	 * @param inCategoryIds
 	 * @param excludCategoryIds
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listAllPeopleViewableCategoryInfoIds(List<String> inAppInfoIds, List<String> inCategoryIds, List<String> excludCategoryIds,
 			String documentType, Integer maxCount ) throws Exception {
@@ -419,10 +429,10 @@ public class CategoryInfoFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
 		cq.select(root.get(CategoryInfo_.id));
-		
+
 		Predicate p_all = cb.isTrue( root.get( CategoryInfo_.allPeopleView ) );
 		p_all = cb.or( p_all,  cb.isTrue( root.get( CategoryInfo_.allPeoplePublish )));
-		
+
 		Predicate p = root.get( CategoryInfo_.id ).isNotNull();
 		if( ListTools.isNotEmpty( inAppInfoIds )) {
 			p = cb.and( p,  root.get( CategoryInfo_.appId ).in( inAppInfoIds ) );
@@ -455,7 +465,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
-		
+
 		Predicate p = cb.isMember( personName, root.get( CategoryInfo_.manageablePersonList ));
 		if( ListTools.isNotEmpty( inAppInfoIds )) {
 			p = cb.and( p, root.get( CategoryInfo_.appId ).in( inAppInfoIds ) );

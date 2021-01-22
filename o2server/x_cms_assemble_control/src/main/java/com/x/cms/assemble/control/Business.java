@@ -6,6 +6,8 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.factory.*;
 import com.x.cms.assemble.control.factory.element.QueryViewFactory;
+import com.x.cms.assemble.control.factory.portal.PortalFactory;
+import com.x.cms.assemble.control.factory.process.ProcessFactory;
 import com.x.cms.core.entity.AppInfo;
 import com.x.organization.core.express.Organization;
 import org.apache.commons.lang3.StringUtils;
@@ -66,63 +68,63 @@ public class Business {
 		}
 		return documentCommentCommendFactory;
 	}
-	
+
 	public ReviewFactory reviewFactory() throws Exception {
 		if (null == this.reviewFactory) {
 			this.reviewFactory = new ReviewFactory(this);
 		}
 		return reviewFactory;
 	}
-	
+
 	public CmsBatchOperationFactory cmsBatchOperationFactory() throws Exception {
 		if (null == this.cmsBatchOperationFactory) {
 			this.cmsBatchOperationFactory = new CmsBatchOperationFactory(this);
 		}
 		return cmsBatchOperationFactory;
 	}
-	
+
 	public DocumentCommentInfoFactory documentCommentInfoFactory() throws Exception {
 		if (null == this.documentCommentInfoFactory) {
 			this.documentCommentInfoFactory = new DocumentCommentInfoFactory(this);
 		}
 		return documentCommentInfoFactory;
 	}
-	
+
 	public DocumentCommendFactory documentCommendFactory() throws Exception {
 		if (null == this.documentCommendFactory) {
 			this.documentCommendFactory = new DocumentCommendFactory(this);
 		}
 		return documentCommendFactory;
 	}
-	
+
 	public FileFactory fileFactory() throws Exception {
 		if (null == this.fileFactory) {
 			this.fileFactory = new FileFactory(this);
 		}
 		return fileFactory;
 	}
-	
+
 	public FormFieldFactory formFieldFactory() throws Exception {
 		if (null == this.formFieldFactory) {
 			this.formFieldFactory = new FormFieldFactory(this);
 		}
 		return formFieldFactory;
 	}
-	
+
 	public ItemFactory itemFactory() throws Exception {
 		if (null == this.itemFactory) {
 			this.itemFactory = new ItemFactory(this);
 		}
 		return itemFactory;
 	}
-	
+
 	public CategoryExtFactory categoryExtFactory() throws Exception {
 		if (null == this.categoryExtFactory) {
 			this.categoryExtFactory = new CategoryExtFactory(this);
 		}
 		return categoryExtFactory;
 	}
-	
+
 	public Organization organization() throws Exception {
 		if (null == this.organization) {
 			this.organization = new Organization(ThisApplication.context());
@@ -144,7 +146,7 @@ public class Business {
 		return documentViewRecordFactory;
 	}
 
-	
+
 
 	public QueryViewFactory queryViewFactory() throws Exception {
 		if (null == this.queryViewFactory) {
@@ -236,12 +238,30 @@ public class Business {
 		}
 		return fileInfoFactory;
 	}
-	
+
 	public LogFactory getLogFactory() throws Exception {
 		if (null == this.logFactory) {
 			this.logFactory = new LogFactory(this);
 		}
 		return logFactory;
+	}
+
+	private ProcessFactory process;
+
+	public ProcessFactory process() throws Exception {
+		if (null == this.process) {
+			this.process = new ProcessFactory(this);
+		}
+		return process;
+	}
+
+	private PortalFactory portal;
+
+	public PortalFactory portal() throws Exception {
+		if (null == this.portal) {
+			this.portal = new PortalFactory(this);
+		}
+		return portal;
 	}
 
 	public boolean isHasPlatformRole( String personName, String roleName) throws Exception {
@@ -262,7 +282,7 @@ public class Business {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 判断用户是否管理员权限
 	 * 1、person.isManager()
@@ -339,7 +359,7 @@ public class Business {
 						OrganizationDefinition.CMSManager)) {
 			return true;
 		}
-		
+
 		//判断effectivePerson是不是该栏目的管理者：涉及 个人，组织和群组
 		List<String> unitNameList= this.organization().unit().listWithPersonSupNested( effectivePerson.getDistinguishedName() );
 		List<String> groupNameList = new ArrayList<String>();
@@ -353,14 +373,14 @@ public class Business {
 				return true;
 			}
 		}
-		
+
 		if( ListTools.isNotEmpty( appInfo.getManageableGroupList() ) && ListTools.isNotEmpty( groupNameList )) {
 			groupNameList.retainAll( appInfo.getManageableGroupList()  );
 			if( ListTools.isNotEmpty( groupNameList )) {
 				return true;
 			}
 		}
-		
+
 		if( ListTools.isNotEmpty( appInfo.getManageableUnitList() )&& ListTools.isNotEmpty( unitNameList )) {
 			unitNameList.retainAll( appInfo.getManageableUnitList()  );
 			if( ListTools.isNotEmpty( unitNameList )) {

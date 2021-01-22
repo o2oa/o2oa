@@ -22,10 +22,19 @@ import java.util.List;
  *
  * @author O2LEE
  */
-public class FormFactory extends AbstractFactory {
+public class FormFactory extends ElementFactory {
 
 	public FormFactory( Business business ) throws Exception {
 		super(business);
+	}
+
+	public Form pick(String flag) throws Exception {
+		return this.pick(flag, ExceptionWhen.none);
+	}
+
+	@Deprecated
+	public Form pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
+		return this.pick(flag, Form.class);
 	}
 
 	/**
