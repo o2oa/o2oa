@@ -1899,7 +1899,10 @@ debugger;
 					for (var i=0; i<view.items.length; i++){
 						var m = view.items[i];
 						if (m.json.id==pattern.pattern.id || m.json.name==pattern.pattern.id){
-							window.setTimeout(function(){m.selected()}, 500);
+							window.setTimeout(function(){
+								if (m.view) m.view.unSelected();
+								m.selected();
+							}, 500);
 							flag = true;
 							break;
 						}
@@ -1909,7 +1912,10 @@ debugger;
 					for (var i=0; i<view.actionbarList.length; i++){
 						var m = view.actionbarList[i];
 						if (m.json.id==pattern.pattern.id || m.json.name==pattern.pattern.id){
-							window.setTimeout(function(){m.selected()}, 500);
+							window.setTimeout(function(){
+								if (m.view) m.view.unSelected();
+								m.selected();
+							}, 500);
 							flag = true;
 							break;
 						}
@@ -1919,7 +1925,10 @@ debugger;
 					for (var i=0; i<view.pagingList.length; i++){
 						var m = view.pagingList[i];
 						if (m.json.id==pattern.pattern.id || m.json.name==pattern.pattern.id){
-							window.setTimeout(function(){m.selected()}, 500);
+							window.setTimeout(function(){
+								if (m.view) m.view.unSelected();
+								m.selected();
+							}, 500);
 							flag = true;
 							break;
 						}
@@ -1990,7 +1999,10 @@ debugger;
 				for (var i=0; i<form.moduleList.length; i++){
 					var m = form.moduleList[i];
 					if (m.json.id==pattern.pattern.name || m.json.name==pattern.pattern.name){
-						window.setTimeout(function(){m.selected()}, 500);
+						window.setTimeout(function(){
+							if (m.form) m.form.unSelected();
+							m.selected()
+						}, 500);
 						flag = true;
 						break;
 					}
@@ -2040,13 +2052,13 @@ debugger;
 
 	getFilterOptionRegex: function(option){
 		var keyword = option.keyword;
-		keyword = keyword.replace("[", "\\[").replace("]", "\\]").replace("(", "\\(").replace(")", "\\)").replace("{", "\\{").replace("}", "\\}")
-			.replace("^", "\\^").replace("$", "\\$").replace(".", "\\.").replace("?", "\\?").replace("+", "\\+").replace("*", "\\*").replace("|", "\\|");
-
 		if (option.matchRegExp){
 			var flag = (option.caseSensitive) ? "gm" : "gmi";
 			return new RegExp(keyword, flag);
 		}else{
+			keyword = keyword.replace("[", "\\[").replace("]", "\\]").replace("(", "\\(").replace(")", "\\)").replace("{", "\\{").replace("}", "\\}")
+				.replace("^", "\\^").replace("$", "\\$").replace(".", "\\.").replace("?", "\\?").replace("+", "\\+").replace("*", "\\*").replace("|", "\\|");
+
 			var flag = (option.caseSensitive) ? "gm" : "gmi";
 			keyword = (option.matchWholeWord) ? "\\b"+keyword+"\\b" : keyword;
 			return new RegExp(keyword, flag);
@@ -2151,6 +2163,9 @@ debugger;
 		if (this.filterOption.matchRegExp){
 			return new RegExp(keyword, flag)
 		}else{
+			keyword = keyword.replace("[", "\\[").replace("]", "\\]").replace("(", "\\(").replace(")", "\\)").replace("{", "\\{").replace("}", "\\}")
+				.replace("^", "\\^").replace("$", "\\$").replace(".", "\\.").replace("?", "\\?").replace("+", "\\+").replace("*", "\\*").replace("|", "\\|");
+
 			if (this.filterOption.matchWholeWord) keyword = "\\b"+keyword+"\\b";
 			return new RegExp(keyword, flag)
 		}
