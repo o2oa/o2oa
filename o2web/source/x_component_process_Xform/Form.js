@@ -3128,14 +3128,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
 
     /**
-     * 需要判断权限
      * @summary 将待办设置为挂起状态，不计算工作时长.
      * @example
-     * if( this.workContext.getControl().allowPause ){ //判断流程节点是否设置了允许挂起
-     *     this.form.getApp().appForm.pauseTask();
-     * }
+     * this.form.getApp().appForm.pauseTask();
      */
     pauseTask: function (e) {
+        if (!this.businessData.control["allowPause"]) {
+            MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
+            return false;
+        }
+
         if (this.businessData.task){
             if (e && e.disable) e.disable(true);
             return o2.Actions.get("x_processplatform_assemble_surface").pauseTask(this.businessData.task.id, function (json) {
@@ -3160,14 +3162,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
 
     /**
-     * 需要判断权限
      * @summary 将待办从挂起状态恢复为正常状态.
      * @example
-     * if( this.workContext.getControl().allowResume ){ //判断当前待办是否可以进行挂起恢复操作
-     *     this.form.getApp().appForm.resumeTask();
-     * }
+     * this.form.getApp().appForm.resumeTask();
      */
     resumeTask: function (e) {
+        if (!this.businessData.control["allowResume"]) {
+            MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
+            return false;
+        }
         if (this.businessData.task){
             if (e && e.disable) e.disable(true);
             return o2.Actions.get("x_processplatform_assemble_surface").resumeTask(this.businessData.task.id, function (json) {
