@@ -542,6 +542,18 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return new ArrayList<T>(query.getResultList());
 	}
 
+	public <T extends JpaObject> List<T> listEqualAndLessThanOrEqualTo(Class<T> cls, String attribute,
+			Object value, String otherAttribute, Object otherValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		Predicate p = cb.equal(root.get(attribute), value);
+		p = cb.and(p, cb.lessThanOrEqualTo(root.get(otherAttribute), (Comparable) otherValue));
+		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		return new ArrayList<>(os);
+	}
+
 	public <T extends JpaObject, W extends Object> List<T> listBetweenAndEqual(Class<T> cls, String attribute,
 			Object start, Object end, String equalAttribute, Object equalValue) throws Exception {
 		EntityManager em = this.get(cls);
