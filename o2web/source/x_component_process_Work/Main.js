@@ -200,9 +200,9 @@ MWF.xApplication.process.Work.Main = new Class({
                     loadFormFlag = true;
                     check();
                 }.bind(this), "failure": function(){
-                    layout.sessionPromise.then(function(){
-                        this.close();
-                    }.bind(this), function(){});
+                    // layout.sessionPromise.then(function(){
+                    //     this.close();
+                    // }.bind(this), function(){});
                     //this.close();
                 }.bind(this)}, id, id, id, [this.options.formid || this.options.form.id]);
         }else{
@@ -249,9 +249,9 @@ MWF.xApplication.process.Work.Main = new Class({
                         loadWorkFlag = true;
                         check();
                     }.bind(this), "failure": function(){
-                        layout.sessionPromise.then(function(){
-                            this.close();
-                        }.bind(this), function(){});
+                        // layout.sessionPromise.then(function(){
+                        //     this.close();
+                        // }.bind(this), function(){});
                         //this.close();
                     }.bind(this)}, id
             );
