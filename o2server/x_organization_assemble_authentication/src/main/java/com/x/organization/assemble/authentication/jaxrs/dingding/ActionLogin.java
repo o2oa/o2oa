@@ -6,10 +6,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.x.base.core.project.logger.Audit;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -25,10 +26,13 @@ import com.x.organization.core.entity.Person;
 
 class ActionLogin extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ActionLogin.class);
+
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			String code) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Audit audit = logger.audit(effectivePerson);
 			String url = "https://oapi.dingtalk.com/user/getuserinfo?access_token="
 					+ Config.dingding().corpAccessToken() + "&code=" + code;
 			String value = this.get(url);
@@ -66,6 +70,7 @@ class ActionLogin extends BaseAction {
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();
 			httpToken.setToken(request, response, effective);
+			audit.log(person.getDistinguishedName(), "登录");
 			result.setData(wo);
 		}
 		return result;
