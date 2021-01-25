@@ -8,8 +8,8 @@ MWF.xApplication.process.Xform.LP = {
     "cancelDatagridLineEditTitle" : "取消编辑数据网格确认",
     "cancelDatagridLineEdit" : "是否确定取消编辑数据网格？",
 
-    "datagridImport" : "导入",
-    "datagridExport" : "导出",
+    "datagridImport" : "导入Excel",
+    "datagridExport" : "导出Excel",
 
     "browserNotActiveX": "您的浏览器不支持ActiveX控件，不能加载Office控件，请使用IE浏览器",
 
