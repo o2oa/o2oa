@@ -25,12 +25,26 @@
  *
  * ***** END LICENSE BLOCK ******/
 
+
+
+/**
+ * <b>o2m</b> 是O2OA移动端APP提供的调用原生控件的能力，帮助开发者高效使用拍照、定位等手机系统的能力，同时可以直接使用扫一扫、打开原生应用、选择时间，人员，组织等业务的能力，带给门户接近原生代码的体验
+ * <br/>
+ * <b>o2m</b> 只有在O2OA移动端APP中才能提供能力
+ * @module o2m
+ * @o2ordernumber 160
+ * @o2range {流程表单|门户}
+ * @o2syntax
+ * // 可以在移动端 流程表单、门户 上使用
+ * this.o2m
+ * 
+ */
 (function () {
   this.o2m = {
     version: {
-      v: "1.0.0",
-      build: "2019.04.20",
-      info: "O2OA 活力办公 创意无限. Copyright © 2019, o2oa.net O2 Team All rights reserved."
+      v: "1.1.0",
+      build: "2021.01.20",
+      info: "O2OA 活力办公 创意无限. Copyright © 2021, o2oa.net O2 Team All rights reserved."
     },
     log: function (message) {
       window.o2android && window.o2android.o2mLog ? window.o2android.o2mLog(message) : window.webkit.messageHandlers.o2mLog.postMessage(message);
@@ -69,7 +83,7 @@
     }
   };
 
-  // notification.alert
+
   this.o2m.notification.alertSuccess = function () {
     console.log("notification alert back");
   };
@@ -97,6 +111,33 @@
     };
     _notification_post(body, onFail);
   };
+  /**
+   * 原生Alert提示弹出窗
+   * @method alert
+   * @o2membercategory notification
+   * @static
+   * @param {Object} obj 提示窗传入对象
+   * <pre><code class='language-js'>{
+   *  "title": "提示",  //消息标题，可为空
+   *  "message": "这里是消息内容", //消息内容
+   *  "buttonName": "确定", //确定按钮名称
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/notification_alert.jpeg">
+   * </caption>
+   * o2m.notification.alert({
+   *  message: "亲爱的",
+   *  title: "提示",//可传空
+   *  buttonName: "收到",
+   *  onSuccess : function() {//onSuccess将在点击button之后回调},
+   *  onFail : function(err) {}
+   * });
+   * 
+   */
   this.o2m.notification.alert = _o2m_n_alert;
 
   //notification.confirm
@@ -131,6 +172,36 @@
     };
     _notification_post(body, onFail);
   }
+  /**
+   * 原生confirm提示弹出窗
+   * @method confirm
+   * @o2membercategory notification
+   * @static
+   * @param {Object} obj 提示窗传入对象
+   * <pre><code class='language-js'>{
+   *  "title": "提示",  //消息标题，可为空
+   *  "message": "这里是消息内容", //消息内容
+   *  "buttonLabels": ["确定", "取消"], //按钮名称 Array[String]
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/notification_confirm.jpeg">
+   * </caption>
+   * o2m.notification.confirm({
+   *  message: "你爱我吗",
+   *  title: "提示",//可传空
+   *  buttonLabels: ['爱', '不爱'],
+   *  onSuccess : function(buttonIndex) {
+   *    //onSuccess将在点击button之后回调
+   *    //buttonIndex: 0 被点击按钮的索引值，Number类型，从0开始
+   * },
+   *  onFail : function(err) {}
+   * });
+   * 
+   */
   this.o2m.notification.confirm = _o2m_n_confirm;
 
   //notification.prompt
@@ -165,6 +236,39 @@
     };
     _notification_post(body, onFail);
   }
+  /**
+   * 原生prompt提示弹出窗
+   * @method prompt
+   * @o2membercategory notification
+   * @static
+   * @param {Object} obj prompt需要传入对象
+   * <pre><code class='language-js'>{
+   *  "title": "提示",  //消息标题，可为空
+   *  "message": "这里是消息内容", //消息内容
+   *  "buttonLabels": ['继续', '不玩了'], //按钮名称 Array[String]
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/notification_prompt.jpeg">
+   * </caption>
+   * o2m.notification.prompt({
+   *  message: "再说一遍？",
+   *  title: "提示",//可传空
+   *  buttonLabels: ['继续', '不玩了'],
+   *  onSuccess : function(result) {
+   *     //result是一个字符串，格式是json格式，内容如下：
+   *     //{
+   *     //    buttonIndex: 0, //被点击按钮的索引值，Number类型，从0开始
+   *     //    value: '' //输入的值
+   *     //}
+   * },
+   *  onFail : function(err) {}
+   * });
+   * 
+   */
   this.o2m.notification.prompt = _o2m_n_prompt;
 
 
@@ -189,6 +293,27 @@
     };
     _notification_post(body, onFail);
   };
+
+  /**
+   * 手机震动
+   * @method vibrate
+   * @o2membercategory notification
+   * @static
+   * @param {Object} obj 震动需要传入对象
+   * <pre><code class='language-js'>{
+   *  "duration": 300,  //震动时间，android可配置 iOS忽略
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.notification.vibrate({
+   *  duration: 300, 
+   *  onSuccess : function() {
+   * },
+   *  onFail : function(err) {}
+   * });
+   * 
+   */
   this.o2m.notification.vibrate = _o2m_n_vibrate;
 
   //notification.toast
@@ -217,6 +342,27 @@
     };
     _notification_post(body, onFail);
   };
+
+  /**
+   * toast提示
+   * @method toast
+   * @o2membercategory notification
+   * @static
+   * @param {Object} obj toast需要传入对象
+   * <pre><code class='language-js'>{
+   *  "message": "这里是提示信息",
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.notification.toast({
+   *  message: "提示消息内容", 
+   *  onSuccess : function() {
+   * },
+   *  onFail : function(err) {}
+   * });
+   * 
+   */
   this.o2m.notification.toast = _o2m_n_toast;
 
   //notification.actionSheet
@@ -251,6 +397,35 @@
     };
     _notification_post(body, onFail);
   };
+  /**
+   * 底部弹出菜单
+   * @method actionSheet
+   * @o2membercategory notification
+   * @static
+   * @param {Object} obj actionSheet需要传入对象
+   * <pre><code class='language-js'>{
+   *  "title": "谁是最棒哒？",//标题
+   *  "cancelButton": '取消', //取消按钮文本
+   *  "otherButtons": ["孙悟空","猪八戒","唐僧","沙和尚"], //其他选项按钮名称
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/notification_action_sheet.jpeg">
+   * </caption>
+   * o2m.notification.actionSheet({
+   *  title: "谁是最棒哒？", //标题
+   *  cancelButton: '取消', //取消按钮文本
+   *  otherButtons: ["孙悟空","猪八戒","唐僧","沙和尚"],
+   *  onSuccess : function(buttonIndex) {
+   *  //buttonIndex: 0 被点击按钮的索引值，Number，从0开始, 取消按钮为-1
+   * },
+   *  onFail : function(err) {}
+   * });
+   * 
+   */
   this.o2m.notification.actionSheet = _o2m_n_actionSheet;
 
   //notification.showLoading
@@ -273,6 +448,30 @@
     };
     _notification_post(body, onFail);
   };
+  /**
+   * 显示Loading浮层，请和hideLoading配合使用
+   * @method showLoading
+   * @o2membercategory notification
+   * @static
+   * @param {Object} obj showLoading需要传入对象
+   * <pre><code class='language-js'>{
+   *  text: "使劲加载中..", //loading显示的字符，空表示不显示文字
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/notification_showLoading.jpeg">
+   * </caption>
+   * o2m.notification.showLoading({
+   *  text: "使劲加载中..", //loading显示的字符，空表示不显示文字
+   *  onSuccess : function() {
+   * },
+   *  onFail : function(err) {}
+   * });
+   * 
+   */
   this.o2m.notification.showLoading = _o2m_n_showLoading;
 
   //notification.hideLoading
@@ -293,6 +492,24 @@
     };
     _notification_post(body, onFail);
   }
+  /**
+   * 隐藏Loading浮层
+   * @method hideLoading
+   * @o2membercategory notification
+   * @static
+   * @param {Object} obj hideLoading需要传入对象
+   * <pre><code class='language-js'>{
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.notification.hideLoading({
+   *  onSuccess : function() {
+   * },
+   *  onFail : function(err) {}
+   * });
+   * 
+   */
   this.o2m.notification.hideLoading = _o2m_n_hideLoading;
 
 
@@ -366,6 +583,34 @@
     };
     _util_post(body, onFail);
   };
+   
+  /**
+   * 日期选择器
+   * @method datePicker
+   * @o2membercategory util.date
+   * @static
+   * @param {Object} obj  datePicker需要传入对象
+   * <pre><code class='language-js'>{
+   *  value: '2019-04-17', //默认显示日期
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/util_date_picker.jpeg">
+   * </caption>
+   * o2m.util.date.datePicker({
+   * value: '2019-04-17', //默认显示日期
+   * onSuccess : function(result) {
+   *     //onSuccess将在点击完成之后回调
+   *     {
+   *         value: "2019-02-10"
+   *     }
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
   this.o2m.util.date.datePicker = _o2m_u_date_datePicker;
 
   //o2m.util.date.timePicker
@@ -388,6 +633,33 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 时间选择器
+   * @method timePicker
+   * @o2membercategory util.date
+   * @static
+   * @param {Object} obj  timePicker需要传入对象
+   * <pre><code class='language-js'>{
+   *  value: '14:00', //默认显示时间
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/util_time_picker.jpeg">
+   * </caption>
+   * o2m.util.date.timePicker({
+   * value: '14:00', //默认显示时间
+   * onSuccess : function(result) {
+   *     //onSuccess将在点击完成之后回调
+   *     {
+   *         value: "18:10"
+   *     }
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
   this.o2m.util.date.timePicker = _o2m_u_date_timePicker;
 
 
@@ -412,6 +684,33 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 日期时间选择器
+   * @method dateTimePicker
+   * @o2membercategory util.date
+   * @static
+   * @param {Object} obj  dateTimePicker需要传入对象
+   * <pre><code class='language-js'>{
+   *  value: '2019-05-05 14:00', //默认显示时间
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/util_date_time_picker.jpeg">
+   * </caption>
+   * o2m.util.date.dateTimePicker({
+   * value: '2019-05-05 14:00', //默认显示时间
+   * onSuccess : function(result) {
+   *     //onSuccess将在点击完成之后回调
+   *     {
+   *         value: "2019-03-18 18:10"
+   *     }
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
   this.o2m.util.date.dateTimePicker = _o2m_u_date_dateTimePicker;
 
 
@@ -436,6 +735,33 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 月历日期选择器
+   * @method chooseOneDay
+   * @o2membercategory util.date
+   * @static
+   * @param {Object} obj  chooseOneDay需要传入对象
+   * <pre><code class='language-js'>{
+   *  value: '2019-05-05', //默认显示日期
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/util_choose_one_day.jpeg">
+   * </caption>
+   * o2m.util.date.chooseOneDay({
+   * value: '2019-05-05', //默认显示日期
+   * onSuccess : function(result) {
+   *     //onSuccess将在点击完成之后回调
+   *     {
+   *         value: "2019-03-18"
+   *     }
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
   this.o2m.util.calendar.chooseOneDay = _o2m_u_calendar_chooseOneDay;
 
 
@@ -459,6 +785,33 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 月历日期时间选择器
+   * @method chooseDateTime
+   * @o2membercategory util.date
+   * @static
+   * @param {Object} obj  chooseDateTime需要传入对象
+   * <pre><code class='language-js'>{
+   *  value: '2019-05-05 11:00', //默认显示时间
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/util_choose_date_time.jpeg">
+   * </caption>
+   * o2m.util.date.chooseDateTime({
+   * value: '2019-05-05 11:00', //默认显示时间
+   * onSuccess : function(result) {
+   *     //onSuccess将在点击完成之后回调
+   *     {
+   *         value: "2019-03-18 18:45"
+   *     }
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
   this.o2m.util.calendar.chooseDateTime = _o2m_u_calendar_chooseDateTime;
 
 
@@ -484,6 +837,35 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 月历日期区间选择器
+   * @method chooseInterval
+   * @o2membercategory util.date
+   * @static
+   * @param {Object} obj  chooseInterval需要传入对象
+   * <pre><code class='language-js'>{
+   *  startDate: '2019-05-05',
+   *  endDate: '2019-05-06',
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/util_choose_interval.jpeg">
+   * </caption>
+   * o2m.util.date.chooseInterval({
+   * value: '2019-05-05 11:00', //默认显示时间
+   * onSuccess : function(result) {
+   *     //onSuccess将在点击完成之后回调
+   *     {
+   *         startDate: "2019-05-05", 
+            endDate: "2019-05-06",
+   *     }
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
   this.o2m.util.calendar.chooseInterval = _o2m_u_calendar_chooseInterval;
 
 
@@ -506,6 +888,32 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 获取手机基础信息
+   * @method getPhoneInfo
+   * @o2membercategory util.device
+   * @static
+   * @param {Object} obj  getPhoneInfo需要传入对象
+   * <pre><code class='language-js'>{
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.util.device.getPhoneInfo({
+   * onSuccess : function(result) {
+   *     {
+   *      screenWidth: 1080, // 手机屏幕宽度
+   *      screenHeight: 1920, // 手机屏幕高度
+   *      brand:'Mi'， // 手机品牌
+   *      model:'Note4', // 手机型号
+   *      version:'7.0'. // 版本
+   *      netInfo:'wifi' , // 网络类型 wifi／4g／3g 
+   *      operatorType :'xx' // 运营商信息
+   *     }
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
   this.o2m.util.device.getPhoneInfo = _o2m_u_device_getPhoneInfo;
 
 
@@ -528,14 +936,32 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 扫二维码
+   * @method scan
+   * @o2membercategory util.device
+   * @static
+   * @param {Object} obj  scan需要传入对象
+   * <pre><code class='language-js'>{
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.util.device.scan({
+   * onSuccess : function(result) {
+   *     { 'text': '扫码内容'}
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
   this.o2m.util.device.scan = _o2m_u_device_scan;
 
-  
+
   //o2m.util.device.location
   this.o2m.util.device.locationSuccess = function (result) {
     console.log("util device location back, result:" + result);
   };
-  var _o2m_u_device_location = function(c) {
+  var _o2m_u_device_location = function (c) {
     var onSuccess = c && c.onSuccess ? c.onSuccess : null;
     var onFail = c && c.onFail ? c.onFail : null;
     if (onSuccess && typeof onSuccess === "function") {
@@ -550,6 +976,29 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 单次定位
+   * @method location
+   * @o2membercategory util.device
+   * @static
+   * @param {Object} obj  location需要传入对象
+   * <pre><code class='language-js'>{
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.util.device.location({
+   * onSuccess : function(result) {
+   *     //这里返回百度坐标系的定位信息 
+   *     { 
+   *      'latitude': 39.903578, // 纬度
+   *      'longitude': 116.473565, // 经度
+   *      'address': '地址描述'
+   *      }
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
   this.o2m.util.device.location = _o2m_u_device_location;
 
 
@@ -573,6 +1022,25 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 设置原生页面标题
+   * @method setTitle
+   * @o2membercategory util.navigation
+   * @static
+   * @param {Object} obj  setTitle需要传入对象
+   * <pre><code class='language-js'>{
+   *  title : '导航标题',    
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.util.navigation.setTitle({
+   * title : '导航标题', 
+   * onSuccess : function() {
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
   this.o2m.util.navigation.setTitle = _o2m_u_navigation_setTitle;
 
 
@@ -594,6 +1062,14 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 关闭当前原生页面
+   * @method close
+   * @o2membercategory util.navigation
+   * @static
+   * @example
+   * o2m.util.navigation.close();
+   */
   this.o2m.util.navigation.close = _o2m_u_navigation_close;
 
 
@@ -615,6 +1091,14 @@
     };
     _util_post(body, onFail);
   };
+  /**
+   * 返回上级原生页面
+   * @method goBack
+   * @o2membercategory util.navigation
+   * @static
+   * @example
+   * o2m.util.navigation.goBack();
+   */
   this.o2m.util.navigation.goBack = _o2m_u_navigation_goBack;
 
 
@@ -662,6 +1146,14 @@
       console.log("请在O2OA移动端使用, workClose");
     }
   }
+  /**
+   * 关闭当前工作页面，<b>只能在工作表单中可以使用</b>
+   * @method workClose
+   * @o2membercategory biz
+   * @static
+   * @example
+   * o2m.biz.workClose();
+   */
   this.o2m.biz.workClose = _o2m_b_work_close;
 
 
@@ -693,6 +1185,51 @@
     };
     _biz_post(body, onFail);
   };
+  /**
+   * 通讯录选部门
+   * @method departmentsPicker
+   * @o2membercategory biz
+   * @static
+   * @param {Object} obj  departmentsPicker需要传入对象
+   * <pre><code class='language-js'>{
+   *  topList: [],//Array[String] 可选的顶级组织列表，不传或列表为空的时候，显示全部组织
+   *  orgType: "",//String 可选择的组织类别。为空就是全部组织类型都可以
+   *  multiple:true, //是否多选
+   *  maxNumber: 0, //Int 当multiple为true的时候，最多可选择的部门数
+   *  pickedDepartments:[],//Array[String] 已经选择的部门distinguishedName列表
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/biz_dept_choose.png">
+   * </caption>
+   * o2m.biz.contact.departmentsPicker({
+   * topList: [],//不传或者空列表，显示全部组织
+   * orgType: "",//可传空 只显示某种类型的组织
+   * multiple:true, //是否多选
+   * maxNumber: 0, //最大选择数量
+   * pickedDepartments:[],//已选部门
+   * onSuccess : function(result) {
+   *     //返回结果样例
+   *     {
+   *       departments:[{
+   *       "id":"xxxx",
+   *       "name":"部门名称", 
+   *       "unique":"xxxx",
+   *       "distinguishedName":"部门@xxxx@U",
+   *       "typeList":["xxxx"],
+   *       "shortName":"xxxx",
+   *       "level": 0,
+   *       "levelName":"xxxx",
+   *       }]
+   *     }
+   *   
+   * },
+   * onFail : function(err) {}
+   * });
+   */
   this.o2m.biz.contact.departmentsPicker = _o2m_b_contact_department_picker;
 
 
@@ -724,6 +1261,55 @@
     };
     _biz_post(body, onFail);
   };
+  /**
+   * 通讯录选身份
+   * @method IdentityPicker
+   * @o2membercategory biz
+   * @static
+   * @param {Object} obj  IdentityPicker需要传入对象
+   * <pre><code class='language-js'>{
+   *  topList: [],//Array[String] 可选的顶级组织列表，不传或列表为空的时候，显示全部组织
+   *  multiple:true, //Boolean 是否多选
+   *  maxNumber: 0, //Int 当multiple为true的时候，最多可选择的身份数
+   *  pickedIdentities:[],//Array[String] 已经选择的身份distinguishedName列表
+   *  duty: [],//Array[String] 可选择的人员职责
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/biz_identity_choose.png">
+   * </caption>
+   * o2m.biz.contact.IdentityPicker({
+   * topList: [],//不传或者空列表，显示全部组织
+   * multiple:true, //是否多选
+   * maxNumber: 0, //最大选择数量
+   * pickedIdentities:[],//已选身份列表
+   * duty: [],//人员职责
+   * onSuccess : function(result) {
+   *     //返回结果样例
+   *     {
+   *       identities:[{
+   *         "id":"xxxx",
+   *         "name":"姓名", 
+   *         "distinguishedName":"姓名@xxxx@I",
+   *         "person":"xxx", 
+   *         "unique":"xxxx",
+   *         "unit":"xxx",
+   *         "unitName":"xxxx",
+   *         "unitLevel": 0,
+   *         "unitLevelName":"xxxx",
+   *         "personName":"xxxx",
+   *         "personUnique":"xxx",
+   *         "personDn":"xxx"
+   *         }]
+   *     }
+   *   
+   * },
+   * onFail : function(err) {}
+   * });
+   */
   this.o2m.biz.contact.IdentityPicker = _o2m_b_contact_identity_picker;
 
 
@@ -752,6 +1338,43 @@
     };
     _biz_post(body, onFail);
   };
+  /**
+   * 群组选择
+   * @method GroupPicker
+   * @o2membercategory biz
+   * @static
+   * @param {Object} obj  GroupPicker需要传入对象
+   * <pre><code class='language-js'>{
+   *  multiple:true, //Boolean 是否多选
+   *  maxNumber: 0, //Int 当multiple为true的时候，最多可选择的身份数
+   *  pickedGroups:[],//Array[String] 已经选择的群组distinguishedName列表
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/biz_group_choose.png">
+   * </caption>
+   * o2m.biz.contact.GroupPicker({
+   * multiple:true, //是否多选
+   * maxNumber: 0, //最大选择数量
+   * pickedGroups:[],//已选群组列表
+   * onSuccess : function(result) {
+   *     //返回结果样例
+   *     {
+   *        groups:[{
+   *           "id":"xxxx", 
+   *           "name":"群组名称", 
+   *           "distinguishedName":"群组名称@xxxx@G"
+   *           "unique":"xxxx", 
+   *           }]
+   *     }
+   *   
+   * },
+   * onFail : function(err) {}
+   * });
+   */
   this.o2m.biz.contact.GroupPicker = _o2m_b_contact_group_picker;
 
 
@@ -779,6 +1402,50 @@
     };
     _biz_post(body, onFail);
   };
+  /**
+   * 人员选择
+   * @method PersonPicker
+   * @o2membercategory biz
+   * @static
+   * @param {Object} obj  PersonPicker需要传入对象
+   * <pre><code class='language-js'>{
+   *  multiple:true, //Boolean 是否多选
+   *  maxNumber: 0, //Int 当multiple为true的时候，最多可选择的身份数
+   *  pickedUsers:[],//Array[String] 已经选择的人员distinguishedName列表
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/biz_person_choose.png">
+   * </caption>
+   * o2m.biz.contact.PersonPicker({
+   * multiple:true, //是否多选
+   * maxNumber: 0, //最大选择数量
+   * pickedUsers:[],//已选人员列表
+   * onSuccess : function(result) {
+   *     //返回结果样例
+   *     {
+   *         users:[{
+   *           "id":"xxx", 
+   *           "name":"姓名", 
+   *           "unique":"xxx", 
+   *           "distinguishedName":"姓名@xxxx@P"
+   *           "genderType":"xxx", 
+   *           "employee":"xxx", 
+   *           "mail":"xxx", 
+   *           "weixin":"xxx", 
+   *           "qq":"xxx", 
+   *           "mobile":"xxx", 
+   *           "officePhone":"xxx"
+   *           }]
+   *     }
+   *   
+   * },
+   * onFail : function(err) {}
+   * });
+   */
   this.o2m.biz.contact.PersonPicker = _o2m_b_contact_person_picker;
 
 
@@ -820,6 +1487,93 @@
     };
     _biz_post(body, onFail);
   };
+  /**
+   * 复合选择器，可配置选择多种数据
+   * @method ComplexPicker
+   * @o2membercategory biz
+   * @static
+   * @param {Object} obj  ComplexPicker需要传入对象
+   * <pre><code class='language-js'>{
+   *  pickMode: ["departmentPicker", "identityPicker"], //Array[String] 选择器类型，可传入值：departmentPicker、identityPicker、groupPicker、personPicker
+   *  topList：Array[String] 可选的顶级组织列表，不传或列表为空的时候，显示全部组织
+   *  duty: Array[String] 可选择的人员职责
+   *  orgType：String 可选择的组织类别。为空就是全部组织类型都可以
+   *  multiple:true, //Boolean 是否多选
+   *  maxNumber: 0, //Int 当multiple为true的时候，最多可选择的身份数
+   *  pickedDepartments：Array[String] 已经选择的部门distinguishedName列表
+   *  pickedIdentities：Array[String] 已经选择的身份distinguishedName列表
+   *  pickedGroups： Array[String] 已经选择的群组distinguishedName列表
+   *  pickedUsers:[],//Array[String] 已经选择的人员distinguishedName列表
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * <caption>
+   * 样例效果：<br/>
+   * <img src="img/module/o2m/biz_complex_choose.png">
+   * </caption>
+   * o2m.biz.contact.ComplexPicker({
+   * pickMode: ["departmentPicker", "identityPicker"], //选择器类型
+   * topList: [],//不传或者空列表，显示全部组织
+   * orgType: "",//可传空 只显示某种类型的组织
+   * duty: [],//人员职责
+   * multiple:true, //是否多选
+   * maxNumber: 0, //最大选择数量
+   * pickedDepartments:[],//已选部门
+   * pickedIdentities:[],//已选身份列表
+   * pickedGroups:[],//已选群组列表
+   * pickedUsers:[],//已选人员列表
+   * onSuccess : function(result) {
+   *     //返回结果样例
+   *     {
+   *       departments:[{
+   *       "id":"xxxx",
+   *       "name":"部门名称", 
+   *       "unique":"xxxx",
+   *       "distinguishedName":"部门@xxxx@U",
+   *       "typeList":["xxxx"],
+   *       "shortName":"xxxx",
+   *       "level": 0,
+   *       "levelName":"xxxx",
+   *       }],
+   *       identities:[{
+   *       "id":"xxxx",
+   *       "name":"姓名", 
+   *       "distinguishedName":"姓名@xxxx@I",
+   *       "person":"xxx", 
+   *       "unique":"xxxx",
+   *       "unit":"xxx",
+   *       "unitName":"xxxx",
+   *       "unitLevel": 0,
+   *       "unitLevelName":"xxxx",
+   *       "personName":"xxxx",
+   *       "personUnique":"xxx",
+   *       "personDn":"xxx"
+   *       }],
+   *       groups:[{
+   *       "id":"xxxx", 
+   *       "name":"群组名称", 
+   *       "distinguishedName":"群组名称@xxxx@G"
+   *       "unique":"xxxx", 
+   *       }],
+   *       users:[{
+   *       "id":"xxx", 
+   *       "name":"姓名", 
+   *       "unique":"xxx", 
+   *       "distinguishedName":"姓名@xxxx@P"
+   *       "genderType":"xxx", 
+   *       "employee":"xxx", 
+   *       "mail":"xxx", 
+   *       "weixin":"xxx", 
+   *       "qq":"xxx", 
+   *       "mobile":"xxx", 
+   *       "officePhone":"xxx"
+   *       }]
+   *     }
+   * },
+   * onFail : function(err) {}
+   * });
+   */
   this.o2m.biz.contact.ComplexPicker = _o2m_b_contact_complex_picker;
 
 
