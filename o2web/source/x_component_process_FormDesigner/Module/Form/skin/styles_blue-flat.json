@@ -269,6 +269,12 @@
       "font-weight": "bold",
       "border-bottom": "0px solid #DCDFE6"
     },
+    "importActionStyles" : {
+
+    },
+    "exportActionStyles" : {
+
+    },
     "properties": {
       "border": "0",
       "cellpadding": "3",
