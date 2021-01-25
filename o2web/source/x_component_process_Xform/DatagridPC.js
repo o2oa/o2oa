@@ -1046,12 +1046,30 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 	},
 
 	_loadImportExportAction: function(){
-		if( this.exportenable ){
+		if( !this.exportenable && !this.importenable )return;
 
+		var position = ["leftTop","centerTop","rightTop"].contains( this.json.impexpPosition || "" ) ? "top" : "bottom";
+		var container = new Element("div").inject(this.node, position);
+
+		this.importExportAreaNode = new Element("div").inject( container );
+		if( ["leftTop","leftBottom"].contains( this.json.impexpPosition || "" ) ){
+			this.importExportAreaNode.setStyles({ "float" : "left" })
+		}else if( ["rightTop","rightBottom"].contains( this.json.impexpPosition || "" ) ){
+			this.importExportAreaNode.setStyles({ "float" : "right" })
+		}else{
+			this.importExportAreaNode.setStyles({ "margin" : "0px auto" })
+		}
+
+		if( this.exportenable ){
+			this.exportActionNode = new Element("div", {
+				text : MWF.xApplication.process.Xform.LP.datagridexport
+			}).inject(this.importExportAreaNode);
 		}
 
 		if( this.importenable ){
-
+			this.importActionNode = new Element("div", {
+				text : MWF.xApplication.process.Xform.LP.datagridImport
+			}).inject(this.importExportAreaNode);
 		}
 	},
 
