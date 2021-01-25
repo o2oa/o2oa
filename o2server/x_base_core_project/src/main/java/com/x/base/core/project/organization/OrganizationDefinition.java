@@ -47,7 +47,7 @@ public class OrganizationDefinition {
 	public final static String PortalManager = "PortalManager";
 	public final static String PortalManager_description = "门户管理员(系统角色)，可以进行门户应用设计，对门户应用进行管理操作。";
 
-	public final static String BBSManager = "BSSManager";
+	public final static String BBSManager = "BBSManager";
 	public final static String BBSManager_description = "社区管理员(系统角色)，可以对社区进行论坛分区，版块的创建，权限的设定，贴子的管理等操作。";
 
 	public final static String CMSManager = "CMSManager";
