@@ -38,13 +38,9 @@ class ActionEdit extends BaseAction {
 			}
 			Wo wo = new Wo();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+			Wi.copier.copy(wi, table);
+
 			this.check(effectivePerson, business, table);
-			if (StringUtils.isEmpty(table.getName())) {
-				throw new ExceptionEntityFieldEmpty(Table.class, Table.name_FIELDNAME);
-			}
-			if (StringUtils.isNotEmpty(emc.conflict(Table.class, table))) {
-				throw new ExceptionDuplicateFlag(Table.class, emc.conflict(Table.class, table));
-			}
 
 			DynamicEntity dynamicEntity = XGsonBuilder.instance().fromJson(wi.getDraftData(), DynamicEntity.class);
 
@@ -62,16 +58,19 @@ class ActionEdit extends BaseAction {
 				}
 			}
 
-			if (!StringUtils.equals(gson.toJson(dynamicEntity), gson.toJson(existDynamicEntity))) {
-				emc.beginTransaction(Table.class);
-				table.setLastUpdatePerson(effectivePerson.getDistinguishedName());
-				table.setLastUpdateTime(new Date());
-				table.setDraftData(gson.toJson(dynamicEntity));
-				emc.check(table, CheckPersistType.all);
-				emc.commit();
-				CacheManager.notify(Table.class);
-				CacheManager.notify(Statement.class);
+			emc.beginTransaction(Table.class);
+			table.setLastUpdatePerson(effectivePerson.getDistinguishedName());
+			table.setLastUpdateTime(new Date());
+			if(Table.STATUS_build.equals(table.getStatus())){
+				table.setData(table.getDraftData());
+			}else{
+				table.setData("");
 			}
+			emc.check(table, CheckPersistType.all);
+			emc.commit();
+			CacheManager.notify(Table.class);
+			CacheManager.notify(Statement.class);
+
 			wo.setId(table.getId());
 			result.setData(wo);
 			return result;
@@ -89,6 +88,6 @@ class ActionEdit extends BaseAction {
 		static WrapCopier<Wi, Table> copier = WrapCopierFactory.wi(Wi.class, Table.class, null,
 				ListTools.toList(JpaObject.FieldsUnmodify, Table.creatorPerson_FIELDNAME,
 						Table.lastUpdatePerson_FIELDNAME, Table.lastUpdateTime_FIELDNAME, Table.data_FIELDNAME,
-						Table.status_FIELDNAME));
+						Table.status_FIELDNAME, Table.name_FIELDNAME, Table.alias_FIELDNAME));
 	}
 }
