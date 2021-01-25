@@ -66,7 +66,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
 
 
         this.editable = (!this.readonly);
-        if (this.editable) this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
+        if (this.editable && this.json.editableScript && this.json.editableScript.code){
+            this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
+        }
         //this.editable = false;
 
         this.deleteable = this.json.deleteable !== "no";

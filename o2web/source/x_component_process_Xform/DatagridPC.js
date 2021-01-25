@@ -130,7 +130,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		this.table = this.node.getElement("table");
 
 		this.editable = (this.readonly) ? false : true;
-		if (this.editable) this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
+		if (this.editable && this.json.editableScript && this.json.editableScript.code){
+			this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
+		}
 
 		this.deleteable = this.json.deleteable !== "no";
 		this.addable = this.json.addable !== "no";
@@ -1046,6 +1048,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 	},
 
 	_loadImportExportAction: function(){
+		debugger;
 		if( !this.exportenable && !this.importenable )return;
 
 		var position = ["leftTop","centerTop","rightTop"].contains( this.json.impexpPosition || "" ) ? "top" : "bottom";
@@ -1062,14 +1065,32 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 		if( this.exportenable ){
 			this.exportActionNode = new Element("div", {
-				text : MWF.xApplication.process.Xform.LP.datagridexport
+				text : MWF.xApplication.process.Xform.LP.datagridExport
 			}).inject(this.importExportAreaNode);
+			var styles = this.form.css.gridExportActionStyles;
+			if( this.json.exportActionStyles ){
+				styles = Object.merge( Object.clone(styles), this.json.exportActionStyles )
+			}
+			this.exportActionNode.setStyles(styles);
+
+			this.exportActionNode.addEvent("click", function () {
+				this.exportToExcel();
+			}.bind(this))
 		}
 
 		if( this.importenable ){
 			this.importActionNode = new Element("div", {
 				text : MWF.xApplication.process.Xform.LP.datagridImport
 			}).inject(this.importExportAreaNode);
+			var styles = this.form.css.gridImportActionStyles;
+			if( this.json.importActionStyles ){
+				styles = Object.merge( Object.clone(styles), this.json.importActionStyles )
+			}
+			this.importActionNode.setStyles(styles);
+
+			this.importActionNode.addEvent("click", function () {
+				this.importFromExcel();
+			}.bind(this))
 		}
 	},
 
@@ -1698,5 +1719,189 @@ MWF.xApplication.process.Xform.DatagridPC$Data =  new Class({
 				this.dataGrid.editModules.push(module);
 			}.bind(this));
 		}
+	}
+});
+
+MWF.xApplication.process.Xform.ExcelUtils = new Class({
+	initialize: function(){
+		if (!FileReader.prototype.readAsBinaryString) {
+			FileReader.prototype.readAsBinaryString = function (fileData) {
+				var binary = "";
+				var pt = this;
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					var bytes = new Uint8Array(reader.result);
+					var length = bytes.byteLength;
+					for (var i = 0; i < length; i++) {
+						binary += String.fromCharCode(bytes[i]);
+					}
+					//pt.result  - readonly so assign binary
+					pt.content = binary;
+					pt.onload();
+				};
+				reader.readAsArrayBuffer(fileData);
+			}
+		}
+	},
+	_loadResource : function( callback ){
+		if( !XLSX || !xlsxUtils ){
+			var uri = "/x_component_Template/framework/xlsx/xlsx.full.js";
+			var uri2 = "/x_component_Template/framework/xlsx/xlsxUtils.js";
+			COMMON.AjaxModule.load(uri, function(){
+				COMMON.AjaxModule.load(uri2, function(){
+					callback();
+				}.bind(this))
+			}.bind(this))
+		}else{
+			callback();
+		}
+	},
+	_openDownloadDialog: function(url, saveName){
+		/**
+		 * 通用的打开下载对话框方法，没有测试过具体兼容性
+		 * @param url 下载地址，也可以是一个blob对象，必选
+		 * @param saveName 保存文件名，可选
+		 */
+		if( Browser.name !== 'ie' ){
+			if(typeof url == 'object' && url instanceof Blob){
+				url = URL.createObjectURL(url); // 创建blob地址
+			}
+			var aLink = document.createElement('a');
+			aLink.href = url;
+			aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+			var event;
+			if(window.MouseEvent && typeOf( window.MouseEvent ) == "function" ) event = new MouseEvent('click');
+			else
+			{
+				event = document.createEvent('MouseEvents');
+				event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+			}
+			aLink.dispatchEvent(event);
+		}else{
+			window.navigator.msSaveBlob( url, saveName);
+		}
+	},
+
+	upload : function ( dateColArray ) {
+		var uploadFileAreaNode = new Element("div");
+		var html = "<input name=\"file\" type=\"file\" accept=\"csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel\" />";
+		uploadFileAreaNode.set("html", html);
+
+		var fileUploadNode = uploadFileAreaNode.getFirst();
+		fileUploadNode.addEvent("change", function () {
+			var files = fileNode.files;
+			if (files.length) {
+				var file = files.item(0);
+				if( file.name.indexOf(" ") > -1 ){
+					this.form.notice("上传的文件不能带空格", "error");
+					return false;
+				}
+
+				//第三个参数是日期的列
+				this.import( file, function(json){
+					//json为导入的结果
+					// this.page.get("div_1").node.set("html", JSON.stringify(json) )
+
+					uploadFileAreaNode.destroy();
+
+				}.bind(this), dateColArray ); //["E","F"]
+
+			}
+		}.bind(this));
+		fileUploadNode.click();
+	},
+	export : function(array, fileName){
+		// var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
+		// array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
+		// array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
+		// this.export(array, "导出数据"+(new Date).format("db"));
+		this._loadResource( function(){
+			var data = xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
+			var wb = xlsxUtils.format2WB(data, "sheet1", undefined);
+			var wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+			var dataInfo = wb.Sheets[wb.SheetNames[0]];
+
+			var widthArray = [];
+			array[0].each( function( v, i ){
+
+				widthArray.push( {wpx: 100} );
+
+				var at = String.fromCharCode(97 + i).toUpperCase();
+				var di = dataInfo[at+"1"];
+				// di.v = v;
+				// di.t = "s";
+				di.s = {  //设置副标题样式
+					font: {
+						//name: '宋体',
+						sz: 12,
+						color: {rgb: "#FFFF0000"},
+						bold: true,
+						italic: false,
+						underline: false
+					},
+					alignment: {
+						horizontal: "center" ,
+						vertical: "center"
+					}
+				};
+			}.bind(this));
+			dataInfo['!cols'] = widthArray;
+
+			this._openDownloadDialog(xlsxUtils.format2Blob(wb), fileName +".xlsx");
+		})
+	},
+	import : function( file, callback, dateColArray ){
+		this._loadResource( function(){
+			var reader = new FileReader();
+			var workbook, data;
+			reader.onload = function (e) {
+				//var data = data.content;
+				if (!e) {
+					data = reader.content;
+				}else {
+					data = e.target.result;
+				}
+				workbook = XLSX.read(data, { type: 'binary' });
+				//wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
+				//wb.Sheets[Sheet名]获取第一个Sheet的数据
+				var sheet = workbook.SheetNames[0];
+				if (workbook.Sheets.hasOwnProperty(sheet)) {
+					// fromTo = workbook.Sheets[sheet]['!ref'];
+					// console.log(fromTo);
+					debugger;
+					var worksheet = workbook.Sheets[sheet];
+
+					if( dateColArray && typeOf(dateColArray) == "array" ){
+						var rowCount = worksheet['!range'].e.r;
+						for( var i=0; i<dateColArray.length; i++ ){
+							for( var j=1; j<=rowCount; j++ ){
+								var cell = worksheet[ dateColArray[i]+j ];
+								if( cell ){
+									delete cell.w; // remove old formatted text
+									cell.z = 'yyyy-mm-dd'; // set cell format
+									XLSX.utils.format_cell(cell); // this refreshes the formatted text.
+								}
+							}
+						}
+					}
+
+					var json = XLSX.utils.sheet_to_json( worksheet );
+					//var data = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet], {dateNF:'YYYY-MM-DD'});
+					if(callback)callback(json);
+					// console.log(JSON.stringify(json));
+					// break; // 如果只取第一张表，就取消注释这行
+				}
+				// for (var sheet in workbook.Sheets) {
+				//     if (workbook.Sheets.hasOwnProperty(sheet)) {
+				//         fromTo = workbook.Sheets[sheet]['!ref'];
+				//         console.log(fromTo);
+				//         var json = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+				//         console.log(JSON.stringify(json));
+				//         // break; // 如果只取第一张表，就取消注释这行
+				//     }
+				// }
+			};
+			reader.readAsBinaryString(file);
+		})
 	}
 });
