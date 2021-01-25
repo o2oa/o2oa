@@ -198,14 +198,24 @@ MWF.xAction.RestActions = MWF.Actions = {
                     }
                     cb();
                 });
-
+                //actionArgs.unshift(null);
                 actionArgs.unshift(function(json){
                     jsons[i] = json;
                     res.push(true);
                     cb();
                 });
 
-                action.action[action.name].apply(action.action, actionArgs);
+                var p = action.action[action.name].apply(action.action, actionArgs);
+                // p.catch(function(xhr, text, error){
+                //     res.push(false);
+                //     if (!cbf){
+                //         _doError(xhr, text, error);
+                //     }else{
+                //         cbf();
+                //     }
+                //     cb();
+                // })
+
             }else{
                 action.action[action.name](function(){
                     jsons[i] = json;
