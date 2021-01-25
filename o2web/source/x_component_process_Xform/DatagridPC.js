@@ -80,7 +80,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  */
 MWF.xApplication.process.Xform.DatagridPC = new Class(
 	/** @lends MWF.xApplication.process.Xform.DatagridPC# */
-	{
+{
 	Implements: [Events],
 	Extends: MWF.APP$Module,
 	isEdit: false,
@@ -135,6 +135,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		this.deleteable = this.json.deleteable !== "no";
 		this.addable = this.json.addable !== "no";
 
+		//允许导出
+		this.importenable  = this.editable && (this.json.impexpType === "impexp" || this.json.impexpType === "imp");
+		//允许导入
+		this.exportenable  = this.json.impexpType === "impexp" || this.json.impexpType === "exp";
+
 		this.gridData = this._getValue();
 
 		this.totalModules = [];
@@ -145,6 +150,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			this._addTitleActionColumn();
 
 			this._loadEditDatagrid(function(){
+				this._loadImportExportAction();
 				this.fireEvent("postLoad");
 				this.fireEvent("load");
 			}.bind(this));
@@ -154,6 +160,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			this._getDatagridEditorTr();
 			this._loadReadDatagrid(function(){
 				if(this.editorTr)this.editorTr.setStyle("display", "none");
+				this._loadImportExportAction();
 				this.fireEvent("postLoad");
 				this.fireEvent("load");
 			}.bind(this));
@@ -1036,6 +1043,16 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		this._loadTotal();
 
 		if (callback) callback();
+	},
+
+	_loadImportExportAction: function(){
+		if( this.exportenable ){
+
+		}
+
+		if( this.importenable ){
+
+		}
 	},
 
 	_loadDatagridStyle: function(){
