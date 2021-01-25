@@ -366,21 +366,6 @@ debugger;
 
 	checkFindDesigner: function(e){
 		if (e.keyCode===13){
-			this.getFindOption();
-
-			if (!this.filterOption.keyword){
-				this.listInfoNode.show().removeClass("loadding").getFirst().set("text", this.lp.nothingFind_keyword);
-				return false;
-			}
-			if (!this.filterOption.designerTypes.length){
-				this.listInfoNode.show().removeClass("loadding").getFirst().set("text", this.lp.nothingFind_noFilter);
-				return false;
-			}
-			if (!this.filterOption.moduleList.length){
-				this.listInfoNode.show().removeClass("loadding").getFirst().set("text", this.lp.nothingFind_noRange);
-				return false;
-			}
-
 			this.findDesigner();
 		}
 	},
@@ -2129,6 +2114,21 @@ debugger;
 	},
 
 	findDesigner: function(){
+		this.getFindOption();
+
+		if (!this.filterOption.keyword){
+			this.listInfoNode.show().removeClass("loadding").getFirst().set("text", this.lp.nothingFind_keyword);
+			return false;
+		}
+		if (!this.filterOption.designerTypes.length){
+			this.listInfoNode.show().removeClass("loadding").getFirst().set("text", this.lp.nothingFind_noFilter);
+			return false;
+		}
+		if (!this.filterOption.moduleList.length){
+			this.listInfoNode.show().removeClass("loadding").getFirst().set("text", this.lp.nothingFind_noRange);
+			return false;
+		}
+
 		this.listContentNode.hide();
 		this.listContentNode.empty();
 		this.listInfoNode.show().getFirst().set("text", "");
