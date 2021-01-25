@@ -33,7 +33,7 @@ public class ThisApplication {
 	}
 
 	protected static Context context;
-	public static final String BBSMANAGER = "BBSManager@CMSManagerSystemRole@R";
+	public static final String BBSMANAGER = "BBSManager";
 	public static final QueueNewReplyNotify queueNewReplyNotify = new QueueNewReplyNotify();
 	public static final QueueNewSubjectNotify queueNewSubjectNotify = new QueueNewSubjectNotify();
 	public static String CONFIG_BBS_ANONYMOUS_PERMISSION = "YES";
