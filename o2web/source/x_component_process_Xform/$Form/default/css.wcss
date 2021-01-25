@@ -426,6 +426,9 @@
         "border-radius": "5px",
         "text-align": "center"
     },
+    "gridImpExpAreaNode" : {
+
+    },
     "mobileGridHelpNode": {
         "width": "30px",
         "height": "30px",
