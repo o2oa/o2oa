@@ -76,6 +76,13 @@ public class BaseAction extends StandardJaxrsAction {
 			this.relatedScriptMap = relatedScriptMap;
 		}
 
+		public Map<String, RelatedForm> getRelatedFormMap() {
+			return relatedFormMap;
+		}
+
+		public void setRelatedFormMap(Map<String, RelatedForm> relatedFormMap) {
+			this.relatedFormMap = relatedFormMap;
+		}
 	}
 
 	public static class RelatedForm extends GsonPropertyObject {
