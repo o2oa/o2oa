@@ -427,7 +427,7 @@
         "text-align": "center"
     },
     "gridImpExpAreaNode" : {
-
+      "display" : "block"
     },
     "mobileGridHelpNode": {
         "width": "30px",
