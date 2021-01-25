@@ -209,7 +209,7 @@ public class UserManagerService {
 			roleList = business.organization().role().listWithPerson( name );
 			if ( ListTools.isNotEmpty( roleList ) ) {
 				for ( String role : roleList ) {
-					if ( role.split("@")[0].equalsIgnoreCase( roleName ) ) {
+					if ( role.split("@")[0].equalsIgnoreCase( roleName ) || role.split("@")[0].equalsIgnoreCase( "BSSManager" )) {
 						return true;
 					}
 				}
