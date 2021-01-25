@@ -1467,15 +1467,19 @@ if (!window.Promise){
                                 layout.session.token = xToken;
                             }
                         }
-                        resolve(responseJSON);
+                        var r = o2.runCallback(callback, "success", [responseJSON],null);
+                        resolve(r || responseJSON);
                         //return o2.runCallback(callback, "success", [responseJSON],null, resolve);
                     },
                     onFailure: function(xhr){
+                        //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
+
                         reject(xhr);
                         //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                     }.bind(this),
                     onError: function(text, error){
-                        reject(null, text, error);
+                        var r = o2.runCallback(callback, "error", [text, error], null, reject);
+                        (r) ? reject(r) : reject(null, text, error);
                         //return o2.runCallback(callback, "error", [text, error], null, reject);
                     }.bind(this)
                 });
@@ -1497,9 +1501,12 @@ if (!window.Promise){
                 res.send(data);
             }.bind(this));
 
-            p = p.then(function(responseJSON){
-                return o2.runCallback(callback, "success", [responseJSON],null);
-            }, function(xhr, text, error){
+            // p = p.then(function(responseJSON){
+            //     return o2.runCallback(callback, "success", [responseJSON],null);
+            // }, function(xhr, text, error){
+            //     return o2.runCallback(callback, "failure", [xhr, text, error], null);
+            // });
+            p = p.catch(function(xhr, text, error){
                 return o2.runCallback(callback, "failure", [xhr, text, error], null);
             });
 
