@@ -620,8 +620,8 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
 	onRequestFailure: function(xhr){
 		return this.doError(xhr, "", "");
 	},
-	onFailure: function(xhr){
-        return this.doError(xhr, "", "");
+	onFailure: function(xhr, text, error){
+        return this.doError(xhr, text, error);
 	},
 	onError: function(text, error){
         return this.doError(null, text, error);
@@ -653,6 +653,6 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
             }
 		//	throw "request error: "+errorText;
 		}
-		return xhr;
+		return Promise.reject(xhr);
 	}
 });
