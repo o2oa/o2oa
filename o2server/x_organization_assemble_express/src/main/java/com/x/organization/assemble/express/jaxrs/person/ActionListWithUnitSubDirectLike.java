@@ -82,6 +82,11 @@ class ActionListWithUnitSubDirectLike extends BaseAction {
 	}
 
 	private Wo list(Business business, Wi wi, List<String> ids) throws Exception {
+		Wo wo = new Wo();
+		if(StringUtils.isBlank(wi.getKey()) &&
+				(ListTools.isEmpty(wi.getUnitList()) || ListTools.isEmpty(ids))){
+			return wo;
+		}
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -97,21 +102,23 @@ class ActionListWithUnitSubDirectLike extends BaseAction {
 		List<String> list = em.createQuery(cq.select(root.get(Person_.id)).where(p))
 				.getResultList().stream().distinct().collect(Collectors.toList());
 		List<String> values = business.person().listPersonDistinguishedNameSorted(list);
-		Wo wo = new Wo();
 		wo.getPersonList().addAll(values);
 		return wo;
 	}
 
 	private List<String> people(Business business, Wi wi) throws Exception {
-		List<Unit> os = business.unit().pick(wi.getUnitList());
-		List<String> unitIds = ListTools.extractField(os, Unit.id_FIELDNAME, String.class, true, true);
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = root.get(Identity_.unit).in(unitIds);
-		List<String> list = em.createQuery(cq.select(root.get(Identity_.person)).where(p))
-				.getResultList().stream().distinct().collect(Collectors.toList());
+		List<String> list = new ArrayList<>();
+		if(ListTools.isNotEmpty(wi.getUnitList())) {
+			List<Unit> os = business.unit().pick(wi.getUnitList());
+			List<String> unitIds = ListTools.extractField(os, Unit.id_FIELDNAME, String.class, true, true);
+			EntityManager em = business.entityManagerContainer().get(Identity.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<String> cq = cb.createQuery(String.class);
+			Root<Identity> root = cq.from(Identity.class);
+			Predicate p = root.get(Identity_.unit).in(unitIds);
+			list = em.createQuery(cq.select(root.get(Identity_.person)).where(p))
+					.getResultList().stream().distinct().collect(Collectors.toList());
+		}
 		return list;
 	}
 
