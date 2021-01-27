@@ -124,7 +124,7 @@
 				if (json.type == 'success') {
 					if (json.data) {
 						var str = '<table border="1" id = "apiTable" >';
-                        str += '<tr><td colspan="3"><center id="title" style="font-size:32px; font-weight:bold;">O2OA Service API URL</center></td></tr>';
+                        str += '<tr><td colspan="3"><center id="title" style="font-size:32px; font-weight:bold;">O2OA Service API URL </center> </td></tr>';
 						$.each(json.data, function(index, o) {
 							str += '<tr>';
 							str += '<td>' + o.name + '</td>';
@@ -145,6 +145,28 @@
 					}
 				}
 			});
+			
+
+		$.ajax({
+			type : 'get',
+			async : false,
+			dataType : 'json',
+			contentType : 'application/json; charset=utf-8',
+			url : '../jaxrs/jest/version',
+			xhrFields : {
+				'withCredentials' : true
+			},
+			crossDomain : true,
+			error : function(e){
+			}
+		}).done(function(json) {
+			if (json.type == 'success') {
+				 if (json.data) {
+					 $('#version').html('<center>version:'+ json.data.version + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;date:" +json.data.date + "</center>");
+				 }
+				}
+			 }
+		);
 		});
 	</script>
 
@@ -155,5 +177,7 @@
 <center id="title" style="font-size:32px; font-weight:bold;"></center>
 <div id="content" style="margin-top:10px;margin-left: 50px;">&nbsp;</div>
 <div id="contentTable" style="margin-top:20px;margin-left: 50px;">&nbsp;</div>
+<div id="version"  >&nbsp;</div>
+<div><center> Copyright © 2020 Zoneland All Rights Reserved. </center></div>
 </body>
 </html>
