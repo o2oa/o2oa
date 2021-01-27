@@ -167,13 +167,38 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		//module.load(json, dom, parent);
 		//return module;
 
-		if( MWF["CMSFC"+json.type] ){
-			var module = new MWF["CMSFC"+json.type](this);
-			module.load(json, dom, parent);
+		if( !json ){
+			var module;
+			var className = ( dom.get("MWFType") || "div" ).capitalize();
+			this.getTemplateData(className, function(data){
+				var moduleData = Object.clone(data);
+				moduleData.id = dom.get("id");
+				this.json.moduleList[dom.get("id")] = moduleData;
+				module = new MWF["CMSFC"+className](this);
+				module.load(moduleData, dom, parent);
+			}.bind(this), false);
+			return module;
+		}else if( MWF["CMSFC"+json.type] ){
+			var module;
+			var className = json.type.capitalize();
+			this.getTemplateData(className, function(data){
+			    var moduleData = Object.clone(data);
+				Object.merge(moduleData, json);
+				Object.merge(json, moduleData);
+			    module = new MWF["CMSFC"+json.type](this);
+			    module.load(json, dom, parent);
+			}.bind(this), false);
 			return module;
 		}else{
-			var module = new MWF["CMSFCDiv"](this);
-			module.load(json, dom, parent);
+		    var module;
+			var className = json.type.capitalize();
+			this.getTemplateData(className, function(data){
+				var moduleData = Object.clone(data);
+				Object.merge(moduleData, json);
+				Object.merge(json, moduleData);
+				module = new MWF["CMSFCDiv"](this);
+				module.load(json, dom, parent);
+			}.bind(this), false);
 			return module;
 		}
 	},

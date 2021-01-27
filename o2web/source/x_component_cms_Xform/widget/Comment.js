@@ -603,13 +603,14 @@ O2CMSComment.Form = new Class({
         "hasTopIcon" : true,
         "hasTopContent" : true,
         "hasBottom": true,
-        "title": MWF.xApplication.cms.Xform.LP.commentFormTitle,
+        // "title": MWF.xApplication.cms.Xform.LP.commentFormTitle,
         "draggable": true,
         "closeAction": true,
         "toMain" : true
     },
     _createTableContent: function(){
         this.lp = MWF.xApplication.cms.Xform.LP;
+        if( this.formTopTextNode )this.formTopTextNode.set("text", this.lp.commentFormTitle);
         if( this.isNew ){
             MWF.Actions.get("x_cms_assemble_control").getUUID( function(id){
                 this.advanceCommentId = id;

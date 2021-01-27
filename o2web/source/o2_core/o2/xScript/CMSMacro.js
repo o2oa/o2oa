@@ -1,5 +1,4 @@
 MWF.xScript = MWF.xScript || {};
-MWF.require("MWF.xScript.CMSEnvironment", null, false);
 MWF.xScript.CMSMacro = MWF.CMSMacro = {
     "swapSpace": {},
 
@@ -61,6 +60,7 @@ MWF.CMSMacro.CMSFormContext = new Class({
             "target": null,
             "event": null
         };
+        MWF.require("MWF.xScript.CMSEnvironment", null, false);
         this.environment = new MWF.xScript.CMSEnvironment(environment);
     },
     setTarget: function(target){

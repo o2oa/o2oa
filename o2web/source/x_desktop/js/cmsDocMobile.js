@@ -7,6 +7,7 @@ layout.addReady(function () {
             Cookie.write("x-token", options["x-token"]);
         }
         var _load = function () {
+            debugger;
             this.options = uri.get("data");
             if (!this.options.documentId) this.options.documentId = this.options.id;
             this.options.name = "cms.Document";
@@ -15,7 +16,6 @@ layout.addReady(function () {
             layout.openApplication(null, "cms.Document", this.options, null);
         };
 
-        debugger;
         if (layout.session && layout.session.user){
             _load();
         }else{
