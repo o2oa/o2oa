@@ -30,29 +30,48 @@ class V2LookupDoc extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(V2LookupDoc.class);
 
 	private Form form = null;
+	private Form readForm = null;
 	private Wo wo = new Wo();
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String docId, String openMode) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String docId) throws Exception {
 
 		ActionResult<Wo> result = new ActionResult<>();
 
-		this.getDocForm(docId, openMode);
-
+		this.getDocForm(docId);
+		String formId = "";
+		String readFormId = "";
 		if (null != this.form) {
-			CacheKey cacheKey = new CacheKey(this.getClass(), this.form.getId());
+			formId = form.getId();
+			this.wo.setFormId(formId);
+		}
+		if (null != this.readForm) {
+			readFormId = readForm.getId();
+			this.wo.setReadFormId(readFormId);
+		}
+		if(StringUtils.isNotEmpty(formId) || StringUtils.isNotEmpty(readFormId)){
+			CacheKey cacheKey = new CacheKey(this.getClass(), formId, readFormId);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				this.wo = (Wo) optional.get();
 			} else {
 				List<String> list = new ArrayList<>();
-				CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.form.getProperties());
-				CompletableFuture<List<String>> relatedScriptFuture = this
-						.relatedScriptFuture(this.form.getProperties());
-				list.add(this.form.getId() + this.form.getUpdateTime().getTime());
-				list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
-				list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
+				if (null != this.form) {
+					CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.form.getProperties());
+					CompletableFuture<List<String>> relatedScriptFuture = this
+							.relatedScriptFuture(this.form.getProperties());
+					list.add(this.form.getId() + this.form.getUpdateTime().getTime());
+					list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
+					list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
+				}
+				if (null != this.readForm && !formId.equals(readFormId)) {
+					CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.readForm.getProperties());
+					CompletableFuture<List<String>> relatedScriptFuture = this
+							.relatedScriptFuture(this.readForm.getProperties());
+					list.add(this.readForm.getId() + this.readForm.getUpdateTime().getTime());
+					list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
+					list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
+				}
 				list = list.stream().sorted().collect(Collectors.toList());
-				this.wo.setId(this.form.getId());
 				CRC32 crc = new CRC32();
 				crc.update(StringUtils.join(list, "#").getBytes());
 				this.wo.setCacheTag(crc.getValue() + "");
@@ -63,25 +82,36 @@ class V2LookupDoc extends BaseAction {
 		return result;
 	}
 
-	private void getDocForm(String docId, String openMode) throws Exception {
+	private void getDocForm(String docId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Document document = emc.fetch(docId, Document.class, ListTools.toList(JpaObject.id_FIELDNAME, Document.form_FIELDNAME,
 					Document.readFormId_FIELDNAME, Document.categoryId_FIELDNAME));
 			if (null != document) {
 				String formId = document.getForm();
-				if(FORM_OPEN_MODE_READ.equals(openMode)){
-					formId = document.getReadFormId();
+				String readFormId = document.getReadFormId();
+				if(StringUtils.isNotBlank(formId)) {
+					this.form = business.getFormFactory().pick(formId);
 				}
-				this.form = business.getFormFactory().pick(formId);
 				if (null == this.form) {
 					CategoryInfo categoryInfo = business.getCategoryInfoFactory().pick(document.getCategoryId());
 					if (null != categoryInfo) {
 						formId = categoryInfo.getFormId();
-						if(FORM_OPEN_MODE_READ.equals(openMode)){
-							formId = categoryInfo.getReadFormId();
-						}
 						this.form = business.getFormFactory().pick(formId);
+					}
+				}
+				if(StringUtils.isNotBlank(readFormId)) {
+					if(readFormId.equals(formId)){
+						this.readForm = this.form;
+					}else {
+						this.readForm = business.getFormFactory().pick(formId);
+					}
+				}
+				if (null == this.readForm) {
+					CategoryInfo categoryInfo = business.getCategoryInfoFactory().pick(document.getCategoryId());
+					if (null != categoryInfo) {
+						readFormId = categoryInfo.getReadFormId();
+						this.readForm = business.getFormFactory().pick(readFormId);
 					}
 				}
 			}
@@ -125,18 +155,28 @@ class V2LookupDoc extends BaseAction {
 
 	public static class Wo extends AbstractWo {
 
-		private static final long serialVersionUID = 4800180927316707892L;
+		private static final long serialVersionUID = -4090679604631097945L;
 
-		private String id;
+		private String formId;
+
+		private String readFormId;
 
 		private String cacheTag;
 
-		public String getId() {
-			return id;
+		public String getFormId() {
+			return formId;
 		}
 
-		public void setId(String id) {
-			this.id = id;
+		public void setFormId(String formId) {
+			this.formId = formId;
+		}
+
+		public String getReadFormId() {
+			return readFormId;
+		}
+
+		public void setReadFormId(String readFormId) {
+			this.readFormId = readFormId;
 		}
 
 		public String getCacheTag() {
