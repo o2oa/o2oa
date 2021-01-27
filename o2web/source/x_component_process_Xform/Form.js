@@ -3145,6 +3145,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (e && e.disable) e.disable(true);
             return o2.Actions.get("x_processplatform_assemble_surface").pauseTask(this.businessData.task.id, function (json) {
                 this.app.notice(MWF.xApplication.process.Xform.LP.pauseWork, "success");
+                this.businessData.control["allowResume"] = true;
                 if (e && e.enable) e.enable(false);
             }.bind(this), function (xhr, text, error) {
                 //e.setDisable(false);
@@ -3178,6 +3179,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (e && e.disable) e.disable(true);
             return o2.Actions.get("x_processplatform_assemble_surface").resumeTask(this.businessData.task.id, function (json) {
                 this.app.notice(MWF.xApplication.process.Xform.LP.resumeWork, "success");
+                this.businessData.control["allowPause"] = true;
                 if (e && e.enable) e.enable(false);
             }.bind(this), function (xhr, text, error) {
                 //e.setDisable(false);
