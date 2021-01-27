@@ -24,6 +24,17 @@ MWF.xApplication.query.QueryManager.StatementExplorer = new Class({
         this.node = $(node);
         this.initData();
     },
+
+    openFindDesigner: function(){
+        this.app.options.application.moduleType = "query";
+        var options = {
+            "filter": {
+                "moduleList": ["query"],
+                "appList": [this.app.options.application]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     keyCopy: function(e){
         if (this.selectMarkItems.length){
             var items = [];

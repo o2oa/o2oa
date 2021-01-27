@@ -137,14 +137,19 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         var value = this.getValue();
         //var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
         var text = [];
-        value.each(function(v){
-            if( typeOf(v) === "string" ){
-                text.push(v);
-            }else{
-                text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
-            }
-        }.bind(this));
-        return {"value": value || "", "text": [text.join(",")]};
+        if( typeOf( value ) === "object" )value = [value];
+        if( typeOf( value ) === "array" ){
+            value.each(function(v){
+                if( typeOf(v) === "string" ){
+                    text.push(v);
+                }else{
+                    text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
+                }
+            }.bind(this));
+            return {"value": value || "", "text": [text.join(",")]};
+        }else{
+            return {"value": [""], "text": [""]};
+        }
     },
 
     loadDescription: function(){
@@ -220,8 +225,6 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
     },
     _computeValue: function(){
 
-        debugger;
-
         var simple = this.json.storeRange === "simple";
         var values = [];
         if (this.json.identityValue) {
@@ -239,13 +242,15 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                 dutys.each(function(duty){
                     if (duty.code) par = this.form.Macro.exec(duty.code, this);
                     if (par){
-                        var promise = o2.promiseAll(par).then(function(p){
+                        var pars = (o2.typeOf(par)=="array") ? par : [par];
+                        var promise = Promise.all(pars).then(function(p){
                             var uName = p.distinguishedName || p;
                             if (o2.typeOf(p)=="array") uName = p[0].distinguishedName || p[0];
                             var code = "return this.org.getDuty(\""+duty.name+"\", \""+uName+"\", true)";
                             var r = (!!uName) ? this.form.Macro.exec(code, this) : "";
 
-                            return o2.promiseAll(r).then(function(d){
+                            var m = (o2.typeOf(r)=="array") ? "all" : "resolve";
+                            return Promise[m](r).then(function(d){
                                 if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
                                 var arr = [];
                                 d.each(function(dd){
@@ -573,7 +578,15 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             //this._setBusinessData(values);
             this.validationMode();
             this.validation();
-            this.fireEvent("select");
+            var p = this.getValue();
+            if (p.then){
+                p.then(function(){
+                    this.fireEvent("select");
+                }.bind(this), function(){});
+            }else{
+                this.fireEvent("select");
+            }
+
         }.bind(this))
     },
     selectOnCancel: function(){
@@ -1158,7 +1171,6 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         return node;
     },
     _setValue: function(value){
-        debugger;
         var values = [];
         var ags = [];
         var simple = this.json.storeRange === "simple";
@@ -1200,8 +1212,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             }
         }.bind(this), function(){});
 
-        this.moduleValueAG = Promise.resolve(p);
-        if (p & p.then) p.then(function(){
+        this.moduleValueAG = p;
+        if (p && p.then) p.then(function(){
             this.moduleValueAG = null;
         }.bind(this), function(){
             this.moduleValueAG = null;

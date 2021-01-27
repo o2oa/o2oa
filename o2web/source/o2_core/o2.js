@@ -21,7 +21,7 @@
  *  GNU Affero General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+ *  along with O2OA.  If not, see <https://www.gnu.org/licenses/>.
  *
  * ***** END LICENSE BLOCK ******/
 
@@ -225,8 +225,31 @@ if (!window.Promise){
                 cb = (callback[name]) ? callback[name] : ((callback[key]) ? callback[key] : null);
             }
         }
-        if (cb) return (promise_cb) ? promise_cb(cb.apply(b, par)) : cb.apply(b, par) ;
-        return (promise_cb) ? promise_cb.apply(b, par) : null;
+        if (cb) return cb.apply(b, par);
+        //return null;
+
+        // if (cb){
+        //     if (promise_cb){
+        //         var r = cb.apply(b, par);
+        //
+        //         window.setTimeout(function(){
+        //             promise_cb(r);
+        //         },0)
+        //         //return promise_cb(r);
+        //     }else{
+        //         return cb.apply(b, par);
+        //     }
+        //     //return (promise_cb) ? promise_cb(cb.apply(b, par)) : cb.apply(b, par) ;
+        // }
+        // if (promise_cb){
+        //     window.setTimeout(function(){
+        //         promise_cb.apply(b, par);
+        //     },0)
+        //
+        //     //return promise_cb.apply(b, par);
+        // }
+
+        //return (promise_cb) ? promise_cb.apply(b, par) : null;
 
         // if (key.toLowerCase()==="success" && (type==="function" || type==="o2_async_function")){
         //     (promise_cb) ? promise_cb(callback.apply(b, par)) : callback.apply(b, par) ;
@@ -762,7 +785,9 @@ if (!window.Promise){
             var el = els.item(i);
             var name = el.getAttribute("data-o2-element");
             if (name) _bindToModule(op.module, el, name.toString());
+            debugger;
             if (el.hasAttribute("data-o2-events")){
+
                 var events = el.getAttribute("data-o2-events").toString();
                 if (events) _bindToEvents(op.module, el, events);
             }
@@ -1322,7 +1347,6 @@ if (!window.Promise){
         /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
         /jaxrs\/script\/.+\/application\/.+\/imported/ig,
         /jaxrs\/page\/.+\/portal\/.+/ig,
-        /jaxrs\/document\/.+/ig,
         /jaxrs\/custom\/.+/ig
     ]:[
         /jaxrs\/form\/workorworkcompleted\/.+/ig,
@@ -1424,7 +1448,7 @@ if (!window.Promise){
         //var noCache = false;
         if (!loadAsync || !useWebWorker){
             var res;
-            var p = new Promise(function(s,f){
+            var p = new Promise(function(resolve,reject){
                 res = new Request.JSON({
                     url: o2.filterUrl(address),
                     secure: false,
@@ -1443,13 +1467,20 @@ if (!window.Promise){
                                 layout.session.token = xToken;
                             }
                         }
-                        return o2.runCallback(callback, "success", [responseJSON],null, s);
+                        var r = o2.runCallback(callback, "success", [responseJSON],null);
+                        resolve(r || responseJSON);
+                        //return o2.runCallback(callback, "success", [responseJSON],null, resolve);
                     },
                     onFailure: function(xhr){
-                        return o2.runCallback(callback, "requestFailure", [xhr], null, f);
+                        //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
+
+                        reject(xhr);
+                        //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                     }.bind(this),
                     onError: function(text, error){
-                        return o2.runCallback(callback, "error", [text, error], null, f);
+                        var r = o2.runCallback(callback, "error", [text, error], null, reject);
+                        (r) ? reject(r) : reject(null, text, error);
+                        //return o2.runCallback(callback, "error", [text, error], null, reject);
                     }.bind(this)
                 });
 
@@ -1468,7 +1499,16 @@ if (!window.Promise){
                 }
                 //Content-Type	application/x-www-form-urlencoded; charset=utf-8
                 res.send(data);
-            }.bind(this)).catch(function(){});
+            }.bind(this));
+
+            // p = p.then(function(responseJSON){
+            //     return o2.runCallback(callback, "success", [responseJSON],null);
+            // }, function(xhr, text, error){
+            //     return o2.runCallback(callback, "failure", [xhr, text, error], null);
+            // });
+            p = p.catch(function(xhr, text, error){
+                return o2.runCallback(callback, "failure", [xhr, text, error], null);
+            });
 
             //var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
             var oReturn = p;
@@ -1497,14 +1537,22 @@ if (!window.Promise){
                                 layout.session.token = xToken;
                             }
                         }
-                        o2.runCallback(callback, "success", [result.data], null, s);
+                        s(result.data);
+                        //o2.runCallback(callback, "success", [result.data], null, s);
                     }else{
-                        o2.runCallback(callback, "failure", [result.data], null, f);
+                        f(result.data);
+                        //o2.runCallback(callback, "failure", [result.data], null, f);
                     }
                     actionWorker.terminate();
                 }
                 actionWorker.postMessage(workerMessage);
             }.bind(this));
+
+            p = p.then(function(data){
+                return o2.runCallback(callback, "success", [data],null);
+            }, function(data){
+                return o2.runCallback(callback, "failure", [data], null);
+            });
 
             //var oReturn = (callback.success && callback.success.addResolve) ? callback.success : callback;
             var oReturn = p;
@@ -1831,7 +1879,7 @@ if (!window.Promise){
     //     return Object.appendChain(asyncGeneratorPrototype, "if (this.success) this.success.apply(this, arguments);");
     // }
     //
-    // //@todo
+    //
     // _AsyncGenerator.all = function(arr){
     //     var result = [];
     //     var ag = function (){
@@ -1882,14 +1930,14 @@ if (!window.Promise){
             if (p.some(function(e){ return (e && o2.typeOf(e.then)=="function") })){
                 return Promise.all(p);
             }else{
-                return { "then": function(s){ return s(p) || this;} };
+                return { "then": function(s){ if (s) s(p); return this;} };
                 //return new Promise(function(s){s(p); return this;});
             }
         }else{
             if (p && o2.typeOf(p.then)=="function"){
                 return Promise.resolve(p);
             }else{
-                return { "then": function(s){ return s(p) || this;} };
+                return { "then": function(s){ if (s) s(p); return this;} };
                 //return new Promise(function(s){s(p); return this;});
             }
         }

@@ -48,15 +48,9 @@ public class Invoke extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
-	/* 以上为 JpaObject 默认字段 */
-
 	public void onPersist() throws Exception {
+
 	}
-
-	/* 更新运行方法 */
-
-	/* flag标志位 */
-	/* Entity 默认字段结束 */
 
 	public static final String name_FIELDNAME = "name";
 	@Flag
@@ -66,12 +60,18 @@ public class Invoke extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	private String name;
 
+	public static final String enableToken_FIELDNAME = "enableToken";
+	@FieldDescribe("是否启用token验证.")
+	@Column(name = ColumnNamePrefix + enableToken_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean enableToken = false;
+
 	public static final String alias_FIELDNAME = "alias";
 	@Flag
 	@FieldDescribe("别名.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
-	/* 检查在同一应用下不能重名 */
+	// 检查在同一应用下不能重名
 	@CitationNotExist(fields = { "name", "id", "alias" }, type = Invoke.class))
 	private String alias;
 
@@ -193,6 +193,14 @@ public class Invoke extends SliceJpaObject {
 
 	public void setRemoteAddrRegex(String remoteAddrRegex) {
 		this.remoteAddrRegex = remoteAddrRegex;
+	}
+
+	public Boolean getEnableToken() {
+		return enableToken;
+	}
+
+	public void setEnableToken(Boolean enableToken) {
+		this.enableToken = enableToken;
 	}
 
 }

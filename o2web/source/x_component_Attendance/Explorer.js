@@ -767,7 +767,6 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
         this.cancelActionNode.addEvent("click", function(e){
             this.cancel(e);
         }.bind(this));
-
         if( this.isNew || this.isEdited){
 
             this.okActionNode = new Element("div", {
@@ -789,7 +788,8 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
         delete this;
     },
     ok: function(e){
-        var data = this.form.getResult(true,",",true,false,true);
+        debugger
+        var data = this.form.getResult(false,",",true,false,true);
         if( data ){
             this._ok( data, function( json ){
                 if( json.type == "ERROR" ){

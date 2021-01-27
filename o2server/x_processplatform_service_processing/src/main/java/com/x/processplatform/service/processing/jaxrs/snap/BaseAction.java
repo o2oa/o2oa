@@ -32,6 +32,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.MessageFactory;
 import com.x.query.core.entity.Item;
 
 abstract class BaseAction extends StandardJaxrsAction {
@@ -78,13 +79,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			futures.add(mergeItem(business, job, properties, items));
 		}
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0]));
-//		CompletableFuture.allOf(mergeItem(business, job, properties, items),
-//				mergeTaskCompleted(business, job, properties, taskCompleteds),
-//				mergeRead(business, job, properties, reads),
-//				mergeReadCompleted(business, job, properties, readCompleteds),
-//				mergeReview(business, job, properties, reviews), mergeWorkLog(business, job, properties, workLogs),
-//				mergeRecord(business, job, properties, records),
-//				mergeAttachment(business, job, properties, attachments)).get();
+
 		return properties;
 	}
 
@@ -307,6 +302,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Work.class);
 				for (Work o : works) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.work_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -319,6 +315,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			try {
 				business.entityManagerContainer().beginTransaction(WorkCompleted.class);
 				business.entityManagerContainer().remove(workCompleted);
+				MessageFactory.workCompleted_delete(workCompleted);
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -331,6 +328,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Task.class);
 				for (Task o : tasks) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.task_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -344,6 +342,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(TaskCompleted.class);
 				for (TaskCompleted o : taskCompleteds) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.taskCompleted_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -357,6 +356,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Read.class);
 				for (Read o : reads) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.read_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -370,6 +370,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(ReadCompleted.class);
 				for (ReadCompleted o : readCompleteds) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.readCompleted_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -383,6 +384,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Review.class);
 				for (Review o : reviews) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.review_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -461,6 +463,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Work.class);
 				for (Work o : business.entityManagerContainer().listEqual(Work.class, Work.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.work_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -475,6 +478,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				for (WorkCompleted o : business.entityManagerContainer().listEqual(WorkCompleted.class,
 						WorkCompleted.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.workCompleted_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -488,6 +492,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Task.class);
 				for (Task o : business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.task_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -502,6 +507,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				for (TaskCompleted o : business.entityManagerContainer().listEqual(TaskCompleted.class,
 						TaskCompleted.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.taskCompleted_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -515,6 +521,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Read.class);
 				for (Read o : business.entityManagerContainer().listEqual(Read.class, Read.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.read_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -529,6 +536,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				for (ReadCompleted o : business.entityManagerContainer().listEqual(ReadCompleted.class,
 						ReadCompleted.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.readCompleted_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -542,6 +550,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Review.class);
 				for (Review o : business.entityManagerContainer().listEqual(Review.class, Review.job_FIELDNAME, job)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.review_delete(o);
 				}
 			} catch (Exception e) {
 				logger.error(e);

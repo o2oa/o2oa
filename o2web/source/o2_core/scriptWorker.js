@@ -288,7 +288,7 @@ layout.addReady(function(){
                         var filterText = key;
                         var kind = 3;
                         if (o[key]){
-                            var text = (keyType=="array" &&  o[key][0]["__type__"]) ?  o[key][0]["__type__"] : o[key].toString();
+                            var text = (keyType=="array" && o[key][0] && o[key][0]["__type__"]) ?  o[key][0]["__type__"] : o[key].toString();
                             var flagCount = text.indexOf(":");
                             if (flagCount!=-1){
                                 keyType = text.substr(0,flagCount);

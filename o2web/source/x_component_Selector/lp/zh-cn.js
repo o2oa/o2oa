@@ -49,6 +49,12 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "cancel": "取消",
     "back": "返回",
     "ok": "确定",
-    "noPerson": "人员“{name}”不存在"
+    "noPerson": "人员“{name}”不存在",
+
+    "processPlatform": "流程平台",
+    "cms": "内容管理",
+    "portal": "门户管理",
+    "query": "数据中心",
+    "service": "服务管理",
 };
 MWF.xApplication.Selector["lp."+o2.language] = MWF.xApplication.Selector.LP;

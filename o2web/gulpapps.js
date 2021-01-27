@@ -31,6 +31,7 @@ var apps = [
     { "folder": "x_component_ExeManager", "tasks": ["move", "min"] },
     { "folder": "x_component_FaceSet", "tasks": ["move", "min"] },
     { "folder": "x_component_File", "tasks": ["move", "min"] },
+    { "folder": "x_component_FindDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_Forum", "tasks": ["move", "min"] },
     { "folder": "x_component_ForumCategory", "tasks": ["move", "min"] },
     { "folder": "x_component_ForumDocument", "tasks": ["move", "min"] },
@@ -88,7 +89,7 @@ var apps = [
     { "folder": "x_desktop", "tasks": ["move", "min"] },
     { "folder": "x_component_IMV2", "tasks": ["move", "min"] },
     { "folder": "x_component_ConfigDesigner", "tasks": ["move", "min"] },
-
+    { "folder": "x_test", "tasks": ["move"] }
 ];
 
 module.exports = apps;

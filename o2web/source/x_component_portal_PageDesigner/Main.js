@@ -1258,7 +1258,11 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 	//loadPage------------------------------------------
 	loadPage: function(){
 		this.getPageData(function(){
-			this.pcPage = new MWF.PCPage(this, this.designNode);
+			this.pcPage = new MWF.PCPage(this, this.designNode, {
+			    "onPostLoad": function(){
+                    this.fireEvent("postPageLoad");
+                }.bind(this)
+            });
 			this.pcPage.load(this.pageData);
 
             this.page = this.pcPage;

@@ -52,8 +52,8 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
-			if ((!Config.token().isInitialManager(effectivePerson.getDistinguishedName()))
-					&& (!effectivePerson.isCipher())) {
+			if (!effectivePerson.isManager() && business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
+					OrganizationDefinition.Manager)) {
 				Person current = business.person().pick(effectivePerson.getDistinguishedName());
 				List<Unit> topUnits = business.unit().pick(current.getTopUnitList());
 				person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));

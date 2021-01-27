@@ -17,7 +17,7 @@ import com.x.program.center.Business;
 
 class ActionCurrentUpdate extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectiveperson) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
