@@ -25,7 +25,6 @@ import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.processplatform.core.entity.content.Data;
-import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
@@ -41,7 +40,6 @@ import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.processplatform.service.processing.processor.manual.TaskIdentities;
-import com.x.processplatform.service.processing.processor.manual.TaskIdentity;
 
 class ActionAppend extends BaseAction {
 
@@ -111,10 +109,15 @@ class ActionAppend extends BaseAction {
 					TaskIdentities taskIdentities = empower(business, process, task, identities);
 					identities = taskIdentities.identities();
 					if (ListTools.isNotEmpty(identities)) {
+//						List<TaskCompleted> os = emc.listEqualAndInAndNotEqual(TaskCompleted.class,
+//								TaskCompleted.activityToken_FIELDNAME, work.getActivityToken(),
+//								TaskCompleted.identity_FIELDNAME, identities, TaskCompleted.joinInquire_FIELDNAME,
+//								true);
+						// 同一环节办理后再转交给已经有已办的人员,需要将已办置为joinInquire=false
 						List<TaskCompleted> os = emc.listEqualAndInAndNotEqual(TaskCompleted.class,
 								TaskCompleted.activityToken_FIELDNAME, work.getActivityToken(),
 								TaskCompleted.identity_FIELDNAME, identities, TaskCompleted.joinInquire_FIELDNAME,
-								true);
+								false);
 						if (ListTools.isNotEmpty(os)) {
 							emc.beginTransaction(TaskCompleted.class);
 							for (TaskCompleted o : os) {

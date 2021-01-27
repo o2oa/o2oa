@@ -82,6 +82,10 @@ class ActionListWithUnitSubDirectLikeObject extends BaseAction {
 
 	private List<Wo> list(Business business, Wi wi, List<Identity> identityList) throws Exception {
 		List<Wo> wos = new ArrayList<>();
+		if(StringUtils.isBlank(wi.getKey()) &&
+				(ListTools.isEmpty(wi.getUnitList()) || ListTools.isEmpty(identityList))){
+			return wos;
+		}
 		EntityManager em = business.entityManagerContainer().get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
