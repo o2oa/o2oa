@@ -33,7 +33,7 @@ public class FormAnonymousAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("表单ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
@@ -44,6 +44,80 @@ public class FormAnonymousAction extends StandardJaxrsAction {
 			Exception exception = new ExceptionServiceLogic( e, "系统在根据ID查询表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在那么返回分类的默认Form.", action = V2LookupDoc.class)
+	@GET
+	@Path("v2/lookup/document/{docId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2LookupDoc(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request,
+											@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId) {
+		ActionResult<V2LookupDoc.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2LookupDoc().execute(effectivePerson, docId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在返回分类的默认FormMobile.", action = V2LookupDocMobile.class)
+	@GET
+	@Path("v2/lookup/document/{docId}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2LookupDocMobile(@Suspended final AsyncResponse asyncResponse,
+												  @Context HttpServletRequest request,
+												  @JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId) {
+		ActionResult<V2LookupDocMobile.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2LookupDocMobile().execute(effectivePerson, docId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取表单.", action = V2Get.class)
+	@GET
+	@Path("v2/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2Get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					  @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<V2Get.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Get().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取表单Mobile.", action = V2GetMobile.class)
+	@GET
+	@Path("v2/{id}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2GetMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<V2GetMobile.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2GetMobile().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}

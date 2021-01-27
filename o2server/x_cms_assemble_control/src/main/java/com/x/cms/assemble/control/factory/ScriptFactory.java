@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.element.Script;
@@ -20,10 +21,19 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 
-public class ScriptFactory extends AbstractFactory {
+public class ScriptFactory extends ElementFactory {
 
 	public ScriptFactory(Business business) throws Exception {
 		super(business);
+	}
+
+	public Script pick(String flag) throws Exception {
+		return this.pick(flag, ExceptionWhen.none);
+	}
+
+	@Deprecated
+	public Script pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
+		return this.pick(flag, Script.class);
 	}
 
 //    public List<Script> list( List<String> ids ) throws Exception {
@@ -44,7 +54,7 @@ public class ScriptFactory extends AbstractFactory {
 		cq.select(root.get(Script_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
-	
+
 	public List<Script> listScriptWithApp(String appId) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Script.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -66,7 +76,7 @@ public class ScriptFactory extends AbstractFactory {
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		return list.isEmpty() ? null : list.get(0);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Script> listScriptNestedWithAppInfoWithUniqueName( String appId, String uniqueName ) throws Exception {
 		List<Script> list = new ArrayList<>();
@@ -100,7 +110,7 @@ public class ScriptFactory extends AbstractFactory {
 			throw new Exception("listScriptNestedWithAppInfoWithUniqueName error.", e);
 		}
 	}
-	
+
 	public Script getScriptWithAppInfoWithUniqueName( String appId, String uniqueName ) throws Exception {
 		Script script = null;
 		try {
