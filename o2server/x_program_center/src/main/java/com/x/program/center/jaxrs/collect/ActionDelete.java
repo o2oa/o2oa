@@ -9,12 +9,13 @@ import org.apache.commons.lang3.StringUtils;
 
 class ActionDelete extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String name, String mobile, String codeAnswer) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String name, String mobile, String codeAnswer)
+			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		if (!this.connect()) {
+		if (BooleanUtils.isNotTrue(this.connect())) {
 			throw new ExceptionUnableConnect();
 		}
-		if (!this.exist(name)) {
+		if (BooleanUtils.isNotTrue(this.exist(name))) {
 			throw new ExceptionNameNotExist(name);
 		}
 		if (!Config.person().isMobile(mobile)) {

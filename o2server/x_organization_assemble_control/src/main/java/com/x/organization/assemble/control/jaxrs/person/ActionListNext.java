@@ -3,6 +3,8 @@ package com.x.organization.assemble.control.jaxrs.person;
 import java.util.List;
 import java.util.Optional;
 
+import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -41,9 +43,19 @@ class ActionListNext extends BaseAction {
 					}
 					id = o.getId();
 				}
-	
-				result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, DESC,
-						business.personPredicateWithTopUnit(effectivePerson));
+
+				if (effectivePerson.isManager() || business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
+						OrganizationDefinition.OrganizationManager)) {
+					result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, DESC,
+							business.personPredicateWithTopUnit(effectivePerson));
+				}else{
+					result = this.standardListNext(Wo.copier2, id, count, JpaObject.sequence_FIELDNAME, DESC,
+							business.personPredicateWithTopUnit(effectivePerson));
+					List<String> list = ListTools.extractField(result.getData(), Person.id_FIELDNAME, String.class, true, true);
+					List<Wo> wos = Wo.copier.copy(business.person().pick(list));
+					result.setData(wos);
+					result.setCount((long)wos.size());
+				}
 
 				Co co = new Co(result.getData(), result.getCount());
 				CacheManager.put(business.cache(), cacheKey, co);
@@ -87,6 +99,9 @@ class ActionListNext extends BaseAction {
 
 		static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class,
 				JpaObject.singularAttributeField(Person.class, true, true), null);
+
+		static WrapCopier<Person, Wo> copier2 = WrapCopierFactory.wo(Person.class, Wo.class,
+				ListTools.toList(Person.id_FIELDNAME), null);
 
 		private Long rank;
 

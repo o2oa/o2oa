@@ -137,6 +137,9 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             this.setViewWidth();
 
             this.designer.addEvent("resize", this.setViewWidth.bind(this));
+
+            this.fireEvent("postLoad");
+
         }.bind(this))
     },
     setEvent: function(){

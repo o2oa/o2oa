@@ -27,7 +27,7 @@ class ActionLogin extends BaseAction {
 		if(BooleanUtils.isFalse(Config.collect().getEnable())){
 			throw new ExceptionDisable();
 		}
-		if (!this.connect()) {
+		if (BooleanUtils.isNotTrue(this.connect())) {
 			throw new ExceptionUnableConnect();
 		}
 

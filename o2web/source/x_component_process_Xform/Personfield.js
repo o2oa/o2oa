@@ -2,14 +2,14 @@ MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 MWF.xDesktop.requireApp("Selector", "package", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
 MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
-	Implements: [Events],
-	Extends: MWF.APP$Input,
+    Implements: [Events],
+    Extends: MWF.APP$Input,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad", "change", "select"],
         "readonly": true
     },
 
-	iconStyle: "personfieldIcon",
+    iconStyle: "personfieldIcon",
 
     getTextData: function(){
         //var value = this.node.get("value");
@@ -17,14 +17,19 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         var value = this.getValue();
         //var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
         var text = [];
-        value.each(function(v){
-            if( typeOf(v) === "string" ){
-                text.push(v);
-            }else{
-                text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
-            }
-        }.bind(this));
-        return {"value": value || "", "text": [text.join(",")]};
+        if( typeOf( value ) === "object" )value = [value];
+        if( typeOf( value ) === "array" ){
+            value.each(function(v){
+                if( typeOf(v) === "string" ){
+                    text.push(v);
+                }else{
+                    text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
+                }
+            }.bind(this));
+            return {"value": value || "", "text": [text.join(",")]};
+        }else{
+            return {"value": [""], "text": [""]};
+        }
     },
 
     loadDescription: function(){
@@ -387,7 +392,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
     },
 
-	clickSelect: function( ev ){
+    clickSelect: function( ev ){
 
         var options = this.getOptions();
         if( this.selector && this.selector.loading ) {
@@ -395,7 +400,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         }else{
             this.selector = new MWF.O2Selector(this.form.app.content, options);
         }
-	},
+    },
     resetData: function(){
         var v = this.getValue();
         //this.setData((v) ? v.join(", ") : "");
@@ -648,7 +653,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
     },
     setData: function(value){
         if (!value) return false;
-	    var oldValues = this.getData();
+        var oldValues = this.getData();
         var values = [];
         var comboxValues = [];
 

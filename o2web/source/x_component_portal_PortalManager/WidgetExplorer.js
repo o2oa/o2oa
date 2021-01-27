@@ -12,7 +12,16 @@ MWF.xApplication.portal.PortalManager.WidgetExplorer = new Class({
             "noElement": MWF.xApplication.portal.PortalManager.LP.widget.noNoticeText
         }
     },
-
+    openFindDesigner: function(){
+        this.app.options.application.moduleType = "portal";
+        var options = {
+            "filter": {
+                "moduleList": ["portal"],
+                "appList": [this.app.options.application]
+            }
+        };
+        layout.openApplication(null, "FindDesigner", options);
+    },
     keyCopy: function(e){
         if (this.selectMarkItems.length){
             var items = [];
@@ -221,6 +230,7 @@ MWF.xApplication.portal.PortalManager.WidgetExplorer.Widget= new Class({
 	_open: function(e){
         var _self = this;
         var options = {
+            "appId": "portal.WidgetDesigner"+_self.data.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

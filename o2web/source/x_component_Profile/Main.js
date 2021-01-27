@@ -1030,7 +1030,8 @@ MWF.xApplication.Profile.Main = new Class({
                 if(result){
                     passwordRemindNode.addClass("o2_profile_passwordWarmming").set("text",result);
                 }else{
-                    passwordRemindNode.removeClass("o2_profile_passwordWarmming").set("text",this.lp.paswordRule);
+                    var paswordRule = layout.config.passwordRegexHint || this.lp.paswordRule;
+                    passwordRemindNode.removeClass("o2_profile_passwordWarmming").set("text",paswordRule);
                     var score = this.getPasswordComplex(pwd);
 
                     if(score<=40){

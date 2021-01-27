@@ -50,7 +50,7 @@ public class ProcessFactory extends ElementFactory {
 			return null;
 		}
 		CacheCategory cacheCategory = new CacheCategory(Process.class);
-		CacheKey cacheKey = new CacheKey(application, edition);
+		CacheKey cacheKey = new CacheKey(application, edition, "enabled");
 		Process o = null;
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {

@@ -4,6 +4,7 @@ o2.widget.Maplist = new Class({
 	Extends: o2.widget.Common,
 	options: {
 		"title": "maplist",
+		"htmlTitle": "",
 		"style": "default",
 		
 		"collapse": false,
@@ -57,6 +58,9 @@ o2.widget.Maplist = new Class({
 			"styles": this.css.titleTextNode,
 			"text": this.options.title
 		}).inject(this.titleNode);
+
+		if (this.options.htmlTitle) this.titleTextNode.set("html", this.options.htmlTitle);
+
 		this.titleTextNode.addEvent("click", function(){
 			if(this.isShowCode){
 
@@ -293,8 +297,12 @@ o2.widget.Maplist = new Class({
 	},
     getValue: function(){
 		return this.toJson();
+	},
+	destroy: function(){
+		this.fireEvent("destroy");
+		this.container.destroy();
+		o2.release(this);
 	}
-	
 });
 
 o2.widget.Maplist.Item = new Class({
@@ -417,6 +425,7 @@ o2.widget.Maplist.Item = new Class({
 	},
 	
 	editItemComplate: function(node, input){
+		var isChangeed = false;
 		var text = input.get("value");
 		if (node == this.keyNode){
 			if (!text){
@@ -431,6 +440,7 @@ o2.widget.Maplist.Item = new Class({
 			}.bind(this));
 			
 			if (flag){
+				if (this.key !== text) isChangeed = true;
 				this.key = text;
 				this.editValue();
 				this.maplist.notAddItem = true;
@@ -444,6 +454,7 @@ o2.widget.Maplist.Item = new Class({
 		
 		var addNewItem = false;
 		if (node == this.valueNode){
+			if (this.value !== text) isChangeed = true;
 			this.value = text;
 			if (this.isEnterKey){
 				if (this.isNewItem){
@@ -457,7 +468,7 @@ o2.widget.Maplist.Item = new Class({
 		this.iconNode.setStyle("background", "transparent ");
 		this.iconNode.title = "";
 
-		this.maplist.fireEvent("change");
+		if (isChangeed) this.maplist.fireEvent("change");
 		
 		if (addNewItem){
 			this.maplist.notAddItem = false;
@@ -470,8 +481,6 @@ o2.widget.Maplist.Item = new Class({
 	}
 	
 });
-
-
 
 o2.widget.Maplist.Style = new Class({
     Implements: [Options, Events],
@@ -682,6 +691,8 @@ o2.widget.Maplist.Style.Item = new Class({
         dlg.close();
     },
     editItemComplate: function(node, input){
+    	var isChangeed = false;
+
         var text = input.get("value");
         if (node == this.keyNode){
             if (!text){
@@ -696,6 +707,7 @@ o2.widget.Maplist.Style.Item = new Class({
             }.bind(this));
 
             if (flag){
+				if (this.key !== text) isChangeed = true;
                 this.key = text;
                 if (this.imgKeys.indexOf(this.key)==-1) this.editValue();
                 this.maplist.notAddItem = true;
@@ -709,6 +721,7 @@ o2.widget.Maplist.Style.Item = new Class({
 
         var addNewItem = false;
         if (node == this.valueNode){
+			if (this.value !== text) isChangeed = true;
             this.value = text;
             if (this.isEnterKey){
                 if (this.isNewItem){
@@ -722,7 +735,8 @@ o2.widget.Maplist.Style.Item = new Class({
         this.iconNode.setStyle("background", "transparent ");
         this.iconNode.title = "";
 
-        this.maplist.fireEvent("change");
+		if (isChangeed) this.maplist.fireEvent("change");
+        //this.maplist.fireEvent("change");
 
         if (addNewItem){
             this.maplist.notAddItem = false;

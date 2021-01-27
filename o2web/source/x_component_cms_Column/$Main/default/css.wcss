@@ -207,6 +207,19 @@
 //        "color" : "#3c76b7",
 //        "background": "url(../x_component_cms_Index/$Main/default/icon/createDocument_over.png) center center no-repeat"
     },
+    "findNode": {
+        "float": "right",
+        "margin-right": "30px",
+        "width": "56px",
+        "background": "url(../x_component_cms_Column/$Main/default/icon/icons_find.png) 0 center no-repeat",
+        "padding-left": "22px",
+        "height": "50px",
+        "line-height": "50px",
+        "font-size": "14px",
+        "color": "#333333",
+        "cursor": "pointer"
+    },
+
     "columnItemNode": {
         "width": "260px",
         "height" : "360px",

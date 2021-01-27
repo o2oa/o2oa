@@ -34,7 +34,7 @@ class ActionSearch extends BaseAction {
 		if(StringUtils.isBlank(wi.getKeyword())){
 			throw new ExceptionFieldEmpty("keyword");
 		}
-		logger.info("{}搜索设计：{}的关键字：{}", effectivePerson.getDistinguishedName(), wi.getModuleList(), wi.getKeyword());
+		logger.debug("{}搜索设计：{}的关键字：{}", effectivePerson.getDistinguishedName(), wi.getModuleList(), wi.getKeyword());
 		if (ListTools.isNotEmpty(wi.getModuleList())) {
 			result.setData(search(wi, effectivePerson));
 		}else{
@@ -92,67 +92,38 @@ class ActionSearch extends BaseAction {
 				moduleMap.put(ModuleType.service.toString(), list);
 			}
 		}
-		Executor executor = Executors.newFixedThreadPool(5);
-		CompletableFuture<List<WrapDesigner>> processPlatformCf = searchAsync(wi, moduleMap, ModuleType.processPlatform.toString(), x_processplatform_assemble_designer.class, executor);
-		CompletableFuture<List<WrapDesigner>> portalCf = searchAsync(wi, moduleMap, ModuleType.portal.toString(), x_portal_assemble_designer.class, executor);
-		CompletableFuture<List<WrapDesigner>> cmsCf = searchAsync(wi, moduleMap, ModuleType.cms.toString(), x_cms_assemble_control.class, executor);
-		CompletableFuture<List<WrapDesigner>> queryCf = searchAsync(wi, moduleMap, ModuleType.query.toString(), x_query_assemble_designer.class, executor);
-		CompletableFuture<List<WrapDesigner>> serviceCf = searchAsync(wi, moduleMap, ModuleType.service.toString(), x_program_center.class, executor);
 		Wo wo = new Wo();
-		try {
-			wo.setProcessPlatformList(processPlatformCf.get(200, TimeUnit.SECONDS));
-		} catch (Exception e) {
-			logger.warn("搜索流程平台设计异常：{}",e.getMessage());
-		}
-		try {
-			wo.setPortalList(portalCf.get(200, TimeUnit.SECONDS));
-		} catch (Exception e) {
-			logger.warn("搜索门户平台设计异常：{}",e.getMessage());
-		}
-		try {
-			wo.setCmsList(cmsCf.get(200, TimeUnit.SECONDS));
-		} catch (Exception e) {
-			logger.warn("搜索内容管理平台设计异常：{}",e.getMessage());
-		}
-		try {
-			wo.setQueryList(queryCf.get(200, TimeUnit.SECONDS));
-		} catch (Exception e) {
-			logger.warn("搜索数据中心平台设计异常：{}",e.getMessage());
-		}
-		try {
-			wo.setServiceList(serviceCf.get(200, TimeUnit.SECONDS));
-		} catch (Exception e) {
-			logger.warn("搜索服务管理平台设计异常：{}",e.getMessage());
-		}
+		wo.setProcessPlatformList(searchApp(wi, moduleMap, ModuleType.processPlatform.toString(), x_processplatform_assemble_designer.class));
+		wo.setPortalList(searchApp(wi, moduleMap, ModuleType.portal.toString(), x_portal_assemble_designer.class));
+		wo.setCmsList(searchApp(wi, moduleMap, ModuleType.cms.toString(), x_cms_assemble_control.class));
+		wo.setQueryList(searchApp(wi, moduleMap, ModuleType.query.toString(), x_query_assemble_designer.class));
+		wo.setServiceList(searchApp(wi, moduleMap, ModuleType.service.toString(), x_program_center.class));
 		return wo;
 	}
 
-	private CompletableFuture<List<WrapDesigner>> searchAsync(final Wi wi, final Map<String, List<WiDesigner.ModuleApp>> moduleMap, final String moduleType, final Class<?> applicationClass, Executor executor){
-		CompletableFuture<List<WrapDesigner>> cf = CompletableFuture.supplyAsync(() -> {
-			List<WrapDesigner> swList = null;
-			if(moduleMap.containsKey(moduleType)) {
+	private List<WrapDesigner> searchApp(final Wi wi, final Map<String, List<WiDesigner.ModuleApp>> moduleMap, final String moduleType, final Class<?> applicationClass){
+		List<WrapDesigner> swList = null;
+		if(moduleMap.containsKey(moduleType)) {
+			try {
+				WiDesigner wiDesigner = new WiDesigner();
+				BeanUtils.copyProperties(wiDesigner, wi);
+				wiDesigner.setModuleAppList(moduleMap.get(moduleType));
+				List<WrapDesigner> designerList = ThisApplication.context().applications().postQuery(applicationClass,
+						Applications.joinQueryUri("designer", "search"), wiDesigner).getDataAsList(WrapDesigner.class);
+				logger.debug("设计搜索关联{}的匹配设计个数：{}", moduleType, designerList.size());
+				getSearchRes(wi, designerList);
+				swList = designerList;
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			if (swList!=null && swList.size() > 2) {
 				try {
-					WiDesigner wiDesigner = new WiDesigner();
-					BeanUtils.copyProperties(wiDesigner, wi);
-					wiDesigner.setModuleAppList(moduleMap.get(moduleType));
-					List<WrapDesigner> designerList = ThisApplication.context().applications().postQuery(applicationClass,
-							Applications.joinQueryUri("designer", "search"), wiDesigner).getDataAsList(WrapDesigner.class);
-					logger.info("设计搜索关联{}的匹配设计个数：{}", moduleType, designerList.size());
-					getSearchRes(wi, designerList);
-					swList = designerList;
+					SortTools.desc(swList, "designerType","appId");
 				} catch (Exception e) {
-					logger.error(e);
-				}
-				if (swList!=null && swList.size() > 2) {
-					try {
-						SortTools.desc(swList, "designerType","appId");
-					} catch (Exception e) {
-					}
 				}
 			}
-			return swList;
-		}, executor);
-		return cf;
+		}
+		return swList;
 	}
 
 	private void getSearchRes(final Wi wi, List<WrapDesigner> designerList){

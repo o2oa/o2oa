@@ -28,11 +28,6 @@ public class ActionGet extends BaseAction {
                 wo = new Wo(generalFile.readContent(gfMapping), this.contentType(false, generalFile.getName()),
                         this.contentDisposition(false, generalFile.getName()));
                 result.setData(wo);
-
-                generalFile.deleteContent(gfMapping);
-                emc.beginTransaction(GeneralFile.class);
-                emc.delete(GeneralFile.class, generalFile.getId());
-                emc.commit();
             } else {
                 throw new ExceptionInputFileObject(flag);
             }
