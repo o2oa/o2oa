@@ -20,8 +20,10 @@ MWF.xApplication.cms.Document.Main = new Class({
         "saveOnClose" : true,
         "postPublish" : null,
         "postDelete" : null,
-        "formId" : null,
-        "formEditId" : null
+        "forceFormId" : null, //不管编辑还是阅读都用此表单打开，优先使用
+        "printFormId" : null, //打印表单，不管编辑还是阅读都用此表单打开，仅此于forceFormId
+        "readFormId" : null, //强制的阅读表单，优先于表单的readFormId
+        "editFormId" : null //强制的编辑表单，优先于表单的formId
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.cms.Document.LP;
@@ -30,10 +32,20 @@ MWF.xApplication.cms.Document.Main = new Class({
             this.options.readonly = (this.status.readonly==="true" || this.status.readonly===true) ? true : false;
             this.options.autoSave = (this.status.autoSave==="true" || this.status.autoSave===true) ? true : false;
             this.options.saveOnClose = (this.status.saveOnClose==="true" || this.status.saveOnClose===true) ? true : false;
+
             this.options.formId = this.status.formId;
             this.options.formEditId = this.status.formEditId;
+
             this.options.printFormId = this.status.printFormId;
+            this.options.forceFormId = this.status.forceFormId;
+            this.options.readFormId = this.status.readFormId;
+            this.options.editFormId = this.status.editFormId;
         }
+
+        //兼容之前的 formEditId 和 formId
+        if( this.options.formId && !this.options.readFormId )this.options.readFormId = this.options.formId;
+        if( this.options.formEditId && !this.options.editFormId )this.options.editFormId = this.options.formEditId;
+
         if( this.options.readonly === "false" )this.options.readonly = false;
         if( this.options.documentId && this.options.documentId!=""){
             this.options.appId = "cms.Document"+this.options.documentId;
@@ -116,13 +128,16 @@ MWF.xApplication.cms.Document.Main = new Class({
         this.json_document = null;
         this.json_form = null;
 
-        var readonly = this.options.readonly !== false;
+        //只读或者匿名查看
+        var readonly = this.options.readonly !== false || this.options.anonymousAccess;
 
         var formId = "";
-        if( this.options.printFormId ){ //有确定的id
+        if( this.options.forceFormId ) { //有确定的id
+            formId = this.options.forceFormId;
+        }else if( this.options.printFormId ){ //有确定的id
             formId = this.options.printFormId;
-        }else if( readonly && this.options.formId ){ //只读，并且有只读表单id
-            formId = this.options.formId;
+        }else if( readonly && this.options.readFormId ){ //只读，并且有只读表单id
+            formId = this.options.readFormId;
         }
 
         if( formId ){
@@ -201,7 +216,8 @@ MWF.xApplication.cms.Document.Main = new Class({
 
                     this.parseDocumentV2(this.json_document.data);
 
-                    var toLoadForm = this.options.readonly !== true; //编辑状态要先获取document再判断有没有权限编辑
+                    //编辑状态要先获取document再判断有没有权限编辑
+                    var toLoadForm = this.options.readonly !== true && !this.options.anonymousAccess;
                     this.checkLoad( toLoadForm )
                 }else{
                     this.errorLoadingV2();
@@ -233,7 +249,7 @@ MWF.xApplication.cms.Document.Main = new Class({
                 if( !ignoreFromCategory && this.document && this.document.categoryId ){
                     this.action.getCategory( this.document.categoryId, function(json){
                         var d = json.data;
-                        if( this.readonly == true && d.readFormId && d.readFormId != "" ){
+                        if( this.readonly === true && d.readFormId && d.readFormId != "" ){
                             this.formId  = d.readFormId;
                         }else{
                             this.formId = d.formId || d.readFormId;
@@ -274,7 +290,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 
         }.bind(this), function(){
             this.checkLoad( true );
-        });
+        }.bind(this));
     },
 
     parseFormV2: function( json ){
@@ -347,9 +363,9 @@ MWF.xApplication.cms.Document.Main = new Class({
 
         var formId;
         if( this.readonly === true ){
-            formId = this.options.printFormId  || this.options.formId || this.document.readFormId || this.options.formEditId || this.document.form;
+            formId = this.options.forceFormId || this.options.printFormId  || this.options.readFormId || this.document.readFormId || this.options.editFormId || this.document.form;
         }else{
-            formId = this.options.printFormId || this.options.formEditId || this.document.form || this.options.formId || this.document.readFormId;
+            formId = this.options.forceFormId || this.options.printFormId || this.options.editFormId || this.document.form || this.options.readFormId || this.document.readFormId;
         }
         this.formId = formId;
 
@@ -648,9 +664,10 @@ MWF.xApplication.cms.Document.Main = new Class({
             "autoSave" : this.options.autoSave,
             "saveOnClose" : this.options.saveOnClose
         };
-        if( this.options.formId )status.formId = this.options.formId;
-        if( this.options.formEditId )status.formEditId = this.options.formEditId;
+        if( this.options.readFormId )status.readFormId = this.options.readFormId;
+        if( this.options.editFormId )status.editFormId = this.options.editFormId;
         if( this.options.printFormId )status.printFormId = this.options.printFormId;
+        if( this.options.forceFormId )status.forceFormId = this.options.forceFormId;
         if(this.options.appId && this.options.appId!="")status.appId = this.options.appId;
         return status;
     },
