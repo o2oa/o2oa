@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
@@ -23,6 +24,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.PersistenceProperties;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -53,6 +55,39 @@ public class Form extends SliceJpaObject {
 		this.editor = StringUtils.trimToEmpty(this.editor);
 	}
 
+	public Form() {
+		this.properties = new FormProperties();
+	}
+
+	public FormProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new FormProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(FormProperties properties) {
+		this.properties = properties;
+	}
+
+	public String getDataOrMobileData() {
+		if (StringUtils.isNotEmpty(this.getData())) {
+			return this.getData();
+		} else if (StringUtils.isNotEmpty(this.getMobileData())) {
+			return this.getMobileData();
+		}
+		return null;
+	}
+
+	public String getMobileDataOrData() {
+		if (StringUtils.isNotEmpty(this.getMobileData())) {
+			return this.getMobileData();
+		} else if (StringUtils.isNotEmpty(this.getData())) {
+			return this.getData();
+		}
+		return null;
+	}
+
 	/* 以上为 JpaObject 默认字段 */
 
 	/* 更新运行方法 */
@@ -67,6 +102,7 @@ public class Form extends SliceJpaObject {
 	@FieldDescribe("表单别名.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
 			+ alias_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + alias_FIELDNAME)
 	private String alias;
 
 	public static final String description_FIELDNAME = "description";
@@ -102,6 +138,19 @@ public class Form extends SliceJpaObject {
 	@Basic(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
 	private String mobileData;
+
+	public static final String hasMobile_FIELDNAME = "hasMobile";
+	@FieldDescribe("是否有移动端内容.")
+	@Column(name = ColumnNamePrefix + hasMobile_FIELDNAME)
+	private Boolean hasMobile;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private FormProperties properties;
 
 	public String getName() {
 		return name;
@@ -159,4 +208,11 @@ public class Form extends SliceJpaObject {
 		this.alias = alias;
 	}
 
+	public Boolean getHasMobile() {
+		return hasMobile;
+	}
+
+	public void setHasMobile(Boolean hasMobile) {
+		this.hasMobile = hasMobile;
+	}
 }
