@@ -251,17 +251,16 @@ public class FormAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在那么返回分类的默认Form.", action = V2LookupDoc.class)
 	@GET
-	@Path("v2/lookup/document/{docId}/mode/{openMode}")
+	@Path("v2/lookup/document/{docId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2LookupDoc(@Suspended final AsyncResponse asyncResponse,
 											@Context HttpServletRequest request,
-											@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId,
-											@JaxrsParameterDescribe("文档打开模式：read(只读模式)|edit(编辑模式)") @PathParam("openMode") String openMode) {
+											@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId) {
 		ActionResult<V2LookupDoc.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new V2LookupDoc().execute(effectivePerson, docId, openMode);
+			result = new V2LookupDoc().execute(effectivePerson, docId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -271,17 +270,16 @@ public class FormAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "查询表单,如果有表单那么返回表单id,如果表单不存在返回分类的默认FormMobile.", action = V2LookupDocMobile.class)
 	@GET
-	@Path("v2/lookup/document/{docId}/mode/{openMode}/mobile")
+	@Path("v2/lookup/document/{docId}/mobile")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2LookupDocMobile(@Suspended final AsyncResponse asyncResponse,
 												  @Context HttpServletRequest request,
-												  @JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId,
-												  @JaxrsParameterDescribe("文档打开模式：read(只读模式)|edit(编辑模式)") @PathParam("openMode") String openMode) {
+												  @JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId) {
 		ActionResult<V2LookupDocMobile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new V2LookupDocMobile().execute(effectivePerson, docId, openMode);
+			result = new V2LookupDocMobile().execute(effectivePerson, docId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

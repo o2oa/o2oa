@@ -14,16 +14,13 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.FormProperties;
 import com.x.cms.core.entity.element.Script;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
 
 class V2Get extends BaseAction {
 
@@ -36,37 +33,41 @@ class V2Get extends BaseAction {
 		if (optional.isPresent()) {
 			result.setData((Wo) optional.get());
 		} else {
-			Wo wo = this.get(id);
+			Form form = null;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				form = business.getFormFactory().pick(id);
+			}
+			if (null == form) {
+				throw new ExceptionEntityNotExist(id, Form.class);
+			}
+			Wo wo = new Wo();
+			final FormProperties properties = form.getProperties();
+			wo.setFastETag(form.getId() + form.getUpdateTime().getTime());
+			wo.setForm(new RelatedForm(form, form.getDataOrMobileData()));
+			CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(properties);
+			CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture = this
+					.getRelatedScriptFuture(properties);
+			wo.setRelatedFormMap(getRelatedFormFuture.get(10, TimeUnit.SECONDS));
+			wo.setRelatedScriptMap(getRelatedScriptFuture.get(10, TimeUnit.SECONDS));
+			wo.setMaxAge(3600 * 24);
 			CacheManager.put(cacheCategory, cacheKey, wo);
 			result.setData(wo);
 		}
 		return result;
 	}
 
-	private Wo get(String id) throws Exception {
-		Form form;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			form = business.getFormFactory().pick(id);
-		}
-		if (null == form) {
-			throw new ExceptionEntityNotExist(id, Form.class);
-		}
-		Wo wo = new Wo();
-		final FormProperties properties = form.getProperties();
-		wo.setForm(new RelatedForm(form, form.getDataOrMobileData()));
-		final List<String> list = new CopyOnWriteArrayList<>();
-		CompletableFuture<Map<String, RelatedForm>> _relatedWidget = CompletableFuture.supplyAsync(() -> {
+	private CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture(FormProperties properties) {
+		return CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedForm> map = new TreeMap<>();
 			if (ListTools.isNotEmpty(properties.getRelatedFormList())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business bus = new Business(emc);
-					Form _f;
-					for (String _id : properties.getRelatedFormList()) {
-						_f = bus.getFormFactory().pick(_id);
-						if (null != _f) {
-							map.put(_id, new RelatedForm(_f, _f.getDataOrMobileData()));
-							list.add(_f.getId() + _f.getUpdateTime().getTime());
+					Form f;
+					for (String id : properties.getRelatedFormList()) {
+						f = bus.getFormFactory().pick(id);
+						if (null != f) {
+							map.put(id, new RelatedForm(f, f.getDataOrMobileData()));
 						}
 					}
 				} catch (Exception e) {
@@ -75,57 +76,58 @@ class V2Get extends BaseAction {
 			}
 			return map;
 		});
-		CompletableFuture<Map<String, RelatedScript>> _relatedScript = CompletableFuture.supplyAsync(() -> {
+	}
+
+	private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(FormProperties properties) {
+		return CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedScript> map = new TreeMap<>();
-			if ((null != properties.getRelatedScriptMap())
-					&& (properties.getRelatedScriptMap().size() > 0)) {
+			if ((null != properties.getRelatedScriptMap()) && (properties.getRelatedScriptMap().size() > 0)) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business bus = new Business(emc);
-					for (Entry<String, String> entry : properties.getRelatedScriptMap().entrySet()) {
-						switch (entry.getValue()) {
-							case RelatedScript.TYPE_PROCESS_PLATFORM:
-								com.x.processplatform.core.entity.element.Script _pp = bus.process().script().pick(entry.getKey());
-								if (null != _pp) {
-									map.put(entry.getKey(), new RelatedScript(_pp.getId(), _pp.getName(), _pp.getAlias(),
-											_pp.getText(), entry.getValue()));
-									list.add(_pp.getId() + _pp.getUpdateTime().getTime());
-								}
-								break;
-							case RelatedScript.TYPE_CMS:
-								Script _cms = bus.getScriptFactory().pick(entry.getKey());
-								if (null != _cms) {
-									map.put(entry.getKey(), new RelatedScript(_cms.getId(), _cms.getName(), _cms.getAlias(),
-											_cms.getText(), entry.getValue()));
-									list.add(_cms.getId() + _cms.getUpdateTime().getTime());
-								}
-								break;
-							case RelatedScript.TYPE_PORTAL:
-								com.x.portal.core.entity.Script _p = bus.portal().script().pick(entry.getKey());
-								if (null != _p) {
-									map.put(entry.getKey(), new RelatedScript(_p.getId(), _p.getName(), _p.getAlias(),
-											_p.getText(), entry.getValue()));
-									list.add(_p.getId() + _p.getUpdateTime().getTime());
-								}
-								break;
-							default:
-								break;
-						}
-					}
+					Business business = new Business(emc);
+					map = convertScript(business, properties);
 				} catch (Exception e) {
 					logger.error(e);
 				}
 			}
 			return map;
 		});
-		list.add(form.getId() + form.getUpdateTime().getTime());
-		List<String> sortList = list.stream().sorted().collect(Collectors.toList());
-		wo.setFastETag(StringUtils.join(sortList, "#"));
-		wo.setRelatedFormMap(_relatedWidget.get());
-		wo.setRelatedScriptMap(_relatedScript.get());
-		return wo;
+	}
+
+	private Map<String, RelatedScript> convertScript(Business bus, FormProperties properties) throws Exception {
+		Map<String, RelatedScript> map = new TreeMap<>();
+		for (Entry<String, String> entry : properties.getRelatedScriptMap().entrySet()) {
+			switch (entry.getValue()) {
+				case RelatedScript.TYPE_PROCESS_PLATFORM:
+					com.x.processplatform.core.entity.element.Script pp = bus.process().script().pick(entry.getKey());
+					if (null != pp) {
+						map.put(entry.getKey(),
+								new RelatedScript(pp.getId(), pp.getName(), pp.getAlias(), pp.getText(), entry.getValue()));
+					}
+					break;
+				case RelatedScript.TYPE_CMS:
+					Script cms = bus.getScriptFactory().pick(entry.getKey());
+					if (null != cms) {
+						map.put(entry.getKey(), new RelatedScript(cms.getId(), cms.getName(), cms.getAlias(), cms.getText(),
+								entry.getValue()));
+					}
+					break;
+				case RelatedScript.TYPE_PORTAL:
+					com.x.portal.core.entity.Script p = bus.portal().script().pick(entry.getKey());
+					if (null != p) {
+						map.put(entry.getKey(),
+								new RelatedScript(p.getId(), p.getName(), p.getAlias(), p.getText(), entry.getValue()));
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		return map;
 	}
 
 	public static class Wo extends AbstractWo {
+
+		private static final long serialVersionUID = 3540820372721279101L;
 
 	}
 
