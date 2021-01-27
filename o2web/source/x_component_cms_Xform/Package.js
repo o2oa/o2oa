@@ -88,7 +88,7 @@ MWF.xApplication.cms.Xform.Image = MWF.CMSImage =  new Class({
 //MWF.xDesktop.requireApp("cms.Xform", "Table", null, false);
 //MWF.xDesktop.requireApp("cms.Xform", "Datagrid", null, false);
 
-MWF.xDesktop.requireApp("cms.Xform", "Html", null, false);
+MWF.xDesktop.requireApp("process.Xform", "Html", null, false);
 MWF.xApplication.cms.Xform.Html = MWF.CMSHtml =  new Class({
 	Extends: MWF.APPHtml
 });
@@ -113,3 +113,5 @@ MWF.xApplication.cms.Xform.Html = MWF.CMSHtml =  new Class({
 //MWF.xDesktop.requireApp("cms.Xform", "View", null, false);
 //MWF.xDesktop.requireApp("cms.Xform", "ViewSelector", null, false);
 //MWF.xDesktop.requireApp("cms.Xform", "Stat", null, false);
+
+MWF.xApplication.cms.Xform.Package = {};

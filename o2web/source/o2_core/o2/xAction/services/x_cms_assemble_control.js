@@ -98,24 +98,45 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
         }
     },
     updateForm: function(formData, mobileData, fieldList, success, failure){ 
-        var data, mobileData;
+        var data, mobileDataStr;
         if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
-        if (mobileData) mobileData = MWF.encodeJsonString(JSON.encode(mobileData));
+        if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
+
+        var relatedScriptMap = null;
+        if (formData && formData.json.includeScripts && formData.json.includeScripts.length){
+            relatedScriptMap = {};
+            formData.json.includeScripts.each(function(s){
+                relatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+            });
+        }
+
+        var mobileRelatedScriptMap = null;
+        if (mobileData && mobileData.json.includeScripts && mobileData.json.includeScripts.length){
+            mobileRelatedScriptMap = {};
+            mobileData.json.includeScripts.each(function(s){
+                mobileRelatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+            });
+        }
+
         var json = {
             "id": formData.json.id,
             "name": formData.json.name,
             "alias": formData.json.name,
             "description": formData.json.description,
             "appId": formData.json.application,
-            "formFieldList": fieldList
+            "formFieldList": fieldList,
+            "relatedScriptMap": relatedScriptMap,
+            "relatedFormList": (formData && formData.json.subformList) ? formData.json.subformList : [],
+            "mobileRelatedScriptMap": mobileRelatedScriptMap,
+            "mobileRelatedFormList": (mobileData && mobileData.json.subformList) ? mobileData.json.subformList : []
         };
         if (formData) json.data = data;
-        if (mobileData) json.mobileData = mobileData;
+        if (mobileData) json.mobileData = mobileDataStr;
 
         this.action.invoke({"name": "updataForm","data": json,"parameter": {"id": formData.json.id},"success": success,"failure": failure});
     },
     addForm: function(formData, mobileData, fieldList, success, failure){
-        var data, mobileData;
+        var data, mobileDataStr;
         if (!formData.json.id){
             this.getUUID(function(id){
                 formData.json.id = id;
@@ -125,7 +146,23 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
                 if ( mobileData && !mobileData.json.id ){
                     mobileData.json.id = id;
                 }
-                if (mobileData) mobileData = MWF.encodeJsonString(JSON.encode(mobileData));
+                if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
+
+                var relatedScriptMap = null;
+                if (formData && formData.json.includeScripts && formData.json.includeScripts.length){
+                    relatedScriptMap = {};
+                    formData.json.includeScripts.each(function(s){
+                        relatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+                    });
+                };
+
+                var mobileRelatedScriptMap = null;
+                if (mobileData && mobileData.json.includeScripts && mobileData.json.includeScripts.length){
+                    mobileRelatedScriptMap = {};
+                    mobileData.json.includeScripts.each(function(s){
+                        mobileRelatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+                    });
+                }
 
                 var json = {
                     "id": formData.json.id,
@@ -133,10 +170,14 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
                     "alias": formData.json.name,
                     "description": formData.json.description,
                     "appId": formData.json.application,
-                    "formFieldList": fieldList
+                    "formFieldList": fieldList,
+                    "relatedScriptMap": relatedScriptMap,
+                    "relatedFormList": (formData && formData.json.subformList) ? formData.json.subformList : [],
+                    "mobileRelatedScriptMap": mobileRelatedScriptMap,
+                    "mobileRelatedFormList": (mobileData && mobileData.json.subformList) ? mobileData.json.subformList : []
                 };
                 if (formData) json.data = data;
-                if (mobileData) json.mobileData = mobileData;
+                if (mobileData) json.mobileData = mobileDataStr;
                 this.action.invoke({"name": "addForm","data": json, "parameter": {"id": formData.json.id }, "success": success,"failure": failure});
             }.bind(this));
         }else{
@@ -145,7 +186,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             if ( mobileData && !mobileData.json.id ){
                 mobileData.json.id = formData.json.id;
             }
-            if (mobileData) mobileData = MWF.encodeJsonString(JSON.encode(mobileData));
+            if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
 
             var json = {
                 "id": formData.json.id,
@@ -156,7 +197,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
                 "formFieldList": fieldList
             };
             if (formData) json.data = data;
-            if (mobileData) json.mobileData = mobileData;
+            if (mobileData) json.mobileData = mobileDataStr;
             this.action.invoke({"name": "addForm","data": json, "parameter": {"id": formData.json.categoryId}, "success": success,"failure": failure});
         }
     },

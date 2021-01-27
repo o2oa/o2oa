@@ -207,6 +207,133 @@ function createXFormConcatTask(path, isMin, thisOptions) {
     });
 }
 
+function createCMSXFormConcatTask(path, isMin, thisOptions) {
+    var processPath = "x_component_process_Xform";
+    gulp.task(path+" : concat", function(){
+        var option = thisOptions || options;
+        var src = [
+            'source/o2_core/o2/widget/AttachmentController.js',
+            // 'source/o2_core/o2/xScript/CMSEnvironment.js',
+            'source/o2_core/o2/xScript/CMSMacro.js',
+            'source/o2_core/o2/widget/Tab.js',
+            'source/o2_core/o2/widget/O2Identity.js',
+            'source/' + processPath + '/Form.js',
+            'source/' + processPath + '/$Module.js',
+            'source/' + processPath + '/$Input.js',
+            'source/' + processPath + '/Div.js',
+            //'source/' + processPath + '/Combox.js',
+            'source/' + processPath + '/DatagridMobile.js',
+            'source/' + processPath + '/DatagridPC.js',
+            'source/' + processPath + '/Textfield.js',
+            //'source/' + processPath + '/Personfield.js',
+            'source/' + processPath + '/Button.js',
+            //'source/' + processPath + '/ViewSelector.js',
+            'source/' + processPath + '/Org.js',
+            // 'source/' + processPath + '/*.js',
+            'source/' + processPath + '/Actionbar.js',
+            //'source/' + processPath + '/Address.js',
+            'source/' + processPath + '/Attachment.js',
+            'source/' + processPath + '/Calendar.js',
+            'source/' + processPath + '/Checkbox.js',
+            'source/' + processPath + '/Datagrid.js',
+            'source/' + processPath + '/Htmleditor.js',
+            //'source/' + processPath + '/Iframe.js',
+            'source/' + processPath + '/Label.js',
+            'source/' + processPath + '/Number.js',
+            'source/' + processPath + '/Common.js',
+            'source/' + processPath + '/Image.js',
+            'source/' + processPath + '/ImageClipper.js',
+            'source/' + processPath + '/Html.js',
+            'source/' + processPath + '/Radio.js',
+            'source/' + processPath + '/Select.js',
+            //'source/' + processPath + '/Stat.js',
+            //'source/' + processPath + '/Statement.js',
+            //'source/' + processPath + '/StatementSelector.js',
+            //'source/' + processPath + '/Subform.js',
+            'source/' + processPath + '/Tab.js',
+            'source/' + processPath + '/Table.js',
+            'source/' + processPath + '/Textarea.js',
+            //'source/' + processPath + '/Tree.js',
+            //'source/' + processPath + '/View.js',
+            // 'source/x_component_process_Work/Processor.js',
+            // '!source/' + processPath + '/Office.js'
+
+
+            'source/o2_core/o2/widget/SimpleToolbar.js',
+            'source/' + path + '/ModuleImplements.js',
+            'source/' + path + '/Package.js',
+            'source/' + path + '/Form.js',
+            //'source/' + path + '/widget/Comment.js',
+            'source/' + path + '/widget/Log.js',
+            'source/' + path + '/Org.js',
+            'source/' + path + '/Author.js',
+            'source/' + path + '/Reader.js',
+            'source/' + path + '/Textfield.js',
+            'source/' + path + '/Actionbar.js',
+            'source/' + path + '/Attachment.js',
+            'source/' + path + '/Button.js',
+            'source/' + path + '/Calendar.js',
+            'source/' + path + '/Checkbox.js',
+            'source/' + path + '/Datagrid.js',
+            'source/' + path + '/Htmleditor.js',
+            'source/' + path + '/ImageClipper.js',
+            'source/' + path + '/Label.js',
+            'source/' + path + '/Number.js',
+            'source/' + path + '/Radio.js',
+            'source/' + path + '/Select.js',
+            'source/' + path + '/Tab.js',
+            'source/' + path + '/Table.js',
+            'source/' + path + '/Textarea.js'
+
+            //'source/' + path + '/Personfield.js',
+            //'source/' + path + '/Readerfield.js',
+            //'source/' + path + '/Authorfield.js',
+            //'source/' + path + '/Orgfield.js',
+            // 'source/' + path + '/*.js',
+            // '!source/' + path + '/Office.js'
+        ];
+        var dest = option.dest+'/' + path + '/';
+        return gulp.src(src)
+            .pipe(sourceMap.init())
+            .pipe(concat('$all.js'))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+            .pipe(concat('$all.min.js'))
+            .pipe(uglify())
+            .pipe(sourceMap.write(""))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+    });
+}
+
 function createO2ConcatTask(path, isMin, thisOptions) {
     gulp.task(path+" : concat", function(){
         var option = thisOptions || options;
@@ -719,6 +846,149 @@ function createBasePortalConcatTask(path, isMin, thisOptions){
     createBasePortalConcatDelTempTask(path);
     gulp.task( path+".base_portal", gulp.series(path+".base_portal : action", path+".base_portal : style", path+".base_portal : concat", path+".base_portal : clean"));
 }
+
+
+function createBaseDocumentConcatActionTask(path){
+    gulp.task(path+".base_document : action", function(){
+        return gulp.src([
+            "source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
+            "source/o2_core/o2/xAction/services/x_organization_assemble_control.json",
+            "source/o2_core/o2/xAction/services/x_cms_assemble_control.json",
+            "source/o2_core/o2/xAction/services/x_program_center.json",
+            "source/o2_core/o2/xAction/services/x_organization_assemble_personal.json"
+        ])
+            .pipe(concat_Actions())
+            .pipe(concat('js/base_document_actions_temp.js'))
+            .pipe(gulp.dest('source/x_desktop/'))
+    })
+}
+
+function createBaseDocumentConcatStyleTask(path){
+    gulp.task(path+".base_document : style", function(){
+        return gulp.src([
+            "source/x_component_cms_Document/$Main/default/css.wcss",
+            "source/x_component_cms_Xform/$Form/default/css.wcss",
+            "source/o2_core/o2/widget/$AttachmentController/default/css.wcss"
+        ])
+            .pipe(concat_Style())
+            .pipe(concat('js/base_document_style_temp.js'))
+            .pipe(gulp.dest('source/x_desktop/'))
+    })
+}
+
+function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
+    gulp.task(path+".base_document : concat", function(){
+        var option = thisOptions || options;
+        var src = [
+            'source/' + path + '/js/base_concat_head.js',
+            'source/o2_core/o2/lp/'+(option.lp || 'zh-cn')+'.js',
+
+            'source/' + path + '/js/base_document_style_temp.js',
+
+            'source/o2_core/o2/widget/Common.js',
+            'source/o2_core/o2/widget/Dialog.js',
+            'source/o2_core/o2/widget/UUID.js',
+            'source/o2_core/o2/widget/Menu.js',
+            'source/o2_core/o2/widget/Mask.js',
+            'source/o2_core/o2/xDesktop/Common.js',
+            'source/o2_core/o2/xDesktop/Actions/RestActions.js',
+            'source/o2_core/o2/xAction/RestActions.js',
+            'source/o2_core/o2/xDesktop/Access.js',
+            'source/o2_core/o2/xDesktop/Dialog.js',
+            'source/o2_core/o2/xDesktop/Menu.js',
+            'source/o2_core/o2/xDesktop/UserData.js',
+            'source/x_component_Template/MPopupForm.js',
+            'source/o2_core/o2/xDesktop/Authentication.js',
+            'source/o2_core/o2/xDesktop/Window.js',
+
+            'source/x_component_Common/Main.js',
+
+            'source/x_component_cms_Document/lp/'+(option.lp || 'zh-cn')+'.js',
+            'source/x_component_process_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
+            'source/x_component_Selector/lp/'+(option.lp || 'zh-cn')+'.js',
+            'source/x_component_cms_xform/lp/'+(option.lp || 'zh-cn')+'.js',
+
+            'source/x_component_cms_Document/Main.js',
+
+            'source/x_component_Selector/package.js',
+
+            'source/o2_core/o2/xScript/Actions/UnitActions.js',
+            'source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
+            'source/o2_core/o2/xScript/CMSEnvironment.js',
+
+            'source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
+            'source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
+            'source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
+            'source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
+
+            'source/' + path + '/js/base_document_actions_temp.js',
+
+            'source/' + path + '/js/base.js'
+        ];
+        var dest = option.dest+'/' + path + '/';
+        return gulp.src(src)
+            .pipe(sourceMap.init())
+            .pipe(concat('js/base_document.js'))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+            // .pipe(gulp.src(src))
+            .pipe(concat('js/base_document.min.js'))
+            .pipe(uglify())
+            .pipe( sourceMap.write("") )
+            // .pipe(rename({ extname: '.min.js' }))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+    });
+}
+
+function createBaseDocumentConcatDelTempTask(path) {
+    gulp.task(path+".base_document : clean", function(cb){
+        var dest = [
+            'source/'+path+'/js/base_document_actions_temp.js',
+            'source/'+path+'/js/base_document_style_temp.js'
+        ];
+        return del(dest, cb);
+    });
+}
+
+function createBaseDocumentConcatTask(path, isMin, thisOptions){
+    createBaseDocumentConcatActionTask(path);
+    createBaseDocumentConcatStyleTask(path);
+    createBaseDocumentConcatBodyTask(path, isMin, thisOptions);
+    createBaseDocumentConcatDelTempTask(path);
+    gulp.task( path+".base_document", gulp.series(path+".base_document : action", path+".base_document : style", path+".base_document : concat", path+".base_document : clean"));
+}
+
+
+
 function createBaseConcatTask(path, isMin, thisOptions){
     gulp.task(path+".base", function(){
         var option = thisOptions || options;
@@ -771,9 +1041,13 @@ function createBaseConcatTask(path, isMin, thisOptions){
 }
 
 function getAppTask(path, isMin, thisOptions) {
-    if (path==="x_component_process_Xform"){
+    if (path==="x_component_process_Xform") {
         createDefaultTask(path, isMin, thisOptions);
         createXFormConcatTask(path, isMin, thisOptions);
+        return gulp.series(path, path + " : concat");
+    }else if (path==="x_component_cms_Xform"){
+        createDefaultTask(path, isMin, thisOptions);
+        createCMSXFormConcatTask(path, isMin, thisOptions);
         return gulp.series(path, path+" : concat");
     }else if (path==="o2_core"){
         createDefaultTask(path, isMin, thisOptions);
@@ -783,8 +1057,9 @@ function getAppTask(path, isMin, thisOptions) {
         createDefaultTask(path, isMin, thisOptions);
         createBaseWorkConcatTask(path, isMin, thisOptions);
         createBasePortalConcatTask(path, isMin, thisOptions);
+        createBaseDocumentConcatTask(path, isMin, thisOptions);
         createBaseConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path+".base_work", path+".base_portal", path+".base");
+        return gulp.series(path, path+".base_work", path+".base_portal", path+".base_document", path+".base");
         //return gulp.series(path, path+".base_work : concat");
     }else{
         createDefaultTask(path, isMin, thisOptions);
