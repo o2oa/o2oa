@@ -194,7 +194,7 @@ MWF.xScript.Environment = function(ev){
          * @method getWork
          * @static
          * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象.
-         * @o2ActionOut x_processplatform_assemble_surface.WoWork|example=Work|ignoreNoDescr=true|Work对象:
+         * @o2ActionOut x_processplatform_assemble_surface.WorkAction.manageGet|example=Work|ignoreNoDescr=true|ignoreProps=[properties]|Work对象:
          * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompleted|ignoreProps=[properties]|WorkCompleted对象:
          * @o2syntax
          * var work = this.workContext.getWork();
@@ -301,7 +301,7 @@ MWF.xScript.Environment = function(ev){
          * @o2syntax
          * //本样例以异步执行
          * this.workContext.getTaskCompletedList( function(taskCompletedList){
-         *     //taskCompletedList 为待办数组
+         *     //taskCompletedList 为已办数组
          * });
          */
         "getTaskCompletedList": function(callback, error){
@@ -329,7 +329,7 @@ MWF.xScript.Environment = function(ev){
          * @o2syntax
          * //本样例以异步执行
          * this.workContext.getTaskCompletedListByJob( function(taskCompletedList){
-         *     //taskCompletedList 为待办数组
+         *     //taskCompletedList 为已办数组
          * });
          */
         "getTaskCompletedListByJob": function(callback, error){

@@ -21,14 +21,14 @@ import java.util.List;
 /**
  * 对文档访问记录信息进行管理的服务类（高级）
  * 高级服务器可以利用Service完成事务控制
- * 
+ *
  * @author O2LEE
  */
 public class DocumentViewRecordServiceAdv {
-	
+
 	private UserManagerService userManagerService = new UserManagerService();
 	private DocumentViewRecordService documentViewRecordService = new DocumentViewRecordService();
-	
+
 	public List<DocumentViewRecord> list( List<String> ids ) throws Exception {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return documentViewRecordService.list( emc, ids );
@@ -44,7 +44,7 @@ public class DocumentViewRecordServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listByPerson( String personName, Integer maxCount ) throws Exception {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			List<String> ids =  documentViewRecordService.listByPerson( emc, personName, maxCount );
@@ -56,7 +56,7 @@ public class DocumentViewRecordServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listDocIdsByPerson( String personName, Integer maxCount ) throws Exception {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			List<String> ids =  documentViewRecordService.listDocIdsByPerson( emc, personName, maxCount );
@@ -68,7 +68,7 @@ public class DocumentViewRecordServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	public void deleteByDocument( String docId ) throws Exception {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			documentViewRecordService.deleteByDocument( emc, docId );
@@ -79,8 +79,8 @@ public class DocumentViewRecordServiceAdv {
 
 	/**
 	 * TODO:记录访问日志，一个用户一篇文档只保留一条记录，更新访问次数和最后访问时间
-	 * 
-	 * @param document
+	 *
+	 * @param docId
 	 * @param personName
 	 * @throws Exception
 	 */
@@ -93,14 +93,14 @@ public class DocumentViewRecordServiceAdv {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
 			emc.beginTransaction( DocumentViewRecord.class );
-			
+
 			ids = business.documentViewRecordFactory().listByDocAndPerson( docId, personName );
 			document = emc.find( docId, Document.class );
-			
+
 			if( document == null ) {
 				throw new Exception("document not exists!ID:" + docId );
 			}
-			
+
 			if( ListTools.isNotEmpty( ids )){
 				int i = 0;
 				for( String id : ids ){
@@ -112,7 +112,7 @@ public class DocumentViewRecordServiceAdv {
 							documentViewRecord.setViewCount( 1 );
 						}
 						documentViewRecord.setViewCount( documentViewRecord.getViewCount() + 1 );
-						emc.check( documentViewRecord, CheckPersistType.all ); 
+						emc.check( documentViewRecord, CheckPersistType.all );
 					}else{
 						//删除多余的日志数据
 						emc.remove( documentViewRecord, CheckRemoveType.all );
@@ -132,23 +132,89 @@ public class DocumentViewRecordServiceAdv {
 					documentViewRecord.setViewCount( 1 );
 					documentViewRecord.setViewerTopUnitName( userManagerService.getTopUnitNameWithPerson( personName ));
 					documentViewRecord.setViewerUnitName( userManagerService.getUnitNameWithPerson( personName ));
-					emc.persist( documentViewRecord, CheckPersistType.all ); 
+					emc.persist( documentViewRecord, CheckPersistType.all );
 				}
 			}
 			emc.commit();
-			
+
 			emc.beginTransaction( Document.class );
 			viewCount = business.documentViewRecordFactory().sumWithDocmentId( docId );
 			document.setViewCount( viewCount );
-			emc.check( document, CheckPersistType.all ); 
+			emc.check( document, CheckPersistType.all );
 			emc.commit();
-			
+
 		} catch ( Exception e ) {
 			throw e;
-		}		
+		}
 		return viewCount;
 	}
-	
+
+	public Long addViewRecord( String docId, String personName, Date viewTime) throws Exception {
+		DocumentViewRecord documentViewRecord = null;
+		Document document = null;
+		Business business = null;
+		Long viewCount = 0L;
+		List<String> ids = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			business = new Business( emc );
+			emc.beginTransaction( DocumentViewRecord.class );
+
+			ids = business.documentViewRecordFactory().listByDocAndPerson( docId, personName );
+			document = emc.find( docId, Document.class );
+
+			if( document == null ) {
+				throw new Exception("document not exists!ID:" + docId );
+			}
+
+			if( ListTools.isNotEmpty( ids )){
+				int i = 0;
+				for( String id : ids ){
+					i++;
+					documentViewRecord = emc.find( id, DocumentViewRecord.class );
+					if( i == 1 ){
+						documentViewRecord.setLastViewTime(viewTime);
+						if( documentViewRecord.getViewCount() == null || documentViewRecord.getViewCount() == 0 ){
+							documentViewRecord.setViewCount( 1 );
+						}
+						documentViewRecord.setViewCount( documentViewRecord.getViewCount() + 1 );
+						emc.check( documentViewRecord, CheckPersistType.all );
+					}else{
+						//删除多余的日志数据
+						emc.remove( documentViewRecord, CheckRemoveType.all );
+					}
+				}
+			}else{
+				if( document != null ){
+					documentViewRecord = new DocumentViewRecord();
+					documentViewRecord.setCreateTime(viewTime);
+					documentViewRecord.setAppId( document.getAppId() );
+					documentViewRecord.setCategoryId( document.getCategoryId() );
+					documentViewRecord.setDocumentId( document.getId() );
+					documentViewRecord.setViewerName( personName );
+					documentViewRecord.setAppName( document.getAppName() );
+					documentViewRecord.setCategoryName( document.getCategoryName() );
+					documentViewRecord.setTitle( document.getTitle() );
+					documentViewRecord.setLastViewTime(viewTime);
+					documentViewRecord.setViewCount( 1 );
+					documentViewRecord.setViewerTopUnitName( userManagerService.getTopUnitNameWithPerson( personName ));
+					documentViewRecord.setViewerUnitName( userManagerService.getUnitNameWithPerson( personName ));
+					emc.persist( documentViewRecord, CheckPersistType.all );
+				}
+			}
+			emc.commit();
+
+			emc.beginTransaction( Document.class );
+			viewCount = business.documentViewRecordFactory().sumWithDocmentId( docId );
+			document.setViewCount( viewCount );
+			emc.check( document, CheckPersistType.all );
+			emc.commit();
+
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return viewCount;
+	}
+
 	public List<DocumentViewRecord> listNextWithDocIds( String id, String docId, Integer count, String order) throws Exception {
 		if( docId == null ){
 			throw new Exception("docId is null!");
@@ -162,7 +228,7 @@ public class DocumentViewRecordServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	public Long countWithDocIds( String docId ) throws Exception {
 		if( docId == null ){
 			throw new Exception("docId is null!");
@@ -173,12 +239,12 @@ public class DocumentViewRecordServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 对文档访问日志信息进行清理
 	 * @param stay_yeanumr_viewRecord 日志保留年份
 	 * @param stay_count_viewRecord 日志保留条目数
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void clean( Integer stay_yeanumr_viewRecord, Integer stay_count_viewRecord ) throws Exception {
 		//先按时间清理
@@ -188,8 +254,8 @@ public class DocumentViewRecordServiceAdv {
 
 	/**
 	 * 按最大保留条目数进行清理
-	 * @param stay_count_operationLog
-	 * @throws Exception 
+	 * @param stay_count_viewRecord
+	 * @throws Exception
 	 */
 	private void cleanWithMaxCount(Integer stay_count_viewRecord ) throws Exception {
 		Business business = null;
@@ -218,8 +284,8 @@ public class DocumentViewRecordServiceAdv {
 
 	/**
 	 * 按保留年份对日志进行清理
-	 * @param stay_yearnum_operationLog
-	 * @throws Exception 
+	 * @param stay_yeanumr_viewRecord
+	 * @throws Exception
 	 */
 	private void cleanWithStayYearNumber( Integer stay_yeanumr_viewRecord ) throws Exception {
 		if( stay_yeanumr_viewRecord == null ) {
@@ -230,12 +296,12 @@ public class DocumentViewRecordServiceAdv {
 		Date limitDate = DateOperation.getDateFromString( ( year-4 ) + "-01-01 00:00:00");
 		cleanWithDate( limitDate );
 	}
-	
-	
+
+
 	/**
 	 * 按保留年份对日志进行清理
 	 * @param overTime
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void cleanWithDate( Date overTime ) throws Exception {
 		if( overTime == null ) {
@@ -267,7 +333,7 @@ public class DocumentViewRecordServiceAdv {
 	 * @param ids
 	 * @param effectivePerson
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listReadDocId( List<String> ids, EffectivePerson effectivePerson ) throws Exception {
 		if( ListTools.isEmpty(  ids ) ) {

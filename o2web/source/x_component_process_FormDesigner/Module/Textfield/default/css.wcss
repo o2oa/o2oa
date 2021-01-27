@@ -9,7 +9,7 @@
 		"position": "absolute",
 		"z-index": 10002,
 		"opacity": 0.7,
-		"width": "120px",
+		"min-width": "120px",
 		"cursor": "move",
 		"display": "inline-block"
 	},
@@ -41,7 +41,7 @@
 		"position": "static",
 		"top": "auto",
 		"left": "auto",
-		"width": "120px",
+		"min-width": "120px",
 		"opacity": 1,
 		"background": "#FFF",
 		"display": "inline-block",

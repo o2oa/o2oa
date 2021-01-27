@@ -1,0 +1,87 @@
+<div class="content" data-o2-element="contentNode">
+    <div class="filterNode" data-o2-element="filterNode">
+        <div class="filterNode_title">{{$.lp.filter}}</div>
+        <div class="filterNode_content" data-o2-events="click:checkFilter">
+            <div class="filterNode_item"><input checked type="checkbox" value="script" />{{$.lp.script}}(script)</div>
+            <div class="filterNode_item"><input checked type="checkbox" value="form" />{{$.lp.form}}(form)</div>
+            <div class="filterNode_item"><input checked type="checkbox" value="process" />{{$.lp.process}}(process)</div>
+            <div class="filterNode_item"><input checked type="checkbox" value="page" />{{$.lp.page}}(page)</div>
+            <div class="filterNode_item"><input checked type="checkbox" value="widget" />{{$.lp.widget}}(widget)</div>
+            <div class="filterNode_item"><input checked type="checkbox" value="view" />{{$.lp.view}}(view)</div>
+            <div class="filterNode_item"><input checked type="checkbox" value="statement" />{{$.lp.statement}}(statement)</div>
+<!--            <div class="filterNode_item"><input checked type="checkbox" value="stat" />{{$.lp.stat}}(stat)</div>-->
+        </div>
+    </div>
+
+    <div class="keywordNode" data-o2-element="keywordNode">
+        <div class="keywordNode_optionArea" data-o2-events="mouseover:overKeywordOption;mouseout:outKeywordOption">
+            <div class="keywordNode_optionItem caseSensitiveNode_false" data-o2-element="caseSensitiveNode" data-o2-events="click:setCaseSensitive" title="区分大小写"></div>
+            <div class="keywordNode_optionItem matchWholeWordNode_false" data-o2-element="matchWholeWordNode" data-o2-events="click:setMatchWholeWord" title="全字匹配"></div>
+            <div class="keywordNode_optionItem matchRegExpNode_false" data-o2-element="matchRegExpNode" data-o2-events="click:setMatchRegExp" title="正则表达式"></div>
+        </div>
+        <div class="keywordNode_inputArea">
+            <div class="keywordNode_icon" data-o2-events="click:findDesigner"></div>
+            <div class="keywordNode_action"></div>
+            <div class="keywordNode_area">
+                <input class="keywordNode_input" data-o2-element="keywordInputNode" data-o2-events="keydown:checkFindDesigner" type="text" placeholder="{{$.lp.search_placeholder}}"/>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="rangeNode" data-o2-element="rangeNode">
+        <div class="rangeNode_title">{{$.lp.range}}</div>
+        <div class="rangeNode_content" data-o2-element="rangeContentNode">
+            <div class="rangeType" data-o2-events="click:checkRange">
+                <div class="rangeType_Item"><input checked type="checkbox" value="processPlatform" />{{$.lp.processPlatform}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="cms" />{{$.lp.cms}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="portal" />{{$.lp.portal}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="query" />{{$.lp.query}}</div>
+                <div class="rangeType_Item"><input checked type="checkbox" value="service" />{{$.lp.service}}</div>
+            </div>
+
+        </div>
+        <div class="rangeNode_select">
+            <div class="rangeNode_select_area">
+                <div class="rangeNode_select_action_area">
+                    <div class="rangeNode_select_action" data-o2-element="rangeSelectedActionNode" data-o2-events="click:selectFindRange">{{$.lp.selectRange}}</div>
+                </div>
+                <div class="rangeNode_select_content" data-o2-element="rangeSelectedContentNode"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="resultNode" data-o2-element="resultNode">
+        <div class="listNode_lr" data-o2-element="listNode">
+            <div class="listNode_title_lr" data-o2-element="listTitleNode">
+                <div class="listNode_title_action"></div>
+                <div class="listNode_title_info" data-o2-element="listTitleInfoNode"></div>
+                <div class="listNode_title_progress">
+                    <div class="listNode_title_progress_node" data-o2-element="listTitleProgressNode"></div>
+                </div>
+            </div>
+
+            <div class="listNode_area" data-o2-element="listAreaNode">
+                <div class="inforNode" data-o2-element="listInfoNode"><div>{{$.lp.nothingFind_keyword}}</div></div>
+                <div class="listContentNode" data-o2-element="listContentNode"></div>
+            </div>
+
+
+        </div>
+        <div class="previewNode_lr" data-o2-element="previewNode">
+            <div class="previewNode_separator_lr" data-o2-element="previewSeparatorNode"></div>
+            <div class="previewNode_title_lr" data-o2-element="previewTitleNode">
+                <div class="previewNode_title_icon" data-o2-element="previewTitleToolbar">
+                    <span MWFnodetype="MWFToolBarButton" title="{{$.lp.saveDesigner}}" MWFButtonImage="../x_component_FindDesigner/$Main/default/icons/save.png" MWFButtonAction="saveDesigner" MWFButtonText=""></span>
+                    <span MWFnodetype="MWFToolBarButton" title="{{$.lp.openDesigner}}" MWFButtonImage="../x_component_FindDesigner/$Main/default/icons/open.png"  MWFButtonAction="openDesinger" MWFButtonText=""></span>
+                </div>
+                <div class="previewNode_title_action_lr" data-o2-element="previewTitleActionNode" title="{{$.lp.dockToBottom}}" data-o2-events="click:changeLayout"></div>
+                <div class="previewNode_title_content"></div>
+            </div>
+            <div class="previewNode_content_lr" data-o2-element="previewContentNode">
+                <div class="inforNode" data-o2-element="previewInforNode"><div>{{$.lp.nothingPreview}}</div></div>
+            </div>
+        </div>
+    </div>
+
+</div>

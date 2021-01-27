@@ -1,8 +1,5 @@
 package com.x.program.center.jaxrs.collect;
 
-import com.x.program.center.ThisApplication;
-import com.x.program.center.schedule.CollectMarket;
-import com.x.program.center.schedule.CollectPerson;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,10 +22,10 @@ class ActionResetPassword extends BaseAction {
 		String password = wi.getPassword();
 		String mobile = wi.getMobile();
 		String codeAnswer = wi.getCodeAnswer();
-		if (!this.connect()) {
+		if (BooleanUtils.isNotTrue(this.connect())) {
 			throw new ExceptionUnableConnect();
 		}
-		if (!this.exist(name)) {
+		if (BooleanUtils.isNotTrue(this.exist(name))) {
 			throw new ExceptionNameNotExist(name);
 		}
 		if (!password.matches(Person.DEFAULT_PASSWORDREGEX)) {

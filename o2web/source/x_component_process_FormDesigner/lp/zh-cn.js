@@ -173,6 +173,9 @@ MWF.xApplication.process.FormDesigner.LP = {
 
     "imageClipper" : "图片编辑",
 
+    "clearNoDomModuleTitle" : "清除未在HTML树中的组件配置",
+    "clearNoDomModuleContent" : "是否清除未在HTML树中的组件配置？清除后需要保存生效。",
+
     "filter": {
         "and": "并且",
         "or": "或者",

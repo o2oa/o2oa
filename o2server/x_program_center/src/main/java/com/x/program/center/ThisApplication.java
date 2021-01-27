@@ -53,8 +53,6 @@ public class ThisApplication {
 
 	public static final List<Object> qiyeweixinSyncOrganizationCallbackRequest = new ArrayList<>();
 
-	public static Map<String, Map<String, LinkedTreeMap>> metricsReportMap = new ConcurrentHashMap<>();
-
 	public static void init() {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());

@@ -11,7 +11,6 @@ import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonArray;
@@ -123,50 +122,50 @@ public class ScriptFactory {
 		return BooleanUtils.toBooleanObject(Objects.toString(o, "false"));
 	}
 
-	public static List<String> asDistinguishedName(Object o) throws Exception {
-		List<String> list = new ArrayList<>();
-		if (null != o) {
-			if (o instanceof CharSequence) {
-				list.add(Objects.toString(o));
-			} else if (o instanceof Iterable) {
-				for (Object obj : (Iterable<?>) o) {
-					if (null != obj) {
-						if (obj instanceof CharSequence) {
-							list.add(Objects.toString(obj));
-						} else {
-							Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
-							if (null != d) {
-								list.add(Objects.toString(d));
-							}
-						}
-					}
-				}
-			} else if (o instanceof ScriptObjectMirror) {
-				ScriptObjectMirror som = (ScriptObjectMirror) o;
-				if (som.isArray()) {
-					Object[] objs = (som.to(Object[].class));
-					for (Object obj : objs) {
-						if (null != obj) {
-							if (obj instanceof CharSequence) {
-								list.add(Objects.toString(obj));
-							} else {
-								Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
-								if (null != d) {
-									list.add(Objects.toString(d));
-								}
-							}
-						}
-					}
-				} else {
-					Object d = PropertyUtils.getProperty(o, JpaObject.DISTINGUISHEDNAME);
-					if (null != d) {
-						list.add(Objects.toString(d));
-					}
-				}
-			}
-		}
-		return list;
-	}
+//	public static List<String> asDistinguishedName(Object o) throws Exception {
+//		List<String> list = new ArrayList<>();
+//		if (null != o) {
+//			if (o instanceof CharSequence) {
+//				list.add(Objects.toString(o));
+//			} else if (o instanceof Iterable) {
+//				for (Object obj : (Iterable<?>) o) {
+//					if (null != obj) {
+//						if (obj instanceof CharSequence) {
+//							list.add(Objects.toString(obj));
+//						} else {
+//							Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
+//							if (null != d) {
+//								list.add(Objects.toString(d));
+//							}
+//						}
+//					}
+//				}
+//			} else if (o instanceof ScriptObjectMirror) {
+//				ScriptObjectMirror som = (ScriptObjectMirror) o;
+//				if (som.isArray()) {
+//					Object[] objs = (som.to(Object[].class));
+//					for (Object obj : objs) {
+//						if (null != obj) {
+//							if (obj instanceof CharSequence) {
+//								list.add(Objects.toString(obj));
+//							} else {
+//								Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
+//								if (null != d) {
+//									list.add(Objects.toString(d));
+//								}
+//							}
+//						}
+//					}
+//				} else {
+//					Object d = PropertyUtils.getProperty(o, JpaObject.DISTINGUISHEDNAME);
+//					if (null != d) {
+//						list.add(Objects.toString(d));
+//					}
+//				}
+//			}
+//		}
+//		return list;
+//	}
 
 	private static List<String> readAsStringList(Object obj) throws Exception {
 		List<String> list = new ArrayList<>();
@@ -232,6 +231,69 @@ public class ScriptFactory {
 						}
 					}
 				}
+			} else if (o instanceof ScriptObjectMirror) {
+				ScriptObjectMirror som = (ScriptObjectMirror) o;
+				if (som.isArray()) {
+					for (Object obj : som.to(Object[].class)) {
+						if (null != obj) {
+							if (obj instanceof CharSequence) {
+								list.add(Objects.toString(obj, ""));
+							} else if (obj instanceof ScriptObject) {
+								ScriptObject so = (ScriptObject) obj;
+								if (so.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+									list.add(Objects.toString(so.get(JpaObject.DISTINGUISHEDNAME), ""));
+								}
+							} else {
+								list.add(PropertyTools.getOrElse(obj, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+							}
+
+						}
+					}
+				} else if (som.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+					list.add(Objects.toString(som.get(JpaObject.DISTINGUISHEDNAME), ""));
+				} else {
+					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+				}
+			// ScriptObject or JO
+			} else if (o instanceof ScriptObject) {
+				ScriptObject so = (ScriptObject) o;
+				if (so.isArray()) {
+					for (Object obj : so.getArray().asObjectArray()) {
+						if (null != obj) {
+							if (obj instanceof CharSequence) {
+								list.add(Objects.toString(obj, ""));
+							} else {
+								if (obj instanceof ScriptObject) {
+									ScriptObject scriptObject = (ScriptObject) obj;
+									if (scriptObject.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+										list.add(Objects.toString(scriptObject.get(JpaObject.DISTINGUISHEDNAME), ""));
+									}
+								} else {
+									list.add(PropertyTools.getOrElse(obj, JpaObject.DISTINGUISHEDNAME, String.class,
+											""));
+								}
+							}
+						}
+					}
+				} else if (so.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+					list.add(Objects.toString(so.get(JpaObject.DISTINGUISHEDNAME), ""));
+				} else {
+					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+				}
+			// Map类型也属于Iterable 所以必须在Iterable之前进行判断
+			} else if (o instanceof Map) {
+				Map map = (Map) o;
+				if (map.containsKey(JpaObject.DISTINGUISHEDNAME)) {
+					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+				} else {
+					for (Object mapValue : map.values()) {
+						if (mapValue instanceof CharSequence) {
+							list.add(Objects.toString(mapValue, ""));
+						} else {
+							list.add(PropertyTools.getOrElse(mapValue, JpaObject.DISTINGUISHEDNAME, String.class, ""));
+						}
+					}
+				}
 			} else if (o instanceof Iterable) {
 				for (Object obj : (Iterable<?>) o) {
 					if (null != obj) {
@@ -241,30 +303,6 @@ public class ScriptFactory {
 							list.add(PropertyTools.getOrElse(obj, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 						}
 					}
-				}
-			} else if (o instanceof ScriptObjectMirror) {
-				ScriptObjectMirror som = (ScriptObjectMirror) o;
-				if (som.isArray()) {
-					Object[] objs = (som.to(Object[].class));
-					for (Object obj : objs) {
-						if (null != obj) {
-							if (obj instanceof CharSequence) {
-								list.add(Objects.toString(obj, ""));
-							} else {
-								if (obj instanceof ScriptObject) {
-									ScriptObject so = (ScriptObject) obj;
-									if (so.containsKey(JpaObject.DISTINGUISHEDNAME)) {
-										list.add(Objects.toString(so.get(JpaObject.DISTINGUISHEDNAME), ""));
-									}
-								} else {
-									list.add(PropertyTools.getOrElse(obj, JpaObject.DISTINGUISHEDNAME, String.class,
-											""));
-								}
-							}
-						}
-					}
-				} else {
-					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 				}
 			} else {
 				list.add(Objects.toString(o, ""));

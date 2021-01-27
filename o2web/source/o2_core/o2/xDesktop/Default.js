@@ -52,7 +52,7 @@ o2.xDesktop.Default = new Class({
         if (this.status && this.status.flatStyle) this.options.style = this.status.flatStyle;
     },
 
-    load: function(){
+    load: function(cb){
         this.loadLayout(function(){
             this.setEvent();
             if (!this.noDefault) this.loadDefaultPage();
@@ -63,6 +63,8 @@ o2.xDesktop.Default = new Class({
                     this.loadDefaultLnk();
 
                     this.loadStatus();
+
+                    if (cb) cb();
                 }.bind(this));
 
                 this.openWebSocket();
@@ -167,21 +169,45 @@ o2.xDesktop.Default = new Class({
 
 
     loadLayout: function(callback){
-        this.session.user.iconUrl = o2.Actions.get("x_organization_assemble_control").getPersonIcon(this.session.user.id);
-        //var css = this.path+this.options.style+ ((o2.session.isMobile || layout.mobile) ? "/style-mobile.css" : "/style-pc.css");
+        this.session.user.iconUrl = o2.filterUrl(o2.Actions.get("x_organization_assemble_control").getPersonIcon(this.session.user.id));
+
         var css = this.path+this.options.style+ ((o2.session.isMobile || layout.mobile) ? "/style-pc.css" : "/style-pc.css");
         var skinCss = this.path+this.options.style+ "/style-skin.css";
-        //var html = this.path+this.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-mobile.html" : "/layout-pc.html");
         var html = this.path+this.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-pc.html" : "/layout-pc.html");
 
         this.node.loadAll({ "css": [css], "html": [html]}, {"bind": {"user": this.session.user}, "module": this},function(){
+            var oReq = new XMLHttpRequest();
+            debugger;
+            oReq.addEventListener("load", function(){
+                var reader  = new FileReader();
+                reader.addEventListener("load", function () {
+                    this.userInforNode.getFirst().setStyle("background-image", "url("+reader.result+")");
+                }.bind(this), false);
+                reader.readAsDataURL(oReq.response);
+            }.bind(this));
+            oReq.open("GET", this.session.user.iconUrl);
+            oReq.setRequestHeader("authorization", layout.session.user.token);
+            oReq.responseType = "blob";
+            oReq.withCredentials = true;
+            oReq.send();
+
+            // var res = new Request({
+            //     "url": this.session.user.iconUrl,
+            //     method: "get",
+            //     withCredentials: true,
+            //     onSuccess: function(response,a,s,d){
+            //
+            //     }.bind(this)
+            // });
+            // res.setHeader("authorization", layout.session.user.token);
+            // res.send();
+
             this.node.loadCss(skinCss);
             if (callback) callback();
             // this.node.load(html, {
             //     "bind": {"user": this.session.user}
             // }, function(){});
         }.bind(this));
-
     },
 
 
@@ -483,9 +509,22 @@ o2.xDesktop.Default = new Class({
             }
         }.bind(this));
         var status = this.getLayoutStatusData();
-        o2.UD.putData("layout", status, function(){
-            if (callback) callback();
-        });
+
+        // if (navigator.sendBeacon) {
+        //     var obj = this.personalAction.action.actions["putUserData"];
+        //     var url = this.personalAction.action.address + obj.uri;
+        //     url = url.replace("{name}", "layout");
+        //     navigator.sendBeacon(url, status);
+        // } else {
+       try{
+           o2.UD.putData("layout", status, function(){
+               if (callback) callback();
+           });
+       }catch(e){};
+
+        // }
+
+
     },
     getLayoutStatusData: function(){
         var status = {

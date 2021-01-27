@@ -53,7 +53,7 @@ public class AgentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取对象.", action = ActionGet.class)
+	@JaxrsMethodDescribe(value = "获取代理对象.", action = ActionGet.class)
 	@GET
 	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -71,7 +71,7 @@ public class AgentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "启用对象.", action = ActionEnable.class)
+	@JaxrsMethodDescribe(value = "启用代理.", action = ActionEnable.class)
 	@GET
 	@Path("{flag}/enable")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -89,7 +89,7 @@ public class AgentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "禁用对象.", action = ActionDisable.class)
+	@JaxrsMethodDescribe(value = "禁用代理.", action = ActionDisable.class)
 	@GET
 	@Path("{flag}/disable")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

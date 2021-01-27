@@ -9,6 +9,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -64,8 +65,12 @@ class ActionFire extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 5415760454523560472L;
+		@FieldDescribe("节点")
 		private String node;
+		@FieldDescribe("应用")
 		private String application;
+		@FieldDescribe("任务类")
 		private String className;
 
 		public String getNode() {

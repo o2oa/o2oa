@@ -125,6 +125,9 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 		private String matchUnitName;
 		private String matchUnitLevelName;
 		private Integer matchUnitLevel;
+		private String matchUnitDutyName;
+		private String matchUnitDutyId;
+		private Integer matchUnitDutyNumber;
 
 		public String getMatchUnitName() {
 			return matchUnitName;
@@ -150,6 +153,29 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 			this.matchUnitLevel = matchUnitLevel;
 		}
 
+		public String getMatchUnitDutyName() {
+			return matchUnitDutyName;
+		}
+
+		public void setMatchUnitDutyName(String matchUnitDutyName) {
+			this.matchUnitDutyName = matchUnitDutyName;
+		}
+
+		public String getMatchUnitDutyId() {
+			return matchUnitDutyId;
+		}
+
+		public void setMatchUnitDutyId(String matchUnitDutyId) {
+			this.matchUnitDutyId = matchUnitDutyId;
+		}
+
+		public Integer getMatchUnitDutyNumber() {
+			return matchUnitDutyNumber;
+		}
+
+		public void setMatchUnitDutyNumber(Integer matchUnitDutyNumber) {
+			this.matchUnitDutyNumber = matchUnitDutyNumber;
+		}
 	}
 
 	private List<Wo> list(Business business, List<String> names, List<String> units, Boolean recursiveUnit) throws Exception {
@@ -190,6 +216,7 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 		}
 
 		for (UnitDuty o : os) {
+			int i = 0;
 			for (Identity identity : business.identity().pick(o.getIdentityList())) {
 				Unit matchUnit = unitMap.get(o.getUnit());
 				if(matchUnit == null){
@@ -203,6 +230,10 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 				}
 				Person person = business.person().pick(identity.getPerson());
 				Wo wo = this.convertToIdentity(matchUnit, unit, person, identity);
+				i++;
+				wo.setMatchUnitDutyNumber(i);
+				wo.setMatchUnitDutyId(o.getId());
+				wo.setMatchUnitDutyName(o.getName());
 				wos.add(wo);
 			}
 		}

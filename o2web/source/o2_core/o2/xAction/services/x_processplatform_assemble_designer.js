@@ -1,4 +1,4 @@
-MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Class({
+ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Class({
     Extends: MWF.xAction.RestActions.Action,
 
     getId: function(count, success, failure, async){
@@ -220,6 +220,33 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
             mobileData.json.includeScripts.each(function(s){
                 mobileRelatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
             });
+        };
+
+        if (!fieldList){
+            dataTypes = {
+                "string": ["htmledit", "radio", "select", "textarea", "textfield"],
+                "person": ["personfield","orgfield","org"],
+                "date": ["calender"],
+                "number": ["number"],
+                "array": ["checkbox"]
+            };
+            fieldList = [];
+            Object.keys(formData.json.moduleList).forEach(function(moduleKey){
+                var moudle = formData.json.moduleList[moduleKey];
+                var key = "";
+                for (k in dataTypes){
+                    if (dataTypes[k].indexOf(moudle.type.toLowerCase())!=-1){
+                        key = k;
+                        break;
+                    }
+                }
+                if (key){
+                    fieldList.push({
+                        "name": moudle.id,
+                        "dataType": key
+                    });
+                }
+            }.bind(this));
         }
 
         var json = {

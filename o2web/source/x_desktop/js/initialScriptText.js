@@ -814,8 +814,11 @@ var _Actions = {
 };
 bind.Actions = _Actions;
 
-
-var oPrint = print;
+try{
+    oPrint = oPrint;
+}catch(e){
+    oPrint = print
+}
 print = function(str, type){
     var d = new Date();
     var t = (type || "PRINT").toUpperCase();
@@ -823,6 +826,8 @@ print = function(str, type){
     oPrint(d.format("db")+"."+d.getMilliseconds()+" "+t+" "+l+" "+str);
 }
 bind.print = print;
+echo = print;
+bind.echo = print;
 
 bind.library = library;
 bind.data = this.data;
