@@ -147,7 +147,7 @@ MWF.xScript.Environment = function(ev){
          * orders.add(0, {name: "mobile", count: 10}, true);
          */
 
-        /**保存data对象。
+        /**保存data对象。不触发事件
          * @method save
          * @static
          * @memberOf module:data
@@ -2796,6 +2796,9 @@ MWF.xScript.Environment = function(ev){
          * @param {Object} [options] - 其他参数，内容如下<br>
          * <pre><code class="language-js">{
          *   "readonly": true, //是否以只读方式打开，默认为true
+         *   "forceFormId": "xxxxxx", //不管编辑还是阅读都用此表单id打开，优先使用，6.0版本之前使用 printFormId
+         *   "readFormId": "xxxxxx", //强制的阅读表单id，优先于表单的readFormId，6.0版本之前使用 formId
+         *   "editFormId": "xxxxxx", //强制的编辑表单id，优先于表单的formId，6.0版本之前使用 formEditId
          *    "saveOnClose" : true, //关闭的时候是否自动保存
          *    "onPostPublish" : function( documentData ){ //发布前执行方法，但数据已经准备好
          *       //documentData 为文档数据
@@ -3011,7 +3014,7 @@ MWF.xScript.Environment = function(ev){
          * @param {String} app  - 流程应用的名称、别名或ID。
          * @param {String} process  - 要启动的流程的名称、别名或ID。
          * @param {Object} [data]   - 流程启动时默认的业务数据。
-         * @param {String} [identity]  - 流程启动所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。。
+         * @param {String} [identity]  - 流程启动所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
          * @param {Function} [callback]  - 流程启动后的回调函数。
          * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
