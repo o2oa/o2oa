@@ -147,7 +147,7 @@ MWF.xScript.Environment = function(ev){
          * orders.add(0, {name: "mobile", count: 10}, true);
          */
 
-        /**保存data对象。
+        /**保存data对象。不触发事件
          * @method save
          * @static
          * @memberOf module:data

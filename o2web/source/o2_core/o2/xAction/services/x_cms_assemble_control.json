@@ -51,7 +51,19 @@
   "updataForm": {"uri": "/jaxrs/form/{id}","method": "PUT"},
   "getFormByAnonymous": {"uri": "/jaxrs/anonymous/form/{id}"},
   "listFormFieldWithForm" : {"uri": "/jaxrs/form/list/{id}/formfield"},
-  "listFormFieldWithColumn" : {"uri": "/jaxrs/form/list/formfield/appInfo/{appId}"},  
+  "listFormFieldWithColumn" : {"uri": "/jaxrs/form/list/formfield/appInfo/{appId}"},
+
+
+  "getFormV2": {"uri": "/jaxrs/form/v2/{id}?t={tag}"},
+  "getFormMobileV2": {"uri": "/jaxrs/form/v2/{id}/mobile?t={tag}"},
+  "getFormAnonymousV2": {"uri": "/jaxrs/anonymous/form/v2/{id}?t={tag}"},
+  "getFormMobileAnonymousV2": {"uri": "/jaxrs/anonymous/form/v2/{id}/mobile?t={tag}"},
+
+  "lookupFormWithDocV2":  {"uri": "/jaxrs/form/v2/lookup/document/{docId}"},
+  "lookupFormWithDocMobileV2":  {"uri": "/jaxrs/form/v2/lookup/document/{docId}/mobile"},
+  "lookupFormWithDocAnonymousV2":  {"uri": "/jaxrs/anonymous/form/v2/lookup/document/{docId}"},
+  "lookupFormWithDocMobileAnonymousV2":  {"uri": "/jaxrs/anonymous/form/v2/lookup/document/{docId}/mobile"},
+
 
   "getFormTemplate": {"uri": "/jaxrs/templateform/{id}"},
   "deleteFormTemplate": {"uri": "/jaxrs/templateform/{id}","method": "DELETE"},
