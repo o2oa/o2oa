@@ -2,7 +2,7 @@ MWF.xApplication.cms = MWF.xApplication.cms || {};
 MWF.xApplication.cms.Xform = MWF.xApplication.cms.Xform || {};
 
 MWF.require("MWF.widget.Common", null, false);
-MWF.require("MWF.xAction.org.express.RestActions", null, false);
+// MWF.require("MWF.xAction.org.express.RestActions", null, false);
 MWF.xDesktop.requireApp("Selector", "package", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Form", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
@@ -214,6 +214,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         this.node = this.container.getFirst();
 
         this._loadEvents();
+        this.loadRelatedScript();
+
         if (this.fireEvent("queryLoad")) {
 
             MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
@@ -223,6 +225,20 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (this.app) if (this.app.fireEvent) this.app.fireEvent("beforeLoad");
 
             this.loadContent(callback)
+        }
+    },
+    loadRelatedScript: function () {
+        if (this.json.includeScripts && this.json.includeScripts.length) {
+            var includeScriptText = "";
+            var includedIds = [];
+            this.json.includeScripts.each(function (s) {
+                if (this.app.relatedScriptMap && this.app.relatedScriptMap[s.id]) {
+                    includeScriptText += "\n" + this.app.relatedScriptMap[s.id].text;
+                    includedIds.push(s.id);
+                }
+            }.bind(this));
+
+            if (includeScriptText) this.Macro.exec(includeScriptText, this);
         }
     },
     loadContent: function (callback) {

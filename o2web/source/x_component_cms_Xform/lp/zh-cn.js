@@ -1,6 +1,8 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp."+MWF.language, null, false);
+MWF.xApplication.cms = MWF.xApplication.cms || {};
+MWF.xApplication.cms.Xform = MWF.xApplication.cms.Xform || {};
 MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP, {
     "dataSaved": "数据保存成功",
     "documentPublished" : "发布成功" ,
@@ -60,3 +62,4 @@ MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP,
     //"historyRead" : "共",
     //"times" : "次"
 });
+MWF.xApplication.cms.Xform["lp."+o2.language] = MWF.xApplication.cms.Xform.LP;

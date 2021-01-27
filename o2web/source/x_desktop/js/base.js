@@ -262,6 +262,29 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                     return window.open(o2.filterUrl(url), par);
                 }
                 break;
+            case "cms.Document":
+                // _openDocument(appNames, options, statusObj);
+                var url = "../x_desktop/cmsdoc.html".toURI();
+                url = url.setData(options).toString();
+                url +=((layout.debugger) ? "&debugger" : "");
+                if (layout.app.$openWithSelf) {
+                    return window.location = o2.filterUrl(url);
+                } else {
+                    return window.open(o2.filterUrl(url), par);
+                }
+                break;
+            // case "cms.Module":
+            //     _openCms(appNames, options, statusObj);
+            //     break;
+            // case "Meeting":
+            //     _openMeeting(appNames, options, statusObj);
+            //     break;
+            // case "Calendar":
+            //     _openCalendar(appNames, options, statusObj);
+            //     break;
+            // case "process.TaskCenter":
+            //     _openTaskCenter(appNames, options, statusObj);
+            //     break;
             default:
                 if (layout.app.$openWithSelf) {
                     return window.location = o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : ""));
