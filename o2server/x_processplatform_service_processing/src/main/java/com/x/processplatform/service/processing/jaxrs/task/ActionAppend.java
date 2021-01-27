@@ -11,6 +11,7 @@ import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -40,6 +41,7 @@ import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.processplatform.service.processing.processor.manual.TaskIdentities;
+import com.x.processplatform.service.processing.processor.manual.TaskIdentity;
 
 class ActionAppend extends BaseAction {
 
@@ -132,6 +134,13 @@ class ActionAppend extends BaseAction {
 						identities = business.organization().identity().list(ListTools.trim(identities, true, true));
 						emc.beginTransaction(Work.class);
 						work.setManualTaskIdentityList(identities);
+						for (TaskIdentity taskIdentity : taskIdentities) {
+							if (BooleanUtils.isNotTrue(taskIdentity.getIgnoreEmpower())
+									&& StringUtils.isNotEmpty(taskIdentity.getFromIdentity())) {
+								work.getProperties().getManualEmpowerMap().put(taskIdentity.getIdentity(),
+										taskIdentity.getFromIdentity());
+							}
+						}
 						// 转派后设置过期为空
 //						emc.beginTransaction(Task.class);
 //						task.setExpired(false);

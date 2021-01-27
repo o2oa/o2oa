@@ -91,6 +91,8 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			text = StringTools.utf8SubString(text, length_255B);
 			this.setManualTaskIdentityText(text);
 		}
+		// 强制进行properties对象写入
+		//this.setProperties(this.getProperties());
 	}
 
 	@PostLoad
