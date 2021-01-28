@@ -1,7 +1,9 @@
 package com.x.processplatform.service.processing.jaxrs.task;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -10,6 +12,8 @@ import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +49,8 @@ import com.x.processplatform.service.processing.processor.manual.TaskIdentity;
 
 class ActionAppend extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ActionAppend.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -65,6 +71,7 @@ class ActionAppend extends BaseAction {
 			public ActionResult<Wo> call() throws Exception {
 				ActionResult<Wo> result = new ActionResult<>();
 				Wo wo = new Wo();
+				String workId = "";
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
 					Task task = emc.find(id, Task.class);
@@ -75,6 +82,7 @@ class ActionAppend extends BaseAction {
 					if (null == work) {
 						throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 					}
+					workId = work.getId();
 					Manual manual = (Manual) business.element().get(task.getActivity(), ActivityType.manual);
 					Route route = getRoute(business, task, manual);
 					List<String> identities = new ArrayList<>();
@@ -141,6 +149,10 @@ class ActionAppend extends BaseAction {
 										taskIdentity.getFromIdentity());
 							}
 						}
+						//properties中的集合对象需要重新new对象set进去，这样jpa才会更新数据
+						Map<String, String> manualEmpowerMap = new LinkedHashMap<String, String>();
+						manualEmpowerMap.putAll(work.getProperties().getManualEmpowerMap());
+						work.getProperties().setManualEmpowerMap(manualEmpowerMap);
 						// 转派后设置过期为空
 //						emc.beginTransaction(Task.class);
 //						task.setExpired(false);
