@@ -11,31 +11,31 @@ import java.util.Map;
 public class PageProperties extends JsonProperties {
 
 	@FieldDescribe("关联Widget.")
-	private List<String> relatedWidgetList = new ArrayList<>();
+	private List<String> relatedWidgetList = new ArrayList<String>();
 
 	@FieldDescribe("移动端关联Widget.")
-	private List<String> mobileRelatedWidgetList = new ArrayList<>();
+	private List<String> mobileRelatedWidgetList = new ArrayList<String>();
 
 	@FieldDescribe("关联脚本.")
-	private Map<String, String> relatedScriptMap = new LinkedHashMap<>();
+	private Map<String, String> relatedScriptMap = new LinkedHashMap<String, String>();
 
 	@FieldDescribe("移动端关联脚本.")
-	private Map<String, String> mobileRelatedScriptMap = new LinkedHashMap<>();
+	private Map<String, String> mobileRelatedScriptMap = new LinkedHashMap<String, String>();
 
 	public List<String> getRelatedWidgetList() {
-		return this.relatedWidgetList == null ? new ArrayList<>() : this.relatedWidgetList;
+		return this.relatedWidgetList == null ? new ArrayList<String>() : this.relatedWidgetList;
 	}
 
 	public List<String> getMobileRelatedWidgetList() {
-		return this.mobileRelatedWidgetList == null ? new ArrayList<>() : this.mobileRelatedWidgetList;
+		return this.mobileRelatedWidgetList == null ? new ArrayList<String>() : this.mobileRelatedWidgetList;
 	}
 
 	public Map<String, String> getRelatedScriptMap() {
-		return this.relatedScriptMap == null ? new LinkedHashMap<>() : this.relatedScriptMap;
+		return this.relatedScriptMap == null ? new LinkedHashMap<String, String>() : this.relatedScriptMap;
 	}
 
 	public Map<String, String> getMobileRelatedScriptMap() {
-		return this.mobileRelatedScriptMap == null ? new LinkedHashMap<>() : this.mobileRelatedScriptMap;
+		return this.mobileRelatedScriptMap == null ? new LinkedHashMap<String, String>() : this.mobileRelatedScriptMap;
 	}
 
 	public void setRelatedWidgetList(List<String> relatedWidgetList) {
