@@ -14,7 +14,7 @@ public class TaskCompletedProperties extends JsonProperties {
 	private List<String> prevTaskIdentityList;
 
 	@FieldDescribe("后续处理人")
-	private List<String> nextTaskIdentityList = new ArrayList<>();
+	private List<String> nextTaskIdentityList = new ArrayList<String>();
 
 	@FieldDescribe("上一人工环节待办对象列表")
 	private List<PrevTask> prevTaskList;
@@ -30,7 +30,7 @@ public class TaskCompletedProperties extends JsonProperties {
 
 	public List<PrevTask> getPrevTaskList() {
 		if (null == this.prevTaskList) {
-			this.prevTaskList = new ArrayList<>();
+			this.prevTaskList = new ArrayList<PrevTask>();
 		}
 		return prevTaskList;
 	}
@@ -45,14 +45,14 @@ public class TaskCompletedProperties extends JsonProperties {
 
 	public List<String> getPrevTaskIdentityList() {
 		if (null == this.prevTaskIdentityList) {
-			this.prevTaskIdentityList = new ArrayList<>();
+			this.prevTaskIdentityList = new ArrayList<String>();
 		}
 		return prevTaskIdentityList;
 	}
 
 	public List<String> getNextTaskIdentityList() {
 		if (null == this.nextTaskIdentityList) {
-			this.nextTaskIdentityList = new ArrayList<>();
+			this.nextTaskIdentityList = new ArrayList<String>();
 		}
 		return nextTaskIdentityList;
 	}

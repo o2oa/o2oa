@@ -11,10 +11,10 @@ import com.x.processplatform.core.entity.element.ActivityType;
 public class RecordProperties extends JsonProperties {
 
 	@FieldDescribe("后续人工环节")
-	private List<NextManual> nextManualList = new ArrayList<>();
+	private List<NextManual> nextManualList = new ArrayList<NextManual>();
 
 	@FieldDescribe("后续人工环节处理人")
-	private List<String> nextManualTaskIdentityList = new ArrayList<>();
+	private List<String> nextManualTaskIdentityList = new ArrayList<String>();
 
 	@FieldDescribe("授权给处理人")
 	private String empowerToPerson;
@@ -80,7 +80,7 @@ public class RecordProperties extends JsonProperties {
 		@FieldDescribe("活动活动令牌")
 		private String activityToken;
 		@FieldDescribe("待办处理人")
-		private List<String> taskIdentityList = new ArrayList<>();
+		private List<String> taskIdentityList = new ArrayList<String>();
 
 		public List<String> getTaskIdentityList() {
 			if (null == this.taskIdentityList) {
