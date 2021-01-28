@@ -14,22 +14,22 @@ import com.x.processplatform.core.entity.element.Script;
 public class WorkCompletedProperties extends JsonProperties {
 
 	@FieldDescribe("合并已办对象")
-	private List<TaskCompleted> taskCompletedList = new ArrayList<>();
+	private List<TaskCompleted> taskCompletedList = new ArrayList<TaskCompleted>();
 
 	@FieldDescribe("合并已阅对象")
-	private List<ReadCompleted> readCompletedList = new ArrayList<>();
+	private List<ReadCompleted> readCompletedList = new ArrayList<ReadCompleted>();
 
 	@FieldDescribe("合并参阅对象")
-	private List<Review> reviewList = new ArrayList<>();
+	private List<Review> reviewList = new ArrayList<Review>();
 
 	@FieldDescribe("合并记录对象")
-	private List<Record> recordList = new ArrayList<>();
+	private List<Record> recordList = new ArrayList<Record>();
 
 	@FieldDescribe("合并数据对象")
 	private Data data;
 
 	@FieldDescribe("合并工作日志对象")
-	private List<WorkLog> workLogList = new ArrayList<>();
+	private List<WorkLog> workLogList = new ArrayList<WorkLog>();
 
 	@FieldDescribe("合并工作Form")
 	private StoreForm storeForm;

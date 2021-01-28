@@ -41,14 +41,14 @@ public class TaskProperties extends JsonProperties {
 
 	public List<String> getPrevTaskIdentityList() {
 		if (null == prevTaskIdentityList) {
-			this.prevTaskIdentityList = new ArrayList<>();
+			this.prevTaskIdentityList = new ArrayList<String>();
 		}
 		return prevTaskIdentityList;
 	}
 
 	public List<PrevTask> getPrevTaskList() {
 		if (null == prevTaskList) {
-			this.prevTaskList = new ArrayList<>();
+			this.prevTaskList = new ArrayList<PrevTask>();
 		}
 		return prevTaskList;
 	}
