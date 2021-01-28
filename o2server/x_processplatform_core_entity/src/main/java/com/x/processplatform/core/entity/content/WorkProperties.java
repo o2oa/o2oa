@@ -13,23 +13,29 @@ public class WorkProperties extends JsonProperties {
 	private static final long serialVersionUID = -62236689373222398L;
 
 	@FieldDescribe("强制待办处理人")
-	private List<String> manualForceTaskIdentityList = new ArrayList<>();
+	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
+	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
+	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
+	private List<String> manualForceTaskIdentityList = new ArrayList<String>();
 
 	@FieldDescribe("授权对象")
-	private Map<String, String> manualEmpowerMap = new LinkedHashMap<>();
+	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
+	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
+	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
+	private Map<String, String> manualEmpowerMap = new LinkedHashMap<String, String>();
 
 	@FieldDescribe("服务回调值")
-	private Map<String, Object> serviceValue = new LinkedHashMap<>();
+	private Map<String, Object> serviceValue = new LinkedHashMap<String, Object>();
 
 	@FieldDescribe("标题")
 	private String title;
 
 	@FieldDescribe("拆分值列表")
-	private List<String> splitValueList = new ArrayList<>();
+	private List<String> splitValueList = new ArrayList<String>();
 
 	public List<String> getManualForceTaskIdentityList() {
 		if (this.manualForceTaskIdentityList == null) {
-			this.manualForceTaskIdentityList = new ArrayList<>();
+			this.manualForceTaskIdentityList = new ArrayList<String>();
 		}
 		return this.manualForceTaskIdentityList;
 	}
@@ -40,7 +46,7 @@ public class WorkProperties extends JsonProperties {
 
 	public Map<String, String> getManualEmpowerMap() {
 		if (this.manualEmpowerMap == null) {
-			this.manualEmpowerMap = new LinkedHashMap<>();
+			this.manualEmpowerMap = new LinkedHashMap<String, String>();
 		}
 		return this.manualEmpowerMap;
 	}
@@ -51,7 +57,7 @@ public class WorkProperties extends JsonProperties {
 
 	public Map<String, Object> getServiceValue() {
 		if (this.serviceValue == null) {
-			this.serviceValue = new LinkedHashMap<>();
+			this.serviceValue = new LinkedHashMap<String, Object>();
 		}
 		return this.serviceValue;
 	}
