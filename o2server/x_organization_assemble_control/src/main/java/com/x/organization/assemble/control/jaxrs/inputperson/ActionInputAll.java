@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,12 +66,11 @@ import com.x.organization.core.entity.PersonAttribute;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
-import com.x.base.core.project.cache.Cache.CacheKey;
 
 class ActionInputAll extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionInputAll.class);
-	
+	private static ReentrantLock lock = new ReentrantLock();
 	private  boolean dutyFlag = false;
 	
 	private  boolean wholeFlag = false;
@@ -92,6 +92,7 @@ class ActionInputAll extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
 			throws Exception {
+		lock.lock();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
 				InputStream is = new ByteArrayInputStream(bytes);
 				XSSFWorkbook workbook = new XSSFWorkbook(is);
@@ -113,6 +114,8 @@ class ActionInputAll extends BaseAction {
 			wo.setFlag(flag);
 			result.setData(wo);
 			return result;
+		}finally {
+			lock.unlock();
 		}
 	}
 
