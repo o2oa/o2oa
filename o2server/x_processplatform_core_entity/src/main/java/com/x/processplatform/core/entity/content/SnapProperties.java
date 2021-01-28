@@ -20,37 +20,37 @@ public class SnapProperties extends JsonProperties {
 	private String job;
 
 	@FieldDescribe("工作")
-	private List<Work> workList = new ArrayList<>();
+	private List<Work> workList = new ArrayList<Work>();
 
 	@FieldDescribe("已完成工作")
 	private WorkCompleted workCompleted;
 
 	@FieldDescribe("待办")
-	private List<Task> taskList = new ArrayList<>();
+	private List<Task> taskList = new ArrayList<Task>();
 
 	@FieldDescribe("已办")
-	private List<TaskCompleted> taskCompletedList = new ArrayList<>();
+	private List<TaskCompleted> taskCompletedList = new ArrayList<TaskCompleted>();
 
 	@FieldDescribe("待阅")
-	private List<Read> readList = new ArrayList<>();
+	private List<Read> readList = new ArrayList<Read>();
 
 	@FieldDescribe("已阅")
-	private List<ReadCompleted> readCompletedList = new ArrayList<>();
+	private List<ReadCompleted> readCompletedList = new ArrayList<ReadCompleted>();
 
 	@FieldDescribe("参阅")
-	private List<Review> reviewList = new ArrayList<>();
+	private List<Review> reviewList = new ArrayList<Review>();
 
 	@FieldDescribe("附件")
-	private List<Attachment> attachmentList = new ArrayList<>();
+	private List<Attachment> attachmentList = new ArrayList<Attachment>();
 
 	@FieldDescribe("记录")
-	private List<Record> recordList = new ArrayList<>();
+	private List<Record> recordList = new ArrayList<Record>();
 
 	@FieldDescribe("工作日志")
-	private List<WorkLog> workLogList = new ArrayList<>();
+	private List<WorkLog> workLogList = new ArrayList<WorkLog>();
 
 	@FieldDescribe("版式文件版本")
-	private List<DocumentVersion> documentVersionList = new ArrayList<>();
+	private List<DocumentVersion> documentVersionList = new ArrayList<DocumentVersion>();
 
 	public Data getData() {
 		return data;
@@ -74,70 +74,70 @@ public class SnapProperties extends JsonProperties {
 
 	public List<Work> getWorkList() {
 		if (null == this.workList) {
-			this.workList = new ArrayList<>();
+			this.workList = new ArrayList<Work>();
 		}
 		return workList;
 	}
 
 	public List<Task> getTaskList() {
 		if (null == this.taskList) {
-			this.taskList = new ArrayList<>();
+			this.taskList = new ArrayList<Task>();
 		}
 		return taskList;
 	}
 
 	public List<TaskCompleted> getTaskCompletedList() {
 		if (null == this.taskCompletedList) {
-			this.taskCompletedList = new ArrayList<>();
+			this.taskCompletedList = new ArrayList<TaskCompleted>();
 		}
 		return taskCompletedList;
 	}
 
 	public List<Read> getReadList() {
 		if (null == this.readList) {
-			this.readList = new ArrayList<>();
+			this.readList = new ArrayList<Read>();
 		}
 		return readList;
 	}
 
 	public List<ReadCompleted> getReadCompletedList() {
 		if (null == this.readCompletedList) {
-			this.readCompletedList = new ArrayList<>();
+			this.readCompletedList = new ArrayList<ReadCompleted>();
 		}
 		return readCompletedList;
 	}
 
 	public List<Review> getReviewList() {
 		if (null == this.reviewList) {
-			this.reviewList = new ArrayList<>();
+			this.reviewList = new ArrayList<Review>();
 		}
 		return reviewList;
 	}
 
 	public List<Attachment> getAttachmentList() {
 		if (null == this.attachmentList) {
-			this.attachmentList = new ArrayList<>();
+			this.attachmentList = new ArrayList<Attachment>();
 		}
 		return attachmentList;
 	}
 
 	public List<Record> getRecordList() {
 		if (null == this.recordList) {
-			this.recordList = new ArrayList<>();
+			this.recordList = new ArrayList<Record>();
 		}
 		return recordList;
 	}
 
 	public List<WorkLog> getWorkLogList() {
 		if (null == this.workLogList) {
-			this.workLogList = new ArrayList<>();
+			this.workLogList = new ArrayList<WorkLog>();
 		}
 		return workLogList;
 	}
 
 	public List<DocumentVersion> getDocumentVersionList() {
 		if (null == this.documentVersionList) {
-			this.documentVersionList = new ArrayList<>();
+			this.documentVersionList = new ArrayList<DocumentVersion>();
 		}
 		return documentVersionList;
 	}
@@ -183,7 +183,7 @@ public class SnapProperties extends JsonProperties {
 	}
 
 	public void setDocumentVersionList(List<DocumentVersion> documentVersionList) {
-		documentVersionList = documentVersionList;
+		this.documentVersionList = documentVersionList;
 	}
 
 	public WorkCompleted getWorkCompleted() {
