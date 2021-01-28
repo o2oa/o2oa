@@ -11,31 +11,31 @@ import com.x.base.core.project.annotation.FieldDescribe;
 public class FormProperties extends JsonProperties {
 
 	@FieldDescribe("关联表单.")
-	private List<String> relatedFormList = new ArrayList<>();
+	private List<String> relatedFormList = new ArrayList<String>();
 
 	@FieldDescribe("移动端关联表单.")
-	private List<String> mobileRelatedFormList = new ArrayList<>();
+	private List<String> mobileRelatedFormList = new ArrayList<String>();
 
 	@FieldDescribe("关联脚本.")
-	private Map<String, String> relatedScriptMap = new LinkedHashMap<>();
+	private Map<String, String> relatedScriptMap = new LinkedHashMap<String, String>();
 
 	@FieldDescribe("移动端关联脚本.")
-	private Map<String, String> mobileRelatedScriptMap = new LinkedHashMap<>();
+	private Map<String, String> mobileRelatedScriptMap = new LinkedHashMap<String, String>();
 
 	public List<String> getRelatedFormList() {
-		return this.relatedFormList == null ? new ArrayList<>() : this.relatedFormList;
+		return this.relatedFormList == null ? new ArrayList<String>() : this.relatedFormList;
 	}
 
 	public List<String> getMobileRelatedFormList() {
-		return this.mobileRelatedFormList == null ? new ArrayList<>() : this.mobileRelatedFormList;
+		return this.mobileRelatedFormList == null ? new ArrayList<String>() : this.mobileRelatedFormList;
 	}
 
 	public Map<String, String> getRelatedScriptMap() {
-		return this.relatedScriptMap == null ? new LinkedHashMap<>() : this.relatedScriptMap;
+		return this.relatedScriptMap == null ? new LinkedHashMap<String, String>() : this.relatedScriptMap;
 	}
 
 	public Map<String, String> getMobileRelatedScriptMap() {
-		return this.mobileRelatedScriptMap == null ? new LinkedHashMap<>() : this.mobileRelatedScriptMap;
+		return this.mobileRelatedScriptMap == null ? new LinkedHashMap<String, String>() : this.mobileRelatedScriptMap;
 	}
 
 	public void setRelatedFormList(List<String> relatedFormList) {
