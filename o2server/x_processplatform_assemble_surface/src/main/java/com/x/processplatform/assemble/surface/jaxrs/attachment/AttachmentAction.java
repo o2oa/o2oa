@@ -173,6 +173,25 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据工作的job获取Attachment列表.", action = ActionListWithJob.class)
+	@GET
+	@Path("list/job/{job}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithJob(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request,
+											@JaxrsParameterDescribe("工作的job") @PathParam("job") String job) {
+		ActionResult<List<ActionListWithJob.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithJob().execute(effectivePerson, job);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "删除指定work下的附件.", action = ActionDeleteWithWork.class)
 	@DELETE
 	@Path("{id}/work/{workId}")
