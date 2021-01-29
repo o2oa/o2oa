@@ -22,6 +22,7 @@ public class ApplicationServer extends ConfigObject {
 	private static final Integer DEFAULT_MAXFORMCONTENT = 20;
 	private static final Boolean DEFAULT_EXPOSEJEST = true;
 	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
+	private static final Integer DEFAULT_MAXTHREAD = 500;
 
 	public ApplicationServer() {
 		this.enable = true;
@@ -40,6 +41,7 @@ public class ApplicationServer extends ConfigObject {
 		this.maxFormContent = DEFAULT_MAXFORMCONTENT;
 		this.exposeJest = DEFAULT_EXPOSEJEST;
 		this.persistentConnectionsEnable = DEFAULT_PERSISTENTCONNECTIONSENABLE;
+		this.maxThread = DEFAULT_MAXTHREAD;
 	}
 
 	@FieldDescribe("是否启用")
@@ -72,6 +74,8 @@ public class ApplicationServer extends ConfigObject {
 	private Integer maxFormContent;
 	@FieldDescribe("暴露jest接口.")
 	private Boolean exposeJest;
+	@FieldDescribe("最大http线程数.")
+	private Integer maxThread;
 
 	@FieldDescribe("是否启用长连接,默认true.")
 	private Boolean persistentConnectionsEnable;
@@ -238,6 +242,10 @@ public class ApplicationServer extends ConfigObject {
 
 	public void setExcludes(CopyOnWriteArrayList<String> excludes) {
 		this.excludes = excludes;
+	}
+
+	public Integer getMaxThread() {
+		return (null == this.maxThread || this.maxThread < 1) ? DEFAULT_MAXTHREAD : this.maxThread;
 	}
 
 }
