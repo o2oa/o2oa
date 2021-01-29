@@ -480,65 +480,7 @@ public class NodeAgent extends Thread {
 	private void storeJar(String simpleName, byte[] bytes) throws Exception {
 		File jar = new File(Config.dir_store_jars(true), simpleName + ".jar");
 		FileUtils.writeByteArrayToFile(jar, bytes, false);
-		List<ClassInfo> classInfos = this.listModuleDependencyWith(simpleName);
-		List<String> contextPaths = new ArrayList<>();
-		for (ClassInfo info : classInfos) {
-			contextPaths.add("/" + info.getSimpleName());
-		}
 
-		if (Servers.applicationServerIsRunning()) {
-			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
-			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
-			for (Handler handler : hanlderList.getHandlers()) {
-				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
-					QuickStartWebApp app = (QuickStartWebApp) handler;
-					if (contextPaths.contains(app.getContextPath())) {
-						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
-						app.stop();
-					}
-				}
-			}
-		}
-		if (Servers.centerServerIsRunning()) {
-			GzipHandler gzipHandler = (GzipHandler) Servers.centerServer.getHandler();
-			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
-			for (Handler handler : hanlderList.getHandlers()) {
-				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
-					QuickStartWebApp app = (QuickStartWebApp) handler;
-					if (contextPaths.contains(app.getContextPath())) {
-						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
-						app.stop();
-					}
-				}
-			}
-		}
-
-		if (Servers.applicationServerIsRunning()) {
-			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
-			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
-			for (Handler handler : hanlderList.getHandlers()) {
-				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
-					QuickStartWebApp app = (QuickStartWebApp) handler;
-					if (contextPaths.contains(app.getContextPath())) {
-						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
-						app.start();
-					}
-				}
-			}
-		}
-		if (Servers.centerServerIsRunning()) {
-			GzipHandler gzipHandler = (GzipHandler) Servers.centerServer.getHandler();
-			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
-			for (Handler handler : hanlderList.getHandlers()) {
-				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
-					QuickStartWebApp app = (QuickStartWebApp) handler;
-					if (contextPaths.contains(app.getContextPath())) {
-						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
-						app.start();
-					}
-				}
-			}
-		}
 	}
 
 	private boolean customWarUninstall(String simpleName) throws Exception {
@@ -638,11 +580,11 @@ public class NodeAgent extends Thread {
 	private void customJar(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
 		File jar = new File(Config.dir_custom_jars(true), simpleName + ".jar");
 		FileUtils.writeByteArrayToFile(jar, bytes, false);
-		if (rebootApp) {
+		/*if (rebootApp) {
 			Servers.stopApplicationServer();
 			Thread.sleep(3000);
 			Servers.startApplicationServer();
-		}
+		}*/
 	}
 
 	private void customZip(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
