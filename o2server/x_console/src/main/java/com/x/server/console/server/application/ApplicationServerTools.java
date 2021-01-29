@@ -123,7 +123,7 @@ public class ApplicationServerTools extends JettySeverTools {
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setMinThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MIN);
-		threadPool.setMaxThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MAX);
+		threadPool.setMaxThreads(applicationServer.getMaxThread());
 		Server server = new Server(threadPool);
 		server.setAttribute("maxFormContentSize", applicationServer.getMaxFormContent() * 1024 * 1024);
 
