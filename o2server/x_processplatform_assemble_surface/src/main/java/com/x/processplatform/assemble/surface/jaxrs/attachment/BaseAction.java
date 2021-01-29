@@ -235,6 +235,23 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return value;
 	}
 
+	protected CompletableFuture<Boolean> checkJobControlFuture(EffectivePerson effectivePerson, String job) {
+		return CompletableFuture.supplyAsync(() -> {
+			Boolean value = false;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				String flag = business.job().findAWorkOrWorkCompleted(job);
+				if(StringUtils.isNotEmpty(flag)){
+					value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag,
+							new ExceptionEntityNotExist(job));
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return value;
+		});
+	}
+
 	protected CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
 		return CompletableFuture.supplyAsync(() -> {
 			Boolean value = false;
