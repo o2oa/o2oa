@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.factory.content;
 
 import java.util.List;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
@@ -62,5 +63,21 @@ public class JobFactory extends AbstractFactory {
 		} else {
 			return false;
 		}
+	}
+
+	public String findAWorkOrWorkCompleted(String job) throws Exception {
+		String id = "";
+		List<Work> ws = this.entityManagerContainer().fetchEqualAscPaging(Work.class,
+				ListTools.toList(Work.id_FIELDNAME), Work.job_FIELDNAME, job, 1, 1, JpaObject.sequence_FIELDNAME);
+		if (ListTools.isNotEmpty(ws)) {
+			id = ws.get(0).getId();
+		}else {
+			List<WorkCompleted> wcs = this.entityManagerContainer().fetchEqualAscPaging(WorkCompleted.class,
+					ListTools.toList(WorkCompleted.id_FIELDNAME), WorkCompleted.job_FIELDNAME, job, 1, 1, JpaObject.sequence_FIELDNAME);
+			if (ListTools.isNotEmpty(wcs)) {
+				id = wcs.get(0).getId();
+			}
+		}
+		return id;
 	}
 }
