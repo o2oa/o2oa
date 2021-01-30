@@ -14,7 +14,7 @@
                 "preperation:rpi": "gulp preperation --e raspi",
                 "build_server": "gulp build_server",
                 "build_server_script": "cd o2server && mvn clean && mvn install",
-                "build_web": "npm run build_api_version && gulp build_web",
+                "build_web": "gulp build_web",
                 "build_api_version": "jsdoc -c o2web/jsdoc.conf.json -q version=${VAPI}",
                 "build_api": "jsdoc -c o2web/jsdoc.conf.json -q version=",
                 "build_parallel": "npm run build_server && npm run build_web",
