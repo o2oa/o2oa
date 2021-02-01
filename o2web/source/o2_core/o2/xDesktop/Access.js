@@ -110,7 +110,7 @@ MWF.xDesktop.Access = MWF.AC = {
     },
     isBBSManager: function(){
         this.getRoleList();
-        return this.isAdministrator() || (this.roleList.indexOf("bbsmanager")!==-1);
+        return this.isAdministrator() || (this.roleList.indexOf("bbsmanager")!==-1) || (this.roleList.indexOf("bssmanager")!==-1);
     },
     isOKRManager: function(){
         this.getRoleList();
