@@ -230,6 +230,25 @@ public class EmpowerAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "管理员更新授权 MockPutToPost", action = ActionManagerEdit.class)
+	@POST
+	@Path("manager/{id}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void managerEditMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionManagerEdit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManagerEdit().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新授权", action = ActionEdit.class)
 	@PUT
 	@Path("{id}")
@@ -247,6 +266,25 @@ public class EmpowerAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "更新授权 MockPutToPost", action = ActionEdit.class)
+	@POST
+	@Path("{id}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void editMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					 @JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEdit().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "删除授权", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
@@ -265,6 +303,24 @@ public class EmpowerAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "删除授权 MockDeleteToGet", action = ActionDelete.class)
+	@GET
+	@Path("{id}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "管理员删除授权", action = ActionManagerDelete.class)
 	@DELETE
 	@Path("/manager/{id}")
@@ -272,6 +328,24 @@ public class EmpowerAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void managerDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 					   @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<ActionManagerDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManagerDelete().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "管理员删除授权 MockDeleteToGet", action = ActionManagerDelete.class)
+	@GET
+	@Path("/manager/{id}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void managerDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<ActionManagerDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
