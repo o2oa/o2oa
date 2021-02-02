@@ -1,0 +1,106 @@
+{
+  "scriptWrapList": [
+    {
+      "moduleType": "processPlatform|cms|portal|service",
+      "appId": "4e498504-855a-423b-a8d0-0fcea2c87c18",
+      "appName": "测试流程",
+      "designerId": "5f852a32-0444-4d8b-bc31-52aa7404e167",
+      "designerName": "file",
+      "pattern": [
+        {"property": "", "line": [23, 33]},
+        {"property": "", "line": [23, 33]}
+      ]
+    }
+  ],
+  "formWrapList": [
+    {
+      "moduleType": "processPlatform|cms",
+      "appId": "4e498504-855a-423b-a8d0-0fcea2c87c18",
+      "appName": "测试流程",
+      "designerId": "5f852a32-0444-4d8b-bc31-52aa7404e167",
+      "designerName": "file",
+      "pattern": [
+        {"property": ""},
+        {"property": ""}
+      ]
+    }
+  ],
+  "processWrapList": [
+    {
+      "moduleType": "processPlatform",
+      "appId": "4e498504-855a-423b-a8d0-0fcea2c87c18",
+      "appName": "测试流程",
+      "designerId": "5f852a32-0444-4d8b-bc31-52aa7404e167",
+      "designerName": "file",
+      "pattern": [
+        {"elementType": "activity | process", "elementId": "", "elementName": "", "property": ""},
+        {"elementType": "activity | process", "elementId": "", "elementName": "", "property": ""}
+      ]
+    }
+  ],
+  "pageWrapList": [
+    {
+      "moduleType": "portal",
+      "appId": "4e498504-855a-423b-a8d0-0fcea2c87c18",
+      "appName": "测试流程",
+      "designerId": "5f852a32-0444-4d8b-bc31-52aa7404e167",
+      "designerName": "file",
+      "pattern": [
+        {"property": ""},
+        {"property": ""}
+      ]
+    }
+  ],
+  "widgetWrapList": [
+    {
+      "moduleType": "portal",
+      "appId": "4e498504-855a-423b-a8d0-0fcea2c87c18",
+      "appName": "测试流程",
+      "designerId": "5f852a32-0444-4d8b-bc31-52aa7404e167",
+      "designerName": "file",
+      "pattern": [
+        {"property": ""},
+        {"property": ""}
+      ]
+    }
+  ],
+  "viewWrapList": [
+    {
+      "moduleType": "query",
+      "appId": "4e498504-855a-423b-a8d0-0fcea2c87c18",
+      "appName": "测试流程",
+      "designerId": "5f852a32-0444-4d8b-bc31-52aa7404e167",
+      "designerName": "file",
+      "pattern": [
+        {"property": ""},
+        {"property": ""}
+      ]
+    }
+  ],
+  "statementWrapList": [
+    {
+      "moduleType": "query",
+      "appId": "4e498504-855a-423b-a8d0-0fcea2c87c18",
+      "appName": "测试流程",
+      "designerId": "5f852a32-0444-4d8b-bc31-52aa7404e167",
+      "designerName": "file",
+      "pattern": [
+        {"property": ""},
+        {"property": ""}
+      ]
+    }
+  ],
+  "statWrapList": [
+    {
+      "moduleType": "query",
+      "appId": "4e498504-855a-423b-a8d0-0fcea2c87c18",
+      "appName": "测试流程",
+      "designerId": "5f852a32-0444-4d8b-bc31-52aa7404e167",
+      "designerName": "file",
+      "pattern": [
+        {"property": ""},
+        {"property": ""}
+      ]
+    }
+  ]
+}

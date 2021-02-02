@@ -51,13 +51,13 @@ public class ActionQueryGetDocument extends BaseAction {
 		List<String> unitNames = null;
 		List<String> groupNames = null;
 		String personName = effectivePerson.getDistinguishedName();
-		
+
 		if ( StringUtils.isEmpty(id)) {
 			check = false;
 			Exception exception = new ExceptionDocumentIdEmpty();
 			result.error(exception);
 		}
-		
+
 		if (check) {
 			try {
 				if (effectivePerson.isManager()) {
@@ -104,7 +104,7 @@ public class ActionQueryGetDocument extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-			
+
 			if (check) {
 				if (wrapOutDocument != null) {
 					try {
@@ -148,7 +148,7 @@ public class ActionQueryGetDocument extends BaseAction {
 					}
 				}
 			}
-			
+
 			//判断用户是否是文档的创建者，创建者是有权限编辑文档的
 			if (check) {
 				if (wo.getDocument() != null && wo.getDocument().getCreatorPerson() != null && wo.getDocument().getCreatorPerson().equals(personName)) {
@@ -156,17 +156,17 @@ public class ActionQueryGetDocument extends BaseAction {
 					wo.setIsCreator(isCreator);
 				}
 			}
-			
+
 			if (check) {
 				wo.setDocumentLogList(new ArrayList<WoLog>());
 				CacheManager.put(cacheCategory, cacheKey, wo );
 			}
 		}
-		
+
 		if (check) {
 			try {
 				unitNames = userManagerService.listUnitNamesWithPerson( personName );
-				groupNames = userManagerService.listGroupNamesByPerson( personName );									
+				groupNames = userManagerService.listGroupNamesByPerson( personName );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "查询用户所有的组织和群组信息时发生异常！user:" + personName);
@@ -174,11 +174,11 @@ public class ActionQueryGetDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		/////////////////////////////////////////////////////////////
 		//不管是从缓存还是数据库查出来，都要重新进行处理权限判断
 		/////////////////////////////////////////////////////////////
-		
+
 		if (check) {
 			try {
 				appInfo = appInfoServiceAdv.get( document.getAppId() );
@@ -209,7 +209,7 @@ public class ActionQueryGetDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		//判断用户是否是分类的管理者，分类管理者是有权限编辑文档的
 		if (check) {
 			try {
@@ -245,27 +245,18 @@ public class ActionQueryGetDocument extends BaseAction {
 			} else {
 				// 判断当前登录者是不是该文档的可编辑者
 				try {
-//					if( ListTools.isEmpty(wrapOutDocument.getAuthorPersonList()) ) {
-//						wrapOutDocument.setAuthorPersonList( composeAuthorPersonsWithAppAndCagetory( appInfo, categoryInfo ) );
-//					}
-//					if( ListTools.isEmpty(wrapOutDocument.getAuthorUnitList()) ) {
-//						wrapOutDocument.setAuthorUnitList(composeAuthorUnitsWithAppAndCagetory( appInfo, categoryInfo ));
-//					}
-//					if( ListTools.isEmpty(wrapOutDocument.getAuthorGroupList()) ) {
-//						wrapOutDocument.setAuthorGroupList(composeAuthorGroupsWithAppAndCagetory( appInfo, categoryInfo ));
-//					}
 					if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
-						if ( wrapOutDocument.getAuthorPersonList().contains( personName )) {
+						if ( wrapOutDocument.getAuthorPersonList().contains( getShortTargetFlag(personName) )) {
 							isEditor = true;
 						}
 					}
 					if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
-						if( ListTools.containsAny( unitNames , wrapOutDocument.getAuthorUnitList() )) {
+						if( ListTools.containsAny( getShortTargetFlag(unitNames) , wrapOutDocument.getAuthorUnitList() )) {
 							isEditor = true;
 						}
 					}
 					if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
-						if( ListTools.containsAny( groupNames , wrapOutDocument.getAuthorGroupList() )) {
+						if( ListTools.containsAny( getShortTargetFlag(groupNames) , wrapOutDocument.getAuthorGroupList() )) {
 							isEditor = true;
 						}
 					}
@@ -286,105 +277,6 @@ public class ActionQueryGetDocument extends BaseAction {
 		result.setData(wo);
 		return result;
 	}
-
-//	private List<String> composeAuthorUnitsWithAppAndCagetory(AppInfo appInfo, CategoryInfo category) {
-//		List<String> authorUnits = new ArrayList<>();
-//		if( ListTools.isNotEmpty( appInfo.getManageableUnitList() )) {
-//			for( String name : appInfo.getManageableUnitList() ) {
-//				if( !authorUnits.contains( name )) {
-//					authorUnits.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( appInfo.getPublishableUnitList() )) {
-//			for( String name : appInfo.getPublishableUnitList() ) {
-//				if( !authorUnits.contains( name )) {
-//					authorUnits.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getManageableUnitList() )) {
-//			for( String name : category.getManageableUnitList() ) {
-//				if( !authorUnits.contains( name )) {
-//					authorUnits.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getPublishableUnitList() )) {
-//			for( String name : category.getPublishableUnitList() ) {
-//				if( !authorUnits.contains( name )) {
-//					authorUnits.add( name );
-//				}
-//			}
-//		}
-//		return authorUnits;
-//	}
-//
-//	private List<String> composeAuthorGroupsWithAppAndCagetory(AppInfo appInfo, CategoryInfo category) {
-//		List<String> authorGroups = new ArrayList<>();
-//		if( ListTools.isNotEmpty( appInfo.getManageableGroupList() )) {
-//			for( String name : appInfo.getManageableGroupList() ) {
-//				if( !authorGroups.contains( name )) {
-//					authorGroups.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( appInfo.getPublishableGroupList() )) {
-//			for( String name : appInfo.getPublishableGroupList() ) {
-//				if( !authorGroups.contains( name )) {
-//					authorGroups.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getManageableGroupList() )) {
-//			for( String name : category.getManageableGroupList() ) {
-//				if( !authorGroups.contains( name )) {
-//					authorGroups.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getPublishableGroupList() )) {
-//			for( String name : category.getPublishableGroupList() ) {
-//				if( !authorGroups.contains( name )) {
-//					authorGroups.add( name );
-//				}
-//			}
-//		}
-//		return authorGroups;
-//	}
-//
-//	private List<String> composeAuthorPersonsWithAppAndCagetory(AppInfo appInfo, CategoryInfo category) {
-//		List<String> authorPersons = new ArrayList<>();
-//		if( ListTools.isNotEmpty( appInfo.getManageablePersonList() )) {
-//			for( String name : appInfo.getManageablePersonList() ) {
-//				if( !authorPersons.contains( name )) {
-//					authorPersons.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( appInfo.getPublishablePersonList() )) {
-//			for( String name : appInfo.getPublishablePersonList() ) {
-//				if( !authorPersons.contains( name )) {
-//					authorPersons.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getManageablePersonList() )) {
-//			for( String name : category.getManageablePersonList() ) {
-//				if( !authorPersons.contains( name )) {
-//					authorPersons.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getPublishablePersonList() )) {
-//			for( String name : category.getPublishablePersonList() ) {
-//				if( !authorPersons.contains( name )) {
-//					authorPersons.add( name );
-//				}
-//			}
-//		}
-//		return authorPersons;
-//	}
 
 	public static class Wo extends GsonPropertyObject {
 
@@ -548,7 +440,7 @@ public class ActionQueryGetDocument extends BaseAction {
 //		public void setControl(WoControl control) {
 //			this.control = control;
 //		}
-//		
+//
 //		public static WrapCopier<FileInfo, WoFileInfo> copier = WrapCopierFactory.wo(FileInfo.class, WoFileInfo.class,
 //				null, JpaObject.FieldsInvisible);
 //
@@ -576,7 +468,7 @@ public class ActionQueryGetDocument extends BaseAction {
 
 		public static List<String> Excludes = new ArrayList<String>();
 	}
-	
+
 //	public static class WoControl extends GsonPropertyObject {
 //
 //		private Boolean allowRead = false;
@@ -607,7 +499,7 @@ public class ActionQueryGetDocument extends BaseAction {
 //			this.allowControl = allowControl;
 //		}
 //	}
-	
+
 //	private boolean read( WoFileInfo woFileInfo, EffectivePerson effectivePerson, List<String> identities, List<String> units) throws Exception {
 //		boolean value = false;
 //		if (effectivePerson.isPerson(woFileInfo.getCreatorUid())) {
