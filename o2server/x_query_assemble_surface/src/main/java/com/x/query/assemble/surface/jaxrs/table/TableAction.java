@@ -167,6 +167,25 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定表中指定行数据 MockPutToPost.", action = ActionRowUpdate.class)
+	@POST
+	@Path("{tableFlag}/row/{id}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void rowUpdateMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						  @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
+						  @JaxrsParameterDescribe("行标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionRowUpdate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionRowUpdate().execute(effectivePerson, tableFlag, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定表中指定行数据.", action = ActionRowDelete.class)
 	@DELETE
 	@Path("{tableFlag}/row/{id}")
@@ -186,6 +205,25 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定表中指定行数据MockDeleteToGet.", action = ActionRowDelete.class)
+	@GET
+	@Path("{tableFlag}/row/{id}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void rowDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						  @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
+						  @JaxrsParameterDescribe("行标识") @PathParam("id") String id) {
+		ActionResult<ActionRowDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionRowDelete().execute(effectivePerson, tableFlag, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定表中指定行数据.", action = ActionRowDeleteAll.class)
 	@DELETE
 	@Path("{tableFlag}/row/delete/all")
@@ -193,6 +231,24 @@ public class TableAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void rowDeleteAll(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag) {
+		ActionResult<ActionRowDeleteAll.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionRowDeleteAll().execute(effectivePerson, tableFlag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定表中指定行数据MockDeleteToGet.", action = ActionRowDeleteAll.class)
+	@GET
+	@Path("{tableFlag}/row/delete/all/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void rowDeleteAllMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							 @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag) {
 		ActionResult<ActionRowDeleteAll.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

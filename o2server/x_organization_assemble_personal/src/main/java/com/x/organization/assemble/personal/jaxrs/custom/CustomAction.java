@@ -80,12 +80,49 @@ public class CustomAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定名称的Custom MockPutToPost.", action = ActionEdit.class)
+	@POST
+	@Path("{name}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("名称") @PathParam("name") String name, String wi) {
+		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEdit().execute(effectivePerson, name, wi);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "管理员更新指定用户指定名称的Custom.", action = ActionManagerEdit.class)
 	@PUT
 	@Path("manager/person/{person}/name/{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void managerUpdate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("用户") @PathParam("person") String person,
+							  @JaxrsParameterDescribe("定义名称") @PathParam("name") String name, String wi) {
+		ActionResult<ActionManagerEdit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManagerEdit().execute(effectivePerson, person, name, wi);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "管理员更新指定用户指定名称的Custom MockPutToPost.", action = ActionManagerEdit.class)
+	@POST
+	@Path("manager/person/{person}/name/{name}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void managerUpdateMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 							  @JaxrsParameterDescribe("用户") @PathParam("person") String person,
 							  @JaxrsParameterDescribe("定义名称") @PathParam("name") String name, String wi) {
 		ActionResult<ActionManagerEdit.Wo> result = new ActionResult<>();
@@ -106,6 +143,24 @@ public class CustomAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("名称") @PathParam("name") String name) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, name);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "删除指定名称的Custom MockDeleteToGet。", action = ActionDelete.class)
+	@GET
+	@Path("{name}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("名称") @PathParam("name") String name) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
