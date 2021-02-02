@@ -47,9 +47,7 @@
     "karma-jasmine": "^4.0.1",
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
-    "readline-sync": "^1.4.10"
-  },
-  "dependencies": {
+    "readline-sync": "^1.4.10",
     "gulp-cli": "^2.3.0",
     "gulp-git": "^2.10.1"
   }
