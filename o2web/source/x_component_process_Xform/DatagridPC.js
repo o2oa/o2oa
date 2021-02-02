@@ -1059,6 +1059,10 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 	_loadImportExportAction: function(){
 		debugger;
+		this.impexpNode = this.node.getElement("div.impexpNode");
+		if( this.impexpNode )this.impexpNode.destroy();
+		this.impexpNode = null;
+
 		if( !this.exportenable && !this.importenable )return;
 
 		var position = ["leftTop","centerTop","rightTop"].contains( this.json.impexpPosition || "" ) ? "top" : "bottom";
@@ -1077,9 +1081,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			this.exportActionNode = new Element("div", {
 				text : this.json.exportActionText || MWF.xApplication.process.Xform.LP.datagridExport
 			}).inject(this.importExportAreaNode);
-			var styles = this.form.css.gridExportActionStyles;
+			var styles;
 			if( this.json.exportActionStyles ){
-				styles = Object.merge( Object.clone(styles), this.json.exportActionStyles )
+				styles = this.json.exportActionStyles
+			}else{
+				styles = this.form.css.gridExportActionStyles;
 			}
 			this.exportActionNode.setStyles(styles);
 
@@ -1092,15 +1098,39 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			this.importActionNode = new Element("div", {
 				text : this.json.importActionText || MWF.xApplication.process.Xform.LP.datagridImport
 			}).inject(this.importExportAreaNode);
-			var styles = this.form.css.gridImportActionStyles;
+			var styles;
 			if( this.json.importActionStyles ){
-				styles = Object.merge( Object.clone(styles), this.json.importActionStyles )
+				styles = this.json.importActionStyles;
+			}else{
+				styles = this.form.css.gridImportActionStyles;
 			}
 			this.importActionNode.setStyles(styles);
 
 			this.importActionNode.addEvent("click", function () {
 				this.importFromExcel();
 			}.bind(this))
+		}
+
+		if( ["centerTop","centerBottom"].contains( this.json.impexpPosition ) ){
+			var width = 2;
+
+			if( this.exportActionNode ){
+				width = width + this.exportActionNode.getSize().x +
+					this.exportActionNode.getStyle("padding-left").toFloat() +
+					+ this.exportActionNode.getStyle("padding-right").toFloat() +
+					+ this.exportActionNode.getStyle("margin-left").toFloat() +
+					+ this.exportActionNode.getStyle("margin-right").toFloat()
+			}
+
+			if( this.importActionNode ){
+				width = width + this.importActionNode.getSize().x +
+					this.importActionNode.getStyle("padding-left").toFloat() +
+					+ this.importActionNode.getStyle("padding-right").toFloat() +
+					+ this.importActionNode.getStyle("margin-left").toFloat() +
+					+ this.importActionNode.getStyle("margin-right").toFloat()
+			}
+
+			this.importExportAreaNode.setStyle( "width", width+"px" );
 		}
 	},
 
@@ -1729,9 +1759,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						}
 					}
 
-
-
-
 					var thJson = this.form._getDomjson( th );
 					if (index==0){
 					}else if (index == titleThs.length-1){
@@ -1770,10 +1797,70 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 		this.fireEvent("export", [resultArr]);
 
-		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils().export( resultArr, title );
+		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).export( resultArr, title );
 	},
 	importFromExcel : function () {
 
+		var textMap = {};
+
+		var dateColArray = []; //日期列
+		var titleThs = this.titleTr.getElements("th");
+
+		var idx = 0;
+		titleThs.each(function(th, index){
+			if (index===0){
+			}else if (index === titleThs.length-1){
+			}else{
+				var module = this.editModules[index-1];
+				var thJson = this.form._getDomjson( th );
+				if( thJson && thJson.isShow === false ){
+				}else if( module && module.json.type === "ImageClipper" ){
+				}else if( module && (module.json.type === "Attachment" || module.json.type === "AttachmentDg") ){
+				}else {
+					textMap[th.get("text")] = {
+						index: idx,
+						thJson: thJson,
+						module: module
+					};
+					idx++;
+					if (module && module.json.type === "Calendar") dateColArray.push(index + 1);
+				}
+			}
+		}.bind(this));
+
+		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).upload( dateColArray, function (array) {
+			array.each( function(d, index){
+				var obj = textMap[d];
+				var module = obj.module;
+				var thJson = obj.thJson;
+
+				switch (module.json.type) {
+					case "Org":
+					case "Reader":
+					case "Author":
+						var arr = d.split(/\s*,\s*/g ); //空格,空格
+						break;
+					case "Number":
+						if (parseFloat(d).toString() === "NaN")errorText = "值不是数字";
+						break;
+					case "Calendar":
+						if( !( isNaN(d) && !isNaN(Date.parse(d) )))errorText = "值不是日期格式";
+						break;
+					default:
+						break;
+				}
+				if (module.json.type!="sequence"){
+					module.setData();
+					module.validationMode();
+					if (!module.validation()){
+						var errorText = module.errNode.get("text");
+						module.errNode.destroy();
+					}
+				}
+
+
+			})
+		});
 	}
 
 });
@@ -1840,7 +1927,9 @@ MWF.xApplication.process.Xform.DatagridPC$Data =  new Class({
 });
 
 MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
-	initialize: function(){
+	initialize: function( datagrid ){
+		this.datagrid = datagrid;
+		this.form = datagrid.form;
 		if (!FileReader.prototype.readAsBinaryString) {
 			FileReader.prototype.readAsBinaryString = function (fileData) {
 				var binary = "";
@@ -1862,8 +1951,8 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 	},
 	_loadResource : function( callback ){
 		if( !window.XLSX || !window.xlsxUtils ){
-			var uri = "/x_component_Template/framework/xlsx/xlsx.full.js";
-			var uri2 = "/x_component_Template/framework/xlsx/xlsxUtils.js";
+			var uri = "../x_component_Template/framework/xlsx/xlsx.full.js";
+			var uri2 = "../x_component_Template/framework/xlsx/xlsxUtils.js";
 			COMMON.AjaxModule.load(uri, function(){
 				COMMON.AjaxModule.load(uri2, function(){
 					callback();
@@ -1899,14 +1988,35 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 		}
 	},
 
-	upload : function ( dateColArray ) {
+	index2ColName : function( index ){
+		if (index < 0) {
+			return null;
+		}
+		var num = 65;// A的Unicode码
+		var colName = "";
+		do {
+			if (colName.length() > 0)index--;
+			var remainder = index % 26;
+			colName =  String.fromCharCode(remainder + num) + colName;
+			index = (index - remainder) / 26;
+		} while (index > 0);
+		return colName;
+	},
+
+	upload : function ( dateColIndexArray, callback ) {
+		var dateColArray = [];
+		dateColIndexArray.each( function (idx) {
+			dateColArray.push( this.index2ColName( idx ));
+		})
+
+
 		var uploadFileAreaNode = new Element("div");
 		var html = "<input name=\"file\" type=\"file\" accept=\"csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel\" />";
 		uploadFileAreaNode.set("html", html);
 
 		var fileUploadNode = uploadFileAreaNode.getFirst();
 		fileUploadNode.addEvent("change", function () {
-			var files = fileNode.files;
+			var files = fileUploadNode.files;
 			if (files.length) {
 				var file = files.item(0);
 				if( file.name.indexOf(" ") > -1 ){
@@ -1917,10 +2027,8 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 				//第三个参数是日期的列
 				this.import( file, function(json){
 					//json为导入的结果
-					// this.page.get("div_1").node.set("html", JSON.stringify(json) )
-
+					if(callback)callback(json);
 					uploadFileAreaNode.destroy();
-
 				}.bind(this), dateColArray ); //["E","F"]
 
 			}
@@ -1988,15 +2096,26 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 					debugger;
 					var worksheet = workbook.Sheets[sheet];
 
-					if( dateColArray && typeOf(dateColArray) == "array" ){
-						var rowCount = worksheet['!range'].e.r;
-						for( var i=0; i<dateColArray.length; i++ ){
-							for( var j=1; j<=rowCount; j++ ){
-								var cell = worksheet[ dateColArray[i]+j ];
-								if( cell ){
-									delete cell.w; // remove old formatted text
-									cell.z = 'yyyy-mm-dd'; // set cell format
-									window.XLSX.utils.format_cell(cell); // this refreshes the formatted text.
+					if( dateColArray && typeOf(dateColArray) == "array" && dateColArray.length ){
+						var rowCount;
+						if( worksheet['!range'] ){
+							rowCount = worksheet['!range'].e.r;
+						}else{
+							var ref = worksheet['!ref'];
+							var arr = ref.split(":");
+							if(arr.length === 2){
+								rowCount = parseInt( arr[1].replace(/[^0-9]/ig,"") );
+							}
+						}
+						if( rowCount ){
+							for( var i=0; i<dateColArray.length; i++ ){
+								for( var j=1; j<=rowCount; j++ ){
+									var cell = worksheet[ dateColArray[i]+j ];
+									if( cell ){
+										delete cell.w; // remove old formatted text
+										cell.z = 'yyyy-mm-dd'; // set cell format
+										window.XLSX.utils.format_cell(cell); // this refreshes the formatted text.
+									}
 								}
 							}
 						}
