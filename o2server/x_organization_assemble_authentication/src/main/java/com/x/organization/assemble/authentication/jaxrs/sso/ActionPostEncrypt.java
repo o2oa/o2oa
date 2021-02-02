@@ -43,8 +43,9 @@ class ActionPostEncrypt extends BaseAction {
 			throw new ExceptionClientNotExist(wi.getClient());
 		}
 		String str = wi.getCredential() + TOKEN_SPLIT + new Date().getTime();
-		byte[] bs = Crypto.encrypt(str.getBytes(DefaultCharset.charset), wi.getKey().getBytes());
-		String token = new String(Base64.encodeBase64(bs), DefaultCharset.charset);
+		//byte[] bs = Crypto.encrypt(str.getBytes(DefaultCharset.charset), wi.getKey().getBytes());
+		//String token = new String(Base64.encodeBase64(bs), DefaultCharset.charset);
+		String token = Crypto.encrypt(str, wi.getKey());
 		Wo wo = new Wo();
 		wo.setToken(token);
 		result.setData(wo);
