@@ -10,6 +10,7 @@ MWF.xApplication.process.Xform.LP = {
 
     "datagridImport" : "导入Excel",
     "datagridExport" : "导出Excel",
+    "exportDefaultName" : "数据网格",
 
     "browserNotActiveX": "您的浏览器不支持ActiveX控件，不能加载Office控件，请使用IE浏览器",
 
