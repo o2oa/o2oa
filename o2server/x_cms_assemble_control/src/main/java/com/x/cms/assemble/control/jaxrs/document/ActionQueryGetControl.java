@@ -58,13 +58,13 @@ public class ActionQueryGetControl extends BaseAction {
 		List<String> unitNames = null;
 		List<String> groupNames = null;
 		String personName = effectivePerson.getDistinguishedName();
-		
+
 		if ( StringUtils.isEmpty(id)) {
 			check = false;
 			Exception exception = new ExceptionDocumentIdEmpty();
 			result.error(exception);
 		}
-		
+
 		if (check) {
 			try {
 				if (effectivePerson.isManager()) {
@@ -77,7 +77,7 @@ public class ActionQueryGetControl extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
 			try {
 				document = documentQueryService.get(id);
@@ -93,16 +93,16 @@ public class ActionQueryGetControl extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(), id, isManager );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
 		if (optional.isPresent()) {
 			result.setData((Wo) optional.get());
 			woControl = wo.getControl();
-		} else {			
+		} else {
 			if (check) {
-				try {					
+				try {
 					reviewCount = documentQueryService.getViewableReview(id, personName);
 					if (reviewCount > 0 ) {
 						woControl.setAllowVisit(true);
@@ -114,7 +114,7 @@ public class ActionQueryGetControl extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-			
+
 			//判断用户是否是文档的创建者，创建者是有权限编辑文档的
 			if (check) {
 				if (wo != null && StringUtils.equals( personName, document.getCreatorPerson())) {
@@ -122,13 +122,13 @@ public class ActionQueryGetControl extends BaseAction {
 					woControl.setAllowVisit(true);
 				}
 			}
-			
+
 			if (check) {
 				wo.setControl(woControl);
 				CacheManager.put(cacheCategory, cacheKey, wo );
 			}
 		}
-		
+
 		/////////////////////////////////////////////////////////////
 		//不管是从缓存还是数据库查出来，都要重新进行处理权限判断
 		/////////////////////////////////////////////////////////////
@@ -143,10 +143,10 @@ public class ActionQueryGetControl extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		AppInfo appInfo = null;
 		CategoryInfo categoryInfo = null;
-		
+
 		if (check) {
 			try {
 				appInfo = appInfoServiceAdv.get( document.getAppId() );
@@ -162,7 +162,7 @@ public class ActionQueryGetControl extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if ( check ) {
 			try {
 				categoryInfo = categoryInfoServiceAdv.get(document.getCategoryId());
@@ -178,7 +178,7 @@ public class ActionQueryGetControl extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		//判断用户是否是分类的管理者，分类管理者是有权限编辑文档的
 		if (check) {
 			try {
@@ -219,19 +219,19 @@ public class ActionQueryGetControl extends BaseAction {
 				// 判断当前登录者是不是该文档的可编辑者
 				try {
 					if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
-						if ( document.getAuthorPersonList().contains( personName )) {
+						if ( document.getAuthorPersonList().contains( getShortTargetFlag(personName) )) {
 							woControl.setAllowVisit(true);
 							woControl.setAllowEdit(true);
 						}
 					}
 					if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
-						if( ListTools.containsAny( unitNames , document.getAuthorUnitList() )) {
+						if( ListTools.containsAny( getShortTargetFlag(unitNames) , document.getAuthorUnitList() )) {
 							woControl.setAllowVisit(true);
 							woControl.setAllowEdit(true);
 						}
 					}
 					if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
-						if( ListTools.containsAny( groupNames , document.getAuthorGroupList() )) {
+						if( ListTools.containsAny( getShortTargetFlag(groupNames) , document.getAuthorGroupList() )) {
 							woControl.setAllowVisit(true);
 							woControl.setAllowEdit(true);
 						}
@@ -248,7 +248,7 @@ public class ActionQueryGetControl extends BaseAction {
 		result.setData(wo);
 		return result;
 	}
-	
+
 
 	public static class Wo extends GsonPropertyObject {
 
@@ -262,9 +262,9 @@ public class ActionQueryGetControl extends BaseAction {
 
 		public void setControl(WoControl control) {
 			this.control = control;
-		}		
+		}
 	}
-	
+
 	public static class WoControl extends GsonPropertyObject {
 
 		@FieldDescribe("是否允许查看.")
@@ -298,9 +298,9 @@ public class ActionQueryGetControl extends BaseAction {
 
 		public void setAllowDelete(Boolean allowDelete) {
 			this.allowDelete = allowDelete;
-		}		
+		}
 	}
-	
+
 //	public static class WoFileInfo extends FileInfo {
 //
 //		private static final long serialVersionUID = -5076990764713538973L;
@@ -316,7 +316,7 @@ public class ActionQueryGetControl extends BaseAction {
 //		public void setControl(WoControl control) {
 //			this.control = control;
 //		}
-//		
+//
 //		public static WrapCopier<FileInfo, WoFileInfo> copier = WrapCopierFactory.wo(FileInfo.class, WoFileInfo.class,
 //				null, JpaObject.FieldsInvisible);
 //
@@ -344,7 +344,7 @@ public class ActionQueryGetControl extends BaseAction {
 //
 //		public static List<String> Excludes = new ArrayList<String>();
 //	}
-	
+
 //	public static class WoControl extends GsonPropertyObject {
 //
 //		private Boolean allowRead = false;
@@ -375,7 +375,7 @@ public class ActionQueryGetControl extends BaseAction {
 //			this.allowControl = allowControl;
 //		}
 //	}
-	
+
 //	private boolean read( WoFileInfo woFileInfo, EffectivePerson effectivePerson, List<String> identities, List<String> units) throws Exception {
 //		boolean value = false;
 //		if (effectivePerson.isPerson(woFileInfo.getCreatorUid())) {
