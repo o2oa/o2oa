@@ -801,14 +801,20 @@ exports.build_concat = gulp.parallel(
 );
 
 function getGitV(){
-    var tagPromise = new Promise(function(s){
+    var tagPromise = new Promise(function(s, f){
         git.exec({args : 'describe --tag'}, function (err, stdout) {
+            if (err){
+                f(err);
+            }
             var v = stdout.substring(0, stdout.indexOf("-"));
             s(v);
         });
     });
-    var revPromise = new Promise(function(s){
+    var revPromise = new Promise(function(s, f){
         git.exec({args : 'rev-parse --short HEAD'}, function (err, hash) {
+            if (err){
+                f(err);
+            }
             s(hash.trim());
         });
     });
@@ -824,6 +830,11 @@ function build_web_v_html() {
             .pipe(assetRev({"verConnecter": arr[0], "md5": arr[1]}))
             .pipe(gulp.dest(dest))
             .pipe(gutil.noop());
+    }, function(){
+        return gulp.src(src)
+            .pipe(assetRev())
+            .pipe(gulp.dest(dest))
+            .pipe(gutil.noop());
     });
 }
 function build_web_api() {
@@ -836,6 +847,8 @@ function build_web_api() {
 function build_doc(){
     return getGitV().then(function(arr){
         return (shell.task('jsdoc -c o2web/jsdoc.conf.json -q version='+arr[0]+'-'+arr[1]+''))();
+    }, function(){
+        return (shell.task('jsdoc -c o2web/jsdoc.conf.json -q version='))();
     });
 }
 exports.build_api = gulp.series(build_doc, build_web_api);
@@ -855,6 +868,10 @@ function build_web_v_o2() {
             // .pipe(uglify())
             // .pipe(rename({ extname: '.min.js' }))
             // .pipe(gulp.dest(dest))
+            .pipe(gutil.noop());
+    }, function(){
+        return gulp.src(src)
+            .pipe(assetRev())
             .pipe(gutil.noop());
     });
 }
