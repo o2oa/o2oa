@@ -232,6 +232,30 @@
       "font-weight": "bold",
       "border-bottom": "0px solid #cccccc"
     },
+    "importActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
+    "exportActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
     "properties": {
       "border": "0",
       "cellpadding": "5",

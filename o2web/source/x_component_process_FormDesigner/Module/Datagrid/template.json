@@ -51,6 +51,14 @@
 		  "code": "",
 		  "html": ""
 		},
+		"export": {
+			"code": "",
+			"html": ""
+		},
+		"import": {
+			"code": "",
+			"html": ""
+		},
 		"click": {
 			"code": "",
 			"html": ""

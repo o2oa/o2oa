@@ -110,7 +110,17 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		 * @event MWF.xApplication.process.Xform.DatagridPC#editLine
 		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 		 */
-		"moduleEvents": ["queryLoad","postLoad","load","completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine"]
+		/**
+		 * 导出excel的时候触发，this.event指向导出的数据。
+		 * @event MWF.xApplication.process.Xform.DatagridPC#export
+		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+		 */
+		/**
+		 * 导入excel的时候触发，this.event指向导入的数据。
+		 * @event MWF.xApplication.process.Xform.DatagridPC#import
+		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+		 */
+		"moduleEvents": ["queryLoad","postLoad","load","completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine", "export", "import"]
 	},
 
 	initialize: function(node, json, form, options){
@@ -137,9 +147,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		this.deleteable = this.json.deleteable !== "no";
 		this.addable = this.json.addable !== "no";
 
-		//允许导出
-		this.importenable  = this.editable && (this.json.impexpType === "impexp" || this.json.impexpType === "imp");
 		//允许导入
+		this.importenable  = this.editable && (this.json.impexpType === "impexp" || this.json.impexpType === "imp");
+		//允许导出
 		this.exportenable  = this.json.impexpType === "impexp" || this.json.impexpType === "exp";
 
 		this.gridData = this._getValue();
@@ -1065,7 +1075,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 		if( this.exportenable ){
 			this.exportActionNode = new Element("div", {
-				text : MWF.xApplication.process.Xform.LP.datagridExport
+				text : this.json.exportActionText || MWF.xApplication.process.Xform.LP.datagridExport
 			}).inject(this.importExportAreaNode);
 			var styles = this.form.css.gridExportActionStyles;
 			if( this.json.exportActionStyles ){
@@ -1080,7 +1090,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 		if( this.importenable ){
 			this.importActionNode = new Element("div", {
-				text : MWF.xApplication.process.Xform.LP.datagridImport
+				text : this.json.importActionText || MWF.xApplication.process.Xform.LP.datagridImport
 			}).inject(this.importExportAreaNode);
 			var styles = this.form.css.gridImportActionStyles;
 			if( this.json.importActionStyles ){
@@ -1657,6 +1667,113 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 	getAttachmentRandomSite: function(){
 		var i = (new Date()).getTime();
 		return this.json.id+i;
+	},
+
+	exportToExcel : function () {
+		debugger;
+		var titleThs = this.titleTr.getElements("th");
+		// var editorTds = this.editorTr.getElements("td");
+
+		var resultArr = [];
+
+		var titleArr = [];
+		titleThs.each(function(th, index){
+			var thJson = this.form._getDomjson( th );
+			if (index==0){
+			}else if (index == titleThs.length-1){
+			}else{
+				var module = this.editModules[index-1];
+				if( thJson && thJson.isShow === false ){
+				}else if( module && module.json.type == "ImageClipper" ){
+				}else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
+				}else{
+					titleArr.push( th.get("text") );
+				}
+			}
+		}.bind(this));
+		resultArr.push( titleArr );
+
+		if (this.gridData.data){
+			this.gridData.data.each(function(data, idx){
+				var array = [];
+
+				titleThs.each(function(th, index){
+
+					var module = this.editModules[index-1];
+					var cellData = data[th.get("id")];
+					var text = "";
+
+					if( typeOf( cellData ) !== "array" ){
+						for (key in cellData){
+							var value = cellData[key];
+							if( module && (module.json.type == "Org" || module.json.type == "Reader" || module.json.type == "Author") ){
+								if (typeOf(value)==="array"){
+									var textArray = [];
+									value.each( function( item ){
+										if (typeOf(item)==="object"){
+											textArray.push( item.distinguishedName );
+										}else{
+											textArray.push(item);
+										}
+									}.bind(this));
+									text = textArray.join(", ");
+								}else if (typeOf(value)==="object"){
+									text = value.distinguishedName ;
+								}else{
+									text = value;
+								}
+							}else {
+								text = this._getValueText(index - 1, value);
+							}
+							break;
+						}
+					}
+
+
+
+
+					var thJson = this.form._getDomjson( th );
+					if (index==0){
+					}else if (index == titleThs.length-1){
+					}else{
+						if( thJson && thJson.isShow === false ){
+						}else if( module && module.json.type == "ImageClipper" ){
+						}else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
+						}else{
+							array.push( text );
+							// if( module && module.json.type == "Textarea" ){
+							// 	cell.set("html", text);
+							// }else{
+							// 	cell.set("text", text);
+							// }
+						}
+					}
+
+				}.bind(this));
+
+				resultArr.push( array );
+
+			}.bind(this));
+		}
+
+		var title;
+		if( this.json.excelName && this.json.excelName.code ){
+			title = this.form.Macro.exec(this.json.excelName.code, this);
+		}else{
+			title = MWF.xApplication.process.Xform.LP.exportDefaultName;
+		}
+		var titleA = title.split(".");
+		if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
+			titleA.splice( titleA.length-1 );
+		}
+		title = titleA.join(".");
+
+		this.fireEvent("export", [resultArr]);
+
+		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils().export( resultArr, title );
+	},
+	importFromExcel : function () {
+
 	}
 
 });
@@ -1722,7 +1839,7 @@ MWF.xApplication.process.Xform.DatagridPC$Data =  new Class({
 	}
 });
 
-MWF.xApplication.process.Xform.ExcelUtils = new Class({
+MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 	initialize: function(){
 		if (!FileReader.prototype.readAsBinaryString) {
 			FileReader.prototype.readAsBinaryString = function (fileData) {
@@ -1744,7 +1861,7 @@ MWF.xApplication.process.Xform.ExcelUtils = new Class({
 		}
 	},
 	_loadResource : function( callback ){
-		if( !XLSX || !xlsxUtils ){
+		if( !window.XLSX || !window.xlsxUtils ){
 			var uri = "/x_component_Template/framework/xlsx/xlsx.full.js";
 			var uri2 = "/x_component_Template/framework/xlsx/xlsxUtils.js";
 			COMMON.AjaxModule.load(uri, function(){
@@ -1816,8 +1933,8 @@ MWF.xApplication.process.Xform.ExcelUtils = new Class({
 		// array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
 		// this.export(array, "导出数据"+(new Date).format("db"));
 		this._loadResource( function(){
-			var data = xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
-			var wb = xlsxUtils.format2WB(data, "sheet1", undefined);
+			var data = window.xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
+			var wb = window.xlsxUtils.format2WB(data, "sheet1", undefined);
 			var wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
 			var dataInfo = wb.Sheets[wb.SheetNames[0]];
 
@@ -1847,8 +1964,8 @@ MWF.xApplication.process.Xform.ExcelUtils = new Class({
 			}.bind(this));
 			dataInfo['!cols'] = widthArray;
 
-			this._openDownloadDialog(xlsxUtils.format2Blob(wb), fileName +".xlsx");
-		})
+			this._openDownloadDialog(window.xlsxUtils.format2Blob(wb), fileName +".xlsx");
+		}.bind(this))
 	},
 	import : function( file, callback, dateColArray ){
 		this._loadResource( function(){
@@ -1861,7 +1978,7 @@ MWF.xApplication.process.Xform.ExcelUtils = new Class({
 				}else {
 					data = e.target.result;
 				}
-				workbook = XLSX.read(data, { type: 'binary' });
+				workbook = window.XLSX.read(data, { type: 'binary' });
 				//wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
 				//wb.Sheets[Sheet名]获取第一个Sheet的数据
 				var sheet = workbook.SheetNames[0];
@@ -1879,14 +1996,14 @@ MWF.xApplication.process.Xform.ExcelUtils = new Class({
 								if( cell ){
 									delete cell.w; // remove old formatted text
 									cell.z = 'yyyy-mm-dd'; // set cell format
-									XLSX.utils.format_cell(cell); // this refreshes the formatted text.
+									window.XLSX.utils.format_cell(cell); // this refreshes the formatted text.
 								}
 							}
 						}
 					}
 
-					var json = XLSX.utils.sheet_to_json( worksheet );
-					//var data = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet], {dateNF:'YYYY-MM-DD'});
+					var json = window.XLSX.utils.sheet_to_json( worksheet );
+					//var data = window.XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet], {dateNF:'YYYY-MM-DD'});
 					if(callback)callback(json);
 					// console.log(JSON.stringify(json));
 					// break; // 如果只取第一张表，就取消注释这行
@@ -1895,7 +2012,7 @@ MWF.xApplication.process.Xform.ExcelUtils = new Class({
 				//     if (workbook.Sheets.hasOwnProperty(sheet)) {
 				//         fromTo = workbook.Sheets[sheet]['!ref'];
 				//         console.log(fromTo);
-				//         var json = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+				//         var json = window.XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
 				//         console.log(JSON.stringify(json));
 				//         // break; // 如果只取第一张表，就取消注释这行
 				//     }

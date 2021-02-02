@@ -328,6 +328,72 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 				if(opacity)td.setStyle("opacity", opacity);
             }.bind(this));
         }
+        if( ["impexpType","impexpPosition","importActionText","importActionStyles","exportActionText","exportActionStyles"].contains( name ) ){
+			//允许导入
+			var importenable  = this.json.impexpType === "impexp" || this.json.impexpType === "imp";
+			//允许导出
+			var exportenable  = this.json.impexpType === "impexp" || this.json.impexpType === "exp";
+
+			if( !exportenable && !importenable ){
+				if( this.impexpNode )this.impexpNode.destroy();
+				return;
+			}
+
+			var position = ["leftTop","centerTop","rightTop"].contains( this.json.impexpPosition || "" ) ? "top" : "bottom";
+			this.impexpNode = new Element("div").inject(this.node, position);
+
+			var importExportAreaNode = new Element("div").inject( this.impexpNode );
+			if( ["leftTop","leftBottom"].contains( this.json.impexpPosition || "" ) ){
+				importExportAreaNode.setStyles({ "float" : "left" })
+			}else if( ["rightTop","rightBottom"].contains( this.json.impexpPosition || "" ) ){
+				importExportAreaNode.setStyles({ "float" : "right" })
+			}else{
+				importExportAreaNode.setStyles({ "margin" : "0px auto" })
+			}
+
+			var styles;
+			if( exportenable ){
+				var exportActionNode = new Element("div", { text : this.json.exportActionText }).inject( importExportAreaNode );
+				if( this.json.exportActionStyles ){
+					styles = Object.clone(this.json.exportActionStyles)
+				}else{
+					styles = {
+						"color" : "#777",
+						"border-radius": "5px",
+						"border": "1px solid #ccc",
+						"cursor": "pointer",
+						"height": "26px",
+						"float" : "left",
+						"line-height": "26px",
+						"padding": "0px 5px",
+						"background-color": "#efefef",
+						"margin" : "5px"
+					}
+				}
+				exportActionNode.setStyles(styles);
+			}
+
+			if( importenable ){
+				var importActionNode = new Element("div", { text : this.json.importActionText }).inject( importExportAreaNode );
+				if( this.json.importActionStyles ){
+					styles = Object.clone(this.json.importActionStyles);
+				}else{
+					styles = {
+						"color" : "#777",
+						"border-radius": "5px",
+						"border": "1px solid #ccc",
+						"cursor": "pointer",
+						"height": "26px",
+						"float" : "left",
+						"line-height": "26px",
+						"padding": "0px 5px",
+						"background-color": "#efefef",
+						"margin" : "5px"
+					}
+				}
+				importActionNode.setStyles(styles);
+			}
+		}
         //if (name=="sequence") this.checkSequenceShow();
 	},
     setDatagridStyles: function(){

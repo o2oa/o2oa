@@ -65,26 +65,45 @@
             <tr>
                 <td class="editTableTitle">启用:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="impexpType" value="none" text{(!$.impexpType || $.impexpType==='none')?'checked':''}/>禁用
-                    <input type="radio" name="impexpType" value="impexp" text{($.impexpType==='impexp')?'checked':''}/>导出导入
-                    <input type="radio" name="impexpType" value="exp" text{($.impexpType==='exp')?'checked':''}/>仅导出
-                    <input type="radio" name="impexpType" value="imp" text{($.impexpType==='imp')?'checked':''}/>仅导入
-                </td>
-            </tr>
-            <tr>
-                <td class="editTableTitle">按钮位置:</td>
-                <td class="editTableValue">
-                    <input type="radio" name="impexpPosition" value="leftTop" text{(!$.impexpPosition || $.impexpPosition==='leftTop')?'checked':''}/>左上
-                    <input type="radio" name="impexpPosition" value="centerTop" text{($.impexpPosition==='centerTop')?'checked':''}/>中上
-                    <input type="radio" name="impexpPosition" value="rightTop" text{($.impexpPosition==='rightTop')?'checked':''}/>右上
-                    <input type="radio" name="impexpPosition" value="leftBottom" text{($.impexpPosition==='leftBottom')?'checked':''}/>左下
-                    <input type="radio" name="impexpPosition" value="centerBottom" text{($.impexpPosition==='centerBottom')?'checked':''}/>中下
-                    <input type="radio" name="impexpPosition" value="rightBottom" text{($.impexpPosition==='rightBottom')?'checked':''}/>右下
+                    <input type="radio" name="impexpType" value="none" text{(!$.impexpType || $.impexpType==='none')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'none')}" />禁用
+                    <input type="radio" name="impexpType" value="impexp" text{($.impexpType==='impexp')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'block')}" />导出导入
+                    <input type="radio" name="impexpType" value="exp" text{($.impexpType==='exp')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'block')}" />仅导出
+                    <input type="radio" name="impexpType" value="imp" text{($.impexpType==='imp')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'block')}" />仅导入
                 </td>
             </tr>
         </table>
-        <div class="MWFMaplist" name="importActionStyles" collapse="true" title="导入按钮样式"></div>
-        <div class="MWFMaplist" name="exportActionStyles" collapse="true" title="导出按钮样式"></div>
+        <div id="text{$.pid}impexpArea" style="display: text{($.impexpType && $.impexpType!=='none')?'block':'none'};">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">按钮位置:</td>
+                    <td class="editTableValue">
+                        <input type="radio" name="impexpPosition" value="leftTop" text{(!$.impexpPosition || $.impexpPosition==='leftTop')?'checked':''}/>左上
+                        <input type="radio" name="impexpPosition" value="centerTop" text{($.impexpPosition==='centerTop')?'checked':''}/>中上
+                        <input type="radio" name="impexpPosition" value="rightTop" text{($.impexpPosition==='rightTop')?'checked':''}/>右上
+                        <input type="radio" name="impexpPosition" value="leftBottom" text{($.impexpPosition==='leftBottom')?'checked':''}/>左下
+                        <input type="radio" name="impexpPosition" value="centerBottom" text{($.impexpPosition==='centerBottom')?'checked':''}/>中下
+                        <input type="radio" name="impexpPosition" value="rightBottom" text{($.impexpPosition==='rightBottom')?'checked':''}/>右下
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">导入按钮文本:</td>
+                    <td class="editTableValue"><input type="text" name="importActionText" value="text{$.importActionText || '导入Excel'}" class="editTableInput"/></td>
+                </tr>
+            </table>
+            <div class="MWFMaplist" name="importActionStyles" collapse="true" title="导入按钮样式"></div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">导出按钮文本:</td>
+                    <td class="editTableValue"><input type="text" name="exportActionText" value="text{$.exportActionText || '导出Excel'}" class="editTableInput"/></td>
+                </tr>
+            </table>
+            <div class="MWFMaplist" name="exportActionStyles" collapse="true" title="导出按钮样式"></div>
+            <div class="MWFFormulaArea" name="excelName" title="导出文件名称"></div>
+        </div>
 
         <div class="MWFValidation" name="validationConfig"></div>
         <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
