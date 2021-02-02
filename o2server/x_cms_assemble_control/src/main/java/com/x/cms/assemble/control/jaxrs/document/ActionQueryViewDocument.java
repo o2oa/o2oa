@@ -48,8 +48,8 @@ public class ActionQueryViewDocument extends BaseAction {
 			check = false;
 			Exception exception = new ExceptionDocumentIdEmpty();
 			result.error(exception);
-		}		
-		
+		}
+
 		if (check) {
 			try {
 				if ( effectivePerson.isManager() ) {
@@ -62,7 +62,7 @@ public class ActionQueryViewDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id, isAnonymous, isManager, effectivePerson.getDistinguishedName() );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
@@ -74,7 +74,7 @@ public class ActionQueryViewDocument extends BaseAction {
 			result = getDocumentQueryResult( id, request, effectivePerson, isManager );
 			CacheManager.put(cacheCategory, cacheKey, result );
 		}
-		
+
 		if (check ) {
 			//只要不是管理员访问，则记录该文档的访问记录
 			if ( !"xadmin".equalsIgnoreCase( personName) ) {
@@ -85,16 +85,16 @@ public class ActionQueryViewDocument extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-			
+
 			//异步更新item里的访问量，便于视图统计
 			try {
 				ThisApplication.queueDocumentViewCountUpdate.send( result.getData().getDocument() );
 			} catch ( Exception e1 ) {
 				e1.printStackTrace();
 			}
-			
+
 		}
-		return result;			
+		return result;
 	}
 
 	/**
@@ -121,11 +121,11 @@ public class ActionQueryViewDocument extends BaseAction {
 		List<String> groupNames = null;
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
-		
+
 		if( !isAnonymous ) {
 			try {
 				unitNames = userManagerService.listUnitNamesWithPerson( personName );
-				groupNames = userManagerService.listGroupNamesByPerson( personName );									
+				groupNames = userManagerService.listGroupNamesByPerson( personName );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "查询用户所有的组织和群组信息时发生异常！user:" + personName);
@@ -133,7 +133,7 @@ public class ActionQueryViewDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
 			try {
 				document = documentQueryService.view( id, effectivePerson );
@@ -149,7 +149,7 @@ public class ActionQueryViewDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null );
 			}
 		}
-		
+
 		if (check) {
 			try {
 				appInfo = appInfoServiceAdv.get( document.getAppId() );
@@ -180,7 +180,7 @@ public class ActionQueryViewDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
 			if( isAnonymous ) {
 				//检查这个文档所在的栏目和分类是否都是全员可见
@@ -206,12 +206,12 @@ public class ActionQueryViewDocument extends BaseAction {
 				}
 			}
 		}
-		
-		
+
+
 		if (check) {
 			try {
 				woOutDocument = WoDocument.copier.copy( document );
-				
+
 				if ( woOutDocument != null && categoryInfo != null ) {
 					try {
 						woOutDocument.setForm(categoryInfo.getFormId());
@@ -220,7 +220,7 @@ public class ActionQueryViewDocument extends BaseAction {
 						woOutDocument.setReadFormName(categoryInfo.getReadFormName());
 						woOutDocument.setCategoryName(categoryInfo.getCategoryName());
 						woOutDocument.setCategoryAlias(categoryInfo.getCategoryAlias());
-						
+
 						if( woOutDocument.getCreatorPerson() != null && !woOutDocument.getCreatorPerson().isEmpty() ) {
 							woOutDocument.setCreatorPersonShort( woOutDocument.getCreatorPerson().split( "@" )[0]);
 						}
@@ -238,9 +238,9 @@ public class ActionQueryViewDocument extends BaseAction {
 						logger.error(e, effectivePerson, request, null);
 					}
 				}
-				
+
 				if ( woOutDocument != null ) {
-					try {						
+					try {
 						wo.setData( documentQueryService.getDocumentData( document ) );
 					} catch (Exception e) {
 						check = false;
@@ -256,7 +256,7 @@ public class ActionQueryViewDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		//判断用户是否是文档的创建者，创建者是有权限编辑文档的
 		if (check) {
 			if( wo.getDocument() != null && wo.getDocument().getCreatorPerson() != null && wo.getDocument().getCreatorPerson().equals( personName )) {
@@ -264,7 +264,7 @@ public class ActionQueryViewDocument extends BaseAction {
 					wo.setIsCreator( isCreator );
 			}
 		}
-	
+
 		//判断用户是否是分类的管理者，分类管理者是有权限编辑文档的
 		if (check) {
 			try {
@@ -278,7 +278,7 @@ public class ActionQueryViewDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		//判断用户是否是栏目的管理者，栏目管理者是有权限编辑文档的
 		if (check) {
 			try {
@@ -301,21 +301,21 @@ public class ActionQueryViewDocument extends BaseAction {
 				try {
 					if( !isAnonymous ) {
 						if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
-							if( document.getAuthorPersonList().contains( personName ) ) {
+							if( document.getAuthorPersonList().contains( getShortTargetFlag(personName) ) ) {
 								isEditor = true;
 							}
 						}
 						if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
-							if( ListTools.containsAny( unitNames, document.getAuthorUnitList())) {
+							if( ListTools.containsAny( getShortTargetFlag(unitNames), document.getAuthorUnitList())) {
 								isEditor = true;
 							}
 						}
 						if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
-							if( ListTools.containsAny( groupNames, document.getAuthorGroupList())) {
+							if( ListTools.containsAny( getShortTargetFlag(groupNames), document.getAuthorGroupList())) {
 								isEditor = true;
 							}
 						}
-					}					
+					}
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionDocumentInfoProcess(e, "判断用户是否可编辑文档时发生异常！user:" + personName);
@@ -324,12 +324,12 @@ public class ActionQueryViewDocument extends BaseAction {
 				}
 			}
 		}
-		
+
 		wo.setIsManager( isManager );
 		wo.setIsAppAdmin( isAppAdmin );
 		wo.setIsCategoryAdmin( isCategoryAdmin );
 		wo.setIsEditor( isEditor );
-		
+
 		result.setData(wo);
 		return result;
 	}
@@ -347,13 +347,13 @@ public class ActionQueryViewDocument extends BaseAction {
 
 		@FieldDescribe( "文档所有数据信息." )
 		private Data data;
-		
+
 		@FieldDescribe( "作为编辑的CMS文档表单." )
 		private WoForm form;
-		
+
 		@FieldDescribe( "作为查看的CMS文档表单." )
 		private WoForm readForm;
-		
+
 		private Boolean isAppAdmin = false;
 		private Boolean isCategoryAdmin = false;
 		private Boolean isManager = false;
@@ -447,24 +447,24 @@ public class ActionQueryViewDocument extends BaseAction {
 		public void setIsCreator(Boolean isCreator) {
 			this.isCreator = isCreator;
 		}
-		
+
 	}
-	
+
 	public static class WoDocument extends Document {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier<Document, WoDocument> copier = WrapCopierFactory.wo( Document.class, WoDocument.class, null,JpaObject.FieldsInvisible);
-		
+
 		/**
 		 * 只作显示用
 		 */
 		private String creatorPersonShort = "";
-		
+
 		private String creatorUnitNameShort = "";
-		
+
 		private String creatorTopUnitNameShort = "";
 
 		public String getCreatorPersonShort() {
@@ -491,13 +491,13 @@ public class ActionQueryViewDocument extends BaseAction {
 			this.creatorTopUnitNameShort = creatorTopUnitNameShort;
 		}
 	}
-//	
+//
 //	public static class WoFileInfo extends FileInfo {
-//		
+//
 //		private static final long serialVersionUID = -5076990764713538973L;
-//		
+//
 //		public static List<String> Excludes = new ArrayList<String>();
-//		
+//
 //		private WoControl control = new WoControl();
 //
 //		public WoControl getControl() {
@@ -507,34 +507,34 @@ public class ActionQueryViewDocument extends BaseAction {
 //		public void setControl(WoControl control) {
 //			this.control = control;
 //		}
-//		
+//
 //		public static WrapCopier<FileInfo, WoFileInfo> copier = WrapCopierFactory.wo( FileInfo.class, WoFileInfo.class, null, JpaObject.FieldsInvisible);
-//		
+//
 //		private Long referencedCount;
-//		
+//
 //		public Long getReferencedCount() {
 //			return referencedCount;
 //		}
-//		
+//
 //		public void setReferencedCount(Long referencedCount) {
 //			this.referencedCount = referencedCount;
 //		}
 //	}
-	
+
 	public static class WoLog extends Log {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
 	}
-	
+
 	public static class WoForm extends Form {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
 	}
-	
+
 //	public static class WoControl extends GsonPropertyObject {
 //
 //		private Boolean allowRead = false;
@@ -565,7 +565,7 @@ public class ActionQueryViewDocument extends BaseAction {
 //			this.allowControl = allowControl;
 //		}
 //	}
-//	
+//
 //	private boolean read( WoFileInfo woFileInfo, EffectivePerson effectivePerson, List<String> identities, List<String> units) throws Exception {
 //		boolean value = false;
 //		if (effectivePerson.isPerson(woFileInfo.getCreatorUid())) {
