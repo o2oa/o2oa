@@ -107,6 +107,24 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "用户注销 MockDeleteToGet.", action = ActionLogout.class)
+	@GET
+	@Path("mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void logoutMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @Context HttpServletResponse response) {
+		ActionResult<ActionLogout.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionLogout().execute(request, response, effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取当前用户,如果是未登录用户返回anonymous", action = ActionWho.class)
 	@GET
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -140,7 +158,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "获取图片验证码.", action = ActionCaptcha.class)
 	@GET
 	@Path("captcha/width/{width}/height/{height}")
@@ -178,7 +196,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "用户登录.credential=xxxx,codeAnswer=xxxx,使用短信验证码登录.", action = ActionCodeLogin.class)
 	@POST
 	@Path("code")
@@ -423,6 +441,24 @@ public class AuthenticationAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void switchUser(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@Context HttpServletResponse response, JsonElement jsonElement) {
+		ActionResult<ActionSwitchUser.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSwitchUser().execute(request, response, effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "切换当前用户,需要系统管理员权限 MockPutToPost.", action = ActionSwitchUser.class)
+	@POST
+	@Path("switchuser/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void switchUserMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						   @Context HttpServletResponse response, JsonElement jsonElement) {
 		ActionResult<ActionSwitchUser.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
