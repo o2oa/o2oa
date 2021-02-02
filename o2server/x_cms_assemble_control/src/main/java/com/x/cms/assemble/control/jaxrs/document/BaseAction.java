@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.x.base.core.container.EntityManagerContainer;
@@ -37,7 +38,7 @@ public class BaseAction extends StandardJaxrsAction {
 	protected DocumentViewRecordServiceAdv documentViewRecordServiceAdv = new DocumentViewRecordServiceAdv();
 	protected DocumentPersistService documentPersistService = new DocumentPersistService();
 	protected DocumentQueryService documentQueryService = new DocumentQueryService();
-	
+
 	protected DocCommendPersistService docCommendPersistService = new DocCommendPersistService();
 
 	protected FormServiceAdv formServiceAdv = new FormServiceAdv();
@@ -50,10 +51,10 @@ public class BaseAction extends StandardJaxrsAction {
 	protected boolean modifyDocStatus( String id, String stauts, String personName ) throws Exception{
 		Business business = null;
 		Document document = null;
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-		
+
 			//进行数据库持久化操作
 			emc.beginTransaction( Document.class );
 			document = business.getDocumentFactory().get(id);
@@ -63,7 +64,7 @@ public class BaseAction extends StandardJaxrsAction {
 				document.setPublishTime( new Date() );
 				//保存文档信息
 				emc.check( document, CheckPersistType.all);
-			}			
+			}
 			emc.commit();
 			return true;
 		} catch (Exception th) {
@@ -171,10 +172,10 @@ public class BaseAction extends StandardJaxrsAction {
 	 * @param groupNames
 	 * @param appInfo
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private boolean appInfoViewable(String personName, Boolean isAnonymous, List<String> unitNames, List<String> groupNames, AppInfo appInfo, Boolean manager) throws Exception {
-		
+
 		if( appInfo.getAllPeopleView() || appInfo.getAllPeoplePublish() ) {
 			return true;
 		}
@@ -182,33 +183,33 @@ public class BaseAction extends StandardJaxrsAction {
 			if( manager ) {
 				return true;
 			}
-			
+
 			if( ListTools.isNotEmpty( appInfo.getManageablePersonList() )) {
 				if( appInfo.getManageablePersonList().contains( personName )) {
 					return true;
 				}
-			}			
+			}
 			if( ListTools.isNotEmpty( appInfo.getViewableUnitList() )) {
 				if( ListTools.containsAny( unitNames, appInfo.getViewableUnitList())) {
 					return true;
 				}
-			}			
+			}
 			if( ListTools.isNotEmpty( appInfo.getViewableGroupList() )) {
 				if( ListTools.containsAny( groupNames, appInfo.getViewableGroupList())) {
 					return true;
 				}
-			}			
+			}
 			if( ListTools.isNotEmpty( appInfo.getPublishableUnitList() )) {
 				if( ListTools.containsAny( unitNames, appInfo.getPublishableUnitList())) {
 					return true;
 				}
-			}			
+			}
 			if( ListTools.isNotEmpty( appInfo.getPublishableGroupList() )) {
 				if( ListTools.containsAny( groupNames, appInfo.getPublishableGroupList())) {
 					return true;
 				}
 			}
-		}		
+		}
 		return false;
 	}
 
@@ -247,22 +248,6 @@ public class BaseAction extends StandardJaxrsAction {
 				return true;
 			}
 		}
-		//是否是作者
-		if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
-			if( document.getAuthorPersonList().contains( personName ) ) {
-				return true;
-			}
-		}
-		if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
-			if( ListTools.containsAny( unitNames, document.getAuthorUnitList())) {
-				return true;
-			}
-		}
-		if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
-			if( ListTools.containsAny( groupNames, document.getAuthorGroupList())) {
-				return true;
-			}
-		}
 
 		if(business.isHasPlatformRole(personName, ThisApplication.ROLE_CMSManager)){
 			return true;
@@ -286,6 +271,27 @@ public class BaseAction extends StandardJaxrsAction {
 			}
 		}
 		return target;
+	}
+
+	protected List<String> getShortTargetFlag(List<String> nameList) {
+		List<String> targetList = new ArrayList<>();
+		if( ListTools.isNotEmpty( nameList ) ){
+			for(String distinguishedName : nameList) {
+				String target = distinguishedName;
+				String[] array = distinguishedName.split("@");
+				StringBuffer sb = new StringBuffer();
+				if (array.length == 3) {
+					target = sb.append(array[1]).append("@").append(array[2]).toString();
+				} else if (array.length == 2) {
+					//2段
+					target = sb.append(array[0]).append("@").append(array[1]).toString();
+				} else {
+					target = array[0];
+				}
+				targetList.add(target);
+			}
+		}
+		return targetList;
 	}
 
 
