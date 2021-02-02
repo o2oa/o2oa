@@ -178,6 +178,12 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
     tableImplode: function(){
         this.view.tableImplode();
     },
+    tableExcelExplode: function(){
+        this.view.tableExcelExplode();
+    },
+    tableExcelImplode: function(){
+        this.view.tableExcelImplode();
+    },
     tableClear: function(){
         this.view.tableClear();
     },

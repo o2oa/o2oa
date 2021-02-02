@@ -50,6 +50,7 @@
     "readline-sync": "^1.4.10"
   },
   "dependencies": {
-    "gulp-cli": "^2.3.0"
+    "gulp-cli": "^2.3.0",
+    "gulp-git": "^2.10.1"
   }
 }
