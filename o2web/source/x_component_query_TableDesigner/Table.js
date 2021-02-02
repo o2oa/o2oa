@@ -533,6 +533,41 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.close();
         }, null);
     },
+    tableExcelImplode: function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.tableExcelImplodeTitle, MWF.APPDTBD.LP.tableExcelImplodeInfo, 480, 120, function(){
+            _self.implodeExcelLocal();
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
+    implodeExcelLocal : function (){
+        var ExcelUtils = new MWF.xApplication.query.TableDesigner.Table.ExcelUtils();
+        var uploadFileAreaNode = new Element("div");
+        var html = "<input name=\"file\" type=\"file\" accept=\"*\" />";
+        uploadFileAreaNode.set("html", html);
+
+        var fileUploadNode = uploadFileAreaNode.getFirst();
+        fileUploadNode.addEvent("change", function () {
+            var files = fileNode.files;
+            if (files.length) {
+                var file = files.item(0);
+                //第三个参数是日期的列
+                ExcelUtils.import( file, function(json){
+                    console.log(JSON.stringify(json));
+
+                    this.designer.actions.rowSave(this.data.id,json[0],function(json){
+                        this.designer.notice(this.designer.lp.tableImplode_success, "success", this.node, {"x": "left", "y": "bottom"});
+                    }.bind(this));
+                }.bind(this) );
+
+            }
+        }.bind(this));
+        var fileNode = uploadFileAreaNode.getFirst();
+        fileNode.click();
+    },
     implodeLocal: function(){
         if (!this.uploadFileAreaNode){
             this.uploadFileAreaNode = new Element("div");
@@ -577,6 +612,48 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             url = url.replace("{tableFlag}",_self.data.id);
             url = url.replace("{count}",1000);
             window.open(o2.filterUrl(url))
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
+    tableExcelExplode: function(e){
+        var ExcelUtils = new MWF.xApplication.query.TableDesigner.Table.ExcelUtils();
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.tableExcelExplodeTitle, MWF.APPDTBD.LP.tableExplodeInfo, 480, 120, function(){
+            var fieldList = JSON.parse(_self.view.data.data).fieldList;
+            var fieldArr = [];
+            var resultArr = [];
+            fieldList.each(function (field){
+                fieldArr.push(field.name);
+                resultArr.push("o." + field.name);
+            })
+            var array = [fieldArr];
+            var jpql = {
+                "data": "select " + resultArr.join() + " from " + _self.data.name + " o",
+                "type": "select",
+                "firstResult": 0,
+                "maxResults": 1000
+            }
+            _self.designer.actions.executeJpql(_self.data.id, jpql, function(json){
+                json.data.each(function (d){
+                    var f = [];
+                    if(o2.typeOf(json.data[0])==="string"){
+                        f = [d];
+                    }else {
+                        d.each(function (dd){
+                            if(!dd){
+                                f.push("");
+                            }else {
+                                f.push(dd);
+                            }
+                        })
+                    }
+                    array.push(f);
+                })
+                ExcelUtils.export(array, "导出数据"+(new Date).format("db"));
+            }.bind(this));
             this.close();
         }, function(){
             this.close();
@@ -679,8 +756,6 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         }
     }
 });
-
-
 
 MWF.xApplication.query.TableDesigner.Table.Column = new Class({
     Extends:MWF.xApplication.query.ViewDesigner.ViewBase.Column,
@@ -1216,5 +1291,109 @@ MWF.xApplication.query.TableDesigner.Table.JPQLRunner = new Class({
             "firstResult": fromResult.toInt(),
             "maxResults": maxResults.toInt()
         }
+    }
+});
+
+MWF.xApplication.query.TableDesigner.Table.ExcelUtils = new Class({
+    _loadResource : function( callback ){
+        var uri = "/x_component_Template/framework/xlsx/xlsx.full.js";
+        var uri2 = "/x_component_Template/framework/xlsx/xlsxUtils.js";
+        COMMON.AjaxModule.load(uri, function(){
+            COMMON.AjaxModule.load(uri2, function(){
+                callback();
+            }.bind(this))
+        }.bind(this))
+    },
+    _openDownloadDialog: function(url, saveName){
+        /**
+         * 通用的打开下载对话框方法，没有测试过具体兼容性
+         * @param url 下载地址，也可以是一个blob对象，必选
+         * @param saveName 保存文件名，可选
+         */
+        if( Browser.name !== 'ie' ){
+            if(typeof url == 'object' && url instanceof Blob){
+                url = URL.createObjectURL(url); // 创建blob地址
+            }
+            var aLink = document.createElement('a');
+            aLink.href = url;
+            aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+            var event;
+            if(window.MouseEvent && typeOf( window.MouseEvent ) == "function" ) event = new MouseEvent('click');
+            else
+            {
+                event = document.createEvent('MouseEvents');
+                event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            }
+            aLink.dispatchEvent(event);
+        }else{
+            window.navigator.msSaveBlob( url, saveName);
+        }
+    },
+    export : function(array, fileName){
+        this._loadResource( function(){
+            data = xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
+            var wb = xlsxUtils.format2WB(data, "sheet1", undefined);
+            var wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+            var dataInfo = wb.Sheets[wb.SheetNames[0]];
+
+            var widthArray = [];
+            array[0].each( function( v, i ){
+
+                widthArray.push( {wpx: 100} );
+
+                var at = String.fromCharCode(97 + i).toUpperCase();
+                var di = dataInfo[at+"1"];
+                // di.v = v;
+                // di.t = "s";
+                di.s = {  //设置副标题样式
+                    font: {
+                        //name: '宋体',
+                        sz: 12,
+                        color: {rgb: "#FFFF0000"},
+                        bold: true,
+                        italic: false,
+                        underline: false
+                    },
+                    alignment: {
+                        horizontal: "center" ,
+                        vertical: "center"
+                    }
+                };
+            }.bind(this));
+            dataInfo['!cols'] = widthArray,
+
+                this._openDownloadDialog(xlsxUtils.format2Blob(wb), fileName +".xlsx");
+        }.bind(this))
+    },
+    import : function( file, callback, dateColArray ){
+        this._loadResource( function(){
+            var reader = new FileReader();
+            var workbook, data;
+            reader.onload = function (e) {
+                //var data = data.content;
+                if (!e) {
+                    data = reader.content;
+                }else {
+                    data = e.target.result;
+                }
+                workbook = XLSX.read(data, { type: 'binary' });
+                //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
+                //wb.Sheets[Sheet名]获取第一个Sheet的数据
+                var sheet = workbook.SheetNames[0];
+                var jsonList = [];
+                for (var sheet in workbook.Sheets) {
+                    if (workbook.Sheets.hasOwnProperty(sheet)) {
+                        fromTo = workbook.Sheets[sheet]['!ref'];
+                        console.log(fromTo);
+                        var json = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+                        console.log(JSON.stringify(json));
+                        jsonList.push(json);
+                        // break; // 如果只取第一张表，就取消注释这行
+                    }
+                }
+                if(callback)callback(jsonList);
+            };
+            reader.readAsBinaryString(file);
+        })
     }
 });

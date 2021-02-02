@@ -67,6 +67,7 @@ MWF.xApplication.query.TableDesigner.LP = {
 
     "tableImplodeTitle": "导入数据",
     "tableImplodeInfo": "导入的数据会覆盖。确认是否导入？",
+    "tableExcelImplodeInfo": "导入的数据如果有id字段，会覆盖，否则会新增。确认是否导入？",
     "tableImplode_success": "导入成功",
 
     "tableClearTitle": "清空数据",
