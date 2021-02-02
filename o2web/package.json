@@ -49,11 +49,8 @@
     "minimist": "^1.2.0",
     "readline-sync": "^1.4.10",
     "gulp-cli": "^2.3.0",
-<<<<<<< HEAD
     "jsdoc": "^3.6.6",
-    "tidy-jsdoc-o2": "0.0.8"
-=======
+    "tidy-jsdoc-o2": "0.0.8",
     "gulp-git": "^2.10.1"
->>>>>>> wrdp
   }
 }
