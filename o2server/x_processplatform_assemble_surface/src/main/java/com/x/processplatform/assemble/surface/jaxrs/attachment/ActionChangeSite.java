@@ -21,21 +21,16 @@ class ActionChangeSite extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			/* 后面要重新保存 */
-			Work work = emc.find(workId, Work.class);
-			/** 判断work是否存在 */
-			if (null == work) {
-				throw new ExceptionEntityNotExist(workId, Work.class);
-			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
-			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionAccessDenied(effectivePerson, work);
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workId,
+					new ExceptionEntityNotExist(workId))) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
+
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
