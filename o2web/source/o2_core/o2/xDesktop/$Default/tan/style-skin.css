@@ -130,7 +130,9 @@
 .icon_refresh{
     background-image: url(../o2_core/o2/xDesktop/$Default/tan/icons/icon_shuaxin.png) !important;
 }
-
+.icon_taskitem_down {
+    background-image: url(../o2_core/o2/xDesktop/$Default/blue/icons/icon_taskitem_down.png) !important;
+}
 .o2_process_AppExp_All_current {
     color: #995E2E !important;
     border-bottom: 2px solid #995E2E !important;

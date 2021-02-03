@@ -316,6 +316,14 @@
     background-repeat: no-repeat;
     background-size: 16px;
 }
+.layout_content_taskbar_item_action {
+    width: 8px;
+    height: 25px;
+    margin-right: 3px;
+    float: left;
+    background-position: center left;
+    background-repeat: no-repeat;
+}
 .layout_content_taskbar_item_text {
     height: 28px;
     float: left;
