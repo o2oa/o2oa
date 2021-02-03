@@ -1807,7 +1807,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		var titleThs = this.titleTr.getElements("th");
 
 		var idx = 0;
-		var hasOrg = false;
+		var orgIndexList = [];
 		titleThs.each(function(th, index){
 			if (index===0){
 			}else if (index === titleThs.length-1){
@@ -1827,50 +1827,160 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 					if (module && module.json.type === "Calendar"){
 						dateColArray.push(index + 1);
 					}else if( module && ["Org","Reader","Author"].contains(module.json.type) ){
-						hasOrg = true;
+						orgIndexList.push(idx);
 					}
 				}
 			}
 		}.bind(this));
 
-		var orgMap = {};
-		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).upload( dateColArray, function (array) {
-			if( hasOrg ){
 
+		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).upload( dateColArray, function (array) {
+			if( orgIndexList.length > 0 ){
+				this.listImportAllOrgData( orgIndexList, array, function () {
+					this.checkImportedData( array );
+				});
+			}else{
+				this.checkImportedData( array );
 			}
 
-			array.each( function(d, index){
-				var obj = textMap[d];
-				var module = obj.module;
-				var thJson = obj.thJson;
 
-				switch (module.json.type) {
-					case "Org":
-					case "Reader":
-					case "Author":
-						var arr = d.split(/\s*,\s*/g ); //空格,空格
-						break;
-					case "Number":
-						if (parseFloat(d).toString() === "NaN")errorText = "值不是数字";
-						break;
-					case "Calendar":
-						if( !( isNaN(d) && !isNaN(Date.parse(d) )))errorText = "值不是日期格式";
-						break;
-					default:
-						break;
-				}
-				if (module.json.type!="sequence"){
-					module.setData();
-					module.validationMode();
-					if (!module.validation()){
-						var errorText = module.errNode.get("text");
-						module.errNode.destroy();
-					}
-				}
-
-
-			})
 		});
+	},
+	checkImportedData : function(array){
+		array.each( function(d, index){
+			var obj = textMap[d];
+			var module = obj.module;
+			var thJson = obj.thJson;
+
+			switch (module.json.type) {
+				case "Org":
+				case "Reader":
+				case "Author":
+					var arr = d.split(/\s*,\s*/g ); //空格,空格
+					break;
+				case "Number":
+					if (parseFloat(d).toString() === "NaN")errorText = "值不是数字";
+					break;
+				case "Calendar":
+					if( !( isNaN(d) && !isNaN(Date.parse(d) )))errorText = "值不是日期格式";
+					break;
+				default:
+					break;
+			}
+			if (module.json.type!="sequence"){
+				module.setData();
+				module.validationMode();
+				if (!module.validation()){
+					var errorText = module.errNode.get("text");
+					module.errNode.destroy();
+				}
+			}
+
+
+		})
+	},
+	getImportOrgData : function( str ){
+		str = str.trim();
+		var flag = str.substr(str.length-2, 2);
+		switch (flag.toLowerCase()){
+			case "@i":
+				return this.identityMapImported[str] || "未在系统中获取身份";
+			case "@p":
+				return this.personMapImported[str] || "未在系统中获取人员";
+			case "@u":
+				return this.unitMapImported[str] || "未在系统中获取组织";
+			case "@g":
+				groupList.push( a ); break;
+			default:
+				identityList.push( a );
+				personList.push( a );
+				unitList.push( a );
+				groupList.push( a );
+				break;
+		}
+	},
+	listImportAllOrgData : function (orgIndexList, array, callback) {
+		var identityList = [], personList = [], unitList = [], groupList = [];
+		if( orgIndexList.length > 0 ){
+			array.each( function( d, index ){
+				if( orgIndexList.contains(index) ){
+					var arr = d.split(/\s*,\s*/g );
+					arr.each( function( a ){
+						a = a.trim();
+						var flag = a.substr(a.length-2, 2);
+						switch (flag.toLowerCase()){
+							case "@i":
+								identityList.push( a ); break;
+							case "@p":
+								personList.push( a ); break;
+							case "@u":
+								unitList.push( a ); break;
+							case "@g":
+								groupList.push( a ); break;
+							default:
+								identityList.push( a );
+								personList.push( a );
+								unitList.push( a );
+								groupList.push( a );
+								break;
+						}
+					})
+				}
+			});
+			var identityLoaded, personLoaded, unitLoaded, groupLoaded;
+			var check = function () {
+				if( identityLoaded && personLoaded && unitLoaded && groupLoaded ){
+					if(callback)callback();
+				}
+			}
+			if( identityList.length ){
+				o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : identityList }, function (json) {
+					this.identityMapImported = {};
+					json.data.each( function (d) { this.identityMapImported[ d.matchKey ] = d; }.bind(this));
+					identityLoaded = true;
+					check();
+				}.bind(this))
+			}else{
+				identityLoaded = true;
+				check();
+			}
+
+			if( personList.length ){
+				o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList }, function (json) {
+					this.personMapImported = {};
+					json.data.each( function (d) { this.personMapImported[ d.matchKey ] = d; }.bind(this));
+					personLoaded = true;
+					check();
+				}.bind(this))
+			}else{
+				personLoaded = true;
+				check();
+			}
+
+			if( unitList.length ){
+				o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList }, function (json) {
+					this.unitMapImported = {};
+					json.data.each( function (d) { this.unitMapImported[ d.matchKey ] = d; }.bind(this));
+					unitLoaded = true;
+					check();
+				}.bind(this))
+			}else{
+				unitLoaded = true;
+				check();
+			}
+
+			if( groupList.length ){
+				o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({ groupList : groupList }, function (json) {
+					this.groupMapImported = {};
+					json.data.each( function (d) { this.groupMapImported[ d.matchKey ] = d; }.bind(this));
+					groupLoaded = true;
+					check();
+				}.bind(this))
+			}else{
+				groupLoaded = true;
+				check();
+			}
+		}
 	}
 
 });
