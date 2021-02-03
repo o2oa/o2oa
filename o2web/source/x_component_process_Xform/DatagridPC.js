@@ -1828,6 +1828,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			}
 		}.bind(this));
 
+		var orgMap = {};
 		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).upload( dateColArray, function (array) {
 			array.each( function(d, index){
 				var obj = textMap[d];
