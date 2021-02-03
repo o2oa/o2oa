@@ -923,7 +923,8 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
 
             'source/' + path + '/js/base_document_actions_temp.js',
 
-            'source/' + path + '/js/base.js'
+            'source/' + path + '/js/base.js',
+            'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)
