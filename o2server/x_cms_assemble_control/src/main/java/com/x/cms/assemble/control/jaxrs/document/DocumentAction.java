@@ -53,6 +53,30 @@ public class DocumentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "变更指定文档的分类信息.", action = ActionPersistChangeCategory.class)
+	@POST
+	@Path("category/change/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void persist_changeCategoryMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+									   @Context HttpServletRequest request, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionPersistChangeCategory.Wo> result = new ActionResult<>();
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionPersistChangeCategory().execute(request, jsonElement, effectivePerson);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error(e);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "指修改指定文档的数据。", action = ActionPersistBatchModifyData.class)
 	@PUT
 	@Path("batch/data/modify")
@@ -60,6 +84,28 @@ public class DocumentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void persist_batchDataModify(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionPersistBatchModifyData.Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if (check) {
+			try {
+				result = new ActionPersistBatchModifyData().execute(request, jsonElement, effectivePerson);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error(e);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "指修改指定文档的数据。", action = ActionPersistBatchModifyData.class)
+	@POST
+	@Path("batch/data/modify/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void persist_batchDataModifyMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+										@Context HttpServletRequest request, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionPersistBatchModifyData.Wo> result = new ActionResult<>();
 		Boolean check = true;
@@ -213,6 +259,29 @@ public class DocumentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "查询符合过滤条件的已发布的信息数量.", action = ActionQueryCountWithFilter.class)
+	@POST
+	@Path("filter/count/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_countDocumentWithFilterMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+											  @Context HttpServletRequest request, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionQueryCountWithFilter.Wo> result = new ActionResult<>();
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionQueryCountWithFilter().execute(request, jsonElement, effectivePerson);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error(e);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据ID删除信息发布文档信息.", action = ActionPersistDeleteDocument.class)
 	@DELETE
 	@Path("{id}")
@@ -220,6 +289,25 @@ public class DocumentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void persist_delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionPersistDeleteDocument.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionPersistDeleteDocument().execute(request, id, effectivePerson);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据ID删除信息发布文档信息.", action = ActionPersistDeleteDocument.class)
+	@GET
+	@Path("{id}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void persist_deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							   @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionPersistDeleteDocument.Wo> result = new ActionResult<>();
 		try {
@@ -240,6 +328,26 @@ public class DocumentAction extends StandardJaxrsAction {
 	public void persist_deleteWithBatchName(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("batchId") String batchId) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionPersistDeleteWithBatch.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionPersistDeleteWithBatch().execute(request, batchId, effectivePerson);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据批次号删除信息发布文档信息.", action = ActionPersistDeleteWithBatch.class)
+	@GET
+	@Path("batch/{batchId}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void persist_deleteWithBatchNameMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request,
+											@JaxrsParameterDescribe("信息文档ID") @PathParam("batchId") String batchId) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionPersistDeleteWithBatch.Wo> result = new ActionResult<>();
 		try {
@@ -296,6 +404,31 @@ public class DocumentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据文档ID正式发布文档，并且使用Message通知所有的阅读者。", action = ActionPersistPublishAndNotify.class)
+	@POST
+	@Path("publish/{id}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void persist_publishAndNotifyMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+										 @Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+										 JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionPersistPublishAndNotify.Wo> result = new ActionResult<>();
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionPersistPublishAndNotify().execute(request, id, effectivePerson, jsonElement);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error(e);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "直接发布信息内容，创建新的信息发布文档并且直接发布.", action = ActionPersistPublishContent.class)
 	@PUT
 	@Path("publish/content")
@@ -303,6 +436,31 @@ public class DocumentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void persist_publishContent(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionPersistPublishContent.Wo> result = new ActionResult<>();
+		Boolean check = true;
+
+		if (check) {
+			System.out.println("please wait, system try to publish content......");
+			try {
+				result = new ActionPersistPublishContent().execute(request, jsonElement, effectivePerson);
+				System.out.println("system publish content successful!");
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error(e);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "直接发布信息内容，创建新的信息发布文档并且直接发布.", action = ActionPersistPublishContent.class)
+	@POST
+	@Path("publish/content/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void persist_publishContentMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+									   @Context HttpServletRequest request, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionPersistPublishContent.Wo> result = new ActionResult<>();
 		Boolean check = true;
@@ -340,6 +498,25 @@ public class DocumentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据ID取消信息内容发布状态，修改为草稿.", action = ActionPersistPublishCancel.class)
+	@POST
+	@Path("publish/{id}/cancel/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void persist_publishCancelMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									  @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionPersistPublishCancel.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionPersistPublishCancel().execute(request, id, effectivePerson);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 下一页.", action = ActionQueryListNextWithFilter.class)
 	@PUT
 	@Path("filter/list/{id}/next/{count}")
@@ -349,6 +526,31 @@ public class DocumentAction extends StandardJaxrsAction {
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionQueryListNextWithFilter.Wo>> result = new ActionResult<>();
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionQueryListNextWithFilter().execute(request, id, count, jsonElement, effectivePerson);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error(e);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 下一页.", action = ActionQueryListNextWithFilter.class)
+	@POST
+	@Path("filter/list/{id}/next/{count}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_listNextWithFilterMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+										 @Context HttpServletRequest request,
+										 @JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+										 @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionQueryListNextWithFilter.Wo>> result = new ActionResult<>();
 		Boolean check = true;
@@ -390,6 +592,31 @@ public class DocumentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 上一页.", action = ActionQueryListPrevWithFilter.class)
+	@POST
+	@Path("filter/list/{id}/prev/{count}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_listPrevWithFilterMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+										 @Context HttpServletRequest request,
+										 @JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+										 @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionQueryListPrevWithFilter.Wo>> result = new ActionResult<>();
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionQueryListPrevWithFilter().execute(request, id, count, jsonElement, effectivePerson);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error(e);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "列示符合过滤条件的草稿信息内容, 下一页.", action = ActionQueryListDraftNextWithFilter.class)
 	@PUT
 	@Path("draft/list/{id}/next/{count}")
@@ -399,6 +626,32 @@ public class DocumentAction extends StandardJaxrsAction {
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionQueryListDraftNextWithFilter.Wo>> result = new ActionResult<>();
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionQueryListDraftNextWithFilter().execute(request, id, count, jsonElement,
+						effectivePerson);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error(e);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示符合过滤条件的草稿信息内容, 下一页.", action = ActionQueryListDraftNextWithFilter.class)
+	@POST
+	@Path("draft/list/{id}/next/{count}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_listDraftNextWithFilterMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+											  @Context HttpServletRequest request,
+											  @JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+											  @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionQueryListDraftNextWithFilter.Wo>> result = new ActionResult<>();
 		Boolean check = true;
@@ -602,6 +855,31 @@ public class DocumentAction extends StandardJaxrsAction {
 	public void query_listWithFilterPaging(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
 			@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionQueryListWithFilterPaging.Wo>> result = new ActionResult<>();
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionQueryListWithFilterPaging().execute(request, page, size, jsonElement,
+						effectivePerson);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error(e);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "分页查询符合过滤条件的已发布的信息内容.", action = ActionQueryListWithFilterPaging.class)
+	@POST
+	@Path("filter/list/{page}/size/{size}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_listWithFilterPagingMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+										   @Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+										   @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionQueryListWithFilterPaging.Wo>> result = new ActionResult<>();
 		Boolean check = true;
