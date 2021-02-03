@@ -28,8 +28,8 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listNext( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
+	public void listNext( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count
 			) {
 		ActionResult<List<ActionListNext.Wo>> result = new ActionResult<>();
@@ -47,8 +47,8 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void standardListPrev( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
+	public void standardListPrev( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count
 			) {
 		ActionResult<List<ActionListPrev.Wo>> result = new ActionResult<>();
@@ -66,7 +66,7 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("flag/{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void flag( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void flag( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("视图信息标识")  @PathParam("flag") String flag) {
 		ActionResult<ActionFlag.Wo> result = new ActionResult<>();
 		try {
@@ -84,7 +84,7 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("视图信息ID") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
@@ -114,7 +114,7 @@ public class QueryViewDesignAction extends BaseAction {
 				result.error(th);
 			}
 		}
-		
+
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
@@ -123,9 +123,32 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void update( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("视图信息ID") @PathParam("id") String id, 
+	public void update( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("视图信息ID") @PathParam("id") String id,
 			JsonElement jsonElement) {
+		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = new ActionUpdate().execute(effectivePerson, id, jsonElement );
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe( value = "更新数据视图设计信息.", action = ActionUpdate.class )
+	@POST
+	@Path("{id}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateMockPutToPost( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						@JaxrsParameterDescribe("视图信息ID") @PathParam("id") String id,
+						JsonElement jsonElement) {
 		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -146,8 +169,26 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("视图信息ID") @PathParam("id") String id) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		try {
+			EffectivePerson effectivePerson = this.effectivePerson(request);
+			result = new ActionDelete().execute( effectivePerson, id );
+		} catch (Throwable th) {
+			th.printStackTrace();
+			result.error(th);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe( value = "删除数据视图设计信息.", action = ActionDelete.class )
+	@GET
+	@Path("{id}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockDeleteToGet( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						@JaxrsParameterDescribe("视图信息ID") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -182,13 +223,44 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("flag/{flag}/simulate")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void simulate( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void simulate( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("视图信息标识")@PathParam("flag") String flag, JsonElement jsonElement ) {
 		ActionResult<Query> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapInQueryViewExecute wrapIn = null;
 		Boolean check = true;
-		
+
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInQueryViewExecute.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new ExceptionWrapInConvert( e, jsonElement );
+			result.error( exception );
+			e.printStackTrace();
+		}
+		if( check ){
+			try {
+				result = new ActionSimulate().execute(effectivePerson, flag, wrapIn);
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe( value = "模拟执行视图设计信息.", action = ActionSimulate.class )
+	@POST
+	@Path("flag/{flag}/simulate/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void simulateMockPutToPost( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						  @JaxrsParameterDescribe("视图信息标识")@PathParam("flag") String flag, JsonElement jsonElement ) {
+		ActionResult<Query> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		WrapInQueryViewExecute wrapIn = null;
+		Boolean check = true;
+
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInQueryViewExecute.class );
 		} catch (Exception e ) {
