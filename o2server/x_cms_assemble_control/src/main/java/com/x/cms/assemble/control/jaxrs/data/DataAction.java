@@ -251,6 +251,24 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocument.class)
+	@POST
+	@Path("document/{id}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithDocumentMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								   @JaxrsParameterDescribe("文档ID") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithDocument.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithDocument().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath0.class)
 	@PUT
 	@Path("document/{id}/{path0}")
@@ -259,6 +277,25 @@ public class DataAction extends StandardJaxrsAction {
 	public void updateWithDocumentWithPath0(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithDocumentPath0.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithDocumentPath0().execute(effectivePerson, id, path0, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath0.class)
+	@POST
+	@Path("document/{id}/{path0}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithDocumentWithPath0MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, JsonElement jsonElement) {
 		ActionResult<ActionUpdateWithDocumentPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -279,6 +316,26 @@ public class DataAction extends StandardJaxrsAction {
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithDocumentPath1.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithDocumentPath1().execute(effectivePerson, id, path0, path1, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath1.class)
+	@POST
+	@Path("document/{id}/{path0}/{path1}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithDocumentWithPath1MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1, JsonElement jsonElement) {
 		ActionResult<ActionUpdateWithDocumentPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -311,6 +368,27 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath2.class)
+	@POST
+	@Path("document/{id}/{path0}/{path1}/{path2}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithDocumentWithPath2MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithDocumentPath2.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithDocumentPath2().execute(effectivePerson, id, path0, path1, path2, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath3.class)
 	@PUT
 	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}")
@@ -322,6 +400,29 @@ public class DataAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithDocumentPath3.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithDocumentPath3().execute(effectivePerson, id, path0, path1, path2, path3,
+					jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath3.class)
+	@POST
+	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithDocumentWithPath3MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+											@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3, JsonElement jsonElement) {
 		ActionResult<ActionUpdateWithDocumentPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -358,6 +459,30 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath4.class)
+	@POST
+	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithDocumentWithPath4MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+											@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+											@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithDocumentPath4.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithDocumentPath4().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath5.class)
 	@PUT
 	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
@@ -371,6 +496,31 @@ public class DataAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithDocumentPath5.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithDocumentPath5().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath5.class)
+	@POST
+	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithDocumentWithPath5MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+											@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+											@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+											@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5, JsonElement jsonElement) {
 		ActionResult<ActionUpdateWithDocumentPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -409,6 +559,32 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath6.class)
+	@POST
+	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithDocumentWithPath6MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+											@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+											@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+											@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+											@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithDocumentPath6.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithDocumentPath6().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5, path6, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath7.class)
 	@PUT
 	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
@@ -424,6 +600,33 @@ public class DataAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
 			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
 			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithDocumentPath7.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithDocumentPath7().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5, path6, path7, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定Document的Data数据.", action = ActionUpdateWithDocumentPath7.class)
+	@POST
+	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithDocumentWithPath7MockPutToPost(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+											@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+											@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+											@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+											@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
+											@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7, JsonElement jsonElement) {
 		ActionResult<ActionUpdateWithDocumentPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -657,6 +860,24 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocument.class)
+	@GET
+	@Path("document/{id}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithDocumentMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								   @JaxrsParameterDescribe("文档ID") @PathParam("id") String id) {
+		ActionResult<ActionDeleteWithDocument.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithDocument().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath0.class)
 	@DELETE
 	@Path("document/{id}/{path0}")
@@ -665,6 +886,25 @@ public class DataAction extends StandardJaxrsAction {
 	public void deleteWithDocumentWithPath0(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0) {
+		ActionResult<ActionDeleteWithDocumentPath0.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithDocumentPath0().execute(effectivePerson, id, path0);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath0.class)
+	@GET
+	@Path("document/{id}/{path0}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithDocumentWithPath0MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0) {
 		ActionResult<ActionDeleteWithDocumentPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -685,6 +925,26 @@ public class DataAction extends StandardJaxrsAction {
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1) {
+		ActionResult<ActionDeleteWithDocumentPath1.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithDocumentPath1().execute(effectivePerson, id, path0, path1);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath1.class)
+	@GET
+	@Path("document/{id}/{path0}/{path1}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithDocumentWithPath1MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1) {
 		ActionResult<ActionDeleteWithDocumentPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -717,6 +977,27 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath2.class)
+	@GET
+	@Path("document/{id}/{path0}/{path1}/{path2}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithDocumentWithPath2MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2) {
+		ActionResult<ActionDeleteWithDocumentPath2.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithDocumentPath2().execute(effectivePerson, id, path0, path1, path2);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath3.class)
 	@DELETE
 	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}")
@@ -728,6 +1009,28 @@ public class DataAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3) {
+		ActionResult<ActionDeleteWithDocumentPath3.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithDocumentPath3().execute(effectivePerson, id, path0, path1, path2, path3);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath3.class)
+	@GET
+	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithDocumentWithPath3MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+											@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3) {
 		ActionResult<ActionDeleteWithDocumentPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -762,6 +1065,29 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath4.class)
+	@GET
+	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithDocumentWithPath4MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+											@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+											@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4) {
+		ActionResult<ActionDeleteWithDocumentPath4.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithDocumentPath4().execute(effectivePerson, id, path0, path1, path2, path3, path4);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath5.class)
 	@DELETE
 	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
@@ -775,6 +1101,31 @@ public class DataAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5) {
+		ActionResult<ActionDeleteWithDocumentPath5.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithDocumentPath5().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath5.class)
+	@GET
+	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithDocumentWithPath5MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+											@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+											@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+											@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5) {
 		ActionResult<ActionDeleteWithDocumentPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -813,6 +1164,32 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath6.class)
+	@GET
+	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithDocumentWithPath6MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+											@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+											@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+											@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+											@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6) {
+		ActionResult<ActionDeleteWithDocumentPath6.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithDocumentPath6().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5, path6);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath7.class)
 	@DELETE
 	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
@@ -828,6 +1205,33 @@ public class DataAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
 			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
 			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7) {
+		ActionResult<ActionDeleteWithDocumentPath7.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWithDocumentPath7().execute(effectivePerson, id, path0, path1, path2, path3, path4,
+					path5, path6, path7);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对指定的document删除局部data数据.", action = ActionDeleteWithDocumentPath7.class)
+	@GET
+	@Path("document/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithDocumentWithPath7MockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id,
+											@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+											@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+											@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+											@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+											@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+											@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+											@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
+											@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7) {
 		ActionResult<ActionDeleteWithDocumentPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
