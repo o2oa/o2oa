@@ -906,7 +906,7 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
             'source/x_component_cms_Document/lp/'+(option.lp || 'zh-cn')+'.js',
             'source/x_component_process_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
             'source/x_component_Selector/lp/'+(option.lp || 'zh-cn')+'.js',
-            'source/x_component_cms_xform/lp/'+(option.lp || 'zh-cn')+'.js',
+            'source/x_component_cms_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
 
             'source/x_component_cms_Document/Main.js',
 
