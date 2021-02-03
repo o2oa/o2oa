@@ -147,4 +147,23 @@ public class ViewCategoryAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "根据ID删除列表信息对象.", action = ActionDelete.class)
+	@GET
+	@Path("{id}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockDeleteToGet( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						@JaxrsParameterDescribe("列表分类关联信息ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionDelete().execute(request, effectivePerson, id);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

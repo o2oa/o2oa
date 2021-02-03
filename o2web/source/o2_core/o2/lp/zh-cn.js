@@ -148,6 +148,11 @@ o2.LP.desktop = {
     "say": "说",
     "clearMessage": "清除消息",
 
+    "refresh": "刷新",
+    "close": "关闭",
+    "closeAll": "全部关闭",
+    "closeOther": "关闭其他",
+
     "lnkAppTitle": "常用应用",
     "deleteLnk": "删除常用应用快捷方式",
     "addLnk": "添加常用应用快捷方式",

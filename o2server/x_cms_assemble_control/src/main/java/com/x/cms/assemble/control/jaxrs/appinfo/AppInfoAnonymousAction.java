@@ -50,10 +50,32 @@ public class AppInfoAnonymousAction extends StandardJaxrsAction {
 	@Path("filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listNextWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
+	public void listNextWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
 			JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListNextWithFilterAnonymous.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListNextWithFilterAnonymous().execute(request, effectivePerson, id, count, jsonElement );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionAppInfoProcess(e, "查询栏目信息对象时发生异常");
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示根据过滤条件的信息栏目信息,下一页.", action = ActionListNextWithFilterAnonymous.class)
+	@POST
+	@Path("filter/list/{id}/next/{count}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listNextWithFilterMockPutToPost( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+									@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
+									JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListNextWithFilterAnonymous.Wo>> result = new ActionResult<>();
 		try {
