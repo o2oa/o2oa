@@ -71,6 +71,7 @@
                 "gulp-tm-uglify": "3.0.1",
                 "gulp-uglify-es": "^2.0.0",
                 "gulp-util": "^3.0.8",
+                "jsdoc": "^3.6.6",
                 "minimist": "^1.2.0",
                 "progress-stream": "^2.0.0",
                 "request": "^2.88.2",
