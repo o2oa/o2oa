@@ -1807,6 +1807,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		var titleThs = this.titleTr.getElements("th");
 
 		var idx = 0;
+		var hasOrg = false;
 		titleThs.each(function(th, index){
 			if (index===0){
 			}else if (index === titleThs.length-1){
@@ -1823,13 +1824,21 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						module: module
 					};
 					idx++;
-					if (module && module.json.type === "Calendar") dateColArray.push(index + 1);
+					if (module && module.json.type === "Calendar"){
+						dateColArray.push(index + 1);
+					}else if( module && ["Org","Reader","Author"].contains(module.json.type) ){
+						hasOrg = true;
+					}
 				}
 			}
 		}.bind(this));
 
 		var orgMap = {};
 		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).upload( dateColArray, function (array) {
+			if( hasOrg ){
+
+			}
+
 			array.each( function(d, index){
 				var obj = textMap[d];
 				var module = obj.module;
