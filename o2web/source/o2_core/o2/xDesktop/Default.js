@@ -1753,6 +1753,8 @@ o2.xDesktop.Default.TaskItem = new Class({
         this.refreshNode.addClass("icon_refresh");
         this.refreshNode.addClass("animation_taskItemLoading");
 
+        this.actionNode = new Element("div.layout_content_taskbar_item_action").inject(this.node);;
+        this.actionNode.addClass("icon_taskitem_down");
 
         this.textNode = new Element("div.layout_content_taskbar_item_text").inject(this.node);;
         this.setText(this.app.options.title);
@@ -1809,8 +1811,60 @@ o2.xDesktop.Default.TaskItem = new Class({
             }.bind(this)
         });
 
+        this.loadTaskItemMenu();
+
         if (this.desktop && this.desktop.checkTaskBarSize) this.desktop.checkTaskBarSize();
     },
+    loadTaskItemMenu: function(){
+        if (!this.taskitemMenu){
+            this.taskitemMenu = new o2.xDesktop.Menu(this.actionNode, {
+                "event": "click", "style": "flatUser", "offsetX": -10, "offsetY":6, "container": this.node
+            });
+            this.taskitemMenu.load();
+            this.loadTaskItemMenuItems();
+        }
+    },
+    loadTaskItemMenuItems: function(){
+        var img = this.desktop.path+this.desktop.options.style+"/icons/menu_refresh.png";
+        this.taskitemMenu.addMenuItem(o2.LP.desktop.refresh, "click", function(e){this.app.refresh(e);}.bind(this), img);
+
+        this.taskitemMenu.addMenuLine();
+
+        //img = this.path+this.options.style+"/icons/logout.png";
+        if (this.app.options.appId!==this.desktop.options.index){
+            img = this.desktop.path+this.desktop.options.style+"/icons/menu_close.png";
+            this.taskitemMenu.addMenuItem(o2.LP.desktop.close, "click", function(){
+                if (!this.app.window){
+                    this.desktop.apps[this.app.options.appId] = null;
+                    delete this.desktop.apps[this.app.options.appId];
+                    this.destroy();
+                }else{
+                    this.app.close();
+                }
+            }.bind(this), img);
+        }
+
+        img = this.desktop.path+this.desktop.options.style+"/icons/menu_closeall.png";
+        this.taskitemMenu.addMenuItem(o2.LP.desktop.closeAll, "click", function(){
+            var keys = Array.clone(Object.keys(this.desktop.apps));
+            keys.each(function(key){
+                if (!this.desktop.apps[key].isIndex && !this.desktop.apps[key].options.isIndex) this.desktop.apps[key].close();
+            }.bind(this));
+            keys = null;
+        }.bind(this), img);
+
+        img = this.desktop.path+this.desktop.options.style+"/icons/menu_closeother.png";
+        this.taskitemMenu.addMenuItem(o2.LP.desktop.closeOther, "click", function(){
+            var keys = Array.clone(Object.keys(this.desktop.apps));
+            keys.each(function(key){
+                if (!this.desktop.apps[key].isIndex &&
+                    !this.desktop.apps[key].options.isIndex &&
+                    this.desktop.apps[key].options.appId!=this.app.options.appId) this.desktop.apps[key].close();
+            }.bind(this));
+            keys = null;
+        }.bind(this), img);
+    },
+
     setText: function(str){
         this.textNode.set("text", str || this.app.options.title);
     },
@@ -1821,7 +1875,8 @@ o2.xDesktop.Default.TaskItem = new Class({
             this.closeNode.removeClass("icon_close_focus");
             //this.closeNode.hide();
         }
-        this.refreshNode.hide();
+        if (this.refreshNode) this.refreshNode.hide();
+        if (this.actionNode) this.actionNode.hide();
     },
     selected: function(){
         this.node.addClass("mainColor_bg");
@@ -1832,11 +1887,15 @@ o2.xDesktop.Default.TaskItem = new Class({
         }
         this.desktop.checkTaskBarScrollTo(this.app);
         //this.refreshNode.show();
+        if (this.actionNode) this.actionNode.show();
+
+
     },
     destroy: function(){
         this.iconNode.destroy();
         this.node.destroy();
         if (this.desktop && this.desktop.checkTaskBarSize) this.desktop.checkTaskBarSize();
+        if (this.app.options && this.app.options.appId) delete this.desktop.apps[this.app.options.appId];
         o2.release(this);
     },
     setTaskitemSize: function(){
