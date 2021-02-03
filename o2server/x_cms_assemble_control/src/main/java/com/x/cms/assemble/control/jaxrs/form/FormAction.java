@@ -146,6 +146,29 @@ public class FormAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新表单信息对象.", action = ActionSave.class)
+	@POST
+	@Path("{id}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void putMockPutToPost( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					 @JaxrsParameterDescribe("表单ID") @PathParam("id") String id, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionSave.Wo> result = new ActionResult<>();
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = new ActionSave().execute( request, effectivePerson, id, jsonElement );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据ID删除表单信息对象.", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
@@ -153,6 +176,26 @@ public class FormAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("表单ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		try {
+			result = new ActionDelete().execute( request, effectivePerson, id );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionServiceLogic( e, "系统在根据ID删除表单时发生异常。" );
+			result.error( exception );
+			logger.error( e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据ID删除表单信息对象.", action = ActionDelete.class)
+	@GET
+	@Path("{id}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockDeleteToGet( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						@JaxrsParameterDescribe("表单ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		try {
@@ -189,6 +232,29 @@ public class FormAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "列示满足过滤条件的表单信息,下一页.", action = ActionListNextWithFilter.class)
+	@POST
+	@Path("filter/list/{id}/next/{count}/app/{appId}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listNextWithFilterMockPutToPost( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+									@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
+									@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId,
+									JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<List<ActionListNextWithFilter.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListNextWithFilter().execute( request, effectivePerson, id, count, appId, jsonElement );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
+			result.error( exception );
+			logger.error( e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "列示满足过滤条件的表单信息,上一页.", action = ActionListPrevWithFilter.class)
 	@PUT
 	@Path("filter/list/{id}/prev/{count}/app/{appId}")
@@ -199,6 +265,29 @@ public class FormAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId,
 			JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<List<ActionListPrevWithFilter.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListPrevWithFilter().execute( request, effectivePerson, id, count, appId, jsonElement );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
+			result.error( exception );
+			logger.error( e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示满足过滤条件的表单信息,上一页.", action = ActionListPrevWithFilter.class)
+	@POST
+	@Path("filter/list/{id}/prev/{count}/app/{appId}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listPrevWithFilterMockPutToPost( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+									@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
+									@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId,
+									JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListPrevWithFilter.Wo>> result = new ActionResult<>();
 		try {
