@@ -35,6 +35,7 @@
 		"cursor": "pointer",
 		"color": "#333333",
 		"font-family": "Microsoft YaHei",
+		"text-align": "left",
 		"font-size": "12px"
 	},
 

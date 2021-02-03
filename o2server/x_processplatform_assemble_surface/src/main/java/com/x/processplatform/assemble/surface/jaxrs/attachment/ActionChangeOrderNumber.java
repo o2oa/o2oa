@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -15,9 +14,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Process;
 
 import java.util.List;
 
@@ -30,18 +26,13 @@ class ActionChangeOrderNumber extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(workId, Work.class);
-			/* 判断work是否存在 */
-			if (null == work) {
-				throw new ExceptionEntityNotExist(workId, Work.class);
-			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
-			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionAccessDenied(effectivePerson, work);
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workId,
+					new ExceptionEntityNotExist(workId))) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
