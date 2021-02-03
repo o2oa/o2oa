@@ -47,6 +47,25 @@ public class OutputAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "选择栏目结构.", action = ActionSelect.class)
+	@POST
+	@Path("{appInfoFlag}/select/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void selectMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+					   JsonElement jsonElement) {
+		ActionResult<ActionSelect.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSelect().execute(effectivePerson, appInfoFlag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "查看所有栏目.", action = ActionList.class)
 	@GET
 	@Path("list")

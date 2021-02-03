@@ -74,6 +74,25 @@ public class AppDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新数据字典以及数据 MockPutToPost.", action = ActionUpdate.class)
+	@POST
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+					   @JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag, WrapInAppDict wrapIn) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdate().execute(effectivePerson, appDictFlag, appInfoFlag, wrapIn);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取AppInfo的数据字典列表.", action = ActionListWithAppInfo.class)
 	@GET
 	@Path("list/appInfo/{appInfoFlag}")
@@ -369,6 +388,29 @@ public class AppDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据字典和路径更新AppInfo下的数据字典局部数据 MockPutToPost.", action = ActionUpdateDataPath2.class)
+	@POST
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/data/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateDataPath2MockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2, JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateDataPath2().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据字典和路径更新AppInfo下的数据字典局部数据.", action = ActionUpdateDataPath3.class)
 	@PUT
 	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/data")
@@ -381,6 +423,30 @@ public class AppDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3, JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateDataPath3().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					path3, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据字典和路径更新AppInfo下的数据字典局部数据 MockPutToPost.", action = ActionUpdateDataPath3.class)
+	@POST
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/data/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateDataPath3MockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+								@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -418,6 +484,31 @@ public class AppDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据字典和路径更新AppInfo下的数据字典局部数据 MockPutToPost.", action = ActionUpdateDataPath4.class)
+	@POST
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateDataPath4MockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+								@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+								@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4, JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateDataPath4().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					path3, path4, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据字典和路径更新AppInfo下的数据字典局部数据.", action = ActionUpdateDataPath5.class)
 	@PUT
 	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data")
@@ -432,6 +523,32 @@ public class AppDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5, JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateDataPath5().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					path3, path4, path5, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据字典和路径更新AppInfo下的数据字典局部数据 MockPutToPost.", action = ActionUpdateDataPath5.class)
+	@POST
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateDataPath5MockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+								@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+								@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+								@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -471,6 +588,33 @@ public class AppDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据字典和路径更新AppInfo下的数据字典局部数据 MockPutToPost.", action = ActionUpdateDataPath6.class)
+	@POST
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateDataPath6MockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+								@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+								@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+								@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+								@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6, JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateDataPath6().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					path3, path4, path5, path6, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据字典和路径更新AppInfo下的数据字典局部数据.", action = ActionUpdateDataPath7.class)
 	@PUT
 	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data")
@@ -487,6 +631,34 @@ public class AppDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
 			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
 			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7, JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateDataPath7().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					path3, path4, path5, path6, path7, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据字典和路径更新AppInfo下的数据字典局部数据 MockPutToPost.", action = ActionUpdateDataPath7.class)
+	@POST
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateDataPath7MockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+								@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+								@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+								@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+								@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
+								@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -714,6 +886,26 @@ public class AppDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据 MockDeleteToGet.", action = ActionDeleteDataPath0.class)
+	@GET
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/data/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteDataPath0MockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteDataPath0().execute(appDictFlag, appInfoFlag, path0);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据.", action = ActionDeleteDataPath1.class)
 	@DELETE
 	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/data")
@@ -724,6 +916,27 @@ public class AppDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteDataPath1().execute(appDictFlag, appInfoFlag, path0, path1);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据 MockDeleteToGet.", action = ActionDeleteDataPath1.class)
+	@GET
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/data/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteDataPath1MockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -757,6 +970,28 @@ public class AppDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据.", action = ActionDeleteDataPath2.class)
+	@GET
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/data/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteDataPath2MockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteDataPath2().execute(appDictFlag, appInfoFlag, path0, path1, path2);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据.", action = ActionDeleteDataPath3.class)
 	@DELETE
 	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/data")
@@ -769,6 +1004,30 @@ public class AppDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteDataPath3().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					path3);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据.", action = ActionDeleteDataPath3.class)
+	@GET
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/data/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteDataPath3MockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+								@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -806,6 +1065,31 @@ public class AppDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据.", action = ActionDeleteDataPath4.class)
+	@GET
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteDataPath4MockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+								@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+								@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteDataPath4().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					path3, path4);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据.", action = ActionDeleteDataPath5.class)
 	@DELETE
 	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data")
@@ -820,6 +1104,32 @@ public class AppDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteDataPath5().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					path3, path4, path5);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据.", action = ActionDeleteDataPath5.class)
+	@GET
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteDataPath5MockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+								@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+								@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+								@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -859,6 +1169,33 @@ public class AppDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据.", action = ActionDeleteDataPath6.class)
+	@GET
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteDataPath6MockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+								@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+								@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+								@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+								@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteDataPath6().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					path3, path4, path5, path6);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据.", action = ActionDeleteDataPath7.class)
 	@DELETE
 	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data")
@@ -875,6 +1212,34 @@ public class AppDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
 			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
 			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteDataPath7().execute(appDictFlag, appInfoFlag, path0, path1, path2,
+					path3, path4, path5, path6, path7);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据字典ID和路径删除AppInfo下的数据字典局部数据.", action = ActionDeleteDataPath7.class)
+	@GET
+	@Path("{appDictFlag}/appInfo/{appInfoFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteDataPath7MockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("数据字典标识") @PathParam("appDictFlag") String appDictFlag,
+								@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String appInfoFlag,
+								@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+								@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+								@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+								@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+								@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+								@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+								@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
+								@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
