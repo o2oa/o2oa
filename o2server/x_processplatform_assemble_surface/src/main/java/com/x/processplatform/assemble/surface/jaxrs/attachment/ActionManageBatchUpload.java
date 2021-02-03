@@ -28,7 +28,7 @@ class ActionManageBatchUpload extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionManageBatchUpload.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workIds, String site, String fileName, byte[] bytes,
-			FormDataContentDisposition disposition, String extraParam, String person) throws Exception {
+			FormDataContentDisposition disposition, String extraParam, String person, Integer order) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -62,11 +62,11 @@ class ActionManageBatchUpload extends BaseAction {
                     Attachment attachment = null;
 					Work work = emc.find(workId.trim(), Work.class);
                     if(work!=null) {
-						attachment = this.concreteAttachment(work, person, site);
+						attachment = this.concreteAttachment(work, person, site, order);
                     }else{
                         WorkCompleted workCompleted = emc.find(workId, WorkCompleted.class);
                         if (null != workCompleted) {
-                            attachment = this.concreteAttachment(workCompleted, person, site);
+                            attachment = this.concreteAttachment(workCompleted, person, site, order);
                         }
                     }
                     if(attachment!=null){
@@ -91,7 +91,7 @@ class ActionManageBatchUpload extends BaseAction {
 		}
 	}
 
-	private Attachment concreteAttachment(Work work, String person, String site) throws Exception {
+	private Attachment concreteAttachment(Work work, String person, String site, Integer order) throws Exception {
 		Attachment attachment = new Attachment();
 		attachment.setCompleted(false);
 		attachment.setPerson(person);
@@ -106,10 +106,13 @@ class ActionManageBatchUpload extends BaseAction {
 		attachment.setActivityName(work.getActivityName());
 		attachment.setActivityToken(work.getActivityToken());
 		attachment.setActivityType(work.getActivityType());
+		if(order!=null){
+			attachment.setOrderNumber(order);
+		}
 		return attachment;
 	}
 
-    private Attachment concreteAttachment(WorkCompleted workCompleted, String person, String site) throws Exception {
+    private Attachment concreteAttachment(WorkCompleted workCompleted, String person, String site, Integer order) throws Exception {
         Attachment attachment = new Attachment();
         attachment.setCompleted(true);
         attachment.setPerson(person);
@@ -124,6 +127,9 @@ class ActionManageBatchUpload extends BaseAction {
         attachment.setActivityName(workCompleted.getActivityName());
         attachment.setActivityToken(workCompleted.getActivity());
         attachment.setActivityType(ActivityType.end);
+		if(order!=null){
+			attachment.setOrderNumber(order);
+		}
         return attachment;
     }
 
