@@ -946,7 +946,7 @@ function build_concat_basedocument_body() {
         'o2web/source/x_component_cms_Document/lp/'+(options.lp || 'zh-cn')+'.js',
         'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
         'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_cms_xform/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_cms_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
 
         'o2web/source/x_component_cms_Document/Main.js',
 
