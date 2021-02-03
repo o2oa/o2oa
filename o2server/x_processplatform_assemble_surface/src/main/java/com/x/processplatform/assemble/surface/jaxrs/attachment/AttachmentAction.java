@@ -1090,6 +1090,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site,
 			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("上传到指定用户") @FormDataParam("person") String person,
+			@JaxrsParameterDescribe("附件排序号") @FormDataParam("orderNumber") Integer orderNumber,
 			@JaxrsParameterDescribe("天印扩展字段") @FormDataParam("extraParam") String extraParam,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
@@ -1097,7 +1098,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionManageBatchUpload().execute(effectivePerson, workIds, site, fileName, bytes, disposition,
-					extraParam, person);
+					extraParam, person, orderNumber);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
