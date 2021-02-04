@@ -3,6 +3,7 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.x.base.core.project.tools.MD5Tool;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,7 +59,8 @@ class ActionLogin extends BaseAction {
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
 						&& StringUtils.equals(Config.token().getPassword(), password)) {
 					logger.warn("user: {} use superPermission.", credential);
-				} else if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())) {
+				} else if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
+						&& !StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
 					/* 普通用户认证密码 */
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
