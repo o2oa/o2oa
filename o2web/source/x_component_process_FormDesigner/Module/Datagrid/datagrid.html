@@ -79,6 +79,12 @@
         <div id="text{$.pid}impexpArea" style="display: text{($.impexpType && $.impexpType!=='none')?'block':'none'};">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
+                    <td class="editTableTitle"></td>
+                    <td class="editTableValue">
+                        注：序号、图片、附件和隐藏列不能导入导出。
+                    </td>
+                </tr>
+                <tr>
                     <td class="editTableTitle">按钮位置:</td>
                     <td class="editTableValue">
                         <input type="radio" name="impexpPosition" value="leftTop" text{(!$.impexpPosition || $.impexpPosition==='leftTop')?'checked':''}/>左上
