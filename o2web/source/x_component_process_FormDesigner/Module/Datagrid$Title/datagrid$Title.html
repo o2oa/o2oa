@@ -28,6 +28,13 @@
                     <input class="editTableRadio" name="isShow" text{($.isShow==false)?'checked':''} type="radio" value="false"/>隐藏该列 <br/>
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">导入导出:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isImpExp" text{($.isImpExp!==false)?'checked':''} type="radio" value="true"/>允许 <br/>
+                    <input class="editTableRadio" name="isImpExp" text{($.isImpExp==false)?'checked':''} type="radio" value="false"/>不允许 <br/>
+                </td>
+            </tr>
         </table>
 
         <div class="MWFMaplist" name="styles" title="样式"></div>
