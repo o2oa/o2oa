@@ -122,9 +122,11 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 
 	public static class Wo extends com.x.base.core.project.organization.Identity {
 
+		private Integer unitOrder;
 		private String matchUnitName;
 		private String matchUnitLevelName;
 		private Integer matchUnitLevel;
+		private Integer matchUnitOrder;
 		private String matchUnitDutyName;
 		private String matchUnitDutyId;
 		private Integer matchUnitDutyNumber;
@@ -175,6 +177,22 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 
 		public void setMatchUnitDutyNumber(Integer matchUnitDutyNumber) {
 			this.matchUnitDutyNumber = matchUnitDutyNumber;
+		}
+
+		public Integer getUnitOrder() {
+			return unitOrder;
+		}
+
+		public void setUnitOrder(Integer unitOrder) {
+			this.unitOrder = unitOrder;
+		}
+
+		public Integer getMatchUnitOrder() {
+			return matchUnitOrder;
+		}
+
+		public void setMatchUnitOrder(Integer matchUnitOrder) {
+			this.matchUnitOrder = matchUnitOrder;
 		}
 	}
 
@@ -246,9 +264,11 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 			wo.setMatchUnitLevelName(matchUnit.getLevelName());
 			wo.setMatchUnitName(matchUnit.getName());
 			wo.setMatchUnitLevel(matchUnit.getLevel());
+			wo.setMatchUnitOrder(matchUnit.getOrderNumber());
 		}
 		if (null != unit) {
 			wo.setUnit(unit.getDistinguishedName());
+			wo.setUnitOrder(unit.getOrderNumber());
 		}else{
 			wo.setUnit(identity.getUnit());
 		}
