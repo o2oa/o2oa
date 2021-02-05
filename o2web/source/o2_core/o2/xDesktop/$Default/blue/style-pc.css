@@ -73,7 +73,6 @@
     background-size: 24px;
     border-radius: 20px;
     margin: auto;
-    margin-top: 10px;
     height: 40px;
     width: 40px;
 }
@@ -314,6 +313,7 @@
     float: left;
     background-position: center;
     background-repeat: no-repeat;
+    background-size: 16px;
 }
 .layout_content_taskbar_item_action {
     width: 8px;
@@ -469,12 +469,21 @@
     text-align: center;
     cursor: pointer;
 }
+.layout_start_item_over{
+    width: 52px;
+    height: 52px;
+    opacity: 0.3;
+    position: absolute;
+    border-radius: 8px;
+    z-index: 10000;
+}
 .layout_start_item_iconArea {
     width: 40px;
     height: 40px;
     overflow: hidden;
     margin: auto;
 }
+
 .layout_start_item_icon {
     width: 40px;
     height: 40px;
