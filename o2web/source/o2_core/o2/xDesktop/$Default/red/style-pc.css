@@ -469,6 +469,14 @@
     text-align: center;
     cursor: pointer;
 }
+.layout_start_item_over{
+    width: 52px;
+    height: 52px;
+    opacity: 0.3;
+    position: absolute;
+    border-radius: 8px;
+    z-index: 10000;
+}
 .layout_start_item_iconArea {
     width: 40px;
     height: 40px;
