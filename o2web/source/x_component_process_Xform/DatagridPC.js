@@ -2042,7 +2042,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			this.fireEvent("import", [data] );
 
 			this.setData( data );
-			this.form.notice("导入成功！");
+			this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
 		},
 		openImportedErrorDlg : function( columnList, tableData ){
@@ -2067,7 +2067,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			columnList.each( function (obj, i) {
 				htmlArray.push( "<th style='"+titleStyle+"'>"+obj.text+"</th>" );
 			});
-			htmlArray.push( "<th style='"+titleStyle+"'>校验信息</th>" );
+			htmlArray.push( "<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>" );
 			htmlArray.push( "</tr>" );
 
 
@@ -2087,7 +2087,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			var div = new Element("div", { style : "padding:10px;", html : htmlArray.join("") });
 			var dlg = o2.DL.open({
 				"style" : this.form.json.dialogStyle || "user",
-				"title": "导入失败",
+				"title": MWF.xApplication.process.Xform.LP.importFail,
 				"content": div,
 				"offset": {"y": 0},
 				"isMax": false,
@@ -2108,6 +2108,10 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		},
 		checkImportedData : function( columnList, tableData ){
 			var flag = true;
+
+			var lp = MWF.xApplication.process.Xform.LP;
+			var columnText =  lp.importValidationColumnText;
+
 			tableData.each( function(lineData, lineIndex){
 
 				var errorTextList = [];
@@ -2116,6 +2120,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 					var module = obj.module;
 					var thJson = obj.thJson;
 					var text = obj.text;
+
+					var colInfor = columnText.replace( "{n}", index );
 
 					var d = lineData[text] || "";
 
@@ -2128,14 +2134,14 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 							var arr = d.split(/\s*,\s*/g ); //空格,空格
 							arr.each( function(d, idx){
 								var obj = this.getImportOrgData( d );
-								if( obj.errorText )errorTextList.push( "第"+index +"列：" + obj.errorText + "。" );
+								if( obj.errorText )errorTextList.push( colInfor + obj.errorText + + lp.fullstop );
 							}.bind(this));
 							break;
 						case "Number":
-							if (parseFloat(d).toString() === "NaN")errorTextList.push( "第"+index +"列：" + d+"不是数字。" );
+							if (parseFloat(d).toString() === "NaN")errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
 							break;
 						case "Calendar":
-							if( !( isNaN(d) && !isNaN(Date.parse(d) )))errorTextList.push("第"+index +"列：" +d+"不是日期格式。");
+							if( !( isNaN(d) && !isNaN(Date.parse(d) )))errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
 							break;
 						default:
 							break;
@@ -2144,7 +2150,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						module.setData();
 						module.validationMode();
 						if (!module.validation()){
-							errorTextList.push("第"+index +"列：" + module.errNode.get("text"));
+							errorTextList.push(colInfor + module.errNode.get("text"));
 							module.errNode.destroy();
 						}
 					}
@@ -2172,19 +2178,19 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			var flag = str.substr(str.length-2, 2);
 			switch (flag.toLowerCase()){
 				case "@i":
-					return this.identityMapImported[str] || {"errorText": str + "在系统中不存在"};
+					return this.identityMapImported[str] || {"errorText": str + MWF.xApplication.process.Xform.LP.notExistInSystem };
 				case "@p":
-					return this.personMapImported[str] || {"errorText":  str + "在系统中不存在"};
+					return this.personMapImported[str] || {"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
 				case "@u":
-					return this.unitMapImported[str] ||  {"errorText":  str + "在系统中不存在"};
+					return this.unitMapImported[str] ||  {"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
 				case "@g":
-					return this.groupMapImported[str] ||  {"errorText":  str + "在系统中不存在"};
+					return this.groupMapImported[str] ||  {"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
 				default:
 					return this.identityMapImported[str] ||
 						this.personMapImported[str] ||
 						this.unitMapImported[str] ||
 						this.groupMapImported[str] ||
-						{"errorText":  str + "在系统中不存在"};
+						{"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
 
 			}
 		},
@@ -2437,7 +2443,7 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 			if (files.length) {
 				var file = files.item(0);
 				if( file.name.indexOf(" ") > -1 ){
-					this.form.notice("上传的文件不能带空格", "error");
+					this.form.notice( MWF.xApplication.process.Xform.LP.uploadedFilesCannotHaveSpaces, "error");
 					return false;
 				}
 
