@@ -73,7 +73,6 @@
     background-size: 24px;
     border-radius: 20px;
     margin: auto;
-    margin-top: 10px;
     height: 40px;
     width: 40px;
 }
@@ -468,6 +467,14 @@
     float: left;
     text-align: center;
     cursor: pointer;
+}
+.layout_start_item_over{
+    width: 52px;
+    height: 52px;
+    opacity: 0.3;
+    position: absolute;
+    border-radius: 8px;
+    z-index: 10000;
 }
 .layout_start_item_iconArea {
     width: 40px;
