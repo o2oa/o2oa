@@ -73,7 +73,6 @@
     background-size: 24px;
     border-radius: 20px;
     margin: auto;
-    margin-top: 10px;
     height: 40px;
     width: 40px;
 }
@@ -314,6 +313,7 @@
     float: left;
     background-position: center;
     background-repeat: no-repeat;
+    background-size: 16px;
 }
 .layout_content_taskbar_item_action {
     width: 8px;
