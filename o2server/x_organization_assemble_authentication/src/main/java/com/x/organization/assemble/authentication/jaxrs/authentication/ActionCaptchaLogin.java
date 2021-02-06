@@ -3,6 +3,7 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.x.base.core.project.tools.MD5Tool;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -78,11 +79,12 @@ class ActionCaptchaLogin extends BaseAction {
 				Person o = null;
 				// 处理同中文问题
 				if (personId.indexOf(",") > -1) {
-					String[] arrPersion = personId.split(",");
-					for (int i = 0; i < arrPersion.length; i++) {
-						personId = arrPersion[i];
+					String[] arrPerson = personId.split(",");
+					for (int i = 0; i < arrPerson.length; i++) {
+						personId = arrPerson[i];
 						o = emc.find(personId, Person.class);
-						if (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())) {
+						if (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
+								|| StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
 							break;
 						}
 					}
@@ -97,7 +99,8 @@ class ActionCaptchaLogin extends BaseAction {
 					if (this.failureLocked(o)) {
 						throw new ExceptionFailureLocked(o.getName(), Config.person().getFailureInterval());
 					} else {
-						if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())) {
+						if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
+								&& !StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
 							emc.beginTransaction(Person.class);
 							this.failure(o);
 							emc.commit();
