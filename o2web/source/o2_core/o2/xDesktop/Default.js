@@ -1026,33 +1026,34 @@ o2.xDesktop.Default.StartMenu = new Class({
         }
     },
     searchApplicatins: function(value){
-        var user = this.layout.session.user;
-        var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
-        if (user.roleList) currentNames = currentNames.concat(user.roleList);
-        if (user.groupList) currentNames = currentNames.concat(user.groupList);
+        // var user = this.layout.session.user;
+        //         // var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
+        //         // if (user.roleList) currentNames = currentNames.concat(user.roleList);
+        //         // if (user.groupList) currentNames = currentNames.concat(user.groupList);
 
-        if (this.layoutJson && this.layoutJson.length) this.layoutJson.each(function(v){
-            if ( this.checkMenuItem(v, currentNames) ){
-                if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
-                    this.createApplicationMenuItem(v);
+        this.getCurrentName( function (currentNames) {
+            if (this.layoutJson && this.layoutJson.length) this.layoutJson.each(function(v){
+                if ( this.checkMenuItem(v, currentNames) ){
+                    if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
+                        this.createApplicationMenuItem(v);
+                    }
                 }
-            }
-        }.bind(this));
+            }.bind(this));
 
-        if (this.componentJson && this.componentJson.length) this.componentJson.each(function(v){
-            if ( this.checkMenuItem(v, currentNames) ){
-                if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
-                    this.createApplicationMenuItem(v);
+            if (this.componentJson && this.componentJson.length) this.componentJson.each(function(v){
+                if ( this.checkMenuItem(v, currentNames) ){
+                    if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
+                        this.createApplicationMenuItem(v);
+                    }
                 }
-            }
-        }.bind(this));
+            }.bind(this));
 
-        if (this.portalJson && this.portalJson.length) this.portalJson.each(function(v){
-            if ((v.name.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.name.toPY().toLowerCase().indexOf(value)!==-1) || (v.name.indexOf(value)!==-1)){
-                this.createPortalMenuItem(v);
-            }
-        }.bind(this));
-
+            if (this.portalJson && this.portalJson.length) this.portalJson.each(function(v){
+                if ((v.name.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.name.toPY().toLowerCase().indexOf(value)!==-1) || (v.name.indexOf(value)!==-1)){
+                    this.createPortalMenuItem(v);
+                }
+            }.bind(this));
+        })
     },
     searchProcesses: function(value){
         if (this.processJson && this.processJson.length) this.processJson.each(function(v){
@@ -1201,52 +1202,69 @@ o2.xDesktop.Default.StartMenu = new Class({
         }.bind(this));
     },
 
-    loadApplicationsItem: function(json_layout, json_component, json_portal){
+    getCurrentName : function( callback ){
         var user = this.layout.session.user;
         var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
         if (user.roleList) currentNames = currentNames.concat(user.roleList);
-        if (user.groupList) currentNames = currentNames.concat(user.groupList);
+        // if (user.groupList) currentNames = currentNames.concat(user.groupList);
+        o2.Actions.load("x_organization_assemble_express").GroupAction.listWithPerson(
+            {  personList: [user.distinguishedName] },
+            function(json) {
+                currentNames = currentNames.concat(json.data.groupList);
+                if( callback )callback( currentNames )
+            }
+        )
+    },
 
-        this.appContentNode.removeClass("icon_loading");
+    loadApplicationsItem: function(json_layout, json_component, json_portal){
+        // var user = this.layout.session.user;
+        // var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
+        // if (user.roleList) currentNames = currentNames.concat(user.roleList);
+        // if (user.groupList) currentNames = currentNames.concat(user.groupList);
 
-        var loadedApps = {};
-        if (this.menuData && this.menuData.appList && this.menuData.appList.length){
-            this.menuData.appList.each(function(app){
-                var appData = null;
-                if (!appData && json_layout && json_layout.length){
-                    appData = json_layout.find(function(i){ return (i.id === app.id); });
-                    if (appData){
-                        json_layout.erase(appData);
-                        if ( this.checkMenuItem(appData, currentNames) ) this.createApplicationMenuItem(appData);
+        this.getCurrentName( function ( currentNames ) {
+            this.appContentNode.removeClass("icon_loading");
+
+            var loadedApps = {};
+            if (this.menuData && this.menuData.appList && this.menuData.appList.length){
+                this.menuData.appList.each(function(app){
+                    var appData = null;
+                    if (!appData && json_layout && json_layout.length){
+                        appData = json_layout.find(function(i){ return (i.id === app.id); });
+                        if (appData){
+                            json_layout.erase(appData);
+                            if ( this.checkMenuItem(appData, currentNames) ) this.createApplicationMenuItem(appData);
+                        }
                     }
-                }
-                if (!appData && json_component && json_component.length){
-                    appData = json_component.find(function(i){ return (i.id === app.id); });
-                    if (appData){
-                        json_component.erase(appData);
-                        if ( this.checkMenuItem(appData, currentNames) ) this.createApplicationMenuItem(appData);
+                    if (!appData && json_component && json_component.length){
+                        appData = json_component.find(function(i){ return (i.id === app.id); });
+                        if (appData){
+                            json_component.erase(appData);
+                            if ( this.checkMenuItem(appData, currentNames) ) this.createApplicationMenuItem(appData);
+                        }
                     }
-                }
-                if (!appData && json_portal && json_portal.length){
-                    appData = json_portal.find(function(i){ return (i.id === app.id); });
-                    if (appData){
-                        json_portal.erase(appData);
-                        this.createPortalMenuItem(appData);
+                    if (!appData && json_portal && json_portal.length){
+                        appData = json_portal.find(function(i){ return (i.id === app.id); });
+                        if (appData){
+                            json_portal.erase(appData);
+                            this.createPortalMenuItem(appData);
+                        }
                     }
-                }
+                }.bind(this));
+            }
+
+            if (json_layout && json_layout.length) json_layout.each(function(value){
+                if ( this.checkMenuItem(value, currentNames) ) this.createApplicationMenuItem(value);
             }.bind(this));
-        }
 
-        if (json_layout && json_layout.length) json_layout.each(function(value){
-            if ( this.checkMenuItem(value, currentNames) ) this.createApplicationMenuItem(value);
-        }.bind(this));
+            if (json_component && json_component.length) json_component.each(function(value){
+                if ( this.checkMenuItem(value, currentNames) ) this.createApplicationMenuItem(value);
+            }.bind(this));
 
-        if (json_component && json_component.length) json_component.each(function(value){
-            if ( this.checkMenuItem(value, currentNames) ) this.createApplicationMenuItem(value);
-        }.bind(this));
+            if (json_portal && json_portal.length) json_portal.each(function(value){
+                this.createPortalMenuItem(value);
+            }.bind(this));
 
-        if (json_portal && json_portal.length) json_portal.each(function(value){
-            this.createPortalMenuItem(value);
         }.bind(this));
     },
 
