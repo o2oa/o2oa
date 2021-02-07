@@ -158,7 +158,10 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
     },
 	/**
 	 * @summary 获取选择项。
-	 * @return {Array} 返回选择项数组，如果使用选择项脚本，根据脚本返回决定
+	 * @return {Array} 返回选择项数组，如果使用选择项脚本，根据脚本返回决定，如：<pre><code class='language-js'>[
+	 *  "女|female",
+	 *  "男|male"
+	 * ]</code></pre>
 	 * @example
 	 * this.form.get('fieldId').getOptions();
 	 */
@@ -170,6 +173,30 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		}
 		return [];
 	},
+
+	/**
+	 * @summary 获取整理后的选择项。
+	 * @return {Object} 返回整理后的选择项，如：
+	 * <pre><code class='language-js'>{"valueList": ["","female","male"], "textList": ["","女","男"]}
+	 * </code></pre>
+	 * @example
+	 * var optionData = this.form.get('fieldId').getOptionsObj();
+	 */
+	getOptionsObj : function(){
+		var textList = [];
+		var valueList = [];
+		var optionItems = this.getOptions();
+		if (!optionItems) optionItems = [];
+		if (o2.typeOf(optionItems)==="array"){
+			optionItems.each(function(item){
+				var tmps = item.split("|");
+				textList.push( tmps[0] );
+				valueList.push( tmps[1] || tmps[0] );
+			}.bind(this));
+		}
+		return { textList : textList, valueList : valueList };
+	},
+
 	setOptions: function(){
 		var optionItems = this.getOptions();
 		this._setOptions(optionItems);
@@ -389,28 +416,6 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 
         this.setData(this.getValue());
     },
-	/**
-	 * @summary 获取整理后的选择项。
-	 * @return {Object} 返回整理后的选择项，如：
-	 * <pre><code class='language-js'>{"value": ["","female","male"], "text": ["","女","男"]}
-	 * </code></pre>
-	 * @example
-	 * var optionData = this.form.get('fieldId').getOptionsObj();
-	 */
-	getOptionsObj : function(){
-		var textList = [];
-		var valueList = [];
-		var optionItems = this.getOptions();
-		if (!optionItems) optionItems = [];
-		if (o2.typeOf(optionItems)==="array"){
-			optionItems.each(function(item){
-				var tmps = item.split("|");
-				textList.push( tmps[0] );
-				valueList.push( tmps[1] || tmps[0] );
-			}.bind(this));
-		}
-		return { textList : textList, valueList : valueList };
-	},
 
 	setData: function(data){
 		return this._setValue(data, "__setData");

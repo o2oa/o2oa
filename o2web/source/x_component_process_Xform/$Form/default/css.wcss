@@ -426,6 +426,33 @@
         "border-radius": "5px",
         "text-align": "center"
     },
+    "gridImpExpAreaNode" : {
+      "display" : "block"
+    },
+  "gridImportActionStyles" : {
+    "color" : "#777",
+    "border-radius": "5px",
+    "border": "1px solid #ccc",
+    "cursor": "pointer",
+    "height": "26px",
+    "float" : "left",
+    "line-height": "26px",
+    "padding": "0px 5px",
+    "background-color": "#efefef",
+    "margin" : "5px"
+  },
+  "gridExportActionStyles" : {
+    "color" : "#777",
+    "border-radius": "5px",
+    "border": "1px solid #ccc",
+    "cursor": "pointer",
+    "height": "26px",
+    "float" : "left",
+    "line-height": "26px",
+    "padding": "0px 5px",
+    "background-color": "#efefef",
+    "margin" : "5px"
+  },
     "mobileGridHelpNode": {
         "width": "30px",
         "height": "30px",
