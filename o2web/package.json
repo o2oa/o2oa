@@ -52,5 +52,10 @@
     "jsdoc": "^3.6.6",
     "tidy-jsdoc-o2": "0.0.8",
     "gulp-git": "^2.10.1"
+  },
+  "dependencies": {
+    "gulp-cli": "^2.3.0",
+    "jsdoc": "^3.6.6",
+    "tidy-jsdoc-o2": "0.0.8"
   }
 }
