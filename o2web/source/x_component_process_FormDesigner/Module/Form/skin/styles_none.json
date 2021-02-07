@@ -126,6 +126,8 @@
     "editStyles": {},
     "amountStyles": {},
     "itemTitleStyles": {},
+    "importActionStyles" : {},
+    "exportActionStyles" : {},
     "properties": {}
   },
   "datagrid$Title": {
