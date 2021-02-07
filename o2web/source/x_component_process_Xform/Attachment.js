@@ -1710,7 +1710,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
      */
     setData: function(data){
         this.attachmentController.clear();
-        data.each(function (att) {
+        ( data || [] ).each(function (att) {
             var attachment = this.form.businessData.attachmentList.find(function(a){
                 return a.id==att.id;
             });

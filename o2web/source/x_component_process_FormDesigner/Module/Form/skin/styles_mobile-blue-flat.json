@@ -302,6 +302,30 @@
       "margin-bottom" : "10px",
       "margin-top" : "10px"
     },
+    "importActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
+    "exportActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
     "properties": {
       "width": "100%",
       "border": "0",
