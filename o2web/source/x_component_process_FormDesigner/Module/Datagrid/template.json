@@ -6,6 +6,8 @@
     "sequence": "yes",
     "section": "no",
     "sectionBy": "person",
+	"importActionText" : "导入Excel",
+	"exportActionText" : "导出Excel",
     "sectionByScript": {
       "code": "",
       "html": ""
@@ -50,6 +52,14 @@
 		"editLine": {
 		  "code": "",
 		  "html": ""
+		},
+		"export": {
+			"code": "",
+			"html": ""
+		},
+		"import": {
+			"code": "",
+			"html": ""
 		},
 		"click": {
 			"code": "",
