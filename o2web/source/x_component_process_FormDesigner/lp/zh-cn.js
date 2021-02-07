@@ -140,6 +140,12 @@ MWF.xApplication.process.FormDesigner.LP = {
             "delete_title": "删除校验内容确认",
             "delete_text": "您确定要删除此项校验码？"
         },
+
+    "datagrid" : {
+		"import" : "导入",
+       "export" : "导出"
+    },
+
     "selectIcon": "选择图标",
     "selectImage": "选择图片",
     "selectApplication" : "选择应用",
