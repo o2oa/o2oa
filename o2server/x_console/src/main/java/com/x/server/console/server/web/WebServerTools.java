@@ -4,19 +4,13 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.servlet.DispatcherType;
 
-import org.apache.commons.codec.binary.Base64;
+import com.x.base.core.project.config.WebServers;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -31,8 +25,6 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServer;
@@ -40,7 +32,6 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.Host;
 import com.x.server.console.server.JettySeverTools;
 
 public class WebServerTools extends JettySeverTools {
@@ -54,8 +45,8 @@ public class WebServerTools extends JettySeverTools {
 
 	public static Server start(WebServer webServer) throws Exception {
 
-		// 更新x_desktop的center指向
-		updateCenterConfigJson();
+		// 更新web服务配置信息
+		WebServers.updateWebServerConfigJson();
 		// 更新 favicon.ico
 		updateFavicon();
 		// 创建index.html
@@ -170,90 +161,6 @@ public class WebServerTools extends JettySeverTools {
 			FileUtils.copyFile(file, new File(Config.dir_servers_webServer(), "favicon.ico"));
 		}
 
-	}
-
-	private static void updateCenterConfigJson() throws Exception {
-		File dir = new File(Config.base(), "servers/webServer/x_desktop/res/config");
-		FileUtils.forceMkdir(dir);
-		File file = new File(dir, "config.json");
-
-		Gson gson = XGsonBuilder.instance();
-
-		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-		/** 覆盖掉配置的参数 */
-		com.x.base.core.project.config.CenterServer centerServerConfig = Config.nodes().centerServers().first()
-				.getValue();
-		map.putAll(centerServerConfig.getConfig());
-		List<Map<String, String>> centers = new ArrayList<>();
-		map.put("center", centers);
-		/** 写入center地址 */
-		Map<String, String> center = new HashMap<String, String>();
-		center = new HashMap<String, String>();
-		center.put("host", "");
-		center.put("port", centerServerConfig.getPort().toString());
-		centers.add(center);
-		if (!Objects.equals(centerServerConfig.getProxyPort(), centerServerConfig.getPort())) {
-			center = new HashMap<String, String>();
-			center.put("host", "");
-			center.put("port", centerServerConfig.getProxyPort().toString());
-			centers.add(center);
-		}
-		String host = Config.nodes().primaryCenterNode();
-		if (!Host.isRollback(host)) {
-			center = new HashMap<String, String>();
-			center.put("host", host);
-			center.put("port", centerServerConfig.getPort().toString());
-			centers.add(center);
-		}
-		/** 写入proxy地址 */
-		if (StringUtils.isNotEmpty(centerServerConfig.getProxyHost())) {
-			center = new HashMap<String, String>();
-			center.put("host", centerServerConfig.getProxyHost());
-			center.put("port", centerServerConfig.getProxyPort().toString());
-			centers.add(center);
-		}
-
-		/** 写入systemName */
-		map.put("footer", Config.collect().getFooter());
-		map.put("title", Config.collect().getTitle());
-		map.put("appUrl", Config.collect().getAppUrl());
-		/***/
-		if (centerServerConfig.getSslEnable()) {
-			map.put("app_protocol", "https:");
-		} else {
-			map.put("app_protocol", "http:");
-		}
-		/* 上面的无效 */
-		map.put("app_protocol", "auto");
-		if ((null != Config.portal().getLoginPage())
-				&& (BooleanUtils.isTrue(Config.portal().getLoginPage().getEnable()))) {
-			map.put(MAP_LOGINPAGE, Config.portal().getLoginPage());
-		} else if ((null != Config.person().getLoginPage())
-				&& (BooleanUtils.isTrue(Config.person().getLoginPage().getEnable()))) {
-			map.put(MAP_LOGINPAGE, Config.person().getLoginPage());
-		} else {
-			map.put(MAP_LOGINPAGE, Config.portal().getLoginPage());
-		}
-		map.put("indexPage", Config.portal().getIndexPage());
-		map.put("webSocketEnable", Config.communicate().wsEnable());
-		map.put("urlMapping", Config.portal().getUrlMapping());
-
-		/* 密码规则 */
-		map.put("passwordRegex", Config.person().getPasswordRegex());
-		map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
-
-		/* RSA */
-		File publicKeyFile = new File(Config.base(), "config/public.key");
-		if (publicKeyFile.exists() && publicKeyFile.isFile()) {
-			String publicKey = FileUtils.readFileToString(publicKeyFile, "utf-8");
-			byte[] publicKeyB = Base64.decodeBase64(publicKey);
-			publicKey = new String(Base64.encodeBase64(publicKeyB));
-			map.put("publicKey", publicKey);
-		}
-		for (Entry<String, JsonElement> en : Config.web().entrySet()) {
-			map.put(en.getKey(), en.getValue());
-		}
-		FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 	}
 
 	private static void createIndexPage() throws Exception {
