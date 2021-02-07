@@ -41,8 +41,8 @@
         <td><a href="module-session.html">当前用户 - session</a></td>
     </tr>
     <tr>
+        <td><a href="module-o2m.html">平台移动APP API - o2m</a></td>
         <td><a href="module-wait.html">表单等待 - wait</a></td>
-        <td></td>
         <td></td>
     </tr>
 </table>
