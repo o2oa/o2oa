@@ -1208,7 +1208,12 @@ o2.xDesktop.Default.StartMenu = new Class({
         if (user.roleList) currentNames = currentNames.concat(user.roleList);
         // if (user.groupList) currentNames = currentNames.concat(user.groupList);
         o2.Actions.load("x_organization_assemble_express").GroupAction.listWithPerson(
-            {  personList: [user.distinguishedName] },
+            {
+                personList: [user.distinguishedName],
+                recursiveGroupFlag : true,
+                referenceFlag : true,
+                recursiveOrgFlag : true
+            },
             function(json) {
                 currentNames = currentNames.concat(json.data.groupList);
                 if( callback )callback( currentNames )
