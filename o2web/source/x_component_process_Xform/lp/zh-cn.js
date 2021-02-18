@@ -15,6 +15,7 @@ MWF.xApplication.process.Xform.LP = {
     "validationInfor" : "校验信息",
     "importFail" : "导入失败",
     "importValidationColumnText" : "第{n}列：",
+    "importValidationColumnTextExcel" : "列{n}：",
     "notValidNumber" : "不是数字",
     "notValidDate" : "不是日期格式",
     "fullstop" : "。",
