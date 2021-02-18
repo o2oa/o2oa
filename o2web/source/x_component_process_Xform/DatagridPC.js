@@ -1866,7 +1866,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 								text = module.node.get("text");
 							}
 
-							array.push(text || "");
+							if( !text && typeOf(text) !== "number" ){
+								text = "";
+							}
+
+							array.push( text );
 						}
 
 
