@@ -1781,18 +1781,17 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			return this.json.id+i;
 		},
 
-		exportToExcel : function () {
-			debugger;
+
+		isAvaliableImpExpColumn : function(thJson, module, type){
+			if (thJson && ( thJson.isShow === false || thJson.isImpExp === false ))return false; //隐藏列，不允许导入导出
+			if (module && (module.json.type == "sequence" || module.json.cellType == "sequence") )return false; //序号列
+			if (module && ["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains(module.json.type) )return false; //图片，附件,Label列不导入导出
+			// if (type==="import" && module && ["Label"].contains(module.json.type))return false; //Label 不导入
+			return true;
+		},
+		getExportColWidthArray : function(){
 			var titleThs = this.titleTr.getElements("th");
-			// var editorTds = this.editorTr.getElements("td");
-
-			var resultArr = [];
-
-			var titleArr = [];
 			var colWidthArr = [];
-			var dateIndexArr = []; //日期格式列下标
-
-			var idx=0;
 			titleThs.each(function(th, index){
 				if ( this.editable && (index===0 || index === titleThs.length-1) )return; //第一列操作列和最后一列排序列
 
@@ -1809,14 +1808,81 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						colWidthArr.push(500);
 					} else if (module && module.json.type === "Calendar") {
 						colWidthArr.push(150);
-						dateIndexArr.push(idx);
 					} else {
 						colWidthArr.push(150);
 					}
+				}
+			}.bind(this));
+			return colWidthArr;
+		},
+		getExportDateIndexArray : function(){
+			var titleThs = this.titleTr.getElements("th");
+			var dateIndexArr = []; //日期格式列下标
+			var idx=0;
+			titleThs.each(function(th, index){
+				if ( this.editable && (index===0 || index === titleThs.length-1) )return; //第一列操作列和最后一列排序列
+				var thJson = this.form._getDomjson( th );
+				var module = this.editModules[this.editable ? (index-1) : index];
+				if ( this.isAvaliableImpExpColumn( thJson, module ) ) {
+					if (module && module.json.type === "Calendar") {
+						dateIndexArr.push(idx);
+					}
 					idx++;
+				}
+			}.bind(this));
+			return dateIndexArr;
+		},
+		getExportTitleArray : function( type ){
+			var titleThs = this.titleTr.getElements("th");
+			var titleArr = [];
+			titleThs.each(function(th, index){
+				if ( this.editable && (index===0 || index === titleThs.length-1) )return; //第一列操作列和最后一列排序列
+				var thJson = this.form._getDomjson( th );
+				var module = this.editModules[this.editable ? (index-1) : index];
+				if ( this.isAvaliableImpExpColumn( thJson, module, type ) ) {
 					titleArr.push(th.get("text"));
 				}
 			}.bind(this));
+			return titleArr;
+		},
+
+		exportToExcel : function () {
+			debugger;
+			var titleThs = this.titleTr.getElements("th");
+			// var editorTds = this.editorTr.getElements("td");
+
+			var resultArr = [];
+
+			var titleArr = this.getExportTitleArray();
+			var colWidthArr = this.getExportColWidthArray();
+			var dateIndexArr = this.getExportDateIndexArray(); //日期格式列下标
+
+			// var idx=0;
+			// titleThs.each(function(th, index){
+			// 	if ( this.editable && (index===0 || index === titleThs.length-1) )return; //第一列操作列和最后一列排序列
+			//
+			// 	var thJson = this.form._getDomjson( th );
+			// 	var module = this.editModules[this.editable ? (index-1) : index];
+			// 	if ( this.isAvaliableImpExpColumn( thJson, module ) ) {
+			// 		if (module && ["Org","Reader","Author","Personfield","Orgfield"].contains(module.json.type)) {
+			// 			colWidthArr.push(340);
+			// 		} else if (module && module.json.type === "Address") {
+			// 			colWidthArr.push(170);
+			// 		} else if (module && module.json.type === "Textarea") {
+			// 			colWidthArr.push(260);
+			// 		} else if (module && module.json.type === "Htmleditor") {
+			// 			colWidthArr.push(500);
+			// 		} else if (module && module.json.type === "Calendar") {
+			// 			colWidthArr.push(150);
+			// 			dateIndexArr.push(idx);
+			// 		} else {
+			// 			colWidthArr.push(150);
+			// 		}
+			// 		idx++;
+			// 		titleArr.push(th.get("text"));
+			// 	}
+			// }.bind(this));
+
 			resultArr.push( titleArr );
 
 			if (this.gridData.data){
@@ -1949,13 +2015,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 			}.bind(this));
 		},
-		isAvaliableImpExpColumn : function(thJson, module, type){
-			if (thJson && ( thJson.isShow === false || thJson.isImpExp === false ))return false; //隐藏列，不允许导入导出
-			if (module && (module.json.type == "sequence" || module.json.cellType == "sequence") )return false; //序号列
-			if (module && ["Image","Button","ImageClipper","Attachment","AttachmentDg"].contains(module.json.type) )return false; //图片，附件列不导入导出
-			if (type==="import" && module && ["Label"].contains(module.json.type))return false; //Label 不导入
-			return true;
-		},
+
 		setImportData: function(columnList, importedData){
 
 			var data = {
@@ -2052,6 +2112,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 		},
 		openImportedErrorDlg : function( columnList, tableData ){
+			var _self = this;
 
 			var objectToString = function (obj, type) {
 				if(!obj)return "";
@@ -2076,13 +2137,15 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			htmlArray.push( "<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>" );
 			htmlArray.push( "</tr>" );
 
+			var contentStyles = Object.clone( this.json.contentStyles );
+			if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
+			var contentStyle = objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
 
-			var contentStyle = objectToString( Object.merge( Object.clone( this.json.contentStyles ), {"text-align":"left"}) , "style" );
 			tableData.each( function( lineData, lineIndex ){
 
 				htmlArray.push( "<tr>" );
 				columnList.each( function (obj, i) {
-					htmlArray.push( "<td style='"+contentStyle+"'>"+lineData[ obj.text ]+"</td>" );
+					htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ obj.text ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
 				});
 				htmlArray.push( "<td style='"+contentStyle+"'>"+( lineData.errorTextList ? lineData.errorTextList.join("<br/>") : "" )+"</td>" );
 				htmlArray.push( "</tr>" );
@@ -2096,10 +2159,15 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 				"title": MWF.xApplication.process.Xform.LP.importFail,
 				"content": div,
 				"offset": {"y": 0},
-				"isMax": false,
+				"isMax": true,
 				"width": 1000,
 				"height": 700,
 				"buttonList": [
+					{
+						"type": "exportWithError",
+						"text": MWF.xApplication.process.Xform.LP.datagridExport,
+						"action": function () { _self.exportWithImportDataToExcel(columnList, tableData); }
+					},
 					{
 						"type": "cancel",
 						"text": MWF.LP.process.button.cancel,
@@ -2112,15 +2180,62 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			});
 
 		},
+		exportWithImportDataToExcel : function ( columnList, importedData ) {
+			debugger;
+			var titleThs = this.titleTr.getElements("th");
+			// var editorTds = this.editorTr.getElements("td");
+
+			var resultArr = [];
+
+			var colWidthArr = this.getExportColWidthArray();
+			colWidthArr.push( 220 );
+
+			var dateIndexArr = this.getExportDateIndexArray(); //日期格式列下标
+
+			var titleArr = this.getExportTitleArray("import");
+			titleArr.push( MWF.xApplication.process.Xform.LP.validationInfor );
+			resultArr.push( titleArr );
+
+			importedData.each( function( lineData, lineIndex ){
+				var array = [];
+				columnList.each( function (obj, i) {
+					array.push( ( lineData[ obj.text ] || '' ).replace(/&#10;/g, "\n") );
+				});
+				array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
+
+				resultArr.push( array );
+			}.bind(this));
+
+			var title;
+			if( this.json.excelName && this.json.excelName.code ){
+				title = this.form.Macro.exec(this.json.excelName.code, this);
+			}else{
+				title = MWF.xApplication.process.Xform.LP.exportDefaultName;
+			}
+			var titleA = title.split(".");
+			if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
+				titleA.splice( titleA.length-1 );
+			}
+			title = titleA.join(".");
+
+			var arg = { data : resultArr, colWidthArray : colWidthArr, title : title, withError : true };
+			this.fireEvent("export", [arg]);
+
+			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+		},
 		checkImportedData : function( columnList, tableData ){
 			var flag = true;
 
 			var lp = MWF.xApplication.process.Xform.LP;
 			var columnText =  lp.importValidationColumnText;
+			var columnTextExcel = lp.importValidationColumnTextExcel;
+			var excelUtil = new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this );
 
 			tableData.each( function(lineData, lineIndex){
 
 				var errorTextList = [];
+				var errorTextListExcel = [];
+
 				columnList.each( function (obj, i) {
 					var index = obj.index;
 					var module = obj.module;
@@ -2128,6 +2243,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 					var text = obj.text;
 
 					var colInfor = columnText.replace( "{n}", index );
+					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index-1 ) );
 
 					var d = lineData[text] || "";
 
@@ -2140,14 +2256,23 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 							var arr = d.split(/\s*,\s*/g ); //空格,空格
 							arr.each( function(d, idx){
 								var obj = this.getImportOrgData( d );
-								if( obj.errorText )errorTextList.push( colInfor + obj.errorText + + lp.fullstop );
+								if( obj.errorText ){
+									errorTextList.push( colInfor + obj.errorText + + lp.fullstop );
+									errorTextListExcel.push( colInforExcel + obj.errorText + + lp.fullstop );
+								}
 							}.bind(this));
 							break;
 						case "Number":
-							if (parseFloat(d).toString() === "NaN")errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+							if (parseFloat(d).toString() === "NaN"){
+								errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+								errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
+							}
 							break;
 						case "Calendar":
-							if( !( isNaN(d) && !isNaN(Date.parse(d) )))errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+							if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+								errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+								errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+							}
 							break;
 						default:
 							break;
@@ -2157,6 +2282,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						module.validationMode();
 						if (!module.validation()){
 							errorTextList.push(colInfor + module.errNode.get("text"));
+							errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
 							module.errNode.destroy();
 						}
 					}
@@ -2164,6 +2290,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 				if(errorTextList.length>0){
 					lineData.errorTextList = errorTextList;
+					lineData.errorTextListExcel = errorTextListExcel;
 					flag = false;
 				}
 
