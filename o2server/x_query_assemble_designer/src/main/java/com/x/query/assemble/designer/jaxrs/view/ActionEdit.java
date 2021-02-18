@@ -37,13 +37,12 @@ class ActionEdit extends BaseAction {
 			if (!business.editable(effectivePerson, query)) {
 				throw new ExceptionQueryAccessDenied(effectivePerson.getDistinguishedName(), query.getName());
 			}
-			Wi.copier.copy(wi, view);
-			switch (StringUtils.trimToEmpty(view.getType())) {
+			switch (StringUtils.trimToEmpty(wi.getType())) {
 			case View.TYPE_CMS:
-				view.setData(gson.toJson(gson.fromJson(view.getData(), CmsPlan.class)));
+				//view.setData(gson.toJson(gson.fromJson(view.getData(), CmsPlan.class)));
 				break;
 			case View.TYPE_PROCESSPLATFORM:
-				view.setData(gson.toJson(gson.fromJson(view.getData(), ProcessPlatformPlan.class)));
+				//view.setData(gson.toJson(gson.fromJson(view.getData(), ProcessPlatformPlan.class)));
 				break;
 			default:
 				throw new ExceptionTypeValue(wi.getType());
