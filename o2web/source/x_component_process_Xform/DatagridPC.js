@@ -716,6 +716,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 								this._createNewEditTd(newTr, idx, editorTds[idx].get("id"), text, titleThs.length-1);
 							}
 						}
+					}else{
+						if (!cell) this._createNewEditTd(newTr, idx, id, "", titleThs.length-1);
 					}
 				}else{
 					if (!cell) this._createNewEditTd(newTr, idx, id, "", titleThs.length-1);
@@ -1864,7 +1866,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 								text = module.node.get("text");
 							}
 
-							array.push(text);
+							if( !text && typeOf(text) !== "number" ){
+								text = "";
+							}
+
+							array.push( text );
 						}
 
 
