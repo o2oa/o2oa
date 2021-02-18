@@ -3,6 +3,7 @@ package com.x.query.core.express.plan;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -23,7 +24,18 @@ public class Row extends GsonPropertyObject {
 	}
 
 	public void put(String key, Object value) {
-		this.data.put(key, value);
+		Object o = this.data.get(key);
+		if(o!=null){
+			String s = String.valueOf(o);
+			if(StringUtils.isNotEmpty(s)){
+				s = s + "," + value;
+				this.data.put(key, s);
+			}else{
+				this.data.put(key, value);
+			}
+		}else {
+			this.data.put(key, value);
+		}
 	}
 
 	/** 统计计算时用于转换值,不可转换的值默认为0 */
