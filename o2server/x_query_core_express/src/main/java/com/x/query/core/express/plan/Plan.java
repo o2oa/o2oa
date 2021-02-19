@@ -128,6 +128,8 @@ public abstract class Plan extends GsonPropertyObject {
 						comp = -1;
 					} else if (null == o2) {
 						comp = 1;
+					} else if (o1 instanceof Collection<?> || o2 instanceof Collection<?>) {
+						comp = 0;
 					} else {
 						if (o1.getClass() == o2.getClass()) {
 							c1 = (Comparable) o1;
@@ -522,7 +524,9 @@ public abstract class Plan extends GsonPropertyObject {
 					root.get(Item_.itemStringValueType), root.get(Item_.stringShortValue),
 					root.get(Item_.stringLongValue), root.get(Item_.dateValue), root.get(Item_.timeValue),
 					root.get(Item_.dateTimeValue), root.get(Item_.booleanValue), root.get(Item_.numberValue)).where(p);
+			boolean isList = false;
 			if(!orderList.isEmpty()){
+				isList = true;
 				cq.orderBy(orderList);
 			}
 			List<Tuple> list = em.createQuery(cq).getResultList();
@@ -535,25 +539,25 @@ public abstract class Plan extends GsonPropertyObject {
 					case s:
 						if (null != o.get(3)) {
 							if ((null != o.get(4)) && StringUtils.isNotEmpty(Objects.toString(o.get(4)))) {
-								row.put(selectEntry.getColumn(), Objects.toString(o.get(4)));
+								row.put(selectEntry.getColumn(), Objects.toString(o.get(4)), isList);
 							} else {
-								row.put(selectEntry.getColumn(), Objects.toString(o.get(3)));
+								row.put(selectEntry.getColumn(), Objects.toString(o.get(3)), isList);
 							}
 						}
 						break;
 					case d:
 						if (null != o.get(5)) {
-							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(5)));
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(5)), isList);
 						}
 						break;
 					case t:
 						if (null != o.get(6)) {
-							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(6)));
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(6)), isList);
 						}
 						break;
 					case dt:
 						if (null != o.get(7)) {
-							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(7)));
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(7)), isList);
 						}
 						break;
 					default:
@@ -562,12 +566,12 @@ public abstract class Plan extends GsonPropertyObject {
 					break;
 				case b:
 					if (null != o.get(8)) {
-						row.put(selectEntry.getColumn(), (Boolean) o.get(8));
+						row.put(selectEntry.getColumn(), (Boolean) o.get(8), isList);
 					}
 					break;
 				case n:
 					if (null != o.get(9)) {
-						row.put(selectEntry.getColumn(), (Number) o.get(9));
+						row.put(selectEntry.getColumn(), (Number) o.get(9), isList);
 					}
 					break;
 				default:

@@ -1,9 +1,10 @@
 package com.x.query.core.express.plan;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.StringUtils;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -24,16 +25,22 @@ public class Row extends GsonPropertyObject {
 	}
 
 	public void put(String key, Object value) {
-		Object o = this.data.get(key);
-		if(o!=null){
-			String s = String.valueOf(o);
-			if(StringUtils.isNotEmpty(s)){
-				s = s + "," + value;
-				this.data.put(key, s);
-			}else{
-				this.data.put(key, value);
+		this.data.put(key, value);
+	}
+
+	public void put(String key, Object value, boolean isList) {
+		if (isList) {
+			Object o = this.data.get(key);
+			if (o != null) {
+				if (o instanceof List<?>) {
+					((List) o).add(value);
+				} else {
+					this.data.put(key, ListTools.toList(value));
+				}
+			} else {
+				this.data.put(key, ListTools.toList(value));
 			}
-		}else {
+		}else{
 			this.data.put(key, value);
 		}
 	}
