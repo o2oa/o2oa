@@ -22,6 +22,15 @@ public class MQActive extends ConfigObject {
 	@FieldDescribe("消息队列名")
 	private String queueName;
 	
+	@FieldDescribe("密钥文件存储路径")
+	private String keyStore;
+	
+	@FieldDescribe("证书文件存储路径")
+	private String trustStore;
+	
+	@FieldDescribe("密钥密码")
+	private String keyStorePassword;
+	
 	public static MQActive defaultInstance() {
 		return new MQActive();
 	}
@@ -49,6 +58,30 @@ public class MQActive extends ConfigObject {
 
 	public void setQueueName(String queueName) {
 		this.queueName = queueName;
+	}
+
+	public String getKeyStore() {
+		return keyStore;
+	}
+
+	public void setKeyStore(String keyStore) {
+		this.keyStore = keyStore;
+	}
+
+	public String getTrustStore() {
+		return trustStore;
+	}
+
+	public void setTrustStore(String trustStore) {
+		this.trustStore = trustStore;
+	}
+
+	public String getKeyStorePassword() {
+		return keyStorePassword;
+	}
+
+	public void setKeyStorePassword(String keyStorePassword) {
+		this.keyStorePassword = keyStorePassword;
 	}
 	
 
