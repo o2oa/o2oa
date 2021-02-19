@@ -23,8 +23,14 @@
   "activeMQ":{
 	   "url":"tcp://127.0.0.1:61616",
 	   "queueName":"queue-test",
+	   "keyStore":"C:/Users/wwx/client.ks",
+	   "trustStore":"C:/Users/wwx/client.ts",
+	   "keyStorePassword":"password",
 	   "###url": "服务地址，端口默认61616.###",
-	   "###queueName": "要创建的消息名称###"
+	   "###queueName": "要创建的消息名称###",
+	   "###keyStore": "密钥文件存储路径###",
+	   "###trustStore": "证书文件存储路径###",
+	   "###keyStorePassword": "密钥密码###"
   },
   "###enable": "是否启用.###",
   "###mq": "消息服务类型.###"
