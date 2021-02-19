@@ -1,11 +1,7 @@
 package com.x.query.core.express.plan;
 
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -13,10 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
@@ -89,7 +82,7 @@ public abstract class Plan extends GsonPropertyObject {
 
 	/**
 	 * !!这个类最后要输出.不能gson scriptEngine对象
-	 * 
+	 *
 	 */
 	private transient ScriptEngine scriptEngine;
 
@@ -135,6 +128,8 @@ public abstract class Plan extends GsonPropertyObject {
 						comp = -1;
 					} else if (null == o2) {
 						comp = 1;
+					} else if (o1 instanceof Collection<?> || o2 instanceof Collection<?>) {
+						comp = 0;
 					} else {
 						if (o1.getClass() == o2.getClass()) {
 							c1 = (Comparable) o1;
@@ -456,43 +451,72 @@ public abstract class Plan extends GsonPropertyObject {
 			Root<Item> root = cq.from(Item.class);
 			Predicate p = cb.isMember(root.get(Item_.bundle), cb.literal(bundles));
 			String[] paths = StringUtils.split(selectEntry.path, ".");
+			List<Order> orderList = new ArrayList<>();
 			if ((paths.length > 0) && StringUtils.isNotEmpty(paths[0])) {
 				p = cb.and(p, cb.equal(root.get(Item_.path0), paths[0]));
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path0)), cb.equal(root.get(Item_.path0), "")));
 			}
 			if ((paths.length > 1) && StringUtils.isNotEmpty(paths[1])) {
-				p = cb.and(p, cb.equal(root.get(Item_.path1), paths[1]));
+				if(!FilterEntry.WILDCARD.equals(paths[1])) {
+					p = cb.and(p, cb.equal(root.get(Item_.path1), paths[1]));
+				}else{
+					orderList.add(cb.asc(root.get(Item_.path1)));
+				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path1)), cb.equal(root.get(Item_.path1), "")));
 			}
 			if ((paths.length > 2) && StringUtils.isNotEmpty(paths[2])) {
-				p = cb.and(p, cb.equal(root.get(Item_.path2), paths[2]));
+				if(!FilterEntry.WILDCARD.equals(paths[2])) {
+					p = cb.and(p, cb.equal(root.get(Item_.path2), paths[2]));
+				}else{
+					orderList.add(cb.asc(root.get(Item_.path2)));
+				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path2)), cb.equal(root.get(Item_.path2), "")));
 			}
 			if ((paths.length > 3) && StringUtils.isNotEmpty(paths[3])) {
-				p = cb.and(p, cb.equal(root.get(Item_.path3), paths[3]));
+				if(!FilterEntry.WILDCARD.equals(paths[3])) {
+					p = cb.and(p, cb.equal(root.get(Item_.path3), paths[3]));
+				}else{
+					orderList.add(cb.asc(root.get(Item_.path3)));
+				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path3)), cb.equal(root.get(Item_.path3), "")));
 			}
 			if ((paths.length > 4) && StringUtils.isNotEmpty(paths[4])) {
-				p = cb.and(p, cb.equal(root.get(Item_.path4), paths[4]));
+				if(!FilterEntry.WILDCARD.equals(paths[4])) {
+					p = cb.and(p, cb.equal(root.get(Item_.path4), paths[4]));
+				}else{
+					orderList.add(cb.asc(root.get(Item_.path4)));
+				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path4)), cb.equal(root.get(Item_.path4), "")));
 			}
 			if ((paths.length > 5) && StringUtils.isNotEmpty(paths[5])) {
-				p = cb.and(p, cb.equal(root.get(Item_.path5), paths[5]));
+				if(!FilterEntry.WILDCARD.equals(paths[5])) {
+					p = cb.and(p, cb.equal(root.get(Item_.path5), paths[5]));
+				}else{
+					orderList.add(cb.asc(root.get(Item_.path5)));
+				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path5)), cb.equal(root.get(Item_.path5), "")));
 			}
 			if ((paths.length > 6) && StringUtils.isNotEmpty(paths[6])) {
-				p = cb.and(p, cb.equal(root.get(Item_.path6), paths[6]));
+				if(!FilterEntry.WILDCARD.equals(paths[6])) {
+					p = cb.and(p, cb.equal(root.get(Item_.path6), paths[6]));
+				}else{
+					orderList.add(cb.asc(root.get(Item_.path6)));
+				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path6)), cb.equal(root.get(Item_.path6), "")));
 			}
 			if ((paths.length > 7) && StringUtils.isNotEmpty(paths[7])) {
-				p = cb.and(p, cb.equal(root.get(Item_.path7), paths[7]));
+				if(!FilterEntry.WILDCARD.equals(paths[7])) {
+					p = cb.and(p, cb.equal(root.get(Item_.path7), paths[7]));
+				}else{
+					orderList.add(cb.asc(root.get(Item_.path7)));
+				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path7)), cb.equal(root.get(Item_.path7), "")));
 			}
@@ -500,6 +524,11 @@ public abstract class Plan extends GsonPropertyObject {
 					root.get(Item_.itemStringValueType), root.get(Item_.stringShortValue),
 					root.get(Item_.stringLongValue), root.get(Item_.dateValue), root.get(Item_.timeValue),
 					root.get(Item_.dateTimeValue), root.get(Item_.booleanValue), root.get(Item_.numberValue)).where(p);
+			boolean isList = false;
+			if(!orderList.isEmpty()){
+				isList = true;
+				cq.orderBy(orderList);
+			}
 			List<Tuple> list = em.createQuery(cq).getResultList();
 			Row row = null;
 			for (Tuple o : list) {
@@ -510,25 +539,25 @@ public abstract class Plan extends GsonPropertyObject {
 					case s:
 						if (null != o.get(3)) {
 							if ((null != o.get(4)) && StringUtils.isNotEmpty(Objects.toString(o.get(4)))) {
-								row.put(selectEntry.getColumn(), Objects.toString(o.get(4)));
+								row.put(selectEntry.getColumn(), Objects.toString(o.get(4)), isList);
 							} else {
-								row.put(selectEntry.getColumn(), Objects.toString(o.get(3)));
+								row.put(selectEntry.getColumn(), Objects.toString(o.get(3)), isList);
 							}
 						}
 						break;
 					case d:
 						if (null != o.get(5)) {
-							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(5)));
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(5)), isList);
 						}
 						break;
 					case t:
 						if (null != o.get(6)) {
-							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(6)));
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(6)), isList);
 						}
 						break;
 					case dt:
 						if (null != o.get(7)) {
-							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(7)));
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(7)), isList);
 						}
 						break;
 					default:
@@ -537,12 +566,12 @@ public abstract class Plan extends GsonPropertyObject {
 					break;
 				case b:
 					if (null != o.get(8)) {
-						row.put(selectEntry.getColumn(), (Boolean) o.get(8));
+						row.put(selectEntry.getColumn(), (Boolean) o.get(8), isList);
 					}
 					break;
 				case n:
 					if (null != o.get(9)) {
-						row.put(selectEntry.getColumn(), (Number) o.get(9));
+						row.put(selectEntry.getColumn(), (Number) o.get(9), isList);
 					}
 					break;
 				default:

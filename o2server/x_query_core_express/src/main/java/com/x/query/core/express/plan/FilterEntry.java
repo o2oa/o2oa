@@ -49,6 +49,8 @@ public class FilterEntry extends GsonPropertyObject {
 
 	public static final String DEFINE_UNITALLLIST = "@unitAllList";
 
+	public static final String WILDCARD = "*";
+
 	/** 用于customFilterEntry */
 	public String title;
 
@@ -137,31 +139,31 @@ public class FilterEntry extends GsonPropertyObject {
 			p = cb.and(p, cb.equal(root.get(Item_.path0), paths[0]));
 		}
 
-		if ((paths.length > 1) && StringUtils.isNotEmpty(paths[1])) {
+		if ((paths.length > 1) && StringUtils.isNotEmpty(paths[1]) && !WILDCARD.equals(paths[1])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path1), paths[1]));
 		}
 
-		if ((paths.length > 2) && StringUtils.isNotEmpty(paths[2])) {
+		if ((paths.length > 2) && StringUtils.isNotEmpty(paths[2]) && !WILDCARD.equals(paths[2])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path2), paths[2]));
 		}
 
-		if ((paths.length > 3) && StringUtils.isNotEmpty(paths[3])) {
+		if ((paths.length > 3) && StringUtils.isNotEmpty(paths[3]) && !WILDCARD.equals(paths[3])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path3), paths[3]));
 		}
 
-		if ((paths.length > 4) && StringUtils.isNotEmpty(paths[4])) {
+		if ((paths.length > 4) && StringUtils.isNotEmpty(paths[4]) && !WILDCARD.equals(paths[4])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path4), paths[4]));
 		}
 
-		if ((paths.length > 5) && StringUtils.isNotEmpty(paths[5])) {
+		if ((paths.length > 5) && StringUtils.isNotEmpty(paths[5]) && !WILDCARD.equals(paths[5])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path5), paths[5]));
 		}
 
-		if ((paths.length > 6) && StringUtils.isNotEmpty(paths[6])) {
+		if ((paths.length > 6) && StringUtils.isNotEmpty(paths[6]) && !WILDCARD.equals(paths[6])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path6), paths[6]));
 		}
 
-		if ((paths.length > 7) && StringUtils.isNotEmpty(paths[7])) {
+		if ((paths.length > 7) && StringUtils.isNotEmpty(paths[7]) && !WILDCARD.equals(paths[7])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path7), paths[7]));
 		}
 
