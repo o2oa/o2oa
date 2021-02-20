@@ -1331,3 +1331,11 @@ function build(){
     options.dest = o_options.dest || uploadOptions.dest || "dest";
 };
 gulp.task("build", gulp.series("clean", gulp.parallel(appTasks, 'index'), "o2:new-v"))
+
+gulp.task("temp_o2", function(){
+    return gulp.src("source/x_test/o2.js")
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulp.dest("source/x_test/"))
+        .pipe(gutil.noop());
+})
