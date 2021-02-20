@@ -1327,6 +1327,7 @@ o2.xDesktop.Default.StartMenu = new Class({
             this.maskNode.setStyles({"display": "block"});
             this.node.setStyles({"display": "block"});
             this.triangleNode.setStyles({"display": "block"});
+            this.appAreaNode.setStyles({ "filter": "" });
 
             this.setSize();
             this.setPosition();
@@ -1375,6 +1376,7 @@ o2.xDesktop.Default.StartMenu = new Class({
 
             this.lnkContentNode.empty();
             this.appContentNode.empty();
+            this.groupMenuArea.empty();
             if (this.appScrollBar) this.appScrollBar.destroy();
 
             this.maskMorph.start({"left": ""+left+"px"}).chain(function(){
@@ -1394,15 +1396,21 @@ o2.xDesktop.Default.StartMenu = new Class({
 });
 
 o2.xDesktop.Default.StartMenu.Item = new Class({
-    initialize: function (menu, container, data) {
+    initialize: function (menu, container, data, positionNode) {
         this.menu = menu;
         this.layout = this.menu.layout;
         this.data = data;
         this.container = $(container);
-        this.load();
+        this.load(positionNode);
     },
-    load: function(){
-        this.node = new Element("div.layout_start_item").inject(this.container);
+    load: function(positionNode){
+        this.node = new Element("div.layout_start_item");
+        if (positionNode){
+            this.node.inject(positionNode, "before");
+        }else{
+            this.node.inject(this.container);
+        }
+
         this.node.set("html", this.menu.itemTempletedHtml);
         this.iconAreaNode = this.node.getElement(".layout_start_item_iconArea");
         this.iconNode = this.node.getElement(".layout_start_item_icon");
@@ -1413,7 +1421,9 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.loadText();
         this.setEvent();
         this.node.store("item", this);
+        this.init();
     },
+    init: function(){},
     dragOver: function(){
         if (!this.overNode){
             this.overNode = new Element("div.layout_start_item_over").inject(this.container);
@@ -1475,9 +1485,9 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
             "mouseover": function(){ this.badgeNode.fade("in"); }.bind(this),
             "mouseout": function(){ this.badgeNode.fade("out"); }.bind(this),
             "click": function(e){
-                this.menu.hide(function(){
+                //this.menu.hide(function(){
                     this.open(e);
-                }.bind(this));
+                //}.bind(this));
             }.bind(this)
         });
 
@@ -1500,7 +1510,9 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.layout.addLnk(lnkdata, dragTargetLnk, dragPosition);
     },
     open: function(e){
-        layout.openApplication(e, this.data.path);
+        this.menu.hide(function(){
+            layout.openApplication(e, this.data.path);
+        }.bind(this));
     },
     makeLnk: function(){
         var drag = new Drag(this.node, {
@@ -1550,7 +1562,8 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.dragTargetLnk = null;
         this.dragPosition = "before";
 
-        this.node.setStyle("opacity", 0);
+        this.node.setStyle("opacity", 0.1);
+        this.positionFlagNode = new Element("div", {"styles": {"display": "none"}}).inject(this.node, "after");
     },
     _drag_drag: function(dragging, e){
         if (this.dragStatus == "order"){
@@ -1644,15 +1657,16 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     _drag_enter: function(el, inObj){
         if (inObj.hasClass("layout_start_content_appContent")){
             this.dragStatus = "group";
-            this.node.setStyle("opacity", 0);
+            this.node.setStyle("opacity", 0.1);
         }else{
+            if (this.positionFlagNode) this.node.inject(this.positionFlagNode, "before");
             this.dragStatus = "order";
             this.node.setStyle("opacity", 1);
         }
     },
     _drag_leave: function(el, inObj){
         if (inObj.hasClass("layout_start_content_appContent")){
-            this.node.inject(this.menu.appContentNode);
+            //this.node.inject(this.menu.appContentNode);
         }else{
             this.dragStatus = "remove";
             if (this.layout.positionNode) this.layout.positionNode.hide();
@@ -1662,6 +1676,9 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     _drag_drop: function(dragging, inObj){
         if (this.dragStatus == "order" && this.dragTargetLnk && this.dragTargetLnk!=this){
             this.addLnk(this.dragTargetLnk, this.dragPosition);
+        }else if (this.dragStatus == "group" && this.overItem && this.overItem!=this){
+            this.overItem.dragOut();
+            this.addGroup();
         }
         this.node.setStyle("opacity", 1);
         this.menu.resetMenuData();
@@ -1676,10 +1693,102 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.menu.resetMenuData();
     },
 
-    _drag_complete: function(dragging){
+    _drag_complete: function(dragging) {
         this._drag_cancel(dragging);
+        if (this.positionFlagNode) this.positionFlagNode.destroy();
+        this.positionFlagNode = null;
+    },
+
+    addGroup: function(){
+        var v = {
+            name: "Group",
+            title: "Group",
+            type: "group",
+            visible: true
+        }
+        this.menu.items.push(new o2.xDesktop.Default.StartMenu.GroupItem(this.menu, this.container, v, this.overItem.node));
+        this.node.destroy();
+        this.overItem.node.destroy();
+    }
+
+});
+o2.xDesktop.Default.StartMenu.GroupItem = new Class({
+    Extends: o2.xDesktop.Default.StartMenu.Item,
+    loadIcon: function(){
+        this.iconNode.addClass("layout_start_item_icon_flat");
+        this.iconNode.addClass("grayColor_bg");
+    },
+    init: function(){
+        // this.menu.appAreaNode
+        // this.container
+    },
+    open: function(e){
+        if (!this.menuNode) this.createMenuNode();
+        var maskNode = new Element("div.layout_start_groupItem_menuMask").inject(this.menuNode, "before");
+        maskNode.addEvent("click", function(e){
+            this.close(e.target);
+        }.bind(this));
+
+        this.menuNode.show();
+        var styles = this.getMenuNodeOpenDimensions();
+        this.menuNode.morph.set("transition", Fx.Transitions.Quart.easeOut);
+        this.menuNode.morph.start(styles).chain(function(){
+            this.loadItems();
+        }.bind(this));
+
+        this.menu.appAreaNode.setStyles({ "filter": "blur(5px)" });
+    },
+    close: function(maskNode){
+        var styles = this.getMenuNodeCloseDimensions();
+        this.menuNode.morph.set("transition", Fx.Transitions.Quart.easeIn);
+        this.menuNode.morph.start(styles).chain(function(){
+            if (maskNode) maskNode.destroy();
+            if (this.menuNode) this.menuNode.hide();
+        }.bind(this));
+        this.menu.appAreaNode.setStyles({ "filter": "" });
+    },
+    loadItems: function(){
+        this.items
+    },
+    getMenuNodeOpenDimensions: function(){
+        var size = this.menu.appAreaNode.getSize();
+        var w = size.x*0.9;
+        var h = size.y*0.7;
+        var x = (size.x*(1-0.9))/2;
+        var y = (size.y*(1-0.7))/2;
+        return {"width":w, "height": h, "left": x, "top": y}
+    },
+    getMenuNodeCloseDimensions: function(){
+        var size = this.iconNode.getSize();
+        var position = this.iconNode.getPosition(this.menu.node);
+        return {"width":size.x, "height": size.y, "left": position.x, "top": position.y}
+    },
+    createMenuNode: function(){
+        this.menuNode = new Element("div.layout_start_groupItem_menu").inject(this.menu.groupMenuArea);
+        this.menuNode.addClass("grayColor_bg");
+        this.menuTitleNode = new Element("div.layout_start_groupItem_menu_title").inject(this.menuNode);
+        this.menuScrollNode = new Element("div.layout_start_groupItem_menu_scroll").inject(this.menuNode);
+        this.menuContentNode = new Element("div.layout_start_groupItem_menu_content").inject(this.menuNode);
+
+        this.menuNode.position({
+            "relativeTo": this.iconNode,
+            "position": "upperLeft",
+            "edge": "upperLeft"
+        });
+        this.menuNode.morph = new Fx.Morph(this.menuNode, {
+            "duration": 200,
+            "transition": Fx.Transitions.Quart.easeOut
+        });
+    },
+
+    addItem: function(data){
+        if (!this.items) this.items = [];
+
+
     }
 });
+
+
 o2.xDesktop.Default.StartMenu.PortalItem = new Class({
     Extends: o2.xDesktop.Default.StartMenu.Item,
     loadIcon: function(){
@@ -1721,8 +1830,10 @@ o2.xDesktop.Default.StartMenu.PortalItem = new Class({
     },
 
     open: function(e){
-        var options = {"portalId": this.data.id, "appId": "portal.Portal"+this.data.id};
-        layout.openApplication(e, "portal.Portal", options);
+        this.menu.hide(function(){
+            var options = {"portalId": this.data.id, "appId": "portal.Portal"+this.data.id};
+            layout.openApplication(e, "portal.Portal", options);
+        }.bind(this));
     }
     // makeLnk: function(){
     //     //@todo
@@ -1769,8 +1880,10 @@ o2.xDesktop.Default.StartMenu.ProcessItem = new Class({
         this.layout.addLnk(lnkdata, dragTargetLnk, dragPosition);
     },
     open: function(e){
-        var options = {"id": this.data.id, "appId": "process.Application"+this.data.id};
-        layout.openApplication(e, "process.Application", options);
+        this.menu.hide(function(){
+            var options = {"id": this.data.id, "appId": "process.Application"+this.data.id};
+            layout.openApplication(e, "process.Application", options);
+        }.bind(this));
     }
     // makeLnk: function(){
     //     //@todo
@@ -1819,7 +1932,9 @@ o2.xDesktop.Default.StartMenu.InforItem = new Class({
         this.layout.addLnk(lnkdata, dragTargetLnk, dragPosition);
     },
     open: function(e){
-        layout.openApplication(e, "cms.Module", {"columnData": this.data, "appId": "cms.Module"+this.data.id});
+        this.menu.hide(function(){
+            layout.openApplication(e, "cms.Module", {"columnData": this.data, "appId": "cms.Module"+this.data.id});
+        }.bind(this));
     }
     // makeLnk: function(){
     //     //@todo
@@ -1866,7 +1981,9 @@ o2.xDesktop.Default.StartMenu.QueryItem = new Class({
         this.layout.addLnk(lnkdata, dragTargetLnk, dragPosition);
     },
     open: function(e){
-        layout.openApplication(e, "query.Query", {"id": this.data.id, "appId": "query.Query"+this.data.id});
+        this.menu.hide(function(){
+            layout.openApplication(e, "query.Query", {"id": this.data.id, "appId": "query.Query"+this.data.id});
+        }.bind(this));
     }
     // makeLnk: function(){
     //     //@todo
