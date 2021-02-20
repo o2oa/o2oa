@@ -746,3 +746,6 @@
 .layout_start_groupItem_menu_scroll {
     overflow: hidden;
 }
+.layout_start_groupItem_menu_content {
+    overflow: hidden;
+}
