@@ -136,7 +136,7 @@ public class NodeAgent extends Thread {
 							fos.close();
 							Config.flush();
 							if(syncFilePath.indexOf("web.json") > -1 || syncFilePath.indexOf("collect.json") > -1
-									|| syncFilePath.indexOf("portal.json") > -1){
+									|| syncFilePath.indexOf("portal.json") > -1 || syncFilePath.indexOf("person.json") > -1){
 								// 更新web服务配置信息
 								WebServers.updateWebServerConfigJson();
 							}
