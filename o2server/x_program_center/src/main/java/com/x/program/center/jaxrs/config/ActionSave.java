@@ -1,6 +1,8 @@
 package com.x.program.center.jaxrs.config;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Nodes;
@@ -30,12 +32,22 @@ public class ActionSave extends BaseAction {
 		Wo wo = new Wo();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String fileName = wi.getFileName();
-		
+
 		if(fileName == null) {
 			throw new ExceptionNameEmpty();
 		}
-		
+
 		String data = wi.getFileContent();
+		Gson gson = new Gson();
+		JsonElement je = null;
+		try {
+			je = gson.fromJson(data, JsonElement.class);
+		} catch (Exception e) {
+			throw new ExceptionJsonError();
+		}
+		if ((null == je) || !je.isJsonObject()) {
+			throw new ExceptionJsonError();
+		}
 
 		if(!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
 			throw new ExceptionModifyConfig();
@@ -45,18 +57,18 @@ public class ActionSave extends BaseAction {
 		if(!configFold.exists()){
 			configFold.mkdir();
 		}
-		
+
 		File file = new File(Config.base(),Config.DIR_CONFIG+"/"+fileName);
 		if(!file.exists()) {
 			file.createNewFile();
 		}
-		
+
 		if(file.exists()) {
 			if(file.isFile()) {
 			    FileUtils.writeStringToFile(file, data, DefaultCharset.charset);
 			}
 		}
-		
+
 		Nodes nodes = Config.nodes();
 		//同步config文件
 		for (String node : nodes.keySet()){
@@ -70,27 +82,27 @@ public class ActionSave extends BaseAction {
 		} catch (InterruptedException e) {
 		}
 		this.configFlush(effectivePerson);
-	
+
 		wo.setTime(df.format(new Date()));
 		wo.setStatus("success");
 		result.setData(wo);
-		
+
 		return result;
 	}
-	
 
 
-	
+
+
 	private boolean executeSyncFile(String syncFilePath , String nodeName ,int nodePort){
 		  boolean syncFileFlag = false;
 		  File syncFile;
 		  InputStream fileInputStream = null;
-		 
+
 		try (Socket socket = new Socket(nodeName, nodePort)) {
-			
+
 			syncFile = new File(Config.base(), syncFilePath);
 			fileInputStream= new FileInputStream(syncFile);
-			 
+
 			socket.setKeepAlive(true);
 			socket.setSoTimeout(5000);
 			DataOutputStream dos = null;
@@ -98,17 +110,17 @@ public class ActionSave extends BaseAction {
 			try {
 				dos = new DataOutputStream(socket.getOutputStream());
 			    dis = new DataInputStream(socket.getInputStream());
-			    
+
 				Map<String, Object> commandObject = new HashMap<>();
 				commandObject.put("command", "syncFile:"+ syncFilePath);
 				commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
 				dos.writeUTF(XGsonBuilder.toJson(commandObject));
 				dos.flush();
-				
+
 				dos.writeUTF(syncFilePath);
 				dos.flush();
-				
-		
+
+
 				logger.info("同步文件starting.......");
 				byte[] bytes = new byte[1024];
 				int length =0;
@@ -117,14 +129,14 @@ public class ActionSave extends BaseAction {
 					dos.flush();
 				}
 				logger.info("同步文件end.......");
-				
+
 			}finally {
 				dos.close();
 				dis.close();
 				socket.close();
 				fileInputStream.close();
 			}
-			
+
 			syncFileFlag = true;
 		} catch (Exception ex) {
 			logger.error(ex);
@@ -132,18 +144,18 @@ public class ActionSave extends BaseAction {
 		}
 		return syncFileFlag;
 	}
-	
+
 	public static class Wi  extends GsonPropertyObject{
-		
+
 		@FieldDescribe("服务器地址(*代表多台应用服务器)")
 		private String nodeName;
-		
+
 		@FieldDescribe("服务端口")
 		private String nodePort;
-		
+
 		@FieldDescribe("文件名")
 		private String fileName;
-		
+
 		@FieldDescribe("config文件内容")
 		private String fileContent;
 
@@ -171,16 +183,16 @@ public class ActionSave extends BaseAction {
 		public void setFileContent(String fileContent) {
 			this.fileContent = fileContent;
 		}
-		
-		
-	
+
+
+
 	}
-	
+
 	public static class Wo extends GsonPropertyObject {
-		
+
 		@FieldDescribe("执行时间")
 		private String time;
-		
+
 		@FieldDescribe("执行结果")
 		private String status;
 
@@ -192,15 +204,15 @@ public class ActionSave extends BaseAction {
 
 		@FieldDescribe("是否Sample")
 		private boolean isSample;
-		
+
 		public String getTime() {
 			return time;
 		}
-		
+
 		public void setTime(String time) {
 			this.time = time;
 		}
-		
+
 		public String getStatus() {
 			return status;
 		}
@@ -231,7 +243,7 @@ public class ActionSave extends BaseAction {
 		public void setMessage(String message) {
 			this.message = message;
 		}
-		
+
 	}
-	
+
 }
