@@ -5,6 +5,8 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
 	_loadUserInterface: function(){
 		this.node.empty();
         if (this.readonly){
+            // var html = this.parseImage( this._getBusinessData() );
+            // this.node.set("html", html);
             this.node.set("html", this._getBusinessData());
             this.node.setStyles({
                 "-webkit-user-select": "text",
@@ -32,8 +34,31 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
 
             this.loadCkeditor(config);
         }
-    //    this._loadValue();
 	},
+    // parseImage : function( html ){
+    //     html = ( html || "" ).replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (img, capture) {
+    //         if( img.indexOf( "data-id" ) > -1 && img.indexOf("setImageSrc()") > -1 ){
+    //             var ids = img.match( /(?<=data-id=").*?(?=")/g );
+    //             if( ids && ids.length > 0 ){
+    //                 var newSrc = MWF.xDesktop.getImageSrc( ids[0] );
+    //                 var newImg = this.replaceAttr( img, "img", "src", newSrc );
+    //                 return newImg;
+    //             }
+    //         }
+    //         return img;
+    //     }.bind(this));
+    //     return html
+    // },
+    // replaceAttr: function(src_str, tag, attr, val) {
+    //     if(src_str.indexOf(attr) > 0) {
+    //         //包含attr属性,替换attr
+    //         var sub_reg = new RegExp(attr + '=[\'\"]([^"]*)[\'\"]', 'gi');
+    //         return src_str.replace(sub_reg, attr +'=' + val);
+    //     }else{
+    //         //不包含attr属性,添加attr
+    //         return src_str.substr(0, tag.length + 1) + ' ' + attr + '=' + val + ' ' + src_str.substr(tag.length + 2, src_str.length);
+    //     }
+    // },
     loadCkeditor: function(config){
         _self = this;
         COMMON.AjaxModule.loadDom("ckeditor", function(){
