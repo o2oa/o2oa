@@ -863,13 +863,28 @@ o2.xDesktop.Default.StartMenu = new Class({
         }
         var nodes = this.appContentNode.getChildren();
         var data = [];
+        debugger;
         nodes.each(function(node){
             var item = node.retrieve("item");
             if (item){
-                data.push({
-                    "id": item.data.id,
-                    "name": item.data.name
-                });
+                if (item.data.type==="group"){
+                    var d = {
+                        "id": item.data.id,
+                        "name": item.data.name,
+                        "type": item.data.type,
+                        "itemDataList": []
+                    }
+                    if (item.data.itemDataList) item.data.itemDataList.each(function(i){
+                        d.itemDataList.push(i);
+                    });
+                    data.push(d);
+                }else{
+                    data.push({
+                        "id": item.data.id,
+                        "name": item.data.name,
+                        "type": item.data.type,
+                    });
+                }
             }
         }.bind(this));
         if (this.currentTab === this.appCategoryTab){
@@ -904,7 +919,6 @@ o2.xDesktop.Default.StartMenu = new Class({
         this.searchNode.store("currentWidth", currentWidth);
 
         this.appCategoryTab.addEvent("click", function(){
-            debugger;
             this.appTitleNode.getElements(".layout_start_tab").removeClass("mainColor_bg");
             this.appCategoryTab.addClass("mainColor_bg");
             this.currentTab = this.appCategoryTab;
@@ -1201,37 +1215,58 @@ o2.xDesktop.Default.StartMenu = new Class({
         }.bind(this));
     },
 
-    loadApplicationsItem: function(json_layout, json_component, json_portal){
+    loadApplicationsItem: function(layoutJson, componentJson, portalJson){
+        debugger;
         var user = this.layout.session.user;
         var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
         if (user.roleList) currentNames = currentNames.concat(user.roleList);
         if (user.groupList) currentNames = currentNames.concat(user.groupList);
+
+        var json_layout = Array.clone(layoutJson);
+        var json_component = Array.clone(componentJson);
+        var json_portal = Array.clone(portalJson);
 
         this.appContentNode.removeClass("icon_loading");
 
         var loadedApps = {};
         if (this.menuData && this.menuData.appList && this.menuData.appList.length){
             this.menuData.appList.each(function(app){
-                var appData = null;
-                if (!appData && json_layout && json_layout.length){
-                    appData = json_layout.find(function(i){ return (i.id === app.id); });
-                    if (appData){
-                        json_layout.erase(appData);
-                        if ( this.checkMenuItem(appData, currentNames) ) this.createApplicationMenuItem(appData);
+                if (app.type==="group"){
+                    this.createGroupMenuItem(app);
+                    app.itemDataList.each(function(a){
+                        var d = json_layout.find(function(i){ return (i.id === a.id); });
+                        if (d) json_layout.erase(d);
+
+                        d = json_component.find(function(i){ return (i.id === a.id); });
+                        if (d) json_component.erase(d);
+
+                        d = json_portal.find(function(i){ return (i.id === a.id); });
+                        if (d) json_portal.erase(d);
+
+                    }.bind(this));
+                }else{
+                    var appData = null;
+                    if (!appData && json_layout && json_layout.length){
+                        appData = json_layout.find(function(i){ return (i.id === app.id); });
+                        if (appData){
+                            json_layout.erase(appData);
+                            if ( this.checkMenuItem(appData, currentNames) ) this.createApplicationMenuItem(appData);
+                        }
                     }
-                }
-                if (!appData && json_component && json_component.length){
-                    appData = json_component.find(function(i){ return (i.id === app.id); });
-                    if (appData){
-                        json_component.erase(appData);
-                        if ( this.checkMenuItem(appData, currentNames) ) this.createApplicationMenuItem(appData);
+                    if (!appData && json_component && json_component.length){
+                        appData = json_component.find(function(i){ return (i.id === app.id); });
+                        if (appData){
+                            json_component.erase(appData);
+                            if ( this.checkMenuItem(appData, currentNames) ) this.createApplicationMenuItem(appData);
+                        }
                     }
-                }
-                if (!appData && json_portal && json_portal.length){
-                    appData = json_portal.find(function(i){ return (i.id === app.id); });
-                    if (appData){
-                        json_portal.erase(appData);
-                        this.createPortalMenuItem(appData);
+                    if (!appData && json_portal && json_portal.length){
+                        appData = json_portal.find(function(i){ return (i.id === app.id); });
+                        if (appData){
+                            json_portal.erase(appData);
+                            appData.type = "portal";
+                            this.createPortalMenuItem(appData);
+                        }
                     }
                 }
             }.bind(this));
@@ -1256,8 +1291,9 @@ o2.xDesktop.Default.StartMenu = new Class({
         // o2.Actions.get("x_processplatform_assemble_surface").listApplication(this.loadProcessesItem.bind(this));
         this.loadProcessesItem(this.processJson)
     },
-    loadProcessesItem: function(json){
+    loadProcessesItem: function(list){
         this.appContentNode.removeClass("icon_loading");
+        var json = Array.clone(list);
 
         if (this.menuData && this.menuData.processList && this.menuData.processList.length){
             this.menuData.processList.each(function(app){
@@ -1266,6 +1302,7 @@ o2.xDesktop.Default.StartMenu = new Class({
                     appData = json.find(function(i){ return (i.id === app.id); });
                     if (appData){
                         json.erase(appData);
+                        appData.type = "process";
                         this.createProcessMenuItem(appData);
                     }
                 }
@@ -1283,8 +1320,9 @@ o2.xDesktop.Default.StartMenu = new Class({
         //o2.Actions.get("x_cms_assemble_control").listColumn(this.loadInforsItem.bind(this));
         this.loadInforsItem(this.inforJson)
     },
-    loadInforsItem: function(json){
+    loadInforsItem: function(list){
         this.appContentNode.removeClass("icon_loading");
+        var json = Array.clone(list);
 
         if (this.menuData && this.menuData.inforList && this.menuData.inforList.length){
             this.menuData.inforList.each(function(app){
@@ -1293,6 +1331,7 @@ o2.xDesktop.Default.StartMenu = new Class({
                     appData = json.find(function(i){ return (i.id === app.id); });
                     if (appData){
                         json.erase(appData);
+                        appData.type = "cms";
                         this.createInforMenuItem(appData);
                     }
                 }
@@ -1310,8 +1349,9 @@ o2.xDesktop.Default.StartMenu = new Class({
         // o2.Actions.get("x_query_assemble_surface").listQuery(this.loadQuerysItem.bind(this));
         this.loadQuerysItem(this.queryJson)
     },
-    loadQuerysItem: function(json){
+    loadQuerysItem: function(list){
         this.appContentNode.removeClass("icon_loading");
+        var json = Array.clone(list);
 
         if (this.menuData && this.menuData.queryList && this.menuData.queryList.length){
             this.menuData.queryList.each(function(app){
@@ -1320,6 +1360,7 @@ o2.xDesktop.Default.StartMenu = new Class({
                     appData = json.find(function(i){ return (i.id === app.id); });
                     if (appData){
                         json.erase(appData);
+                        appData.type = "query";
                         this.createQueryMenuItem(appData);
                     }
                 }
@@ -1354,6 +1395,9 @@ o2.xDesktop.Default.StartMenu = new Class({
     },
     createQueryMenuItem: function(value){
         this.items.push(new o2.xDesktop.Default.StartMenu.QueryItem(this, this.appContentNode, value));
+    },
+    createGroupMenuItem: function(value){
+        this.items.push(new o2.xDesktop.Default.StartMenu.GroupItem(this, this.appContentNode, value));
     },
 
     show: function(){
@@ -1524,7 +1568,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.badgeNode.set("title", o2.LP.desktop.addLnk).addClass("icon_add_red");
     },
     loadText: function(){
-        this.textNode.set("text", this.data.title);
+        this.textNode.set("text", this.data.title || this.data.name);
     },
     setEvent: function(){
         this.node.addEvents({
@@ -1752,21 +1796,25 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     },
 
     addGroup: function(){
-        var v = {
-            name: "Group",
-            title: "Group",
-            type: "group",
-            visible: true
+        debugger;
+        if (this.overItem.data.type==="group"){
+            this.overItem.addItem(this.data);
+        }else{
+            var v = {
+                name: "Group",
+                title: "Group",
+                type: "group",
+                visible: true
+            }
+            var group = new o2.xDesktop.Default.StartMenu.GroupItem(this.menu, this.container, v, this.overItem.node);
+            group.addItem(this.overItem.data);
+            group.addItem(this.data);
+            this.menu.items.push(group);
+            this.overItem.node.destroy();
         }
-        var group = new o2.xDesktop.Default.StartMenu.GroupItem(this.menu, this.container, v, this.overItem.node);
-        group.addItem(this.overItem.data);
-        group.addItem(this.data);
-
-        this.menu.items.push(group);
         this.node.destroy();
-        this.overItem.node.destroy();
+        this.menu.resetMenuData();
     }
-
 });
 o2.xDesktop.Default.StartMenu.GroupItem = new Class({
     Extends: o2.xDesktop.Default.StartMenu.Item,
@@ -1787,6 +1835,7 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
         }.bind(this));
 
         this.menuNode.show();
+
         var styles = this.getMenuNodeOpenDimensions();
         this.menuNode.morph.set("transition", Fx.Transitions.Quart.easeOut);
         this.menuNode.morph.start(styles).chain(function(){
@@ -1797,7 +1846,8 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
             var ts = this.menuTitleNode.getSize();
             var h = s.y - ts.y;
             this.menuContentNode.setStyle("height", ""+h+"px");
-            if (!this.isLoadItems) this.loadItems();
+            this.loadItems();
+
         }.bind(this));
 
         this.menu.appAreaNode.setStyles({ "filter": "blur(5px)" });
@@ -1816,26 +1866,29 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
     },
     loadItems: function(){
         if (!this.items) this.items = [];
-        this.itemDataList.each(function(data){
-            switch (data.type){
-                case "system":
-                    this.items.push(new o2.xDesktop.Default.StartMenu.Item(this, this.menuContentNode, data));
-                    break;
-                case "portal":
-                    this.items.push(new o2.xDesktop.Default.StartMenu.PortalItem(this, this.menuContentNode, data));
-                    break;
-                case "process":
-                    this.items.push(new o2.xDesktop.Default.StartMenu.ProcessItem(this, this.menuContentNode, data));
-                    break;
-                case "cms":
-                    this.items.push(new o2.xDesktop.Default.StartMenu.InforItem(this, this.menuContentNode, data));
-                    break;
-                case "query":
-                    this.items.push(new o2.xDesktop.Default.StartMenu.QueryItem(this, this.menuContentNode, data));
-                    break;
+        this.data.itemDataList.each(function(data){
+            var item = this.items.find(function(i){
+                return i.data.id == data.id;
+            });
+            if (!item){
+                switch (data.type){
+                    case "portal":
+                        this.items.push(new o2.xDesktop.Default.StartMenu.PortalItem(this, this.menuContentNode, data));
+                        break;
+                    case "process":
+                        this.items.push(new o2.xDesktop.Default.StartMenu.ProcessItem(this, this.menuContentNode, data));
+                        break;
+                    case "cms":
+                        this.items.push(new o2.xDesktop.Default.StartMenu.InforItem(this, this.menuContentNode, data));
+                        break;
+                    case "query":
+                        this.items.push(new o2.xDesktop.Default.StartMenu.QueryItem(this, this.menuContentNode, data));
+                        break;
+                    default:
+                        this.items.push(new o2.xDesktop.Default.StartMenu.Item(this, this.menuContentNode, data));
+                }
             }
         }.bind(this));
-        this.isLoadItems = true;
     },
     getMenuNodeOpenDimensions: function(){
         var size = this.menu.appAreaNode.getSize();
@@ -1854,8 +1907,10 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
         this.menuNode = new Element("div.layout_start_groupItem_menu").inject(this.menu.groupMenuArea);
         this.menuNode.addClass("grayColor_bg");
         this.menuTitleNode = new Element("div.layout_start_groupItem_menu_title").inject(this.menuNode);
+        this.menuTitleNode.set("text", this.data.name);
+
         this.menuScrollNode = new Element("div.layout_start_groupItem_menu_scroll").inject(this.menuNode);
-        this.menuContentNode = new Element("div.layout_start_groupItem_menu_content").inject(this.menuNode);
+        this.menuContentNode = new Element("div.layout_start_groupItem_menu_content").inject(this.menuScrollNode);
 
         this.menuNode.position({
             "relativeTo": this.iconNode,
@@ -1869,8 +1924,8 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
     },
 
     addItem: function(data){
-        if (!this.itemDataList) this.itemDataList = [];
-        this.itemDataList.push(data);
+        if (!this.data.itemDataList) this.data.itemDataList = [];
+        this.data.itemDataList.push(data);
     }
 });
 
