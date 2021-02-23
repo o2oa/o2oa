@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -45,6 +47,8 @@ public class TriggerAgent extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(TriggerAgent.class);
 
 	private static final CopyOnWriteArrayList<String> LOCK = new CopyOnWriteArrayList<>();
+
+	private static final ExecutorService executorService = Executors.newWorkStealingPool();
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -89,7 +93,7 @@ public class TriggerAgent extends BaseAction {
 							pair.getName(), pair.getCron(),
 							(pair.getLastStartTime() == null ? "" : DateTools.format(pair.getLastStartTime())));
 					ExecuteThread thread = new ExecuteThread(agent);
-					thread.start();
+					executorService.execute(thread);
 				}
 
 			}
@@ -170,7 +174,7 @@ public class TriggerAgent extends BaseAction {
 
 	}
 
-	public class ExecuteThread extends Thread {
+	public class ExecuteThread implements Runnable {
 
 		private Agent agent;
 
