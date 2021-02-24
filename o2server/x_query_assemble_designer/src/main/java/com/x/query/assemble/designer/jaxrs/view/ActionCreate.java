@@ -35,12 +35,12 @@ class ActionCreate extends BaseAction {
 			}
 			emc.beginTransaction(View.class);
 			View view = Wi.copier.copy(wi);
-			switch (StringUtils.trimToEmpty(view.getType())) {
+			switch (StringUtils.trimToEmpty(wi.getType())) {
 			case View.TYPE_CMS:
-				view.setData(gson.toJson(gson.fromJson(view.getData(), CmsPlan.class)));
+				//view.setData(gson.toJson(gson.fromJson(view.getData(), CmsPlan.class)));
 				break;
 			case View.TYPE_PROCESSPLATFORM:
-				view.setData(gson.toJson(gson.fromJson(view.getData(), ProcessPlatformPlan.class)));
+				//view.setData(gson.toJson(gson.fromJson(view.getData(), ProcessPlatformPlan.class)));
 				break;
 			default:
 				throw new ExceptionTypeValue(wi.getType());

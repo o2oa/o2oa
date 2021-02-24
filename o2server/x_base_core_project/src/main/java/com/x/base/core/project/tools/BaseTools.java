@@ -145,16 +145,12 @@ public class BaseTools {
 	public  static boolean executeSyncFile(String syncFilePath) throws Exception {
 
 		boolean Syncflag = false;
-		String localip = getIpAddress();
 		Nodes nodes = Config.nodes();
 		//同步config文件
 		if(Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
 			for (String node : nodes.keySet()) {
-				//其他服务器
-				if (!node.equalsIgnoreCase(localip)) {
-					if (nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()) {
-						Syncflag = executeSyncFile(syncFilePath, node, nodes.get(node).nodeAgentPort());
-					}
+				if (nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()) {
+					Syncflag = executeSyncFile(syncFilePath, node, nodes.get(node).nodeAgentPort());
 				}
 			}
 		}
@@ -172,7 +168,7 @@ public class BaseTools {
 			fileInputStream= new FileInputStream(syncFile);
 
 			socket.setKeepAlive(true);
-			socket.setSoTimeout(5000);
+			socket.setSoTimeout(2000);
 			DataOutputStream dos = null;
 			DataInputStream dis  = null;
 			try {

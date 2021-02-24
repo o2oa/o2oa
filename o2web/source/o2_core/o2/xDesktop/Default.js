@@ -863,13 +863,28 @@ o2.xDesktop.Default.StartMenu = new Class({
         }
         var nodes = this.appContentNode.getChildren();
         var data = [];
+
         nodes.each(function(node){
             var item = node.retrieve("item");
             if (item){
-                data.push({
-                    "id": item.data.id,
-                    "name": item.data.name
-                });
+                if (item.data.type==="group"){
+                    var d = {
+                        "id": item.data.id,
+                        "name": item.data.name,
+                        "type": item.data.type,
+                        "itemDataList": []
+                    }
+                    if (item.data.itemDataList) item.data.itemDataList.each(function(i){
+                        d.itemDataList.push(i);
+                    });
+                    data.push(d);
+                }else{
+                    data.push({
+                        "id": item.data.id,
+                        "name": item.data.name,
+                        "type": item.data.type,
+                    });
+                }
             }
         }.bind(this));
         if (this.currentTab === this.appCategoryTab){
@@ -904,7 +919,6 @@ o2.xDesktop.Default.StartMenu = new Class({
         this.searchNode.store("currentWidth", currentWidth);
 
         this.appCategoryTab.addEvent("click", function(){
-            debugger;
             this.appTitleNode.getElements(".layout_start_tab").removeClass("mainColor_bg");
             this.appCategoryTab.addClass("mainColor_bg");
             this.currentTab = this.appCategoryTab;
@@ -1202,37 +1216,36 @@ o2.xDesktop.Default.StartMenu = new Class({
         }.bind(this));
     },
 
-    getCurrentName : function( callback ){
+    loadApplicationsItem: function(layoutJson, componentJson, portalJson){
+        debugger;
         var user = this.layout.session.user;
         var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
         if (user.roleList) currentNames = currentNames.concat(user.roleList);
-        // if (user.groupList) currentNames = currentNames.concat(user.groupList);
-        o2.Actions.load("x_organization_assemble_express").GroupAction.listWithPerson(
-            {
-                personList: [user.distinguishedName],
-                recursiveGroupFlag : true,
-                referenceFlag : true,
-                recursiveOrgFlag : true
-            },
-            function(json) {
-                currentNames = currentNames.concat(json.data.groupList);
-                if( callback )callback( currentNames )
-            }
-        )
-    },
+        if (user.groupList) currentNames = currentNames.concat(user.groupList);
 
-    loadApplicationsItem: function(json_layout, json_component, json_portal){
-        // var user = this.layout.session.user;
-        // var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
-        // if (user.roleList) currentNames = currentNames.concat(user.roleList);
-        // if (user.groupList) currentNames = currentNames.concat(user.groupList);
+        var json_layout = Array.clone(layoutJson);
+        var json_component = Array.clone(componentJson);
+        var json_portal = Array.clone(portalJson);
 
-        this.getCurrentName( function ( currentNames ) {
-            this.appContentNode.removeClass("icon_loading");
+        this.appContentNode.removeClass("icon_loading");
 
-            var loadedApps = {};
-            if (this.menuData && this.menuData.appList && this.menuData.appList.length){
-                this.menuData.appList.each(function(app){
+        var loadedApps = {};
+        if (this.menuData && this.menuData.appList && this.menuData.appList.length){
+            this.menuData.appList.each(function(app){
+                if (app.type==="group"){
+                    this.createGroupMenuItem(app);
+                    app.itemDataList.each(function(a){
+                        var d = json_layout.find(function(i){ return (i.id === a.id); });
+                        if (d) json_layout.erase(d);
+
+                        d = json_component.find(function(i){ return (i.id === a.id); });
+                        if (d) json_component.erase(d);
+
+                        d = json_portal.find(function(i){ return (i.id === a.id); });
+                        if (d) json_portal.erase(d);
+
+                    }.bind(this));
+                }else{
                     var appData = null;
                     if (!appData && json_layout && json_layout.length){
                         appData = json_layout.find(function(i){ return (i.id === app.id); });
@@ -1252,6 +1265,7 @@ o2.xDesktop.Default.StartMenu = new Class({
                         appData = json_portal.find(function(i){ return (i.id === app.id); });
                         if (appData){
                             json_portal.erase(appData);
+                            appData.type = "portal";
                             this.createPortalMenuItem(appData);
                         }
                     }
@@ -1270,6 +1284,9 @@ o2.xDesktop.Default.StartMenu = new Class({
                 this.createPortalMenuItem(value);
             }.bind(this));
 
+        if (json_portal && json_portal.length) json_portal.each(function(value){
+            value.type = "portal";
+            this.createPortalMenuItem(value);
         }.bind(this));
     },
 
@@ -1278,9 +1295,34 @@ o2.xDesktop.Default.StartMenu = new Class({
         // o2.Actions.get("x_processplatform_assemble_surface").listApplication(this.loadProcessesItem.bind(this));
         this.loadProcessesItem(this.processJson)
     },
-    loadProcessesItem: function(json){
+    loadProcessesItem: function(list){
         this.appContentNode.removeClass("icon_loading");
+        var json = Array.clone(list);
+
+        if (this.menuData && this.menuData.processList && this.menuData.processList.length){
+            this.menuData.processList.each(function(app){
+                if (app.type==="group"){
+                    this.createGroupMenuItem(app);
+                    app.itemDataList.each(function(a){
+                        var d = json.find(function(i){ return (i.id === a.id); });
+                        if (d) json.erase(d);
+                    }.bind(this));
+                }else{
+                    var appData = null;
+                    if (!appData && json && json.length){
+                        appData = json.find(function(i){ return (i.id === app.id); });
+                        if (appData){
+                            json.erase(appData);
+                            appData.type = "process";
+                            this.createProcessMenuItem(appData);
+                        }
+                    }
+                }
+            }.bind(this));
+        }
+
         if (json && json.length) json.each(function(value){
+            value.type = "process";
             this.createProcessMenuItem(value);
         }.bind(this));
     },
@@ -1290,9 +1332,34 @@ o2.xDesktop.Default.StartMenu = new Class({
         //o2.Actions.get("x_cms_assemble_control").listColumn(this.loadInforsItem.bind(this));
         this.loadInforsItem(this.inforJson)
     },
-    loadInforsItem: function(json){
+    loadInforsItem: function(list){
         this.appContentNode.removeClass("icon_loading");
+        var json = Array.clone(list);
+
+        if (this.menuData && this.menuData.inforList && this.menuData.inforList.length){
+            this.menuData.inforList.each(function(app){
+                if (app.type==="group"){
+                    this.createGroupMenuItem(app);
+                    app.itemDataList.each(function(a){
+                        var d = json.find(function(i){ return (i.id === a.id); });
+                        if (d) json.erase(d);
+                    }.bind(this));
+                }else{
+                    var appData = null;
+                    if (!appData && json && json.length){
+                        appData = json.find(function(i){ return (i.id === app.id); });
+                        if (appData){
+                            json.erase(appData);
+                            appData.type = "cms";
+                            this.createInforMenuItem(appData);
+                        }
+                    }
+                }
+            }.bind(this));
+        }
+
         if (json && json.length) json.each(function(value){
+            value.type = "cms";
             this.createInforMenuItem(value);
         }.bind(this));
     },
@@ -1302,9 +1369,34 @@ o2.xDesktop.Default.StartMenu = new Class({
         // o2.Actions.get("x_query_assemble_surface").listQuery(this.loadQuerysItem.bind(this));
         this.loadQuerysItem(this.queryJson)
     },
-    loadQuerysItem: function(json){
+    loadQuerysItem: function(list){
         this.appContentNode.removeClass("icon_loading");
+        var json = Array.clone(list);
+
+        if (this.menuData && this.menuData.queryList && this.menuData.queryList.length){
+            this.menuData.queryList.each(function(app){
+                if (app.type==="group"){
+                    this.createGroupMenuItem(app);
+                    app.itemDataList.each(function(a){
+                        var d = json.find(function(i){ return (i.id === a.id); });
+                        if (d) json.erase(d);
+                    }.bind(this));
+                }else{
+                    var appData = null;
+                    if (!appData && json && json.length){
+                        appData = json.find(function(i){ return (i.id === app.id); });
+                        if (appData){
+                            json.erase(appData);
+                            appData.type = "query";
+                            this.createQueryMenuItem(appData);
+                        }
+                    }
+                }
+            }.bind(this));
+        }
+
         if (json && json.length) json.each(function(value){
+            value.type = "query";
             this.createQueryMenuItem(value);
         }.bind(this));
     },
@@ -1332,6 +1424,9 @@ o2.xDesktop.Default.StartMenu = new Class({
     createQueryMenuItem: function(value){
         this.items.push(new o2.xDesktop.Default.StartMenu.QueryItem(this, this.appContentNode, value));
     },
+    createGroupMenuItem: function(value){
+        this.items.push(new o2.xDesktop.Default.StartMenu.GroupItem(this, this.appContentNode, value));
+    },
 
     show: function(){
         if (!this.isMorph){
@@ -1350,6 +1445,7 @@ o2.xDesktop.Default.StartMenu = new Class({
             this.maskNode.setStyles({"display": "block"});
             this.node.setStyles({"display": "block"});
             this.triangleNode.setStyles({"display": "block"});
+            this.appAreaNode.setStyles({ "filter": "" });
 
             this.setSize();
             this.setPosition();
@@ -1398,6 +1494,7 @@ o2.xDesktop.Default.StartMenu = new Class({
 
             this.lnkContentNode.empty();
             this.appContentNode.empty();
+            this.groupMenuArea.empty();
             if (this.appScrollBar) this.appScrollBar.destroy();
 
             this.maskMorph.start({"left": ""+left+"px"}).chain(function(){
@@ -1414,18 +1511,31 @@ o2.xDesktop.Default.StartMenu = new Class({
             }.bind(this));
         }
     },
+    defaultMenu: function(){
+        this.layout.menuData = null;
+        if (this.layout.status) this.layout.status.menuData = null;
+        this.menuData = null;
+        this.hide();
+    }
 });
 
 o2.xDesktop.Default.StartMenu.Item = new Class({
-    initialize: function (menu, container, data) {
+    initialize: function (menu, container, data, positionNode) {
         this.menu = menu;
         this.layout = this.menu.layout;
         this.data = data;
         this.container = $(container);
-        this.load();
+        this.load(positionNode);
+        this.init();
     },
-    load: function(){
-        this.node = new Element("div.layout_start_item").inject(this.container);
+    load: function(positionNode){
+        this.node = new Element("div.layout_start_item");
+        if (positionNode){
+            this.node.inject(positionNode, "before");
+        }else{
+            this.node.inject(this.container);
+        }
+
         this.node.set("html", this.menu.itemTempletedHtml);
         this.iconAreaNode = this.node.getElement(".layout_start_item_iconArea");
         this.iconNode = this.node.getElement(".layout_start_item_icon");
@@ -1436,7 +1546,11 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.loadText();
         this.setEvent();
         this.node.store("item", this);
+        if (this.menu.data && this.menu.data.type==="group"){
+            this.node.addClass("layout_start_item_sub");
+        }
     },
+    init: function(){},
     dragOver: function(){
         if (!this.overNode){
             this.overNode = new Element("div.layout_start_item_over").inject(this.container);
@@ -1491,16 +1605,16 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.badgeNode.set("title", o2.LP.desktop.addLnk).addClass("icon_add_red");
     },
     loadText: function(){
-        this.textNode.set("text", this.data.title);
+        this.textNode.set("text", this.data.title || this.data.name);
     },
     setEvent: function(){
         this.node.addEvents({
             "mouseover": function(){ this.badgeNode.fade("in"); }.bind(this),
             "mouseout": function(){ this.badgeNode.fade("out"); }.bind(this),
             "click": function(e){
-                this.menu.hide(function(){
+                //this.menu.hide(function(){
                     this.open(e);
-                }.bind(this));
+                //}.bind(this));
             }.bind(this)
         });
 
@@ -1523,7 +1637,15 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.layout.addLnk(lnkdata, dragTargetLnk, dragPosition);
     },
     open: function(e){
-        layout.openApplication(e, this.data.path);
+        this.menu.hide(function(){
+            if (this.menu.menu){
+                this.menu.menu.hide(function(){
+                    layout.openApplication(e, this.data.path);
+                }.bind(this));
+            }else{
+                layout.openApplication(e, this.data.path);
+            }
+        }.bind(this));
     },
     makeLnk: function(){
         var drag = new Drag(this.node, {
@@ -1553,10 +1675,17 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     },
     doDragMove: function(e){
         this.getDragNode();
+
+        var droppables = [this.layout.lnkContentNode, this.menu.appContentNode];
+        if (this.menu.appContentNode.hasClass("layout_start_groupItem_menu_content")){
+            this.onGroup = true;
+        }
+        //if (this.menu.maskGroupNode) droppables.push(this.menu.maskGroupNode);
+
         var drag = new Drag.Move(this.dragNode, {
             "stopPropagation": true,
             "compensateScroll": true,
-            "droppables": [this.layout.lnkContentNode, this.menu.appContentNode],
+            "droppables": droppables,
             "onStart": function(el){ this._drag_start(el); }.bind(this),
             "onDrag": function(dragging,e){ this._drag_drag(dragging, e); }.bind(this),
             "onEnter": function(dragging, inObj){ this._drag_enter(dragging, inObj); }.bind(this),
@@ -1573,9 +1702,11 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.dragTargetLnk = null;
         this.dragPosition = "before";
 
-        this.node.setStyle("opacity", 0);
+        this.node.setStyle("opacity", 0.2);
+        this.positionFlagNode = new Element("div", {"styles": {"display": "none"}}).inject(this.node, "after");
     },
     _drag_drag: function(dragging, e){
+        console.log(this.dragStatus);
         if (this.dragStatus == "order"){
             if (this.layout.lnks && this.layout.lnks.length){
                 var current = e.page.y;
@@ -1613,7 +1744,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
             }
         }
         if (this.dragStatus == "group"){
-            this.checkDargOver(dragging);
+            if (!this.onGroup) this.checkDargOver(dragging);
             if (!this.overItem){
                 this.checkDargPosition(dragging);
             }
@@ -1665,17 +1796,21 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     },
 
     _drag_enter: function(el, inObj){
-        if (inObj.hasClass("layout_start_content_appContent")){
+        if (inObj.hasClass("layout_start_content_appContent") || inObj.hasClass("layout_start_groupItem_menu_content")){
             this.dragStatus = "group";
-            this.node.setStyle("opacity", 0);
+            this.node.setStyle("opacity", 0.2);
         }else{
+            if (this.positionFlagNode) this.node.inject(this.positionFlagNode, "before");
             this.dragStatus = "order";
             this.node.setStyle("opacity", 1);
         }
     },
     _drag_leave: function(el, inObj){
         if (inObj.hasClass("layout_start_content_appContent")){
-            this.node.inject(this.menu.appContentNode);
+            //this.node.inject(this.menu.appContentNode);
+        }else if (inObj.hasClass("layout_start_groupItem_menu_content")){
+            this.dragStatus = "ungroup";
+            this.node.setStyle("opacity", 0);
         }else{
             this.dragStatus = "remove";
             if (this.layout.positionNode) this.layout.positionNode.hide();
@@ -1683,14 +1818,22 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     },
 
     _drag_drop: function(dragging, inObj){
-        if (this.dragStatus == "order" && this.dragTargetLnk && this.dragTargetLnk!=this){
-            this.addLnk(this.dragTargetLnk, this.dragPosition);
+        if (this.dragStatus==="ungroup"){
+            this.removeFormGroup();
+        }else{
+            if (this.dragStatus == "order" && this.dragTargetLnk && this.dragTargetLnk!=this){
+                this.addLnk(this.dragTargetLnk, this.dragPosition);
+            }else if (this.dragStatus == "group" && this.overItem && this.overItem!=this){
+                this.overItem.dragOut();
+                this.addGroup();
+            }
+            this.node.setStyle("opacity", 1);
         }
-        this.node.setStyle("opacity", 1);
         this.menu.resetMenuData();
     },
 
     _drag_cancel: function(dragging){
+        console.log("_drag_cancel");
         dragging.hide();
         if (this.layout.positionNode) this.layout.positionNode.hide();
         if (this.dragRemoveNode) this.dragRemoveNode.hide();
@@ -1699,10 +1842,324 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.menu.resetMenuData();
     },
 
-    _drag_complete: function(dragging){
+    _drag_complete: function(dragging) {
         this._drag_cancel(dragging);
+        if (this.positionFlagNode) this.positionFlagNode.destroy();
+        this.positionFlagNode = null;
+    },
+    removeFormGroup: function(){
+        // this.menu.itemDataList.erase(this.data);
+        // this.menu.items.erase(this);
+        this.menu.data.itemDataList.erase(this.data);
+        switch (this.data.type){
+            case "portal":
+                this.layout.startMenu.createPortalMenuItem(this.data);
+                break;
+            case "process":
+                this.layout.startMenu.createProcessMenuItem(this.data);
+                break;
+            case "cms":
+                this.layout.startMenu.createInforMenuItem(this.data);
+                break;
+            case "query":
+                this.layout.startMenu.createQueryMenuItem(this.data);
+                break;
+            default:
+                this.layout.startMenu.createApplicationMenuItem(this.data);
+
+        }
+        debugger;
+        this.destroy();
+        if (!this.menu.data.itemDataList.length){
+            this.menu.hide(function(){
+                this.menu.destroy();
+            }.bind(this));
+        }else{
+            this.menu.resetSubItemIcon();
+        }
+
+    },
+    addGroup: function(){
+        debugger;
+        if (this.overItem.data.type==="group"){
+            this.overItem.addItem(this.data);
+        }else{
+            var v = {
+                name: "Group",
+                title: "Group",
+                type: "group",
+                visible: true
+            }
+            var group = new o2.xDesktop.Default.StartMenu.GroupItem(this.menu, this.container, v, this.overItem.node);
+            group.addItem(this.overItem.data);
+            group.addItem(this.data);
+            this.menu.items.push(group);
+            this.overItem.node.destroy();
+            group.open(null, function(){
+                group.editTitle();
+            });
+        }
+        this.node.destroy();
+        this.menu.resetMenuData();
+    },
+    destroy: function(){
+        this.menu.items.erase(this);
+        this.node.destroy();
     }
 });
+
+o2.xDesktop.Default.StartMenu.GroupItem = new Class({
+    Extends: o2.xDesktop.Default.StartMenu.Item,
+    loadIcon: function(){
+        this.iconNode.addClass("layout_start_item_icon_group");
+        this.iconNode.addClass("grayColor_bg");
+
+        this.sunIconNodes = [];
+        var node = new Element("div.layout_start_item_icon_group_sub").inject(this.iconNode);
+        this.sunIconNodes.push(node);
+
+        node = new Element("div.layout_start_item_icon_group_sub").inject(this.iconNode);
+        this.sunIconNodes.push(node);
+
+        node = new Element("div.layout_start_item_icon_group_sub").inject(this.iconNode);
+        this.sunIconNodes.push(node);
+
+        node = new Element("div.layout_start_item_icon_group_sub").inject(this.iconNode);
+        this.sunIconNodes.push(node);
+    },
+    init: function(){
+        this.itemTempletedHtml = this.menu.itemTempletedHtml;
+
+        if (this.data.itemDataList && this.data.itemDataList.length){
+            for (var i=0; i<Math.min(this.data.itemDataList.length, 4); i++){
+                var icon = this.setSubItemIcon(this.data.itemDataList[i], this.sunIconNodes[i]);
+            }
+        }
+    },
+    resetSubItemIcon: function(){
+        this.sunIconNodes.each(function(e){
+            e.setStyle("background-image", "");
+            e.setStyle("background-color", "");
+        });
+        if (this.data.itemDataList && this.data.itemDataList.length){
+            for (var i=0; i<Math.min(this.data.itemDataList.length, 4); i++){
+                var icon = this.setSubItemIcon(this.data.itemDataList[i], this.sunIconNodes[i]);
+            }
+        }
+    },
+    open: function(e, callback){
+        if (!this.menuNode) this.createMenuNode();
+        this.maskNode = new Element("div.layout_start_groupItem_menuMask").inject(this.menuNode, "before");
+        this.maskNode.addEvent("click", function(e){
+            this.hide();
+        }.bind(this));
+        this.maskGroupNode = this.maskNode;
+
+        this.menuNode.show();
+
+        var styles = this.getMenuNodeOpenDimensions();
+        this.menuNode.morph.set("transition", Fx.Transitions.Quart.easeOut);
+        this.menuNode.morph.start(styles).chain(function(){
+            this.menuTitleNode.show();
+            this.menuScrollNode.show();
+
+            var s = this.menuNode.getSize();
+            var ts = this.menuTitleNode.getSize();
+            var h = s.y - ts.y;
+            this.menuContentNode.setStyle("height", ""+h+"px");
+            this.loadItems();
+            if (callback) callback();
+        }.bind(this));
+
+        this.menu.appAreaNode.setStyles({ "filter": "blur(5px)" });
+    },
+    hide: function(callback){
+        this.menuTitleNode.hide();
+        this.menuScrollNode.hide();
+        var styles = this.getMenuNodeCloseDimensions();
+        this.menuNode.morph.set("transition", Fx.Transitions.Quart.easeIn);
+        this.menuNode.morph.start(styles).chain(function(){
+            if (this.maskNode) this.maskNode.destroy();
+            if (this.menuNode) this.menuNode.hide();
+            if (callback) callback();
+        }.bind(this));
+        this.menu.appAreaNode.setStyles({ "filter": "" });
+    },
+    loadItems: function(){
+        if (!this.items) this.items = [];
+        this.data.itemDataList.each(function(data){
+            var item = this.items.find(function(i){
+                return i.data.id == data.id;
+            });
+            if (!item){
+                switch (data.type){
+                    case "portal":
+                        this.items.push(new o2.xDesktop.Default.StartMenu.PortalItem(this, this.menuContentNode, data));
+                        break;
+                    case "process":
+                        this.items.push(new o2.xDesktop.Default.StartMenu.ProcessItem(this, this.menuContentNode, data));
+                        break;
+                    case "cms":
+                        this.items.push(new o2.xDesktop.Default.StartMenu.InforItem(this, this.menuContentNode, data));
+                        break;
+                    case "query":
+                        this.items.push(new o2.xDesktop.Default.StartMenu.QueryItem(this, this.menuContentNode, data));
+                        break;
+                    default:
+                        this.items.push(new o2.xDesktop.Default.StartMenu.Item(this, this.menuContentNode, data));
+                }
+            }
+        }.bind(this));
+    },
+    getMenuNodeOpenDimensions: function(){
+        var size = this.menu.appAreaNode.getSize();
+        var w = size.x*0.94;
+        var h = size.y*0.7;
+        var x = (size.x*(1-0.94))/2;
+        var y = (size.y*(1-0.7))/2;
+        return {"width":w, "height": h, "left": x, "top": y}
+    },
+    getMenuNodeCloseDimensions: function(){
+        var size = this.iconNode.getSize();
+        var position = this.iconNode.getPosition(this.menu.node);
+        return {"width":size.x, "height": size.y, "left": position.x, "top": position.y}
+    },
+    createMenuNode: function(){
+        this.menuNode = new Element("div.layout_start_groupItem_menu").inject(this.menu.groupMenuArea);
+        this.menuNode.addClass("grayColor_bg");
+        this.menuTitleNode = new Element("div.layout_start_groupItem_menu_title").inject(this.menuNode);
+        this.menuTitleNode.set("text", this.data.name);
+
+        this.menuScrollNode = new Element("div.layout_start_groupItem_menu_scroll").inject(this.menuNode);
+        this.menuContentNode = new Element("div.layout_start_groupItem_menu_content").inject(this.menuScrollNode);
+        this.appContentNode = this.menuContentNode;
+
+        this.menuNode.position({
+            "relativeTo": this.iconNode,
+            "position": "upperLeft",
+            "edge": "upperLeft"
+        });
+        this.menuNode.morph = new Fx.Morph(this.menuNode, {
+            "duration": 200,
+            "transition": Fx.Transitions.Quart.easeOut
+        });
+        this.menuTitleNode.addEvent("click", function(){
+            
+            var input = this.menuTitleNode.getElement("input");
+            if (!input) this.editTitle();
+        }.bind(this))
+    },
+    destroy: function(){
+        this.menu.items.erase(this);
+        this.node.destroy();
+        this.menuNode.destroy();
+    },
+    editTitle: function(){
+        this.menuTitleNode.empty();
+        this.editotTitleNode = new Element("input.layout_start_groupItem_menu_title_edit", {"type": "text"}).inject(this.menuTitleNode);
+        this.editotTitleNode.set("value", this.data.name);
+        this.editotTitleNode.focus();
+
+        this.editotTitleNode.addEvent("blur", function(){
+            var name = this.editotTitleNode.get("value");
+            if (name) this.data.name = name;
+            this.menuTitleNode.empty();
+            this.menuTitleNode.set("text", this.data.name);
+            this.loadText();
+        }.bind(this));
+    },
+
+    addItem: function(data){
+        if (!this.data.itemDataList) this.data.itemDataList = [];
+        if (this.data.itemDataList.length<4){
+            this.setSubItemIcon(data, this.sunIconNodes[this.data.itemDataList.length]);
+        }
+        this.data.itemDataList.push(data);
+    },
+    setSubItemIcon: function(data, node){
+        switch (data.type){
+            case "process":
+                this.setAppSubItemIcon(node, data.icon, "processDefault", "../x_component_process_ApplicationExplorer/$Main/default/icon/application.png");
+                break;
+            case "portal":
+                this.setAppSubItemIcon(node, data.icon, "portalDefault", "../x_component_portal_PortalExplorer/$Main/default/icon/application.png");
+                break;
+            case "cms":
+                this.setAppSubItemIcon(node, data.icon, "cmsDefault", "../x_component_cms_Index/$Main/default/icon/column.png");
+                break;
+            case "query":
+                this.setAppSubItemIcon(node, data.icon, "queryDefault", "../x_component_query_Query/$Main/appicon.png");
+                break;
+            default:
+                this.setDefaultSubItemIcon(data, node);
+        }
+    },
+    setAppSubItemIcon: function(node, iconData, defaultIcon, defaultUrl){
+        var icon = "";
+        var bgcolor = "";
+        if (iconData){
+            icon = "data:image/png;base64,"+iconData+"";
+            bgcolor = "";
+            node.addClass("layout_start_item_icon_group_subIcon");
+        }else{
+            var p = defaultIcon;
+            if (this.layout.iconsJson[p] && this.layout.iconsJson[p].icon){
+                icon = this.layout.path+"appicons/"+this.layout.iconsJson[p].icon;
+                bgcolor = this.layout.iconsJson[p].color;
+            }else{
+                icon = defaultUrl;
+                bgcolor = "";
+            }
+        }
+        if (icon && bgcolor) node.setStyle("background-color", bgcolor);
+        node.setStyle("background-image", "url("+icon+")");
+    },
+    setDefaultSubItemIcon: function(data, node){
+        var icon;
+        var bgcolor = "";
+        if (data.path.substring(0, 4)==="@url"){
+            if (data.iconPath){
+                icon = data.iconPath;
+            }else{
+                if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon){
+                    icon = this.layout.path+"appicons/"+this.layout.iconsJson["Url"].icon;
+                    bgcolor = this.layout.iconsJson["Url"].color;
+                }else{
+                    icon = "../x_component_Setting/$Main/default/icon/site.png";
+                    bgcolor = "";
+                }
+            }
+        }else{
+            if (this.layout.iconsJson[data.path] && this.layout.iconsJson[data.path].icon){
+                icon = this.layout.path+"appicons/"+this.layout.iconsJson[data.path].icon;
+                bgcolor = this.layout.iconsJson[data.path].color;
+            }else{
+                icon = "../x_component_"+data.path.replace(/\./g, "_")+"/$Main/"+data.iconPath;
+                bgcolor = "";
+            }
+        }
+        if (icon && bgcolor){
+            node.setStyle("background-color", bgcolor);
+        }
+        node.setStyle("background-image", "url("+icon+")");
+    },
+
+    resetMenuData: function(){
+        debugger;
+        var nodes = this.menuContentNode.getChildren(".layout_start_item");
+        var data = [];
+
+        nodes.each(function(node){
+            var item = node.retrieve("item");
+            if (item){
+                data.push(item.data);
+            }
+        }.bind(this));
+        this.data.itemDataList = data;
+    }
+});
+
+
 o2.xDesktop.Default.StartMenu.PortalItem = new Class({
     Extends: o2.xDesktop.Default.StartMenu.Item,
     loadIcon: function(){
@@ -1745,7 +2202,15 @@ o2.xDesktop.Default.StartMenu.PortalItem = new Class({
 
     open: function(e){
         var options = {"portalId": this.data.id, "appId": "portal.Portal"+this.data.id};
-        layout.openApplication(e, "portal.Portal", options);
+        this.menu.hide(function(){
+            if (this.menu.menu){
+                this.menu.menu.hide(function(){
+                    layout.openApplication(e, "portal.Portal", options);
+                }.bind(this));
+            }else{
+                layout.openApplication(e, "portal.Portal", options);
+            }
+        }.bind(this));
     }
     // makeLnk: function(){
     //     //@todo
@@ -1793,7 +2258,15 @@ o2.xDesktop.Default.StartMenu.ProcessItem = new Class({
     },
     open: function(e){
         var options = {"id": this.data.id, "appId": "process.Application"+this.data.id};
-        layout.openApplication(e, "process.Application", options);
+        this.menu.hide(function(){
+            if (this.menu.menu){
+                this.menu.menu.hide(function(){
+                    layout.openApplication(e, "process.Application", options);
+                }.bind(this));
+            }else{
+                layout.openApplication(e, "process.Application", options);
+            }
+        }.bind(this));
     }
     // makeLnk: function(){
     //     //@todo
@@ -1842,7 +2315,15 @@ o2.xDesktop.Default.StartMenu.InforItem = new Class({
         this.layout.addLnk(lnkdata, dragTargetLnk, dragPosition);
     },
     open: function(e){
-        layout.openApplication(e, "cms.Module", {"columnData": this.data, "appId": "cms.Module"+this.data.id});
+        this.menu.hide(function(){
+            if (this.menu.menu){
+                this.menu.menu.hide(function(){
+                    layout.openApplication(e, "cms.Module", {"columnData": this.data, "appId": "cms.Module"+this.data.id});
+                }.bind(this));
+            }else{
+                layout.openApplication(e, "cms.Module", {"columnData": this.data, "appId": "cms.Module"+this.data.id});
+            }
+        }.bind(this));
     }
     // makeLnk: function(){
     //     //@todo
@@ -1889,7 +2370,15 @@ o2.xDesktop.Default.StartMenu.QueryItem = new Class({
         this.layout.addLnk(lnkdata, dragTargetLnk, dragPosition);
     },
     open: function(e){
-        layout.openApplication(e, "query.Query", {"id": this.data.id, "appId": "query.Query"+this.data.id});
+        this.menu.hide(function(){
+            if (this.menu.menu){
+                this.menu.menu.hide(function(){
+                    layout.openApplication(e, "query.Query", {"id": this.data.id, "appId": "query.Query"+this.data.id});
+                }.bind(this));
+            }else{
+                layout.openApplication(e, "query.Query", {"id": this.data.id, "appId": "query.Query"+this.data.id});
+            }
+        }.bind(this));
     }
     // makeLnk: function(){
     //     //@todo
