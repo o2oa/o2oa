@@ -1,0 +1,54 @@
+{
+  "mock": {
+    "x_processplatform_assemble_surface": {
+      "put": {
+        "to": "post",
+        "append": "mockputtopost"
+      },
+      "delete": {
+        "to": "get",
+        "append": "mockdeletetoget"
+      }
+    },
+    "x_cms_assemble_control": {
+      "put": {
+        "to": "post",
+        "append": "mockputtopost"
+      },
+      "delete": {
+        "to": "get",
+        "append": "mockdeletetoget"
+      }
+    },
+    "x_query_assemble_surface": {
+      "put": {
+        "to": "post",
+        "append": "mockputtopost"
+      },
+      "delete": {
+        "to": "get",
+        "append": "mockdeletetoget"
+      }
+    },
+    "x_organization_assemble_authentication": {
+      "put": {
+        "to": "post",
+        "append": "mockputtopost"
+      },
+      "delete": {
+        "to": "get",
+        "append": "mockdeletetoget"
+      }
+    },
+    "x_organization_assemble_personal": {
+      "put": {
+        "to": "post",
+        "append": "mockputtopost"
+      },
+      "delete": {
+        "to": "get",
+        "append": "mockdeletetoget"
+      }
+    }
+  }
+}

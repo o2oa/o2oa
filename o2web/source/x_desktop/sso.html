@@ -44,7 +44,7 @@
                             }.bind(this)
                         });
                         res.setHeader("Content-Type", "application/json; charset=utf-8");
-                        var json = {"token": xtoken, "client": client};
+                        var json = {"token": encodeURIComponent(xtoken), "client": client};
 
                         res.send(JSON.encode(json));
                     }else{

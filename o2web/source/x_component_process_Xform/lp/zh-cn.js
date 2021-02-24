@@ -8,6 +8,20 @@ MWF.xApplication.process.Xform.LP = {
     "cancelDatagridLineEditTitle" : "取消编辑数据网格确认",
     "cancelDatagridLineEdit" : "是否确定取消编辑数据网格？",
 
+    "datagridImport" : "导入Excel",
+    "datagridExport" : "导出Excel",
+    "exportDefaultName" : "数据网格",
+    "importSuccess" : "导入成功！",
+    "validationInfor" : "校验信息",
+    "importFail" : "导入失败",
+    "importValidationColumnText" : "第{n}列：",
+    "importValidationColumnTextExcel" : "列{n}：",
+    "notValidNumber" : "不是数字",
+    "notValidDate" : "不是日期格式",
+    "fullstop" : "。",
+    "notExistInSystem" : "在系统中不存在",
+    "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格",
+
     "browserNotActiveX": "您的浏览器不支持ActiveX控件，不能加载Office控件，请使用IE浏览器",
 
     "activity": "活动",

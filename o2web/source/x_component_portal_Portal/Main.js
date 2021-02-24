@@ -175,11 +175,15 @@ MWF.xApplication.portal.Portal.Main = new Class({
         var check = function(){
             if (!!pageJson && loadModuleFlag){
                 this.pageJson = pageJson;
-                layout.sessionPromise.then(function(){
+                if (layout.session && layout.session.user){
                     this.openPage(pageJson, par, callback);
-                }.bind(this), function(){
-                    this.openPage(pageJson, par, callback);
-                }.bind(this));
+                }else if( layout.sessionPromise ){
+                    layout.sessionPromise.then(function () {
+                        this.openPage(pageJson, par, callback);
+                    }.bind(this), function () {
+                        this.openPage(pageJson, par, callback);
+                    }.bind(this));
+                }
             }
         }.bind(this);
 
