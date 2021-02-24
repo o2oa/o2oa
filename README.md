@@ -1,12 +1,12 @@
 # O2OA相关教程
 
-[安装管理及配置](https://www.yuque.com/o2oa/course/wqq0co)
+[平台初级开发体验](https://www.o2oa.net/course/tbzbmy.html)
 
-[业务开发与设计](https://www.yuque.com/o2oa/course/gty5yx)
+[服务器部署及管理](https://www.o2oa.net/course/ot3372.html)
 
-[平台内置应用介绍](https://www.yuque.com/o2oa/course/kls5ye)
+[业务功能开发手册](https://www.o2oa.net/course/wsmndr.html)
 
-[源码的编译及管理](https://www.yuque.com/o2oa/course/ng5iqb)
+[源码的编译及管理](https://www.o2oa.net/course/ng5iqb.html)
 
 ***
 
@@ -63,9 +63,9 @@ Gitee : https://gitee.com/o2oa/O2OA
 
 Github : https://github.com/o2oa/o2oa
 
-语雀文档 : https://www.yuque.com/o2oa/course
+语雀文档 : https://www.o2oa.net/course
 
-脚本API：http://www.o2oa.net/x_desktop/portal.html?id=dcd8e168-2da0-4496-83ee-137dc976c7f6
+脚本API：http://www.o2oa.net/api/
 
 
 
