@@ -1698,7 +1698,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.dragTargetLnk = null;
         this.dragPosition = "before";
 
-        this.node.setStyle("opacity", 0.1);
+        this.node.setStyle("opacity", 0.2);
         this.positionFlagNode = new Element("div", {"styles": {"display": "none"}}).inject(this.node, "after");
     },
     _drag_drag: function(dragging, e){
@@ -1794,7 +1794,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     _drag_enter: function(el, inObj){
         if (inObj.hasClass("layout_start_content_appContent") || inObj.hasClass("layout_start_groupItem_menu_content")){
             this.dragStatus = "group";
-            this.node.setStyle("opacity", 0.1);
+            this.node.setStyle("opacity", 0.2);
         }else{
             if (this.positionFlagNode) this.node.inject(this.positionFlagNode, "before");
             this.dragStatus = "order";
@@ -1806,7 +1806,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
             //this.node.inject(this.menu.appContentNode);
         }else if (inObj.hasClass("layout_start_groupItem_menu_content")){
             this.dragStatus = "ungroup";
-            this.node.setStyle("opacity", 0.1);
+            this.node.setStyle("opacity", 0);
         }else{
             this.dragStatus = "remove";
             if (this.layout.positionNode) this.layout.positionNode.hide();
@@ -1814,17 +1814,22 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     },
 
     _drag_drop: function(dragging, inObj){
-        if (this.dragStatus == "order" && this.dragTargetLnk && this.dragTargetLnk!=this){
-            this.addLnk(this.dragTargetLnk, this.dragPosition);
-        }else if (this.dragStatus == "group" && this.overItem && this.overItem!=this){
-            this.overItem.dragOut();
-            this.addGroup();
+        if (this.dragStatus==="ungroup"){
+            this.removeFormGroup();
+        }else{
+            if (this.dragStatus == "order" && this.dragTargetLnk && this.dragTargetLnk!=this){
+                this.addLnk(this.dragTargetLnk, this.dragPosition);
+            }else if (this.dragStatus == "group" && this.overItem && this.overItem!=this){
+                this.overItem.dragOut();
+                this.addGroup();
+            }
+            this.node.setStyle("opacity", 1);
         }
-        this.node.setStyle("opacity", 1);
         this.menu.resetMenuData();
     },
 
     _drag_cancel: function(dragging){
+        console.log("_drag_cancel");
         dragging.hide();
         if (this.layout.positionNode) this.layout.positionNode.hide();
         if (this.dragRemoveNode) this.dragRemoveNode.hide();
@@ -1838,7 +1843,38 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         if (this.positionFlagNode) this.positionFlagNode.destroy();
         this.positionFlagNode = null;
     },
+    removeFormGroup: function(){
+        // this.menu.itemDataList.erase(this.data);
+        // this.menu.items.erase(this);
+        this.menu.data.itemDataList.erase(this.data);
+        switch (this.data.type){
+            case "portal":
+                this.layout.startMenu.createPortalMenuItem(this.data);
+                break;
+            case "process":
+                this.layout.startMenu.createProcessMenuItem(this.data);
+                break;
+            case "cms":
+                this.layout.startMenu.createInforMenuItem(this.data);
+                break;
+            case "query":
+                this.layout.startMenu.createQueryMenuItem(this.data);
+                break;
+            default:
+                this.layout.startMenu.createApplicationMenuItem(this.data);
 
+        }
+        debugger;
+        this.destroy();
+        if (!this.menu.data.itemDataList.length){
+            this.menu.hide(function(){
+                this.menu.destroy();
+            }.bind(this));
+        }else{
+            this.menu.resetSubItemIcon();
+        }
+
+    },
     addGroup: function(){
         debugger;
         if (this.overItem.data.type==="group"){
@@ -1861,6 +1897,10 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         }
         this.node.destroy();
         this.menu.resetMenuData();
+    },
+    destroy: function(){
+        this.menu.items.erase(this);
+        this.node.destroy();
     }
 });
 
@@ -1886,6 +1926,17 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
     init: function(){
         this.itemTempletedHtml = this.menu.itemTempletedHtml;
 
+        if (this.data.itemDataList && this.data.itemDataList.length){
+            for (var i=0; i<Math.min(this.data.itemDataList.length, 4); i++){
+                var icon = this.setSubItemIcon(this.data.itemDataList[i], this.sunIconNodes[i]);
+            }
+        }
+    },
+    resetSubItemIcon: function(){
+        this.sunIconNodes.each(function(e){
+            e.setStyle("background-image", "");
+            e.setStyle("background-color", "");
+        });
         if (this.data.itemDataList && this.data.itemDataList.length){
             for (var i=0; i<Math.min(this.data.itemDataList.length, 4); i++){
                 var icon = this.setSubItemIcon(this.data.itemDataList[i], this.sunIconNodes[i]);
@@ -1993,6 +2044,11 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
             var input = this.menuTitleNode.getElement("input");
             if (!input) this.editTitle();
         }.bind(this))
+    },
+    destroy: function(){
+        this.menu.items.erase(this);
+        this.node.destroy();
+        this.menuNode.destroy();
     },
     editTitle: function(){
         this.menuTitleNode.empty();
