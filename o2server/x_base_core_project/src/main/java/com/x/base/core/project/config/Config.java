@@ -81,6 +81,7 @@ public class Config {
 	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
 	public static final String PATH_CONFIG_EMAIL = "config/email.json";
 	public static final String PATH_CONFIG_WEB = "config/web.json";
+	public static final String PATH_CONFIG_MOCK = "config/mock.json";
 
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
@@ -1174,6 +1175,19 @@ public class Config {
 			instance().web = obj;
 		}
 		return instance().web;
+	}
+
+	public JsonObject mock;
+
+	public static synchronized JsonObject mock() throws Exception {
+		if (null == instance().mock) {
+			JsonObject obj = BaseTools.readConfigObject(PATH_CONFIG_MOCK, JsonObject.class);
+			if (null == obj) {
+				obj = new JsonObject();
+			}
+			instance().mock = obj;
+		}
+		return instance().mock;
 	}
 
 	public Map<String, JsonObject> customConfig = new HashMap<>();

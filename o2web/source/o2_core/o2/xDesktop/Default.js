@@ -1040,33 +1040,34 @@ o2.xDesktop.Default.StartMenu = new Class({
         }
     },
     searchApplicatins: function(value){
-        var user = this.layout.session.user;
-        var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
-        if (user.roleList) currentNames = currentNames.concat(user.roleList);
-        if (user.groupList) currentNames = currentNames.concat(user.groupList);
+        // var user = this.layout.session.user;
+        //         // var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
+        //         // if (user.roleList) currentNames = currentNames.concat(user.roleList);
+        //         // if (user.groupList) currentNames = currentNames.concat(user.groupList);
 
-        if (this.layoutJson && this.layoutJson.length) this.layoutJson.each(function(v){
-            if ( this.checkMenuItem(v, currentNames) ){
-                if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
-                    this.createApplicationMenuItem(v);
+        this.getCurrentName( function (currentNames) {
+            if (this.layoutJson && this.layoutJson.length) this.layoutJson.each(function(v){
+                if ( this.checkMenuItem(v, currentNames) ){
+                    if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
+                        this.createApplicationMenuItem(v);
+                    }
                 }
-            }
-        }.bind(this));
+            }.bind(this));
 
-        if (this.componentJson && this.componentJson.length) this.componentJson.each(function(v){
-            if ( this.checkMenuItem(v, currentNames) ){
-                if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
-                    this.createApplicationMenuItem(v);
+            if (this.componentJson && this.componentJson.length) this.componentJson.each(function(v){
+                if ( this.checkMenuItem(v, currentNames) ){
+                    if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
+                        this.createApplicationMenuItem(v);
+                    }
                 }
-            }
-        }.bind(this));
+            }.bind(this));
 
-        if (this.portalJson && this.portalJson.length) this.portalJson.each(function(v){
-            if ((v.name.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.name.toPY().toLowerCase().indexOf(value)!==-1) || (v.name.indexOf(value)!==-1)){
-                this.createPortalMenuItem(v);
-            }
-        }.bind(this));
-
+            if (this.portalJson && this.portalJson.length) this.portalJson.each(function(v){
+                if ((v.name.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.name.toPY().toLowerCase().indexOf(value)!==-1) || (v.name.indexOf(value)!==-1)){
+                    this.createPortalMenuItem(v);
+                }
+            }.bind(this));
+        })
     },
     searchProcesses: function(value){
         if (this.processJson && this.processJson.length) this.processJson.each(function(v){
@@ -1268,17 +1269,20 @@ o2.xDesktop.Default.StartMenu = new Class({
                             this.createPortalMenuItem(appData);
                         }
                     }
-                }
+                }.bind(this));
+            }
+
+            if (json_layout && json_layout.length) json_layout.each(function(value){
+                if ( this.checkMenuItem(value, currentNames) ) this.createApplicationMenuItem(value);
             }.bind(this));
-        }
 
-        if (json_layout && json_layout.length) json_layout.each(function(value){
-            if ( this.checkMenuItem(value, currentNames) ) this.createApplicationMenuItem(value);
-        }.bind(this));
+            if (json_component && json_component.length) json_component.each(function(value){
+                if ( this.checkMenuItem(value, currentNames) ) this.createApplicationMenuItem(value);
+            }.bind(this));
 
-        if (json_component && json_component.length) json_component.each(function(value){
-            if ( this.checkMenuItem(value, currentNames) ) this.createApplicationMenuItem(value);
-        }.bind(this));
+            if (json_portal && json_portal.length) json_portal.each(function(value){
+                this.createPortalMenuItem(value);
+            }.bind(this));
 
         if (json_portal && json_portal.length) json_portal.each(function(value){
             value.type = "portal";
