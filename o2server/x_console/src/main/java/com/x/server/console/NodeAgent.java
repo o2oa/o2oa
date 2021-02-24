@@ -23,6 +23,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import com.x.base.core.project.config.WebServers;
 import com.x.base.core.project.tools.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
@@ -133,6 +134,12 @@ public class NodeAgent extends Thread {
 								fos.flush();
 							}
 							fos.close();
+							Config.flush();
+							if(syncFilePath.indexOf("web.json") > -1 || syncFilePath.indexOf("collect.json") > -1
+									|| syncFilePath.indexOf("portal.json") > -1){
+								// 更新web服务配置信息
+								WebServers.updateWebServerConfigJson();
+							}
 							logger.info("同步完成");
 							continue;
 

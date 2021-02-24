@@ -20,7 +20,8 @@
         "include": [ //需要抽取文档的源文件夹
             "./o2web/source/x_component_process_Xform",
             "./o2web/source/x_component_cms_Xform",
-            "./o2web/source/o2_core/o2/xScript"
+            "./o2web/source/o2_core/o2/xScript",
+            "./o2web/source/x_desktop/js/o2m.api.js"
         ],
         "includePattern": ".+\\.js(doc|x)?$", //抽取的源文件名称正则表达式
         "excludePattern": "(^|\\/|\\\\)_" //排除的源文件正则表达式
@@ -41,7 +42,9 @@
         }
     },
     "metadata": {
-        "title": "O2OA前台API" //最终生成的文档中标题
+        "title": "O2OA前台API", //最终生成的文档中标题
+        "title_prefix" : "O2OA WebAPI", //html title标题前缀
+        "title_suffix" : " | O2OA开发平台" //标题后缀
     },
     "o2" : {
         "actionOutPath" : "./o2server/{actionRoot}/src/main/webapp/describe/jsdoc/{actionName}.json",
