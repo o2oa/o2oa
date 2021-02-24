@@ -16,7 +16,7 @@
     //      "icon": "cms.png"
     //    },
     {
-      "title": "云文件",
+      "title": "企业网盘",
       "action": "File",
       "icon": "file.png"
     },
