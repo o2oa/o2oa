@@ -1347,8 +1347,8 @@ MWF.xApplication.AppCenter.Exporter.Element.QuerySelector = new Class({
         this.selectData.viewList = this.getCheckedList(this.listViewContent);
         this.selectData.statList = this.getCheckedList(this.listStatContent);
         this.selectData.revealList = this.getCheckedList(this.listRevealContent);
-        this.selectData.statementList = this.getCheckedList(this.listRevealContent);
-        this.selectData.tableList = this.getCheckedList(this.listRevealContent);
+        this.selectData.statementList = this.getCheckedList(this.listTableContent);
+        this.selectData.tableList = this.getCheckedList(this.listStatementContent);
         this.element.checkSelect(this.selectData);
         this.hide();
     },
@@ -1358,8 +1358,8 @@ MWF.xApplication.AppCenter.Exporter.Element.QuerySelector = new Class({
         this.listStatContent = this.listProcess("statList");
         this.listRevealContent = this.listProcess("revealList");
 
-        this.listRevealContent = this.listProcess("tableList");
-        this.listRevealContent = this.listProcess("statementList");
+        this.listTableContent = this.listProcess("tableList");
+        this.listStatementContent = this.listProcess("statementList");
     }
 });
 MWF.xApplication.AppCenter.Exporter.Element.ServiceSelector = new Class({
