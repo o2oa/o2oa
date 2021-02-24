@@ -1855,7 +1855,9 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
             group.addItem(this.data);
             this.menu.items.push(group);
             this.overItem.node.destroy();
-            group.open();
+            group.open(null, function(){
+                group.editTitle();
+            });
         }
         this.node.destroy();
         this.menu.resetMenuData();
