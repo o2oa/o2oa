@@ -1987,16 +1987,24 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
             "transition": Fx.Transitions.Quart.easeOut
         });
         this.menuTitleNode.addEvent("click", function(){
+            
             var input = this.menuTitleNode.getElement("input");
             if (!input) this.editTitle();
         }.bind(this))
     },
     editTitle: function(){
-        debugger;
         this.menuTitleNode.empty();
         this.editotTitleNode = new Element("input.layout_start_groupItem_menu_title_edit", {"type": "text"}).inject(this.menuTitleNode);
         this.editotTitleNode.set("value", this.data.name);
         this.editotTitleNode.focus();
+
+        this.editotTitleNode.addEvent("blur", function(){
+            var name = this.editotTitleNode.get("value");
+            if (name) this.data.name = name;
+            this.menuTitleNode.empty();
+            this.menuTitleNode.set("text", this.data.name);
+            this.loadText();
+        }.bind(this));
     },
 
     addItem: function(data){

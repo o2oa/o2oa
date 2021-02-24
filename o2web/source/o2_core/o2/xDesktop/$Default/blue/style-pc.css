@@ -743,7 +743,6 @@
     font-size: 16px;
     text-align: center;
     overflow: hidden;
-    user-select: all;
 }
 .layout_start_groupItem_menu_scroll {
     overflow: hidden;
@@ -787,12 +786,10 @@
     border: 0;
     height: 40px;
     line-height: 40px;
-
     padding: 0 10px;
     font-size: 16px;
     text-align: center;
     width: 90%;
     margin: auto;
     border-radius: 20px;
-    user-select: all;
 }
