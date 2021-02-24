@@ -128,5 +128,10 @@
     "icon": "statement.png",
     "text": "嵌入查询视图",
     "className": "Statement"
+  },
+  "datagrid": {
+    "icon": "datagrid.png",
+    "text": "数据网格",
+    "className": "Datagrid"
   }
 }
