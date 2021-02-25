@@ -533,7 +533,7 @@
 .layout_start_search {
     height: 28px;
     width: 28px;
-    margin-right: 20px;
+    /*margin-right: 20px;*/
     float: right;
     border-width: 1px;
     border-style: solid;
@@ -727,6 +727,7 @@
     height: 40px;
     border-radius: 20px;
     background-size: 22px 22px;
+    overflow: hidden;
 }
 .layout_start_groupItem_menuMask {
     position: absolute;
@@ -756,6 +757,7 @@
 }
 .layout_start_groupItem_menu_content {
     overflow: hidden;
+    padding-top: 10px;
 }
 .layout_start_item_icon_group_sub {
     width:  14px;

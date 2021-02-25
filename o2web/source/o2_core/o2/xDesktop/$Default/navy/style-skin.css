@@ -81,6 +81,9 @@
 .icon_startMenu_search {
     background-image: url(../o2_core/o2/xDesktop/$Default/navy/icons/icon_sousuo_click.png) !important;
 }
+.icon_startMenu_refresh {
+    background-image: url(../o2_core/o2/xDesktop/$Default/navy/icons/refresh_menu.png) !important;
+}
 .icon_close {
     background-image: url(../o2_core/o2/xDesktop/$Default/navy/icons/icon_off_round_grey.png) !important;
 }
