@@ -912,9 +912,14 @@ o2.xDesktop.Default.StartMenu = new Class({
         this.inforCategoryTab = new Element("div.layout_start_tab", {"text": o2.LP.desktop.message.infor}).inject(this.appTitleNode);
         this.queryCategoryTab = new Element("div.layout_start_tab", {"text": o2.LP.desktop.message.query}).inject(this.appTitleNode);
 
+        this.refreshNode =  new Element("div.layout_start_search", {"title": o2.LP.desktop.message.refreshMenu}).inject(this.appTitleNode);
+        this.refreshNode = new Element("div.layout_start_search_icon").inject(this.refreshNode);
+        this.refreshNode.addClass("icon_startMenu_refresh");
+
         this.searchNode =  new Element("div.layout_start_search").inject(this.appTitleNode);
         this.searchIconNode = new Element("div.layout_start_search_icon").inject(this.searchNode);
         this.searchIconNode.addClass("icon_startMenu_search");
+
         var currentWidth = this.searchNode.getSize().x;
         this.searchNode.store("currentWidth", currentWidth);
 
@@ -947,6 +952,17 @@ o2.xDesktop.Default.StartMenu = new Class({
         }.bind(this));
 
         this.searchIconNode.addEvent("click", this.searchIconAction.bind(this));
+
+        this.refreshNode.addEvent("click", function(e){
+            var _self = this;
+            MWF.xDesktop.confirm("infor", e, o2.LP.desktop.defaultMenuTitle, o2.LP.desktop.defaultMenuInfor, 420, 100, function(){
+                    _self.defaultMenu();
+                    this.close();
+                }, function(){
+                    this.close();
+                }, null, null, "o2"
+            );
+        }.bind(this));
     },
     searchIconAction: function(){
         if (!this.isMorph){
@@ -1806,6 +1822,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         }
     },
     _drag_leave: function(el, inObj){
+        console.log("_drag_leave");
         if (inObj.hasClass("layout_start_content_appContent")){
             //this.node.inject(this.menu.appContentNode);
         }else if (inObj.hasClass("layout_start_groupItem_menu_content")){
@@ -2044,10 +2061,15 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
             "transition": Fx.Transitions.Quart.easeOut
         });
         this.menuTitleNode.addEvent("click", function(){
-            
             var input = this.menuTitleNode.getElement("input");
             if (!input) this.editTitle();
-        }.bind(this))
+        }.bind(this));
+
+        o2.require("o2.widget.ScrollBar", function(){
+            this.appScrollBar = new o2.widget.ScrollBar(this.menuContentNode, {
+                "style":"xDesktop_Message", "where": "before", "indent": false, "distance": 100, "friction": 6,	"axis": {"x": false, "y": true}
+            });
+        }.bind(this));
     },
     destroy: function(){
         this.menu.items.erase(this);
