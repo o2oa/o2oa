@@ -78,7 +78,8 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 if (!editorConfig.toolbar && !editorConfig.toolbarGroups){
                     editorConfig.toolbar = [
                         { name: 'paragraph',   items: [ 'Bold', 'Italic', "-" , 'TextColor', "BGColor", 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', "-", 'Undo', 'Redo' ] },
-                        { name: 'basicstyles', items: [ 'Styles', 'FontSize']}
+                        { name: 'basicstyles', items: [ 'Styles', 'FontSize']},
+                        { name: 'insert', items : [ 'Image' ] }
                     ];
                 }
             }
