@@ -295,7 +295,7 @@
     overflow: hidden;
     cursor: pointer;
     float: left;
-    padding: 0 10px;
+    padding: 0 10px 0 10px;
     margin-left: 10px;
 }
 .layout_content_taskbar_item_icon {
@@ -323,6 +323,7 @@
     background-position: center left;
     background-repeat: no-repeat;
 }
+
 .layout_content_taskbar_item_text {
     height: 28px;
     float: left;
@@ -459,7 +460,7 @@
     display: none;
 }
 
-.layout_start_item{
+.layout_start_item {
     width: 72px;
     height: 90px;
     margin-left: 18px;
@@ -482,6 +483,7 @@
     overflow: hidden;
     margin: auto;
 }
+
 .layout_start_item_icon {
     width: 40px;
     height: 40px;
@@ -531,7 +533,7 @@
 .layout_start_search {
     height: 28px;
     width: 28px;
-    margin-right: 20px;
+    /*margin-right: 20px;*/
     float: right;
     border-width: 1px;
     border-style: solid;
@@ -718,4 +720,78 @@
     top: -40px;
     opacity: 0;
     box-shadow: 3PX 3PX 10px #999999;
+}
+.layout_start_groupItem_menu {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-size: 22px 22px;
+    overflow: hidden;
+}
+.layout_start_groupItem_menuMask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+    top: 0;
+    left: 0;
+}
+.layout_start_groupItem_menu_title {
+    height: 60px;
+    padding: 8px 0 12px 0;
+    line-height: 40px;
+    font-size: 16px;
+    text-align: center;
+    overflow: hidden;
+}
+.layout_start_groupItem_menu_scroll {
+    overflow: hidden;
+}
+.layout_start_item_icon_group {
+    width: 32px;
+    height: 32px;
+    padding: 5px 3px 3px 5px;
+    border-radius: 10px;
+    background-size: 22px 22px;
+}
+.layout_start_groupItem_menu_content {
+    overflow: hidden;
+    padding-top: 10px;
+}
+.layout_start_item_icon_group_sub {
+    width:  14px;
+    height: 14px;
+    margin-right: 2px;
+    margin-bottom: 2px;
+    border-radius: 10px;
+    float: left;
+    background-repeat: no-repeat;
+    background-size: 10px 10px;
+    background-position: center;
+}
+.layout_start_item_icon_group_subIcon {
+    width:  14px;
+    height: 14px;
+    margin-right: 2px;
+    margin-bottom: 2px;
+    border-radius: 10px;
+    float: left;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.layout_start_item_sub {
+    margin-left: 12px;
+}
+.layout_start_groupItem_menu_title_edit {
+    border: 0;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+    text-align: center;
+    width: 90%;
+    margin: auto;
+    border-radius: 20px;
 }
