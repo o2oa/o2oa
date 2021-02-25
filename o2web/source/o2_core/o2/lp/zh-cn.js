@@ -159,6 +159,9 @@ o2.LP.desktop = {
 
     "changeViewTitle": "切换视图样式确认",
     "changeView": "您确定要切换视图样式吗？<br><br>如果您选择“确定”，页面将直接刷新，未保存的数据可能丢失。",
+    "refreshMenu": "恢复默认菜单排序",
+    "defaultMenuTitle": "恢复默认菜单确认",
+    "defaultMenuInfor": "您确定要将菜单的排序和分组，恢复到默认状态码？",
 
     "messsage": {
         "appliction": "应用",
