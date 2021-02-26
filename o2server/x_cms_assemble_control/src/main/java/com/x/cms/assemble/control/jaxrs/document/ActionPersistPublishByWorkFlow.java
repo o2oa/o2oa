@@ -211,7 +211,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 		if (check) {
 			try {
-				JsonElement docData = XGsonBuilder.instance().toJsonTree(wi.getDocData(), Map.class);
+				JsonElement docData = XGsonBuilder.instance().toJsonTree(wi.getDocData());
 				wi.setDocStatus("published");
 				if(wi.getPublishTime()==null) {
 					wi.setPublishTime(new Date());
