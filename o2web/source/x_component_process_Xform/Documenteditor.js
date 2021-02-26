@@ -121,7 +121,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 return true;
         }
     },
-    _createPage: function(callback){
+    _createPage: function(callback, callbackAftreLoad){
         var pageContentNode = this._createNewPage().getFirst();
 
         var control = this.getShowControl();
@@ -187,6 +187,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
                 if (callback) callback(control);
                 this.fireEvent("loadPage");
+                if (callbackAftreLoad) callbackAftreLoad(control);
             }.bind(this));
         }else{
             this.getTempleteJson(function(){
@@ -200,6 +201,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     }
                     if (callback) callback(control);
                     this.fireEvent("loadPage");
+                    if (callbackAftreLoad) callbackAftreLoad(control);
                 }.bind(this));
             }.bind(this));
         }
@@ -3025,35 +3027,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.node.setStyles({
                 "height":"auto"
             });
-
-            //var content = this.contentNode.getFirst().getFirst().get("html");
-            // var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
-            // var htmlNode = tmpNode.getLast();
-            // htmlNode = this.removeDisplayNone(htmlNode);
-            // var nodes = tmpNode.querySelectorAll("[data-w-style]");
-            // if (nodes.length){
-            //     for (var i=0; i<nodes.length; i++){
-            //         var n = nodes.item(i);
-            //         wStyle = n.dataset["wStyle"];
-            //         var styles = wStyle.split(/\s*\;\s*/g);
-            //         styles.each(function(style){
-            //             if (style){
-            //                 try{
-            //                     s = style.split(/\s*\:\s*/g);
-            //                     n.setStyle(s[0], s[1]);
-            //                 }catch(e) {}
-            //             }
-            //         });
-            //     }
-            // }
+        }.bind(this), function(){
             var content = this.getDocumentHtml();
             //var content = "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
 
             var fileName = docNmae || this.json.toWordFilename || "$doc";
             var n = fileName.lastIndexOf(".");
             if (n==-1) fileName = fileName+".doc";
-            // var ex = fileName.substring(n, fileName.length).toLowerCase();
-            // if (ex!==".doc" && ex!==".docx") fileName = fileName+".doc";
 
             var body = {
                 "fileName": fileName,
