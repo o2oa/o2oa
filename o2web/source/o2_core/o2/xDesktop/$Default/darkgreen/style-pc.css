@@ -487,7 +487,7 @@
 .layout_start_item_icon {
     width: 40px;
     height: 40px;
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }

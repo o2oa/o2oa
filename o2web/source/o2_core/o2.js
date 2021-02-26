@@ -2487,8 +2487,24 @@ o2.core = true;
             h += (this.getStyle("padding-left").toFloat() || 0)+ (this.getStyle("padding-right").toFloat() || 0);
             if (!notMargin) h += (this.getStyle("margin-left").toFloat() || 0)+ (this.getStyle("margin-right").toFloat() || 0);
             return h;
+        },
+        "getSize": function(){
+            if ((/^(?:body|html)$/i).test(this.tagName)) return this.getWindow().getSize();
+            if (!window.getComputedStyle) return {x: this.offsetWidth, y: this.offsetHeight};
+            if (this.get('tag') == 'svg') return svgCalculateSize(this);
+            try {
+                if (!layout.scale || layout.scale==1){
+                    var bounds = this.getBoundingClientRect();
+                    return {x: bounds.width, y: bounds.height};
+                }else{
+                    return {"x": this.offsetWidth.toFloat(), "y": this.offsetHeight.toFloat()};
+                }
+            } catch (e){
+                return {x: 0, y: 0};
+            }
         }
     });
+
     Object.copy = function(from, to){
         Object.each(from, function(value, key){
             switch (typeOf(value)){
