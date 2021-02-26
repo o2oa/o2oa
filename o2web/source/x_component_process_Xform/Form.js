@@ -4426,4 +4426,12 @@ var PortalPage="";
  * @method PortalPage#uploadedAttachment
  * @ignore
  */
+/**
+ * @method PortalPage#pauseTask
+ * @ignore
+ */
+/**
+ * @method PortalPage#resumeTask
+ * @ignore
+ */
 
