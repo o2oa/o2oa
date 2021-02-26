@@ -11,6 +11,99 @@ o2.xDesktop.Default = new Class({
         "style": "blue",
         "index": "Homepage"
     },
+    scale: function(){
+        debugger;
+        //document.body.setStyle("zoom", "80%");
+        if (!layout.scale) layout.scale = 1;
+        layout.scale = layout.scale-0.1;
+        if (layout.scale<0.4) layout.scale = 0.4;
+        //
+        //layout.scale = 0.8;
+        var s = (1/layout.scale)*100;
+        var p = s+"%";
+        //
+        document.body.setStyles({
+            "transform": "scale("+layout.scale+")",
+            "transform-origin": "0 0",
+            "width": p,
+            "height":p
+        });
+        this.fireEvent("resize");
+        //
+        // // if (!this.resizeScaleEvent){
+        // //     this.addEvent("resize", this.resizeScale.bind(this));
+        // // }
+        //this.resizeScale();
+    },
+    resizeScale: function(){
+        if (layout.scale!==1){
+            var node = document.body.getFirst();
+            while (node){
+                this.resizeScaleNode(node);
+                node = node.getNext();
+            }
+        }
+    },
+    setStyleValue: function(v, node, key){
+        if (node.hasClass("layout_menu_lnk_item")){
+            debugger;
+        }
+        if (v && v.indexOf("%")==-1){
+            var u = v.substr(v.length-2, v.length);
+            var o = v.substr(0, v.length-2);
+            if (o!=0){
+                o = o.toFloat()*(1/layout.scale);
+                node.setStyle(key, o+u);
+            }
+        }
+    },
+    resizeScaleNode: function(node){
+        //var style = node.getStyles("width", "height", "min-width", "min-height");
+        //this.setStyleValue(node.getStyle("width"), node, "width");
+        this.setStyleValue(node.getStyle("height"), node, "height");
+        //this.setStyleValue(node.getStyle("min-width"), node, "min-width");
+        this.setStyleValue(node.getStyle("min-height"), node, "min-height");
+
+        //this.setStyleValue(node.getStyle("padding-left"), node, "padding-left");
+        //this.setStyleValue(node.getStyle("padding-top"), node, "padding-top");
+        //this.setStyleValue(node.getStyle("padding-right"), node, "padding-right");
+        //this.setStyleValue(node.getStyle("padding-bottom"), node, "padding-bottom");
+
+        // this.setStyleValue(node.style.paddingLeft, node, "padding-left");
+        // this.setStyleValue(node.style.paddingTop, node, "padding-top");
+        // this.setStyleValue(node.style.paddingRight, node, "padding-right");
+        // this.setStyleValue(node.style.paddingBottom, node, "padding-bottom");
+
+        // if (v && v.indexOf("%")==-1)
+        //
+        // Object.keys(style).each(function(key){
+        //     var v = style[key];
+        //     if (v.indexOf("%")==-1){
+        //         debugger;
+        //         var u = v.substr(v.length-2, v.length);
+        //         var o = v.substr(0, v.length-2);
+        //         o = o.toFloat()*(1/layout.scale);
+        //         node.setStyle(key, o+u);
+        //     }
+        //     // var v = *(1/layout.scale);
+        //     // node.setStyle(key, v)
+        // }.bind(this));
+
+        // if (style.height.indexOf("%")!=-1){
+        //     alert(style.height);
+        // }
+
+        var sub = node.getFirst();
+        if (sub) this.resizeScaleNode(sub);
+
+        // while (sub) {
+        //     this.resizeScaleNode(sub);
+        //     var sub = sub.getFirst();
+        // }
+        var next = node.getNext();
+        if (next) this.resizeScaleNode(next);
+    },
+
     initialize: function(node, options){
         this.setOptions(options);
         this.type = "layout";
