@@ -2493,7 +2493,7 @@ o2.core = true;
             if (!window.getComputedStyle) return {x: this.offsetWidth, y: this.offsetHeight};
             if (this.get('tag') == 'svg') return svgCalculateSize(this);
             try {
-                if (!layout.scale || layout.scale==1){
+                if (!layout || !layout.userLayout || !layout.userLayout.scale || layout.userLayout.scale==1){
                     var bounds = this.getBoundingClientRect();
                     return {x: bounds.width, y: bounds.height};
                 }else{
