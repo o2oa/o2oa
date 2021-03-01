@@ -211,12 +211,11 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 		if (check) {
 			try {
-				JsonElement docData = XGsonBuilder.instance().toJsonTree(wi.getDocData());
 				wi.setDocStatus("published");
 				if(wi.getPublishTime()==null) {
 					wi.setPublishTime(new Date());
 				}
-				document = documentPersistService.save(wi, docData);
+				document = documentPersistService.save(wi, wi.getDocData());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");
@@ -464,7 +463,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		private String[] wf_attachmentIds = null;
 
 		@FieldDescribe( "文档数据." )
-		private Map<?, ?> docData = null;
+		private JsonElement docData = null;
 
 		@FieldDescribe( "文档读者." )
 		private List<PermissionInfo> readerList = null;
@@ -521,11 +520,11 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			this.dataPaths = dataPaths;
 		}
 
-		public Map<?, ?> getDocData() {
+		public JsonElement getDocData() {
 			return docData;
 		}
 
-		public void setDocData(Map<?, ?> docData) {
+		public void setDocData(JsonElement docData) {
 			this.docData = docData;
 		}
 
