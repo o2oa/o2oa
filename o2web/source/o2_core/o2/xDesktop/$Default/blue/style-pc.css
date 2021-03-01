@@ -795,3 +795,30 @@
     margin: auto;
     border-radius: 20px;
 }
+/*.layout_menu_scale_zoomout {*/
+/*    height: 20px;*/
+/*    line-height: 20px;*/
+/*    width: 16px;*/
+/*    text-align: center;*/
+/*    background: #ffffff;*/
+/*    margin-left: 5px;*/
+/*    float: left;*/
+/*}*/
+/*.layout_menu_scale_zoomin {*/
+/*    height: 20px;*/
+/*    line-height: 20px;*/
+/*    width: 16px;*/
+/*    text-align: center;*/
+/*    background: #ffffff;*/
+/*    margin-right: 5px;*/
+/*    float: right;*/
+/*}*/
+.layout_menu_scale_zoomValue {
+    height: 50px;
+    line-height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    margin: auto;
+    text-align: center;
+    background: #ffffff;
+}
