@@ -28,7 +28,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     initialize: function(node, json, form, options){
         /**
-         * @summary 组件的节点
+         * @summary 组件的节点，mootools封装过的Dom对象，可以直接使用原生的js和moootools方法访问和操作该对象。
          * @see https://mootools.net/core/docs/1.6.0/Element/Element
          * @member {Element}
          * @example
@@ -40,13 +40,14 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         this.node.store("module", this);
 
         /**
-         * @summary 组件的配置信息，比如id,类型等.
+         * @summary 组件的配置信息，比如id,类型,是否只读等等。可以在修改组件的queryLoad事件里修改该配置来对组件做一些改变。
          * @member {JsonObject}
          * @example
          *  //可以在脚本中获取该组件
          * var json = this.form.get("fieldId").json; //获取组件对象
          * var id = json.id; //获取组件的id
          * var type = json.type; //获取组件的类型，如Textfield 为文本输入组件，Select为下拉组件
+         * json.isReadonly = true; //设置组件为只读。
          */
         this.json = json;
 
