@@ -377,8 +377,8 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			}
 		}
 
-		//判断是否需要发送通知消息
-		if (check) {
+		//判断是否需要发送通知消息 后端业务接口不需要发送消息
+		/*if (check) {
 			try {
 				Boolean notify = false;
 				if( categoryInfo.getSendNotify() == null ) {
@@ -392,7 +392,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				}
 				if( notify ){
 					logger.info("try to add notify object to queue for document:" + document.getTitle() );
-					ThisApplication.queueSendDocumentNotify.send( document );
+					ThisApplication.queueSendDocumentNotify.send( document.getId() );
 				}
 			} catch (Exception e) {
 				check = false;
@@ -400,7 +400,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
-		}
+		}*/
 
 		CacheManager.notify(Document.class);
 		return result;

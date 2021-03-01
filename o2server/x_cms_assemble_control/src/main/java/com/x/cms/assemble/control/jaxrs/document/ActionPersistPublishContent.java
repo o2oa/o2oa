@@ -441,7 +441,7 @@ public class ActionPersistPublishContent extends BaseAction {
 				}
 				if( notify ){
 					logger.debug("try to add notify object to queue for document:" + document.getTitle() );
-					ThisApplication.queueSendDocumentNotify.send( document );
+					ThisApplication.queueSendDocumentNotify.send( document.getId() );
 				}
 			} catch (Exception e) {
 				check = false;
