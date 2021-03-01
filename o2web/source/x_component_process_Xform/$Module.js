@@ -40,7 +40,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         this.node.store("module", this);
 
         /**
-         * @summary 组件的配置信息，比如id,类型,是否只读等等。可以在修改组件的queryLoad事件里修改该配置来对组件做一些改变。
+         * @summary 组件的配置信息，比如id,类型,是否只读等等。可以在组件的queryLoad事件里修改该配置来对组件做一些改变。
          * @member {JsonObject}
          * @example
          *  //可以在脚本中获取该组件
