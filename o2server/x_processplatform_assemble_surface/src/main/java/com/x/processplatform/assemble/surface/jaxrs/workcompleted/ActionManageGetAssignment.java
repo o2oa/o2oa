@@ -12,6 +12,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -122,10 +123,10 @@ class ActionManageGetAssignment extends BaseAction {
 				logger.error(e);
 			}
 		});
-		future_taskCompleted.get(10, TimeUnit.SECONDS);
-		future_read.get(10, TimeUnit.SECONDS);
-		future_readCompleted.get(10, TimeUnit.SECONDS);
-		future_review.get(10, TimeUnit.SECONDS);
+		future_taskCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		future_read.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		future_readCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		future_review.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		result.setData(wo);
 		return result;
 	}

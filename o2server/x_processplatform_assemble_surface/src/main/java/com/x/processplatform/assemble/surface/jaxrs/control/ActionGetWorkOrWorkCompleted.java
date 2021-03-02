@@ -11,6 +11,7 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -49,13 +50,13 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 
 	private Map<String, Boolean> hasTaskCompletedWithActivityToken = new HashMap<>();
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted)
-			throws InterruptedException, ExecutionException, TimeoutException, ExceptionAccessDenied {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		CompletableFuture<Wo> getFuture = this.getFuture(effectivePerson, workOrWorkCompleted);
 		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, workOrWorkCompleted);
-		result.setData(getFuture.get(10, TimeUnit.SECONDS));
-		if (BooleanUtils.isFalse(checkControlFuture.get(10, TimeUnit.SECONDS))) {
+		result.setData(getFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+		if (BooleanUtils
+				.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
 		return result;
