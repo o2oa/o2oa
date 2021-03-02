@@ -21,6 +21,7 @@ import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -76,16 +77,16 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			CompletableFuture<Void> creatorUnitFuture = this.creatorUnitFuture(work.getCreatorUnit(), wo);
 			CompletableFuture<Void> attachmentFuture = this.attachmentFuture(effectivePerson, work.getJob(), wo);
 			CompletableFuture<Void> recordFuture = this.recordFuture(effectivePerson, work.getJob(), wo);
-			workJsonFuture.get(10, TimeUnit.SECONDS);
-			activityRouteFuture.get(10, TimeUnit.SECONDS);
-			dataFuture.get(10, TimeUnit.SECONDS);
-			taskFuture.get(10, TimeUnit.SECONDS);
-			readFuture.get(10, TimeUnit.SECONDS);
-			creatorIdentityFuture.get(10, TimeUnit.SECONDS);
-			creatorPersonFuture.get(10, TimeUnit.SECONDS);
-			creatorUnitFuture.get(10, TimeUnit.SECONDS);
-			attachmentFuture.get(10, TimeUnit.SECONDS);
-			recordFuture.get(10, TimeUnit.SECONDS);
+			workJsonFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			activityRouteFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			dataFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			taskFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			readFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			creatorIdentityFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			creatorPersonFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			creatorUnitFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			attachmentFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			recordFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 			for (WoTask woTask : wo.getTaskList()) {
 				wo.getRecordList().add(taskToRecord(woTask));
 			}
@@ -100,17 +101,17 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			CompletableFuture<Void> attachmentFuture = attachmentFuture(effectivePerson, workCompleted.getJob(), wo);
 			CompletableFuture<Void> workCompletedRecordFuture = this.workCompletedRecordFuture(effectivePerson,
 					workCompleted, wo);
-			workCompletedJsonFuture.get(10, TimeUnit.SECONDS);
-			workCompletedDataFuture.get(10, TimeUnit.SECONDS);
-			readFuture.get(10, TimeUnit.SECONDS);
-			creatorIdentityFuture.get(10, TimeUnit.SECONDS);
-			creatorPersonFuture.get(10, TimeUnit.SECONDS);
-			creatorUnitFuture.get(10, TimeUnit.SECONDS);
-			attachmentFuture.get(10, TimeUnit.SECONDS);
-			workCompletedRecordFuture.get(10, TimeUnit.SECONDS);
+			workCompletedJsonFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			workCompletedDataFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			readFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			creatorIdentityFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			creatorPersonFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			creatorUnitFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			attachmentFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			workCompletedRecordFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		}
 
-		if (BooleanUtils.isFalse(checkControlFuture.get(10, TimeUnit.SECONDS))) {
+		if (BooleanUtils.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
 
