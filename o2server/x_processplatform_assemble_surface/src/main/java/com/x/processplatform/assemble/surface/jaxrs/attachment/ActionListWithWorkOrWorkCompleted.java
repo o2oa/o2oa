@@ -16,8 +16,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -35,8 +35,9 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		CompletableFuture<List<Wo>> listFuture = listFuture(effectivePerson, workOrWorkCompleted);
 		CompletableFuture<Boolean> checkControlFuture = checkControlFuture(effectivePerson, workOrWorkCompleted);
-		result.setData(listFuture.get(10, TimeUnit.SECONDS));
-		if (BooleanUtils.isFalse(checkControlFuture.get(10, TimeUnit.SECONDS))) {
+		result.setData(listFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+		if (BooleanUtils
+				.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
 		return result;
