@@ -69,20 +69,20 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 				modifyDocStatus( id, "published", effectivePerson.getDistinguishedName() );
 				document.setDocStatus("published");
 				document.setPublishTime(new Date());
-				
+
 				document = documentPersistService.refreshDocInfoData( document );
-				
+
 				Wo wo = new Wo();
 				wo.setId( document.getId() );
 				result.setData( wo );
-				
+
 				//检查是否需要删除热点图片
 				try {
 					ThisApplication.queueDocumentUpdate.send( document );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}
-				
+
 			} catch (Exception e) {
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统将文档状态修改为发布状态时发生异常。Id:" + id);
 				result.error(exception);
@@ -186,7 +186,7 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		//判断是否需要发送通知消息
 		if (check) {
 			try {
@@ -204,7 +204,7 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 //					}
 					if( categoryInfo.getSendNotify() ){
 						logger.info("try to add notify object to queue for document:" + document.getTitle() );
-						ThisApplication.queueSendDocumentNotify.send( document );
+						ThisApplication.queueSendDocumentNotify.send( document.getId() );
 					}
 				}
 			} catch (Exception e) {
@@ -221,21 +221,21 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 	}
 
 	public static class Wi {
-		
+
 		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodify );
-		
+
 		@FieldDescribe( "文档读者." )
 		private List<PermissionInfo> readerList = null;
-		
+
 		@FieldDescribe( "文档编辑者." )
 		private List<PermissionInfo> authorList = null;
-		
+
 		@FieldDescribe( "图片列表." )
 		private List<String> cloudPictures = null;
-		
+
 		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置）." )
 		private Boolean skipPermission  = false;
-		
+
 		public Boolean getSkipPermission() {
 			return skipPermission;
 		}
@@ -269,7 +269,7 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 		}
 
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}

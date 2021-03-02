@@ -50,15 +50,15 @@ public class ActionPersistSaveDocument extends BaseAction {
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
 			document = Wi.copier.copy(wi);
-			document.setId( wi.getId() ); //继承传入的ID			
-			identity = wi.getIdentity();	
+			document.setId( wi.getId() ); //继承传入的ID
+			identity = wi.getIdentity();
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new ExceptionDocumentInfoProcess( e, "系统在将JSON信息转换为对象时发生异常。");
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		
+
 		if (check) {
 			if( !"xadmin".equals( effectivePerson.getDistinguishedName() )) {
 				try {
@@ -166,15 +166,15 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		if (check) {
 			//补充部分信息
-//			document.setCategoryId(categoryInfo.getId());	
-			document.setAppId(appInfo.getId());					
-			document.setDocumentType( categoryInfo.getDocumentType() );	
+//			document.setCategoryId(categoryInfo.getId());
+			document.setAppId(appInfo.getId());
+			document.setDocumentType( categoryInfo.getDocumentType() );
 			document.setAppAlias( appInfo.getAppAlias());
 			document.setAppName(appInfo.getAppName());
 			document.setCategoryName(categoryInfo.getCategoryName());
 			document.setCategoryAlias(categoryInfo.getCategoryAlias());
 			document.setDocumentType( categoryInfo.getDocumentType() );
-			
+
 			if( !"信息".equals(document.getDocumentType()) && !"数据".equals( document.getDocumentType() )) {
 				document.setDocumentType( "信息" );
 			}
@@ -184,8 +184,8 @@ public class ActionPersistSaveDocument extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				if( StringUtils.isNotEmpty( identity )) {
 					document.setCreatorIdentity( identity );
-				}				
-				
+				}
+
 				if (StringUtils.isEmpty( document.getCreatorIdentity() )) {
 					if( "cipher".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
 						document.setCreatorIdentity("cipher");
@@ -202,7 +202,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 						document.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
 					}
 				}
-				
+
 				if ( !StringUtils.equals(  "cipher", document.getCreatorIdentity() ) && !StringUtils.equals(  "xadmin", document.getCreatorIdentity() )) {
 					//说明是指定的发布者，并不使用cipher和xadmin代替
 					if (StringUtils.isNotEmpty( document.getCreatorIdentity() )) {
@@ -219,7 +219,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 				result.error(th);
 			}
 		}
-		
+
 //		if (check) {
 //			if ( StringUtils.isNotEmpty(identity)) {
 //				document.setCreatorIdentity( identity );
@@ -267,11 +267,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		if (check) {
 			try {
-				JsonElement dataJson = null;
-				if( wi.getDocData() != null ) {
-					dataJson = XGsonBuilder.instance().toJsonTree( wi.getDocData() );
-				}
-				document = documentPersistService.save( document, dataJson );
+				document = documentPersistService.save( document, wi.getDocData() );
 				CacheManager.notify(Document.class);
 
 				Wo wo = new Wo();
@@ -291,7 +287,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		// 处理文档的云文档图片信息
 		if (check) {
 			try {
@@ -363,7 +359,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 				}
 			}
 		}
-		
+
 		if (check) {
 			try {//将读者以及作者信息持久化到数据库中
 				document = documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
@@ -378,16 +374,16 @@ public class ActionPersistSaveDocument extends BaseAction {
 	}
 
 	public static class Wi{
-		
+
 		@FieldDescribe("ID，非必填，更新时必填写，不然就是新增文档")
 		private String id;
-		
+
 		@FieldDescribe("文档标题，<font style='color:red'>必填</font>")
 		private String title;
 
 		@FieldDescribe("分类ID，<font style='color:red'>必填</font>")
 		private String categoryId;
-		
+
 		@FieldDescribe( "文档操作者身份，如果不传入则取登录者信息。" )
 		private String identity = null;
 
@@ -396,42 +392,42 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		@FieldDescribe("文档状态: published | draft | checking | error，非必填，默认为draft")
 		private String docStatus = "draft";
-		
+
 		@FieldDescribe("文档发布时间")
 		private Date publishTime;
 
 		@FieldDescribe("首页图片列表，非必填")
-		private List<String> pictureList = null;		
-		
+		private List<String> pictureList = null;
+
 		@FieldDescribe( "数据的路径列表，非必填" )
 		private String[] dataPaths = null;
-		
+
 		@FieldDescribe( "启动流程的JobId，非必填" )
 		private String wf_jobId = null;
-		
+
 		@FieldDescribe( "启动流程的WorkId，非必填" )
 		private String wf_workId = null;
-		
+
 		@FieldDescribe( "启动流程的附件列表，非必填" )
-		private String[] wf_attachmentIds = null;	
-		
+		private String[] wf_attachmentIds = null;
+
 		@FieldDescribe( "文档数据，非必填" )
-		private Map<?, ?> docData = null;
-		
+		private JsonElement docData = null;
+
 		@FieldDescribe( "文档读者，非必填：{'permission':'读者', 'permissionObjectType':'组织', 'permissionObjectCode':'组织全称', 'permissionObjectName':'组织全称'}" )
 		private List<PermissionInfo> readerList = null;
-		
+
 		@FieldDescribe( "文档编辑者，非必填：{'permission':'读者', 'permissionObjectType':'组织', 'permissionObjectCode':'组织全称', 'permissionObjectName':'组织全称'}" )
 		private List<PermissionInfo> authorList = null;
-		
+
 		@FieldDescribe( "图片列表，非必填" )
 		private List<String> cloudPictures = null;
-		
+
 		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置），非必填" )
-		private Boolean skipPermission  = false;	
+		private Boolean skipPermission  = false;
 
 		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodifyExcludeId);
-		
+
 		public String getId() {
 			return id;
 		}
@@ -487,7 +483,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		public void setIdentity(String identity) {
 			this.identity = identity;
 		}
-		
+
 		public List<PermissionInfo> getReaderList() {
 			return readerList;
 		}
@@ -515,11 +511,11 @@ public class ActionPersistSaveDocument extends BaseAction {
 			this.dataPaths = dataPaths;
 		}
 
-		public Map<?, ?> getDocData() {
+		public JsonElement getDocData() {
 			return docData;
 		}
 
-		public void setDocData(Map<?, ?> docData) {
+		public void setDocData(JsonElement docData) {
 			this.docData = docData;
 		}
 
