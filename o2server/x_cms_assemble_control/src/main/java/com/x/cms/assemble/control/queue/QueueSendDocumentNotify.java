@@ -25,72 +25,72 @@ import java.util.List;
 /**
  * Document正式发布后，向所有的阅读者推送消息通知
  */
-public class QueueSendDocumentNotify extends AbstractQueue<Document> {
-	
+public class QueueSendDocumentNotify extends AbstractQueue<String> {
+
 	private static  Logger logger = LoggerFactory.getLogger( QueueSendDocumentNotify.class );
 	private UserManagerService userManagerService = new UserManagerService();
 
-	public void execute( Document document ) throws Exception {
-		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>QueueSendDocumentNotify:" + document.getTitle() );
-		if( document == null ) {
+	public void execute( String documentId ) throws Exception {
+		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>start QueueSendDocumentNotify:" + documentId );
+		if( StringUtils.isEmpty(documentId) ) {
 			logger.debug("can not send publish notify , document is NULL!" );
 			return;
 		}
-		if( !StringUtils.equalsIgnoreCase( "信息" , document.getDocumentType()) ) {
-			logger.debug("can not send publish notify , document is not '信息'!" );
-			return;
-		}
-		logger.debug("send publish notify for new document:" + document.getTitle() );
+		List<String> persons = null;
+		Document document = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			AppInfo appInfo = emc.find( document.getAppId(), AppInfo.class );
-			CategoryInfo category = emc.find( document.getCategoryId(), CategoryInfo.class );
+			document = emc.find(documentId, Document.class);
+			if(document !=null && StringUtils.equals( "信息" , document.getDocumentType())) {
+				logger.debug("send publish notify for new document:" + document.getTitle() );
+				AppInfo appInfo = emc.find(document.getAppId(), AppInfo.class);
+				CategoryInfo category = emc.find(document.getCategoryId(), CategoryInfo.class);
 
-			if( appInfo != null && category != null ) {
-				ReviewService reviewService = new ReviewService();
-				List<String> persons = reviewService.listPermissionPersons( appInfo, category, document );
-				if( ListTools.isNotEmpty( persons )) {
-					//有可能是*， 一般是所有的人员标识列表
-					if( persons.contains( "*" )) {
-						String topUnitName = document.getCreatorTopUnitName();
-						logger.debug(">>>>>document.getCreatorTopUnitName()=" + topUnitName );
-						if( StringUtils.equalsAnyIgnoreCase("cipher",topUnitName ) || StringUtils.equalsAnyIgnoreCase("xadmin", topUnitName) ){
-							//取发起人所有顶层组织
-							if( !StringUtils.equalsAnyIgnoreCase("cipher",document.getCreatorIdentity() ) &&
-								!StringUtils.equalsAnyIgnoreCase("xadmin",document.getCreatorIdentity() )){
-								topUnitName = userManagerService.getTopUnitNameByIdentity(document.getCreatorIdentity());
-							}else if(!StringUtils.equalsAnyIgnoreCase("cipher",document.getCreatorPerson() ) &&
-									!StringUtils.equalsAnyIgnoreCase("xadmin",document.getCreatorPerson() )){
-								topUnitName = userManagerService.getTopUnitNameWithPerson(document.getCreatorPerson());
+				if (appInfo != null && category != null) {
+					ReviewService reviewService = new ReviewService();
+					persons = reviewService.listPermissionPersons(appInfo, category, document);
+					if (ListTools.isNotEmpty(persons)) {
+						//有可能是*， 一般是所有的人员标识列表
+						if (persons.contains("*")) {
+							String topUnitName = document.getCreatorTopUnitName();
+							logger.debug(">>>>>document.getCreatorTopUnitName()=" + topUnitName);
+							if (StringUtils.equalsAnyIgnoreCase("cipher", topUnitName) || StringUtils.equalsAnyIgnoreCase("xadmin", topUnitName)) {
+								//取发起人所有顶层组织
+								if (!StringUtils.equalsAnyIgnoreCase("cipher", document.getCreatorIdentity()) &&
+										!StringUtils.equalsAnyIgnoreCase("xadmin", document.getCreatorIdentity())) {
+									topUnitName = userManagerService.getTopUnitNameByIdentity(document.getCreatorIdentity());
+								} else if (!StringUtils.equalsAnyIgnoreCase("cipher", document.getCreatorPerson()) &&
+										!StringUtils.equalsAnyIgnoreCase("xadmin", document.getCreatorPerson())) {
+									topUnitName = userManagerService.getTopUnitNameWithPerson(document.getCreatorPerson());
+								}
+							}
+							if (StringUtils.isNotEmpty(topUnitName)) {
+								//取顶层组织的所有人
+								persons = listPersonWithUnit(topUnitName);
+							} else {
+								persons = new ArrayList<>();
 							}
 						}
-						if( StringUtils.isNotEmpty( topUnitName )){
-							//取顶层组织的所有人
-							persons = listPersonWithUnit( topUnitName );
-						}else{
-							persons = new ArrayList<>();
-						}
 					}
+				} else {
+					logger.debug("can not send publish notify for document, category or  appinfo not exists! ID： " + document.getId());
 				}
-				if( ListTools.isNotEmpty( persons )) {
-					//去一下重复
-			        HashSet<String> set = new HashSet<String>( persons );
-			        persons.clear();
-			        persons.addAll(set);
-			        
-					MessageWo wo = MessageWo.copier.copy(document);
-					for( String person : persons ) {
-						if( !StringUtils.equals( "*", person  )) {
-							MessageFactory.cms_publish(person, wo);
-						}
-					}
-					logger.debug("cms send total count:" + persons.size()  );
-				}
-				logger.debug("cms send publish notify for new document completed! " );
-				//}
-			}else{
-				logger.debug("can not send publish notify for document, category or  appinfo not exists! ID： " + document.getId() );
 			}
 		}
+		if( ListTools.isNotEmpty( persons )) {
+			//去一下重复
+			HashSet<String> set = new HashSet<String>( persons );
+			persons.clear();
+			persons.addAll(set);
+
+			MessageWo wo = MessageWo.copier.copy(document);
+			for( String person : persons ) {
+				if( !StringUtils.equals( "*", person  )) {
+					MessageFactory.cms_publish(person, wo);
+				}
+			}
+			logger.debug(documentId +" cms send total count:" + persons.size()  );
+		}
+		logger.debug(documentId + " QueueSendDocumentNotify cms send publish notify for new document completed! " );
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 		}
 		return persons;
 	}
-	
+
 	public static class MessageWo{
 
 		public static List<String> Excludes = new ArrayList<String>();

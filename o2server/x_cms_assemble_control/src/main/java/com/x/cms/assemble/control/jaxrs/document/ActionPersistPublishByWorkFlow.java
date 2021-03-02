@@ -211,12 +211,11 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 		if (check) {
 			try {
-				JsonElement docData = XGsonBuilder.instance().toJsonTree(wi.getDocData());
 				wi.setDocStatus("published");
 				if(wi.getPublishTime()==null) {
 					wi.setPublishTime(new Date());
 				}
-				document = documentPersistService.save(wi, docData);
+				document = documentPersistService.save(wi, wi.getDocData());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");
@@ -377,8 +376,8 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			}
 		}
 
-		//判断是否需要发送通知消息
-		if (check) {
+		//判断是否需要发送通知消息 后端业务接口不需要发送消息
+		/*if (check) {
 			try {
 				Boolean notify = false;
 				if( categoryInfo.getSendNotify() == null ) {
@@ -392,7 +391,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				}
 				if( notify ){
 					logger.info("try to add notify object to queue for document:" + document.getTitle() );
-					ThisApplication.queueSendDocumentNotify.send( document );
+					ThisApplication.queueSendDocumentNotify.send( document.getId() );
 				}
 			} catch (Exception e) {
 				check = false;
@@ -400,7 +399,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
-		}
+		}*/
 
 		CacheManager.notify(Document.class);
 		return result;
@@ -464,7 +463,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		private String[] wf_attachmentIds = null;
 
 		@FieldDescribe( "文档数据." )
-		private Map<?, ?> docData = null;
+		private JsonElement docData = null;
 
 		@FieldDescribe( "文档读者." )
 		private List<PermissionInfo> readerList = null;
@@ -521,11 +520,11 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			this.dataPaths = dataPaths;
 		}
 
-		public Map<?, ?> getDocData() {
+		public JsonElement getDocData() {
 			return docData;
 		}
 
-		public void setDocData(Map<?, ?> docData) {
+		public void setDocData(JsonElement docData) {
 			this.docData = docData;
 		}
 
