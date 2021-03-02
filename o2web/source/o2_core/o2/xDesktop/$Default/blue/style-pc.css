@@ -122,7 +122,8 @@
     height: 70px;
 }
 .layout_menu_setting_button{
-    height: 70px;
+    height: 55px;
+    padding-top: 15px;
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
@@ -814,11 +815,12 @@
 /*    float: right;*/
 /*}*/
 .layout_menu_scale_zoomValue {
-    height: 50px;
-    line-height: 50px;
-    width: 50px;
-    border-radius: 25px;
+    height: 40px;
+    line-height: 40px;
+    width: 40px;
+    border-radius: 20px;
     margin: auto;
     text-align: center;
     background: #ffffff;
+    cursor: pointer;
 }
