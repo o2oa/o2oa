@@ -15,8 +15,13 @@ public class FloatDeserializer implements JsonDeserializer<Float> {
 	@Override
 	public Float deserialize(JsonElement json, Type type, JsonDeserializationContext context)
 			throws JsonParseException {
-		Number num = NumberUtils.createNumber(StringUtils.trimToNull(json.getAsString()));
-		return (num == null) ? null : num.floatValue();
+		/*Number num = NumberUtils.createNumber(StringUtils.trimToNull(json.getAsString()));
+		return (num == null) ? null : num.floatValue();*/
+		if(StringUtils.isBlank(json.getAsString())){
+			return null;
+		}else{
+			return Float.parseFloat(StringUtils.trim(json.getAsString()));
+		}
 	}
 
 }
