@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.logger.Logger;
@@ -46,11 +47,13 @@ class ActionCountWithPerson extends BaseAction {
 			CompletableFuture<Long> readFuture = this.readFuture(dn);
 			CompletableFuture<Long> readCompletedFuture = this.readCompletedFuture(dn);
 			CompletableFuture<Long> reviewFuture = this.reviewFuture(dn);
-			wo.setTask(taskFuture.get(10, TimeUnit.SECONDS));
-			wo.setTaskCompleted(taskCompletedFuture.get(10, TimeUnit.SECONDS));
-			wo.setRead(readFuture.get(10, TimeUnit.SECONDS));
-			wo.setReadCompleted(readCompletedFuture.get(10, TimeUnit.SECONDS));
-			wo.setReview(reviewFuture.get(10, TimeUnit.SECONDS));
+			wo.setTask(taskFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+			wo.setTaskCompleted(
+					taskCompletedFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+			wo.setRead(readFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+			wo.setReadCompleted(
+					readCompletedFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+			wo.setReview(reviewFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
 		}
 		result.setData(wo);
 		return result;

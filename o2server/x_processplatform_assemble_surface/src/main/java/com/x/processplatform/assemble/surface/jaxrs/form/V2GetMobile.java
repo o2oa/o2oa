@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -51,8 +52,10 @@ class V2GetMobile extends BaseAction {
 			CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(properties);
 			CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture = this
 					.getRelatedScriptFuture(properties);
-			wo.setRelatedFormMap(getRelatedFormFuture.get(10, TimeUnit.SECONDS));
-			wo.setRelatedScriptMap(getRelatedScriptFuture.get(10, TimeUnit.SECONDS));
+			wo.setRelatedFormMap(
+					getRelatedFormFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+			wo.setRelatedScriptMap(
+					getRelatedScriptFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
 			wo.setMaxAge(3600 * 24);
 			CacheManager.put(cacheCategory, cacheKey, wo);
 			result.setData(wo);
@@ -96,7 +99,7 @@ class V2GetMobile extends BaseAction {
 			return map;
 		});
 	}
-	
+
 	private Map<String, RelatedScript> convertScript(Business bus, FormProperties properties) throws Exception {
 		Map<String, RelatedScript> map = new TreeMap<>();
 		for (Entry<String, String> entry : properties.getMobileRelatedScriptMap().entrySet()) {

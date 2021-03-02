@@ -40,7 +40,6 @@ public class ProcessingAttributes extends GsonPropertyObject {
 
 	private SignalStack signalStack = new SignalStack();
 
-	
 	public SignalStack getSignalStack() {
 		return signalStack;
 	}

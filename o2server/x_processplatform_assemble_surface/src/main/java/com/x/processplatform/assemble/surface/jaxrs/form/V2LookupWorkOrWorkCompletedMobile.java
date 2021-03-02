@@ -14,6 +14,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -53,8 +54,9 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 				CompletableFuture<List<String>> relatedScriptFuture = this
 						.relatedScriptFuture(this.form.getProperties());
 				list.add(this.form.getId() + this.form.getUpdateTime().getTime());
-				list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
-				list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
+				list.addAll(relatedFormFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+				list.addAll(
+						relatedScriptFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
 				list = list.stream().sorted().collect(Collectors.toList());
 				this.wo.setId(this.form.getId());
 				CRC32 crc = new CRC32();
