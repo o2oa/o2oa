@@ -51,7 +51,8 @@ class ActionProcessing extends BaseAction {
 
 		try {
 			open(id, wi);
-			Wo wo = ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get(300, TimeUnit.SECONDS);
+			Wo wo = ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get(300,
+					TimeUnit.SECONDS);
 			persistSignalStack(id, job, wi);
 			result.setData(wo);
 			return result;

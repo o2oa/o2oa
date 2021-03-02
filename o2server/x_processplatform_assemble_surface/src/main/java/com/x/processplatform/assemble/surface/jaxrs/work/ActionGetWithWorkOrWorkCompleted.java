@@ -20,6 +20,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -59,30 +60,29 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 			CompletableFuture<Data> dataFuture = this.dataFuture(work);
 			CompletableFuture<List<WoTask>> taskFuture = this.taskFuture(work.getJob());
 			CompletableFuture<List<WoRead>> readFuture = this.readFuture(work.getJob());
-			wo.setData(dataFuture.get(10, TimeUnit.SECONDS));
-			wo.setTaskList(taskFuture.get(10, TimeUnit.SECONDS));
-			wo.setReadList(readFuture.get(10, TimeUnit.SECONDS));
+			wo.setData(dataFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+			wo.setTaskList(taskFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+			wo.setReadList(readFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
 			this.setCurrentReadIndex(effectivePerson, wo);
 			this.setCurrentTaskIndex(effectivePerson, wo);
 			wo.setWork(gson.toJsonTree(work));
 		} else if (null != workCompleted) {
 			CompletableFuture<Data> dataFuture = this.dataFuture(workCompleted);
 			CompletableFuture<List<WoRead>> readFuture = this.readFuture(workCompleted.getJob());
-			wo.setData(dataFuture.get(10, TimeUnit.SECONDS));
-			wo.setReadList(readFuture.get(10, TimeUnit.SECONDS));
+			wo.setData(dataFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
+			wo.setReadList(readFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
 			this.setCurrentReadIndex(effectivePerson, wo);
 			wo.setWork(gson.toJsonTree(workCompleted));
 		}
 
-		if (BooleanUtils.isFalse(checkControlFuture.get(10, TimeUnit.SECONDS))) {
+		if (BooleanUtils
+				.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
 
 		result.setData(wo);
 		return result;
 	}
-
-
 
 	private CompletableFuture<Data> dataFuture(Work work) {
 		return CompletableFuture.supplyAsync(() -> {
