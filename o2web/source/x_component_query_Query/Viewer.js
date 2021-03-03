@@ -140,6 +140,72 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     exportView: function(){
+        var _self = this;
+        var lp = this.lp.viewExport;
+        var node = this.exportExcelDlgNode = new Element("div");
+        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
+            "   <input class='start' value='" + ( this.exportExcelStart || 1) +  "'><span>"+ lp.to +"</span>" +
+            "   <input class='end' value='"+ ( this.exportExcelEnd || Math.min( ( this.bundleItems || [] ).length, 2000 ) ) +"' ><span>"+lp.item+"</span>" +
+            "</div>";
+        html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", ( this.bundleItems || [] ).length) )+"</div>";
+        node.set("html", html);
+        var check = function () {
+            if(this.value.length == 1){
+                this.value = this.value.replace(/[^1-9]/g,'')
+            }else{
+                this.value = this.value.replace(/\D/g,'')
+            }
+            if( this.value.toInt() > _self.bundleItems.length ){
+                this.value = _self.bundleItems.length;
+            }
+        }
+        node.getElement(".start").addEvent( "keyup", function(){ check.call(this) } );
+        node.getElement(".end").addEvent( "keyup", function(){ check.call(this) } );
+
+
+        var dlg = o2.DL.open({
+            "title": this.lp.exportExcel,
+            "style": "user",
+            "isResize": false,
+            "content": node,
+            "width": 600,
+            "height" : 260,
+            "buttonList": [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function (d, e) {
+                        var start = node.getElement(".start").get("value");
+                        var end = node.getElement(".end").get("value");
+                        if( !start || !end ){
+                            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
+                            return false;
+                        }
+                        start = start.toInt();
+                        end = end.toInt();
+                        if( end < start ){
+                            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
+                            return false;
+                        }
+                        debugger;
+                        this.exportExcelStart = start;
+                        this.exportExcelEnd = end;
+                        var bundleList = this.bundleItems.slice(start-1, end);
+                        var excelName = this.json.name + "(" + start + "-" + end + ").xlsx";
+                        this._exportView(bundleList, excelName);
+                        dlg.close();
+                    }.bind(this)
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function () { dlg.close(); }
+                }
+            ]
+        });
+    },
+    _exportView: function(bundleList, excelName){
+
         var action = MWF.Actions.get("x_query_assemble_surface");
 
         var filterData = this.json.filter ? this.json.filter.clone() : [];
@@ -148,7 +214,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 filterData.push(filter.data);
             }.bind(this));
         }
-        action.exportViewWithQuery(this.json.viewName, this.json.application, {"filterList": filterData}, function(json){
+        var data = {"filterList": filterData};
+        if( bundleList )data.bundleList = bundleList;
+        if( excelName )data.excelName = excelName;
+        action.exportViewWithQuery(this.json.viewName, this.json.application, data, function(json){
             var uri = action.action.actions.getViewExcel.uri;
             uri = uri.replace("{flag}", json.data.id);
             uri = o2.filterUrl( action.action.address+uri );
@@ -435,6 +504,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
         this.currentPage = this.options.defaultPage || 1;
         this.options.defaultPage = null;
+
+        this.exportExcelStart = null;
+        this.exportExcelEnd = null;
     },
     lookup: function(data, callback){
         if( this.lookuping )return;
