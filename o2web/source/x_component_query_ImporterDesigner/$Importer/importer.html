@@ -1,0 +1,118 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">别名:</td>
+                <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+        </table>
+
+        <div title="目标">
+            <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">导入目标</div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableValue" colspan="2" align="center">
+                        <input class="editTableRadio" onclick="
+                    if (this.checked){
+                        $('text{$.id}dateRangeType_cms').setStyle('display', 'block');
+                        $('text{$.id}dateRangeType_table').setStyle('display', 'none');
+                        $('text{$.id}dateRangeType_process').setStyle('display', 'none');
+                        $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', '');
+                        $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
+                     }" name="text{$.id}*type" text{($.type!='querytable' && $.type!='process')?'checked':''} type="radio" value="cms"/>内容管理数据
+                        <input class="editTableRadio" onclick="
+                    if (this.checked){
+                        $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
+                        $('text{$.id}dateRangeType_table').setStyle('display', 'block');
+                        $('text{$.id}dateRangeType_process').setStyle('display', 'none');
+                        $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', 'none');
+                        $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', '');
+                     }" name="text{$.id}*type" text{($.type=='querytable')?'checked':''} type="radio" value="querytable"/>自建表数据
+                        <input class="editTableRadio" onclick="
+                    if (this.checked){
+                        $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
+                        $('text{$.id}dateRangeType_table').setStyle('display', 'none');
+                        $('text{$.id}dateRangeType_process').setStyle('display', 'block');
+                        $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', '');
+                        $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
+                    }" name="text{$.id}*type" text{($.type=='process')?'checked':''} type="radio" value="process"/>流程平台数据
+                    </td>
+                </tr>
+            </table>
+
+
+            <div id="text{$.id}dateRangeType_cms" style="display: text{($.type!='table' && $.type!='process')?'block':'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle" width="100px;">选择分类:</td>
+                        <td class="editTableValue">
+                            <div class="MWFSelecCMStCategory" name="data.category"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="text{$.id}dateRangeType_table" style="display: text{($.type=='querytable')?'block':'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">选择自建表:</td>
+                        <td class="editTableValue">
+                            <div class="MWFSelecQueryTable" name="data.querytable"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="text{$.id}dateRangeType_process" style="display: text{($.type=='process')?'block':'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">选择流程:</td>
+                        <td class="editTableValue">
+                            <div class="MWFSelectProcess" name="data.process"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">可执行者</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
+            <tr>
+                <td class="editTableTitle">可执行人:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="availableIdentityList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">执行组织:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonUnit" name="availableUnitList"></div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+
+
+
+    <div title="事件"  class="MWFTab">
+        <div class="MWFEventsArea" name="data.events"></div>
+    </div>
+
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>
