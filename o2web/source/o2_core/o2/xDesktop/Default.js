@@ -50,6 +50,46 @@ o2.xDesktop.Default = new Class({
     returnZoom: function(){
         this.zoom(1);
     },
+    zoomMenuShow: function(){
+        this.sliderNode.show();
+        this.sliderNode.set('tween', {duration: 100});
+        this.sliderNode.tween('width', '140');
+
+        if (!this.zoomSlider){
+            if (!layout.userLayout.scale) layout.userLayout.scale = 1;
+            this.sliderNode.addEvent("mousedown", function (e){
+                e.stopPropagation();
+                e.preventDefault();
+            });
+
+            this.zoomSlider = new Slider(this.zoomSliderNode, this.zoomSliderKnobNode, {
+                range: [30, 300],
+                wheel: false,
+                snap: true,
+                //mode: "vertical",
+
+                steps: 27,
+                initialStep: layout.userLayout.scale*100,
+                onChange: function(step){
+                    if (this.zoomValueNode) this.zoomValueNode.set("text", step+"%");
+                }.bind(this),
+                onComplete: function(step){
+                    var scale = step/100;
+                    this.zoom(scale);
+                    this.zoomMenuHide();
+                }.bind(this)
+            });
+        }
+
+        this.hideZoom = this.zoomMenuHide.bind(this);
+        this.desktopNode.addEvent("mousedown", this.hideZoom);
+    },
+    zoomMenuHide: function(){
+        this.sliderNode.set('tween', {duration: 100});
+        this.sliderNode.tween('width', '0');
+
+        if (this.hideZoom) this.desktopNode.removeEvent("mousedown", this.hideZoom);
+    },
 
     initialize: function(node, options){
         this.setOptions(options);
