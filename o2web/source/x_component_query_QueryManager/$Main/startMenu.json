@@ -48,6 +48,14 @@
     "expand": false,
     "sub": []
   },
+  {
+    "title": "导入模型",
+    "id": "1.1",
+    "action": "importerConfig",
+    "icon": "query_statement.png",
+    "expand": false,
+    "sub": []
+  },
 //  {
 //    "title": "展示配置",
 //    "id": "1.1",
