@@ -2180,6 +2180,27 @@ o2.core = true;
             }
         });
     }
+
+    var styleString = Element.getComputedStyle;
+    function styleNumber(element, style){
+        return styleString(element, style).toInt() || 0;
+    }
+
+    function topBorder(element){
+        return styleNumber(element, 'border-top-width');
+    }
+
+    function leftBorder(element){
+        return styleNumber(element, 'border-left-width');
+    }
+
+    [Document, Window].invoke('implement', {
+        getSize: function(){
+            var doc = this.getDocument();
+            doc = ((!doc.compatMode || doc.compatMode == 'CSS1Compat') && (!layout || !layout.userLayout || !layout.userLayout.scale || layout.userLayout.scale==1)) ? doc.html : doc.body;
+            return {x: doc.clientWidth, y: doc.clientHeight};
+        },
+    });
     if (window.Element && Element.implement) Element.implement({
         "isIntoView": function() {
             // var pNode = this.getParent();
@@ -2487,8 +2508,100 @@ o2.core = true;
             h += (this.getStyle("padding-left").toFloat() || 0)+ (this.getStyle("padding-right").toFloat() || 0);
             if (!notMargin) h += (this.getStyle("margin-left").toFloat() || 0)+ (this.getStyle("margin-right").toFloat() || 0);
             return h;
+        },
+        "getSize": function(){
+            if ((/^(?:body|html)$/i).test(this.tagName)) return this.getWindow().getSize();
+            if (!window.getComputedStyle) return {x: this.offsetWidth, y: this.offsetHeight};
+            if (this.get('tag') == 'svg') return svgCalculateSize(this);
+            try {
+                if (!layout || !layout.userLayout || !layout.userLayout.scale || layout.userLayout.scale==1){
+                    var bounds = this.getBoundingClientRect();
+                    return {x: bounds.width, y: bounds.height};
+                }else{
+                    return {"x": this.offsetWidth.toFloat(), "y": this.offsetHeight.toFloat()};
+                }
+            } catch (e){
+                return {x: 0, y: 0};
+            }
+        },
+        "getScaleOffsets": function(){
+            var hasGetBoundingClientRect = this.getBoundingClientRect;
+//<1.4compat>
+            hasGetBoundingClientRect = hasGetBoundingClientRect && !Browser.Platform.ios;
+//</1.4compat>
+            if (hasGetBoundingClientRect){
+                var bound = this.getBoundingClientRect();
+
+                var boundLeft = bound.left;
+                var boundTop = bound.top;
+                if (!layout || !layout.userLayout || !layout.userLayout.scale || layout.userLayout.scale==1){
+
+                }else{
+                    boundLeft= boundLeft/layout.userLayout.scale;
+                    boundTop = boundTop/layout.userLayout.scale;
+                }
+
+
+
+                var html = document.id(this.getDocument().documentElement);
+                var htmlScroll = html.getScroll();
+                var elemScrolls = this.getScrolls();
+                var isFixed = (Element.getComputedStyle(this, 'position') == 'fixed');
+
+                return {
+                    x: boundLeft.toFloat() + elemScrolls.x + ((isFixed) ? 0 : htmlScroll.x) - html.clientLeft,
+                    y: boundTop.toFloat() + elemScrolls.y + ((isFixed) ? 0 : htmlScroll.y) - html.clientTop
+                };
+            }
+
+            var element = this, position = {x: 0, y: 0};
+            if (isBody(this)) return position;
+
+            while (element && !isBody(element)){
+                position.x += element.offsetLeft;
+                position.y += element.offsetTop;
+//<1.4compat>
+                if (Browser.firefox){
+                    if (!borderBox(element)){
+                        position.x += leftBorder(element);
+                        position.y += topBorder(element);
+                    }
+                    var parent = element.parentNode;
+                    if (parent && styleString(parent, 'overflow') != 'visible'){
+                        position.x += leftBorder(parent);
+                        position.y += topBorder(parent);
+                    }
+                } else if (element != this && Browser.safari){
+                    position.x += leftBorder(element);
+                    position.y += topBorder(element);
+                }
+//</1.4compat>
+                element = element.offsetParent;
+            }
+//<1.4compat>
+            if (Browser.firefox && !borderBox(this)){
+                position.x -= leftBorder(this);
+                position.y -= topBorder(this);
+            }
+//</1.4compat>
+            return position;
+        },
+        getPosition: function(relative){
+            var offset = this.getScaleOffsets(),
+                scroll = this.getScrolls();
+            var position = {
+                x: offset.x - scroll.x,
+                y: offset.y - scroll.y
+            };
+
+            if (relative && (relative = document.id(relative))){
+                var relativePosition = relative.getPosition();
+                return {x: position.x - relativePosition.x - leftBorder(relative), y: position.y - relativePosition.y - topBorder(relative)};
+            }
+            return position;
         }
     });
+
     Object.copy = function(from, to){
         Object.each(from, function(value, key){
             switch (typeOf(value)){
