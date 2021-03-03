@@ -11,6 +11,86 @@ o2.xDesktop.Default = new Class({
         "style": "blue",
         "index": "Homepage"
     },
+    zoomOut: function(){
+        if (!layout.userLayout.scale) layout.userLayout.scale = 1;
+        layout.userLayout.scale = layout.userLayout.scale-0.1;
+        if (layout.userLayout.scale<0.4) layout.userLayout.scale = 0.4;
+        this.zoom();
+    },
+    zoomIn: function(){
+        if (!layout.userLayout.scale) layout.userLayout.scale = 1;
+        layout.userLayout.scale = layout.userLayout.scale+0.1;
+        if (layout.userLayout.scale>5) layout.userLayout.scale = 5;
+        this.zoom();
+    },
+    zoom: function(v){
+        if (v){
+            layout.userLayout.scale = v;
+            if (layout.userLayout.scale<0.4) layout.userLayout.scale = 0.4;
+            if (layout.userLayout.scale>5) layout.userLayout.scale = 5;
+        }
+        if (layout.userLayout.scale){
+            var s = (1/layout.userLayout.scale)*100;
+            var p = s+"%";
+            document.id(document.documentElement).setStyles({
+                "transform": "scale("+layout.userLayout.scale+")",
+                "transform-origin": "0 0",
+                "width": p,
+                "height":p
+            });
+            this.fireEvent("resize");
+            this.setZoomValue();
+        }
+    },
+    setZoomValue: function(){
+        if (!layout.userLayout.scale) layout.userLayout.scale = 1;
+        var scaleP = Math.round(layout.userLayout.scale*100);
+        if (this.zoomValueNode) this.zoomValueNode.set("text", scaleP+"%");
+    },
+    returnZoom: function(){
+        this.zoom(1);
+    },
+    zoomMenuShow: function(){
+        this.sliderNode.show();
+        this.sliderNode.set('tween', {duration: 100});
+        this.sliderNode.tween('width', '140');
+
+        if (!this.zoomSlider){
+            if (!layout.userLayout.scale) layout.userLayout.scale = 1;
+            this.sliderNode.addEvent("mousedown", function (e){
+                e.stopPropagation();
+                e.preventDefault();
+            });
+
+            this.zoomSlider = new Slider(this.zoomSliderNode, this.zoomSliderKnobNode, {
+                range: [30, 300],
+                wheel: false,
+                snap: true,
+                //mode: "vertical",
+
+                steps: 27,
+                initialStep: layout.userLayout.scale*100,
+                onChange: function(step){
+                    if (this.zoomValueNode) this.zoomValueNode.set("text", step+"%");
+                }.bind(this),
+                onComplete: function(step){
+                    var scale = step/100;
+                    this.zoom(scale);
+                    this.zoomMenuHide();
+                }.bind(this)
+            });
+        }
+
+        this.hideZoom = this.zoomMenuHide.bind(this);
+        this.desktopNode.addEvent("mousedown", this.hideZoom);
+    },
+    zoomMenuHide: function(){
+        this.sliderNode.set('tween', {duration: 100});
+        this.sliderNode.tween('width', '0');
+
+        if (this.hideZoom) this.desktopNode.removeEvent("mousedown", this.hideZoom);
+    },
+
     initialize: function(node, options){
         this.setOptions(options);
         this.type = "layout";
@@ -18,6 +98,7 @@ o2.xDesktop.Default = new Class({
         this.node = $(node);
         this.node.empty();
         this.initData();
+        this.zoom();
         //this.load();
     },
     initData: function(){
@@ -75,6 +156,8 @@ o2.xDesktop.Default = new Class({
             }.bind(this), 0);
 
             this.loadMessageMenu();
+
+            this.setZoomValue();
 
             this.fireEvent("load");
             MWF.require("MWF.xDesktop.shortcut");
@@ -538,7 +621,8 @@ o2.xDesktop.Default = new Class({
             //"lnks": [],
             "flatLnks": [],
             "widgets": {},
-            "menuData": this.menuData
+            "menuData": this.menuData,
+            "scale": layout.userLayout.scale || 1
         };
         // this.appArr.each(function(app){
         //     if (app.options.appId!==this.options.index){
