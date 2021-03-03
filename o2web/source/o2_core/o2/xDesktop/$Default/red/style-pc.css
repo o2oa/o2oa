@@ -122,7 +122,8 @@
     height: 70px;
 }
 .layout_menu_setting_button{
-    height: 70px;
+    height: 55px;
+    padding-top: 15px;
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
@@ -487,7 +488,7 @@
 .layout_start_item_icon {
     width: 40px;
     height: 40px;
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -794,4 +795,63 @@
     width: 90%;
     margin: auto;
     border-radius: 20px;
+}
+/*.layout_menu_scale_zoomout {*/
+/*    height: 20px;*/
+/*    line-height: 20px;*/
+/*    width: 16px;*/
+/*    text-align: center;*/
+/*    background: #ffffff;*/
+/*    margin-left: 5px;*/
+/*    float: left;*/
+/*}*/
+/*.layout_menu_scale_zoomin {*/
+/*    height: 20px;*/
+/*    line-height: 20px;*/
+/*    width: 16px;*/
+/*    text-align: center;*/
+/*    background: #ffffff;*/
+/*    margin-right: 5px;*/
+/*    float: right;*/
+/*}*/
+.layout_menu_scale_zoomValue {
+    height: 40px;
+    line-height: 40px;
+    width: 40px;
+    border-radius: 20px;
+    margin: auto;
+    text-align: center;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+}
+.layout_menu_scale_zoomSlider {
+    width: 110px;
+    height: 5px;
+    margin-left: 10px;
+    border-radius: 3px;
+    background: #ffffff;
+    position: relative;
+}
+.layout_menu_scale_zoomSliderKnob {
+    width: 12px;
+    height: 12px;
+    border-radius: 10px;
+    border: 3px solid #f1f1f1;
+    cursor: pointer;
+    position: absolute;
+    top: -6px;
+}
+.layout_menu_scale_slider {
+    width: 0;
+    height: 38px;
+    overflow: hidden;
+    padding-top: 32px;
+    border-top-right-radius: 35px;
+    border-bottom-right-radius: 35px;
+    position: absolute;
+    bottom: 0;
+    left: 80px;
+    z-index: 40000;
+    display: none;
 }
