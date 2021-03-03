@@ -1,5 +1,8 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
+import com.x.base.core.project.config.StorageMapping;
+import com.x.general.core.entity.GeneralFile;
+import com.x.query.assemble.surface.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -23,16 +26,12 @@ class ActionExcelResult extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			logger.info("{}", flag);
 			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(flag);
-			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
-			if (optional.isPresent()) {
-				ExcelResultObject obj = (ExcelResultObject) optional.get();
-				if (!StringUtils.equals(effectivePerson.getDistinguishedName(), obj.getPerson())) {
-					throw new ExceptionAccessDenied(effectivePerson);
-				}
-				Wo wo = new Wo(obj.getBytes(), this.contentType(true, obj.getName()),
-						this.contentDisposition(true, obj.getName()));
+			GeneralFile generalFile = emc.find(flag, GeneralFile.class);
+			if(generalFile!=null){
+				StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
+						generalFile.getStorage());
+				Wo wo = new Wo(generalFile.readContent(gfMapping), this.contentType(true, generalFile.getName()),
+						this.contentDisposition(true, generalFile.getName()));
 				result.setData(wo);
 			} else {
 				throw new ExceptionExcelResultObject(flag);
