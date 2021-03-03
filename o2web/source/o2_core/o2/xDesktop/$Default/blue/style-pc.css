@@ -823,4 +823,35 @@
     text-align: center;
     background: #ffffff;
     cursor: pointer;
+    font-size: 12px;
+}
+.layout_menu_scale_zoomSlider {
+    width: 110px;
+    height: 5px;
+    margin-left: 10px;
+    border-radius: 3px;
+    background: #ffffff;
+    position: relative;
+}
+.layout_menu_scale_zoomSliderKnob {
+    width: 12px;
+    height: 12px;
+    border-radius: 10px;
+    border: 3px solid #f1f1f1;
+    cursor: pointer;
+    position: absolute;
+    top: -6px;
+}
+.layout_menu_scale_slider {
+    width: 0;
+    height: 38px;
+    overflow: hidden;
+    padding-top: 32px;
+    border-top-right-radius: 35px;
+    border-bottom-right-radius: 35px;
+    position: absolute;
+    bottom: 0;
+    left: 80px;
+    z-index: 40000;
+    display: none;
 }
