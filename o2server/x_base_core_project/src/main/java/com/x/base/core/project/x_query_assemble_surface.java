@@ -20,9 +20,10 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.content.Attachment", "com.x.cms.core.entity.Document",
 		"com.x.cms.core.entity.Review", "com.x.cms.core.entity.AppInfo", "com.x.cms.core.entity.CategoryInfo",
 		"com.x.organization.core.entity.Person", "com.x.organization.core.entity.Unit", "com.x.organization.core.entity.Group",
-		"com.x.query.dynamic.entity.*" }, storageTypes = { StorageType.processPlatform, StorageType.cms }, storeJars = {
-				"x_query_core_entity", "x_organization_core_entity", "x_organization_core_express",
-				"x_processplatform_core_entity", "x_cms_core_entity",
-				"x_query_core_express" }, dynamicJars = { "x_query_dynamic_entity" })
+		"com.x.query.dynamic.entity.*", "com.x.general.core.entity.GeneralFile"},
+		storageTypes = { StorageType.processPlatform, StorageType.cms, StorageType.general}, storeJars = {
+		"x_query_core_entity", "x_organization_core_entity", "x_organization_core_express",
+		"x_processplatform_core_entity", "x_cms_core_entity",
+		"x_query_core_express", "x_general_core_entity" }, dynamicJars = { "x_query_dynamic_entity" })
 public class x_query_assemble_surface extends Deployable {
 }
