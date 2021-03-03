@@ -11,7 +11,11 @@ import java.util.Objects;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.query.assemble.surface.ThisApplication;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -166,7 +170,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	protected String girdWriteToExcel(EffectivePerson effectivePerson, Business business, Plan plan, View view)
+	protected String girdWriteToExcel(EffectivePerson effectivePerson, Business business, Plan plan, View view, String excelName)
 			throws Exception {
 		try (XSSFWorkbook workbook = new XSSFWorkbook(); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 			XSSFSheet sheet = workbook.createSheet("grid");
@@ -197,16 +201,23 @@ abstract class BaseAction extends StandardJaxrsAction {
 					}
 				}
 			}
-			String name = view.getName() + ".xlsx";
+			if(StringUtils.isEmpty(excelName)) {
+				excelName = view.getName() + ".xlsx";
+			}
+			if(!excelName.toLowerCase().endsWith(".xlsx")){
+				excelName = excelName + ".xlsx";
+			}
 			workbook.write(os);
-			ExcelResultObject obj = new ExcelResultObject();
-			obj.setBytes(os.toByteArray());
-			obj.setName(name);
-			obj.setPerson(effectivePerson.getDistinguishedName());
-			String flag = StringTools.uniqueToken();
-			CacheKey cacheKey = new CacheKey(flag);
-			CacheManager.put(business.cache(), cacheKey, obj);
-			return flag;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+				GeneralFile generalFile = new GeneralFile(gfMapping.getName(), excelName, effectivePerson.getDistinguishedName());
+				generalFile.saveContent(gfMapping, os.toByteArray(), excelName);
+				emc.beginTransaction(GeneralFile.class);
+				emc.persist(generalFile, CheckPersistType.all);
+				emc.commit();
+				String key = generalFile.getId();
+				return key;
+			}
 		}
 	}
 
