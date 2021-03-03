@@ -174,7 +174,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			this.node.setStyle("overflow-y", "hidden");
 			this.table = this.node.getElement("table");
 
-			this.editable = (this.readonly) ? false : true;
+			this.editable = (this.readonly || this.json.isReadonly === true ) ? false : true;
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 			}
