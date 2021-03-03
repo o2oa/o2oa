@@ -6,6 +6,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -19,9 +20,13 @@ import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.End;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
+import java.util.List;
 
 class ActionManageBatchUpload extends BaseAction {
 
@@ -66,7 +71,15 @@ class ActionManageBatchUpload extends BaseAction {
                     }else{
                         WorkCompleted workCompleted = emc.find(workId, WorkCompleted.class);
                         if (null != workCompleted) {
-                            attachment = this.concreteAttachment(workCompleted, person, site, order);
+							Process process = business.process().pick(workCompleted.getProcess());
+							if (null == process) {
+								throw new ExceptionEntityNotExist(workCompleted.getProcess(), Process.class);
+							}
+							List<End> ends = business.end().listWithProcess(process);
+							if (ends.isEmpty()) {
+								throw new ExceptionEndNotExist(process.getId());
+							}
+							attachment = this.concreteAttachment(workCompleted, person, site, order, ends.get(0));
                         }
                     }
                     if(attachment!=null){
@@ -112,7 +125,7 @@ class ActionManageBatchUpload extends BaseAction {
 		return attachment;
 	}
 
-    private Attachment concreteAttachment(WorkCompleted workCompleted, String person, String site, Integer order) throws Exception {
+    private Attachment concreteAttachment(WorkCompleted workCompleted, String person, String site, Integer order, End end) throws Exception {
         Attachment attachment = new Attachment();
         attachment.setCompleted(true);
         attachment.setPerson(person);
@@ -123,10 +136,10 @@ class ActionManageBatchUpload extends BaseAction {
         attachment.setApplication(workCompleted.getApplication());
         attachment.setProcess(workCompleted.getProcess());
         attachment.setJob(workCompleted.getJob());
-        attachment.setActivity(workCompleted.getActivity());
-        attachment.setActivityName(workCompleted.getActivityName());
-        attachment.setActivityToken(workCompleted.getActivity());
-        attachment.setActivityType(ActivityType.end);
+		attachment.setActivity(end.getId());
+		attachment.setActivityName(end.getName());
+		attachment.setActivityToken(end.getId());
+		attachment.setActivityType(end.getActivityType());
 		if(order!=null){
 			attachment.setOrderNumber(order);
 		}

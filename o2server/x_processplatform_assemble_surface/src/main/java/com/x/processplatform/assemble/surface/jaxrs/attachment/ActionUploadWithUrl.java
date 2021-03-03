@@ -27,8 +27,12 @@ import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.End;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
+
+import java.util.List;
 
 class ActionUploadWithUrl extends BaseAction {
 
@@ -70,7 +74,15 @@ class ActionUploadWithUrl extends BaseAction {
 			if (null == work) {
 				WorkCompleted workCompleted = emc.find(wi.getWorkId(), WorkCompleted.class);
 				if(workCompleted!=null){
-					attachment = this.concreteAttachment(workCompleted, person, wi.getSite());
+					Process process = business.process().pick(workCompleted.getProcess());
+					if (null == process) {
+						throw new ExceptionEntityNotExist(workCompleted.getProcess(), Process.class);
+					}
+					List<End> ends = business.end().listWithProcess(process);
+					if (ends.isEmpty()) {
+						throw new ExceptionEndNotExist(process.getId());
+					}
+					attachment = this.concreteAttachment(workCompleted, person, wi.getSite(), ends.get(0));
 				}
 			}else{
 				attachment = this.concreteAttachment(work, person, wi.getSite());
@@ -121,7 +133,7 @@ class ActionUploadWithUrl extends BaseAction {
 		return attachment;
 	}
 
-	private Attachment concreteAttachment(WorkCompleted workCompleted, String person, String site) throws Exception {
+	private Attachment concreteAttachment(WorkCompleted workCompleted, String person, String site, End end) throws Exception {
 		Attachment attachment = new Attachment();
 		attachment.setCompleted(true);
 		attachment.setPerson(person);
@@ -132,10 +144,10 @@ class ActionUploadWithUrl extends BaseAction {
 		attachment.setApplication(workCompleted.getApplication());
 		attachment.setProcess(workCompleted.getProcess());
 		attachment.setJob(workCompleted.getJob());
-		attachment.setActivity(workCompleted.getActivity());
-		attachment.setActivityName(workCompleted.getActivityName());
-		attachment.setActivityToken(workCompleted.getActivity());
-		attachment.setActivityType(ActivityType.end);
+		attachment.setActivity(end.getId());
+		attachment.setActivityName(end.getName());
+		attachment.setActivityToken(end.getId());
+		attachment.setActivityType(end.getActivityType());
 		return attachment;
 	}
 
