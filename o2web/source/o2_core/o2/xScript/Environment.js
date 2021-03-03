@@ -2800,13 +2800,13 @@ MWF.xScript.Environment = function(ev){
          *   "readFormId": "xxxxxx", //强制的阅读表单id，优先于表单的readFormId。6.0版本之前使用 formId。
          *   "editFormId": "xxxxxx", //强制的编辑表单id，优先于表单的formId。6.0版本之前使用 formEditId。
          *    "saveOnClose" : true, //关闭的时候是否自动保存
-         *    "onPostPublish" : function( documentData ){ //发布前执行方法，但数据已经准备好
+         *    "onPostPublish" : function( documentData ){ //发布前执行方法，但数据已经准备好，该事件在桌面模式打开有效
          *       //documentData 为文档数据
          *    },
-         *    "onAfterPublish" : function( form, documentData ){ //发布后执行的方法
+         *    "onAfterPublish" : function( form, documentData ){ //发布后执行的方法，该事件在桌面模式打开有效
          *       //form为内容管理Form对象，documentData 为文档数据
          *    },
-         *    "onPostDelete" : function(){ //删除文档后执行的方法
+         *    "onPostDelete" : function(){ //删除文档后执行的方法，该事件在桌面模式打开有效
          *    }
          * }</code></pre>
          * @example
