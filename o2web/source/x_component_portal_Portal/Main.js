@@ -94,9 +94,25 @@ MWF.xApplication.portal.Portal.Main = new Class({
             if (!!pageJson && loadModuleFlag){
                 this.pageJson = pageJson;
                 layout.sessionPromise.finally(function(){
-                    this.pageInfor = pageJson.data;
-                    this.setTitle(this.portal.name+"-"+pageJson.data.name);
-                    var page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
+                    // this.pageInfor = pageJson.data;
+                    // this.setTitle(this.portal.name+"-"+pageJson.data.name);
+                    // var page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
+
+                    var pageName = pageJson.data.page ? pageJson.data.page.name : pageJson.data.name;
+                    this.setTitle((this.portal && this.portal.name) ? this.portal.name+"-"+pageName : pageName);
+                    var page;
+                    if (pageJson.data.page){
+                        page = (pageJson.data.page.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.page.data)): null;
+                        this.relatedFormMap = pageJson.data.relatedWidgetMap;
+                        this.relatedScriptMap = pageJson.data.relatedScriptMap;
+                        delete pageJson.data.page.data;
+                        this.pageInfor = pageJson.data.page;
+                    }else{
+                        page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
+                        delete pageJson.data.data;
+                        this.pageInfor = pageJson.data;
+                    }
+
                     if (page){
                         this.options.pageId = pageJson.data.id;
 
@@ -116,7 +132,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         }.bind(this);
 
         if (name){
-            var m = (layout.mobile) ? "getPageByNameMobile" : "getPageByName";
+            var m = (layout.mobile) ? "getPageByNameMobileV2" : "getPageByNameV2";
             this.action[m](name, this.portal.id, function(json){
                 pageJson = json;
                 check();
@@ -129,7 +145,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
 
         }else{
             if (this.options.pageId){
-                var m = (layout.mobile) ? "getPageByNameMobile" : "getPageByName";
+                var m = (layout.mobile) ? "getPageByNameMobileV2" : "getPageByNameV2";
                 this.action[m](this.options.pageId, this.portal.id, function(json){
                     pageJson = json;
                     check();
