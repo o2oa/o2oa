@@ -491,10 +491,12 @@ MWF.xApplication.process.StatDesigner.Stat.Column = new Class({
                     this.areaNode.inject(inObj, "before");
                     var column = inObj.retrieve("column");
                     this.listNode.inject(column.listNode, "before");
-                    var idx = this.view.json.data.calculate.calculateEntryList.indexOf(column.json);
+                    // var idx = this.view.json.data.calculate.calculateEntryList.indexOf(column.json);
 
                     this.view.json.data.calculate.calculateEntryList.erase(this.json);
                     this.view.items.erase(this);
+
+                    var idx = this.view.json.data.calculate.calculateEntryList.indexOf(column.json);
 
                     this.view.json.data.calculate.calculateEntryList.splice(idx, 0, this.json);
                     this.view.items.splice(idx, 0, this);

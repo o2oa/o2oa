@@ -58,6 +58,44 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
             if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
         }.bind(this));
     },
+    loadViewNodes: function(){
+        this.viewAreaNode = new Element("div#viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.areaNode);
+        this.viewTitleNode = new Element("div#viewTitleNode", {"styles": this.css.viewTitleNode}).inject(this.viewAreaNode);
+
+        this.excelTitleNode = new Element("div#excelTitleNode", {
+            "styles": this.css.excelTitleNode,
+            "text" : "Excel表格列对应字段："
+        }).inject(this.viewTitleNode);
+
+        // this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
+        this.addColumnNode = new Element("div", {"styles": this.css.addColumnNode}).inject(this.viewTitleNode);
+
+        this.viewTitleContentNode = new Element("div", {"styles": this.css.viewTitleContentNode}).inject(this.viewTitleNode);
+        this.viewTitleTableNode = new Element("table", {
+            "styles": this.css.viewTitleTableNode,
+            "border": "0px",
+            "cellPadding": "0",
+            "cellSpacing": "0"
+        }).inject(this.viewTitleContentNode);
+        this.viewTitleTrNode = new Element("tr", {"styles": this.css.viewTitleTrNode}).inject(this.viewTitleTableNode);
+
+
+        this.viewContentScrollNode = new Element("div", {"styles": this.css.viewContentScrollNode}).inject(this.viewAreaNode);
+        this.viewContentNode = new Element("div", {"styles": this.css.viewContentNode}).inject(this.viewContentScrollNode);
+        MWF.require("MWF.widget.ScrollBar", function(){
+            new MWF.widget.ScrollBar(this.viewContentScrollNode, {"style": "view", "distance": 100, "indent": false});
+        }.bind(this));
+
+        this.contentLeftNode = new Element("div", {"styles": this.css.contentLeftNode}).inject(this.viewContentNode);
+        this.contentRightNode = new Element("div", {"styles": this.css.contentRightNode}).inject(this.viewContentNode);
+        this.viewContentBodyNode = new Element("div", {"styles": this.css.viewContentBodyNode}).inject(this.viewContentNode);
+        this.viewContentTableNode = new Element("table", {
+            "styles": this.css.viewContentTableNode,
+            "border": "0px",
+            "cellPadding": "0",
+            "cellSpacing": "0"
+        }).inject(this.viewContentBodyNode);
+    },
     autoSave: function(){
         this.autoSaveTimerID = window.setInterval(function(){
             if (!this.autoSaveCheckNode) this.autoSaveCheckNode = this.designer.contentToolbarNode.getElement("#MWFDictionaryAutoSaveCheck");
@@ -138,10 +176,10 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
     },
     setEvent: function(){
         this.areaNode.addEvent("click", this.selected.bind(this));
-        this.refreshNode.addEvent("click", function(e){
-            // this.loadViewData();
-            e.stopPropagation();
-        }.bind(this));
+        // this.refreshNode.addEvent("click", function(e){
+        //     // this.loadViewData();
+        //     e.stopPropagation();
+        // }.bind(this));
         this.addColumnNode.addEvent("click", function(e){
             this.addColumn();
             e.stopPropagation();
@@ -371,7 +409,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
             };
             if (!this.json.data.selectList) this.json.data.selectList = [];
             this.json.data.selectList.push(json);
-            var column = new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this);
+            var column = new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this, null);
             this.items.push(column);
             column.selected();
 
@@ -383,6 +421,11 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
                 //this.setContentColumnWidth();
             }
             this.setViewWidth();
+
+            this.items.each( function (item, i) {
+                item.resetIndex(i);
+            });
+
             this.addColumnNode.scrollIntoView(true);
 
         }.bind(this));
@@ -393,8 +436,8 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
     loadViewColumns: function(){
         //    for (var i=0; i<10; i++){
         if (this.json.data.selectList) {
-            this.json.data.selectList.each(function (json) {
-                this.items.push(new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this));
+            this.json.data.selectList.each(function (json, i) {
+                this.items.push(new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this, null, i));
 
             }.bind(this));
         }
@@ -438,9 +481,13 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         this.viewTitleNode.setStyle("width", "auto");
 
         var s1 = this.viewTitleTableNode.getSize();
-        var s2 = this.refreshNode.getSize();
+
+        var m1 = this.viewTitleNode.getStyle("margin-left");
+        var m2 = this.viewTitleNode.getStyle("margin-right");
+
+        var s2 = 0; //this.refreshNode.getSize();
         var s3 = this.addColumnNode.getSize();
-        var width = s1.x+s2.x+s2.x;
+        var width = s1.x+s2.x+s2.x - m1.toFloat() - m2.toFloat();
         var size = this.areaNode.getSize();
 
         if (width>size.x){
@@ -600,11 +647,12 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
 
 MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
     Extends: MWF.xApplication.query.ViewDesigner.View.Column,
-    initialize: function(json, view, next){
+    initialize: function(json, view, next, index){
         this.propertyPath = "../x_component_query_ImporterDesigner/$Importer/column.html";
         this.view = view;
         this.json = json;
         this.next = next;
+        this.index = index;
         this.css = this.view.css;
         this.content = this.view.viewTitleTrNode;
         this.domListNode = this.view.domListNode;
@@ -632,9 +680,13 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         this.node = new Element("div", {
             "styles": this.css.viewTitleColumnNode
         }).inject(this.areaNode);
+
+
+        var colName = this.index2ColumnName( this.index );
+        colName = colName ? ( colName + ": " ) : "";
         this.textNode = new Element("div", {
             "styles": this.css.viewTitleColumnTextNode,
-            "text": this.json.displayName
+            "text": colName + this.json.displayName
         }).inject(this.node);
 
         this.createDomListItem();
@@ -780,11 +832,13 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         if (name=="attribute") this.resetTextNode();
         if (name=="path") this.resetTextNode();
     },
-    resetTextNode: function(){
+    resetTextNode: function( index ){
         var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
         if (!listText) listText = "unnamed";
 
-        this.textNode.set("text", this.json.displayName);
+        var colName = this.index2ColumnName( index || this.index );
+        colName = colName ? ( colName + ": " ) : "";
+        this.textNode.set("text", colName + this.json.displayName);
         this.listNode.getLast().set("text", this.json.displayName+"("+listText+")");
     },
     destroy: function(){
@@ -795,34 +849,21 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
 
         var idx = this.view.items.indexOf(this);
 
-        if (this.view.viewContentTableNode){
-            var trs = this.view.viewContentTableNode.getElements("tr");
-            var isGroup = this.isGroupColumn();
-            trs.each(function(tr){
-                if( isGroup ){
-                    if( tr.get("data-is-group") === "yes" ){
-                        tr.destroy()
-                    }
-                }else{
-                    if( tr.get("data-is-group") !== "yes" ){
-                        tr.deleteCell(idx);
-                    }
-                }
-            }.bind(this));
-        }
-
-        if (this.view.json.data.group.column === this.json.column){
-            this.view.json.data.group.column = null;
-        }
-
-        var sortList = this.view.json.data.orderList || [];
-        var deleteItem = null;
-        sortList.each(function(order){
-            if (order.column==this.json.column){
-                deleteItem = order;
-            }
-        }.bind(this));
-        if (deleteItem) sortList.erase(deleteItem);
+        // if (this.view.viewContentTableNode){
+        //     var trs = this.view.viewContentTableNode.getElements("tr");
+        //     var isGroup = this.isGroupColumn();
+        //     trs.each(function(tr){
+        //         if( isGroup ){
+        //             if( tr.get("data-is-group") === "yes" ){
+        //                 tr.destroy()
+        //             }
+        //         }else{
+        //             if( tr.get("data-is-group") !== "yes" ){
+        //                 tr.deleteCell(idx);
+        //             }
+        //         }
+        //     }.bind(this));
+        // }
 
         if (this.view.json.data.selectList) this.view.json.data.selectList.erase(this.json);
         if (this.view.json.data.calculate) if (this.view.json.data.calculate.calculateList) this.view.json.data.calculate.calculateList.erase(this.json);
@@ -833,6 +874,10 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         this.view.selected();
 
         this.view.setViewWidth();
+
+        this.view.items.each( function (item, i) {
+            item.resetIndex(i);
+        });
 
         MWF.release(this);
         delete this;
@@ -870,10 +915,28 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
             }
             this.view.setViewWidth();
 
+            this.view.items.each( function (item, i) {
+                item.resetIndex(i);
+            });
+
         }.bind(this));
     },
-    setExcelColumnName : function(){
-
+    resetIndex : function( index ){
+        this.index = index;
+        this.resetTextNode();
+    },
+    index2ColumnName : function( index ){
+        if( typeOf(index) !== "number" )return null;
+        if (index < 0) return null;
+        var num = 65;// A的Unicode码
+        var colName = "";
+        do {
+            if (colName.length > 0)index--;
+            var remainder = index % 26;
+            colName =  String.fromCharCode(remainder + num) + colName;
+            index = (index - remainder) / 26;
+        } while (index > 0);
+        return colName;
     },
     move: function(e){
         var columnNodes = [];
@@ -914,21 +977,23 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
                     this.areaNode.inject(inObj, "before");
                     var column = inObj.retrieve("column");
                     this.listNode.inject(column.listNode, "before");
-                    var idx = this.view.json.data.selectList.indexOf(column.json);
 
                     this.view.json.data.selectList.erase(this.json);
                     this.view.items.erase(this);
 
+                    var idx = this.view.json.data.selectList.indexOf(column.json);
+
                     this.view.json.data.selectList.splice(idx, 0, this.json);
                     this.view.items.splice(idx, 0, this);
-
-                    this.view.items.each( function (item, i) {
-                        item.setExcelColumnName(item, i);
-                    })
 
                     if (this.moveNode) this.moveNode.destroy();
                     if (this.moveFlagNode) this.moveFlagNode.destroy();
                     this._setActionAreaPosition();
+
+                    this.view.items.each( function (item, i) {
+                        item.resetIndex(i);
+                    });
+
                 }else{
                     if (this.moveNode) this.moveNode.destroy();
                     if (this.moveFlagNode) this.moveFlagNode.destroy();
