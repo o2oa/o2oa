@@ -13,7 +13,9 @@
         "overflow": "hidden"
     },
 	"viewTitleNode": {
-        "height": "40px",
+        "height": "91px",
+        "margin-left" : "29px",
+        "border-left" : "1px solid #999",
         "background-color": "#EEE",
         "border-bottom": "1px solid #999",
         "cursor": "pointer"
@@ -79,6 +81,14 @@
         "text-align" : "center"
     },
 
+    "excelTitleNode" : {
+        "padding-top" : "20px",
+        "height" : "30px",
+        "font-size" : "14px",
+        "font-weight" : "bold",
+        "background-color" : "#f3f3f3",
+        "border-bottom" : "1px solid rgb(153, 153, 153)"
+    },
     "refreshNode": {
         "width": "29px",
         "height": "40px",
@@ -93,7 +103,7 @@
     },
 
     "viewTitleContentNode": {
-        "margin": "0px 31px",
+        "margin": "0px 31px 0px 31px",
         "height": "40px"
     },
     "viewTitleTableNode": {
