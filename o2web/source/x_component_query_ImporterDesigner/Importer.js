@@ -64,10 +64,10 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
 
         this.excelTitleNode = new Element("div#excelTitleNode", {
             "styles": this.css.excelTitleNode,
-            "text" : "Excel表格列对应字段："
+            "text" : "Excel表格列和数据路径对应关系"
         }).inject(this.viewTitleNode);
 
-        // this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
+        this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
         this.addColumnNode = new Element("div", {"styles": this.css.addColumnNode}).inject(this.viewTitleNode);
 
         this.viewTitleContentNode = new Element("div", {"styles": this.css.viewTitleContentNode}).inject(this.viewTitleNode);
@@ -485,7 +485,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         var m1 = this.viewTitleNode.getStyle("margin-left");
         var m2 = this.viewTitleNode.getStyle("margin-right");
 
-        var s2 = 0; //this.refreshNode.getSize();
+        var s2 = this.refreshNode.getSize();
         var s3 = this.addColumnNode.getSize();
         var width = s1.x+s2.x+s2.x - m1.toFloat() - m2.toFloat();
         var size = this.areaNode.getSize();
