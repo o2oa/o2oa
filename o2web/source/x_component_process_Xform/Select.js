@@ -330,8 +330,10 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	__setValue: function(value){
 		if (!this.readonly && !this.json.isReadonly ) {
 			this._setBusinessData(value);
-			for (var i=0; i<this.node.options.length; i++){
-				var option = this.node.options[i];
+
+			var ops = this.node.getElements("option");
+			for (var i=0; i<ops.length; i++){
+				var option = ops[i];
 				if (option.value==value){
 					option.selected = true;
 					//	break;
