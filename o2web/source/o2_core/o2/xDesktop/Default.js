@@ -2175,6 +2175,7 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
         this.editotTitleNode.addEvent("blur", function(){
             var name = this.editotTitleNode.get("value");
             if (name) this.data.name = name;
+            this.data.title = this.data.name;
             this.menuTitleNode.empty();
             this.menuTitleNode.set("text", this.data.name);
             this.loadText();
