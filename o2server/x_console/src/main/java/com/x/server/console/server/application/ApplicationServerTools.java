@@ -21,6 +21,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import ch.qos.logback.core.rolling.TimeBasedFileNamingAndTriggeringPolicyBase;
+import com.x.base.core.project.tools.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.file.PathUtils;
@@ -71,12 +73,6 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ClassLoaderTools;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.JarTools;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.PathTools;
-import com.x.base.core.project.tools.StringTools;
 import com.x.server.console.server.JettySeverTools;
 
 import io.github.classgraph.ClassGraph;
@@ -316,7 +312,7 @@ public class ApplicationServerTools extends JettySeverTools {
 		}
 	}
 
-	private static void modified(Path war, Path dir) throws IOException {
+	private static void modified(Path war, Path dir) throws Exception {
 		Path lastModified = Paths.get(dir.toString(), PathTools.WEB_INF_LASTMODIFIED);
 		if ((!Files.exists(lastModified)) || Files.isDirectory(lastModified)
 				|| (Files.getLastModifiedTime(war).toMillis() != NumberUtils
@@ -332,6 +328,18 @@ public class ApplicationServerTools extends JettySeverTools {
 			}
 			FileUtils.writeStringToFile(lastModified.toFile(), Files.getLastModifiedTime(war).toMillis() + "",
 					DefaultCharset.charset_utf_8, false);
+			File commonLang = new File(Config.DIR_COMMONS_LANGUAGE);
+			if(commonLang.exists() && commonLang.isDirectory()){
+				File languageDir = new File(dir.toString(), PathTools.WEB_INF_CLASSES_LANGUAGE);
+				FileTools.forceMkdir(languageDir);
+				File[] files = commonLang.listFiles();
+				for(File file : files){
+					if(!file.isDirectory()){
+						File languageFile = new File(languageDir, file.getName());
+						FileUtils.copyFile(file, languageFile);
+					}
+				}
+			}
 		}
 	}
 }
