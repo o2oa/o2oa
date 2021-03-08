@@ -6,7 +6,7 @@ MWF.xApplication.query.ImporterDesigner.LP = {
     "type": "类型",
     "value": "值",
     "importer": "导入模型",
-    "unnamed": "无标题列",
+    "unnamed": "无标题",
     "unCategory": "未分类",
 
     "id": "标识",
