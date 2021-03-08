@@ -26,6 +26,7 @@ import com.x.program.center.jaxrs.invoke.InvokeAction;
 import com.x.program.center.jaxrs.jest.JestAction;
 import com.x.program.center.jaxrs.market.MarketAction;
 import com.x.program.center.jaxrs.module.ModuleAction;
+import com.x.program.center.jaxrs.mpweixin.MPWeixinAction;
 import com.x.program.center.jaxrs.output.OutputAction;
 import com.x.program.center.jaxrs.pms.PmsAction;
 import com.x.program.center.jaxrs.prompterrorlog.PromptErrorLogAction;
@@ -72,6 +73,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(InputAction.class);
 		classes.add(MarketAction.class);
 		classes.add(DesignerAction.class);
+		classes.add(MPWeixinAction.class);
 		return classes;
 	}
 }
