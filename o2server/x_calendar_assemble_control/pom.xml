@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>5.4</version>
+		<version>6.0</version>
 	</parent>
 	<artifactId>x_calendar_assemble_control</artifactId>
 	<packaging>war</packaging>
