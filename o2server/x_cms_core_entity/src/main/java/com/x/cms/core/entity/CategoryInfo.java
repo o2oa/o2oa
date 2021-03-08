@@ -15,6 +15,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
@@ -32,7 +33,7 @@ import com.x.base.core.project.tools.ListTools;
 
 /**
  * 内容管理栏目目录分类信息
- * 
+ *
  * @author O2LEE
  *
  */
@@ -407,7 +408,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 获取分类名称
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCategoryName() {
@@ -416,7 +417,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 设置分类名称
-	 * 
+	 *
 	 * @param categoryName
 	 */
 	public void setCategoryName(String categoryName) {
@@ -425,7 +426,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 获取分类所属栏目ID
-	 * 
+	 *
 	 * @return
 	 */
 	public String getAppId() {
@@ -434,7 +435,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 设置分类所属栏目ID
-	 * 
+	 *
 	 * @param appId
 	 */
 	public void setAppId(String appId) {
@@ -443,7 +444,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 获取上级分类ID
-	 * 
+	 *
 	 * @return
 	 */
 	public String getParentId() {
@@ -452,7 +453,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 设置上级分类ID
-	 * 
+	 *
 	 * @param parentId
 	 */
 	public void setParentId(String parentId) {
@@ -461,7 +462,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 获取分类别名
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCategoryAlias() {
@@ -470,7 +471,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 设置分类别名
-	 * 
+	 *
 	 * @param categoryAlias
 	 */
 	public void setCategoryAlias(String categoryAlias) {
@@ -479,7 +480,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 获取分类信息排序号
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCategorySeq() {
@@ -488,24 +489,23 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 设置分类排序号
-	 * 
+	 *
 	 * @param categorySeq
 	 */
 	public void setCategorySeq(String categorySeq) {
-		try {
-			if (Integer.parseInt(categorySeq) < 10) {
-				this.categorySeq = "0" + Integer.parseInt(categorySeq);
-			} else {
-				this.categorySeq = categorySeq;
+		if(StringUtils.isBlank(categorySeq)){
+			this.categorySeq = "000";
+		}else{
+			try {
+				this.categorySeq = String.format("%0" + 3 + "d", Integer.parseInt(categorySeq));
+			} catch (NumberFormatException e) {
 			}
-		} catch (Exception e) {
-			this.categorySeq = "999";
 		}
 	}
 
 	/**
 	 * 获取分类说明信息
-	 * 
+	 *
 	 * @return
 	 */
 	public String getDescription() {
@@ -514,7 +514,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 设置分类说明信息
-	 * 
+	 *
 	 * @param description
 	 */
 	public void setDescription(String description) {
@@ -523,7 +523,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 获取分类图标
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCategoryIcon() {
@@ -532,7 +532,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 设置分类图标
-	 * 
+	 *
 	 * @param categoryIcon
 	 */
 	public void setCategoryIcon(String categoryIcon) {
@@ -541,7 +541,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 获取分类备注
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCategoryMemo() {
@@ -550,7 +550,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	/**
 	 * 设置分类备注
-	 * 
+	 *
 	 * @param categoryMemo
 	 */
 	public void setCategoryMemo(String categoryMemo) {
