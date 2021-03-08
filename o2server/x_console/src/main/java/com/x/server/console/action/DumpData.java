@@ -138,13 +138,14 @@ public class DumpData {
 			List<String> list = new ArrayList<>();
 			if (StringUtils.equals(Config.dumpRestoreData().getMode(), DumpRestoreData.TYPE_FULL)) {
 				list.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
-				return list;
-			}
-			for (String str : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
-				Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(str);
-				ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
-				if (Objects.equals(containerEntity.reference(), Reference.strong)) {
-					list.add(str);
+				//return list;
+			}else {
+				for (String str : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
+					Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(str);
+					ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
+					if (Objects.equals(containerEntity.reference(), Reference.strong)) {
+						list.add(str);
+					}
 				}
 			}
 			return ListTools.includesExcludesWildcard(list, Config.dumpRestoreData().getIncludes(),

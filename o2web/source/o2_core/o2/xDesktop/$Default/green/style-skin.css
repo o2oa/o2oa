@@ -80,6 +80,9 @@
 .icon_startMenu_search {
     background-image: url(../o2_core/o2/xDesktop/$Default/green/icons/icon_sousuo_click.png) !important;
 }
+.icon_startMenu_refresh {
+    background-image: url(../o2_core/o2/xDesktop/$Default/green/icons/refresh_menu.png) !important;
+}
 .icon_close {
     background-image: url(../o2_core/o2/xDesktop/$Default/green/icons/icon_off_round_grey.png) !important;
 }
@@ -128,6 +131,9 @@
 }
 .icon_refresh{
     background-image: url(../o2_core/o2/xDesktop/$Default/green/icons/icon_shuaxin.png) !important;
+}
+.icon_taskitem_down {
+    background-image: url(../o2_core/o2/xDesktop/$Default/blue/icons/icon_taskitem_down.png) !important;
 }
 .o2_process_AppExp_All_current {
     color: #60BF78 !important;

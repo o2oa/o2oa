@@ -53,6 +53,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static final Boolean DEFAULT_PROCESSINGSIGNALPERSISTENABLE = false;
 
+	public static final Integer DEFAULT_ASYNCHRONOUSTIMEOUT = 60;
+
 	public static ProcessPlatform defaultInstance() {
 		return new ProcessPlatform();
 	}
@@ -75,6 +77,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.deleteDraft = new DeleteDraft();
 		this.passExpired = new PassExpired();
 		this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
+		this.asynchronousTimeout = DEFAULT_ASYNCHRONOUSTIMEOUT;
 		this.attachmentConfig = new AttachmentConfig();
 	}
 
@@ -174,6 +177,15 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("流程附件上传限制大小或者类型.")
 	private AttachmentConfig attachmentConfig;
 
+	@FieldDescribe("异步超时.")
+	private Integer asynchronousTimeout;
+
+	public Integer getAsynchronousTimeout() {
+		if ((asynchronousTimeout == null) || (asynchronousTimeout < 1)) {
+			this.asynchronousTimeout = DEFAULT_ASYNCHRONOUSTIMEOUT;
+		}
+		return asynchronousTimeout;
+	}
 
 	public Boolean getProcessingSignalPersistEnable() {
 		if (processingSignalPersistEnable == null) {
@@ -451,7 +463,7 @@ public class ProcessPlatform extends ConfigObject {
 
 		public static final Boolean DEFAULT_ENABLE = false;
 
-		public static final Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 60;
+		public static final Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 10;
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;

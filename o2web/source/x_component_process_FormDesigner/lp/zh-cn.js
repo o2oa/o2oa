@@ -140,6 +140,12 @@ MWF.xApplication.process.FormDesigner.LP = {
             "delete_title": "删除校验内容确认",
             "delete_text": "您确定要删除此项校验码？"
         },
+
+    "datagrid" : {
+		"import" : "导入",
+       "export" : "导出"
+    },
+
     "selectIcon": "选择图标",
     "selectImage": "选择图片",
     "selectApplication" : "选择应用",
@@ -172,6 +178,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     "notValidJson" : "错误的json格式",
 
     "imageClipper" : "图片编辑",
+
+    "clearNoDomModuleTitle" : "清除未在HTML树中的组件配置",
+    "clearNoDomModuleContent" : "是否清除未在HTML树中的组件配置？清除后需要保存生效。",
 
     "filter": {
         "and": "并且",

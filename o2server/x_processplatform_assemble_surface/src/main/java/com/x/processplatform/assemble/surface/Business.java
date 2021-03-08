@@ -622,29 +622,13 @@ public class Business {
 			throws Exception {
 		T control = clz.newInstance();
 		Activity activity = this.getActivity(work);
-		List<Task> taskList = task().listWithWorkObject(work);
-		Task task = null;
-		for (int i = 0; i < taskList.size(); i++) {
-			Task o = taskList.get(i);
-			if (StringUtils.equals(o.getPerson(), effectivePerson.getDistinguishedName())) {
-				task = o;
-				break;
-			}
-		}
-		List<Read> readList = read().listWithWorkObject(work);
-		Read read = null;
-		for (int i = 0; i < readList.size(); i++) {
-			Read o = readList.get(i);
-			if (StringUtils.equals(o.getPerson(), effectivePerson.getDistinguishedName())) {
-				read = o;
-				break;
-			}
-		}
+		Long taskCount = task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
+		Long readCount = read().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
 		Application application = application().pick(work.getApplication());
 		Process process = process().pick(work.getProcess());
-		Long taskCompletedCount = taskCompleted().countWithPersonWithWork(effectivePerson.getDistinguishedName(), work);
-		Long readCompletedCount = readCompleted().countWithPersonWithWork(effectivePerson.getDistinguishedName(), work);
-		Long reviewCount = review().countWithPersonWithWork(effectivePerson.getDistinguishedName(), work);
+		Long taskCompletedCount = taskCompleted().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
+		Long readCompletedCount = readCompleted().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
+		Long reviewCount = review().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
 		/* 工作是否可以打开(管理员 或 有task,taskCompleted,read,readCompleted,review的人) */
 		control.setAllowVisit(false);
 		/* 工作是否可以流转(有task的人) */
@@ -662,7 +646,7 @@ public class Business {
 		/* 工作是否可删除(管理员 或者 此活动在流程设计中允许删除且当前待办人是文件的创建者) */
 		control.setAllowDelete(false);
 		/* 设置allowVisit */
-		if ((null != task) || (null != read) || (taskCompletedCount > 0) || (readCompletedCount > 0)
+		if ((taskCount > 0) || (readCount > 0) || (taskCompletedCount > 0) || (readCompletedCount > 0)
 				|| (reviewCount > 0)) {
 			control.setAllowVisit(true);
 		} else if (effectivePerson.isPerson(work.getCreatorPerson())) {
@@ -671,22 +655,22 @@ public class Business {
 			control.setAllowVisit(true);
 		}
 		/* 设置allowProcessing */
-		if (null != task) {
+		if (taskCount > 0) {
 			control.setAllowProcessing(true);
 		}
 		/* 设置allowReadProcessing */
-		if (null != read) {
+		if (readCount > 0) {
 			control.setAllowReadProcessing(true);
 		}
 		/* 设置 allowSave */
-		if (null != task) {
+		if (taskCount > 0) {
 			control.setAllowSave(true);
 		} else if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
 			control.setAllowSave(true);
 		}
 		/* 设置 allowReset */
 		if (null != activity && Objects.equals(activity.getActivityType(), ActivityType.manual)
-				&& BooleanUtils.isTrue(((Manual) activity).getAllowReset()) && null != task) {
+				&& BooleanUtils.isTrue(((Manual) activity).getAllowReset()) && taskCount > 0) {
 			control.setAllowReset(true);
 		}
 		/* 设置 allowRetract */
@@ -734,7 +718,7 @@ public class Business {
 			// effectivePerson.getDistinguishedName())) {
 			// control.setAllowDelete(true);
 			// }
-			if (null != task) {
+			if (taskCount > 0) {
 				control.setAllowDelete(true);
 			}
 		}
@@ -1033,21 +1017,21 @@ public class Business {
 		if (effectivePerson.isPerson(work.getCreatorPerson())) {
 			return true;
 		}
-		if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
-				effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, work.getJob()) == 0) {
-			if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
-					effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, work.getJob()) == 0) {
-				if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-						Task.job_FIELDNAME, work.getJob()) == 0) {
-					if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME,
-							effectivePerson.getDistinguishedName(), Read.job_FIELDNAME, work.getJob()) == 0) {
-						if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME,
-								effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, work.getJob()) == 0) {
-							Application application = application().pick(work.getApplication());
-							Process process = process().pick(work.getProcess());
-							if (!canManageApplicationOrProcess(effectivePerson, application, process)) {
-								return false;
-							}
+		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME,
+				effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, work.getJob()) == 0) {
+			if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
+					effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, work.getJob()) == 0) {
+				if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
+						effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, work.getJob()) == 0) {
+					if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+							Task.job_FIELDNAME, work.getJob()) == 0) {
+						if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME,
+								effectivePerson.getDistinguishedName(), Read.job_FIELDNAME, work.getJob()) == 0) {
+								Application application = application().pick(work.getApplication());
+								Process process = process().pick(work.getProcess());
+								if (!canManageApplicationOrProcess(effectivePerson, application, process)) {
+									return false;
+								}
 						}
 					}
 				}
@@ -1179,8 +1163,7 @@ public class Business {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-				Task.work_FIELDNAME, work.getId()) > 0) {
+		if (this.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob()) > 0) {
 			return true;
 		}
 		if (this.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess())) {

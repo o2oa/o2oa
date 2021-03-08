@@ -73,7 +73,6 @@
     background-size: 24px;
     border-radius: 20px;
     margin: auto;
-    margin-top: 10px;
     height: 40px;
     width: 40px;
 }
@@ -123,7 +122,8 @@
     height: 70px;
 }
 .layout_menu_setting_button{
-    height: 70px;
+    height: 55px;
+    padding-top: 15px;
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
@@ -296,7 +296,7 @@
     overflow: hidden;
     cursor: pointer;
     float: left;
-    padding: 0 10px;
+    padding: 0 10px 0 10px;
     margin-left: 10px;
 }
 .layout_content_taskbar_item_icon {
@@ -316,6 +316,15 @@
     background-repeat: no-repeat;
     background-size: 16px;
 }
+.layout_content_taskbar_item_action {
+    width: 8px;
+    height: 25px;
+    margin-right: 3px;
+    float: left;
+    background-position: center left;
+    background-repeat: no-repeat;
+}
+
 .layout_content_taskbar_item_text {
     height: 28px;
     float: left;
@@ -461,16 +470,25 @@
     text-align: center;
     cursor: pointer;
 }
+.layout_start_item_over{
+    width: 52px;
+    height: 52px;
+    opacity: 0.3;
+    position: absolute;
+    border-radius: 8px;
+    z-index: 10000;
+}
 .layout_start_item_iconArea {
     width: 40px;
     height: 40px;
     overflow: hidden;
     margin: auto;
 }
+
 .layout_start_item_icon {
     width: 40px;
     height: 40px;
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -516,7 +534,7 @@
 .layout_start_search {
     height: 28px;
     width: 28px;
-    margin-right: 20px;
+    /*margin-right: 20px;*/
     float: right;
     border-width: 1px;
     border-style: solid;
@@ -703,4 +721,137 @@
     top: -40px;
     opacity: 0;
     box-shadow: 3PX 3PX 10px #999999;
+}
+.layout_start_groupItem_menu {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-size: 22px 22px;
+    overflow: hidden;
+}
+.layout_start_groupItem_menuMask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+    top: 0;
+    left: 0;
+}
+.layout_start_groupItem_menu_title {
+    height: 60px;
+    padding: 8px 0 12px 0;
+    line-height: 40px;
+    font-size: 16px;
+    text-align: center;
+    overflow: hidden;
+}
+.layout_start_groupItem_menu_scroll {
+    overflow: hidden;
+}
+.layout_start_item_icon_group {
+    width: 32px;
+    height: 32px;
+    padding: 5px 3px 3px 5px;
+    border-radius: 10px;
+    background-size: 22px 22px;
+}
+.layout_start_groupItem_menu_content {
+    overflow: hidden;
+    padding-top: 10px;
+}
+.layout_start_item_icon_group_sub {
+    width:  14px;
+    height: 14px;
+    margin-right: 2px;
+    margin-bottom: 2px;
+    border-radius: 10px;
+    float: left;
+    background-repeat: no-repeat;
+    background-size: 10px 10px;
+    background-position: center;
+}
+.layout_start_item_icon_group_subIcon {
+    width:  14px;
+    height: 14px;
+    margin-right: 2px;
+    margin-bottom: 2px;
+    border-radius: 10px;
+    float: left;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.layout_start_item_sub {
+    margin-left: 12px;
+}
+.layout_start_groupItem_menu_title_edit {
+    border: 0;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+    text-align: center;
+    width: 90%;
+    margin: auto;
+    border-radius: 20px;
+}
+/*.layout_menu_scale_zoomout {*/
+/*    height: 20px;*/
+/*    line-height: 20px;*/
+/*    width: 16px;*/
+/*    text-align: center;*/
+/*    background: #ffffff;*/
+/*    margin-left: 5px;*/
+/*    float: left;*/
+/*}*/
+/*.layout_menu_scale_zoomin {*/
+/*    height: 20px;*/
+/*    line-height: 20px;*/
+/*    width: 16px;*/
+/*    text-align: center;*/
+/*    background: #ffffff;*/
+/*    margin-right: 5px;*/
+/*    float: right;*/
+/*}*/
+.layout_menu_scale_zoomValue {
+    height: 40px;
+    line-height: 40px;
+    width: 40px;
+    border-radius: 20px;
+    margin: auto;
+    text-align: center;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+}
+.layout_menu_scale_zoomSlider {
+    width: 110px;
+    height: 5px;
+    margin-left: 10px;
+    border-radius: 3px;
+    background: #ffffff;
+    position: relative;
+}
+.layout_menu_scale_zoomSliderKnob {
+    width: 12px;
+    height: 12px;
+    border-radius: 10px;
+    border: 3px solid #f1f1f1;
+    cursor: pointer;
+    position: absolute;
+    top: -6px;
+}
+.layout_menu_scale_slider {
+    width: 0;
+    height: 38px;
+    overflow: hidden;
+    padding-top: 32px;
+    border-top-right-radius: 35px;
+    border-bottom-right-radius: 35px;
+    position: absolute;
+    bottom: 0;
+    left: 80px;
+    z-index: 40000;
+    display: none;
 }

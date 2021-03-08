@@ -185,18 +185,32 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                         if (this.isNumber(value1) && this.isNumber(value2)) {
                             if (parseFloat(value1) !== parseFloat(value2)) {
                                 return parseFloat(value1) - parseFloat(value2);
+                            }else{
+                                if( this.json.sortTypeInCategory === "none" ){
+                                    return 0;
+                                }else{
+                                    return Date.parse(a.recordTime) - Date.parse(b.recordTime);
+                                }
                             }
                         } else if (!this.isNumber(value1) && !this.isNumber(value2)) {
-                            return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                            if( this.json.sortTypeInCategory === "none" ){
+                                return 0;
+                            }else{
+                                return Date.parse(a.recordTime) - Date.parse(b.recordTime);
+                            }
                         } else {
                             return this.isNumber(value1) ? -1 : 1;
                         }
                     }
-                    return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                    return Date.parse(a.recordTime) - Date.parse(b.recordTime);
                 }else if( a.properties.fromOpinionGroup || b.properties.fromOpinionGroup ){
                     return a.properties.fromOpinionGroup ? -1 : 1;
                 }else{
-                    return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                    if( this.json.sortTypeInCategory === "none" ){
+                        return 0;
+                    }else{
+                        return Date.parse(a.recordTime) - Date.parse(b.recordTime);
+                    }
                 }
             }.bind(this))
         }
@@ -792,9 +806,19 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                       if (this.isNumber(value1) && this.isNumber(value2)) {
                           if (parseFloat(value1) !== parseFloat(value2)) {
                               return parseFloat(value1) - parseFloat(value2);
-                          }
+                          }else{
+                                if( this.json.sortTypeInCategory === "none" ){
+                                    return 0;
+                                }else{
+                                    return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                                }
+                            }
                       } else if (!this.isNumber(value1) && !this.isNumber(value2)) {
-                          return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                          if( this.json.sortTypeInCategory === "none" ){
+                              return 0;
+                          }else{
+                              return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                          }
                       } else {
                           return this.isNumber(value1) ? -1 : 1;
                       }
@@ -803,7 +827,11 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
               }else if( a.fromOpinionGroup || b.fromOpinionGroup ){
                   return a.fromOpinionGroup ? -1 : 1;
               }else{
-                  return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                  if( this.json.sortTypeInCategory === "none" ){
+                      return 0;
+                  }else{
+                      return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                  }
               }
             }.bind(this))
         }

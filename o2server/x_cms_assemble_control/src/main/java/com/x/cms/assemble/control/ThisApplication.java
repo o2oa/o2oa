@@ -42,7 +42,7 @@ public class ThisApplication {
 	// 执行数据库中的批处理操作
 	public static final QueueBatchOperation queueBatchOperation = new QueueBatchOperation();
 	// Document发布时，向所有阅读者推送通知
-	public static final QueueSendDocumentNotify queueSendDocumentNotify = new QueueSendDocumentNotify();
+	public static QueueSendDocumentNotify queueSendDocumentNotify = new QueueSendDocumentNotify();
 	private static final ConcurrentHashMap<String, DataImportStatus> importStatus = new ConcurrentHashMap<>();
 
 	public static Context context() {
@@ -58,6 +58,7 @@ public class ThisApplication {
 		context().startQueue(queueDataRowImport);
 		context().startQueue(queueDocumentUpdate);
 		context().startQueue(queueDocumentViewCountUpdate);
+		queueSendDocumentNotify.initFixedThreadPool(3);
 		context().startQueue(queueSendDocumentNotify);
 
 		// 每天凌晨2点执行一次

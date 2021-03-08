@@ -542,6 +542,18 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return new ArrayList<T>(query.getResultList());
 	}
 
+	public <T extends JpaObject> List<T> listEqualAndLessThanOrEqualTo(Class<T> cls, String attribute, Object value,
+			String otherAttribute, Object otherValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		Predicate p = cb.equal(root.get(attribute), value);
+		p = cb.and(p, cb.lessThanOrEqualTo(root.get(otherAttribute), (Comparable) otherValue));
+		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		return new ArrayList<>(os);
+	}
+
 	public <T extends JpaObject, W extends Object> List<T> listBetweenAndEqual(Class<T> cls, String attribute,
 			Object start, Object end, String equalAttribute, Object equalValue) throws Exception {
 		EntityManager em = this.get(cls);
@@ -596,6 +608,16 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		List<T> os = em.createQuery(cq).getResultList();
 		List<T> list = new ArrayList<>(os);
 		return list;
+	}
+
+	public <T extends JpaObject> Optional<T> first(Class<T> cls) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root);
+		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
+		return os.isEmpty() ? Optional.empty() : Optional.of(os.get(0));
 	}
 
 	public <T extends JpaObject> T firstEqual(Class<T> cls, String attribute, Object value) throws Exception {
@@ -1681,6 +1703,22 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		p = cb.and(p, cb.equal(root.get(twoEqualAttribute), twoEqualValue));
 		if (StringUtils.isNotEmpty(sequence)) {
 			p = cb.and(p, cb.greaterThan(root.get(JpaObject.sequence_FIELDNAME), sequence));
+		}
+		cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject.sequence_FIELDNAME)));
+		List<T> os = em.createQuery(cq).setMaxResults((count != null && count > 0) ? count : 100).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
+	public <T extends JpaObject> List<T> listSequenceAfter(Class<T> clz, Integer count, String sequence)
+			throws Exception {
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(clz);
+		Root<T> root = cq.from(clz);
+		Predicate p = cb.conjunction();
+		if (StringUtils.isNotEmpty(sequence)) {
+			p = cb.greaterThan(root.get(JpaObject.sequence_FIELDNAME), sequence);
 		}
 		cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject.sequence_FIELDNAME)));
 		List<T> os = em.createQuery(cq).setMaxResults((count != null && count > 0) ? count : 100).getResultList();

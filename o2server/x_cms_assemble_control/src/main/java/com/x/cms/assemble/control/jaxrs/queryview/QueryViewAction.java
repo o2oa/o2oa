@@ -39,7 +39,7 @@ public class QueryViewAction extends BaseAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "列示指定栏目中所有当前用户可见的数据视图信息.", action = ActionList.class)
 	@GET
 	@Path("list/application/flag/{applicationFlag}")
@@ -62,7 +62,7 @@ public class QueryViewAction extends BaseAction {
 	@Path("flag/{flag}/application/flag/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void flag( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void flag( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据视图信息标识") @PathParam("flag") String flag ) {
 		ActionResult<ActionFlag.Wo> result = new ActionResult<>();
 		try {
@@ -74,20 +74,44 @@ public class QueryViewAction extends BaseAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "执行指定栏目中指定数据视图查询.", action = ActionExecute.class)
 	@PUT
 	@Path("flag/{flag}/application/flag/{appId}/execute")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void execute( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("数据视图信息标识") @PathParam("flag") String flag, 
-			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId, 
+	public void execute( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("数据视图信息标识") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId,
 			JsonElement jsonElement) {
 		ActionResult<Query> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
-		
+
+		if( check ){
+			try {
+				result = new ActionExecute().execute( request, effectivePerson, flag, appId, jsonElement);
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "执行指定栏目中指定数据视图查询.", action = ActionExecute.class)
+	@POST
+	@Path("flag/{flag}/application/flag/{appId}/execute/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void executeMockPutToPost( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						 @JaxrsParameterDescribe("数据视图信息标识") @PathParam("flag") String flag,
+						 @JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId,
+						 JsonElement jsonElement) {
+		ActionResult<Query> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+
 		if( check ){
 			try {
 				result = new ActionExecute().execute( request, effectivePerson, flag, appId, jsonElement);

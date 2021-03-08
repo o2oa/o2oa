@@ -10,11 +10,32 @@ o2.addReady(function () {
     o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], { "sequence": true }, function () {
         //MWF.defaultPath = "../x_desktop"+MWF.defaultPath;
 
+        // 是否ip
+        var _isIp = function(ip) {
+            var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+            return reg.test(ip);
+        };
         //修改支持x-token
         var uri = new URI(window.location.href);
         var options = uri.get("data");
         if (options["x-token"]) {
-            Cookie.write("x-token", options["x-token"]);
+            // 删除
+            Cookie.dispose("x-token");
+            // 写入
+            var host = window.location.host; // 域名 
+            var domain = null;
+            if (_isIp(host)) {
+                domain = host;
+            }else {
+                if (host.indexOf(".") > 0) {
+                    domain = host.substring(host.indexOf(".")); // 上级域名 如 .o2oa.net
+                }
+            }
+            if (domain) {
+                Cookie.write("x-token", options["x-token"], {domain: domain, path:"/"});
+            }else {
+                Cookie.write("x-token", options["x-token"]);
+            }
         }
 
         MWF.loadLP("zh-cn");

@@ -91,6 +91,8 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			text = StringTools.utf8SubString(text, length_255B);
 			this.setManualTaskIdentityText(text);
 		}
+		// 强制进行properties对象写入
+		//this.setProperties(this.getProperties());
 	}
 
 	@PostLoad
@@ -168,6 +170,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	/* 修改过的Set Get 方法 */
 
 	@Transient
+	@FieldDescribe("要拆分的值")
 	private List<String> splitValueList;
 
 	public static final String job_FIELDNAME = "job";

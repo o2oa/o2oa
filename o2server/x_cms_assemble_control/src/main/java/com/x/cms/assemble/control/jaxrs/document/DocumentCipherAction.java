@@ -24,15 +24,37 @@ import java.util.List;
 @Path("document/cipher")
 @JaxrsDescribe("信息发布信息文档管理(Cipher)")
 public class DocumentCipherAction extends StandardJaxrsAction{
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( DocumentCipherAction.class );
-	
+
 	@JaxrsMethodDescribe(value = "直接发布文档信息.", action = ActionPersistPublishByWorkFlow.class)
 	@PUT
 	@Path("publish/content")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void publishContentByWorkFlow( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionPersistPublishByWorkFlow.Wo> result = new ActionResult<>();
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = new ActionPersistPublishByWorkFlow().execute( request, jsonElement, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "直接发布文档信息.", action = ActionPersistPublishByWorkFlow.class)
+	@POST
+	@Path("publish/content/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void publishContentByWorkFlowMockPutToPost( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionPersistPublishByWorkFlow.Wo> result = new ActionResult<>();
 		Boolean check = true;
@@ -73,6 +95,30 @@ public class DocumentCipherAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "分页查询符合过滤条件的已发布的信息内容(管理员和Ciper使用).", action = ActionQueryListWithFilterPagingAdmin.class)
+	@POST
+	@Path("filter/list/{page}/size/{size}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_listWithFilterPagingMockPutToPost( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+											@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+											@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<List<ActionQueryListWithFilterPagingAdmin.Wo>> result = new ActionResult<>();
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = new ActionQueryListWithFilterPagingAdmin().execute( request, page, size, jsonElement, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "查询某用户是否有阅读文档的权限.", action = ActionQueryPermissionReadDocument.class)
 	@GET
 	@Path("{id}/permission/read/person/{person}")
@@ -94,6 +140,26 @@ public class DocumentCipherAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "添加文档的阅读记录.", action = ActionPersistViewRecord.class)
+	@POST
+	@Path("{id}/persist/view/record")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void persist_documentViewRecord( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+											@JaxrsParameterDescribe("文档ID") @PathParam("id") String id, JsonElement jsonElement ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionPersistViewRecord.Wo> result = new ActionResult<>();
+
+		try {
+			result = new ActionPersistViewRecord().execute( request, id, jsonElement, effectivePerson );
+		} catch (Exception e) {
+			result.error( e );
+			logger.error( e, effectivePerson, request, null);
+		}
+
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

@@ -201,7 +201,7 @@ public class ActionPersistPublishContent extends BaseAction {
 						wi.setCreatorIdentity( userManagerService.getMajorIdentityWithPerson( wi.getCreatorPerson() ) );
 					}
 				}
-				
+
 				if ( !StringUtils.equals(  "cipher", wi.getCreatorIdentity() ) && !StringUtils.equals(  "xadmin", wi.getCreatorIdentity() )) {
 					//说明是实际的用户，并不使用cipher和xadmin代替
 					if (StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
@@ -227,12 +227,11 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		if (check) {
 			try {
-				JsonElement docData = XGsonBuilder.instance().toJsonTree(wi.getDocData(), Map.class);
 				wi.setDocStatus("published");
 				if( wi.getPublishTime() == null ) { wi.setPublishTime(new Date()); }
 				document =  wi.copier.copy(wi);
 				document.setId( wi.getId() );
-				document = documentPersistService.save( document, docData );
+				document = documentPersistService.save( document, wi.getDocData() );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");
@@ -283,8 +282,44 @@ public class ActionPersistPublishContent extends BaseAction {
 			}
 		}
 
+		//从CMS其他文档中复制所有的附件到CMS
 		if (check) {
-			try {				
+			if ( wi.getCms_attachmentIds() != null && wi.getCms_attachmentIds().length > 0 ) {
+				FileInfo fileInfo = null;
+				FileInfo copyFileInfo = null;
+				StorageMapping mapping_attachment = null;
+				StorageMapping mapping_fileInfo = null;
+				byte[] attachment_content = null;
+				for (String attachmentId : wi.getCms_attachmentIds()) {
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						document = emc.find(document.getId(), Document.class, ExceptionWhen.not_found);
+						copyFileInfo = emc.find(attachmentId, FileInfo.class, ExceptionWhen.not_found);
+						if (copyFileInfo != null) {
+							emc.beginTransaction(FileInfo.class);
+							emc.beginTransaction(Document.class);
+
+							mapping_attachment = ThisApplication.context().storageMappings().get(FileInfo.class, copyFileInfo.getStorage());
+							attachment_content = copyFileInfo.readContent(mapping_attachment);
+
+							mapping_fileInfo = ThisApplication.context().storageMappings().random(FileInfo.class);
+							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document, mapping_fileInfo, copyFileInfo.getName(), copyFileInfo.getSite());
+							fileInfo.saveContent(mapping_fileInfo, attachment_content, copyFileInfo.getName());
+							fileInfo.setName(copyFileInfo.getName());
+							emc.check(document, CheckPersistType.all);
+							emc.persist(fileInfo, CheckPersistType.all);
+
+							emc.commit();
+						}
+					} catch (Throwable th) {
+						th.printStackTrace();
+						result.error(th);
+					}
+				}
+			}
+		}
+
+		if (check) {
+			try {
 				Wo wo = new Wo();
 				wo.setId( document.getId() );
 				result.setData( wo );
@@ -397,7 +432,7 @@ public class ActionPersistPublishContent extends BaseAction {
 				if( categoryInfo.getSendNotify() == null ) {
 					if( StringUtils.equals("信息", categoryInfo.getDocumentType()) ) {
 						notify = true;
-					}						
+					}
 				}else {
 					if( categoryInfo.getSendNotify() ) {
 						notify = true;
@@ -405,7 +440,7 @@ public class ActionPersistPublishContent extends BaseAction {
 				}
 				if( notify ){
 					logger.debug("try to add notify object to queue for document:" + document.getTitle() );
-					ThisApplication.queueSendDocumentNotify.send( document );
+					ThisApplication.queueSendDocumentNotify.send( document.getId() );
 				}
 			} catch (Exception e) {
 				check = false;
@@ -454,40 +489,43 @@ public class ActionPersistPublishContent extends BaseAction {
 	}
 
 	public static class Wi {
-		
+
 		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, null);
 
 		private String id = null;
 
 		@FieldDescribe( "文档操作者身份" )
 		private String identity = null;
-		
+
 //		@FieldDescribe( "数据的路径列表." )
 //		private String[] dataPaths = null;
-		
+
 		@FieldDescribe( "启动流程的JobId." )
 		private String wf_jobId = null;
-		
+
 		@FieldDescribe( "启动流程的WorkId." )
 		private String wf_workId = null;
-		
+
 		@FieldDescribe( "启动流程的附件列表." )
-		private String[] wf_attachmentIds = null;	
-		
+		private String[] wf_attachmentIds = null;
+
+		@FieldDescribe( "内容管理其他文档的附件列表，非必填" )
+		private String[] cms_attachmentIds = null;
+
 		@FieldDescribe( "文档数据JSON对象." )
-		private Map<?, ?> docData = null;
-		
+		private JsonElement docData = null;
+
 		@FieldDescribe( "文档读者，Json数组，权限对象需要包含四个属性:<br/>permission权限类别：读者|阅读|作者|管理,  <br/>permissionObjectType使用者类别：所有人|组织|人员|群组, <br/>permissionObjectCode使用者编码：所有人|组织编码|人员UID|群组编码, <br/>permissionObjectName使用者名称：所有人|组织名称|人员名称|群组名称" )
 		private List<PermissionInfo> readerList = null;
-		
+
 		@FieldDescribe( "文档编辑者, ，Json数组，权限对象需要包含四个属性:<br/>permission权限类别：读者|阅读|作者|管理,  <br/>permissionObjectType使用者类别：所有人|组织|人员|群组, <br/>permissionObjectCode使用者编码：所有人|组织编码|人员UID|群组编码, <br/>permissionObjectName使用者名称：所有人|组织名称|人员名称|群组名称" )
 		private List<PermissionInfo> authorList = null;
-		
+
 		private List<String> cloudPictures = null;
-		
+
 		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置）， True|False." )
 		private Boolean skipPermission  = false;
-		
+
 		@FieldDescribe("文档摘要，70字以内")
 		private String summary;
 
@@ -538,7 +576,7 @@ public class ActionPersistPublishContent extends BaseAction {
 		private Long commendCount = 0L;
 
 		private Long commentCount = 0L;
-		
+
 		private Date publishTime;
 
 		private Date modifyTime;
@@ -974,22 +1012,11 @@ public class ActionPersistPublishContent extends BaseAction {
 			this.readerList = readerList;
 		}
 
-//		public String[] getDataPaths() {
-//			if( dataPaths != null && dataPaths.length == 1 && dataPaths[0].equals("null")){
-//				return null;
-//			}
-//			return dataPaths;
-//		}
-//
-//		public void setDataPaths(String[] dataPaths) {
-//			this.dataPaths = dataPaths;
-//		}
-
-		public Map<?, ?> getDocData() {
+		public JsonElement getDocData() {
 			return docData;
 		}
 
-		public void setDocData(Map<?, ?> docData) {
+		public void setDocData(JsonElement docData) {
 			this.docData = docData;
 		}
 
@@ -1033,8 +1060,15 @@ public class ActionPersistPublishContent extends BaseAction {
 			this.authorList = authorList;
 		}
 
+		public String[] getCms_attachmentIds() {
+			return cms_attachmentIds;
+		}
+
+		public void setCms_attachmentIds(String[] cms_attachmentIds) {
+			this.cms_attachmentIds = cms_attachmentIds;
+		}
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}

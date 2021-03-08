@@ -506,6 +506,101 @@ function build_concat_xform(){
         .pipe(gulp.dest(dest))
 }
 
+function build_concat_cms_xform(){
+    let processPath = "x_component_process_Xform";
+    let path = "x_component_cms_Xform";
+    var src = [
+        'o2web/source/o2_core/o2/widget/AttachmentController.js',
+        // 'source/o2_core/o2/xScript/CMSEnvironment.js',
+        'o2web/source/o2_core/o2/xScript/CMSMacro.js',
+        'o2web/source/o2_core/o2/widget/Tab.js',
+        'o2web/source/o2_core/o2/widget/O2Identity.js',
+        'o2web/source/' + processPath + '/Form.js',
+        'o2web/source/' + processPath + '/$Module.js',
+        'o2web/source/' + processPath + '/$Input.js',
+        'o2web/source/' + processPath + '/Div.js',
+        //'source/' + processPath + '/Combox.js',
+        'o2web/source/' + processPath + '/DatagridMobile.js',
+        'o2web/source/' + processPath + '/DatagridPC.js',
+        'o2web/source/' + processPath + '/Textfield.js',
+        //'source/' + processPath + '/Personfield.js',
+        'o2web/source/' + processPath + '/Button.js',
+        //'source/' + processPath + '/ViewSelector.js',
+        'o2web/source/' + processPath + '/Org.js',
+        // 'source/' + processPath + '/*.js',
+        'o2web/source/' + processPath + '/Actionbar.js',
+        //'source/' + processPath + '/Address.js',
+        'o2web/source/' + processPath + '/Attachment.js',
+        'o2web/source/' + processPath + '/Calendar.js',
+        'o2web/source/' + processPath + '/Checkbox.js',
+        'o2web/source/' + processPath + '/Datagrid.js',
+        'o2web/source/' + processPath + '/Htmleditor.js',
+        //'source/' + processPath + '/Iframe.js',
+        'o2web/source/' + processPath + '/Label.js',
+        'o2web/source/' + processPath + '/Number.js',
+        'o2web/source/' + processPath + '/Common.js',
+        'o2web/source/' + processPath + '/Image.js',
+        'o2web/source/' + processPath + '/ImageClipper.js',
+        'o2web/source/' + processPath + '/Html.js',
+        'o2web/source/' + processPath + '/Radio.js',
+        'o2web/source/' + processPath + '/Select.js',
+        //'source/' + processPath + '/Stat.js',
+        //'source/' + processPath + '/Statement.js',
+        //'source/' + processPath + '/StatementSelector.js',
+        //'source/' + processPath + '/Subform.js',
+        'o2web/source/' + processPath + '/Tab.js',
+        'o2web/source/' + processPath + '/Table.js',
+        'o2web/source/' + processPath + '/Textarea.js',
+        //'source/' + processPath + '/Tree.js',
+        //'source/' + processPath + '/View.js',
+        // 'source/x_component_process_Work/Processor.js',
+        // '!source/' + processPath + '/Office.js'
+
+
+        'o2web/source/o2_core/o2/widget/SimpleToolbar.js',
+        'o2web/source/' + path + '/ModuleImplements.js',
+        'o2web/source/' + path + '/Package.js',
+        'o2web/source/' + path + '/Form.js',
+        //'source/' + path + '/widget/Comment.js',
+        'o2web/source/' + path + '/widget/Log.js',
+        'o2web/source/' + path + '/Org.js',
+        'o2web/source/' + path + '/Author.js',
+        'o2web/source/' + path + '/Reader.js',
+        'o2web/source/' + path + '/Textfield.js',
+        'o2web/source/' + path + '/Actionbar.js',
+        'o2web/source/' + path + '/Attachment.js',
+        'o2web/source/' + path + '/Button.js',
+        'o2web/source/' + path + '/Calendar.js',
+        'o2web/source/' + path + '/Checkbox.js',
+        'o2web/source/' + path + '/Datagrid.js',
+        'o2web/source/' + path + '/Htmleditor.js',
+        'o2web/source/' + path + '/ImageClipper.js',
+        'o2web/source/' + path + '/Label.js',
+        'o2web/source/' + path + '/Number.js',
+        'o2web/source/' + path + '/Radio.js',
+        'o2web/source/' + path + '/Select.js',
+        'o2web/source/' + path + '/Tab.js',
+        'o2web/source/' + path + '/Table.js',
+        'o2web/source/' + path + '/Textarea.js'
+        //'source/' + path + '/Personfield.js',
+        //'source/' + path + '/Readerfield.js',
+        //'source/' + path + '/Authorfield.js',
+        //'source/' + path + '/Orgfield.js',
+        // 'source/' + path + '/*.js',
+        // '!source/' + path + '/Office.js'
+    ];
+    var dest = 'target/o2server/servers/webServer/'+path+'/';
+    return gulp.src(src)
+        .pipe(sourceMap.init())
+        .pipe(concat('$all.js'))
+        .pipe(gulp.dest(dest))
+        .pipe(concat('$all.min.js'))
+        .pipe(uglify())
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest))
+}
+
 function build_bundle(){
     let path = "o2_core";
     var src = [
@@ -790,14 +885,109 @@ function build_concat_baseportal_body() {
         .pipe(gulp.dest(dest));
 }
 
+
+function build_concat_basedocument_style(){
+    return gulp.src([
+        "o2web/source/x_component_cms_Document/$Main/default/css.wcss",
+        "o2web/source/x_component_cms_Xform/$Form/default/css.wcss",
+        "o2web/source/o2_core/o2/widget/$AttachmentController/default/css.wcss"
+    ])
+        .pipe(concat_Style())
+        .pipe(concat('js/base_document_style_temp.js'))
+        .pipe(gulp.dest('o2web/source/x_desktop/'));
+}
+
+function build_concat_basedocument_action(){
+    return gulp.src([
+        "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
+        "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.json",
+        "o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.json",
+        "o2web/source/o2_core/o2/xAction/services/x_program_center.json",
+        "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.json"
+    ])
+        .pipe(concat_Actions())
+        .pipe(concat('js/base_document_actions_temp.js'))
+        .pipe(gulp.dest('o2web/source/x_desktop/'));
+}
+
+function build_concat_basedocument_clean(cb) {
+    var dest = [
+        'o2web/source/x_desktop/js/base_document_actions_temp.js',
+        'o2web/source/x_desktop/js/base_document_style_temp.js'
+    ];
+    return del(dest, cb);
+}
+
+function build_concat_basedocument_body() {
+    var src = [
+        'o2web/source/x_desktop/js/base_concat_head.js',
+        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
+
+        'o2web/source/x_desktop/js/base_document_style_temp.js',
+
+        'o2web/source/o2_core/o2/widget/Common.js',
+        'o2web/source/o2_core/o2/widget/Dialog.js',
+        'o2web/source/o2_core/o2/widget/UUID.js',
+        'o2web/source/o2_core/o2/widget/Menu.js',
+        'o2web/source/o2_core/o2/widget/Mask.js',
+        'o2web/source/o2_core/o2/xDesktop/Common.js',
+        'o2web/source/o2_core/o2/xDesktop/Actions/RestActions.js',
+        'o2web/source/o2_core/o2/xAction/RestActions.js',
+        'o2web/source/o2_core/o2/xDesktop/Access.js',
+        'o2web/source/o2_core/o2/xDesktop/Dialog.js',
+        'o2web/source/o2_core/o2/xDesktop/Menu.js',
+        'o2web/source/o2_core/o2/xDesktop/UserData.js',
+        'o2web/source/x_component_Template/MPopupForm.js',
+        'o2web/source/o2_core/o2/xDesktop/Authentication.js',
+        'o2web/source/o2_core/o2/xDesktop/Window.js',
+
+        'o2web/source/x_component_Common/Main.js',
+
+        'o2web/source/x_component_cms_Document/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
+        'o2web/source/x_component_cms_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
+
+        'o2web/source/x_component_cms_Document/Main.js',
+
+        'o2web/source/x_component_Selector/package.js',
+
+        'o2web/source/o2_core/o2/xScript/Actions/UnitActions.js',
+        'o2web/source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
+        'o2web/source/o2_core/o2/xScript/CMSEnvironment.js',
+
+        'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
+        'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
+        'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
+        'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_personal.js',
+
+        'o2web/source/x_desktop/js/base_document_actions_temp.js',
+
+        'o2web/source/x_desktop/js/base.js',
+        'o2web/source/x_desktop/js/base_loader.js'
+    ];
+    var dest = 'target/o2server/servers/webServer/x_desktop/js/';
+    return gulp.src(src)
+        .pipe(sourceMap.init())
+        .pipe(concat('base_document.js'))
+        .pipe(gulp.dest(dest))
+        .pipe(concat('base_document.min.js'))
+        .pipe(uglify())
+        //.pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest));
+}
+
 exports.build_concat = gulp.parallel(
     build_concat_o2,
     build_concat_base,
     build_concat_desktop,
     build_concat_xform,
+    build_concat_cms_xform,
     build_bundle,
     gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
-    gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean)
+    gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean),
+    gulp.series(build_concat_basedocument_style, build_concat_basedocument_action, build_concat_basedocument_body,build_concat_basedocument_clean)
 );
 
 function getGitV(){
@@ -953,8 +1143,10 @@ exports.build_web = gulp.series(
         build_concat_base,
         build_concat_desktop,
         build_concat_xform,
+        build_concat_cms_xform,
         gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
         gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean),
+        gulp.series(build_concat_basedocument_style, build_concat_basedocument_action, build_concat_basedocument_body,build_concat_basedocument_clean),
         build_bundle
     ),
     build_web_v_html,

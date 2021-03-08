@@ -10,12 +10,21 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQSslConnectionFactory;
+
 import com.google.gson.Gson;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.MQActive;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.core.entity.Message;
+
+import java.io.FileInputStream;
+import java.security.KeyStore;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 public class ActiveMQ implements MQInterface {
 	
@@ -28,16 +37,37 @@ public class ActiveMQ implements MQInterface {
 		try {
 			    MQActive configMQ = Config.mq().getActiveMQ();
 			    logger.info("MqActive initialize.....");
-			    
-			    String url=configMQ.getUrl();
 			    String queueName=configMQ.getQueueName();
-	
-				ConnectionFactory factory=new ActiveMQConnectionFactory(url);
-			    this.connection= factory.createConnection();
-				this.connection.start();
-				this.session= this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-				Destination destination=session.createQueue(queueName);
-				this.producer = session.createProducer(destination);
+			    String url=configMQ.getUrl();
+			    url = url.trim();
+			    
+			    String protocol = url.substring(0, 3);
+			   if(protocol.equalsIgnoreCase("tcp")) {
+					ConnectionFactory factory=new ActiveMQConnectionFactory(url);
+				    this.connection= factory.createConnection();
+					this.connection.start();
+					
+					this.session= this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+					Destination destination=session.createQueue(queueName);
+					this.producer = session.createProducer(destination);
+					
+			   }else {
+				    String keyStore = configMQ.getKeyStore();
+				    String keyStorePassword = configMQ.getKeyStorePassword();
+				    String trustStore = configMQ.getTrustStore();
+				    
+			        ActiveMQSslConnectionFactory sslConnectionFactory = new ActiveMQSslConnectionFactory();
+			        sslConnectionFactory.setBrokerURL(url);
+			        sslConnectionFactory.setKeyAndTrustManagers(this.loadKeyManager(keyStore, keyStorePassword), this.loadTrustManager(trustStore),
+			                new java.security.SecureRandom());
+			        this.connection = sslConnectionFactory.createConnection();
+			        this.connection.start();
+			        
+			        this.session =  this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			        Destination destination = session.createQueue(queueName);
+			        this.producer = session.createProducer(destination);
+			   }
+			   
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e);
@@ -57,12 +87,12 @@ public class ActiveMQ implements MQInterface {
 	 
 	 public static void main(String[] args) {
 		   ActiveMQ MQClient = getInstance();
-		   //System.out.println(MQClient.getTopic());
 		   Message msg = new Message();
 		   msg.setBody("body");
 		   msg.setConsumed(false);
 		   msg.setCreateTime(new Date());
 		   msg.setPerson("person");
+		   MQClient.sendMessage(msg);
 	 }
 
 	@Override
@@ -83,13 +113,53 @@ public class ActiveMQ implements MQInterface {
 	}
 
 	public void destroy() {
-		 System.out.println("MqActive destroy.....");
-		  try {
+		try {
+			logger.info("MqActive destroy.....");
 			this.connection.close();
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			 e.printStackTrace();
 			 logger.error(e);
 		}
-	   }
+	}
+	
+	
+	  /**
+        * 加载证书文件
+     * @param trustStore
+     * @return
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.KeyStoreException
+     * @throws java.io.IOException
+     * @throws java.security.GeneralSecurityException
+     */
+    public static TrustManager[] loadTrustManager(String trustStore) throws java.security.NoSuchAlgorithmException, java.security.KeyStoreException,
+               java.io.IOException, java.security.GeneralSecurityException {
+          KeyStore ks = KeyStore. getInstance("JKS");
+          ks.load( new FileInputStream(trustStore), null);
+          TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory. getDefaultAlgorithm());
+          tmf.init(ks);
+          return tmf.getTrustManagers();
+    }
+
+    /**
+         * 加载密钥文件
+     * @param keyStore
+     * @param keyStorePassword
+     * @return
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.KeyStoreException
+     * @throws java.security.GeneralSecurityException
+     * @throws java.security.cert.CertificateException
+     * @throws java.io.IOException
+     * @throws java.security.UnrecoverableKeyException
+     */
+    public static KeyManager[] loadKeyManager(String keyStore, String keyStorePassword) throws java.security.NoSuchAlgorithmException,
+               java.security.KeyStoreException, java.security.GeneralSecurityException, java.security.cert.CertificateException, java.io.IOException,
+               java.security.UnrecoverableKeyException {
+          KeyStore ks = KeyStore. getInstance("JKS");
+          ks.load( new FileInputStream(keyStore), keyStorePassword.toCharArray());
+          KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory. getDefaultAlgorithm());
+          kmf.init(ks, keyStorePassword.toCharArray());
+          return kmf.getKeyManagers();
+    }
 }

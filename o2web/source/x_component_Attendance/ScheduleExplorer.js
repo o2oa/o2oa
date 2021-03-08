@@ -85,7 +85,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
     Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
     options : {
         "width": 600,
-        "height": 500,
+        "height": 600,
         "hasTop" : true,
         "hasBottom" : true,
         "title" : "",
@@ -125,7 +125,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
 
         this.formTableArea.set("html",html);
         MWF.xDesktop.requireApp("Template", "MForm", function(){
-
+            debugger
             var ob = Object;
             this.form = new MForm( this.formTableArea, this.data, {
                 onPostLoad: function(){
@@ -207,6 +207,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
     },
     _ok: function( data, callback ){
         //checkDate
+        debugger
         var dateList = [];
         var signProxy = data.signProxy;
         if(signProxy!=1){

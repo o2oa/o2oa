@@ -449,7 +449,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					this.changeViewToDay();
 					break;
 				case "month" :
-					this.showMonth();
+					//this.showMonth();
+					this.changeViewToMonth();
 					break;
 				case "year" :
 					this.showYear();
@@ -884,7 +885,6 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	_setTimeDate: function(node, h, m, s){
-		;
 		if( !this.options.secondEnable ){
 			var div = this.contentTimeTable.getElement(".MWF_calendar_time_s");
 			if( div )div.hide();
@@ -1163,6 +1163,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 						calendar._selectDate(this.retrieve("dateValue"), this);
 						break;
 					case "month" :
+						debugger;
 						calendar.changeViewToDay(this.retrieve("year"), this.retrieve("month"));
 						break;
 					case "year" :

@@ -4311,6 +4311,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             window.webkit.messageHandlers.closeWork.postMessage("");
         } else if (window.wx && window.__wxjs_environment === 'miniprogram') { //微信小程序 关闭页面
             wx.miniProgram.navigateBack({ delta: 1 });
+        } else if (uni && uni.navigateBack) { // uniapp 关闭页面
+            uni.navigateBack();
         } else if (this.json.afterProcessAction === "redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code) {
             var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
             (new URI(url)).go();
@@ -4422,6 +4424,14 @@ var PortalPage="";
  */
 /**
  * @method PortalPage#uploadedAttachment
+ * @ignore
+ */
+/**
+ * @method PortalPage#pauseTask
+ * @ignore
+ */
+/**
+ * @method PortalPage#resumeTask
  * @ignore
  */
 

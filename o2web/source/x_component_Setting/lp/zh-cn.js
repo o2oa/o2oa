@@ -219,7 +219,7 @@ MWF.xApplication.Setting.LP = {
     "service_ctl":"命令名称",
     "service_node":"服务器节点",
     "service_allNode":"全部节点",
-    "service_success":"部署成功,app应用会自动重启，请稍候操作，大概一分钟。。",
+    "service_success":"部署成功,需要重启服务后生效",
 
     "on": "开",
     "off": "关",

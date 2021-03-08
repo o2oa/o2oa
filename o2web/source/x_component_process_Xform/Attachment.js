@@ -1097,7 +1097,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @event MWF.xApplication.process.Xform.Attachment#open
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open"]
+        "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open", "queryLoad "]
     },
 
     initialize: function (node, json, form, options) {
@@ -1135,7 +1135,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
             "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
             "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
-            "readonly": (this.json.readonly === "y" || this.json.readonly === "true"),
+            "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly ),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
@@ -1710,7 +1710,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
      */
     setData: function(data){
         this.attachmentController.clear();
-        data.each(function (att) {
+        ( data || [] ).each(function (att) {
             var attachment = this.form.businessData.attachmentList.find(function(a){
                 return a.id==att.id;
             });
