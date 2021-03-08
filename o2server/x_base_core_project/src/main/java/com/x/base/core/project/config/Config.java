@@ -65,6 +65,7 @@ public class Config {
 	public static final String PATH_CONFIG_WELINK = "config/weLink.json";
 	public static final String PATH_CONFIG_ZHENGWUDINGDING = "config/zhengwuDingding.json";
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
+	public static final String PATH_CONFIG_MPWEIXIN = "config/mpweixin.json";
 	public static final String PATH_CONFIG_MQ = "config/mq.json";
 	public static final String PATH_CONFIG_LOGLEVEL = "config/logLevel.json";
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
@@ -969,6 +970,19 @@ public class Config {
 			instance().weLink = obj;
 		}
 		return instance().weLink;
+	}
+
+	private MPweixin mPweixin;
+
+	public static synchronized MPweixin mPweixin() throws Exception {
+		if (null == instance().mPweixin) {
+			MPweixin obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN, MPweixin.class);
+			if (null == obj) {
+				obj = MPweixin.defaultInstance();
+			}
+			instance().mPweixin = obj;
+		}
+		return instance().mPweixin;
 	}
 
 	private Qiyeweixin qiyeweixin;
