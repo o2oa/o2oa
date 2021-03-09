@@ -25,16 +25,15 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.calendar.assemble.control.ThisApplication;
 
 @Path("event")
 @JaxrsDescribe("日历事件信息管理服务")
 public class Calendar_EventAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
+	// private StandardJaxrsActionProxy proxy = new
+	// StandardJaxrsActionProxy(ThisApplication.context());
 	private static Logger logger = LoggerFactory.getLogger(Calendar_EventAction.class);
 
 	@JaxrsMethodDescribe(value = "根据ID获取日历事件信息", action = ActionGet.class)
@@ -50,7 +49,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionGet) proxy.getProxy(ActionGet.class)).execute(request, effectivePerson, id);
+				result = new ActionGet().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "根据ID获取日历事件信息时发生异常！");
@@ -74,8 +73,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionGetRFCContent) proxy.getProxy(ActionGetRFCContent.class)).execute(request,
-						effectivePerson, id);
+				result = new ActionGetRFCContent().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "根据ID获取日历事件信息的RFC内容时发生异常！");
@@ -99,8 +97,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionDestroySingleEventWithId) proxy.getProxy(ActionDestroySingleEventWithId.class))
-						.execute(request, effectivePerson, eventId);
+				result = new ActionDestroySingleEventWithId().execute(request, effectivePerson, eventId);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "根据ID删除日历事件信息时发生异常！");
@@ -125,8 +122,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionDestroyWithMaster) proxy.getProxy(ActionDestroyWithMaster.class)).execute(request,
-						effectivePerson, eventId);
+				result = new ActionDestroyWithMaster().execute(request, effectivePerson, eventId);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "根据指定事件ID删除所有的重复日历事件信息时发生异常！");
@@ -150,8 +146,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionDestroyAfterEventId) proxy.getProxy(ActionDestroyAfterEventId.class)).execute(request,
-						effectivePerson, eventId);
+				result = new ActionDestroyAfterEventId().execute(request, effectivePerson, eventId);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "删除重复日程事件中指定事件开始后续所有的日程事件信息时发生异常！");
@@ -175,8 +170,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionListWithCondition) proxy.getProxy(ActionListWithCondition.class)).execute(request,
-						effectivePerson, jsonElement);
+				result = new ActionListWithCondition().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "根据条件查询日历事件信息列表！");
@@ -200,8 +194,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionSimpleListWithCondition) proxy.getProxy(ActionSimpleListWithCondition.class))
-						.execute(request, effectivePerson, jsonElement);
+				result = new ActionSimpleListWithCondition().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "根据条件查询日历事件信息列表！");
@@ -224,8 +217,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionCreate) proxy.getProxy(ActionCreate.class)).execute(request, effectivePerson,
-						jsonElement);
+				result = new ActionCreate().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "新建或者更新日历事件信息时发生异常！");
@@ -251,8 +243,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionUpdateWithMaster) proxy.getProxy(ActionUpdateWithMaster.class)).execute(request,
-						effectivePerson, eventId, jsonElement);
+				result = new ActionUpdateWithMaster().execute(request, effectivePerson, eventId, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "更新日历事件信息时发生异常！");
@@ -277,8 +268,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionUpdateAfterEventId) proxy.getProxy(ActionUpdateAfterEventId.class)).execute(request,
-						effectivePerson, eventId, jsonElement);
+				result = new ActionUpdateAfterEventId().execute(request, effectivePerson, eventId, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "更新日历事件信息时发生异常！");
@@ -303,8 +293,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionUpdateSingleEventWithId) proxy.getProxy(ActionUpdateSingleEventWithId.class))
-						.execute(request, effectivePerson, eventId, jsonElement);
+				result = new ActionUpdateSingleEventWithId().execute(request, effectivePerson, eventId, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "更新日历事件信息时发生异常！");
