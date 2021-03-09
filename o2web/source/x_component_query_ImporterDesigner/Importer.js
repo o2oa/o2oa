@@ -264,7 +264,11 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
                 item.resetIndex(i);
             });
 
-            this.addColumnNode.scrollIntoView(true);
+            if( addToLeft ){
+                this.addColumnLeftNode.scrollIntoView(true);
+            }else{
+                this.addColumnNode.scrollIntoView(true);
+            }
 
         }.bind(this));
         //new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 0}).toRight();
@@ -1076,7 +1080,7 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
     "delete": function(e){
         var _self = this;
         if (!e) e = this.node;
-        this.view.designer.confirm("warn", e, MWF.APPDIPD.LP.notice.deleteColumnTitle, MWF.APPDIPD.LP.notice.deleteColumn, 300, 120, function(){
+        this.view.designer.confirm("warn", e, MWF.APPDIPD.LP.notice.deleteFieldTitle, MWF.APPDIPD.LP.notice.deleteField, 300, 120, function(){
             _self.destroy();
             this.close();
         }, function(){
@@ -1129,7 +1133,7 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
         this.areaNode.destroy();
         this.view.selected();
 
-        this.view.setViewWidth();
+        // this.view.setViewWidth();
 
         MWF.release(this);
         delete this;
@@ -1151,31 +1155,18 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
                 };
             }
 
-            var idx = this.view.json.data.selectList.indexOf(this.json);
-            this.view.json.data.selectList.splice(idx, 0, json);
+            var idx = this.view.json.data.calculateFieldList.indexOf(this.json);
+            this.view.json.data.calculateFieldList.splice(idx, 0, json);
 
-            var column = new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this.view, this);
-            this.view.items.splice(idx, 0, column);
+            var column = new MWF.xApplication.query.ImporterDesigner.Importer.CalculateField(json, this.view, this);
+            this.view.calculateItems.splice(idx, 0, column);
             column.selected();
-
-            if (this.view.viewContentTableNode){
-                var trs = this.view.viewContentTableNode.getElements("tr");
-                trs.each(function(tr){
-                    var td = tr.insertCell(idx);
-                    td.setStyles(this.css.viewContentTdNode);
-                }.bind(this));
-            }
-            this.view.setViewWidth();
-
-            this.view.items.each( function (item, i) {
-                item.resetIndex(i);
-            });
 
         }.bind(this));
     },
     move: function(e){
         var columnNodes = [];
-        this.view.items.each(function(item){
+        this.view.calculateItems.each(function(item){
             if (item!=this){
                 columnNodes.push(item.areaNode);
             }
@@ -1184,6 +1175,26 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
         this._createMoveNode();
 
         this._setNodeMove(columnNodes, e);
+    },
+    _createMoveNode: function(){
+        this.moveNode = new Element("div", {"text": this.node.get("text")});
+        this.moveNode.inject(this.view.designer.content);
+        this.moveNode.setStyles({
+            "border": "2px dashed #ffa200",
+            "opacity": 0.7,
+            "height": "30px",
+            "line-height": "30px",
+            "padding": "0px 10px",
+            "position": "absolute"
+        });
+    },
+    _setMoveNodePosition: function(e){
+        var x = e.page.x+2;
+        var y = e.page.y+2;
+        this.moveNode.positionTo(x, y);
+    },
+    createMoveFlagNode: function(){
+        this.moveFlagNode = new Element("td", {"styles": this.css.moveFieldFlagNode});
     },
     _setNodeMove: function(droppables, e){
         this._setMoveNodePosition(e);
