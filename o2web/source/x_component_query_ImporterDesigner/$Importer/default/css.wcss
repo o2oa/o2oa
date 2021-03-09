@@ -331,6 +331,18 @@
         "display": "block",
         "background": "#ffa200"
     },
+    "moveFieldFlagNode": {
+        "height": "40px",
+        "width" : "10px",
+        "float" : "left",
+        "margin-top" : "5px",
+        //"border": "0px dashed #333",
+        "border-right": "1px solid #BBB",
+        "border-left": "1px solid #FFF",
+        "overflow": "hidden",
+        "display": "block",
+        "background": "#ffa200"
+    },
     "applicationSelectTitle": {
         "height": "24px",
         "line-height": "24px",
