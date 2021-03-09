@@ -47,15 +47,6 @@ class ActionGet extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
-
-		logger.print("===============test1============================");
-
-		logger.print(LanguageTools.getValueByKey("allModels", "zh"));
-
-		logger.print(LanguageTools.getValueByKey("allModels", "en"));
-
-		logger.print("===============test2============================");
-
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
