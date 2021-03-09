@@ -24,16 +24,14 @@ import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.http.WrapOutBoolean;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.calendar.assemble.control.ThisApplication;
 
 @Path("setting")
 @JaxrsDescribe("系统设置信息管理服务")
 public class CalendarSettingAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
+//	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static Logger logger = LoggerFactory.getLogger(CalendarSettingAction.class);
 
 	@JaxrsMethodDescribe(value = "获取所有系统配置信息列表", action = ActionListAll.class)
@@ -49,7 +47,7 @@ public class CalendarSettingAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionListAll) proxy.getProxy(ActionListAll.class)).execute(request, effectivePerson);
+				result = new ActionListAll().execute(request, effectivePerson);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionSettingInfoProcess(e, "获取所有系统配置信息列表时发生异常！");
@@ -73,7 +71,7 @@ public class CalendarSettingAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionGet) proxy.getProxy(ActionGet.class)).execute(request, effectivePerson, id);
+				result = new ActionGet().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionSettingInfoProcess(e, "根据ID获取系统配置信息时发生异常！");
@@ -97,8 +95,7 @@ public class CalendarSettingAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionGetWithCode) proxy.getProxy(ActionGetWithCode.class)).execute(request, effectivePerson,
-						code);
+				result = new ActionGetWithCode().execute(request, effectivePerson, code);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionSettingInfoProcess(e, "根据Code获取系统配置信息时发生异常！");
@@ -121,7 +118,7 @@ public class CalendarSettingAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionIsManager) proxy.getProxy(ActionIsManager.class)).execute(request, effectivePerson);
+				result = new ActionIsManager().execute(request, effectivePerson);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionSettingInfoProcess(e, "判断当前用户是否有管理员权限时发生异常！");
@@ -144,7 +141,7 @@ public class CalendarSettingAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionSave) proxy.getProxy(ActionSave.class)).execute(request, effectivePerson, jsonElement);
+				result = new ActionSave().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionSettingInfoProcess(e, "新建或者更新系统配置信息时发生异常！");
