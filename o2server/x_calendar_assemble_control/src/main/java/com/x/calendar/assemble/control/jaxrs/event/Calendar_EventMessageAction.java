@@ -17,16 +17,15 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.calendar.assemble.control.ThisApplication;
 
 @Path("message")
 @JaxrsDescribe("消息处理")
 public class Calendar_EventMessageAction extends BaseAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
+	// private StandardJaxrsActionProxy proxy = new
+	// StandardJaxrsActionProxy(ThisApplication.context());
 	private static Logger logger = LoggerFactory.getLogger(Calendar_EventMessageAction.class);
 
 	@JaxrsMethodDescribe(value = "接收日历消息", action = ActionMessageReceive.class)
@@ -38,8 +37,7 @@ public class Calendar_EventMessageAction extends BaseAction {
 		ActionResult<ActionMessageReceive.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionMessageReceive) proxy.getProxy(ActionMessageReceive.class)).execute(request,
-					effectivePerson, jsonElement);
+			result = new ActionMessageReceive().execute(request, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
