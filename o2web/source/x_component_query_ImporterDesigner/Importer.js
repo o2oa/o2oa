@@ -738,7 +738,7 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         // }
 
         if (this.view.json.data.selectList) this.view.json.data.selectList.erase(this.json);
-        if (this.view.json.data.calculate) if (this.view.json.data.calculate.calculateList) this.view.json.data.calculate.calculateList.erase(this.json);
+        // if (this.view.json.data.calculate) if (this.view.json.data.calculate.calculateList) this.view.json.data.calculate.calculateList.erase(this.json);
         this.view.items.erase(this);
         if (this.view.property) this.view.property.loadStatColumnSelect();
 
@@ -1120,14 +1120,14 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
     destroy: function(){
         if (this.view.currentSelectedModule==this) this.view.currentSelectedModule = null;
         if (this.actionArea) this.actionArea.destroy();
-        if (this.listNode) this.listNode.destroy();
+        // if (this.listNode) this.listNode.destroy();
         if (this.property) this.property.propertyContent.destroy();
 
-        var idx = this.view.items.indexOf(this);
+        var idx = this.view.calculateItems.indexOf(this);
 
-        if (this.view.json.data.selectList) this.view.json.data.selectList.erase(this.json);
-        if (this.view.json.data.calculate) if (this.view.json.data.calculate.calculateList) this.view.json.data.calculate.calculateList.erase(this.json);
-        this.view.items.erase(this);
+        if (this.view.json.data.calculateFieldList) this.view.json.data.calculateFieldList.erase(this.json);
+        // if (this.view.json.data.calculate) if (this.view.json.data.calculate.calculateList) this.view.json.data.calculate.calculateList.erase(this.json);
+        this.view.calculateItems.erase(this);
         if (this.view.property) this.view.property.loadStatColumnSelect();
 
         this.areaNode.destroy();
@@ -1222,23 +1222,23 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
                 if (inObj){
                     this.areaNode.inject(inObj, "before");
                     var column = inObj.retrieve("column");
-                    this.listNode.inject(column.listNode, "before");
+                    // this.listNode.inject(column.listNode, "before");
 
-                    this.view.json.data.selectList.erase(this.json);
-                    this.view.items.erase(this);
+                    this.view.json.data.calculateFieldList.erase(this.json);
+                    this.view.calculateItems.erase(this);
 
-                    var idx = this.view.json.data.selectList.indexOf(column.json);
+                    var idx = this.view.json.data.calculateFieldList.indexOf(column.json);
 
-                    this.view.json.data.selectList.splice(idx, 0, this.json);
-                    this.view.items.splice(idx, 0, this);
+                    this.view.json.data.calculateFieldList.splice(idx, 0, this.json);
+                    this.view.calculateItems.splice(idx, 0, this);
 
                     if (this.moveNode) this.moveNode.destroy();
                     if (this.moveFlagNode) this.moveFlagNode.destroy();
                     this._setActionAreaPosition();
 
-                    this.view.items.each( function (item, i) {
-                        item.resetIndex(i);
-                    });
+                    // this.view.items.each( function (item, i) {
+                    //     item.resetIndex(i);
+                    // });
 
                 }else{
                     if (this.moveNode) this.moveNode.destroy();
