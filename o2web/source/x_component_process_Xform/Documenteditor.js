@@ -1079,7 +1079,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 paddingTop = 0;
             }
 
-            if (p.y<paddingTop){
+            if (p.y<paddingTop && this.toolNode.offsetParent){
                 this.toolbarNode.inject(this.scrollNode);
                 this.toolbarNode.setStyles({
                     "position": "absolute",
