@@ -1,5 +1,24 @@
 package com.x.mind.assemble.control.jaxrs.mind;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -8,27 +27,15 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.mind.assemble.control.ThisApplication;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.List;
 
 @Path("mind")
 @JaxrsDescribe("脑图信息管理服务")
 public class MindInfoAction extends BaseAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
+	// private StandardJaxrsActionProxy proxy = new
+	// StandardJaxrsActionProxy(ThisApplication.context());
 	private Logger logger = LoggerFactory.getLogger(MindInfoAction.class);
 
 	@JaxrsMethodDescribe(value = "根据ID获取脑图信息", action = ActionMindGetWithId.class)
@@ -41,8 +48,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindGetWithId.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindGetWithId) proxy.getProxy(ActionMindGetWithId.class)).execute(request, id,
-					effectivePerson);
+			result = new ActionMindGetWithId().execute(request, id, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -60,8 +66,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindIconGetWithId.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindIconGetWithId) proxy.getProxy(ActionMindIconGetWithId.class)).execute(request,
-					effectivePerson, id);
+			result = new ActionMindIconGetWithId().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -79,8 +84,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListVersionsWithMindId.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListVersionsWithMindId) proxy.getProxy(ActionListVersionsWithMindId.class))
-					.execute(request, effectivePerson, id);
+			result = new ActionListVersionsWithMindId().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -98,8 +102,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListShareRecordsWithMindId.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionListShareRecordsWithMindId) proxy.getProxy(ActionListShareRecordsWithMindId.class))
-					.execute(request, effectivePerson, id);
+			result = new ActionListShareRecordsWithMindId().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -119,8 +122,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionMyShareMindNextWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionMyShareMindNextWithFilter) proxy.getProxy(ActionMyShareMindNextWithFilter.class))
-					.execute(request, effectivePerson, id, count, jsonElement);
+			result = new ActionMyShareMindNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
@@ -141,8 +143,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionMyRecycleNextWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionMyRecycleNextWithFilter) proxy.getProxy(ActionMyRecycleNextWithFilter.class))
-					.execute(request, effectivePerson, id, count, jsonElement);
+			result = new ActionMyRecycleNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
@@ -163,8 +164,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionMyReciveMindNextWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionMyReciveMindNextWithFilter) proxy.getProxy(ActionMyReciveMindNextWithFilter.class))
-					.execute(request, effectivePerson, id, count, jsonElement);
+			result = new ActionMyReciveMindNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
@@ -183,8 +183,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindViewWithId.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindViewWithId) proxy.getProxy(ActionMindViewWithId.class)).execute(request, id,
-					effectivePerson);
+			result = new ActionMindViewWithId().execute(request, id, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -202,8 +201,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindVersionViewWithId.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindVersionViewWithId) proxy.getProxy(ActionMindVersionViewWithId.class)).execute(request,
-					id, effectivePerson);
+			result = new ActionMindVersionViewWithId().execute(request, id, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -221,8 +219,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindSave.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindSave) proxy.getProxy(ActionMindSave.class)).execute(request, effectivePerson,
-					jsonElement);
+			result = new ActionMindSave().execute(request, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -243,8 +240,7 @@ public class MindInfoAction extends BaseAction {
 		ActionResult<ActionMindIconUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionMindIconUpdate) proxy.getProxy(ActionMindIconUpdate.class)).execute(request,
-					effectivePerson, mindId, size, bytes, disposition);
+			result = new ActionMindIconUpdate().execute(request, effectivePerson, mindId, size, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -263,8 +259,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionMindListNextWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = ((ActionMindListNextWithFilter) proxy.getProxy(ActionMindListNextWithFilter.class))
-					.execute(request, id, count, jsonElement, effectivePerson);
+			result = new ActionMindListNextWithFilter().execute(request, id, count, jsonElement, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
@@ -283,8 +278,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindRestore.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindRestore) proxy.getProxy(ActionMindRestore.class)).execute(request, effectivePerson,
-					id);
+			result = new ActionMindRestore().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -302,8 +296,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindShare.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindShare) proxy.getProxy(ActionMindShare.class)).execute(request, effectivePerson, id,
-					jsonElement);
+			result = new ActionMindShare().execute(request, effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -321,8 +314,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindShareCancel.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindShareCancel) proxy.getProxy(ActionMindShareCancel.class)).execute(request,
-					effectivePerson, shareId);
+			result = new ActionMindShareCancel().execute(request, effectivePerson, shareId);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -340,8 +332,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindDestroyFromNormal.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindDestroyFromNormal) proxy.getProxy(ActionMindDestroyFromNormal.class)).execute(request,
-					effectivePerson, id);
+			result = new ActionMindDestroyFromNormal().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -359,8 +350,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindDestroyFromRecycle.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindDestroyFromRecycle) proxy.getProxy(ActionMindDestroyFromRecycle.class))
-					.execute(request, effectivePerson, recycleId);
+			result = new ActionMindDestroyFromRecycle().execute(request, effectivePerson, recycleId);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
@@ -378,8 +368,7 @@ public class MindInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMindRecycle.Wo> result = new ActionResult<>();
 		try {
-			result = ((ActionMindRecycle) proxy.getProxy(ActionMindRecycle.class)).execute(request, effectivePerson,
-					id);
+			result = new ActionMindRecycle().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
