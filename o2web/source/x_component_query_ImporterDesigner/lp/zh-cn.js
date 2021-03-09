@@ -32,16 +32,12 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "save_success": "导入模型保存成功！",
         "saveAs_success" : "导入模型另存成功，您可以在导入模型设置中打开新的导入模型！",
 
-        "deleteFilterTitle": "删除筛选条件确认",
-        "deleteFilter": "是否确定删除筛选条件？",
 
         "deleteColumnTitle": "删除列确认",
         "deleteColumn": "是否确定删除当前列？",
 
-
-        "changeTypeTitle": "改变数据类型确认",
-        "changeTypeDeleteChildren": "改变数据类型将删除所有子数据，是否确定要执行？",
-        "changeType": "改变数据类型将改变数据的值，是否确定要执行？",
+        "deleteFieldTitle" : "删除字段确认",
+        "deleteField": "是否确定删除当前字段？",
 
         "inputTypeError": "您输入的数据类型有误，请重新输入",
         "sameKey": "您输入的项目名称在对象中已存在，请重新输入",
