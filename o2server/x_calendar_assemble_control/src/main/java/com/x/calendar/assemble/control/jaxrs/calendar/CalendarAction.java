@@ -26,16 +26,13 @@ import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.http.WrapOutBoolean;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.calendar.assemble.control.ThisApplication;
 
 @Path("calendar")
 @JaxrsDescribe("日历信息管理服务")
 public class CalendarAction extends StandardJaxrsAction {
 
-	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static Logger logger = LoggerFactory.getLogger(CalendarAction.class);
 
 	@JaxrsMethodDescribe(value = "获取我能访问到的所有日历信息列表", action = ActionListWhatICanView.class)
@@ -49,8 +46,9 @@ public class CalendarAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if (check) {
 			try {
-				result = ((ActionListWhatICanView) proxy.getProxy(ActionListWhatICanView.class)).execute(request,
-						effectivePerson);
+				result = new ActionListWhatICanView().execute(request, effectivePerson);
+//				result = ((ActionListWhatICanView) proxy.getProxy(ActionListWhatICanView.class)).execute(request,
+//						effectivePerson);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionCalendarInfoProcess(e, "获取我能访问到的所有日历信息列表时发生异常！");
@@ -73,8 +71,9 @@ public class CalendarAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionListPublicCalendar) proxy.getProxy(ActionListPublicCalendar.class)).execute(request,
-						effectivePerson);
+				result = new ActionListPublicCalendar().execute(request, effectivePerson);
+//				result = ((ActionListPublicCalendar) proxy.getProxy(ActionListPublicCalendar.class)).execute(request,
+//						effectivePerson);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionCalendarInfoProcess(e, "获取所有公开的日历信息列表时发生异常！");
@@ -98,7 +97,8 @@ public class CalendarAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionGet) proxy.getProxy(ActionGet.class)).execute(request, effectivePerson, id);
+				result = new ActionGet().execute(request, effectivePerson, id);
+//				result = ((ActionGet) proxy.getProxy(ActionGet.class)).execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionCalendarInfoProcess(e, "根据ID获取日历信息时发生异常！");
@@ -122,8 +122,9 @@ public class CalendarAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionListWithCondition) proxy.getProxy(ActionListWithCondition.class)).execute(request,
-						effectivePerson, jsonElement);
+				result = new ActionListWithCondition().execute(request, effectivePerson, jsonElement);
+//				result = ((ActionListWithCondition) proxy.getProxy(ActionListWithCondition.class)).execute(request,
+//						effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionCalendarInfoProcess(e, "根据条件查询日历信息列表时发生异常！");
@@ -146,7 +147,8 @@ public class CalendarAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionIsManager) proxy.getProxy(ActionIsManager.class)).execute(request, effectivePerson);
+				result = new ActionIsManager().execute(request, effectivePerson);
+//				result = ((ActionIsManager) proxy.getProxy(ActionIsManager.class)).execute(request, effectivePerson);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionCalendarInfoProcess(e, "判断当前用户是否有管理员权限时发生异常！");
@@ -170,8 +172,9 @@ public class CalendarAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionFollowCalendar) proxy.getProxy(ActionFollowCalendar.class)).execute(request,
-						effectivePerson, id);
+				result = new ActionFollowCalendar().execute(request, effectivePerson, id);
+//				result = ((ActionFollowCalendar) proxy.getProxy(ActionFollowCalendar.class)).execute(request,
+//						effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionCalendarInfoProcess(e, "关注一个公开的日历信息时发生异常！");
@@ -195,8 +198,9 @@ public class CalendarAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionFollowCalendarCancel) proxy.getProxy(ActionFollowCalendarCancel.class))
-						.execute(request, effectivePerson, id);
+				result = new ActionFollowCalendarCancel().execute(request, effectivePerson, id);
+//				result = ((ActionFollowCalendarCancel) proxy.getProxy(ActionFollowCalendarCancel.class))
+//						.execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionCalendarInfoProcess(e, "取消关注一个公开的日历信息时发生异常！");
@@ -220,8 +224,9 @@ public class CalendarAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionIsCalendarManager) proxy.getProxy(ActionIsCalendarManager.class)).execute(request,
-						effectivePerson, accountId);
+				result = new ActionIsCalendarManager().execute(request, effectivePerson, accountId);
+//				result = ((ActionIsCalendarManager) proxy.getProxy(ActionIsCalendarManager.class)).execute(request,
+//						effectivePerson, accountId);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionCalendarInfoProcess(e, "判断当前用户是否对指定的日历有管理员权限时发生异常！");
@@ -244,7 +249,8 @@ public class CalendarAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionSave) proxy.getProxy(ActionSave.class)).execute(request, effectivePerson, jsonElement);
+				result = new ActionSave().execute(request, effectivePerson, jsonElement);
+//				result = ((ActionSave) proxy.getProxy(ActionSave.class)).execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionCalendarInfoProcess(e, "新建或者更新日历信息时发生异常！");
@@ -268,7 +274,8 @@ public class CalendarAction extends StandardJaxrsAction {
 
 		if (check) {
 			try {
-				result = ((ActionDelete) proxy.getProxy(ActionDelete.class)).execute(request, effectivePerson, id);
+				result = new ActionDelete().execute(request, effectivePerson, id);
+//				result = ((ActionDelete) proxy.getProxy(ActionDelete.class)).execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionCalendarInfoProcess(e, "根据ID删除日历信息及所有事件时发生异常！");
