@@ -4,15 +4,9 @@
   "query": "",
   "alias": "",
   "description": "",
-  "display": true,
   "type": "Importer",
 
   "data": {
-    "columnList": [],
-    "calculate": {},
-    "afterGridScriptText": "",
-    "afterGroupGridScriptText": "",
-    "afterCalculateGridScriptText": "",
     "events": {
       "queryLoad" : {
         "code": "",
@@ -22,35 +16,19 @@
         "code": "",
         "html": ""
       },
-      "postLoadPageData" : {
+      "queryImportData" : {
         "code": "",
         "html": ""
       },
-      "postLoadPage": {
+      "postImportData" : {
         "code": "",
         "html": ""
       },
-      "queryLoadItemRow": {
+      "queryImportRowData": {
         "code": "",
         "html": ""
       },
-      "postLoadItemRow": {
-        "code": "",
-        "html": ""
-      },
-      "queryLoadCategoryRow": {
-        "code": "",
-        "html": ""
-      },
-      "postLoadCategoryRow": {
-        "code": "",
-        "html": ""
-      },
-      "selectRow" : {
-        "code": "",
-        "html": ""
-      },
-      "unselectRow" : {
+      "postImportRowData": {
         "code": "",
         "html": ""
       }

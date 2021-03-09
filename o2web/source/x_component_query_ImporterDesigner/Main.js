@@ -114,6 +114,7 @@ MWF.xApplication.query.ImporterDesigner.Main = new Class({
             this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;
             this.importer = new MWF.xApplication.query.ImporterDesigner.Importer(this, vdata);
+            this.view = this.importer;
             this.importer.load();
         }.bind(this));
     },
