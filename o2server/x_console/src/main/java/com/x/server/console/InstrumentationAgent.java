@@ -25,7 +25,15 @@ public class InstrumentationAgent {
 	private static final String STORE_JARS = "store/jars";
 	private static final String COMMONS_EXT = "commons/ext";
 
+	public static String JAVAVERSION = "java8";
+
+	public static final String JAVAVERSION_JAVA8 = "java8";
+	public static final String JAVAVERSION_JAVA11 = "java11";
+
 	public static void premain(String args, Instrumentation inst) {
+		if ((null != args) && (args.length() > 0)) {
+			JAVAVERSION = args;
+		}
 		INST = inst;
 		try {
 			Path base = getBasePath();
@@ -36,10 +44,14 @@ public class InstrumentationAgent {
 				load(base, DYNAMIC_JARS);
 			}
 			loadWithCfg(base, STORE_JARS);
-			loadWithCfg(base, COMMONS_EXT);
+			loadWithCfg(base, ext());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static String ext() {
+		return JAVAVERSION.equals(JAVAVERSION_JAVA8) ? COMMONS_EXT : COMMONS_EXT + "_" + JAVAVERSION;
 	}
 
 	private static void loadWithCfg(Path base, String sub) throws IOException {
