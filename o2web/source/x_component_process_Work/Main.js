@@ -731,8 +731,6 @@ MWF.xApplication.process.Work.Main = new Class({
                     }.bind(this));
                 }
 
-                if  (layout.desktop.type !== "layout") layout.appForm = this.appForm;
-
                 this.appForm.load(function(){
                     if (this.mask) this.mask.hide();
                     if (window.o2android && window.o2android.appFormLoaded){
@@ -746,13 +744,6 @@ MWF.xApplication.process.Work.Main = new Class({
                     if (this.options.action=="processTask"){
                         this.appForm.processWork();
                         this.options.action = "";
-                    }
-
-                    if (window.o2 && window.o2.appFormLoaded){
-                        window.o2.appFormLoaded('true');
-                    }
-                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.appFormLoaded){
-                        window.webkit.messageHandlers.appFormLoaded.postMessage('true')
                     }
 
                     this.fireEvent("postLoadForm");
