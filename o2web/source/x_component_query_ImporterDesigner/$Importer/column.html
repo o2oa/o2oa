@@ -24,7 +24,7 @@
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">字段类型:</td>
-                        <td class="editTableValue"><select id="text{$.pid}dataTypeSelectedCMSProcess">
+                        <td class="editTableValue"><select id="text{$.pid}dataTypeSelectedCMSProcess" name="dataType_CMSProcess">
 <!--                                                           onchange=" var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
                             <option value="string" selected>string</option>
                             <option value="date">date</option>
@@ -42,7 +42,7 @@
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">字段类型:</td>
-                        <td class="editTableValue"><select  id="text{$.pid}dataTypeSelectedQuerytable">
+                        <td class="editTableValue"><select  id="text{$.pid}dataTypeSelectedQuerytable" name="dataType_Querytable">
 <!--                                                            onchange="var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
                             <option value="string">string</option>
                             <option value="integer">integer</option>
@@ -69,6 +69,13 @@
                     <td class="editTableValue">
                         <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>是
                         <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>否
+                    </td>
+                </tr>
+                <tr class="MWFColumnExportGroup">
+                    <td class="editTableTitle">允许空值:</td>
+                    <td class="editTableValue">
+                        <input class="MWFWorkDataCheck" name="allowEmpty" type="radio" value="true" text{($.allowEmpty)!==false?'checked':''}/>是
+                        <input class="MWFWorkDataCheck" name="allowEmpty" type="radio" value="false" text{($.allowEmpty)===false?'checked':''}/>否
                     </td>
                 </tr>
             </table>

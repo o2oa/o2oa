@@ -1,4 +1,6 @@
 {
+  "dataType_CMSProcess": "string",
+  "dataType_Querytable" : "string",
   "events": {
     "queryLoad" : {
       "code": "",
