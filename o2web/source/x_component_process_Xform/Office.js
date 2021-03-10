@@ -115,8 +115,9 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 			"min-height": "100px"
 		});
         // this.isActive = true;
-        //if (Browser.name==="ie" || Browser.name==="chrome" || Browser.name==="firefox"){
-		if (Browser.name==="ie"){
+        debugger;
+        if (Browser.name==="ie" || Browser.name==="chrome" || Browser.name==="firefox"){
+		//if (Browser.name==="ie"){
             this.isActive = true;
             this.file = null;
             if (!this.form.officeList) this.form.officeList=[];
@@ -827,12 +828,29 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
             var version = this.json.version || this.options.version;
             var classid = this.json.clsid || this.options.clsid;
 
-            var objectHtml = "<form id='"+this.getFormId()+"' style='height:100%'><OBJECT id='"+this.getOfficeObjectId()+"' " +
-                "type='application/ntko-plug' " +
-                "style='HEIGHT: 99%; WIDTH: 100%' " +
-                "height='99%' width='100%' " +
-                "codeBase='"+codeBase+"#version="+version+"' " +
-                "classid='{"+classid+"}' ";
+            var objectHtml = "";
+            if (navigator.userAgent.indexOf("Linux") > -1) {
+                objectHtml = "<form id='"+this.getFormId()+"' style='height:100%'>" +
+                    "<OBJECT id='"+this.getOfficeObjectId()+"' " +
+                    "type='application/ntko-plug' height='99%' width='100%' style='HEIGHT: 99%; WIDTH: 100%' "
+            }else{
+                objectHtml = "<form id='"+this.getFormId()+"' style='height:100%'><OBJECT id='"+this.getOfficeObjectId()+"' " +
+                    "type='application/ntko-plug' " +
+                    "style='HEIGHT: 99%; WIDTH: 100%' " +
+                    "height='99%' width='100%' " +
+                    "codeBase='"+codeBase+"#version="+version+"' " +
+                    "clsid='{"+classid+"}' ";
+            }
+
+
+
+
+            // var objectHtml = "<form id='"+this.getFormId()+"' style='height:100%'><OBJECT id='"+this.getOfficeObjectId()+"' " +
+            //     "type='application/ntko-plug' " +
+            //     "style='HEIGHT: 99%; WIDTH: 100%' " +
+            //     "height='99%' width='100%' " +
+            //     "codeBase='"+codeBase+"#version="+version+"' " +
+            //     "clsid='{"+classid+"}' ";
 
             objectHtml += "ForOnSaveToURL='OnComplete2' ";
             objectHtml += "ForOnBeginOpenFromURL='OnComplete' ";
@@ -854,6 +872,12 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
             this.officeForm = this.officeNode.getFirst();
             this.officeOCX = this.officeNode.getFirst().getFirst();
 
+            if(window.navigator.platform=="Win64"){
+                this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
+            }
+            if(window.navigator.platform=="Win32"){
+                this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
+            }
             this.doOfficeOCXEvents();
         }
 
@@ -882,17 +906,35 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 
             var objectHtml = "";
 
-            if(window.navigator.platform=="Win64"){
-                objectHtml = "<form id='"+this.getFormId()+"' style='height:100%'><OBJECT id='"+this.getOfficeObjectId()+"' " +
-                    "style='HEIGHT: 99%; WIDTH: 100%' " +
-                    "codeBase='"+codeBase64+"#version="+version+"' " +
-                    "classid='{"+classid64+"}'>";
-            }else{
-                objectHtml = "<form id='"+this.getFormId()+"' style='height:100%'><OBJECT id='"+this.getOfficeObjectId()+"' " +
+            // if (navigator.userAgent.indexOf("Linux") > -1) {
+            //     objectHtml = "<form id='"+this.getFormId()+"' style='height:100%'><OBJECT id='"+this.getOfficeObjectId()+"' " +
+            //         "type='application/ntko-plug' height='99%' width='100%' style='HEIGHT: 99%; WIDTH: 100%' "
+            // }else{
+                objectHtml = "<form id='"+this.getFormId()+"' style='height:100%'><OBJECT type='application/ntko-plug' id='"+this.getOfficeObjectId()+"' " +
+                    "height='99%' width='100%' " +
                     "style='HEIGHT: 99%; WIDTH: 100%' " +
                     "codeBase='"+codeBase+"#version="+version+"' " +
-                    "classid='{"+classid+"}'";
-            }
+                    "clsid='{"+classid+"}'";
+            // }
+
+            // if(window.navigator.platform=="Win64"){
+            //     objectHtml = "<form id='"+this.getFormId()+"' style='height:100%'><OBJECT id='"+this.getOfficeObjectId()+"' " +
+            //         "style='HEIGHT: 99%; WIDTH: 100%' " +
+            //         "codeBase='"+codeBase64+"#version="+version+"' " +
+            //         "classid='{"+classid64+"}'>";
+            // }else{
+            //     objectHtml = "<form id='"+this.getFormId()+"' style='height:100%'><OBJECT id='"+this.getOfficeObjectId()+"' " +
+            //         "style='HEIGHT: 99%; WIDTH: 100%' " +
+            //         "codeBase='"+codeBase+"#version="+version+"' " +
+            //         "classid='{"+classid+"}'";
+            // }
+
+            // this.addOfficeEvent(id, "AfterOpenFromURL(doc, statusCode)", "if (layout.desktop.offices[\""+id+"\"]) layout.desktop.offices[\""+id+"\"].AfterOpenFromURL(doc, statusCode);");
+            // this.addOfficeEvent(id, "OnDocumentOpened(url, doc)", "if (layout.desktop.offices[\""+id+"\"]) layout.desktop.offices[\""+id+"\"].OnDocumentOpened(url, doc);");
+            // this.addOfficeEvent(id, "OnDocumentClosed()", "if (layout.desktop.offices[\""+id+"\"]) layout.desktop.offices[\""+id+"\"].OnDocumentClosed();");
+            // document.write('ForOnpublishAshtmltourl="ntkopublishashtml"');
+            // document.write('ForOnpublishAspdftourl="ntkopublishaspdf"');
+            // document.write('ForOnSaveAsOtherFormatToUrl="ntkosaveasotherurl"');
 
             objectHtml += "ForOnSaveToURL='OnComplete2' ";
             objectHtml += "ForOnBeginOpenFromURL='OnComplete' ";
@@ -916,22 +958,28 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 
             if(window.navigator.platform=="Win64"){
                 this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
-            }else{
+            }
+            if(window.navigator.platform=="Win32"){
                 this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
             }
 
-            //this.doOfficeOCXEvents();
+            this.doOfficeOCXEvents();
         }
 
         var url = this.getOfficeFileUrl();
         if (url){
             this.officeOCX.BeginOpenFromURL(url, true, this.readonly);
         }else{
-            this.officeOCX.CreateNew(this.getProgID());
+            window.setTimeout(function(){
+                this.officeOCX.CreateNew("WPS.Document");
+            }.bind(this), 5000);
+
+            //this.officeOCX.CreateNew(this.getProgID());
             this.fireEvent("afterCreate");
         }
     },
     loadOfficeEdit: function(file){
+        debugger;
         if (Browser.name==="chrome"){
             this.loadOfficeEditChrome(file);
         }else if (Browser.name==="firefox") {
