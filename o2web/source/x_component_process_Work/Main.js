@@ -725,8 +725,6 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.appForm.workAction = this.action;
                 this.appForm.app = this;
 
-                if  (layout.desktop.type !== "layout") layout.appForm = this.appForm;
-
                 if( this.$events && this.$events.queryLoadForm ){
                     this.appForm.addEvent( "queryLoad", function () {
                         this.fireEvent("queryLoadForm");
@@ -747,6 +745,7 @@ MWF.xApplication.process.Work.Main = new Class({
                         this.appForm.processWork();
                         this.options.action = "";
                     }
+
                     this.fireEvent("postLoadForm");
                 }.bind(this));
             }.bind(this));
