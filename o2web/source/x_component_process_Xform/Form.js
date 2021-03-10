@@ -592,7 +592,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 node.empty();
                 this._loadMobileActions(node, callback);
             } else {
-                console.log("没有找到移动端底部操作栏！")
+                if (callback) callback();
+                //console.log("没有找到移动端底部操作栏！")
             }
         } else {
             if (callback) callback();
