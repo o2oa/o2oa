@@ -67,7 +67,7 @@ public class MPweixinAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @JaxrsMethodDescribe(value = "创建测试菜单", action = ActionCreateMenu.class)
+    @JaxrsMethodDescribe(value = "创建测试菜单, 【注意这个接口会把公众号菜单全部替换掉！】", action = ActionCreateMenu.class)
     @GET
     @Path("menu/create")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
