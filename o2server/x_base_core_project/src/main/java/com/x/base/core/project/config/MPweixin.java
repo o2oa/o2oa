@@ -24,6 +24,9 @@ public class MPweixin extends ConfigObject  {
     private String token = "";
     @FieldDescribe("微信公众号配的encodingAesKey")
     private String encodingAesKey="";
+    @FieldDescribe("微信公众号测试菜单的门户地址")
+    private String portalId = "";
+
 
 
 
@@ -41,6 +44,7 @@ public class MPweixin extends ConfigObject  {
         this.appSecret = "";
         this.token = "";
         this.encodingAesKey = "";
+        this.portalId = "";
     }
 
     /**
@@ -124,6 +128,14 @@ public class MPweixin extends ConfigObject  {
 
     public void setEncodingAesKey(String encodingAesKey) {
         this.encodingAesKey = encodingAesKey;
+    }
+
+    public String getPortalId() {
+        return portalId;
+    }
+
+    public void setPortalId(String portalId) {
+        this.portalId = portalId;
     }
 
     /**
