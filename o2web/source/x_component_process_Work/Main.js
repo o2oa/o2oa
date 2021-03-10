@@ -725,13 +725,13 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.appForm.workAction = this.action;
                 this.appForm.app = this;
 
-                if  (layout.desktop.type !== "layout") layout.appForm = this.appForm;
-
                 if( this.$events && this.$events.queryLoadForm ){
                     this.appForm.addEvent( "queryLoad", function () {
                         this.fireEvent("queryLoadForm");
                     }.bind(this));
                 }
+
+                if  (layout.desktop.type !== "layout") layout.appForm = this.appForm;
 
                 this.appForm.load(function(){
                     if (this.mask) this.mask.hide();
@@ -747,6 +747,14 @@ MWF.xApplication.process.Work.Main = new Class({
                         this.appForm.processWork();
                         this.options.action = "";
                     }
+
+                    if (window.o2 && window.o2.appFormLoaded){
+                        window.o2.appFormLoaded('true');
+                    }
+                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.appFormLoaded){
+                        window.webkit.messageHandlers.appFormLoaded.postMessage('true')
+                    }
+
                     this.fireEvent("postLoadForm");
                 }.bind(this));
             }.bind(this));
