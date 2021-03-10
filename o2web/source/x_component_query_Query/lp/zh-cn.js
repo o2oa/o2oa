@@ -145,5 +145,17 @@ MWF.xApplication.query.Query.LP = {
     "selecteAllRow": "选择所有行",
 
     "firstPage": "第一页",
-    "lastPage": "最后一页"
+    "lastPage": "最后一页",
+
+    "importSuccess" : "导入成功！",
+    "validationInfor" : "校验信息",
+    "importFail" : "导入失败",
+    "importValidationColumnText" : "第{n}列：",
+    "importValidationColumnTextExcel" : "列{n}：",
+    "notValidNumber" : "不是数字",
+    "notValidDate" : "不是日期格式",
+    "canNotBeEmpty": "不能为空",
+    "fullstop" : "。",
+    "notExistInSystem" : "在系统中不存在",
+    "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格"
 };

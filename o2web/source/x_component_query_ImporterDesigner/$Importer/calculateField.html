@@ -24,7 +24,7 @@
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">字段类型:</td>
-                        <td class="editTableValue"><select id="text{$.pid}dataTypeSelectedCMSProcess">
+                        <td class="editTableValue"><select id="text{$.pid}dataTypeSelectedCMSProcess" name="dataType_CMSProcess">
 <!--                                                           onchange=" var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
                             <option value="string" selected>string</option>
                             <option value="date">date</option>
@@ -42,7 +42,7 @@
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">字段类型:</td>
-                        <td class="editTableValue"><select  id="text{$.pid}dataTypeSelectedQuerytable">
+                        <td class="editTableValue"><select  id="text{$.pid}dataTypeSelectedQuerytable" name="dataType_Querytable">
 <!--                                                            onchange="var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
                             <option value="string">string</option>
                             <option value="integer">integer</option>
@@ -72,6 +72,7 @@
                     </td>
                 </tr>
             </table>
+            <div class="MWFFormulaArea" name="valueScript" title="值脚本"></div>
         </div>
 	</div>
 
