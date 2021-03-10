@@ -212,7 +212,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
     addCalculateField: function(){
         var id = (new MWF.widget.UUID).id;
         var json = {
-            "id": "field",
+            "id": id,
             "displayName": this.designer.lp.unnamed,
         };
         if (!this.json.data.calculateFieldList) this.json.data.calculateFieldList = [];
@@ -232,9 +232,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
             var id = (new MWF.widget.UUID).id;
             var json = {
                 "id": id,
-                "column": id,
                 "displayName": this.designer.lp.unnamed,
-                "orderType": "original"
             };
             if (!this.json.data.selectList) this.json.data.selectList = [];
 
