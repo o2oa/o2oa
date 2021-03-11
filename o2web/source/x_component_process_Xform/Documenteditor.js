@@ -1032,7 +1032,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var editionData = {"category": this.json.id};
             // if (!originaData || !originaData.filetext || !this.originaHistoryData){
                 //保存原始版本
-            var d = this.getFiletextText(this.data.filetext);
+            //var d = this.getFiletextText(this.data.filetext);
+            var d = this.data.filetext;
                 this.originaHistoryData = {"data": d};
                 editionData.data = JSON.stringify({"data": d});
                 //this.originaHistoryData = {"data": this.data.filetext};
