@@ -1393,9 +1393,9 @@ o2.xDesktop.Default.StartMenu = new Class({
             if ( this.checkMenuItem(value, currentNames) ) this.createApplicationMenuItem(value);
         }.bind(this));
 
-        if (json_portal && json_portal.length) json_portal.each(function(value){
-            this.createPortalMenuItem(value);
-        }.bind(this));
+        // if (json_portal && json_portal.length) json_portal.each(function(value){
+        //     this.createPortalMenuItem(value);
+        // }.bind(this));
 
         if (json_portal && json_portal.length) json_portal.each(function(value){
             value.type = "portal";
