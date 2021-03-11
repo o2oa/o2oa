@@ -1,5 +1,6 @@
 package com.x.organization.assemble.authentication.jaxrs.mpweixin;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.http.ActionResult;
@@ -78,6 +79,24 @@ public class MPweixinAction extends StandardJaxrsAction {
         ActionResult<ActionCreateMenu.Wo> result = new ActionResult<>();
         try {
             result = new ActionCreateMenu().execute();
+        }catch (Exception e) {
+            logger.error(e);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "测试发送模版消息", action = ActionTestSendTempMessage.class)
+    @POST
+    @Path("menu/test/send/to/{person}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void testSendMessage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                           @Context HttpServletResponse response, @PathParam("person") String person, JsonElement jsonElement) {
+
+        ActionResult<ActionTestSendTempMessage.Wo> result = new ActionResult<>();
+        try {
+            result = new ActionTestSendTempMessage().execute(person, jsonElement);
         }catch (Exception e) {
             logger.error(e);
             result.error(e);
