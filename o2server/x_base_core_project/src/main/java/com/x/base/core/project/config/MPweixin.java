@@ -5,8 +5,10 @@ import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by fancyLou on 3/8/21.
@@ -27,6 +29,15 @@ public class MPweixin extends ConfigObject  {
     @FieldDescribe("微信公众号测试菜单的门户地址")
     private String portalId = "";
 
+    @FieldDescribe("是否启用公众号模版消息")
+    private Boolean messageEnable;
+    @FieldDescribe("公众号模版消息id")
+    private String tempMessageId;
+    @FieldDescribe("模版字段")
+    private List<MPweixinMessageTemp> fieldList;
+
+
+
 
 
 
@@ -45,6 +56,9 @@ public class MPweixin extends ConfigObject  {
         this.token = "";
         this.encodingAesKey = "";
         this.portalId = "";
+        this.messageEnable = false;
+        this.tempMessageId = "";
+        this.fieldList = new ArrayList<>();
     }
 
     /**
@@ -136,6 +150,31 @@ public class MPweixin extends ConfigObject  {
 
     public void setPortalId(String portalId) {
         this.portalId = portalId;
+    }
+
+
+    public Boolean getMessageEnable() {
+        return messageEnable;
+    }
+
+    public void setMessageEnable(Boolean messageEnable) {
+        this.messageEnable = messageEnable;
+    }
+
+    public String getTempMessageId() {
+        return tempMessageId;
+    }
+
+    public void setTempMessageId(String tempMessageId) {
+        this.tempMessageId = tempMessageId;
+    }
+
+    public List<MPweixinMessageTemp> getFieldList() {
+        return fieldList;
+    }
+
+    public void setFieldList(List<MPweixinMessageTemp> fieldList) {
+        this.fieldList = fieldList;
     }
 
     /**
