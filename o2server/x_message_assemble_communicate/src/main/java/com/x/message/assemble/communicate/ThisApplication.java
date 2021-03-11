@@ -36,6 +36,8 @@ public class ThisApplication {
 
 	public static final MQConsumeQueue mqConsumeQueue = new MQConsumeQueue();
 
+	public static final MPWeixinConsumeQueue mpWeixinConsumeQueue = new MPWeixinConsumeQueue();
+
 	public static Context context() {
 		return context;
 	}
@@ -89,6 +91,9 @@ public class ThisApplication {
 
 		if (BooleanUtils.isTrue(Config.mq().getEnable())) {
 			context().startQueue(mqConsumeQueue);
+		}
+		if (BooleanUtils.isTrue(Config.mPweixin().getEnable()) && BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
+			context().startQueue(mpWeixinConsumeQueue);
 		}
 	}
 
