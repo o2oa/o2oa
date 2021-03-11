@@ -745,6 +745,7 @@ MWF.xApplication.process.Work.Main = new Class({
                         this.appForm.processWork();
                         this.options.action = "";
                     }
+
                     this.fireEvent("postLoadForm");
                 }.bind(this));
             }.bind(this));
