@@ -34,11 +34,6 @@ class ActionPreviewPdfResult extends BaseAction {
 				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(true, generalFile.getName()),
 						this.contentDisposition(true, generalFile.getName()));
 				result.setData(wo);
-
-				generalFile.deleteContent(gfMapping);
-				emc.beginTransaction(GeneralFile.class);
-				emc.delete(GeneralFile.class, generalFile.getId());
-				emc.commit();
 			} else {
 				throw new ExceptionPreviewImageResultObject(flag);
 			}
