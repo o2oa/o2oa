@@ -1902,47 +1902,57 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this.fireEvent("afterSave");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
 
-                this.workAction.processTask(function (json) {
-                    //if (processor) processor.destroy();
-                    //if (processNode) processNode.destroy();
-                    if (callback) callback(json);
+                // var promiseList = [];
+                // if (this.documenteditorList && this.documenteditorList.length) {
+                //     var promiseList = [];
+                //     this.documenteditorList.each(function (module) {
+                //         promiseList.push(module.checkSaveNewHistroy());
+                //     });
+                // }
+                // Promise.all(promiseList).then(function(){
+                    this.workAction.processTask(function (json) {
+                        //if (processor) processor.destroy();
+                        //if (processNode) processNode.destroy();
+                        if (callback) callback(json);
 
-                    this.taskList = json.data;
-                    this.fireEvent("afterProcess");
-                    if (this.app && this.app.fireEvent) this.app.fireEvent("afterProcess");
-                    //    this.notice(MWF.xApplication.process.Xform.LP.taskProcessed, "success");
-                    this.addMessage(json.data, true);
+                        this.taskList = json.data;
+                        this.fireEvent("afterProcess");
+                        if (this.app && this.app.fireEvent) this.app.fireEvent("afterProcess");
+                        //    this.notice(MWF.xApplication.process.Xform.LP.taskProcessed, "success");
+                        this.addMessage(json.data, true);
 
-                    if (this.app.taskObject) this.app.taskObject.destroy();
+                        if (this.app.taskObject) this.app.taskObject.destroy();
 
-                    if (this.closeImmediatelyOnProcess) {
-                        this.app.close();
-                    } else if (typeOf(this.showCustomSubmitedDialog) === "function") {
-                        this.showCustomSubmitedDialog(json.data);
-                    } else if (layout.mobile) {
-                        //移动端页面关闭
-                        _self.finishOnMobile()
-                    } else {
-                        if (this.app.inBrowser) {
-                            if (this.mask) this.mask.hide();
-                            if (this.json.isPrompt !== false) {
-                                this.showSubmitedDialog(json.data);
-                            } else {
-                                if (this.json.afterProcessAction == "redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code) {
-                                    var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
-                                    (new URI(url)).go();
-                                } else {
-                                    this.app.close();
-                                }
-                            }
-                            //}
-
-                        } else {
+                        if (this.closeImmediatelyOnProcess) {
                             this.app.close();
+                        } else if (typeOf(this.showCustomSubmitedDialog) === "function") {
+                            this.showCustomSubmitedDialog(json.data);
+                        } else if (layout.mobile) {
+                            //移动端页面关闭
+                            _self.finishOnMobile()
+                        } else {
+                            if (this.app.inBrowser) {
+                                if (this.mask) this.mask.hide();
+                                if (this.json.isPrompt !== false) {
+                                    this.showSubmitedDialog(json.data);
+                                } else {
+                                    if (this.json.afterProcessAction == "redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code) {
+                                        var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
+                                        (new URI(url)).go();
+                                    } else {
+                                        this.app.close();
+                                    }
+                                }
+                                //}
+
+                            } else {
+                                this.app.close();
+                            }
                         }
-                    }
-                    //window.setTimeout(function(){this.app.close();}.bind(this), 2000);
-                }.bind(this), null, this.businessData.task.id, this.businessData.task);
+                        //window.setTimeout(function(){this.app.close();}.bind(this), 2000);
+                    }.bind(this), null, this.businessData.task.id, this.businessData.task);
+                // }.bind(this), function(){});
+
             }.bind(this), null, true, data, true);
 
         }.bind(this));

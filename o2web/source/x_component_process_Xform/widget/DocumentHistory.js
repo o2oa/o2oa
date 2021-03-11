@@ -209,6 +209,9 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         if (this.documentEditor.allowEdit){
             o2.load("../o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
                 var originaData = this.documentEditor.form.businessData.originalData[this.documentEditor.json.id];
+
+                //var data = this.documentEditor.getFiletextText(this.documentEditor.data.filetext);
+
                 var data = this.documentEditor.data.filetext;
                 var earlyData = originaData.filetext;
                 if (data!=earlyData){
