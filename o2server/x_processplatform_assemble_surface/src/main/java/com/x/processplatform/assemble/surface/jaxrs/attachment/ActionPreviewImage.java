@@ -40,8 +40,10 @@ class ActionPreviewImage extends BaseAction {
 			}
 		}
 		String key = "";
+		StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+				attachment.getStorage());
+		byte[] bytes = DocumentTools.toPdf(attachment.getName(), attachment.readContent(mapping), "");
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			byte[] bytes = DocumentTools.toImage(attachment.getName(), attachment.getBytes(), "", page);
 			String name = FilenameUtils.getBaseName(attachment.getName()) + ".png";
 			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
 			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name, effectivePerson.getDistinguishedName());
