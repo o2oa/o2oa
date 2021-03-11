@@ -19,6 +19,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.poi.hslf.util.SystemTimeUtils;
 import org.eclipse.jetty.http.MimeTypes;
 
 import com.google.gson.JsonElement;
@@ -36,6 +38,17 @@ public class Config {
 
 	public Config() {
 	}
+
+	public static final String JAVAVERSION_JAVA8 = "java8";
+	public static final String JAVAVERSION_JAVA11 = "java11";
+
+	public static final String OS_WINDOWS = "windows";
+	public static final String OS_AIX = "aix";
+	public static final String OS_LINUX = "linux";
+	public static final String OS_MACOS = "macos";
+	public static final String OS_RASPI = "raspi";
+	public static final String OS_ARM = "arm";
+	public static final String OS_MIPS = "mips";
 
 	public static final String PATH_VERSION = "version.o2";
 	public static final String PATH_LOCAL_NODE = "local/node.cfg";
@@ -262,24 +275,9 @@ public class Config {
 		return new File(base(), DIR_JVM);
 	}
 
-	public static File dir_jvm_aix() throws Exception {
-		return new File(base(), DIR_JVM_AIX);
-	}
-
-	public static File dir_jvm_linux() throws Exception {
-		return new File(base(), DIR_JVM_LINUX);
-	}
-
-	public static File dir_jvm_neokylin_loongson() throws Exception {
-		return new File(base(), DIR_JVM_NEOKYLIN_LOONGSON);
-	}
-
-	public static File dir_jvm_macos() throws Exception {
-		return new File(base(), DIR_JVM_MACOS);
-	}
-
-	public static File dir_jvm_windows() throws Exception {
-		return new File(base(), DIR_JVM_WINDOWS);
+	public static Path command_java_path() throws Exception {
+		Path dir = Paths.get(System.getProperty("java.home"));
+		return SystemUtils.IS_OS_WINDOWS ? dir.resolve("bin/java.exe") : dir.resolve("bin/java");
 	}
 
 	public static File dir_local() throws Exception {
@@ -1193,12 +1191,12 @@ public class Config {
 	public Map<String, JsonObject> customConfig = new HashMap<>();
 
 	public static synchronized JsonObject customConfig(String configName) throws Exception {
-		if(StringUtils.isBlank(configName)){
+		if (StringUtils.isBlank(configName)) {
 			return null;
-		}else{
-			if(instance().customConfig.get(configName)==null){
-				JsonObject obj = BaseTools.readConfigObject(DIR_CONFIG+"/"+configName+".json", JsonObject.class);
-				if(obj!=null){
+		} else {
+			if (instance().customConfig.get(configName) == null) {
+				JsonObject obj = BaseTools.readConfigObject(DIR_CONFIG + "/" + configName + ".json", JsonObject.class);
+				if (obj != null) {
 					instance().customConfig.put(configName, obj);
 				}
 			}

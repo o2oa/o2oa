@@ -430,35 +430,35 @@ public class Main {
 			stopAll();
 			stopAllThreads();
 			String osName = System.getProperty("os.name");
-			//System.out.println("当前操作系统是："+osName);
+			// System.out.println("当前操作系统是："+osName);
 			File file = new File(Config.base(), "start_linux.sh");
-			if (osName.toLowerCase().startsWith("mac")){
+			if (osName.toLowerCase().startsWith("mac")) {
 				file = new File(Config.base(), "start_macos.sh");
-			}else if (osName.toLowerCase().startsWith("windows")) {
+			} else if (osName.toLowerCase().startsWith("windows")) {
 				file = new File(Config.base(), "start_windows.bat");
-			}else if(!file.exists()) {
-				file  = new File("start_aix.sh");
-				if(!file.exists()) {
-					file  = new File("start_arm.sh");
-					if(!file.exists()) {
-						file  = new File("start_mips.sh");
-						if(!file.exists()) {
-							file  = new File("start_raspi.sh");
+			} else if (!file.exists()) {
+				file = new File("start_aix.sh");
+				if (!file.exists()) {
+					file = new File("start_arm.sh");
+					if (!file.exists()) {
+						file = new File("start_mips.sh");
+						if (!file.exists()) {
+							file = new File("start_raspi.sh");
 						}
 					}
 				}
 			}
-			if(file.exists()) {
-                System.out.println("server will start in new process!");
+			if (file.exists()) {
+				System.out.println("server will start in new process!");
 				Process ps = Runtime.getRuntime().exec(file.getAbsolutePath());
 				Thread.sleep(2000);
-				if(!Config.currentNode().autoStart()) {
+				if (!Config.currentNode().autoStart()) {
 					for (int i = 0; i < 5; i++) {
 						try (Socket socket = new Socket(Config.node(), Config.currentNode().nodeAgentPort())) {
 							socket.setKeepAlive(true);
 							socket.setSoTimeout(2000);
 							try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-								 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
+									DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 								Map<String, Object> commandObject = new HashMap<>();
 								commandObject.put("command", "command:start");
 								commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
@@ -474,7 +474,7 @@ public class Main {
 						}
 					}
 				}
-			}else{
+			} else {
 				System.out.println("not support restart in current operating system!start server failure!");
 			}
 		} catch (Exception e) {
@@ -484,20 +484,20 @@ public class Main {
 		}
 	}
 
-	private static void stopAllThreads(){
-		if(swapCommandThread!=null){
+	private static void stopAllThreads() {
+		if (swapCommandThread != null) {
 			try {
 				swapCommandThread.interrupt();
 			} catch (Exception e) {
 			}
 		}
-		if(consoleCommandThread!=null){
+		if (consoleCommandThread != null) {
 			try {
 				consoleCommandThread.interrupt();
 			} catch (Exception e) {
 			}
 		}
-		if(nodeAgent!=null){
+		if (nodeAgent != null) {
 			try {
 				nodeAgent.stopAgent();
 				try {
