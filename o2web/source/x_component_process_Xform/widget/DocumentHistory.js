@@ -281,12 +281,12 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         // this.initData();
         this.initAnimationStatus();
     },
-    initData: function(){
-        this.currentHistoryData = this.originaHistoryData;
+    initData: function(data, diffObj){
+        this.currentHistoryData = data || this.originaHistoryData;
         this.documentEditor.layout_filetext.set("html", this.currentHistoryData);
         this.patchIndex = 0;
         this.diffIndex = 0;
-        if (this.originaDiff) this.originaDiff.showCurrent();
+        if (diffObj || this.originaDiff) (diffObj || this.originaDiff).showCurrent();
     },
     initAnimationStatus: function(){
         this.patchIndex = 0;
@@ -416,16 +416,16 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
             this.doAnimationAuto(diff.id);
         }
     },
-    origina: function(){
+    origina: function(data, diffObj){
         if (this.nextPlayPrefixFunction){
             this.playing = false;
             this.nextPlayPrefixFunction(function(){
-                this.initData();
+                this.initData(data, diffObj);
                 this.initAnimationStatus();
             }.bind(this));
             this.nextPlayPrefixFunction = null;
         }else{
-            this.initData();
+            this.initData(data, diffObj);
             this.initAnimationStatus();
         }
     },
@@ -982,7 +982,8 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
         }else{
             infor = MWF.xApplication.process.Xform.LP.documentHistory.original;
             diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
-            this.history.originaDiff = {
+            //this.history.originaDiff = {
+            var diffObj = {
                 "node": diffNode,
                 "showCurrent": function(){
                     this.node.setStyles({"background-color": "#e2edfb"});
@@ -995,7 +996,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
             diffNode.addEvents({
                 "click": function(){
                     if (_self.history.stop){
-                        _self.history.origina();
+                        _self.history.origina(_self.historyData.json.data, diffObj);
                     }
                 }
             });

@@ -996,8 +996,8 @@ o2.xDesktop.Default.StartMenu = new Class({
         this.inforCategoryTab = new Element("div.layout_start_tab", {"text": o2.LP.desktop.message.infor}).inject(this.appTitleNode);
         this.queryCategoryTab = new Element("div.layout_start_tab", {"text": o2.LP.desktop.message.query}).inject(this.appTitleNode);
 
-        this.refreshNode =  new Element("div.layout_start_search", {"title": o2.LP.desktop.message.refreshMenu}).inject(this.appTitleNode);
-        this.refreshNode = new Element("div.layout_start_search_icon").inject(this.refreshNode);
+        this.refreshAreaNode =  new Element("div.layout_start_search", {"title": o2.LP.desktop.message.refreshMenu}).inject(this.appTitleNode);
+        this.refreshNode = new Element("div.layout_start_search_icon").inject(this.refreshAreaNode);
         this.refreshNode.addClass("icon_startMenu_refresh");
 
         this.searchNode =  new Element("div.layout_start_search").inject(this.appTitleNode);
@@ -1065,11 +1065,13 @@ o2.xDesktop.Default.StartMenu = new Class({
         this.processCategoryTab.hide();
         this.inforCategoryTab.hide();
         this.queryCategoryTab.hide();
+        this.refreshAreaNode.hide();
 
         var size = this.appTitleNode.getSize();
         var pr = this.appTitleNode.getStyle("padding-right").toInt() || 0;
         var pl = this.appTitleNode.getStyle("padding-left").toInt() || 0;
         var margin = this.searchNode.getStyle("margin-right").toInt() || 0;
+
         var w = size.x-margin*2-pr-pl;
 
         this.isMorph = true;
@@ -1120,6 +1122,7 @@ o2.xDesktop.Default.StartMenu = new Class({
                 this.processCategoryTab.show();
                 this.inforCategoryTab.show();
                 this.queryCategoryTab.show();
+                this.refreshAreaNode.show();
                 this.isSearch = false;
                 this.isMorph = false;
                 this.isSearchResult = false;
@@ -1144,8 +1147,12 @@ o2.xDesktop.Default.StartMenu = new Class({
         //         // var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
         //         // if (user.roleList) currentNames = currentNames.concat(user.roleList);
         //         // if (user.groupList) currentNames = currentNames.concat(user.groupList);
+        var user = this.layout.session.user;
+        var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
+        if (user.roleList) currentNames = currentNames.concat(user.roleList);
+        if (user.groupList) currentNames = currentNames.concat(user.groupList);
 
-        this.getCurrentName( function (currentNames) {
+        //this.getCurrentName( function (currentNames) {
             if (this.layoutJson && this.layoutJson.length) this.layoutJson.each(function(v){
                 if ( this.checkMenuItem(v, currentNames) ){
                     if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
@@ -1167,7 +1174,7 @@ o2.xDesktop.Default.StartMenu = new Class({
                     this.createPortalMenuItem(v);
                 }
             }.bind(this));
-        })
+        //})
     },
     searchProcesses: function(value){
         if (this.processJson && this.processJson.length) this.processJson.each(function(v){
