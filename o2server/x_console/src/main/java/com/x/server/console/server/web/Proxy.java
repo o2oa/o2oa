@@ -1,23 +1,34 @@
 package com.x.server.console.server.web;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.project.tools.EscapeStringTools;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.proxy.ProxyServlet;
+
+import com.x.base.core.project.tools.EscapeStringTools;
 
 public class Proxy extends ProxyServlet {
 
 	private static final long serialVersionUID = 2737360000716631564L;
 	private static final String X_Real_IP = "X-Real-IP";
 
-//	@Override
-//	public void init() throws ServletException {
-//		super.init();
-//		this.getHttpClient().setMaxRequestsQueuedPerDestination(10000);
-//	}
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		// 如果没有扩大requestBufferSize那么会有下面的报错.默认为4096增加到32K
+		// 把responseBufferSize也增加到32K,默认16K.
+		// {
+		// "servlet":"com.x.server.console.server.web.Proxy-2d14237e",
+		// "message":"Bad Gateway",
+		// "url":"/x_program_center/jaxrs/distribute/assemble/source/abc.com",
+		// "status":"502"
+		// }
+		this.getHttpClient().setRequestBufferSize(1024 * 32);
+		this.getHttpClient().setResponseBufferSize(1024 * 32);
+	}
 
 	@Override
 	protected String rewriteTarget(HttpServletRequest request) {
