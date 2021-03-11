@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.ImageToAcii;
@@ -16,8 +17,6 @@ import com.x.base.core.project.tools.ImageToAcii;
 public class CommandFactory {
 
 	public static final Pattern test_pattern = Pattern.compile("^ {0,}test {0,}$", Pattern.CASE_INSENSITIVE);
-
-	//public static final Pattern create_encrypt_key_pattern = Pattern.compile("^ {0,}create encrypt key{0,}$",Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern create_encrypt_key_pattern = Pattern.compile("^ {0,}create encrypt key {0,}$",
 			Pattern.CASE_INSENSITIVE);
@@ -28,32 +27,11 @@ public class CommandFactory {
 	public static final Pattern stop_pattern = Pattern
 			.compile("^ {0,}stop {0,}(data|storage|center|application|web|all|) {0,}$", Pattern.CASE_INSENSITIVE);
 
-	// public static final Pattern dump_path_pattern = Pattern.compile("^ {0,}dump
-	// (data|storage) path (.+) (.+)$",
-	// Pattern.CASE_INSENSITIVE);
-
-	// public static final Pattern dump_pattern = Pattern.compile("^ {0,}dump
-	// {0,}(data|storage) (.+)$",
-	// Pattern.CASE_INSENSITIVE);
-
-	// public static final Pattern restore_path_pattern = Pattern
-	// .compile("^ {0,}restore {1,}(data|storage) {1,}path {1,}(.+) {1,}(.+)$",
-	// Pattern.CASE_INSENSITIVE);
-
-	// public static final Pattern restore_pattern = Pattern.compile(
-	// "^ {0,}restore {0,}(data|storage)
-	// {0,}([2][0][1-9][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])
-	// (.+)$",
-	// Pattern.CASE_INSENSITIVE);
-
 	public static final Pattern help_pattern = Pattern.compile("^ {0,}help {0,}$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern exit_pattern = Pattern.compile("^ {0,}exit {0,}$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern restart_pattern = Pattern.compile("^ {0,}restart {0,}$", Pattern.CASE_INSENSITIVE);
-
-	// public static final Pattern updateFile_pattern = Pattern.compile("^ {0,}update file (.+) (true|false) {0,}$",
-	// 		Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern version_pattern = Pattern.compile("^ {0,}version {0,}$", Pattern.CASE_INSENSITIVE);
 
@@ -63,14 +41,14 @@ public class CommandFactory {
 	public static final Pattern convert_dataItem_pattern = Pattern.compile("^ {0,}convert dataItem (.+)$",
 			Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern control_pattern = Pattern.compile("^(\\s*)ctl(\\s*)",
-			Pattern.CASE_INSENSITIVE);
+	public static final Pattern control_pattern = Pattern.compile("^(\\s*)ctl(\\s*)", Pattern.CASE_INSENSITIVE);
 
 	public static void printStartHelp() {
 		try {
 			printStartImage();
 			System.out.println(">>> server directory:" + Config.base() + StringUtils.LF + ">>> version:"
-					+ Config.version() + StringUtils.LF + ">>> nodeAgent "
+					+ Config.version() + StringUtils.LF + ">>> java:" + SystemUtils.JAVA_VERSION + StringUtils.LF
+					+ ">>> os:" + SystemUtils.OS_NAME + StringUtils.LF + ">>> nodeAgent "
 					+ (Config.currentNode().nodeAgentEnable()
 							? ("port:" + Config.currentNode().nodeAgentPort() + ", encrypt:"
 									+ Config.currentNode().nodeAgentEncrypt())
@@ -102,29 +80,9 @@ public class CommandFactory {
 			help += StringUtils.LF;
 			help += " start|stop web                         start stop web server.";
 			help += StringUtils.LF;
-			// help += " dump data (passwd) dump data from database.";
-			// help += StringUtils.LF;
-			// help += " dump storage (passwd) dump storage from database,file.";
-			// help += StringUtils.LF;
-			// help += " restore data yyyyMMddHHmmss (passwd)" + "\t\t\t" + "restore data to
-			// database.";
-			// help += StringUtils.LF;
-			// help += " restore storage yyyyMMddHHmmss (passwd)" + "\t\t" + "restore
-			// storage to database,file.";
-			// help += StringUtils.LF;
 			help += " setPassword (oldpasswd) (newpasswd)    change initial manager password.";
 			help += StringUtils.LF;
-			// help += " update file (path) (backup)            upgrade to new version from local zip file.";
-			// help += StringUtils.LF;
-			// help += " compact data (passwd) compact local h2 repository database.";
-			// help += StringUtils.LF;
-			// help += " erase content (cms|pp|bbs|log) (passwd)" + "\t\t" + "remove all
-			// data except design.";
-			// help += StringUtils.LF;
 			help += " create encrypt key                     create random RSA key.";
-			// help += StringUtils.LF;
-			// help += " show (os|cpu|memory|thread) interval repeat" + "\t\t" + "show
-			// operating system infomation.";
 			help += StringUtils.LF;
 			help += " version                                show available update version.";
 			help += StringUtils.LF;
