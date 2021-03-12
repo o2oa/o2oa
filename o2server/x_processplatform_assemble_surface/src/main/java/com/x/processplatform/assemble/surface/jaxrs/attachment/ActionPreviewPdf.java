@@ -43,8 +43,10 @@ class ActionPreviewPdf extends BaseAction {
 			}
 		}
 		String key = "";
+		StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+				attachment.getStorage());
+		byte[] bytes = DocumentTools.toPdf(attachment.getName(), attachment.readContent(mapping), "");
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			byte[] bytes = DocumentTools.toPdf(attachment.getName(), attachment.getBytes(), "");
 			String name = FilenameUtils.getBaseName(attachment.getName()) + ".pdf";
 			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
 			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name, effectivePerson.getDistinguishedName());
