@@ -165,9 +165,12 @@
         "float": "right",
         "background-color": "#f3f3f3",
         "border-left": "1px solid #cccccc",
+        "border-top": "1px solid #cccccc",
+        "border-bottom": "1px solid #cccccc",
         "position": "absolute",
         "z-index": "20000",
-        "right": "0px"
+        "right": "0px",
+        "top": "37px"
     },
     "historyListTitleAreaNode":{
         "height": "80px",
