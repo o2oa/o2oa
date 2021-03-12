@@ -1030,12 +1030,19 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.form.businessData.work){
             var originaData = this.form.businessData.originalData[this.json.id];
             var editionData = {"category": this.json.id};
+
+            if ((!originaData || !originaData.filetext || !this.originaHistoryData) || originaData.filetext!=this.data.filetext){
+                var d = this.data.filetext;
+                this.originaHistoryData = {"data": d};
+                editionData.data = JSON.stringify({"data": d});
+            }else{
+                return false;
+            }
+
             // if (!originaData || !originaData.filetext || !this.originaHistoryData){
                 //保存原始版本
             //var d = this.getFiletextText(this.data.filetext);
-            var d = this.data.filetext;
-                this.originaHistoryData = {"data": d};
-                editionData.data = JSON.stringify({"data": d});
+
                 //this.originaHistoryData = {"data": this.data.filetext};
                 //editionData.data = JSON.stringify({"data": this.data.filetext});
             // }else if (originaData.filetext!=this.data.filetext){

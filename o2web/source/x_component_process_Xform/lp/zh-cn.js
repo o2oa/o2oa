@@ -249,7 +249,10 @@ MWF.xApplication.process.Xform.LP = {
         "exit": "退出痕迹审查",
         "diff_patch_count": "共有{history}个历史版本，{diff}处修订。",
         "original": "原始版本",
-        "nodiff": "目前还没有历史修改信息"
+        "nodiff": "目前还没有历史修改信息",
+        "word": "字",
+        "diff": "对比",
+        "diffTitle": "与上一版本对比"
     },
     "subjectEmpty": "标题不能为空",
     "issuanceUnitEmpty": "发文单位不能为空",

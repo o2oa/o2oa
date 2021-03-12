@@ -173,7 +173,8 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         // }.bind(this));
     },
     createHistoryListItem: function(historyData){
-        new MWF.xApplication.process.Xform.widget.DocumentHistory.Item(this, historyData);
+        if (!this.documentHistoryItems) this.documentHistoryItems = [];
+        this.documentHistoryItems.push(new MWF.xApplication.process.Xform.widget.DocumentHistory.Item(this, historyData));
     },
 
 
@@ -286,6 +287,11 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.documentEditor.layout_filetext.set("html", this.currentHistoryData);
         this.patchIndex = 0;
         this.diffIndex = 0;
+        if (this.documentHistoryItems && this.documentHistoryItems.length){
+            this.documentHistoryItems.each(function(item){
+                if (item.histroyObj) item.histroyObj.hideCurrent();
+            });
+        }
         if (diffObj || this.originaDiff) (diffObj || this.originaDiff).showCurrent();
     },
     initAnimationStatus: function(){
@@ -637,7 +643,8 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                 var ins = filetextNode.getElement("ins");
                 if (!this.stopWhile || this.stopWhile == diff["id"]) ins.scrollIn();
 
-                this.doInsetAnimation(ins, diff[1], function(invisible){
+                this.doInsetAnimation(ins,
+                    [1], function(invisible){
                     var insertInforDiv = null;
                     if (!invisible && (!this.stopWhile || this.stopWhile == diff["id"]) ){
                         insertInforDiv = this.createDiifInforNode(obj, ins, "#e2edfb", MWF.xApplication.process.Xform.LP.documentHistory.insertContent);
@@ -921,7 +928,17 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
         var obj = this.historyData;
 
         this.node = new Element("div", {"styles": this.css.historyListItemNode}).inject(this.history.historyListContentAreaNode);
-        var patchHtml = "<div style='font-weight: bold; height: 30px; line-height: 30px'>"+o2.name.cn(obj.person)+" ["+obj.activityName+"]</div><div style='height: 20px; line-height: 20px; color:#666666'>"+obj.createTime+"</div>"
+        if (this.history.documentHistoryItems && this.history.documentHistoryItems.length)
+            this.actionNode = new Element("div", {"styles": this.css.historyListItemActionNode, "text": MWF.xApplication.process.Xform.LP.documentHistory.diff, "title": MWF.xApplication.process.Xform.LP.documentHistory.diffTitle}).inject(this.node);
+
+        var patchHtml = "";
+        if (this.historyData.json.data){
+            var d = this.documentEditor.getFiletextText(this.historyData.json.data);
+            var s = d.length+" "+MWF.xApplication.process.Xform.LP.documentHistory.word;
+            patchHtml = "<div style='font-weight: bold; height: 30px; line-height: 30px'>"+o2.name.cn(obj.person)+" ["+obj.activityName+"] ("+s+")</div><div style='height: 20px; line-height: 20px; color:#666666'>"+obj.createTime+"</div>"
+        }else{
+            patchHtml = "<div style='font-weight: bold; height: 30px; line-height: 30px'>"+o2.name.cn(obj.person)+" ["+obj.activityName+"]</div><div style='height: 20px; line-height: 20px; color:#666666'>"+obj.createTime+"</div>"
+        }
         this.patchNode = new Element("div", {"styles": this.css.historyListItemPatchNode, "html": patchHtml}).inject(this.node);
         this.diffsNode = new Element("div", {"styles": this.css.historyListItemDiffsNode}).inject(this.node);
 
@@ -981,10 +998,10 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
             }.bind(this));
         }else{
             infor = MWF.xApplication.process.Xform.LP.documentHistory.original;
-            diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
+            //diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
             //this.history.originaDiff = {
-            var diffObj = {
-                "node": diffNode,
+            var histroyObj = {
+                "node": this.node,
                 "showCurrent": function(){
                     this.node.setStyles({"background-color": "#e2edfb"});
                     //if (show) this.node.scrollIn();
@@ -993,10 +1010,11 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
                     this.node.setStyles(_self.css.historyListItemDiffNode);
                 }
             };
-            diffNode.addEvents({
+            this.histroyObj = histroyObj;
+            this.node.addEvents({
                 "click": function(){
                     if (_self.history.stop){
-                        _self.history.origina(_self.historyData.json.data, diffObj);
+                        _self.history.origina(_self.historyData.json.data, histroyObj);
                     }
                 }
             });
