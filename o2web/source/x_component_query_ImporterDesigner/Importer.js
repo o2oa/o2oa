@@ -513,13 +513,13 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         this.load();
     },
     load: function(){
-        if( !this.json.events ){
+         if( !this.json.events ){
             this.loadDefaultJson(function () {
                 this._load()
             }.bind(this))
-        }else{
-            this._load();
-        }
+         }else{
+             this._load();
+         }
     },
     _load: function(){
         this.areaNode = new Element("td", {"styles": this.css.viewTitleColumnAreaNode});

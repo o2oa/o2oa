@@ -5,7 +5,7 @@
   "alias": "",
   "description": "",
   "type": "Importer",
-
+  "enableValid" : true,
   "data": {
     "events": {
       "queryLoad" : {
@@ -16,22 +16,26 @@
         "code": "",
         "html": ""
       },
-      "queryImportData" : {
+      "beforeImport" : {
         "code": "",
         "html": ""
       },
-      "postImportData" : {
+      "afterImport" : {
         "code": "",
         "html": ""
       },
-      "queryImportRowData": {
+      "beforeCreateRowData": {
         "code": "",
         "html": ""
       },
-      "postImportRowData": {
+      "afterCreateRowData": {
         "code": "",
         "html": ""
       }
+//      "saveRow": {
+//        "code": "",
+//        "html": ""
+//      }
     }
   },
   "availableIdentityList": [],

@@ -51,8 +51,8 @@
         "vtype": "cms",
         "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD3ACC000016AB1C5701D801823",
         "isName": false,
-        "dataType_CMSProcess" : "string",
-        "path": "subject"
+        "dataType_Querytable" : "string",
+        "path": "workId"
       },
       {
         "id": "C9482DD3CE20000114B8F3881A656F20",
@@ -71,8 +71,8 @@
         "vtype": "cms",
         "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD3CE20000114B8F3881A656F20",
         "isName": false,
-        "dataType_CMSProcess" : "date",
-        "path": "date.data1"
+        "dataType_Querytable" : "string",
+        "path": "sName"
       },
       {
         "id": "C9482DD3EFA000013A6F1B3D815016C5",
@@ -91,8 +91,8 @@
         "vtype": "cms",
         "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD3EFA000013A6F1B3D815016C5",
         "isName": false,
-        "dataType_CMSProcess" : "number",
-        "path": "number"
+        "dataType_Querytable" : "string",
+        "path": "sDate"
       },
       {
         "id": "C9482DD47A10000132A71D231EA0FC20",
@@ -111,8 +111,8 @@
         "vtype": "cms",
         "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD47A10000132A71D231EA0FC20",
         "isName": false,
-        "dataType_CMSProcess" : "boolean",
-        "path": "boolean"
+        "dataType_Querytable" : "string",
+        "path": "isCorrelation"
       },
       {
         "id": "C9482DD500E000018C58F6F01F9D3700",
@@ -131,8 +131,8 @@
         "vtype": "cms",
         "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD500E000018C58F6F01F9D3700",
         "isName": false,
-        "dataType_CMSProcess" : "stringList",
-        "path": "stringList"
+        "dataType_Querytable" : "string",
+        "path": "column1"
       },
       {
         "id": "C9482DD51F50000186C41CE0193A1241",
@@ -151,8 +151,8 @@
         "vtype": "cms",
         "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD51F50000186C41CE0193A1241",
         "isName": false,
-        "dataType_CMSProcess" : "dateList",
-        "path": "date"
+        "dataType_Querytable" : "string",
+        "path": "test11"
       },
       {
         "id": "C9482E4C8C900001CEE19E001BF0138F",
@@ -171,7 +171,7 @@
         "vtype": "cms",
         "pid": "97499527-eeb1-416d-befc-f0758f465768C9482E4C8C900001CEE19E001BF0138F",
         "isName": true,
-        "dataType_CMSProcess" : "string",
+        "dataType_Querytable" : "string",
         "path": "org"
       }
     ],
@@ -193,7 +193,7 @@
         "vtype": "cms",
         "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DF45F200001FE257880BB043D00",
         "isName": true,
-        "dataType_CMSProcess" : "string",
+        "dataType_Querytable" : "string",
         "valueScript" : "return this.target.data.subject + \"_aaa\"",
         "path": "cal_org"
       },
@@ -215,7 +215,7 @@
         "pid": "97499527-eeb1-416d-befc-f0758f465768C9482E382C50000165A216601F242230",
         "isName": false,
         "valueScript" : "return this.target.data.subject + \"_bbb\"",
-        "dataType_CMSProcess" : "stringList",
+        "dataType_Querytable" : "stringList",
         "path": "cal_stringList"
       }
     ]
