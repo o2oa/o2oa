@@ -87,6 +87,16 @@
             </div>
         </div>
 
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">启用校验:</td>
+                <td class="editTableValue">
+                    <input class="MWFWorkDataCheck" name="enableValid" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>是
+                    <input class="MWFWorkDataCheck" name="enableValid" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>否
+                </td>
+            </tr>
+        </table>
+
         <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">可执行者</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>

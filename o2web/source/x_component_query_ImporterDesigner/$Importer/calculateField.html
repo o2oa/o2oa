@@ -20,65 +20,72 @@
         </div>
 
         <div style="margin-top:10px">
-            <div style="display:text{($.vtype!=='querytable')?'block':'none'}" id="text{$.pid}dataTypeSelectedCMSProcessArea" class="text{$.vid}dataTypeSelectedCMSProcessArea">
-                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                    <tr>
-                        <td class="editTableTitle">字段类型:</td>
-                        <td class="editTableValue"><select id="text{$.pid}dataTypeSelectedCMSProcess" name="dataType_CMSProcess">
-<!--                                                           onchange=" var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
-                            <option value="string" selected>string</option>
-                            <option value="date">date</option>
-                            <option value="number">number</option>
-                            <option value="boolean">boolean</option>
-                            <option value="stringList">stringList</option>
-                            <option value="dateList">dateList</option>
-                            <option value="numberList">numberList</option>
-                            <option value="booleanList">booleanList</option>
-                        </select></td>
-                    </tr>
-                </table>
-            </div>
-            <div style="display:text{($.vtype=='querytable')?'block':'none'}" id="text{$.pid}dataTypeSelectedQuerytableArea" class="text{$.vid}dataTypeSelectedQuerytableArea">
-                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                    <tr>
-                        <td class="editTableTitle">字段类型:</td>
-                        <td class="editTableValue"><select  id="text{$.pid}dataTypeSelectedQuerytable" name="dataType_Querytable">
-<!--                                                            onchange="var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
-                            <option value="string">string</option>
-                            <option value="integer">integer</option>
-                            <option value="long">long</option>
-                            <option value="double">double</option>
-                            <option value="boolean">boolean</option>
-                            <option value="date">date</option>
-                            <option value="time">time</option>
-                            <option value="dateTime">dateTime</option>
-                            <option value="stringList">stringList</option>
-                            <option value="integerList">integerList</option>
-                            <option value="longList">longList</option>
-                            <option value="doubleList">doubleList</option>
-                            <option value="booleanList">booleanList</option>
-                            <option value="stringLob">stringLob</option>
-                            <option value="stringMap">stringMap</option>
-                        </select></td>
-                    </tr>
-                </table>
-            </div>
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr class="MWFColumnExportGroup">
-                    <td class="editTableTitle">组织对象:</td>
-                    <td class="editTableValue">
-                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>是
-                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>否
-                    </td>
-                </tr>
-            </table>
+<!--            <div style="display:text{($.vtype!=='querytable')?'block':'none'}" id="text{$.pid}dataTypeSelectedCMSProcessArea" class="text{$.vid}dataTypeSelectedCMSProcessArea">-->
+<!--                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--                    <tr>-->
+<!--                        <td class="editTableTitle">字段类型:</td>-->
+<!--                        <td class="editTableValue"><select id="text{$.pid}dataTypeSelectedCMSProcess" name="dataType_CMSProcess">-->
+<!--&lt;!&ndash;                                                           onchange=" var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">&ndash;&gt;-->
+<!--                            <option value="string" selected>string</option>-->
+<!--                            <option value="date">date</option>-->
+<!--                            <option value="number">number</option>-->
+<!--                            <option value="boolean">boolean</option>-->
+<!--                            <option value="stringList">stringList</option>-->
+<!--                            <option value="dateList">dateList</option>-->
+<!--                            <option value="numberList">numberList</option>-->
+<!--                            <option value="booleanList">booleanList</option>-->
+<!--                        </select></td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--            <div style="display:text{($.vtype=='querytable')?'block':'none'}" id="text{$.pid}dataTypeSelectedQuerytableArea" class="text{$.vid}dataTypeSelectedQuerytableArea">-->
+<!--                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--                    <tr>-->
+<!--                        <td class="editTableTitle">字段类型:</td>-->
+<!--                        <td class="editTableValue"><select  id="text{$.pid}dataTypeSelectedQuerytable" name="dataType_Querytable">-->
+<!--&lt;!&ndash;                                                            onchange="var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">&ndash;&gt;-->
+<!--                            <option value="string">string</option>-->
+<!--                            <option value="integer">integer</option>-->
+<!--                            <option value="long">long</option>-->
+<!--                            <option value="double">double</option>-->
+<!--                            <option value="boolean">boolean</option>-->
+<!--                            <option value="date">date</option>-->
+<!--                            <option value="time">time</option>-->
+<!--                            <option value="dateTime">dateTime</option>-->
+<!--                            <option value="stringList">stringList</option>-->
+<!--                            <option value="integerList">integerList</option>-->
+<!--                            <option value="longList">longList</option>-->
+<!--                            <option value="doubleList">doubleList</option>-->
+<!--                            <option value="booleanList">booleanList</option>-->
+<!--                            <option value="stringLob">stringLob</option>-->
+<!--                            <option value="stringMap">stringMap</option>-->
+<!--                        </select></td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--                <tr class="MWFColumnExportGroup">-->
+<!--                    <td class="editTableTitle">组织对象:</td>-->
+<!--                    <td class="editTableValue">-->
+<!--                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>是-->
+<!--                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>否-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td class="editTableTitle">校验字段类型:</td>-->
+<!--                    <td class="editTableValue">-->
+<!--                        <input class="MWFWorkDataCheck" name="validFieldType" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>是-->
+<!--                        <input class="MWFWorkDataCheck" name="validFieldType" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>否-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--            </table>-->
             <div class="MWFFormulaArea" name="valueScript" title="值脚本"></div>
         </div>
 	</div>
 
-    <div title="事件"  class="MWFTab">
-        <div class="MWFEventsArea" name="events"></div>
-    </div>
+<!--    <div title="事件"  class="MWFTab">-->
+<!--        <div class="MWFEventsArea" name="events"></div>-->
+<!--    </div>-->
 	<div title="JSON"  class="MWFTab">
 		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
 	</div>

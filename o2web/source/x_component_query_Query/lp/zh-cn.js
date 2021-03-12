@@ -155,6 +155,7 @@ MWF.xApplication.query.Query.LP = {
     "notValidNumber" : "不是数字",
     "notValidDate" : "不是日期格式",
     "canNotBeEmpty": "不能为空",
+    "showWithExcel" : "用Excel打开",
     "fullstop" : "。",
     "notExistInSystem" : "在系统中不存在",
     "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格"
