@@ -71,6 +71,9 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
             this.toolbar.load();
             this.checkToolbar();
         }.bind(this));
+
+        this.toolbarNode.setStyle("overflow", "visible");
+        if (this.historyListAreaNode) this.historyListAreaNode.inject(this.toolbarNode);
     },
     checkToolbar: function(){
         if (this.toolbar){
@@ -132,7 +135,12 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.documentEditor.zoom(1);
         this.documentEditor._checkScale();
 
-        var size = this.documentEditor.node.getSize();
+        // var size = this.documentEditor.node.getSize();
+        // var toolbarSize = this.documentEditor.toolbarNode.getSize();
+        // var h = size.y-toolbarSize.y;
+        // this.historyListAreaNode.setStyle("height", ""+h+"px");
+
+        var size = this.documentEditor.form.app.content.getSize();
         var toolbarSize = this.documentEditor.toolbarNode.getSize();
         var h = size.y-toolbarSize.y;
         this.historyListAreaNode.setStyle("height", ""+h+"px");
@@ -456,6 +464,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         }
 
         if (this.historyListAreaNode) this.historyListAreaNode.destroy();
+        this.documentHistoryItems = [];
         this.historyListAreaNode = null;
         this.documentEditor.zoom(1);
         this.documentEditor._checkScale();
@@ -486,6 +495,10 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
 
                     if (!layout.mobile || this.is_iPad()) {
                         this.createHistoryListNode();
+                        if (this.toolbarNode){
+                            this.toolbarNode.setStyle("overflow", "visible");
+                            if (this.historyListAreaNode) this.historyListAreaNode.inject(this.toolbarNode);
+                        }
                         this.loadHistoryList();
                     }
 
@@ -923,13 +936,39 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
         this.historyData = historyData;
         this.load();
     },
+    launch: function () {
+        debugger;
+        o2.load("../o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
+            var dmp = new diff_match_patch();
+            var text1 = this.documentEditor.getFiletextText(this.historyData.json.data);
+            var i = this.history.documentHistoryItems.indexOf(this)-1;
+            var text2 = this.documentEditor.getFiletextText(this.history.documentHistoryItems[i].historyData.json.data);
+            // dmp.Diff_Timeout = parseFloat(document.getElementById('timeout').value);
+            // dmp.Diff_EditCost = parseFloat(document.getElementById('editcost').value);
+
+            var d = dmp.diff_main(text2, text1);
+            dmp.diff_cleanupSemantic(d);
+            var ds = dmp.diff_prettyHtml(d);
+            ds = ds.replace(/[\n\r]+/g, "<br>");
+            this.documentEditor.layout_filetext.set("html", ds);
+        }.bind(this));
+    },
     load: function(){
         var patchs = this.historyData.json.patchObj || null;
         var obj = this.historyData;
 
         this.node = new Element("div", {"styles": this.css.historyListItemNode}).inject(this.history.historyListContentAreaNode);
-        if (this.history.documentHistoryItems && this.history.documentHistoryItems.length)
+        if (this.history.documentHistoryItems && this.history.documentHistoryItems.length){
             this.actionNode = new Element("div", {"styles": this.css.historyListItemActionNode, "text": MWF.xApplication.process.Xform.LP.documentHistory.diff, "title": MWF.xApplication.process.Xform.LP.documentHistory.diffTitle}).inject(this.node);
+            this.actionNode.addEvent("click", function(e){
+                // if (this.history.stop){
+                //     this.history.origina(this.historyData.json.data, this.histroyObj);
+                // }
+                this.launch();
+                e.stopPropagation();
+            }.bind(this));
+        }
+
 
         var patchHtml = "";
         if (this.historyData.json.data){
