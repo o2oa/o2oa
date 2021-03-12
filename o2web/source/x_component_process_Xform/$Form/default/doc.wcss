@@ -202,6 +202,7 @@
         "margin-bottom": "10px",
         "overflow": "hidden",
         "padding": "5px 10px",
+        "cursor": "pointer"
     },
 
     "historyListItemPatchNode": {
@@ -210,6 +211,14 @@
     },
     "historyListItemDiffsNode": {
         "overflow": "hidden"
+    },
+    "historyListItemActionNode": {
+        "height": "55px",
+        "width": "40px",
+        "float": "right",
+        "line-height": "55px",
+        "cursor": "pointer",
+        "color": "#0000FF"
     },
     "historyListItemDiffNode": {
         "overflow": "hidden",
