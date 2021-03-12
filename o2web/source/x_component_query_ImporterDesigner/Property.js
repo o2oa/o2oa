@@ -132,6 +132,7 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
                     "type": "QueryTable",
                     "names": (this.data.data) ? this.data.data.querytable : {},
                     "onChange": function (ids) {
+                        debugger;
                         this.savePersonSelectItem(node, ids);
                     }.bind(this)
                 });

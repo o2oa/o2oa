@@ -78,13 +78,20 @@
                         <input class="MWFWorkDataCheck" name="allowEmpty" type="radio" value="false" text{($.allowEmpty)===false?'checked':''}/>否
                     </td>
                 </tr>
+                <tr>
+                    <td class="editTableTitle">校验字段类型:</td>
+                    <td class="editTableValue">
+                        <input class="MWFWorkDataCheck" name="validFieldType" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>是
+                        <input class="MWFWorkDataCheck" name="validFieldType" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>否
+                    </td>
+                </tr>
             </table>
         </div>
 	</div>
 
-    <div title="事件"  class="MWFTab">
-        <div class="MWFEventsArea" name="events"></div>
-    </div>
+<!--    <div title="事件"  class="MWFTab">-->
+<!--        <div class="MWFEventsArea" name="events"></div>-->
+<!--    </div>-->
 	<div title="JSON"  class="MWFTab">
 		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
 	</div>

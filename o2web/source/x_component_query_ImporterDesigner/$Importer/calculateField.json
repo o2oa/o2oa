@@ -1,14 +1,12 @@
 {
-  "dataType_CMSProcess": "string",
-  "dataType_Querytable" : "string",
   "events": {
-    "queryLoad" : {
-      "code": "",
-      "html": ""
-    },
-    "postLoad" : {
-      "code": "",
-      "html": ""
-    }
+//    "beforeImport" : {
+//      "code": "",
+//      "html": ""
+//    },
+//    "afterImport" : {
+//      "code": "",
+//      "html": ""
+//    }
   }
 }

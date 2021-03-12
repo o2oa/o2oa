@@ -8,7 +8,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     Extends: MWF.widget.Common,
     options: {
         "style": "default",
-        "moduleEvents": ["queryLoad", "postLoadJson","postLoad", "queryImportData", "postImportData", "validImport", "queryImportRowData", "postImportRowData"]
+        "moduleEvents": ["queryLoad", "postLoadJson","postLoad", "beforeImport", "afterImport", "validImport", "beforeCreateRowData", "afterCreateRowData", "saveRow"]
     },
     initialize: function(container, options, app, parentMacro){
 
@@ -24,8 +24,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         this.contains = container;
 
         this.parentMacro = parentMacro;
-
-        this.importerJson = null;
 
         this.load();
 
@@ -57,7 +55,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         loadingTextNode.set("text", "loading...");
     },
     getImporterJSON: function(callback){
-        var path = "/x_component_query_Query/$Main/importer_test.json";
+        var path = "/x_component_query_Query/$Main/importer_test_querytable.json";
         var r = new Request.JSON({
             url: o2.filterUrl(path),
             secure: false,
@@ -66,8 +64,8 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             noCache: false,
             onSuccess: function(responseJSON, responseText){
                 this.json = responseJSON;
-                this.importerJson = responseJSON.data;
                 debugger;
+                if(callback)callback();
                 this.fireEvent("postLoadJson");
             }.bind(this),
             onError: function(text, error){
@@ -95,7 +93,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         // }
     },
     _loadModuleEvents : function(){
-        Object.each(this.importerJson.events, function(e, key){
+        Object.each(this.json.data.events, function(e, key){
             if (e.code){
                 if (this.options.moduleEvents.indexOf(key)!==-1){
                     this.addEvent(key, function(event, target){
@@ -107,16 +105,16 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     },
     getDateColIndexArray: function(){
         var dateColIndexArray = [];
-        this.importerJson.selectList.each(function(columnJson, index){
-            var dataType = this.importerJson.type === "querytable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
-            if( dataType === "date" )dateColIndexArray.push( index+1 );
+        this.json.data.selectList.each(function(columnJson, index){
+            var dataType = this.json.type === "querytable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+            if( dataType === "date" )dateColIndexArray.push( index );
         }.bind(this));
         return dateColIndexArray;
     },
     getOrgColIndexArray : function(){
         var orgColIndexArray = [];
-        this.importerJson.selectList.each(function(columnJson, index){
-            if( columnJson.isName )orgColIndexArray.push( index+1 );
+        this.json.data.selectList.each(function(columnJson, index){
+            if( columnJson.isName )orgColIndexArray.push( index );
         }.bind(this));
         return orgColIndexArray;
     },
@@ -124,16 +122,21 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         this.excelUtils.upload( this.getDateColIndexArray(), function (importedData) {
 
-            this.fireEvent("queryImportData");
+            if( importedData.length > 0 )importedData.shift();
+
+            this.fireEvent("beforeImport");
 
             var checkAndImport = function () {
-                if( !this.checkImportedData( importedData ) ){
-                    this.openImportedErrorDlg( importedData );
+                if( this.json.enableValid === false ){
+                    this.doImportData( importedData )
                 }else{
-                    this.setImportData( importedData )
+                    if( !this.checkImportedData( importedData ) ){
+                        this.openImportedErrorDlg( importedData );
+                    }else{
+                        this.doImportData( importedData )
+                    }
                 }
             }.bind(this);
-
             var orgColIndexArray = this.getOrgColIndexArray();
             if( orgColIndexArray.length > 0 ){
                 this.listAllOrgDataByImport( orgColIndexArray, importedData, function () {
@@ -142,30 +145,31 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             }else{
                 checkAndImport();
             }
-
-
         }.bind(this));
     },
+    getData : function(){
+        return ( this.rowList || [] ).map( function(row){
+            return row.data;
+        })
+    },
+    doImportData: function(importedData){
 
-    setImportData: function(importedData){
+        this.rowList = [];
 
-        var data = {
-            "data" : []
-        };
-
-        importedData.each( function( importedLineData, lineIndex ){
-
-
-
-
-
-            data.data.push( lineData );
+        importedData.each( function( lineData, lineIndex ){
+            this.rowList.push( new MWF.xApplication.query.Query.Importer.Row( this, lineData, lineIndex ) )
         }.bind(this));
 
-        this.fireEvent("postImportData", [data] );
-
-        this.setData( data );
-        this.form.notice( this.lp.importSuccess );
+        if( this.json.type === "querytable" ){
+            o2.Actions.load("x_query_assemble_designer").TableAction.rowSave(
+                this.json.data.querytable[0].id || this.json.data.querytable[0].name,
+                this.getData(),
+                function(json){
+                    this.fireEvent("afterImport", json );
+                    this.app.notice( this.lp.importSuccess );
+                }.bind(this)
+            );
+        }
 
     },
     openImportedErrorDlg : function( importedData ){
@@ -188,7 +192,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         var titleStyle = objectToString( this.css.titleStyles, "style" );
         htmlArray.push( "<tr>" );
-        this.importerJson.selectList.each( function (columnJson, i) {
+        this.json.data.selectList.each( function (columnJson, i) {
             htmlArray.push( "<th style='"+titleStyle+"'>"+columnJson.displayName+"</th>" );
         });
         htmlArray.push( "<th style='"+titleStyle+"'> "+this.lp.validationInfor +"</th>" );
@@ -201,7 +205,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         importedData.each( function( lineData, lineIndex ){
 
             htmlArray.push( "<tr>" );
-            this.importerJson.selectList.each( function (columnJson, i) {
+            this.json.data.selectList.each( function (columnJson, i) {
                 htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
             });
             htmlArray.push( "<td style='"+contentStyle+"'>"+( lineData.errorTextList ? lineData.errorTextList.join("<br/>") : "" )+"</td>" );
@@ -222,7 +226,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             "buttonList": [
                 {
                     "type": "exportWithError",
-                    "text": this.lp.datagridExport,
+                    "text": this.lp.showWithExcel,
                     "action": function () { _self.exportWithImportDataToExcel(columnList, importedData); }
                 },
                 {
@@ -249,48 +253,79 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             var errorTextList = [];
             var errorTextListExcel = [];
 
-            this.importerJson.selectList.each( function (columnJson, i) {
 
-                var colInfor = columnText.replace( "{n}", i );
-                var colInforExcel = columnTextExcel.replace( "{n}", this.excelUtils.index2ColName( i-1 ) );
+            this.json.data.selectList.each( function (columnJson, i) {
 
-                var d = lineData[i] || "";
+                var colInfor = columnText.replace( "{n}", i+1 );
+                var colInforExcel = columnTextExcel.replace( "{n}", this.excelUtils.index2ColName( i ) );
 
-                var dataType = this.importerJson.type === "querytable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+                var value = lineData[i] || "";
+
+                var dataType = this.json.type === "querytable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
 
 
-                if( !columnJson.allowEmpty && !d ){
-                    errorTextList.push( colInfor + lp.canNotBeEmpty + + lp.fullstop );
-                    errorTextListExcel.push( colInforExcel + lp.canNotBeEmpty + + lp.fullstop );
+                if( !columnJson.allowEmpty && !value ){
+                    errorTextList.push( colInfor + lp.canNotBeEmpty + lp.fullstop );
+                    errorTextListExcel.push( colInforExcel + lp.canNotBeEmpty + lp.fullstop );
                 }
 
-                switch ( dataType ) {
-                    case "string":
-                        if( columnJson.isName ){
-                            var  arr = d.split(/\s*,\s*/g ); //空格,空格
+                if( columnJson.validFieldType !== false && value ){
+
+                    switch ( dataType ) {
+                        case "string":
+                        case "stringList":
+                            if( columnJson.isName ){
+                                var  arr = value.split(/\s*,\s*/g ); //空格,空格
+                                arr.each( function(d, idx){
+                                    var obj = this.getOrgData( d );
+                                    if( obj.errorText ){
+                                        errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+                                        errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+                                    }
+                                }.bind(this));
+                            }
+                            break;
+                        case "number":
+                        case "integer":
+                        case "long":
+                        case "double":
+                            if (parseFloat(value).toString() === "NaN"){
+                                errorTextList.push( colInfor + value + lp.notValidNumber + lp.fullstop );
+                                errorTextListExcel.push( colInforExcel + value + lp.notValidNumber + lp.fullstop );
+                            }
+                            break;
+                        case "numberList":
+                        case "integerList":
+                        case "longList":
+                        case "doubleList":
+                            var  arr = value.split(/\s*,\s*/g ); //空格,空格
                             arr.each( function(d, idx){
-                                var obj = this.getOrgData( d );
-                                if( obj.errorText ){
-                                    errorTextList.push( colInfor + obj.errorText + + lp.fullstop );
-                                    errorTextListExcel.push( colInforExcel + obj.errorText + + lp.fullstop );
+                                if (parseFloat(d).toString() === "NaN"){
+                                    errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+                                    errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
                                 }
                             }.bind(this));
-                        }
-                        break;
-                    case "Number":
-                        if (parseFloat(d).toString() === "NaN"){
-                            errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
-                            errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
-                        }
-                        break;
-                    case "Calendar":
-                        if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-                            errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-                            errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-                        }
-                        break;
-                    default:
-                        break;
+                            break;
+                        case "date":
+                        case "dateTime":
+                            if( !( isNaN(value) && !isNaN(Date.parse(value) ))){
+                                errorTextList.push(colInfor + value + lp.notValidDate + lp.fullstop );
+                                errorTextListExcel.push( colInforExcel + value + lp.notValidDate + lp.fullstop );
+                            }
+                            break;
+                        case "dateList":
+                        case "dateTimeList":
+                            var  arr = value.split(/\s*,\s*/g ); //空格,空格
+                            arr.each( function(d, idx){
+                                if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+                                    errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+                                    errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+                                }
+                            }.bind(this));
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }.bind(this));
 
@@ -312,25 +347,35 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         return arg.validted;
     },
-    getOrgData : function( str ){
+    getOrgData : function( str, ignoreNone, isParse ){
         str = str.trim();
         var flag = str.substr(str.length-2, 2);
+        var d;
         switch (flag.toLowerCase()){
             case "@i":
-                return this.identityMapImported[str] || {"errorText": str + this.lp.notExistInSystem };
+                d =  this.identityMapImported[str] ;
+                break;
             case "@p":
-                return this.personMapImported[str] || {"errorText":  str + this.lp.notExistInSystem };
+                d = this.personMapImported[str] ;
+                break;
             case "@u":
-                return this.unitMapImported[str] ||  {"errorText":  str + this.lp.notExistInSystem };
+                d = this.unitMapImported[str] ;
+                break;
             case "@g":
-                return this.groupMapImported[str] ||  {"errorText":  str + this.lp.notExistInSystem };
+                d = this.groupMapImported[str] ;
+                break;
             default:
-                return this.identityMapImported[str] ||
+                var d = this.identityMapImported[str] ||
                     this.personMapImported[str] ||
                     this.unitMapImported[str] ||
-                    this.groupMapImported[str] ||
-                    {"errorText":  str + this.lp.notExistInSystem };
-
+                    this.groupMapImported[str];
+                break;
+        }
+        if( d )return isParse ? MWF.org.parseOrgData(d, true, true) : d;
+        if( ignoreNone ) {
+            return null;
+        }else{
+            return {"errorText":  str + this.lp.notExistInSystem };
         }
     },
     listAllOrgDataByImport : function (orgColIndexArray, importedData, callback) {
@@ -438,19 +483,129 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     //api 使用 结束
 });
 
-MWF.xApplication.query.Query.Importer.Item = new Class({
-    initialize: function(importer, data,){
+MWF.xApplication.query.Query.Importer.Row = new Class({
+    initialize: function(importer, importedData, rowIndex){
         this.importer = importer;
-        this.data = data;
-        this.clazzType = "item";
+        this.importedData = importedData;
+        this.clazzType = "row";
+        this.data = {};
 
         this.load();
     },
     load: function(){
-        this.view.fireEvent("queryLoadItemRow", [null, this]);
+        this.importer.fireEvent("beforeCreateRowData", [null, this]);
+
+        debugger;
+
+        this.importer.json.data.selectList.each( function (columnJson, i) {
+
+            var dataType = this.importer.json.type === "querytable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+
+            var value = this.importedData[i] || "";
+
+            var data;
+
+            if( value ){
+
+                switch ( dataType ) {
+                    case "string":
+                    case "stringList":
+                        if( columnJson.isName ){
+                            var  arr = value.split(/\s*,\s*/g ); //空格,空格
+                            if( this.importer.json.type === "querytable" ){
+                                data = arr
+                            }else{
+                                data = arr.map( function(d, idx){
+                                    return this.importer.getOrgData( d, true, true ) || d;
+                                }.bind(this));
+                            }
+                        }else{
+                            data = dataType === "string" ? value : value.split(/\s*,\s*/g );
+                        }
+                        break;
+                    case "number":
+                    case "integer":
+                    case "long":
+                        data = parseInt( value );
+                        break;
+                    case "double":
+                        data = parseFloat(value);
+                        break;
+                    case "numberList":
+                    case "integerList":
+                    case "longList":
+                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseInt( d ); }.bind(this));
+                        break;
+                    case "doubleList":
+                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseFloat( d ); }.bind(this));
+                        break;
+                    case "date":
+                        data = Date.parse(value).format( "%Y-%m-%d" );
+                        break;
+                    case "dateTime":
+                        data = Date.parse(value).format( "db" );
+                        break;
+                    case "dateList":
+                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "%Y-%m-%d" ); }.bind(this));
+                        break;
+                    case "dateTimeList":
+                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "db" ); }.bind(this));
+                        break;
+                    default:
+                        data = value;
+                        break;
+                }
+
+                if( this.importer.json.type === "querytable" ){
+                    this.data[ columnJson.path ] = data;
+                }else{
+                    var names = columnJson.path.split(".");
+                    var d = this.data;
+                    Array.each(names, function (n, idx) {
+                        if( idx === names.length -1 )return;
+                        if ( !d[n] ) d[n] = {};
+                        d = d[n];
+                    });
+                    d[names[names.length -1]] = data;
+                }
+
+            }
+
+        }.bind(this));
+
+        this.importer.json.data.calculateFieldList.each( function (fieldJson, i) {
+            if( fieldJson.valueScript ){
+                var data = this.importer.Macro.exec( fieldJson.valueScript, this );
+
+                if( this.importer.json.type === "querytable" ){
+                    this.data[ fieldJson.path ] = data;
+                }else{
+                    var names = fieldJson.path.split(".");
+                    var d = this.data;
+                    Array.each(names, function (n, idx) {
+                        if( idx === names.length -1 )return;
+                        if ( !d[n] ) d[n] = {};
+                        d = d[n];
+                    });
+                    d[names[names.length -1]] = data;
+                }
+            }
+        }.bind(this));
+
+        console.log( this.data );
 
 
-        this.view.fireEvent("postLoadItemRow", [null, this]);
+        this.importer.fireEvent("afterCreateRowData", [null, this]);
+    },
+    save : function () {
+        if( this.json.type === "querytable" ){
+
+        }else if( this.json.type === "cms" ){
+
+        }else if( this.json.type === "process" ){
+
+        }
+        this.importer.fireEvent("saveRow", [null, this]);
     }
 });
 
