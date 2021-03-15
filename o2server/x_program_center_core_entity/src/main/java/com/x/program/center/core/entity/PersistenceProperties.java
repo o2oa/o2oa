@@ -81,4 +81,8 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 			public static final String table = "VAL_META";
 		}
 	}
+
+	public static class MPWeixinMenu {
+		public static final String table = "CTE_MP_WEIXIN_MENU";
+	}
 }
