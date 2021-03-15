@@ -68,23 +68,6 @@ public class MPweixinAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @JaxrsMethodDescribe(value = "创建测试菜单, 【注意这个接口会把公众号菜单全部替换掉！】", action = ActionCreateMenu.class)
-    @GET
-    @Path("menu/create")
-    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void createMenu(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                           @Context HttpServletResponse response) {
-
-        ActionResult<ActionCreateMenu.Wo> result = new ActionResult<>();
-        try {
-            result = new ActionCreateMenu().execute();
-        }catch (Exception e) {
-            logger.error(e);
-            result.error(e);
-        }
-        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-    }
 
     @JaxrsMethodDescribe(value = "测试发送模版消息", action = ActionTestSendTempMessage.class)
     @POST
