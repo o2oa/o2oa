@@ -231,6 +231,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-windows-x64.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
+				<exclude name="commons/ext" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -239,7 +240,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/windows/"/>
+				<include name="jvm/windows_java11/"/>
 				<include name="service_windows.bat"/>
 				<include name="start_windows.bat"/>
 				<include name="start_windows_debug.bat"/>
@@ -252,6 +253,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-x64.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
+				<exclude name="commons/ext" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -260,7 +262,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/linux/"/>
+				<include name="jvm/linux_java11/"/>
 				<include name="start_linux.sh"/>
 				<include name="start_linux_debug.sh"/>
 				<include name="console_linux.sh"/>
@@ -272,6 +274,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-macos.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
+				<exclude name="commons/ext" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -280,7 +283,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/macos/"/>
+				<include name="jvm/macos_java11/"/>
 				<include name="start_macos.sh"/>
 				<include name="start_macos_debug.sh"/>
 				<include name="console_macos.sh"/>
@@ -292,6 +295,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-aix.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
+				<exclude name="commons/ext" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -300,7 +304,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/aix/"/>
+				<include name="jvm/aix_java11/"/>
 				<include name="start_aix.sh"/>
 				<include name="start_aix_debug.sh"/>
 				<include name="console_aix.sh"/>
@@ -312,6 +316,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-raspi.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
+				<exclude name="commons/ext" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -320,7 +325,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/raspi/"/>
+				<include name="jvm/raspi_java11/"/>
 				<include name="start_raspi.sh"/>
 				<include name="start_raspi_debug.sh"/>
 				<include name="console_raspi.sh"/>
@@ -332,6 +337,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-mips.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
+				<exclude name="commons/ext" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -340,7 +346,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/mips/"/>
+				<include name="jvm/mips_java11/"/>
 				<include name="start_mips.sh"/>
 				<include name="start_mips_debug.sh"/>
 				<include name="console_mips.sh"/>
@@ -352,6 +358,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-arm.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
+				<exclude name="commons/ext" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -360,7 +367,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/arm/"/>
+				<include name="jvm/arm_java11/"/>
 				<include name="start_arm.sh"/>
 				<include name="start_arm_debug.sh"/>
 				<include name="console_arm.sh"/>
