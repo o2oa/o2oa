@@ -49,6 +49,9 @@ public class MPWeixinConsumeQueue extends AbstractQueue<Message> {
                     if (StringUtils.isNotEmpty(openId)) {
                         JsonObject object =new JsonParser().parse(message.getBody()).getAsJsonObject();
                         Map<String, WeixinTempMessageFieldObj> data = new HashMap<>();
+                        WeixinTempMessageFieldObj wobj = new WeixinTempMessageFieldObj();
+                        wobj.setValue(message.getTitle());
+                        data.put("first", wobj);
                         for (int i = 0; i < list.size(); i++) {
                             MPweixinMessageTemp filed = list.get(i);
                             String name = filed.getName();
@@ -57,7 +60,7 @@ public class MPWeixinConsumeQueue extends AbstractQueue<Message> {
                             logger.info("解析出的结果 name："+name + " value:"+value + "  放入tempName："+tempName);
                             if ("title".equalsIgnoreCase(name)) { // 工作标题为空就用消息的标题
                                 if (StringUtils.isEmpty(value)) {
-                                    value = message.getTitle();
+                                    value = "无标题";
                                 }
                             } else {
                                 if ("creatorPerson".equalsIgnoreCase(name) && StringUtils.isNotEmpty(value)) {
@@ -72,6 +75,9 @@ public class MPWeixinConsumeQueue extends AbstractQueue<Message> {
                             obj.setColor("#173177");
                             data.put(tempName, obj);
                         }
+                        WeixinTempMessageFieldObj robj = new WeixinTempMessageFieldObj();
+                        robj.setValue("请注意查收！");
+                        data.put("remark", robj);
                         String workId = object.get("work").getAsString();
                         String workUrl = getOpenUrl(workId);
                         WeixinTempMessage wxMessage = new WeixinTempMessage();
