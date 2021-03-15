@@ -949,7 +949,14 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
             var d = dmp.diff_main(text2, text1);
             dmp.diff_cleanupSemantic(d);
             var ds = dmp.diff_prettyHtml(d);
-            ds = ds.replace(/[\n\r]+/g, "<br>");
+            //ds = ds.replace(/[\n\r]+/g, "<br>");
+            ds = ds.replace(/(\n\t\t\t)+/g, " | ")
+                .replace(/(\n\t\t)+/g,"\n")
+                .replace(/(\n\t)+/g,"\n")
+                .replace(/\n+/g,"<br>")
+                .replace(/\t+/g,"");
+            //ds = ds.replace(/(\n\t)+/g,"<table width=100% border=1 style='border-collapse: collapse'>");
+            //ds = ds.replace(/\n+/g, "<br>");
             this.documentEditor.layout_filetext.set("html", ds);
         }.bind(this));
     },
@@ -964,6 +971,12 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
                 // if (this.history.stop){
                 //     this.history.origina(this.historyData.json.data, this.histroyObj);
                 // }
+                if (this.history.documentHistoryItems && this.history.documentHistoryItems.length){
+                    this.history.documentHistoryItems.each(function(item){
+                        if (item.histroyObj) item.histroyObj.hideCurrent();
+                    });
+                }
+                this.histroyObj.showCurrent();
                 this.launch();
                 e.stopPropagation();
             }.bind(this));
@@ -981,7 +994,29 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
         this.patchNode = new Element("div", {"styles": this.css.historyListItemPatchNode, "html": patchHtml}).inject(this.node);
         this.diffsNode = new Element("div", {"styles": this.css.historyListItemDiffsNode}).inject(this.node);
 
+        debugger;
         var _self = this;
+        if (this.historyData.json.data){
+            infor = MWF.xApplication.process.Xform.LP.documentHistory.original;
+            var histroyObj = {
+                "node": this.node,
+                "showCurrent": function(){
+                    this.node.setStyles({"background-color": "#e2edfb"});
+                    //if (show) this.node.scrollIn();
+                },
+                "hideCurrent": function(){
+                    this.node.setStyles(_self.css.historyListItemDiffNode);
+                }
+            };
+            this.histroyObj = histroyObj;
+            this.node.addEvents({
+                "click": function(){
+                    if (_self.history.stop){
+                        _self.history.origina(_self.historyData.json.data, histroyObj);
+                    }
+                }
+            });
+        }
         if (patchs){
             patchs.each(function(patch){
                 patch.diffs.each(function(diff){
@@ -1015,48 +1050,84 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
                             }
                         };
 
-                        diffNode.addEvents({
-                            // "mouseover": function(){
-                            //     if (_self.history.stop){
-                            //         var diff = this.retrieve("diff");
-                            //         var color = (diff[0]==-1) ? "red": "blue";
-                            //         this.setStyles({"border-color": color});
-                            //     }
-                            // },
-                            // "mouseout": function(){ if (_self.history.stop) this.setStyles(_self.css.historyListItemDiffNode_out) },
-                            "click": function(){
-                                if (_self.history.stop){
-                                    var diff = this.retrieve("diff");
-                                    _self.history.to(diff);
-                                }
-                            }
-                        });
+                        // diffNode.addEvents({
+                        //     "click": function(){
+                        //         if (_self.history.stop){
+                        //             var diff = this.retrieve("diff");
+                        //             _self.history.to(diff);
+                        //         }
+                        //     }
+                        // });
 
                     }
                 }.bind(this));
             }.bind(this));
-        }else{
-            infor = MWF.xApplication.process.Xform.LP.documentHistory.original;
-            //diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
-            //this.history.originaDiff = {
-            var histroyObj = {
-                "node": this.node,
-                "showCurrent": function(){
-                    this.node.setStyles({"background-color": "#e2edfb"});
-                    //if (show) this.node.scrollIn();
-                },
-                "hideCurrent": function(){
-                    this.node.setStyles(_self.css.historyListItemDiffNode);
-                }
-            };
-            this.histroyObj = histroyObj;
-            this.node.addEvents({
-                "click": function(){
-                    if (_self.history.stop){
-                        _self.history.origina(_self.historyData.json.data, histroyObj);
-                    }
-                }
-            });
         }
+
+        // if (patchs){
+        //     patchs.each(function(patch){
+        //         patch.diffs.each(function(diff){
+        //             if (diff[0]!=0){
+        //                 diff["id"] = (new o2.widget.UUID()).toString();
+        //                 var tmp = new Element("div", {"html": diff[1]});
+        //                 infor = tmp.get("text");
+        //                 var infor = ((infor.length>50) ? infor.substring(0, 50)+"..." : infor);
+        //
+        //                 tmp.destroy();
+        //                 if (diff[0]==-1){
+        //                     infor = MWF.xApplication.process.Xform.LP.documentHistory.delete +": "+"<span style='color:red'><del>"+infor+"</del></span>"
+        //                 }else{
+        //                     infor = MWF.xApplication.process.Xform.LP.documentHistory.insert +": "+"<span style='color:blue'><ins>"+infor+"</ins></span>"
+        //                 }
+        //                 diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
+        //                 diffNode.store("diff", diff);
+        //                 diff["item"] = {
+        //                     "node": diffNode,
+        //                     "showCurrent": function(show){
+        //                         var thisDiff = this.node.retrieve("diff");
+        //                         var color = (thisDiff[0]==-1) ? "#fbe0e7": "#e2edfb";
+        //                         this.node.setStyles({"background-color": color});
+        //
+        //                         var ss = _self.history.historyListContentAreaNode.getScrollSize();
+        //                         var s = _self.history.historyListContentAreaNode.getSize();
+        //                         if (ss.y>s.y) if (show) this.node.scrollIn();
+        //                     },
+        //                     "hideCurrent": function(){
+        //                         this.node.setStyles(_self.css.historyListItemDiffNode);
+        //                     }
+        //                 };
+        //
+        //                 diffNode.addEvents({
+        //                     "click": function(){
+        //                         if (_self.history.stop){
+        //                             var diff = this.retrieve("diff");
+        //                             _self.history.to(diff);
+        //                         }
+        //                     }
+        //                 });
+        //
+        //             }
+        //         }.bind(this));
+        //     }.bind(this));
+        // }else{
+        //     infor = MWF.xApplication.process.Xform.LP.documentHistory.original;
+        //     var histroyObj = {
+        //         "node": this.node,
+        //         "showCurrent": function(){
+        //             this.node.setStyles({"background-color": "#e2edfb"});
+        //         },
+        //         "hideCurrent": function(){
+        //             this.node.setStyles(_self.css.historyListItemDiffNode);
+        //         }
+        //     };
+        //     this.histroyObj = histroyObj;
+        //     this.node.addEvents({
+        //         "click": function(){
+        //             if (_self.history.stop){
+        //                 _self.history.origina(_self.historyData.json.data, histroyObj);
+        //             }
+        //         }
+        //     });
+        // }
     }
 })
