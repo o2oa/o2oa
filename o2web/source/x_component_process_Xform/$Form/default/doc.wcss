@@ -165,9 +165,12 @@
         "float": "right",
         "background-color": "#f3f3f3",
         "border-left": "1px solid #cccccc",
+        "border-top": "1px solid #cccccc",
+        "border-bottom": "1px solid #cccccc",
         "position": "absolute",
         "z-index": "20000",
-        "right": "0px"
+        "right": "0px",
+        "top": "37px"
     },
     "historyListTitleAreaNode":{
         "height": "80px",
@@ -202,6 +205,7 @@
         "margin-bottom": "10px",
         "overflow": "hidden",
         "padding": "5px 10px",
+        "cursor": "pointer"
     },
 
     "historyListItemPatchNode": {
@@ -210,6 +214,14 @@
     },
     "historyListItemDiffsNode": {
         "overflow": "hidden"
+    },
+    "historyListItemActionNode": {
+        "height": "55px",
+        "width": "40px",
+        "float": "right",
+        "line-height": "55px",
+        "cursor": "pointer",
+        "color": "#0000FF"
     },
     "historyListItemDiffNode": {
         "overflow": "hidden",
