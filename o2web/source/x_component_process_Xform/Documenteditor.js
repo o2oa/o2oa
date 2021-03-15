@@ -1033,8 +1033,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             if (!originaData || !originaData.filetext || !this.originaHistoryData){
                 //保存原始版本
-                this.originaHistoryData = {"data": this.data.filetext};
-                editionData.data = JSON.stringify({"data": this.data.filetext});
+                this.originaHistoryData = {"data": this.data.filetext, "v": "6"};
+                editionData.data = JSON.stringify({"data": this.data.filetext, "v": "6"});
             }else if (originaData.filetext!=this.data.filetext){
                 //保存历史版本
                 var data = this.getFiletextText(this.data.filetext);
@@ -1047,7 +1047,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 var patch_list = dmp.patch_make(earlyData, data, diff_d);
                 var d = {
                     "patchs": dmp.patch_toText(patch_list),
-                    "data": this.data.filetext
+                    "data": this.data.filetext,
+                    "v": "6"
                 };
                 editionData.data = JSON.stringify(d);
             }else{
