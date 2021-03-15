@@ -56,11 +56,11 @@ o2.addReady(function () {
                     console.log("code：" + code)
                     var type = uri.getData("type"); // bind 是绑定
                     console.log("type：" + type)
-                    if (type && type === "bind") { 
+                    if (type && type === "bind") {
                         layout._authForm();
-                    }else { // code 登录
+                    } else { // code 登录
                         layout.showLoading();
-                        o2.Actions.load("x_organization_assemble_authentication").MPweixinAction.loginWithCode(code, function(json) {
+                        o2.Actions.load("x_organization_assemble_authentication").MPweixinAction.loginWithCode(code, function (json) {
                             console.log(json);
                             layout.hideLoading();
                             layout.session.user = json.data;
@@ -71,16 +71,16 @@ o2.addReady(function () {
                                 history.replaceState(null, "page", "../x_desktop/appMobile.html?app=process.TaskCenter");
                                 "appMobile.html?app=process.TaskCenter".toURI().go();
                             }
-                        }, function(err) {
+                        }, function (err) {
                             layout.hideLoading();
                             console.log(err)
-                            layout.notice('单点登录失败', 'error');
+                            layout.notice('单点登录失败，请先绑定用户', 'error');
                         });
                     }
 
                 };
 
- 
+
                 /**
                  * 认证表单
                  */
@@ -111,7 +111,7 @@ o2.addReady(function () {
                             }
                         });
                         layout.getCodeBtnNode.addEvents({
-                            "click": function(e) {
+                            "click": function (e) {
                                 layout._getCodeForLogin();
                             }
                         });
@@ -134,17 +134,17 @@ o2.addReady(function () {
                                         codeAnswer: code
                                     }
                                     layout.showLoading();
-                                    o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.codeLogin(data, function(json) {
+                                    o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.codeLogin(data, function (json) {
                                         console.log('登录成功。。。。。。。');
                                         layout.session.user = json.data;
                                         //绑定用户
                                         layout._bindWeixin2User();
-                                    }, function(err) {
+                                    }, function (err) {
                                         layout.hideLoading();
                                         console.log(err)
                                         layout.notice('登录失败！', "error")
                                     });
-                                }else { //密码登录
+                                } else { //密码登录
                                     var password = layout.loginInputPasswordNode.get('value');
                                     if (!password || password === '') {
                                         layout.notice('请先输入密码！', "error")
@@ -155,14 +155,13 @@ o2.addReady(function () {
                                         password: password
                                     }
                                     layout.showLoading();
-                                    o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.	login(data, function(json) {
-                                        console.log('登录成功。。。。。。。');
+                                    o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.login(data, function (json) {
                                         layout.session.user = json.data;
                                         //删除登录窗口
                                         layout.loginBoxNode.destroy();
                                         //绑定用户
                                         layout._bindWeixin2User();
-                                    }, function(err) {
+                                    }, function (err) {
                                         layout.hideLoading();
                                         console.log(err)
                                         layout.notice('登录失败！', "error")
@@ -174,27 +173,27 @@ o2.addReady(function () {
                     }.bind(layout));
                 };
                 //绑定微信openid到用户信息
-                layout._bindWeixin2User = function() {
+                layout._bindWeixin2User = function () {
                     var uri = href.toURI();
                     var code = uri.getData("code"); //微信code
                     if (code) {
-                        o2.Actions.load("x_organization_assemble_authentication").MPweixinAction.bindWithCode(code, function(json) {
+                        o2.Actions.load("x_organization_assemble_authentication").MPweixinAction.bindWithCode(code, function (json) {
                             layout.hideLoading();
                             //绑定成功
-                            var box = new Element("div", {"style": "text-align: center;"}).inject($(document.body));
-                            new Element("h2", {"text": "绑定成功！"}).inject(box);
-                        }, function(err) {
+                            var box = new Element("div", { "style": "text-align: center;" }).inject($(document.body));
+                            new Element("h2", { "text": "绑定成功！" }).inject(box);
+                        }, function (err) {
                             layout.hideLoading();
                             console.log(err)
                             layout.notice('绑定账号失败', 'error');
                         })
-                    }else {
+                    } else {
                         layout.hideLoading();
                         layout.notice('没有传入微信code无法绑定', 'error');
                     }
                 };
                 // 获取验证码
-                layout._getCodeForLogin = function() {
+                layout._getCodeForLogin = function () {
                     var username = layout.loginInputUsernameNode.get('value');
                     if (!username || username === '') {
                         layout.notice('请先输入用户名或手机号码！', "error")
@@ -206,19 +205,19 @@ o2.addReady(function () {
                     layout.getCodeBtnNode.addClass("code-btn-sending");
                     layout.countDownTime--;
                     layout.getCodeBtnNode.set('text', layout.countDownTime + '秒后可重新获取');
-                    layout.countDownFun = setInterval(()=> {
+                    layout.countDownFun = setInterval(() => {
                         layout._countDownSendCode();
                     }, 1000)
-                    o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.code(username, function(json) {
+                    o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.code(username, function (json) {
                         layout.notice('验证码已经发送，请注意查收！', 'success');
-                    }, function(err){
+                    }, function (err) {
                         console.log(err);
                         layout.notice('发送验证码失败！', 'error');
                     });
-                     
+
                 };
                 // countdown 定时器
-                layout._countDownSendCode = function() {
+                layout._countDownSendCode = function () {
                     if (layout.countDownTime === 0) {
                         layout.getCodeBtnNode.removeClass("code-btn-sending");
                         layout.getCodeBtnNode.addClass("code-btn");
@@ -228,18 +227,18 @@ o2.addReady(function () {
                             clearInterval(layout.countDownFun)
                             layout.countDownFun = null
                         }
-                    }else {
+                    } else {
                         layout.countDownTime--
                         layout.getCodeBtnNode.set('text', layout.countDownTime + '秒后可重新获取');
-                    }                
+                    }
                 };
 
-                layout.showLoading = function() {
-                    layout.loadingGif = new Element("div", {"sytle": "position:fixed;left:0;right:0;top:0;text-align: center;margin: 60px;"}).inject($(document.body));
-                    new Element("img", {"src": "../x_desktop/img/loading2.gif", "style": "width: 96px; height: 96px;"}).inject(layout.loadingGif);
+                layout.showLoading = function () {
+                    layout.loadingGif = new Element("div", { "sytle": "position:fixed;left:0;right:0;top:0;text-align: center;margin: 60px;" }).inject($(document.body));
+                    new Element("img", { "src": "../x_desktop/img/loading2.gif", "style": "width: 96px; height: 96px;" }).inject(layout.loadingGif);
                 };
-                
-                layout.hideLoading = function() {
+
+                layout.hideLoading = function () {
                     if (layout.loadingGif) {
                         layout.loadingGif.destroy()
                         layout.loadingGif = null
