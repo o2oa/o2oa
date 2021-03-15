@@ -51,7 +51,6 @@ public class MPWeixinConsumeQueue extends AbstractQueue<Message> {
                         Map<String, WeixinTempMessageFieldObj> data = new HashMap<>();
                         WeixinTempMessageFieldObj wobj = new WeixinTempMessageFieldObj();
                         wobj.setValue(message.getTitle());
-                        wobj.setValue("#173177");
                         data.put("first", wobj);
                         for (int i = 0; i < list.size(); i++) {
                             MPweixinMessageTemp filed = list.get(i);
@@ -78,7 +77,6 @@ public class MPWeixinConsumeQueue extends AbstractQueue<Message> {
                         }
                         WeixinTempMessageFieldObj robj = new WeixinTempMessageFieldObj();
                         robj.setValue("请注意查收！");
-                        robj.setValue("#173177");
                         data.put("remark", robj);
                         String workId = object.get("work").getAsString();
                         String workUrl = getOpenUrl(workId);
