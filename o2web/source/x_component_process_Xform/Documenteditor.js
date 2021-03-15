@@ -980,8 +980,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.form.addEvent("beforeSave", function(){
                 this.resetData();
                 this.checkSaveNewEdition();
-                //if (!this.notSaveResetData) this.resetData();
             }.bind(this));
+
+            // this.form.addEvent("beforeProcess", function(){
+            //     this.checkSaveNewHistroy();
+            // }.bind(this));
 
             if (this.json.toWord=="y"){
                 if (this.json.toWordTrigger=="open") this.docToWord();
@@ -1013,25 +1016,41 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.form.documenteditorList.push(this);
     },
 
+    getFiletextText: function(data){
+        var div = new Element("div", {
+            "html": data
+        });
+        var text = div.get("text");
+        div.destroy();
+        return text;
+    },
     checkSaveNewEdition: function(callback){
-
+        debugger;
         if (!this.allowEdit || !this.data.filetext || this.data.filetext == this.json.defaultValue.filetext) return false;
         if (this.form.businessData.work){
             var originaData = this.form.businessData.originalData[this.json.id];
             var editionData = {"category": this.json.id};
+
             if (!originaData || !originaData.filetext || !this.originaHistoryData){
                 //保存原始版本
-                this.originaHistoryData = {"data": this.data.filetext};
-                editionData.data = JSON.stringify({"data": this.data.filetext});
+                this.originaHistoryData = {"data": this.data.filetext, "v": "6"};
+                editionData.data = JSON.stringify({"data": this.data.filetext, "v": "6"});
             }else if (originaData.filetext!=this.data.filetext){
                 //保存历史版本
-                var data = this.data.filetext;
-                var earlyData = originaData.filetext;
+                var data = this.getFiletextText(this.data.filetext);
+                var earlyData = this.getFiletextText(originaData.filetext);
+                //var data = this.data.filetext;
+                //var earlyData = originaData.filetext;
                 var dmp = new diff_match_patch();
                 var diff_d = dmp.diff_main(earlyData, data);
                 dmp.diff_cleanupSemantic(diff_d);
                 var patch_list = dmp.patch_make(earlyData, data, diff_d);
-                editionData.data = JSON.stringify({"patchs": dmp.patch_toText(patch_list)});
+                var d = {
+                    "patchs": dmp.patch_toText(patch_list),
+                    "data": this.data.filetext,
+                    "v": "6"
+                };
+                editionData.data = JSON.stringify(d);
             }else{
                 return false;
             }
@@ -1041,27 +1060,20 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }.bind(this));
         }
     },
-    // saveNewDataEdition: function(callback){
-    //     if (this.form.businessData.work){
-    //         var editionData = {"category": this.json.id};
-    //         if (this.form.businessData.originalData[this.json.id] && this.form.businessData.originalData[this.json.id].filetext){
-    //             var data = this.data.filetext;
-    //             var earlyData = this.form.businessData.originalData[this.json.id].filetext;
-    //             var dmp = new diff_match_patch();
-    //             var diff_d = dmp.diff_main(earlyData, data);
-    //             dmp.diff_cleanupSemantic(diff_d);
-    //             var patch_list = dmp.patch_make(earlyData, data, diff_d);
-    //             editionData.data = {"patchs": dmp.patch_toText(patch_list)};
-    //
-    //         }else{
-    //             editionData.data = {"data": this.data.filetext};
-    //         }
-    //         o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.create(this.form.businessData.work.id, editionData, function(json){
-    //             this.form.businessData.originalData[this.json.id] = this.data.filetext;
-    //             if (callback) callback();
-    //         }.bind(this));
-    //     }
-    // },
+    checkSaveNewHistroy: function(){
+        var p = o2.Actions.load("x_processplatform_assemble_surface").DocumentRevisionAction.getLast(this.form.businessData.work.job, this.json.id);
+        p.then(function(json){
+            if (!json.data || json.data.data!=this.data.filetext){
+                var data = {
+                    "category": this.json.id,
+                    "data":this.data.filetext
+                }
+                return o2.Actions.load("x_processplatform_assemble_surface").DocumentRevisionAction.create(this.form.businessData.work.id, data);
+            }
+        }.bind(this));
+        return p;
+    },
+
     resizeToolbar: function(){
         if (this.toolbarNode){
             var p = this.toolNode.getPosition(this.scrollNode);
