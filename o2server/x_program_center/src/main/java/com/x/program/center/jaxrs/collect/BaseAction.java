@@ -80,13 +80,14 @@ class BaseAction extends StandardJaxrsAction {
 		return resp.getData(ReturnWoBoolean.class).getValue();
 	}
 
-	Boolean regist(String name, String password, String mobile, String codeAnswer) throws Exception {
+	Boolean regist(String name, String password, String mobile, String codeAnswer, String mail) throws Exception {
 		String url = Config.collect().url("/o2_collect_assemble/jaxrs/unit");
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("name", name);
 		parameters.put("password", password);
 		parameters.put("mobile", mobile);
 		parameters.put("codeAnswer", codeAnswer);
+		parameters.put("mail", mail);
 		ActionResponse resp = ConnectionAction.post(url, null, parameters);
 		return resp.getData(ReturnWoBoolean.class).getValue();
 	}
