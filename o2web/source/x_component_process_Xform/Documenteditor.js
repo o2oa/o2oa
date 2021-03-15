@@ -1031,34 +1031,28 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var originaData = this.form.businessData.originalData[this.json.id];
             var editionData = {"category": this.json.id};
 
-            if ((!originaData || !originaData.filetext || !this.originaHistoryData) || originaData.filetext!=this.data.filetext){
-                var d = this.data.filetext;
-                this.originaHistoryData = {"data": d};
-                editionData.data = JSON.stringify({"data": d});
+            if (!originaData || !originaData.filetext || !this.originaHistoryData){
+                //保存原始版本
+                this.originaHistoryData = {"data": this.data.filetext};
+                editionData.data = JSON.stringify({"data": this.data.filetext});
+            }else if (originaData.filetext!=this.data.filetext){
+                //保存历史版本
+                var data = this.getFiletextText(this.data.filetext);
+                var earlyData = this.getFiletextText(originaData.filetext);
+                //var data = this.data.filetext;
+                //var earlyData = originaData.filetext;
+                var dmp = new diff_match_patch();
+                var diff_d = dmp.diff_main(earlyData, data);
+                dmp.diff_cleanupSemantic(diff_d);
+                var patch_list = dmp.patch_make(earlyData, data, diff_d);
+                var d = {
+                    "patchs": dmp.patch_toText(patch_list),
+                    "data": this.data.filetext
+                };
+                editionData.data = JSON.stringify(d);
             }else{
                 return false;
             }
-
-            // if (!originaData || !originaData.filetext || !this.originaHistoryData){
-                //保存原始版本
-            //var d = this.getFiletextText(this.data.filetext);
-
-                //this.originaHistoryData = {"data": this.data.filetext};
-                //editionData.data = JSON.stringify({"data": this.data.filetext});
-            // }else if (originaData.filetext!=this.data.filetext){
-            //     //保存历史版本
-            //     var data = this.getFiletextText(this.data.filetext);
-            //     var earlyData = this.getFiletextText(originaData.filetext);
-            //     //var data = this.data.filetext;
-            //     //var earlyData = originaData.filetext;
-            //     var dmp = new diff_match_patch();
-            //     var diff_d = dmp.diff_main(earlyData, data);
-            //     dmp.diff_cleanupSemantic(diff_d);
-            //     var patch_list = dmp.patch_make(earlyData, data, diff_d);
-            //     editionData.data = JSON.stringify({"patchs": dmp.patch_toText(patch_list)});
-            // }else{
-            //     return false;
-            // }
             o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.create(this.form.businessData.work.id, editionData, function(json){
                 //originaData.filetext = this.data.filetext;
                 if (callback) callback();
@@ -1079,27 +1073,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return p;
     },
 
-    // saveNewDataEdition: function(callback){
-    //     if (this.form.businessData.work){
-    //         var editionData = {"category": this.json.id};
-    //         if (this.form.businessData.originalData[this.json.id] && this.form.businessData.originalData[this.json.id].filetext){
-    //             var data = this.data.filetext;
-    //             var earlyData = this.form.businessData.originalData[this.json.id].filetext;
-    //             var dmp = new diff_match_patch();
-    //             var diff_d = dmp.diff_main(earlyData, data);
-    //             dmp.diff_cleanupSemantic(diff_d);
-    //             var patch_list = dmp.patch_make(earlyData, data, diff_d);
-    //             editionData.data = {"patchs": dmp.patch_toText(patch_list)};
-    //
-    //         }else{
-    //             editionData.data = {"data": this.data.filetext};
-    //         }
-    //         o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.create(this.form.businessData.work.id, editionData, function(json){
-    //             this.form.businessData.originalData[this.json.id] = this.data.filetext;
-    //             if (callback) callback();
-    //         }.bind(this));
-    //     }
-    // },
     resizeToolbar: function(){
         if (this.toolbarNode){
             var p = this.toolNode.getPosition(this.scrollNode);
