@@ -49,13 +49,14 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
     },
 
     loadHistoryToolbar: function(){
-        var html = "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/play.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.play+"\" MWFButtonAction=\"play\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/pause.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.pause+"\" MWFButtonAction=\"pause\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/stop.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.stop+"\" MWFButtonAction=\"stopPlay\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/prev.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.prev+"\" MWFButtonAction=\"prev\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/next.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.next+"\" MWFButtonAction=\"next\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
+        // var html = "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/play.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.play+"\" MWFButtonAction=\"play\"></span>";
+        // html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/pause.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.pause+"\" MWFButtonAction=\"pause\"></span>";
+        // html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/stop.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.stop+"\" MWFButtonAction=\"stopPlay\"></span>";
+        // html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
+        // html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/prev.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.prev+"\" MWFButtonAction=\"prev\"></span>";
+        // html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/next.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.next+"\" MWFButtonAction=\"next\"></span>";
+        // html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
+        var html = "";
         html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/exit.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.exit+"\" MWFButtonAction=\"exit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.documentHistory.exit+"\"></span>";
         html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
 
@@ -76,58 +77,60 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         if (this.historyListAreaNode) this.historyListAreaNode.inject(this.toolbarNode);
     },
     checkToolbar: function(){
-        if (this.toolbar){
-            if (this.playing){
-                if (this.stop){
-                    this.toolbar.childrenButton[0].enable();
-                    this.toolbar.childrenButton[1].disable();
-
-                    if (this.patchIndex==0 && this.diffIndex==0){
-                        this.toolbar.childrenButton[3].disable();
-                        if (this.diffPatch.length) this.toolbar.childrenButton[4].enable();
-                    }else{
-                        if (this.patchIndex<this.diffPatch.length-1){
-                            this.toolbar.childrenButton[3].enable();
-                            this.toolbar.childrenButton[4].enable();
-                        }else if (this.patchIndex<this.diffPatch.length && this.diffIndex < this.diffPatch[this.patchIndex].patch.diffs.length){
-                            this.toolbar.childrenButton[3].enable();
-                            this.toolbar.childrenButton[4].enable();
-                        }else{
-                            if (this.diffPatch.length) this.toolbar.childrenButton[3].enable();
-                            this.toolbar.childrenButton[4].disable();
-                        }
-                    }
-                }else{
-                    this.toolbar.childrenButton[0].disable();
-                    this.toolbar.childrenButton[1].enable();
-
-                    this.toolbar.childrenButton[3].disable();
-                    this.toolbar.childrenButton[4].disable();
-                }
-                this.toolbar.childrenButton[2].enable();
-
-            }else{
-                this.toolbar.childrenButton[0].enable();
-                this.toolbar.childrenButton[1].disable();
-                this.toolbar.childrenButton[2].disable();
-
-                if (this.patchIndex==0 && this.diffIndex==0){
-                    this.toolbar.childrenButton[3].disable();
-                    if (this.diffPatch.length) this.toolbar.childrenButton[4].enable();
-                }else{
-                    if (this.patchIndex<this.diffPatch.length-1){
-                        this.toolbar.childrenButton[3].enable();
-                        this.toolbar.childrenButton[4].enable();
-                    }else if (this.patchIndex<this.diffPatch.length && this.diffIndex < this.diffPatch[this.patchIndex].patch.diffs.length){
-                        this.toolbar.childrenButton[3].enable();
-                        this.toolbar.childrenButton[4].enable();
-                    }else{
-                        if (this.diffPatch.length) this.toolbar.childrenButton[3].enable();
-                        this.toolbar.childrenButton[4].disable();
-                    }
-                }
-            }
-        }
+        return false;
+        // 不做动画效果，不需要处理工具条
+        // if (this.toolbar){
+        //     if (this.playing){
+        //         if (this.stop){
+        //             this.toolbar.childrenButton[0].enable();
+        //             this.toolbar.childrenButton[1].disable();
+        //
+        //             if (this.patchIndex==0 && this.diffIndex==0){
+        //                 this.toolbar.childrenButton[3].disable();
+        //                 if (this.diffPatch.length) this.toolbar.childrenButton[4].enable();
+        //             }else{
+        //                 if (this.patchIndex<this.diffPatch.length-1){
+        //                     this.toolbar.childrenButton[3].enable();
+        //                     this.toolbar.childrenButton[4].enable();
+        //                 }else if (this.patchIndex<this.diffPatch.length && this.diffIndex < this.diffPatch[this.patchIndex].patch.diffs.length){
+        //                     this.toolbar.childrenButton[3].enable();
+        //                     this.toolbar.childrenButton[4].enable();
+        //                 }else{
+        //                     if (this.diffPatch.length) this.toolbar.childrenButton[3].enable();
+        //                     this.toolbar.childrenButton[4].disable();
+        //                 }
+        //             }
+        //         }else{
+        //             this.toolbar.childrenButton[0].disable();
+        //             this.toolbar.childrenButton[1].enable();
+        //
+        //             this.toolbar.childrenButton[3].disable();
+        //             this.toolbar.childrenButton[4].disable();
+        //         }
+        //         this.toolbar.childrenButton[2].enable();
+        //
+        //     }else{
+        //         this.toolbar.childrenButton[0].enable();
+        //         this.toolbar.childrenButton[1].disable();
+        //         this.toolbar.childrenButton[2].disable();
+        //
+        //         if (this.patchIndex==0 && this.diffIndex==0){
+        //             this.toolbar.childrenButton[3].disable();
+        //             if (this.diffPatch.length) this.toolbar.childrenButton[4].enable();
+        //         }else{
+        //             if (this.patchIndex<this.diffPatch.length-1){
+        //                 this.toolbar.childrenButton[3].enable();
+        //                 this.toolbar.childrenButton[4].enable();
+        //             }else if (this.patchIndex<this.diffPatch.length && this.diffIndex < this.diffPatch[this.patchIndex].patch.diffs.length){
+        //                 this.toolbar.childrenButton[3].enable();
+        //                 this.toolbar.childrenButton[4].enable();
+        //             }else{
+        //                 if (this.diffPatch.length) this.toolbar.childrenButton[3].enable();
+        //                 this.toolbar.childrenButton[4].disable();
+        //             }
+        //         }
+        //     }
+        // }
     },
     createHistoryListNode: function(){
         this.historyListAreaNode = new Element("div", {"styles": this.css.historyListAreaNode}).inject(this.documentEditor.contentNode, "before");
@@ -224,17 +227,20 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                 var data = this.documentEditor.data.filetext;
                 var earlyData = originaData.filetext;
                 if (data!=earlyData){
+                    dataTxt = this.documentEditor.getFiletextText(data);
+                    earlyDataTxt = this.documentEditor.getFiletextText(earlyData);
+
                     var dmp = new diff_match_patch();
-                    var diff_d = dmp.diff_main(earlyData, data);
+                    var diff_d = dmp.diff_main(earlyDataTxt, dataTxt);
                     dmp.diff_cleanupSemantic(diff_d);
-                    var patch_list = dmp.patch_make(earlyData, data, diff_d);
+                    var patch_list = dmp.patch_make(earlyDataTxt, dataTxt, diff_d);
 
                     if (patch_list.length){
                         var patch = dmp.patch_toText(patch_list);
                         var patchData = JSON.stringify({"patchs": patch});
                         var currentData = {
                             "data": patchData,
-                            "json": {"patchs": patch},
+                            "json": {"patchs": patch, "data": data, "current": true},
                             "person": layout.session.user.distinguishedName,
                             "activityName": this.documentEditor.form.businessData.activity.name,
                             "createTime" : (new Date()).format("db")
