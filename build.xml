@@ -231,7 +231,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-windows-x64.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
-				<exclude name="commons/ext" />
+				<exclude name="commons/ext/" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -253,7 +253,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-x64.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
-				<exclude name="commons/ext" />
+				<exclude name="commons/ext/" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -274,7 +274,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-macos.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
-				<exclude name="commons/ext" />
+				<exclude name="commons/ext/" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -295,7 +295,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-aix.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
-				<exclude name="commons/ext" />
+				<exclude name="commons/ext/" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -316,7 +316,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-raspi.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
-				<exclude name="commons/ext" />
+				<exclude name="commons/ext/" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -337,7 +337,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-mips.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
-				<exclude name="commons/ext" />
+				<exclude name="commons/ext/" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -358,7 +358,7 @@
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-arm.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
-				<exclude name="commons/ext" />
+				<exclude name="commons/ext/" />
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
