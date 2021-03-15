@@ -49,14 +49,18 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
     },
 
     loadHistoryToolbar: function(){
-        // var html = "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/play.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.play+"\" MWFButtonAction=\"play\"></span>";
-        // html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/pause.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.pause+"\" MWFButtonAction=\"pause\"></span>";
-        // html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/stop.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.stop+"\" MWFButtonAction=\"stopPlay\"></span>";
-        // html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
-        // html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/prev.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.prev+"\" MWFButtonAction=\"prev\"></span>";
-        // html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/next.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.next+"\" MWFButtonAction=\"next\"></span>";
-        // html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
+        debugger;
         var html = "";
+        if (this.historyDataList && this.historyDataList.length && this.historyDataList[0].json.v!="6"){
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/play.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.play+"\" MWFButtonAction=\"play\"></span>";
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/pause.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.pause+"\" MWFButtonAction=\"pause\"></span>";
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/stop.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.stop+"\" MWFButtonAction=\"stopPlay\"></span>";
+            html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/prev.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.prev+"\" MWFButtonAction=\"prev\"></span>";
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/next.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.next+"\" MWFButtonAction=\"next\"></span>";
+            html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
+        }
+
         html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/exit.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.exit+"\" MWFButtonAction=\"exit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.documentHistory.exit+"\"></span>";
         html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
 
@@ -77,60 +81,62 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         if (this.historyListAreaNode) this.historyListAreaNode.inject(this.toolbarNode);
     },
     checkToolbar: function(){
-        return false;
-        // 不做动画效果，不需要处理工具条
-        // if (this.toolbar){
-        //     if (this.playing){
-        //         if (this.stop){
-        //             this.toolbar.childrenButton[0].enable();
-        //             this.toolbar.childrenButton[1].disable();
-        //
-        //             if (this.patchIndex==0 && this.diffIndex==0){
-        //                 this.toolbar.childrenButton[3].disable();
-        //                 if (this.diffPatch.length) this.toolbar.childrenButton[4].enable();
-        //             }else{
-        //                 if (this.patchIndex<this.diffPatch.length-1){
-        //                     this.toolbar.childrenButton[3].enable();
-        //                     this.toolbar.childrenButton[4].enable();
-        //                 }else if (this.patchIndex<this.diffPatch.length && this.diffIndex < this.diffPatch[this.patchIndex].patch.diffs.length){
-        //                     this.toolbar.childrenButton[3].enable();
-        //                     this.toolbar.childrenButton[4].enable();
-        //                 }else{
-        //                     if (this.diffPatch.length) this.toolbar.childrenButton[3].enable();
-        //                     this.toolbar.childrenButton[4].disable();
-        //                 }
-        //             }
-        //         }else{
-        //             this.toolbar.childrenButton[0].disable();
-        //             this.toolbar.childrenButton[1].enable();
-        //
-        //             this.toolbar.childrenButton[3].disable();
-        //             this.toolbar.childrenButton[4].disable();
-        //         }
-        //         this.toolbar.childrenButton[2].enable();
-        //
-        //     }else{
-        //         this.toolbar.childrenButton[0].enable();
-        //         this.toolbar.childrenButton[1].disable();
-        //         this.toolbar.childrenButton[2].disable();
-        //
-        //         if (this.patchIndex==0 && this.diffIndex==0){
-        //             this.toolbar.childrenButton[3].disable();
-        //             if (this.diffPatch.length) this.toolbar.childrenButton[4].enable();
-        //         }else{
-        //             if (this.patchIndex<this.diffPatch.length-1){
-        //                 this.toolbar.childrenButton[3].enable();
-        //                 this.toolbar.childrenButton[4].enable();
-        //             }else if (this.patchIndex<this.diffPatch.length && this.diffIndex < this.diffPatch[this.patchIndex].patch.diffs.length){
-        //                 this.toolbar.childrenButton[3].enable();
-        //                 this.toolbar.childrenButton[4].enable();
-        //             }else{
-        //                 if (this.diffPatch.length) this.toolbar.childrenButton[3].enable();
-        //                 this.toolbar.childrenButton[4].disable();
-        //             }
-        //         }
-        //     }
-        // }
+        if (this.historyDataList && this.historyDataList.length && this.historyDataList[0].json.v!="6"){
+            if (this.toolbar){
+                if (this.playing){
+                    if (this.stop){
+                        this.toolbar.childrenButton[0].enable();
+                        this.toolbar.childrenButton[1].disable();
+
+                        if (this.patchIndex==0 && this.diffIndex==0){
+                            this.toolbar.childrenButton[3].disable();
+                            if (this.diffPatch.length) this.toolbar.childrenButton[4].enable();
+                        }else{
+                            if (this.patchIndex<this.diffPatch.length-1){
+                                this.toolbar.childrenButton[3].enable();
+                                this.toolbar.childrenButton[4].enable();
+                            }else if (this.patchIndex<this.diffPatch.length && this.diffIndex < this.diffPatch[this.patchIndex].patch.diffs.length){
+                                this.toolbar.childrenButton[3].enable();
+                                this.toolbar.childrenButton[4].enable();
+                            }else{
+                                if (this.diffPatch.length) this.toolbar.childrenButton[3].enable();
+                                this.toolbar.childrenButton[4].disable();
+                            }
+                        }
+                    }else{
+                        this.toolbar.childrenButton[0].disable();
+                        this.toolbar.childrenButton[1].enable();
+
+                        this.toolbar.childrenButton[3].disable();
+                        this.toolbar.childrenButton[4].disable();
+                    }
+                    this.toolbar.childrenButton[2].enable();
+
+                }else{
+                    this.toolbar.childrenButton[0].enable();
+                    this.toolbar.childrenButton[1].disable();
+                    this.toolbar.childrenButton[2].disable();
+
+                    if (this.patchIndex==0 && this.diffIndex==0){
+                        this.toolbar.childrenButton[3].disable();
+                        if (this.diffPatch.length) this.toolbar.childrenButton[4].enable();
+                    }else{
+                        if (this.patchIndex<this.diffPatch.length-1){
+                            this.toolbar.childrenButton[3].enable();
+                            this.toolbar.childrenButton[4].enable();
+                        }else if (this.patchIndex<this.diffPatch.length && this.diffIndex < this.diffPatch[this.patchIndex].patch.diffs.length){
+                            this.toolbar.childrenButton[3].enable();
+                            this.toolbar.childrenButton[4].enable();
+                        }else{
+                            if (this.diffPatch.length) this.toolbar.childrenButton[3].enable();
+                            this.toolbar.childrenButton[4].disable();
+                        }
+                    }
+                }
+            }
+        }else{
+            // 不做动画效果，不需要处理工具条
+        }
     },
     createHistoryListNode: function(){
         this.historyListAreaNode = new Element("div", {"styles": this.css.historyListAreaNode}).inject(this.documentEditor.contentNode, "before");
@@ -237,7 +243,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
 
                     if (patch_list.length){
                         var patch = dmp.patch_toText(patch_list);
-                        var patchData = JSON.stringify({"patchs": patch});
+                        var patchData = JSON.stringify({"patchs": patch, "v": "6"});
                         var currentData = {
                             "data": patchData,
                             "json": {"patchs": patch, "data": data, "current": true},
@@ -966,29 +972,26 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
             this.documentEditor.layout_filetext.set("html", ds);
         }.bind(this));
     },
-    load: function(){
-        var patchs = this.historyData.json.patchObj || null;
-        var obj = this.historyData;
-
+    createTitleNode: function(){
         this.node = new Element("div", {"styles": this.css.historyListItemNode}).inject(this.history.historyListContentAreaNode);
-        if (this.history.documentHistoryItems && this.history.documentHistoryItems.length){
-            this.actionNode = new Element("div", {"styles": this.css.historyListItemActionNode, "text": MWF.xApplication.process.Xform.LP.documentHistory.diff, "title": MWF.xApplication.process.Xform.LP.documentHistory.diffTitle}).inject(this.node);
-            this.actionNode.addEvent("click", function(e){
-                // if (this.history.stop){
-                //     this.history.origina(this.historyData.json.data, this.histroyObj);
-                // }
-                if (this.history.documentHistoryItems && this.history.documentHistoryItems.length){
-                    this.history.documentHistoryItems.each(function(item){
-                        if (item.histroyObj) item.histroyObj.hideCurrent();
-                    });
-                }
-                this.histroyObj.showCurrent();
-                this.launch();
-                e.stopPropagation();
-            }.bind(this));
+
+        if (this.historyData.json.v && this.historyData.json.v=="6"){
+            if (this.history.documentHistoryItems && this.history.documentHistoryItems.length){
+                this.actionNode = new Element("div", {"styles": this.css.historyListItemActionNode, "text": MWF.xApplication.process.Xform.LP.documentHistory.diff, "title": MWF.xApplication.process.Xform.LP.documentHistory.diffTitle}).inject(this.node);
+                this.actionNode.addEvent("click", function(e){
+                    if (this.history.documentHistoryItems && this.history.documentHistoryItems.length){
+                        this.history.documentHistoryItems.each(function(item){
+                            if (item.histroyObj) item.histroyObj.hideCurrent();
+                        });
+                    }
+                    this.histroyObj.showCurrent();
+                    this.launch();
+                    e.stopPropagation();
+                }.bind(this));
+            }
         }
 
-
+        var obj = this.historyData;
         var patchHtml = "";
         if (this.historyData.json.data){
             var d = this.documentEditor.getFiletextText(this.historyData.json.data);
@@ -999,141 +1002,143 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
         }
         this.patchNode = new Element("div", {"styles": this.css.historyListItemPatchNode, "html": patchHtml}).inject(this.node);
         this.diffsNode = new Element("div", {"styles": this.css.historyListItemDiffsNode}).inject(this.node);
-
-        debugger;
+    },
+    createDataNode:function(){
+        var infor = MWF.xApplication.process.Xform.LP.documentHistory.original;
+        var histroyObj = {
+            "node": this.node,
+            "showCurrent": function(){
+                this.node.setStyles({"background-color": "#e2edfb"});
+                //if (show) this.node.scrollIn();
+            },
+            "hideCurrent": function(){
+                this.node.setStyles(_self.css.historyListItemDiffNode);
+            }
+        };
         var _self = this;
-        if (this.historyData.json.data){
-            infor = MWF.xApplication.process.Xform.LP.documentHistory.original;
-            var histroyObj = {
-                "node": this.node,
-                "showCurrent": function(){
-                    this.node.setStyles({"background-color": "#e2edfb"});
-                    //if (show) this.node.scrollIn();
-                },
-                "hideCurrent": function(){
-                    this.node.setStyles(_self.css.historyListItemDiffNode);
+        this.histroyObj = histroyObj;
+        this.node.addEvents({
+            "click": function(){
+                if (_self.history.stop){
+                    _self.history.origina(_self.historyData.json.data, histroyObj);
                 }
-            };
-            this.histroyObj = histroyObj;
-            this.node.addEvents({
-                "click": function(){
-                    if (_self.history.stop){
-                        _self.history.origina(_self.historyData.json.data, histroyObj);
-                    }
+            }
+        });
+    },
+    createPatchNode: function(patch){
+        var _self = this;
+        patch.diffs.each(function(diff){
+            if (diff[0]!=0){
+                diff["id"] = (new o2.widget.UUID()).toString();
+                var tmp = new Element("div", {"html": diff[1]});
+                infor = tmp.get("text");
+                var infor = ((infor.length>50) ? infor.substring(0, 50)+"..." : infor);
+
+                tmp.destroy();
+                if (diff[0]==-1){
+                    infor = MWF.xApplication.process.Xform.LP.documentHistory.delete +": "+"<span style='color:red'><del>"+infor+"</del></span>"
+                }else{
+                    infor = MWF.xApplication.process.Xform.LP.documentHistory.insert +": "+"<span style='color:blue'><ins>"+infor+"</ins></span>"
                 }
-            });
-        }
-        if (patchs){
-            patchs.each(function(patch){
-                patch.diffs.each(function(diff){
-                    if (diff[0]!=0){
-                        diff["id"] = (new o2.widget.UUID()).toString();
-                        var tmp = new Element("div", {"html": diff[1]});
-                        infor = tmp.get("text");
-                        var infor = ((infor.length>50) ? infor.substring(0, 50)+"..." : infor);
+                diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
+                diffNode.store("diff", diff);
+                diff["item"] = {
+                    "node": diffNode,
+                    "showCurrent": function(show){
+                        var thisDiff = this.node.retrieve("diff");
+                        var color = (thisDiff[0]==-1) ? "#fbe0e7": "#e2edfb";
+                        this.node.setStyles({"background-color": color});
 
-                        tmp.destroy();
-                        if (diff[0]==-1){
-                            infor = MWF.xApplication.process.Xform.LP.documentHistory.delete +": "+"<span style='color:red'><del>"+infor+"</del></span>"
-                        }else{
-                            infor = MWF.xApplication.process.Xform.LP.documentHistory.insert +": "+"<span style='color:blue'><ins>"+infor+"</ins></span>"
-                        }
-                        diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
-                        diffNode.store("diff", diff);
-                        diff["item"] = {
-                            "node": diffNode,
-                            "showCurrent": function(show){
-                                var thisDiff = this.node.retrieve("diff");
-                                var color = (thisDiff[0]==-1) ? "#fbe0e7": "#e2edfb";
-                                this.node.setStyles({"background-color": color});
-
-                                var ss = _self.history.historyListContentAreaNode.getScrollSize();
-                                var s = _self.history.historyListContentAreaNode.getSize();
-                                if (ss.y>s.y) if (show) this.node.scrollIn();
-                            },
-                            "hideCurrent": function(){
-                                this.node.setStyles(_self.css.historyListItemDiffNode);
-                            }
-                        };
-
-                        // diffNode.addEvents({
-                        //     "click": function(){
-                        //         if (_self.history.stop){
-                        //             var diff = this.retrieve("diff");
-                        //             _self.history.to(diff);
-                        //         }
-                        //     }
-                        // });
-
+                        var ss = _self.history.historyListContentAreaNode.getScrollSize();
+                        var s = _self.history.historyListContentAreaNode.getSize();
+                        if (ss.y>s.y) if (show) this.node.scrollIn();
+                    },
+                    "hideCurrent": function(){
+                        this.node.setStyles(_self.css.historyListItemDiffNode);
                     }
+                };
+            }
+        }.bind(this));
+    },
+    load: function(){
+        debugger;
+        this.createTitleNode();
+        var patchs = this.historyData.json.patchObj || null;
+
+        if (this.historyData.json.v && this.historyData.json.v=="6"){
+            if (this.historyData.json.data) this.createDataNode();
+            if (patchs){
+                patchs.each(function(patch){
+                    this.createPatchNode(patch);
                 }.bind(this));
-            }.bind(this));
-        }
+            }
+        }else{
+            var _self = this;
+            if (patchs){
+                patchs.each(function(patch){
+                    patch.diffs.each(function(diff){
+                        if (diff[0]!=0){
+                            diff["id"] = (new o2.widget.UUID()).toString();
+                            var tmp = new Element("div", {"html": diff[1]});
+                            infor = tmp.get("text");
+                            var infor = ((infor.length>50) ? infor.substring(0, 50)+"..." : infor);
 
-        // if (patchs){
-        //     patchs.each(function(patch){
-        //         patch.diffs.each(function(diff){
-        //             if (diff[0]!=0){
-        //                 diff["id"] = (new o2.widget.UUID()).toString();
-        //                 var tmp = new Element("div", {"html": diff[1]});
-        //                 infor = tmp.get("text");
-        //                 var infor = ((infor.length>50) ? infor.substring(0, 50)+"..." : infor);
-        //
-        //                 tmp.destroy();
-        //                 if (diff[0]==-1){
-        //                     infor = MWF.xApplication.process.Xform.LP.documentHistory.delete +": "+"<span style='color:red'><del>"+infor+"</del></span>"
-        //                 }else{
-        //                     infor = MWF.xApplication.process.Xform.LP.documentHistory.insert +": "+"<span style='color:blue'><ins>"+infor+"</ins></span>"
-        //                 }
-        //                 diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
-        //                 diffNode.store("diff", diff);
-        //                 diff["item"] = {
-        //                     "node": diffNode,
-        //                     "showCurrent": function(show){
-        //                         var thisDiff = this.node.retrieve("diff");
-        //                         var color = (thisDiff[0]==-1) ? "#fbe0e7": "#e2edfb";
-        //                         this.node.setStyles({"background-color": color});
-        //
-        //                         var ss = _self.history.historyListContentAreaNode.getScrollSize();
-        //                         var s = _self.history.historyListContentAreaNode.getSize();
-        //                         if (ss.y>s.y) if (show) this.node.scrollIn();
-        //                     },
-        //                     "hideCurrent": function(){
-        //                         this.node.setStyles(_self.css.historyListItemDiffNode);
-        //                     }
-        //                 };
-        //
-        //                 diffNode.addEvents({
-        //                     "click": function(){
-        //                         if (_self.history.stop){
-        //                             var diff = this.retrieve("diff");
-        //                             _self.history.to(diff);
-        //                         }
-        //                     }
-        //                 });
-        //
-        //             }
-        //         }.bind(this));
-        //     }.bind(this));
-        // }else{
-        //     infor = MWF.xApplication.process.Xform.LP.documentHistory.original;
-        //     var histroyObj = {
-        //         "node": this.node,
-        //         "showCurrent": function(){
-        //             this.node.setStyles({"background-color": "#e2edfb"});
-        //         },
-        //         "hideCurrent": function(){
-        //             this.node.setStyles(_self.css.historyListItemDiffNode);
-        //         }
-        //     };
-        //     this.histroyObj = histroyObj;
-        //     this.node.addEvents({
-        //         "click": function(){
-        //             if (_self.history.stop){
-        //                 _self.history.origina(_self.historyData.json.data, histroyObj);
-        //             }
-        //         }
-        //     });
-        // }
+                            tmp.destroy();
+                            if (diff[0]==-1){
+                                infor = MWF.xApplication.process.Xform.LP.documentHistory.delete +": "+"<span style='color:red'><del>"+infor+"</del></span>"
+                            }else{
+                                infor = MWF.xApplication.process.Xform.LP.documentHistory.insert +": "+"<span style='color:blue'><ins>"+infor+"</ins></span>"
+                            }
+                            diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
+                            diffNode.store("diff", diff);
+                            diff["item"] = {
+                                "node": diffNode,
+                                "showCurrent": function(show){
+                                    var thisDiff = this.node.retrieve("diff");
+                                    var color = (thisDiff[0]==-1) ? "#fbe0e7": "#e2edfb";
+                                    this.node.setStyles({"background-color": color});
+
+                                    var ss = _self.history.historyListContentAreaNode.getScrollSize();
+                                    var s = _self.history.historyListContentAreaNode.getSize();
+                                    if (ss.y>s.y) if (show) this.node.scrollIn();
+                                },
+                                "hideCurrent": function(){
+                                    this.node.setStyles(_self.css.historyListItemDiffNode);
+                                }
+                            };
+
+                            diffNode.addEvents({
+                                "click": function(){
+                                    if (_self.history.stop){
+                                        var diff = this.retrieve("diff");
+                                        _self.history.to(diff);
+                                    }
+                                }
+                            });
+
+                        }
+                    }.bind(this));
+                }.bind(this));
+            }else{
+                infor = MWF.xApplication.process.Xform.LP.documentHistory.original;
+                diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
+                this.history.originaDiff = {
+                    "node": diffNode,
+                    "showCurrent": function(){
+                        this.node.setStyles({"background-color": "#e2edfb"});
+                    },
+                    "hideCurrent": function(){
+                        this.node.setStyles(_self.css.historyListItemDiffNode);
+                    }
+                };
+                diffNode.addEvents({
+                    "click": function(){
+                        if (_self.history.stop){
+                            _self.history.origina();
+                        }
+                    }
+                });
+            }
+        }
     }
 })
