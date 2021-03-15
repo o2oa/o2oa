@@ -91,6 +91,17 @@
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
+				<td class="editTableTitle">保留历史版本:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="saveHistoricalFile" text{($.saveHistoricalFile!='n')?'checked':''} type="radio" value="y"/>保存
+					<input class="editTableRadio" name="saveHistoricalFile" text{($.saveHistoricalFile=='n')?'checked':''} type="radio" value="n"/>不保存
+					<br><div>如果选择保存历史版本，如果正文内容与上一版本有差异，系统会在流转时保存一个新版本</div>
+				</td>
+			</tr>
+		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
 				<td class="editTableTitle">设置缩放:</td>
 				<td class="editTableValue">
 					<input class="editTableRadio" name="isScale" text{($.isScale=='y')?'checked':''} type="radio" value="y"/>是
