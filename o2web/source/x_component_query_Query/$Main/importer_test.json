@@ -4,7 +4,7 @@
   "query": "de6d9aa1-8bc4-430d-b4ff-ef4be7dd68e0",
   "alias": "",
   "description": "",
-  "type": "querytable",
+  "type": "cms",
   "data": {
     "events": {
       "queryLoad": {

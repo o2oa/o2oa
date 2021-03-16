@@ -215,7 +215,7 @@
 
     },
     "editTableTitle": {
-        "width": "60px",
+        "width": "80px",
         "font-weight": "bold",
         "font-size": "12px",
         "height": "24px",

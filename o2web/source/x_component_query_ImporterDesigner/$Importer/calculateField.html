@@ -80,6 +80,53 @@
 <!--                </tr>-->
 <!--            </table>-->
             <div class="MWFFormulaArea" name="valueScript" title="值脚本"></div>
+            <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}cmsFieldProperty" class="text{$.vid}cmsFieldProperty">
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">cms文档属性</div>
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">是否为标题:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="isTitle" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
+                            <input class="MWFWorkDataCheck" name="isTitle" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">是否为摘要:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="isTitle" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
+                            <input class="MWFWorkDataCheck" name="isTitle" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">是否为创建人:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="isPublisher" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
+                            <input class="MWFWorkDataCheck" name="isPublisher" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">是否作者:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>是
+                            <input class="MWFWorkDataCheck" name="isAuthor" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">是否读者:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="isReader" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>是
+                            <input class="MWFWorkDataCheck" name="isReader" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">是否置顶:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="isTop" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
+                            <input class="MWFWorkDataCheck" name="isTop" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
 	</div>
 
