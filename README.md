@@ -1,14 +1,3 @@
-# O2OA相关教程
-
-[平台初级开发体验](https://www.o2oa.net/course/tbzbmy.html)
-
-[服务器部署及管理](https://www.o2oa.net/course/ot3372.html)
-
-[业务功能开发手册](https://www.o2oa.net/course/wsmndr.html)
-
-[源码的编译及管理](https://www.o2oa.net/course/ng5iqb.html)
-
-***
 
 # O2OA : Java企业信息化系统,开源OA openSource OA Platform
 
@@ -18,6 +7,9 @@ O2OA是基于J2EE架构，集成移动办公、智能办公，支持私有化部
 
 O2OA平台拥有流程管理、门户管理、信息管理、数据管理和服务管理五大核心能力。用户可以直接使用平台已有功能进行信息信息化建设，平台提供了完整的用户管理，权限管理，流程和信息管理体系，并且提供了大量的开发组件和开箱即用的应用，可以大幅度减化企业信息化建设成本和业务应用开发难度。
 
+### O2OA应用开发平台是兰德纵横网络技术股份有限公司发布和维护的开源产品，是使用JavaEE技术栈，分布式架构设计的一款真正全代码开源的企业应用定制化开发平台。
+### 开发者学习源码结构、功能以及企业内部办公系统建设使用，不闭源分发版本，不参与商业项目的使用行为不会构成侵权风险。开发平台可以永久免费使用，全功能开放，没有任何限制，企业自用或者用于研究均不会产生任何费用。
+### 如果需要进行转售，闭源分发或者在商业项目中作为项目的一部分使用，请主动联系兰德网络公司购买商用许可。兰德网络公司承诺全代码开源，无死角，无限制，希望大家支持。
 
 # 其主要能力如下：
 
@@ -67,7 +59,17 @@ Github : https://github.com/o2oa/o2oa
 
 脚本API：http://www.o2oa.net/api/
 
+# O2OA相关教程
 
+[平台初级开发体验](https://www.o2oa.net/course/tbzbmy.html)
+
+[服务器部署及管理](https://www.o2oa.net/course/ot3372.html)
+
+[业务功能开发手册](https://www.o2oa.net/course/wsmndr.html)
+
+[源码的编译及管理](https://www.o2oa.net/course/ng5iqb.html)
+
+***
 
 # 关于正式环境数据安全相关的建议\:
 
