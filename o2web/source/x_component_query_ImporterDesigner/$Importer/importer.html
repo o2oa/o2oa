@@ -31,6 +31,7 @@
                         $('text{$.id}dateRangeType_process').setStyle('display', 'none');
                         $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', '');
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
+                        $$('.text{$.id}cmsFieldProperty').setStyle('display', '');
                      }" name="text{$.id}*type" text{($.type!='querytable' && $.type!='process')?'checked':''} type="radio" value="cms"/>内容管理数据
                         <input class="editTableRadio" onclick="
                     if (this.checked){
@@ -39,6 +40,7 @@
                         $('text{$.id}dateRangeType_process').setStyle('display', 'none');
                         $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', 'none');
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', '');
+                        $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
                      }" name="text{$.id}*type" text{($.type=='querytable')?'checked':''} type="radio" value="querytable"/>自建表数据
                         <input class="editTableRadio" onclick="
                     if (this.checked){
@@ -47,6 +49,7 @@
                         $('text{$.id}dateRangeType_process').setStyle('display', 'block');
                         $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', '');
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
+                        $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
                     }" name="text{$.id}*type" text{($.type=='process')?'checked':''} type="radio" value="process"/>流程平台数据
                     </td>
                 </tr>
@@ -91,8 +94,8 @@
             <tr>
                 <td class="editTableTitle">启用校验:</td>
                 <td class="editTableValue">
-                    <input class="MWFWorkDataCheck" name="enableValid" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>是
-                    <input class="MWFWorkDataCheck" name="enableValid" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>否
+                    <input name="enableValid" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>是
+                    <input name="enableValid" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>否
                 </td>
             </tr>
         </table>
