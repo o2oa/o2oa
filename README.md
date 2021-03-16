@@ -62,17 +62,6 @@ Github : https://github.com/o2oa/o2oa
 
 脚本API：http://www.o2oa.net/api/
 
-# O2OA相关教程
-
-[平台初级开发体验](https://www.o2oa.net/course/tbzbmy.html)
-
-[服务器部署及管理](https://www.o2oa.net/course/ot3372.html)
-
-[业务功能开发手册](https://www.o2oa.net/course/wsmndr.html)
-
-[源码的编译及管理](https://www.o2oa.net/course/ng5iqb.html)
-
-***
 
 # 关于正式环境数据安全相关的建议\:
 
@@ -95,36 +84,23 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
 
     自带H2数据库。
 
-    第三方数据库：Mysql5.7+, MySQL8, SQLServer2012， Oracle 12CR2, DB2， PostgreSQL，达梦DM7+, 人大金仓，南大通用，神通数据库......
+    第三方数据库：Mysql5.7+, MySQL8, SQLServer2012， Oracle 12CR2, DB2， PostgreSQL，达梦DM7+, 人大金仓，南大通用，神通数据库
 
 
 # 官方网盘下载\:
 
 百度云盘：https://pan.baidu.com/s/1oBQ1atXGyXdLaYE5uAqF1w   提取码: pnk9
 
+
 # 最新源码编译教程\:http://www.o2oa.net/course/ng5iqb.html
 
-# 服务器部署署教程
+
+# 服务器部署教程
 
     Windows环境：https://www.o2oa.net/course/qq5gny.html
     
     Linux环境：https://www.o2oa.net/course/yto8af.html
 
-## windows部署步骤：
-
-1.下载o2server_yyyyMMddHHmmss_windows.zip程序包。
-
-2.解压下载后的压缩包到任意目录。
-
-3.确认开通服务器的80、20020、20030端口。
-
-4.打开o2server文件夹，选择start_windows.bat双击打开。
-
-5.启动服务,等待相关服务启动完成。
-
-6.启动完成后打开浏览器访问http://127.0.0.1。
-
-7.输入用户名xadmin密码o2登陆系统。
 
 # 最新版本 v6.0.x\:
 
