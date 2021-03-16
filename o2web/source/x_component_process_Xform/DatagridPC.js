@@ -313,10 +313,12 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 					titleThs.each(function(th, index){
 						var cellData = data[th.get("id")];
 						var text = "";
-						for (key in cellData){
-							var value = cellData[key];
-							text = this._getValueText(index-1, value);
-							break;
+						if( typeOf( cellData ) !== "array" ) {
+							for (key in cellData) {
+								var value = cellData[key];
+								text = this._getValueText(index - 1, value);
+								break;
+							}
 						}
 						this._createNewEditTd(tr, index, editorTds[index].get("id"), text, titleThs.length-1, idx);
 					}.bind(this));
