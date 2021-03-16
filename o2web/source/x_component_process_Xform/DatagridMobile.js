@@ -425,38 +425,40 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
                     cell.set("MWFId", tds[index].get("id"));
 
                     var cellData = data[th.get("id")];
-                    if (cellData){
-                        for (key in cellData){
-                            var v = cellData[key];
+                    if( typeOf( cellData ) !== "array" ){
+                        if ( cellData ){
+                            for (key in cellData){
+                                var v = cellData[key];
 
-                            var module = this.editModules[index];
-                            if( module && module.json.type == "ImageClipper" ){
-                                this._createImage( cell, module, v )
-                            }else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
-                                this._createAttachment( cell, module, v );
-                            }else{
-                                text = this._getValueText(index, v);
-                                if( module && module.json.type == "Textarea" ){
-                                    cell.set("html", text);
+                                var module = this.editModules[index];
+                                if( module && module.json.type == "ImageClipper" ){
+                                    this._createImage( cell, module, v )
+                                }else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
+                                    this._createAttachment( cell, module, v );
                                 }else{
-                                    cell.set("text", text);
+                                    text = this._getValueText(index, v);
+                                    if( module && module.json.type == "Textarea" ){
+                                        cell.set("html", text);
+                                    }else{
+                                        cell.set("text", text);
+                                    }
+                                    //cell.set("text", text);
                                 }
-                                //cell.set("text", text);
-                            }
 
-                            // if (typeOf(v)==="object"){
-                            //     cell.set("text", v.name+((v.unitName) ? "("+v.unitName+")" : ""));
-                            // }else{
-                            //     cell.set("text", v);
-                            // }
-                            break;
-                            //
-                            // cell.set("text", cellData[key]);
-                            // break;
+                                // if (typeOf(v)==="object"){
+                                //     cell.set("text", v.name+((v.unitName) ? "("+v.unitName+")" : ""));
+                                // }else{
+                                //     cell.set("text", v);
+                                // }
+                                break;
+                                //
+                                // cell.set("text", cellData[key]);
+                                // break;
+                            }
+                        }else{ //Sequence
+                            cell.setStyle("text-align", "left");
+                            cell.set("text", idx+1);
                         }
-                    }else{ //Sequence
-                        cell.setStyle("text-align", "left");
-                        cell.set("text", idx+1);
                     }
 
                     var json = this.form._getDomjson(th);
