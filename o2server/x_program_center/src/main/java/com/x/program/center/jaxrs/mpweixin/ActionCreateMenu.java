@@ -49,6 +49,9 @@ public class ActionCreateMenu  extends BaseAction {
             List<WoMenu> firstLevelList = new ArrayList<>();
             for (int i = 0; i < menus.size(); i++) {
                 MPWeixinMenu menu = menus.get(i);
+                if (menu.getType()!=null && WX_MSG_RECEIVE_EVENT_SUBSCRIBE.equalsIgnoreCase(menu.getType())) {
+                    continue;
+                }
                 if (StringUtils.isEmpty(menu.getParentId())) {
                     firstLevelList.add(WoMenu.copier.copy(menu));
                 }
