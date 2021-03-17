@@ -83,22 +83,24 @@ o2.widget.O2Identity = new Class({
             }
         }
         this.setEvent();
-        this.node.addEvents({
-            "mouseover": function(){
+        if( !layout.mobile ){
+            this.node.addEvents({
+                "mouseover": function(){
 
-                var style_over = ( layout.mobile && this.style.identityNode_over_mobile ) ?
-                    this.style.identityNode_over_mobile : this.style.identityNode_over;
+                    // var style_over = ( layout.mobile && this.style.identityNode_over_mobile ) ?
+                    //     this.style.identityNode_over_mobile : this.style.identityNode_over;
 
-                this.node.setStyles( style_over );
-            }.bind(this),
-            "mouseout": function(){
+                    this.node.setStyles( this.style.identityNode_over ); //style_over
+                }.bind(this),
+                "mouseout": function(){
 
-                var style = ( layout.mobile && this.style.identityNode_mobile ) ?
-                    this.style.identityNode_mobile : this.style.identityNode;
+                    // var style = ( layout.mobile && this.style.identityNode_mobile ) ?
+                    //     this.style.identityNode_mobile : this.style.identityNode;
 
-                this.node.setStyles(style);
-            }.bind(this)
-        });
+                    this.node.setStyles( this.style.identityNode ); //style
+                }.bind(this)
+            });
+        }
     },
     setEvent: function(){
 	    if( this.open ){

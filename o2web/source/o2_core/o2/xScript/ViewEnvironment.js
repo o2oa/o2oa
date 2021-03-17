@@ -2846,7 +2846,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       }
          *   ]
          *}, function(data){
-         *   var result = data.grid; //得到过滤后的数据
+         *   var grid = data.grid; //得到过滤后的数据
+         *   var groupGrid = data.groupGrid; //如果有分类，得到带分类的数据
          *   //......
          *});
          * @example
@@ -2873,13 +2874,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       },
          *   ]
          *}, function(data){
-         *   var result = data.grid; //得到过滤后的数据
+         *   var grid = data.grid; //得到过滤后的数据
+         *   var groupGrid = data.groupGrid; //如果有分类，得到带分类的数据
          *   //......
          *});
          */
         "lookup": function (view, callback, async) {
             var filterList = { "filterList": (view.filter || null) };
-            MWF.Actions.get("x_query_assemble_surface").loadView(view.view, view.application, filterList, function (json) {
+            MWF.Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(view.view, view.application, filterList, function (json) {
                 var data = {
                     "grid": json.data.grid || json.data.groupGrid,
                     "groupGrid": json.data.groupGrid
