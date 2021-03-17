@@ -1544,7 +1544,7 @@ MWF.xScript.Environment = function(ev){
     this.view = {
         "lookup": function(view, callback, async){
             var filterList = {"filterList": (view.filter || null)};
-            MWF.Actions.get("x_query_assemble_surface").loadView(view.view, view.application, filterList, function(json){
+            MWF.Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(view.view, view.application, filterList, function(json){
                 var data = {
                     "grid": json.data.grid || json.data.groupGrid,
                     "groupGrid": json.data.groupGrid
