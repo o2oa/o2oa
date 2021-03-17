@@ -559,7 +559,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 				this.categoryRadioHtml += "<div><input type='radio' name='categoryRadio' value='"+ c.id+"'/>" + c.categoryName + "(" + c.categoryAlias +")</div>"
 			}.bind(this));
 			this.categoryRadioHtml = "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'>" +
-				this.categoryRadioHtml + "</div>"
+				this.categoryRadioHtml + "</div>";
 			if(callback)callback();
 		}.bind(this));
 	},
@@ -615,7 +615,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 			html += "</div>";
 
 //                html += "<>"
-			this.dlg("inofr", null, lp.copyConfirmCategoryTitle, {"html": html}, 500, 360, [
+			this.dlg("inofr", null, lp.copyConfirmCategoryTitle, {"html": html}, 500, 450, [
 				{
 					"text": lp.copy,
 					"action": function(){
