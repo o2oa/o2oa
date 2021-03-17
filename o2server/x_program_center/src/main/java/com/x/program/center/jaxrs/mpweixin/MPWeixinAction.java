@@ -123,7 +123,7 @@ public class MPWeixinAction extends StandardJaxrsAction {
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void menuDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                        @QueryParam("id") String id) {
+                        @PathParam("id") String id) {
         ActionResult<ActionDeleteMenu.Wo> result = new ActionResult<>();
         try {
             result = new ActionDeleteMenu().execute(id);
