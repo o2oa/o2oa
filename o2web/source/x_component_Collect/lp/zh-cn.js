@@ -34,6 +34,7 @@ MWF.xApplication.Collect.LP = {
     "username": "账户名称",
     "password": "password",
     "mobile": "手机号码",
+    "mail": "电子邮件",
     "code": "验证码",
     "secret": "推送消息secret",
     "key": "推送消息key",
@@ -47,6 +48,7 @@ MWF.xApplication.Collect.LP = {
     "errorPassword": "请输入密码",
     "errorPasswordRule": "密码太简单了，至少8位数值和字母组合",
     "errorMobile": "手机号码输入有误",
+    "errorMail": "电子邮件输入有误",
     "errorCode": "验证码输入有误",
     "loginError": "登录O2云失败，请检查账户名称和密码",
 
