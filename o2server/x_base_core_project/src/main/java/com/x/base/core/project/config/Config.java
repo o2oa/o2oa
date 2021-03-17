@@ -213,8 +213,16 @@ public class Config {
 		return new File(base(), DIR_COMMONS_TESS4J_TESSDATA);
 	}
 
-	public static File dir_commons_ext() throws Exception {
-		return new File(base(), DIR_COMMONS_EXT);
+//	public static File dir_commons_ext() throws Exception {
+//		return new File(base(), DIR_COMMONS_EXT);
+//	}
+
+	public static Path dir_commons_ext() throws Exception {
+		if (SystemUtils.IS_JAVA_11) {
+			return Paths.get(base()).resolve(DIR_COMMONS_EXT + "_java11");
+		} else {
+			return Paths.get(base()).resolve(DIR_COMMONS_EXT);
+		}
 	}
 
 	public static File dir_config() throws Exception {
