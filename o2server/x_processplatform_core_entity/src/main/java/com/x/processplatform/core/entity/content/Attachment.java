@@ -113,6 +113,38 @@ public class Attachment extends StorageObject {
 
 	@Override
 	public String path() throws Exception {
+		if(StringUtils.isNotEmpty(fromPath)){
+			return fromPath;
+		}
+		if (null == this.workCreateTime) {
+			throw new Exception("workCreateTime can not be null.");
+		}
+		if (StringUtils.isEmpty(job)) {
+			throw new Exception("job can not be empty.");
+		}
+		if (StringUtils.isEmpty(id)) {
+			throw new Exception("id can not be empty.");
+		}
+		String str = DateTools.format(workCreateTime, DateTools.formatCompact_yyyyMMdd);
+		if (BooleanUtils.isTrue(this.getDeepPath())) {
+			str += PATHSEPARATOR;
+			str += StringUtils.substring(this.job, 0, 2);
+			str += PATHSEPARATOR;
+			str += StringUtils.substring(this.job, 2, 4);
+		}
+		str += PATHSEPARATOR;
+		str += this.job;
+		str += PATHSEPARATOR;
+		str += this.id;
+		str += StringUtils.isEmpty(this.extension) ? "" : ("." + this.extension);
+		return str;
+	}
+
+	@Override
+	public String path(String operate) throws Exception {
+		if(StringUtils.isNotEmpty(fromPath) && !DELETE_OPERATE.equals(operate)){
+			return fromPath;
+		}
 		if (null == this.workCreateTime) {
 			throw new Exception("workCreateTime can not be null.");
 		}
@@ -440,6 +472,25 @@ public class Attachment extends StorageObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> divisionList;
 
+	public static final String fromJob_FIELDNAME = "fromJob";
+	@FieldDescribe("附件拷贝来源任务，仅soft拷贝模式存储.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + fromJob_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String fromJob;
+
+	public static final String fromId_FIELDNAME = "fromId";
+	@FieldDescribe("附件拷贝来源附件ID，仅soft拷贝模式存储.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + fromId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + fromId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String fromId;
+
+	public static final String fromPath_FIELDNAME = "fromPath";
+	@FieldDescribe("附件拷贝来源存储路径，仅soft拷贝模式存储.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + fromPath_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String fromPath;
+
 	public String getJob() {
 		return job;
 	}
@@ -632,4 +683,27 @@ public class Attachment extends StorageObject {
 		this.divisionList = divisionList;
 	}
 
+	public String getFromJob() {
+		return fromJob;
+	}
+
+	public void setFromJob(String fromJob) {
+		this.fromJob = fromJob;
+	}
+
+	public String getFromId() {
+		return fromId;
+	}
+
+	public void setFromId(String fromId) {
+		this.fromId = fromId;
+	}
+
+	public String getFromPath() {
+		return fromPath;
+	}
+
+	public void setFromPath(String fromPath) {
+		this.fromPath = fromPath;
+	}
 }
