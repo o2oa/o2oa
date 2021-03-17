@@ -36,6 +36,9 @@ public class ActionAddMenu extends BaseAction {
                     if (StringUtils.isBlank(menu.getKey())) {
                         throw new ExceptionNotEmpty("key");
                     }
+                    if (StringUtils.isBlank(menu.getContent())) {
+                        throw new ExceptionNotEmpty("content");
+                    }
                 } else if ("view".equals(type)) {
                   if (StringUtils.isBlank(menu.getUrl())) {
                       throw new ExceptionNotEmpty("url");
@@ -49,6 +52,11 @@ public class ActionAddMenu extends BaseAction {
                     }
                     if (StringUtils.isBlank(menu.getPagepath())) {
                         throw new ExceptionNotEmpty("pagepath");
+                    }
+                } else if(WX_MSG_RECEIVE_EVENT_SUBSCRIBE.equals(type)) { //关注事件 添加了之后会发送文本消息
+                    menu.setKey(WX_MSG_RECEIVE_EVENT_SUBSCRIBE);
+                    if (StringUtils.isBlank(menu.getContent())) {
+                        throw new ExceptionNotEmpty("content");
                     }
                 } else {
                     throw new ExceptionTypeNotSupport();

@@ -40,11 +40,12 @@ public class ActionReceiveMsg  extends BaseAction {
         if (inputStream != null) { // 解析消息
             Map<String, String> map = xmlToMap(inputStream);
             String msgType = map.get("MsgType");
-            //TODO 目前只处理菜单点击事件 其他消息类型暂不处理
+
             if (WX_MSG_RECEIVE_TYPE_EVENT.equals(msgType)) { //
                 String event = map.get("Event");
                 String eventKey = map.get("EventKey");
                 logger.info("接收到事件消息： event: {} , eventKey: {}", event, eventKey);
+                //TODO 目前只处理菜单点击事件和订阅公众号的事件 其他消息类型暂不处理
                 if (StringUtils.isNotEmpty(event) && event.equalsIgnoreCase(WX_MSG_RECEIVE_EVENT_CLICK)) { //点击菜单事件
                     MPWeixinMenu menu = findMenuWithEventKey(eventKey);
                     if (menu != null) {
@@ -53,6 +54,20 @@ public class ActionReceiveMsg  extends BaseAction {
                         String fromUser = map.get("ToUserName");
                         String xml = txtMessageBack(toUser, fromUser, content);
                         logger.info("回复点击菜单消息： {}", xml);
+                        wo.setText(xml);
+                        actionResult.setData(wo);
+                        return actionResult;
+                    } else {
+                        logger.info("没有查询到对应的 eventKey：{}", eventKey);
+                    }
+                }else if (WX_MSG_RECEIVE_EVENT_SUBSCRIBE.equalsIgnoreCase(event)) { // 订阅事件
+                    MPWeixinMenu menu = findMenuWithEventKey(WX_MSG_RECEIVE_EVENT_SUBSCRIBE);
+                    if (menu != null) {
+                        String content = menu.getContent();
+                        String toUser = map.get("FromUserName");
+                        String fromUser = map.get("ToUserName");
+                        String xml = txtMessageBack(toUser, fromUser, content);
+                        logger.info("回复关注公众号的消息： {}", xml);
                         wo.setText(xml);
                         actionResult.setData(wo);
                         return actionResult;
