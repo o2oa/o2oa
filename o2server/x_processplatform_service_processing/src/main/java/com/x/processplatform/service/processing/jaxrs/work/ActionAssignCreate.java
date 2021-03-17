@@ -52,7 +52,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * 创建处于start状态的work 此方法不需要进入队列运行
- * 
+ *
  * @author Rui
  *
  *         此方法不需要推入线程池运行
@@ -103,6 +103,10 @@ class ActionAssignCreate extends BaseAction {
 					if (null == fromMapping) {
 						throw new ExceptionFromMappingNotExist(o.getStorage());
 					}
+					Attachment oldAtt = emc.find(o.getId(), Attachment.class);
+					if (null == oldAtt) {
+						throw new ExceptionEntityNotExist(o.getId(), Attachment.class);
+					}
 					StorageMapping toMapping = ThisApplication.context().storageMappings().random(Attachment.class);
 					if (null == toMapping) {
 						throw new ExceptionToMappingNotExist(Attachment.class);
@@ -112,7 +116,19 @@ class ActionAssignCreate extends BaseAction {
 					attachment.setActivityName(begin.getName());
 					attachment.setActivityType(ActivityType.begin);
 					attachment.setActivityToken(work.getActivityToken());
-					attachment.saveContent(toMapping, o.readContent(fromMapping), o.getName());
+					if(BooleanUtils.isTrue(wi.getAttachmentSoftCopy())){
+						attachment.setName(o.getName());
+						attachment.setDeepPath(toMapping.getDeepPath());
+						attachment.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(o.getName(), ".")));
+						attachment.setLength(oldAtt.getLength());
+						attachment.setStorage(toMapping.getName());
+						attachment.setLastUpdateTime(new Date());
+						attachment.setFromJob(oldAtt.getJob());
+						attachment.setFromId(oldAtt.getId());
+						attachment.setFromPath(oldAtt.path());
+					}else {
+						attachment.saveContent(toMapping, o.readContent(fromMapping), o.getName());
+					}
 					emc.persist(attachment, CheckPersistType.all);
 				}
 			}
@@ -155,6 +171,8 @@ class ActionAssignCreate extends BaseAction {
 		private Data data;
 		@FieldDescribe("附件")
 		private List<WiAttachment> attachmentList;
+		@FieldDescribe("是否软拷贝附件，true表示不拷贝真实存储附件，只拷贝附件记录，共用附件.")
+		private Boolean attachmentSoftCopy;
 		@FieldDescribe("自动流转")
 		private Boolean processing;
 
@@ -214,6 +232,13 @@ class ActionAssignCreate extends BaseAction {
 			this.processing = processing;
 		}
 
+		public Boolean getAttachmentSoftCopy() {
+			return attachmentSoftCopy;
+		}
+
+		public void setAttachmentSoftCopy(Boolean attachmentSoftCopy) {
+			this.attachmentSoftCopy = attachmentSoftCopy;
+		}
 	}
 
 	public static class WiAttachment extends Attachment {
