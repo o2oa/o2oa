@@ -72,7 +72,7 @@ MWF.xApplication.Collect.Main = new Class({
         this.modifyContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
         this.modifyPwdContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
         this.deleteContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
-        this.registerContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
+        this.registerContentNode = new Element("div", {"styles": this.css.registerContentNode}).inject(this.node);
 
         this.check = new MWF.xApplication.Collect.Check(this);
         this.showContent("checkContentNode");
@@ -507,6 +507,9 @@ MWF.xApplication.Collect.RegisterForm = new Class({
         this.mobileNode = this.createNode("registerMobileIconNode", "mobile");
         this.mobileInput = this.mobileNode.getElement("input");
 
+        this.mailNode = this.createNode("registerMailIconNode", "mail");
+        this.mailInput = this.mailNode.getElement("input");
+
         this.codeNode = this.createNode("registerCodeIconNode", "code");
         this.codeInput = this.codeNode.getElement("input");
 
@@ -614,6 +617,7 @@ MWF.xApplication.Collect.RegisterForm = new Class({
         this.setInputNodeEvent(this.usernameNode, this.usernameInput, this.lp.username, this.lp.errorUsername, "username");
         this.setInputNodeEvent(this.passwordNode, this.passwordInput, this.lp.password, this.lp.errorPassword, "password");
         this.setInputNodeEvent(this.mobileNode, this.mobileInput, this.lp.mobile, this.lp.errorMobile, "mobile");
+        this.setInputNodeEvent(this.mailNode, this.mailInput, this.lp.mail, this.lp.errorMail, "mail");
         this.setInputNodeEvent(this.codeNode, this.codeInput, this.lp.code, this.lp.errorCode, "code");
         this.resetCodeNode();
     },
@@ -638,14 +642,16 @@ MWF.xApplication.Collect.RegisterForm = new Class({
     register: function(){
         var user = this.usernameInput.get("value");
         var mobile = this.mobileInput.get("value");
+        var mail = this.mailInput.get("value");
         var code = this.codeInput.get("value");
         var password = this.passwordInput.get("value");
 
-        if (this.usernameVerification() & this.mobileVerification() & this.codeVerification() & this.passwordVerification()){
+        if (this.usernameVerification() && this.mobileVerification() && this.mailVerification() && this.codeVerification() && this.passwordVerification()){
             this.registering();
             var data = {
                 codeAnswer: code,
                 mobile: mobile,
+                mail: mail,
                 name: user,
                 password: password
             };
@@ -742,6 +748,20 @@ MWF.xApplication.Collect.RegisterForm = new Class({
         }
         if (mobile.length!=11){
             this.errorInput(this.mobileNode, this.lp.errorMobile);
+            return false;
+        }
+        return true;
+    },
+    mailVerification: function(){
+        var mail = this.mailInput.get("value");
+        if (!mail || mail==this.lp.mail){
+            this.errorInput(this.mailNode, this.lp.errorMail);
+            return false;
+        }
+
+        var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+        if (!reg.test(mail)){
+            this.errorInput(this.mailNode, this.lp.errorMail);
             return false;
         }
         return true;
