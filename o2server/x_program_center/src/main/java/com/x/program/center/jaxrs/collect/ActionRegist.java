@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.collect;
 
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,6 +30,7 @@ class ActionRegist extends BaseAction {
 		String password = wi.getPassword();
 		String mobile = wi.getMobile();
 		String codeAnswer = wi.getCodeAnswer();
+		String mail = wi.getMail();
 		if (BooleanUtils.isNotTrue(this.connect())) {
 			throw new ExceptionUnableConnect();
 		}
@@ -43,8 +46,14 @@ class ActionRegist extends BaseAction {
 		if (StringUtils.isEmpty(codeAnswer)) {
 			throw new CodeAnswerEmptyException();
 		}
+		if (StringUtils.isEmpty(mail)) {
+			throw new ExceptionEmailEmpty();
+		}
+		if (!StringTools.isMail(mail)) {
+			throw new ExceptionInvalidMail(mail);
+		}
 		Wo wo = new Wo();
-		wo.setValue(this.regist(name, password, mobile, codeAnswer));
+		wo.setValue(this.regist(name, password, mobile, codeAnswer, mail));
 		if (BooleanUtils.isTrue(wo.getValue())) {
 			Config.collect().setEnable(true);
 			Config.collect().setName(name);
@@ -63,9 +72,12 @@ class ActionRegist extends BaseAction {
 
 		static WrapCopier<Wi, Collect> copier = WrapCopierFactory.wi(Wi.class, Collect.class, null, null);
 
+		@FieldDescribe("手机号码")
 		private String mobile;
-
+		@FieldDescribe("验证码")
 		private String codeAnswer;
+		@FieldDescribe("邮件地址")
+		private String mail;
 
 		public String getMobile() {
 			return mobile;
@@ -81,6 +93,14 @@ class ActionRegist extends BaseAction {
 
 		public void setCodeAnswer(String codeAnswer) {
 			this.codeAnswer = codeAnswer;
+		}
+
+		public String getMail() {
+			return mail;
+		}
+
+		public void setMail(String mail) {
+			this.mail = mail;
 		}
 	}
 
