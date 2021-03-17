@@ -38,7 +38,7 @@ public class DocumentTools {
 
 		Config.collect().validate();
 
-		Tika tika = new Tika();
+		/*Tika tika = new Tika();
 		String type = tika.detect(bytes, fileName);
 
 		switch (Objects.toString(type, "")) {
@@ -48,7 +48,7 @@ public class DocumentTools {
 			break;
 		default:
 			throw new ExceptionUnsupportedMediaType(type);
-		}
+		}*/
 
 		URL serverUrl = new URL(Config.collect().url() + "/o2_collect_assemble/jaxrs/document/to/pdf");
 
@@ -110,7 +110,7 @@ public class DocumentTools {
 
 		Config.collect().validate();
 
-		Tika tika = new Tika();
+		/*Tika tika = new Tika();
 		String type = tika.detect(bytes, fileName);
 
 		switch (Objects.toString(type, "")) {
@@ -120,7 +120,7 @@ public class DocumentTools {
 			break;
 		default:
 			throw new ExceptionUnsupportedMediaType(type);
-		}
+		}*/
 
 		URL serverUrl = new URL(Config.collect().url() + "/o2_collect_assemble/jaxrs/document/to/image");
 
