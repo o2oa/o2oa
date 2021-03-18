@@ -167,6 +167,46 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
+	public static class ReqAttachment extends GsonPropertyObject {
+
+		private String id;
+		private String name;
+		private String site;
+		private Boolean isSoftCopy;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getSite() {
+			return site;
+		}
+
+		public void setSite(String site) {
+			this.site = site;
+		}
+
+		public Boolean getSoftCopy() {
+			return isSoftCopy;
+		}
+
+		public void setSoftCopy(Boolean softCopy) {
+			isSoftCopy = softCopy;
+		}
+	}
+
 	public String adjustFileName(Business business, String job, String fileName) throws Exception {
 		List<String> list = new ArrayList<>();
 		list.add(fileName);
