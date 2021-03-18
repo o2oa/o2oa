@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.jaxrs.attachment;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -24,9 +25,11 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.ThisApplication;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
- * 
+ *
  * @author zhour 复制指定的附件到work,仅拷贝内容,并清除其他附带的信息
  */
 class ActionCopyToWork extends BaseAction {
@@ -63,13 +66,25 @@ class ActionCopyToWork extends BaseAction {
 						if (null == o) {
 							throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
 						}
-						StorageMapping fromStorageMapping = ThisApplication.context().storageMappings()
-								.get(Attachment.class, o.getStorage());
 						StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-						byte[] bs = o.readContent(fromStorageMapping);
 						Attachment attachment = new Attachment(work, effectivePerson.getDistinguishedName(),
 								w.getSite());
-						attachment.saveContent(mapping, bs, w.getName());
+						if(BooleanUtils.isTrue(w.getSoftCopy())){
+							attachment.setName(o.getName());
+							attachment.setDeepPath(mapping.getDeepPath());
+							attachment.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(o.getName(), ".")));
+							attachment.setLength(o.getLength());
+							attachment.setStorage(mapping.getName());
+							attachment.setLastUpdateTime(new Date());
+							attachment.setFromJob(o.getJob());
+							attachment.setFromId(o.getId());
+							attachment.setFromPath(o.path());
+						}else {
+							StorageMapping fromStorageMapping = ThisApplication.context().storageMappings()
+									.get(Attachment.class, o.getStorage());
+							byte[] bs = o.readContent(fromStorageMapping);
+							attachment.saveContent(mapping, bs, w.getName());
+						}
 						adds.add(attachment);
 					}
 					if (!adds.isEmpty()) {
@@ -112,6 +127,16 @@ class ActionCopyToWork extends BaseAction {
 
 		private static final long serialVersionUID = 5623475924507252797L;
 
+		@FieldDescribe("true表示不拷贝真实存储附件，只拷贝路径，共用附件.")
+		private Boolean isSoftCopy;
+
+		public Boolean getSoftCopy() {
+			return isSoftCopy;
+		}
+
+		public void setSoftCopy(Boolean softCopy) {
+			isSoftCopy = softCopy;
+		}
 	}
 
 	public static class Wo extends WoId {
