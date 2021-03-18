@@ -2275,6 +2275,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     this.fireEvent("afterPaste");
                 }.bind(this) );
 
+                this.filetextEditor.on( 'insertElement', function( e ) {
+                    var tr = e.data.$.getElement("tr");
+                    var tds = tr.getElements("td");
+                    var p = 100/tds.length;
+                    tds.setStyle("width", ""+p+"%");
+                }.bind(this) );
 
                 if (this.json.textIndent!=="n"){
                     this.layout_filetext.addEvent("keyup", function(ev){
