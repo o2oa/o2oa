@@ -18,8 +18,12 @@
                     <tr>
                         <td class="editTableTitle">组织对象:</td>
                         <td class="editTableValue">
-                            <input name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>是
-                            <input name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>否
+                            <input name="isName" type="radio" value="true" text{($.isName)===true?'checked':''} onclick="if(this.checked){
+                               $('text{$.pid}cmsNamePropertyArea').setStyle('display', '');
+                           }"/>是
+                            <input name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''} onclick="if(this.checked){
+                               $('text{$.pid}cmsNamePropertyArea').setStyle('display', 'none');
+                           }"/>否
                         </td>
                     </tr>
                 </table>
@@ -107,27 +111,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">是否为创建人:</td>
-                        <td class="editTableValue">
-                            <input name="isPublisher" type="radio" value="true" text{($.isPublisher)==true?'checked':''}/>是
-                            <input name="isPublisher" type="radio" value="false" text{($.isPublisher)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否作者:</td>
-                        <td class="editTableValue">
-                            <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>是
-                            <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否读者:</td>
-                        <td class="editTableValue">
-                            <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>是
-                            <input name="isReader" type="radio" value="false" text{($.isReader)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="editTableTitle">是否置顶:</td>
                         <td class="editTableValue">
                             <input name="isTop" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
@@ -135,6 +118,32 @@
                         </td>
                     </tr>
                 </table>
+
+                <div style="display:text{(($.isName)==true)?'block':'none'}" id="text{$.pid}cmsNamePropertyArea">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle">是否为创建人:</td>
+                            <td class="editTableValue">
+                                <input name="isPublisher" type="radio" value="true" text{($.isPublisher)==true?'checked':''}/>是
+                                <input name="isPublisher" type="radio" value="false" text{($.isPublisher)!==false?'checked':''}/>否
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="editTableTitle">是否为作者:</td>
+                            <td class="editTableValue">
+                                <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>是
+                                <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>否
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="editTableTitle">是否为读者:</td>
+                            <td class="editTableValue">
+                                <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>是
+                                <input name="isReader" type="radio" value="false" text{($.isReader)!==false?'checked':''}/>否
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 	</div>
