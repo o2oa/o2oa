@@ -97,7 +97,8 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 				}
 				
 				emc.beginTransaction(Person.class);
-				business.person().setPassword(person, wi.getNewPassword());
+				//business.person().setPassword(person, wi.getNewPassword());
+				business.person().setPassword(person, newPassword);
 				emc.commit();
 				CacheManager.notify(Person.class);
 				Wo wo = new Wo();
