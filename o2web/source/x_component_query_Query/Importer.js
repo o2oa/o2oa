@@ -114,7 +114,14 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     getOrgColIndexArray : function(){
         var orgColIndexArray = [];
         this.json.data.selectList.each(function(columnJson, index){
-            if( columnJson.isName )orgColIndexArray.push( index );
+            if( columnJson.isName ) {
+                orgColIndexArray.push(index);
+            }
+            // }else if( this.json.type === "cms" ){
+            //     if( columnJson.isPublisher || columnJson.isAuthor || columnJson.isReader ){
+            //         orgColIndexArray.push( index );
+            //     }
+            // }
         }.bind(this));
         return orgColIndexArray;
     },
@@ -278,7 +285,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                 d = this.groupMapImported[str];
                 break;
             default:
-                var d = this.identityMapImported[str] ||
+                d = this.identityMapImported[str] ||
                     this.personMapImported[str] ||
                     this.unitMapImported[str] ||
                     this.groupMapImported[str];
@@ -598,7 +605,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 }
 
                 if( this.importer.json.type === "cms" ){
-                    this.parseCMSDocument()
+                    this.parseCMSDocument_FromExcel( columnJson, i, data )
                 }
 
             }
@@ -621,6 +628,10 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     });
                     d[names[names.length -1]] = data;
                 }
+
+                if( this.importer.json.type === "cms" ){
+                    this.parseCMSDocument_CalculateField( fieldJson, data )
+                }
             }
         }.bind(this));
 
@@ -629,31 +640,36 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         this.importer.fireEvent("afterCreateRowData", [null, this]);
     },
-    parseCMSDocument : function( columnJson, colIndex, data ){
-        var columnText =  this.importer.lp.importValidationColumnText;
-        var columnTextExcel = this.importer.lp.importValidationColumnTextExcel;
+    parseCMSDocument_FromExcel : function( columnJson, i, data ){
+        var lp = this.importer.lp;
+        var columnText =  lp.importValidationColumnText;
+        var columnTextExcel = lp.importValidationColumnTextExcel;
 
         var colInfor = columnText.replace( "{n}", i+1 );
         var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
 
         if( columnJson.isTitle ){
             if( data.length > 70 ){
-
+                this.errorTextList.push(colInfor + data + "作为标题长度不能超过70个字" + lp.fullstop );
+                this.errorTextListExcel.push( colInforExcel + data + "作为标题长度不能超过70个字" + lp.fullstop );
             }
         }
         if( columnJson.isSummary ){
             if( data.length > 70 ){
-
+                this.errorTextList.push(colInfor + data + "作为摘要长度不能超过70个字" + lp.fullstop );
+                this.errorTextListExcel.push( colInforExcel + data + "作为摘要长度不能超过70个字" + lp.fullstop );
             }
         }
-        if( columnJson.isPublisher ){
+        if( columnJson.isName ){
+            if( columnJson.isPublisher ){
 
-        }
-        if( columnJson.isAuthor ){
+            }
+            if( columnJson.isAuthor ){
 
-        }
-        if( columnJson.isReader ){
+            }
+            if( columnJson.isReader ){
 
+            }
         }
         if( columnJson.isTop ){
 
