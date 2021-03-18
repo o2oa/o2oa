@@ -1,13 +1,9 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -19,39 +15,41 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 
-class ActionCopyToWork extends BaseAction {
+import java.util.ArrayList;
+import java.util.List;
+
+class ActionCopyToWorkCompletedSoft extends BaseAction {
 
 	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionCopyToWork.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionCopyToWorkCompletedSoft.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement)
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workCompletedId, JsonElement jsonElement)
 			throws Exception {
 
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-		Work work = null;
-
+		WorkCompleted workCompleted = null;
 		Req req = new Req();
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			work = emc.find(workId, Work.class);
-			if (null == work) {
-				throw new ExceptionEntityNotExist(workId, Work.class);
+
+			workCompleted = emc.flag(workCompletedId, WorkCompleted.class);
+			if((null == workCompleted)){
+				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			if (effectivePerson.isNotManager()) {
-				WoWorkControl workControl = business.getControl(effectivePerson, work, WoWorkControl.class);
-				if (!workControl.getAllowProcessing()) {
-					throw new ExceptionAccessDenied(effectivePerson, work);
-				}
+			if (!business.canManageApplicationOrProcess(effectivePerson, workCompleted.getApplication(),
+					workCompleted.getProcess())) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
 			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
@@ -67,6 +65,7 @@ class ActionCopyToWork extends BaseAction {
 					q.setId(o.getId());
 					q.setName(w.getName());
 					q.setSite(w.getSite());
+					q.setSoftCopy(true);
 					req.getAttachmentList().add(q);
 				}
 			}
@@ -75,7 +74,7 @@ class ActionCopyToWork extends BaseAction {
 		if (ListTools.isNotEmpty(req.getAttachmentList())) {
 			wos = ThisApplication.context().applications()
 					.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-							Applications.joinQueryUri("attachment", "copy", "work", work.getId()), req, work.getJob())
+							Applications.joinQueryUri("attachment", "copy", "workcompleted", workCompleted.getId()), req, workCompleted.getJob())
 					.getDataAsList(Wo.class);
 		}
 
