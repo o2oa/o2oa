@@ -597,7 +597,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         var n = idx+1;
         var titleDiv = new Element("div", {"styles": this.json.itemTitleStyles}).inject(node);
         titleDiv.setStyle("overflow", "hidden");
-        var textNode = new Element("div", {
+        var textNode = new Element("div.sequenceDiv", {
             "styles": {"float": "left"},
             "text": MWF.xApplication.process.Xform.LP.item+n
         }).inject(titleDiv);
@@ -1327,6 +1327,11 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
                 }
             }.bind(this));
         }.bind(this));
+
+        var sequenceDivs = this.node.getElements(".sequenceDiv");
+        sequenceDivs.each( function(div, index){
+            div.set("text", MWF.xApplication.process.Xform.LP.item+(index+1))
+        })
     },
 
     _loadBorderStyle: function(){
