@@ -51,6 +51,8 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	public static final String PATHSEPARATOR = "/";
 
+	public static final String DELETE_OPERATE = "delete";
+
 	abstract public String path() throws Exception;
 
 	abstract public String getStorage();
@@ -76,6 +78,8 @@ public abstract class StorageObject extends SliceJpaObject {
 	abstract public Boolean getDeepPath();
 
 	abstract public void setDeepPath(Boolean deepPath);
+
+	public String path(String operate) throws Exception { return this.path();}
 
 	@Transient
 	private byte[] bytes;
@@ -231,7 +235,7 @@ public abstract class StorageObject extends SliceJpaObject {
 	public void deleteContent(StorageMapping mapping) throws Exception {
 		FileSystemManager manager = this.getFileSystemManager();
 		String prefix = this.getPrefix(mapping);
-		String path = this.path();
+		String path = this.path(DELETE_OPERATE);
 		FileSystemOptions options = this.getOptions(mapping);
 		try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options)) {
 			if (fo.exists() && fo.isFile()) {
