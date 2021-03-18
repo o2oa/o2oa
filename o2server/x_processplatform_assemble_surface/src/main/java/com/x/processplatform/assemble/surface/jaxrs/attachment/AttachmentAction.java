@@ -730,6 +730,43 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "拷贝附件到指定的工作(不拷贝真实存储附件，共用附件，此接口拷贝的附件删除时只删除记录不删附件).", action = ActionCopyToWorkSoft.class)
+	@POST
+	@Path("copy/work/{workId}/soft")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void copyToWorkSoft(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						   @JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId, JsonElement jsonElement) {
+		ActionResult<List<ActionCopyToWorkSoft.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCopyToWorkSoft().execute(effectivePerson, workId, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "拷贝附件到指定的工作(不拷贝真实存储附件，共用附件，此接口拷贝的附件删除时只删除记录不删附件).", action = ActionCopyToWorkCompletedSoft.class)
+	@POST
+	@Path("copy/workcompleted/{workCompletedId}/soft")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void copyToWorkCompletedSoft(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId,
+									JsonElement jsonElement) {
+		ActionResult<List<ActionCopyToWorkCompletedSoft.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCopyToWorkCompletedSoft().execute(effectivePerson, workCompletedId, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新附件.", action = ActionChangeSite.class)
 	@GET
 	@Path("{id}/work/{workId}/change/site/{site}")

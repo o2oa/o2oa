@@ -1,13 +1,9 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -19,16 +15,20 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
-class ActionCopyToWork extends BaseAction {
+import java.util.ArrayList;
+import java.util.List;
+
+class ActionCopyToWorkSoft extends BaseAction {
 
 	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionCopyToWork.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionCopyToWorkSoft.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement)
 			throws Exception {
@@ -67,6 +67,7 @@ class ActionCopyToWork extends BaseAction {
 					q.setId(o.getId());
 					q.setName(w.getName());
 					q.setSite(w.getSite());
+					q.setSoftCopy(true);
 					req.getAttachmentList().add(q);
 				}
 			}
