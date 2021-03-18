@@ -777,8 +777,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 //     "mso-border-bottom-alt": "solid windowtext 0.75pt"
                 // });
             }
+
             if ((!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
-                if (this.layout_editionArea && (this.layout_edition_issuance_date || this.layout_edition_issuance_unit)){
+                if (this.layout_editionArea && (this.contentNode.getElement(".doc_layout_edition_issuance_date") || this.contentNode.getElement(".doc_layout_edition_issuance_unit"))){
                     var trs = this.layout_editionArea.getElement("table").rows;
                     trs.item(trs.length-1).destroy();
                     // trs = this.layout_editionArea.getElement("table").rows;
