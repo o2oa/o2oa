@@ -142,14 +142,11 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                     this.rowList.push( new MWF.xApplication.query.Query.Importer.Row( this, lineData, lineIndex ) )
                 }.bind(this));
 
-                if( this.json.enableValid === false ){
-                    this.doImportData()
+                var isValid = this.json.enableValid ? this.checkImportedData() : this.checkNecessaryImportedData();
+                if( isValid ){
+                    this.doImportData();
                 }else{
-                    if( !this.checkImportedData() ){
-                        this.openImportedErrorDlg();
-                    }else{
-                        this.doImportData()
-                    }
+                    this.openImportedErrorDlg();
                 }
             }.bind(this));
 
@@ -162,10 +159,30 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         })
     },
     doImportData: function(){
-
+        //创建数据
         this.rowList.each( function( row, i ){
             row.createData();
         }.bind(this));
+
+        //再次校验数据（计算的内容）
+        var flag = true;
+        this.rowList.each( function(row, index){
+            if( row.errorTextList.length )flag = false;
+        }.bind(this));
+        if( !flag ){
+            var arg = {
+                validted : false,
+                data : this.importedData,
+                rowList : this.rowList
+            };
+            this.fireEvent( "validImport", [arg] );
+
+            flag = arg.validted;
+        }
+        if( !flag ){
+            this.openImportedErrorDlg();
+            return;
+        }
 
         if( this.json.type === "querytable" ){
             o2.Actions.load("x_query_assemble_designer").TableAction.rowSave(
@@ -176,6 +193,8 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                     this.app.notice( this.lp.importSuccess );
                 }.bind(this)
             );
+        }else if( this.json.type === "cms" ){
+
         }
 
     },
@@ -249,6 +268,28 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             }.bind(this)
         });
 
+    },
+    //必须校验的数据
+    checkNecessaryImportedData: function(){
+        var flag = true;
+
+
+        if( this.json.type === "cms" ){
+
+            this.rowList.each( function(row, index){
+                if( !row.checkCMS() )flag = false;
+            }.bind(this));
+
+        }
+
+        var arg = {
+            validted : flag,
+            data : this.importedData,
+            rowList : this.rowList
+        };
+        this.fireEvent( "validImport", [arg] );
+
+        return arg.validted;
     },
     //校验Excel中的数据
     checkImportedData : function(){
@@ -510,9 +551,14 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             }
         }.bind(this));
 
-        if(errorTextList.length>0){
-            this.errorTextList = errorTextList;
-            this.errorTextListExcel = errorTextListExcel;
+        this.errorTextList = this.errorTextList.concat( errorTextList );
+        this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
+
+        if( this.importer.json.type === "cms" ){
+            this.checkCMS();
+        }
+
+        if(this.errorTextList.length>0){
             return false;
         }
 
@@ -520,7 +566,64 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
 
     },
+    checkCMS : function(){
+        var lp = this.lp;
+
+        var columnText =  lp.importValidationColumnText;
+        var columnTextExcel = lp.importValidationColumnTextExcel;
+
+        var errorTextList = [];
+        var errorTextListExcel = [];
+
+
+        this.importer.json.data.selectList.each( function (columnJson, i) {
+
+            var colInfor = columnText.replace( "{n}", i+1 );
+            var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
+
+            var value = this.importedData[i] || "";
+
+            var dataType = columnJson.dataType_CMSProcess;
+            if( value && ["string","stringList"].contains(columnJson.dataType_CMSProcess) ){
+                if( columnJson.isTitle ){
+                    if( value.length > 70 ){
+                        errorTextList.push(colInfor + value + lp.cmsTitleLengthInfor + lp.fullstop );
+                        errorTextListExcel.push( colInforExcel + value + lp.cmsTitleLengthInfor + lp.fullstop );
+                    }
+                }
+                if( columnJson.isSummary ){
+                    if( value.length > 70 ){
+                        errorTextList.push(colInfor + value + lp.cmsSummaryLengthInfor + lp.fullstop );
+                        errorTextListExcel.push( colInforExcel + value + lp.cmsSummaryLengthInfor + lp.fullstop );
+                    }
+                }
+                if( columnJson.isName ){
+                    if( columnJson.isPublisher ){ //发布者必须要校验
+                        var  arr = value.split(/\s*,\s*/g ); //空格,空格
+                        arr.each( function(d, idx){
+                            var obj = this.importer.getOrgData( d );
+                            if( obj.errorText ){
+                                errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+                                errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+                            }
+                        }.bind(this));
+                    }
+                }
+             }
+
+        }.bind(this));
+
+        this.errorTextList = this.errorTextList.concat( errorTextList );
+        this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
+
+        if(errorTextList.length > 0){
+            return false;
+        }
+
+        return true;
+    },
     createData : function(){
+
         if( this.importer.json.type === "cms" ){
             this.document = {
                 categoryId : this.importer.json.data.category[0].id,
@@ -552,7 +655,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                             }else{
                                 data = arr.map( function(d, idx){
                                     return this.importer.getOrgData( d, true, true ) || d;
-                                }.bind(this));
+                                }.bind(this)).clean();
                             }
                         }else{
                             data = dataType === "string" ? value : value.split(/\s*,\s*/g );
@@ -569,10 +672,10 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     case "numberList":
                     case "integerList":
                     case "longList":
-                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseInt( d ); }.bind(this));
+                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseInt( d ); }.bind(this)).clean();
                         break;
                     case "doubleList":
-                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseFloat( d ); }.bind(this));
+                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseFloat( d ); }.bind(this)).clean();
                         break;
                     case "date":
                         data = Date.parse(value).format( "%Y-%m-%d" );
@@ -581,10 +684,10 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                         data = Date.parse(value).format( "db" );
                         break;
                     case "dateList":
-                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "%Y-%m-%d" ); }.bind(this));
+                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "%Y-%m-%d" ); }.bind(this)).clean();
                         break;
                     case "dateTimeList":
-                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "db" ); }.bind(this));
+                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "db" ); }.bind(this)).clean();
                         break;
                     default:
                         data = value;
@@ -604,7 +707,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     d[names[names.length -1]] = data;
                 }
 
-                if( this.importer.json.type === "cms" ){
+                if( data && this.importer.json.type === "cms" ){
                     this.parseCMSDocument_FromExcel( columnJson, i, data )
                 }
 
@@ -635,12 +738,22 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             }
         }.bind(this));
 
+        if( this.importer.json.type === "cms" ){
+            this.document.docData = this.data;
+            if( !this.document.identity ){ //没有发布身份，则设置
+                var identityList = layout.session.user.identityList;
+                if( identityList && identityList.length ){
+                    this.document.identity = identityList[0].distinguishedName
+                }
+            }
+        }
+
         console.log( this.data );
 
 
         this.importer.fireEvent("afterCreateRowData", [null, this]);
     },
-    parseCMSDocument_FromExcel : function( columnJson, i, data ){
+    parseCMSDocument_FromExcel : function( columnJson, i, data, excelValue ){
         var lp = this.importer.lp;
         var columnText =  lp.importValidationColumnText;
         var columnTextExcel = lp.importValidationColumnTextExcel;
@@ -649,32 +762,87 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
 
         if( columnJson.isTitle ){
+            this.document.title = data;
+        }
+        if( columnJson.isSummary ){
+            this.document.summary = data;
+        }
+        if( columnJson.isName ){
+            if( columnJson.isPublisher && data.length){
+               this.document.identity = data[0].distinguishedName
+            }
+            if( columnJson.isAuthor ){
+                var array = this.parseCMSReadAndAuthor( data );
+                this.document.authorList = this.document.authorList.concat( array )
+            }
+            if( columnJson.isReader ){
+                var array = this.parseCMSReadAndAuthor( data );
+                this.document.readerList = this.document.readerList.concat( array )
+            }
+        }
+        if( columnJson.isTop ){
+            if( [lp.yes,"yes","true"].contains(data) ){
+                this.document.isTop = true;
+            }
+        }
+    },
+    parseCMSDocument_CalculateField : function( fieldJson, data ){
+        var lp = this.importer.lp;
+
+        var fieldInfor = lp.caculateFieldValidationText + ( fieldJson.displayName || fieldJson.path );
+
+        if( columnJson.isTitle ){
             if( data.length > 70 ){
-                this.errorTextList.push(colInfor + data + "作为标题长度不能超过70个字" + lp.fullstop );
-                this.errorTextListExcel.push( colInforExcel + data + "作为标题长度不能超过70个字" + lp.fullstop );
+                this.errorTextList.push(  fieldInfor +'"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
+                this.errorTextListExcel.push(  fieldInfor +'"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
+            }else{
+                this.document.title = data;
             }
         }
         if( columnJson.isSummary ){
             if( data.length > 70 ){
-                this.errorTextList.push(colInfor + data + "作为摘要长度不能超过70个字" + lp.fullstop );
-                this.errorTextListExcel.push( colInforExcel + data + "作为摘要长度不能超过70个字" + lp.fullstop );
+                this.errorTextList.push( fieldInfor +'"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
+                this.errorTextListExcel.push( fieldInfor +'"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
+            }else{
+                this.document.summary = data;
             }
         }
-        if( columnJson.isName ){
-            if( columnJson.isPublisher ){
-
+        if( columnJson.isPublisher ){
+            var d = (typeOf(data) === "array" && data.length) ? data[0] : data;
+            if( d ){
+                d = typeOf(d) === "object" ? d.distinguishedName : d;
+                this.document.identity = data[0].distinguishedName
             }
-            if( columnJson.isAuthor ){
-
-            }
-            if( columnJson.isReader ){
-
-            }
+        }
+        if( columnJson.isAuthor ){
+            var array = this.parseCMSReadAndAuthor( data );
+            this.document.authorList = this.document.authorList.concat( array )
+        }
+        if( columnJson.isReader ){
+            var array = this.parseCMSReadAndAuthor( data );
+            this.document.readerList = this.document.readerList.concat( array )
         }
         if( columnJson.isTop ){
-
+            if( [lp.yes,"yes","true"].contains(data) ){
+                this.document.isTop = true;
+            }
         }
-
+    },
+    parseCMSReadAndAuthor : function( data ){
+        var cnArray = ["组织","群组","人员","人员","角色"];
+        var keyArray = ["U","G","I","P","R"];
+        if( typeOf(data) !== "array" )data = [data];
+        return data.map( function( d ){
+            var dn = typeOf( d ) === "string" ? d : d.distinguishedName;
+            var index = keyArray.indexOf(dn.substr(dn.length-1, 1));
+            if( index > -1 ){
+                return {
+                    "permission" : "阅读",
+                    "permissionObjectType" : cnArray[ index ],
+                    "permissionObjectName" : dn
+                }
+            }
+        }).clean()
     },
     save : function () {
         if( this.json.type === "querytable" ){
