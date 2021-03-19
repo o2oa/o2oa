@@ -14,6 +14,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"before": null,
 		"after": null,
 		"timeOnly": false,
+		"yearOnly" : false,
+		"monthOnly": false,
 		"defaultDate": new Date(),
 
 		"beforeCurrent": true,
@@ -185,7 +187,13 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				this.changeViewToYear();
 				break;
 			case "year" :
-				this.changeViewToDay();
+				if( this.options.yearOnly ){
+					break;
+				}else if( this.options.monthOnly ){
+					this.changeViewToMonth();
+				}else{
+					this.changeViewToDay();
+				}
 				break;
 			case "time" :
 				this.changeViewToDay();
@@ -431,7 +439,6 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	show: function(){
-		;
 		if (!this.visible){
 			var dStr = this.node.get("value");
 			if (dStr && Date.isValid(dStr)){
@@ -453,7 +460,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					this.changeViewToMonth();
 					break;
 				case "year" :
-					this.showYear();
+					if( this.options.yearOnly ){
+						this.changeViewToYear()
+					}else{
+						this.showYear();
+					}
 					break;
 				case "time" :
 					//this.showTime(this.options.baseDate);
@@ -1062,6 +1073,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	_selectDate: function(dateStr){
+		if( this.options.yearOnly ){
+			dateStr = dateStr+"-1-1"
+		}else if( this.options.monthOnly ){
+			dateStr = dateStr+"-1"
+		}
 		var date = new Date(dateStr);
 		this.options.baseDate = date;
 		var dv = date.format(this.options.format);
@@ -1164,10 +1180,18 @@ o2.widget.Calendar = o2.Calendar = new Class({
 						break;
 					case "month" :
 						debugger;
-						calendar.changeViewToDay(this.retrieve("year"), this.retrieve("month"));
+						if( calendar.options.monthOnly ){
+							calendar._selectDate(this.retrieve("year")+"-"+( this.retrieve("month").toInt() + 1 ), this);
+						}else{
+							calendar.changeViewToDay(this.retrieve("year"), this.retrieve("month"));
+						}
 						break;
 					case "year" :
-						calendar.changeViewToMonth(this.retrieve("year"));
+						if( calendar.options.yearOnly ){
+							calendar._selectDate(this.retrieve("year"), this);
+						}else{
+							calendar.changeViewToMonth(this.retrieve("year"));
+						}
 						break;
 					case "time" :
 						//nothing
