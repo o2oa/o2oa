@@ -106,7 +106,7 @@ class V2Retract extends BaseAction {
 						}
 					}
 
-					update(work, workLog);
+					update(work, workLog, activity);
 
 					// 必然不为null
 					taskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_RETRACT);
@@ -170,10 +170,11 @@ class V2Retract extends BaseAction {
 		return work;
 	}
 
-	private void update(Work work, WorkLog workLog) {
-		work.setActivity(workLog.getFromActivity());
-		work.setActivityAlias(workLog.getFromActivityAlias());
-		work.setActivityName(workLog.getFromActivityName());
+	private void update(Work work, WorkLog workLog, Activity activity) {
+		work.setActivity(activity.getId());
+		work.setActivityAlias(activity.getAlias());
+		work.setActivityName(activity.getName());
+		work.setActivityDescription(activity.getDescription());
 		work.setActivityToken(workLog.getFromActivityToken());
 		work.setSplitting(workLog.getSplitting());
 		work.setSplitToken(workLog.getSplitToken());
