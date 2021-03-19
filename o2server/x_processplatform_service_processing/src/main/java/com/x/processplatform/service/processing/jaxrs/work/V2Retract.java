@@ -176,7 +176,6 @@ class V2Retract extends BaseAction {
 		work.setActivityName(activity.getName());
 		work.setActivityDescription(activity.getDescription());
 		work.setActivityToken(workLog.getFromActivityToken());
-		work.setActivityDescription(DESC);
 		work.setSplitting(workLog.getSplitting());
 		work.setSplitToken(workLog.getSplitToken());
 		work.setSplitValue(workLog.getSplitValue());
