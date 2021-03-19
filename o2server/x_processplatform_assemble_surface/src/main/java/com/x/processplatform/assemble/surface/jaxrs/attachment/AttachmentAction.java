@@ -268,6 +268,42 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "下载指定附件", action = ActionDownload.class)
+	@GET
+	@Path("download/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void download(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								 @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+								 @JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
+		ActionResult<ActionDownload.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownload().execute(effectivePerson, id, fileName);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "下载指定附件,设定用stream输出", action = ActionDownloadStream.class)
+	@GET
+	@Path("download/{id}/stream")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void downloadStream(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						 @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+						 @JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
+		ActionResult<ActionDownloadStream.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownloadStream().execute(effectivePerson, id, fileName);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据Work下载附件", action = ActionDownloadWithWork.class)
 	@GET
 	@Path("download/{id}/work/{workId}")
@@ -1128,6 +1164,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("上传到指定用户") @FormDataParam("person") String person,
 			@JaxrsParameterDescribe("附件排序号") @FormDataParam("orderNumber") Integer orderNumber,
+			@JaxrsParameterDescribe("是否根据主工作软拷贝附件到其他工作，所有文档共享主文档的存储附件") @FormDataParam("isSoftUpload") Boolean isSoftUpload,
+			@JaxrsParameterDescribe("主工作标志(isSoftUpload为true时必填)") @FormDataParam("mainWork") String mainWork,
 			@JaxrsParameterDescribe("天印扩展字段") @FormDataParam("extraParam") String extraParam,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
@@ -1135,7 +1173,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionManageBatchUpload().execute(effectivePerson, workIds, site, fileName, bytes, disposition,
-					extraParam, person, orderNumber);
+					extraParam, person, orderNumber, isSoftUpload, mainWork);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
