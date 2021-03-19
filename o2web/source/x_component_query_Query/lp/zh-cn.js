@@ -158,5 +158,10 @@ MWF.xApplication.query.Query.LP = {
     "showWithExcel" : "用Excel打开",
     "fullstop" : "。",
     "notExistInSystem" : "在系统中不存在",
-    "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格"
+    "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格",
+    "caculateFieldValidationText" : "计算的字段：",
+
+    "cmsTitleLengthInfor" : "作为标题长度不能超过70个字",
+    "cmsSummaryLengthInfor" : "作为摘要长度不能超过70个字",
+    "yes" : "是"
 };
