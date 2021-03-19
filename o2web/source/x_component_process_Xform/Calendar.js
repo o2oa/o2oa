@@ -118,11 +118,17 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         var _self = this;
         if (!this.calendar){
             MWF.require("MWF.widget.Calendar", function(){
+                var defaultView = "day";
+                if( this.json.selectType === "month" )defaultView = "month";
+                if( this.json.selectType === "year" )defaultView = "year";
                 var options = {
                     "style": layout.mobile ? "xform_mobile" : "xform",
                     "secondEnable" : this.json.isSelectSecond,
                     "isTime": (this.json.selectType==="datetime" || this.json.selectType==="time"),
                     "timeOnly": (this.json.selectType === "time"),
+                    "monthOnly" : (this.json.selectType === "month"),
+                    "yearOnly" : (this.json.selectType === "year"),
+                    "defaultView" : defaultView,
                     //"target": this.form.node,
                     "target": layout.mobile ? $(document.body) : this.form.app.content,
                     "format": this.json.format,
@@ -207,6 +213,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         }
 	},
     getBaseDate : function(){
+	    debugger;
         var d;
         var value = this.getValue(true);
         if( value && value.getTime() > 10000 ){
