@@ -22,10 +22,12 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Process;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
+import java.util.Date;
 import java.util.List;
 
 class ActionManageBatchUpload extends BaseAction {
@@ -33,7 +35,8 @@ class ActionManageBatchUpload extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionManageBatchUpload.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workIds, String site, String fileName, byte[] bytes,
-			FormDataContentDisposition disposition, String extraParam, String person, Integer order) throws Exception {
+			FormDataContentDisposition disposition, String extraParam, String person, Integer order,
+							 Boolean isSoftUpload, String mainWork) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -62,10 +65,48 @@ class ActionManageBatchUpload extends BaseAction {
 				person = effectivePerson.getDistinguishedName();
 			}
 			if(StringUtils.isNotEmpty(workIds) && bytes!=null && bytes.length>0) {
+				Attachment mainAtt = null;
+				if(BooleanUtils.isTrue(isSoftUpload) && StringUtils.isNotEmpty(mainWork)){
+					logger.print("file {} soft upload from mainWork:{}", fileName, mainWork);
+					mainWork = mainWork.trim();
+					Work work = emc.find(mainWork, Work.class);
+					if(work!=null) {
+						mainAtt = this.concreteAttachment(work, person, site, order);
+					}else{
+						WorkCompleted workCompleted = emc.find(mainWork, WorkCompleted.class);
+						if (null != workCompleted) {
+							Process process = business.process().pick(workCompleted.getProcess());
+							if (null == process) {
+								throw new ExceptionEntityNotExist(workCompleted.getProcess(), Process.class);
+							}
+							List<End> ends = business.end().listWithProcess(process);
+							if (ends.isEmpty()) {
+								throw new ExceptionEndNotExist(process.getId());
+							}
+							mainAtt = this.concreteAttachment(workCompleted, person, site, order, ends.get(0));
+						}
+					}
+					if(mainAtt!=null){
+						StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
+						mainAtt.saveContent(mapping, bytes, fileName);
+						mainAtt.setType((new Tika()).detect(bytes, fileName));
+						if (Config.query().getExtractImage() && ExtractTextTools.supportImage(mainAtt.getName())
+								&& ExtractTextTools.available(bytes)) {
+							mainAtt.setText(ExtractTextTools.image(bytes));
+						}
+						emc.beginTransaction(Attachment.class);
+						emc.persist(mainAtt, CheckPersistType.all);
+						emc.commit();
+					}
+				}
 				String[] idArray = workIds.split(",");
 				for (String workId : idArray) {
                     Attachment attachment = null;
-					Work work = emc.find(workId.trim(), Work.class);
+					workId = workId.trim();
+					if(mainAtt!=null && workId.equals(mainWork)){
+						continue;
+					}
+					Work work = emc.find(workId, Work.class);
                     if(work!=null) {
 						attachment = this.concreteAttachment(work, person, site, order);
                     }else{
@@ -84,12 +125,26 @@ class ActionManageBatchUpload extends BaseAction {
                     }
                     if(attachment!=null){
                         StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-                        attachment.saveContent(mapping, bytes, fileName);
-                        attachment.setType((new Tika()).detect(bytes, fileName));
-                        if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
-                                && ExtractTextTools.available(bytes)) {
-                            attachment.setText(ExtractTextTools.image(bytes));
-                        }
+                        if(mainAtt!=null){
+							attachment.setName(mainAtt.getName());
+							attachment.setDeepPath(mapping.getDeepPath());
+							attachment.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(mainAtt.getName(), ".")));
+							attachment.setLength(mainAtt.getLength());
+							attachment.setStorage(mapping.getName());
+							attachment.setType(mainAtt.getType());
+							attachment.setText(mainAtt.getText());
+							attachment.setLastUpdateTime(new Date());
+							attachment.setFromJob(mainAtt.getJob());
+							attachment.setFromId(mainAtt.getId());
+							attachment.setFromPath(mainAtt.path());
+						}else {
+							attachment.saveContent(mapping, bytes, fileName);
+							attachment.setType((new Tika()).detect(bytes, fileName));
+							if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
+									&& ExtractTextTools.available(bytes)) {
+								attachment.setText(ExtractTextTools.image(bytes));
+							}
+						}
                         emc.beginTransaction(Attachment.class);
                         emc.persist(attachment, CheckPersistType.all);
                         emc.commit();
