@@ -1133,16 +1133,16 @@ public class Business {
 		if (effectivePerson.isPerson(creatorPerson)) {
 			return true;
 		}
-		if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
-				effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, job) == 0) {
-			if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
-					effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0) {
-				if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-						Task.job_FIELDNAME, job) == 0) {
-					if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME,
-							effectivePerson.getDistinguishedName(), Read.job_FIELDNAME, job) == 0) {
-						if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME,
-								effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, job) == 0) {
+		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME,
+				effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, job) == 0) {
+			if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
+					effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, job) == 0) {
+				if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
+						effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0) {
+					if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+							Task.job_FIELDNAME, job) == 0) {
+						if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME,
+								effectivePerson.getDistinguishedName(), Read.job_FIELDNAME, job) == 0) {
 							Application application = application().pick(applicationId);
 							Process process = process().pick(processId);
 							if (!canManageApplicationOrProcess(effectivePerson, application, process)) {
