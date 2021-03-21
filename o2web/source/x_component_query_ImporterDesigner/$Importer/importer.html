@@ -32,6 +32,7 @@
                         $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', '');
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', '');
+                        $$('.text{$.id}processFieldProperty').setStyle('display', 'none');
                      }" name="text{$.id}*type" text{($.type!='querytable' && $.type!='process')?'checked':''} type="radio" value="cms"/>内容管理数据
                         <input class="editTableRadio" onclick="
                     if (this.checked){
@@ -41,6 +42,7 @@
                         $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', 'none');
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', '');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
+                        $$('.text{$.id}processFieldProperty').setStyle('display', 'none');
                      }" name="text{$.id}*type" text{($.type=='querytable')?'checked':''} type="radio" value="querytable"/>自建表数据
                         <input class="editTableRadio" onclick="
                     if (this.checked){
@@ -50,6 +52,7 @@
                         $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', '');
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
+                        $$('.text{$.id}processFieldProperty').setStyle('display', '');
                     }" name="text{$.id}*type" text{($.type=='process')?'checked':''} type="radio" value="process"/>流程平台数据
                     </td>
                 </tr>

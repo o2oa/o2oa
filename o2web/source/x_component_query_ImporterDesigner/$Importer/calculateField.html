@@ -86,15 +86,15 @@
                     <tr>
                         <td class="editTableTitle">是否为标题:</td>
                         <td class="editTableValue">
-                            <input name="isTitle" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
-                            <input name="isTitle" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
+                            <input name="isTitle" type="radio" value="true" text{($.isTitle)==true?'checked':''}/>是
+                            <input name="isTitle" type="radio" value="false" text{($.isTitle)!==false?'checked':''}/>否
                         </td>
                     </tr>
                     <tr>
                         <td class="editTableTitle">是否为摘要:</td>
                         <td class="editTableValue">
-                            <input name="isTitle" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
-                            <input name="isTitle" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
+                            <input name="isSummary" type="radio" value="true" text{($.isSummary)==true?'checked':''}/>是
+                            <input name="isSummary" type="radio" value="false" text{($.isSummary)!==false?'checked':''}/>否
                         </td>
                     </tr>
                     <tr>
@@ -107,8 +107,8 @@
                     <tr>
                         <td class="editTableTitle">是否为创建人:</td>
                         <td class="editTableValue">
-                            <input name="isPublisher" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
-                            <input name="isPublisher" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
+                            <input name="isPublisher" type="radio" value="true" text{($.isPublisher)==true?'checked':''}/>是
+                            <input name="isPublisher" type="radio" value="false" text{($.isPublisher)!==false?'checked':''}/>否
                         </td>
                     </tr>
                     <tr>
@@ -121,12 +121,34 @@
                     <tr>
                         <td class="editTableTitle">是否读者:</td>
                         <td class="editTableValue">
-                            <input name="isReader" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>是
-                            <input name="isReader" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>否
+                            <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>是
+                            <input name="isReader" type="radio" value="false" text{($.isReader)!==false?'checked':''}/>否
                         </td>
                     </tr>
                 </table>
             </div>
+
+            <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}processFieldProperty" class="text{$.vid}processFieldProperty">
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">流程work属性</div>
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">是否为标题:</td>
+                        <td class="editTableValue">
+                            <input name="isProcessTitle" type="radio" value="true" text{($.isProcessTitle)==true?'checked':''}/>是
+                            <input name="isProcessTitle" type="radio" value="false" text{($.isProcessTitle)!==false?'checked':''}/>否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">是否为流程发起人:</td>
+                        <td class="editTableValue">
+                            <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>是
+                            <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==false?'checked':''}/>否
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
         </div>
 	</div>
 
