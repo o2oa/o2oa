@@ -280,6 +280,12 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                 if( !row.checkCMS() )flag = false;
             }.bind(this));
 
+        }else if( this.json.type === "process" ){
+
+            this.rowList.each( function(row, index){
+                if( !row.checkProcess() )flag = false;
+            }.bind(this));
+
         }
 
         var arg = {
@@ -555,7 +561,9 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
 
         if( this.importer.json.type === "cms" ){
-            this.checkCMS();
+            this.checkCMS( true );
+        }else if( this.importer.json.type === "process" ){
+            this.checkProcess( true );
         }
 
         if(this.errorTextList.length>0){
@@ -566,7 +574,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
 
     },
-    checkCMS : function(){
+    checkCMS : function( notCheckName ){
         var lp = this.lp;
 
         var columnText =  lp.importValidationColumnText;
@@ -597,7 +605,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                         errorTextListExcel.push( colInforExcel + value + lp.cmsSummaryLengthInfor + lp.fullstop );
                     }
                 }
-                if( columnJson.isName ){
+                if( columnJson.isName && !notCheckName){
                     if( columnJson.isPublisher ){ //发布者必须要校验
                         var  arr = value.split(/\s*,\s*/g ); //空格,空格
                         arr.each( function(d, idx){
@@ -622,6 +630,56 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         return true;
     },
+    checkProcess : function( notCheckName ){
+        var lp = this.lp;
+
+        var columnText =  lp.importValidationColumnText;
+        var columnTextExcel = lp.importValidationColumnTextExcel;
+
+        var errorTextList = [];
+        var errorTextListExcel = [];
+
+
+        this.importer.json.data.selectList.each( function (columnJson, i) {
+
+            var colInfor = columnText.replace( "{n}", i+1 );
+            var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
+
+            var value = this.importedData[i] || "";
+
+            var dataType = columnJson.dataType_CMSProcess;
+            if( value && ["string","stringList"].contains(columnJson.dataType_CMSProcess) ){
+                // if( columnJson.isProcessTitle ){
+                //     if( value.length > 70 ){
+                //         errorTextList.push(colInfor + value + lp.cmsTitleLengthInfor + lp.fullstop );
+                //         errorTextListExcel.push( colInforExcel + value + lp.cmsTitleLengthInfor + lp.fullstop );
+                //     }
+                // }
+                if( columnJson.isName && !notCheckName ){
+                    if( columnJson.isProcessDrafter ){ //流程发起人必须要校验
+                        var  arr = value.split(/\s*,\s*/g ); //空格,空格
+                        arr.each( function(d, idx){
+                            var obj = this.importer.getOrgData( d );
+                            if( obj.errorText ){
+                                errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+                                errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+                            }
+                        }.bind(this));
+                    }
+                }
+            }
+
+        }.bind(this));
+
+        this.errorTextList = this.errorTextList.concat( errorTextList );
+        this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
+
+        if(errorTextList.length > 0){
+            return false;
+        }
+
+        return true;
+    },
     createData : function(){
 
         if( this.importer.json.type === "cms" ){
@@ -629,6 +687,10 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 categoryId : this.importer.json.data.category[0].id,
                 readerList : [],
                 authorList : []
+            };
+        }else if( this.importer.json.type === "process" ){
+            this.work = {
+                processFlag : this.importer.json.data.process[0].id
             };
         }
 
@@ -707,8 +769,12 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     d[names[names.length -1]] = data;
                 }
 
-                if( data && this.importer.json.type === "cms" ){
-                    this.parseCMSDocument_FromExcel( columnJson, i, data )
+                if( data  ){
+                    if( this.importer.json.type === "cms" ){
+                        this.parseCMSDocument_FromExcel( columnJson, i, data )
+                    }else if( this.importer.json.type === "process" ){
+                        this.parseProcessWork_FromExcel( columnJson, i, data )
+                    }
                 }
 
             }
@@ -734,6 +800,8 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
                 if( this.importer.json.type === "cms" ){
                     this.parseCMSDocument_CalculateField( fieldJson, data )
+                }else if( this.importer.json.type === "process" ){
+                    this.parseProcessWork_CalculateField( fieldJson, data )
                 }
             }
         }.bind(this));
@@ -744,6 +812,14 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 var identityList = layout.session.user.identityList;
                 if( identityList && identityList.length ){
                     this.document.identity = identityList[0].distinguishedName
+                }
+            }
+        }else if( this.importer.json.type === "process" ){
+            this.work.data = this.data;
+            if( !this.work.identity ){ //没有发布身份，则设置
+                var identityList = layout.session.user.identityList;
+                if( identityList && identityList.length ){
+                    this.work.identity = identityList[0].distinguishedName
                 }
             }
         }
@@ -844,6 +920,46 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             }
         }).clean()
     },
+
+    parseProcessWork_FromExcel : function( columnJson, i, data, excelValue ){
+        var lp = this.importer.lp;
+        var columnText =  lp.importValidationColumnText;
+        var columnTextExcel = lp.importValidationColumnTextExcel;
+
+        var colInfor = columnText.replace( "{n}", i+1 );
+        var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
+
+        if( columnJson.isProcessTitle ){
+            this.work.title = data;
+        }
+        if( columnJson.isName ){
+            if( columnJson.isProcessDrafter && data.length){
+                this.work.identity = data[0].distinguishedName
+            }
+        }
+    },
+    parseProcessWork_CalculateField : function( fieldJson, data ){
+        var lp = this.importer.lp;
+
+        var fieldInfor = lp.caculateFieldValidationText + ( fieldJson.displayName || fieldJson.path );
+
+        if( columnJson.isProcessTitle ){
+            // if( data.length > 70 ){
+            //     this.errorTextList.push(  fieldInfor +'"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
+            //     this.errorTextListExcel.push(  fieldInfor +'"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
+            // }else{
+                this.work.title = data;
+            // }
+        }
+        if( columnJson.isProcessDrafter ){
+            var d = (typeOf(data) === "array" && data.length) ? data[0] : data;
+            if( d ){
+                d = typeOf(d) === "object" ? d.distinguishedName : d;
+                this.work.identity = data[0].distinguishedName
+            }
+        }
+    },
+
     save : function () {
         if( this.json.type === "querytable" ){
 
