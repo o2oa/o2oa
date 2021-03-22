@@ -224,7 +224,7 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer = new Class({
 
         this.loadSelectFormDialog( function( e, form ){
             this.pasteItem(data, 0, form);
-        }.bind(this), "请选择需粘贴视图的关联表单");
+        }.bind(this),  MWF.CMSCM.LP.view.selectRelativeFormNoticeText ); //"请选择需粘贴视图的关联表单"
 
     },
     pasteItem: function(data, i, form){
