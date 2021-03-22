@@ -29,6 +29,9 @@ MWF.xApplication.cms.Document.LP = {
     "attachmentGettedError" : "附件获取错误",
     "formNotSetted" : "未设置表单",
 
+    "attachmentArea" : "附件区域",
+    "selectAttachment" : "选择附件",
+
     "hotPicture" : "热点图片",
     "cancelHotPicture" : "取消热点",
     "setHotPicture" : "设置热点",

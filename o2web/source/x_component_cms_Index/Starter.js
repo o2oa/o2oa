@@ -207,7 +207,7 @@ MWF.xApplication.cms.Index.Starter = new Class({
         //}.bind(this));
     },
     isIgnoreTitle : function(){
-        return this.categoryData && this.categoryData.documentType != "信息"
+        return this.categoryData && this.categoryData.documentType != this.lp.documentTypeInfor; //"信息"
     },
     checkSubject: function(){
         if( this.categoryData &&  this.subjectInput ){
@@ -332,7 +332,7 @@ MWF.xApplication.cms.Index.Starter = new Class({
             this.departmentSelArea.setStyle("border-color", "red");
             this.app.notice(this.lp.selectStartId, "error");
         }else{
-            if( this.isIgnoreTitle() )data.title = "无标题";
+            if( this.isIgnoreTitle() )data.title = this.lp.untitled; //"无标题";
             if( this.areaNode ){
                 this.mask = new MWF.widget.Mask({"style": "desktop"});
                 this.mask.loadNode(this.areaNode);
@@ -384,7 +384,7 @@ MWF.xApplication.cms.Index.Starter = new Class({
             this.departmentSelArea.setStyle("border-color", "red");
             this.app.notice(this.lp.selectStartId, "error");
         }else{
-            if( this.isIgnoreTitle() )title = "无标题";
+            if( this.isIgnoreTitle() )title = this.lp.untitled; //"无标题";
             var workData = {
                 cmsDocument : {
                     "isNewDocument" : true,

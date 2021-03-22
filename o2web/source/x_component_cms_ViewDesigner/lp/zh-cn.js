@@ -67,5 +67,7 @@ MWF.xApplication.cms.ViewDesigner.LP = {
             "inputName": "请输入列表名称",
             "noModifyName": "不能修改名称或者别名",
             "noRemoveOnlyColumn" : "不能删除唯一的列"
-		}
+		},
+        "copy" : "副本",
+        "newListName" : "新列表名称"
 };

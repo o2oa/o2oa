@@ -83,7 +83,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         //MWF.require("MWF.widget.AttachmentController", function() {
         var options = {
             "style": this.json.style || "default",
-            "title": "附件区域",
+            "title": MWF.xApplication.cms.Xform.LP.attachmentArea,
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
             "resize": (this.json.resize === "y" || this.json.resize === "true"),
@@ -114,7 +114,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         MWF.require("MWF.widget.AttachmentSelector", function () {
             var options = {
                 //"style" : "cms",
-                "title": "选择附件",
+                "title": MWF.xApplication.cms.Xform.LP.selectAttachment, //"选择附件",
                 "listStyle": "icon",
                 "selectType": "all",
                 "size": "max",
