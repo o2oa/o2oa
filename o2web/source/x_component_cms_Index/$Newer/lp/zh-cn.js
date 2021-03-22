@@ -29,5 +29,8 @@ MWF.xApplication.cms.Index.Newer.lp = {
 
     "processStarted": "文件已启动",
     "deal": "处理",
-    "all" : "全部"
+    "all" : "全部",
+
+    "documentTypeInfor" : "信息",
+    "untitled" : "无标题"
 };

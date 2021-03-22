@@ -1330,7 +1330,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
     remove: function(e){
         var lp = this.explorer.app.lp;
         var title ;
-        if( !this.data.title || this.data.title == "无标题" ){
+        if( !this.data.title || this.data.title == lp.untitled ){ //"无标题"
             title = lp.currentDocument;
         }else{
             title = "\"" + this.data.title + "\"";

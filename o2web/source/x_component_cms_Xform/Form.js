@@ -631,7 +631,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (callback) callback();
             if (this.app.mobile) {
                 this.app.content.unmask();
-                console.log('这里是移动端');
+                // console.log('这里是移动端');
             } else {
                 if (this.businessData.document.title) {
                     this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished + ": “" + this.businessData.document.title + "”", "success");
