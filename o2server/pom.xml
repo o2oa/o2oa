@@ -356,6 +356,10 @@
 			<groupId>com.github.xuwei-k</groupId>
 			<artifactId>html2image</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.microsoft.playwright</groupId>
+			<artifactId>playwright</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -874,6 +878,11 @@
 				<groupId>com.github.xuwei-k</groupId>
 				<artifactId>html2image</artifactId>
 				<version>0.1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.microsoft.playwright</groupId>
+				<artifactId>playwright</artifactId>
+				<version>1.9.1-alpha-0</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
