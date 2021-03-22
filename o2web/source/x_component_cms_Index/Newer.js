@@ -240,7 +240,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
     },
     isIgnoreTitle : function(){
         if( this.options.ignoreTitle )return true;
-        return this.categoryData && this.categoryData.documentType != "信息"
+        return this.categoryData && this.categoryData.documentType != this.lp.documentTypeInfor
     },
     checkSubject: function(){
         if( this.categoryData ){
@@ -451,7 +451,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
             this.departmentSelArea.setStyle("border-color", "red");
             this.app.notice(this.lp.selectStartId, "error");
         }else{
-            if( this.isIgnoreTitle() && !data.title )data.title = "无标题";
+            if( this.isIgnoreTitle() && !data.title )data.title = this.lp.untitled;
             if( this.formAreaNode ){
                 this.mask = new MWF.widget.Mask({"style": "desktop"});
                 this.mask.loadNode(this.formAreaNode);
@@ -549,7 +549,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
             this.departmentSelArea.setStyle("border-color", "red");
             this.app.notice(this.lp.selectStartId, "error");
         }else{
-            if( this.isIgnoreTitle() && !title )title = "无标题";
+            if( this.isIgnoreTitle() && !title )title = this.lp.untitled; //"无标题";
             var workData;
             if( this.options.documentData ){
                 workData = Object.clone(this.options.documentData);

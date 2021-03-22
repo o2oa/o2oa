@@ -23,5 +23,8 @@ MWF.xApplication.cms.Index.Starter.lp = {
     "processStartedMessage": "您启动了一个新的工作：",
 
     "processStarted": "文件已启动",
-    "deal": "处理"
+    "deal": "处理",
+
+    "documentTypeInfor" : "信息",
+    "untitled" : "无标题"
 };
