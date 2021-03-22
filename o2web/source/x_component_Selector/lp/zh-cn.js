@@ -15,6 +15,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectView": "选择视图",
     "selectStatement" : "选择查询",
     "selectTable": "选择数据表",
+    "selectList" : "选择列表",
     "selectFormStyle" : "选择表单样式",
     "selectCMSApplication": "选择内容管理应用",
     "selectCMSCategory": "选择内容管理栏目",
@@ -39,6 +40,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "role" : "角色",
     "group" : "群组",
     "unit" : "组织",
+    "systemList" : "系统列表",
 
     "appType" : {
         "process": "流程管理",

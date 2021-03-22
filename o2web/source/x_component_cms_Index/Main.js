@@ -63,7 +63,7 @@ MWF.xApplication.cms.Index.Main = new Class({
 	loadAllTypeNode : function(){
 		this.allTypeNode =  new Element("div.columnTop_All",{
 			"styles" : this.css.columnTop_All,
-			"text" : "全部栏目"
+			"text" : this.lp.allColumn //"全部栏目"
 		}).inject( this.titleBar );
 		this.allTypeNode.addEvents({
 			"mouseover" : function(){
@@ -116,11 +116,11 @@ MWF.xApplication.cms.Index.Main = new Class({
 
 		this.searchBarActionNode = new Element("div", {
 			"styles": this.css.searchBarActionNode,
-			"title" : "搜索"
+			"title" :this.lp.search
 		}).inject(this.searchBarNode);
 		this.searchBarResetActionNode = new Element("div", {
 			"styles": this.css.searchBarResetActionNode,
-			"title" : "重置"
+			"title" : this.lp.reset
 		}).inject(this.searchBarNode);
 		this.searchBarResetActionNode.setStyle("display","none");
 
@@ -725,7 +725,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 		}).inject(this.rightNode);
 		this.moreLinkText = new Element("div",{
 			"styles" : this.app.css.moreLinkText,
-			"text" : "更多("+(total-size)+")"
+			"text" : this.app.lp.more+"("+(total-size)+")"
 		}).inject(this.moreArea);
 		this.moreLinkImage = new Element("div",{
 			"styles" : this.app.css.moreLinkImage

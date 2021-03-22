@@ -154,5 +154,9 @@ MWF.xApplication.query.Query.LP = {
         "description" : "注：一次最多允许导出2000条。有{count}条符合条件的数据。",
         "inputIntegerNotice" : "开始和结束条目都请输入正整数",
         "startLargetThanEndNotice" : "开始条目不能大于结束条目"
-    }
+    },
+
+    "deleteConfirmContent" : "删除后不能恢复，你确定要删除该文档？",
+    "deleteConfirmTitle" : "删除确认",
+    "deleteSuccessNotice" : "删除成功"
 };
