@@ -292,9 +292,9 @@ O2CMSComment.getDateDiff = function (publishTime ) {
     var hourC = diffValue / hour;
     var minC = diffValue / minute;
     if (yesterday.getFullYear() == dateTimeStamp.getFullYear() && yesterday.getMonth() == dateTimeStamp.getMonth() && yesterday.getDate() == dateTimeStamp.getDate()) {
-        result = "昨天 " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
+        result =  MWF.xApplication.cms.Xform.LP.yesterday + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
     } else if (beforYesterday.getFullYear() == dateTimeStamp.getFullYear() && beforYesterday.getMonth() == dateTimeStamp.getMonth() && beforYesterday.getDate() == dateTimeStamp.getDate()) {
-        result = "前天 " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
+        result = MWF.xApplication.cms.Xform.LP.theDayBeforeYesterday + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
     } else if (yearC > 1) {
         result = dateTimeStamp.getFullYear() + "-" + (dateTimeStamp.getMonth() + 1) + "-" + dateTimeStamp.getDate();
     } else if (monthC >= 1) {
@@ -302,15 +302,15 @@ O2CMSComment.getDateDiff = function (publishTime ) {
         // s.getFullYear()+"年";
         result = dateTimeStamp.getFullYear() + "-" + (dateTimeStamp.getMonth() + 1) + "-" + dateTimeStamp.getDate();
     } else if (weekC >= 1) {
-        result = parseInt(weekC) + "周前";
+        result = MWF.xApplication.cms.Xform.LP.severalWeekAgo.replace("{count}", parseInt(weekC));
     } else if (dayC >= 1) {
-        result = parseInt(dayC) + "天前";
+        result = MWF.xApplication.cms.Xform.LP.severalDayAgo.replace("{count}", parseInt(dayC));
     } else if (hourC >= 1) {
-        result = parseInt(hourC) + "小时前";
+        result = MWF.xApplication.cms.Xform.LP.severalHourAgo.replace("{count}", parseInt(hourC));
     } else if (minC >= 1) {
-        result = parseInt(minC) + "分钟前";
+        result = MWF.xApplication.cms.Xform.LP.severalMintuesAgo.replace("{count}", parseInt(minC));
     } else
-        result = "刚才";
+        result = MWF.xApplication.cms.Xform.LP.justNow;
     return result;
 };
 

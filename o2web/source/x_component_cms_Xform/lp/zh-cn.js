@@ -55,7 +55,18 @@ MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP,
     "commentFormTitle" : "编辑评论",
     "createCommentSuccess" : "创建评论成功",
     "updateSuccess" : "更新成功",
-    "save" : "保存"
+    "save" : "保存",
+
+    "attachmentArea" : "附件区域",
+    "selectAttachment" : "选择附件",
+
+    "yesterday" : "昨天",
+    "theDayBeforeYesterday" : "前天",
+    "severalWeekAgo" : "{count}周前",
+    "severalDayAgo" : "{count}天前",
+    "severalHourAgo" : "{count}小时前",
+    "severalMintuesAgo" : "{count}分钟前",
+    "justNow" : "刚才",
 
     //"at" : "阅于",
     //"readdDocument" : "，",

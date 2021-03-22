@@ -76,5 +76,19 @@ MWF.xApplication.cms.Module.LP = {
 	"deleteDocumentTitle": "删除确认",
 	"deleteDocument": "您确定要删除{title}吗?", 
 	"deleteDocumentOK": "文档删除成功",
-	"currentDocument" : "该文档"
+	"currentDocument" : "该文档",
+
+	"untitled" : "无标题",
+	"select" : "选择",
+	"cancelSelect" : "取消选择",
+	"move" : "移动",
+	"selectDocNotice" : "请先选择文档",
+	"moveDocConfirmTitle" : "移动确认",
+	"moveDocConfirmContent" : "移动后将在本分类删除，确定要移动选中的{count}个文档到{category}？",
+	"moveDocSuccessNotice" : "移动成功",
+	"clearDocConfirmTitle" : "清除确认",
+	"clearDocConfirmContent" : "删除后无法恢复，确定要删除选中的{count}个文档？",
+	"clearDocSuccessNotice" : "清除成功",
+	"selectCategoryText" : "选择{title}的分类",
+	"systemList" : "系统列表"
 };
