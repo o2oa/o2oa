@@ -361,7 +361,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             if( this.options.hasAction ){
                 var viewCell = new Element("td", {
                     "styles": viewTitleCellNode,
-                    "text": "操作"
+                    "text": this.lp.action
                 }).inject(this.viewTitleLine);
                 viewCell.setStyle("width","40px");
                 if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
@@ -656,7 +656,7 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         }.bind(this));
     },
     loadActions : function( container ){
-        this.deleteNode = new Element("div", {"styles": this.css.actionDeleteNode, "title": "删除"}).inject(container);
+        this.deleteNode = new Element("div", {"styles": this.css.actionDeleteNode, "title": this.view.lp.delete }).inject(container);
         this.deleteNode.addEvents({
             "mouseover": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
             "mouseout": function(){this.deleteNode.setStyles(this.css.actionDeleteNode);}.bind(this),
@@ -668,7 +668,7 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
             }.bind(this)
         });
 
-        this.editNode = new Element("div", {"styles": this.css.actionEditNode, "title": "编辑"}).inject(container);
+        this.editNode = new Element("div", {"styles": this.css.actionEditNode, "title": this.view.lp.edit }).inject(container);
         this.editNode.addEvents({
             "mouseover": function(){this.editNode.setStyles(this.css.actionEditNode_over);}.bind(this),
             "mouseout": function(){this.editNode.setStyles(this.css.actionEditNode);}.bind(this),
@@ -730,11 +730,11 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         this.openCMSDocument( true );
     },
     remove: function(e){
-        var text = "删除后不能恢复，你确定要删除该文档？";
+        var text = this.view.lp.deleteConfirmContent;
         var _self = this;
         this.node.setStyles(this.css.viewContentTrNode_delete);
         this.readyRemove = true;
-        this.view.app.confirm("warn", e, "删除确认", text, 350, 120, function(){
+        this.view.app.confirm("warn", e, this.view.lp.deleteConfirmTitle, text, 350, 120, function(){
 
             _self.removeCMSDocument(_self, false);
 
@@ -757,7 +757,7 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         MWF.Actions.get("x_cms_assemble_control").removeDocument(id, function(json){
             this.readyRemove = false;
             this.node.destroy();
-            this.view.app.notice("删除成功", "success");
+            this.view.app.notice( this.view.lp.deleteSuccessNotice, "success");
             MWF.release(this);
         }.bind(this));
     }
