@@ -43,7 +43,8 @@ MWF.xApplication.cms.Column.LP = {
 		"noElement" : "系统没有栏目或者没有您有权限管理的栏目",
 		"category" : "分类",
 		"form" : "表单",
-		"export" : "导出栏目"
+		"export" : "导出栏目",
+		"changeIcon" : "更改图标"
 	},
 
 	"category" : {

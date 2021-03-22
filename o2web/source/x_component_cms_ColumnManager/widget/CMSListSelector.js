@@ -5,7 +5,7 @@ MWF.xApplication.Selector.ListSelector = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": "选择列表",
+        "title": MWF.xApplication.Selector.LP.selectList, //"选择列表"
         "values": [],
         "appId" : "",
         "formId": "",
@@ -27,6 +27,7 @@ MWF.xApplication.Selector.ListSelector = new Class({
         this.items = [];
     },
     loadSelectItems: function(addToNext){
+        var systemListText = MWF.xApplication.Selector.LP.systemList;
         this.action.listView(this.options.appId, function(json){
             json.data = json.data || [];
             if (json.data.length){
@@ -51,7 +52,7 @@ MWF.xApplication.Selector.ListSelector = new Class({
                     }
                 }.bind(this));
 
-                var item = this._newItem({ name : "系统列表", id : "defaultList" }, this, this.itemAreaNode );
+                var item = this._newItem({ name : systemListText, id : "defaultList" }, this, this.itemAreaNode );
                 this.items.push(item);
 
                 for( var f in form ){
@@ -62,7 +63,7 @@ MWF.xApplication.Selector.ListSelector = new Class({
                     }.bind(this));
                 }
             }else{
-                var item = this._newItem({ name : "系统列表", id : "defaultList" }, this, this.itemAreaNode );
+                var item = this._newItem({ name : systemListText, id : "defaultList" }, this, this.itemAreaNode );
                 this.items.push(item);
             }
         }.bind(this));
