@@ -166,7 +166,7 @@ MWF.xApplication.cms.ViewDesigner.View = new Class({
     },
     saveAs: function(){
         var form = new MWF.xApplication.cms.ViewDesigner.View.NewName(this, {
-            name : this.data.name + "_副本"
+            name : this.data.name + "_" + this.designer.lp.copy
         }, {
             onSave : function( data, callback ){
                 this._saveAs( data.name , callback);
@@ -1639,7 +1639,7 @@ MWF.xApplication.cms.ViewDesigner.View.NewName = new Class({
         "hasTop": true,
         "hasIcon": false,
         "draggable": true,
-        "title" : "新列表名称"
+        "title" : MWF.xApplication.cms.ViewDesigner.LP.newListName
     },
     _createTableContent: function () {
 
@@ -1655,7 +1655,7 @@ MWF.xApplication.cms.ViewDesigner.View.NewName = new Class({
                 style : "cms",
                 hasColon : true,
                 itemTemplate: {
-                    name: { text : "名称", notEmpty : true }
+                    name: { text : MWF.xApplication.cms.ViewDesigner.LP.name, notEmpty : true }
                 }
             }, this.app);
             this.form.load();

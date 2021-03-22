@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
 MWF.xApplication.cms = MWF.xApplication.cms || {};
 MWF.xApplication.cms.Module = MWF.xApplication.cms.Module || {};
+MWF.xDesktop.requireApp("cms.Module", "$ExcelForm.lp."+MWF.language, null, false);
 //MWF.xDesktop.requireApp("cms.Module", "Actions.RestActions", null, false);
 
 MWF.xApplication.cms.Module.ImportForm = new Class({
@@ -13,10 +14,9 @@ MWF.xApplication.cms.Module.ImportForm = new Class({
         "hasTop": true,
         "hasIcon": false,
         "draggable": true,
-        "title" : "数据导入"
+        "title" : MWF.xApplication.cms.Module.ExcelForm.lp.importData
     },
     initialize: function (explorer, data, options, para) {
-        MWF.xDesktop.requireApp("cms.Module", "$ExcelForm.lp."+MWF.language, null, false);
         this.lp = MWF.xApplication.cms.Module.ExcelForm.lp;
 
         this.setOptions(options);
@@ -51,8 +51,8 @@ MWF.xApplication.cms.Module.ImportForm = new Class({
             style : "cms",
             hasColon : true,
             itemTemplate: {
-                url: { text : "下载模板" },
-                file: { type : "button", value : "选择Excel文件",text : "选择文件", event :{
+                url: { text : this.lp.downloadTemplate }, //"下载模板"
+                file: { type : "button", value : this.lp.selectExcelFile ,text : this.lp.selectFile, event :{
                     click : function(){
                         this.selectFile();
                     }.bind(this)
@@ -102,7 +102,7 @@ MWF.xApplication.cms.Module.ImportForm = new Class({
     },
     ok: function( callback ){
         if( !this.formData ){
-            this.app.notice( "请先选择Excel文件", "error" );
+            this.app.notice( this.lp.selectExcelFileNotice, "error" ); //"请先选择Excel文件"
         }else{
             this.action.importDocumentFormExcel(this.data.id, function () {
                 this.formData = null;
@@ -125,7 +125,7 @@ MWF.xApplication.cms.Module.ExportForm = new Class({
         "hasIcon": false,
         "hasBottom": true,
         "draggable": true,
-        "title" : "数据导出"
+        "title" : MWF.xApplication.cms.Module.ExcelForm.lp.exportData
     },
     initialize: function (explorer, data, options, para) {
         MWF.xDesktop.requireApp("cms.Module", "$ExcelForm.lp."+MWF.language, null, false);

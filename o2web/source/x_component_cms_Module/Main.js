@@ -162,7 +162,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		if( !this.isAdmin )return;
 		this.batchAction = new Element("div", {
 			"styles": this.css.batchAction,
-			"text" : "选择"
+			"text" : this.lp.select
 		}).inject(this.titleActionBar);
 		this.batchAction.addEvents({
 			"click": function(e){
@@ -170,7 +170,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 					if( this.view.selectEnable ){
 						this.selectEnable = false;
 						this.batchAction.setStyles( this.css.batchAction );
-						this.batchAction.set("text","选择");
+						this.batchAction.set("text",this.lp.select);
 						this.view.disableSelectMode();
 
 						this.cancelBatchRemoveAction();
@@ -179,7 +179,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 					}else{
 						this.selectEnable = true;
 						this.batchAction.setStyles( this.css.batchAction_over );
-						this.batchAction.set("text","取消选择");
+						this.batchAction.set("text", this.lp.cancelSelect);
 						this.view.selectMode();
 
 						this.loadCopyActionNode();
@@ -264,7 +264,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		if( !this.isAdmin )return;
 		this.moveAction = new Element("div", {
 			"styles": this.css.moveDocumentAction,
-			"text" : "移动"
+			"text" : this.lp.move //"移动"
 		}).inject(this.titleActionBar);
 		this.moveAction.addEvents({
 			"click": function(e){
@@ -272,18 +272,19 @@ MWF.xApplication.cms.Module.Main = new Class({
 				if( this.view ){
 					var itemIds = this.view.getSelectedIds();
 					if (!itemIds.length) {
-						this.notice("请先选择文档","error");
+						this.notice( _self.lp.selectDocNotice, "error"); //"请先选择文档"
 						return;
 					}
 					this.loadSelectColumnDialog( function( data ){
 						if( data && data.id ){
-							var text = "移动后将在本分类删除，确定要移动选中的"+itemIds.length+"个文档到"+data.categoryName+"？";
-							this.confirm("warn", e, "移动确认", text, 350, 120, function(){
+							var text = _self.lp.moveDocConfirmContent.replace("{count}", itemIds.length ).replace("{category}", data.categoryName);
+								//"移动后将在本分类删除，确定要移动选中的"+itemIds.length+"个文档到"+data.categoryName+"？";
+							this.confirm("warn", e, _self.lp.moveDocConfirmTitle, text, 350, 120, function(){
 								_self.restActions.moveDocumentToCategory({
 									ids : itemIds,
 									categoryId : data.id
 								}, function(){
-									_self.notice("移动成功", "success");
+									_self.notice( _self.lp.moveDocSuccessNotice, "success"); //"移动成功"
 									_self.view.reload();
 									this.close();
 								}.bind(this))
@@ -317,12 +318,14 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}).inject(this.titleActionBar);
 		this.batchRemoveAction.addEvents({
 			"click": function(e){
+				var _self = this;
 				if( this.view ){
 					var itemIds = this.view.getSelectedIds();
 					if (itemIds.length) {
 						_self.readyRemove = true;
-						var text = "删除后无法恢复，确定要删除选中的"+itemIds.length+"个文档？";
-						this.confirm("warn", e, "清除确认", text, 350, 120, function(){
+						var text = _self.lp.clearDocConfirmContent.replace("{count}", itemIds.length);
+						// var text = "删除后无法恢复，确定要删除选中的"+itemIds.length+"个文档？";
+						this.confirm("warn", e, _self.lp.clearDocConfirmTitle, text, 350, 120, function(){
 
 							_self.removeDocumentList(itemIds);
 
@@ -333,7 +336,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 							this.close();
 						});
 					}else{
-						this.notice("请先选择文档","error")
+						this.notice( _self.lp.selectDocNotice,"error")
 					}
 				}
 			}.bind(this),
@@ -409,7 +412,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 			this.restActions.removeDocument(id, function(json){
 				count++;
 				if( count === itemIds.length ){
-					this.notice("清除成功", "success");
+					this.notice( this.lp.clearDocSuccessNotice, "success");
 					//this.view.disableSelectMode();
 					this.view.reload();
 				}
@@ -786,13 +789,13 @@ MWF.xApplication.cms.Module.Main = new Class({
 					doc.categoryId = data.document.categoryId;
 					callback( doc );
 				}else{
-					this.loadSelectCategoryDialog( "选择"+ data.document.title + "的分类",function(id){
+					this.loadSelectCategoryDialog( this.lp.selectCategoryText.replace("{title}", data.document.title ), function(id){
 						doc.categoryId = id;
 						callback( doc );
 					}.bind(this))
 				}
 			}.bind(this), function(){
-				this.loadSelectCategoryDialog( "选择"+ data.document.title + "的分类",function(id){
+				this.loadSelectCategoryDialog( this.lp.selectCategoryText.replace("{title}", data.document.title), function(id){
 					doc.categoryId = id;
 					callback( doc );
 				}.bind(this))
@@ -1222,8 +1225,8 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 		if( !this.extContent || !this.extContent.reveal || this.extContent.reveal.length == 0 ){
 			this.extContent = { reveal : [{
 					id : "defaultList",
-					showName : "系统列表",
-					name : "系统列表"
+					showName : this.app.lp.systemList,
+					name : this.app.lp.systemList
 				}] };
 		}
 		this.revealData = this.extContent.reveal;
@@ -1231,8 +1234,8 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 		if( !this.defaultRevealData ){
 			this.defaultRevealData = {
 				id : "defaultList",
-				showName : "系统列表",
-				name : "系统列表"
+				showName : this.app.lp.systemList,
+				name : this.app.lp.systemList
 			}
 		}
 	},
