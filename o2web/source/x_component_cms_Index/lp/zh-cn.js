@@ -42,5 +42,10 @@ MWF.xApplication.cms.Index.LP = {
 
 	"deleteDocumentTitle": "删除确认",
 	"deleteDocument": "您确定要删除“{title}”吗?",
-	"deleteDocumentOK": "文档删除成功"
+	"deleteDocumentOK": "文档删除成功",
+
+	"allColumn" : "全部栏目",
+	"search" :  "搜索",
+	"reset" : "重置",
+	"more" : "更多"
 };
