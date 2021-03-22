@@ -117,7 +117,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "noViewNoCreateNoticeText": "此栏目现在没有列表",
         "loaded": "列表加载完毕",
         "deleteFormTitle": "删除列表确认",
-        "deleteForm": "是否确定要删除当前列表？"
+        "deleteForm": "是否确定要删除当前列表？",
+        "selectRelativeFormNoticeText" : "请选择需粘贴视图的关联表单"
     },
     "dictionary": {
         "create": "新建数据字典",
