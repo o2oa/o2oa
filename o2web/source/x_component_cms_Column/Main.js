@@ -874,7 +874,7 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
                 "color": "#666",
                 "cursor": "pointer"
             },
-            "text": "更改图标"
+            "text": this.lp.changeIcon
         }).inject(this.iconActionNode);
         changeIconAction.addEvent("click", function () {
             this.changeIcon();
