@@ -25,7 +25,7 @@ MWF.xApplication.cms.Document.Attachment = new Class({
     loadAttachmentController: function () {
         var options = {
             "style": "cms",
-            "title": "附件区域",
+            "title": MWF.xApplication.cms.Document.LP.attachmentArea, //"附件区域",
             "size": this.options.size ,
             "resize": true,
             //"attachmentCount": this.json.attachmentCount || 0,
@@ -233,7 +233,7 @@ MWF.xApplication.cms.Document.Attachment = new Class({
         MWF.require("MWF.widget.AttachmentSelector", function() {
             var options = {
                 "style" : "cms",
-                "title": "选择附件",
+                "title": MWF.xApplication.cms.Document.LP.selectAttachment, //"选择附件"
                 "listStyle": "icon",
                 "selectType" : "all",
                 "size": "max",
