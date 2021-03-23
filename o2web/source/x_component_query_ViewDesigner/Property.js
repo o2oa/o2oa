@@ -747,11 +747,12 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 "cellSpacing": "0"
             }).inject(node);
             var tr = new Element("tr", {"styles": this.module.css.filterTableTitle}).inject(table);
+            var lp =  MWF.APPDVD.LP.filter;
             var html = "<th style='width:24px;border-right:1px solid #CCC;border-bottom:1px solid #999;'></th>" +
-                "<th style='border-right:1px solid #CCC;border-left:1px solid #FFF;border-bottom:1px solid #999;'>逻辑</th>" +
-                "<th style='border-right:1px solid #CCC;border-left:1px solid #FFF;border-bottom:1px solid #999;'>路径</th>" +
-                "<th style='border-right:1px solid #CCC;border-left:1px solid #FFF;border-bottom:1px solid #999;'>比较</th>" +
-                "<th style='border-left:1px solid #FFF;border-bottom:1px solid #999;'>值</th>";
+                "<th style='border-right:1px solid #CCC;border-left:1px solid #FFF;border-bottom:1px solid #999;'>"+lp.logic+"</th>" +
+                "<th style='border-right:1px solid #CCC;border-left:1px solid #FFF;border-bottom:1px solid #999;'>"+lp.path+"</th>" +
+                "<th style='border-right:1px solid #CCC;border-left:1px solid #FFF;border-bottom:1px solid #999;'>"+lp.compare+"</th>" +
+                "<th style='border-left:1px solid #FFF;border-bottom:1px solid #999;'>"+lp.value+"</th>";
             tr.set("html", html);
             var addActionNode = new Element("div", {"styles": this.module.css.filterAddActionNode}).inject(tr.getFirst("th"));
             addActionNode.addEvent("click", function () {
@@ -1287,10 +1288,11 @@ MWF.xApplication.query.ViewDesigner.Property.Filter = new Class({
         this.load();
     },
     load: function () {
+        var lp =  MWF.APPDVD.LP.filter;
         this.node = new Element("tr", {"styles": this.module.css.filterTableTd}).inject(this.table);
         var html = "<td style='widtd:24px;border-right:1px solid #CCC;border-bottom:1px solid #999;'></td>" +
             "<td style='padding:3px;border-right:1px solid #CCC;border-bottom:1px solid #999; width:60px'>" + this.data.logic + "</td>" +
-            "<td style='padding:3px;border-right:1px solid #CCC;border-bottom:1px solid #999; width:30px'>列值</td>" +
+            "<td style='padding:3px;border-right:1px solid #CCC;border-bottom:1px solid #999; width:30px'>"+lp.columnValue+"</td>" +
             "<td style='padding:3px;border-right:1px solid #CCC;border-bottom:1px solid #999;'>" + this.data.comparison + "</td>" +
             "<td style='padding:3px;border-bottom:1px solid #999;'>" + this.data.value + "</td>";
         this.node.set("html", html);
@@ -1348,30 +1350,31 @@ MWF.xApplication.query.ViewDesigner.Property.Filter = new Class({
         width = this.comparisonNode.getSize().x - 9;
         this.comparisonNode.empty();
         var comparisonSelect = new Element("select", {"styles": {"width": "90%"}}).inject(this.comparisonNode);
+        var lp =  MWF.APPDVD.LP.filter;
         html = "";
         switch (this.property.data.type) {
             case "text":
-                html += "<option value=''></option><option value='==' " + ((this.data.comparison == "==") ? "selected" : "") + ">等于(==)</option>" +
-                    "<option value='!=' " + ((this.data.comparison == "!=") ? "selected" : "") + ">不等于(!=)</option>" +
-                    "<option value='@' " + ((this.data.comparison == "@") ? "selected" : "") + ">包含(@)</option>";
+                html += "<option value=''></option><option value='==' " + ((this.data.comparison == "==") ? "selected" : "") + ">"+lp.equals+"(==)</option>" +
+                    "<option value='!=' " + ((this.data.comparison == "!=") ? "selected" : "") + ">"+lp.notEquals+"(!=)</option>" +
+                    "<option value='@' " + ((this.data.comparison == "@") ? "selected" : "") + ">"+lp.contain+"(@)</option>";
                 break;
             case "date":
-                html += "<option value=''></option><option value='&gt;' " + ((this.data.comparison == ">") ? "selected" : "") + ">大于(&gt;)</option>" +
-                    "<option value='&lt;' " + ((this.data.comparison == "<") ? "selected" : "") + ">小于(&lt;)</option>" +
-                    "<option value='&gt;=' " + ((this.data.comparison == ">=") ? "selected" : "") + ">大于等于(&gt;=)</option>" +
-                    "<option value='&lt;=' " + ((this.data.comparison == "<=") ? "selected" : "") + ">小于等于(&lt;=)</option>";
+                html += "<option value=''></option><option value='&gt;' " + ((this.data.comparison == ">") ? "selected" : "") + ">"+lp.greaterThan+"(&gt;)</option>" +
+                    "<option value='&lt;' " + ((this.data.comparison == "<") ? "selected" : "") + ">"+lp.lessThan+"(&lt;)</option>" +
+                    "<option value='&gt;=' " + ((this.data.comparison == ">=") ? "selected" : "") + ">"+lp.greaterThanOrEqualTo+"(&gt;=)</option>" +
+                    "<option value='&lt;=' " + ((this.data.comparison == "<=") ? "selected" : "") + ">"+lp.lessThanOrEqualTo+"(&lt;=)</option>";
                 break;
             case "number":
-                html += "<option value=''></option><option value='==' " + ((this.data.comparison == "==") ? "selected" : "") + ">等于(==)</option>" +
-                    "<option value='!=' " + ((this.data.comparison == "!=") ? "selected" : "") + ">不等于(!=)</option>" +
-                    "<option value='&gt;' " + ((this.data.comparison == ">") ? "selected" : "") + ">大于(&gt;)</option>" +
-                    "<option value='&lt;' " + ((this.data.comparison == "<") ? "selected" : "") + ">小于(&lt;)</option>" +
-                    "<option value='&gt;=' " + ((this.data.comparison == ">=") ? "selected" : "") + ">大于等于(&gt;=)</option>" +
-                    "<option value='&lt;=' " + ((this.data.comparison == "<=") ? "selected" : "") + ">小于等于(&lt;=)</option>";
+                html += "<option value=''></option><option value='==' " + ((this.data.comparison == "==") ? "selected" : "") + ">"+lp.equals+"(==)</option>" +
+                    "<option value='!=' " + ((this.data.comparison == "!=") ? "selected" : "") + ">"+lp.notEquals+"(!=)</option>" +
+                    "<option value='&gt;' " + ((this.data.comparison == ">") ? "selected" : "") + ">"+lp.greaterThan+"(&gt;)</option>" +
+                    "<option value='&lt;' " + ((this.data.comparison == "<") ? "selected" : "") + ">"+lp.lessThan+"(&lt;)</option>" +
+                    "<option value='&gt;=' " + ((this.data.comparison == ">=") ? "selected" : "") + ">"+lp.greaterThanOrEqualTo+"(&gt;=)</option>" +
+                    "<option value='&lt;=' " + ((this.data.comparison == "<=") ? "selected" : "") + ">"+lp.lessThanOrEqualTo+"(&lt;=)</option>";
                 break;
             case "boolean":
-                html += "<option value=''></option><option value='==' " + ((this.data.comparison == "==") ? "selected" : "") + ">等于(==)</option>" +
-                    "<option value='!=' " + ((this.data.comparison == "!=") ? "selected" : "") + ">不等于(!=)</option>";
+                html += "<option value=''></option><option value='==' " + ((this.data.comparison == "==") ? "selected" : "") + ">"+lp.equals+"(==)</option>" +
+                    "<option value='!=' " + ((this.data.comparison == "!=") ? "selected" : "") + ">"+lp.notEquals+"(!=)</option>";
                 break;
         }
         comparisonSelect.set("html", html);
