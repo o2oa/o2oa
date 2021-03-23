@@ -2086,7 +2086,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
             if(callback)callback();
         }else{
-            MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
+            MWF.xDesktop.notice("error", {x: "right", y:"top"}, MWF.SelectorLP.selectItemMaxText.replace("{count}", count) , this.node);
         }
     },
     unSelected: function( checkValid, callback ){
@@ -2360,7 +2360,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }).inject(this.children);
             this.selectAllNode = new Element("div", {
                 "styles": this.selector.css.flatCategory_selectAll,
-                "text" : "全选"
+                "text" : MWF.SelectorLP.selectAll
             }).inject(selectAllWrap);
             this.selectAllNode.addEvent( "click", function(ev){
                 if( this.isSelectedAll ){
@@ -2452,7 +2452,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         if( this.selector.options.selectAllEnable && this.selector.options.count.toInt()!==1 ){
             this.selectAllNode = new Element("div", {
                 "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
-                "title" : "全选下级"
+                "title" : MWF.SelectorLP.selectChildren
             }).inject(this.node);
             this.selectAllNode.addEvent( "click", function(ev){
                 if( this.isSelectedAll ){
@@ -2662,7 +2662,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }
 
         }else{
-            MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
+            MWF.xDesktop.notice("error", {x: "right", y:"top"}, MWF.SelectorLP.selectItemMaxText.replace("{count}", count), this.node);
         }
     },
     checkSelectAll : function(){
