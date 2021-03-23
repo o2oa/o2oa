@@ -691,7 +691,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
                 "color": "#666",
                 "cursor": "pointer"
             },
-            "text": "更改图标"
+            "text": this.app.lp.application.changeIcon
         }).inject(this.iconActionNode);
         changeIconAction.addEvent("click", function(){
             this.changeIcon();
@@ -810,7 +810,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
                 "color": "#666",
                 "cursor": "pointer"
             },
-            "text": "设置管理者"
+            "text": this.app.lp.application.setManager //"设置管理者"
         }).inject(this.contentAreaNode);
         changeAdministrators.addEvent("click", function(){
             this.changeAdministrators();
@@ -825,7 +825,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
     changeAdministrators: function(){
         var options = {
             "type": "person",
-            "title": "设置应用管理者",
+            "title": this.app.lp.application.setAppManager,
             "values": this.data.controllerList || [],
             "onComplete": function(items){
                 this.administratorsContentNode.empty();
@@ -859,7 +859,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
 
         var changeIdentityList = new Element("div", {
             "styles": this.app.css.selectButtonStyle,
-            "text": "设置可用身份"
+            "text": this.app.lp.application.setUsableIdentity
         }).inject(this.availableActionAreaNode);
         changeIdentityList.addEvent("click", function(){
             this.changeAvailableIdentitys();
@@ -867,7 +867,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
 
         var changeUnitList = new Element("div", {
             "styles": this.app.css.selectButtonStyle,
-            "text": "设置可用组织"
+            "text": this.app.lp.application.setUsableUnit
         }).inject(this.availableActionAreaNode);
         changeUnitList.addEvent("click", function(){
             this.changeAvailableUnit();
@@ -917,7 +917,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
     changeAvailableIdentitys: function(){
         var options = {
             "type": "identity",
-            "title": "设置应用可用身份",
+            "title": this.app.lp.application.setAppUsableIdentity,
             "values": this.data.availableIdentityList || [],
             "onComplete": function(items){
                 var availableIdentityList = [];
@@ -938,7 +938,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
     changeAvailableUnit: function(){
         var options = {
             "type": "unit",
-            "title": "设置应用可用组织",
+            "title": this.app.lp.application.setAppUsableUnit,
             "values": this.data.availableUnitList || [],
             "onComplete": function(items){
                 var availableUnitList = [];

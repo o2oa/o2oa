@@ -2362,7 +2362,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                                 var m = d.getMonth();
                                 var day = d.getDate();
                                 m = m +1;
-                                this.data[name] = ""+y+"年"+m+"月"+day+"日";
+                                var lp = MWF.xApplication.process.Xform.LP;
+                                this.data[name] = ""+y+lp.year+m+lp.month+day+lp.date;
                             }else{
                                 this.data[name] = v;
                             }
@@ -2402,7 +2403,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                                     var m = d.getMonth();
                                     var day = d.getDate();
                                     m = m +1;
-                                    return ""+y+"年"+m+"月"+day+"日";
+                                    var lp = MWF.xApplication.process.Xform.LP;
+                                    return ""+y+lp.year+m+lp.month+day+lp.date;
                                 }else{
                                     return n;
                                 }
@@ -2452,7 +2454,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             var m = d.getMonth();
                             var day = d.getDate();
                             m = m +1;
-                            this.data[name] = ""+y+"年"+m+"月"+day+"日";
+                            var lp = MWF.xApplication.process.Xform.LP;
+                            this.data[name] = ""+y+lp.year+m+lp.month+day+lp.date;
                         }else{
                             this.data[name] = v;
                         }

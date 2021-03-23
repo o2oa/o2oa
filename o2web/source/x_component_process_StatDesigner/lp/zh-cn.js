@@ -45,5 +45,9 @@ MWF.xApplication.process.StatDesigner.LP = {
         "errorViewColumn": "视图列选择有错误，请重新选择"
     },
     "category": "分类",
-    "amount": "总计"
+    "amount": "总计",
+    "selectorButton" : {
+        "ok" : "确　定",
+        "cancel" : "取 消"
+    }
 };
