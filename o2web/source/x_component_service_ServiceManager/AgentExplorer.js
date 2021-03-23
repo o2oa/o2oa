@@ -34,7 +34,7 @@ MWF.xApplication.service.ServiceManager.AgentExplorer = new Class({
     createTitleElementNode: function() {
         this.titleElementNode = new Element("div", {
             "styles": this.css.titleElementNode,
-            "text": "代理配置"
+            "text": MWF.xApplication.service.ServiceManager.LP.agentConfig
         }).inject(this.toolbarNode);
     },
     _createElement: function(e){
@@ -247,7 +247,7 @@ MWF.xApplication.service.ServiceManager.AgentExplorer.Agent= new Class({
     createTextNodes: function(){
         var titleNode = new Element("div", {
             "styles":  this.css.itemTextTitleNode,
-            "text": ( this.data.enable ? "" : "(禁用)" ) + this.data.name ,
+            "text": ( this.data.enable ? "" : "("+MWF.xApplication.service.ServiceManager.LP.disable+")" ) + this.data.name ,
             "title": this.data.name,
             "events": {
                 "click": function(e){this._open(e);}.bind(this)

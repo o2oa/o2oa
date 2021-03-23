@@ -40,8 +40,8 @@ MWF.xApplication.Selector.PlatApp = new Class({
                         break;
                     case "service":
                         data.appList = [
-                            { "id": "invoke", "name": "服务" },
-                            { "id": "agent", "name": "代理" }
+                            { "id": "invoke", "name": MWF.SelectorLP.service1 },
+                            { "id": "agent", "name": MWF.SelectorLP.agent }
                         ];
                         break;
                     default:
