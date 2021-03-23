@@ -111,5 +111,9 @@ MWF.APPWD.LP = {
     "templateDescription": "模板描述",
     "save": "保存",
     "cancel": "取消",
-    "newCategory": "新分类"
+    "newCategory": "新分类",
+    "selectorButton" : {
+        "ok" : "确　定",
+        "cancel" : "取 消"
+    }
 };
