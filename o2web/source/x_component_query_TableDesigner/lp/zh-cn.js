@@ -73,6 +73,7 @@ MWF.xApplication.query.TableDesigner.LP = {
     "tableClearTitle": "清空数据",
     "tableClearInfo": "清空的数据不能恢复！！确认是否清空？",
     "tableClear_success": "清空成功",
+    "exportExcelFileName" : "导出数据",
 
 
     "buildAllViewInfor": "即将编译所有数据表，包括所有数据应用中的数据表，编译后您可能需要重启服务器后才能使用此数据表。您确定要执行此操作吗？",

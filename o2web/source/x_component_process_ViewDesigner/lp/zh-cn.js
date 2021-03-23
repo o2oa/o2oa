@@ -54,7 +54,9 @@ MWF.xApplication.process.ViewDesigner.LP = {
         "lessThan": "小于",
         "lessThanOrEqualTo": "小于等于",
         "like": "匹配",
-        "notLike": "不匹配"
+        "notLike": "不匹配",
+        "from" : "从",
+        "value" : "值"
     },
     "delete_filterItem_title": "删除过滤条件确认",
     "delete_filterItem": "您确定要删除当前过滤条件吗？"
