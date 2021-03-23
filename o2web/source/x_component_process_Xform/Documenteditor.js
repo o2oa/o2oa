@@ -2002,6 +2002,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             qtPreviewSize: '4px', // Preview table cell size
             qtPreviewBackground: '#c8def4', // preview table background (hover)
 
+            language: o2.language,
+
             // format_tags: '标题一;标题二;标题三;标题四;正文', // entries is displayed in "Paragraph format"
             format_tags: '标题一;标题二;正文(标题三,四)', // entries is displayed in "Paragraph format"
             'format_标题一': {
@@ -2264,6 +2266,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         //    if (textIndent.toInt()) p.appendText("　　","top");
                         //}
                     }.bind(this));
+
+                    var tableList = tmp.getElements("table");
+                    if (tableList && tableList.length){
+                        var w = this.layout_filetext.getSize().x;
+                        tableList.setStyle("width", ""+w+"px");
+                    }
+
                     e.data.dataValue = tmp.get("html");
                     tmp.destroy();
 
@@ -2277,9 +2286,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
                 this.filetextEditor.on( 'insertElement', function( e ) {
                     var tr = e.data.$.getElement("tr");
-                    var tds = tr.getElements("td");
-                    var p = 100/tds.length;
-                    tds.setStyle("width", ""+p+"%");
+                    if (tr){
+                        var tds = tr.getElements("td");
+                        if (td){
+                            var p = 100/tds.length;
+                            tds.setStyle("width", ""+p+"%");
+                        }
+                    }
                 }.bind(this) );
 
                 if (this.json.textIndent!=="n"){
