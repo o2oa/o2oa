@@ -58,5 +58,13 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "portal": "门户管理",
     "query": "数据中心",
     "service": "服务管理",
+
+    "systemStyle" : "系统样式",
+    "customStyle" : "自定义样式（脚本）",
+    "selectAll" : "全选",
+    "selectChildren" : "全选下级",
+    "selectItemMaxText" : "最多可选择{count}个选项",
+    "service1" : "服务",
+    "agent" : "代理"
 };
 MWF.xApplication.Selector["lp."+o2.language] = MWF.xApplication.Selector.LP;
