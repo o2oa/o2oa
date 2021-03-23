@@ -71,5 +71,12 @@ MWF.xApplication.process.TaskCenter.LP = {
     "duty": "职务",
     "searchProcess": "输入关键字，搜素可启动流程",
     "searchProcessResault": "”{key}“ 的搜索结果",
-    "datch": "批量处理"
+    "datch": "批量处理",
+
+    "setReaded" : "设置为已阅",
+    "setReadedConfirmContent" : "您确定要将“{title}”标记为已阅吗？",
+    "setReadedConfirmTitle" : "标记已阅确认",
+
+    "open" : "打开"
+
 };
