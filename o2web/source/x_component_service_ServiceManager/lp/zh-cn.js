@@ -75,5 +75,9 @@ MWF.xApplication.service.ServiceManager.LP = {
     },
     "createSelectTemplate": "新建：选择模板",
     "templateCategory": "模板分类：",
-    "all": "全部"
+    "all": "全部",
+
+    "agentConfig" : "代理配置",
+    "interfaceConfig" : "接口配置",
+    "disable" : "禁用"
 };
