@@ -32,7 +32,7 @@ MWF.xApplication.Selector.FormStyle = new Class({
                         }
                     }.bind(this));
                     var category = this._newItemCategory({
-                        name : "系统样式",
+                        name : MWF.SelectorLP.systemStyle,
                         id : "stystem",
                         subItemList : subItemList
                     }, this, this.itemAreaNode);
@@ -69,7 +69,7 @@ MWF.xApplication.Selector.FormStyle = new Class({
                         });
 
                         var category = this._newItemCategory({
-                            name : "自定义样式（脚本）",
+                            name : MWF.SelectorLP.customStyle,
                             id : "script",
                             applicationList : array
                         }, this, this.itemAreaNode);

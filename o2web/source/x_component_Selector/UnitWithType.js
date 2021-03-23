@@ -180,7 +180,7 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
             if( !this.selectAllNode && !this.selector.isFlatCategory ){
                 this.selectAllNode = new Element("div", {
                     "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
-                    "title" : "全选下级"
+                    "title" : MWF.SelectorLP.selectChildren
                 }).inject(this.textNode, "before");
                 //this.selectAllNode.addEvent( "click", function(ev){
                 //    this.selectAll(ev);
