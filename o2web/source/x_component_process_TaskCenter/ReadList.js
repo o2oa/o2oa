@@ -83,7 +83,7 @@ MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({
     //    this.closeNode = new Element("div", {"styles": this.list.css.titleActionCloseNode}).inject(this.titleActionNode);
     //},
     loadActions: function(){
-        this.showTaskCompletedNode = new Element("div", {"styles": this.list.css.titleActionReadedNode, "title": "设置为已阅"}).inject(this.actionContentNode);
+        this.showTaskCompletedNode = new Element("div", {"styles": this.list.css.titleActionReadedNode, "title": this.list.app.lp.setReaded }).inject(this.actionContentNode);
         this.closeTaskCompletedNode = new Element("div", {"styles": this.list.css.titleActionCloseNode}).inject(this.actionContentNode);
     },
     setEvent: function(){
@@ -130,15 +130,15 @@ MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({
         this.setReadedButton();
     },
     setReadedButton: function(){
-        this.setReadedAction = Element("div", {"styles": this.list.css.setReadedAction, "text": "设置为已阅"}).inject(this.mainContentNode);
+        this.setReadedAction = Element("div", {"styles": this.list.css.setReadedAction, "text": this.list.app.lp.setReaded}).inject(this.mainContentNode);
         this.setReadedAction.addEvent("click", function(e){
             this.setReaded(e);
         }.bind(this));
     },
     setReadedClose: function(e){
         var _self = this;
-        var text = "您确定要将“"+this.data.title+"”标记为已阅吗？"
-        this.list.app.confirm("infor", e, "标记已阅确认", text, 350, 130, function(){
+        var text = this.list.app.lp.setReadedConfirmContent.replace("{title}", this.data.title );
+        this.list.app.confirm("infor", e, this.list.app.lp.setReadedConfirmTitle, text, 350, 130, function(){
             _self.list.app.action.setReaded(function(){
                 this.node.destroy();
                 this.list.refresh();
@@ -150,8 +150,9 @@ MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({
     },
     setReaded: function(e){
         var _self = this;
-        var text = "您确定要将“"+this.data.title+"”标记为已阅吗？"
-        this.list.app.confirm("infor", e, "标记已阅确认", text, 350, 130, function(){
+        // var text = "您确定要将“"+this.data.title+"”标记为已阅吗？"
+        var text = this.list.app.lp.setReadedConfirmContent.replace("{title}", this.data.title );
+        this.list.app.confirm("infor", e, this.list.app.lp.setReadedConfirmTitle, text, 350, 130, function(){
             _self.list.app.action.setReaded(function(){
                 this.closeTaskCompleted(function(){
                     this.node.destroy();

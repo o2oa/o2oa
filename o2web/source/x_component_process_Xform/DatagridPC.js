@@ -810,7 +810,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			cell.empty();
 			var options = {
 				"style": module.json.style || "default",
-				"title": "附件区域",
+				"title": MWF.xApplication.process.Xform.LP.attachmentArea,
 				"listStyle": module.json.dg_listStyle || "icon",
 				"size": module.json.dg_size || "min",
 				"resize": (module.json.dg_resize === "y" || this.json.dg_resize === "true"),

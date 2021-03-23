@@ -2876,9 +2876,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
             return false;
         }
+        var lp = MWF.xApplication.process.Xform.LP;
         var node = new Element("div", { "styles": this.css.rollbackAreaNode });
-        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;float:left;\">请选择文件要回溯到的位置：</div>";
-        html += "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;float:right;\"><input class='rollback_flowOption' checked type='checkbox' />并尝试继续流转</div>";
+        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;float:left;\">"+lp.selectRollbackActivity+"</div>";
+        html += "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;float:right;\"><input class='rollback_flowOption' checked type='checkbox' />"+lp.tryToProcess+"</div>";
         html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
         node.set("html", html);
         var rollbackItemNode = node.getLast();
@@ -3122,7 +3123,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (e && e.setDisable) e.setDisable(true);
         o2.Actions.get("x_processplatform_assemble_surface").press(this.businessData.work.id, function (json) {
             var users = o2.name.cns(json.data.valueList).join(", ");
-            this.app.notice("已经向待办人：" + users + ", 发送了提醒", "success");
+            this.app.notice(MWF.xApplication.process.Xform.LP.sendTaskNotice.replace("{users}", users), "success");
             if (e && e.setDisable) e.setDisable(false);
         }.bind(this), function (xhr, text, error) {
             //e.setDisable(false);
@@ -4202,9 +4203,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (title.length > 75) {
             title = title.substr(0, 74) + "..."
         }
-        var text = "您确定要将“" + title + "”标记为已阅吗？";
+        //"您确定要将“" + title + "”标记为已阅吗？";
+        var text = MWF.xApplication.process.Xform.LP.setReadedConfirmContent.replace("{title}",title);
 
-        this.app.confirm("infor", e, "标记已阅确认", text, 300, 120, function () {
+        this.app.confirm("infor", e,  MWF.xApplication.process.Xform.LP.setReadedConfirmTitle, text, 300, 120, function () {
             var confirmDlg = this;
             var read = null;
             for (var i = 0; i < _self.businessData.readList.length; i++) {
