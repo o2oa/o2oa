@@ -120,5 +120,9 @@ MWF.xApplication.query.QueryManager.LP = {
     },
     "createSelectTemplate": "新建：选择模板",
     "templateCategory": "模板分类：",
-    "all": "全部"
+    "all": "全部",
+    "selectorButton" : {
+        "ok" : "确　定",
+        "cancel" : "取 消"
+    }
 };
