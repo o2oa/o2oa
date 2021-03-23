@@ -157,7 +157,15 @@ MWF.xApplication.process.ProcessManager.LP = {
         "icon": "应用图标",
         "id": "应用标识",
         "controllerList": "管理者",
-        "available": "可用范围"
+        "available": "可用范围",
+
+        "changeIcon" : "更改图标",
+        "setManager" : "设置管理者",
+        "setAppManager" : "设置应用管理者",
+        "setUsableIdentity" : "设置可用身份",
+        "setUsableUnit" : "设置可用组织",
+        "setAppUsableIdentity" : "设置应用可用身份",
+        "setAppUsableUnit" : "设置应用可用组织"
     },
     "createSelectTemplate": "新建：选择模板",
     "templateCategory": "模板分类：",
@@ -166,5 +174,10 @@ MWF.xApplication.process.ProcessManager.LP = {
     "name": "名称",
     "alias": "别名",
     "attachment": "附件",
-    "upload": "上传附件"
+    "upload": "上传附件",
+    "selectorButton" : {
+        "ok" : "确　定",
+        "cancel" : "取 消"
+    }
+
 };
