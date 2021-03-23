@@ -1347,8 +1347,8 @@ MWF.xApplication.AppCenter.Exporter.Element.QuerySelector = new Class({
         this.selectData.viewList = this.getCheckedList(this.listViewContent);
         this.selectData.statList = this.getCheckedList(this.listStatContent);
         this.selectData.revealList = this.getCheckedList(this.listRevealContent);
-        this.selectData.statementList = this.getCheckedList(this.listTableContent);
-        this.selectData.tableList = this.getCheckedList(this.listStatementContent);
+        this.selectData.statementList = this.getCheckedList(this.listStatementContent);
+        this.selectData.tableList = this.getCheckedList(this.listTableContent);
         this.element.checkSelect(this.selectData);
         this.hide();
     },
