@@ -36,7 +36,7 @@ class ActionListRowSelectWhere extends BaseAction {
 			EntityManager em = emc.get(clz);
 			String sql = "SELECT o FROM " + clz.getName() + " o";
 			if (StringUtils.isNotBlank(where) && (!StringUtils.equals(where, EMPTY_SYMBOL))) {
-				sql += " where (" + where + ")";
+				sql += " where " + where;
 			}
 			List<?> list = em.createQuery(sql).getResultList();
 			result.setData(list);
