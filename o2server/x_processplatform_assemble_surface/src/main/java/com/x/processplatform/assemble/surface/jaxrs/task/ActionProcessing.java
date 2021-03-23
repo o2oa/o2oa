@@ -243,7 +243,7 @@ class ActionProcessing extends BaseAction {
 	private void processingTask() throws Exception {
 		this.taskCompletedId = this.processingProcessingTask(TaskCompleted.PROCESSINGTYPE_TASK);
 		this.processingProcessingWork(ProcessingAttributes.TYPE_TASK);
-		// 流程流转到取消环节，此时工作已被删除
+		// 流程流转到取消环节，此时工作已被删除.flag =true 代表存在,false 已经被删除
 		boolean flag = true;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			if ((emc.countEqual(Work.class, Work.job_FIELDNAME, task.getJob()) == 0)
@@ -257,6 +257,14 @@ class ActionProcessing extends BaseAction {
 			this.processingUpdateTask();
 		} else {
 			record = new Record(workLog, task);
+			List<String> unitDutyList = new ArrayList<>();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				// 后续需要记录unitDutyList所以在一个emc中进行计算.
+				unitDutyList = business.organization().unitDuty().listNameWithIdentity(task.getIdentity());
+			}
+			// 记录task中身份所有的组织职务.
+			record.getProperties().setUnitDutyList(unitDutyList);
 			record.setCompleted(true);
 			record.setType(Record.TYPE_TASK);
 		}
@@ -295,8 +303,12 @@ class ActionProcessing extends BaseAction {
 
 	private void processingRecord(String type) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
 			final List<String> nextTaskIdentities = new ArrayList<>();
 			record = new Record(workLog, task);
+			// 获取在record中需要记录的task中身份所有的组织职务.
+			record.getProperties()
+					.setUnitDutyList(business.organization().unitDuty().listNameWithIdentity(task.getIdentity()));
 			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
 			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
 					task.getJob());
