@@ -87,7 +87,9 @@ MWF.xApplication.process.FormDesigner.LP = {
             "delete" : "删除",
             "setProperties" : "设置操作属性",
             "restoreDefaultTool" : "恢复删除的系统操作",
-            "selectDefaultTool" : "选择系统操作"
+            "selectDefaultTool" : "选择系统操作",
+            "setReaded" : "标记为已阅",
+            "readed" : "已阅"
         },
         "isSave": "正在保存，请稍候...",
         "scriptIncluder" : {
@@ -269,5 +271,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectedScript": "视图选择脚本",
         "action.tools": "操作按钮"
     },
-    "copyed": "已复制"
+    "copyed": "已复制",
+    "selectorButton" : {
+        "ok" : "确　定",
+        "cancel" : "取 消"
+    }
+
 };

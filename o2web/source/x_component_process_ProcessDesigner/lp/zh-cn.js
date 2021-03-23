@@ -177,7 +177,17 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"enabledProcessInfor": "将当前流程设置为”启用“，原来已启用的流程版本将被设置为”未启用“。<br><br>已经在流转的流程实例不会受到影响，下次启动流程时，会以已启用的流程版本为模板创建流程实例。<br><br>您确定要将当前流程设置为”启用“吗？",
 
 		"deleteEditionTitle": "删除版本确认",
-		"deleteEditionInfor": "删除选中的流程版本”{v}“，同时也会删除流程版本”{v}“的流转中实例。您确定要删除流程版本”{v}“吗？",
+		"deleteEditionInfor": "删除选中的流程版本”{v}“，同时也会删除流程版本”{v}“的流转中实例。您确定要删除流程版本”{v}“吗？"
+	},
+	"selectorButton" : {
+		"ok" : "确　定",
+		"cancel" : "取 消"
+	},
+	"orgEditor" : {
+		"addOption" : "添加选择项",
+		"modifyOption" : "修改选择项",
+		"conflictNotice" : "该路由已经有重名配置",
+		"copyConfig" : "拷贝选择配置"
 	}
 
 };

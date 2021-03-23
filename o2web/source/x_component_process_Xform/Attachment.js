@@ -1125,7 +1125,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         //MWF.require("MWF.widget.AttachmentController", function() {
         var options = {
             "style": this.json.style || "default",
-            "title": "附件区域",
+            "title": MWF.xApplication.process.Xform.LP.attachmentArea,
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
             "resize": (this.json.resize === "y" || this.json.resize === "true"),
@@ -1882,7 +1882,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         //MWF.require("MWF.widget.AttachmentController", function() {
         var options = {
             "style": this.json.style || "default",
-            "title": "附件区域DG",
+            "title": MWF.xApplication.process.Xform.LP.attachmentArea+"DG",
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
             "resize": (this.json.resize === "y" || this.json.resize === "true"),
