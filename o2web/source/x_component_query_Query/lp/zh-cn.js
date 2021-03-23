@@ -49,7 +49,6 @@ MWF.xApplication.query.Query.LP = {
     "filterErrorComparison": "请选择比较符",
     "filterErrorValue": "请输入比较值",
 
-
     "workTitle": "标题",
     "activity": "活动",
     "status": "状态",
