@@ -26,11 +26,6 @@ class ActionDownloadTransfer extends BaseAction {
 						generalFile.getStorage());
 				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(false, generalFile.getName()),
 						this.contentDisposition(false, generalFile.getName()));
-
-				generalFile.deleteContent(gfMapping);
-				emc.beginTransaction(GeneralFile.class);
-				emc.delete(GeneralFile.class, generalFile.getId());
-				emc.commit();
 			}
 			result.setData(wo);
 			return result;

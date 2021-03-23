@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import com.google.gson.JsonElement;
+import com.microsoft.playwright.*;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -29,9 +30,11 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 
-import javax.print.DocFlavor;
 import java.io.File;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 class ActionHtmlToImage extends BaseAction {
 
@@ -77,18 +80,50 @@ class ActionHtmlToImage extends BaseAction {
 		if (workHtml.toLowerCase().indexOf("<html") == -1) {
 			workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
 		}
-		String name = StringUtils.split(effectivePerson.getDistinguishedName(),"@")[0] + DateTools.compact(new Date()) + ".png";
+		String name = StringUtils.split(effectivePerson.getDistinguishedName(),"@")[0] + DateTools.compact(new Date()) + ".jpg";
 		if (StringUtils.isNotEmpty(wi.getTitle())) {
-			name = wi.getTitle() + ".png";
+			name = wi.getTitle() + ".jpg";
 		}
-
-		HtmlImageGenerator imageGenerator = new HtmlImageGenerator();
-		imageGenerator.loadHtml(workHtml);
-		File tempDir = Config.dir_local_temp();
-		FileTools.forceMkdir(tempDir);
-		File file = new File(tempDir, name);
-		imageGenerator.saveAsImage(file);
-		byte[] bytes = FileUtils.readFileToByteArray(file);
+		byte[] bytes = null;
+		try (Playwright playwright = Playwright.create()) {
+			List<BrowserType> browserTypes = Arrays.asList(
+					playwright.chromium(),
+					playwright.firefox(),
+					playwright.webkit()
+			);
+			for (BrowserType browserType : browserTypes) {
+				logger.print("Playwright user browser:"+browserType.name());
+				BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
+				options.setHeadless(true);
+				try (Browser browser = browserType.launch(options)) {
+					BrowserContext context = browser.newContext();
+					Page page = context.newPage();
+					//page.navigate("file:///Users/chengjian/dev/tmp/html2Image.html");
+					page.setContent(workHtml);
+					Page.ScreenshotOptions screenshotOptions = new Page.ScreenshotOptions();
+					screenshotOptions.setFullPage(true);
+					File tempDir = Config.dir_local_temp();
+					FileTools.forceMkdir(tempDir);
+					File file = new File(tempDir, name);
+					//screenshotOptions.setPath(Paths.get("/Users/chengjian/dev/tmp/screenshot-" + browserType.name() + ".png"));
+					screenshotOptions.setPath(file.toPath());
+					if(wi.getQuality()!=null && wi.getQuality()>20){
+						screenshotOptions.setQuality(wi.getQuality());
+					}else {
+						screenshotOptions.setQuality(80);
+					}
+					page.screenshot(screenshotOptions);
+					bytes = FileUtils.readFileToByteArray(file);
+					break;
+				} catch (Exception e) {
+					logger.warn("Playwright user browser:{} error:{}",browserType.name(), e.getMessage());
+				}
+			}
+		}
+		if(bytes==null){
+			logger.warn("Playwright screenshot fail!!!");
+			return "";
+		}
 		String key = "";
 		if(work!=null){
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
@@ -138,6 +173,8 @@ class ActionHtmlToImage extends BaseAction {
 		private String workHtml;
 		@FieldDescribe("图片标题")
 		private String title;
+		@FieldDescribe("图片质量，默认80，值越大越清晰")
+		private Integer quality;
 		@FieldDescribe("工作标识，把图片保存到工单的附件中，非必填")
 		private String workId;
 		@FieldDescribe("位置，工作标识不为空的时候必填")
@@ -174,8 +211,51 @@ class ActionHtmlToImage extends BaseAction {
 		public void setSite(String site) {
 			this.site = site;
 		}
+
+		public Integer getQuality() {
+			return quality;
+		}
+
+		public void setQuality(Integer quality) {
+			this.quality = quality;
+		}
 	}
 
 	public static class WoControl extends WorkControl {
+	}
+
+	public static void main(String[] args) throws Exception{
+		System.out.println(10);
+		System.out.println("!!!!!!!!");
+		try (Playwright playwright = Playwright.create()) {
+			List<BrowserType> browserTypes = Arrays.asList(
+					playwright.chromium(),
+					playwright.firefox(),
+					playwright.webkit()
+			);
+			for (BrowserType browserType : browserTypes) {
+				System.out.println(browserType.name());
+				BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
+				options.setHeadless(true);
+				try (Browser browser = browserType.launch(options)) {
+					BrowserContext context = browser.newContext();
+					Page page = context.newPage();
+					page.navigate("file:///Users/chengjian/dev/tmp/html2Image.html");
+					//page.setContent("<html><body>测试一下</body></html>");
+					//Thread.sleep(1000);
+					Page.ScreenshotOptions screenshotOptions = new Page.ScreenshotOptions();
+					screenshotOptions.setFullPage(true);
+					screenshotOptions.setQuality(80);
+					//screenshotOptions.setQuality(2);
+					screenshotOptions.setPath(Paths.get("/Users/chengjian/dev/tmp/screenshot-" + browserType.name() + ".jpg"));
+					page.screenshot(screenshotOptions);
+					break;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		System.out.println(11);
 	}
 }
