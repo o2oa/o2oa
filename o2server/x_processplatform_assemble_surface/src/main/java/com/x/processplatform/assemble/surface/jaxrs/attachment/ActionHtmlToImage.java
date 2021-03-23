@@ -80,7 +80,7 @@ class ActionHtmlToImage extends BaseAction {
 		if (workHtml.toLowerCase().indexOf("<html") == -1) {
 			workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
 		}
-		String name = StringUtils.split(effectivePerson.getDistinguishedName(),"@")[0] + DateTools.compact(new Date()) + ".png";
+		String name = StringUtils.split(effectivePerson.getDistinguishedName(),"@")[0] + DateTools.compact(new Date()) + ".jpg";
 		if (StringUtils.isNotEmpty(wi.getTitle())) {
 			name = wi.getTitle() + ".jpg";
 		}
