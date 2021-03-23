@@ -346,7 +346,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 ( this.selector.options.style!=="blue_flat" && this.selector.options.style!=="blue_flat_mobile")){
                 this.selectAllNode = new Element("div", {
                     "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
-                    "title" : "全选下级"
+                    "title" : MWF.SelectorLP.selectChildren
                 }).inject(this.textNode, "before");
                 this.selectAllNode.addEvent( "click", function(ev){
                     if( this.isSelectedAll ){
@@ -490,7 +490,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
             }
 
         }else{
-            MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
+            MWF.xDesktop.notice("error", {x: "right", y:"top"}, MWF.SelectorLP.selectItemMaxText.replace("{count}", count), this.node);
         }
     },
     checkSelectAll : function(){
@@ -620,7 +620,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
             }).inject(this.children);
             this.selectAllNode = new Element("div", {
                 "styles": this.selector.css.flatCategory_selectAll,
-                "text" : "全选"
+                "text" : MWF.SelectorLP.selectAll
             }).inject(selectAllWrap);
             this.selectAllNode.addEvent( "click", function(ev){
                 if( this.isSelectedAll ){
