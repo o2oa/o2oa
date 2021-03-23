@@ -46,7 +46,7 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor = new Class({
 
         this.selectedNode = new Element("div", {"styles": this.css.selectedNode}).inject(this.node);
 
-        this.upNode = new Element("div", { "styles": this.css.upNode, "text" : "添加选择项" }).inject(this.node);
+        this.upNode = new Element("div", { "styles": this.css.upNode, "text" : this.lp.orgEditor.addOption }).inject(this.node);
         this.upNode.addEvent("click", function( ev ){
             if( this.currentItem ){
                 if( !this.currentItem.data.title || !this.currentItem.data.name ){
@@ -65,7 +65,7 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor = new Class({
                     this.scrollNode.scrollTo(0,0);
                     this.upNode.set("text","添加选择项");
                 }else{
-                    MWF.xDesktop.notice("error", {"y":"top", "x": "right"}, "该路由已经有重名配置："+ d.name, ev.target);
+                    MWF.xDesktop.notice("error", {"y":"top", "x": "right"}, this.lp.orgEditor.conflictNotice+"："+ d.name, ev.target);
                 }
 
             }else if( this.defaultProperty ){
@@ -80,9 +80,9 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor = new Class({
                     this.save();
                     this.defaultProperty.propertyContent.destroy();
                     this.loadDefaultProperty();
-                    this.upNode.set("text","添加选择项");
+                    this.upNode.set("text", this.lp.orgEditor.addOption);
                 }else{
-                    MWF.xDesktop.notice("error", {"y":"top", "x": "right"}, "该路由已经有重名配置："+ d.name, ev.target);
+                    MWF.xDesktop.notice("error", {"y":"top", "x": "right"}, this.lp.orgEditor.conflictNotice+"："+ d.name, ev.target);
                 }
             }
         }.bind(this));
@@ -195,7 +195,7 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor = new Class({
         o2.xDesktop.requireApp("Template", "Selector.Custom", function () {
             var options = {
                 "count": 0,
-                "title": "拷贝选择配置",
+                "title": this.lp.orgEditor.copyConfig,
                 "selectableItems": selectableItems,
                 "expand": true,
                 "category": true,
@@ -215,7 +215,7 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor = new Class({
                                 nameConflictList.push( data.name );
                             }
                             if( nameConflictList.length > 0 ){
-                                MWF.xDesktop.notice("error", {"y":"top", "x": "right"}, "该路由已经有重名配置："+ nameConflictList.join(","), ev.target);
+                                MWF.xDesktop.notice("error", {"y":"top", "x": "right"}, this.lp.orgEditor.conflictNotice+"："+ nameConflictList.join(","), ev.target);
                             }
                         }.bind(this));
                         this.save();
@@ -337,13 +337,13 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor.SelectedItem = new Cla
         if( !this.editor.currentItem ){
             if(this.editor.defaultProperty){
                 this.editor.defaultProperty.show();
-                this.editor.upNode.set("text","添加选择项");
+                this.editor.upNode.set("text",this.editor.lp.orgEditor.addOption);
             }
         }
         MWF.release(this);
     },
     selectItem: function(){
-        this.editor.upNode.set("text","修改选择项");
+        this.editor.upNode.set("text", this.editor.lp.orgEditor.modifyOption);
         if(this.editor.currentItem) this.editor.currentItem.unSelectItem();
         if(this.editor.defaultProperty)this.editor.defaultProperty.hide();
         if (this.property){
