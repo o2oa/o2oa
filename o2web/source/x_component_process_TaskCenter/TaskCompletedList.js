@@ -299,7 +299,7 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
                     "<td style=\"white-space: normal;word-break: break-all;word-wrap:break-word;\">"+
                     ""+lp.fileat+"<font style=\"color: #00F\"> "+log.fromTime.substr(0, log.fromTime.lastIndexOf(":"))+" </font>"+lp.flowto+"<font style=\"color: #00F\"> ["+log.fromActivityName+"] </font>" +
                     "<br/><font style=\"font-weight:bold\">"+lp.list_owner+": </font>"+users.join(", ")+"</td>" +
-                    "<td style=\"width:60px; text-align:right\"><div id=\""+work.id+"\">打开</div></td>" +
+                    "<td style=\"width:60px; text-align:right\"><div id=\""+work.id+"\">"+lp.open+"</div></td>" +
                     "</tr></table>";
 
                 var taskCompletedWorkInforNode = new Element("div", {
@@ -327,7 +327,7 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
             //         if (log){
             var html = "<table border=\"0\" width=\"90%\" align=\"center\"><tr>" +
                 "<td style=\"white-space: normal;word-break: break-all;word-wrap:break-word;\">"+work.title+"”"+lp.fileat+""+work.completedTime+""+lp.completed+"</td>" +
-                "<td><div id=\""+work.id+"\">打开</div></td>" +
+                "<td><div id=\""+work.id+"\">"+lp.open+"</div></td>" +
                 "</tr></table>";
 
             var taskCompletedWorkInforNode = new Element("div", {

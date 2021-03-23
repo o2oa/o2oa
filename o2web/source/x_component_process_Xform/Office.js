@@ -666,7 +666,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
                     var buttonNode = new Element("input", {
                         "type": "button",
                         "styles": {"float": "right"},
-                        "value": "查看版本",
+                        "value": MWF.xApplication.process.Xform.LP.seeVersion,
                         "events": {
                             "click": function(e){
                                 this.openOfficeHistory(e, dlg, button);
@@ -865,7 +865,8 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
                 objectHtml += "_"+key+"='"+p+"'";
             });
             objectHtml += ">";
-            objectHtml += "<SPAN STYLE='color:red'>尚未安装NTKO Web Chrome跨浏览器插件。请点击<a href=\"../o2_lib/officecontrol/ntkoplugins.xpi\">安装组件</a></SPAN>";
+            //尚未安装NTKO Web Chrome跨浏览器插件。请点击<a href="../o2_lib/officecontrol/ntkoplugins.xpi">安装组件</a>
+            objectHtml += "<SPAN STYLE='color:red'>"+MWF.xApplication.process.Xform.LP.installNTKOWebChromePluginNotice_xpi+"</SPAN>";
 
             objectHtml += "</OBJECT><input type='hidden' value='"+this.json.id+"' name='site'><input style='display:none' name=\"file\" type=\"file\"/></form>";
             this.officeNode.appendHTML(objectHtml);
@@ -949,7 +950,8 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
                 objectHtml += "_"+key+"='"+p+"'";
             });
             objectHtml += ">";
-            objectHtml += "<SPAN STYLE='color:red'>尚未安装NTKO Web Chrome跨浏览器插件。请点击<a href=\"../o2_lib/officecontrol/ntkoplugins.crx\">安装组件</a></SPAN>";
+            //尚未安装NTKO Web Chrome跨浏览器插件。请点击<a href="../o2_lib/officecontrol/ntkoplugins.crx">安装组件</a>
+            objectHtml += "<SPAN STYLE='color:red'>"+MWF.xApplication.process.Xform.LP.installNTKOWebChromePluginNotice_crx+"</SPAN>";
 
             objectHtml += "</OBJECT><input type='hidden' value='"+this.json.id+"' name='site'><input style='display:none' name=\"file\" type=\"file\"/></form>";
             this.officeNode.appendHTML(objectHtml);
@@ -1134,8 +1136,9 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         }.bind(this));
     },
     openRecoverAutoSaveDlg: function(){
+        var lp = MWF.xApplication.process.Xform.LP;
         var node = new Element("div", {"styles": {"overflow": "hidden", "padding": "0 30px"}});
-        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden\">请选择要恢复的正文版本：</div>";
+        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden\">"+lp.selectVersionToRestore+"</div>";
         html += "<div style=\"max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
         node.set("html", html);
         var recoverItemNode = node.getLast();
@@ -1144,7 +1147,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 
         var _self = this;
         var dlg = o2.DL.open({
-            "title": "恢复正文",
+            "title": lp.restoreFile,
             //"style": "work",
             "isResize": false,
             "content": node,

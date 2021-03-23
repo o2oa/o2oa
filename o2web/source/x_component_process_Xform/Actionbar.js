@@ -94,9 +94,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
                             {
                                 "type": "MWFToolBarButton",
                                 "img": "read.png",
-                                "title": "标记为已阅",
+                                "title": MWF.xApplication.process.Xform.LP.setReaded,
                                 "action": "readedWork",
-                                "text": "已阅",
+                                "text": MWF.xApplication.process.Xform.LP.readed,
                                 "id": "action_readed",
                                 "control": "allowReadProcessing",
                                 "condition": "",
@@ -116,9 +116,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
                                 {
                                     "type": "MWFToolBarButton",
                                     "img": "read.png",
-                                    "title": "标记为已阅",
+                                    "title": MWF.xApplication.process.Xform.LP.setReaded,
                                     "action": "readedWork",
-                                    "text": "已阅",
+                                    "text": MWF.xApplication.process.Xform.LP.readed,
                                     "id": "action_readed",
                                     "control": "allowReadProcessing",
                                     "condition": "",
