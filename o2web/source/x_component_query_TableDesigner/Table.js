@@ -652,7 +652,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
                     }
                     array.push(f);
                 })
-                ExcelUtils.export(array, "导出数据"+(new Date).format("db"));
+                ExcelUtils.export(array,  MWF.APPDTBD.LP.exportExcelFileName +(new Date).format("db"));
             }.bind(this));
             this.close();
         }, function(){
