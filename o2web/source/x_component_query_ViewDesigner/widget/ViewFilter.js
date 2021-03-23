@@ -226,6 +226,8 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             id = this.app.view.data.id;
         }
 
+        var lp = this.app.lp.filter;
+
         var config = {
             "textValue": {
                 "equals": {
@@ -420,13 +422,13 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             if(viewFilterValue2Area)viewFilterValue2Area.setStyle('display', 'block');
 
             viewFilterValueTitleArea = this.inputAreaNode.getElement("#"+id+"viewFilterValueTitleArea");
-            if(viewFilterValueTitleArea)viewFilterValueTitleArea.set('text', '从');
+            if(viewFilterValueTitleArea)viewFilterValueTitleArea.set('text', lp.from );
         }else{
             viewFilterValue2Area = this.inputAreaNode.getElement("#"+id+"viewFilterValue2Area");
             if(viewFilterValue2Area)viewFilterValue2Area.setStyle('display', 'none');
 
             viewFilterValueTitleArea = this.inputAreaNode.getElement("#"+id+"viewFilterValueTitleArea");
-            if(viewFilterValueTitleArea)viewFilterValueTitleArea.set('text', '值');
+            if(viewFilterValueTitleArea)viewFilterValueTitleArea.set('text', lp.value );
         }
         switch (formatType){
             case "textValue":

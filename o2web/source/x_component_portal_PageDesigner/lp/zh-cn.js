@@ -137,7 +137,9 @@ MWF.APPPD.LP = {
         "lessThan": "小于",
         "lessThanOrEqualTo": "小于等于",
         "like": "匹配",
-        "notLike": "不匹配"
+        "notLike": "不匹配",
+        "from" : "从",
+        "value" : "值"
     },
     "mastInputPath": "请输入数据路径",
     "mastInputTitle": "请输入标题",
