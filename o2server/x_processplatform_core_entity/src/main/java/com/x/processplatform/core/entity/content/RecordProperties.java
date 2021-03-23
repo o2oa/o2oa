@@ -10,6 +10,9 @@ import com.x.processplatform.core.entity.element.ActivityType;
 
 public class RecordProperties extends JsonProperties {
 
+	@FieldDescribe("record中记录的处理人身份所拥有的组织职务,向上递归.")
+	private List<String> unitDutyList = new ArrayList<>();
+
 	@FieldDescribe("后续人工环节")
 	private List<NextManual> nextManualList = new ArrayList<NextManual>();
 
@@ -229,6 +232,14 @@ public class RecordProperties extends JsonProperties {
 
 	public void setEmpowerFromIdentity(String empowerFromIdentity) {
 		this.empowerFromIdentity = empowerFromIdentity;
+	}
+
+	public List<String> getUnitDutyList() {
+		return unitDutyList;
+	}
+
+	public void setUnitDutyList(List<String> unitDutyList) {
+		this.unitDutyList = unitDutyList;
 	}
 
 }
