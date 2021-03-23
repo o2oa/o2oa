@@ -2288,7 +2288,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     var tr = e.data.$.getElement("tr");
                     if (tr){
                         var tds = tr.getElements("td");
-                        if (td){
+                        if (tds && tds.length){
                             var p = 100/tds.length;
                             tds.setStyle("width", ""+p+"%");
                         }
