@@ -106,7 +106,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 }.bind(this)
             });
             this.editor.ui.add('ecnet', CKEDITOR.UI_BUTTON, {
-                label:'智能纠错',
+                label:MWF.xApplication.process.Xform.LP.intelligentCorrection,
                 icon: '../x_component_process_Xform/$Form/default/icon/ecnet.png',
                 command:"ecnet"
             });

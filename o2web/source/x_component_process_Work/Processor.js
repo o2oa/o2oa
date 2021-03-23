@@ -2824,7 +2824,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
             var flag = true;
             if (this.json.validationCount && typeOf(this.json.validationCount.toInt()) === "number") {
                 if (this.selector.selector.selectedItems.length < this.json.validationCount.toInt()) {
-                    flag = "请至少选择" + this.json.validationCount + "项"
+                    flag = MWF.xApplication.process.Xform.LP.selectItemCountNotice.replace("{count}", this.json.validationCount);
                 }
             }
             if (flag === true) {
@@ -2855,7 +2855,8 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
             var flag = true;
             if (this.json.validationCount && typeOf(this.json.validationCount.toInt()) === "number") {
                 if (data.length < this.json.validationCount.toInt()) {
-                    flag = "请至少选择" + this.json.validationCount + "项"
+                    //"请至少选择" + this.json.validationCount + "项"
+                    flag = MWF.xApplication.process.Xform.LP.selectItemCountNotice.replace("{count}", this.json.validationCount);
                 }
             }
 

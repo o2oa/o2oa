@@ -105,9 +105,9 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
                     this.defaultTools.push({
                         "type": "MWFToolBarButton",
                         "img": "read.png",
-                        "title": "标记为已阅",
+                        "title": this.designer.lp.actionbar.setReaded,
                         "action": "readedWork",
-                        "text": "已阅",
+                        "text": this.designer.lp.actionbar.readed,
                         "id": "action_readed",
                         "control": "allowReadProcessing",
                         "condition": "",

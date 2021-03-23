@@ -1324,9 +1324,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         td = tr.insertCell(3).setStyles(this.form.css[style]);
         td.set("text", task.completedTime || "");
         td = tr.insertCell(4).setStyles(this.form.css[style]);
-        td.set("text", (task.processingType=="empower") ? "授权" : task.routeName || "");
+        td.set("text", (task.processingType=="empower") ? MWF.xApplication.process.Xform.LP.empower : task.routeName || "");
         td = tr.insertCell(5).setStyles(this.form.css[style]);
-        opinion = (task.processingType=="empower") ? "授权给"+ o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + (task.opinion || "")+"</div>";
+        opinion = (task.processingType=="empower") ? MWF.xApplication.process.Xform.LP.empowerTo + o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + (task.opinion || "")+"</div>";
         td.set("html", opinion);
 
 
@@ -1569,7 +1569,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         if (!isTask){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
             var html = this.json.textStyle;
-            if (task.processingType=="empower") html = "<font style='color:#ff5400;'>{person}</font>（{department}）授权给<font style='color:#ff5400;'>{empowerTo}</font>处理。（{time}）</font>";
+            if (task.processingType=="empower") html = MWF.xApplication.process.Xform.LP.empowerToHtml;
 
             var nextTaskText = "";
             if (task.processingType=="empower"){
