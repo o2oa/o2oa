@@ -385,13 +385,13 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         if( !this.okActionNode ) {
             this.okActionNode = new Element("button", {
                 "styles": this.css.okActionNode,
-                "text": "确定"
+                "text": MWF.SelectorLP.ok
             }).inject(this.actionNode);
         }
         if( !this.cancelActionNode ) {
             this.cancelActionNode = new Element("button", {
                 "styles": this.css.cancelActionNode,
-                "text": "取消"
+                "text": MWF.SelectorLP.cancel
             }).inject(this.actionNode);
         }
         this.okActionNode.addEvent("click", function(){
