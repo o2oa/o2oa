@@ -1554,11 +1554,11 @@ MWF.APPOrg.EmpowerChecker = new Class({
 
         data.each( function( d ){
             subItemList.push({
-                "name" : d.fromIdentity.split("@")[0] + " 授权给 " + d.toIdentity.split("@")[0],
+                "name" : d.fromIdentity.split("@")[0] + " "+MWF.xApplication.process.Xform.LP.empowerTo+" " + d.toIdentity.split("@")[0],
                 "id" : d.fromIdentity + "#" + d.toIdentity
             })
             valueList.push({
-                "name" : d.fromIdentity.split("@")[0] + " 授权给 " + d.toIdentity.split("@")[0],
+                "name" : d.fromIdentity.split("@")[0] + " "+MWF.xApplication.process.Xform.LP.empowerTo+" " + d.toIdentity.split("@")[0],
                 "id" : d.fromIdentity + "#" + d.toIdentity
             })
             // empowerMap[ d.fromIdentity ] = d.toIdentity;
