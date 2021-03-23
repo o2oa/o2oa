@@ -220,11 +220,11 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector.DutyInput = Class
     loadAction: function(){
         this.okActionNode = new Element("button", {
             "styles": this.css.dutyOkActionNode,
-            "text": "确　定"
+            "text": this.app.lp.selectorButton.ok
         }).inject(this.actionNode);
         this.cancelActionNode = new Element("button", {
             "styles": this.css.dutyCancelActionNode,
-            "text": "取 消"
+            "text": this.app.lp.selectorButton.cancel
         }).inject(this.actionNode);
     },
     loadContent: function(){
