@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -23,9 +24,11 @@ import javax.tools.ToolProvider;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import com.x.base.core.project.config.Config;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -41,13 +44,11 @@ public class MetaModelBuilder {
 			File sourcedir = new File(args[1]);
 			File outputdir = new File(args[2]);
 
-			File o2oadir = basedir.getParentFile();
-
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, Charset.forName("UTF-8"));
+			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, StandardCharsets.UTF_8);
 			fileManager.setLocation(StandardLocation.SOURCE_PATH, Arrays.asList(sourcedir));
 			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(sourcedir));
-			fileManager.setLocation(StandardLocation.CLASS_PATH, classpath(o2oadir, outputdir));
+			fileManager.setLocation(StandardLocation.CLASS_PATH, classpath(outputdir));
 			List<JavaFileObject> res = new ArrayList<>();
 
 			List<String> paths = scanEntityJava(sourcedir);
@@ -72,20 +73,13 @@ public class MetaModelBuilder {
 
 	}
 
-	private static List<File> classpath(File o2oadir, File outputdir) {
+	private static List<File> classpath(File outputdir) {
 
 		List<File> cp = new ArrayList<>();
 
 		cp.add(outputdir);
-
-		IOFileFilter filter = new WildcardFileFilter("x_base_core_project.jar");
-		File storeDir = new File(o2oadir, "store/jars");
-		if(!storeDir.exists() || !storeDir.isDirectory()){
-			storeDir = new File(o2oadir.getParent(), "o2server/store/jars");
-		}
-		for (File o : FileUtils.listFiles(storeDir, filter, null)) {
-			cp.add(o);
-		}
+		// 需要引入x_base_core_project才可以进行编译,在x_base_core_project模块中直接使用target/classes
+		cp.add(new File(Config.class.getProtectionDomain().getCodeSource().getLocation().getFile()));
 
 		ClassLoader cl = MetaModelBuilder.class.getClassLoader();
 
@@ -97,15 +91,15 @@ public class MetaModelBuilder {
 		return cp;
 	}
 
-	private static void removeClassFile(File sourcedir) {
+	private static void removeClassFile(File sourcedir) throws IOException {
 		for (File o : FileUtils.listFiles(sourcedir, new WildcardFileFilter("*.class"),
 				DirectoryFileFilter.DIRECTORY)) {
-			o.delete();
+			Files.delete(o.toPath());
 		}
 	}
 
-	private static List<String> scanEntityJava(File sourcedir) throws Exception {
-		List<String> list = new ArrayList<String>();
+	private static List<String> scanEntityJava(File sourcedir) {
+		List<String> list = new ArrayList<>();
 		try (ScanResult sr = new ClassGraph().enableAnnotationInfo().disableJarScanning().scan()) {
 			ClassInfoList infos = new ClassInfoList();
 			for (ClassInfo info : sr.getClassesWithAnnotation(Entity.class.getName())) {
@@ -116,7 +110,10 @@ public class MetaModelBuilder {
 			}
 			for (ClassInfo info : infos) {
 				File file = new File(sourcedir,
-						info.getName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + ".java");
+						RegExUtils.replaceAll(info.getName(), "\\.", Matcher.quoteReplacement(File.separator))
+								+ ".java");
+//				File file = new File(sourcedir,
+//						info.getName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + ".java");
 				list.add(file.getAbsolutePath());
 			}
 			return list.stream().sorted().collect(Collectors.toList());
