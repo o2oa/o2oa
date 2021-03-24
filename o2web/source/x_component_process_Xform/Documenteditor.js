@@ -21,7 +21,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
          * @event MWF.xApplication.process.Xform.Documenteditor#loadPage
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["load", "queryLoad", "beforeLoad", "postLoad", "afterLoad", "loadPage"],
+        "moduleEvents": ["load", "queryLoad", "beforeLoad", "postLoad", "afterLoad", "loadPage", "fullScreen", "returnScreen"],
         "docPageHeight": 850.4,
         "docPageFullWidth": 794,
         "pageShow": "single"
@@ -1075,9 +1075,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return p;
     },
 
-    resizeToolbar: function(){
+    resizeToolbar: function(node){
+        debugger;
         if (this.toolbarNode){
-            var p = this.toolNode.getPosition(this.scrollNode);
+            var p = this.toolNode.getPosition(node || this.scrollNode);
             var size = this.toolNode.getSize();
             var pl = this.toolbarNode.getStyle("padding-left").toInt();
             var pr = this.toolbarNode.getStyle("padding-right").toInt();
@@ -1085,7 +1086,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             //var pNode = this.toolNode.getOffsetParent();
 
-            var paddingTop = this.form.node.getStyle("padding-top");
+            var paddingTop = (this.isFullScreen) ? 0 : (node || this.form.node).getStyle("padding-top");
             try {
                 paddingTop = paddingTop.toInt();
             }catch (e) {
@@ -1093,17 +1094,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
 
             if (p.y<paddingTop && this.toolNode.offsetParent){
-                this.toolbarNode.inject(this.scrollNode);
+                this.toolbarNode.inject(node || this.scrollNode);
                 this.toolbarNode.setStyles({
                     "position": "absolute",
                     "width": ""+x+"px",
-                    "z-index": 200,
+                    "z-index": 50000,
                     "top": paddingTop+"px",
                     "left": ""+p.x+"px"
                 });
             }else{
                 this.toolbarNode.inject(this.toolNode);
-                this.toolbarNode.setStyles({"position": "static"});
+                this.toolbarNode.setStyles({"position": "static", "width": "auto"});
             }
         }
     },
@@ -1560,7 +1561,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     _loadToolbars: function(){
         var html ="";
-        var editdoc, printdoc, history;
+        var editdoc, printdoc, history, fullscreen=MWF.xApplication.process.Xform.LP.fullScreen;
 
         if (layout.mobile){
             editdoc = MWF.xApplication.process.Xform.LP.editdoc_mobile;
@@ -1581,6 +1582,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         if (this.allowHistory){
            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+history+"\" MWFButtonAction=\"_historyDoc\" MWFButtonText=\""+history+"\"></span>";
+        }
+        if (this.json.canFullScreen!=="n"){
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/fullscreen.png\" title=\""+fullscreen+"\" MWFButtonAction=\"fullScreen\" MWFButtonText=\""+fullscreen+"\"></span>";
         }
 
         // if (this.json.fullWidth=="y"){
@@ -1616,8 +1620,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }.bind(this));
             if (this.json.canDoublePage==="n" && !layout.mobile) this.doublePageAction.hide();
         //}
-
-
 
         this.zoomActionArea =  new Element("div", {"styles": {"float": "right", "margin-right": "10px"}}).inject(this.toolbarNode);
         if (this.json.isScale !== "y") this.zoomActionArea.hide();
@@ -1726,6 +1728,67 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (v>2) v = 2;
             this.scaleTo(v);
         }.bind(this));
+    },
+    fullScreen: function(bt){
+        var text = bt.node.get("text");
+        var content = this.form.app.content;
+
+        var stopFun = function(e){ e.stopPropagation(); };
+        if (text===MWF.xApplication.process.Xform.LP.returnScreen){
+            this.form.node.getParent().show();
+            this.node.inject(this.positionNode, "before");
+            this.positionNode.destroy();
+
+            // var styles = content.retrieve("tmpStyles");
+            // content.setStyles({
+            //     "position": styles.position,
+            //     "overflow": styles.overflow
+            // });
+            // this.node.setStyles(this.css.returnScreen);
+            this.fireEvent("returnScreen");
+            bt.setText(MWF.xApplication.process.Xform.LP.fullScreen);
+
+            // this.fullScreenScrollNode = this.node.getOffsetParent().getFirst().getParentSrcollNode();
+            // if (this.fullScreenScrollNode){
+            //     if (this.fullScreenScrollResizeToolbarFun) this.fullScreenScrollNode.removeEvent("scroll", this.fullScreenScrollResizeToolbarFun);
+            // }
+
+            //this.node.removeEvent("wheel", stopFun);
+            this.isFullScreen = false;
+            this.resizeToolbar();
+        }else{
+            // this.positionNode = new Element("div").inject(this.node, "after");
+            // this.node.inject(content, "top");
+            // this.form.node.hide();
+
+            this.positionNode = new Element("div").inject(this.node, "after");
+            this.node.inject(this.scrollNode, "top");
+            this.form.node.getParent().hide();
+
+            // var position = content.getStyle("poaition");
+            // var overflow = content.getStyle("overflow");
+            // content.store("tmpStyles", {"position": position, "overflow": overflow});
+            // content.setStyles({
+            //     "position": "relative",
+            //     "overflow": "auto"
+            // });
+            this.node.setStyles(this.css.fullScreen);
+            this.fireEvent("fullScreen");
+
+            // this.fullScreenScrollNode = this.node.getOffsetParent().getFirst().getParentSrcollNode();
+            // if (this.fullScreenScrollNode){
+            //     this.fullScreenScrollResizeToolbarFun = function(){this.resizeToolbar(this.fullScreenScrollNode);}.bind(this);
+            //     this.fullScreenScrollResizeToolbarFun();
+            //     this.fullScreenScrollNode.addEvent("scroll", this.fullScreenScrollResizeToolbarFun);
+            // }
+
+            bt.setText(MWF.xApplication.process.Xform.LP.returnScreen);
+
+            this.isFullScreen = true;
+            //this.node.addEvent("wheel", stopFun);
+            this.resizeToolbar();
+        }
+        this.reload();
     },
     /**缩放文件内容
      * @param scale{Number} 缩放的比率

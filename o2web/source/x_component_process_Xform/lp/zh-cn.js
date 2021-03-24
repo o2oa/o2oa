@@ -197,6 +197,8 @@ MWF.xApplication.process.Xform.LP = {
     "editdocCompleted": "编辑完成",
     "printdoc": "打印正文",
     "history": "正文痕迹审查",
+    "fullScreen": "全屏",
+    "returnScreen": "还原",
 
     "editdoc_mobile": "编辑",
     "editdocCompleted_mobile": "编辑完成",
