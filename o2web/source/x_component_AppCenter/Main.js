@@ -597,23 +597,34 @@ MWF.xApplication.AppCenter.Exporter = new Class({
         // //this.processArea = new Element("div", {"styles": this.css.moduleSetupListAreaNode}).inject(this.contentNode);
         //
         // this.listAreaNode = new Element("div").inject(this.contentAreaNode);
-        this.processAreaTitle = new Element("div", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.process}).inject(this.contentAreaNode);
-        this.processAreaContent = new Element("div", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
+        this.processAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.process}).inject(this.contentAreaNode);
+        this.processAreaContent = new Element("div.", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
 
-        this.portalAreaTitle = new Element("div", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.portal}).inject(this.contentAreaNode);
+        this.portalAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.portal}).inject(this.contentAreaNode);
         this.portalAreaContent = new Element("div", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
 
-        this.cmsAreaTitle = new Element("div", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.cms}).inject(this.contentAreaNode);
+        this.cmsAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.cms}).inject(this.contentAreaNode);
         this.cmsAreaContent = new Element("div", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
 
-        this.queryAreaTitle = new Element("div", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.query}).inject(this.contentAreaNode);
+        this.queryAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.query}).inject(this.contentAreaNode);
         this.queryAreaContent = new Element("div", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
 
 
-        this.serviceAreaTitle = new Element("div", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.service}).inject(this.contentAreaNode);
+        this.serviceAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.service}).inject(this.contentAreaNode);
         this.serviceAreaContent = new Element("div", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
 
-
+        this.contentAreaNode.getElements(".moduleSetupListAreaTitle").each(function (node){
+            var spanNode = new Element("span",{"text":"︽","style":"float:right;font-size:16px;padding-right:15px;cursor:pointer"}).inject(node);
+            spanNode.addEvent("click",function (){
+                if(spanNode.get("text") === "︽"){
+                    node.getNext().hide();
+                    spanNode.set("text","︾");
+                }else {
+                    node.getNext().show();
+                    spanNode.set("text","︽");
+                }
+            }.bind(this));
+        }.bind(this));
 
     },
     loadProcessList: function(){
@@ -1462,6 +1473,7 @@ MWF.xApplication.AppCenter.Module.Setup = new Class({
         }.bind(this));
     },
     createListArea: function(){
+        debugger
         this.contentAreaNode = new Element("div").inject(this.contentNode);
         this.contentInforNode = new Element("div", {"styles": this.css.moduleSetupContentInforNode, "text": this.lp.downloadInfor}).inject(this.contentAreaNode);
         //this.processArea = new Element("div", {"styles": this.css.moduleSetupListAreaNode}).inject(this.contentNode);
@@ -1572,7 +1584,7 @@ MWF.xApplication.AppCenter.Module.SetupLocal = new Class({
     loadCompare: function(){
         var formData = new FormData();
         formData.append('file', this.file);
-debugger;
+        debugger;
         this.app.actions.compareUpload(formData, this.file, function(json){
             this.clearLoading();
             this.setupData.flag = json.data.flag;
