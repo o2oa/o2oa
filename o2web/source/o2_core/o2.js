@@ -2144,6 +2144,19 @@ o2.core = true;
             }
         }
     };
+    o2.zoom = function(scale){
+        if (!layout) layout = {};
+        if (layout && !layout.userLayout) layout.userLayout = {};
+        layout.userLayout.scale = scale;
+        var s = (1/layout.userLayout.scale)*100;
+        var p = s+"%";
+        document.id(document.documentElement).setStyles({
+            "transform": "scale("+layout.userLayout.scale+")",
+            "transform-origin": "0 0",
+            "width": p,
+            "height":p
+        });
+    };
 
     if (String.implement) String.implement({
         "getAllIndexOf": function(str){
