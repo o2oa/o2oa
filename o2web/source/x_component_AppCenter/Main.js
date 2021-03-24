@@ -1473,7 +1473,6 @@ MWF.xApplication.AppCenter.Module.Setup = new Class({
         }.bind(this));
     },
     createListArea: function(){
-        debugger
         this.contentAreaNode = new Element("div").inject(this.contentNode);
         this.contentInforNode = new Element("div", {"styles": this.css.moduleSetupContentInforNode, "text": this.lp.downloadInfor}).inject(this.contentAreaNode);
         //this.processArea = new Element("div", {"styles": this.css.moduleSetupListAreaNode}).inject(this.contentNode);
