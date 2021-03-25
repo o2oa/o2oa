@@ -163,6 +163,8 @@ o2.LP.desktop = {
     "defaultMenuTitle": "恢复默认菜单确认",
     "defaultMenuInfor": "您确定要将菜单的排序和分组，恢复到默认状态码？",
 
+    "deleteLink" : "删除快捷方式",
+
     "messsage": {
         "appliction": "应用",
         "application": "应用",
@@ -212,7 +214,8 @@ o2.LP.desktop = {
         "publishDocument" : "发布文档：",
 
         "customMessageTitle": "消息提醒：",
-        "customMessage": "您收到一条消息："
+        "customMessage": "您收到一条消息",
+        "emoji": "表情"
     },
     "styleMenu": {
         "default": "默认",
@@ -313,6 +316,11 @@ o2.LP.widget = {
     "rename": "重命名",
     "property": "属性",
     "refuseUpload": "禁止文件上传",
+    "refuseUploadHTML": "<div>名为：<font style='color:#0000ff'>“{filename}”</font>的附件不符合允许上传类型，<font style='color:#ff0000'>已经被剔除</font></div>",
+    "refuseUploadNotice" : "文件：“{filename}”不符合允许上传类型",
+    "refuseUploadHTML_size" : "<div>名为：<font style='color:#0000ff'>“{filename}”</font>的附件超出允许的大小，<font style='color:#ff0000'>已经被剔除</font>（仅允许上传小于{size}M的文件）</div>",
+    "refuseUploadNotice_size": "文件：“{filename}”超出允许的大小，（仅允许上传小于{size}M的文件）",
+
 
     "list": "列表",
     "sequence": "序列",
@@ -344,6 +352,11 @@ o2.LP.widget = {
 
     "months": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
     "days_abbr": ["日", "一", "二", "三", "四", "五", "六"],
+    "clear": "清除",
+    "year": "年",
+    "month": "月",
+    "date": "日",
+    "dateGreaterThanCurrentNotice" : "选择的日期必须大于当前日期",
 
     "unknow": "未知",
     "uploadImg": "上传图片",
@@ -360,7 +373,38 @@ o2.LP.widget = {
     "record": "录音",
     "stop": "停止",
     "play": "播放",
-    "save": "保存"
+    "save": "保存",
+    "userRefuse" : "用户拒绝提供信息。",
+    "explorerNotSupportDevice" : "浏览器不支持硬件设备。",
+    "canNotFindDevice": "无法发现指定的硬件设备。",
+    "canNotOpenMicrophone": "无法打开麦克风。异常信息：",
+    "explorerNotSupportRecordVoice" : "浏览器不支持录音功能。",
+
+    "clickToEditCss" : "点击此处，编写CSS",
+    "uploadSuccess": "上传成功！",
+    "uploadFail": "上传失败，请重新上传！",
+    "selectLocalImage" : "选择本地图片",
+    "selectCloudImage": "选择云文件图片",
+    "reset": "重置",
+    "uploadOriginalImage": "上传原图",
+
+    "startRecord" : "开始录制",
+    "completeRecord": "结束录制",
+    "requireHttps" : "视频录制功能需要用在 https 协议下才能使用",
+    "canNotToRecordVideo" : "视频录制功能不能使用，您的浏览器不支持以下特性:",
+
+    "pageJumperTitle": "输入页码，离开输入框或按回车跳转",
+
+    "scriptAreaEditNotice" : "点击此处，编写脚本代码",
+    "empty" : "清空",
+    "undo" : "撤销",
+    "redo" : "重做",
+    "thickness" : "粗细",
+    "color" : "颜色",
+    "insertImage" : "插入图片",
+    "imageClipper" : "裁剪图片",
+
+    "explorerNotSupportFeatures" : "您的浏览器不支持以下特性:"
 };
 
 o2.LP.widget.SimpleEditor = {
@@ -432,8 +476,9 @@ o2.LP.authentication = {
     "inputYourOldPassword" : "请输入原密码",
     "newPassword" : "新密码",
     "inputYourNewPassword" : "请输入新密码",
-    "changePasswordSuccess" : "修改密码成功"
-
+    "changePasswordSuccess" : "修改密码成功",
+    "userAppCameraHtml" : "<div>打开<div styles='bindTipLinkArea'>APP</div>扫一扫</div>",
+    "loginToPage": "登录网页版"
 
 };
 o2.LP.script = {

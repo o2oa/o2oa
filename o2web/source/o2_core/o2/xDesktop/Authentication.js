@@ -757,8 +757,8 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 "<div styles='bindTipArea'>" +
                 "   <div styles='bindTipIconArea'></div>" +
                 "   <div styles='bindTipTextArea'>" +
-                "       <div>打开<div styles='bindTipLinkArea'>APP</div>扫一扫</div>" +
-                "       <div>登录网页版</div>" +
+                "       " + this.lp.userAppCameraHtml +
+                "       <div>"+this.lp.loginToPage +"</div>" +
                 "</div>";
 
             this.bindLoginContainer.set("html", html2);

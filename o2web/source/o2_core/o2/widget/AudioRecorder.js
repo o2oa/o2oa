@@ -346,27 +346,27 @@ o2.widget.AudioRecorder = new Class({
                     switch (error.code || error.name) {
                         case 'PERMISSION_DENIED':
                         case 'PermissionDeniedError':
-                            o2.xDesktop.notice("error", {"x": "right", "y": "top"}, '用户拒绝提供信息。', this.node);
+                            o2.xDesktop.notice("error", {"x": "right", "y": "top"}, o2.LP.widget.userRefuse, this.node);
                             //this.throwError('用户拒绝提供信息。');
                             break;
                         case 'NOT_SUPPORTED_ERROR':
                         case 'NotSupportedError':
-                            o2.xDesktop.notice("error", {"x": "right", "y": "top"}, '浏览器不支持硬件设备。', this.node);
+                            o2.xDesktop.notice("error", {"x": "right", "y": "top"}, o2.LP.widget.explorerNotSupportDevice, this.node);
                             //this.throwError('<a href="http://www.it165.net/edu/ewl/" target="_blank" class="keylink">浏览器</a>不支持硬件设备。');
                             break;
                         case 'MANDATORY_UNSATISFIED_ERROR':
                         case 'MandatoryUnsatisfiedError':
-                            o2.xDesktop.notice("error", {"x": "right", "y": "top"}, '无法发现指定的硬件设备。', this.node);
+                            o2.xDesktop.notice("error", {"x": "right", "y": "top"}, o2.LP.widget.canNotFindDevice, this.node);
                             //this.throwError('无法发现指定的硬件设备。');
                             break;
                         default:
-                            o2.xDesktop.notice("error", {"x": "right", "y": "top"}, '无法打开麦克风。异常信息:' + (error.code || error.name), this.node);
+                            o2.xDesktop.notice("error", {"x": "right", "y": "top"}, o2.LP.widget.canNotOpenMicrophone + (error.code || error.name), this.node);
                             //this.throwError('无法打开麦克风。异常信息:' + (error.code || error.name));
                             break;
                     }
                 }.bind(this));
         } else {
-            o2.xDesktop.notice("error", {"x": "right", "y": "top"}, '浏览器不支持录音功能。', this.node);
+            o2.xDesktop.notice("error", {"x": "right", "y": "top"}, o2.LP.widget.explorerNotSupportRecordVoice, this.node);
             //this.throwError('当前<a href="http://www.it165.net/edu/ewl/" target="_blank" class="keylink">浏览器</a>不支持录音功能。'); return;
         }
     },
