@@ -136,7 +136,7 @@ o2.widget.FlashImageClipper = new Class({
 				value += '';
 				switch(value){
 					case '1':
-						alert("上传成功！");
+						alert( o2.LP.widget.uploadSuccess );
 						var time = new Date().getTime();
 						ok();
 						break;
@@ -163,7 +163,7 @@ o2.widget.FlashImageClipper = new Class({
 						break;
 					case '-2':
 						this.isUploading = false;
-						alert("上传失败，请重新上传!");
+						alert( o2.LP.widget.uploadFail );
 						window.location.href = "#";
 						break;
 
@@ -430,7 +430,7 @@ o2.widget.HTML5ImageClipper = new Class({
 		if( this.options.fromLocalEnable ){
 			this.uploadLocalImage = new Element("button.uploadActionNode",{
 				"styles" : this.css.uploadActionNode,
-				"text" : "选择本地图片"
+				"text" : o2.LP.widget.selectLocalImage
 			}).inject(this.uploadToolbar);
 			this.uploadLocalImage.addEvents({
 				"click": function(){ this.fileNode.click(); }.bind(this)
@@ -461,7 +461,7 @@ o2.widget.HTML5ImageClipper = new Class({
 					if( obj.name == "File" || obj.path == "File" ){
 						this.uploadCloudFile = new Element("button.uploadActionNode",{
 							"styles" : this.css.uploadActionNode,
-							"text" : "选择云文件图片"
+							"text" : o2.LP.widget.selectCloudImage
 						}).inject(this.uploadCloudFileArea );
 						this.uploadCloudFile.addEvents({
 							"click": function(){ this.selectFileImage(
@@ -481,7 +481,7 @@ o2.widget.HTML5ImageClipper = new Class({
 		if( this.options.resetEnable ){
 			this.resetAction = new Element("button.resetAction",{
 				"styles" : this.css.resetActionNode,
-				"text" : "重置"
+				"text" : o2.LP.widget.reset
 			}).inject(this.uploadToolbar);
 			this.resetAction.addEvents({
 				"click": function(){ this.reset(); }.bind(this)
@@ -498,7 +498,7 @@ o2.widget.HTML5ImageClipper = new Class({
 				}
 			}).inject( this.uploadToolbar );
 			new Element("span",{
-				text : "上传原图"
+				text : o2.LP.widget.uploadOriginalImage
 			}).inject( this.uploadToolbar );
 		}
 	},
@@ -532,7 +532,7 @@ o2.widget.HTML5ImageClipper = new Class({
 		o2.xDesktop.requireApp("File", "FileSelector", function(){
 			_self.selector_cloud = new o2.xApplication.File.FileSelector( document.body ,{
 				"style" : "default",
-				"title": "选择云文件图片",
+				"title": o2.LP.widget.selectCloudImage,
 				"copyToPublic" : false,
 				//"reference" :  _self.options.reference,
 				//"referenceType" : _self.options.referenceType,
@@ -556,7 +556,7 @@ o2.widget.HTML5ImageClipper = new Class({
 
 			this.resultTitleNode = new Element("div", {
 					"styles":this.css.resultTitleNode,
-					"text" : "预览"
+					"text" : o2.LP.widget.preview
 				}
 			).inject(this.resultContainer);
 
