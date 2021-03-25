@@ -84,7 +84,7 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 		var toolbar = new Element("div", { styles : this.css.toolbar }).inject( this.container );
 
 		this.recordButton = new Element("button", {
-			styles : this.css.recordButton, text : "开始录制",
+			styles : this.css.recordButton, text : o2.LP.widget.startRecord,
 			events : {
 				click : function(){
 					this.toggleRecording();
@@ -93,7 +93,7 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 		}).inject( toolbar );
 
 		this.playButton = new Element("button", {
-			styles : this.css.playButton, text : "播放", disable : true,
+			styles : this.css.playButton, text : o2.LP.widget.play, disable : true,
 			events : {
 				click : function(){
 					this.play();
@@ -102,7 +102,7 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 		}).inject( toolbar );
 
 		this.downloadButton = new Element("button", {
-			styles : this.css.downloadButton, text : "下载", disable : true,
+			styles : this.css.downloadButton, text : o2.LP.widget.download, disable : true,
 			events : {
 				click : function(){
 					this.download();
@@ -150,13 +150,13 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 	toggleRecording: function () {
 		if ( this.isRecording ) {
 			this.stopRecording();
-			this.recordButton.textContent = '开始录制';
+			this.recordButton.textContent = o2.LP.widget.startRecord;
 			this.playButton.disabled = false;
 			this.downloadButton.disabled = false;
 			this.isRecording = false;
 		} else {
 			this.startRecording();
-			this.recordButton.textContent = '结束录制';
+			this.recordButton.textContent = o2.LP.widget.completeRecord;
 			this.isRecording = true;
 		}
 	},
@@ -242,7 +242,7 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 			location.hostname === 'localhost';
 		if (!isSecureOrigin) {
 			this.available = false;
-			this.container.set("html", "<p>视频录制功能需要用在 https 协议下才能使用</p>");
+			this.container.set("html", "<p>"+o2.LP.widget.requireHttps+"</p>");
 			//alert('getUserMedia() must be run from a secure origin: HTTPS or localhost.' +
 			//	'\n\nChanging protocol to HTTPS');
 			//location.protocol = 'HTTPS';
@@ -257,7 +257,7 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 				return "<li>"+ item +"</li>";
 			}).join("");
 			this.available = false;
-			this.container.set("html", "<p>视频录制功能不能使用，您的浏览器不支持以下特性:</p><ul>" +  html + "</ul>");
+			this.container.set("html", "<p>"+o2.LP.widget.canNotToRecordVideo+"</p><ul>" +  html + "</ul>");
 			return false;
 		}
 		return true;
