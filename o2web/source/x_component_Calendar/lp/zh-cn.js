@@ -6,6 +6,7 @@ MWF.xApplication.Calendar.LP = {
     "subject": "标题",
     "applyPerson": "申请人",
     "myCalendar": "我的日历",
+    "year" : "年",
     "month": "月",
     "day": "日",
     "list": "日程",
@@ -171,6 +172,7 @@ MWF.xApplication.Calendar.LP = {
     "noEvent": "当日无日程",
     "noAddress" : "未填写地址",
     "noEventCurMonth" : "该月无日程安排",
+    "weeklyViewTitle" : "{month}，第{week}周",
 
     "week" : "周",
     "weeks": {
@@ -216,5 +218,12 @@ MWF.xApplication.Calendar.LP = {
     "nextUser": "处理人：",
     "deal": "处理",
     "processStarted": "文件已启动",
-    "processStartedMessage": "您启动了一个新的工作："
+    "processStartedMessage": "您启动了一个新的工作：",
+    "add": "增加",
+    "more": "更多",
+    "schedule": {
+	    "noEvent": "当天您没有议程",
+        "current": "当前您有",
+        "someEvent": "项议程！"
+    }
 };

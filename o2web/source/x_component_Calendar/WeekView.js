@@ -242,8 +242,11 @@ MWFCalendarWeekView.Calendar = new Class({
     setTitleNode: function(){
         this.prevWeekNode =  new Element("div", {"styles": this.css.calendarPrevWeekNode}).inject(this.titleNode);
 
-        var text = this.baseDate.format(this.app.lp.dateFormatMonth)
-            + "，第" + this.view.getWeekNumber( this.baseDate  ) + "周";
+        // var text = this.baseDate.format(this.app.lp.dateFormatMonth)
+        //     + "，第" + this.view.getWeekNumber( this.baseDate  ) + "周";
+        var month = this.baseDate.format(this.app.lp.dateFormatMonth);
+        var week = this.view.getWeekNumber( this.baseDate );
+        var text = this.app.lp.weeklyViewTitle.replace("{month}", month ).replace("{week}",week);
 
 
 
@@ -277,14 +280,22 @@ MWFCalendarWeekView.Calendar = new Class({
     changeWeekPrev: function(){
         this.date.decrement("week", 1);
         this.baseDate = this.date;
-        var text = this.baseDate.format(this.app.lp.dateFormatMonth) + "，第" + this.view.getWeekNumber( this.baseDate  ) + "周";
+
+        var month = this.baseDate.format(this.app.lp.dateFormatMonth);
+        var week = this.view.getWeekNumber( this.baseDate  );
+        var text = this.app.lp.weeklyViewTitle.replace("{month}", month ).replace("{week}",week);
+
         this.titleTextNode.set("text", text);
         this.reLoadCalendar();
     },
     changeWeekNext: function(){
         this.date.increment("week", 1);
         this.baseDate = this.date;
-        var text = this.baseDate.format(this.app.lp.dateFormatMonth) + "，第" + this.view.getWeekNumber( this.baseDate  ) + "周";
+
+        var month = this.baseDate.format(this.app.lp.dateFormatMonth);
+        var week = this.view.getWeekNumber( this.baseDate  );
+        var text = this.app.lp.weeklyViewTitle.replace("{month}", month ).replace("{week}",week);
+
         this.titleTextNode.set("text", text);
         this.reLoadCalendar();
     },
@@ -315,7 +326,10 @@ MWFCalendarWeekView.Calendar = new Class({
         //var text = this.date.format(this.app.lp.dateFormatWeek);
         //this.titleTextNode.set("text", text);
 
-        var text = this.baseDate.format(this.app.lp.dateFormatMonth) + "，第" + this.view.getWeekNumber( this.baseDate  ) + "周";
+        var month = this.baseDate.format(this.app.lp.dateFormatMonth);
+        var week = this.view.getWeekNumber( this.baseDate  );
+        var text = this.app.lp.weeklyViewTitle.replace("{month}", month ).replace("{week}",week);
+
         this.titleTextNode.set("text", text);
 
         this.reLoadCalendar();
@@ -1239,7 +1253,7 @@ MWFCalendarWeekView.Calendar.WholeDayDocument = new Class({
                     "padding-left" : "2px",
                     "float" : "left"
                 },
-                text : this.data.timeStart.format("%m-%d %H:%M") + "至" + this.data.timeEnd.format("%m-%d %H:%M")
+                text : this.data.timeStart.format("%m-%d %H:%M") + MWF.xApplication.Calendar.LP.to + this.data.timeEnd.format("%m-%d %H:%M")
             }).inject( node );
 
             var titleNode = new Element("div",{
@@ -1582,7 +1596,7 @@ MWFCalendarWeekView.WeekCalendar = new Class({
         var thisMonth = (month!=undefined) ? month : this.options.baseDate.getMonth();
         thisMonth++;
 
-        var text = thisYear+"年"+thisMonth+"月";
+        var text = thisYear+ MWF.xApplication.Calendar.LP.year +thisMonth+ MWF.xApplication.Calendar.LP.month;
         var thisNode = node || this.currentTextNode;
         thisNode.set("text", text);
 
