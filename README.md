@@ -76,15 +76,19 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
 
 ## 支持操作系统：
 
-    Windows 64Bit ,Linux 64Bit[CentOS，RedHat, Ubuntu等], MacOS, AIX, Raspberrypi(树莓派)， 
+    Windows 64Bit, Linux 64Bit[CentOS, RedHat, Ubuntu等], MacOS, AIX, Raspberrypi(树莓派),
 
-    ARM[深度Linux(deepin)，优麒麟(Ubuntu),中标麒麟(NeoKylin),威科乐恩Linux（WiOS）]， RISC-V[Debian GNU/Linux，银河麒麟飞腾]
+    ARM_Linux,
+    
+    MIPS_Linux,
+    
+    UOS,麒麟等国产操作系统
 
 ## 支持数据库：
 
-    自带H2数据库。
+    自带H2数据库.
 
-    第三方数据库：Mysql5.7+, MySQL8, SQLServer2012， Oracle 12CR2, DB2， PostgreSQL，达梦DM7+, 人大金仓，南大通用，神通数据库
+    第三方数据库: Apache Derby, Borland Interbase, Borland JDataStore, DB2, Empress, Firebird, H2 Database Engine, Hypersonic Database Engine, Informix Dynamic Server, Ingres Database, InterSystems Cache, Microsoft Access, Microsoft SQL Server, Microsoft Visual FoxPro, MySQL, Oracle, Pointbase, PostgreSQL, IBM solidDB, Sybase Adaptive Server Enterprise, 达梦DM7+, 人大金仓，南大通用，神通数据库
 
 
 # 官方网盘下载\:
