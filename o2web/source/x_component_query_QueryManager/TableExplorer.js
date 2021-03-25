@@ -149,7 +149,7 @@ MWF.xApplication.query.QueryManager.TableExplorer = new Class({
         var draftDataJson = (data.draftData) ? JSON.decode(data.draftData): "";
         data.draftData = draftDataJson;
 
-        data.status = "draft";
+        data.statu = "draft";
 
         var dataJson = (data.data) ? JSON.decode(data.data): "";
         data.data = dataJson;
