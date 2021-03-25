@@ -169,7 +169,7 @@ MWF.xApplication.Calendar.Main = new Class({
 
         this.newCalendarNode = new Element("div", {
             styles : this.css.newCalendarNode,
-            text : "创建新日历",
+            text : this.lp.createNewCalendar,
             events : {
                 mouseover : function( ev ){ ev.target.setStyles( this.css.newCalendarNode_over ); }.bind(this),
                 mouseout : function( ev ){ ev.target.setStyles( this.css.newCalendarNode ); }.bind(this),
@@ -643,6 +643,7 @@ MWF.xApplication.Calendar.Navi = new Class({
     initialize: function(app, node, options){
         this.setOptions(options);
         this.app = app;
+        this.lp = this.app.lp;
         this.node = $(node);
         this.css = this.app.css;
         this.load();
@@ -704,7 +705,7 @@ MWF.xApplication.Calendar.Navi = new Class({
         //}).inject( this.node );
         this.seeMore = new Element("div.seeMore", {
             styles : this.css.seeMoreNode,
-            "text" : "日历广场",
+            "text" : this.lp.calendarMarket,
             "events" : {
                 mouseover : function(ev){ ev.target.setStyles( this.css.seeMoreNode_over ) }.bind(this),
                 mouseout : function(ev){ ev.target.setStyles( this.css.seeMoreNode ) }.bind(this),
@@ -758,7 +759,7 @@ MWF.xApplication.Calendar.Navi = new Class({
         return ids;
     },
     loadMyCalendar : function(){
-        var listNode = this.createCategoryNode("我的日历");
+        var listNode = this.createCategoryNode(this.lp.myCalendar);
 
         this.myCalendars.each( function( d ){
             this.myCalendarNaviItem.push( new MWF.xApplication.Calendar.NaviItem( this, listNode, d, {
@@ -767,7 +768,7 @@ MWF.xApplication.Calendar.Navi = new Class({
         }.bind(this))
     },
     loadUnitCalendar : function(){
-        var listNode = this.createCategoryNode("组织日历");
+        var listNode = this.createCategoryNode(this.lp.unitCalendar);
 
         this.unitCalendars.each( function( d ){
             this.unitCalendarNaviItem.push( new MWF.xApplication.Calendar.NaviItem( this, listNode, d, {
@@ -776,7 +777,7 @@ MWF.xApplication.Calendar.Navi = new Class({
         }.bind(this))
     },
     loadFollowCalendar : function(){
-        var listNode = this.createCategoryNode("关注的日历");
+        var listNode = this.createCategoryNode(this.lp.myFollowCalendar);
 
         this.followCalendars.each( function( d ){
             this.followCalendarNaviItem.push( new MWF.xApplication.Calendar.NaviItem( this, listNode, d, {
@@ -955,7 +956,7 @@ MWF.xApplication.Calendar.CalendarMenu = new Class({
         "style": "arrow",
         "width": "150px",
         "height": "36px",
-        "defaultOptionLp" : "字体",
+        "defaultOptionLp" : MWF.xApplication.Calendar.LP.font,
         "textField" : "name",
         "valueField" : "val",
         "event" : "mouseenter",
@@ -990,10 +991,11 @@ MWF.xApplication.Calendar.CalendarMenu = new Class({
         }.bind(this))
     },
     deleteCalendar : function( e ){
+        var lp = MWF.xApplication.Calendar.LP;
         var _self = this;
-        _self.app.confirm("warn", e,  "删除确认", "删除后无法恢复，确定要删除“"+ _self.calendarData.name +"”？", 300, 120, function(){
+        _self.app.confirm("warn", e,  lp.deleteCalendarTitle, lp.deleteCalendarContent.replace("{name}", _self.calendarData.name), 300, 120, function(){
             _self.app.actions.deleteCalendar( _self.calendarData.id, function( json ){
-                _self.app.notice("删除成功");
+                _self.app.notice( lp.deleteSuccess );
                 _self.app.leftNavi.reload();
             }.bind(this));
             this.close();
@@ -1003,27 +1005,28 @@ MWF.xApplication.Calendar.CalendarMenu = new Class({
 
     },
     _loadData : function( callback ){
+        var lp =  MWF.xApplication.Calendar.LP;
         var actionList = [{
-            name: '只显示当前日历',
+            name: lp.onlyViewCurrent,
             val: 'showThis'
         }];
         if( this.calendarData.publishable || this.calendarData.manageable){
             actionList.push( {
-                name: '新建日程',
+                name: lp.addEvent,
                 val: 'createEvent'
             });
         }
         if( this.calendarData.manageable ){
             actionList.push( {
-                name: '编辑日历',
-                    val: 'editCalendar'
+                name: lp.editCalendar,
+                val: 'editCalendar'
             }, {
-                name: '删除日历',
-                    val: 'deleteCalendar'
+                name: lp.deleteCalendar,
+                val: 'deleteCalendar'
             });
         }else{
             actionList.push( {
-                name: '日历详情',
+                name: lp.viewCalendar,
                 val: 'openCalendar'
             });
         }
@@ -1055,9 +1058,10 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
         "draggable": true,
         "maxAction" : true,
         "closeAction": true,
-        "title" : "日历广场"
+        "title" : MWF.xApplication.Calendar.LP.calendarMarket
     },
     _createTableContent : function(){
+        var lp = MWF.xApplication.Calendar.LP;
         var _self = this;
 
         this.formTableContainer.setStyles({
@@ -1074,7 +1078,7 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
             if( !json.data  || json.data.length == 0 ){
                 this.noCalendarNode = new Element("div",{
                     "styles" : this.css.noCalendarNode,
-                    "text" : "系统内还没有公开日历!"
+                    "text" : lp.noPublicCalendar
                 }).inject( this.formTableArea );
             }else{
                 ( json.data || [] ).each( function(d){
@@ -1096,7 +1100,7 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
 
                     new Element("div", {
                         styles : this.css.marketItemTopLable,
-                        text : "创建："
+                        text : lp.create + "："
                     }).inject( middleNode );
 
                     new Element("div", {
@@ -1106,7 +1110,7 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
 
                     new Element("div", {
                         styles : this.css.marketItemTopLable,
-                        text : "时间："
+                        text : lp.time + "："
                     }).inject( middleNode );
 
                     new Element("div", {
@@ -1118,18 +1122,18 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
                     var middleNode = new Element("div", { styles : this.css.marketItemMiddleNode }).inject( itemNode );
                     new Element("div", {
                         styles : this.css.marketItemTopLable,
-                        text : "类型："
+                        text : lp.type + "："
                     }).inject( middleNode );
 
                     new Element("div", {
                         styles : this.css.marketItemTopInfor,
-                        text : d.type == "PERSON" ? "个人" : "组织，"
+                        text : d.type == "PERSON" ? lp.personal : lp.unit2
                     }).inject( middleNode );
 
                     if( d.type == "UNIT" ){
                         new Element("div", {
                             styles : this.css.marketItemTopLable,
-                            text : "所属："
+                            text : lp.belongTo + "："
                         }).inject( middleNode );
 
                         new Element("div", {
@@ -1142,7 +1146,7 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
                     var middleNode = new Element("div", { styles : this.css.marketItemMiddleNode }).inject( itemNode );
                     new Element("div", {
                         styles : this.css.marketItemTopLable,
-                        text : "备注："
+                        text : lp.description + "："
                     }).inject( middleNode );
 
                     new Element("div", {
@@ -1154,12 +1158,12 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
                     var followedAction, followAction;
                     var followedAction = new Element("div",{
                         styles : this.css.marketItemFollowedAction,
-                        text : "已关注",
-                        title : "点击取消关注",
+                        text : lp.followed,
+                        title : lp.clickToCancelFollow,
                         events : {
                             click : function(){
                                 _self.app.actions.followCalendarCancel(d.id, function(){
-                                    _self.app.notice("取消关注成功");
+                                    _self.app.notice( lp.cancelFollowSuccess );
                                     _self.needReload = true;
                                     this.followedAction.setStyle("display","none");
                                     this.followAction.setStyle("display","");
@@ -1171,11 +1175,11 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
 
                     var followAction = new Element("div",{
                         styles : this.css.marketItemFollowAction,
-                        text : "关注",
+                        text : lp.follow ,
                         events : {
                             click: function () {
                                 _self.app.actions.followCalendar(d.id, function () {
-                                    _self.app.notice("关注成功");
+                                    _self.app.notice( lp.followSuccess );
                                     _self.needReload = true;
                                     this.followedAction.setStyle("display","");
                                     this.followAction.setStyle("display","none");

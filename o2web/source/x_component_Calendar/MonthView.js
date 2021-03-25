@@ -990,7 +990,7 @@ MWFCalendarMonthView.Calendar.WholeDayWeek = new Class({
                     "padding-left" : "2px",
                     "float" : "left"
                 },
-                text : this.timeStart.format("%m-%d %H:%M") + "至" + this.timeEnd.format("%m-%d %H:%M")
+                text : this.timeStart.format("%m-%d %H:%M") + MWF.xApplication.Calendar.LP.to + this.timeEnd.format("%m-%d %H:%M")
             }).inject( node );
         }
 
@@ -1121,7 +1121,7 @@ MWFCalendarMonthView.Calendar.InOnDayDocument = new Class({
                 "padding-left" : "2px",
                 "float" : "left"
             },
-            text : this.timeStart.format("%H:%M") + "至" + this.timeEnd.format("%H:%M")
+            text : this.timeStart.format("%H:%M") + MWF.xApplication.Calendar.LP.to + this.timeEnd.format("%H:%M")
         }).inject( node );
 
         this.titleNode = new Element("div",{
