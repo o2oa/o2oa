@@ -42,7 +42,7 @@ o2.widget.CssArea = new Class({
         if (this.options.isload){
             this.loadEditor(content);
         }else{
-            var inforNode = new Element("div", {"styles": this.css.inforNode, "text": "点击此处，编写CSS"}).inject(this.contentNode);
+            var inforNode = new Element("div", {"styles": this.css.inforNode, "text": o2.LP.widget.clickToEditCss }).inject(this.contentNode);
             var _self = this;
             inforNode.addEvent("click", function(){
                 this.destroy();
