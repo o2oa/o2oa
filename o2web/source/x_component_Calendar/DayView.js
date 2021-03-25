@@ -168,7 +168,7 @@ MWFCalendarDayView.Calendar = new Class({
     setTitleNode: function(){
         this.prevDayNode =  new Element("div", {"styles": this.css.calendarPrevDayNode}).inject(this.titleNode);
 
-        var text = this.date.format("%Y年%m月%d日") + "，" + this.lp.weeks.arr[ this.date.getDay() ];
+        var text = this.date.format(this.lp.dateFormatDay) + "，" + this.lp.weeks.arr[ this.date.getDay() ];
 
 
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
@@ -200,13 +200,13 @@ MWFCalendarDayView.Calendar = new Class({
     },
     changeDayPrev: function(){
         this.date.decrement("day", 1);
-        var text = this.date.format("%Y年%m月%d日") + "，" + this.lp.weeks.arr[ this.date.getDay() ];
+        var text = this.date.format(this.lp.dateFormatDay) + "，" + this.lp.weeks.arr[ this.date.getDay() ];
         this.titleTextNode.set("text", text);
         this.reLoadCalendar();
     },
     changeDayNext: function(){
         this.date.increment("day", 1);
-        var text = this.date.format("%Y年%m月%d日") + "，" + this.lp.weeks.arr[ this.date.getDay() ];
+        var text = this.date.format(this.lp.dateFormatDay) + "，" + this.lp.weeks.arr[ this.date.getDay() ];
         this.titleTextNode.set("text", text);
         this.reLoadCalendar();
     },
@@ -230,7 +230,7 @@ MWFCalendarDayView.Calendar = new Class({
     changeDayTo: function(d){
         this.date = d;
 
-        var text = this.date.format("%Y年%m月%d日") + "，" + this.lp.weeks.arr[ this.date.getDay() ];
+        var text = this.date.format(this.lp.dateFormatDay) + "，" + this.lp.weeks.arr[ this.date.getDay() ];
 
         this.titleTextNode.set("text", text);
 
@@ -258,7 +258,7 @@ MWFCalendarDayView.Calendar = new Class({
             } ).inject( tr );
             td.setStyle("min-height","80px");
             var node = new Element("div",{
-                text : "全天"
+                text : this.lp.allDay
             }).inject( td );
             this.wholeDayTd =  new Element( "td" , {
                 "tdType" : "calendar",
@@ -873,7 +873,7 @@ MWFCalendarDayView.Calendar.wholeDayDocument = new Class({
                 "padding-left" : "2px",
                 "float" : "left"
             },
-            text : this.data.dateStart.format("%m-%d %H:%M") + "至" + this.data.dateEnd.format("%m-%d %H:%M")
+            text : this.data.dateStart.format("%m-%d %H:%M") + this.app.lp.to + this.data.dateEnd.format("%m-%d %H:%M")
         }).inject( node );
 
         var titleNode = new Element("div",{

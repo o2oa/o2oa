@@ -246,6 +246,7 @@ MWFCalendarWeekView.Calendar = new Class({
             + "，第" + this.view.getWeekNumber( this.baseDate  ) + "周";
 
 
+
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
 
         this.nextWeekNode =  new Element("div", {"styles": this.css.calendarNextWeekNode}).inject(this.titleNode);
