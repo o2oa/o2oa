@@ -716,6 +716,7 @@ function createBasePortalConcatActionTask(path){
         return gulp.src([
             "source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
             "source/o2_core/o2/xAction/services/x_portal_assemble_surface.json",
+            "source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.json",
             "source/o2_core/o2/xAction/services/x_organization_assemble_control.json",
             "source/o2_core/o2/xAction/services/x_query_assemble_surface.json",
             "source/o2_core/o2/xAction/services/x_cms_assemble_control.json",
@@ -786,6 +787,7 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
             'source/o2_core/o2/xScript/PageEnvironment.js',
 
             'source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
+            'source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
             'source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
             'source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
             'source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
