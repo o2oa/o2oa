@@ -88,7 +88,10 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
 
     自带H2数据库.
 
-    第三方数据库: Apache Derby, Borland Interbase, Borland JDataStore, DB2, Empress, Firebird, H2 Database Engine, Hypersonic Database Engine, Informix Dynamic Server, Ingres Database, InterSystems Cache, Microsoft Access, Microsoft SQL Server, Microsoft Visual FoxPro, MySQL, Oracle, Pointbase, PostgreSQL, IBM solidDB, Sybase Adaptive Server Enterprise, 达梦DM7+, 人大金仓，南大通用，神通数据库
+    第三方数据库: Apache Derby, Borland Interbase, Borland JDataStore, DB2, Empress, Firebird, H2 Database Engine, 
+                  Hypersonic Database Engine, Informix Dynamic Server, Ingres Database, InterSystems Cache,
+                  Microsoft Access, Microsoft SQL Server, Microsoft Visual FoxPro, MySQL, Oracle, Pointbase,
+                  PostgreSQL, IBM solidDB, Sybase Adaptive Server Enterprise, 达梦DM7+, 人大金仓, 南大通用, 神通数据库
 
 
 # 官方网盘下载\:
