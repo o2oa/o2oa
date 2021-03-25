@@ -884,7 +884,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 
 		if (!this.clearButton){
-			this.clearButton = new Element("button", {"text": "清除"}).inject(this.showActionNode);
+			this.clearButton = new Element("button", {"text": o2.LP.widget.clear }).inject(this.showActionNode);
 			this.clearButton.addEvent("click", function(){
 				var t = this.node.get("value");
 				this.node.set("value", "");

@@ -50,16 +50,15 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.cssPath = this.path + this.options.style+"/css.wcss";
 
         this.lp = {
-            save : "保存",
-            reset : "清空",
-            undo : "撤销",
-            redo : "重做",
-            size : "粗细",
-            color : "颜色",
-            image : "插入图片",
-            imageClipper : "裁剪图片",
-            //clear : "橡皮"
-            "cancel": "取消"
+            "save" : o2.LP.widget.save,
+            "reset" : o2.LP.widget.empty,
+            "undo" : o2.LP.widget.undo,
+            "redo" : o2.LP.widget.redo,
+            "size" : o2.LP.widget.thickness,
+            "color" : o2.LP.widget.color,
+            "image" : o2.LP.widget.insertImage,
+            "imageClipper" : o2.LP.widget.imageClipper,
+            "cancel": o2.LP.widget.cancel
         };
 
         this._loadCss();
@@ -360,7 +359,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             return true;
         }else{
             this.available = false;
-            this.container.set("html", "<p>您的浏览器不支持以下特性:</p><ul><li>canvas</li><li>Blob</li><li>Uint8Array</li><li>FormData</li><li>atob</li></ul>");
+            this.container.set("html", "<p>"+o2.LP.widget.explorerNotSupportFeatures+"</p><ul><li>canvas</li><li>Blob</li><li>Uint8Array</li><li>FormData</li><li>atob</li></ul>");
             return false;
         }
     },
@@ -815,7 +814,7 @@ o2.widget.Tablet.SizePicker = new Class({
             });
 
             var previewContainer = new Element("div").inject(this.node);
-             new Element("div",{ text : "预览", styles : {
+             new Element("div",{ text : o2.LP.widget.preview, styles : {
                 "float" : "left",
                  "margin-top" : "5px",
                 "width" : "30px"
@@ -834,7 +833,7 @@ o2.widget.Tablet.SizePicker = new Class({
             this.drawPreview();
 
             new Element("button", {
-                text : "重置",
+                text : o2.LP.widget.reset,
                 type : "button",
                 styles :{
                     "margin-left" : "40px",
@@ -895,7 +894,7 @@ o2.widget.Tablet.ImageClipper = new Class({
         "imageUrl" : "",
         "resultMaxSize" : 800,
         "description" : "",
-        "title": "裁剪图片",
+        "title": o2.LP.widget.imageClipper,
         "style": "default",
         "aspectRatio": 0
     },
