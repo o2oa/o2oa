@@ -265,7 +265,7 @@ o2.widget.Paging = new Class({
         var _self = this;
         var pageJumper = this.pageJumper = new Element("input.pageJumper", {
             "styles": this.css.pageJumper,
-            "title": "输入页码，离开输入框或按回车跳转"
+            "title": o2.LP.widget.pageJumperTitle,
         }).inject(this.node);
         this.pageJumperText = new Element("div.pageText", {
             "styles": this.css.pageJumperText,
