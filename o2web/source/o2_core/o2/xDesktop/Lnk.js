@@ -395,7 +395,7 @@ MWF.xDesktop.Lnk = new Class({
             "container": this.desktop.node
         });
 		this.menu.load();
-		this.menu.addMenuItem("删除快捷方式", "click", function(){
+		this.menu.addMenuItem(o2.LP.desktop.deleteLink, "click", function(){
             this.deleteLnk();
         }.bind(this));
 	},

@@ -348,7 +348,7 @@ MWF.xDesktop.WebSocket = new Class({
         var body = JSON.parse(jsonBody);
         var msgBody = body.body; //默认text 文本消息
         if (body.type && body.type == "emoji") { //表情 消息
-            msgBody = "[表情]";
+            msgBody = "["+MWF.LP.desktop.messsage.emoji+"]";
         }
         var content = "<font style='color: #333; font-weight: bold'>"+data.title+"</font>: "+msgBody;
         var msg = {
