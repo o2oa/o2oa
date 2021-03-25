@@ -235,7 +235,7 @@ var MTooltips = new Class({
                                 e.stopPropagation();
                             }.bind(this)
                         }
-                    }).inject( this.container );
+                    }).inject( this.node, "before" );
                 }
 
                 if( this.app ){

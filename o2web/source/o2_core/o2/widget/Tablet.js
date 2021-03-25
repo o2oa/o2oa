@@ -910,7 +910,7 @@ o2.widget.Tablet.ImageClipper = new Class({
         this.data = data;
 
         var options = {};
-        var width = "668";
+        var width = "700";
         var height = "510";
         width = width.toInt();
         height = height.toInt();
