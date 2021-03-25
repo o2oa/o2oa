@@ -797,6 +797,7 @@ function build_concat_baseportal_action(){
     return gulp.src([
         "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
         "o2web/source/o2_core/o2/xAction/services/x_portal_assemble_surface.json",
+        "o2web/source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.json",
         "o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.json",
         "o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.json",
         "o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.json",
@@ -863,6 +864,7 @@ function build_concat_baseportal_body() {
         'o2web/source/o2_core/o2/xScript/PageEnvironment.js',
 
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
+        'o2web/source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
         'o2web/source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
