@@ -266,7 +266,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	showMonthYearButton : function(){
 		if( this.buttonArea && !this.clearButton_month ){
 			this.container.setStyle("height","auto");
-			this.clearButton_month = new Element("div", {"text": "清除"}).inject(this.buttonArea);
+			this.clearButton_month = new Element("div", {"text": o2.LP.widget.clear }).inject(this.buttonArea);
 			this.clearButton_month.addEvent("click", function(){
 				var t = this.node.get("value");
 				this.node.set("value", "");
@@ -649,7 +649,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var thisMonth = (month!=undefined) ? month : this.options.baseDate.getMonth();
 		thisMonth++;
 
-		var text = thisYear+"年"+thisMonth+"月";
+		var text = thisYear+ o2.LP.widget.year +thisMonth+ o2.LP.widget.month;
 		var thisNode = node || this.currentTextNode;
 		thisNode.set("text", text);
 
@@ -773,7 +773,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var y = thisDate.getFullYear();
 		var m = thisDate.getMonth()+1;
 		var d = thisDate.getDate();
-		var text = "" + y + "年" + m + "月" + d + "日";
+		var text = "" + y + o2.LP.widget.year + m + o2.LP.widget.month + d + o2.LP.widget.date;
 
 		if (this.options.timeOnly){
 			thisNode.hide();
@@ -875,7 +875,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 
 		if (!this.okButton){
-			this.okButton = new Element("button", {"text": "确定"}).inject(this.showActionNode);
+			this.okButton = new Element("button", {"text": o2.LP.widget.ok }).inject(this.showActionNode);
 			this.okButton.addEvent("click", function(){
 				this._selectTime();
 				this.hide();
@@ -1007,7 +1007,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 
 		if (!this.okButton){
-			this.okButton = new Element("button", {"text": "确定"}).inject(this.showActionNode);
+			this.okButton = new Element("button", {"text": o2.LP.widget.ok}).inject(this.showActionNode);
 			this.okButton.addEvent("click", function(){
 				this._selectTime();
 				this.hide();
@@ -1016,7 +1016,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 
 		if (!this.clearButton){
-			this.clearButton = new Element("button", {"text": "清除"}).inject(this.showActionNode);
+			this.clearButton = new Element("button", {"text": o2.LP.widget.clear }).inject(this.showActionNode);
 			this.clearButton.addEvent("click", function(){
 				var t = this.node.get("value");
 				this.node.set("value", "");
@@ -1052,7 +1052,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		if (!this.options.beforeCurrent){
 			var now = new Date();
 			if (date.getTime()-now.getTime()<0){
-				alert("选择的日期必须大于当前日期!");
+				alert( o2.LP.widget.dateGreaterThanCurrentNotice );
 				this.node.focus();
 				return false;
 			}
@@ -1088,7 +1088,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				var now = new Date();
 				date.setHours(23,59,59);
 				if (date.getTime()-now.getTime()<0){
-					alert("选择的日期必须大于当前日期!");
+					alert( o2.LP.widget.dateGreaterThanCurrentNotice );
 					this.node.focus();
 					return false;
 				}
