@@ -547,8 +547,8 @@ var MSelector = new Class({
         }
         return null;
     },
-    _selectItem : function( itemNode, itemData ){
-        this.fireEvent("selectItem", [itemNode, itemData] );
+    _selectItem : function( itemNode, itemData, ev ){
+        // this.fireEvent("selectItem", [itemNode, itemData, ev] );
     },
     _loadData : function( callback ){
         //if(callback)callback();
@@ -660,7 +660,7 @@ MSelector.Tootips = new Class({
                 var _self = this.obj;
                 var data = this.itemNode.retrieve( "data" );
                 _self.selector.setCurrentItem( this.itemNode );
-                // _self.selector._selectItem( this.itemNode, data, ev );
+                _self.selector._selectItem( this.itemNode, data, ev );
                 _self.selector.fireEvent("selectItem", [ this.itemNode, data, ev ] );
                 _self.hide();
                 ev.stopPropagation();
