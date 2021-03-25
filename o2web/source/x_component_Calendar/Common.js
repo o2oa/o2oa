@@ -119,7 +119,7 @@ MWFCalendar.EventForm = new Class({
         }else{
             this.rRule = {};
         }
-        var text = ["不","每天","每周","每月（当日）","每年（当日）"];
+        var text = this.lp.repeatFrequencyArr;
         var value = ["NONE",RRule["DAILY"],RRule["WEEKLY"],RRule["MONTHLY"],RRule["YEARLY"] ];
         var repeat;
         if( this.rRule.freq ){
@@ -132,36 +132,36 @@ MWFCalendar.EventForm = new Class({
                 repeatWeeks.each( function(r){
                     repeatWeekTextList.push( weekArr[ rruleArr.indexOf( r ) ] );
                 });
-                repeat = "每"+ repeatWeekTextList.join("、")+"重复";
+                repeat = this.lp.repeatInfor.replace("{frequency}", repeatWeekTextList.join("、"));
             }else{
-                repeat = repeat+"重复";
+                repeat = repeat + this.lp.repeat;
             }
-            if( this.rRule.until && repeat!="不重复" ){
-                repeat += "  结束日期："+this.rRule.until.format("%Y-%m-%d");
+            if( this.rRule.until && ( repeat !== "不重复" || repeat !== this.lp.notRepeat ) ){
+                repeat += "  "+ this.lp.endDate +"："+this.rRule.until.format("%Y-%m-%d");
             }
         }else{
-            repeat = "不重复"
+            repeat = this.lp.notRepeat
         }
 
         var remind;
         if( data.valarmTime_config ){ //天、时、分、秒
             if( data.valarmTime_config === "0,0,0,-5" ){
-                remind = "开始时提醒";
+                remind = this.lp.remindWhenBegin;
             }else{
                 var valarmTime_configList = data.valarmTime_config.split(",");
                 valarmTime_configList.each( function( v, i ){
                     var unit;
                     if( i == 0 ){
-                        unit = "天"
+                        unit = this.lp.date;
                     }else if( i == 1 ){
-                        unit = "小时";
+                        unit = this.lp.hour;
                     }else if( i==2 ){
-                        unit = "分钟"
+                        unit = this.lp.minute;
                     }else{
-                        unit = "秒"
+                        unit = this.lp.second;
                     }
                     if( v && v!="0" ){
-                        remind = "提前"+ Math.abs(v)+unit+"提醒";
+                        remind = this.lp.remindInAdvance.replace("{text}",  Math.abs(v)+unit );
                     }
                 }.bind(this))
             }
@@ -171,32 +171,32 @@ MWFCalendar.EventForm = new Class({
 
         var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='table-layout:fixed;'>" +
             //"<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
-        "<tr><td styles='formTableTitle' width='40'>日历：</td>" +
+        "<tr><td styles='formTableTitle' width='40'>"+this.lp.calendar+"：</td>" +
         "    <td styles='formTableValue' width='400'>"+calendarName+"</td>" +
         "</tr>" +
-        "<tr><td styles='formTableTitle'>标题：</td>" +
+        "<tr><td styles='formTableTitle'>"+this.lp.subject+"：</td>" +
         "    <td styles='formTableValue'><div styles='colorItem'></div>"+ data.title +"</td></tr>" +
-        "<tr><td styles='formTableTitle'>开始：</td>" +
+        "<tr><td styles='formTableTitle'>"+this.lp.beginTime+"：</td>" +
         "    <td styles='formTableValue'>"+ begin +"</td>" +
         "</tr>" +
-        "<tr><td styles='formTableTitle'>结束：</td>" +
+        "<tr><td styles='formTableTitle'>"+this.lp.endTime+"：</td>" +
         "    <td styles='formTableValue'>"+end+"</td>" +
         "</tr>"+
-        "<tr><td styles='formTableTitle'>地点：</td>" +
+        "<tr><td styles='formTableTitle'>"+this.lp.address+"：</td>" +
         "    <td styles='formTableValue'>"+( data.locationName || "" )+"</td>" +
         "</tr>";
         if( remind ){
-            html += "<tr><td styles='formTableTitle'>提醒：</td>" +
+            html += "<tr><td styles='formTableTitle'>"+this.lp.remind+"：</td>" +
                 "    <td styles='formTableValue'>"+remind+"</td>" +
                 "</tr>";
         }
-        if( repeat && repeat!="不" && repeat!="不重复" ){
-            "<tr><td styles='formTableTitle'>重复：</td>" +
+        if( repeat && repeat!==this.lp.no && repeat !== this.lp.notRepeat ){
+            "<tr><td styles='formTableTitle'>"+this.lp.repeat+"：</td>" +
             "    <td styles='formTableValue'>"+ repeat +"</td>" +
             "</tr>";
         }
         if( data.comment ){
-            html += "<tr><td styles='formTableTitle'>内容：</td>" +
+            html += "<tr><td styles='formTableTitle'>"+ this.lp.content +"：</td>" +
                 "    <td styles='formTableValue'>"+data.comment+"</td>" +
                 "</tr>";
         }
@@ -348,9 +348,9 @@ MWFCalendar.EventForm = new Class({
                         defaultValue: defaultEndTime, className : ( (this.isNew || this.isEdited ) ?  "inputTimeUnformatWidth" : "" ),
                         disable : data.isAllDayEvent
                     },
-                    remind : { text : this.lp.remind, type : "select", selectText : ["不提醒","开始时","提前5分钟","提前10分钟","提前15分钟","提前30分钟","提前1小时","提前2小时"],
+                    remind : { text : this.lp.remind, type : "select", selectText : this.lp.remindIntervalArr,
                         selectValue : ["", "-5_s","-5_m","-10_m","-15_m","-30_m","-1_h","-2_h"] },
-                    isAllDayEvent : { type : "checkbox", selectValue : ["true"], selectText : ["全天"], event : {
+                    isAllDayEvent : { type : "checkbox", selectValue : ["true"], selectText : [ this.lp.allDay ], event : {
                         change : function(item ){
                             var itemStart = item.form.getItem("startTimeInput");
                             var itemEnd = item.form.getItem("endTimeInput");
@@ -367,9 +367,9 @@ MWFCalendar.EventForm = new Class({
                     } },
                     title: { text : this.lp.eventSubject, notEmpty : true },
                     description: {type: "textarea"},
-                    locationName : { text : "地点" },
+                    locationName : { text : this.lp.locationName },
                     repeat : { text : this.lp.repeat, type : "select", defaultValue : "NONE",
-                        selectText : ["不重复","每天","每周","每月（当日）","每年（当日）"],
+                        selectText : this.lp.repeatFrequencyArr2,
                         selectValue : ["NONE",RRule["DAILY"],RRule["WEEKLY"],RRule["MONTHLY"],RRule["YEARLY"] ], event : {
                         change : function(item){
                             var val = item.getValue();
@@ -384,7 +384,7 @@ MWFCalendar.EventForm = new Class({
                         }.bind(this)
                     }},
                     repeatUntilAvailable : { text : this.lp.repeatUntilAvailable, type : "radio",
-                        selectText : ["永不", "结束日期"],
+                        selectText : this.lp.repeatUntilAvailableTextArr,
                         selectValue : ["NONE", "AVAILABLE"],
                         defaultValue : "NONE"
                     },
@@ -706,7 +706,7 @@ MWFCalendar.EventForm = new Class({
                 hasColon : true,
                 itemTemplate: {
                     moreInfor : {
-                        type : "a", value : "更多编辑", event : {
+                        type : "a", value : this.lp.editMore, event : {
                             click : function(){ this.openMoreInfor() }.bind(this)
                         }, disable : this.options.isFull
                     },
@@ -1066,11 +1066,11 @@ MWFCalendar.CalendarForm = new Class({
             this.options.height = "650"
         }
         if( this.isNew ){
-            this.formTopTextNode.set( "text", "新建日历" );
+            this.formTopTextNode.set( "text", this.lp.createCalendar );
         }else if( this.isEdited ){
-            this.formTopTextNode.set( "text", "编辑日历" );
+            this.formTopTextNode.set( "text", this.lp.editCalendar );
         }else{
-            this.formTopTextNode.set( "text", "日历" );
+            this.formTopTextNode.set( "text", this.lp.calendar );
         }
 
         this.formTableArea.set("html", this.getHtml());
@@ -1086,11 +1086,11 @@ MWFCalendar.CalendarForm = new Class({
                 style : "meeting",
                 hasColon : true,
                 itemTemplate: {
-                    name: { text : "日历名称", notEmpty : true },
-                    description: {text : "备注", type: "textarea"},
-                    type : { text : "类型", type : "select", isEdited : this.isNew,
+                    name: { text : this.lp.calendarName, notEmpty : true },
+                    description: {text : this.lp.description, type: "textarea"},
+                    type : { text : this.lp.type, type : "select", isEdited : this.isNew,
                         selectValue : ["PERSON", "UNIT"],
-                        selectText : ["个人日历", "组织日历"],
+                        selectText : this.lp.canlendarTypeArr,
                         defaultValue : "PERSON",
                         event : {
                             change : function(item){
@@ -1098,16 +1098,16 @@ MWFCalendar.CalendarForm = new Class({
                             }.bind(this)
                         }
                     },
-                    target : { text : "所属组织", type : "org", orgType : "unit", validRule : { empty : function( value, item){
+                    target : { text : this.lp.unit, type : "org", orgType : "unit", validRule : { empty : function( value, item){
                         if( item.form.getItem("type").getValue() == "UNIT" && value == ""){ return false }else{ return true };
-                    }}, validMessage : { empty : "所属组织不能为空"} },
-                    isPublic : { text : "是否公开", type : "select", selectValue : ["true","false"], selectText : ["是","否"], defaultValue : "false" },
-                    status : { text : "是否启用", type : "radio", selectValue : ["OPEN","CLOSE"], selectText : ["是","否"], defaultValue : "OPEN" },
-                    manageablePersonList : { text : "管理者", type : "org", orgType : "person", count : 0},
-                    viewerList : { text : "可见范围", type : "org", orgType : ["person","unit","group"], count : 0, value : function(){
+                    }}, validMessage : { empty : this.lp.unitEmptyNotice } },
+                    isPublic : { text : this.lp.isOpened, type : "select", selectValue : ["true","false"], selectText : this.lp.trueFalseArr, defaultValue : "false" },
+                    status : { text : this.lp.isAvaliable, type : "radio", selectValue : ["OPEN","CLOSE"], selectText : this.lp.trueFalseArr, defaultValue : "OPEN" },
+                    manageablePersonList : { text : this.lp.manager, type : "org", orgType : "person", count : 0},
+                    viewerList : { text : this.lp.viewerRange, type : "org", orgType : ["person","unit","group"], count : 0, value : function(){
                         return ( data.viewablePersonList || [] ).combine( data.viewableUnitList || [] ).combine( data.viewableGroupList || [] )
                     }.bind(this)},
-                    publisherList : { text : "可新建范围", type : "org", orgType : ["person","unit","group"], count : 0, value : function(){
+                    publisherList : { text : this.lp.publisherRange, type : "org", orgType : ["person","unit","group"], count : 0, value : function(){
                         return ( data.publishablePersonList || [] ).combine( data.publishableUnitList || [] ).combine( data.publishableGroupList || [] )
                     }.bind(this)}
                 }
@@ -1234,10 +1234,10 @@ MWFCalendar.CalendarForm = new Class({
     },
     deleteCalendar : function( e ){
         var _self = this;
-        _self.app.confirm("warn", e,  "删除确认", "删除后无法恢复，确定要删除“"+ _self.data.name +"”？", 300, 120, function(){
+        _self.app.confirm("warn", e, _self.lp.deleteCalendarTitle, _self.lp.deleteCalendarContent.replace("{name}", _self.data.name), 300, 120, function(){
             _self.app.actions.deleteCalendar( _self.data.id, function( json ){
                 _self.close();
-                _self.app.notice("删除成功");
+                _self.app.notice( _self.lp.deleteSuccess );
                 _self.app.leftNavi.reload();
             }.bind(this));
             this.close();
@@ -1325,7 +1325,7 @@ MWFCalendar.SaveOptionDialog = new Class({
         "draggable": true,
         //"maxAction" : true,
         "closeAction": true,
-        "title" : "修改重复日程"
+        "title" : MWF.xApplication.Calendar.LP.saveOptionDialogTitle
     },
     _createTableContent : function(){
 
@@ -1335,7 +1335,8 @@ MWFCalendar.SaveOptionDialog = new Class({
             "padding-left" : "40px"
         });
 
-        this.lp = { ok : "确定修改", cancel : "取消" };
+        var lp = MWF.xApplication.Calendar.LP;
+        this.lp = { ok : lp.modifyConfirm, cancel : lp.cancel };
         var html = "<table width='80%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
                 //"<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
             "<tr><td styles='formTableTitle' lable='saveOption'></td>" +
@@ -1350,9 +1351,9 @@ MWFCalendar.SaveOptionDialog = new Class({
                 itemTemplate: {
                     saveOption: {
                         defaultValue : "single",
-                        text: "请选择您要修改日程的类型",
+                        text: lp.selectModifyCalendarTypeNotice,
                         type: "radio",
-                        selectText: ["只修改当前日程", "修改当前日程和之后的此重复日程","修改所有此重复日程"],
+                        selectText: lp.calendarModifyTypeArr,
                         selectValue: ["single", "after", "all"]
                     }
                 }
@@ -1385,7 +1386,7 @@ MWFCalendar.DeleteOptionDialog = new Class({
         "draggable": true,
         //"maxAction" : true,
         "closeAction": true,
-        "title" : "删除重复日程"
+        "title" : MWF.xApplication.Calendar.LP.deleteOptionDialogTitle
     },
     _createTableContent : function(){
         this.formTableContainer.setStyles({
@@ -1394,7 +1395,9 @@ MWFCalendar.DeleteOptionDialog = new Class({
             "padding-left" : "40px"
         });
 
-        this.lp = { ok : "确定删除", cancel : "取消" };
+        var lp = MWF.xApplication.Calendar.LP;
+        this.lp = { ok : lp.modifyConfirm, cancel : lp.cancel };
+
         var html = "<table width='80%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
                 //"<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
             "<tr><td styles='formTableTitle' lable='saveOption'></td>" +
@@ -1409,9 +1412,9 @@ MWFCalendar.DeleteOptionDialog = new Class({
                 itemTemplate: {
                     saveOption: {
                         defaultValue : "single",
-                        text: "请选择您要删除日程的类型",
+                        text: lp.selectDeleteCalendarTypeNotice,
                         type: "radio",
-                        selectText: ["只删除当前日程", "删除当前日程和之后的此重复日程","删除所有此重复日程"],
+                        selectText: lp.calendarDeleteTypeArr,
                         selectValue: ["single", "after", "all"]
                     }
                 }
@@ -1454,9 +1457,9 @@ MWFCalendar.EventTooltip = new Class({
             "<div style='font-size: 16px;color:#333;padding:10px 10px 10px 20px;'>"+ data.title +"</div>"+
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
-            "<tr><td style='"+titleStyle+";' width='40'>开始:</td>" +
+            "<tr><td style='"+titleStyle+";' width='40'>"+this.lp.begin+":</td>" +
             "    <td style='"+valueStyle+"'>" + begin + "</td></tr>" +
-            "<tr><td style='"+titleStyle+"'>结束:</td>" +
+            "<tr><td style='"+titleStyle+"'>"+this.lp.end+":</td>" +
             "    <td style='"+valueStyle+ "'>"+ end +"</td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.locationName+":</td>" +
             "    <td style='"+valueStyle+ "'>"+ (this.data.locationName||"") +"</td></tr>" +
@@ -1498,7 +1501,7 @@ MWFCalendar.EventTooltip = new Class({
                 form.edit();
                 this.hide();
             }.bind(this)},
-            text : "查看更多"
+            text : this.lp.seeMore
         }).inject(area);
     },
     loadAttachment: function(){
