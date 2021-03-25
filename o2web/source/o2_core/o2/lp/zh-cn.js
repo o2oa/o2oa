@@ -163,6 +163,8 @@ o2.LP.desktop = {
     "defaultMenuTitle": "恢复默认菜单确认",
     "defaultMenuInfor": "您确定要将菜单的排序和分组，恢复到默认状态码？",
 
+    "deleteLink" : "删除快捷方式",
+
     "messsage": {
         "appliction": "应用",
         "application": "应用",
@@ -212,7 +214,8 @@ o2.LP.desktop = {
         "publishDocument" : "发布文档：",
 
         "customMessageTitle": "消息提醒：",
-        "customMessage": "您收到一条消息"
+        "customMessage": "您收到一条消息",
+        "emoji": "表情"
     },
     "styleMenu": {
         "default": "默认",
@@ -388,7 +391,20 @@ o2.LP.widget = {
     "startRecord" : "开始录制",
     "completeRecord": "结束录制",
     "requireHttps" : "视频录制功能需要用在 https 协议下才能使用",
-    "canNotToRecordVideo" : "视频录制功能不能使用，您的浏览器不支持以下特性:"
+    "canNotToRecordVideo" : "视频录制功能不能使用，您的浏览器不支持以下特性:",
+
+    "pageJumperTitle": "输入页码，离开输入框或按回车跳转",
+
+    "scriptAreaEditNotice" : "点击此处，编写脚本代码",
+    "empty" : "清空",
+    "undo" : "撤销",
+    "redo" : "重做",
+    "thickness" : "粗细",
+    "color" : "颜色",
+    "insertImage" : "插入图片",
+    "imageClipper" : "裁剪图片",
+
+    "explorerNotSupportFeatures" : "您的浏览器不支持以下特性:"
 };
 
 o2.LP.widget.SimpleEditor = {
@@ -460,8 +476,9 @@ o2.LP.authentication = {
     "inputYourOldPassword" : "请输入原密码",
     "newPassword" : "新密码",
     "inputYourNewPassword" : "请输入新密码",
-    "changePasswordSuccess" : "修改密码成功"
-
+    "changePasswordSuccess" : "修改密码成功",
+    "userAppCameraHtml" : "<div>打开<div styles='bindTipLinkArea'>APP</div>扫一扫</div>",
+    "loginToPage": "登录网页版"
 
 };
 o2.LP.script = {
