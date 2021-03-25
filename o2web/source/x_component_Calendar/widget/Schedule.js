@@ -687,14 +687,14 @@ o2.Schedule.Calendar = new Class({
 		var data = this.getDataByDate( date );
 		if( data.length == 0 ){
 			var titleNode = new Element("div", { styles : this.css.rightContentTitle }).inject( this.rightContentNode );
-			new Element("div", { styles : this.css.rightContentTitle_text, text : "当天您没有议程" }).inject( titleNode );
+			new Element("div", { styles : this.css.rightContentTitle_text, text : this.lp.schedule.noEvent }).inject( titleNode );
 
 			var itemContainer = new Element("div", { styles : this.css.rightContentItemContainer }).inject( this.rightContentNode );
 		}else{
 			var titleNode = new Element("div", { styles : { overflow : "hidden" } }).inject( this.rightContentNode );
-			new Element("div", { styles : this.css.rightContentTitle_text, text : "当天您有" }).inject( titleNode );
+			new Element("div", { styles : this.css.rightContentTitle_text, text : this.lp.schedule.current }).inject( titleNode );
 			new Element("div", { styles : this.css.rightContentTitle_count, text : data.length }).inject( titleNode );
-			new Element("div", { styles : this.css.rightContentTitle_text, text : "项议程！" }).inject( titleNode );
+			new Element("div", { styles : this.css.rightContentTitle_text, text : this.lp.schedule.someEvent }).inject( titleNode );
 
 			var itemContainer = new Element("div", { styles : this.css.rightContentItemContainer }).inject( this.rightContentNode );
 			for( var i=0; i<data.length && i<2; i++ ){
@@ -712,20 +712,20 @@ o2.Schedule.Calendar = new Class({
 				var endDateOnly = end.format("%Y-%m-%d");
 				var timeText ;
 				if( startDateOnly === endDateOnly ){
-					timeText =start.format("%H:%M") + "至" + end.format("%H:%M");
+					timeText =start.format("%H:%M") +  this.lp.to + end.format("%H:%M");
 				}else{
-					timeText = start.format("%m-%d") + "至" + end.format("%m-%d");
+					timeText = start.format("%m-%d") + this.lp.to + end.format("%m-%d");
 				}
 				new Element("div", { styles : this.css.rightContentItemTime, text : timeText }).inject( itemNode );
 			}
 		}
 
 		var rightToolbar = new Element("div", { styles : this.css.rightToolbar }).inject( this.rightContentNode );
-		var rightTool_add = new Element("div", { styles : this.css.rightTool_add, "text" : "增加" }).inject( this.rightContentNode );
+		var rightTool_add = new Element("div", { styles : this.css.rightTool_add, "text" : this.lp.add }).inject( this.rightContentNode );
 		rightTool_add.addEvent( "click", function(){
 			this.create( date )
 		}.bind(this));
-		var rightTool_more = new Element("div", { styles : this.css.rightTool_more, "text" : "更多" }).inject( this.rightContentNode );
+		var rightTool_more = new Element("div", { styles : this.css.rightTool_more, "text" : this.lp.more }).inject( this.rightContentNode );
 		rightTool_more.addEvent( "click", function(){
 			this.toDay( date )
 		}.bind(this))
