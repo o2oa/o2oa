@@ -1273,6 +1273,24 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "批量删除附件.", action = ActionManageBatchDelete.class)
+	@POST
+	@Path("batch/delete/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageBatchDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								  JsonElement jsonElement) {
+		ActionResult<ActionManageBatchDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageBatchDelete().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "上传附件", action = ActionUploadWithUrl.class)
 	@POST
 	@Path("upload/with/url")
@@ -1308,4 +1326,5 @@ public class AttachmentAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
 }
