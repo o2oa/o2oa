@@ -142,7 +142,7 @@ o2.widget.ScriptArea = new Class({
         if (this.options.isload){
             this.loadEditor(content);
         }else{
-            var inforNode = new Element("div", {"styles": this.css.inforNode, "text": "点击此处，编写脚本代码"}).inject(this.contentNode);
+            var inforNode = new Element("div", {"styles": this.css.inforNode, "text": o2.LP.widget.scriptAreaEditNotice}).inject(this.contentNode);
             var _self = this;
             inforNode.addEvent("click", function(){
                 this.destroy();
