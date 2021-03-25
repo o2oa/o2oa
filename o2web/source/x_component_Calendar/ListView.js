@@ -201,6 +201,7 @@ MWF.xApplication.Calendar.ListView.View = new Class({
         this.css = this.view.css;
         this.container = this.view.contentNode;
         this.app = this.view.app;
+        this.lp = this.app.lp;
         this.items = [];
         this.load();
     },
@@ -219,7 +220,7 @@ MWF.xApplication.Calendar.ListView.View = new Class({
     loadEmptyNode : function(){
         this.noEventNode = new Element("div",{
             "styles" : this.css.noEventNode,
-            "text" : "该月无日程安排"
+            "text" : this.lp.noEventCurMonth
         }).inject( this.container );
     },
     loadList: function() {
@@ -393,7 +394,7 @@ MWF.xApplication.Calendar.ListView.View.Line = new Class({
 
         if( this.isWholeday ){
             this.node = new Element("tr",{
-                "html": "<td width='30'><div></div></td><td width='100'>全天</td><td>"+this.data.data.title +"</td><td>"+ (this.data.data.locationName || "") +"</td>"
+                "html": "<td width='30'><div></div></td><td width='100'>"+this.app.lp.allDay+"</td><td>"+this.data.data.title +"</td><td>"+ (this.data.data.locationName || "") +"</td>"
             }).inject(this.container);
         }else{
             var bdate = this.data.start;
