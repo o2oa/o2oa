@@ -45,6 +45,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static final Integer DEFAULT_EXECUTORCOUNT = 32;
 
+	public static final Integer DEFAULT_EXECUTORQUEUEBUSYTHRESHOLD = 5;
+
 	public static final Boolean DEFAULT_DELETEPROCESSINUSE = false;
 
 	public static final Boolean DEFAULT_DELETEAPPLICATIONINUSE = false;
@@ -68,6 +70,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.docToWordDefaultFileName = DEFAULT_DOCTOWORDDEFAULTFILENAME;
 		this.docToWordDefaultSite = DEFAULT_DOCTOWORDDEFAULTSITE;
 		this.executorCount = DEFAULT_EXECUTORCOUNT;
+		this.executorQueueBusyThreshold = DEFAULT_EXECUTORQUEUEBUSYTHRESHOLD;
 		this.updateDataProjectionEnable = DEFAULT_UPDATEDATAPROJECTIONENABLE;
 		this.urge = new Urge();
 		this.expire = new Expire();
@@ -83,6 +86,12 @@ public class ProcessPlatform extends ConfigObject {
 
 	public Integer getExecutorCount() {
 		return ((null == executorCount) || (executorCount < 1)) ? DEFAULT_EXECUTORCOUNT : this.executorCount;
+	}
+
+	public Integer getExecutorQueueBusyThreshold() {
+		return ((null == executorQueueBusyThreshold) || (executorQueueBusyThreshold < 1))
+				? DEFAULT_EXECUTORQUEUEBUSYTHRESHOLD
+				: this.executorQueueBusyThreshold;
 	}
 
 	public Integer getFormVersionCount() {
@@ -137,6 +146,9 @@ public class ProcessPlatform extends ConfigObject {
 
 	@FieldDescribe("执行器数量")
 	private Integer executorCount;
+
+	@FieldDescribe("执行器队列繁忙阈值")
+	private Integer executorQueueBusyThreshold;
 
 	@FieldDescribe("更新data数据是否执行映射.")
 	private boolean updateDataProjectionEnable;
