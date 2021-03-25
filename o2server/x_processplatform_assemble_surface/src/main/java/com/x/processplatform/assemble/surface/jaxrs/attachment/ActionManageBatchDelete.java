@@ -35,8 +35,8 @@ class ActionManageBatchDelete extends BaseAction {
 			if(ListTools.isNotEmpty(wi.getIdList())){
 				for (String id : wi.getIdList()){
 					Attachment attachment = emc.find(id.trim(), Attachment.class);
-					logger.print("manageBatchDelete attachment:{}——{}", attachment.getId(), attachment.getName());
 					if(attachment!=null){
+						logger.print("manageBatchDelete attachment:{}——{}", attachment.getId(), attachment.getName());
 						StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 								attachment.getStorage());
 						attachment.deleteContent(mapping);
