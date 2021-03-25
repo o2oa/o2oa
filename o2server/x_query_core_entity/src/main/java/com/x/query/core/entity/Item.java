@@ -19,7 +19,6 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -36,12 +35,20 @@ import com.x.base.core.project.annotation.FieldDescribe;
 @Table(name = PersistenceProperties.Item.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Item.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
+						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) },
+		indexes = {
+		@javax.persistence.Index(name = Item.TABLE + Item.IndexNameMiddle + Item.bundle_FIELDNAME,
+				columnList = Item.ColumnNamePrefix + Item.bundle_FIELDNAME+","+Item.ColumnNamePrefix + Item.path0_FIELDNAME+","+
+				Item.ColumnNamePrefix + Item.path1_FIELDNAME+","+Item.ColumnNamePrefix + Item.path2_FIELDNAME+","+
+				Item.ColumnNamePrefix + Item.path3_FIELDNAME+","+
+				Item.ColumnNamePrefix + Item.path4_FIELDNAME+","+Item.ColumnNamePrefix + Item.path5_FIELDNAME+","+
+				Item.ColumnNamePrefix + Item.path6_FIELDNAME)}
+)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Item extends DataItem {
 
 	private static final long serialVersionUID = 7182248599724230391L;
-	private static final String TABLE = PersistenceProperties.Item.table;
+	public static final String TABLE = PersistenceProperties.Item.table;
 
 	public String getId() {
 		return id;
@@ -80,102 +87,80 @@ public class Item extends DataItem {
 	/* 更新运行方法 */
 
 	/* 修改过的 set get方法 */
+	@FieldDescribe("数据标识")
+	@Column(length = STRING_VALUE_MAX_LENGTH, name = ColumnNamePrefix + bundle_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String bundle;
+
 	@Column(length = Item.pathLength, name = ColumnNamePrefix + path0_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path0_FIELDNAME)
 	private String path0 = "";
 
 	@Column(length = Item.pathLength, name = ColumnNamePrefix + path1_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path1_FIELDNAME)
 	private String path1 = "";
 
 	@Column(length = Item.pathLength, name = ColumnNamePrefix + path2_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path2_FIELDNAME)
 	private String path2 = "";
 
 	@Column(length = Item.pathLength, name = ColumnNamePrefix + path3_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path3_FIELDNAME)
 	private String path3 = "";
 
 	@Column(length = Item.pathLength, name = ColumnNamePrefix + path4_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path4_FIELDNAME)
 	private String path4 = "";
 
 	@Column(length = Item.pathLength, name = ColumnNamePrefix + path5_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path5_FIELDNAME)
 	private String path5 = "";
 
 	@Column(length = Item.pathLength, name = ColumnNamePrefix + path6_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path6_FIELDNAME)
 	private String path6 = "";
 
 	@Column(length = Item.pathLength, name = ColumnNamePrefix + path7_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path7_FIELDNAME)
 	private String path7 = "";
 
 	@Column(name = ColumnNamePrefix + path0Location_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path0Location_FIELDNAME)
 	private Integer path0Location;
 
 	@Column(name = ColumnNamePrefix + path1Location_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path1Location_FIELDNAME)
 	private Integer path1Location;
 
 	@Column(name = ColumnNamePrefix + path2Location_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path2Location_FIELDNAME)
 	private Integer path2Location;
 
 	@Column(name = ColumnNamePrefix + path3Location_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path3Location_FIELDNAME)
 	private Integer path3Location;
 
 	@Column(name = ColumnNamePrefix + path4Location_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path4Location_FIELDNAME)
 	private Integer path4Location;
 
 	@Column(name = ColumnNamePrefix + path5Location_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path5Location_FIELDNAME)
 	private Integer path5Location;
 
 	@Column(name = ColumnNamePrefix + path6Location_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path6Location_FIELDNAME)
 	private Integer path6Location;
 
 	@Column(name = ColumnNamePrefix + path7Location_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + path7Location_FIELDNAME)
 	private Integer path7Location;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = ItemCategory.length, name = ColumnNamePrefix + itemCategory_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + itemCategory_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private ItemCategory itemCategory;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = ItemType.length, name = ColumnNamePrefix + itemType_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + itemType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private ItemType itemType;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = ItemPrimitiveType.length, name = ColumnNamePrefix + itemPrimitiveType_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + itemPrimitiveType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private ItemPrimitiveType itemPrimitiveType;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = ItemStringValueType.length, name = ColumnNamePrefix + itemStringValueType_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + itemStringValueType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private ItemStringValueType itemStringValueType;
 
-	@FieldDescribe("数据标识")
-	@Column(length = STRING_VALUE_MAX_LENGTH, name = ColumnNamePrefix + bundle_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + bundle_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
-	private String bundle;
-
 	@Column(length = STRING_VALUE_MAX_LENGTH, name = ColumnNamePrefix + stringShortValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringShortValue_FIELDNAME)
 	private String stringShortValue;
 
 	@Column(length = JpaObject.length_100M, name = ColumnNamePrefix + stringLongValue_FIELDNAME)
@@ -184,26 +169,21 @@ public class Item extends DataItem {
 	private String stringLongValue;
 
 	@Column(name = ColumnNamePrefix + numberValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + numberValue_FIELDNAME)
 	private Double numberValue;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + dateTimeValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dateTimeValue_FIELDNAME)
 	private Date dateTimeValue;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = ColumnNamePrefix + dateValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dateValue_FIELDNAME)
 	private Date dateValue;
 
 	@Temporal(TemporalType.TIME)
 	@Column(name = ColumnNamePrefix + timeValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + timeValue_FIELDNAME)
 	private Date timeValue;
 
 	@Column(name = ColumnNamePrefix + booleanValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue_FIELDNAME)
 	private Boolean booleanValue;
 
 	public String getPath0() {
