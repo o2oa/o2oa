@@ -10,14 +10,22 @@ import com.x.processplatform.core.entity.element.ActivityType;
 
 public class RecordProperties extends JsonProperties {
 
+	private static final long serialVersionUID = 4021727898101550914L;
+
+	@FieldDescribe("record中记录的处理人身份排序值.")
+	private Integer identityOrderNumber = null;
+
+	@FieldDescribe("record中记录的处理人身份所在组织排序值.")
+	private Integer unitOrderNumber = null;
+
 	@FieldDescribe("record中记录的处理人身份所拥有的组织职务,向上递归.")
 	private List<String> unitDutyList = new ArrayList<>();
 
 	@FieldDescribe("后续人工环节")
-	private List<NextManual> nextManualList = new ArrayList<NextManual>();
+	private List<NextManual> nextManualList = new ArrayList<>();
 
 	@FieldDescribe("后续人工环节处理人")
-	private List<String> nextManualTaskIdentityList = new ArrayList<String>();
+	private List<String> nextManualTaskIdentityList = new ArrayList<>();
 
 	@FieldDescribe("授权给处理人")
 	private String empowerToPerson;
@@ -54,14 +62,14 @@ public class RecordProperties extends JsonProperties {
 
 	public List<String> getNextManualTaskIdentityList() {
 		if (null == this.nextManualTaskIdentityList) {
-			this.nextManualTaskIdentityList = new ArrayList<String>();
+			this.nextManualTaskIdentityList = new ArrayList<>();
 		}
 		return this.nextManualTaskIdentityList;
 	}
 
 	public List<NextManual> getNextManualList() {
 		if (null == this.nextManualList) {
-			this.nextManualList = new ArrayList<NextManual>();
+			this.nextManualList = new ArrayList<>();
 		}
 		return this.nextManualList;
 	}
@@ -69,7 +77,7 @@ public class RecordProperties extends JsonProperties {
 	public static class NextManual {
 
 		public NextManual() {
-
+			//nothing
 		}
 
 		@FieldDescribe("活动")
@@ -83,11 +91,11 @@ public class RecordProperties extends JsonProperties {
 		@FieldDescribe("活动活动令牌")
 		private String activityToken;
 		@FieldDescribe("待办处理人")
-		private List<String> taskIdentityList = new ArrayList<String>();
+		private List<String> taskIdentityList = new ArrayList<>();
 
 		public List<String> getTaskIdentityList() {
 			if (null == this.taskIdentityList) {
-				this.taskIdentityList = new ArrayList<String>();
+				this.taskIdentityList = new ArrayList<>();
 			}
 			return this.taskIdentityList;
 		}
@@ -240,6 +248,22 @@ public class RecordProperties extends JsonProperties {
 
 	public void setUnitDutyList(List<String> unitDutyList) {
 		this.unitDutyList = unitDutyList;
+	}
+
+	public Integer getIdentityOrderNumber() {
+		return identityOrderNumber;
+	}
+
+	public void setIdentityOrderNumber(Integer identityOrderNumber) {
+		this.identityOrderNumber = identityOrderNumber;
+	}
+
+	public Integer getUnitOrderNumber() {
+		return unitOrderNumber;
+	}
+
+	public void setUnitOrderNumber(Integer unitOrderNumber) {
+		this.unitOrderNumber = unitOrderNumber;
 	}
 
 }
