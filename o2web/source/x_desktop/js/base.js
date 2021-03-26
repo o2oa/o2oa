@@ -329,14 +329,16 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
     layout.refreshApp = function (app) {
         var status = app.recordStatus();
 
-        var uri = new URI(window.location.href);
-        var appNames = uri.getData("app");
-        var optionsStr = uri.getData("option");
-        var statusStr = uri.getData("status");
+        var _uri = new URI(window.location.href);
+        var appNames = _uri.getData("app");
+        var optionsStr = _uri.getData("option");
+        var statusStr = _uri.getData("status");
         if (status) statusStr = JSON.encode(status);
 
-        var port = uri.get("port");
-        window.location = o2.filterUrl(uri.get("scheme") + "://" + uri.get("host") + ((port) ? ":" + port + "/" : "") + uri.get("directory ") + "?app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent(statusStr) + "&option=" + encodeURIComponent((optionsStr) ? JSON.encode(optionsStr) : "") + ((layout.debugger) ? "&debugger" : ""));
+        var port = _uri.get("port");
+        var u = _uri.get("scheme") + "://" + _uri.get("host") + ((port) ? ":" + port + "/" : "") + _uri.get("directory") + _uri.get("file") + "?app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent(statusStr) + "&option=" + encodeURIComponent((optionsStr) ? JSON.encode(optionsStr) : "") + ((layout.debugger) ? "&debugger" : "");
+        u = o2.filterUrl(u);
+        window.location = u;
     };
 
     layout.load = function (appNames, options, statusObj) {
