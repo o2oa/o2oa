@@ -235,14 +235,9 @@
         "border": "1px solid #ffffff",
     },
     "fullScreen": {
-        "top": "0px",
-        "left": "0px",
-        "width": "100%",
-        "min-height": "100%",
-        "z-index": "20000"
+        "min-height": "100%"
     },
     "returnScreen": {
-        "position": "static",
         "top": "",
         "left": "",
         "width": "",
