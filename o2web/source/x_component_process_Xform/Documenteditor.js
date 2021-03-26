@@ -1110,7 +1110,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.toolbarNode.setStyles({
                     "position": "absolute",
                     "width": ""+x+"px",
-                    "z-index": 50000,
+                    "z-index": 200,
                     "top": paddingTop+"px",
                     "left": ""+p.x+"px"
                 });
@@ -1762,7 +1762,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             //     "position": styles.position,
             //     "overflow": styles.overflow
             // });
-            // this.node.setStyles(this.css.returnScreen);
+            //this.node.setStyles(this.css.returnScreen);
+            this.node.setStyle("min-height", "");
             this.fireEvent("returnScreen");
             bt.setText(MWF.xApplication.process.Xform.LP.fullScreen);
 
@@ -1790,7 +1791,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             //     "position": "relative",
             //     "overflow": "auto"
             // });
-            this.node.setStyles(this.css.fullScreen);
+            //this.node.setStyles(this.css.fullScreen);
+            this.node.setStyle("min-height", "100%");
             this.fireEvent("fullScreen");
 
             // this.fullScreenScrollNode = this.node.getOffsetParent().getFirst().getParentSrcollNode();
