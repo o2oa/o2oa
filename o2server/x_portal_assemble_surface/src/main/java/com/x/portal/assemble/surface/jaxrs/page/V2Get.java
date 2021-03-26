@@ -119,13 +119,11 @@ class V2Get extends BaseAction {
 			}
 			return map;
 		});
-		_relatedWidget.get(300, TimeUnit.SECONDS);
-		_relatedScript.get(300, TimeUnit.SECONDS);
+		wo.setRelatedWidgetMap(_relatedWidget.get(300, TimeUnit.SECONDS));
+		wo.setRelatedScriptMap(_relatedScript.get(300, TimeUnit.SECONDS));
 		list.add(page.getId() + page.getUpdateTime().getTime());
 		List<String> sortList = list.stream().sorted().collect(Collectors.toList());
 		wo.setFastETag(StringUtils.join(sortList, "#"));
-		wo.setRelatedWidgetMap(_relatedWidget.get());
-		wo.setRelatedScriptMap(_relatedScript.get());
 		return wo;
 	}
 
