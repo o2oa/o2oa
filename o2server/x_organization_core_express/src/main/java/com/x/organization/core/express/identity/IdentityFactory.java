@@ -145,4 +145,14 @@ public class IdentityFactory {
 		List<? extends Identity> os = ActionListWithPersonUnitObject.execute(context, units, people);
 		return (List<Identity>) os;
 	}
+
+	/** 根据个人获取排序号 */
+	public Integer getOrderNumber(String value, Integer defaultValue) throws Exception {
+		List<? extends Identity> os = ActionListObject.execute(context, Arrays.asList(value));
+		if (os.isEmpty()) {
+			return defaultValue;
+		} else {
+			return (os.get(0).getOrderNumber() == null) ? defaultValue : os.get(0).getOrderNumber();
+		}
+	}
 }
