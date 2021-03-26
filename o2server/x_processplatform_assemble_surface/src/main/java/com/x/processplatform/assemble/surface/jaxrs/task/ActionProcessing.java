@@ -257,16 +257,21 @@ class ActionProcessing extends BaseAction {
 			this.processingUpdateTask();
 		} else {
 			record = new Record(workLog, task);
-			List<String> unitDutyList = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				// 后续需要记录unitDutyList所以在一个emc中进行计算.
-				unitDutyList = business.organization().unitDuty().listNameWithIdentity(task.getIdentity());
+				record.getProperties()
+						.setUnitDutyList(business.organization().unitDuty().listNameWithIdentity(task.getIdentity()));
+				// 记录处理身份的排序号
+				record.getProperties().setIdentityOrderNumber(
+						business.organization().identity().getOrderNumber(task.getIdentity(), Integer.MAX_VALUE));
+				// 记录处理身份所在组织的排序号
+				record.getProperties().setUnitOrderNumber(
+						business.organization().unit().getOrderNumber(task.getUnit(), Integer.MAX_VALUE));
+				// 记录task中身份所有的组织职务.
+				record.setCompleted(true);
+				record.setType(Record.TYPE_TASK);
 			}
-			// 记录task中身份所有的组织职务.
-			record.getProperties().setUnitDutyList(unitDutyList);
-			record.setCompleted(true);
-			record.setType(Record.TYPE_TASK);
 		}
 	}
 
@@ -309,6 +314,12 @@ class ActionProcessing extends BaseAction {
 			// 获取在record中需要记录的task中身份所有的组织职务.
 			record.getProperties()
 					.setUnitDutyList(business.organization().unitDuty().listNameWithIdentity(task.getIdentity()));
+			// 记录处理身份的排序号
+			record.getProperties().setIdentityOrderNumber(
+					business.organization().identity().getOrderNumber(task.getIdentity(), Integer.MAX_VALUE));
+			// 记录处理身份所在组织的排序号
+			record.getProperties().setUnitOrderNumber(
+					business.organization().unit().getOrderNumber(task.getUnit(), Integer.MAX_VALUE));
 			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
 			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
 					task.getJob());
@@ -499,9 +510,13 @@ class ActionProcessing extends BaseAction {
 
 	public static class RespProcessingSignal extends ActionProcessingSignalWo {
 
+		private static final long serialVersionUID = -8806173185445267895L;
+
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -870819172943535910L;
 
 		@FieldDescribe("路由名称")
 		private String routeName;
