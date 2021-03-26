@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 class V2GetMobile extends BaseAction {
@@ -118,11 +119,11 @@ class V2GetMobile extends BaseAction {
 			}
 			return map;
 		});
+		wo.setRelatedWidgetMap(_relatedWidget.get(300, TimeUnit.SECONDS));
+		wo.setRelatedScriptMap(_relatedScript.get(300, TimeUnit.SECONDS));
 		list.add(page.getId() + page.getUpdateTime().getTime());
 		List<String> sortList = list.stream().sorted().collect(Collectors.toList());
 		wo.setFastETag(StringUtils.join(sortList, "#"));
-		wo.setRelatedWidgetMap(_relatedWidget.get());
-		wo.setRelatedScriptMap(_relatedScript.get());
 		return wo;
 	}
 
