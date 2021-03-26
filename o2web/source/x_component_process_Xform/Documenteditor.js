@@ -1816,12 +1816,16 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * this.form.get("fieldId").scaleTo(0.5);
     */
     scaleTo: function(scale){
+        debugger;
         this._returnScale();
         this.scale = scale;
         this.zoom();
-        var w = this.contentNode.getSize().x;
+        //var w = this.contentNode.getSize().x*this.scale;
+        var w = this.contentNode.offsetWidth*this.scale;
+        //if (layout.userLayout && layout.userLayout.scale) w = w*layout.userLayout.scale;
         var count = 1;
         var docPageFullWidth = (this.scale) ? this.scale*this.options.docPageFullWidth : this.options.docPageFullWidth;
+        //if (layout.userLayout && layout.userLayout.scale) docPageFullWidth = docPageFullWidth*layout.userLayout.scale;
         var pageWidth = count * docPageFullWidth;
         var margin = (w-pageWidth)/(count+1);
         if (this.isScale){
@@ -1899,9 +1903,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.doublePageAction.set("text", MWF.xApplication.process.Xform.LP.doublePage);
     },
     resetNodeSize: function(){
-        var contentSize = this.contentNode.getSize();
+        //var contentSize = this.contentNode.getSize();
+        var contentHeight = this.contentNode.offsetHeight;
         var toolbarSize = this.toolNode.getSize();
-        contentHeight = contentSize.y;
+        contentHeight = contentHeight*(this.scale || 1);
         var h = contentHeight+toolbarSize.y+20;
         //h = h - contentSize.y*(1-this.scale);
 
