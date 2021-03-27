@@ -131,42 +131,8 @@ public class FilterEntry extends GsonPropertyObject {
 		return false;
 	}
 
-	public Predicate toPredicate(CriteriaBuilder cb, Root<Item> root, Runtime runtime, ItemCategory itemCategory)
+	public Predicate toPredicate(CriteriaBuilder cb, Root<Item> root, Runtime runtime, Predicate p)
 			throws Exception {
-		Predicate p = cb.equal(root.get(Item_.itemCategory), itemCategory);
-		String[] paths = StringUtils.split(this.path, ".");
-		if ((paths.length > 0) && StringUtils.isNotEmpty(paths[0])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path0), paths[0]));
-		}
-
-		if ((paths.length > 1) && StringUtils.isNotEmpty(paths[1]) && !WILDCARD.equals(paths[1])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path1), paths[1]));
-		}
-
-		if ((paths.length > 2) && StringUtils.isNotEmpty(paths[2]) && !WILDCARD.equals(paths[2])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path2), paths[2]));
-		}
-
-		if ((paths.length > 3) && StringUtils.isNotEmpty(paths[3]) && !WILDCARD.equals(paths[3])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path3), paths[3]));
-		}
-
-		if ((paths.length > 4) && StringUtils.isNotEmpty(paths[4]) && !WILDCARD.equals(paths[4])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path4), paths[4]));
-		}
-
-		if ((paths.length > 5) && StringUtils.isNotEmpty(paths[5]) && !WILDCARD.equals(paths[5])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path5), paths[5]));
-		}
-
-		if ((paths.length > 6) && StringUtils.isNotEmpty(paths[6]) && !WILDCARD.equals(paths[6])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path6), paths[6]));
-		}
-
-		if ((paths.length > 7) && StringUtils.isNotEmpty(paths[7]) && !WILDCARD.equals(paths[7])) {
-			p = cb.and(p, cb.equal(root.get(Item_.path7), paths[7]));
-		}
-
 		String compareValue = this.compareValue(runtime);
 		String compareOtherValue = this.compareOtherValue(runtime);
 		if (StringUtils.equals(this.formatType, FORMAT_BOOLEANVALUE)) {
@@ -571,6 +537,40 @@ public class FilterEntry extends GsonPropertyObject {
 				}
 			}
 		}
+
+		String[] paths = StringUtils.split(this.path, ".");
+		if ((paths.length > 0) && StringUtils.isNotEmpty(paths[0])) {
+			p = cb.and(p, cb.equal(root.get(Item_.path0), paths[0]));
+		}
+
+		if ((paths.length > 1) && StringUtils.isNotEmpty(paths[1]) && !WILDCARD.equals(paths[1])) {
+			p = cb.and(p, cb.equal(root.get(Item_.path1), paths[1]));
+		}
+
+		if ((paths.length > 2) && StringUtils.isNotEmpty(paths[2]) && !WILDCARD.equals(paths[2])) {
+			p = cb.and(p, cb.equal(root.get(Item_.path2), paths[2]));
+		}
+
+		if ((paths.length > 3) && StringUtils.isNotEmpty(paths[3]) && !WILDCARD.equals(paths[3])) {
+			p = cb.and(p, cb.equal(root.get(Item_.path3), paths[3]));
+		}
+
+		if ((paths.length > 4) && StringUtils.isNotEmpty(paths[4]) && !WILDCARD.equals(paths[4])) {
+			p = cb.and(p, cb.equal(root.get(Item_.path4), paths[4]));
+		}
+
+		if ((paths.length > 5) && StringUtils.isNotEmpty(paths[5]) && !WILDCARD.equals(paths[5])) {
+			p = cb.and(p, cb.equal(root.get(Item_.path5), paths[5]));
+		}
+
+		if ((paths.length > 6) && StringUtils.isNotEmpty(paths[6]) && !WILDCARD.equals(paths[6])) {
+			p = cb.and(p, cb.equal(root.get(Item_.path6), paths[6]));
+		}
+
+		if ((paths.length > 7) && StringUtils.isNotEmpty(paths[7]) && !WILDCARD.equals(paths[7])) {
+			p = cb.and(p, cb.equal(root.get(Item_.path7), paths[7]));
+		}
+
 		return p;
 	}
 
