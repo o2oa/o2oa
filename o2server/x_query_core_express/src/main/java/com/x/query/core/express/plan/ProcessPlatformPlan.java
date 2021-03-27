@@ -207,9 +207,10 @@ public class ProcessPlatformPlan extends Plan {
 						CriteriaBuilder cb = em.getCriteriaBuilder();
 						CriteriaQuery<String> cq = cb.createQuery(String.class);
 						Root<Item> root = cq.from(Item.class);
-						Predicate p = f.toPredicate(cb, root, this.runtime, ItemCategory.pp);
+						Predicate p = cb.isMember(root.get(Item_.bundle), cb.literal(_batch));
+						p = f.toPredicate(cb, root, this.runtime, p);
 						logger.debug("predicate:{}.", p);
-						p = cb.and(p, cb.isMember(root.get(Item_.bundle), cb.literal(_batch)));
+
 						cq.select(root.get(Item_.bundle)).where(p);
 						List<String> parts = em.createQuery(cq).getResultList();
 						return parts.stream().distinct().collect(Collectors.toList());
