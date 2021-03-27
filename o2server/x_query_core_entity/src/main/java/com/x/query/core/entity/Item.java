@@ -38,11 +38,22 @@ import com.x.base.core.project.annotation.FieldDescribe;
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) },
 		indexes = {
 		@javax.persistence.Index(name = Item.TABLE + Item.IndexNameMiddle + Item.bundle_FIELDNAME,
-				columnList = Item.ColumnNamePrefix + Item.bundle_FIELDNAME+","+Item.ColumnNamePrefix + Item.path0_FIELDNAME+","+
+				columnList = Item.ColumnNamePrefix + Item.bundle_FIELDNAME+","+
+						Item.ColumnNamePrefix + Item.itemCategory_FIELDNAME+","+
+						Item.ColumnNamePrefix + Item.path0_FIELDNAME+","+
 				Item.ColumnNamePrefix + Item.path1_FIELDNAME+","+Item.ColumnNamePrefix + Item.path2_FIELDNAME+","+
 				Item.ColumnNamePrefix + Item.path3_FIELDNAME+","+
 				Item.ColumnNamePrefix + Item.path4_FIELDNAME+","+Item.ColumnNamePrefix + Item.path5_FIELDNAME+","+
-				Item.ColumnNamePrefix + Item.path6_FIELDNAME)}
+				Item.ColumnNamePrefix + Item.path6_FIELDNAME),
+		@javax.persistence.Index(name = Item.TABLE + Item.IndexNameMiddle + Item.stringShortValue_FIELDNAME,
+				columnList = Item.ColumnNamePrefix + Item.bundle_FIELDNAME+","+
+						Item.ColumnNamePrefix + Item.stringShortValue_FIELDNAME+","+
+						Item.ColumnNamePrefix + Item.itemCategory_FIELDNAME+","+
+						Item.ColumnNamePrefix + Item.path0_FIELDNAME+","+
+						Item.ColumnNamePrefix + Item.path1_FIELDNAME+","+Item.ColumnNamePrefix + Item.path2_FIELDNAME+","+
+						Item.ColumnNamePrefix + Item.path3_FIELDNAME+","+
+						Item.ColumnNamePrefix + Item.path4_FIELDNAME+","+Item.ColumnNamePrefix + Item.path5_FIELDNAME+","+
+						Item.ColumnNamePrefix + Item.path6_FIELDNAME)}
 )
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Item extends DataItem {
