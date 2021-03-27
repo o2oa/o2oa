@@ -44,7 +44,7 @@ public abstract class Plan extends GsonPropertyObject {
 	public static final String CALCULATE_AVERAGE = "average";
 	public static final String CALCULATE_COUNT = "count";
 
-	protected static final int SQL_STATEMENT_IN_BATCH = 3000;
+	protected static final int SQL_STATEMENT_IN_BATCH = 1000;
 
 	public Runtime runtime;
 
