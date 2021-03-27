@@ -187,7 +187,7 @@ public class CmsPlan extends Plan {
 						CriteriaBuilder cb = em.getCriteriaBuilder();
 						CriteriaQuery<String> cq = cb.createQuery(String.class);
 						Root<Item> root = cq.from(Item.class);
-						Predicate p = cb.isMember(root.get(Item_.bundle), cb.literal(_batch));
+						Predicate p = root.get(Item_.bundle).in(_batch);
 						p = f.toPredicate(cb, root, this.runtime, p);
 						cq.select(root.get(Item_.bundle)).where(p);
 						List<String> parts = em.createQuery(cq).getResultList();
