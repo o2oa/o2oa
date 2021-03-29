@@ -62,9 +62,12 @@
  * <b>textValue</b> ：文本。<br/>
  * <b>numberValue</b> ：数字。<br/>
  * <b>dateTimeValue</b> ：日期时间。<br/>
+ * <b>dateValue</b> ：仅日期。<br/>
+ * <b>timeValue</b> ：仅时间。<br/>
  * <b>booleanValue</b> ：布尔值。<br/>
  * </div>
- * @property {(String|Number|Boolean)} value - 过滤的值，根据formatType提供匹配的数据类型的值，如果是dateTimeValue数据类型，则提供日期格式的字符串，格式如“YYYY-MM-DD HH:MM:SS”。
+ * @property {(String|Number|Boolean)} value - 过滤的值，根据formatType提供匹配的数据类型的值。如果是dateTimeValue数据类型，则提供日期格式的字符串，格式如“YYYY-MM-DD HH:MM:SS”。
+ * 如果是dateValue数据类型，则提供日期格式的字符串，格式如“YYYY-MM-DD”。如果是timeValue数据类型，则提供时间格式的字符串，格式如“HH:MM:SS”。
  * @example
  *{
  *    "path":"o.title",
