@@ -32,7 +32,7 @@ MWF.xApplication.Deployment.Main = new Class({
 		MWF.require("MWF.widget.Tab", function(){
 			this.tab = new MWF.widget.Tab(this.content, {"style": "processlayout"});
 			this.tab.load();
-			this.appPage = this.tab.addTab(this.appDeploymentContent, "已部署组件", false);
+			this.appPage = this.tab.addTab(this.appDeploymentContent, this.lp.deployedComponent, false);
 			this.appPage.showIm();
 
 			this.setContentHeight();
@@ -112,9 +112,9 @@ MWF.xApplication.Deployment.Main = new Class({
 		var title = tileInput.get("value");
 
 		if (!name || !title){
-			this.notice("请输入应用名称和应用标题", "error", this.appContentNode);
+			this.notice( this.lp.inputNameAndTitle , "error", this.appContentNode);
 		}else if (!fileInput.files.length){
-			this.notice("请上传文件的ZIP包", "error", this.appContentNode);
+			this.notice( this.lp.uploadZipFile, "error", this.appContentNode);
 		}else{
 			var formData = new FormData();
 			formData.append('file', fileInput.files[0]);
@@ -132,7 +132,7 @@ MWF.xApplication.Deployment.Main = new Class({
 				status = (status == 1223) ? 204 : status;
 
 				if ((status >= 200 && status < 300)) {
-					this.notice("部署成功", "success", this.appContentNode);
+					this.notice( this.lp.deploySuccess, "success", this.appContentNode);
 					this.appListNode.empty();
 					this.loadApps();
 				};

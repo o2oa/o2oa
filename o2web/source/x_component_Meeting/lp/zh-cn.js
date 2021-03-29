@@ -232,5 +232,8 @@ MWF.xApplication.Meeting.LP = {
     "nextUser": "处理人：",
     "deal": "处理",
     "processStarted": "文件已启动",
-    "processStartedMessage": "您启动了一个新的工作："
+    "processStartedMessage": "您启动了一个新的工作：",
+    "needSignInPerson" : "签到人员",
+    "printQrcode": "打印签到二维码",
+    "weeklyViewTitle" : "{month}，第{week}周"
 };
