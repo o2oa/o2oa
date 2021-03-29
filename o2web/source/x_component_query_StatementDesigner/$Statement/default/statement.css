@@ -7,7 +7,7 @@
     border-bottom: 1px solid #cccccc;
 }
 .o2_statement_statementDesignerFormatLine {
-    height:30px;
+    overflow:hidden;
     line-height: 30px;
     border-bottom: 1px solid #666666;
 }
@@ -18,7 +18,7 @@
 }
 .o2_statement_statementDesignerLine {
     margin-top: 5px;
-    height: 30px;
+    overflow: hidden;
     line-height: 30px;
 }
 .o2_statement_statementDesignerLine div {
