@@ -65,6 +65,22 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }
         }.bind(this), 60000);
     },
+    getDefaultEditorData: function(){
+        return {
+            "javascriptEditor": {
+                "monaco_theme": "vs",
+                "fontSize" : "12px",
+                "editor": "monaco"
+            }
+        };
+        // return {
+        //     "javascriptEditor": {
+        //         "theme": "tomorrow",
+        //         "fontSize" : "12px",
+        //         "editor": "ace"
+        //     }
+        // };
+    },
     getEditorTheme: function(callback){
         if (!o2.editorData){
             o2.UD.getData("editor", function(json){
