@@ -17,7 +17,7 @@ o2.widget.Tree = new Class({
 		"icon": "icon",
         "style": "",
 		"sub": "sub",
-		"defalut" : "defalut"
+		"default" : "default"
 	},
 	initialize: function(container, options){
 		this.setOptions(options);
@@ -76,6 +76,7 @@ o2.widget.Tree = new Class({
 		if (mapping.icon) this.jsonMapping.icon = mapping.icon;
         if (mapping.style) this.jsonMapping.style = mapping.style;
 		if (mapping.sub) this.jsonMapping.sub = mapping.sub;
+		if (mapping.default) this.jsonMapping.default = mapping.default;
 	},
 	
 	loadJsonTree: function(treeJson, tree, node){
@@ -87,6 +88,7 @@ o2.widget.Tree = new Class({
 			if (item[this.jsonMapping.action]) options.action = item[this.jsonMapping.action];
             if (item[this.jsonMapping.style]) options.style = item[this.jsonMapping.style];
 			if (item[this.jsonMapping.icon]) options.icon = item[this.jsonMapping.icon];
+			if (item[this.jsonMapping.default]) options.default = item[this.jsonMapping.default];
 			
 			var treeNode = node.appendChild(options);
 
@@ -156,7 +158,7 @@ o2.widget.Tree = new Class({
 		obj[this.jsonMapping.text] = options.text;
 		obj[this.jsonMapping.action] = options.action;
         obj[this.jsonMapping.style] = options.style;
-		obj[this.jsonMapping.defalut] = options.defalut;
+		obj[this.jsonMapping.default] = options.default;
 		obj[this.jsonMapping.icon] = (options.icon) ? options.icon : "none";
 		return obj;
 	}
