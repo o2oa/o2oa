@@ -683,8 +683,12 @@ public class ManualProcessor extends AbstractManualProcessor {
 		String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
 		Task task = new Task(aeiObjects.getWork(), identity, person, unit, fromIdentity, new Date(), null,
 				aeiObjects.getRoutes(), manual.getAllowRapid());
-		// 是第一条待办,进行标记
-		task.setFirst(ListTools.isEmpty(aeiObjects.getJoinInquireTaskCompleteds()));
+		// 是第一条待办,进行标记，调度过的待办都标记为非第一个待办
+		if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().getForceJoinAtArrive())){
+			task.setFirst(false);
+		}else{
+			task.setFirst(ListTools.isEmpty(aeiObjects.getJoinInquireTaskCompleteds()));
+		}
 		this.calculateExpire(aeiObjects, manual, task);
 		if (StringUtils.isNotEmpty(fromIdentity)) {
 			aeiObjects.business().organization().empowerLog()
