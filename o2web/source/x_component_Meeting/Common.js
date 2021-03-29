@@ -738,7 +738,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             ) +
             "   </td>" +
             "</tr>" +
-            "<tr style='display:"+ ( this.isNew ? "none" : "") +" ;' item='checkPersonTr'><td styles='formTableTitle'>签到人员:</td>" +
+            "<tr style='display:"+ ( this.isNew ? "none" : "") +" ;' item='checkPersonTr'><td styles='formTableTitle'>"+this.lp.needSignInPerson+":</td>" +
             "    <td styles='formTableValue' item='checkinPersonList'></td></tr>" +
             "<tr><td styles='formTableTitle'>"+this.lp.meetingSubject+":</td>" +
             "    <td styles='formTableValue' item='subject'></td></tr>" +
@@ -939,7 +939,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 }
             }).inject( this.qrCodeArea );
             var div = new Element("div",{
-                text : "打印签到二维码",
+                text : this.app.lp.printQrcode,
                 styles : {
                     "color" : "#3c75b7",
                     "cursor" : "pointer",
