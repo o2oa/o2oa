@@ -65,6 +65,10 @@ MWF.xApplication.service.ServiceManager.InvokeExplorer = new Class({
                         this._createElement(e);
                     }.bind(this));
                 }
+                if( !this.isSetContentSize ){
+                    this.setContentSize();
+                    this.isSetContentSize = true;
+                }
             }.bind(this));
         }else{
             var noElementNode = new Element("div.noElementNode", {
