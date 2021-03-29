@@ -47,6 +47,16 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 "-webkit-user-select": "text",
                 "-moz-user-select": "text"
             });
+            //移动端设置图片宽度为100%
+            if( layout.mobile ){
+                this.node.getElements("img").each( function( img ){
+                    //if( img.height )img.erase("height");
+                    img.setStyles({
+                        "height": "auto",
+                        "max-width" : "100%"
+                    });
+                }.bind(this))
+            }
         }else{
             var config = Object.clone(this.json.editorProperties);
             if (this.json.config){
