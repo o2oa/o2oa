@@ -302,7 +302,7 @@ MWF.xApplication.Meeting.DayView.Day = new Class({
         }
         this.titleTextNode = new Element("div.dayTitleTextNode", {
             "styles": this.css[ className ],
-            "text" :  this.date.format("%Y年%m月%d日")
+            "text" :  this.date.format(this.app.lp.dateFormatDay)
         }).inject(this.titleNode);
         if( this.isFirst ){
             MWF.require("MWF.widget.Calendar", function(){

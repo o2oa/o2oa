@@ -281,7 +281,7 @@ MWF.xApplication.Meeting.MeetingView.Day = new Class({
         var className = !this.isToday ? "dayTitleTextNode" : "dayTitleTextNode_today";
         this.titleTextNode = new Element("div.dayTitleTextNode", {
             "styles": this.css[ className ],
-            "text" :  this.date.format("%Y年%m月%d日")
+            "text" :  this.date.format( this.app.lp.dateFormatDay )
         }).inject(this.titleNode);
 
         this.dayWeekNode = new Element("div.dayWeekNode", {

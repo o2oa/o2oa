@@ -356,6 +356,7 @@ o2.LP.widget = {
     "year": "年",
     "month": "月",
     "date": "日",
+    "week": "周",
     "dateGreaterThanCurrentNotice" : "选择的日期必须大于当前日期",
 
     "unknow": "未知",
