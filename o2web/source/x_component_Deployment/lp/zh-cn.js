@@ -32,5 +32,9 @@ MWF.xApplication.Deployment.LP = {
     "removeComponent": "您确定要卸载组件：{name} 吗？",
     "removeComponentOk": "组件已卸载",
 
-    "modify": "修改组件信息"
+    "modify": "修改组件信息",
+
+    "deployedComponent" : "已部署组件",
+    "inputNameAndTitle" : "请输入应用名称和应用标题",
+    "uploadZipFile" : "请上传文件的ZIP包"
 };
