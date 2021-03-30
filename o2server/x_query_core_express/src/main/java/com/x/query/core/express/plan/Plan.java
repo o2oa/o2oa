@@ -44,7 +44,7 @@ public abstract class Plan extends GsonPropertyObject {
 	public static final String CALCULATE_AVERAGE = "average";
 	public static final String CALCULATE_COUNT = "count";
 
-	protected static final int SQL_STATEMENT_IN_BATCH = 1000;
+	// protected static final int SQL_STATEMENT_IN_BATCH = 1000;
 
 	public Runtime runtime;
 
@@ -229,7 +229,7 @@ public abstract class Plan extends GsonPropertyObject {
 
 		final Table fillTable = this.concreteTable(bundles);
 		List<CompletableFuture<Void>> futures = new TreeList<>();
-		for (List<String> _part_bundles : ListTools.batch(bundles, SQL_STATEMENT_IN_BATCH)) {
+		for (List<String> _part_bundles : ListTools.batch(bundles, Config.query().getPlanQueryBatchSize())) {
 			for (SelectEntry selectEntry : this.selectList) {
 				CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
 					try {
@@ -364,7 +364,7 @@ public abstract class Plan extends GsonPropertyObject {
 		TreeList<String> os = new TreeList<>();
 		final Table fillTable = this.concreteTable(bundles);
 		List<CompletableFuture<Void>> futures = new TreeList<>();
-		for (List<String> _part_bundles : ListTools.batch(bundles, SQL_STATEMENT_IN_BATCH)) {
+		for (List<String> _part_bundles : ListTools.batch(bundles, Config.query().getPlanQueryBatchSize())) {
 			for (SelectEntry selectEntry : this.orderList) {
 				CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
 					try {
@@ -458,63 +458,63 @@ public abstract class Plan extends GsonPropertyObject {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path0)), cb.equal(root.get(Item_.path0), "")));
 			}
 			if ((paths.length > 1) && StringUtils.isNotEmpty(paths[1])) {
-				if(!FilterEntry.WILDCARD.equals(paths[1])) {
+				if (!FilterEntry.WILDCARD.equals(paths[1])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path1), paths[1]));
-				}else{
+				} else {
 					orderList.add(cb.asc(root.get(Item_.path1)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path1)), cb.equal(root.get(Item_.path1), "")));
 			}
 			if ((paths.length > 2) && StringUtils.isNotEmpty(paths[2])) {
-				if(!FilterEntry.WILDCARD.equals(paths[2])) {
+				if (!FilterEntry.WILDCARD.equals(paths[2])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path2), paths[2]));
-				}else{
+				} else {
 					orderList.add(cb.asc(root.get(Item_.path2)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path2)), cb.equal(root.get(Item_.path2), "")));
 			}
 			if ((paths.length > 3) && StringUtils.isNotEmpty(paths[3])) {
-				if(!FilterEntry.WILDCARD.equals(paths[3])) {
+				if (!FilterEntry.WILDCARD.equals(paths[3])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path3), paths[3]));
-				}else{
+				} else {
 					orderList.add(cb.asc(root.get(Item_.path3)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path3)), cb.equal(root.get(Item_.path3), "")));
 			}
 			if ((paths.length > 4) && StringUtils.isNotEmpty(paths[4])) {
-				if(!FilterEntry.WILDCARD.equals(paths[4])) {
+				if (!FilterEntry.WILDCARD.equals(paths[4])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path4), paths[4]));
-				}else{
+				} else {
 					orderList.add(cb.asc(root.get(Item_.path4)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path4)), cb.equal(root.get(Item_.path4), "")));
 			}
 			if ((paths.length > 5) && StringUtils.isNotEmpty(paths[5])) {
-				if(!FilterEntry.WILDCARD.equals(paths[5])) {
+				if (!FilterEntry.WILDCARD.equals(paths[5])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path5), paths[5]));
-				}else{
+				} else {
 					orderList.add(cb.asc(root.get(Item_.path5)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path5)), cb.equal(root.get(Item_.path5), "")));
 			}
 			if ((paths.length > 6) && StringUtils.isNotEmpty(paths[6])) {
-				if(!FilterEntry.WILDCARD.equals(paths[6])) {
+				if (!FilterEntry.WILDCARD.equals(paths[6])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path6), paths[6]));
-				}else{
+				} else {
 					orderList.add(cb.asc(root.get(Item_.path6)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path6)), cb.equal(root.get(Item_.path6), "")));
 			}
 			if ((paths.length > 7) && StringUtils.isNotEmpty(paths[7])) {
-				if(!FilterEntry.WILDCARD.equals(paths[7])) {
+				if (!FilterEntry.WILDCARD.equals(paths[7])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path7), paths[7]));
-				}else{
+				} else {
 					orderList.add(cb.asc(root.get(Item_.path7)));
 				}
 			} else {
@@ -525,7 +525,7 @@ public abstract class Plan extends GsonPropertyObject {
 					root.get(Item_.stringLongValue), root.get(Item_.dateValue), root.get(Item_.timeValue),
 					root.get(Item_.dateTimeValue), root.get(Item_.booleanValue), root.get(Item_.numberValue)).where(p);
 			boolean isList = false;
-			if(!orderList.isEmpty()){
+			if (!orderList.isEmpty()) {
 				isList = true;
 				cq.orderBy(orderList);
 			}
