@@ -1433,6 +1433,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 var className = "cke_editor_" + this.filetextEditor.name;
                 var filetextToolbarNode = $$("." + className)[0];
                 this.filetextToolbarNode = filetextToolbarNode;
+
                 //filetextToolbarNode.destroy();
             }
         }
@@ -1471,6 +1472,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var position = this.layout_filetext.getPosition();
             var size = this.layout_filetext.getSize();
             var contentSize = this.filetextScrollNode.getSize();
+
+            if (layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
+                var x = this.filetextEditor.editable().$.getPosition().x;
+                this.filetextToolbarNode.setStyle("left", ""+x+"px");
+            }
 
             if (position.y<0 && size.y+position.y+h<contentSize.y){
                 // var top = size.y+position.y;
@@ -2328,6 +2334,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }.bind(this));
                 this.filetextEditor.on( 'focus', function( e ) {
                     window.setTimeout(this.reLocationFiletextToolbar.bind(this), 10);
+                }.bind(this) );
+
+                this.filetextEditor.on( 'loaded', function( e ) {
+                    this.filetextEditor.element.$.store("module", this);
                 }.bind(this) );
 
                 this.filetextEditor.on( 'paste', function( e ) {
