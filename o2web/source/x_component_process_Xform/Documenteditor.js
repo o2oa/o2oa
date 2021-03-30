@@ -1228,6 +1228,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             "overflow": "auto",
             "width": ""+w+"px"
         });
+
+        if (this.filetextEditor && this.filetextEditor.element) {
+            this.filetextEditor.element.$.store("scale", this.scale);
+        }
     },
 
     _switchReadOrEdit: function(){
@@ -1477,6 +1481,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 var x = this.filetextEditor.editable().$.getPosition().x;
                 this.filetextToolbarNode.setStyle("left", ""+x+"px");
             }
+            this.filetextToolbarNode.setStyle("min-width", "530px");
+
 
             if (position.y<0 && size.y+position.y+h<contentSize.y){
                 // var top = size.y+position.y;
@@ -2338,6 +2344,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
                 this.filetextEditor.on( 'loaded', function( e ) {
                     this.filetextEditor.element.$.store("module", this);
+                    this.filetextEditor.element.$.store("scale", this.scale);
                 }.bind(this) );
 
                 this.filetextEditor.on( 'paste', function( e ) {
