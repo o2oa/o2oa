@@ -81,8 +81,9 @@ MWF.xApplication.Profile.Common.Pagination = new Class({
         return new Element('div.page', {'text': '...'});
     },
     createText: function () {
+        var text = MWF.xApplication.Profile.LP.pageText.replace("{n}",  (this.currentPage + 1) + '/' + (this.page) );
         return new Element('span', {
-            'text': '第' + (this.currentPage + 1) + '/' + (this.page) + '页',
+            'text': text,
             'style': "margin:0 3px;"
         });
     },
@@ -230,7 +231,7 @@ MWF.xApplication.Profile.Common.Content = new Class({
         this.searchOkButton = new Element("a", {
             "class": "button is-link",
             "style": "margin:5px;",
-            "text": "搜索"
+            "text": MWF.xApplication.Profile.LP.search
         }).inject(this.searchItemNode).addEvent("click", function () {
 
             this.options.page = 1;
@@ -240,7 +241,7 @@ MWF.xApplication.Profile.Common.Content = new Class({
         this.searchCancleButton = new Element("a", {
             "class": "button",
             "style": "margin:5px;",
-            "text": "取消"
+            "text": MWF.xApplication.Profile.LP.cancel1
         }).inject(this.searchItemNode).addEvent("click", function () {
             this.searchItemList.each(function (item) {
                 $$('[name=' + item.name + ']').set("value", "");
