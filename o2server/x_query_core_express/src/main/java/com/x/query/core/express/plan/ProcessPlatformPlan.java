@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -159,7 +160,7 @@ public class ProcessPlatformPlan extends Plan {
 		logger.debug("开始过滤权限.");
 		List<String> list = new TreeList<>();
 		List<CompletableFuture<List<String>>> futures = new TreeList<>();
-		for (List<String> _part_bundles : ListTools.batch(jobs, SQL_STATEMENT_IN_BATCH)) {
+		for (List<String> _part_bundles : ListTools.batch(jobs, Config.query().getPlanQueryBatchSize())) {
 			CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					EntityManager em = emc.get(Review.class);
@@ -194,7 +195,7 @@ public class ProcessPlatformPlan extends Plan {
 	private List<String> listBundle_filterEntry(List<String> jobs, List<FilterEntry> filterEntries) throws Exception {
 		/** 运行FilterEntry */
 		List<String> partJobs = new TreeList<>();
-		List<List<String>> batch_jobs = ListTools.batch(jobs, SQL_STATEMENT_IN_BATCH);
+		List<List<String>> batch_jobs = ListTools.batch(jobs, Config.query().getPlanQueryBatchSize());
 		for (int i = 0; i < filterEntries.size(); i++) {
 			FilterEntry f = filterEntries.get(i);
 			logger.debug("listBundle_filterEntry:{}.", f);
