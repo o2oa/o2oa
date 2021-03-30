@@ -7,8 +7,11 @@
 	var pxUnit = CKEDITOR.tools.cssLength,
 		needsIEHacks = CKEDITOR.env.ie && ( CKEDITOR.env.ie7Compat || CKEDITOR.env.quirks );
 
+	//var notCheckScale = (layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1);
+
 	function getWidth( el ) {
-		return CKEDITOR.env.ie ? el.$.clientWidth : parseInt( el.getComputedStyle( 'width' ), 10 );
+		return el.$.getSize().x;
+		//return CKEDITOR.env.ie ? el.$.clientWidth : parseInt( el.getComputedStyle( 'width' ), 10 );
 	}
 
 	function getBorderWidth( element, side ) {
@@ -34,7 +37,8 @@
 	function setPillarDimensions( nativeTableElement ) {
 		if ( nativeTableElement ) {
 			var tableElement = new CKEDITOR.dom.element( nativeTableElement );
-			return { height: tableElement.$.offsetHeight, position: tableElement.getDocumentPosition() };
+			//return { height: tableElement.$.offsetHeight, position: tableElement.getDocumentPosition() };
+			return { height: tableElement.$.getSize().y, position: tableElement.$.getPosition() };
 		}
 	}
 
@@ -70,22 +74,24 @@
 				// Calculate the pillar boundary positions.
 				var pillarLeft, pillarRight, pillarWidth;
 
-				var x = td.getDocumentPosition().x;
+				var x = td.$.getPosition().x;
 
 				// Calculate positions based on the current cell.
-				rtl ? pillarRight = x + getBorderWidth( td, 'left' ) : pillarLeft = x + td.$.offsetWidth - getBorderWidth( td, 'right' );
+				//rtl ? pillarRight = x + getBorderWidth( td, 'left' ) : pillarLeft = x + td.$.offsetWidth - getBorderWidth( td, 'right' );
+				rtl ? pillarRight = x + getBorderWidth( td, 'left' ) : pillarLeft = x + td.$.getSize().x - getBorderWidth( td, 'right' );
 
 				// Calculate positions based on the next cell, if available.
 				if ( nextTd ) {
-					x = nextTd.getDocumentPosition().x;
+					x = nextTd.$.getPosition().x;
 
-					rtl ? pillarLeft = x + nextTd.$.offsetWidth - getBorderWidth( nextTd, 'right' ) : pillarRight = x + getBorderWidth( nextTd, 'left' );
+					rtl ? pillarLeft = x + nextTd.$.getSize().x - getBorderWidth( nextTd, 'right' ) : pillarRight = x + getBorderWidth( nextTd, 'left' );
 				}
 				// Otherwise calculate positions based on the table (for last cell).
 				else {
-					x = table.getDocumentPosition().x;
+					x = table.$.getPosition().x;
 
-					rtl ? pillarLeft = x : pillarRight = x + table.$.offsetWidth;
+					//rtl ? pillarLeft = x : pillarRight = x + table.$.offsetWidth;
+					rtl ? pillarLeft = x : pillarRight = x + table.$.getSize().x;
 				}
 
 				pillarWidth = Math.max( pillarRight - pillarLeft, 3 );
@@ -242,6 +248,9 @@
 					if ( ++cellsSaved == cellsCount ) {
 						editor.fire( 'saveSnapshot' );
 					}
+
+					var module = editor.element.$.retrieve("module");
+					if (module) module.reLocationFiletextToolbar();
 				}, 0, this, [
 					leftCell, leftCell && getWidth( leftCell ),
 					rightCell, rightCell && getWidth( rightCell ),
@@ -268,7 +277,12 @@
 		}
 
 		function onMouseMove( evt ) {
-			move( evt.data.getPageOffset().x );
+			var x = evt.data.getPageOffset().x;
+			if (layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
+				x = x/layout.userLayout.scale;
+			}
+
+			move( x );
 		}
 
 		document = editor.document;
@@ -308,10 +322,16 @@
 			resizerY = firstAligned.y;
 			resizerHeight = lastAligned.height + lastAligned.y - firstAligned.y;
 
+			resizerX = targetPillar.x;
+			// if (layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
+			// 	resizerX = resizerX/layout.userLayout.scale;
+			// 	resizerY = resizerY/layout.userLayout.scale;
+			// }
+
 			resizer.setStyles( {
 				width: pxUnit( targetPillar.width ),
 				height: pxUnit( resizerHeight ),
-				left: pxUnit( targetPillar.x ),
+				left: pxUnit( resizerX ),
 				top: pxUnit( resizerY )
 			} );
 
@@ -337,7 +357,8 @@
 					detach();
 					return 0;
 				}
-				var resizerNewPosition = posX - Math.round( resizer.$.offsetWidth / 2 );
+				//var resizerNewPosition = posX - Math.round( resizer.$.offsetWidth / 2 );
+				var resizerNewPosition = posX - Math.round( resizer.$.getSize().x / 2 );
 
 				if ( isResizing ) {
 					if ( resizerNewPosition == leftShiftBoundary || resizerNewPosition == rightShiftBoundary )
@@ -394,10 +415,19 @@
 					if ( target.type != CKEDITOR.NODE_ELEMENT )
 						return;
 
+					var page1 = {
+						x: evt.getPageOffset().x,
+						y: evt.getPageOffset().y
+					};
+
 					var page = {
 						x: evt.getPageOffset().x,
 						y: evt.getPageOffset().y
 					};
+					if (layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
+						page.x = page.x/layout.userLayout.scale;
+						page.y = page.y/layout.userLayout.scale;
+					}
 
 					// If we're already attached to a pillar, simply move the
 					// resizer.
@@ -427,7 +457,6 @@
 						table.on( 'mouseout', clearPillarsCache );
 						table.on( 'mousedown', clearPillarsCache );
 					}
-
 					var pillar = getPillarAtPosition( pillars, page );
 					if ( pillar ) {
 						!resizer && ( resizer = new columnResizer( editor ) );
