@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
@@ -141,7 +142,7 @@ public class CmsPlan extends Plan {
 	private List<String> listBundle_accessible(List<String> docIds, String person) throws Exception {
 		List<String> list = new TreeList<>();
 		List<CompletableFuture<List<String>>> futures = new TreeList<>();
-		for (List<String> documentId : ListTools.batch(docIds, SQL_STATEMENT_IN_BATCH)) {
+		for (List<String> documentId : ListTools.batch(docIds, Config.query().getPlanQueryBatchSize())) {
 			CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					EntityManager em = emc.get(Review.class);
@@ -175,7 +176,7 @@ public class CmsPlan extends Plan {
 	private List<String> listBundle_filterEntry(List<String> docIds, List<FilterEntry> filterEntries) throws Exception {
 		/** 运行FilterEntry */
 		List<String> partDocIds = new TreeList<>();
-		List<List<String>> batch_docIds = ListTools.batch(docIds, SQL_STATEMENT_IN_BATCH);
+		List<List<String>> batch_docIds = ListTools.batch(docIds, Config.query().getPlanQueryBatchSize());
 		for (int i = 0; i < filterEntries.size(); i++) {
 			FilterEntry f = filterEntries.get(i);
 			List<String> os = new TreeList<>();

@@ -55,11 +55,20 @@ public class Query extends ConfigObject {
 	@FieldDescribe("tess使用语言.")
 	private String tessLanguage = "chi_sim";
 
+	@FieldDescribe("查询批次大小.")
+	private Integer planQueryBatchSize = DEFAULT_PLANQUERYBATCHSIZE;
+
 	public static final Boolean DEFAULT_EXTRACTOFFICE = true;
 	public static final Boolean DEFAULT_EXTRACTPDF = true;
 	public static final Boolean DEFAULT_EXTRACTTEXT = true;
 	public static final Boolean DEFAULT_EXTRACTIMAGE = false;
 	public static final String DEFAULT_TESSLANGUAGE = "chi_sim";
+	public static final Integer DEFAULT_PLANQUERYBATCHSIZE = 500;
+
+	public Integer getPlanQueryBatchSize() {
+		return (this.planQueryBatchSize == null || planQueryBatchSize < 1) ? DEFAULT_PLANQUERYBATCHSIZE
+				: this.planQueryBatchSize;
+	}
 
 	public Boolean getExtractOffice() {
 		return BooleanUtils.isTrue(extractOffice);
