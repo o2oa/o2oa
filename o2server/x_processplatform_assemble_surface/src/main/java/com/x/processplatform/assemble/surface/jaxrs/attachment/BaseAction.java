@@ -280,11 +280,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				String flag = business.job().findAWorkOrWorkCompleted(job);
-				if(StringUtils.isNotEmpty(flag)){
-					value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag,
-							new ExceptionEntityNotExist(job));
-				}
+				value = business.readableWithJob(effectivePerson, job);
 			} catch (Exception e) {
 				logger.error(e);
 			}
