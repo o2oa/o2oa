@@ -9182,7 +9182,7 @@ var local = Element.Position = {
 			return document.id(this.getOffsetParent());
 		});
 
-		if (!offsetParent || offsetParent == element.getDocument().body) return;
+		if (!offsetParent || offsetParent == element.getDocument().body || offsetParent==document.documentElement) return;
 
 		parentScroll = offsetParent.getScroll();
 		parentOffset = offsetParent.measure(function(){

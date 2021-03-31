@@ -50,6 +50,8 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
+            var input = this.node.getFirst();
+            input.set("readonly", true);
         }
     },
     setDescriptionEvent: function(){
