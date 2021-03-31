@@ -1135,7 +1135,7 @@ debugger;
                 var htmlArea = new MWF.widget.HtmlEditorArea(node, {
                     "title": title,
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "maxObj": this.designer.formContentNode,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
                         this.data[name] = htmlArea.getValue();
                         this.changeData(name);
