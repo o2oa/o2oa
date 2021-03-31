@@ -271,6 +271,7 @@ public class CmsPlan extends Plan {
 			ps.add(this.documentPredicate_appInfo(cb, root));
 			ps.add(this.documentPredicate_date(cb, root));
 			ps.add(this.documentPredicate_Filter(cb, root, runtime, filterList));
+			ps.add(this.documentPredicate_draft(cb, root));
 
 			Predicate predicate = this.documentPredicate_typeScope(cb, root);
 			if (predicate != null) {
@@ -371,6 +372,13 @@ public class CmsPlan extends Plan {
 				return cb.equal(root.get(Document_.documentType), "数据");
 			} else if (StringUtils.equals(this.scope, SCOPE_CMS_INFO)) {
 				return cb.equal(root.get(Document_.documentType), "信息");
+			}
+			return null;
+		}
+
+		private Predicate documentPredicate_draft(CriteriaBuilder cb, Root<Document> root) {
+			if (BooleanUtils.isFalse(this.draft)) {
+				return cb.isNotNull(root.get(Document_.publishTime));
 			}
 			return null;
 		}
