@@ -1,11 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -73,7 +68,10 @@ class ActionUploadWorkInfo extends BaseAction {
 			}
 			String workHtml = wi.getWorkHtml();
 			if(StringUtils.isNotBlank(workHtml)){
-				workHtml = URLDecoder.decode(workHtml, StandardCharsets.UTF_8.name());
+				try {
+					workHtml = URLDecoder.decode(workHtml, StandardCharsets.UTF_8.name());
+				} catch (Exception e) {
+				}
 				if (workHtml.toLowerCase().indexOf("<html") == -1) {
 					workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
 				}

@@ -45,7 +45,11 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		if(StringUtils.isNotBlank(wi.getContent())){
-			wi.setContent(URLDecoder.decode(wi.getContent(), StandardCharsets.UTF_8.name()));
+			try {
+				String decodedContent = URLDecoder.decode(wi.getContent(), StandardCharsets.UTF_8.name());
+				wi.setContent(decodedContent);
+			} catch (Exception e) {
+			}
 		}
 		Work work = null;
 		WorkCompleted workCompleted = null;
