@@ -74,7 +74,6 @@
                 "gulp-util": "^3.0.8",
                 "jsdoc": "^3.6.6",
                 "minimist": "^1.2.0",
-                "playwright": "^1.9.2",
                 "progress-stream": "^2.0.0",
                 "request": "^2.88.2",
                 "single-line-log": "^1.1.2",
