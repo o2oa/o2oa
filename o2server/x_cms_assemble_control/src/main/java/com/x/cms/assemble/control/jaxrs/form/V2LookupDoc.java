@@ -104,7 +104,7 @@ class V2LookupDoc extends BaseAction {
 					if(readFormId.equals(formId)){
 						this.readForm = this.form;
 					}else {
-						this.readForm = business.getFormFactory().pick(formId);
+						this.readForm = business.getFormFactory().pick(readFormId);
 					}
 				}
 				if (null == this.readForm) {
