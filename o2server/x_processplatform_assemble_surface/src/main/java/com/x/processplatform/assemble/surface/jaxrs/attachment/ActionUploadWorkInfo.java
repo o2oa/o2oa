@@ -69,7 +69,7 @@ class ActionUploadWorkInfo extends BaseAction {
 			String workHtml = wi.getWorkHtml();
 			if(StringUtils.isNotBlank(workHtml)){
 				try {
-					workHtml = URLDecoder.decode(workHtml, StandardCharsets.UTF_8.name());
+					//workHtml = URLDecoder.decode(workHtml, StandardCharsets.UTF_8.name());
 				} catch (Exception e) {
 				}
 				if (workHtml.toLowerCase().indexOf("<html") == -1) {
