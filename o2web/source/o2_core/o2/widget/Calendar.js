@@ -409,10 +409,15 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		if(this.visible) {
 			var elementCoords = this.container.getCoordinates();
 			var targetCoords  = this.node.getCoordinates();
-			if(((e.page.x < elementCoords.left || e.page.x > (elementCoords.left + elementCoords.width)) ||
-				(e.page.y < elementCoords.top || e.page.y > (elementCoords.top + elementCoords.height))) &&
-				((e.page.x < targetCoords.left || e.page.x > (targetCoords.left + targetCoords.width)) ||
-				(e.page.y < targetCoords.top || e.page.y > (targetCoords.top + targetCoords.height))) ) this.hide();
+			var page = e.page;
+			if (layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
+				page.x = page.x/layout.userLayout.scale;
+				page.y = page.y/layout.userLayout.scale;
+			}
+			if(((page.x < elementCoords.left || page.x > (elementCoords.left + elementCoords.width)) ||
+				(page.y < elementCoords.top || page.y > (elementCoords.top + elementCoords.height))) &&
+				((page.x < targetCoords.left || page.x > (targetCoords.left + targetCoords.width)) ||
+				(page.y < targetCoords.top || page.y > (targetCoords.top + targetCoords.height))) ) this.hide();
 		}
 	},
 
@@ -480,7 +485,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 //			}
 			this.container.setStyle("display", "block");
 
-			if (this.container.position ){
+			if (this.container.position && (!layout || !layout.userLayout || !layout.userLayout.scale || !layout.userLayout.scale===1) ){
 				this.container.position({
 					relativeTo: this.node,
 					position: 'bottomLeft',
