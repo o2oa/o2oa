@@ -2389,6 +2389,23 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     this.fireEvent("afterPaste");
                 }.bind(this) );
 
+                this.filetextEditor.on( 'change', function( e ) {
+                    this.filetextEditor.on( 'change', function( e ) {
+                        var h = document.documentElement.scrollTop;
+                        var scrollNode = this.contentNode;
+                        while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
+                            scrollNode = scrollNode.getParent();
+                        }
+                        if (scrollNode){
+                            var top = scrollNode.scrollTop.toFloat();
+                            scrollNode.scrollTop = h+top;
+                        }
+                        document.documentElement.scrollTop = 0;
+                    }.bind(this) );
+                }.bind(this) );
+
+
+
                 this.filetextEditor.on( 'insertElement', function( e ) {
                     var tr = e.data.$.getElement("tr");
                     if (tr){

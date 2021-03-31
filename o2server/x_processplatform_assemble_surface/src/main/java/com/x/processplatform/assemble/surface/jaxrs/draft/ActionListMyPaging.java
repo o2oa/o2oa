@@ -1,7 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.draft;
 
-import java.util.List;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -26,6 +24,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.List;
 
 class ActionListMyPaging extends BaseAction {
 
@@ -41,6 +40,7 @@ class ActionListMyPaging extends BaseAction {
 			Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
 			List<Wo> wos = emc.fetchDescPaging(Draft.class, Wo.copier, p, page, size, Draft.createTime_FIELDNAME);
 			result.setData(wos);
+			result.setCount(emc.count(Draft.class, p));
 			return result;
 		}
 	}
