@@ -452,17 +452,17 @@ MWF.xApplication.ForumDocument.Main = new Class({
 	},
 	reloadAllParents : function(){
 		var aid = "Forum";
-		if (this.desktop.apps[aid]){
+		if (this.desktop.apps[aid] && this.desktop.apps[aid].reload){
 			this.desktop.apps[aid].reload();
 		}
 
 		aid = "ForumCategory"+this.sectionData.forumId;
-		if (this.desktop.apps[aid]){
+		if (this.desktop.apps[aid] && this.desktop.apps[aid].reload){
 			this.desktop.apps[aid].reload();
 		}
 
 		aid = "ForumSection"+this.sectionData.id;
-		if (this.desktop.apps[aid]){
+		if (this.desktop.apps[aid] && this.desktop.apps[aid].reload){
 			this.desktop.apps[aid].reload();
 		}
 	},
@@ -1220,6 +1220,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 				}.bind(this)
 			},
 			onGotoItem : function( top ){
+				debugger;
 				var t = top - this.content.getTop();
 				this.contentContainerNode.scrollTo( 0, t );
 			}.bind(this)

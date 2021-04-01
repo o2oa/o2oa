@@ -123,17 +123,17 @@ MWF.xApplication.ForumPerson.Main = new Class({
 	reloadAllParents : function( sectionId ){
 		this.restActions.getSection( sectionId, function( json ){
 			var aid = "Forum";
-			if (this.desktop.apps[aid]){
+			if (this.desktop.apps[aid] && this.desktop.apps[aid].reload ){
 				this.desktop.apps[aid].reload();
 			}
 
 			aid = "ForumCategory"+json.data.forumId;
-			if (this.desktop.apps[aid]){
+			if (this.desktop.apps[aid] && this.desktop.apps[aid].reload){
 				this.desktop.apps[aid].reload();
 			}
 
 			aid = "ForumSection"+sectionId;
-			if (this.desktop.apps[aid]){
+			if (this.desktop.apps[aid] && this.desktop.apps[aid].reload){
 				this.desktop.apps[aid].reload();
 			}
 		}.bind(this) )
