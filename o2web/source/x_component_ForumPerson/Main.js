@@ -730,7 +730,7 @@ MWF.xApplication.ForumPerson.ReplyDocument = new Class({
 		return this.app.access.isAdmin();
 	},
 	htmlToString : function( html ){
-		html = html.replace( /<img[^>]+>/g," [图片] ");
+		html = html.replace( /<img[^>]+>/g," ["+this.app.lp.picture+"] ");
 		return html.replace(/<[^>]+>/g,"");
 	}
 });

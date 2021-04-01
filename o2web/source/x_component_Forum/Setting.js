@@ -435,7 +435,7 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
             var forumColorArea = this.formTableArea.getElements("[item='forumColorArea']")[0];
             this.forumColorNode = new Element( "div", {
                 styles : { "font-size":"12px", height : "24px", "line-height" : "24px", width : "70px", "margin-right" : "20px" , "color" : "#fff", "text-align" : "center", "background-color" : this.data.forumColor || this.lp.defaultForumColor },
-                text : "效果"
+                text : this.lp.effect
             }).inject( forumColorArea )
 
 
@@ -570,7 +570,11 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
             }
         }.bind(this));
         columnCountList.each(function( columnCount ){
-            var createTemplateCategoryItemNode = new Element("div", {"styles": this.css.createTemplateFormCategoryItemNode, "text":  columnCount+"列", "value": columnCount}).inject(createTemplateCategoryNode);
+            var createTemplateCategoryItemNode = new Element("div", {
+                "styles": this.css.createTemplateFormCategoryItemNode,
+                "text":  columnCount+ MWF.xApplication.Forum.LP.column,
+                "value": columnCount
+            }).inject(createTemplateCategoryNode);
             createTemplateCategoryItemNode.addEvent("click", function(){
                 createTemplateContentNode.empty();
                 createTemplateCategoryNode.getElements("div").each(function(node, i){
@@ -753,7 +757,7 @@ MWF.xApplication.Forum.Setting.SectionSettingExplorer = new Class({
 
         this.allCategoryNode = new Element("li.allCategoryNode", {
             "styles": this.css.categoryNode,
-            "text" : "全部"
+            "text" : MWF.xApplication.Forum.LP.all1
         }).inject(this.toolbar);
         this.allCategoryNode.addEvents({
             "mouseover" : function(){ if( this.currentCategoryNode != this.allCategoryNode)this.allCategoryNode.setStyles(this.css.categoryNode_over) }.bind(this),
@@ -1355,7 +1359,7 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
         if( typeOf(data.moderatorNames) === "string" ){
             data.moderatorNames = data.moderatorNames.split(",");
         }
-        data.sectionLevel = "主版块";
+        data.sectionLevel = MWF.xApplication.Forum.LP.mainSection;
         data.typeCatagory = data.typeCatagory.split(",").join("|");
         this.app.restActions.saveSection( data, function(json){
             if( this.formData ){
