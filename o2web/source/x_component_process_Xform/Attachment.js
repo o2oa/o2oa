@@ -1156,7 +1156,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @example
          * var attachmentController = this.form.get("fieldId").AttachmentController; //获取附件容器
          * var attachmentList = attachmentController.attachments; //获取所有的附件
-         * var attachmentData = attachment[0].data; //获取第一个附件的数据
+         * var attachmentData = attachmentList[0].data; //获取第一个附件的数据
          */
         this.attachmentController = new MWF.xApplication.process.Xform.AttachmentController(this.node, this, options);
         this.attachmentController.load();

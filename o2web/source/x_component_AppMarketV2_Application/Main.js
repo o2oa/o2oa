@@ -112,9 +112,9 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 						new Element("img",{"src":this.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular);
 					}
 					if (!this.appdata.commentCount) this.appdata.commentCount=0;					
-					this.applicationintroducememoremarkcommentcount.set("text","共"+this.appdata.commentCount+"个评分")
+					this.applicationintroducememoremarkcommentcount.set("text",this.lp.commentCountText.replace("{n}", this.appdata.commentCount))
 					//this.applicationintroducememodownload.set("text",this.appdata.downloadCount);
-					this.applicationintroducememocategory.set("text","分类:"+this.appdata.category);
+					this.applicationintroducememocategory.set("text", this.lp.category+":"+this.appdata.category);
 					this.applicationintroducememocontent.set("text",this.appdata.describe);
 					//this.applicationintroducedownloadprice.set("text","$"+this.appdata.price);
 					this.applicationintroducedownloadprice.set("text","");
@@ -211,7 +211,7 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 		this.applicationintroducecontent.set("html",this.appdata.abort);
 		this.applicationintroducepicslable.set("html","");
 		this.applicationintroducepics.set("html","")
-		this.applicationintroducepicslable.set("html","屏幕截图");			//截图
+		this.applicationintroducepicslable.set("html", this.lp.screenshot);			//截图
 		this.appdata.attList.each(function(peratt,i){
 				if (peratt.type == "image"){
 					picdiv = new Element("img",{"class":"o2_appmarket_application_introduce_pic"}).inject(this.applicationintroducepics);

@@ -23,5 +23,9 @@ MWF.xApplication.AppMarketV2.LP = {
     "confirmsetupTitle":"安装提示",
     "confirmsetupContent":"您确认安装本应用么？",
     "confirmupdateTitle":"更新提示",
-    "confirmupdateContent":"您确认更新本应用么？如果安装应用后改过本应用，本次更新后会被替换"
+    "confirmupdateContent":"您确认更新本应用么？如果安装应用后改过本应用，本次更新后会被替换",
+
+    "all" : "全部",
+    "searchHolder": "请输入搜索关键字",
+    "accessDenyNotice": "应用市场需要管理员角色才能访问"
 };
