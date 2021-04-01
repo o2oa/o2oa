@@ -194,7 +194,11 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
 		for (var tmpnum=0;tmpnum<5-intgrade;tmpnum++){
 			new Element("img",{"src":this.content.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.content.applicationcommenttopangular);
         }
-        new Element("span",{"class":"o2_appmarket_application_introduce_memo_remark_inner_text","text":"共"+commentcount+"个评分"}).inject(this.content.applicationcommenttopangular);
+
+        new Element("span",{
+            "class":"o2_appmarket_application_introduce_memo_remark_inner_text",
+            "text":this.app.lp.commentCountText.replace("{n}",commentcount)
+        }).inject(this.content.applicationcommenttopangular);
         
         //5星
         new Element("div",{"text":"5","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightfive);
@@ -282,15 +286,18 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         var commentText = "";
         if (commentdata.type && commentdata.type=="success"){
             if (commentdata.data.value){
-                commentText = "您已评论过该应用！"
+                commentText = this.app.lp.commented;
             }
         }
         if (this.appdata.installedVersion==""){
-            commentText = "由于您还未安装本应用，因此无法对其进行评分及评论！"
+            commentText = this.app.lp.notInstall;
         }
         if (commentText == ""){
             var commentbuttondiv = new Element("div",{"class":"o2_appmarket_application_comment_middle_commentbutton"}).inject(this.content.applicationcommentmiddle);
-            new Element("span",{"class":"o2_appmarket_application_comment_middle_commentbutton_InnerSpan","text":"我要评分及评论"}).inject(commentbuttondiv);
+            new Element("span",{
+                "class":"o2_appmarket_application_comment_middle_commentbutton_InnerSpan",
+                "text":this.app.lp.iNeedComment
+            }).inject(commentbuttondiv);
             var _self = this;
             commentbuttondiv.addEvents({
                 "click": function(e){
@@ -336,7 +343,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
     createComment:function(targetnode){
         var content = new Element("div", {"styles": {"margin": "20px"}});
         var xingdiv = new Element("div").inject(content);
-        new Element("div",{"class":"comment_dlg_title","text":"评分："}).inject(xingdiv);
+        new Element("div",{"class":"comment_dlg_title","text": this.app.lp.score }).inject(xingdiv);
         xingpngdiv = new Element("div",{"class":"comment_dlg_png"}).inject(xingdiv);
         var starnode;
         var _self = this;
@@ -378,7 +385,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
                     "action": function(){
                         debugger;
                         if (selectstar==0 || commentcontentNode.get("value")==""){
-                            MWF.xDesktop.notice("error", {x: "right", y:"top"}, "请评分，评论后提交");
+                            MWF.xDesktop.notice("error", {x: "right", y:"top"}, this.app.lp.commentNotice);
                         }else{
                             var commentdata = {};
                             commentdata["title"] = "";
