@@ -27,5 +27,49 @@ MWF.xApplication.Template.LP = {
 
 	"index" : {
 
+	},
+
+	"explorer" : {
+		"returnText" : "返回首页",
+		"pageJumperText": "输入页码，按回车跳转",
+		"prePage" : "上一页",
+		"nextPage": "下一页"
+	},
+
+	"MDomItem" : {
+		"emptyTip": "{text}不能为空",
+		"emailTip":"请输入正确格式的电子邮件",
+		"urlTip":"请输入合法的网址",
+		"phoneNumberTip" :"请输入正确的手机号码",
+		"dateTip":"请输入合法的日期",
+		"dateISOTip":"请输入合法的日期 .",
+		"numberTip":"请输入合法的数字",
+		"digitsTip":"只能输入整数",
+		"maxlengthTip":"长度不能超过{n}",
+		"minlengthTip":"长度不能小于{n}",
+		"rangelengthTip":"长度不能要介于{n0}和{n1}之间" ,
+		"rangeTip":"请输入一个介于{n0}和{n1}之间的值" ,
+		"minTip":"请输入一个最小为{n}的值" ,
+		"maxTip":"请输入一个最大为{n}的值" ,
+		"extensionTip":"请上传{text}格式的附件" ,
+		"defaultTip" :"请输入正确的{text}",
+		"selectTip": "请先选择{text}",
+		"defaultOption": "请选择",
+		"setPicture": "设置图片",
+		"uploadPictureNotice" : "请先上传图片",
+		"selectCoundPicture": "选择云文件图片"
+	},
+
+	"MGrid" : {
+		"sequence" : "序号",
+		"add": "添加",
+		"delete": "删除",
+		"addMaxLimitText": "最多只能添加{count}项"
+	},
+
+	"MPopupForm" : {
+		"close": "关闭",
+		"max": "最大化",
+		"restore": "还原"
 	}
 };

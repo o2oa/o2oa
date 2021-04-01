@@ -24,9 +24,9 @@ MWFForum.getDateDiff = function (publishTime, justNowStr) {
     var hourC = diffValue / hour;
     var minC = diffValue / minute;
     if (yesterday.getFullYear() == dateTimeStamp.getFullYear() && yesterday.getMonth() == dateTimeStamp.getMonth() && yesterday.getDate() == dateTimeStamp.getDate()) {
-        result = "昨天 " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
+        result = MWF.xApplication.Forum.LP.yesterday + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
     } else if (beforYesterday.getFullYear() == dateTimeStamp.getFullYear() && beforYesterday.getMonth() == dateTimeStamp.getMonth() && beforYesterday.getDate() == dateTimeStamp.getDate()) {
-        result = "前天 " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
+        result = MWF.xApplication.Forum.LP.twoDaysAgo + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
     } else if (yearC > 1) {
         result = dateTimeStamp.getFullYear() + "-" + (dateTimeStamp.getMonth() + 1) + "-" + dateTimeStamp.getDate();
     } else if (monthC >= 1) {
@@ -34,20 +34,20 @@ MWFForum.getDateDiff = function (publishTime, justNowStr) {
         // s.getFullYear()+"年";
         result = dateTimeStamp.getFullYear() + "-" + (dateTimeStamp.getMonth() + 1) + "-" + dateTimeStamp.getDate();
     } else if (weekC >= 1) {
-        result = parseInt(weekC) + "周前";
+        result = parseInt(weekC) + MWF.xApplication.Forum.LP.weekAgo;
     } else if (dayC >= 1) {
-        result = parseInt(dayC) + "天前";
+        result = parseInt(dayC) + MWF.xApplication.Forum.LP.dayAgo;
     } else if (hourC >= 1) {
-        result = parseInt(hourC) + "小时前";
+        result = parseInt(hourC) + MWF.xApplication.Forum.LP.hourAgo;
     } else if (minC >= 1) {
-        result = parseInt(minC) + "分钟前";
+        result = parseInt(minC) + MWF.xApplication.Forum.LP.weekAgo;
     } else
-        result = justNowStr || "刚刚发表";
+        result = justNowStr || MWF.xApplication.Forum.LP.publishJustNow;
     return result;
 };
 
 MWFForum.getDateDiff2 = function (publishTime) {
-    return MWFForum.getDateDiff( publishTime, "刚才" );
+    return MWFForum.getDateDiff( publishTime, MWF.xApplication.Forum.LP.justNow );
 };
 
 MWFForum.BBS_LOGO_NAME = "BBS_LOGO_NAME";

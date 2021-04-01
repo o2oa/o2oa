@@ -321,7 +321,7 @@ MWFForum.NaviMode.CategoryItem = new Class({
     },
     loadListContent : function(){
         var d = this.data;
-        if(d.forumStatus != "停用" ){
+        if(d.forumStatus != MWF.xApplication.Forum.LP.disable ){
             MWF.Actions.get("x_bbs_assemble_control").listSection(d.id , function ( json ) {
                 (json.data || []).each( function( sectiondata ){
                     var sectionItem = new MWFForum.NaviMode.SectionItem(this.navi, this, this.listNode, sectiondata );
@@ -473,7 +473,7 @@ MWFForum.NaviMode.AllItem = new Class({
         var _self = this;
         this.node = new Element("div.allNode", {
             "styles": this.css.allNode,
-            "text" : "全部"
+            "text" : MWF.xApplication.Forum.LP.all1
         }).inject(this.container);
 
         this.node.addEvents({
