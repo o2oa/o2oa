@@ -201,7 +201,7 @@ MWF.xApplication.Forum.TopNode = new Class({
             //}).inject(this.personNode);
             this.personTextNode = new Element("div", {
                 "styles": this.css.personTextNode,
-                "text": MWF.xApplication.Forum.LP.welcomeTitle.replace("{n}", ( this.userName || "").split("@")[0]),
+                "text": MWF.xApplication.Forum.LP.welcomeTitle.replace("{user}", ( this.userName || "").split("@")[0]),
                 "title" : MWF.xApplication.Forum.LP.seePersonCenter
             }).inject(this.personNode);
             this.personNode.addEvent("click", function(){ this.openPerson(this.userName ) }.bind(this))
