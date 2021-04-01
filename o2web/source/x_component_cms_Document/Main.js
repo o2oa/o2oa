@@ -641,6 +641,7 @@ MWF.xApplication.cms.Document.Main = new Class({
                     "document": this.document,
                     "control": this.control,
                     "attachmentList": this.attachmentList,
+                    "formInfor": this.formInfor,
                     "status": {
                         //"readonly": (this.options.readonly) ? true : false
                         "readonly": this.readonly
