@@ -26,6 +26,8 @@
  dispose() 清空对象
  verify( isShowWarning ) 参数isShowWarning,校验不通过的是否提示用户。根据isShowWarning参数和options的notEmpty、warningType、validRule属性校验对象，返回boolean
  */
+
+MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
 var MDomItem_ClassType = {
     "text" : "Text",
     "textarea" : "Textarea",
@@ -341,7 +343,7 @@ var MDomItem = new Class({
         var warningText = "";
         var focus = false;
         try{
-            warningText = this.options.emptyTip ||  (this.dom && this.dom.getErrorText()) || (text+"不能为空");
+            warningText = this.options.emptyTip ||  (this.dom && this.dom.getErrorText()) || MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",text);
             if( this.options.warningType == "batch" ) {
                 this.setWarning(warningText, "empty");
             }else if( this.options.warningType == "single" ){
@@ -551,37 +553,38 @@ var MDomItem = new Class({
                 }
             }
         }
+        var lp = MWF.xApplication.Template.LP.MDomItem;
         switch( type ){
             case "email":
-                return "请输入正确格式的电子邮件";
+                return lp.emailTip;
             case "url":
-                return "请输入合法的网址";
+                return lp.urlTip;
             case "phoneNumber" :
-                return "请输入正确的手机号码";
+                return lp.phoneNumberTip;
             case "date":
-                return "请输入合法的日期";
+                return lp.dateTip;
             case "dateISO":
-                return "请输入合法的日期 .";
+                return lp.dateISOTip;
             case "number":
-                return "请输入合法的数字";
+                return lp.numberTip;
             case "digits":
-                return "只能输入整数";
+                return lp.digitsTip;
             case "maxlength":
-                return "长度不能超过"+ param ;
+                return lp.maxlengthTip.replace("{n}",param );
             case "minlength":
-                return "长度不能小于"+ param ;
+                return lp.minlengthTip.replace("{n}",param );
             case "rangelength":
-                return "长度不能要介于"+ param[0] + "和" + param[1] + "之间" ;
+                return lp.rangelengthTip.replace("{n0}",param[0] ).replace("{n1}",param[1] ) ;
             case "range":
-                return "请输入一个介于"+ param[0] + " 和 "+ param[1] + "之间的值" ;
+                return lp.rangeTip.replace("{n0}",param[0] ).replace("{n1}",param[1] ) ;
             case "min":
-                return "请输入一个最小为"+ param +" 的值" ;
+                return lp.minTip.replace("{n}",param );
             case "max":
-                return "请输入一个最大为"+ param +"的值" ;
+                return lp.maxTip.replace("{n}",param );
             case "extension":
-                return "请上传" + param + "格式的附件" ;
+                return lp.extensionTip.replace("{text}",param );
             default :
-                return "请输入正确的"+ this.options.text ;
+                return lp.defaultTip.replace("{text}",this.options.text );
         }
     },
     destroy: function(){
@@ -831,7 +834,7 @@ MDomItem.Text = new Class({
         }
     },
     getErrorText : function(){
-        return this.options.text +"不能为空";
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var tType = this.options.tType;
@@ -1028,7 +1031,7 @@ MDomItem.Textarea = new Class({
         }
     },
     getErrorText : function(){
-        return this.options.text +"不能为空";
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var tType = this.options.tType;
@@ -1095,7 +1098,7 @@ MDomItem.Hidden = new Class({
         item.set( "value", value );
     },
     getErrorText : function(){
-        return this.options.text +"不能为空";
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     }
 });
 
@@ -1182,7 +1185,7 @@ MDomItem.Password = new Class({
         }
     },
     getErrorText : function(){
-        return this.options.text +"不能为空";
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var tType = this.options.tType;
@@ -1357,7 +1360,7 @@ MDomItem.Radio = new Class({
         }
     },
     getErrorText : function(){
-        return "请先选择"+this.options.text;
+        return MWF.xApplication.Template.LP.MDomItem.selectTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var className = null ;
@@ -1542,7 +1545,7 @@ MDomItem.Checkbox = new Class({
         }
     },
     getErrorText : function(){
-        return "请先选择"+this.options.text;
+        return MWF.xApplication.Template.LP.MDomItem.selectTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var tType = this.options.tType;
@@ -1699,7 +1702,7 @@ MDomItem.Select = new Class({
         }
     },
     getErrorText : function(){
-        return "请先选择"+this.options.text;
+        return MWF.xApplication.Template.LP.MDomItem.selectTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var tType = this.options.tType;
@@ -1867,7 +1870,7 @@ MDomItem.Multiselect = new Class({
         }
     },
     getErrorText : function(){
-        return "请先选择"+this.options.text;
+        return MWF.xApplication.Template.LP.MDomItem.selectTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var tType = this.options.tType;
@@ -1962,7 +1965,7 @@ MDomItem.Innertext = new Class({
         item.set("text", value );
     },
     getErrorText : function(){
-        return this.options.text+"不能为空";
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var tType = this.options.tType;
@@ -2056,7 +2059,7 @@ MDomItem.Innerhtml = new Class({
         item.set("html", value );
     },
     getErrorText : function(){
-        return this.options.text+"不能为空";
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var tType = this.options.tType;
@@ -2132,7 +2135,7 @@ MDomItem.Img = new Class({
         item.set("src",value);
     },
     getErrorText : function(){
-        return this.options.text + "不能为空"
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var tType = this.options.tType;
@@ -2214,7 +2217,7 @@ MDomItem.Button = new Class({
         item.set( "value", value );
     },
     getErrorText : function(){
-        return this.options.text+"不能为空";
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var className = null ;
@@ -2295,7 +2298,7 @@ MDomItem.A = new Class({
         item.set( "value", value );
     },
     getErrorText : function(){
-        return this.options.text+"不能为空";
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var className = null ;
@@ -2337,7 +2340,7 @@ MDomItem.MSelector = new Class({
             "style": "default",
             "width": "230px",
             "height": "30px",
-            "defaultOptionLp" : "请选择",
+            "defaultOptionLp" : MWF.xApplication.Template.LP.MDomItem.defaultOption,
             "trigger" : "delay", //immediately
             "isSetSelectedValue" : true,
             "inputEnable" : false,
@@ -2404,7 +2407,7 @@ MDomItem.MSelector = new Class({
         this.mSelector.setValue( value );
     },
     getErrorText : function(){
-        return this.options.text + "不能为空";
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var className = null ;
@@ -2462,7 +2465,7 @@ MDomItem.ImageClipper = new Class({
             if( styles.imageStyle )this.image.setStyles( styles.imageStyle );
         }
         var action = new Element("button",{
-            "text" : "设置图片"
+            "text" : MWF.xApplication.Template.LP.MDomItem.setPicture
         }).inject( parent );
         //if( this.css && this.css["inputButton"] )action.setStyles( this.css["inputButton"] );
         if( styles.actionStyle )action.setStyles( styles.actionStyle );
@@ -2547,7 +2550,7 @@ MDomItem.ImageClipper = new Class({
         }
     },
     getErrorText : function(){
-        return "请先上传图片："+this.options.text
+        return MWF.xApplication.Template.LP.MDomItem.uploadPictureNotice+"："+this.options.text ;
     }
 });
 
@@ -2609,7 +2612,7 @@ MDomItem.Rtf = new Class({
                     MWF.xDesktop.requireApp("File", "FileSelector", function(){
                         _self.selector_cloud = new MWF.xApplication.File.FileSelector( document.body ,{
                             "style" : "default",
-                            "title": "选择云文件图片",
+                            "title": MWF.xApplication.Template.LP.MDomItem.selectCoundPicture,
                             "toBase64" : true,
                             "listStyle": "preview",
                             "selectType" : "images",
@@ -2718,7 +2721,7 @@ MDomItem.Rtf = new Class({
         }
     },
     getErrorText : function(){
-        return this.options.text+"不能为空"
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
     },
     getClassName : function(){
         var className = null ;
@@ -2851,7 +2854,7 @@ MDomItem.Org = new Class({
         this.module.orgData = this.orgData
     },
     getErrorText : function(){
-        return "请先选择" + this.options.text;
+        return MWF.xApplication.Template.LP.MDomItem.selectTip.replace("{text}",this.options.text);
     },
     bindDefaultEvent : function( item ){
         if( this.options.unsetDefaultEvent )return;

@@ -5,7 +5,7 @@ MWF.xApplication.Forum.SectionSelector = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": "选择列表",
+        "title": MWF.xApplication.Forum.LP.selectList,
         "values": [],
         "appId" : "",
         "formId": "",
@@ -30,7 +30,7 @@ MWF.xApplication.Forum.SectionSelector = new Class({
 
         this.action.listCategoryAll(function(json){
             (json.data || []).each(function(d){
-                if(d.forumStatus != "停用" ){
+                if(d.forumStatus != MWF.xApplication.Forum.LP.disable ){
                     this.action.listSection(d.id , function (js) {
                         d.name = d.forumName;
                         d.sectionList = (  js.data || [] );

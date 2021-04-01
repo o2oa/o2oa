@@ -64,7 +64,7 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 				}
 			}.bind(this));
 		}else{
-			o2.xDesktop.notice("error", {x: "right", y:"top"}, "应用市场需要管理员角色才能访问");
+			o2.xDesktop.notice("error", {x: "right", y:"top"}, this.lp.accessDenyNotice);
 		}
 	},
 	loadApp: function(callback){
