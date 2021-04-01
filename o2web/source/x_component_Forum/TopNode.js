@@ -201,8 +201,8 @@ MWF.xApplication.Forum.TopNode = new Class({
             //}).inject(this.personNode);
             this.personTextNode = new Element("div", {
                 "styles": this.css.personTextNode,
-                "text": ( this.userName || "").split("@")[0] + ",您好！",
-                "title" : "点击查看个人中心"
+                "text": MWF.xApplication.Forum.LP.welcomeTitle.replace("{n}", ( this.userName || "").split("@")[0]),
+                "title" : MWF.xApplication.Forum.LP.seePersonCenter
             }).inject(this.personNode);
             this.personNode.addEvent("click", function(){ this.openPerson(this.userName ) }.bind(this))
 
@@ -266,15 +266,15 @@ MWF.xApplication.Forum.TopNode = new Class({
             if( this.options.naviMode ){
                 this.closeNaviTextNode = new Element("div", {
                     "styles": this.css.settingTextNode,
-                    "text": "关闭导航",
-                    "title" : "关闭导航"
+                    "text": MWF.xApplication.Forum.LP.closeNavi,
+                    "title" : MWF.xApplication.Forum.LP.closeNavi
                 }).inject(this.naviNode);
                 this.closeNaviTextNode.addEvent("click", function(){ this.app.closeNavi( ) }.bind(this));
             }else{
                 this.naviTextNode = new Element("div", {
                     "styles": this.css.settingTextNode,
-                    "text": "导航",
-                    "title" : "导航布局"
+                    "text": MWF.xApplication.Forum.LP.navi,
+                    "title" : MWF.xApplication.Forum.LP.naviLayout
                 }).inject(this.naviNode);
                 this.naviTextNode.addEvent("click", function(){
                     this.app.openNavi( )

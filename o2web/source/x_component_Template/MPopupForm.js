@@ -1,4 +1,5 @@
 MWF.xApplication.Template = MWF.xApplication.Template || {};
+MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
 MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
@@ -322,7 +323,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
             if (this.options.closeAction) {
                 this.formTopCloseActionNode = new Element("div", {
                     "styles": this.css.formTopCloseActionNode,
-                    "title" : "关闭"
+                    "title" : MWF.xApplication.Template.LP.MPopupForm.close
                 }).inject(this.formTopNode);
                 this.formTopCloseActionNode.addEvent("click", function ( ev ) {
                     this.close();
@@ -333,7 +334,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
             if( this.options.maxAction ){
                 this.formTopMaxActionNode = new Element("div", {
                     "styles": this.css.formTopMaxActionNode,
-                    "title" : "最大化"
+                    "title" : MWF.xApplication.Template.LP.MPopupForm.max
                 }).inject(this.formTopNode);
                 this.formTopMaxActionNode.addEvent("click", function () {
                     this.maxSize()
@@ -341,7 +342,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
 
                 this.formTopRestoreActionNode = new Element("div", {
                     "styles": this.css.formTopRestoreActionNode,
-                    "title" : "还原"
+                    "title": MWF.xApplication.Template.LP.MPopupForm.restore
                 }).inject(this.formTopNode);
                 this.formTopRestoreActionNode.addEvent("click", function () {
                     this.restoreSize()

@@ -317,7 +317,7 @@ MWF.xApplication.Profile.Main = new Class({
                 "startTime" : null,
                 "endTime" : null,
                 "isWholeday" : false,
-                "title" : "新建外出授权",
+                "title" : this.lp.createEmpower,
                 "defaultCalendarId" : ""
             }, {
                 app: this,
@@ -451,7 +451,7 @@ MWF.xApplication.Profile.Main = new Class({
         if(!this[type+"NoDataDiv"]){
             this[type+"NoDataDiv"] = new Element("div.o2_profile_emPower_noData").adopt(
                 new Element("img",{src:"../x_component_Profile/$Main/newVersion/icon_wuweituo.png"}),
-                new Element("div",{text:"无待办"})
+                new Element("div",{text: this.lp.noTask })
             ).inject(content.getElement(".profile_common_tableDiv"));
         }
         if(content.getElements("tr").length==1){
@@ -512,7 +512,7 @@ MWF.xApplication.Profile.Main = new Class({
 
 
         if(type=="myEmPower"){
-            th.adopt(new Element("th",{width:"25%"}).adopt(new Element("div",{text:"操作"})));
+            th.adopt(new Element("th",{width:"25%"}).adopt(new Element("div",{text: this.lp.action })));
         }
         this.emPowerTable.adopt(th);
         data.forEach(function(item){
@@ -636,7 +636,7 @@ MWF.xApplication.Profile.Main = new Class({
             this[type+"NoDataDiv"] = new Element("div.o2_profile_emPower_noData").adopt(
                 new Element("img",{src:"../x_component_Profile/$Main/newVersion/icon_wuweituo.png"}),
                 new Element("div",{text:this.lp.empower.noData}),
-                type=="myEmPower"?new Element("div.o2_profile_emPower_Add.mainColor_color",{text:"新建委托"}).addEvent("click",function(){
+                type=="myEmPower"?new Element("div.o2_profile_emPower_Add.mainColor_color",{text: this.lp.createAuthorize }).addEvent("click",function(){
                     var popForm = new MWF.xApplication.Profile.emPowerPopupForm(null, {}, {
                         "style": "empower",
                         "width": "550",
@@ -652,7 +652,7 @@ MWF.xApplication.Profile.Main = new Class({
                         "startTime" : null,
                         "endTime" : null,
                         "isWholeday" : false,
-                        "title" : "新建外出授权",
+                        "title" : this.lp.createEmpower,
                         "defaultCalendarId" : ""
                     }, {
                         app: this,
