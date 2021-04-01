@@ -14,7 +14,7 @@ MWF.xApplication.ForumDocument.HotLinkForm = new Class({
         "hasTopIcon" : false,
         "hasTopContent" : true,
         "hasBottom": true,
-        "title": "设置热点",
+        "title": MWF.xApplication.Forum.LP.setHotPicture,
         "draggable": true,
         "closeAction": true,
         "toMain" : true,

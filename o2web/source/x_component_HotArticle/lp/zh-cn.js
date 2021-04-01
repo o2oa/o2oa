@@ -10,5 +10,14 @@ MWF.xApplication.HotArticle.LP = {
 	"ok" : "确定",
 	"edit" : "编辑",
 	"remove" : "删除",
-	"action" : "操作"
+	"action" : "操作",
+
+	"yesterday": "昨天",
+	"twoDaysAgo" : "前天",
+	"weekAgo" : "周前",
+	"dayAgo" : "天前",
+	"hourAgo" : "小时前",
+	"minuteAgo" : "分钟前",
+	"justNow" : "刚才",
+	"publishJustNow": "刚刚发表"
 };
