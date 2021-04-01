@@ -161,6 +161,7 @@ MWF.xApplication.ForumDocument.Vote = new Class({
 
     },
     createGroupVoted : function(data, idx){
+        var _self = this;
         var bgColor = this.getRandomColor();
         var maxWidth = "800";
         var sum = 0;
@@ -168,7 +169,7 @@ MWF.xApplication.ForumDocument.Vote = new Class({
         var contentUsePicture = false;
         data.voteOptions.each( function(opt){
             sum += parseInt( opt.chooseCount );
-            if( opt.optionContentType == this.lp.picture ){
+            if( opt.optionContentType == _self.lp.picture ){
                 contentUsePicture = true;
             }
         });
@@ -728,13 +729,13 @@ MWF.xApplication.ForumDocument.Vote = new Class({
 
         var returnStr = seconds + this.lp.second;
         if(minutes>0) {
-            returnStr = minutes + this.lp.mintue + returnStr;
+            returnStr = minutes + this.lp.minute + returnStr;
         }
         if(hours>0) {
             returnStr = hours + this.lp.hour + returnStr;
         }
         if(days>0) {
-            returnStr = days + thi.lp.day + returnStr;
+            returnStr = days + this.lp.day + returnStr;
         }
         return returnStr;
     },
