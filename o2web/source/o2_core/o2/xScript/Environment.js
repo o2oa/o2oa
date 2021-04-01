@@ -496,7 +496,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @return {Record[]} 流程记录(Record)对象.
          * @o2syntax
-         * var workLogList = this.workContext.getRecordList();
+         * var recordList = this.workContext.getRecordList();
          */
         "getRecordList": function(){return ev.recordList;},
         /**
@@ -523,7 +523,7 @@ MWF.xScript.Environment = function(ev){
          * @summary 重新设置流程实例标题。。
          * @method setTitle
          * @static
-         * @param {String} title - 路由字符串数组.
+         * @param {String} title - 标题字符串.
          * @o2syntax
          * this.workContext.setTitle(title);
          * @example

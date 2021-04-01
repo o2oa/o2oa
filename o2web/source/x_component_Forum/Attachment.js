@@ -24,7 +24,7 @@ MWF.xApplication.Forum.Attachment = new Class({
     loadAttachmentController: function () {
         var options = {
             "style": "cms",
-            "title": "附件区域",
+            "title": this.lp.attachmentArea,
             "size": this.options.size ,
             "resize": true,
             //"attachmentCount": this.json.attachmentCount || 0,
@@ -331,7 +331,7 @@ MWF.xApplication.Forum.Attachment = new Class({
         MWF.require("MWF.widget.AttachmentSelector", function() {
             var options = {
                 "style" : "cms",
-                "title": "选择附件",
+                "title": this.lp.selectAttachment,
                 "listStyle": "icon",
                 "selectType" : "all",
                 "size": "max",

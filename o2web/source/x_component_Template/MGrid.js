@@ -1,4 +1,5 @@
 MWF.xDesktop.requireApp("Template", "MDomItem", null, false);
+MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
 var MGrid = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
@@ -254,7 +255,7 @@ var MGrid = new Class({
         var styles = (this.options.thClass && this.css[this.options.thClass]) ? this.css[this.options.thClass] : {};
 
         if( this.options.hasSequence  ){
-            var th = new Element("th", { text : "序号" }).inject( tr );
+            var th = new Element("th", { text : MWF.xApplication.Template.LP.MGrid.sequence }).inject( tr );
             th.set( align );
             th.setStyles( styles );
         }
@@ -284,7 +285,7 @@ var MGrid = new Class({
         this.fireEvent("postCreateHead", [tr] );
     },
     createAddButton : function( container ){
-        var button = new Element("div", { title : "添加" }).inject( container );
+        var button = new Element("div", { title : MWF.xApplication.Template.LP.MGrid.add }).inject( container );
         if( this.options.lp.add )button.set("text",this.options.lp.add );
         if( this.css.actionAdd )button.setStyles( this.css.actionAdd );
         button.addEvent("click", function( e ){
@@ -327,7 +328,8 @@ var MGrid = new Class({
                 this._createTr( itemData, isNew, unid, sourceData )
             }else{
                 if( this.app && this.app.notice ){
-                    this.app.notice("最多只能添加"+this.options.maxTrCount+"项目","error");
+                    var text = MWF.xApplication.Template.LP.MGrid.addMaxLimitText.replace("{count}", this.options.maxTrCount);
+                    this.app.notice(text,"error");
                 }
             }
         }else{
@@ -445,7 +447,7 @@ var MGrid = new Class({
         }
     },
     createRemoveButton : function( trObj, container ){
-        var button = new Element("div", { title : "删除" }).inject( container );
+        var button = new Element("div", { title : MWF.xApplication.Template.LP.MGrid.delete }).inject( container );
         if( this.options.lp.remove )button.set("text",this.options.lp.remove );
         if( this.css.actionRemove )button.setStyles( this.css.actionRemove );
         button.addEvents( {
