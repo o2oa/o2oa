@@ -102,5 +102,12 @@ MWF.xApplication.Profile.LP = {
     "myEmPowerLog": "委托的待办",
     "receiveEmPowerLog": "收到的待办",
     "ok":"保存",
-    "cancel":"关闭"
+    "cancel":"关闭",
+    "pageText" : "第{n}页",
+    "search" : "搜索",
+    "cancel1" : "取消",
+    "createEmpower" : "新建外出授权",
+    "noTask" : "无待办",
+    "action" : "操作",
+    "createAuthorize" : "新建委托"
 };

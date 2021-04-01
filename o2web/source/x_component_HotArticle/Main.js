@@ -376,9 +376,9 @@ var getDateDiff = function (publishTime) {
     var hourC = diffValue / hour;
     var minC = diffValue / minute;
     if (yesterday.getFullYear() == dateTimeStamp.getFullYear() && yesterday.getMonth() == dateTimeStamp.getMonth() && yesterday.getDate() == dateTimeStamp.getDate()) {
-        result = "昨天 " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
+        result = MWF.xApplication.HotArticle.LP.yesterday + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
     } else if (beforYesterday.getFullYear() == dateTimeStamp.getFullYear() && beforYesterday.getMonth() == dateTimeStamp.getMonth() && beforYesterday.getDate() == dateTimeStamp.getDate()) {
-        result = "前天 " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
+        result = MWF.xApplication.HotArticle.LP.twoDaysAgo + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
     } else if (yearC > 1) {
         result = dateTimeStamp.getFullYear() + "-" + (dateTimeStamp.getMonth() + 1) + "-" + dateTimeStamp.getDate();
     } else if (monthC >= 1) {
@@ -386,15 +386,15 @@ var getDateDiff = function (publishTime) {
         // s.getFullYear()+"年";
         result = dateTimeStamp.getFullYear() + "-" + (dateTimeStamp.getMonth() + 1) + "-" + dateTimeStamp.getDate();
     } else if (weekC >= 1) {
-        result = parseInt(weekC) + "周前";
+        result = parseInt(weekC) + MWF.xApplication.HotArticle.LP.weekAgo;
     } else if (dayC >= 1) {
-        result = parseInt(dayC) + "天前";
+        result = parseInt(dayC) + MWF.xApplication.HotArticle.LP.dayAgo;
     } else if (hourC >= 1) {
-        result = parseInt(hourC) + "小时前";
+        result = parseInt(hourC) +  MWF.xApplication.HotArticle.LP.hourAgo;
     } else if (minC >= 1) {
-        result = parseInt(minC) + "分钟前";
+        result = parseInt(minC) +  MWF.xApplication.HotArticle.LP.minuteAgo;
     } else
-        result = "刚刚发表";
+        result = MWF.xApplication.HotArticle.LP.publishJustNow;
     return result;
 };
 
