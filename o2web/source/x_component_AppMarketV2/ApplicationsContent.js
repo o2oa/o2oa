@@ -10,7 +10,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent = new Class({
         this.viewPath = this.app.path+this.app.options.style+"/"+this.options.view;
         debugger;
         this.querydata = {};
-        this.currentcategory = {"name":"全部","count":0};
+        this.currentcategory = {"name": this.app.lp.all,"count":0};
         this.load();
     },
     load: function(){
@@ -116,7 +116,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         this.emptyLoadContent();
         this.actions.MarketAction.listPaging(this.page, this.pageSize, this.content.querydata,function(json){
             if (json.data && json.data.length){
-                this.content.currentcategory["name"] = this.content.querydata.category==""||!(this.content.querydata.category)?"全部":this.content.querydata.category;
+                this.content.currentcategory["name"] = this.content.querydata.category==""||!(this.content.querydata.category)? this.app.lp.all :this.content.querydata.category;
                 this.content.currentcategory["count"] = json.count;
                 this.showApplications(json.data);
             }
@@ -141,7 +141,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
     showCategorys:function(data){
         var categorysdiv = this.content.appCategory;
         categorysdiv.empty();
-        this.loadCertainCategory(categorysdiv,"全部")
+        this.loadCertainCategory(categorysdiv, this.app.lp.all );
         data.each(function(d,i){
             this.loadCertainCategory(categorysdiv,d)
         }.bind(this))
@@ -153,7 +153,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         var categorydiv = new Element("span",{"text":d,"class":"o2_appmarket_appcategory"}).inject(categorysdiv);
         categorydiv.store("data",d);
         if (_self.content.querydata["category"]){
-            if ((_self.content.querydata["category"]=="" && d=="全部")||(_self.content.querydata["category"]==d)){
+            if ((_self.content.querydata["category"]=="" && d==_self.app.lp.all )||(_self.content.querydata["category"]==d)){
                 categorydiv.removeClass("o2_appmarket_appcategory").addClass("mainColor_color").addClass("o2_appmarket_appcategory_current");
             }
         }
@@ -169,7 +169,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
                 this.getParent().getElements(".o2_appmarket_appcategory_current").removeClass("mainColor_color").removeClass("o2_appmarket_appcategory_current").addClass("o2_appmarket_appcategory");
                 this.removeClass("o2_appmarket_appcategory").addClass("mainColor_color").addClass("o2_appmarket_appcategory_current");
                 if (d){
-                    if (d=="全部"){
+                    if ( d== _self.app.lp.all ){
                         _self.content.querydata["category"]="";                        
                     }else{
                         _self.content.querydata["category"]=d;

@@ -2,7 +2,7 @@ MWF.xApplication.Template = MWF.xApplication.Template || {};
 MWF.xApplication.Template.Explorer = MWF.xApplication.Template.Explorer || {};
 
 MWF.require("MWF.widget.O2Identity", null, false);
-//MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
+MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
 
 String.implement({
 
@@ -1050,7 +1050,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         hasTruningBar : true,
         hasJumper : true,
         hasReturn : true,
-        returnText : "返回首页",
+        returnText : MWF.xApplication.Template.LP.explorer.returnText,
         hiddenWithDisable: true,
         text : {
             prePage : "",
@@ -1162,7 +1162,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
             }
 
             if( this.options.hasJumper ){
-                var pageJumper = this.pageJumper = new Element("input.pageJumper", {"styles" : this.css.pageJumper , "title" : "输入页码，按回车跳转"}).inject( node );
+                var pageJumper = this.pageJumper = new Element("input.pageJumper", {"styles" : this.css.pageJumper , "title" : MWF.xApplication.Template.LP.explorer.pageJumperText }).inject( node );
                 new Element( "div.pageText", {"styles" : this.css.pageText , "text" : "/" + pageSize }).inject( node );
                 pageJumper.addEvents( {
                     "focus" : function( ev ){ ev.target.setStyles( this.css.pageJumper_over ) }.bind(this),
@@ -1210,7 +1210,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         if( this.options.currentPage != pageSize && pageSize != 1 && pageSize != 0 ){
             this.nextPageNode = new Element("div.nextPageNode", {
                 "styles" : this.css.nextPageNode,
-                "text" : "下一页"
+                "text" : MWF.xApplication.Template.LP.explorer.prePage
             }).inject(container);
             this.nextPageNode.addEvents( {
                 "mouseover" : function( ev ){ ev.target.setStyles( this.css.nextPageNode_over ) }.bind(this),
@@ -1228,7 +1228,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         if( this.options.currentPage != 1 && pageSize != 1 && pageSize != 0 ){
             this.prevPageNode = new Element("div.prevPageNode", {
                 "styles" : this.css.prevPageNode,
-                "text" : "上一页"
+                "text" : MWF.xApplication.Template.LP.explorer.nextPage
             }).inject(container);
             this.prevPageNode.addEvents( {
                 "mouseover" : function( ev ){ ev.target.setStyles( this.css.prevPageNode_over ) }.bind(this),
