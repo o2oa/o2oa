@@ -69,12 +69,12 @@ MWF.xApplication.ForumSection.Main = new Class({
 	},
 	reloadAllParents : function(){
 		var aid = "Forum";
-		if (this.desktop.apps[aid]){
+		if (this.desktop.apps[aid] && this.desktop.apps[aid].reload){
 			this.desktop.apps[aid].reload();
 		}
 
 		aid = "ForumCategory"+this.sectionData.forumId;
-		if (this.desktop.apps[aid]){
+		if (this.desktop.apps[aid] && this.desktop.apps[aid].reload){
 			this.desktop.apps[aid].reload();
 		}
 	},
