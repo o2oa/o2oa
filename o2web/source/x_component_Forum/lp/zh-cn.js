@@ -71,6 +71,8 @@ MWF.xApplication.Forum.LP = {
 	"indexListStyleButton" : "选择首页样式",
 	"selectIndexType" : "选择首页样式",
 	"all" : "所有",
+	"all1" : "全部",
+	"disable" : "停用",
 	"typeColumn" : "每行列数",
 	"indexListStyleImage" : "图片矩形",
 	"forumIndexStyle" : "分区主页样式",
@@ -107,6 +109,15 @@ MWF.xApplication.Forum.LP = {
 		["#400000","#a11f12","#604200","#212100","#002100","#00201f","#002041","#00204f","#0000e0","#0000a1","#000061","#1f0062","#40005f","#620042","#620012","#0f0f0f"]
 	],
 	"selectColor" : "选择颜色",
+	"selectList" : "选择列表",
+	"effect": "效果",
+	"column" : "列",
+	"mainSection": "主版块",
+	"welcomeTitle" : "{user},您好！",
+	"seePersonCenter": "点击查看个人中心",
+	"closeNavi": "关闭导航",
+	"navi": "导航",
+	"naviLayout": "导航布局",
 
 	"sectionName" : "版块名称",
 	"mainSectionName" : "主版块名称",
@@ -190,6 +201,31 @@ MWF.xApplication.Forum.LP = {
 	"confirmPublishVoteDocumentContent" : "该帖子是投票帖，为了保证投票真实性，发布后不能再修改，确定要发表帖子？",
 	"voteSubject" : "投票主题",
 
+	"timeToEndText": "，距结束还有{time}",
+	"voteCompleteText": "，投票已经结束",
+	"votedPersonCountText": "，目前已有{count}人参与",
+	"noPersonVoteText": "，目前还没有人参与",
+	"privateVoteText": "此为不公开投票，只有发帖人能看到投票结果",
+	"publicVoteText": "(此为公开投票，其他人可以看到您的投票项目)",
+	"anonymousVoteText": "(此为匿名投票，他人无法查看您的投票项目)",
+	"submit" : "提交",
+	"youAreVoted": "您已经投过票，谢谢您的参与",
+	"picture": "图片",
+	"word": "文字",
+	"multiSelectText" : "多选（最多可选{n}项）：",
+	"singleSelectText" : "单选：",
+	"uploadPicture" : "上传图片",
+	"notSelectGroupNotice": "请对每组选择至少一项再提交",
+	"notSelectItemNotice": "请至少选择一项再提交",
+	"second": "秒",
+	"minute": "分",
+	"hour": "小时",
+	"seeVotedPerson": "查看投票参与人",
+	"group1": "组别：",
+	"option1": "选项：",
+
+	"attachmentArea" : "附件区域",
+	"selectAttachment" : "选择附件",
 	"attachment" : "附件",
 	"bindObject" : "对象",
 	"replyAndReadCount" : "回复/查看",
@@ -287,6 +323,18 @@ MWF.xApplication.Forum.LP = {
 	"question" : "问题",
 
 	"gotoTop" : "顶部",
-	"forumConfig" : "论坛设置"
+	"forumConfig" : "论坛设置",
+
+	"yesterday": "昨天",
+	"twoDaysAgo" : "前天",
+	"weekAgo" : "周前",
+	"dayAgo" : "天前",
+	"hourAgo" : "小时前",
+	"minuteAgo" : "分钟前",
+	"justNow" : "刚才",
+	"publishJustNow": "刚刚发表",
+
+	"selectTargetSection" : "选择移动到的版块",
+	"moveSuccess": "帖子已经移动到{section}"
 
 };

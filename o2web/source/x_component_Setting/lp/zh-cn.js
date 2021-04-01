@@ -309,7 +309,11 @@ MWF.xApplication.Setting.LP = {
         "removeComponent": "您确定要卸载组件：{name} 吗？",
         "removeComponentOk": "组件已卸载",
 
-        "modify": "修改组件信息"
+        "modify": "修改组件信息",
+
+        "moduleDeployed" : "已部署组件",
+        "inputAppNameNotice" : "请输入应用名称和应用标题",
+        "uploadZipFileNotice": "请上传文件的ZIP包"
     },
 
 
@@ -394,6 +398,6 @@ MWF.xApplication.Setting.LP = {
     "registerSuccessTitle": "您的公司已经在O2中心注册成功",
 
     "mobileServerSaveInfor": "数据已提交",
-    "mobileServerSaveErrorInfor": "数据已提交, 旦有以下错误：{error}"
+    "mobileServerSaveErrorInfor": "数据已提交, 旦有以下错误：{error}",
 
 };

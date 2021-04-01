@@ -1095,13 +1095,13 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		MWF.xDesktop.requireApp("Forum", "SectionSelector", null, false);
 		var selector = new MWF.xApplication.Forum.SectionSelector(this.content, {
 			"count": 1,
-			"title": "选择移动到的版块",
+			"title": this.lp.selectTargetSection,
 			"values": [],
 			"onComplete": function( array ){
 				if( typeOf( array ) == "array" ){
 					var sectionId = array[0].data.id;
 					this.restActions.changeSection( {"subjectIds":[ this.data.id ],"sectionId" : sectionId }, function(){
-						this.notice( "帖子已经移动到"+array[0].data.name );
+						this.notice( this.lp.moveSuccess.replace("{section}", array[0].data.name ) );
 						this.reload();
 					}.bind(this))
 				}

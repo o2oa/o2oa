@@ -20,5 +20,15 @@ MWF.xApplication.AppMarketV2.Application.LP = {
     "confirmupdateContent":"您确认更新本应用么？如果安装应用后改过本应用，本次更新后会被替换",
     "bbsname":"藕粉社区",
     "bbslink":"http://forum.o2oa.net/x_desktop/forum.html?app=ForumSection&id=b1895d5a-7ef2-4d74-b2d1-a7ae10daaa28",
-    "bbstip":"如果您有什么疑问或想法，请来我们的藕粉社区交流吧！"
+    "bbstip":"如果您有什么疑问或想法，请来我们的藕粉社区交流吧！",
+
+    "commentCountText":"共{n}个评分",
+    "category" : "分类",
+    "screenshot":"屏幕截图",
+    "commented" : "您已评论过该应用！",
+    "notInstall": "由于您还未安装本应用，因此无法对其进行评分及评论！",
+    "iNeedComment": "我要评分及评论",
+    "score": "打分：",
+    "comment": "评论：",
+    "commentNotice" : "请评分，评论后提交"
 };
