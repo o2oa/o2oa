@@ -3428,7 +3428,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      */
 
     /**
-     * 当查询视图被嵌入到门户页面、流程表单或内容管理表单的时候，可以通过这个方法来获取页面或表单的上下文。
+     * 当查询视图被嵌入到门户页面、流程表单或内容管理表单的时候，可以在查询视图写脚本的地方通过这个方法来获取页面或表单的上下文。
      * @method getParentEnvironment
      * @memberOf module:queryStatement
      * @static
@@ -3571,7 +3571,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      */
     this.page = this.form = this.queryView = this.queryStatement = {
         /**
-         * 当视图被嵌入到门户页面、流程表单或内容管理表单的时候，可以通过这个方法来获取页面或表单的上下文。
+         * 当视图被嵌入到门户页面、流程表单或内容管理表单的时候，可以在视图可以写脚本的地方中通过这个方法来获取页面或表单的上下文。
          * @method getParentEnvironment
          * @static
          * @return {MWF.xScript.Environment|MWF.xScript.CMSEnvironment} 页面或表单的上下文.
