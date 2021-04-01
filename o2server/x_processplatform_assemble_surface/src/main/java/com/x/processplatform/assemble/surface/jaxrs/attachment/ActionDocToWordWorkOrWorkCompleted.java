@@ -26,6 +26,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.DocumentTools;
 import com.x.processplatform.assemble.surface.Business;
@@ -40,6 +42,8 @@ import org.apache.tika.Tika;
 
 class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ActionDocToWordWorkOrWorkCompleted.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted, JsonElement jsonElement)
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -49,6 +53,7 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 				String decodedContent = URLDecoder.decode(wi.getContent(), StandardCharsets.UTF_8.name());
 				wi.setContent(decodedContent);
 			} catch (Exception e) {
+				logger.warn("docContent URLDecoder error:"+e.getMessage());
 			}
 		}
 		Work work = null;
