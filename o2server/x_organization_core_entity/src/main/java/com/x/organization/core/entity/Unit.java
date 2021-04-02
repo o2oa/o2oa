@@ -165,6 +165,13 @@ public class Unit extends SliceJpaObject {
 	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + levelName_FIELDNAME)
 	private String levelName;
 
+	public static final String levelOrderNumber_FIELDNAME = "levelOrderNumber";
+	@FieldDescribe("层级排序号,使用" + PersistenceProperties.Unit.levelNameSplit
+			+ "进行分割.将逐级unit中的orderNumber的Integer值扩充到在Organization配置中指定位数的文本值,前填充0")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + levelOrderNumber_FIELDNAME)
+	private String levelOrderNumber;
+
 	public static final String superior_FIELDNAME = "superior";
 	@FieldDescribe("上级组织.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + superior_FIELDNAME)
@@ -188,18 +195,6 @@ public class Unit extends SliceJpaObject {
 	@ElementIndex(name = TABLE + controllerList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Person.class))
 	private List<String> controllerList;
-
-//	public static final String inheritedControllerList_FIELDNAME = "inheritedControllerList";
-//	@FieldDescribe("继承自上级组织的管理人员.")
-//	@PersistentCollection(fetch = FetchType.EAGER)
-//	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-//	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-//			+ inheritedControllerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-//					+ inheritedControllerList_FIELDNAME + JoinIndexNameSuffix))
-//	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + inheritedControllerList_FIELDNAME)
-//	@ElementIndex(name = TABLE + IndexNameMiddle + inheritedControllerList_FIELDNAME + ElementIndexNameSuffix)
-//	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Person.class))
-//	private List<String> inheritedControllerList;
 
 	public static final String dingdingId_FIELDNAME = "dingdingId";
 	@FieldDescribe("钉钉部门ID.")
@@ -351,14 +346,6 @@ public class Unit extends SliceJpaObject {
 		this.distinguishedName = distinguishedName;
 	}
 
-//	public List<String> getInheritedControllerList() {
-//		return inheritedControllerList;
-//	}
-//
-//	public void setInheritedControllerList(List<String> inheritedControllerList) {
-//		this.inheritedControllerList = inheritedControllerList;
-//	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -437,5 +424,13 @@ public class Unit extends SliceJpaObject {
 
 	public void setWeLinkHash(String weLinkHash) {
 		this.weLinkHash = weLinkHash;
+	}
+
+	public String getLevelOrderNumber() {
+		return levelOrderNumber;
+	}
+
+	public void setLevelOrderNumber(String levelOrderNumber) {
+		this.levelOrderNumber = levelOrderNumber;
 	}
 }
