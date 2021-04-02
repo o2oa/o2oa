@@ -1042,6 +1042,9 @@ public class Business {
 
 	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted,
 			PromptException entityException) throws Exception {
+		if(effectivePerson.isManager()){
+			return true;
+		}
 		Work work = emc.fetch(workOrWorkCompleted, Work.class, ListTools.toList(Work.job_FIELDNAME,
 				Work.application_FIELDNAME, Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME));
 		WorkCompleted workCompleted = null;
@@ -1107,6 +1110,9 @@ public class Business {
 	}
 
 	public boolean readableWithJob(EffectivePerson effectivePerson, String job) throws Exception {
+		if(effectivePerson.isManager()){
+			return true;
+		}
 		String creatorPerson = null;
 		String applicationId = null;
 		String processId = null;
