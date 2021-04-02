@@ -67,6 +67,19 @@ MWF.xApplication.Attendance.LP = {
 	"scheduleTable" : "排班时间表",
 	"signTime" : "打卡时间",
 	"appeal" : "申诉",
+	"export" : "导出",
+	"name1": "名称",
+	"alias" : "别名",
+	"range": "范围",
+	"meter": "米",
+	"description" : "备注",
+	"save": "保存",
+	"enableMove": "允许移动",
+	"workPlaceEmptyNotice": "工作场所不能为空",
+	"BaiduDeveloperCertification": "百度开发者认证",
+	"registerBiaduNotice": "工作场所设置使用了百度地图开放平台的服务，你可以注册百度开发者认证来提高地图的并发量。认证完成后，请将密钥填至下方的输入框。",
+	"openRegisterUrl": "点击此打开认证通道",
+	"secretKey": "秘钥",
 
 	"index" : {
 		"attendanceCalendar":"考勤日历",
@@ -143,5 +156,8 @@ MWF.xApplication.Attendance.LP = {
 	"nextUser": "处理人：",
 	"deal": "处理",
 	"processStarted": "文件已启动",
-	"processStartedMessage": "您启动了一个新的工作："
+	"processStartedMessage": "您启动了一个新的工作：",
+	"AppealExplore" : {
+		"auditStatus" : "审批状态"
+	}
 };
