@@ -77,6 +77,7 @@ public class Config {
 	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
 	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
+	public static final String PATH_CONFIG_ORGANIZATION = "config/organization.json";
 	public static final String PATH_CONFIG_CACHE = "config/cache.json";
 	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
 	public static final String PATH_CONFIG_EMAIL = "config/email.json";
@@ -1193,17 +1194,30 @@ public class Config {
 	public Map<String, JsonObject> customConfig = new HashMap<>();
 
 	public static synchronized JsonObject customConfig(String configName) throws Exception {
-		if(StringUtils.isBlank(configName)){
+		if (StringUtils.isBlank(configName)) {
 			return null;
-		}else{
-			if(instance().customConfig.get(configName)==null){
-				JsonObject obj = BaseTools.readConfigObject(DIR_CONFIG+"/"+configName+".json", JsonObject.class);
-				if(obj!=null){
+		} else {
+			if (instance().customConfig.get(configName) == null) {
+				JsonObject obj = BaseTools.readConfigObject(DIR_CONFIG + "/" + configName + ".json", JsonObject.class);
+				if (obj != null) {
 					instance().customConfig.put(configName, obj);
 				}
 			}
 			return instance().customConfig.get(configName);
 		}
+	}
+
+	private Organization organization;
+
+	public static synchronized Organization organization() throws Exception {
+		if (null == instance().organization) {
+			Organization obj = BaseTools.readConfigObject(PATH_CONFIG_ORGANIZATION, Organization.class);
+			if (null == obj) {
+				obj = Organization.defaultInstance();
+			}
+			instance().organization = obj;
+		}
+		return instance().organization;
 	}
 
 	public static Object resource(String name) throws Exception {
