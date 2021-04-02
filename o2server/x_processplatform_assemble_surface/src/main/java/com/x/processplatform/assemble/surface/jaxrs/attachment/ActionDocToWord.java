@@ -3,6 +3,9 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +38,13 @@ class ActionDocToWord extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		if(StringUtils.isNotBlank(wi.getContent())){
+			try {
+				String decodedContent = URLDecoder.decode(wi.getContent(), StandardCharsets.UTF_8.name());
+				wi.setContent(decodedContent);
+			} catch (Exception e) {
+			}
+		}
 		Work work = null;
 		Wo wo = new Wo();
 
