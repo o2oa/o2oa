@@ -1,15 +1,13 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import com.google.gson.JsonElement;
@@ -69,8 +67,14 @@ class ActionUploadWorkInfo extends BaseAction {
 				title = work.getTitle();
 			}
 			String workHtml = wi.getWorkHtml();
-			if (workHtml != null && workHtml.toLowerCase().indexOf("<html") == -1) {
-				workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
+			if(StringUtils.isNotBlank(workHtml)){
+				try {
+					workHtml = URLDecoder.decode(workHtml, StandardCharsets.UTF_8.name());
+				} catch (Exception e) {
+				}
+				if (workHtml.toLowerCase().indexOf("<html") == -1) {
+					workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
+				}
 			}
 			String id = saveHtml(workId, flag, workHtml, effectivePerson.getDistinguishedName(), title,
 					wi.getPageWidth(), business);
