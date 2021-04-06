@@ -264,32 +264,32 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
         html.push('<br/>');
         html.push('<table border="0" cellpadding="1" cellspacing="1" id="markerTable" docId="'+ (json.id || "") +'" style="font-size:12px;">');
         html.push('  <tr>');
-        html.push('      <td style="width:50px" align="left" class="common">名称：</td>');
+        html.push('      <td style="width:50px" align="left" class="common">'+ this.app.lp.name1 +'：</td>');
         html.push('      <td style="width: 300px"><input type="text"  size="40" value="'+(json.placeName || "") +'" id="placeName" ></td>');
         html.push('	     <td style="width: 10px" valign="top"><span style="color:#ff0000">*</span></td>');
         html.push('  </tr>');
         html.push('  <tr>');
-        html.push('      <td  align="left" class="common">别名：</td>');
+        html.push('      <td  align="left" class="common">'+this.app.lp.alias+'：</td>');
         html.push('      <td><input type="text" maxlength="300px" size="40"  value="'+(json.placeAlias || "") +'" id="placeAlias" ></td>');
         html.push('	     <td valign="top"></td>');
         html.push('  </tr>');
         html.push('  <tr>');
-        html.push('      <td  align="left" class="common">范围：</td>');
+        html.push('      <td  align="left" class="common">'+this.app.lp.range+'：</td>');
         html.push('      <td><input type="text" maxlength="300px" size="40"  value="'+(json.errorRange || "") +'" id="errorRange" ></td>');
-        html.push('	     <td valign="top">米</td>');
+        html.push('	     <td valign="top">'+this.app.lp.meter+'</td>');
         html.push('  </tr>');
         html.push('  <tr>');
-        html.push('      <td align="left" class="common">备注：</td>');
+        html.push('      <td align="left" class="common">'+this.app.lp.description+'：</td>');
         html.push('      <td><textarea rows="4" cols="31"  id="description">'+ (json.description || "") +'</textarea></td>');
         html.push('	     <td valign="top"></td>');
         html.push('  </tr>');
         html.push('  <tr>');
         html.push('	     <td  align="center" colspan="3">');
-        html.push('          <input type="button" name="btnOK"  id="submitPlace" value="保存">&nbsp;&nbsp;');
+        html.push('          <input type="button" name="btnOK"  id="submitPlace" value="'+this.app.lp.save+'">&nbsp;&nbsp;');
         if( json.id ){
-            html.push('		     <input type="button" name="btnMove" id="enableMovePlace" value="允许移动">&nbsp;&nbsp;');
+            html.push('		     <input type="button" name="btnMove" id="enableMovePlace" value="'+this.app.lp.enableMove+'">&nbsp;&nbsp;');
         }
-        html.push('		     <input type="button" name="btnClear" id="cancelPlace" value="删除">');
+        html.push('		     <input type="button" name="btnClear" id="cancelPlace" value="'+this.app.lp.delete+'">');
         html.push('	     </td>');
         html.push('  </tr>');
         html.push('</table>');
@@ -406,7 +406,7 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
         //var id = table.get("docId");
         var placeName = table.getElements("[id='placeName']")[0].get("value");
         if( placeName.trim() == "" ){
-            this.app.notice( "工作场所不能为空", "error" );
+            this.app.notice( this.app.lp.workPlaceEmptyNotice, "error" );
             return false;
         }
         var placeAlias = table.getElements("[id='placeAlias']")[0].get("value");
@@ -450,13 +450,14 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
 MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
     Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
     _createTableContent: function(){
+        var lp = MWF.xApplication.Attendance.LP;
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>百度开发者认证</td></tr>" +
+            "<tr><td colspan='2' styles='formTableHead'>"+lp.BaiduDeveloperCertification+"</td></tr>" +
             "<tr>" +
-            "    <td styles='formTableValue' colspan='2'>工作场所设置使用了百度地图开放平台的服务，你可以注册百度开发者认证来提高地图的并发量。认证完成后，请将密钥填至下方的输入框。</td>"+
+            "    <td styles='formTableValue' colspan='2'>"+lp.registerBiaduNotice+"</td>"+
             "</tr>" +
             "<tr>" +
-            "    <td styles='formTableValue' colspan='2'><a href='http://lbsyun.baidu.com/apiconsole/auth' target='_blank'>点击此打开认证通道</a></td>"+
+            "    <td styles='formTableValue' colspan='2'><a href='http://lbsyun.baidu.com/apiconsole/auth' target='_blank'>"+lp.openRegisterUrl+"</a></td>"+
             "</tr>" +
             "<tr>" +
             "    <td styles='formTableTitle' lable='ak'></td>"+
@@ -472,7 +473,7 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
                 this.form = new MForm( this.formTableArea, {ak : json || "" }, {
                     isEdited : true,
                     itemTemplate : {
-                        ak : {  "text" : "密钥" }
+                        ak : {  "text" : lp.secretKey }
                     }
                 }, this.app );
                 this.form.load();
