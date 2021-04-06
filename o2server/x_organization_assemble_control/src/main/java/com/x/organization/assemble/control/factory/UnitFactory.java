@@ -1,6 +1,11 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -10,18 +15,20 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.config.Config;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.NumberTools;
 import com.x.organization.assemble.control.AbstractFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;
-import com.x.base.core.project.cache.Cache.CacheCategory;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 
 public class UnitFactory extends AbstractFactory {
 
@@ -113,20 +120,19 @@ public class UnitFactory extends AbstractFactory {
 	}
 
 	public <T extends Unit> List<T> sort(List<T> list) throws Exception {
-		if(Config.person().getPersonUnitOrderByAsc()) {
-			List<T> os = list.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo))
+		if (BooleanUtils.isTrue(Config.person().getPersonUnitOrderByAsc())) {
+			return list.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo))
 					.thenComparing(Comparator.comparing(Unit::getOrderNumber, Comparator.nullsLast(Integer::compareTo)))
 					.thenComparing(
 							Comparator.comparing(Unit::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
 					.collect(Collectors.toList());
-			return os;
-		}else{
-			List<T> os = list.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo))
-					.thenComparing(Comparator.comparing(Unit::getOrderNumber, Comparator.nullsLast(Integer::compareTo)).reversed())
+		} else {
+			return list.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo))
+					.thenComparing(Comparator.comparing(Unit::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
+							.reversed())
 					.thenComparing(
 							Comparator.comparing(Unit::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
 					.collect(Collectors.toList());
-			return os;
 		}
 
 	}
@@ -213,19 +219,21 @@ public class UnitFactory extends AbstractFactory {
 		os.addAll(this.listSubNestedObject(unit));
 		for (Unit o : os) {
 			List<Unit> list = this.listSupNestedObject(o);
-			/** 级别从1开始 */
+			// 级别从1开始
 			o.setLevel(list.size() + 1);
-			List<String> names = ListTools.extractProperty(list, "name", String.class, false, false);
-			// Collections.reverse(names);
+			List<String> names = ListTools.extractProperty(list, Unit.name_FIELDNAME, String.class, false, false);
+			List<Integer> levelOrderNumbers = ListTools.extractProperty(list, Unit.orderNumber_FIELDNAME, Integer.class,
+					false, false);
 			names.add(o.getName());
+			levelOrderNumbers.add(o.getOrderNumber());
 			o.setLevelName(StringUtils.join(names, PersistenceProperties.Unit.levelNameSplit));
-//			List<String> inheritControllerList = new ArrayList<>();
-//			for (Unit u : list) {
-//				if (ListTools.isNotEmpty(u.getControllerList())) {
-//					inheritControllerList.addAll(u.getControllerList());
-//				}
-//			}
-//			o.setInheritedControllerList(ListTools.trim(inheritControllerList, true, true));
+			List<String> levelOrderNumberStrings = new ArrayList<>();
+			final String format = "%0" + Config.organization().getUnitLevelOrderNumberDigits() + "d";
+			for (Integer i : levelOrderNumbers) {
+				// 不支持<0排序
+				levelOrderNumberStrings.add(String.format(format, (NumberTools.nullOrLessThan(i, 0) ? 0 : i)));
+			}
+			o.setLevelOrderNumber(StringUtils.join(levelOrderNumberStrings, PersistenceProperties.Unit.levelNameSplit));
 		}
 	}
 
@@ -252,7 +260,7 @@ public class UnitFactory extends AbstractFactory {
 
 	public List<String> listSubDirect(String id) throws Exception {
 		if (StringUtils.isEmpty(id)) {
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 		EntityManager em = this.entityManagerContainer().get(Unit.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -285,7 +293,7 @@ public class UnitFactory extends AbstractFactory {
 
 	public List<Unit> listSubDirectObject(Unit unit) throws Exception {
 		if (null == unit) {
-			return new ArrayList<Unit>();
+			return new ArrayList<>();
 		}
 		EntityManager em = this.entityManagerContainer().get(Unit.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

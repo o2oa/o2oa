@@ -44,7 +44,7 @@ class ActionEdit extends BaseAction {
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Unit unit = business.unit().pick(flag);
-			Unit oldUnit = unit;
+			//Unit oldUnit = unit;
 			boolean checkFlag = false;
 
 			if (null == unit) {
@@ -78,11 +78,13 @@ class ActionEdit extends BaseAction {
 			if (this.duplicateName(business, unit)) {
 				throw new ExceptionDuplicateName(unit.getName());
 			}
-			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织的组织级别 */
-			checkFlag = this.checkUnitTypeName(oldUnit, unit);
-			if (checkFlag) {
-				business.unit().adjustInherit(unit);
-			}
+//			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织的组织级别 */
+//			checkFlag = this.checkUnitTypeName(oldUnit, unit);
+//			if (checkFlag) {
+//				business.unit().adjustInherit(unit);
+//			}
+			// 现在由于可能修改了上级组织排序,所以都需要重新计算.
+			business.unit().adjustInherit(unit);
 			emc.check(unit, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Unit.class);
