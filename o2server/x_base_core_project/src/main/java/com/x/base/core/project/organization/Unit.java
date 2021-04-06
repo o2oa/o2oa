@@ -7,6 +7,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class Unit extends GsonPropertyObject {
 
+	private static final long serialVersionUID = 5213623128307370812L;
+	
 	@FieldDescribe("组织名称")
 	private String name;
 	@FieldDescribe("唯一标识")
@@ -27,6 +29,8 @@ public class Unit extends GsonPropertyObject {
 	private String superior;
 	@FieldDescribe("排序号")
 	private Integer orderNumber;
+	@FieldDescribe("层级排序号")
+	private String levelOrderNumber;
 	@FieldDescribe("企业微信Id")
 	private String qiyeweixinId;
 	@FieldDescribe("钉钉Id")
@@ -146,6 +150,14 @@ public class Unit extends GsonPropertyObject {
 
 	public void setZhengwuDingdingId(String zhengwuDingdingId) {
 		this.zhengwuDingdingId = zhengwuDingdingId;
+	}
+
+	public String getLevelOrderNumber() {
+		return levelOrderNumber;
+	}
+
+	public void setLevelOrderNumber(String levelOrderNumber) {
+		this.levelOrderNumber = levelOrderNumber;
 	}
 
 }
