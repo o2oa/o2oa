@@ -1341,13 +1341,13 @@ if (!window.Promise){
     };
 
     var _cacheUrls = (Browser.name == "ie") ? [
-        /jaxrs\/form\/workorworkcompleted\/.+/ig,
-        /jaxrs\/form\/.+/ig,
-        /jaxrs\/script\/.+\/app\/.+\/imported/ig,
-        /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
-        /jaxrs\/script\/.+\/application\/.+\/imported/ig,
-        /jaxrs\/page\/.+\/portal\/.+/ig,
-        /jaxrs\/custom\/.+/ig
+        // /jaxrs\/form\/workorworkcompleted\/.+/ig,
+        // /jaxrs\/form\/.+/ig,
+        // /jaxrs\/script\/.+\/app\/.+\/imported/ig,
+        // /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
+        // /jaxrs\/script\/.+\/application\/.+\/imported/ig,
+        // /jaxrs\/page\/.+\/portal\/.+/ig,
+        // /jaxrs\/custom\/.+/ig
     ]:[
         /jaxrs\/form\/workorworkcompleted\/.+/ig,
         /jaxrs\/form\/.+/ig,
