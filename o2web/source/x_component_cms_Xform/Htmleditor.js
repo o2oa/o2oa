@@ -61,6 +61,8 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
     // },
     loadCkeditor: function(config){
         _self = this;
+        // o2.load("../o2_lib/htmleditor/ckeditor4130/ckeditor.js", function(){
+
         COMMON.AjaxModule.loadDom("ckeditor", function(){
             CKEDITOR.disableAutoInline = true;
             var editorDiv = new Element("div").inject(this.node);
