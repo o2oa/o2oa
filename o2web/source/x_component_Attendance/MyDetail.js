@@ -38,7 +38,7 @@ MWF.xApplication.Attendance.MyDetail = new Class({
             this.tabs = new MWF.widget.Tab(this.tabNode, {"style": "attendance"});
             this.tabs.load();
 
-            this.detailPage = this.tabs.addTab(this.detailArea, "我的出勤明细", false);
+            this.detailPage = this.tabs.addTab(this.detailArea, this.app.lp.myDetail, false);
             this.detailPage.contentNodeArea.set("class","detailPage");
             this.detailPage.addEvent("show",function(){
                 if( !this.detailExplorer ){
@@ -57,7 +57,7 @@ MWF.xApplication.Attendance.MyDetail = new Class({
             //}.bind(this))
 
 
-            this.detailStaticPage = this.tabs.addTab(this.detailStaticArea, "我的出勤率统计", false);
+            this.detailStaticPage = this.tabs.addTab(this.detailStaticArea, this.app.lp.myDetailStatic, false);
             this.detailStaticPage.contentNodeArea.set("class","detailStaticPage");
             this.detailStaticPage.addEvent("show",function(){
                 if( !this.detailStaticExplorer ){
@@ -147,6 +147,7 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
         }
     },
     loadFilter: function(){
+        var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
             "styles" : this.css.fileterNode
         }).inject(this.node);
@@ -175,7 +176,7 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
                 isEdited : true,
                 itemTemplate : {
                     cycleYear : {
-                        text : "年度",
+                        text : lp.annuaal,
                         "type" : "select",
                         "selectValue" : function(){
                             var years = [];
@@ -193,7 +194,7 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
                         }
                     },
                     cycleMonth : {
-                        text : "月份",
+                        text : lp.months,
                         "type" : "select",
                         "defaultValue" : function(){
                             var month = (new Date().getMonth() + 1 ).toString();
@@ -207,7 +208,7 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
                             }.bind(this)
                         }
                     },
-                    date : { text : "日期",  "type" : "select", "selectValue" : function(){
+                    date : { text : lp.date,  "type" : "select", "selectValue" : function(){
                             var year =  this.preMonthDate.getFullYear() ;
                             var month =  this.preMonthDate.getMonth() ;
                             var date = new Date(year, month, 1);
@@ -222,10 +223,10 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
                             return days;
                         }.bind(this)
                     },
-                    isAbsent : { text: "缺勤",  "type" : "select", "selectValue" : ["","true","false"], "selectText" : ["","缺勤","未缺勤"] },
-                    isLate : { text: "迟到",  "type" : "select", "selectValue" : ["","true","false"], "selectText" : ["","迟到","未迟到"] },
-                    isLackOfTime : { text: "工时不足", "type" : "select", "selectValue" : ["","true","false"], "selectText" : ["","是","否"] },
-                    action : { "value" : "查询", type : "button", className : "filterButton", event : {
+                    isAbsent : { text: lp.absent,  "type" : "select", "selectValue" : ["","true","false"], "selectText" : lp.absendSelectText },
+                    isLate : { text: lp.late,  "type" : "select", "selectValue" : ["","true","false"], "selectText" : lp.lateSelectText },
+                    isLackOfTime : { text: lp.lackOfTime, "type" : "select", "selectValue" : ["","true","false"], "selectText" : lp.truefalseSelectText },
+                    action : { "value" : lp.query, type : "button", className : "filterButton", event : {
                             click : function(){
                                 var result = this.form.getResult(false,null,false,true,false);
 
@@ -522,7 +523,7 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
     },
     createMonthSelectTd : function( tr ){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "月份"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : MWF.xApplication.Attendance.LP.months  }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
         this.cycleMonth = new MDomItem( td, {
             "name" : "cycleMonth",
@@ -537,7 +538,7 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
     createActionTd : function( tr ){
         var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
         var input = new Element("button",{
-            "text" : "查询",
+            "text" : MWF.xApplication.Attendance.LP.query,
             "styles" : this.css.filterButton
         }).inject(td);
         input.addEvent("click", function(){
@@ -905,6 +906,7 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
         this.addEvent("resize", this.setCreateNodeSizeFun);
     },
     createNode: function(){
+        var appLp = MWF.xApplication.Attendance.LP;
         var _self = this;
 
         this.createNode = new Element("div", {
@@ -937,41 +939,41 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
 
         var d = this.data;
         var status = [];
-        if(d.isGetSelfHolidays && d.selfHolidayDayTime == "全天" ) {
-            status.push('请假或外出报备')
-        }else if( d.isAbnormalDuty && d.abnormalDutyDayTime == "全天" ){
-            status.push('异常打卡')
+        if(d.isGetSelfHolidays && ( d.selfHolidayDayTime == appLp.wholeDay || d.selfHolidayDayTime == "全天")) {
+            status.push( appLp.levelAsked )
+        }else if( d.isAbnormalDuty && (d.abnormalDutyDayTime == appLp.wholeDay || d.abnormalDutyDayTime == "全天")){
+            status.push( appLp.abNormalDuty )
         }else if(d.isLackOfTime  ) {
-            status.push('工时不足')
+            status.push( appLp.lackOfTime )
         }else{
-            if( d.isGetSelfHolidays && d.selfHolidayDayTime == "上午" ){
-                status.push("请假或外出报备")
+            if( d.isGetSelfHolidays && ( d.selfHolidayDayTime == appLp.am || d.selfHolidayDayTime == "上午" ) ){
+                status.push( appLp.levelAsked )
             }else if(d.isLate){
-                status.push('迟到')
-            }else if(d.isAbsent && (d.absentDayTime == "上午" || d.absentDayTime == "全天" ) ){
-                status.push('缺勤')
-            }else if( d.isAbnormalDuty && (d.abnormalDutyDayTime == "全天" || d.abnormalDutyDayTime == "上午")){
-                status.push('异常打卡')
+                status.push( appLp.late )
+            }else if(d.isAbsent && ["上午","全天",appLp.am, appLp.wholeDay].contains(d.absentDayTime) ){
+                status.push( appLp.absent )
+            }else if( d.isAbnormalDuty && ["上午","全天",appLp.am, appLp.wholeDay].contains(d.abnormalDutyDayTime)){
+                status.push( appLp.abNormalDuty )
             }
-            if( d.isGetSelfHolidays && d.selfHolidayDayTime == "下午" ){
-                status.push("请假或外出报备");
+            if( d.isGetSelfHolidays && ( d.selfHolidayDayTime == "下午" || d.selfHolidayDayTime == appLp.pm ) ){
+                status.push( appLp.levelAsked );
                 //}else if(d.isLeaveEarlier){
                 //    status.push( '早退')
-            }else if(d.isAbsent && d.absentDayTime == "下午" ){
-                status.push( '缺勤')
-            }else if(d.isAbnormalDuty && d.abnormalDutyDayTime == "下午" ){
-                status.push('异常打卡')
+            }else if(d.isAbsent && ( d.absentDayTime == "下午" || d.absentDayTime == appLp.pm ) ){
+                status.push( appLp.abNormalDuty)
+            }else if(d.isAbnormalDuty && ( d.abnormalDutyDayTime == "下午" || d.abnormalDutyDayTime == appLp.pm ) ){
+                status.push( appLp.abNormalDuty )
             }
         }
         this.data.statusShow = status.unique().join();
 
-        var appealStatus = "发起";
+        var appealStatus = appLp.draft;
         if (d.status == 0 ) {
-            appealStatus = "待处理"
+            appealStatus = appLp.todo
         } else if (d.status == 1) {
-            appealStatus = "审批通过"
+            appealStatus = appLp.approve
         } else if (d.status == -1) {
-            appealStatus = "审批未通过"
+            appealStatus = appLp.deny
         }
         //if (d.appealStatus == 1) {
         //    appealStatus = "申诉中"
@@ -986,8 +988,8 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
         var identityList = this.getIdentity();
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='4' styles='formTableHead'>申诉申请单</td></tr>" +
-            "<tr><td styles='formTableTitle'>员工姓名</td>"+
+            "<tr><td colspan='4' styles='formTableHead'>"+appLp.apealApplyForm+"</td></tr>" +
+            "<tr><td styles='formTableTitle'>"+appLp.employeeName+"</td>"+
             "    <td styles='formTableValue'>"+this.data.empName.split("@")[0]+"</td>" +
             "    <td styles='formTableTitle' lable='recordDateString'></td>"+
             "    <td styles='formTableValue' item='recordDateString'></td></tr>"
@@ -1035,13 +1037,13 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
             style : "popup",
             isEdited : this.isEdited || this.isNew,
             itemTemplate : {
-                recordDateString : { text:"考勤日期",  type : "innertext"},
-                onDutyTime : { text:"上班打卡时间",  type : "innertext"},
+                recordDateString : { text: appLp.recordDate,  type : "innertext"},
+                onDutyTime : { text:appLp.onDutyTime,  type : "innertext"},
                 morningOffDutyTime : { text:signProxy==1?"":lp.signProxy[signProxy].middayRestStartTime,  type : "innertext"},
                 afternoonOnDutyTime : { text:signProxy==1?"":lp.signProxy[signProxy].middayRestEndTime,  type : "innertext"},
-                offDutyTime : { text:"下班打卡时间",  type : "innertext"},
-                statusShow : {  text:"考勤状态", type : "innertext" },
-                appealStatusShow : { text:"审批状态",type : "innertext"},
+                offDutyTime : { text: appLp.offDutyTime,  type : "innertext"},
+                statusShow : {  text: appLp.attendanceStatus, type : "innertext" },
+                appealStatusShow : { text: appLp.appealStatus, type : "innertext"},
                 //processPerson1 : {
                 //    text : "审核人", type : "select", selectValue : auditors, selectText : function(){
                 //        var array = [];
@@ -1051,16 +1053,16 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                 //},
                 appealReason : {
                     notEmpty : true,
-                    text:"申述原因",
+                    text: appLp.appealReason,
                     type : "select",
-                    selectValue : ["","临时请假","出差","因公外出","其他"],
+                    selectValue : appLp.appealReasonSelectText,
                     event : { change : function(mdi){
                             _self.switchFieldByAppealReason(mdi.getValue());
                         }}
                 },
                 identity : {
                     notEmpty : true,
-                    text:"选择部门",
+                    text: appLp.selectDepartment,
                     type : "radio",
                     defaultValue : function(){
                         return identityList.identities[0];
@@ -1068,15 +1070,15 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                     selectText : identityList.units,
                     selectValue : identityList.identities
                 },
-                address : { text:"地点" },
+                address : { text: appLp.address },
                 selfHolidayType : {
-                    text:"请假类型",
+                    text: appLp.leaveType,
                     type : "select",
-                    selectValue : ["","带薪年休假","带薪病假","带薪福利假","扣薪事假","其他"]
+                    selectValue : appLp.leaveTypeSelectText
                 },
-                startTime : {  text:"开始日期", tType : "datetime" },
-                endTime : {  text:"结束日期", tType : "datetime" },
-                appealDescription : { text:"事由" }
+                startTime : {  text: appLp.startTime, tType : "datetime" },
+                endTime : {  text: appLp.endTime, tType : "datetime" },
+                appealDescription : { text:appLp.appealDescriptoin }
             }
         }, this.app,this.css);
         this.document.load();
@@ -1089,7 +1091,7 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
 
         this.cancelActionNode = new Element("div", {
             "styles": this.css.createCancelActionNode,
-            "text": this.app.lp.cancel
+            "text": appLp.cancel
         }).inject(this.createFormNode);
         this.cancelActionNode.addEvent("click", function(e){
             this.cancelCreate(e);
@@ -1098,7 +1100,7 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
         if( this.isNew || this.isEdited ){
             this.createOkActionNode = new Element("div", {
                 "styles": this.css.createOkActionNode,
-                "text": this.app.lp.ok
+                "text": appLp.ok
             }).inject(this.createFormNode);
             this.createOkActionNode.addEvent("click", function(e){
                 this.okCreate(e);
@@ -1106,15 +1108,16 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
         }
     },
     switchFieldByAppealReason : function( ar ){
+        var lp = MWF.xApplication.Attendance.LP;
         var tempField = ["selfHolidayType","startTime","endTime","address","appealDescription"];
         var showField = [];
-        if( ar == "临时请假" ){
+        if( ar == lp.temporaryLeave ){
             showField = ["selfHolidayType","startTime","endTime"];
-        }else if( ar == "出差" ){
+        }else if( ar == lp.out ){
             showField = ["address","startTime","endTime"];
-        }else if( ar == "因公外出" ){
+        }else if( ar == lp.businessTrip ){
             showField = ["address","startTime","endTime","appealDescription"];
-        }else if( ar == "其他" ){
+        }else if( ar == lp.other ){
             showField = ["appealDescription"];
         }
         tempField.each( function( f ){
@@ -1134,6 +1137,7 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
         return identityList;
     },
     getAuditor : function(){
+        var lp = MWF.xApplication.Attendance.LP;
         //获取设置
         var setting = {};
         var result = [];
@@ -1143,12 +1147,12 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
             }.bind(this))
         }.bind(this),null,false);
         if( setting.APPEAL_AUDITOR_TYPE && setting.APPEAL_AUDITOR_TYPE.configValue!="" && setting.APPEAL_AUDITOR_VALUE && setting.APPEAL_AUDITOR_VALUE.configValue!=""){
-            if( setting.APPEAL_AUDITOR_TYPE.configValue == "汇报对象" ) {
+            if( setting.APPEAL_AUDITOR_TYPE.configValue == lp.reportTo || setting.APPEAL_AUDITOR_TYPE.configValue == "汇报对象" ) {
                 var d = {"personList": [layout.desktop.session.user.distinguishedName] };
                 this.app.orgActions.listPersonSupDirectValue( d, function( json ){
                     var superior = json.data.personList;
                     if( !superior || !superior[0] ){
-                        this.app.notice("组织管理中没有配置您的汇报对象，请联系管理员", "error");
+                        this.app.notice( lp.noReportToNotice, "error");
                     }else{
                         var p = superior[0];
                         if( p.split("@")[ p.split("@").length - 1].toLowerCase() == "i"  ){
@@ -1158,7 +1162,7 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                         }
                     }
                 }.bind(this), null, false );
-            }else if( setting.APPEAL_AUDITOR_TYPE.configValue == "所属部门职位" ){
+            }else if( setting.APPEAL_AUDITOR_TYPE.configValue == "所属部门职位" || setting.APPEAL_AUDITOR_TYPE.configValue == lp.unitDuty ){
                 this.app.personActions.getPerson( function( json ){
                     json.data.woIdentityList.each( function( id ){
                         var unit = id.woUnit;
@@ -1170,12 +1174,14 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                                     result = result.concat( this.getPersonByIdentity( id ) );
                                 }.bind(this));
                             }else{
-                                this.app.notice("系统中没有配置"+unit.name+"的"+setting.APPEAL_AUDITOR_VALUE.configValue+"职位，请联系管理员", "error");
+                                var text = lp.noUnitDutyNotice.replace("{unit}",unit.name).replace("{duty}",setting.APPEAL_AUDITOR_VALUE.configValue);
+                                this.app.notice( text, "error");
+                                // this.app.notice("系统中没有配置"+unit.name+"的"+setting.APPEAL_AUDITOR_VALUE.configValue+"职位，请联系管理员", "error");
                             }
                         }.bind(this),null ,false)
                     }.bind(this))
                 }.bind(this), null, false );
-            }else if( setting.APPEAL_AUDITOR_TYPE.configValue == "人员属性" ){
+            }else if( setting.APPEAL_AUDITOR_TYPE.configValue == "人员属性" || setting.APPEAL_AUDITOR_TYPE.configValue == lp.personAttribute ){
                 this.app.personActions.getPerson( function( json ){
                     var attribute = setting.APPEAL_AUDITOR_VALUE.configValue;
                     json.data.woPersonAttributeList.each( function( attr ){
@@ -1192,9 +1198,10 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                     })
                 }.bind(this),null ,false);
                 if( result.length == 0 ){
-                    this.app.notice("系统中没有配置您的人员属性“"+setting.APPEAL_AUDITOR_VALUE.configValue+"”，请联系管理员", "error");
+                    var text = lp.noPersonAttribute.replace("{att}", setting.APPEAL_AUDITOR_VALUE.configValue);
+                    this.app.notice( text, "error");
                 }
-            }else if( setting.APPEAL_AUDITOR_TYPE.configValue == "指定人" ){
+            }else if( setting.APPEAL_AUDITOR_TYPE.configValue == "指定人" || setting.APPEAL_AUDITOR_TYPE.configValue == lp.assignedPerson){
                 var p = setting.APPEAL_AUDITOR_TYPE.configValue;
                 if( p.split("@")[ p.split("@").length - 1].toLowerCase() == "i"  ){
                     result.push( this.getPersonByIdentity( p ) )
@@ -1204,7 +1211,7 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
             }
         }else{
             this.app.personActions.getPerson( function( json ){
-                var attribute = "直接主管";
+                var attribute = lp.directLeader;
                 json.data.woPersonAttributeList.each( function( attr ){
                     if( attr.name == attribute ){
                         var p = attr.attributeList[0];
@@ -1218,7 +1225,7 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                     }
                 })
             }.bind(this),null ,false);
-            this.app.notice("系统中没有配置您的人员属性“直接主管”，请联系管理员", "error");
+            this.app.notice(lp.noDirectLeader, "error");
         }
         return result;
     },
@@ -1274,7 +1281,7 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                 var starTime = new Date(start.replace(/-/g, "/"));
                 var endTime = new Date(end.replace(/-/g, "/"));
                 if (starTime >= endTime) {
-                    this.app.notice("开始日期不能晚于结束日期", "error");
+                    this.app.notice( MWF.xApplication.Attendance.LP.holiday.beginGreateThanEndNotice, "error");
                     return;
                 }
             }
@@ -1292,7 +1299,7 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                 this.createMarkNode.destroy();
                 this.createAreaNode.destroy();
                 if (this.explorer.view)this.explorer.view.reload();
-                this.app.notice("申诉已提交", "success");
+                this.app.notice( MWF.xApplication.Attendance.LP.createAppealNotice, "success");
             }
         }.bind(this));
     },
@@ -1340,10 +1347,10 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
             if( json.data.length > 0 ){
                 if(callback)callback( json.data );
             }else{
-                this.app.notice( "未找到您所在的部门，请联系管理员！", "error");
+                this.app.notice( MWF.xApplication.Attendance.LP.noDepartment, "error");
             }
         }.bind(this), function(){
-            this.app.notice( "未找到您所在的部门，请联系管理员！", "error");
+            this.app.notice( MWF.xApplication.Attendance.LP.noDepartment, "error");
         }.bind(this), data, false )
     }
 });
