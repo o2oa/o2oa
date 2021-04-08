@@ -83,9 +83,9 @@ MWF.xApplication.Attendance.PersonSetting.Form = new Class({
         "closeAction" : true
     },
     _createTableContent: function(){
-
+        var lp = MWF.xApplication.Attendance.LP;
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>考勤人员设置</td></tr>" +
+            "<tr><td colspan='2' styles='formTableHead'>"+lp.personSetting+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='configType'></td>"+
             "    <td styles='formTableValue' item='configType'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='topUnitName'></td>"+
@@ -105,10 +105,10 @@ MWF.xApplication.Attendance.PersonSetting.Form = new Class({
             this.form = new MForm( this.formTableArea, this.data, {
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
-                    configType : { text:"配置类型", type : "select", selectText : ["需要考勤","不需要考勤"], selectValue : ["REQUIRED","NOTREQUIRED"] },
-                    topUnitName : { text:"公司名称",  type : "org", orgType : "unit", notEmpty:true },
-                    unitName : { text:"部门名称",  type : "org", orgType : "unit", notEmpty:true },
-                    employeeName : { text:"员工姓名", type : "org", orgType : "person", notEmpty:true , "event" : {
+                    configType : { text:lp.configType, type : "select", selectText : lp.configTypeSelectText, selectValue : ["REQUIRED","NOTREQUIRED"] },
+                    topUnitName : { text: lp.topUnitName,  type : "org", orgType : "unit", notEmpty:true },
+                    unitName : { text:lp.unitName,  type : "org", orgType : "unit", notEmpty:true },
+                    employeeName : { text:lp.employeeName, type : "org", orgType : "person", notEmpty:true , "event" : {
                         change : function(  item , ev ){
                             if( typeOf( item.orgObject ) == "array" && item.orgObject.length > 0  ){
                                 var data = item.orgObject[0].data;
@@ -118,8 +118,8 @@ MWF.xApplication.Attendance.PersonSetting.Form = new Class({
                             }
                         }
                     } },
-                    employeeNumber : {  text:"员工编号", notEmpty:true },
-                    empInTopUnitTime : { text:"入职日期", tType : "date" }
+                    employeeNumber : {  text:lp.employeeNumber, notEmpty:true },
+                    empInTopUnitTime : { text:lp.joininDate, tType : "date" }
                 }
             }, this.app);
             this.form.load();
