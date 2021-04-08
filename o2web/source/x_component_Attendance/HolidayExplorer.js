@@ -178,7 +178,7 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
                 makeupClassArea += "<input type='text' class='makeUpClassDay' " +
                     "style='" + inputTimeStyle +"'" +
                     " value='" + (  d || "" ) + "'/>";
-                if( idx > 0 )makeupClassArea += "<div class='removeMakeUpClassDay' style='color: #354f67;padding-bottom: 5px;cursor: pointer;'>删除</div>";
+                if( idx > 0 )makeupClassArea += "<div class='removeMakeUpClassDay' style='color: #354f67;padding-bottom: 5px;cursor: pointer;'>"+this.app.lp.delete+"</div>";
             }.bind(this))
         }else{
             makeupClassArea += "<input type='text' class='makeUpClassDay' " +
@@ -222,7 +222,7 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
             "<td valign='top' style='height: 30px; line-height: 30px;  text-align: left'>"+lp.makeUpClassDay+":</td>" +
             "<td style='; text-align: right;' id='makeUpClassDayTd'>" +
             (!this.isNew && !this.isEdited  ? "" :makeupClassArea )+
-            (!this.isNew && !this.isEdited  ? "" : "<div id='addMakeupClass' style='color: #354f67;cursor: pointer;'>增加补班日期</div>" )+
+            (!this.isNew && !this.isEdited  ? "" : "<div id='addMakeupClass' style='color: #354f67;cursor: pointer;'>"+lp.addMakeUpClassDay+"</div>" )+
             "</td>" +
             "</tr>" +
             "</table>";
@@ -283,7 +283,7 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
             var div = new Element("div",{
                 "class" : "removeMakeUpClassDay",
                 style : "color: #354f67;padding-bottom: 5px;cursor: pointer;",
-                text : "删除",
+                text : this.app.lp.delete,
                 events : {
                     click : function () {
                         var input = this.getPrevious();
@@ -407,7 +407,7 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
             var endDate = new Date( data.endDate );
             var startDate = new Date( data.startDate  );
             if( startDate > endDate ){
-                this.app.notice("开始日期不能大于结束日期","error");
+                this.app.notice( this.app.lp.holiday.beginGreateThanEndNotice ,"error");
                 return;
             }
 
