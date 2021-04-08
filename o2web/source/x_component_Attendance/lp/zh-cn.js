@@ -61,6 +61,14 @@ MWF.xApplication.Attendance.LP = {
 
 	"topUnitAttendanceDetail" : "公司出勤明细",
 	"topUnitAttendanceStatic" : "公司出勤率统计",
+	"unitAttendanceDetail":"部门出勤明细",
+	"unitAttendanceStatic":"部门出勤率统计",
+	"personAttendanceDetail": "个人出勤明细",
+	"personAttendanceStatic" : "个人出勤率统计",
+	"unitSigninDetail": "部门打卡明细",
+	"unitSigninStatic": "部门打卡率统计",
+	"personSigninDetail": "个人打卡明细",
+	"personSigninStatic": "个人打卡率统计",
 	"staticByDay" : "按日统计",
 	"staticByMonth" : "按月统计",
 	"type": "类型",
@@ -156,7 +164,8 @@ MWF.xApplication.Attendance.LP = {
 		"setAttendancer" : "考勤员设置",
 		"role" : "角色",
 		"personName" : "人员",
-		"unit" : "单位"
+		"unit" : "单位",
+		"roleSelectText": ["公司管理员","部门管理员"]
 	},
 	"selfHoliday" : {
 		"inputValid" : "部门、员工姓名、休假类型、开始时间、结束时间、休假天数必填，请填写！"
@@ -212,6 +221,10 @@ MWF.xApplication.Attendance.LP = {
 	"inputIdeaNotice": "请填写意见",
 	"processSuccess": "处理成功",
 	"noDepartment": "未找到您所在的部门，请联系管理员！",
+	"signinType": "打卡类型",
+	"signinTypeSelectText": ["", "上班打卡", "下班打卡"],
+	"signinResult": "打卡结果",
+	"signinResultSelectText": ["", "正常", "早退", "迟到", "严重迟到", "旷工迟到", "未打卡"],
 
 	"systemSetting" : "系统设置",
 	"reportTo": "汇报对象",
@@ -284,7 +297,37 @@ MWF.xApplication.Attendance.LP = {
 	"importFailContent": "共有数据{total}条  出错: {errorCount}条  耗时: {timeStr} 请修改后重新导入",
 
 	"myDetail": "我的出勤明细",
-	"myDetailStatic": "我的出勤率统计"
+	"myDetailStatic": "我的出勤率统计",
 
+	"cyclText" : "考勤周期：{start}至{end}",
+
+	"personSetting": "考勤人员设置",
+	"configType": "配置类型",
+	"configTypeSelectText": ["需要考勤","不需要考勤"],
+	"topUnitName": "公司名称",
+	"unitName": "部门名称",
+	"employeeNumber":"员工编号",
+	"joininDate": "入职日期",
+
+	"exportEmployeeHolidayRecord": "导出员工休假记录",
+	"employeeHolidayRecord": "员工休假记录",
+
+	"leaveType1": "休假类型",
+	"leaveTypeSelectText1" : ["带薪年休假","带薪病假","带薪福利假","扣薪事假","其他"],
+	"leaveDayCount": "休假天数",
+
+	"statisticsPeriodSetting": "统计周期设置",
+	"selectCompanyNotice": "双击选择，填写'*'匹配所有公司",
+	"selectDepartmentNotice": "双击选择，填写'*'匹配所有部门",
+	"statisticsCompany": "统计公司",
+	"statisticsUnit": "统计部门",
+	"cycleYear": "统计周期年份",
+	"cycleMonth":"统计周期月份",
+	"startDate": "开始日期",
+	"endData": "结束日期",
+
+	"selectStartEndEndDataNotice":"请选择开始日期和结束日期",
+	"weekendSetting": "周末设置",
+	"selectWeekend": "周末选择"
 
 };

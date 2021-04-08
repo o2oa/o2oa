@@ -92,7 +92,7 @@ MWF.xApplication.Attendance.PermissionExplorer.Permission = new Class({
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
                     adminLevel : { text: lp.role,  type : "select",
-                        "selectText" : ["公司管理员","部门管理员"],
+                        "selectText" : lp.roleSelectText,
                         "selectValue" : ["COMPANY","DEPT"]
                     },
                     unitName : { text: lp.unit, type : "org", orgType:"unit",notEmpty:true },
