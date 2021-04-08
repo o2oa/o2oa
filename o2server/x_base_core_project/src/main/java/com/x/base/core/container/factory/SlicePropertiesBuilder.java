@@ -16,7 +16,7 @@ public class SlicePropertiesBuilder {
 	public static String driver_h2 = "org.h2.Driver";
 	public static String driver_dm = "dm.jdbc.driver.DmDriver";
 	public static String driver_sqlserver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-	public static String driver_gbase = "com.gbasedbt.jdbc.IfxDriver";
+	public static String driver_gbase = "com.gbasedbt.jdbc.Driver";
 	public static String driver_kingbase = "com.kingbase.Driver";
 	public static String driver_kingbase8 = "com.kingbase8.Driver";
 	public static String driver_oscar = "com.oscar.Driver";
@@ -42,7 +42,8 @@ public class SlicePropertiesBuilder {
 	public static String validationQuery_h2 = "select 1";
 	public static String validationQuery_dm = "select getdate()";
 	public static String validationQuery_sqlserver = "select 1";
-	public static String validationQuery_gbase = "select 1";
+//	public static String validationQuery_gbase = "select 1";
+	public static String validationQuery_gbase = "select 1 from dual";
 	public static String validationQuery_kingbase = "select now()";
 	public static String validationQuery_kingbase8 = "select now()";
 	public static String validationQuery_oscar = "select 1 from dual";
