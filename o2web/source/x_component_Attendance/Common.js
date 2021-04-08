@@ -51,7 +51,7 @@ MWF.xApplication.Attendance.Calendar = new Class({
             "../x_component_Attendance/$Common/fullcalendar/lib/jquery.js"
         ];
         var fullcalendarUrl = "../x_component_Attendance/$Common/fullcalendar/fullcalendar.js";
-        var langUrl =  "../x_component_Attendance/$Common/fullcalendar/lang/zh-cn.js";
+        var langUrl =  "../x_component_Attendance/$Common/fullcalendar/lang/"+MWF.language+".js";
         COMMON.AjaxModule.loadCss("../x_component_Attendance/$Common/fullcalendar/fullcalendar.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
@@ -78,10 +78,10 @@ MWF.xApplication.Attendance.Calendar = new Class({
             eventTextColor : "#fff",
             rendingNumberCellFun : function( date, formatedDate, dateStr ){
                 if( this.holiday && this.holiday.holidays && this.holiday.holidays.contains( formatedDate )){
-                    return "<span style='float:right;padding-right:5px;color:red'>休</span>"
+                    return "<span style='float:right;padding-right:5px;color:red'>"+this.app.lp.offDutyAbbrev+"</span>"
                 }
                 if( this.holiday && this.holiday.workdays && this.holiday.workdays.contains( formatedDate ) ){
-                    return "<span style='float:right;padding-right:5px;'>班</span>"
+                    return "<span style='float:right;padding-right:5px;'>"+this.app.lp.onDutyAbbrev+"</span>"
                 }
             }.bind(this),
             eventMouseover : function(event, jsEvent, view){
@@ -137,7 +137,7 @@ MWF.xApplication.Attendance.Echarts = new Class({
 
         this.chart.setOption({
             title: {
-                text: '考勤汇总'
+                text: this.lp.attendanceSummary
                 //subtext: '纯属虚构'
             },
             tooltip: {
@@ -151,7 +151,7 @@ MWF.xApplication.Attendance.Echarts = new Class({
             //},
             series: [
                 {
-                    name:'考勤状态',
+                    name: this.lp.attendanceStatus,
                     type:'pie',
                     radius: ['55%', '70%'],
                     avoidLabelOverlap: false,
@@ -185,7 +185,7 @@ MWF.xApplication.Attendance.Echarts = new Class({
         var data = this.analyseLineData();
         var option = {
             title: {
-                text: '上下班走势图'
+                text: this.lp.attendanceTrendChart
             },
             grid : {
                 left : 50,
@@ -227,7 +227,7 @@ MWF.xApplication.Attendance.Echarts = new Class({
                 }
             },
             legend: {
-                data: ['上班时间', '下班时间']
+                data: this.lp.trendChartLegend
             }
             //toolbox: {
             //    show: true,
@@ -269,14 +269,14 @@ MWF.xApplication.Attendance.Echarts = new Class({
         ];
         option.series= [
             {
-                name:'上班时间',
+                name: this.lp.trendChartLegend[0],
                 type:'line',
                 data : data.yOnTime.map(function (str) {
                     return (!str || isNaN(parseFloat(str.replace(':', '.')))) ? "-" : parseFloat(str.replace(':', '.'))
                 })
             },
             {
-                name:'下班时间',
+                name: this.lp.trendChartLegend[1],
                 type:'line',
                 data:data.yOffTime.map(function (str) {
                     return (!str || isNaN(parseFloat(str.replace(':', '.')))) ? "-" : parseFloat(str.replace(':', '.'))
@@ -386,7 +386,7 @@ MWF.xApplication.Attendance.Echarts = new Class({
         this.chart = echarts.init(this.node, 'shine');
         this.chart.setOption({
             title: {
-                text: '考勤汇总'
+                text: this.lp.attendanceSummary
                 //subtext: '纯属虚构'
             },
             tooltip: {
@@ -400,7 +400,7 @@ MWF.xApplication.Attendance.Echarts = new Class({
             //},
             series: [
                 {
-                    name:'考勤状态',
+                    name: this.lp.attendanceStatus,
                     type:'pie',
                     radius: ['55%', '70%'],
                     avoidLabelOverlap: false,
@@ -463,7 +463,7 @@ MWF.xApplication.Attendance.Echarts = new Class({
         var data = this.getUnitBarData();
         var option = {
             title: {
-                text: '考勤趋势'
+                text: this.lp.attendanceTrend
                 //subtext: '纯属虚构'
             },
             tooltip : {
@@ -512,7 +512,7 @@ MWF.xApplication.Attendance.Echarts = new Class({
                     }
                 }
                 obj[n].data.push( d.data[n] );
-                obj[n].month.push( d.year+"年"+ d.month+"月" );
+                obj[n].month.push( d.year + this.lp.year + d.month + this.lp.month );
             }
         }.bind(this));
 

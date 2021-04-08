@@ -33,7 +33,7 @@ MWF.xApplication.Attendance.PeopleDingdingDetail = new Class({
             this.tabs = new MWF.widget.Tab(this.tabNode, { "style": "attendance" });
             this.tabs.load();
 
-            this.detailPage = this.tabs.addTab(this.detailArea, "个人打卡明细", false);
+            this.detailPage = this.tabs.addTab(this.detailArea, this.app.lp.personSigninDetail, false);
             this.detailPage.contentNodeArea.set("class", "detailPage");
             this.detailPage.addEvent("show", function () {
                 if (!this.detailExplorer) {
@@ -43,7 +43,7 @@ MWF.xApplication.Attendance.PeopleDingdingDetail = new Class({
             }.bind(this));
 
 
-            this.detailStaticPage = this.tabs.addTab(this.detailStaticArea, "个人打卡率统计", false);
+            this.detailStaticPage = this.tabs.addTab(this.detailStaticArea, this.app.lp.personSigninStatic, false);
             this.detailStaticPage.contentNodeArea.set("class", "detailStaticPage");
             this.detailStaticPage.addEvent("show", function () {
                 if (!this.detailStaticExplorer) {
@@ -89,6 +89,7 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.Explorer = new Class({
         this.setNodeScroll();
     },
     loadFilter: function () {
+        var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
             "styles": this.css.fileterNode
         }).inject(this.node);
@@ -116,9 +117,9 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.Explorer = new Class({
             this.form = new MForm(this.fileterNode, {}, {
                 isEdited: true,
                 itemTemplate: {
-                    person: { text: "人员", type: "org", orgType: "person", notEmpty: true, style: { "min-width": "100px" } },
+                    person: { text: lp.person, type: "org", orgType: "person", notEmpty: true, style: { "min-width": "100px" } },
                     year: {
-                        text: "年度",
+                        text: lp.annuaal,
                         "type": "select",
                         "selectValue": function () {
                             var years = [];
@@ -136,7 +137,7 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.Explorer = new Class({
                         }
                     },
                     month: {
-                        text: "月份",
+                        text: lp.months,
                         "type": "select",
                         "defaultValue": function () {
                             var month = (new Date().getMonth() + 1).toString();
@@ -150,11 +151,11 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.Explorer = new Class({
                             }.bind(this)
                         }
                     },
-                    day: { text: "日期", "type": "select", "selectValue": this.getDateSelectValue.bind(this) },
-                    checkType: { text: "打卡类型", "type": "select", "selectValue": ["", "OnDuty", "OffDuty"], "selectText": ["", "上班打卡", "下班打卡"] },
-                    timeResult: { text: "打卡结果", "type": "select", "selectValue": ["", "Normal", "Early", "Late", "SeriousLate", "Absenteeism", "NotSigned"], "selectText": ["", "正常", "早退", "迟到", "严重迟到", "旷工迟到", "未打卡"] },
+                    day: { text: lp.date, "type": "select", "selectValue": this.getDateSelectValue.bind(this) },
+                    checkType: { text: lp.signinType, "type": "select", "selectValue": ["", "OnDuty", "OffDuty"], "selectText": lp.signinTypeSelectText },
+                    timeResult: { text: lp.signinResult, "type": "select", "selectValue": ["", "Normal", "Early", "Late", "SeriousLate", "Absenteeism", "NotSigned"], "selectText": lp.signinResultSelectText },
                     action: {
-                        "value": "查询", type: "button", className: "filterButton", event: {
+                        "value": lp.query, type: "button", className: "filterButton", event: {
                             click: function () {
                                 var result = this.form.getResult(true, ",", true, true, false);
                                 if (!result) return;
@@ -243,6 +244,7 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.SelfHoliday = new Class({
 MWF.xApplication.Attendance.PeopleDingdingDetail.DetailStaticExplorer = new Class({
     Extends: MWF.xApplication.Attendance.PeopleDingdingDetail.Explorer,
     loadFilter: function () {
+        var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
             "styles": this.css.fileterNode
         }).inject(this.node);
@@ -264,9 +266,9 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.DetailStaticExplorer = new Clas
             this.form = new MForm(this.fileterNode, {}, {
                 isEdited: true,
                 itemTemplate: {
-                    q_empName: { text: "人员", type: "org", orgType: "person", notEmpty: true, style: { "min-width": "100px" } },
+                    q_empName: { text: lp.person, type: "org", orgType: "person", notEmpty: true, style: { "min-width": "100px" } },
                     cycleYear: {
-                        text: "年度",
+                        text: lp.annuaal,
                         "type": "select",
                         "selectValue": function () {
                             var years = [];
@@ -278,7 +280,7 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.DetailStaticExplorer = new Clas
                         }
                     },
                     cycleMonth: {
-                        text: "月份",
+                        text: lp.months,
                         "type": "select",
                         "defaultValue": function () {
                             var month = (new Date().getMonth() + 1).toString();
@@ -287,7 +289,7 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.DetailStaticExplorer = new Clas
                         "selectValue": ["", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
                     },
                     action: {
-                        "value": "查询", type: "button", className: "filterButton", event: {
+                        "value": lp.query, type: "button", className: "filterButton", event: {
                             click: function () {
                                 var result = this.form.getResult(true, ",", true, true, false);
                                 if (!result) return;
