@@ -140,16 +140,16 @@ MWF.xApplication.Attendance.AppSetting = new Class({
 
         var d = this.decodeData( this.data );
 
-
+        var lp = this.app.lp;
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='4' styles='formTableHead'>系统设置</td></tr>" +
+            "<tr><td colspan='4' styles='formTableHead'>"+lp.systemSetting+"</td></tr>" +
             "<tr><td styles='formTableTitle' lable='APPEALABLE'></td>"+
             "    <td styles='formTableValue' item='APPEALABLE'></td>"+
             "<tr><td styles='formTableTitle' lable='APPEAL_AUDIFLOWTYPE'></td>"+
             "    <td styles='formTableValue' item='APPEAL_AUDIFLOWTYPE'></td>"+
             "<tr item='AUDITOR_TYPE' style='display:"+ (d.APPEAL_AUDIFLOWTYPE == "WORKFLOW" ? "none" : "") +"'><td styles='formTableTitle' lable='APPEAL_AUDITOR_TYPE'></td>"+
             "    <td styles='formTableValue' item='APPEAL_AUDITOR_TYPE'></td>"+
-            "<tr item='valueArea' style='display:"+ (d.APPEAL_AUDITOR_TYPE == "汇报对象" || d.APPEAL_AUDIFLOWTYPE == "WORKFLOW" ? "none" : "") +"' ><td styles='formTableTitle' lable='APPEAL_AUDITOR_VALUE'></td>"+
+            "<tr item='valueArea' style='display:"+ (d.APPEAL_AUDITOR_TYPE == lp.reportTo || d.APPEAL_AUDITOR_TYPE == "汇报对象" || d.APPEAL_AUDIFLOWTYPE == "WORKFLOW" ? "none" : "") +"' ><td styles='formTableTitle' lable='APPEAL_AUDITOR_VALUE'></td>"+
             "    <td styles='formTableValue' style='width: 60%' item='APPEAL_AUDITOR_VALUE'></td>" +
             "<tr item='AUDIFLOW' style='display:"+ (d.APPEAL_AUDIFLOWTYPE == "BUILTIN" ? "none" : "") +"'><td styles='formTableTitle' lable='APPEAL_AUDIFLOW_ID'></td>" +
             "    <td styles='formTableValue' style='width: 60%' item='APPEAL_AUDIFLOW_ID'></td>" +
@@ -162,17 +162,17 @@ MWF.xApplication.Attendance.AppSetting = new Class({
 
 
         this.itemTemplate = {
-            APPEALABLE : { text:"申诉及审批功能启用状态",
+            APPEALABLE : { text: lp.appealEnable,
                 type : "select",
                 value : d.APPEALABLE || "true",
-                selectText : ["开启","关闭"],
+                selectText : lp.appealSelectText,
                 selectValue : ["true","false"]
             },
-            APPEAL_AUDIFLOWTYPE : { text : "考勤结果申诉流程类型",
+            APPEAL_AUDIFLOWTYPE : { text : lp.appealAuditFlowType,
                 type : "select",
                 value : d.APPEAL_AUDIFLOWTYPE ,
                 selectValue : this.dataJson.APPEAL_AUDIFLOWTYPE.selectContent.split("|"), //["人员属性","所属部门职位","指定人","汇报对象"],
-                selectText : ["自定义流程","内置流程"],
+                selectText : lp.appealAuditFlowTypeSelectText,
                 event : {
                     change : function( item, ev ){
                         this.createTableArea.getElement("[item='AUDITOR_TYPE']").setStyle( "display" , (item.getValue() == "WORKFLOW") ? "none" : "" );
@@ -181,27 +181,27 @@ MWF.xApplication.Attendance.AppSetting = new Class({
                     }.bind(this)
                 }
             },
-            APPEAL_AUDITOR_TYPE : { text : "申诉审核人确定方式",
+            APPEAL_AUDITOR_TYPE : { text : lp.appealAuditorType,
                 type : "select",
                 value : d.APPEAL_AUDITOR_TYPE ,
                 selectValue : this.dataJson.APPEAL_AUDITOR_TYPE.selectContent.split("|"), //["人员属性","所属部门职位","指定人","汇报对象"],
                 event : {
                     change : function( item, ev ){
-                        this.createTableArea.getElement("[item='valueArea']").setStyle( "display" , (item.getValue() == "汇报对象") ? "none" : "" );
+                        this.createTableArea.getElement("[item='valueArea']").setStyle( "display" , (item.getValue() == "汇报对象" || item.getValue() == lp.reportTo) ? "none" : "" );
                     }.bind(this)
                 }
             },
-            APPEAL_AUDITOR_VALUE : { text : "申诉审核人确定内容",
+            APPEAL_AUDITOR_VALUE : { text : lp.appealAuditorValue,
                 type : "text",
                 value : d.APPEAL_AUDITOR_VALUE ,
-                defaultValue : "直属领导"
+                defaultValue : lp.directSupervisor
             },
-            APPEAL_AUDIFLOW_ID : { text : "自定义申请流程",
+            APPEAL_AUDIFLOW_ID : { text : lp.appealAuditFlow,
                 type : "org",
                 orgType: ["process"],
                 count : 1,
                 isEdited : this.isEdited || this.isNew,
-                value : !d.APPEAL_AUDIFLOW_ID||d.APPEAL_AUDIFLOW_ID=="无" ?"":d.APPEAL_AUDIFLOW_ID,
+                value : (!d.APPEAL_AUDIFLOW_ID||d.APPEAL_AUDIFLOW_ID== lp.none || d.APPEAL_AUDIFLOW_ID=="无") ?"":d.APPEAL_AUDIFLOW_ID,
                 defaultValue : "",
                 orgWidgetOptions : {
                     "onLoadedInfor": function(item){
@@ -233,7 +233,7 @@ MWF.xApplication.Attendance.AppSetting = new Class({
 
         this.cancelActionNode = new Element("div", {
             "styles": this.css.createCancelActionNode,
-            "text": "取消"
+            "text": lp.cancel
         }).inject(this.createFormNode);
 
 
@@ -244,7 +244,7 @@ MWF.xApplication.Attendance.AppSetting = new Class({
         if( this.isNew || this.isEdited ){
             this.createOkActionNode = new Element("div", {
                 "styles": this.css.createOkActionNode,
-                "text": "确定"
+                "text": lp.ok
             }).inject(this.createFormNode);
 
             this.createOkActionNode.addEvent("click", function(e){
@@ -291,8 +291,8 @@ MWF.xApplication.Attendance.AppSetting = new Class({
     okCreate: function(e){
         var data = this.document.getResult(true,",",true,false,false);
         if(data){
-            var APPEAL_AUDIFLOW_ID = data.APPEAL_AUDIFLOW_ID
-            if(!!APPEAL_AUDIFLOW_ID&&APPEAL_AUDIFLOW_ID!="无"&&APPEAL_AUDIFLOW_ID!=""&&!!this.document.items.APPEAL_AUDIFLOW_ID.orgObject){
+            var APPEAL_AUDIFLOW_ID = data.APPEAL_AUDIFLOW_ID;
+            if(!!APPEAL_AUDIFLOW_ID &&APPEAL_AUDIFLOW_ID!=this.app.lp.none &&APPEAL_AUDIFLOW_ID!="无"&&APPEAL_AUDIFLOW_ID!=""&&!!this.document.items.APPEAL_AUDIFLOW_ID.orgObject){
                 data.APPEAL_AUDIFLOW_ID = this.document.items.APPEAL_AUDIFLOW_ID.orgObject[0].data.id;
             }
             var arr = this.encodeData( this.data, data );
@@ -312,7 +312,7 @@ MWF.xApplication.Attendance.AppSetting = new Class({
         if( flag ){
             this.createMarkNode.destroy();
             this.createAreaNode.destroy();
-            this.app.notice( "保存成功" , "success");
+            this.app.notice( this.app.lp.saveSuccess , "success");
         }
     }
 });
