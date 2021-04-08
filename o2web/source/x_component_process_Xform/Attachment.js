@@ -1055,12 +1055,29 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     Extends: MWF.APP$Module,
     options: {
         /**
-         * @event MWF.xApplication.process.Xform.Attachment#queryLoad
-         * @ignore
-         */
-        /**
          * @event MWF.xApplication.process.Xform.Attachment#postLoad
          * @ignore
+         */
+        /**附件组件（this.target）加载前触发。
+         * @event MWF.xApplication.process.Xform.Attachment#queryLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**附件容器（this.target.attachmentController）初始化之前触发，可以通过this.event获取附件容器的选项。
+         * @event MWF.xApplication.process.Xform.Attachment#queryLoadController
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**附件容器（this.target.attachmentController）初始化之后，加载之前触发。
+         * @event MWF.xApplication.process.Xform.Attachment#loadController
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**附件容器（this.target.attachmentController）加载之后触发，但这时还未加载具体的附件。
+         * @event MWF.xApplication.process.Xform.Attachment#postLoadController
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
+         * @event MWF.xApplication.process.Xform.Attachment#load
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
          * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
@@ -1078,11 +1095,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
-         * 附件容器加载时触发。
-         * @event MWF.xApplication.process.Xform.Attachment#load
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
          * 附件有变化的时候会被触发，包括上传、删除、排序
          * @event MWF.xApplication.process.Xform.Attachment#change
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -1097,7 +1109,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @event MWF.xApplication.process.Xform.Attachment#open
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open", "queryLoad "]
+        "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open", "queryLoad", "queryLoadController", "loadController", "postLoadController"]
     },
 
     initialize: function (node, json, form, options) {
@@ -1111,6 +1123,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     _loadUserInterface: function () {
         this.node.empty();
         if (this.form.businessData.work.startTime){
+            this.fireEvent("queryLoad");
             this.loadAttachmentController();
             this.fireEvent("load");
         }
@@ -1150,16 +1163,24 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         //this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
 
+        this.fireEvent("queryLoadController", [options]);
+
         /**
          * @summary 附件容器.
          * @member {MWF.xApplication.process.Xform.AttachmentController}
          * @example
-         * var attachmentController = this.form.get("fieldId").AttachmentController; //获取附件容器
+         * var attachmentController = this.form.get("fieldId").attachmentController; //获取附件容器
          * var attachmentList = attachmentController.attachments; //获取所有的附件
          * var attachmentData = attachmentList[0].data; //获取第一个附件的数据
          */
+
         this.attachmentController = new MWF.xApplication.process.Xform.AttachmentController(this.node, this, options);
+
+        this.fireEvent("loadController");
+
         this.attachmentController.load();
+
+        this.fireEvent("postLoadController");
 
         this.form.businessData.attachmentList.each(function (att) {
             //if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
