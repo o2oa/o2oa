@@ -305,6 +305,7 @@ o2.LP.widget = {
     "uploadTitle": "上传文件",
     "uploadInfor": "请选择要上传的文件",
     "delete": "删除",
+    "previewAtt" : "预览",
     "replace": "替换",
     "select": "选择",
 
