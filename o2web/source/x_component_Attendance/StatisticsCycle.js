@@ -74,19 +74,19 @@ MWF.xApplication.Attendance.StatisticsCycle.Form = new Class({
         "closeAction" : true
     },
     _createTableContent: function(){
-        var lp = this.app.lp.schedule;
+        var lp = MWF.xApplication.Attendance.LP;
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>统计周期设置</td></tr>" +
+            "<tr><td colspan='2' styles='formTableHead'>"+lp.statisticsPeriodSetting+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='topUnitName'></td>"+
             "    <td styles='formTableValue'>" +
             "       <div item='topUnitName'></div>"+
-            "       <div style='font-size: 12px;color: #999;'>双击选择，填写'*'匹配所有公司</div>"+
+            "       <div style='font-size: 12px;color: #999;'>"+lp.selectCompanyNotice+"</div>"+
             "   </td></tr>" +
             "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
             "    <td styles='formTableValue'>" +
             "       <div item='unitName'></div>"+
-            "       <div style='font-size: 12px;color: #999;'>双击选择，填写'*'匹配所有部门</div>"+
+            "       <div style='font-size: 12px;color: #999;'>"+lp.selectDepartmentNotice+"</div>"+
             "   </td></tr>" +
             "<tr><td styles='formTabelTitle' lable='cycleYear'></td>"+
             "    <td styles='formTableValue' item='cycleYear'></td></tr>" +
@@ -105,9 +105,9 @@ MWF.xApplication.Attendance.StatisticsCycle.Form = new Class({
             this.form = new MForm( this.formTableArea, this.data, {
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
-                    topUnitName : { text:"统计公司", type : "org", orgType : "unit" },
-                    unitName : { text: "统计部门", type : "org", orgType : "unit" },
-                    cycleYear : { text: "统计周期年份", type : "select", notEmpty:true, defaultValue : new Date().getFullYear(), selectValue : function(){
+                    topUnitName : { text:lp.statisticsCompany, type : "org", orgType : "unit" },
+                    unitName : { text: lp.statisticsUnit, type : "org", orgType : "unit" },
+                    cycleYear : { text: lp.cycleYear, type : "select", notEmpty:true, defaultValue : new Date().getFullYear(), selectValue : function(){
                         var years = [];
                         var year = new Date().getFullYear() + 5;
                         for (var i = 0; i < 10; i++) {
@@ -115,10 +115,10 @@ MWF.xApplication.Attendance.StatisticsCycle.Form = new Class({
                         }
                         return years;
                     }},
-                    cycleMonth : { text: "统计周期月份",  type : "select",notEmpty:true, selectValue : ["01","02","03","04","05","06","07","08","09","10","11","12"] },
-                    cycleStartDateString : { text: "开始日期", tType : "date"},
-                    cycleEndDateString : {  text:"结束日期", tType : "date" },
-                    description : { text:"说明备注", type : "textarea" }
+                    cycleMonth : { text: lp.cycleMonth,  type : "select",notEmpty:true, selectValue : ["01","02","03","04","05","06","07","08","09","10","11","12"] },
+                    cycleStartDateString : { text: lp.startDate, tType : "date"},
+                    cycleEndDateString : {  text:lp.endData, tType : "date" },
+                    description : { text:lp.description, type : "textarea" }
                 }
             }, this.app);
             this.form.load();
@@ -186,6 +186,7 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
     },
     createNode: function(){
         var _self = this;
+        var lp = MWF.xApplication.Attendance.LP;
 
         this.createNode = new Element("div", {
             "styles": this.css.createNode
@@ -215,10 +216,10 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
         var d = this.data;
 
         var tr = new Element("tr").inject(table);
-        var td = new Element("td", {  "styles" : this.css.editTableHead, "colspan": "4", "text" : "统计周期设置"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableHead, "colspan": "4", "text" : lp.statisticsPeriodSetting  }).inject(tr);
 
         var tr = new Element("tr").inject(table);
-        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "公司名称："  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : lp.topUnitName + "："  }).inject(tr);
         var td = new Element("td", { "styles" : this.css.editTableValue }).inject(tr);
         if( !this.isNew && !this.isEdited  ){
             td.set("text",  d.topUnitName  )
@@ -232,11 +233,11 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
                 }
             }, true, this.app );
             this.topUnitName.load();
-            new Element("div", { "text" : "双击选择，填写'*'匹配所有公司" , "styles" : {"color":"#ccc"}}).inject(td)
+            new Element("div", { "text" : lp.selectCompanyNotice , "styles" : {"color":"#ccc"}}).inject(td)
         }
 
         var tr = new Element("tr").inject(table);
-        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "部门名称："  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : lp.unitName+"："  }).inject(tr);
         var td = new Element("td", { "styles" : this.css.editTableValue }).inject(tr);
         if( !this.isNew && !this.isEdited  ){
             td.set("text",  d.unitName  )
@@ -250,11 +251,11 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
                 }
             }, true, this.app );
             this.unitName.load();
-            new Element("div", { "text" : "双击选择，填写'*'匹配所有部门" , "styles" : {"color":"#ccc"} }).inject(td)
+            new Element("div", { "text" : lp.selectDepartmentNotice , "styles" : {"color":"#ccc"} }).inject(td)
         }
 
         var tr = new Element("tr").inject(table);
-        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "统计周期年份："  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : lp.cycleYear+"："  }).inject(tr);
         var td = new Element("td", { "styles" : this.css.editTableValue }).inject(tr);
         if( !this.isNew && !this.isEdited ){
             td.set( "text", d.cycleYear || "")
@@ -276,7 +277,7 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
         }
 
         var tr = new Element("tr").inject(table);
-        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "统计周期月份："  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : lp.cycleMonth+"："  }).inject(tr);
         var td = new Element("td", { "styles" : this.css.editTableValue }).inject(tr);
         if( !this.isNew && !this.isEdited ){
             td.set( "text", d.cycleMonth || "")
@@ -291,7 +292,7 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
         }
 
         var tr = new Element("tr").inject(table);
-        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "开始日期："  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : lp.startDate+"："  }).inject(tr);
         var td = new Element("td", { "styles" : this.css.editTableValue }).inject(tr);
         this.cycleStartDateString = new MDomItem( td, {
             "name" : "cycleStartDateString",
@@ -307,7 +308,7 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
         this.cycleStartDateString.load();
 
         var tr = new Element("tr").inject(table);
-        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "结束日期："  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : lp.endData+"："  }).inject(tr);
         var td = new Element("td", { "styles" : this.css.editTableValue }).inject(tr);
         this.cycleEndDateString = new MDomItem( td, {
             "name" : "cycleEndDateString",
@@ -323,7 +324,7 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
         this.cycleEndDateString.load();
 
         var tr = new Element("tr").inject(table);
-        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "说明备注："  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : lp.description+"："  }).inject(tr);
         var td = new Element("td", { "styles" : this.css.editTableValue }).inject(tr);
         this.description = new MDomItem( td, {
             "type" : "textarea",
@@ -336,7 +337,7 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
 
         this.cancelActionNode = new Element("div", {
             "styles": this.css.createCancelActionNode,
-            "text": "取消"
+            "text": lp.cancel
         }).inject(this.createFormNode);
 
 
@@ -347,7 +348,7 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
         if( this.isNew || this.isEdited){
             this.createOkActionNode = new Element("div", {
                 "styles": this.css.createOkActionNode,
-                "text": "确定"
+                "text": lp.ok
             }).inject(this.createFormNode);
 
             this.createOkActionNode.addEvent("click", function(e){
@@ -452,7 +453,7 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
         }else{
            // this.adminName.setStyle("border-color", "red");
             //this.adminName.focus();
-            this.app.notice( "请选择开始日期和结束日期", "error");
+            this.app.notice( this.app.lp.selectStartEndEndDataNotice, "error");
         }
     },
     selectDateTime : function( el, timeOnly, isTme, baseDate ){
@@ -469,13 +470,14 @@ MWF.xApplication.Attendance.StatisticsCycle.StatisticsCycle2 = new Class({
         }.bind(this));
     },
     selectPeople: function(el, type, value ){
+        var lp = MWF.xApplication.Attendance.LP;
         var title;
         if( type == "unit" ){
-            title = "选择部门"
+            title = lp.selectDepartment
         }else if( type == "topUnit" ){
-            title = "选择公司"
+            title = lp.selectCompany
         }else{
-            title = "选择个人"
+            title = lp.selectPerson
         }
         var options = {
             "type": type,

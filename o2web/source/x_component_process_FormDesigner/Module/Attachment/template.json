@@ -4,6 +4,22 @@
   "type": "Attachment",
   "description": "",
   "events": {
+    "queryLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "queryLoadController" : {
+      "code": "",
+      "html": ""
+    },
+    "loadController" : {
+      "code": "",
+      "html": ""
+    },
+    "postLoadController" : {
+      "code": "",
+      "html": ""
+    },
     "load" : {
       "code": "",
       "html": ""
