@@ -36,6 +36,7 @@ class ActionCreate extends BaseAction {
 			String codeAnswer = wi.getCodeAnswer();
 			String captcha = wi.getCaptcha();
 			String captchaAnswer = wi.getCaptchaAnswer();
+			String mail = wi.getMail();
 			if (StringUtils.equals(com.x.base.core.project.config.Person.REGISTER_TYPE_DISABLE,
 					Config.person().getRegister())) {
 				throw new ExceptionDisableRegist();
@@ -51,6 +52,14 @@ class ActionCreate extends BaseAction {
 			}
 			if (this.mobileExisted(emc, mobile)) {
 				throw new ExceptionMobileExist(mobile);
+			}
+			if(StringUtils.isNotBlank(mail)){
+				if (!StringTools.isMail(mail)) {
+					throw new ExceptionInvalidMail(mail);
+				}
+				if(this.mailExisted(emc, mail)){
+					throw new ExceptionMailExist(mail);
+				}
 			}
 			if (!password.matches(Config.person().getPasswordRegex())) {
 				throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
@@ -73,7 +82,7 @@ class ActionCreate extends BaseAction {
 					throw new ExceptionInvalidCaptcha();
 				}
 			}
-			this.register(business, name, password, genderType, mobile);
+			this.register(business, name, password, genderType, mobile, mail);
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);
@@ -81,13 +90,14 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
-	private void register(Business business, String name, String password, GenderType genderType, String mobile)
+	private void register(Business business, String name, String password, GenderType genderType, String mobile, String mail)
 			throws Exception {
 		Person o = new Person();
 		o.setName(name);
 		business.person().setPassword(o, password);
 		o.setGenderType(genderType);
 		o.setMobile(mobile);
+		o.setMail(mail);
 		business.entityManagerContainer().beginTransaction(Person.class);
 		business.entityManagerContainer().persist(o, CheckPersistType.all);
 		business.entityManagerContainer().commit();
@@ -97,24 +107,27 @@ class ActionCreate extends BaseAction {
 
 		@FieldDescribe("用户名称.")
 		private String name;
-		
+
 		@FieldDescribe("性别.男:m,女:f,未知:d")
 		private GenderType genderType;
-		
+
 		@FieldDescribe("密码.")
 		private String password;
-		
+
 		@FieldDescribe("必填,手机号.")
 		private String mobile;
-		
+
 		@FieldDescribe("手机认证码")
 		private String codeAnswer;
-		
+
 		@FieldDescribe("图片认证码")
 		private String captchaAnswer;
-		
+
 		@FieldDescribe("图片认证编号")
 		private String captcha;
+
+		@FieldDescribe("邮件地址(非必填).")
+		private String mail;
 
 		public String getName() {
 			return name;
@@ -172,6 +185,13 @@ class ActionCreate extends BaseAction {
 			this.captcha = captcha;
 		}
 
+		public String getMail() {
+			return mail;
+		}
+
+		public void setMail(String mail) {
+			this.mail = mail;
+		}
 	}
 
 	public static class Wo extends WrapBoolean {
