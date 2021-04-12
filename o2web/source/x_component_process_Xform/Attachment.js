@@ -4,7 +4,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     Extends: MWF.widget.ATTER,
     "options": {
         "officeFiles": ["doc", "docx", "dotx", "dot", "xls", "xlsx", "xlsm", "xlt", "xltx", "pptx", "ppt", "pot", "potx", "potm", "pdf"],
-        "allowPreviewExtension" : ["pdf", "ofd", "png", "jpg", "bmp", "jpeg", "gif", "js", "css", "java", "json", "xml", "php", "html", "htm", "xhtml", "log", "md", "txt"],
+        "allowPreviewExtension" : ["zip","pdf", "ofd", "png", "jpg", "bmp", "jpeg", "gif", "js", "css", "java", "json", "xml", "php", "html", "htm", "xhtml", "log", "md", "txt"],
         "checkTextEnable": true
     },
     checkAttachmentDeleteAction: function () {
@@ -1944,6 +1944,9 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         if(extension === "ofd"){
             this.previewOfd();
         }
+        if(extension === "zip"){
+            this.previewZip();
+        }
         if(extension === "pdf"){
             this.previewPdf();
         }
@@ -1975,17 +1978,101 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             this.previewAce("text");
         }
     },
-    previewPdf : function(att){
+    previewZip : function (){
+        //zip压缩包预览
+        var _self = this;
+        var zipViewNode = new Element("div.ztree").inject(document.body);
+        o2.load("/o2_lib/zipjs/zip-fs.js",function(){
+
+            this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+                var cookie = Cookie.read("x-token");
+                url = url + "?x-token=" + cookie;
+                unzip().catch(error => console.error(error));
+                async function unzip() {
+                    zip.configure({ chunkSize: 128 });
+                    let zipFs = new zip.fs.FS();
+                    let directory = zipFs.addDirectory("import");
+                    await directory.importHttpContent(url);
+
+                    o2.loadCss("/o2_lib/zTree/zTreeStyle.css",function(){
+                        o2.load(["/o2_lib/jquery/jquery.min.js","/o2_lib/zTree/jquery.ztree.core.min.js"], {"sequence": true}, function(){
+                            jQuery = jQuery.noConflict(true); //避免js框架冲突
+                            var nodes = [];
+                            loadNodes(directory,nodes);
+                            jQuery.fn.zTree.init(jQuery(zipViewNode), {}, nodes);
+
+                            var dlg = o2.DL.open({
+                                "title": _self.att.name,
+                                "width": "660px",
+                                "height": "510px",
+                                "mask": true,
+                                "content": zipViewNode,
+                                "container": null,
+                                "positionNode": document.body,
+                                "onQueryClose": function () {
+                                    zipViewNode.destroy();
+                                },
+                                "buttonList": [
+                                    {
+                                        "text": "关闭",
+                                        "action": function () {
+                                            dlg.close();
+                                        }
+                                    }
+                                ],
+                                "onPostShow": function () {
+                                    dlg.reCenter();
+                                }
+                            });
+
+
+                        }.bind(this));
+                    })
+                }
+
+                function loadNodes(directory,nodes){
+                    var folderList = [];
+                    var fileList = [];
+                    directory.children.each(function(file){
+                        if(file.directory){
+                            folderList.push(file)
+                        }
+                    })
+                    directory.children.each(function(file){
+                        if(!file.directory){
+                            fileList.push(file)
+                        }
+                    })
+                    folderList.append(fileList);
+                    folderList.each(function(file){
+                        var node = {
+                            name : file.name
+                        }
+                        if(nodes.children){
+                            nodes.children.push(node);
+                        }else{
+                            nodes.push(node);
+                        }
+                        if(file.directory){
+                            node.children = [];
+                            loadNodes(file,node);
+                        }
+                    })
+                }
+            }.bind(this));
+        }.bind(this));
+    },
+    previewPdf : function(){
         this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
             window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url)
         });
     },
-    previewOfd : function(att){
+    previewOfd : function(){
         this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
             window.open("../o2_lib/ofdjs/index.html?file=" + url)
         });
     },
-    previewImage : function(att){
+    previewImage : function(){
         this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
             var imgNode = new Element("img",{"src":url,"alt":this.att.name}).inject(document.body).hide();
             o2.loadCss("../m_app/yunFile/css/viewer.css", document.body,function(){
