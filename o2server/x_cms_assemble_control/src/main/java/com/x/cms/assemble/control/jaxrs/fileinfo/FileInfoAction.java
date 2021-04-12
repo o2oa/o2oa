@@ -150,11 +150,12 @@ public class FileInfoAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void attachmentDownLoad(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionFileDownload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionFileDownload().execute(request, effectivePerson, id);
+			result = new ActionFileDownload().execute(request, effectivePerson, id, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -168,11 +169,12 @@ public class FileInfoAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void attachmentDownloadStream(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionFileDownloadStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionFileDownloadStream().execute(request, effectivePerson, id );
+			result = new ActionFileDownloadStream().execute(request, effectivePerson, id, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
