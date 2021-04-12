@@ -12,7 +12,6 @@ MWF.xApplication.cms.ScriptDesigner.LP = {
 
 		"notice": {
 			"save_success": "脚本保存成功！",
-			
 			"deleteDataTitle": "删除数据确认",
 			"deleteData": "是否确定删除当前数据，及其子数据吗？",
 
