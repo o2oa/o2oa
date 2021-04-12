@@ -8,7 +8,7 @@ MWF.xApplication.Homepage.LP = o2.HPLP = {
 	"myProcessDraft": "Draft",
 	"startProcess": "Start process",
 	"noSubject": "Untitled",
-	"noWork": "Temporarily not working",
+	"noWork": "No Documentation",
 	"noHotpic": "No hot news at the moment",
 	"noInforItem": "No information temporarily",
 	"noCalendar": "No schedule on the day",
@@ -59,5 +59,5 @@ MWF.xApplication.Homepage.LP = o2.HPLP = {
 	"allDay": "All Day",
 	"calenderInfor": "Hello {name}! {date} You have<div class='o2_homepage_calender_count_flag'>{count}</div>schedules.",
 	"noCalenderInfor": "Hello {name}! {date} no schedule。",
-	"dateFormat": "%b %d, %Y"
+	"dateFormat": "%m %d, %Y"
 };
