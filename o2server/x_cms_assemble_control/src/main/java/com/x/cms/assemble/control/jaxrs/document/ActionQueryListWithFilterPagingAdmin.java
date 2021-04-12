@@ -10,6 +10,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.express.tools.filter.QueryFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -25,11 +26,17 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionQueryListWithFilterPagingAdmin.class);
 
-	protected ActionResult<List<Wo>> execute( HttpServletRequest request, Integer page, Integer size, JsonElement jsonElement, EffectivePerson effectivePerson ) {
-		ActionResult<List<Wo>> result = new ActionResult<>();		
+	protected ActionResult<List<Wo>> execute( HttpServletRequest request, Integer page, Integer size, JsonElement jsonElement, EffectivePerson effectivePerson ) throws Exception {
+		ActionResult<List<Wo>> result = new ActionResult<>();
 		Long total = 0L;
 		Wi wi = null;
 		List<Wo> wos = new ArrayList<>();
+		Business business = new Business(null);
+		if(!business.isManager(effectivePerson)){
+			result.setCount(0L);
+			result.setData(wos);
+		}
+
 		List<Document> searchResultList = new ArrayList<>();
 		Boolean check = true;
 		Boolean isManager = false;
@@ -53,21 +60,21 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 		if( StringUtils.isEmpty( wi.getDocumentType() )) {
 			wi.setDocumentType( "信息" );
 		}
-		
+
 		if( StringUtils.isNotEmpty( wi.getOrderField() )) {
 			wi.setOrderField( "createTime" );
 		}
-		
+
 		if( StringUtils.isNotEmpty( wi.getOrderType() )) {
 			wi.setOrderField( "DESC" );
 		}
-		
+
 		if( ListTools.isNotEmpty( wi.getStatusList() )) {
 			List<String> status = new ArrayList<>();
 			status.add( "published" );
 			wi.setStatusList( status );
 		}
-		
+
 		if (check) {
 			try {
 				queryFilter = wi.getQueryFilter();
@@ -78,7 +85,7 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ) {
 			if( StringUtils.equals( effectivePerson.getDistinguishedName(), personName )){
 				//管理员身份，查全部的
@@ -109,7 +116,7 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 				}
 			}
 		}
-		
+
 		if (check) {
 			// 从Review表中查询符合条件的对象总数
 			try {
@@ -124,7 +131,7 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
 			//document和Review除了sequence还有5个排序列支持title, appAlias, categoryAlias, categoryName, creatorUnitName的分页查询
 			//除了sequence和title, appAlias, categoryAlias, categoryName, creatorUnitName之外，其他的列排序全部在内存进行分页
@@ -137,13 +144,13 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
 			if ( searchResultList != null ) {
 				Wo wo = null;
-				for( Document document : searchResultList ) {					
+				for( Document document : searchResultList ) {
 					try {
-						wo = Wo.copier.copy( document );						
+						wo = Wo.copier.copy( document );
 						if( wo.getCreatorPerson() != null && !wo.getCreatorPerson().isEmpty() ) {
 							wo.setCreatorPersonShort( wo.getCreatorPerson().split( "@" )[0]);
 						}
@@ -170,11 +177,11 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 		result.setCount(total);
 		result.setData(wos);
 		return result;
-	}	
+	}
 
 	public class DocumentCacheForFilter {
 
-		private Long total = 0L;		
+		private Long total = 0L;
 		private List<Wo> documentList = null;
 
 		public Long getTotal() {
@@ -191,9 +198,9 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 
 		public void setDocumentList(List<Wo> documentList) {
 			this.documentList = documentList;
-		}	
+		}
 	}
-	
+
 	public static class Wi extends WrapInDocumentFilter{
 
 		@FieldDescribe( "可以查询的人员：DistinguishedName" )
@@ -207,12 +214,12 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 			this.person = person;
 		}
 	}
-	
+
 	public static class Wo extends WrapOutDocumentList {
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier<Document, Wo> copier = WrapCopierFactory.wo( Document.class, Wo.class, null,JpaObject.FieldsInvisible);
-		
+
 	}
 }
