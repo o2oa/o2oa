@@ -30,6 +30,13 @@
 	"editTable": {
 		
 	},
+	"editTableTitleWithoutWith": {
+		"font-weight": "bold",
+		"font-size": "12px",
+		"height": "24px",
+		"line-height": "24px",
+		"border-bottom": "1px dashed #CCC"
+	},
 	"editTableTitle": {
 		"width": "60px",
 		"font-weight": "bold",
