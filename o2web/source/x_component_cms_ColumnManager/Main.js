@@ -351,7 +351,8 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "FormExplorer", function(){
             //MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
             //if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-            this.formConfigurator = new MWF.xApplication.cms.ColumnManager.FormExplorer(this.formConfiguratorContent, this.restActions, { "title" : "表单配置" });
+            var title = MWF.xApplication.cms.ColumnManager.LP.formSetting;
+            this.formConfigurator = new MWF.xApplication.cms.ColumnManager.FormExplorer(this.formConfiguratorContent, this.restActions, { "title" : title });
             this.formConfigurator.app = this;
             this.formConfigurator.load();
             //}.bind(this));
@@ -383,7 +384,8 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "DictionaryExplorer", function(){
             //MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
             //if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-            this.dataConfigurator = new MWF.xApplication.cms.ColumnManager.DictionaryExplorer(this.dataConfiguratorContent, this.restActions, { "title" : "数据配置" });
+            var title = MWF.xApplication.cms.ColumnManager.LP.dataSetting;
+            this.dataConfigurator = new MWF.xApplication.cms.ColumnManager.DictionaryExplorer(this.dataConfiguratorContent, this.restActions, { "title" : title });
             this.dataConfigurator.app = this;
             this.dataConfigurator.load();
             //}.bind(this));
@@ -415,7 +417,8 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "ScriptExplorer", function(){
             //MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
             //if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-            this.scriptConfigurator = new MWF.xApplication.cms.ColumnManager.ScriptExplorer(this.scriptConfiguratorContent, this.restActions, { "title" : "脚本配置" });
+            var title = MWF.xApplication.cms.ColumnManager.LP.scriptSetting;
+            this.scriptConfigurator = new MWF.xApplication.cms.ColumnManager.ScriptExplorer(this.scriptConfiguratorContent, this.restActions, { "title" : title });
             this.scriptConfigurator.app = this;
             this.scriptConfigurator.load();
             //}.bind(this));
@@ -447,7 +450,8 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "ViewExplorer", function(){
             //MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
             //if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-            this.viewConfigurator = new MWF.xApplication.cms.ColumnManager.ViewExplorer(this.viewConfiguratorContent, this.restActions, { "title" : "列表配置" });
+            var title = MWF.xApplication.cms.ColumnManager.LP.listSetting;
+            this.viewConfigurator = new MWF.xApplication.cms.ColumnManager.ViewExplorer(this.viewConfiguratorContent, this.restActions, { "title" : title });
             this.viewConfigurator.app = this;
             this.viewConfigurator.load();
             //}.bind(this));
@@ -479,7 +483,8 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "QueryViewExplorer", function(){
             //MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
             //if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-            this.queryViewConfigurator = new MWF.xApplication.cms.ColumnManager.QueryViewExplorer(this.queryViewConfiguratorContent, this.restActions, { "title" : "数据视图配置" });
+            var title = MWF.xApplication.cms.ColumnManager.LP.queryViewSetting;
+            this.queryViewConfigurator = new MWF.xApplication.cms.ColumnManager.QueryViewExplorer(this.queryViewConfiguratorContent, this.restActions, { "title" : title });
             this.queryViewConfigurator.app = this;
             this.queryViewConfigurator.load();
             //}.bind(this));
@@ -511,7 +516,8 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "FileExplorer", function(){
             //MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
             //if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-            this.fileConfigurator = new MWF.xApplication.cms.ColumnManager.FileExplorer(this.fileConfiguratorContent, this.restActions, { "title" : "附件配置" });
+            var title = MWF.xApplication.cms.ColumnManager.LP.attachmentSetting;
+            this.fileConfigurator = new MWF.xApplication.cms.ColumnManager.FileExplorer(this.fileConfiguratorContent, this.restActions, { "title" : title });
             this.fileConfigurator.app = this;
             this.fileConfigurator.load();
             //}.bind(this));
@@ -645,7 +651,7 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
                 if( navi.create ){
                     var createNode = new Element("div", {
                         "styles": this.app.css.startMenuCreateNode,
-                        "title" : "新建"+navi.title
+                        "title" : MWF.xApplication.cms.ColumnManager.LP.new + navi.title
                     });
                     createNode.inject(naviNode);
                     naviNode.store("createNode", createNode );
@@ -843,7 +849,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
     load: function(){
         this.propertyTitleBar = new Element("div.propertyTitleBar", {
             "styles": this.app.css.propertyTitleBar,
-            "text": "栏目属性"  //this.data.name || this.data.appName
+            "text":  MWF.xApplication.cms.ColumnManager.LP.appProperty  //this.data.name || this.data.appName
         }).inject(this.node);
 
         this.contentNode =  new Element("div.propertyContentNode", {
@@ -943,7 +949,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         }
         var changeIconAction = new Element("div", {
             "styles": this.app.css.selectButtonStyle,
-            "text": "更改图标"
+            "text":  MWF.xApplication.cms.ColumnManager.LP.changeIcon
         }).inject(this.iconActionNode);
         changeIconAction.addEvent("click", function(){
             this.changeIcon();
@@ -991,6 +997,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
 
     createPropertyContentNode: function(){
+        var lp =  MWF.xApplication.cms.ColumnManager.LP;
         this.propertyContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
 
         var html = "<table cellspacing='0' cellpadding='0' border='0' width='95%' align='center' style='margin-top: 20px'>";
@@ -998,15 +1005,15 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         html += "<tr><td class='formTitle'>"+this.app.lp.application.name+"</td><td id='formApplicationName'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.sign+"</td><td id='formApplicationAlias'></td></tr>"; //"+(this.data.alias||this.data.appAlias||'')+"
         html += "<tr><td class='formTitle'>"+this.app.lp.application.appType+"</td><td id='formApplicationAppType'></td></tr>";
-        html += "<tr><td class='formTitle'>"+this.app.lp.application.documentType+"</td><td id='formApplicationType' class='formValue'>"+(this.data.documentType || "信息" )+"</td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.documentType+"</td><td id='formApplicationType' class='formValue'>"+(this.data.documentType || lp.documentTypeSelectText[0] )+"</td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.description+"</td><td id='formApplicationDescription'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.sort+"</td><td id='formApplicationSort'></td></tr>";
         var flag = typeOf(this.config.ignoreTitle) === "boolean" ? this.config.ignoreTitle : false;
-        html += "<tr><td class='formTitle'>"+this.app.lp.application.ignoreTitle+"</td><td id='formApplicationIgnoreTitle' class='formValue'>"+(flag ? "新建界面不填写标题" : "新建界面需要填写标题" )+"</td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.ignoreTitle+"</td><td id='formApplicationIgnoreTitle' class='formValue'>"+(flag ? lp.ignoreTitleSelectText[0] : lp.ignoreTitleSelectText[1] )+"</td></tr>";
         var flag = typeOf(this.config.latest) === "boolean" ? this.config.latest : true;
-        html += "<tr><td class='formTitle'>"+this.app.lp.application.latest+"</td><td id='formApplicationLatest' class='formValue'>"+(flag ? "新建界面检查草稿" : "新建界面不检查草稿" )+"</td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.latest+"</td><td id='formApplicationLatest' class='formValue'>"+(flag ? lp.checkDraftSelectText[0] : lp.checkDraftSelectText[1] )+"</td></tr>";
         var flag = typeOf(this.data.showAllDocuments) === "boolean" ? this.data.showAllDocuments : true;
-        html += "<tr><td class='formTitle'>"+this.app.lp.application.showAllDocumentViews+"</td><td id='showAllDocumentViews' class='formValue'>"+(flag ? "显示所有文档视图" : "隐藏所有文档视图" )+"</td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.showAllDocumentViews+"</td><td id='showAllDocumentViews' class='formValue'>"+(flag ? lp.showAllDocumentSelectText[0] : lp.showAllDocumentSelectText[1] )+"</td></tr>";
         // html += "<tr><td class='formTitle'>"+this.app.lp.application.type+"</td><td id='formApplicationType'></td></tr>";
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
         html += "</table>";
@@ -1022,8 +1029,9 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
         this.typeSelect = new MDomItem( this.propertyContentNode.getElement("#formApplicationType"), {
             type : "select",
-            value : this.data.documentType || "信息",
-            selectValue : [ "信息", "数据" ]
+            value : this.data.documentType || lp.documentTypeSelectValue[0],
+            selectValue : lp.documentTypeSelectValue,
+            selectText : lp.documentTypeSelectText
         });
 
         this.descriptionInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationDescription"), this.data.description, this.app.css.formInput);
@@ -1035,7 +1043,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             defaultValue : "false",
             value : ( typeOf(this.config.ignoreTitle) === "boolean" ? this.config.ignoreTitle : false ).toString(),
             selectValue : [ "true", "false" ],
-            selectText : [ "新建界面不填写标题", "新建界面需要填写标题" ]
+            selectText : lp.ignoreTitleSelectText
         });
 
 
@@ -1044,7 +1052,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             defaultValue : "true",
             value : ( typeOf(this.config.latest) === "boolean" ? this.config.latest : true ).toString(),
             selectValue : [ "true", "false" ],
-            selectText : [ "新建界面检查草稿", "新建界面不检查草稿" ]
+            selectText : lp.checkDraftSelectText
         });
 
         this.allDocumentViewSelect = new MDomItem( this.propertyContentNode.getElement("#showAllDocumentViews"), {
@@ -1052,7 +1060,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             defaultValue : "true",
             value : ( typeOf(this.data.showAllDocuments) === "boolean" ? this.data.showAllDocuments : true ).toString(),
             selectValue : [ "true", "false" ],
-            selectText : [ "显示所有文档视图", "隐藏所有文档视图" ]
+            selectText : lp.showAllDocumentSelectText
         });
 
         //this.typeInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationType"), this.data.applicationCategory, this.app.css.formInput);
