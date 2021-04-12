@@ -958,14 +958,16 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
             this.officeForm = this.officeNode.getFirst();
             this.officeOCX = this.officeNode.getFirst().getFirst();
 
-            if(window.navigator.platform=="Win64"){
-                this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
-            }
-            if(window.navigator.platform=="Win32"){
-                this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
-            }
+            if (this.officeOCX){
+                if(window.navigator.platform=="Win64"){
+                    this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
+                }
+                if(window.navigator.platform=="Win32"){
+                    this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
+                }
 
-            this.doOfficeOCXEvents();
+                this.doOfficeOCXEvents();
+            }
         }
 
         var url = this.getOfficeFileUrl();

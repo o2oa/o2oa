@@ -125,7 +125,7 @@ o2.LP.process = {
 		"script": "Script"
 	}
 };
-MWF.LP.desktop = {
+o2.LP.desktop = {
 	"homepage": "Homepage",
 	"loadding": "System is loadding, please wait......",
 	"lowBrowser": " Your browser version is too low! ~ IE8 and the following versions are not supported!",
@@ -163,12 +163,14 @@ MWF.LP.desktop = {
 	"defaultMenuTitle": "Confirmation",
 	"defaultMenuInfor": "Are you sure you want to restore the ordering and grouping of the menu to the default state？",
 
+	"deleteLink" : "Delete Link",
+
 	"messsage": {
 		"appliction": "Application",
-		"application": "app",
+		"application": "App",
 		"process": "Process",
-		"infor": "info",
-		"query": "data",
+		"infor": "Info",
+		"query": "Data",
 		"taskMessage": "Task Reminders",
 		"receiveTask": "You get a Task, The title is: ",
 		"activity": "Activity",
@@ -212,7 +214,8 @@ MWF.LP.desktop = {
 		"publishDocument" : "Publish document: ",
 
 		"customMessageTitle": "Message: ",
-		"customMessage": "You received a message: "
+		"customMessage": "You received a message: ",
+		"emoji": "Emoji"
 	},
 	"styleMenu": {
 		"default": "default",
@@ -313,6 +316,11 @@ o2.LP.widget = {
 	"rename": "Rename",
 	"property": "Property",
 	"refuseUpload": "File upload is prohibited",
+	"refuseUploadHTML": "<div>The type of attachment named <font style='color:#0000ff'>\"{filename}\"</font> is not allowed to be uploaded and has been excluded</div>",
+	"refuseUploadNotice" : "The type of attachment named \"{filename}\" is not allowed to be uploaded",
+	"refuseUploadHTML_size" : "<div>The size of the attachment named <font style='color:#0000ff'>\"{filename}\"</font> is too large and has been excluded </font> (Only allow uploading of attachments smaller than {size}M) </div>",
+	"refuseUploadNotice_size": "The size of the attachment named \"{filename}\" is too large (Only allow uploading of attachments smaller than {size}M) ",
+
 
 	"list": "List",
 	"sequence": "Sequence",
@@ -344,6 +352,12 @@ o2.LP.widget = {
 
 	"months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 	"days_abbr": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+	"clear": "clear",
+	"year": ", ",
+	"month": " ",
+	"date": " ",
+	"week": "week",
+	"dateGreaterThanCurrentNotice" : "The selected date must be greater than the current date",
 
 	"unknow": "unknow",
 	"uploadImg": "uploadImg",
@@ -360,7 +374,38 @@ o2.LP.widget = {
 	"record": "Record",
 	"stop": "Stop",
 	"play": "Play",
-	"save": "Save"
+	"save": "Save",
+	"userRefuse" : "The user refuses to provide information.",
+	"explorerNotSupportDevice" : "The browser does not support hardware devices.",
+	"canNotFindDevice": "Unable to discover the specified hardware device.",
+	"canNotOpenMicrophone": "Unable to turn on the microphone. Exception information: ",
+	"explorerNotSupportRecordVoice" : "The browser does not support the recording function.",
+
+	"clickToEditCss" : "Click here to write CSS",
+	"uploadSuccess": "Uploaded successfully!",
+	"uploadFail": "Upload failed, please upload again!",
+	"selectLocalImage" : "Choose local picture",
+	"selectCloudImage": "Choose server picture",
+	"reset": "Reset",
+	"uploadOriginalImage": "Upload Original Image",
+
+	"startRecord" : "Start Recording",
+	"completeRecord": "Stop Recording",
+	"requireHttps" : "Video recording function must use https protocol",
+	"canNotToRecordVideo" : "The video recording function cannot be used. Your browser does not support the following features:",
+
+	"pageJumperTitle": "Enter the page number",
+
+	"scriptAreaEditNotice" : "Click here to write script code",
+	"empty" : "Clear",
+	"undo" : "Undo",
+	"redo" : "Redo",
+	"thickness" : "Thickness",
+	"color" : "Color",
+	"insertImage" : "Insert Image",
+	"imageClipper" : "Crop Image",
+
+	"explorerNotSupportFeatures" : "Your browser does not support the following features:"
 };
 
 o2.LP.widget.SimpleEditor = {
@@ -432,8 +477,9 @@ o2.LP.authentication = {
 	"inputYourOldPassword" : "Enter the original password",
 	"newPassword" : "New Password",
 	"inputYourNewPassword" : "Enter a new password",
-	"changePasswordSuccess" : "Successfully change password"
-
+	"changePasswordSuccess" : "Successfully change password",
+	"userAppCameraHtml" : "<div>open <div styles='bindTipLinkArea'>APP </div> and scan QR code</div>",
+	"loginToPage": "Login to the web page"
 
 };
 o2.LP.script = {
