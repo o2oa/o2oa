@@ -122,6 +122,11 @@
     "text": "数据网格",
     "className": "Datagrid"
   },
+  "datatemplate": {
+    "icon": "datagrid.png",
+    "text": "数据模板",
+    "className": "Datatemplate"
+  },
   "subform": {
     "icon": "subform.png",
     "text": "子表单",
