@@ -981,11 +981,11 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
                 selectData.tableList.length===this.data.tableList.length &&
                 selectData.revealList.length===this.data.revealList.length){
                 selectData =  {
-                    "viewList": this.data.viewList,
-                    "statList": this.data.statList,
-                    "revealList": this.data.revealList,
-                    "statementList": this.data.statementList,
-                    "tableList": this.data.tableList
+                    "viewList": [],
+                    "statList": [],
+                    "revealList": [],
+                    "statementList": [],
+                    "tableList": []
                 };
             }else{
                 selectData =  {
@@ -1052,7 +1052,7 @@ MWF.xApplication.AppCenter.Exporter.ServiceElement = new Class({
     selectAll: function(){
         var selectData = this.postData;
         if (selectData.agentList.length  || selectData.invokeList.length){
-            if (selectData.agentList.length===this.data.invokeList.length ){
+            if (selectData.agentList.length===this.data.agentList.length  || selectData.invokeList.length===this.data.invokeList.length){
                 selectData =  {
                     "agentList": [],
                     "invokeList": []
