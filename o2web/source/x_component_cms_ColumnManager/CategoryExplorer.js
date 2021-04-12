@@ -160,7 +160,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 
         this.formCreateNode = new Element("div.formCreateNode", {
             "styles": this.css.formCreateNode,
-            "title" : "新建表单"
+            "title" : MWF.xApplication.cms.ColumnManager.LP.form.create
         }).inject(this.formTitleNode);
         this.formCreateNode.addEvent("click", function(e){
             this.formExplorer._createElement(e);
@@ -179,7 +179,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 
         this.formTitleTextNode = new Element("div.formTitleTextNode", {
             "styles": this.css.formTitleTextNode,
-            "text" : "选择分类表单"
+            "text" : MWF.xApplication.cms.ColumnManager.LP.form.selectCategoryForm
         }).inject(this.formTitleNode);
 
         //this.formContainerNode = new Element("div.formContainerNode", {
@@ -208,8 +208,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 
         this.viewAddNode = new Element("div.viewAddNode", {
             "styles": this.css.viewAddNode,
-            "text" : "选择数据视图",
-            "title" : "从已有数据视图中选择"
+            "text" : MWF.xApplication.cms.ColumnManager.LP.selectDataView,
+            "title" : MWF.xApplication.cms.ColumnManager.LP.selectDataViewTitle
         }).inject(this.viewTitleNode);
         this.viewAddNode.addEvent("click", function(e){
             this.viewExplorer._selectView(e);
@@ -224,8 +224,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 
         this.listAddNode = new Element("div.listAddNode", {
             "styles": this.css.viewAddNode,
-            "text" : "选择列表",
-            "title" : "从已有列表中选择"
+            "text" : MWF.xApplication.cms.ColumnManager.LP.selectList,
+            "title" : MWF.xApplication.cms.ColumnManager.LP.selectListTitle
         }).inject(this.viewTitleNode);
         this.listAddNode.addEvent("click", function(e){
             this.viewExplorer._selectList(e);
@@ -244,7 +244,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 
         this.viewTitleTextNode = new Element("div.viewTitleTextNode", {
             "styles": this.css.viewTitleTextNode,
-            "text" : "分类展现"
+            "text" : MWF.xApplication.cms.ColumnManager.LP.categoryDisplay
         }).inject(this.viewTitleNode);
 
         //this.viewContainerNode = new Element("div.viewContainerNode", {
@@ -721,7 +721,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         this.app.restActions.addCategoryView(data, function(json){
             this.app.restActions.getView( viewId, function( js ){
                 //this.createViewsNode( this.viewNaviListNode, js.data );
-                this.app.notice("设置分类列表成功");
+                this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setCategoryListSuccess );
             }.bind(this) )
         }.bind(this), null, false);
     },
@@ -729,7 +729,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         var d = this.data;
         d.defaultViewName = viewId;
         this.app.restActions.saveCategory(  d, function( json ){
-            if(!silent)this.app.notice("设置默认视图成功");
+            if(!silent)this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setDefaultViewSuccess );
         }.bind(this))
     },
     cancelCategoryView : function(viewId, viewName){
@@ -741,7 +741,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
                         delete this.categoryViewObj[viewId];
                         this.categoryViewArr.erase( categoryView );
                         categoryView.destroy();
-                        this.app.notice("取消分类列表成功");
+                        this.app.notice( MWF.xApplication.cms.ColumnManager.LP.cancelCategoryListSuccess );
                     }.bind(this), null, false);
                 }
             }.bind(this));
@@ -757,7 +757,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
             viewAppId : viewAppId
         };
         this.app.restActions.saveCategoryImportView(d.id, json, function( json ){
-            this.app.notice("设置分类导入导出视图成功");
+            this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setImpExpViewSuccess );
         }.bind(this))
     },
     setCategoryAlias : function( alias ){
@@ -765,14 +765,14 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         d.categoryAlias = alias;
         d.alias = alias;
         this.app.restActions.saveCategory(  d, function( json ){
-            this.app.notice("设置分类别名成功");
+            this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setCategoryAliasSuccess );
         }.bind(this))
     },
     setDocumentType : function( documentType ){
         var d = this.data;
         d.documentType = documentType;
         this.app.restActions.saveCategory(  d, function( json ){
-            this.app.notice("设置文档类型成功");
+            this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setDocumentTypeSuccess );
         }.bind(this))
     },
     setEditForm : function( formId, formName ){
@@ -780,7 +780,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         d.formId = formId;
         d.formName = formName;
         this.app.restActions.saveCategory(  d, function( json ){
-            this.app.notice("设置编辑表单成功");
+            this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setEditFormSuccess );
         }.bind(this))
     },
     setReadForm : function( readformId, readformName ){
@@ -788,7 +788,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         d.readFormId = readformId;
         d.readFormName = readformName;
         this.app.restActions.saveCategory(  d, function( json ){
-            this.app.notice("设置阅读表单成功");
+            this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setReadFormSuccess );
         }.bind(this))
     },
     saveCategory : function(){
@@ -799,8 +799,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         }
         if( this.editMode && this.input ){
             var value = this.input.get("value");
-            if( value == "" || value == "请输入分类名称" ){
-                this.app.notice("请输入分类名称","error");
+            if( value == "" || value == MWF.xApplication.cms.ColumnManager.LP.category.inputName ){
+                this.app.notice( MWF.xApplication.cms.ColumnManager.LP.inputCategoryNotice,"error");
                 return;
             }else{
                 d.categoryName = value;
@@ -830,7 +830,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         this.editMode = true;
         this.input = new Element("input", {
             "type": "text",
-            "value" : this.options.isNew ? "请输入分类名称" : this.data.name,
+            "value" : this.options.isNew ? MWF.xApplication.cms.ColumnManager.LP.category.inputName : this.data.name,
             "styles": this.css.categoryInput
         }).inject(this.node, "top");
         this.input.addEvents( {
@@ -842,13 +842,13 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
                 ev.stopPropagation();
             }.bind(this),
             "focus" : function( ev ){
-                if( ev.target.value == "请输入分类名称" ){
+                if( ev.target.value == MWF.xApplication.cms.ColumnManager.LP.category.inputName ){
                     ev.target.value = "";
                 }
             }.bind(this),
             "blur" : function( ev ){
                 if( ev.target.value == "" ){
-                    ev.target.value = "请输入分类名称";
+                    ev.target.value = MWF.xApplication.cms.ColumnManager.LP.category.inputName;
                 }
             }.bind(this)
         });
@@ -1238,7 +1238,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.FormExplorer =  new Class({
             });
             this.noElementNode = new Element("div", {
                 "styles": this.css.noElementNode,
-                "text": "请先新建或选择分类"
+                "text":  MWF.xApplication.cms.ColumnManager.LP.noCategoryNotice
             }).inject(this.elementContentListNode);
         }else if( category.options.isNew ){
             this.itemArray.each( function( item ){
@@ -1246,7 +1246,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.FormExplorer =  new Class({
             });
             this.noElementNode = new Element("div", {
                 "styles": this.css.noElementNode,
-                "text": "请先保存分类"
+                "text": MWF.xApplication.cms.ColumnManager.LP.saveCategoryNotice
             }).inject(this.elementContentListNode);
         }else{
             if( this.itemArray && this.itemArray.length ){
@@ -1364,7 +1364,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Form = new Class({
 
         var itemIconNode = new Element("div", {
             "styles": this.css.itemIconNode,
-            "title" : "可以拖动到桌面"
+            "title" : MWF.xApplication.cms.ColumnManager.LP.dragToDesktopNotice
         }).inject(this.node);
         itemIconNode.setStyle("background", "url("+iconUrl+") center center no-repeat");
         //new Element("img", {
@@ -1381,7 +1381,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Form = new Class({
 
         this.setEditAction =  new Element("div.setEditAction",{
             styles : this.css.setEditAction,
-            "title" : "设为编辑表单"
+            "title" : MWF.xApplication.cms.ColumnManager.LP.asEditForm
         }).inject(this.actionsArea);
         this.setEditAction.addEvents({
             "click" : function(ev){ this.setEditForm(); }.bind(this),
@@ -1394,7 +1394,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Form = new Class({
         });
         this.setReadAction =  new Element("div.setReadAction",{
             styles : this.css.setReadAction,
-            "title" : "设为阅读表单"
+            "title" : MWF.xApplication.cms.ColumnManager.LP.asReadForm
         }).inject(this.actionsArea);
         this.setReadAction.addEvents({
             "click" : function(ev){
@@ -1410,7 +1410,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Form = new Class({
         if (!this.explorer.options.noDelete){
             this.deleteActionNode = new Element("div.deleteAction", {
                 "styles": this.css.deleteAction,
-                "title" : "删除"
+                "title" : MWF.xApplication.cms.ColumnManager.LP.delete
             }).inject(this.actionsArea);
             this.deleteActionNode.addEvent("click", function(e){
                 this.deleteItem(e);
@@ -1614,13 +1614,13 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
             this.elementContentListNode.empty();
             var noElementNode = new Element("div", {
                 "styles": this.css.noElementNode,
-                "text": "请先新建或选择分类"
+                "text": MWF.xApplication.cms.ColumnManager.LP.noCategoryNotice
             }).inject(this.elementContentListNode);
         }else if( this.category.options.isNew ){
             this.elementContentListNode.empty();
             var noElementNode = new Element("div", {
                 "styles": this.css.noElementNode,
-                "text": "请先保存分类"
+                "text": MWF.xApplication.cms.ColumnManager.LP.saveCategoryNotice
             }).inject(this.elementContentListNode);
         }else{
             this._loadItemDataList(function(json){
@@ -1636,7 +1636,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
                     this.elementContentListNode.empty();
                     var noElementNode = new Element("div", {
                         "styles": this.css.noElementNode,
-                        "text": "未添加列表或者数据视图"
+                        "text": MWF.xApplication.cms.ColumnManager.LP.notAddListOrView
                     }).inject(this.elementContentListNode);
                     if (!this.options.noCreate){
                         noElementNode.addEvent("click", function(e){
@@ -1700,8 +1700,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
                 if( !this.extContent || !this.extContent.reveal || this.extContent.reveal.length == 0 ){
                     this.extContent = { reveal : [{
                         id : "defaultList",
-                        showName : "系统列表",
-                        name : "系统列表"
+                        showName : MWF.xApplication.cms.ColumnManager.LP.systemList,
+                        name : MWF.xApplication.cms.ColumnManager.LP.systemList
                     }] };
                 }
                 this.revealData = this.extContent.reveal;
@@ -1715,7 +1715,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
             this.elementContentListNode.empty();
             var noElementNode = new Element("div", {
                 "styles": this.css.noElementNode,
-                "text": "请先选择分类！"
+                "text": MWF.xApplication.cms.ColumnManager.LP.selectCategoryNotice
             }).inject(this.elementContentListNode);
         }
 
@@ -1742,7 +1742,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "widget.CMSListSelector", null, false);
         var opt  = {
             "count": 0,
-            "title": "选择列表",
+            "title": MWF.xApplication.cms.ColumnManager.LP.selectList,
             "values": [],
             "appId" : this.app.options.column.id,
             "onComplete": function( array ){
@@ -1788,7 +1788,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
             this.saveExtContent();
         }
         if( repeated.length > 0 ){
-            this.app.notice( "列表" + repeated.join("、") + "已经存在了，不再重复添加！", "error" );
+            var text = MWF.xApplication.cms.ColumnManager.LP.conflictedListNotice.replace("{text}", repeated.join("、"));
+            this.app.notice( text, "error" );
         }
     },
     _selectView: function(){
@@ -1796,7 +1797,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
 
         var opt  = {
             "type" : "QueryView", //CMSView
-            "title": "选择视图",
+            "title": MWF.xApplication.cms.ColumnManager.LP.selectDataView,
             "count" : 0,
             "values": [],
             "onComplete": function( array ){
@@ -1839,7 +1840,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
             this.saveExtContent();
         }
         if( repeated.length > 0 ){
-            this.app.notice( "视图" + repeated.join("、") + "已经存在了，不再重复添加！" , "error");
+            var text = MWF.xApplication.cms.ColumnManager.LP.conflictedViewNotice.replace("{text}", repeated.join("、"));
+            this.app.notice( text , "error");
         }
     },
     //_createElementByForm: function(e){
@@ -2022,7 +2024,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
         this.typeNode = new Element("td", {
             "styles": this.css.listTableContent,
             "width" : "30",
-            "text" : this.data.type == "list" ? "列表" : "视图"
+            "text" : this.data.type == "list" ? MWF.xApplication.cms.ColumnManager.LP.list1 : MWF.xApplication.cms.ColumnManager.LP.view1
         }).inject(this.node);
         this.typeNode.setStyle("font-size","12px");
 
@@ -2053,7 +2055,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
         this.readActionsArea = new Element("div").inject( this.actionsArea );
         this.editAction =  new Element("div.editViewAction",{
             styles : this.css.editViewAction,
-            "title" : "编辑"
+            "title" : MWF.xApplication.cms.ColumnManager.LP.edit
         }).inject(this.readActionsArea);
         this.editAction.addEvents({
             "click" : function(ev){
@@ -2069,7 +2071,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
 
         this.setDefaultCategoryViewAction =  new Element("div.setDefaultCategoryViewAction",{
             styles : this.css.setDefaultCategoryViewAction,
-            "title" : "设为分类默认列表"
+            "title" : MWF.xApplication.cms.ColumnManager.LP.setAsDefaultList
         }).inject(this.readActionsArea);
         this.setDefaultCategoryViewAction.addEvents({
             "click" : function(ev){
@@ -2086,7 +2088,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
 
         this.cancelViewAction = new Element("div.cancelViewAction", {
             "styles": this.css.cancelViewAction,
-            "title" : "取消"
+            "title" : MWF.xApplication.cms.ColumnManager.LP.cancel
         }).inject(this.readActionsArea);
         this.cancelViewAction.addEvent("click", function(e){
             this.cancelView(e);
@@ -2102,7 +2104,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
 
         this.trunViewAction =  new Element("div.trunViewAction",{
             styles : this.css.trunViewAction,
-            "title" : "调整顺序"
+            "title" : MWF.xApplication.cms.ColumnManager.LP.adjustOrder
         }).inject(this.readActionsArea);
         this.trunViewAction.addEvents({
             "click" : function(ev){
@@ -2123,7 +2125,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
 
         this.saveViewAction =  new Element("div.saveViewAction",{
             styles : this.css.saveViewAction,
-            "title" : "保存"
+            "title" : MWF.xApplication.cms.ColumnManager.LP.save
         }).inject(this.editActionsArea);
         this.saveViewAction.addEvents({
             "click" : function(ev){
@@ -2139,7 +2141,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
 
         this.cancelEditViewAction =  new Element("div.cancelEditViewAction",{
             styles : this.css.cancelEditViewAction,
-            "title" : "取消编辑"
+            "title" :  MWF.xApplication.cms.ColumnManager.LP.cancelEdit
         }).inject(this.editActionsArea);
         this.cancelEditViewAction.addEvents({
             "click" : function(ev){
@@ -2487,7 +2489,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         var d = this.category.data;
         d.workflowFlag = processId;
         d.workflowName = processName;
-        d.workflowType = processId ? "固定审批流" : "禁用审批流";
+        d.workflowType = processId ? MWF.xApplication.cms.ColumnManager.LP.enableProcess : MWF.xApplication.cms.ColumnManager.LP.disableProcess;
         this.app.restActions.saveCategory(  d, function( json ){
             this.app.notice(this.lp.setProcessSucess);
         }.bind(this))
@@ -2651,10 +2653,12 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
             this.category.setCategoryAlias( el.target.get("value") );
         }.bind(this));
 
+        var lp = this.app.lp;
         this.typeSelect = new MDomItem( this.propertyContentNode.getElement("#formCategoryType"), {
             type : "select",
-            value : this.category.data.documentType || "信息",
-            selectValue : [ "信息", "数据" ],
+            value : this.category.data.documentType || lp.documentTypeSelectValue[0],
+            selectValue : lp.documentTypeSelectValue,
+            selectText: lp.documentTypeSelectText,
             event : {
                 change : function( item ){
                     this.category.setDocumentType( item.getValue() );
@@ -2718,28 +2722,30 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewTooltip = new Class({
         var titleStyle = "font-size:12px;color:#333";
         var valueStyle = "font-size:12px;color:#666;padding-right:20px";
 
+        var lp = MWF.xApplication.cms.ColumnManager.LP;
+
        if( data.type == "list" ){
            var html =
                "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
-               "<tr><td style='"+titleStyle+";' width='70'>"+"类型"+":</td>" +
-               "    <td style='"+valueStyle+";'>" + "列表" + "</td></tr>" +
-               "<tr><td style='"+titleStyle+";' width='70'>"+"列表名称"+":</td>" +
+               "<tr><td style='"+titleStyle+";' width='70'>"+lp.type+":</td>" +
+               "    <td style='"+valueStyle+";'>" + lp.list + "</td></tr>" +
+               "<tr><td style='"+titleStyle+";' width='70'>"+lp.listName+":</td>" +
                "    <td style='"+valueStyle+";'>" + data.name + "</td></tr>" +
-               "<tr><td style='"+titleStyle+"'>"+"关联表单" +":</td>" +
+               "<tr><td style='"+titleStyle+"'>"+ lp.relativeForm +":</td>" +
                "    <td style='"+valueStyle+"'>"+ (data.formName || "") +"</td></tr>" +
-               "<tr><td style='"+titleStyle+"'>"+"别名"+":</td>" +
+               "<tr><td style='"+titleStyle+"'>"+ lp.alias +":</td>" +
                "    <td style='"+valueStyle+"'>"+(data.alias||"") +"</td></tr>" +
                "</table>";
        }else{
            var html =
                "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
-               "<tr><td style='"+titleStyle+";' width='70'>"+"类型"+":</td>" +
-               "    <td style='"+valueStyle+";'>" + "数据视图" + "</td></tr>" +
-               "<tr><td style='"+titleStyle+";' width='70'>"+"视图名称"+":</td>" +
+               "<tr><td style='"+titleStyle+";' width='70'>"+ lp.type +":</td>" +
+               "    <td style='"+valueStyle+";'>" + lp.dataView + "</td></tr>" +
+               "<tr><td style='"+titleStyle+";' width='70'>"+ lp.viewName +":</td>" +
                "    <td style='"+valueStyle+";'>" + data.name + "</td></tr>" +
-               "<tr><td style='"+titleStyle+"'>"+"栏目" +":</td>" +
+               "<tr><td style='"+titleStyle+"'>"+ lp.column +":</td>" +
                "    <td style='"+valueStyle+"'>"+ (data.appName || "") +"</td></tr>" +
-               "<tr><td style='"+titleStyle+"'>"+"别名"+":</td>" +
+               "<tr><td style='"+titleStyle+"'>"+ lp.alias +":</td>" +
                "    <td style='"+valueStyle+"'>"+(data.alias||"")+"</td></tr>" +
                "</table>";
        }
