@@ -63,7 +63,12 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
                 style : "filter",
                 isEdited : true,
                 itemTemplate : {
-                    q_topUnitName : { "text" : lp.selectCompany, "type" : "org", "orgType" : "unit", style : {"min-width" : "200px"} },
+                    q_topUnitName : { "text" : lp.selectCompany, "type" : "org", "orgType" : "unit", style : {"min-width" : "200px"} , event: {
+                            change : function (item, ev) {
+                                debugger;
+                            }
+                        }
+                    },
                     q_unitName : { "text" : lp.selectDepartment, "type" : "org", "orgType" : "unit", style : {"min-width" : "250px"} },
                     q_empName : {  "text" : lp.selectPerson, "type" : "org", "orgType" : "person", style : {"min-width" : "100px"} },
                     startdateString : {  "text" : lp.startTime, "tType" : "date",style : {"border" : "1px solid rgb(153, 153, 153)","background":'url("../x_component_Template/$MForm/default/icon/calendar.png") 98% center no-repeat',"border-radius":"3px","box-shadow":"rgb(204, 204, 204) 0px 0px 6px","height":"26px","width":"100px"} },
