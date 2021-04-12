@@ -148,6 +148,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">允许预览:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isPreviewAtt" text{($.isReplace=='y')?'checked':''} type="radio" value="y"/>允许
+                    <input class="editTableRadio" name="isPreviewAtt" text{($.isReplace=='n')?'checked':''} type="radio" value="n"/>不允许<br/>
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">允许下载:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isDownload" text{($.isDownload!=='n')?'checked':''} type="radio" value="y"/>允许
