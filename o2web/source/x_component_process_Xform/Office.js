@@ -116,8 +116,8 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 		});
         // this.isActive = true;
         debugger;
-        if (Browser.name==="ie" || Browser.name==="chrome" || Browser.name==="firefox"){
-		//if (Browser.name==="ie"){
+        //if (Browser.name==="ie" || Browser.name==="chrome" || Browser.name==="firefox"){
+		if (Browser.name==="ie"){
             this.isActive = true;
             this.file = null;
             if (!this.form.officeList) this.form.officeList=[];
