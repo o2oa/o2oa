@@ -206,16 +206,10 @@ MWF.xApplication.Org.Main = new Class({
                 }).load();
 			}.bind(this));
 		}.bind(this));
+
 		var exporturl = o2.filterUrl(o2.Actions.getHost("x_cms_assemble_control") + "/x_organization_assemble_control/jaxrs/export/export/all");
-		this.exportPersonNode.set("text",this.lp.exportPersonText);
-		var anode = new Element("div").inject(this.exportPersonNode);
-		anode.set("html", this.lp.exportPersonAction.replace("{url}", exporturl));
-		anode.hide();
-		this.exportPersonNode.addEvent("click", function(){	
-			debugger;		
-			this.exportPersonNode.getElement("a").click()
-			debugger;
-		}.bind(this));
+		this.exportPersonNode.set("text", this.lp.exportPersonText);
+		this.exportPersonNode.set("href", exporturl);
 	},
 	privateNamesQueryPower:function(){
 		debugger;
