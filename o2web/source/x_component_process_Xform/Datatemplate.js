@@ -70,11 +70,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		isEdit: false,
 		options: {
 			/**
-			 * 当前条目编辑完成时触发。通过this.event可以获取对应的tr。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#completeLineEdit
-			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-			 */
-			/**
 			 * 添加条目时触发。通过this.event可以获取对应的tr。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#addLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -87,11 +82,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			/**
 			 * 删除条目后触发。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#afterDeleteLine
-			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-			 */
-			/**
-			 * 编辑条目时触发。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#editLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
@@ -139,7 +129,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @event MWF.xApplication.process.Xform.Datatemplate#import
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
-			"moduleEvents": ["queryLoad","postLoad","load","completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine", "export", "import", "validImport"]
+			"moduleEvents": ["queryLoad","postLoad","load","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport"]
 		},
 
 		initialize: function(node, json, form, options){
