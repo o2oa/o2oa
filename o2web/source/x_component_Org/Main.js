@@ -173,6 +173,7 @@ MWF.xApplication.Org.Main = new Class({
             this.importPersonTemplateNode = this.importConfiguratorContentNode.getElement(".importPersonTemplateNode");
             this.importPersonNode = this.importConfiguratorContentNode.getElement(".importPersonNode");
             this.importPersonResultNode = this.importConfiguratorContentNode.getElement(".importPersonResultNode");
+			this.exportPersonNode = this.importConfiguratorContentNode.getElement(".exportPersonNode");
             o2.loadCss(this.path+this.options.style+"/importCss.css", this.importConfiguratorContentNode, function(){
                 this.loadPersonImport();
             }.bind(this));
@@ -205,6 +206,10 @@ MWF.xApplication.Org.Main = new Class({
                 }).load();
 			}.bind(this));
 		}.bind(this));
+
+		var exporturl = o2.filterUrl(o2.Actions.getHost("x_cms_assemble_control") + "/x_organization_assemble_control/jaxrs/export/export/all");
+		this.exportPersonNode.set("text", this.lp.exportPersonText);
+		this.exportPersonNode.set("href", exporturl);
 	},
 	privateNamesQueryPower:function(){
 		debugger;
