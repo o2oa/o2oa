@@ -28,6 +28,18 @@
     text-align: center;
     cursor: pointer;
 }
+.exportPersonNode{
+    margin: 50px 0px;
+    height: 30px;
+    line-height: 30px;
+    width: 160px;
+    border: 1px solid #999999;
+    border-radius: 8px;
+    background-color: #3c76b7;
+    color: #ffffff;
+    text-align: center;
+    cursor: pointer;
+}
 .importPersonResultNode {
     display: none;
     margin-top: 20px;
