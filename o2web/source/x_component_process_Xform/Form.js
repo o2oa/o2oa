@@ -4341,6 +4341,32 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
             }
         }
+    },
+    /**
+     * @summary 获取组件的类型(小写).
+     * @param {Object|String} module - 组件或组件Id
+     * @return {String} 组件类型（小写）
+     * @example
+     * //假设有一个文本输入组件id为subject
+     * var module = this.form.get("subject");
+     * //moduleType 为 textfield;
+     * var moduleType = this.form.getApp().appForm.getModuleType();
+     * @example
+     * //假设有一个附件组件id为att,
+     * var moduleType = this.form.getApp().appForm.getModuleType("att");
+     * //moduleType 为 attachment;
+     */
+    getModuleType : function (module) {
+        if( typeOf(module) === "string" )module = this.all[module];
+        if( module ){
+            var moduleType = module.json.moduleName || "";
+            if( !moduleType ){
+                moduleType = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
+            }
+            return moduleType.toLowerCase();
+        }else{
+            return "";
+        }
     }
 
 });
