@@ -258,7 +258,6 @@ MWF.xApplication.Org.LP = {
     "importPersonAction": "上传Excel文件，导入组织",
     "importPersonResult": "组织已导入，<a target='_blank' href='{url}' >点击此处</a>查看导入结果",
     "exportPersonText": "导出组织到excel文件",
-    "exportPersonAction": "<a target='_blank' href='{url}' >组织导出excel文件</a>",
 
     "queryPrivateConfigTitle":"个人通讯录权限配置",
     "queryPrivateConfigExcludUnit":"不允许被查询单位",
