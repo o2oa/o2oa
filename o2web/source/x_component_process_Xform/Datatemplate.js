@@ -4,8 +4,7 @@
  * @property {Array} data - 数据网格列表数据
  * @property {Object} total - 统计数据
  * @example
- {
-    "data": [ //数据模板数据条目
+	[ //数据模板数据条目
         {
             "org": [{
                 "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
@@ -48,27 +47,22 @@
             ]
         },
         ...
-    ],
-    "total": {  //统计数据，列title设置了总计
-        "datagrid_datagrid$Title_2": "333", //总计列2
-        "datagrid_datagrid$Title_3": "2" //总计列3
-    }
-}
+    ]
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Datatemplate 数据模板组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var datagrid = this.form.get("name"); //获取组件
+ * var datatemplate = this.form.get("name"); //获取组件
  * //方法2
- * var datagrid = this.target; //在组件事件脚本中获取
+ * var datatemplate = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @o2category FormComponents
  * @o2range {Process|CMS}
  * @hideconstructor
  */
-MWF.xApplication.process.Xform.Datatemplate = new Class(
+MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 	/** @lends MWF.xApplication.process.Xform.Datatemplate# */
 	{
 		Implements: [Events],
@@ -77,32 +71,32 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 		options: {
 			/**
 			 * 当前条目编辑完成时触发。通过this.event可以获取对应的tr。
-			 * @event MWF.xApplication.process.Xform.DatagridPC#completeLineEdit
+			 * @event MWF.xApplication.process.Xform.Datatemplate#completeLineEdit
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
 			 * 添加条目时触发。通过this.event可以获取对应的tr。
-			 * @event MWF.xApplication.process.Xform.DatagridPC#addLine
+			 * @event MWF.xApplication.process.Xform.Datatemplate#addLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
 			 * 删除条目前触发。通过this.event可以获取对应的tr。
-			 * @event MWF.xApplication.process.Xform.DatagridPC#deleteLine
+			 * @event MWF.xApplication.process.Xform.Datatemplate#deleteLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
 			 * 删除条目后触发。
-			 * @event MWF.xApplication.process.Xform.DatagridPC#afterDeleteLine
+			 * @event MWF.xApplication.process.Xform.Datatemplate#afterDeleteLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
 			 * 编辑条目时触发。
-			 * @event MWF.xApplication.process.Xform.DatagridPC#editLine
+			 * @event MWF.xApplication.process.Xform.Datatemplate#editLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
 			 * 导出excel的时候触发，this.event指向导出的数据，您可以通过修改this.event来修改数据。
-			 * @event MWF.xApplication.process.Xform.DatagridPC#export
+			 * @event MWF.xApplication.process.Xform.Datatemplate#export
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 * @example
 			 * <caption>this.event数据格式如下：</caption>
@@ -118,7 +112,7 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 			 */
 			/**
 			 * 在导入excel，进行数据校验后触发，this.event指向导入的数据。
-			 * @event MWF.xApplication.process.Xform.DatagridPC#validImport
+			 * @event MWF.xApplication.process.Xform.Datatemplate#validImport
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 * @example
 			 * <caption>this.event数据格式如下：</caption>
@@ -141,8 +135,8 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 			 * }
 			 */
 			/**
-			 * 在导入excel，数据校验成功将要设置回数据网格的时候触发，this.event指向整理过的导入数据，格式见{@link DatagridData}。
-			 * @event MWF.xApplication.process.Xform.DatagridPC#import
+			 * 在导入excel，数据校验成功将要设置回数据网格的时候触发，this.event指向整理过的导入数据，格式见{@link DatatemplateData}。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#import
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			"moduleEvents": ["queryLoad","postLoad","load","completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine", "export", "import", "validImport"]
@@ -188,7 +182,7 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 			this.exportActionIdList = (this.json.exportActionId || "").split(",");
 			this.exportenable  = (this.exportActionIdList.length > 0) && (this.json.impexpType === "impexp" || this.json.impexpType === "exp");
 
-			this.gridData = this._getValue();
+			this.data = this._getValue();
 
 			this.lineList = [];
 
@@ -196,31 +190,21 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 			this._loadStyles();
 
 			//获取html模板和json模板
-			// this.getTemplate();
+			this.getTemplate();
 
 			//设置节点外的操作：添加、删除、导入、导出
-			this.setEvents_OuterActions();
+			this.setOuterActionsEvents();
+
+			debugger;
 
 			//隐藏节点
 			this.node.getChildren().hide();
 
-			if (this.editable!==false){
-				this._loadEdit(function(){
-					this._loadImportExportAction();
-					this.fireEvent("postLoad");
-					this.fireEvent("load");
-				}.bind(this));
-				//this._loadReadDatagrid();
-			}else{
-
-				this._loadReadDatagrid(function(){
-					if(this.editorTr)this.editorTr.setStyle("display", "none");
-					this._loadImportExportAction();
-					this.fireEvent("postLoad");
-					this.fireEvent("load");
-				}.bind(this));
-
-			}
+			this._loadDataTemplate(function(){
+				// this._loadImportExportAction();
+				this.fireEvent("postLoad");
+				this.fireEvent("load");
+			}.bind(this));
 		},
 		getTemplate: function(){
 			this.templateJson = {};
@@ -236,45 +220,52 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 		_loadStyles: function(){
 			this.node.setStyles(this.json.styles);
 		},
-		setEvents_OuterActions: function(){
-
+		setOuterActionsEvents: function(){
+			//判断不在数据模板中，但是在表单内的Id
 			var getModules = function (idList) {
 				var list = [];
 				idList.each( function (id) {
-					if( !this.node.getElement(id) && this.form.all[id] ){
+					if( !this.templateJson.hasOwnProperty(id) && this.form.all[id] ){
 						list.push( this.form.all[id] );
 					}
 				}.bind(this));
 				return list;
-			};
+			}.bind(this);
 
-			this.addActionList = getModules( this.addActionIdList );
-			this.addActionList.each( function (node) {
-				node.addEvents({"click": function(e){
-						this._addLine(e.target);
-					}.bind(this)})
-			}.bind(this));
+			this.bindEvent = function () {
+				this.addActionList = getModules( this.addActionIdList );
+				this.addActionList.each( function (module) {
+					module.node.addEvents({"click": function(e){
+							this._addLine(e.target);
+						}.bind(this)})
+				}.bind(this));
 
-			this.deleteActionList = getModules( this.deleteActionIdList );
-			this.deleteActionList.each( function (node) {
-				node.addEvents({"click": function(e){
-						this._deleteLine(e.target);
-					}.bind(this)})
-			}.bind(this));
+				this.deleteActionList = getModules( this.deleteActionIdList );
+				this.deleteActionList.each( function (module) {
+					module.node.addEvents({"click": function(e){
+							this._deleteLine(e.target);
+						}.bind(this)})
+				}.bind(this));
 
-			this.importActionList = getModules( this.importActionIdList );
-			this.importActionList.each( function (node) {
-				node.addEvents({"click": function(e){
-						this.importFromExcel();
-					}.bind(this)})
-			}.bind(this));
+				this.importActionList = getModules( this.importActionIdList );
+				this.importActionList.each( function (module) {
+					module.node.addEvents({"click": function(e){
+							this.importFromExcel();
+						}.bind(this)})
+				}.bind(this));
 
-			this.exportActionList = getModules( this.exportActionIdList );
-			this.exportActionList.each( function (node) {
-				node.addEvents({"click": function(e){
-						this.exportToExcel();
-					}.bind(this)})
-			}.bind(this));
+				this.exportActionList = getModules( this.exportActionIdList );
+				this.exportActionList.each( function (module) {
+					module.node.addEvents({"click": function(e){
+							this.exportToExcel();
+						}.bind(this)})
+				}.bind(this));
+				//加载完成以后，删除事件
+				this.form.removeEvent("afterModulesLoad", this.bindEvent );
+			}.bind(this);
+
+			//去要表单的所有组件加载完成以后再去获取外部组件
+			this.form.addEvent("afterModulesLoad", this.bindEvent );
 		},
 		_getValue: function(){
 			if (this.moduleValueAG) return this.moduleValueAG;
@@ -291,9 +282,9 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 		},
 
 		_loadDataTemplate: function(callback){
-			var p = o2.promiseAll(this.gridData).then(function(v){
-				this.gridData = v;
-				if (o2.typeOf(this.gridData)=="array") this.gridData = {"data": this.gridData};
+			var p = o2.promiseAll(this.data).then(function(v){
+				this.data = v;
+				if (o2.typeOf(this.data)=="object") this.data = [this.data];
 				this._loadLineList(callback);
 				this.moduleValueAG = null;
 				return v;
@@ -308,94 +299,57 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 			}.bind(this));
 		},
 		_loadLineList: function(callback){
-			if (this.gridData.data){
-				this.gridData.data.each(function(data, idx){
+			if (this.data){
+				this.data.each(function(data, idx){
 					var div = new Element("div").inject(this.node);
-					this._loadLine(div, data, idx );
+					var line = this._loadLine(div, data, idx );
+					this.lineList.push(line);
 				}.bind(this));
 			}
 			if (callback) callback();
 		},
 		_loadLine: function(container, data, index, isEdited){
-			var line = new MWF.xApplication.process.Xform.Datatemplate.Line( container, this, data, {
+			var line = new MWF.xApplication.process.Xform.Datatemplate.Line(container, this, data, {
 				index : index,
 				indexText : (index+1).toString(),
 				isEdited : typeOf(isEdited) === "boolean" ? isEdited : this.editable
 			});
 			line.load();
+			return line;
+		},
+		_addLine: function(ev){
+			var index = this.lineList.length;
+			var div = new Element("div").inject(this.node);
+			var line = this._loadLine(div, {}, index );
 			this.lineList.push(line);
+			this.fireEvent("addLine", [line, ev]);
 		},
-
-		_addLine: function(ev, beforeLine){
-			// if (this.isEdit){
-			// 	if (!this._completeLineEdit()) return false;
-			// }
-			// this.editorTr.setStyles({
-			// 	"display": "table-row"
-			// });
-			// this.currentEditLine = null;
-			// var currentTr = node.getParent("tr");
-			// if (currentTr){
-			// 	this.editorTr.inject(currentTr, "after");
-			// }
-			// this.isEdit =true;
-
-			if(!beforeLine){
-				// if( length )
-			}
-
-			var div = new Element("div").inject(beforeLine.node, "after");
-			this._loadLine(div, {}, beforeLine.options.index);
-
-
-
-			// this.validationMode();
-			this.fireEvent("addLine",[this.editorTr]);
+		_insertLine: function(ev, beforeLine){
+			debugger;
+			//使用数据驱动
+			var index = beforeLine.options.index+1;
+			// var d = Object.clone(this.getTemplateData());
+			var data = this.getData();
+			data.splice(index, 0, {});
+			this.setData( data );
+			this.fireEvent("addLine",[this.lineList[index], ev]);
 		},
-		_deleteLine: function(e){
-			var saveFlag = false;
-			var currentTr = e.target.getParent("tr");
-			if (currentTr){
-				var color = currentTr.getStyle("background");
-				currentTr.store("bgcolor", color);
-				currentTr.tween("background-color", "#ffd4d4");
-				var datagrid = this;
-				var _self = this;
-				this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteDatagridLine, 300, 120, function(){
-					_self.fireEvent("deleteLine", [currentTr]);
+		_deleteLine: function(ev, line){
+			var _self = this;
+			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteDatagridLine, 300, 120, function(){
+				_self.fireEvent("deleteLine", [line]);
 
-					var data = currentTr.retrieve("data");
+				//使用数据驱动
+				var index = line.options.index;
+				var data = _self.getData();
+				data.splice(index, 1);
+				_self.setData( data );
+				this.close();
 
-					//var attKeys = [];
-					var titleThs = _self.titleTr.getElements("th");
-					titleThs.each(function(th, i){
-						var key = th.get("id");
-						var module = (i>0) ? _self.editModules[i-1] : null;
-						if (key && module && (module.json.type=="Attachment" || module.json.type=="AttachmentDg")){
-							data[key][module.json.id].each(function(d){
-								_self.form.workAction.deleteAttachment(d.id, _self.form.businessData.work.id);
-							});
-							saveFlag = true;
-						}
-					});
-
-					currentTr.destroy();
-					datagrid._loadTotal();
-					datagrid.getData();
-					this.close();
-
-					_self.fireEvent("afterDeleteLine");
-
-					if(saveFlag){
-						_self.form.saveFormData();
-					}
-				}, function(){
-					var color = currentTr.retrieve("bgcolor");
-					currentTr.tween("background", color);
-					this.close();
-				}, null, null, this.form.json.confirmStyle);
-			}
-			this.validationMode();
+				_self.fireEvent("afterDeleteLine");
+			}, function(){
+				this.close();
+			}, null, null, this.form.json.confirmStyle);
 		},
 
 
@@ -548,101 +502,15 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 		// 	return true;
 		// },
 
-		_loadReadDatagrid: function(callback){
-			var p = o2.promiseAll(this.gridData).then(function(v){
-				this.gridData = v;
-				if (o2.typeOf(this.gridData)=="array") this.gridData = {"data": this.gridData};
-				this.__loadReadDatagrid(callback);
-				this.moduleValueAG = null;
-				return v;
-			}.bind(this), function(){
-				this.moduleValueAG = null;
-			}.bind(this));
-			this.moduleValueAG = p;
-			if (this.moduleValueAG) this.moduleValueAG.then(function(){
-				this.moduleValueAG = null;
-			}.bind(this), function(){
-				this.moduleValueAG = null;
-			}.bind(this));
-		},
 
-		__loadReadDatagrid: function(callback){
-			//this.gridData = this._getValue();
-			if (!this.titleTr) this._getDatagridTitleTr();
-			//var titleTr = this.table.getElement("tr");
-			var titleHeaders = this.titleTr.getElements("th");
-
-			var lastTrs = this.table.getElements("tr");
-			var lastTr = lastTrs[lastTrs.length-1];
-			//var tds = lastTr.getElements("td");
-
-			debugger;
-
-			if (this.gridData.data){
-				this.gridData.data.each(function(data, idx){
-					var tr = this.table.insertRow(idx+1);
-					tr.store("data", data);
-
-					titleHeaders.each(function(th, index){
-						var cell = tr.insertCell(index);
-						// cell.set("MWFId", tds[index].get("id"));
-						var cellData = data[th.get("id")];
-
-						var module = this.editModules[index];
-						if( typeOf( cellData ) !== "array" ){
-							if (cellData) {
-								for (key in cellData) {
-									var v = cellData[key];
-									if (module && module.json.type == "ImageClipper") {
-										this._createImage(cell, module, v);
-									} else if (module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg")) {
-										this._createAttachment(cell, module, v);
-									} else {
-										var text = this._getValueText(index, v);
-										if (module && module.json.type == "Textarea") {
-											cell.set("html", text);
-										} else {
-											cell.set("text", text);
-										}
-									}
-									break;
-								}
-							}else if( module && module.json.type == "Image" ) {
-								this._createImg(cell, module, idx);
-							}else if( module && module.json.type == "Button" ) {
-								this._createButton(cell, module, idx);
-							}else if( module && module.json.type == "Label" ) {
-								this._createLabel(cell, module, idx);
-							}else if( module && module.json.type == "sequence" ){ //Sequence
-								cell.setStyle("text-align", "center");
-								cell.set("text", tr.rowIndex);
-							}
-						}
-
-
-						var json = this.form._getDomjson(th);
-						if( json && json.isShow === false )cell.hide();
-					}.bind(this));
-				}.bind(this));
-			}
-			this._loadTotal();
-
-			if (callback) callback();
-		},
-
-		_loadDatagridStyle: function(){
-
-			this._loadTotal();
-			this._loadSequence();
-		},
 		_afterLoaded: function(){
-			if (this.moduleValueAG){
-				this.moduleValueAG.then(function(){
-					this._loadDatagridStyle();
-				}.bind(this));
-			}else{
-				this._loadDatagridStyle();
-			}
+			// if (this.moduleValueAG){
+			// 	this.moduleValueAG.then(function(){
+			//
+			// 	}.bind(this));
+			// }else{
+			//
+			// }
 		},
 		/**
 		 * @summary 重置数据网格的值为默认值或置空。
@@ -655,7 +523,7 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
 		 * @summary 为数据网格赋值。
-		 * @param data{DatagridData|Promise|Array} 必选，数组或Promise.
+		 * @param data{DatatemplateData|Promise|Array} 必选，数组或Promise.
 		 * @example
 		 *  this.form.get("fieldId").setData([]); //赋空值
 		 * @example
@@ -689,8 +557,8 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 		},
 		_setData: function(data){
 			var p = o2.promiseAll(this.data).then(function(v){
-				this.gridData = v;
-				if (o2.typeOf(data)=="array") data = {"data": data};
+				this.data = v;
+				if (o2.typeOf(data)=="object") data = [data];
 				this.__setData(data);
 				this.moduleValueAG = null;
 				return v;
@@ -703,64 +571,20 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 			}.bind(this), function(){
 				this.moduleValueAG = null;
 			}.bind(this));
-
-			// if (data && data.isAG){
-			// 	this.moduleValueAG = data;
-			// 	data.addResolve(function(v){
-			// 		this._setData(v);
-			// 	}.bind(this));
-			// }else{
-			// 	if (o2.typeOf(data)=="array") data = {"data": data};
-			// 	this.__setData(data);
-			// 	this.moduleValueAG = null;
-			// }
 		},
 		__setData: function(data){
 			// if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
 			this._setBusinessData(data);
-			this.gridData = data;
+			this.data = data;
 
-			if (this.gridData){
-				var trs = this.table.getElements("tr");
-				for (var i=1; i<trs.length-1; i++){
-					var tr = trs[i];
-					if( tr.hasClass("datagridEditorTr") )continue;
-					var tds = tr.getElements("td");
-					for (var j=0; j<tds.length; j++){
-						var td = tds[j];
-						var module = td.retrieve("module");
-						if (module){
-							this.form.modules.erase(module);
-							module = null;
-						}
-					}
+			if (this.data){
+				for (var i=0; i<this.lineList.length; i++){
+					this.lineList[i].clear();
 				}
-				for (var i=1; i<trs.length-1; i++){
-					if( trs[i].hasClass("datagridTotalTr") )continue;
-					if( trs[i].hasClass("datagridEditorTr") )continue;
-					trs[i].destroy();
-				}
-				//while (this.table.rows.length>2){
-				//this.table.rows[1].destroy();
-				//}
-				if (this.editable!=false){
-					this._loadEditDatagrid();
-					//this._loadReadDatagrid();
-				}else{
-					this._loadReadDatagrid();
-				}
-				this._loadDatagridStyle();
 			}
-		},
-		/**
-		 * @summary 获取总计数据.
-		 * @example
-		 * var totalObject = this.form.get('fieldId').getTotal();
-		 * @return {Object} 总计数据
-		 */
-		getTotal: function(){
-			this._loadTotal();
-			return this.totalResaults;
+
+			this.lineList = [];
+			this._loadDataTemplate()
 		},
 		/**
 		 * @summary 判断数据网格是否为空.
@@ -773,9 +597,8 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 		isEmpty: function(){
 			var data = this.getData();
 			if( !data )return true;
-			if( typeOf( data ) === "object" ){
-				if( typeOf( data.data ) !== "array" )return true;
-				if( data.data.length === 0 )return true;
+			if( o2.typeOf( data ) === "array" ){
+				return data.data.length === 0;
 			}
 			return false;
 		},
@@ -814,34 +637,23 @@ MWF.xApplication.process.Xform.Datatemplate = new Class(
 		 *    var data = field.getData(); //此时由于异步请求已经执行完毕，getData方法获得data.json的值
 		 * })
 		 *  field.setData( promise );
-		 * @return {DatagridData}
+		 * @return {DatatemplateData}
 		 */
 		getData: function(){
-			if (this.editable!=false){
-				if (this.isEdit) this._completeLineEdit();
+			if (this.editable!==false){
 				var data = [];
-				var trs = this.table.getElements("tr");
-				for (var i=1; i<trs.length-1; i++){
-					var tr = trs[i];
-					var d = tr.retrieve("data");
-					if (d) data.push(d);
-				}
+				this.lineList.each(function(line, index){
+					data.push(line.getData())
+				});
 
-				this.gridData = {};
-				this.gridData.data = data;
+				this.data = data;
 
-				this._loadTotal();
-				this.gridData.total = this.totalResaults;
+				this._setBusinessData(this.data);
 
-				this._setBusinessData(this.gridData);
-
-				return (this.gridData.data.length) ? this.gridData : {data:[]};
+				return (this.data.length) ? this.data : [];
 			}else{
 				return this._getBusinessData();
 			}
-		},
-		getAmount: function(){
-			return this._loadTotal();
 		},
 		createErrorNode: function(text){
 			var node = new Element("div");
@@ -1042,21 +854,23 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 	},
 	load: function(){
-		var copyNode = this.template.node.clone();
-		var moduleNodes = this.form._getModuleNodes( copyNode );
+		this.node.set("html", this.template.templateHtml);
+		var moduleNodes = this.form._getModuleNodes(this.node);
 		moduleNodes.each(function (node) {
 			if (node.get("MWFtype") !== "form") {
 				var _self = this;
 
-				var json = this.form._getDomjson(node);
-				if( json ){
+				var tJson = this.form._getDomjson(node);
+				if( tJson ){
+					var json = Object.clone(tJson);
+
 					var templateJsonId = json.id;
 					var id = this.template.json.id + ".."+this.options.index + ".." + json.id;
 
 					json.id = id;
 					if( !this.options.isEdited )json.isReadonly = true;
 
-					node.set("id", json.id);
+					node.set("id", id);
 
 					if (this.form.all[id]) this.form.all[id] = null;
 					if (this.form.forms[id])this.form.forms[id] = null;
@@ -1068,23 +882,24 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					this.all[id] = module;
 
 					if (module.field) {
+						if(this.data.hasOwnProperty(templateJsonId)){
+							module.setData(this.data[templateJsonId]);
+						}
 						this.allField[id] = module;
 						this.fields.push( module );
 					}
 
-					this.setEvents(module, id);
+					this.setEvents(module, templateJsonId);
 
 				}
 			}
 		}.bind(this));
-		copyNode.inject( this.node );
 	},
 	setEvents: function (module, id) {
-
 		if( this.template.addActionIdList.contains( id )){
 			this.addActionList.push( module );
 			module.node.addEvent("click", function (ev) {
-				this.template._addLine( ev, this )
+				this.template._insertLine( ev, this )
 			}.bind(this))
 		}
 
@@ -1102,7 +917,14 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			}.bind(this))
 		}
 
-		if( this.template.sequenceIdList.contains(id))this.sequenceNodeList.push( module );
+		if( this.template.sequenceIdList.contains(id)){
+			this.sequenceNodeList.push( module );
+			if(this.form.getModuleType(module) === "label"){
+				module.node.set("text", this.options.indexText );
+			}else{
+				module.set( this.options.indexText );
+			}
+		}
 
 		//???
 		// if( this.template.importActionIdList.contains(id))this.importActionList.push( module );
@@ -1123,6 +945,23 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 				// this.selector.setData( this.selector.getOptionsObj().valueList[0] );
 			}
 		}
+	},
+	clear: function () { //把module清除掉
+		for(var key in this.all){
+			var module = this.all[key];
+			this.form.modules.erase(module);
+			if (this.form.all[key]) delete this.form.all[key];
+			if (this.form.forms[key])delete this.form.forms[key];
+		}
+		this.node.destroy();
+	},
+	getData: function () {
+		var data = {};
+		for( var key in this.allField){
+			var id = key.split("..").getLast();
+			data[id] = this.allField[key].getData();
+		}
+		return data;
 	}
 
 	// _createImg : function(cell, module, idx){
