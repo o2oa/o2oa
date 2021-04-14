@@ -41,7 +41,7 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
     _loadFilterContent : function(){
 	    var lp = MWF.xApplication.Attendance.LP;
         var _self = this;
-        var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable' width='1350'>"+
+        var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr>" +
             "    <td styles='formTableTitle' lable='q_topUnitName'></td>"+
             "    <td styles='formTableValue' item='q_topUnitName'></td>"+

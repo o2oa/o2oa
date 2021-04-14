@@ -5,7 +5,7 @@ MWF.require("MWF.xAction.org.express.RestActions", null,false);
 MWF.xDesktop.requireApp("Calendar", "Common", null, false);
 MWF.xDesktop.requireApp("Template", "MDomItem", null, false);
 MWF.xApplication.Calendar.options.multitask = false;
-MWFCalendar.LeftNaviWidth = 200;
+MWFCalendar.LeftNaviWidth = 250;
 MWF.xApplication.Calendar.Main = new Class({
     Extends: MWF.xApplication.Common.Main,
     Implements: [Options, Events],
