@@ -1945,7 +1945,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             this.previewOfd();
         }
         if(extension === "zip"){
-            //this.previewZip();
+            this.previewZip();
         }
         if(extension === "pdf"){
             this.previewPdf();
@@ -1978,90 +1978,120 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             this.previewAce("text");
         }
     },
-    // previewZip : function (){
-    //     //zip压缩包预览
-    //     var _self = this;
-    //     var zipViewNode = new Element("div.ztree").inject(document.body);
-    //     o2.load("/o2_lib/zipjs/zip-fs.js",function(){
-    //
-    //         this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
-    //             var cookie = Cookie.read("x-token");
-    //             url = url + "?x-token=" + cookie;
-    //             unzip().catch(error => console.error(error));
-    //             async function unzip() {
-    //                 zip.configure({ chunkSize: 128 });
-    //                 let zipFs = new zip.fs.FS();
-    //                 let directory = zipFs.addDirectory("import");
-    //                 await directory.importHttpContent(url);
-    //
-    //                 o2.loadCss("/o2_lib/zTree/zTreeStyle.css",function(){
-    //                     o2.load(["/o2_lib/jquery/jquery.min.js","/o2_lib/zTree/jquery.ztree.core.min.js"], {"sequence": true}, function(){
-    //                         jQuery = jQuery.noConflict(true); //避免js框架冲突
-    //                         var nodes = [];
-    //                         loadNodes(directory,nodes);
-    //                         jQuery.fn.zTree.init(jQuery(zipViewNode), {}, nodes);
-    //
-    //                         var dlg = o2.DL.open({
-    //                             "title": _self.att.name,
-    //                             "width": "660px",
-    //                             "height": "510px",
-    //                             "mask": true,
-    //                             "content": zipViewNode,
-    //                             "container": null,
-    //                             "positionNode": document.body,
-    //                             "onQueryClose": function () {
-    //                                 zipViewNode.destroy();
-    //                             },
-    //                             "buttonList": [
-    //                                 {
-    //                                     "text": "关闭",
-    //                                     "action": function () {
-    //                                         dlg.close();
-    //                                     }
-    //                                 }
-    //                             ],
-    //                             "onPostShow": function () {
-    //                                 dlg.reCenter();
-    //                             }
-    //                         });
-    //
-    //
-    //                     }.bind(this));
-    //                 })
-    //             }
-    //
-    //             function loadNodes(directory,nodes){
-    //                 var folderList = [];
-    //                 var fileList = [];
-    //                 directory.children.each(function(file){
-    //                     if(file.directory){
-    //                         folderList.push(file)
-    //                     }
-    //                 })
-    //                 directory.children.each(function(file){
-    //                     if(!file.directory){
-    //                         fileList.push(file)
-    //                     }
-    //                 })
-    //                 folderList.append(fileList);
-    //                 folderList.each(function(file){
-    //                     var node = {
-    //                         name : file.name
-    //                     }
-    //                     if(nodes.children){
-    //                         nodes.children.push(node);
-    //                     }else{
-    //                         nodes.push(node);
-    //                     }
-    //                     if(file.directory){
-    //                         node.children = [];
-    //                         loadNodes(file,node);
-    //                     }
-    //                 })
-    //             }
-    //         }.bind(this));
-    //     }.bind(this));
-    // },
+    previewZip: function () {
+        //zip压缩包预览
+        var _self = this;
+        var zipViewNode = new Element("div.ztree");
+        o2.load(["../o2_lib/jszip/jszip.min.js", "../o2_lib/jszip/jszip-utils.min.js"], function () {
+            this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+                var cookie = Cookie.read("x-token");
+                url = url + "?x-token=" + cookie;
+                JSZipUtils.getBinaryContent(url, function (err, data) {
+                    JSZip.loadAsync(data).then(function (zip) {
+                        var nodeList = [];
+                        zip.forEach(function (relativePath, zipEntry) {
+                            nodeList.push(zipEntry.name)
+                        });
+                        o2.loadCss("../o2_lib/zTree/zTreeStyle.css", function () {
+                            o2.load(["../o2_lib/jquery/jquery.min.js", "../o2_lib/zTree/jquery.ztree.core.min.js"], {"sequence": true}, function () {
+                                jQuery = jQuery.noConflict(true); //避免js框架冲突
+                                jQuery.fn.zTree.init(jQuery(zipViewNode), {}, _pathToTree(nodeList));
+                                var dlg = o2.DL.open({
+                                    "title": _self.att.name,
+                                    "width": "660px",
+                                    "height": "510px",
+                                    "mask": true,
+                                    "content": zipViewNode,
+                                    "container": null,
+                                    "positionNode": document.body,
+                                    "onQueryClose": function () {
+                                        zipViewNode.destroy();
+                                    },
+                                    "buttonList": [
+                                        {
+                                            "text": "关闭",
+                                            "action": function () {
+                                                dlg.close();
+                                            }
+                                        }
+                                    ],
+                                    "onPostShow": function () {
+                                        dlg.reCenter();
+                                    }
+                                });
+                            }.bind(this));
+                        })
+                    });
+                });
+            }.bind(this));
+        }.bind(this));
+        function _pathToTree(pathList) {
+            var pathJsonList = [];
+            for (var i = 0; i < pathList.length; i++) {
+                var chain = pathList[i].split("/");
+                var currentNode = pathJsonList;
+                for (var j = 0; j < chain.length; j++) {
+                    if (chain[j] === "") {
+                        break;
+                    }
+                    var wantedNode = chain[j];
+                    var lastNode = currentNode;
+                    for (var k = 0; k < currentNode.length; k++) {
+                        if (currentNode[k].name == wantedNode) {
+                            currentNode = currentNode[k].children;
+                            break;
+                        }
+                    }
+                    if (lastNode == currentNode) {
+                        var obj = {
+                            key: pathList[i],
+                            name: wantedNode,
+                            children: []
+                        };
+                        var newNode = (currentNode[k] = obj);
+                        if (wantedNode.indexOf(".") > -1) {
+                            obj.dir = false;
+                            //delete obj.children;
+                        } else {
+                            obj.dir = true;
+                            currentNode = newNode.children;
+                        }
+                    } else {
+                        delete currentNode.children;
+                    }
+                }
+            }
+            var nodes = [];
+            _sortPath(pathJsonList[0], nodes);
+            return nodes;
+        }
+        function _sortPath(pathJsonList, nodes) {
+            var folderList = [];
+            var fileList = [];
+            pathJsonList.children.each(function (file) {
+                if (file.dir) {
+                    folderList.push(file);
+                } else {
+                    fileList.push(file);
+                }
+            });
+            folderList.append(fileList);
+            folderList.each(function (file) {
+                var node = {
+                    name: file.name
+                };
+                if (nodes.children) {
+                    nodes.children.push(node);
+                } else {
+                    nodes.push(node);
+                }
+                if (file.dir) {
+                    node.children = [];
+                    _sortPath(file, node);
+                }
+            })
+        }
+    },
     previewPdf : function(){
         this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
             window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url)
@@ -2075,8 +2105,8 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
     previewImage : function(){
         this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
             var imgNode = new Element("img",{"src":url,"alt":this.att.name}).inject(document.body).hide();
-            o2.loadCss("../m_app/yunFile/css/viewer.css", document.body,function(){
-                o2.load("../m_app/yunFile/js/viewer.js", function(){
+            o2.loadCss("../o2_lib/viewer/viewer.css", document.body,function(){
+                o2.load("../o2_lib/viewer/viewer.js", function(){
                     this.viewer = new Viewer(imgNode,{
                         navbar : false,
                         toolbar : false,
