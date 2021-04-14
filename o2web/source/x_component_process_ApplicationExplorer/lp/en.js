@@ -54,6 +54,6 @@ MWF.xApplication.process.ApplicationExplorer.LP = {
 		"deleteElementsConfirmAgain": "<font style='color: #00F; font-size:14px'>Please confirm again that you want to delete the following apps: </font>",
 		"deleteElementsAllConfirmAgain": "<font style='color: #00F; font-size:14px'>Please confirm again that you want to delete the following applications and delete all process instances of this application:</font>",
 
-		"select": "反选"
+		"select": "Invert Selection"
 	}
 };
