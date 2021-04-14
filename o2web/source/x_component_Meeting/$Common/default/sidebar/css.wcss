@@ -2,7 +2,7 @@
   "node": {
     "box-shadow": "inset 1px 0 0 0 #CCCCCC",
     "background": "#F8F8F8",
-    "width": "300px",
+    "width": "320px",
     "height": "490px",
     "position": "absolute",
     "right": "0px",
@@ -23,7 +23,7 @@
   "titleDiv": {
     "margin-left" : "20px",
     "height": "30px",
-    "width": "120px",
+    "width": "auto",
     "color": "#333",
     "font-size": "18px",
     "margin-bottom" : "10px"

@@ -82,6 +82,8 @@ MWF.xApplication.Attendance.LP = {
 	"scheduleTable" : "排班时间表",
 	"signTime" : "打卡时间",
 	"appeal" : "申诉",
+	"createAppeal": "发起申诉",
+	"viewAppealDetail": "查看申诉信息",
 	"export" : "导出",
 	"name1": "名称",
 	"alias" : "别名",
@@ -204,7 +206,8 @@ MWF.xApplication.Attendance.LP = {
 	"onDutyTime": "上班打卡时间",
 	"offDutyTime": "下班打卡时间",
 	"attendanceStatus": "考勤状态",
-	"appealStatus": "审批状态",
+	"appealStatus": "申诉状态",
+	"appealStatusSelectText": ["申诉中","申诉未通过","申诉通过"],
 	"address": "地点",
 	"leaveType": "请假类型",
 	"leaveTypeSelectText": ["","带薪年休假","带薪病假","带薪福利假","扣薪事假","其他"],
@@ -232,6 +235,7 @@ MWF.xApplication.Attendance.LP = {
 	"appealSelectText": ["开启","关闭"],
 	"appealAuditFlowType": "考勤结果申诉流程类型",
 	"appealAuditFlowTypeSelectText": ["自定义流程","内置流程"],
+	"appealAuditor": "申诉审核人",
 	"appealAuditorType": "申诉审核人确定方式",
 	"appealAuditorValue": "申诉审核人确定内容",
 	"directSupervisor": "直属领导",
@@ -328,6 +332,21 @@ MWF.xApplication.Attendance.LP = {
 
 	"selectStartEndEndDataNotice":"请选择开始日期和结束日期",
 	"weekendSetting": "周末设置",
-	"selectWeekend": "周末选择"
+	"selectWeekend": "周末选择",
+
+	"detail": "具体描述",
+	"appealDate": "申诉日期",
+	"auditOpinion": "审批意见",
+
+	"holiday1": "节假日",
+	"weekend": "周末",
+	"workDaysoff": "调休工作日",
+	"workDay": "工作日",
+
+	"middayRestStartTime":"午休开始时间",
+	"middayRestEndTime":"午休结束时间",
+	"isCheckInOutOfRange": "是否范围外打卡",
+	"yes": "是",
+	"no": "否"
 
 };
