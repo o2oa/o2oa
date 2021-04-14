@@ -544,7 +544,7 @@
     "configNode": {
         "box-shadow": "inset 1px 0 0 0 #CCCCCC",
         "background": "#F8F8F8",
-        "width": "300px",
+        "width": "330px",
         "position": "absolute",
         "right": "0px",
         "top": "50px",
@@ -579,8 +579,8 @@
         "margin-bottom" : "20px"
     },
     "configTitleDiv": {
-        "height": "30px",
-        "width": "180px", 
+        "line-height": "30px",
+        "width": "auto",
         "color": "#333",
         "font-size": "18px",
         "margin-bottom" : "10px"
