@@ -82,12 +82,14 @@ MWF.xApplication.Attendance.LP = {
 	"scheduleTable": "Schedule Table",
 	"signTime": "sign-in time",
 	"appeal": "Appeal",
+	"createAppeal": "Appeal",
+	"viewAppealDetail": "View appeal detail",
 	"export": "Export",
 	"name1": "Name",
 	"alias": "Alias",
 	"range": "range",
 	"meter": "meter",
-	"description": "Remarks",
+	"description": "Description",
 	"save": "Save",
 	"enableMove": "Allow Move",
 	"workPlaceEmptyNotice": "Workplace cannot be empty",
@@ -194,9 +196,10 @@ MWF.xApplication.Attendance.LP = {
 	"employeeName": "Employee Name",
 	"recordDate": "Attendance Date",
 	"onDutyTime": "OnDutyTime",
-	"offDutyTime": "off-duty check-in time",
+	"offDutyTime": "offDutyTime",
 	"attendanceStatus": "Attendance Status",
 	"appealStatus": "Approval Status",
+	"appealStatusSelectText": ["in progress","failed","approved"],
 	"address": "Location",
 	"leaveType": "Leave Type",
 	"leaveTypeSelectText": ["","paid annual leave","paid sick leave","paid welfare leave","withholding leave","other"],
@@ -320,6 +323,20 @@ MWF.xApplication.Attendance.LP = {
 
 	"selectStartEndEndDataNotice":"Please select the start date and end date",
 	"weekendSetting": "Weekend Setting",
-	"selectWeekend": "Select Weekend"
+	"selectWeekend": "Select Weekend",
 
+	"detail": "description",
+	"appealDate": "Appeal Date",
+	"auditOpinion": "Approval Opinion",
+
+	"holiday1": "Holidays",
+	"weekend": "Weekend",
+	"workDaysoff": "Work Days Off",
+	"workDay": "Work Day",
+
+	"middayRestStartTime":"Lunch break start time",
+    "middayRestEndTime":"Lunch break end time",
+    "isCheckInOutOfRange": "out of range",
+    "yes": "Yes",
+    "no": "No"
 };
