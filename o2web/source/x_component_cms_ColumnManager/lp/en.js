@@ -160,13 +160,13 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "latest": "Check Draft",
         viewerSetting: {
             title: "Visible Range",
-            set: "Set the visible range",
-            setSuccess: "Set the visible range successfully"
+            set: "Set visible range",
+            setSuccess: "Set visible range successfully"
         },
         publisherSetting: {
             title: "Publisher",
             set: "Set Publisher",
-            setSuccess: "Successfully set the publisher"
+            setSuccess: "Successfully set publisher"
         },
         managerSetting: {
             title: "Manager",
