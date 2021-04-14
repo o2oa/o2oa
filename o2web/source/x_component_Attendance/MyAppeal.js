@@ -40,7 +40,7 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
             "styles" : this.css.fileterNode
         }).inject(this.node);
 
-        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' style='width: 580px;font-size: 14px;color:#666'>"+
+        var html = "<table bordr='0' cellpadding='5' cellspacing='0' style='font-size: 14px;color:#666'>"+
             "<tr>" +
             "    <td styles='filterTableTitle' lable='yearString'></td>"+
             "    <td styles='filterTableValue' item='yearString'></td>" +
