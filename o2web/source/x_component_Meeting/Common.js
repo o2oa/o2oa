@@ -303,7 +303,7 @@ MWF.xApplication.Meeting.RoomForm = new Class({
                         selectText : function(){
                             var floors = [];
                             for (var i=-2; i<=50; i++){
-                                if( i != 0  )floors.push(i+ this.lp.floor )
+                                if( i != 0  )floors.push(i) //this.lp.floor
                             }
                             return floors;
                         }.bind(this), selectValue : function(){

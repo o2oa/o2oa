@@ -1,7 +1,7 @@
 {
     "rightContentNode": {
         "height": "100%",
-        "margin-left": "200px",
+        "margin-left": "250px",
         "overflow": "hidden",
         "background-color" : "#fff",
         "opacity": 1
@@ -11,7 +11,7 @@
         "border-right" : "1px solid #ddd",
         "float": "left",
         "overflow": "hidden",
-        "width": "193px",
+        "width": "243px",
         "height": "100%",
         "background-color" : "#f7f7f7"
     },
@@ -39,7 +39,7 @@
         "line-height": "30px",
         "height": "30px",
         "margin-left" : "50px",
-        "width": "100px",
+        "width": "150px",
         "overflow" : "hidden"
     },
     "naviNode": {
@@ -51,7 +51,7 @@
         "border" : "1px solid #ccc",
         "height" : "40px",
         "line-height" : "40px",
-        "width" : "100px",
+        "width" : "150px",
         "margin" : "15px 20px 0px 20px",
         "font-size" : "14px",
         "padding-left" : "50px",
@@ -118,7 +118,7 @@
     "naviItemTextNode" : {
         "word-break":"break-all",
         "margin-left" : "70px",
-        "width" : "100px"
+        "width" : "150px"
     },
     "naviItemNode_selected" : {
         "background-color" : "#3C76B7",
@@ -186,7 +186,7 @@
         "border-bottom" : "1px solid #bbb",
         "height" : "40px",
         "line-height" : "40px",
-        "width" : "120px",
+        "width" : "170px",
         "font-size" : "14px",
         "padding-left" : "70px",
         "background" : "url(../x_component_Calendar/$Main/default/icon/plazz.png) no-repeat 45px 12px",
@@ -776,7 +776,7 @@
     },
     "configTitleDiv": {
         "height": "30px",
-        "width": "180px", 
+        "width": "auto",
         "color": "#333",
         "font-size": "18px",
         "margin-bottom" : "10px"
@@ -921,21 +921,21 @@
     },
     "marketItemFollowAction" : {
         "border" : "1px solid #DEDEDE",
-        "width" : "39px",
+        "width" : "43px",
         "line-height" : "20px",
         "height" : "20px",
         "font-size" : "12px",
         "position" : "absolute",
         "top" : "15px",
         "right" : "20px",
-        "border-radius" : "100px",
+        "border-radius" : "150px",
         "padding-left" : "35px",
         "cursor" : "pointer",
         "background" : "url(../x_component_Calendar/$Main/default/icon/plus.png) no-repeat 13px center"
     },
     "marketItemFollowedAction" : {
         "border" : "1px solid #DEDEDE",
-        "width" : "46px",
+        "width" : "50px",
         "line-height" : "20px",
         "height" : "20px",
         "font-size" : "12px",
