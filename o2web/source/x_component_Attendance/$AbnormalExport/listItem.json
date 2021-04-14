@@ -1,6 +1,6 @@
 [
   {
-    "title" : "员工姓名",
+    "title" : MWF.xApplication.Attendance.LP.employeeName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "empName",
@@ -8,7 +8,7 @@
     "width" : "10%"
   },
   {
-    "title" : "考勤日期",
+    "title" : MWF.xApplication.Attendance.LP.recordDate,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "recordDateString",
@@ -24,7 +24,7 @@
   //    "width" : "10%"
   //  },
   {
-    "title" : "申诉原因",
+    "title" : MWF.xApplication.Attendance.LP.appealReason,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "appealReason",
@@ -32,7 +32,7 @@
     "width" : "15%"
   },
   {
-    "title" : "具体描述",
+    "title" : MWF.xApplication.Attendance.LP.detail,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "appealDescription",
@@ -40,7 +40,7 @@
     "width" : "20%"
   },
   {
-    "title": "申述日期",
+    "title": MWF.xApplication.Attendance.LP.appealDate,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "function( d ){ var date = d.appealDateString.split(' '); return date[0] }",
@@ -48,15 +48,15 @@
     "width" : "10%"
   },
   {
-    "title": "审批状态",
+    "title": MWF.xApplication.Attendance.LP.auditStatus,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( d ){  if(d.status==0){ return '待处理' }else if(d.status==-1){ return '未通过' }else if(d.status==1){ return '通过' }else{ return '' } }",
+    "item": "function( d ){  if(d.status==0){ return MWF.xApplication.Attendance.LP.todo }else if(d.status==-1){ return MWF.xApplication.Attendance.LP.deny }else if(d.status==1){ return MWF.xApplication.Attendance.LP.approve }else{ return '' } }",
     "name" : "status",
     "width" : "10%"
   },
   {
-    "title" : "审批意见",
+    "title" : MWF.xApplication.Attendance.LP.auditOpinion,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "opinion1",
