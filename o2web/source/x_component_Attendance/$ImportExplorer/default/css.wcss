@@ -78,7 +78,7 @@
 
   "descriptionNode": {
     "width": "320px",
-    "height": "320px",
+    "height": "auto",
     "background-color": "#FFF",
     "position": "absolute",
     "text-align": "center",
