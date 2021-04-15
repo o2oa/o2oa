@@ -2601,6 +2601,7 @@ MDomItem.Rtf = new Class({
                 //"height": "200",
                 //"width": "",
                 "readOnly": false,
+                "language": MWF.language || "zh-cn",
                 "extraAllowedContent " : "img[onerror,data-id]"
             };
             if( this.options.RTFConfig ){
