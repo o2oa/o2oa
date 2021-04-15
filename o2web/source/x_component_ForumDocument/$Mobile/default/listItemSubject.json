@@ -19,7 +19,7 @@
         "   </div>"+
         "   <div styles='itemUserInfor_subject'>"+
         "     <div style='overflow:hidden'>"+
-        "       <span styles='itemUserLabel'>发帖人</span>"+
+        "       <span styles='itemUserLabel'>"+MWF.xApplication.Forum.LP.poster+"</span>"+
         "       <span styles='itemUserName_subject' item='creatorName'></span>"+
         "     </div>"+
         "     <div>"+
@@ -59,7 +59,7 @@
           "content": { "type" : "html" },
           "remove" : { "action" : "remove" },
           "replyTotal" : {
-            "value": "function( d ){ return d.replyTotal + '评' }"
+            "value": "function( d ){ return d.replyTotal + MWF.xApplication.Forum.LP.replyAbbr }"
           },
           "userIcon" : {
             "value": "",
