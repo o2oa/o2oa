@@ -393,7 +393,7 @@
     "color" : "#333"
   },
   "actionBar" : {
-    "width" : "750px",
+    "width" : "auto",
     "float" : "left",
     "border-right" : "1px solid #ddd",
     "padding-right" : "5px",
