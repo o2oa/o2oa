@@ -347,6 +347,22 @@ MWF.xApplication.Attendance.LP = {
 	"middayRestEndTime":"午休结束时间",
 	"isCheckInOutOfRange": "是否范围外打卡",
 	"yes": "是",
-	"no": "否"
+	"no": "否",
+
+	"createWorkLocation":"新建工作场所",
+	"createWorkLocationText": "点击后移到地图相应位置再次点击可创建",
+	"setBaiduDeveloperCertification": "设置百度开发者认证",
+	"setBaiduDeveloperCertificationText": "设置工作场所需要用到百度开发者认证",
+
+	"action": "操作",
+	"start": "开始时间",
+	"end": "结束时间",
+
+	"appealIsDisable": "考勤申诉审批已被停用",
+	"batchDeal": "批量处理：",
+	"holi": "假日",
+	"work": "补班",
+	"newHoliday": "新建假期配置"
+
 
 };
