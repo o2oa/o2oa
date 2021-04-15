@@ -13,7 +13,7 @@
       "name": "work",
       "content": {
         "html": "<div styles='documentItemNode'>"+
-        "<div styles='removeNode' item='remove' title='取消热点'></div>"+
+        "<div styles='removeNode' item='remove' title='"+MWF.xApplication.HotArticle.LP.cancelHotspot+"' ></div>"+
         " <div styles='documentItemIconNode'>"+
         "   <img styles='documentItemIcon' item='icon'>"+
         " </div>"+
@@ -21,7 +21,7 @@
         "   <div item='title' styles='documentItemText'>"+
         " </div>"+
         " <div styles='documentItemInforNode'>"+
-        "   <div style='float:left'>来自</div><div item='from' style='float:left'></div> <div item='createTime' style='float:right;margin-right:20px'></div>"+
+        "   <div style='float:left'>"+MWF.xApplication.HotArticle.LP.from+"&nbsp;&nbsp;</div><div item='from' style='float:left'></div> <div item='createTime' style='float:right;margin-right:20px'></div>"+
         " </div>"+
         "</div>",
         "items": {
@@ -31,7 +31,7 @@
           },
           "createTime" : {},
           "from" : {
-            "value" : "function(d){ return (d.application == 'CMS' ?  '内容管理' : '论坛') }"
+            "value" : "function(d){ return (d.application == 'CMS' ?  MWF.xApplication.HotArticle.LP.CMS : MWF.xApplication.HotArticle.LP.forum ) }"
           },
           "title" : {
             "value" : "function(d){ return d.title }",
