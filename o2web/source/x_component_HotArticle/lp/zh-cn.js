@@ -19,5 +19,10 @@ MWF.xApplication.HotArticle.LP = {
 	"hourAgo" : "小时前",
 	"minuteAgo" : "分钟前",
 	"justNow" : "刚才",
-	"publishJustNow": "刚刚发表"
+	"publishJustNow": "刚刚发表",
+
+	"cancelHotspot": "取消热点",
+	"from": "来自",
+	"CMS": "内容管理",
+	"forum": "论坛"
 };
