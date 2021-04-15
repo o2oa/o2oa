@@ -1,6 +1,6 @@
 [
   {
-    "title" : "姓名",
+    "title" :  MWF.xApplication.Attendance.LP.name,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function( d ){ return d.empName.split('@')[0] }",
@@ -8,7 +8,7 @@
     "width" : "11%"
   },
   {
-    "title" : "日期",
+    "title" : MWF.xApplication.Attendance.LP.data,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "defaultSort" : "desc",
@@ -18,16 +18,16 @@
   },
 
   {
-    "title" : "说明",
+    "title" : MWF.xApplication.Attendance.LP.description,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function( data ){ if(data.isHoliday){return '节假日'}else if(data.isWeekend){return '周末'}else if(data.isWorkday){return '调休工作日'}else{return '工作日'}  }",
+    "item" : "function( data ){ if(data.isHoliday){ return MWF.xApplication.Attendance.LP.holiday1 }else if(data.isWeekend){return MWF.xApplication.Attendance.LP.weekend }else if(data.isWorkday){return MWF.xApplication.Attendance.LP.workDaysoff }else{return MWF.xApplication.Attendance.LP.workDay }  }",
     "name" : "description",
     "width" : "11%"
   },
 
   {
-    "title" : "上班打卡时间",
+    "title" :  MWF.xApplication.Attendance.LP.onDutyTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "onDutyTime",
@@ -35,7 +35,7 @@
     "width" : "11%"
   },
   {
-    "title" : "午休开始时间",
+    "title" : MWF.xApplication.Attendance.LP.middayRestStartTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "morningOffDutyTime",
@@ -43,7 +43,7 @@
     "width" : "11%"
   },
   {
-    "title" : "午休结束时间",
+    "title" : MWF.xApplication.Attendance.LP.middayRestEndTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "afternoonOnDutyTime",
@@ -51,7 +51,7 @@
     "width" : "11%"
   },
   {
-    "title" : "下班打卡时间",
+    "title" : MWF.xApplication.Attendance.LP.offDutyTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "offDutyTime",
@@ -59,7 +59,7 @@
     "width" : "11%"
   },
   {
-    "title": "考勤状态",
+    "title": MWF.xApplication.Attendance.LP.attendanceStatus,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ if(d.leaveType && d.leaveType!=''){status =d.leaveType }else{status = '请假或外出报备'} }else if(d.isLate){ status = '迟到' }else if(d.isLeaveEarlier){ status = '早退' }else if(d.isAbsent){ status = '缺勤' }else if(d.isAbnormalDuty){ status = '异常打卡' }else if(d.isLackOfTime){ status = '工时不足' }else{ status = '正常' }; return status; }",
@@ -67,19 +67,19 @@
     "width" : "7%"
   },
   {
-    "title": "是否范围外打卡",
+    "title": MWF.xApplication.Attendance.LP.isCheckInOutOfRange,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( d ){  if(d.isExternal){ return '是' }else{ return '否' }}",
+    "item": "function( d ){  if(d.isExternal){ return MWF.xApplication.Attendance.LP.yes }else{ return MWF.xApplication.Attendance.LP.no }}",
     "name" : "appealStatus",
     "width" : "7%"
   },
   {
-    "title": "申诉状态",
+    "title": MWF.xApplication.Attendance.LP.appealStatus,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( d ){  if(d.appealStatus==1){ return '申诉中' }else if(d.appealStatus==-1){ return '申诉未通过' }else if(d.appealStatus==9){ return '申诉通过' }else{ return '' } }",
-    "name" : "appealStatus",
+    "item": "function( d ){  if(d.appealStatus==1){ return MWF.xApplication.Attendance.LP.appealStatusSelectText[0] }else if(d.appealStatus==-1){ return MWF.xApplication.Attendance.LP.appealStatusSelectText[1] }else if(d.appealStatus==9){ return MWF.xApplication.Attendance.LP.appealStatusSelectText[2] }else{ return '' } }",
+   "name" : "appealStatus",
     "width" : "11%"
   }
 //  {
