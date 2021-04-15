@@ -22,7 +22,7 @@
         "   <div styles='itemRightTop'>"+
         "     <div styles='itemUserName' item='creatorName'></div>"+
         "       <div styles='replyAction' item='replyAction'></div>"+
-        "     <div styles='itemFloor'>满意回复</div>"+
+        "     <div styles='itemFloor'>"+MWF.xApplication.Forum.LP.satisfiedAnswer+"</div>"+
         "   </div>"+
         "   <div styles='itemRightTop'>"+
         "     <div styles='itemTime' item='createTime'></div>"+
