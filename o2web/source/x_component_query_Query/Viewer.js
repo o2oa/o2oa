@@ -2048,7 +2048,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         if( viewStyles ){
             this.node.setStyles( viewStyles["contentTr"] );
         }else{
-            this.node.setStyles(this.css.viewContentTrNode);z
+            this.node.setStyles(this.css.viewContentTrNode);
         }
         this.isSelected = false;
         if( from !== "view" && from !=="category" && this.view.viewJson.allowSelectAll ){
