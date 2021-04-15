@@ -121,7 +121,7 @@
           "satisfiedAction": {
             "text" : "satisfiedReply",
             "action": "satisfiedAction",
-            "condition" : "function( d ){ return ( layout.desktop.session.user.distinguishedName == this.view.data.creatorName && this.view.data.typeCategory == this.lp.question && !this.view.data.acceptReplyId); }",
+            "condition" : "function( d ){ return ( layout.desktop.session.user.distinguishedName == this.view.data.creatorName && ( this.view.data.typeCategory == this.lp.question || this.view.data.typeCategory == '问题' ) && !this.view.data.acceptReplyId); }",
             "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.satisfiedAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.satisfiedAction ) }"
           }
         }
