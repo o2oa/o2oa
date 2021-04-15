@@ -3127,6 +3127,23 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * var html = this.form.get("fieldId").getDocumentHtml();
     */
     getDocumentHtml: function(){
+        var docNode = this.contentNode.getFirst().getFirst();
+        var filetextNode = docNode.getElement(".doc_layout_filetext");
+        var tables = filetextNode.getElements("table");
+        tables.each(function(table){
+            var tableWidth = table.offsetWidth;
+            table.set("data-o2-width", tableWidth);
+
+            var tr = table.getElement("tr");
+            if (tr){
+                tr.getElements("td").each(function(td){
+                    var tdx = td.offsetWidth;
+                    var p = (tdx/tableWidth)*100;
+                    td.set("data-o2-width", tdx);
+                });
+            }
+        });
+
         var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
         var htmlNode = tmpNode.getLast();
         htmlNode = this.removeDisplayNone(htmlNode);
@@ -3146,6 +3163,21 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 });
             }
         }
+
+        var filetextNode = tmpNode.getElement(".doc_layout_filetext");
+        filetextNode.getElements("td").setStyle("width", "");
+        //var tables = filetextNode.getElements("table");
+
+        var tables = tmpNode.querySelectorAll("table[data-o2-width]");
+        for (var i=0; i<tables.length; i++){
+            tables[i].setStyle("width", tables[i].dataset["o2Width"]);
+        }
+
+        var tds = tmpNode.querySelectorAll("td[data-o2-width]");
+        for (var i=0; i<tds.length; i++){
+            tds[i].setStyle("width", tds[i].dataset["o2Width"]+"px");
+        }
+
         var htmlStr = tmpNode.get("html");
         tmpNode.destroy();
         return "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+htmlStr+"</body></html>";
