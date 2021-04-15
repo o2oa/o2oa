@@ -94,5 +94,13 @@ MWF.xApplication.cms.Module.LP = {
 
 	"enableCopy": "Enable Copy",
 	"attachmentBlankNotice": "The uploaded file cannot contain spaces",
-	"selectCategory": "Select Category"
+	"selectCategory": "Select Category",
+
+	"subject": "Title",
+	"appName": "App Name",
+	"category": "Category",
+	"creatorCompany": "Create Company",
+	"creatorDepartment": "Create Department",
+	"creatorPerson": "Creator",
+	"publishTime": "Publish Time"
 };
