@@ -1746,22 +1746,33 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 
 
         //默认选中
+        var selectedFlag;
         var defaultSelectedScript = this.view.json.defaultSelectedScript || this.view.viewJson.defaultSelectedScript;
         if( !this.isSelected && defaultSelectedScript ){
             // var flag = this.view.json.select || this.view.viewJson.select ||  "none";
             // if ( flag ==="single" || flag==="multi"){
             //
             // }
-            var flag = this.view.Macro.exec( defaultSelectedScript,
+            selectedFlag = this.view.Macro.exec( defaultSelectedScript,
                 {"node" : this.node, "data" : this.data, "view": this.view, "row" : this});
-            if( flag ){
-                if( flag === "multi" || flag === "single" ){
-                    this.select( flag );
-                }else if( flag.toString() === "true" ){
-                    var f = this.view.json.select || this.view.viewJson.select ||  "none";
-                    if ( f ==="single" || f==="multi"){
-                        this.select();
-                    }
+        }
+        //判断是不是在selectedItems中，用户手工选择
+        if( !this.isSelected && this.view.selectedItems.length ){
+            for(var i=0; i<this.view.selectedItems.length; i++){
+                if( this.view.selectedItems[i].data.bundle === this.data.bundle ){
+                    selectedFlag = "true";
+                    break;
+                }
+            }
+        }
+
+        if( selectedFlag ){
+            if( selectedFlag === "multi" || selectedFlag === "single" ){
+                this.select( selectedFlag );
+            }else if( selectedFlag.toString() === "true" ){
+                var f = this.view.json.select || this.view.viewJson.select ||  "none";
+                if ( f ==="single" || f==="multi"){
+                    this.select();
                 }
             }
         }
@@ -1973,6 +1984,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     },
 
     select: function(  force ){
+        debugger
         // var flag = force || this.view.json.select || this.view.viewJson.select ||  "none";
         var flag = force || this.view.getSelectFlag();
         if (this.isSelected){
@@ -1992,6 +2004,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     },
 
     selected: function( from ){
+        for(var i=0; i<this.view.selectedItems.length; i++){
+            var item = this.view.selectedItems[i];
+            if( item.data.bundle === this.data.bundle ){
+                this.view.selectedItems.erase(item);
+                break;
+            }
+        }
         this.view.selectedItems.push(this);
         var viewStyles = this.view.viewJson.viewStyles;
         if( viewStyles ){
@@ -2009,7 +2028,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.view.fireEvent("selectRow", [this]);
     },
     unSelected: function( from ){
-        this.view.selectedItems.erase(this);
+        for(var i=0; i<this.view.selectedItems.length; i++){
+            var item = this.view.selectedItems[i];
+            if( item.data.bundle === this.data.bundle ){
+                this.view.selectedItems.erase(item);
+                break;
+            }
+        }
         var viewStyles = this.view.viewJson.viewStyles;
         if( this.view.viewJson.selectBoxShow !=="always" ){
             this.selectTd.setStyles({"background": "transparent"});
