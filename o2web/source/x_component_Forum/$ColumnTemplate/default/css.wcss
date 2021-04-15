@@ -39,7 +39,8 @@
     "background-color" : "#8ca3b5",
     "height" : "20px",
     "line-height" : "20px",
-    "width" : "50px",
+    "min-width" : "44px",
+    "padding": "0px 2px",
     "color" : "#fff",
     "float" : "left",
     "text-align" : "center"
@@ -443,7 +444,8 @@
     "background-color" : "#8ca3b5",
     "height" : "20px",
     "line-height" : "20px",
-    "width" : "50px",
+    "min-width" : "44px",
+    "padding": "0px 2px",
     "color" : "#fff",
     "float" : "left",
     "text-align" : "center"

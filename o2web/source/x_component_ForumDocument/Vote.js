@@ -458,10 +458,10 @@ MWF.xApplication.ForumDocument.Vote = new Class({
     loadContent_edit : function(){
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' style='margin-top:15px;'>" +
             "<tr>" +
-            "   <td styles='formTableTitleRight'  lable='voteLimitTime' width='7%'></td>" +
+            "   <td styles='formTableTitleRight'  lable='voteLimitTime' width='13%'></td>" +
             "   <td styles='formTableValue' item='voteLimitTime' width='20%'></td>" +
             "   <td styles='formTableTitleRight' lable='voteResultVisible' width='16%'></td>" +
-            "   <td styles='formTableValue' item='voteResultVisible' width='20%'></td>" +
+            "   <td styles='formTableValue' item='voteResultVisible' width='14%'></td>" +
             "   <td styles='formTableTitleRight' lable='votePersonVisible' width='16%'></td>" +
             "   <td styles='formTableValue' item='votePersonVisible' width='20%'></td>" +
             "</tr>"+

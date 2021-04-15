@@ -15,6 +15,7 @@ MWF.xApplication.cms.Column.LP = {
     "close": "Close",
     "cancel": "Cancel",
     "export_ok": "OK",
+    "allApp": "All apps",
     "column": {
         "title" :"AppInfo Management",
         "create": "New App",
@@ -33,7 +34,7 @@ MWF.xApplication.cms.Column.LP = {
         "inputName":"Please enter the AppInfo name",
         "create_cancel_title": "Cancel Confirmation of New App",
         "create_cancel": "Are you sure you want to cancel the new App?",
-        "noDescription": "There is no description in this AppInfo",
+        "noDescription": "No description",
         "delete": "Delete AppInfo",
         "delete_confirm_title": "Delete AppInfo",
         "delete_confirm_content": "Are you sure you want to delete the AppInfo?",
