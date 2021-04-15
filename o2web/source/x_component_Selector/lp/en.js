@@ -6,19 +6,28 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectIdentity": "Select Identity",
     "selectUnit": "Select Unit",
     "selectGroup": "Select Group",
+    "selectRole": "Select Role",
     "selectDuty": "Select Duty",
     "selectField": "Select Field",
-    "selectAppliction": "Select Process Appliction",
+    "selectFile": "Select Resource File",
+    "selectAppliction": "Select Process Application",
     "selectProcess": "Select Process",
     "selectView": "Select View",
     "selectStatement": "Select Statement",
+    "selectTable": "Select Data Table",
+    "selectList": "Select List",
+    "selectFormStyle": "Select Form Style",
     "selectCMSApplication": "Select CMS Application",
     "selectCMSCategory": "Select CMS Category",
+    "noSelectableItemText": "No option to be selected",
+    "selectScript": "Select Script",
+    "selectDictionary": "Select Data Dictionary",
+
     "searchDescription" : "search",
 
-    "waitingSelect" : "Waiting Select",
+    "waitingSelect": "To be selected",
     "selected" : "Selected",
-    "empty" : "<Empty",
+    "empty" : "Empty",
 
     "identity" : "Identity",
     "person" : "Person",
@@ -31,6 +40,8 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "role" : "Role",
     "group" : "Group",
     "unit" : "Unit",
+    "systemList": "System List",
+
     "appType" : {
         "process": "Process",
         "cms": "CMS",
@@ -40,5 +51,20 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "cancel": "Cancel",
     "back": "Back",
     "ok": "Ok",
-    "noPerson": "User “{name}” not exist"
+    "noPerson": "User “{name}” not exist",
+
+    "processPlatform": "Process Platform",
+    "cms": "Content Management",
+    "portal": "Portal Management",
+    "query": "Data Center",
+    "service": "Service Management",
+
+    "systemStyle": "System Style",
+    "customStyle": "Custom Style (Script)",
+    "selectAll": "Select All",
+    "selectChildren": "Select all children",
+    "selectItemMaxText": "Select at most {count} options",
+    "service1": "Service",
+    "agent": "Agent"
 };
+MWF.xApplication.Selector["lp."+o2.language] = MWF.xApplication.Selector.LP;

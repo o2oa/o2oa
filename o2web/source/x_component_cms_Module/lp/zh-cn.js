@@ -94,6 +94,16 @@ MWF.xApplication.cms.Module.LP = {
 
 	"enableCopy": "启用复制",
 	"attachmentBlankNotice" : "上传的文件不能带空格",
-	"selectCategory": "选择分类"
+	"selectCategory": "选择分类",
+
+	"subject": "标题",
+	"appName": "栏目",
+	"category": "分类",
+	"creatorCompany": "创建公司",
+	"creatorDepartment": "创建部门",
+	"creatorPerson": "创建人",
+	"publishTime": "发布时间"
+
+
 
 };
