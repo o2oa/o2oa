@@ -8,7 +8,7 @@
     "width" : "9%"
   },
   {
-    "title" : MWF.xApplication.Attendance.LP.data,
+    "title" : MWF.xApplication.Attendance.LP.date,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "defaultSort" : "desc",
@@ -16,7 +16,6 @@
     "name" : "recordDateString",
     "width" : "6%"
   },
-
   {
     "title" : MWF.xApplication.Attendance.LP.description,
     "headStyles" : "normalThNode",
@@ -62,7 +61,7 @@
     "title": MWF.xApplication.Attendance.LP.attendanceStatus,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ if(d.leaveType && d.leaveType!=''){status =d.leaveType }else{status = '请假或外出报备'}  }else if(d.isLate){ status = '迟到' }else if(d.isLeaveEarlier){ status = '早退' }else if(d.isAbsent){ status = '缺勤' }else if(d.isAbnormalDuty){ status = '异常打卡' }else if(d.isLackOfTime){ status = '工时不足' }else{ status = '正常' }; return status; }",
+    "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ if(d.leaveType && d.leaveType!=''){status =d.leaveType }else{status = MWF.xApplication.Attendance.LP.levelAsked } }else if(d.isLate){ status = MWF.xApplication.Attendance.LP.late }else if(d.isLeaveEarlier){ status = MWF.xApplication.Attendance.LP.leaveEarly }else if(d.isAbsent){ status = MWF.xApplication.Attendance.LP.noSign }else if(d.isAbnormalDuty){ status = MWF.xApplication.Attendance.LP.abNormalDuty }else if(d.isLackOfTime){ status = MWF.xApplication.Attendance.LP.lackOfTime }else{ status = MWF.xApplication.Attendance.LP.normal }; return status; }",
     "name" : "status",
     "width" : "9%"
   } ,
