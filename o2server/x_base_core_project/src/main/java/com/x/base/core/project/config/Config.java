@@ -101,6 +101,7 @@ public class Config {
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
 	public static final String DIR_COMMONS_EXT = "commons/ext";
+	public static final String DIR_COMMONS_LANGUAGE = "commons/language";
 	public static final String DIR_CONFIG = "config";
 	public static final String DIR_CONFIG_COVERTOWEBSERVER = "config/coverToWebServer";
 	public static final String DIR_CONFIGSAMPLE = "configSample";
