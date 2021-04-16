@@ -59,4 +59,5 @@ public abstract class LanguagePromptException extends PromptException {
 	public void setLanguageKey(String languageKey) {
 		this.languageKey = languageKey;
 	}
+
 }
