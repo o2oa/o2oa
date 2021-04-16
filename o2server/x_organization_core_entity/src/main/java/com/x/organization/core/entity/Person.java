@@ -857,4 +857,12 @@ public class Person extends SliceJpaObject {
 	public void setMpwxopenId(String mpwxopenId) {
 		this.mpwxopenId = mpwxopenId;
 	}
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 }
