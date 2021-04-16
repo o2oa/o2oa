@@ -131,7 +131,7 @@
     background-position: top;
     background-repeat: no-repeat;
     background-image: url(../x_component_Homepage/$Main/default/icon/icon_wugongzuo.png);
-    width: 90px;
+    /*width: 90px;*/
     height: 30px;
     padding-top: 60px;
     line-height: 30px;
@@ -493,7 +493,7 @@
     background-position: top;
     background-repeat: no-repeat;
     background-image: url(../x_component_Homepage/$Main/default/icon/icon_wuhuiyi.png);
-    width: 90px;
+    /*width: 90px;*/
     height: 30px;
     padding-top: 60px;
     line-height: 30px;
@@ -595,7 +595,7 @@
     background-repeat: no-repeat;
     background-image: url(../x_component_Homepage/$Main/default/icon/icon_wuwenjian.png);
     cursor: pointer;
-    width: 90px;
+    /*width: 90px;*/
     height: 30px;
     padding-top: 60px;
     line-height: 20px;
@@ -653,7 +653,7 @@
     background-position: top;
     background-repeat: no-repeat;
     background-image: url(../x_component_Homepage/$Main/default/icon/icon_wuricheng.png);
-    width: 90px;
+    /*width: 90px;*/
     height: 30px;
     padding-top: 60px;
     line-height: 30px;
