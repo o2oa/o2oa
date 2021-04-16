@@ -8,7 +8,6 @@ MWF.xDesktop.requireApp("Setting", "SettingModuleUI", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingModuleService", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingModuleResource", null, false);
 
-
 MWF.xApplication.Setting.Main = new Class({
     Extends: MWF.xApplication.Common.Main,
     Implements: [Options, Events],
@@ -27,8 +26,10 @@ MWF.xApplication.Setting.Main = new Class({
         //this.actions = new MWF.xApplication.Setting.Actions.RestActions();
     },
     loadApplication: function(callback){
+        debugger;
+
         this.baseAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
-        this.uiAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
+        //this.uiAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
         this.mobileAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
         this.cloudAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
 
@@ -45,7 +46,7 @@ MWF.xApplication.Setting.Main = new Class({
             this.tab.load();
 
             this.basePage = this.tab.addTab(this.baseAreaNode, this.lp.tab_base, false);
-            this.uiPage = this.tab.addTab(this.uiAreaNode, this.lp.tab_ui, false);
+            // this.uiPage = this.tab.addTab(this.uiAreaNode, this.lp.tab_ui, false);
             this.cloudPage = this.tab.addTab(this.cloudAreaNode, this.lp.tab_cloud, false);
             this.mobilePage = this.tab.addTab(this.mobileAreaNode, this.lp.tab_mobile, false);
             this.disposePage = this.tab.addTab(this.disposeAreaNode, this.lp.tab_dispose, false);
@@ -54,9 +55,9 @@ MWF.xApplication.Setting.Main = new Class({
                 if (!this.baseExplorer) this.baseExplorer = new MWF.xApplication.Setting.BaseExplorer(this, this.baseAreaNode);
             }.bind(this));
 
-            this.uiPage.addEvent("postShow", function(){
-                if (!this.uiExplorer) this.uiExplorer = new MWF.xApplication.Setting.UIExplorer(this, this.uiAreaNode);
-            }.bind(this));
+            // this.uiPage.addEvent("postShow", function(){
+            //     if (!this.uiExplorer) this.uiExplorer = new MWF.xApplication.Setting.UIExplorer(this, this.uiAreaNode);
+            // }.bind(this));
 
             this.mobilePage.addEvent("postShow", function(){
                 if (!this.mobileExplorer) this.mobileExplorer = new MWF.xApplication.Setting.MobileExplorer(this, this.mobileAreaNode);
