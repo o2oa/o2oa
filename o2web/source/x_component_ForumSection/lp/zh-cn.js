@@ -1,3 +1,3 @@
 MWF.xApplication.ForumSection.LP = {
-	"title": "版块"
+	"title": "论坛版块"
 };

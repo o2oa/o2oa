@@ -91,7 +91,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
         }).inject(this.node);
 
         var table = new Element("table", {
-            "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.filterTable, "class" : "filterTable"
+            "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.filterTable, "class" : "filterTable"
         }).inject( this.fileterNode );
         var tr = new Element("tr").inject(table);
 
@@ -107,31 +107,31 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
     },
     createStatusSelectTd : function( tr ){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "审批状态"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.auditStatus  }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
         this.status = new MDomItem( td, {
             "name" : "status",
             "type" : "select",
             "value" : "0",
-            "selectText" :["所有状态","待处理","审批通过","审批未通过"],
+            "selectText" : this.app.lp.auditStatusSelectText,
             "selectValue" :["999","0","1","-1"]
         }, true, this.app );
         this.status.load();
     },
     createAppealReasonTd : function( tr ){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "申诉原因"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.appealReason  }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
         this.appealReason = new MDomItem( td, {
             "name" : "appealReason",
             "type" : "select",
-            "selectText" :["","临时请假","出差","因公外出","其他"]
+            "selectText" : this.app.lp.appealReasonSelectText
         }, true, this.app );
         this.appealReason.load();
     },
     createUnitTd : function(tr){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "部门"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.department  }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
         this.unitName = new MDomItem( td, {
             "name" : "unitName",
@@ -145,7 +145,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
     },
     createPersonTd : function(tr){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "人员"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.person }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
         this.empName = new MDomItem( td, {
             "name" : "empName",
@@ -158,7 +158,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
     },
     createYearSelectTd : function( tr ){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "年度"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.annuaal  }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
         this.yearString = new MDomItem( td, {
             "name" : "yearString",
@@ -176,7 +176,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
     },
     createMonthSelectTd : function( tr ){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "月份"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.months  }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
         this.monthString = new MDomItem( td, {
             "name" : "monthString",
@@ -188,7 +188,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
     createActionTd : function( tr ){
         var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
         var input = new Element("button",{
-            "text" : "查询",
+            "text" : this.app.lp.search,
             "styles" : this.css.filterButton
         }).inject(td);
         input.addEvent("click", function(){
@@ -207,11 +207,11 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
         }.bind(this))
     },
     selecePerson: function( el, type ){
-        var text = "选择人员"
+        var text = this.app.lp.selecePerson;
         if( type=="topUnit") {
-            text = "选择公司"
+            text = this.app.lp.selectCompany;
         }else if( type=="unit"){
-            text = "选择部门"
+            text = this.app.lp.selectDepartment;
         }
         var options = {
             "type": type, //topUnit unit person,
@@ -264,17 +264,17 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             if( it.checkboxElement && it.checkboxElement.get("checked" ) )count++;
         }.bind(this))
         if( count == 0 ){
-            this.app.notice("请先选择申诉","error");
+            this.app.notice(this.app.lp.selectAppealNotice,"error");
             return;
         }
-        this.app.confirm("warn", e, "同意申诉", "确定处理您选择的"+count+"份申诉？", 350, 120, function(){
+        this.app.confirm("warn", e, this.app.lp.agreeAppealConfirmTitle, this.app.lp.agreeAppealConfirmContent.replace("{count}", count), 350, 120, function(){
             _self.batchAppeals = true;
             _self.view.items.each( function( it ){
                 if( it.checkboxElement && it.checkboxElement.get("checked" ) )it.agree( true );
             }.bind(this));
             if(_self.view)_self.view.reload();
             _self.batchAppeals = false;
-            _self.app.notice( "处理成功" , "success");
+            _self.app.notice( this.app.lp.actionSuccess, "success");
             this.close();
         }, function(){
             this.close();
@@ -287,17 +287,17 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             if( it.checkboxElement && it.checkboxElement.get("checked" ) )count++;
         }.bind(this));
         if( count == 0 ){
-            this.app.notice("请先选择申诉","error");
+            this.app.notice(this.app.lp.selectAppealNotice,"error");
             return;
         }
-        this.app.confirm("warn", e, "不同意申诉", "确定处理您选择的"+count+"份申诉？", 350, 120, function(){
+        this.app.confirm("warn", e, this.app.lp.disagreeAppealConfirmTitle, this.app.lp.disagreeAppealConfirmContent.replace("{count}", count), 350, 120, function(){
             _self.batchAppeals = true;
             _self.view.items.each( function( it ){
                 if( it.checkboxElement && it.checkboxElement.get("checked" ) )it.deny( true );
             }.bind(this));
             if(_self.view)_self.view.reload();
             _self.batchAppeals = false;
-            _self.app.notice( "处理成功" , "success");
+            _self.app.notice( this.app.lp.actionSuccess , "success");
             this.close();
         }, function(){
             this.close();
@@ -381,7 +381,7 @@ MWF.xApplication.Attendance.AppealExplorer.Document = new Class({
             }else{
                 if( !this.explorer.batchAppeals ){
                     if(this.explorer.view)this.explorer.view.reload();
-                    this.app.notice( "处理成功" , "success");
+                    this.app.notice( this.app.lp.actionSuccess.replace("{count}", count) , "success");
                 }
             }
         }.bind(this), null, false );
@@ -485,18 +485,18 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
 
         var d = this.data;
 
-        var appealStatus = "发起";
+        var appealStatus = this.app.lp.draft;
             if (d.status == 0 ) {
-                appealStatus = "待处理"
+                appealStatus = this.app.lp.todo;
             } else if (d.status == 1) {
-                appealStatus = "审批通过"
+                appealStatus = this.app.lp.approve;
             } else if (d.status == -1) {
-                appealStatus = "审批不通过"
+                appealStatus = this.app.lp.deny;
             }
         this.data.appealStatusShow = appealStatus;
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='4' styles='formTableHead'>申诉处理单</td></tr>" +
+            "<tr><td colspan='4' styles='formTableHead'>"+this.app.lp.apealForm+"</td></tr>" +
             "<tr><td styles='formTableTitle' lable='empNameShow'></td>"+
             "    <td styles='formTableValue' item='empNameShow'></td>" +
             "    <td styles='formTableTitle' lable='recordDateString'></td>"+
@@ -524,28 +524,28 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
             "</table>"
         this.createTableArea.set("html",html);
 
-
+        var lp = this.app.lp;
         this.document = new MForm( this.createTableArea, this.data, {
             style : "popup",
             isEdited : this.isEdited || this.isNew,
             itemTemplate : {
-                empNameShow : { text:"员工姓名", type : "innertext", value : this.data.empName.split("@")[0] },
-                recordDateString : { text:"考勤日期",  type : "innertext"},
-                onDutyTime : { text:"上班打卡时间",  type : "innertext"},
-                offDutyTime : { text:"下班打卡时间",  type : "innertext"},
-                statusShow : {  text:"考勤状态", type : "innertext" },
-                appealStatusShow : { text:"审批状态",type : "innertext"},
+                empNameShow : { text: lp.employeeName, type : "innertext", value : this.data.empName.split("@")[0] },
+                recordDateString : { text:lp.recordDate,  type : "innertext"},
+                onDutyTime : { text: lp.onDutyTime ,  type : "innertext"},
+                offDutyTime : { text: lp.offDutyTime,  type : "innertext"},
+                statusShow : {  text:lp.attendanceStatus , type : "innertext" },
+                appealStatusShow : { text:lp.appealStatus, type : "innertext"},
                 appealReason : {
-                    text:"申述原因",  type : "innertext"
+                    text:lp.appealReason,  type : "innertext"
                 },
-                address : { text:"地点", type : "innertext" },
+                address : { text: lp.address, type : "innertext" },
                 selfHolidayType : {
-                    text:"请假类型",
+                    text: lp.leaveType,
                     type : "innertext"
                 },
-                startTime : {  text:"开始日期", type : "innertext" },
-                endTime : {  text:"结束日期", type : "innertext" },
-                appealDescription : { text:"事由", type : "innertext" }
+                startTime : {  text:lp.startTime, type : "innertext" },
+                endTime : {  text:lp.endTime, type : "innertext" },
+                appealDescription : { text: lp.appealDescriptoin , type : "innertext" }
                 //opinion1 : { text :"审批意见",type : "textarea" }
             }
         }, this.app,this.css);
@@ -560,7 +560,7 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
 
         this.cancelActionNode = new Element("div", {
             "styles": this.css.createCancelActionNode,
-            "text": "关闭"
+            "text": lp.close
         }).inject(this.createFormNode);
 
 
@@ -571,11 +571,11 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
         if( this.isNew || this.isEdited ){
             this.denyActionNode = new Element("div", {
                 "styles": this.css.createDenyActionNode,
-                "text": "不同意"
+                "text": lp.disagree
             }).inject(this.createFormNode);
             this.createOkActionNode = new Element("div", {
                 "styles": this.css.createOkActionNode,
-                "text": "同意"
+                "text": lp.agree
             }).inject(this.createFormNode);
 
             this.denyActionNode.addEvent("click", function(e){
@@ -588,15 +588,16 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
 
     },
     switchFieldByAppealReason : function( ar ){
+        var lp = this.app.lp;
         var tempField = ["selfHolidayType","startTime","endTime","address","appealDescription"];
         var showField = [];
-        if( ar == "临时请假" ){
+        if( ar == lp.temporaryLeave ){
             showField = ["selfHolidayType","startTime","endTime"];
-        }else if( ar == "出差" ){
+        }else if( ar == lp.out ){
             showField = ["address","startTime","endTime"];
-        }else if( ar == "因公外出" ){
+        }else if( ar == lp.businessTrip ){
             showField = ["address","startTime","endTime","appealDescription"];
-        }else if( ar == "其他" ){
+        }else if( ar == lp.other ){
             showField = ["appealDescription"];
         }
         tempField.each( function( f ){
@@ -659,7 +660,7 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
                 this.createMarkNode.destroy();
                 this.createAreaNode.destroy();
                 if(this.explorer.view)this.explorer.view.reload();
-                this.app.notice( "处理成功" , "success");
+                this.app.notice( this.app.lp.actionSuccess, "success");
             }
             //    this.app.processConfig();
         }.bind(this));

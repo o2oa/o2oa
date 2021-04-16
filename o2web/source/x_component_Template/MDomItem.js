@@ -871,7 +871,7 @@ MDomItem.Text = new Class({
         var tType = this.options.tType;
         var type = "text";
         if( typeOf( tType ) == "array" || ( tType == "identity" || tType.toLowerCase() == "person" || tType == "unit" ) ){
-            item.addEvent( "click" , function(){
+            item.addEvent( "click" , function(ev){
                 this.module.fireEvent("querySelect", this.module );
                 var options = this.options;
                 var opt = {
@@ -892,7 +892,7 @@ MDomItem.Text = new Class({
                         this.orgData.push( it.data.distinguishedName || it.data.name );
                     }.bind(this));
                     item.set("value",this.orgData.join(","));
-                    this.items[0].fireEvent("change");
+                    this.items[0].fireEvent("change", [this.module, ev]);
                     if( this.options.validImmediately )this.module.verify( true );
                 }.bind(this))
             }.bind(this) );
@@ -905,7 +905,7 @@ MDomItem.Text = new Class({
                     item.addEvent("blur", function(){ this.module.verify( true ); }.bind(this))
                 }
             }else if( tType == "time" || tType.toLowerCase() == "datetime" || tType == "date" ){
-                item.addEvent( "click" , function(){
+                item.addEvent( "click" , function(ev){
                     this.module.fireEvent("querySelect", this.module );
                     if( this.calendarSelector ){
                         this.calendarSelector.show();
@@ -914,7 +914,7 @@ MDomItem.Text = new Class({
                             calendarOptions : this.options.calendarOptions,
                             type : tType
                         }, function( dateString, date ){
-                            this.items[0].fireEvent("change");
+                            this.items[0].fireEvent("change", [this.module, ev]);
                             if( this.options.validImmediately )this.module.verify( true );
                         }.bind(this) )
                     }
@@ -2601,6 +2601,7 @@ MDomItem.Rtf = new Class({
                 //"height": "200",
                 //"width": "",
                 "readOnly": false,
+                "language": MWF.language || "zh-cn",
                 "extraAllowedContent " : "img[onerror,data-id]"
             };
             if( this.options.RTFConfig ){
@@ -2858,7 +2859,7 @@ MDomItem.Org = new Class({
     },
     bindDefaultEvent : function( item ){
         if( this.options.unsetDefaultEvent )return;
-        item.addEvent( "click" , function(){
+        item.addEvent( "click" , function( ev ){
             debugger;
             this.module.fireEvent("querySelect", this.module );
             var options = this.options;
@@ -2886,7 +2887,7 @@ MDomItem.Org = new Class({
                 this.OrgWidgetList = [];
                 this.loadOrgWidget( this.orgObjData, item, true );
                 this.modified = true;
-                this.items[0].fireEvent("change");
+                this.items[0].fireEvent("change", [this.module, ev]);
                 if( this.options.validImmediately )this.module.verify( true );
             }.bind(this))
         }.bind(this) );

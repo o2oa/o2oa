@@ -335,6 +335,8 @@ MWF.xApplication.Forum.LP = {
 	"publishJustNow": "刚刚发表",
 
 	"selectTargetSection" : "选择移动到的版块",
-	"moveSuccess": "帖子已经移动到{section}"
+	"moveSuccess": "帖子已经移动到{section}",
+	"poster": "发帖人",
+	"replyAbbr" : "评"
 
 };
