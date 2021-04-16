@@ -117,6 +117,26 @@ public class MPWeixinAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "更新一个菜单项.", action = ActionUpdateMenu.class)
+    @POST
+    @Path("menu/update/{id}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void menuUpdate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @PathParam("id") String id,
+                        JsonElement jsonElement) {
+        ActionResult<ActionUpdateMenu.Wo> result = new ActionResult<>();
+        try {
+            result = new ActionUpdateMenu().execute(id, jsonElement);
+        } catch (Exception e) {
+            logger.error(e);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+
+
     @JaxrsMethodDescribe(value = "删除一个菜单项.", action = ActionDeleteMenu.class)
     @DELETE
     @Path("menu/delete/{id}")

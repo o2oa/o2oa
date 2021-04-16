@@ -336,6 +336,11 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
                 "text": this.app.lp.tab_mobile_style,
                 "icon": "style",
                 "action": "loadMobileStyleSetting"
+            },
+            {
+                "text": this.app.lp.tab_mobile_mpweixin_menu,
+                "icon": "style",
+                "action": "loadMPWeixinMenuSetting"
             }
         ];
     },
@@ -362,6 +367,14 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
             delete json.data;
             json = null;
             checkData();
+        }.bind(this));
+        //微信菜单数据
+        o2.Actions.load("x_program_center").MPWeixinAction.menuWeixinList(function (json) {
+            if (json.data && json.data.button) {
+                this.mpweixinListData = json.data.button;
+            } else {
+                this.mpweixinListData = [];
+            }
         }.bind(this));
 
     },
@@ -390,6 +403,14 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
             item.store("content", this.mobileStyleSetting);
         }else{
             this.loadDataBack = function(){this.loadMobileStyleSetting(item)}.bind(this);
+        }
+    },
+    loadMPWeixinMenuSetting: function(item) {
+        if (MWF.AC.isAdministrator()) if (this.proxyData && this.nativeData && this.imagesData){
+            this.mpweixinMenuSetting = new MWF.xApplication.Setting.MPWeixinMenuSettingDocument(this, this.contentAreaNode);
+            item.store("content", this.mpweixinMenuSetting);
+        }else{
+            this.loadDataBack = function(){this.loadMPWeixinMenuSetting(item)}.bind(this);
         }
     }
 });
