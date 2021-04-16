@@ -2374,13 +2374,41 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
                     var tableList = tmp.getElements("table");
                     if (tableList && tableList.length){
-                        var w = this.layout_filetext.getSize().x;
-                        tableList.setStyle("width", ""+w+"px");
+                        var w = this.layout_filetext.offsetWidth.toFloat();
+                        tableList.each(function(table){
+                            debugger;
+                            var twstyle = table.getStyle("width");
+                            var tws = (twstyle) ? (twstyle.toFloat() || 0) : 0;
+                            var twatt = table.get("width");
+                            var twa = (twatt) ? (twatt.toFloat() || 0) : 0;
+                            var tw = Math.max(tws, twa);
+                            if (tw===0 || tw>w){
+                                table.setStyle("width", ""+w+"px");
+                            }
+                        });
+                        tableList.setStyles({
+                            "margin-left": "",
+                            "margin-right": "",
+                            "word-break": "break-word"
+                        });
                     }
+                    var tdList = tmp.getElements("td");
+                    tdList.each(function(td){
+                        var tbw_top = td.getStyle("border-top-width").toFloat() || 0;
+                        var tbw_bottom = td.getStyle("border-bottom-width").toFloat() || 0;
+                        var tbw_left = td.getStyle("border-left-width").toFloat() || 0;
+                        var tbw_right = td.getStyle("border-right-width").toFloat() || 0;
+
+                        td.setStyles({
+                            "border-top-width": (tbw_top/2)+"px",
+                            "border-bottom-width": (tbw_bottom/2)+"px",
+                            "border-left-width": (tbw_left/2)+"px",
+                            "border-right-width": (tbw_right/2)+"px",
+                        });
+                    });
 
                     e.data.dataValue = tmp.get("html");
                     tmp.destroy();
-
                     this.fireEvent("paste");
                 }.bind(this) );
 
@@ -2407,6 +2435,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
 
                 this.filetextEditor.on( 'insertElement', function( e ) {
+                    if (e.data.$.tagName.toString().toLowerCase()=="table"){
+                        e.data.$.setStyles({
+                            "margin-left": "",
+                            "margin-right": "",
+                            "word-break": "break-word"
+                        });
+                    }
+
                     var tr = e.data.$.getElement("tr");
                     if (tr){
                         var tds = tr.getElements("td");
@@ -2846,6 +2882,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }else if (this.layout_filetext){
                 //this.layout_filetext.set("placeholder", this.json.defaultValue.filetext);
                 this.layout_filetext.set("html", data.filetext || "　　");
+
+                var tableList = this.layout_filetext.getElements("table");
+                if (tableList && tableList.length){
+                    // var w = this.layout_filetext.offsetWidth;
+                    // tableList.setStyle("width", ""+w+"px");
+                    tableList.setStyles({
+                        "margin-left": "",
+                        "margin-right": "",
+                        "word-break": "break-word"
+                    });
+                }
             }
             if (this.layout_signer) this.layout_signer.set("text", data.signer || "");
             if (this.layout_attachmentTitle) this.layout_attachmentTitle.set("text", data.attachmentTitle || " ");
@@ -3170,7 +3217,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         var tables = tmpNode.querySelectorAll("table[data-o2-width]");
         for (var i=0; i<tables.length; i++){
-            tables[i].setStyle("width", tables[i].dataset["o2Width"]);
+            tables[i].setStyle("width", tables[i].dataset["o2Width"]+"px");
         }
 
         var tds = tmpNode.querySelectorAll("td[data-o2-width]");
