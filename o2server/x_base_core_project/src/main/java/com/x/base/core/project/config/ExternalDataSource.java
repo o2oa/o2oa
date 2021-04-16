@@ -65,7 +65,7 @@ public class ExternalDataSource extends ConfigObject {
 	private List<String> includes;
 	@FieldDescribe("在此节点上不存储的类,和includes一起设置实际存储的类,可以使用通配符*")
 	private List<String> excludes;
-	@FieldDescribe("默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完成的配置为DefaultLevel=WARN, Tool=TRACE, Enhance=TRACE, METADATA=TRACE, Runtime=TRACE, Query=TRACE, DataCache=TRACE, JDBC=TRACE, SQL=TRACE")
+	@FieldDescribe("默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完整的配置为DefaultLevel=WARN, Tool=TRACE, Enhance=TRACE, METADATA=TRACE, Runtime=TRACE, Query=TRACE, DataCache=TRACE, JDBC=TRACE, SQL=TRACE")
 	private String logLevel = DEFAULT_LOGLEVEL;
 	@FieldDescribe("事务隔离级别:default,none,read-uncommitted,read-committed,repeatable-read,serializable.默认使用default(数据库设置的事务级别).")
 	private String transactionIsolation;
@@ -75,6 +75,8 @@ public class ExternalDataSource extends ConfigObject {
 	private Boolean testConnectionOnCheckout;
 	@FieldDescribe("空闲阈值,默认300秒.")
 	private Integer maxIdleTime;
+	@FieldDescribe("自动提交,默认为false.")
+	private Boolean autoCommit = DEFAULT_AUTOCOMMIT;
 
 	public static final Integer DEFAULT_MAXTOTAL = 100;
 
@@ -95,6 +97,12 @@ public class ExternalDataSource extends ConfigObject {
 	public static final Boolean DEFAULT_TESTCONNECTIONONCHECKOUT = false;
 
 	public static final Integer DEFAULT_MAXIDLETIME = 300;
+
+	public static final Boolean DEFAULT_AUTOCOMMIT = false;
+
+	public Boolean getAutoCommit() {
+		return (null == this.autoCommit) ? DEFAULT_AUTOCOMMIT : this.autoCommit;
+	}
 
 	public Integer getMaxIdleTime() {
 		return maxIdleTime == null ? DEFAULT_MAXIDLETIME : this.maxIdleTime;

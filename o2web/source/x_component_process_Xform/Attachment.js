@@ -4,6 +4,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     Extends: MWF.widget.ATTER,
     "options": {
         "officeFiles": ["doc", "docx", "dotx", "dot", "xls", "xlsx", "xlsm", "xlt", "xltx", "pptx", "ppt", "pot", "potx", "potm", "pdf"],
+        "allowPreviewExtension" : ["zip","pdf", "ofd", "png", "jpg", "bmp", "jpeg", "gif", "js", "css", "java", "json", "xml", "php", "html", "htm", "xhtml", "log", "md", "txt"],
         "checkTextEnable": true
     },
     checkAttachmentDeleteAction: function () {
@@ -137,6 +138,31 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             //         this.setActionDisabled(this.min_deleteAction);
             //     }
             // }
+        }
+    },
+    checkPreviewAttAction: function () {
+        if (!this.options.isPreviewAtt){
+            this.setActionDisabled(this.previewAttAction);
+            //this.setActionDisabled(this.min_downloadAction);
+        }else{
+            if (this.selectedAttachments.length){
+                var flag = false;
+                for (var i = 0; i < this.selectedAttachments.length; i++) {
+                    var att = this.selectedAttachments[i];
+                    if (this.options.allowPreviewExtension.contains(att.data.extension)) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(flag){
+                    this.setActionEnabled(this.previewAttAction);
+                    //this.setActionEnabled(this.min_downloadAction);
+                }
+
+            }else{
+                this.setActionDisabled(this.previewAttAction);
+                //this.setActionDisabled(this.min_downloadAction);
+            }
         }
     },
     isAttDeleteAvailable: function (att) {
@@ -413,6 +439,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.checkUploadAction();
         this.checkDeleteAction();
         this.checkReplaceAction();
+        this.checkPreviewAttAction();
         //this.checkOfficeAction();
         this.checkDownloadAction();
         this.checkSizeAction();
@@ -511,7 +538,9 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.deleteAction = this.createAction(this.editActionsGroupNode, "delete", o2.LP.widget["delete"], function (e, node) {
             this.deleteAttachment(e, node);
         }.bind(this));
-
+        this.previewAttAction = this.createAction(this.editActionsGroupNode, "previewAtt", o2.LP.widget["previewAtt"], function (e, node) {
+            this.previewAttachment(e, node);
+        }.bind(this));
         if (!this.options.isReplaceHidden) {
             this.replaceAction = this.createAction(this.editActionsGroupNode, "replace", o2.LP.widget.replace, function (e, node) {
                 this.replaceAttachment(e, node);
@@ -1055,12 +1084,29 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     Extends: MWF.APP$Module,
     options: {
         /**
-         * @event MWF.xApplication.process.Xform.Attachment#queryLoad
-         * @ignore
-         */
-        /**
          * @event MWF.xApplication.process.Xform.Attachment#postLoad
          * @ignore
+         */
+        /**附件组件（this.target）加载前触发。
+         * @event MWF.xApplication.process.Xform.Attachment#queryLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**附件容器（this.target.attachmentController）初始化之前触发，可以通过this.event获取附件容器的选项。
+         * @event MWF.xApplication.process.Xform.Attachment#queryLoadController
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**附件容器（this.target.attachmentController）初始化之后，加载之前触发。
+         * @event MWF.xApplication.process.Xform.Attachment#loadController
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**附件容器（this.target.attachmentController）加载之后触发，但这时还未加载具体的附件。
+         * @event MWF.xApplication.process.Xform.Attachment#postLoadController
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
+         * @event MWF.xApplication.process.Xform.Attachment#load
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
          * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
@@ -1078,11 +1124,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
-         * 附件容器加载时触发。
-         * @event MWF.xApplication.process.Xform.Attachment#load
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
          * 附件有变化的时候会被触发，包括上传、删除、排序
          * @event MWF.xApplication.process.Xform.Attachment#change
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -1097,7 +1138,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @event MWF.xApplication.process.Xform.Attachment#open
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open", "queryLoad "]
+        "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open", "queryLoad", "queryLoadController", "loadController", "postLoadController"]
     },
 
     initialize: function (node, json, form, options) {
@@ -1111,6 +1152,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     _loadUserInterface: function () {
         this.node.empty();
         if (this.form.businessData.work.startTime){
+            this.fireEvent("queryLoad");
             this.loadAttachmentController();
             this.fireEvent("load");
         }
@@ -1134,6 +1176,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "isDelete": (this.json.isDelete === "y" || this.json.isDelete === "true"),
             "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
             "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
+            "isPreviewAtt": (this.json.isPreviewAtt === "y" || this.json.isPreviewAtt === "true"),
             "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
             "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly ),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
@@ -1150,16 +1193,24 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         //this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
 
+        this.fireEvent("queryLoadController", [options]);
+
         /**
          * @summary 附件容器.
          * @member {MWF.xApplication.process.Xform.AttachmentController}
          * @example
-         * var attachmentController = this.form.get("fieldId").AttachmentController; //获取附件容器
+         * var attachmentController = this.form.get("fieldId").attachmentController; //获取附件容器
          * var attachmentList = attachmentController.attachments; //获取所有的附件
          * var attachmentData = attachmentList[0].data; //获取第一个附件的数据
          */
+
         this.attachmentController = new MWF.xApplication.process.Xform.AttachmentController(this.node, this, options);
+
+        this.fireEvent("loadController");
+
         this.attachmentController.load();
+
+        this.fireEvent("postLoadController");
 
         this.form.businessData.attachmentList.each(function (att) {
             //if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
@@ -1388,6 +1439,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }, function () {
             this.close();
         }, null, null, this.form.json.confirmStyle);
+    },
+    previewAttachment: function (attachments) {
+        var att = attachments[0].data;
+        new MWF.xApplication.process.Xform.AttachmenPreview(att,this);
     },
     deleteAttachment: function (attachment) {
         this.fireEvent("delete", [attachment.data]);
@@ -1875,7 +1930,217 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     }
 
 });
+MWF.xApplication.process.Xform.AttachmenPreview = new Class({
+    Implements: [Options, Events],
 
+    initialize : function(att,app ){
+        this.att = att;
+        this.app = app;
+        this.load();
+    },
+    load:function(){
+
+        var extension = this.att.extension;
+        if(extension === "ofd"){
+            this.previewOfd();
+        }
+        if(extension === "zip"){
+            //this.previewZip();
+        }
+        if(extension === "pdf"){
+            this.previewPdf();
+        }
+        if(["png","jpg","bmp","jpeg","gif"].contains(extension)){
+            this.previewImage();
+        }
+        if(extension === "js"){
+            this.previewAce("javascript");
+        }
+        if(extension === "css"){
+            this.previewAce("css");
+        }
+        if(extension === "java"){
+            this.previewAce("java");
+        }
+        if(extension === "json"){
+            this.previewAce("json");
+        }
+        if(extension === "xml"){
+            this.previewAce("xml");
+        }
+        if(extension === "php"){
+            this.previewAce("php");
+        }
+        if(["html","htm","xhtml"].contains(extension)){
+            this.previewAce("html");
+        }
+        if(["log","md","txt"].contains(extension)){
+            this.previewAce("text");
+        }
+    },
+    // previewZip : function (){
+    //     //zip压缩包预览
+    //     var _self = this;
+    //     var zipViewNode = new Element("div.ztree").inject(document.body);
+    //     o2.load("/o2_lib/zipjs/zip-fs.js",function(){
+    //
+    //         this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+    //             var cookie = Cookie.read("x-token");
+    //             url = url + "?x-token=" + cookie;
+    //             unzip().catch(error => console.error(error));
+    //             async function unzip() {
+    //                 zip.configure({ chunkSize: 128 });
+    //                 let zipFs = new zip.fs.FS();
+    //                 let directory = zipFs.addDirectory("import");
+    //                 await directory.importHttpContent(url);
+    //
+    //                 o2.loadCss("/o2_lib/zTree/zTreeStyle.css",function(){
+    //                     o2.load(["/o2_lib/jquery/jquery.min.js","/o2_lib/zTree/jquery.ztree.core.min.js"], {"sequence": true}, function(){
+    //                         jQuery = jQuery.noConflict(true); //避免js框架冲突
+    //                         var nodes = [];
+    //                         loadNodes(directory,nodes);
+    //                         jQuery.fn.zTree.init(jQuery(zipViewNode), {}, nodes);
+    //
+    //                         var dlg = o2.DL.open({
+    //                             "title": _self.att.name,
+    //                             "width": "660px",
+    //                             "height": "510px",
+    //                             "mask": true,
+    //                             "content": zipViewNode,
+    //                             "container": null,
+    //                             "positionNode": document.body,
+    //                             "onQueryClose": function () {
+    //                                 zipViewNode.destroy();
+    //                             },
+    //                             "buttonList": [
+    //                                 {
+    //                                     "text": "关闭",
+    //                                     "action": function () {
+    //                                         dlg.close();
+    //                                     }
+    //                                 }
+    //                             ],
+    //                             "onPostShow": function () {
+    //                                 dlg.reCenter();
+    //                             }
+    //                         });
+    //
+    //
+    //                     }.bind(this));
+    //                 })
+    //             }
+    //
+    //             function loadNodes(directory,nodes){
+    //                 var folderList = [];
+    //                 var fileList = [];
+    //                 directory.children.each(function(file){
+    //                     if(file.directory){
+    //                         folderList.push(file)
+    //                     }
+    //                 })
+    //                 directory.children.each(function(file){
+    //                     if(!file.directory){
+    //                         fileList.push(file)
+    //                     }
+    //                 })
+    //                 folderList.append(fileList);
+    //                 folderList.each(function(file){
+    //                     var node = {
+    //                         name : file.name
+    //                     }
+    //                     if(nodes.children){
+    //                         nodes.children.push(node);
+    //                     }else{
+    //                         nodes.push(node);
+    //                     }
+    //                     if(file.directory){
+    //                         node.children = [];
+    //                         loadNodes(file,node);
+    //                     }
+    //                 })
+    //             }
+    //         }.bind(this));
+    //     }.bind(this));
+    // },
+    previewPdf : function(){
+        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+            window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url)
+        });
+    },
+    previewOfd : function(){
+        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+            window.open("../o2_lib/ofdjs/index.html?file=" + url)
+        });
+    },
+    previewImage : function(){
+        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+            var imgNode = new Element("img",{"src":url,"alt":this.att.name}).inject(document.body).hide();
+            o2.loadCss("../m_app/yunFile/css/viewer.css", document.body,function(){
+                o2.load("../m_app/yunFile/js/viewer.js", function(){
+                    this.viewer = new Viewer(imgNode,{
+                        navbar : false,
+                        toolbar : false,
+                        hidden : function(){
+                            imgNode.destroy();
+                            this.viewer.destroy();
+                        }.bind(this)
+                    });
+                    this.viewer.show();
+                }.bind(this));
+            }.bind(this));
+        }.bind(this));
+    },
+    previewAce:function(type){
+        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+            o2.require("o2.widget.ace", null, false);
+            var fileRequest = new Request({
+                url: url,
+                method: 'get',
+                withCredentials: true,
+                onSuccess: function(responseText){
+                    var editorNode = new Element("div",{"style":"padding:10px"});
+                    editorNode.set("text",responseText);
+
+                    o2.widget.ace.load(function(){
+                        o2.load("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
+                            var highlight = ace.require("ace/ext/static_highlight");
+                            highlight(editorNode, {mode: "ace/mode/"+ type , theme: "ace/theme/tomorrow", "fontSize": 30,"showLineNumbers":true});
+                        }.bind(this));
+
+                    }.bind(this));
+                    var dlg = o2.DL.open({
+                        "title": this.att.name,
+                        "width": "960px",
+                        "height": "610px",
+                        "mask": true,
+                        "content": editorNode,
+                        "container": null,
+                        "positionNode": document.body,
+                        "onQueryClose": function () {
+                            editorNode.destroy();
+                        }.bind(this),
+                        "buttonList": [
+                            {
+                                "text": "关闭",
+                                "action": function () {
+                                    dlg.close();
+                                }.bind(this)
+                            }
+                        ],
+                        "onPostShow": function () {
+                            dlg.reCenter();
+                        }.bind(this)
+                    });
+                }.bind(this),
+                onFailure: function(){
+                    console.log('text', 'Sorry, your request failed :(');
+                }
+            });
+            fileRequest.send();
+        }.bind(this));
+
+    },
+});
 MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
     Extends: MWF.APPAttachment,
     loadAttachmentController: function () {

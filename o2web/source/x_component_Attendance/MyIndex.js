@@ -87,7 +87,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         //    "styles" : this.css.titleRightArrowNode
         //}).inject(this.titleNode);
 
-        var cycleText = "考勤周期："+ this.cycleStartDateString + "至" + this.cycleEndDateString;
+        var cycleText = this.app.lp.cyclText.replace("{start}",this.cycleStartDateString).replace("{end}",this.cycleEndDateString);
         this.titleCycleTextNode = new Element("div",{
             "styles" : this.css.titleCycleTextNode,
             "text" : cycleText
@@ -412,7 +412,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
 
             this.calendarCurrentMonthNode = new Element("div",{
                 "styles" : this.css.calendarCurrentMonthNode,
-                "text" : (this.calendarDate.getMonth()+1)+"月"
+                "text" : (this.calendarDate.getMonth()+1)+this.app.lp.month
             }).inject(this.canlendarToolbar);
 
             this.calendarLeftArrowNode = new Element("div",{
@@ -482,14 +482,14 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         if( this.calendarLeftDisable )return ;
         jQuery(this.calendarNode).fullCalendar( 'prev' );
         this.calendarDate.decrement("month", 1);
-        this.calendarCurrentMonthNode.set("text",(this.calendarDate.getMonth()+1)+"月");
+        this.calendarCurrentMonthNode.set("text",(this.calendarDate.getMonth()+1)+ this.app.lp.month );
         this.switchCalendarArrow( this.calendarDate );
     },
     changeCalendarMonthNext: function(){
         if( this.calendarRightDisable )return ;
         jQuery(this.calendarNode).fullCalendar( 'next' );
         this.calendarDate.increment("month", 1);
-        this.calendarCurrentMonthNode.set("text",(this.calendarDate.getMonth()+1)+"月");
+        this.calendarCurrentMonthNode.set("text",(this.calendarDate.getMonth()+1)+this.app.lp.month);
         this.switchCalendarArrow( this.calendarDate );
 
         //this.date.increment("month", 1);
@@ -618,7 +618,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             }).inject(this.statusColorTable);
             var td = new Element("td",{
                 "styles" : this.css.statusTextTd,
-                "text" : this.lp[status] +this.totalData[status]+"天" + ( this.rateData[status] ? "("+this.rateData[status]+")" : "" )
+                "text" : this.lp[status] +":"+this.totalData[status] + " "+ this.app.lp.day + ( this.rateData[status] ? "("+this.rateData[status]+")" : "" )
             }).inject(tr)
         }
     },
@@ -799,16 +799,20 @@ MWF.xApplication.Attendance.MyIndex = new Class({
     },
     isAskForLevel : function( d , ap ){
         if( ap == "am" ){
-            return  d.isGetSelfHolidays && ( d.selfHolidayDayTime == "全天" || d.selfHolidayDayTime == "上午" )
+            //d.selfHolidayDayTime == "全天" || d.selfHolidayDayTime == "上午"
+            return  d.isGetSelfHolidays && ( ["全天","上午",this.app.lp.wholeDay, this.app.lp.am ].contains(d.selfHolidayDayTime) )
         }else{
-            return  d.isGetSelfHolidays && ( d.selfHolidayDayTime == "全天" || d.selfHolidayDayTime == "下午" )
+            // return  d.isGetSelfHolidays && ( d.selfHolidayDayTime == "全天" || d.selfHolidayDayTime == "下午" )
+            return  d.isGetSelfHolidays && ( ["全天","下午",this.app.lp.wholeDay, this.app.lp.pm ].contains(d.selfHolidayDayTime ) )
         }
     },
     isAbsent : function(d , ap ){
         if( ap == "am" ){
-            return  d.isAbsent && ( d.absentDayTime == "全天" || d.absentDayTime == "上午" )
+            // return  d.isAbsent && ( d.absentDayTime == "全天" || d.absentDayTime == "上午" )
+            return  d.isAbsent && ["全天","上午",this.app.lp.wholeDay, this.app.lp.am ].contains(d.absentDayTime);
         }else{
-            return  d.isAbsent && ( d.absentDayTime == "全天" || d.absentDayTime == "下午" )
+            // return  d.isAbsent && ( d.absentDayTime == "全天" || d.absentDayTime == "下午" )
+            return  d.isAbsent && ["全天","下午",this.app.lp.wholeDay, this.app.lp.pm ].contains(d.absentDayTime);
         }
     },
     isLate : function(d, ap ){
@@ -825,9 +829,10 @@ MWF.xApplication.Attendance.MyIndex = new Class({
     },
     isAbnormalDuty : function(d , ap ){
         if( ap == "am" ){
-            return  d.isAbnormalDuty && ( d.abnormalDutyDayTime == "全天" || d.abnormalDutyDayTime == "上午" )
+            // return  d.isAbnormalDuty && ( d.abnormalDutyDayTime == "全天" || d.abnormalDutyDayTime == "上午" )
+            return  d.isAbnormalDuty && ["全天","上午",this.app.lp.wholeDay, this.app.lp.am ].contains(d.abnormalDutyDayTime)
         }else{
-            return  d.isAbnormalDuty && ( d.abnormalDutyDayTime == "全天" || d.abnormalDutyDayTime == "下午" )
+            return  d.isAbnormalDuty && ["全天","下午",this.app.lp.wholeDay, this.app.lp.pm ].contains(d.abnormalDutyDayTime);
         }
     },
     isHoliday : function( d, ap ){

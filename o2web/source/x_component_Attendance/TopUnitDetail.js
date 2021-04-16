@@ -90,6 +90,7 @@ MWF.xApplication.Attendance.TopUnitDetail.Explorer = new Class({
         this.setNodeScroll();
     },
     loadFilter: function(){
+        var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
             "styles" : this.css.fileterNode
         }).inject(this.node);
@@ -120,9 +121,9 @@ MWF.xApplication.Attendance.TopUnitDetail.Explorer = new Class({
             this.form = new MForm( this.fileterNode, {}, {
                 isEdited : true,
                 itemTemplate : {
-                    q_topUnitName : { text : "公司", type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "200px" } },
+                    q_topUnitName : { text : lp.topUnit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "200px" } },
                     cycleYear : {
-                        text : "年度",
+                        text : lp.annuaal,
                         "type" : "select",
                         "selectValue" : function(){
                             var years = [];
@@ -140,7 +141,7 @@ MWF.xApplication.Attendance.TopUnitDetail.Explorer = new Class({
                         }
                     },
                     cycleMonth : {
-                        text : "月份",
+                        text : lp.months,
                         "type" : "select",
                         "defaultValue" : function(){
                             var month = (new Date().getMonth() + 1 ).toString();
@@ -154,11 +155,11 @@ MWF.xApplication.Attendance.TopUnitDetail.Explorer = new Class({
                             }.bind(this)
                         }
                     },
-                    date : { text : "日期",  "type" : "select", "selectValue" : this.getDateSelectValue.bind(this) },
-                    isAbsent : { text: "缺勤",  "type" : "select", "selectValue" : ["","true","false"], "selectText" : ["","缺勤","未缺勤"] },
-                    isLate : { text: "迟到",  "type" : "select", "selectValue" : ["","true","false"], "selectText" : ["","迟到","未迟到"] },
-                    isLackOfTime : { text: "工时不足", "type" : "select", "selectValue" : ["","true","false"], "selectText" : ["","是","否"] },
-                    action : { "value" : "查询", type : "button", className : "filterButton", event : {
+                    date : { text : lp.date,  "type" : "select", "selectValue" : this.getDateSelectValue.bind(this) },
+                    isAbsent : { text: lp.absent,  "type" : "select", "selectValue" : ["","true","false"], "selectText" : lp.absendSelectText },
+                    isLate : { text: lp.late,  "type" : "select", "selectValue" : ["","true","false"], "selectText" : lp.lateSelectText },
+                    isLackOfTime : { text: lp.lackOfTime, "type" : "select", "selectValue" : ["","true","false"], "selectText" : lp.truefalseSelectText },
+                    action : { "value" : lp.query, type : "button", className : "filterButton", event : {
                         click : function(){
                             var result = this.form.getResult(true,",",true,true,false);
                             if( !result )return;
@@ -172,7 +173,7 @@ MWF.xApplication.Attendance.TopUnitDetail.Explorer = new Class({
                             this.loadView( result );
                         }.bind(this)
                     }},
-                    export : { "value" : "导出", type : "button", className : "filterButton", event : {
+                    export : { "value" : lp.export, type : "button", className : "filterButton", event : {
                             click : function(){
                                 var result = this.form.getResult(true,",",true,true,false);
                                 if( !result )return;
@@ -471,6 +472,7 @@ MWF.xApplication.Attendance.TopUnitDetail.Explorer = new Class({
 MWF.xApplication.Attendance.TopUnitDetail.DetailStaticExplorer = new Class({
     Extends: MWF.xApplication.Attendance.TopUnitDetail.Explorer,
     loadFilter: function(){
+        var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
             "styles" : this.css.fileterNode
         }).inject(this.node);
@@ -493,9 +495,9 @@ MWF.xApplication.Attendance.TopUnitDetail.DetailStaticExplorer = new Class({
             this.form = new MForm( this.fileterNode, {}, {
                 isEdited : true,
                 itemTemplate : {
-                    q_topUnitName : { text : "公司", type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "200px" } },
+                    q_topUnitName : { text : lp.topUnit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "200px" } },
                     cycleYear : {
-                        text : "年度",
+                        text : lp.annuaal,
                         "type" : "select",
                         "selectValue" : function(){
                             var years = [];
@@ -507,7 +509,7 @@ MWF.xApplication.Attendance.TopUnitDetail.DetailStaticExplorer = new Class({
                         }
                     },
                     cycleMonth : {
-                        text : "月份", notEmpty : true,
+                        text : lp.months, notEmpty : true,
                         "type" : "select",
                         "defaultValue" : function(){
                             var month = (new Date().getMonth() + 1 ).toString();
@@ -515,14 +517,14 @@ MWF.xApplication.Attendance.TopUnitDetail.DetailStaticExplorer = new Class({
                         },
                         "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"]
                     },
-                    action : { "value" : "查询", type : "button", className : "filterButton", event : {
+                    action : { "value" : lp.query, type : "button", className : "filterButton", event : {
                         click : function(){
                             var result = this.form.getResult(true,",",true,true,false);
                             if( !result )return;
                             this.loadView( result );
                         }.bind(this)
                     }},
-                    export : { "value" : "导出", type : "button", className : "filterButton", event : {
+                    export : { "value" : lp.export, type : "button", className : "filterButton", event : {
                             click : function(){
                                 var result = this.form.getResult(true,",",true,true,false);
                                 if( !result )return;
