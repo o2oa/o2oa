@@ -1,6 +1,6 @@
 [
   {
-    "title": "新建假期",
+    "title": MWF.xApplication.Attendance.LP.newHoliday,
     "id": "1.1",
     "action": "createDocument",
     "icon": "create.png",

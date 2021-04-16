@@ -1,14 +1,14 @@
 [
   {
-    "title" : "角色",
+    "title" : MWF.xApplication.Attendance.LP.permission.role,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(data){ return data.adminLevel == 'DEPT' ? '部门管理员' : '公司管理员'  }",
+    "item" : "function(data){ return data.adminLevel == 'DEPT' ? MWF.xApplication.Attendance.LP.permission.roleSelectText[1] : MWF.xApplication.Attendance.LP.permission.roleSelectText[0]  }",
     "name" : "adminLevel",
     "width" : "30%"
   },
   {
-    "title" : "人员名称",
+    "title" : MWF.xApplication.Attendance.LP.permission.personName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.adminName.split('@')[0] }",
@@ -16,7 +16,7 @@
     "width" : "30%"
   },
   {
-    "title" : "部门",
+    "title" : MWF.xApplication.Attendance.LP.permission.unit,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.unitName.split('@')[0] }",
@@ -25,14 +25,14 @@
   },
   {
     "access" : "admin",
-    "title" : "操作",
+    "title" : MWF.xApplication.Attendance.LP.action,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "actions",
     "name" : "actions",
     "width" : "10%",
     "sub" : [{
-      "title" : "删除文件",
+      "title" : MWF.xApplication.Attendance.LP.delete,
       "action" : "remove",
       "styles" : "actionDeleteNode",
       "overStyles" : "actionDeleteNode_over",

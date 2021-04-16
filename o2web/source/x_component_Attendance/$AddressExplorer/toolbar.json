@@ -1,7 +1,7 @@
 [
   {
-    "title": "新建工作场所",
-    "text" : "点击后移到地图相应位置再次点击可创建",
+    "title": MWF.xApplication.Attendance.LP.createWorkLocation,
+    "text" : MWF.xApplication.Attendance.LP.createWorkLocationText,
     "id": "1.1",
     "action": "createDocument",
     "icon": "create.png",
@@ -18,8 +18,8 @@
     "styles" : "toolbarSep"
   },
   {
-    "title": "设置百度开发者认证",
-    "text" : "设置工作场所需要用到百度开发者认证",
+    "title": MWF.xApplication.Attendance.LP.setBaiduDeveloperCertification,
+    "text" : MWF.xApplication.Attendance.LP.setBaiduDeveloperCertificationText,
     "id": "2.1",
     "action": "setBiduAccount",
     "icon": "create.png",
