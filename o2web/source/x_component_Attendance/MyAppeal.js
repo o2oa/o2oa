@@ -35,11 +35,12 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
 
     },
     loadFilter: function(){
+        var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
             "styles" : this.css.fileterNode
         }).inject(this.node);
 
-        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' style='width: 580px;font-size: 14px;color:#666'>"+
+        var html = "<table bordr='0' cellpadding='5' cellspacing='0' style='font-size: 14px;color:#666'>"+
             "<tr>" +
             "    <td styles='filterTableTitle' lable='yearString'></td>"+
             "    <td styles='filterTableValue' item='yearString'></td>" +
@@ -59,7 +60,7 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
                 isEdited : true,
                 itemTemplate : {
                     yearString : {
-                        text : "年度",
+                        text : lp.annuaal,
                         "type" : "select",
                         "selectValue" : function(){
                             var years = [];
@@ -77,7 +78,7 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
                         }
                     },
                     monthString : {
-                        text : "月份",
+                        text : lp.months,
                         "type" : "select",
                         "defaultValue" : function(){
                             var month = (new Date().getMonth() + 1 ).toString();
@@ -92,18 +93,18 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
                         }
                     },
                     status : {
-                        "text" : "申述状态",
+                        "text" : lp.auditStatus,
                         "type" : "select",
                         "value" : "999",
-                        "selectText" :["所有状态","待处理","审批通过","审批未通过"],
+                        "selectText" : lp.auditStatusSelectText,
                         "selectValue" :["999","0","1","-1"]
                     },
                     appealReason : {
-                        "text" : "申述原因",
+                        "text" : lp.appealReason,
                         "type" : "select",
-                        "selectText" :["","临时请假","出差","因公外出","其他"]
+                        "selectText" : lp.appealReasonSelectText
                     },
-                    action : { "value" : "查询", type : "button", className : "filterButton", event : {
+                    action : { "value" : lp.search, type : "button", className : "filterButton", event : {
                             click : function(){
                                 var result = this.form.getResult(true,",",true,true,false);
                                 if( !result )return;
@@ -406,6 +407,7 @@ MWF.xApplication.Attendance.MyAppeal.Appeal = new Class({
     },
     createNode: function(){
         var _self = this;
+        var lp = MWF.xApplication.Attendance.LP;
 
         this.createNode = new Element("div", {
             "styles": this.css.createNode
@@ -438,19 +440,19 @@ MWF.xApplication.Attendance.MyAppeal.Appeal = new Class({
 
 
         var d = this.data;
-        var appealStatus = "发起";
+        var appealStatus = lp.draft;
         if (d.status == 0 ) {
-            appealStatus = "待处理"
+            appealStatus = lp.todo;
         } else if (d.status == 1) {
-            appealStatus = "审批通过"
+            appealStatus = lp.approve
         } else if (d.status == -1) {
-            appealStatus = "申诉不通过"
+            appealStatus = lp.deny
         }
         this.data.appealStatusShow = appealStatus;
 debugger
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='4' styles='formTableHead'>申诉申请单</td></tr>" +
-            "<tr><td styles='formTableTitle'>员工姓名</td>"+
+            "<tr><td colspan='4' styles='formTableHead'>"+lp.apealApplyForm+"</td></tr>" +
+            "<tr><td styles='formTableTitle'>"+lp.employeeName+"</td>"+
             "    <td styles='formTableValue'>"+this.data.empName.split("@")[0]+"</td>" +
             "    <td styles='formTableTitle' lable='recordDateString'></td>"+
             "    <td styles='formTableValue' item='recordDateString'></td></tr>" +
@@ -483,30 +485,30 @@ debugger
             style : "popup",
             isEdited : this.isEdited || this.isNew,
             itemTemplate : {
-                recordDateString : { text:"考勤日期",  type : "innertext"},
-                onDutyTime : { text:"上班打卡时间",  type : "innertext"},
-                offDutyTime : { text:"下班打卡时间",  type : "innertext"},
-                statusShow : {  text:"考勤状态", type : "innertext" },
-                appealStatusShow : { text:"审批状态",type : "innertext"},
-                processPerson1Show : {text:"审核人",type:"innertext", value : this.data.appealAuditInfo?this.data.appealAuditInfo.currentProcessor.split("@")[0] :""},
+                recordDateString : { text:lp.recordDate,  type : "innertext"},
+                onDutyTime : { text:lp.onDutyTime,  type : "innertext"},
+                offDutyTime : { text:lp.offDutyTime,  type : "innertext"},
+                statusShow : {  text:lp.attendanceStatus, type : "innertext" },
+                appealStatusShow : { text:lp.appealStatus, type : "innertext"},
+                processPerson1Show : {text:lp.auditor, type:"innertext", value : this.data.appealAuditInfo?this.data.appealAuditInfo.currentProcessor.split("@")[0] :""},
                 appealReason : {
                     notEmpty : true,
-                    text:"申述原因",
+                    text: lp.appealReason,
                     type : "select",
-                    selectValue : ["","临时请假","出差","因公外出","其他"],
+                    selectValue : lp.appealReasonSelectText,
                     event : { change : function(mdi){
                             _self.switchFieldByAppealReason(mdi.getValue());
                         }}
                 },
-                address : { text:"地点" },
+                address : { text: lp.address },
                 selfHolidayType : {
-                    text:"请假类型",
+                    text: lp.leaveType,
                     type : "select",
-                    selectValue : ["","带薪年休假","带薪病假","带薪福利假","扣薪事假","其他"]
+                    selectValue : lp.leaveTypeSelectText
                 },
-                startTime : {  text:"开始日期", tType : "datetime" },
-                endTime : {  text:"结束日期", tType : "datetime" },
-                appealDescription : { text:"事由" }
+                startTime : {  text: lp.startTime, tType : "datetime" },
+                endTime : {  text:lp.endTime, tType : "datetime" },
+                appealDescription : { text: lp.appealDescriptoin }
                 //opinion1 : { text :"审批意见" }
             }
         }, this.app,this.css);
@@ -521,7 +523,7 @@ debugger
 
         this.cancelActionNode = new Element("div", {
             "styles": this.css.createCancelActionNode,
-            "text": "关闭"
+            "text": lp.close
         }).inject(this.createFormNode);
 
 
@@ -532,11 +534,11 @@ debugger
         if( this.isNew || this.isEdited){
             this.denyActionNode = new Element("div", {
                 "styles": this.css.createDenyActionNode,
-                "text": "不同意"
+                "text": lp.disagree
             }).inject(this.createFormNode);
             this.createOkActionNode = new Element("div", {
                 "styles": this.css.createOkActionNode,
-                "text": "同意"
+                "text": lp.agree
             }).inject(this.createFormNode);
 
             this.denyActionNode.addEvent("click", function(e){
@@ -549,15 +551,16 @@ debugger
 
     },
     switchFieldByAppealReason : function( ar ){
+        var lp = MWF.xApplication.Attendance.LP;
         var tempField = ["selfHolidayType","startTime","endTime","address","appealDescription"];
         var showField = [];
-        if( ar == "临时请假" ){
+        if( ar == lp.temporaryLeave ){
             showField = ["selfHolidayType","startTime","endTime"];
-        }else if( ar == "出差" ){
+        }else if( ar == lp.out ){
             showField = ["address","startTime","endTime"];
-        }else if( ar == "因公外出" ){
+        }else if( ar == lp.businessTrip ){
             showField = ["address","startTime","endTime","appealDescription"];
-        }else if( ar == "其他" ){
+        }else if( ar == lp.other ){
             showField = ["appealDescription"];
         }
         tempField.each( function( f ){
@@ -605,7 +608,7 @@ debugger
         if (data.opinion1 ){
             this.process( data );
         }else{
-            this.app.notice( "请填写意见", "error");
+            this.app.notice( MWF.xApplication.Attendance.LP.inputIdeaNotice, "error");
         }
     },
     okCreate: function(e){
@@ -620,7 +623,7 @@ debugger
                 this.createMarkNode.destroy();
                 this.createAreaNode.destroy();
                 if(this.explorer.view)this.explorer.view.reload();
-                this.app.notice( "处理成功" , "success");
+                this.app.notice( MWF.xApplication.Attendance.LP.processSuccess, "success");
             }
             //    this.app.processConfig();
         }.bind(this));

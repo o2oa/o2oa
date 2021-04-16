@@ -101,6 +101,7 @@ MWF.xApplication.Attendance.WeekendSetting = new Class({
         this.addEvent("resize", this.setCreateNodeSizeFun);
     },
     createNode: function(){
+        var lp = MWF.xApplication.Attendance.LP;
         var _self = this;
 
         this.createNode = new Element("div", {
@@ -142,14 +143,14 @@ MWF.xApplication.Attendance.WeekendSetting = new Class({
 
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='4' styles='formTableHead'>周末设置</td></tr>" +
+            "<tr><td colspan='4' styles='formTableHead'>"+lp.weekendSetting+"</td></tr>" +
             "<tr><td styles='formTableTitle' lable='ATTENDANCE_WEEKEND'></td>"+
             "    <td styles='formTableValue' item='ATTENDANCE_WEEKEND'></td>"+
             "</table>";
         html = html+"<span style='font-size:12px'>"+this.dataJson.ATTENDANCE_WEEKEND.description+"</span>"
         this.createTableArea.set("html",html);
         this.itemTemplate = {
-            ATTENDANCE_WEEKEND : { text : "周末选择",
+            ATTENDANCE_WEEKEND : { text : lp.selectWeekend,
                 type : "select",
                 value : d.ATTENDANCE_WEEKEND ,
                 selectValue :this.dataJson.ATTENDANCE_WEEKEND.selectContent.split("|") ,//["周六","周日"]
@@ -169,7 +170,7 @@ MWF.xApplication.Attendance.WeekendSetting = new Class({
 
         this.cancelActionNode = new Element("div", {
             "styles": this.css.createCancelActionNode,
-            "text": "取消"
+            "text": lp.cancel
         }).inject(this.createFormNode);
 
 
@@ -180,7 +181,7 @@ MWF.xApplication.Attendance.WeekendSetting = new Class({
         if( this.isNew || this.isEdited ){
             this.createOkActionNode = new Element("div", {
                 "styles": this.css.createOkActionNode,
-                "text": "确定"
+                "text": lp.ok
             }).inject(this.createFormNode);
 
             this.createOkActionNode.addEvent("click", function(e){
@@ -244,7 +245,7 @@ MWF.xApplication.Attendance.WeekendSetting = new Class({
         if( flag ){
             this.createMarkNode.destroy();
             this.createAreaNode.destroy();
-            this.app.notice( "保存成功" , "success");
+            this.app.notice( MWF.xApplication.Attendance.LP.saveSuccess , "success");
         }
     }
 });

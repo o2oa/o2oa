@@ -39,8 +39,9 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
         exportForm.edit();
     },
     _loadFilterContent : function(){
+	    var lp = MWF.xApplication.Attendance.LP;
         var _self = this;
-        var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable' width='1350'>"+
+        var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr>" +
             "    <td styles='formTableTitle' lable='q_topUnitName'></td>"+
             "    <td styles='formTableValue' item='q_topUnitName'></td>"+
@@ -62,14 +63,19 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
                 style : "filter",
                 isEdited : true,
                 itemTemplate : {
-                    q_topUnitName : { "text" : "选择公司", "type" : "org", "orgType" : "unit", style : {"min-width" : "200px"} },
-                    q_unitName : { "text" : "选择部门", "type" : "org", "orgType" : "unit", style : {"min-width" : "250px"} },
-                    q_empName : {  "text" : "选择人员", "type" : "org", "orgType" : "person", style : {"min-width" : "100px"} },
-                    startdateString : {  "text" : "开始日期", "tType" : "date",style : {"border" : "1px solid rgb(153, 153, 153)","background":'url("../x_component_Template/$MForm/default/icon/calendar.png") 98% center no-repeat',"border-radius":"3px","box-shadow":"rgb(204, 204, 204) 0px 0px 6px","height":"26px","width":"100px"} },
-                    enddateString : { "text" : "结束日期", "tType" : "date" ,style : {"border" : "1px solid rgb(153, 153, 153)","background":'url("../x_component_Template/$MForm/default/icon/calendar.png") 98% center no-repeat',"border-radius":"3px","box-shadow":"rgb(204, 204, 204) 0px 0px 6px","height":"26px","width":"100px"}},
+                    q_topUnitName : { "text" : lp.selectCompany, "type" : "org", "orgType" : "unit", style : {"min-width" : "200px"} , event: {
+                            change : function (item, ev) {
+                                debugger;
+                            }
+                        }
+                    },
+                    q_unitName : { "text" : lp.selectDepartment, "type" : "org", "orgType" : "unit", style : {"min-width" : "250px"} },
+                    q_empName : {  "text" : lp.selectPerson, "type" : "org", "orgType" : "person", style : {"min-width" : "100px"} },
+                    startdateString : {  "text" : lp.startTime, "tType" : "date",style : {"border" : "1px solid rgb(153, 153, 153)","background":'url("../x_component_Template/$MForm/default/icon/calendar.png") 98% center no-repeat',"border-radius":"3px","box-shadow":"rgb(204, 204, 204) 0px 0px 6px","height":"26px","width":"100px"} },
+                    enddateString : { "text" : lp.endTime, "tType" : "date" ,style : {"border" : "1px solid rgb(153, 153, 153)","background":'url("../x_component_Template/$MForm/default/icon/calendar.png") 98% center no-repeat',"border-radius":"3px","box-shadow":"rgb(204, 204, 204) 0px 0px 6px","height":"26px","width":"100px"}},
                     action : {
                         "type" : "button",
-                        "value" : "查询",
+                        "value" : lp.query,
                         "event" : { "click" : function(){
                             var filterData =  _self.filter.getResult( true,",",true,true,true);
                             this.loadView( filterData );
@@ -134,9 +140,10 @@ MWF.xApplication.Attendance.SelfHoliday.Document = new Class({
 MWF.xApplication.Attendance.SelfHoliday.ExportExcelForm = new Class({
     Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
     _createTableContent: function(){
+        var lp = MWF.xApplication.Attendance.LP;
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>导出员工休假记录</td></tr>" +
+            "<tr><td colspan='2' styles='formTableHead'>"+lp.exportEmployeeHolidayRecord+"</td></tr>" +
             "<tr>" +
             "    <td styles='formTableTitle' lable='startDate'></td>"+
             "    <td styles='formTableValue' item='startDate'></td>"+
@@ -153,8 +160,8 @@ MWF.xApplication.Attendance.SelfHoliday.ExportExcelForm = new Class({
             this.form = new MForm( this.formTableArea, {q_empName : layout.desktop.session.user.distinguishedName }, {
                 isEdited : true,
                 itemTemplate : {
-                    startDate : {  "text" : "开始日期", "tType" : "date" },
-                    endDate : { "text" : "结束日期", "tType" : "date" }
+                    startDate : {  "text" : lp.startTime, "tType" : "date" },
+                    endDate : { "text" : lp.endTime, "tType" : "date" }
                 }
             }, this.app );
             this.form.load();
@@ -181,9 +188,9 @@ MWF.xApplication.Attendance.SelfHoliday.Form = new Class({
         "closeAction" : true
     },
     _createTableContent: function(){
-
+        var lp = MWF.xApplication.Attendance.LP;
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>员工休假记录</td></tr>" +
+            "<tr><td colspan='2' styles='formTableHead'>"+lp.employeeHolidayRecord+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
             "    <td styles='formTableValue' item='unitName'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='employeeName'></td>"+
@@ -203,21 +210,21 @@ MWF.xApplication.Attendance.SelfHoliday.Form = new Class({
             this.form = new MForm( this.formTableArea, this.data, {
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
-                    unitName : { text : "部门", "type" : "org", orgType : "unit", notEmpty : true},
-                    employeeName : { text: "员工姓名",  "type" : "org", orgType : "person" , notEmpty : true },
+                    unitName : { text : lp.unit, "type" : "org", orgType : "unit", notEmpty : true},
+                    employeeName : { text: lp.employeeName,  "type" : "org", orgType : "person" , notEmpty : true },
                     leaveType : {
-                        text: "休假类型",
+                        text: lp.leaveType1,
                         "type" : "select", notEmpty : true,
-                        "selectValue" : "带薪年休假,带薪病假,带薪福利假,扣薪事假,其他".split(",")
+                        "selectValue" : lp.leaveTypeSelectText1
                     },
                     startTime : {
-                        text:"开始时间", tType : "datetime", notEmpty : true
+                        text: lp.startTime, tType : "datetime", notEmpty : true
                     },
                     endTime : {
-                        text:"结束时间", tType : "datetime", notEmpty : true
+                        text: lp.endTime, tType : "datetime", notEmpty : true
                     },
                     leaveDayNumber : {
-                        text:"休假天数", tType : "number", notEmpty : true
+                        text:lp.leaveDayCount, tType : "number", notEmpty : true
                     }
                 }
             }, this.app);

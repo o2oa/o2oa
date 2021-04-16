@@ -1964,7 +1964,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			var arg = { data : resultArr, colWidthArray : colWidthArr, title : title };
 			this.fireEvent("export", [arg]);
 
-			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils(this).exportToExcel( resultArr, arg.title || title, colWidthArr, dateIndexArr );
 		},
 		importFromExcel : function () {
 			debugger;
@@ -1996,7 +1996,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			}.bind(this));
 
 
-			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).upload( dateColArray, function (importedData) {
+			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils(this).upload( dateColArray, function (importedData) {
 
 				var checkAndImport = function () {
 					if( !this.checkImportedData( columnList, importedData ) ){
@@ -2223,7 +2223,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			var arg = { data : resultArr, colWidthArray : colWidthArr, title : title, withError : true };
 			this.fireEvent("export", [arg]);
 
-			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils(this).exportToExcel( resultArr, arg.title || title, colWidthArr, dateIndexArr );
 		},
 		checkImportedData : function( columnList, tableData ){
 			var flag = true;
@@ -2231,7 +2231,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			var lp = MWF.xApplication.process.Xform.LP;
 			var columnText =  lp.importValidationColumnText;
 			var columnTextExcel = lp.importValidationColumnTextExcel;
-			var excelUtil = new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this );
+			var excelUtil = new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils(this);
 
 			tableData.each( function(lineData, lineIndex){
 
@@ -2583,7 +2583,7 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 				}
 
 				//第三个参数是日期的列
-				this.import( file, function(json){
+				this.importFromExcel( file, function(json){
 					//json为导入的结果
 					if(callback)callback(json);
 					uploadFileAreaNode.destroy();
@@ -2594,11 +2594,11 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 		var fileNode = uploadFileAreaNode.getFirst();
 		fileNode.click();
 	},
-	export : function(array, fileName, colWidthArr, dateIndexArray){
+	exportToExcel : function(array, fileName, colWidthArr, dateIndexArray){
 		// var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
 		// array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
 		// array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
-		// this.export(array, "导出数据"+(new Date).format("db"));
+		// this.exportToExcel(array, "导出数据"+(new Date).format("db"));
 		this._loadResource( function(){
 			var data = window.xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
 			var wb = window.xlsxUtils.format2WB(data, "sheet1", undefined);
@@ -2668,7 +2668,7 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 			this._openDownloadDialog(window.xlsxUtils.format2Blob(wb), fileName +".xlsx");
 		}.bind(this))
 	},
-	import : function( file, callback, dateColArray ){
+	importFromExcel : function( file, callback, dateColArray ){
 		this._loadResource( function(){
 			var reader = new FileReader();
 			var workbook, data;

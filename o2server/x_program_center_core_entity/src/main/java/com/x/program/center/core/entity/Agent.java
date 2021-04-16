@@ -67,7 +67,7 @@ public class Agent extends SliceJpaObject {
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
 	/* 检查在同一应用下不能重名 */
-	@CitationNotExist(fields = { "name", "id", "alias" }, type = Invoke.class))
+	@CitationNotExist(fields = { "name", "id", "alias" }, type = Agent.class))
 	private String alias;
 
 	public static final String description_FIELDNAME = "description";

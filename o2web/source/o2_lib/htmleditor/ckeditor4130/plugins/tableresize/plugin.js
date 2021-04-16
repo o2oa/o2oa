@@ -13,9 +13,12 @@
 		var size = el.getSize();
 		var scale = thisEditor.element.$.retrieve("scale");
 
-		if (scale && scale!==1){
-			size.x = size.x*scale;
-			size.y = size.y*scale;
+		if (layout && layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
+			var scale = thisEditor.element.$.retrieve("scale");
+			if (scale && scale!==1){
+				size.x = size.x*scale;
+				size.y = size.y*scale;
+			}
 		}
 		return size;
 	}
