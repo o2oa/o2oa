@@ -1,14 +1,14 @@
 [
   {
-    "title" : "公司名称",
-    "headStyles" : "normalThNode",
+    "title": MWF.xApplication.Attendance.LP.topUnitName,
+    "headStyles": "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.topUnitName.split('@')[0] }",
     "name" : "topUnitName",
     "width" : "15%"
   },
   {
-    "title" : "部门名称",
+    "title": MWF.xApplication.Attendance.LP.unitName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.unitName.split('@')[0] }",
@@ -16,7 +16,7 @@
     "width" : "15%"
   },
   {
-    "title" : "年度",
+    "title": MWF.xApplication.Attendance.LP.annuaal,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "cycleYear",
@@ -24,7 +24,7 @@
     "width" : "10%"
   },
   {
-    "title" : "月份",
+    "title": MWF.xApplication.Attendance.LP.months,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "cycleMonth",
@@ -32,7 +32,7 @@
     "width" : "10%"
   },
   {
-    "title" : "开始日期",
+    "title": MWF.xApplication.Attendance.LP.startDate,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "cycleStartDateString",
@@ -40,7 +40,7 @@
     "width" : "15%"
   },
   {
-    "title" : "结束日期",
+    "title": MWF.xApplication.Attendance.LP.holiday.endDate,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "cycleEndDateString",
@@ -49,14 +49,14 @@
   },
   {
     "access" : "admin",
-    "title" : "操作",
+    "title": MWF.xApplication.Attendance.LP.action,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "actions",
     "name" : "actions",
     "width" : "5%",
     "sub" : [{
-      "title" : "删除文件",
+      "title": MWF.xApplication.Attendance.LP.delete,
       "action" : "remove",
       "styles" : "actionDeleteNode",
       "overStyles" : "actionDeleteNode_over",
