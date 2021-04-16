@@ -8,7 +8,7 @@
     "sub": []
   },
   {
-    "title": MWF.xApplication.process.ProcessManager.LP.processConfig,s
+    "title": MWF.xApplication.process.ProcessManager.LP.processConfig,
     "id": "1.1",
     "action": "processConfig",
     "icon": "process_flow.png",
