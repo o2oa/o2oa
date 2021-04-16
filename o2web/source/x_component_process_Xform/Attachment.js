@@ -1441,7 +1441,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }, null, null, this.form.json.confirmStyle);
     },
     previewAttachment: function (attachments) {
-        var att = attachments[0].data;
+        var att = attachments[0];
         new MWF.xApplication.process.Xform.AttachmenPreview(att,this);
     },
     deleteAttachment: function (attachment) {
@@ -1623,7 +1623,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
                 } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({ 
+                    wx.miniProgram.navigateTo({
                         url: '../file/download?attId=' + att.data.id + '&type=work&work=' + this.form.businessData.work.id
                     });
                 } else {
@@ -1647,7 +1647,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
                 } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({ 
+                    wx.miniProgram.navigateTo({
                         url: '../file/download?attId=' + att.data.id + '&type=work&workCompleted=' + this.form.businessData.workCompleted.id
                     });
                 } else {
@@ -1674,7 +1674,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
                 } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({ 
+                    wx.miniProgram.navigateTo({
                         url: '../file/download?attId=' + att.data.id + '&type=work&work=' + this.form.businessData.work.id
                     });
                 } else {
@@ -1699,7 +1699,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
                 } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({ 
+                    wx.miniProgram.navigateTo({
                         url: '../file/download?attId=' + att.data.id + '&type=work&workCompleted=' + this.form.businessData.workCompleted.id
                     });
                 } else {
@@ -1940,7 +1940,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
     },
     load:function(){
 
-        var extension = this.att.extension;
+        var extension = this.att.data.extension;
         if(extension === "ofd"){
             this.previewOfd();
         }
@@ -1979,48 +1979,50 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         }
     },
     previewZip: function () {
+        debugger
         //zip压缩包预览
         var _self = this;
-        var zipViewNode = new Element("div.ztree");
+        var zipViewNode = new Element("div");
         o2.load(["../o2_lib/jszip/jszip.min.js", "../o2_lib/jszip/jszip-utils.min.js"], function () {
-            this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
-                var cookie = Cookie.read("x-token");
-                url = url + "?x-token=" + cookie;
+            this.app.getAttachmentUrl(this.att, function (url) {
                 JSZipUtils.getBinaryContent(url, function (err, data) {
                     JSZip.loadAsync(data).then(function (zip) {
                         var nodeList = [];
                         zip.forEach(function (relativePath, zipEntry) {
-                            nodeList.push(zipEntry.name)
+                            nodeList.push(zipEntry.name);
                         });
-                        o2.loadCss("../o2_lib/zTree/zTreeStyle.css", function () {
-                            o2.load(["../o2_lib/jquery/jquery.min.js", "../o2_lib/zTree/jquery.ztree.core.min.js"], {"sequence": true}, function () {
-                                jQuery = jQuery.noConflict(true); //避免js框架冲突
-                                jQuery.fn.zTree.init(jQuery(zipViewNode), {}, _pathToTree(nodeList));
-                                var dlg = o2.DL.open({
-                                    "title": _self.att.name,
-                                    "width": "660px",
-                                    "height": "510px",
-                                    "mask": true,
-                                    "content": zipViewNode,
-                                    "container": null,
-                                    "positionNode": document.body,
-                                    "onQueryClose": function () {
-                                        zipViewNode.destroy();
-                                    },
-                                    "buttonList": [
-                                        {
-                                            "text": "关闭",
-                                            "action": function () {
-                                                dlg.close();
-                                            }
+
+                        debugger
+                        o2.require("MWF.widget.Tree", function(){
+                            var options = {"style":"form"};
+                            var dlg = o2.DL.open({
+                                "title": _self.att.name,
+                                "width": "660px",
+                                "height": "510px",
+                                "mask": true,
+                                "content": zipViewNode,
+                                "container": null,
+                                "positionNode": document.body,
+                                "onQueryClose": function () {
+                                    zipViewNode.destroy();
+                                },
+                                "buttonList": [
+                                    {
+                                        "text": "关闭",
+                                        "action": function () {
+                                            dlg.close();
                                         }
-                                    ],
-                                    "onPostShow": function () {
-                                        dlg.reCenter();
                                     }
-                                });
-                            }.bind(this));
-                        })
+                                ],
+                                "onPostShow": function () {
+                                    debugger
+                                    var tree = new MWF.widget.Tree(zipViewNode, options);
+                                    var treeData = _pathToTree(nodeList);
+                                    tree.load(treeData);
+                                    dlg.reCenter();
+                                }
+                            });
+                        }.bind(this));
                     });
                 });
             }.bind(this));
@@ -2038,7 +2040,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
                     var lastNode = currentNode;
                     for (var k = 0; k < currentNode.length; k++) {
                         if (currentNode[k].name == wantedNode) {
-                            currentNode = currentNode[k].children;
+                            currentNode = currentNode[k].sub;
                             break;
                         }
                     }
@@ -2046,64 +2048,83 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
                         var obj = {
                             key: pathList[i],
                             name: wantedNode,
-                            children: []
+                            title:wantedNode,
+                            text:wantedNode,
+                            sub: []
                         };
                         var newNode = (currentNode[k] = obj);
                         if (wantedNode.indexOf(".") > -1) {
                             obj.dir = false;
-                            //delete obj.children;
+                            obj.icon = "file.png";
+                            delete obj.sub;
                         } else {
                             obj.dir = true;
-                            currentNode = newNode.children;
+                            obj.expand = false;
+                            currentNode = newNode.sub;
+                            //delete obj.sub;
                         }
                     } else {
-                        delete currentNode.children;
+                        delete currentNode.sub;
                     }
                 }
             }
             var nodes = [];
-            _sortPath(pathJsonList[0], nodes);
+
+            var folder = {
+                "title" : _self.att.name,
+                "text" : _self.att.name,
+                "sub" : []
+            };
+            pathJsonList.each(function(path){
+                folder.sub.push(path);
+            })
+            _sortPath(folder, nodes);
             return nodes;
         }
         function _sortPath(pathJsonList, nodes) {
             var folderList = [];
-            var fileList = [];
-            pathJsonList.children.each(function (file) {
+            pathJsonList.sub.each(function (file) {
                 if (file.dir) {
                     folderList.push(file);
-                } else {
-                    fileList.push(file);
                 }
             });
-            folderList.append(fileList);
+            pathJsonList.sub.each(function (file) {
+                if (!file.dir) {
+                    folderList.push(file);
+                }
+            });
+
+            debugger
             folderList.each(function (file) {
                 var node = {
-                    name: file.name
+                    text: file.name,
+                    title: file.name,
+                    expand : false
                 };
-                if (nodes.children) {
-                    nodes.children.push(node);
-                } else {
-                    nodes.push(node);
+                if (!file.dir) {
+                    node.icon = "file.png";
                 }
-                if (file.dir) {
-                    node.children = [];
-                    _sortPath(file, node);
+                nodes.push(node);
+                if(file.sub && file.sub.length>0){
+                    node.sub = [];
+                    _sortPath(file,node.sub);
                 }
+
             })
         }
     },
     previewPdf : function(){
-        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+        this.app.getAttachmentUrl(this.att, function (url) {
             window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url)
         });
     },
     previewOfd : function(){
-        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+        this.app.getAttachmentUrl(this.att,  function (url) {
             window.open("../o2_lib/ofdjs/index.html?file=" + url)
         });
     },
     previewImage : function(){
-        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+        this.app.getAttachmentUrl(this.att, function (url) {
             var imgNode = new Element("img",{"src":url,"alt":this.att.name}).inject(document.body).hide();
             o2.loadCss("../o2_lib/viewer/viewer.css", document.body,function(){
                 o2.load("../o2_lib/viewer/viewer.js", function(){
@@ -2121,7 +2142,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         }.bind(this));
     },
     previewAce:function(type){
-        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+        this.app.getAttachmentUrl(this.att,  function (url) {
             o2.require("o2.widget.ace", null, false);
             var fileRequest = new Request({
                 url: url,
