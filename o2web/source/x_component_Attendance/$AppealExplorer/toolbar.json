@@ -1,6 +1,6 @@
 [
   {
-    "title": "考勤申诉审批已被停用",
+    "title": MWF.xApplication.Attendance.LP.appealIsDisable,
     "id": "1.1",
     "position" : "left",
     "styles" : "toolbarTextNode",
@@ -8,14 +8,14 @@
     "sub": []
   },
   {
-    "title": "批量处理：",
+    "title": MWF.xApplication.Attendance.LP.batchDeal,
     "id": "1.1",
     "position" : "left",
     "styles" : "toolbarTextNode",
     "sub": []
   },
   {
-    "title": "同意",
+    "title": MWF.xApplication.Attendance.LP.agree,
     "id": "1.2",
     "action": "agreeAppeals",
     "icon": "agree.png",
@@ -24,7 +24,7 @@
     "sub": []
   },
   {
-    "title": "不同意",
+    "title": MWF.xApplication.Attendance.LP.disagree,
     "id": "1.3",
     "action": "denyAppeals",
     "icon": "deny.png",
