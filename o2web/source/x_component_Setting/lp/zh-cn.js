@@ -83,17 +83,17 @@ MWF.xApplication.Setting.LP = {
     "register_code": "允许使用短信验证码自助注册",
 
     "base_portalLogin": "使用门户页面登录",
-    "base_portalLogin_infor": "可使用定制的门户页面作为登录页，登录页面模板可从应用市场下载。(重启服务器后生效)",
+    "base_portalLogin_infor": "可使用定制的门户页面作为登录页，登录页面模板可从应用市场下载。",
     "base_portalLogin_action": "",
 
     "base_loginPortalId": "登录门户",
-    "base_loginPortalId_infor": "选择登录页面的门户。(重启服务器后生效)",
+    "base_loginPortalId_infor": "选择登录页面的门户。",
 
     "base_portalIndex": "使用门户页面作为系统首页",
-    "base_portalIndex_infor": "可使用定制的门户页面作为系统首页，登录后打开此页面。(重启服务器后生效)",
+    "base_portalIndex_infor": "可使用定制的门户页面作为系统首页，登录后打开此页面。",
     "base_portalIndex_action": "",
     "base_indexPortalId": "系统首页门户",
-    "base_indexPortalId_infor": "选择系统首页的门户。(重启服务器后生效)",
+    "base_indexPortalId_infor": "选择系统首页的门户。",
 
 
     "base_ssoSetting": "配置与其它系统的鉴权和单点登录设置",
