@@ -1,12 +1,15 @@
-MWF.LP = window.LP || {
+o2.LP = window.LP || {
 	"name": "Name",
 	"description": "Description",
-	"searchKey": "请输入搜索关键字",
-	"desktop_style": "桌面风格",
-	"flat_style": "扁平风格"
+	"searchKey": "Search",
+	"desktop_style": "dDesktop",
+	"flat_style": "Flat",
+	"cmsName" : "CMS",
+	"processName" : "Process",
+	"portalName" : "Portal"
 };
 
-MWF.LP.process = {
+o2.LP.process = {
 	"unnamed": "Unnamed",
 	"unknow": "Unknow",
 	"processConfig": "Process Config",
@@ -67,39 +70,39 @@ MWF.LP.process = {
 		"hideGrid": "Hide Grid"
 	},
 	"notice": {
-		"save_success": "Save the process successful!",
+		"save_success": "Process saved successfully!",
 		"deleteForm_success": "Form deleted!",
 		"deleteProcess_success": "Process deleted!",
-		"one_begin": "Each process can have only one begin activity!",
-		"deleteRoute": "You sure you want to delete the selected route?",
+		"one_begin": "There can only be one start activity per process!",
+		"deleteRoute": "Are you sure you want to delete the selected route?",
 		"deleteRouteTitle": "Delete route confirmation",
 		"deleteActivityTitle": "Delete activity confirmation",
-		"deleteActivity": "Deleting the activity will also delete all routes associated with this activity, you sure you want to delete the selected activity？",
+		"deleteActivity": "Deleting the activity will also delete all routes associated with this activity, Are you sure you want to delete the selected activity？",
 		"deleteDecisionTitle": "Delete decision confirmation",
-		"deleteDecision": "You sure you want to delete the selected decision?",
+		"deleteDecision": "Are you sure you want to delete the selected decision?",
 		"deleteScriptTitle": "Delete script confirmation",
-		"deleteScript": "You sure you want to delete the selected script?",
+		"deleteScript": "Are you sure you want to delete the selected script?",
 		"deleteElementTitle": "Delete form element confirmation",
 		"deleteElement": "Are you sure to delete the current element and its child elements?",
 		"deleteEventTitle": "Delete event confirmation",
-		"deleteEvent": "You sure you want to delete the selected event?",
+		"deleteEvent": "Are you sure you want to delete the selected event?",
 
 		"deleteActionTitle": "Delete operation confirmation",
-		"deleteAction": "You sure you want to delete the selected operation?",
+		"deleteAction": "Are you sure you want to delete the selected operation?",
 
 		"deleteRowTitle": "Delete table row confirmation",
-		"deleteRow": "Deletes the current row is the row is deleted all the content in the cells, are you sure to delete the currently selected row?",
+		"deleteRow": "Deletes the current row is the row is deleted all the content in the cells, Are you sure to delete the currently selected row?",
 		"deleteColTitle": "Delete Table Columns confirmation",
-		"deleteCol": "Deletes the current column is the column is deleted all the content in the cells, are you sure to delete the currently selected column?",
+		"deleteCol": "Deletes the current column is the column is deleted all the content in the cells, Are you sure to delete the currently selected column?",
 
 		"deleteProcessTitle": "Delete process confirmation",
-		"deleteProcess": "You sure you want to delete the selected process?",
+		"deleteProcess": "Are you sure you want to delete the selected process?",
 
 		"deleteFormTitle": "Delete form confirmation",
 		"deleteForm": "You sure you want to delete the selected form?",
 
 		"deleteTreeNodeTitle": "Delete node confirmation",
-		"deleteTreeNode": "You sure you want to delete the selected node?",
+		"deleteTreeNode": "Are You sure you want to delete the selected node?",
 
 		"inputScriptName": "Please enter the name of the script!",
 		"inputCategoryName": "Please enter the category name of the script!"
@@ -122,8 +125,8 @@ MWF.LP.process = {
 		"script": "Script"
 	}
 };
-MWF.LP.desktop = {
-	"homepage": "首页",
+o2.LP.desktop = {
+	"homepage": "Homepage",
 	"loadding": "System is loadding, please wait......",
 	"lowBrowser": " Your browser version is too low! ~ IE8 and the following versions are not supported!",
 	"upgradeBrowser": "Please upgrade your browser：",
@@ -145,19 +148,29 @@ MWF.LP.desktop = {
 	"say": "Say",
 	"clearMessage": "Clear Message",
 
-	"lnkAppTitle": "常用应用",
-	"deleteLnk": "删除常用应用快捷方式",
-	"addLnk": "添加常用应用快捷方式",
+	"refresh": "Refresh",
+	"close": "Close",
+	"closeAll": "Close All",
+	"closeOther": "Close Others",
 
-	"changeViewTitle": "切换视图样式确认",
-	"changeView": "您确定要切换视图样式吗？<br><br>如果您选择“确定”，页面将直接刷新，未保存的数据可能丢失。",
+	"lnkAppTitle": "Often Used",
+	"deleteLnk": "Delete Link",
+	"addLnk": "Add Link",
+
+	"changeViewTitle": "Toggle style confirmation",
+	"changeView": "Are you sure you want to switch the style？<br><br>If you select \"OK\", the page will refresh directly, and unsaved data may be lost.",
+	"refreshMenu": "Restore the default menu order",
+	"defaultMenuTitle": "Confirmation",
+	"defaultMenuInfor": "Are you sure you want to restore the ordering and grouping of the menu to the default state？",
+
+	"deleteLink" : "Delete Link",
 
 	"messsage": {
 		"appliction": "Application",
-		"application": "app",
+		"application": "App",
 		"process": "Process",
-		"infor": "info",
-		"query": "data",
+		"infor": "Info",
+		"query": "Data",
 		"taskMessage": "Task Reminders",
 		"receiveTask": "You get a Task, The title is: ",
 		"activity": "Activity",
@@ -177,29 +190,32 @@ MWF.LP.desktop = {
 		"meetingInviteMessage": "Meeting Invitation",
 		"meetingInvite": "<font style='color: #ea621f'>{person}</font> invite you to attend the meeting in <font style='color: #ea621f'>{date}</font>: Topics is: \"{subject}\"，location: <font style='color: #ea621f'>{addr}</font>",
 		"meetingCancelMessage": "Meeting.Canceled",
-		"meetingCancel": "<font style='color: #ea621f'>{person}</font> 取消了原定于<font style='color: #ea621f'>{date}</font>在<font style='color: #ea621f'>{addr}</font>举行的会议: “{subject}”",
+		"meetingCancel": "<font style='color: #ea621f'>{person}</font> cancelled the meeting on <font style='color: #ea621f'>{date}</font> in <font style='color: #ea621f'>{addr}</font>: \"{subject}\"",
 		"meetingAcceptMessage": "Meeting invitation has been accepted",
-		"meetingAccept": "<font style='color: #ea621f'>{person}</font> 已接受您的会议邀请，将于<font style='color: #ea621f'>{date}</font>到<font style='color: #ea621f'>{addr}</font>参加会议: “{subject}”",
+		"meetingAccept": "<font style='color: #ea621f'>{person}</font> has accepted your meeting invitation, will attend the meeting in <font style='color: #ea621f'>{addr}</font> on <font style='color: #ea621f'>{date}</font>: \"{subject}\"",
 		"meetingRejectMessage": "Meeting invitation has been rejected",
-		"meetingReject": "<font style='color: #ea621f'>{person}</font> 已拒绝您的会议邀请。会议时间：<font style='color: #ea621f'>{date}</font>；会议标题: “{subject}”",
+		"meetingReject": "<font style='color: #ea621f'>{person}</font> has declined your meeting invitation。Time: <font style='color: #ea621f'>{date}</font>; Subject: \"{subject}\"",
 
-		"attendanceAppealInviteMessage": "有考勤申述需要您审批",
+		"attendanceAppealInviteMessage": "There is an attendance claim that needs your approval",
 		"attendanceAppealInvite": "{subject}",
-		"attendanceAppealAcceptMessage": "考勤申述通过",
+		"attendanceAppealAcceptMessage": "Attendance application passed",
 		"attendanceAppealAccept": "{subject}",
-		"attendanceAppealRejectMessage": "考勤申述未通过",
+		"attendanceAppealRejectMessage": "Attendance appeal failed",
 		"attendanceAppealReject": "{subject}",
 
-		"canlendarAlarmMessage" : "日程提醒",
+		"canlendarAlarmMessage" : "Schedule",
 		"canlendarAlarm" : "{title}",
 
 		"teamwork":{
-			"executor":"责任人",
-			"creatorPerson":"创建者"
+			"executor":"Assignee",
+			"creatorPerson":"Creator"
 		},
 
-		"customMessageTitle": "消息提醒：",
-		"customMessage": "您收到一条消息："
+		"publishDocument" : "Publish document: ",
+
+		"customMessageTitle": "Message: ",
+		"customMessage": "You received a message: ",
+		"emoji": "Emoji"
 	},
 	"styleMenu": {
 		"default": "default",
@@ -226,10 +242,10 @@ MWF.LP.desktop = {
 		"navy": "navy"
 	},
 	"notice": {
-		"unload": "If you close or refresh the current page, the content is not saved is lost, please make sure your operation",
-		"changePassword": "Your password has expired, please do not hesitate to change the password",
-		"errorConnectCenter1": "无法连接到应用中心服务器，请确保下列地址其中之一可以访问：",
-		"errorConnectCenter2": "如果以上地址都无法访问，请检查您的网络，或联系管理员！"
+		"unload": "If you close or refresh the current page, the unsaved content will be lost, please confirm your operation",
+		"changePassword": "Your password has expired, please change it in time",
+		"errorConnectCenter1": "Unable to connect to the Center Server, please make sure one of the following addresses is accessible: ",
+		"errorConnectCenter2": "If none of the above addresses can be accessed, please check your network or contact the administrator!"
 	},
 	"login": {
 		"title": "User Login",
@@ -284,7 +300,7 @@ MWF.LP.desktop = {
 	}
 };
 o2.LP.desktop.message = o2.LP.desktop.messsage;
-MWF.LP.widget = {
+o2.LP.widget = {
 	"upload": "Upload",
 	"uploadTitle": "Upload File",
 	"uploadInfor": "Please select a file to upload",
@@ -299,10 +315,15 @@ MWF.LP.widget = {
 	"createFolder": "Create Folder",
 	"rename": "Rename",
 	"property": "Property",
-	"refuseUpload": "禁止文件上传",
+	"refuseUpload": "File upload is prohibited",
+	"refuseUploadHTML": "<div>The type of attachment named <font style='color:#0000ff'>\"{filename}\"</font> is not allowed to be uploaded and has been excluded</div>",
+	"refuseUploadNotice" : "The type of attachment named \"{filename}\" is not allowed to be uploaded",
+	"refuseUploadHTML_size" : "<div>The size of the attachment named <font style='color:#0000ff'>\"{filename}\"</font> is too large and has been excluded </font> (Only allow uploading of attachments smaller than {size}M) </div>",
+	"refuseUploadNotice_size": "The size of the attachment named \"{filename}\" is too large (Only allow uploading of attachments smaller than {size}M) ",
+
 
 	"list": "List",
-	"sequence": "序列",
+	"sequence": "Sequence",
 	"icon": "Icon",
 	"preview": "Preview",
 
@@ -319,7 +340,7 @@ MWF.LP.widget = {
 	"folderCount": "Folder",
 
 	"pictureSize": "Width {width}px, Height {height}px",
-	"pictureRatio": "图片宽高比为{ratio}",
+	"pictureRatio": "Image aspect ratio{ratio}",
 
 	"ok": "Ok",
 	"cancel": "Cancel",
@@ -327,39 +348,76 @@ MWF.LP.widget = {
 	"close": "close",
 	"open": "open",
 	"choiceWork": "choice document open",
-	"workcompleted": "流转完成",
+	"workcompleted": "Process completed",
 
 	"months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 	"days_abbr": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+	"clear": "clear",
+	"year": ", ",
+	"month": " ",
+	"date": " ",
+	"week": "week",
+	"dateGreaterThanCurrentNotice" : "The selected date must be greater than the current date",
 
 	"unknow": "unknow",
 	"uploadImg": "uploadImg",
-	"clearImg": "清除图片",
-	"clearImg_confirmTitle": "清除图片确认",
-	"clearImg_confirm": "您确定要清除图片吗？",
-	"office": "在文档控件中打开",
-	"closeOffice": "关闭附件",
-	"configAttachment": "设置附件权限",
-	"configAttachmentText": "设置",
-	"checkOcrText": "纠正自动识别的图片中的文字",
-	"order": "附件排序",
+	"clearImg": "Clear Image",
+	"clearImg_confirmTitle": "Clear Image confirmation",
+	"clearImg_confirm": "Are you sure you want to clear the image？",
+	"office": "Open in document Office Control",
+	"closeOffice": "Close Attachment",
+	"configAttachment": "Set attachment permissions",
+	"configAttachmentText": "Config",
+	"checkOcrText": "Correct the text in the automatically recognized picture",
+	"order": "Attachment Sorting",
 
-	"record": "录音",
-	"stop": "停止",
-	"play": "播放",
-	"save": "保存"
+	"record": "Record",
+	"stop": "Stop",
+	"play": "Play",
+	"save": "Save",
+	"userRefuse" : "The user refuses to provide information.",
+	"explorerNotSupportDevice" : "The browser does not support hardware devices.",
+	"canNotFindDevice": "Unable to discover the specified hardware device.",
+	"canNotOpenMicrophone": "Unable to turn on the microphone. Exception information: ",
+	"explorerNotSupportRecordVoice" : "The browser does not support the recording function.",
+
+	"clickToEditCss" : "Click here to write CSS",
+	"uploadSuccess": "Uploaded successfully!",
+	"uploadFail": "Upload failed, please upload again!",
+	"selectLocalImage" : "Choose local picture",
+	"selectCloudImage": "Choose server picture",
+	"reset": "Reset",
+	"uploadOriginalImage": "Upload Original Image",
+
+	"startRecord" : "Start Recording",
+	"completeRecord": "Stop Recording",
+	"requireHttps" : "Video recording function must use https protocol",
+	"canNotToRecordVideo" : "The video recording function cannot be used. Your browser does not support the following features:",
+
+	"pageJumperTitle": "Enter the page number",
+
+	"scriptAreaEditNotice" : "Click here to write script code",
+	"empty" : "Clear",
+	"undo" : "Undo",
+	"redo" : "Redo",
+	"thickness" : "Thickness",
+	"color" : "Color",
+	"insertImage" : "Insert Image",
+	"imageClipper" : "Crop Image",
+
+	"explorerNotSupportFeatures" : "Your browser does not support the following features:"
 };
 
-MWF.LP.widget.SimpleEditor = {
+o2.LP.widget.SimpleEditor = {
 	"insertEmotion": "Insert Expressions",
 	"insertImage": "Insert Image",
-	"Emotions": "regular_smile|微笑，teeth_smile|大笑,angry_smile|生气,confused_smile|迷惑,cry_smile|大哭,embaressed_smile|尴尬,omg_smile|吃惊,sad_smile|难过,shades_smile|装酷,tounge_smile|吐舌,wink_smile|眨眼,angel_smile|天使,devil_smile|魔鬼,heart|红心,broken_heart|心碎,thumbs_up|顶,thumbs_down|踩,cake|蛋糕,lightbulb|灯泡,envelope|信封"
+	"Emotions": "regular_smile|smile，teeth_smile|laugh,angry_smile|angry,confused_smile|confuse,cry_smile|cry,embaressed_smile|awkward,omg_smile|Surprised,sad_smile|sad,shades_smile|cool,tounge_smile|Tongue out,wink_smile|wink,angel_smile|angel,devil_smile|devil,heart|heart,broken_heart|Broken heart,thumbs_up|up,thumbs_down|down,cake|cake,lightbulb|light,envelope|envelope"
 };
-MWF.LP.authentication = {
+o2.LP.authentication = {
 	"LoginFormTitle": "Welcome",
 	"SignUpFormTitle": "Welcome",
 	"ResetPasswordFormTitle": "Retrieve Password",
-	"ChangePasswordFormTitle" : "密码已过期",
+	"ChangePasswordFormTitle" : "Password has expired",
 	"userName": "Username",
 	"password": "Password",
 	"verificationCode": "CAPTCHA",
@@ -414,15 +472,16 @@ MWF.LP.authentication = {
 	"resetPasswordFailWord": "Please check your username and message authentication codes.",
 	"backtoModify": "Return for correction",
 	"pageNotFound": "404 error, the service was not found or the server has been disconnected",
-	"submitAction" : "确定",
-	"oldPassword" : "原密码",
-	"inputYourOldPassword" : "请输入原密码",
-	"newPassword" : "新密码",
-	"inputYourNewPassword" : "请输入新密码",
-	"changePasswordSuccess" : "修改密码成功"
-
+	"submitAction" : "OK",
+	"oldPassword" : "Old Password",
+	"inputYourOldPassword" : "Enter the original password",
+	"newPassword" : "New Password",
+	"inputYourNewPassword" : "Enter a new password",
+	"changePasswordSuccess" : "Successfully change password",
+	"userAppCameraHtml" : "<div>open <div styles='bindTipLinkArea'>APP </div> and scan QR code</div>",
+	"loginToPage": "Login to the web page"
 
 };
 o2.LP.script = {
-	"error": "脚本运行错误，请查看以下详细信息"
+	"error": "Script operation error, please check the following details"
 };

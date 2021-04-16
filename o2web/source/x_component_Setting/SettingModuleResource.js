@@ -23,7 +23,7 @@ MWF.xApplication.Setting.ResourceModuleDocument = new Class({
         this.filePathDescNode = new Element("div",{"styles":this.css.explorerContentInputInforNode}).inject(this.contentAreaNode);
         this.filePathDescNode.set("text",this.lp.resource_filePathDesc);
         this.filePathNode = new Element("div",{"styles":this.css.explorerContentInputInforNode}).inject(this.contentAreaNode);
-        this.filePathInputNode = new Element("input").inject(this.filePathNode);
+        this.filePathInputNode = new Element("input", {"styles": {"width": "500px"}}).inject(this.filePathNode);
 
         this.submitNode = new Element("div",{"styles":this.css.explorerContentInputInforNode}).inject(this.contentAreaNode);
         this.submitBtnNode = new Element("button",{"styles":this.css.explorerContentButtonNode,"text":this.lp.ok}).inject(this.submitNode);
