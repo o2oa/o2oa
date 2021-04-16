@@ -362,7 +362,66 @@ MWF.xApplication.Attendance.LP = {
 	"batchDeal": "批量处理：",
 	"holi": "假日",
 	"work": "补班",
-	"newHoliday": "新建假期配置"
+	"newHoliday": "新建假期配置",
+	"onDutyDayCount1": "出勤天数",
+	"onSelfHolidayCount1":"请假或外出报备天数",
+	"absentCount": "缺勤天数",
+
+	"fileName": "文件名",
+	"fileSize": "文件大小",
+	"uploadTime": "上传时间",
+	"uploadPerson": "上传人",
+	"action": "操作",
+	"deleteFile": "删除文件",
+	"download": "下载文件",
+	"viewImportResult": "查看导入结果",
+	"downloadExcelTemplate": "下载Excel模板",
+	"imporData": "导入考勤数据",
+	"checkData": "核对考勤数据",
+	"statData": "统计考勤数据",
+	"analyzeData": "分析考勤数据",
+	"viewDescription": "查看说明",
+	"myAppealTitleText": "请在“我的考勤统计 -> 我的出勤明细”提出申述",
+
+	"createManager": "新建管理员配置",
+	"createPersonConfig": "新增考勤人员配置",
+	"addStaticCycle": "添加统计周期",
+	"errorDescription": "错误描述",
+	"createSchedule": "新建排班设置",
+	"deleteSelected": "删除选中文件",
+
+	"navi": {
+		"myIndex": "我的考勤月报",
+		"myDetail": "我的考勤统计",
+		"myAppealDeal": "我的申诉申请",
+		"appealDeal": "员工考勤申诉审批",
+
+		"unitIndex": "部门考勤月报",
+		"peopleDetail": "个人考勤统计",
+		"unitDetail": "部门考勤统计",
+		"topUnitDetail": "公司考勤统计",
+		"unitDingdingIndex": "钉钉部门考勤月报",
+		"dingdingPeopleDetail": "钉钉个人考勤统计",
+		"dingdingUnitDetail": "钉钉部门考勤统计",
+
+		"maintain": "维护",
+		"importing": "数据导入",
+		"importedInvalidInfor": "移动端接入错误信息",
+		"abnormalExport": "非正常出勤数据导出",
+		"selfHoliday": "员工休假记录",
+		"authorization": "权限和人员",
+		"permissionSetting": "管理员设置",
+		"personSetting": "考勤人员配置",
+		"config": "配置",
+		"scheduleSetting": "排班设置",
+		"staticsCycleExplorer": "统计周期设置",
+		"holidaySetting": "法定假期",
+		"addressSetting": "工作场所设置",
+		"appSetting": "申诉设置",
+		"weekendSetting": "周末设置",
+	}
+
+
 
 
 };
