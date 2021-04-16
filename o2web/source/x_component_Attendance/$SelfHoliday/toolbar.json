@@ -1,7 +1,7 @@
 [
   {
     "access" : "admin",
-    "title": "导出员工休假记录",
+    "title": MWF.xApplication.Attendance.LP.exportEmployeeHolidayRecord
     "id": "1.1",
     "action": "exportExcel",
     "icon": "create.png",
