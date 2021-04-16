@@ -456,6 +456,13 @@ public class Person extends SliceJpaObject {
 	private Integer failureCount;
 	/* flag标志位 */
 
+	public static final String language_FIELDNAME = "language";
+	@FieldDescribe("国际化语言,如：zh-CN,zh,en,zh_TW等.")
+	@Column(length = length_255B, name = ColumnNamePrefix + language_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + language_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String language;
+
 	public static final String topUnitList_FIELDNAME = "topUnitList";
 	@FieldDescribe("所属顶层组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
