@@ -17,6 +17,13 @@ MWF.xApplication.process.ProcessManager.LP = {
     "copyConfirm_cancel": "取消",
     "copynew": "新",
 
+    "formConfig": "表单配置",
+    // "formConfig": "",
+    // "formConfig": "",
+    // "formConfig": "",
+    // "formConfig": "",
+    // "formConfig": "",
+
     "findDesigner": "查找设计",
 
     "ok": "确定",
