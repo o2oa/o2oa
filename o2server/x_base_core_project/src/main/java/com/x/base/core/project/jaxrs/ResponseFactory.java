@@ -9,6 +9,7 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.HttpHeader;
 
@@ -26,6 +27,8 @@ public class ResponseFactory {
 	public static final String Accept_Ranges = "Accept-Ranges";
 	public static final String Content_Type = "Content-Type";
 	public static final String Content_Length = "Content-Length";
+	public static final String Accept_Language = "Accept-Language";
+
 
 	public static <T> Response getDefaultActionResultResponse(ActionResult<T> result) {
 		if (result.getType().equals(ActionResult.Type.error)) {
@@ -73,6 +76,13 @@ public class ResponseFactory {
 
 	public static <T> Response getEntityTagActionResultResponse(HttpServletRequest request, ActionResult<T> result) {
 		if (result.getType().equals(ActionResult.Type.error)) {
+			if ((result.throwable instanceof LanguagePromptException)) {
+				LanguagePromptException e = (LanguagePromptException)result.throwable;
+				String message = e.getFormatMessage(result.getPrompt(), request.getHeader(Accept_Language));
+				if(StringUtils.isNotBlank(message)) {
+					result.setMessage(message);
+				}
+			}
 			if ((result.throwable instanceof CallbackPromptException)) {
 				return Response.ok(callbackError(result)).build();
 			} else {

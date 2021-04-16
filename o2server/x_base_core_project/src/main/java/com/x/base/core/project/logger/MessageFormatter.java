@@ -25,6 +25,8 @@ package com.x.base.core.project.logger;
  *
  */
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -100,6 +102,7 @@ final public class MessageFormatter {
     static final char DELIM_START = '{';
     static final char DELIM_STOP = '}';
     static final String DELIM_STR = "{}";
+    static final String DELIM_STR2 = "{%d}";
     private static final char ESCAPE_CHAR = '\\';
 
     /**
@@ -200,7 +203,16 @@ final public class MessageFormatter {
         StringBuilder sbuf = new StringBuilder(messagePattern.length() + 50);
 
         int L;
+        String message = messagePattern;
         for (L = 0; L < argArray.length; L++) {
+            j = messagePattern.indexOf(String.format(DELIM_STR2, L));
+            if(j > -1){
+                message = StringUtils.replace(message, String.format(DELIM_STR2, L), (String)argArray[L]);
+                if(L == argArray.length-1){
+                    return new FormattingTuple(message, argArray, throwable);
+                }
+                continue;
+            }
 
             j = messagePattern.indexOf(DELIM_STR, i);
 
