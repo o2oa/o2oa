@@ -1,6 +1,6 @@
 [
   {
-    "title": "请在“我的考勤统计 -> 我的出勤明细”提出申述",
+    "title": MWF.xApplication.Attendance.LP.myAppealTitleText,
     "id": "1.1",
     "action": "createDocument",
     "icon": "",

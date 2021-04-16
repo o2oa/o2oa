@@ -1,6 +1,6 @@
 [
   {
-    "title" : "部门",
+    "title": MWF.xApplication.Attendance.LP.department,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.unitName.split('@')[0] }",
@@ -8,7 +8,7 @@
     "width" : "17%"
   },
   {
-    "title" : "员工姓名",
+    "title": MWF.xApplication.Attendance.LP.employeeName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.employeeName.split('@')[0] }",
@@ -16,7 +16,7 @@
     "width" : "13.5%"
   },
   {
-    "title" : "员工编号",
+    "title": MWF.xApplication.Attendance.LP.employeeNumber,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "employeeNumber",
@@ -25,7 +25,7 @@
   },
 
   {
-    "title" : "休假类型",
+    "title": MWF.xApplication.Attendance.LP.leaveType1,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "leaveType",
@@ -34,7 +34,7 @@
   },
 
   {
-    "title" : "开始时间",
+    "title": MWF.xApplication.Attendance.LP.start,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "startTime",
@@ -42,7 +42,7 @@
     "width" : "13.5%"
   },
   {
-    "title" : "结束时间",
+    "title": MWF.xApplication.Attendance.LP.end,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "endTime",
@@ -50,7 +50,7 @@
     "width" : "13.5%"
   },
   {
-    "title" : "休假天数",
+    "title": MWF.xApplication.Attendance.LP.leaveDayCount,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "leaveDayNumber",

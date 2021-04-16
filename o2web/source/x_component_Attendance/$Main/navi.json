@@ -1,21 +1,21 @@
 [
   {
-    "title": "我的考勤月报",
+    "title": MWF.xApplication.Attendance.LP.navi.myIndex,
     "id": "10",
     "action": "openMyIndex"
   },
   {
-    "title": "我的考勤统计",
+    "title": MWF.xApplication.Attendance.LP.navi.myDetail,
     "id": "11",
     "action": "openMyDetail"
   },
   {
-    "title": "我的申诉申请",
+    "title": MWF.xApplication.Attendance.LP.navi.myAppealDeal,
     "id": "12",
     "action": "openMyAppealDeal"
   },
   {
-    "title": "员工考勤申诉审批",
+    "title": MWF.xApplication.Attendance.LP.navi.appealDeal,
     "id": "13",
     "action": "openAppealDeal"
   },
@@ -25,43 +25,43 @@
   },
   {
     "access": "admin_dept",
-    "title": "部门考勤月报",
+    "title": MWF.xApplication.Attendance.LP.navi.unitIndex,
     "id": "15",
     "action": "openUnitIndex"
   },
   {
     "access": "admin_dept",
-    "title": "个人考勤统计",
+    "title": MWF.xApplication.Attendance.LP.navi.peopleDetail,
     "id": "16",
     "action": "openPeopleDetail"
   },
   {
     "access": "admin_dept",
-    "title": "部门考勤统计",
+    "title": MWF.xApplication.Attendance.LP.navi.unitDetail,
     "id": "17",
     "action": "openUnitDetail"
   },
   {
     "access": "admin",
-    "title": "公司考勤统计",
+    "title": MWF.xApplication.Attendance.LP.navi.topUnitDetail,
     "id": "18",
     "action": "openTopUnitDetail"
   },
   {
     "access": "dingding",
-    "title": "钉钉部门考勤月报",
+    "title":  MWF.xApplication.Attendance.LP.navi.unitDingdingIndex,
     "id": "151",
     "action": "openUnitDingdingIndex"
   },
   {
     "access": "dingding",
-    "title": "钉钉个人考勤统计",
+    "title": MWF.xApplication.Attendance.LP.navi.dingdingPeopleDetail,
     "id": "161",
     "action": "openDingdingPeopleDetail"
   },
   {
     "access": "dingding",
-    "title": "钉钉部门考勤统计",
+    "title": MWF.xApplication.Attendance.LP.navi.dingdingUnitDetail,
     "id": "171",
     "action": "openDingdingUnitDetail"
   },
@@ -71,30 +71,30 @@
   },
   {
     "access": "admin",
-    "title": "维护",
+    "title": MWF.xApplication.Attendance.LP.navi.maintain,
     "id": "20",
     "sub": [
       {
         "access": "admin",
-        "title": "数据导入",
+        "title": MWF.xApplication.Attendance.LP.navi.importing,
         "id": "20.3",
         "action": "openImporting"
       },
       {
         "access": "admin",
-        "title": "移动端接入错误信息",
+        "title": MWF.xApplication.Attendance.LP.navi.importedInvalidInfor,
         "id": "20.4",
         "action": "openImportedInvalidInfor"
       },
       {
         "access": "admin",
-        "title": "非正常出勤数据导出",
+        "title": MWF.xApplication.Attendance.LP.navi.abnormalExport,
         "id": "20.42",
         "action": "openAbnormalExport"
       },
       {
         "access": "admin",
-        "title": "员工休假记录",
+        "title": MWF.xApplication.Attendance.LP.navi.selfHoliday,
         "id": "20.1",
         "action": "openSelfHoliday"
       }
@@ -102,64 +102,64 @@
   },
   {
     "access": "admin",
-    "title": "权限和人员",
+    "title": MWF.xApplication.Attendance.LP.navi.authorization,
     "id": "30",
     "sub": [
       {
         "id": "30.10",
         "access": "admin",
-        "title": "管理员设置",
+        "title": MWF.xApplication.Attendance.LP.navi.permissionSetting,
         "action": "openPermissionSetting"
       },
       {
         "id": "30.20",
         "access": "admin",
-        "title": "考勤人员配置",
+        "title": MWF.xApplication.Attendance.LP.navi.personSetting,
         "action": "openPersonSetting"
       }
     ]
   },
   {
     "access": "admin",
-    "title": "配置",
+    "title": MWF.xApplication.Attendance.LP.navi.config,
     "id": "40",
     "sub": [
       {
         "id": "40.10",
         "access": "admin",
-        "title": "排班设置",
+        "title": MWF.xApplication.Attendance.LP.navi.scheduleSetting,
         "action": "openScheduleSetting"
       },
       {
         "id": "40.20",
         "access": "admin",
-        "title": "统计周期设置",
+        "title": MWF.xApplication.Attendance.LP.navi.staticsCycleExplorer,
         "action": "openStaticsCycleExplorer"
       },
       {
         "id": "40.15",
         "access": "admin",
-        "title": "法定假期",
+        "title": MWF.xApplication.Attendance.LP.navi.holidaySetting,
         "action": "openHolidaySetting"
       },
       {
         "id": "40.35",
         "access": "admin",
-        "title": "工作场所设置",
+        "title": MWF.xApplication.Attendance.LP.navi.addressSetting,
         "action": "openAddressSetting"
       },
       {
         "id": "40.25",
         "access": "admin",
         "target": "_blank",
-        "title": "申诉设置",
+        "title": MWF.xApplication.Attendance.LP.navi.appSetting,
         "action": "openAppSetting"
       },
       {
         "id" : "40.45",
         "access" : "admin",
         "target" : "_blank",
-        "title" : "周末设置",
+        "title": MWF.xApplication.Attendance.LP.navi.weekendSetting,
         "action" : "openWeekendSetting"
       }
     ]
