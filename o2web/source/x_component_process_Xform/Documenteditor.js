@@ -3134,14 +3134,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var tableWidth = table.offsetWidth;
             table.set("data-o2-width", tableWidth);
 
-            var tr = table.getElement("tr");
-            if (tr){
-                tr.getElements("td").each(function(td){
-                    var tdx = td.offsetWidth;
-                    var p = (tdx/tableWidth)*100;
-                    td.set("data-o2-width", tdx);
-                });
-            }
+            // var tr = table.getElement("tr");
+            // if (tr){
+            table.getElements("td").each(function(td){
+                var tdx = td.offsetWidth;
+                var p = (tdx/tableWidth)*100;
+                td.set("data-o2-width", tdx);
+            });
+            //}
         });
 
         var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
