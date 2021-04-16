@@ -1,6 +1,6 @@
 [
   {
-    "title": "删除选中文件",
+    "title" : MWF.xApplication.Attendance.LP.deleteSelected,
     "id": "1.1",
     "action": "removeSelectedDocument",
     "icon": "delete.png",

@@ -1,6 +1,6 @@
 [
   {
-    "title" : "单位",
+    "title": MWF.xApplication.Attendance.LP.schedule.unit,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.unitName.split('@')[0] }",
@@ -8,15 +8,15 @@
     "width" : "11%"
   },
   {
-    "title" : "打卡策略",
+    "title": MWF.xApplication.Attendance.LP.schedule.signProxy.name,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){return {'1':'两次打卡（上午上班，下午下班）','2':'三次打卡（上午上班，下午下班加中午一次共三次）', '3':'四次打卡（上午下午都打上班下班卡）'}[d.signProxy] }",
+    "item" : "function(d){return MWF.xApplication.Attendance.LP.schedule.signProxy.select[d.signProxy] }",
     "name" : "signProxy",
     "width" : "11%"
   },
   {
-    "title" : "上班时间",
+    "title": MWF.xApplication.Attendance.LP.schedule.workTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "onDutyTime",
@@ -24,7 +24,7 @@
     "width" : "11%"
   },
   {
-    "title" : "午休开始时间",
+    "title": MWF.xApplication.Attendance.LP.schedule.signProxy["2"].middayRestStartTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "middayRestStartTime",
@@ -32,7 +32,7 @@
     "width" : "11%"
   },
   {
-    "title" : "午休结束时间",
+    "title": MWF.xApplication.Attendance.LP.schedule.signProxy["2"].middayRestEndTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "middayRestEndTime",
@@ -40,7 +40,7 @@
     "width" : "11%"
   },
   {
-    "title" : "下班时间",
+    "title": MWF.xApplication.Attendance.LP.schedule.offTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "offDutyTime",
@@ -49,7 +49,7 @@
   },
 
   {
-    "title" : "迟到起算时间",
+    "title": MWF.xApplication.Attendance.LP.schedule.lateTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "lateStartTime",
@@ -66,7 +66,7 @@
 //    "width" : "15%"
 //  },
   {
-    "title" : "旷工起算时间",
+    "title": MWF.xApplication.Attendance.LP.schedule.absenteeismTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "absenceStartTime",
@@ -75,14 +75,14 @@
   },
   {
     "access" : "admin",
-    "title" : "操作",
+    "title": MWF.xApplication.Attendance.LP.action,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "actions",
     "name" : "actions",
     "width" : "11%",
     "sub" : [{
-      "title" : "删除文件",
+      "title": MWF.xApplication.Attendance.LP.delete,
       "action" : "remove",
       "styles" : "actionDeleteNode",
       "overStyles" : "actionDeleteNode_over",
