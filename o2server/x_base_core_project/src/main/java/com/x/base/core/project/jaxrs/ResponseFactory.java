@@ -78,7 +78,10 @@ public class ResponseFactory {
 		if (result.getType().equals(ActionResult.Type.error)) {
 			if ((result.throwable instanceof LanguagePromptException)) {
 				LanguagePromptException e = (LanguagePromptException)result.throwable;
-				result.setMessage((e.getFormatMessage(result.getPrompt(), request.getHeader(Accept_Language))));
+				String message = e.getFormatMessage(result.getPrompt(), request.getHeader(Accept_Language));
+				if(StringUtils.isNotBlank(message)) {
+					result.setMessage(message);
+				}
 			}
 			if ((result.throwable instanceof CallbackPromptException)) {
 				return Response.ok(callbackError(result)).build();
