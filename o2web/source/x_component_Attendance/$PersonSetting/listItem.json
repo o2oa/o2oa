@@ -1,14 +1,14 @@
 [
   {
-    "title" : "配置类型",
+    "title" : MWF.xApplication.Attendance.LP.configType,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){ return d.configType == 'NOTREQUIRED' ? '不需要考勤' : '需要考勤' }",
+    "item" : "function(d){ return d.configType == 'NOTREQUIRED' ? MWF.xApplication.Attendance.LP.configTypeSelectText[1] : MWF.xApplication.Attendance.LP.configTypeSelectText[0] }",
     "name" : "configType",
     "width" : "10%"
   },
   {
-    "title" : "公司名称",
+    "title" : MWF.xApplication.Attendance.LP.topUnitName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.topUnitName.split('@')[0] }",
@@ -16,7 +16,7 @@
     "width" : "20%"
   },
   {
-    "title" : "部门名称",
+    "title" : MWF.xApplication.Attendance.LP.unitName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.unitName.split('@')[0] }",
@@ -24,7 +24,7 @@
     "width" : "20%"
   },
   {
-    "title" : "员工姓名",
+    "title" : MWF.xApplication.Attendance.LP.employeeName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.employeeName.split('@')[0] }",
@@ -32,7 +32,7 @@
     "width" : "10%"
   },
   {
-    "title" : "员工编码",
+    "title" : MWF.xApplication.Attendance.LP.employeeNumber,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "employeeNumber",
@@ -40,7 +40,7 @@
     "width" : "10%"
   },
   {
-    "title" : "入职日期",
+    "title" : MWF.xApplication.Attendance.LP.joininDate,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "empInTopUnitTime",
@@ -49,14 +49,14 @@
   },
   {
     "access" : "admin",
-    "title" : "操作",
+    "title" : MWF.xApplication.Attendance.LP.action,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "actions",
     "name" : "actions",
     "width" : "5%",
     "sub" : [{
-      "title" : "删除配置",
+      "title" : MWF.xApplication.Attendance.LP.delete,
       "action" : "remove",
       "styles" : "documentActionNode",
       "overStyles" : "documentActionNode_over",
