@@ -10,7 +10,8 @@
 /o2server/store/*.war
 /o2server/config/
 /o2server/store/
-/o2server/commons/
+/o2server/commons/ext/
+/o2server/commons/fonts/
 /o2server/jvm/
 /o2server/local/
 /o2server/configSample/appStyle.json

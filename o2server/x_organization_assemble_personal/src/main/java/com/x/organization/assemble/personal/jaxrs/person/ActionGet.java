@@ -1,5 +1,6 @@
 package com.x.organization.assemble.personal.jaxrs.person;
 
+import java.io.File;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,6 +9,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.LanguageTools;
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,6 +43,8 @@ import com.x.base.core.project.cache.CacheManager;
 import java.util.Optional;
 
 class ActionGet extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

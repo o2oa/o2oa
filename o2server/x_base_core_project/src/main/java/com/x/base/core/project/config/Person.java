@@ -45,6 +45,7 @@ public class Person extends ConfigObject {
 
 	public static final String DEFAULT_PASSWORDREGEX = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$";
 	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";
+	public static final String DEFAULT_LANGUAGE = "zh_CN";
 
 	public Person() {
 		this.captchaLogin = DEFAULT_CAPTCHALOGIN;
@@ -59,6 +60,7 @@ public class Person extends ConfigObject {
 		this.passwordRegexHint = DEFAULT_PASSWORDREGEXHINT;
 		this.personUnitOrderByAsc = DEFAULT_PERSONUNITORDERBYASC;
 		this.tokenCookieHttpOnly = DEFAULT_TOKENCOOKIEHTTPONLY;
+		this.language = DEFAULT_LANGUAGE;
 	}
 
 	public static Person defaultInstance() {
@@ -117,6 +119,9 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("人员组织排序是否为升序，true为升序(默认)，false为降序")
 	private Boolean personUnitOrderByAsc;
+
+	@FieldDescribe("平台语言：zh_CN(中文，默认)、en(英语)")
+	private String language;
 
 	public Boolean getTokenCookieHttpOnly() {
 		return BooleanUtils.isTrue(this.tokenCookieHttpOnly);
@@ -318,5 +323,13 @@ public class Person extends ConfigObject {
 
 	public void setPersonUnitOrderByAsc(Boolean personUnitOrderByAsc) {
 		this.personUnitOrderByAsc = personUnitOrderByAsc;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 }
