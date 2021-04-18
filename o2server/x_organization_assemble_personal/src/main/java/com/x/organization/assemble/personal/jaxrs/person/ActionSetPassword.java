@@ -1,8 +1,7 @@
 package com.x.organization.assemble.personal.jaxrs.person;
 
-import java.util.Date;
-
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +10,6 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
