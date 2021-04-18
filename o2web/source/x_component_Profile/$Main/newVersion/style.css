@@ -61,29 +61,29 @@
     float: left;
 }
 .o2_profile_inforIconContent {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     margin: auto;
 }
 
 .o2_profile_inforIconContentImg {
     border: 0px;
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     border-radius: 166.67px;
 }
 
 .o2_profile_inforIconChange {
     cursor: pointer;
-    margin: 22px auto;
+    margin: 16px auto;
     width: 90px;
-    height: 36px;
+    height: 30px;
     border: 1px solid #4A90E2;
     border-radius: 100px;
     font-family: MicrosoftYaHei;
     font-size: 14px;
     color: #4A90E2;
-    line-height: 36px;
+    line-height: 30px;
     text-align: center;
 }
 .o2_profile_inforContent {
@@ -110,17 +110,23 @@
 
 .o2_profile_inforContentInput {
     background-color: #FFF;
-    background: #FFFFFF;
     border: 1px solid #DEDEDE;
     border-radius: 100px;
     width:77%;
     min-width: 300px;
     height: 32px;
-    font-family: MicrosoftYaHei;
     font-size: 14px;
     color: #666666;
     padding: 0 0 0 8px;
     outline:none;
+}
+.o2_profile_inforContentSelect {
+    border: 1px solid #DEDEDE;
+    border-radius: 100px;
+    height: 32px;
+    font-size: 14px;
+    color: #666666;
+    padding: 0 0 0 8px;
 }
 
 
