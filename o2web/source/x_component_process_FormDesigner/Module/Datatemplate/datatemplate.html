@@ -23,7 +23,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">删除按钮标识:</td>
+                <td class="editTableTitle">删除选中条目按钮标识:</td>
                 <td class="editTableValue">
                     <input type="text" name="outerDeleteActionId" value="text{$.outerDeleteActionId}" class="editTableInput"/>
                 </td>
@@ -32,6 +32,12 @@
                 <td class="editTableTitle">全选组件标识:</td>
                 <td class="editTableValue">
                     <input type="text" name="outerSelectAllId" value="text{$.outerSelectAllId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">全选值:</td>
+                <td class="editTableValue">
+                    <input type="text" name="outerSelectAllSelectedValue" value="text{$.outerSelectAllSelectedValue || yes}" class="editTableInput"/>
                 </td>
             </tr>
         </table>
@@ -59,6 +65,12 @@
                 <td class="editTableTitle">选中组件标识:</td>
                 <td class="editTableValue">
                     <input type="text" name="selectorId" value="text{$.selectorId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选中值:</td>
+                <td class="editTableValue">
+                    <input type="text" name="selectorSelectedValue" value="text{$.selectorSelectedValue || yes}" class="editTableInput"/>
                 </td>
             </tr>
         </table>
