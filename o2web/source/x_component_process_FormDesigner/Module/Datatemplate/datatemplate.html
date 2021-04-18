@@ -37,7 +37,7 @@
             <tr>
                 <td class="editTableTitle">全选值:</td>
                 <td class="editTableValue">
-                    <input type="text" name="outerSelectAllSelectedValue" value="text{$.outerSelectAllSelectedValue || yes}" class="editTableInput"/>
+                    <input type="text" name="outerSelectAllSelectedValue" value="text{$.outerSelectAllSelectedValue || 'yes'}" class="editTableInput"/>
                 </td>
             </tr>
         </table>
@@ -70,7 +70,7 @@
             <tr>
                 <td class="editTableTitle">选中值:</td>
                 <td class="editTableValue">
-                    <input type="text" name="selectorSelectedValue" value="text{$.selectorSelectedValue || yes}" class="editTableInput"/>
+                    <input type="text" name="selectorSelectedValue" value="text{$.selectorSelectedValue || 'yes'}" class="editTableInput"/>
                 </td>
             </tr>
         </table>
@@ -96,7 +96,15 @@
             </tr>
         </table>
         <div class="MWFScriptArea" name="editableScript" title="是否可编辑(S)"></div>
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">导出导入</div>
+        <div class="MWFMaplist" name="styles" collapse="true" title="样式"></div>
+        <div class="MWFMaplist" name="properties" collapse="true" title="属性"></div>
+        <div class="MWFScriptArea" name="defaultData" title="默认数据(S)"></div>
+
+        <div class="MWFValidation" name="validationConfig"></div>
+        <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
+    </div>
+    <div title="导入" class="MWFTab">
+<!--        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">导出导入</div>-->
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">启用:</td>
@@ -117,7 +125,7 @@
                 <tr>
                     <td class="editTableTitle"></td>
                     <td class="editTableValue">
-                        注：序号、图片、附件和隐藏列不能导入导出。
+                        注：序号、图片、附件不能导入导出。
                     </td>
                 </tr>
                 <tr>
@@ -137,12 +145,6 @@
             </table>
             <div class="MWFFormulaArea" name="excelName" title="导出文件名称"></div>
         </div>
-        <div class="MWFMaplist" name="styles" collapse="true" title="样式"></div>
-        <div class="MWFMaplist" name="properties" collapse="true" title="属性"></div>
-        <div class="MWFScriptArea" name="defaultData" title="默认数据(S)"></div>
-
-        <div class="MWFValidation" name="validationConfig"></div>
-        <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
     </div>
     <div title="区段" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

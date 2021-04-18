@@ -369,6 +369,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				return false;
 			}
 			var minCount = this.json.minCount ? this.json.minCount.toInt() : 0;
+			if( minCount > 0 ){
+				if( this.lineList.length - selectedLine < minCount ){
+					this.form.notice("最少需要保留"+minCount+"项，删除后的条目小于需保留的条目，请确认勾选","info");
+					return false;
+				}
+			}
 			var _self = this;
 			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, "确定要删除选中的条目", 300, 120, function(){
 				selectedLine.each(function(line){
