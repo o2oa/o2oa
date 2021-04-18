@@ -1903,7 +1903,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         //MWF.require("MWF.widget.AttachmentController", function() {
         var options = {
             "style": this.json.style || "default",
-            "title": MWF.xApplication.process.Xform.LP.attachmentArea+"DG",
+            "title": MWF.xApplication.process.Xform.LP.attachmentArea,
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
             "resize": (this.json.resize === "y" || this.json.resize === "true"),
@@ -1913,7 +1913,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
             "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
             "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
-            "readonly": (this.json.readonly === "y" || this.json.readonly === "true"),
+            "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
@@ -1926,8 +1926,16 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         if (this.form.json.attachmentStyle) {
             options = Object.merge(options, this.form.json.attachmentStyle);
         }
+
+        this.fireEvent("queryLoadController", [options]);
+
         this.attachmentController = new MWF.xApplication.process.Xform.AttachmentController(this.node, this, options);
+
+        this.fireEvent("loadController");
+
         this.attachmentController.load();
+
+        this.fireEvent("postLoadController");
 
         // var d = this._getBusinessData();
         // if (d) d.each(function (att) {

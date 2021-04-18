@@ -44,7 +44,7 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 		if (this.form.moduleContainerNodeList.indexOf(this.node)==-1) this.form.moduleContainerNodeList.push(this.node);
 		this.node.store("module", this);
 	},
-	
+
 	_dragIn: function(module){
 		module.onDragModule = this;
 		if (!this.Component) module.inContainer = this;
@@ -106,7 +106,6 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 		var copyNode = module._getCopyNode();
 		copyNode.inject(this.node, "before");
 	},
-	
 	_getSubModule: function(){
 		var modules = [];
 		var subNode = this.node.getFirst();
@@ -177,11 +176,11 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
         if (this.property) this.property.destroy();
 		this.node.destroy();
 		this.actionArea.destroy();
-		
+
 		delete this.form.json.moduleList[this.json.id];
 		this.json = null;
 		delete this.json;
-		
+
 		this.treeNode.destroy();
 		o2.release(this);
 	},
@@ -264,5 +263,5 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
         //    subNode = subNode.getNext();
         //}
     }
-	
+
 });
