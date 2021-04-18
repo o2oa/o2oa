@@ -195,7 +195,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             if (this.json.type==="Opinion"){
                 return this._getBusinessSectionDataByPerson();
             }else{
-                return this.form.businessData.data[this.json.id] || "";
+                // return this.form.businessData.data[this.json.id] || "";
+                return this.getBusinessDataById() || "";
             }
         }
     },
@@ -212,17 +213,20 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             case "script":
                 return this._getBusinessSectionDataByScript(((this.json.sectionByScript) ? this.json.sectionByScript.code : ""));
             default:
-                return this.form.businessData.data[this.json.id] || "";
+                // return this.form.businessData.data[this.json.id] || "";
+                return this.getBusinessDataById() || "";
         }
     },
     _getBusinessSectionDataByPerson: function(){
         this.form.sectionListObj[this.json.id] = layout.desktop.session.user.id;
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         return (dataObj) ? (dataObj[layout.desktop.session.user.id] || "") : "";
     },
     _getBusinessSectionDataByUnit: function(){
         this.form.sectionListObj[this.json.id] = "";
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         if (!dataObj) return "";
         var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
         if (key) this.form.sectionListObj[this.json.id] = key;
@@ -230,7 +234,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     _getBusinessSectionDataByActivity: function(){
         this.form.sectionListObj[this.json.id] = "";
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         if (!dataObj) return "";
         var key = (this.form.businessData.work) ? this.form.businessData.work.activity : "";
         if (key) this.form.sectionListObj[this.json.id] = key;
@@ -238,7 +243,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     _getBusinessSectionDataBySplitValue: function(){
         this.form.sectionListObj[this.json.id] = "";
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         if (!dataObj) return "";
         var key = (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
         if (key) this.form.sectionListObj[this.json.id] = key;
@@ -246,7 +252,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     _getBusinessSectionDataByScript: function(code){
         this.form.sectionListObj[this.json.id] = "";
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         if (!dataObj) return "";
         var key = this.form.Macro.exec(code, this);
         if (key) this.form.sectionListObj[this.json.id] = key;
@@ -261,9 +268,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 this._setBusinessSectionDataByPerson(v);
             }else{
                 if (this.form.businessData.data[this.json.id]){
-                    this.form.businessData.data[this.json.id] = v;
+                    // this.form.businessData.data[this.json.id] = v;
+                    this.setBusinessDataById(v);
                 }else{
-                    this.form.businessData.data[this.json.id] = v;
+                    // this.form.businessData.data[this.json.id] = v;
+                    this.setBusinessDataById(v);
                     this.form.Macro.environment.setData(this.form.businessData.data);
                 }
                 if (this.json.isTitle) this.form.businessData.work.title = v;
@@ -289,9 +298,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 break;
             default:
                 if (this.form.businessData.data[this.json.id]){
-                    this.form.businessData.data[this.json.id] = v;
+                    // this.form.businessData.data[this.json.id] = v;
+                    this.setBusinessDataById(v)
                 }else{
-                    this.form.businessData.data[this.json.id] = v;
+                    // this.form.businessData.data[this.json.id] = v;
+                    this.setBusinessDataById(v);
                     this.form.Macro.environment.setData(this.form.businessData.data);
                 }
         }
@@ -300,10 +311,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var resetData = false;
         var key = layout.desktop.session.user.id;
 
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         if (!dataObj){
             dataObj = {};
-            this.form.businessData.data[this.json.id] = dataObj;
+            // this.form.businessData.data[this.json.id] = dataObj;
+            this.setBusinessDataById(dataObj);
             resetData = true;
         }
         if (!dataObj[key]) resetData = true;
@@ -316,10 +329,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
 
         if (key){
-            var dataObj = this.form.businessData.data[this.json.id];
+            // var dataObj = this.form.businessData.data[this.json.id];
+            var dataObj = this.getBusinessDataById();
             if (!dataObj){
                 dataObj = {};
-                this.form.businessData.data[this.json.id] = dataObj;
+                // this.form.businessData.data[this.json.id] = dataObj;
+                this.setBusinessDataById(dataObj);
                 resetData = true;
             }
             if (!dataObj[key]) resetData = true;
@@ -333,10 +348,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var key = (this.form.businessData.work) ? this.form.businessData.work.activity : "";
 
         if (key){
-            var dataObj = this.form.businessData.data[this.json.id];
+            // var dataObj = this.form.businessData.data[this.json.id];
+            var dataObj = this.getBusinessDataById();
             if (!dataObj){
                 dataObj = {};
-                this.form.businessData.data[this.json.id] = dataObj;
+                // this.form.businessData.data[this.json.id] = dataObj;
+                this.setBusinessDataById(dataObj);
                 resetData = true;
             }
             if (!dataObj[key]) resetData = true;
@@ -350,10 +367,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var key = (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
 
         if (key){
-            var dataObj = this.form.businessData.data[this.json.id];
+            // var dataObj = this.form.businessData.data[this.json.id];
+            var dataObj = this.getBusinessDataById();
             if (!dataObj){
                 dataObj = {};
-                this.form.businessData.data[this.json.id] = dataObj;
+                // this.form.businessData.data[this.json.id] = dataObj;
+                this.setBusinessDataById(dataObj);
                 resetData = true;
             }
             if (!dataObj[key]) resetData = true;
@@ -368,10 +387,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var key = this.form.Macro.exec(code, this);
 
         if (key){
-            var dataObj = this.form.businessData.data[this.json.id];
+            // var dataObj = this.form.businessData.data[this.json.id];
+            var dataObj = this.getBusinessDataById();
             if (!dataObj){
                 dataObj = {};
-                this.form.businessData.data[this.json.id] = dataObj;
+                // this.form.businessData.data[this.json.id] = dataObj;
+                this.setBusinessDataById(dataObj);
                 resetData = true;
             }
             if (!dataObj[key]) resetData = true;
@@ -379,6 +400,64 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
 
         if (resetData) this.form.Macro.environment.setData(this.form.businessData.data);
+    },
+    getBusinessDataById: function(){
+        //对id类似于 xx..0..xx 的字段进行拆分
+        if(this.json.id.indexOf("..") < 1){
+            return this.form.businessData.data[this.json.id];
+        }else{
+            var idList = this.json.id.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
+
+            var data = this.form.businessData.data;
+            var lastIndex = idList.length - 1;
+
+            for(var i=0; i<=lastIndex; i++){
+                var id = idList[i];
+                if( !id && id !== 0 )return null;
+                if( ["object","array"].contains(o2.typeOf(data)) ){
+                    if( i === lastIndex ){
+                        return data[id];
+                    }else{
+                        data = data[id];
+                    }
+                }else{
+                    return null;
+                }
+            }
+        }
+    },
+    setBusinessDataById: function(v){
+        //对id类似于 xx..0..xx 的字段进行拆分
+        if(this.json.id.indexOf("..") < 1){
+            this.form.businessData.data[this.json.id] = v;
+        }else{
+            var idList = this.json.id.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
+
+            var data = this.form.businessData.data;
+            var lastIndex = idList.length - 1;
+
+            for(var i=0; i<=lastIndex; i++){
+                var id = idList[i];
+                if( !id && id !== 0 )return;
+
+                if( i === lastIndex ){
+                    data[id] = v;
+                }else{
+                    var nexId = idList[i+1];
+                    if(o2.typeOf(nexId) === "number"){ //下一个ID是数字
+                        if( !data[id] && o2.typeOf(data[id]) !== "array" )data[id] = [];
+                        if( nexId > data[id].length ){ //超过了最大下标，丢弃
+                            return;
+                        }
+                    }else{ //下一个ID是字符串
+                        if( !data[id] || o2.typeOf(data[id]) !== "object")data[id] = {};
+                    }
+                    data = data[id];
+                }
+            }
+        }
     },
 
     _queryLoaded: function(){},

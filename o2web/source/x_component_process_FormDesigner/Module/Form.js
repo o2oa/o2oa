@@ -376,6 +376,27 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.treeNode.module = this;
 	},
 
+	getModuleNodes: function (dom, ignoreMultipleModule) {
+		var moduleNodes = [];
+		var subDom = dom.getFirst();
+		while (subDom) {
+			var mwftype = subDom.get("MWFtype") || subDom.get("mwftype");
+			if (mwftype) {
+				if( ignoreMultipleModule ){
+					var type = mwftype;
+					if ( type.indexOf("$") === -1)moduleNodes.push(subDom);
+				}else{
+					moduleNodes.push(subDom);
+				}
+				moduleNodes = moduleNodes.concat(this.getModuleNodes(subDom));
+			} else {
+				moduleNodes = moduleNodes.concat(this.getModuleNodes(subDom));
+			}
+			subDom = subDom.getNext();
+		}
+		return moduleNodes;
+	},
+
 	parseModules: function(parent, dom){
 		var moduleNodes = [];
 		var subDom = dom.getFirst();

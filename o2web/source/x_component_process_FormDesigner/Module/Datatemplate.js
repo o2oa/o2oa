@@ -7,6 +7,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 	options: {
 		"style": "default",
 		"propertyPath": "../x_component_process_FormDesigner/Module/Datatemplate/datatemplate.html"
+		// "disallowModules": ["subform","subpage","widget"]
 	},
 
 	initialize: function(form, options){
@@ -118,20 +119,40 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 	_setEditStyle_custom: function(name, obj, oldValue){
 		if (name=="id"){
 			if (name!=oldValue){
-				var reg = new RegExp("^"+oldValue, "i");
-				this.containers.each(function(container){
-					var id = container.json.id;
-					var newId = id.replace(reg, this.json.id);
-					container.json.id = newId;
-
-					delete this.form.json.moduleList[id];
-					this.form.json.moduleList[newId] = container.json;
-					container._setEditStyle("id");
-				}.bind(this));
+				// var reg = new RegExp("^"+oldValue, "i");
+				// this.containers.each(function(container){
+				// 	var id = container.json.id;
+				// 	var newId = id.replace(reg, this.json.id);
+				// 	container.json.id = newId;
+				//
+				// 	delete this.form.json.moduleList[id];
+				// 	this.form.json.moduleList[newId] = container.json;
+				// 	container._setEditStyle("id");
+				// }.bind(this));
 			}
 		}
 		//if (name=="sequence") this.checkSequenceShow();
 	},
+	// _dragIn: function(module){
+	// 	if (this.options.disallowModules.indexOf(module.moduleName)===-1){
+	// 		module.onDragModule = this;
+	// 		if (!this.Component) module.inContainer = this;
+	// 		module.parentContainer = this;
+	// 		module.nextModule = null;
+	//
+	// 		this.node.setStyles({"border": "1px solid #ffa200"});
+	//
+	// 		if (module.controlMode){
+	// 			if (module.copyNode) module.copyNode.hide();
+	// 		}else{
+	// 			var copyNode = module._getCopyNode(this);
+	// 			copyNode.show();
+	// 			copyNode.inject(this.node);
+	// 		}
+	// 	}else{
+	// 		this.parentContainer._dragIn(module);
+	// 	}
+	// },
 	setAllStyles: function(){
 		this.setPropertiesOrStyles("styles");
 		this.setPropertiesOrStyles("properties");

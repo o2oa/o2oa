@@ -14,7 +14,28 @@
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
         </table>
-
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">外部相关组件标识</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitleWithoutWith" width="80px">添加按钮标识:</td>
+                <td class="editTableValue">
+                    <input type="text" name="outerAddActionId" value="text{$.outerAddActionId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">删除按钮标识:</td>
+                <td class="editTableValue">
+                    <input type="text" name="outerDeleteActionId" value="text{$.outerDeleteActionId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">全选组件标识:</td>
+                <td class="editTableValue">
+                    <input type="text" name="outerSelectAllId" value="text{$.outerSelectAllId}" class="editTableInput"/>
+                </td>
+            </tr>
+        </table>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">内部相关组件标识</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitleWithoutWith" width="80px">添加按钮标识:</td>
@@ -38,6 +59,27 @@
                 <td class="editTableTitle">选中组件标识:</td>
                 <td class="editTableValue">
                     <input type="text" name="selectorId" value="text{$.selectorId}" class="editTableInput"/>
+                </td>
+            </tr>
+        </table>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">数量</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitleWithoutWith" width="80px">默认显示:</td>
+                <td class="editTableValue">
+                    <input type="text" name="defaultCount" value="text{$.defaultCount || 1}" class="editTableInputNoWidth" style="width: 100px;"/>项
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">最多添加:</td>
+                <td class="editTableValue">
+                    <input type="text" name="maxCount" value="text{$.maxCount}" class="editTableInputNoWidth" style="width: 100px;"/>项
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">最少保留:</td>
+                <td class="editTableValue">
+                    <input type="text" name="minCount" value="text{$.minCount}" class="editTableInputNoWidth" style="width: 100px;"/>项
                 </td>
             </tr>
         </table>
