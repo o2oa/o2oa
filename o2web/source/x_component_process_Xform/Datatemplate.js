@@ -153,23 +153,23 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 			}
 
+			this.outerAddActionIdList = (this.json.outerAddActionId || "").split(",");
+			this.outerDeleteActionIdList = (this.json.outerDeleteActionId || "").split(",");
+			this.outerSelectAllIdList = (this.json.outerSelectAllId || "").split(",");
+
 			this.addActionIdList = (this.json.addActionId || "").split(",");
-			this.addable = this.addActionIdList.length > 0;
-
 			this.deleteActionIdList = (this.json.deleteActionId || "").split(",");
-			this.deleteable = this.deleteActionIdList.length > 0;
-
 			this.sequenceIdList = (this.json.sequenceId || "").split(",");
-
 			this.selectorId = this.json.selectorId;
 
 			this.importActionIdList = (this.json.importActionId || "").split(",");
+			this.exportActionIdList = (this.json.exportActionId || "").split(",");
+
 			//允许导入
 			this.importenable  = this.editable && (this.importActionIdList.length > 0) &&
 				(this.json.impexpType === "impexp" || this.json.impexpType === "imp");
 
 			//允许导出
-			this.exportActionIdList = (this.json.exportActionId || "").split(",");
 			this.exportenable  = (this.exportActionIdList.length > 0) && (this.json.impexpType === "impexp" || this.json.impexpType === "exp");
 
 			this.data = this._getValue();
@@ -211,6 +211,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.node.setStyles(this.json.styles);
 		},
 		setOuterActionsEvents: function(){
+
 			//判断不在数据模板中，但是在表单内的Id
 			var getModules = function (idList) {
 				var list = [];
@@ -223,17 +224,24 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this);
 
 			this.bindEvent = function () {
-				this.addActionList = getModules( this.addActionIdList );
+				this.addActionList = getModules( [].concat(this.addActionIdList, this.outerAddActionIdList) );
 				this.addActionList.each( function (module) {
 					module.node.addEvents({"click": function(e){
 							this._addLine(e.target);
 						}.bind(this)})
 				}.bind(this));
 
-				this.deleteActionList = getModules( this.deleteActionIdList );
+				this.deleteActionList = getModules( [].concat( this.deleteActionIdList, this.outerDeleteActionIdList ) );
 				this.deleteActionList.each( function (module) {
 					module.node.addEvents({"click": function(e){
 							this._deleteLine(e.target);
+						}.bind(this)})
+				}.bind(this));
+
+				this.selectAllList = getModules( this.outerSelectAllIdList );
+				this.selectAllList.each( function (module) {
+					module.node.addEvents({"click": function(e){
+							this._checkSelect(e.target);
 						}.bind(this)})
 				}.bind(this));
 
@@ -259,13 +267,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_getValue: function(){
 			if (this.moduleValueAG) return this.moduleValueAG;
-			var value = [];
-			value = this._getBusinessData();
+			var value = this._getBusinessData();
 			if (!value){
 				if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
-				if (!value.then) if (o2.typeOf(value)=="array") value = {"data": value || []};
+				if (!value.then) if (o2.typeOf(value)==="object") value = [value];
 			}
-			return value || {};
+			return value || [];
 		},
 		getValue: function(){
 			return this._getValue();
@@ -289,14 +296,35 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 		},
 		_loadLineList: function(callback){
-			if (this.data){
+			if (this._getBusinessData() && this.data){
 				this.data.each(function(data, idx){
 					var div = new Element("div").inject(this.node);
 					var line = this._loadLine(div, data, idx );
 					this.lineList.push(line);
 				}.bind(this));
+			}else if( this.editable && this.json.defaultCount.toInt() > 0 ){
+				var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
+				for( var i=0; i<count; i++ ){
+					var div = new Element("div").inject(this.node);
+					var line = this._loadLine(div, {}, i );
+					this.lineList.push(line);
+				}
 			}
 			if (callback) callback();
+		},
+		isMax : function(){
+			var maxCount = this.json.maxCount ? this.json.maxCount.toInt() : 0;
+			if( this.editable && maxCount > 0 ) {
+				if( this.lineList.length >= maxCount )return true;
+			}
+			return false;
+		},
+		isMin : function(){
+			var minCount = this.json.minCount ? this.json.minCount.toInt() : 0;
+			if( this.editable && minCount > 0 ) {
+				if( this.lineList.length <= minCount )return true;
+			}
+			return false;
 		},
 		_loadLine: function(container, data, index, isEdited){
 			var line = new MWF.xApplication.process.Xform.Datatemplate.Line(container, this, data, {
@@ -308,6 +336,10 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return line;
 		},
 		_addLine: function(ev){
+			if( this.isMax() ){
+				this.form.notice("最多允许添加"+this.json.maxCount+"项");
+				return false;
+			}
 			var index = this.lineList.length;
 			var div = new Element("div").inject(this.node);
 			var line = this._loadLine(div, {}, index );
@@ -316,6 +348,10 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_insertLine: function(ev, beforeLine){
 			debugger;
+			if( this.isMax() ){
+				this.form.notice("最多允许添加"+this.json.maxCount+"项");
+				return false;
+			}
 			//使用数据驱动
 			var index = beforeLine.options.index+1;
 			// var d = Object.clone(this.getTemplateData());
@@ -325,6 +361,10 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.fireEvent("addLine",[this.lineList[index], ev]);
 		},
 		_deleteLine: function(ev, line){
+			if( this.isMin() ){
+				this.form.notice("请最少保留"+this.json.minCount+"项");
+				return false;
+			}
 			var _self = this;
 			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteDatagridLine, 300, 120, function(){
 				_self.fireEvent("deleteLine", [line]);
@@ -346,7 +386,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		editValidation: function(){
 			var flag = true;
 			this.editModules.each(function(field, key){
-				if (field.json.type!="sequence" && field.validationMode ){
+				if (field.json.type!=="sequence" && field.validationMode ){
 					field.validationMode();
 					if (!field.validation()) flag = false;
 				}
@@ -631,6 +671,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 */
 		getData: function(){
 			if (this.editable!==false){
+				debugger;
 				var data = [];
 				this.lineList.each(function(line, index){
 					data.push(line.getData())
@@ -856,11 +897,19 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 					var templateJsonId = json.id;
 					var id = this.template.json.id + ".."+this.options.index + ".." + json.id;
-
 					json.id = id;
 					if( !this.options.isEdited )json.isReadonly = true;
 
 					node.set("id", id);
+
+					if( json.type=="Attachment" || json.type=="AttachmentDg" ){
+						json.type = "AttachmentDg";
+						if( json.site ){
+							json.site = this.template.json.id + ".."+this.options.index + ".." + json.site;
+						}else{
+							json.site = id;
+						}
+					}
 
 					if (this.form.all[id]) this.form.all[id] = null;
 					if (this.form.forms[id])this.form.forms[id] = null;
@@ -926,7 +975,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		if( this.form.getModuleType( this.selector ) === "radio" ){
 
 		}else if( this.form.getModuleType( this.selector ) === "checkbox" ){
-			var selectData = this.selected.getData();
+			var selectData = this.selector.getData();
 			if( selectData.length > 0 ){ //表示选中
 				this.selected = false;
 				// this.selector.setData("");
@@ -948,8 +997,13 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	getData: function () {
 		var data = {};
 		for( var key in this.allField){
+			var module = this.allField[key];
 			var id = key.split("..").getLast();
-			data[id] = this.allField[key].getData();
+			if( module.json.type=="Attachment" || module.json.type=="AttachmentDg" ){
+				data[id] = module._getBusinessData();
+			}else{
+				data[id] = module.getData();
+			}
 		}
 		return data;
 	}
