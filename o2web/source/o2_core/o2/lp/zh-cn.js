@@ -140,6 +140,7 @@ o2.LP.desktop = {
     "showMessage": "消息",
     "logout": "注销",
     "userConfig": "个人设置",
+    "userLanguage": "语言设置",
     "application": "组件",
     "widget": "小工具",
     "process": "应用",
