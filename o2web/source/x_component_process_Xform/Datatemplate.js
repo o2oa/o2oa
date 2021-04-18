@@ -231,19 +231,21 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						}.bind(this)})
 				}.bind(this));
 
-				this.deleteActionList = getModules( [].concat( this.deleteActionIdList, this.outerDeleteActionIdList ) );
+				this.deleteActionList = getModules( [].concat( this.outerDeleteActionIdList ) );
 				this.deleteActionList.each( function (module) {
 					module.node.addEvents({"click": function(e){
-							this._deleteLine(e.target);
+							this._deleteSelectedLine(e.target);
 						}.bind(this)})
 				}.bind(this));
 
 				this.selectAllList = getModules( this.outerSelectAllIdList );
 				this.selectAllList.each( function (module) {
+					module.setData(""); //默认不选中
 					module.node.addEvents({"click": function(e){
-							this._checkSelect(e.target);
+							this._checkSelectAll(e.target);
 						}.bind(this)})
 				}.bind(this));
+				this.selectAllSelector = this.selectAllList[0];
 
 				this.importActionList = getModules( this.importActionIdList );
 				this.importActionList.each( function (module) {
@@ -337,7 +339,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_addLine: function(ev){
 			if( this.isMax() ){
-				this.form.notice("最多允许添加"+this.json.maxCount+"项");
+				this.form.notice("最多允许添加"+this.json.maxCount+"项","info");
 				return false;
 			}
 			var index = this.lineList.length;
@@ -349,7 +351,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_insertLine: function(ev, beforeLine){
 			debugger;
 			if( this.isMax() ){
-				this.form.notice("最多允许添加"+this.json.maxCount+"项");
+				this.form.notice("最多允许添加"+this.json.maxCount+"项","info");
 				return false;
 			}
 			//使用数据驱动
@@ -360,9 +362,36 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.setData( data );
 			this.fireEvent("addLine",[this.lineList[index], ev]);
 		},
+		_deleteSelectedLine: function(ev){
+			var selectedLine = this.lineList.filter(function (line) { return line.selected; });
+			if( selectedLine.length === 0 ){
+				this.form.notice("请先选择条目","info");
+				return false;
+			}
+			var minCount = this.json.minCount ? this.json.minCount.toInt() : 0;
+			var _self = this;
+			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, "确定要删除选中的条目", 300, 120, function(){
+				selectedLine.each(function(line){
+					_self.fireEvent("deleteLine", [line]);
+
+					var index = line.options.index;
+					var data = _self.getData();
+					data.splice(index, 1);
+					_self.setData( data );
+
+					_self.fireEvent("afterDeleteLine");
+				});
+
+				this.close();
+
+			}, function(){
+				this.close();
+			}, null, null, this.form.json.confirmStyle);
+
+		},
 		_deleteLine: function(ev, line){
 			if( this.isMin() ){
-				this.form.notice("请最少保留"+this.json.minCount+"项");
+				this.form.notice("请最少保留"+this.json.minCount+"项","info");
 				return false;
 			}
 			var _self = this;
@@ -381,7 +410,19 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.close();
 			}, null, null, this.form.json.confirmStyle);
 		},
-
+		_checkSelectAll: function () {
+			var selectData = this.selectAllSelector.getData();
+			var selected;
+			if(o2.typeOf(selectData)==="array"){
+				selected = selectData.contains(this.json.outerSelectAllSelectedValue);
+			}else{
+				selected = selectData === this.json.outerSelectAllSelectedValue;
+			}
+			this.selected = !selected;
+			if( this.selected ){
+				//???
+			}
+		},
 
 		editValidation: function(){
 			var flag = true;
@@ -393,154 +434,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 			return flag;
 		},
-		// _cancelLineEdit: function(e){
-		//
-		// 	var datagrid = this;
-		// 	this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.cancelDatagridLineEditTitle, MWF.xApplication.process.Xform.LP.cancelDatagridLineEdit, 300, 120, function(){
-		// 		if (datagrid.currentEditLine) {
-		// 			datagrid.currentEditLine.setStyle("display", "table-row");
-		// 		}
-		//
-		// 		datagrid.editModules.each(function(module){
-		// 			if (module && (module.json.type=="Attachment" || module.json.type=="AttachmentDg")){
-		// 				module.attachmentController.attachments.each(function(att){
-		// 					datagrid.form.workAction.deleteAttachment(att.data.id, datagrid.form.businessData.work.id);
-		// 				});
-		// 				module.attachmentController.clear();
-		// 			}
-		// 		});
-		//
-		// 		datagrid.isEdit = false;
-		// 		datagrid.currentEditLine = null;
-		//
-		// 		this.close();
-		//
-		// 		datagrid.fireEvent("cancelLineEdit");
-		// 	}, function(){
-		// 		this.close();
-		// 	}, null, null, this.form.json.confirmStyle);
-		//
-		// },
-		// _completeLineEdit: function( ev ){
-		//
-		// 	debugger;
-		//
-		// 	//this.currentEditLine.getElemets(td);
-		// 	if (!this.editValidation()){
-		// 		return false;
-		// 	}
-		//
-		// 	this.isEdit = false;
-		//
-		// 	var flag = true;
-		// 	var saveFlag = false;
-		//
-		// 	var griddata = {};
-		// 	var newTr = null;
-		//
-		// 	if (this.currentEditLine){
-		// 		newTr = this.currentEditLine;
-		// 		griddata = this.currentEditLine.retrieve("data");
-		// 	}else{
-		// 		newTr = new Element("tr").inject(this.editorTr, "before");
-		// 		griddata = {};
-		// 	}
-		//
-		// 	var titleThs = this.titleTr.getElements("th");
-		// 	var editorTds = this.editorTr.getElements("td");
-		// 	var cells = newTr.getElements("td");
-		// 	titleThs.each(function(th, idx){
-		// 		var cell = cells[idx];
-		// 		var id = th.get("id");
-		// 		var module = this.editModules[idx-1];
-		// 		if (module){
-		// 			if (module.json.type=="sequence"){
-		// 				flag = false;
-		// 				var i = newTr.rowIndex;
-		// 				var data = {"value": [i], "text": [i]};
-		// 			}else if (module.json.type=="Attachment" || module.json.type == "AttachmentDg"){
-		// 				saveFlag = true;
-		// 				flag = false;
-		// 				var data = module.getTextData();
-		// 				//data.site = module.json.site;
-		// 				if (!griddata[id]) griddata[id] = {};
-		// 				griddata[id][module.json.id] = data;
-		// 				// }else if( ["Orgfield","Personfield","Org","Address"].contains(module.json.type) ){
-		// 				// 	data = module.getTextData();
-		// 				// 	if( data.value && data.value.length )flag = false;
-		// 				// 	if (!griddata[id]) griddata[id] = {};
-		// 				// 	griddata[id][module.json.id] = data.value;
-		// 			}else if( module.getTextData ){
-		// 				var data = module.getTextData();
-		// 				if (data.value[0]) flag = false;
-		// 				if (data.value.length<2){
-		// 					if (!griddata[id]) griddata[id] = {};
-		// 					griddata[id][module.json.id] = data.value[0];
-		// 				}else{
-		// 					if (!griddata[id]) griddata[id] = {};
-		// 					griddata[id][module.json.id] = data.value;
-		// 				}
-		// 			}
-		//
-		// 			if( data ){
-		// 				if (cell){
-		// 					if( module.json.type == "ImageClipper" ){
-		// 						this._createImage( cell, module, data.text[0] );
-		// 					}else if( module.json.type == "Attachment" || module.json.type == "AttachmentDg" ){
-		// 						this._createAttachment( cell, module, data );
-		// 					}else{
-		// 						var text = this._getValueText(idx-1, data.text.join(", "));
-		// 						if( module.json.type == "Textarea"){
-		// 							cell.set("html", text);
-		// 						}else{
-		// 							cell.set("text", data.text.join(", "));
-		// 						}
-		// 					}
-		// 				}else{
-		// 					if( module.json.type == "Attachment" || module.json.type == "AttachmentDg" ){
-		// 						this._createNewEditTd(newTr, idx, editorTds[idx].get("id"), data, titleThs.length-1);
-		// 					}else{
-		// 						var text = this._getValueText(idx-1, data.text.join(", "));
-		// 						this._createNewEditTd(newTr, idx, editorTds[idx].get("id"), text, titleThs.length-1);
-		// 					}
-		// 				}
-		// 			}else{
-		// 				if (!cell) this._createNewEditTd(newTr, idx, id, "", titleThs.length-1);
-		// 			}
-		// 		}else{
-		// 			if (!cell) this._createNewEditTd(newTr, idx, id, "", titleThs.length-1);
-		// 		}
-		// 		module = null;
-		// 	}.bind(this));
-		//
-		// 	newTr.store("data", griddata);
-		// 	newTr.setStyle("display", "table-row");
-		//
-		// 	if (flag){
-		// 		newTr.destroy();
-		// 	}
-		// 	this.currentEditLine = null;
-		//
-		// 	this.getData();
-		// 	this.validationMode();
-		// 	this.fireEvent("completeLineEdit", [newTr]);
-		//
-		// 	if( saveFlag ){
-		// 		this.form.saveFormData();
-		// 	}
-		//
-		// 	return true;
-		// },
 
 
 		_afterLoaded: function(){
-			// if (this.moduleValueAG){
-			// 	this.moduleValueAG.then(function(){
-			//
-			// 	}.bind(this));
-			// }else{
-			//
-			// }
 		},
 		/**
 		 * @summary 重置数据网格的值为默认值或置空。
@@ -588,7 +484,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_setData: function(data){
 			var p = o2.promiseAll(this.data).then(function(v){
 				this.data = v;
-				if (o2.typeOf(data)=="object") data = [data];
+				if (o2.typeOf(data)==="object") data = [data];
 				this.__setData(data);
 				this.moduleValueAG = null;
 				return v;
@@ -951,6 +847,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 		if( this.template.selectorId === id){
 			this.selector = module;
+			module.setData(""); //默认不选择
 			module.node.addEvent("click", function (ev) {
 				this.checkSelect();
 			}.bind(this))
@@ -971,19 +868,14 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 	},
 	checkSelect: function () {
-		//???
-		if( this.form.getModuleType( this.selector ) === "radio" ){
-
-		}else if( this.form.getModuleType( this.selector ) === "checkbox" ){
-			var selectData = this.selector.getData();
-			if( selectData.length > 0 ){ //表示选中
-				this.selected = false;
-				// this.selector.setData("");
-			}else{
-				this.selected = true;
-				// this.selector.setData( this.selector.getOptionsObj().valueList[0] );
-			}
+		var selectData = this.selector.getData();
+		var selected;
+		if(o2.typeOf(selectData)==="array"){
+			selected = selectData.contains(this.template.json.selectorSelectedValue);
+		}else{
+			selected = selectData === this.template.json.selectorSelectedValue;
 		}
+		this.selected = !selected;
 	},
 	clear: function () { //把module清除掉
 		for(var key in this.all){
@@ -1007,216 +899,4 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		}
 		return data;
 	}
-
-	// _createImg : function(cell, module, idx){
-	// 	this._cloneModule(cell, module, idx);
-	// },
-	// _createLabel : function(cell, module, idx){
-	// 	this._cloneModule(cell, module, idx);
-	// },
-	// _createButton : function(cell, module, idx){
-	// 	this._cloneModule(cell, module, idx);
-	// },
-	// _cloneModule : function(cell, module, idx){
-	// 	debugger;
-	// 	cell.empty();
-	// 	if( module.node && module.json ){
-	// 		var json = Object.clone( module.json );
-	// 		json.id = json.id +"_"+idx;
-	//
-	// 		var node = module.node.clone();
-	// 		node.set("id", json.id);
-	// 		node.inject(cell);
-	//
-	// 		this.form._loadModule(json, node)
-	// 	}
-	// },
-	// _createImage : function( cell, module, data ){
-	// 	cell.empty();
-	// 	if( !data )return;
-	// 	var img = new Element("img",{
-	// 		src : MWF.xDesktop.getImageSrc( data )
-	// 	}).inject( cell, "top" );
-	// 	if( module.json.clipperType == "size" ){
-	// 		var width = module.json.imageWidth;
-	// 		var height = module.json.imageHeight;
-	// 		if (width && height) {
-	// 			img.setStyles({
-	// 				width: width + "px",
-	// 				height: height + "px"
-	// 			})
-	// 		}
-	// 	}
-	// },
-	// _createAttachment: function ( cell, module, data ){
-	// 	cell.empty();
-	// 	var options = {
-	// 		"style": module.json.style || "default",
-	// 		"title": MWF.xApplication.process.Xform.LP.attachmentArea,
-	// 		"listStyle": module.json.dg_listStyle || "icon",
-	// 		"size": module.json.dg_size || "min",
-	// 		"resize": (module.json.dg_resize === "y" || this.json.dg_resize === "true"),
-	// 		"attachmentCount": 0,
-	// 		"isUpload": false,
-	// 		"isDelete": false,
-	// 		"isReplace": false,
-	// 		"isDownload": true,
-	// 		"isSizeChange": (module.json.dg_isSizeChange === "y" || module.json.dg_isSizeChange === "true"),
-	// 		"readonly": true,
-	// 		"availableListStyles": module.json.dg_availableListStyles ? module.json.dg_availableListStyles : ["list", "seq", "icon", "preview"],
-	// 		"isDeleteOption": "n",
-	// 		"isReplaceOption": "n",
-	// 		"toolbarGroupHidden": module.json.dg_toolbarGroupHidden || []
-	// 	};
-	// 	if (this.readonly) options.readonly = true;
-	// 	if(!this.editable && !this.addable)options.readonly = true;
-	//
-	// 	var atts = [];
-	// 	( data || [] ).each(function(d){
-	// 		var att = module.attachmentController.attachments.find(function(a){
-	// 			return d.id == a.data.id;
-	// 		});
-	// 		if (att) module.attachmentController.removeAttachment(att);
-	// 	});
-	// 	module.setAttachmentBusinessData();
-	//
-	//
-	// 	var attachmentController = new MWF.xApplication.process.Xform.AttachmentController(cell, module, options);
-	// 	attachmentController.load();
-	//
-	// 	( data || [] ).each(function (att) {
-	// 		var attachment = this.form.businessData.attachmentList.find(function(a){
-	// 			return a.id==att.id;
-	// 		});
-	// 		var attData = attachment || att;
-	// 		//if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
-	// 		attachmentController.addAttachment(attData);
-	// 	}.bind(this));
-	// },
-	// _createNewEditTd: function(tr, idx, id, text, lastIdx, rowIndex){
-	// 	var cell = $(tr.insertCell(idx));
-	// 	if (idx==0){
-	// 		cell.setStyles(this.form.css.gridLineActionCell);
-	// 		if( this.addable )this._createAddLineAction(cell);
-	// 		if( this.deleteable )this._createDelLineAction(cell);
-	// 	}else if (idx == lastIdx){
-	// 		cell.setStyles(this.form.css.gridMoveActionCell);
-	// 		// this._createMoveLineAction(cell);
-	// 	}else{
-	// 		cell.set("MWFId", id);
-	//
-	// 		var module = this.editModules[idx-1];
-	// 		if( module && module.json.type == "ImageClipper" ){
-	// 			this._createImage( cell, module, text )
-	// 		}else if( module && module.json.type == "Image" ) {
-	// 			this._createImg(cell, module, rowIndex);
-	// 		}else if( module && module.json.type == "Button" ) {
-	// 			this._createButton(cell, module, rowIndex);
-	// 		}else if( module && module.json.type == "Label" ) {
-	// 			this._createLabel(cell, module, rowIndex);
-	// 		}else if( module && (module.json.type == "Attachment" || module.json.type == "AttachmentDg") ){
-	// 			this._createAttachment( cell, module, text );
-	// 		}else{
-	// 			if( module && module.json.type == "Textarea" ){
-	// 				cell.set("html", text);
-	// 			}else{
-	// 				cell.set("text", text);
-	// 			}
-	// 			// /cell.set("text", text);
-	// 		}
-	// 		if( !module ||  !["Button"].contains( module.json.type ) ){
-	// 			cell.addEvent("click", function(e){
-	// 				this._editLine(e.target);
-	// 			}.bind(this));
-	// 		}
-	// 	}
-	// 	var json = this.form._getDomjson(cell);
-	//
-	// 	if (json){
-	// 		cell.store("dataGrid", this);
-	// 		var module = this.form._loadModule(json, cell);
-	// 		cell.store("module", module);
-	// 		this.form.modules.push(module);
-	// 		if( json.isShow === false )cell.hide();
-	// 	}
-	//
-	// },
-	//
-	//
-	// _getValueText: function(idx, value){
-	//
-	// 	var module = this.editModules[idx];
-	// 	if (module){
-	// 		switch (module.json.type){
-	// 			case "Select":
-	// 				for (var i=0; i<module.json.itemValues.length; i++){
-	// 					var itemv = module.json.itemValues[i];
-	// 					var arr = itemv.split(/\|/);
-	// 					var text = arr[0];
-	// 					var v = (arr.length>1) ? arr[1] : arr[0];
-	// 					if (value===v) return text;
-	// 				}
-	// 				// var ops = module.node.getElements("option");
-	// 				// for (var i=0; i<ops.length; i++){
-	// 				// 	if (ops[i].value == value){
-	// 				// 		return ops[i].get("text");
-	// 				// 		break;
-	// 				// 	}
-	// 				// }
-	// 				break;
-	// 			case "Radio":
-	// 				var ops = module.node.getElements("input");
-	// 				for (var i=0; i<ops.length; i++){
-	// 					if (ops[i].value == value){
-	// 						return ops[i].get("showText");
-	// 						break;
-	// 					}
-	// 				}
-	// 				break;
-	// 			case "Checkbox":
-	// 				var ops = module.node.getElements("input");
-	// 				var texts = [];
-	// 				for (var i=0; i<ops.length; i++){
-	// 					if (value.indexOf(ops[i].value) != -1) texts.push(ops[i].get("showText"));
-	// 				}
-	// 				if (texts.length) return texts.join(", ");
-	// 				break;
-	// 			case "Orgfield":
-	// 			case "Personfield":
-	// 			case "Org":
-	// 				//var v = module.getTextData();
-	// 				//return v.text[0];
-	//
-	// 				if (typeOf(value)==="array"){
-	// 					var textArray = [];
-	// 					value.each( function( item ){
-	// 						if (typeOf(item)==="object"){
-	// 							textArray.push( item.name+((item.unitName) ? "("+item.unitName+")" : "") );
-	// 						}else{
-	// 							textArray.push(item);
-	// 						}
-	// 					}.bind(this));
-	// 					return textArray.join(", ");
-	// 				}else if (typeOf(value)==="object"){
-	// 					return value.name+((value.unitName) ? "("+value.unitName+")" : "");
-	// 				}else{
-	// 					return value;
-	// 				}
-	//
-	// 				break;
-	// 			case "Textarea":
-	// 				var reg = new RegExp("\n","g");
-	// 				var reg2 = new RegExp("\u003c","g"); //尖括号转义，否则内容会截断
-	// 				var reg3 = new RegExp("\u003e","g");
-	// 				value = value.replace(reg2,"&lt").replace(reg3,"&gt").replace(reg,"<br/>");
-	// 				break;
-	// 			// case "address":
-	// 			// 	if (typeOf(value)==="array"){
-	// 			//
-	// 			// 	}
-	// 			// 	break;
-	// 		}
-	// 	}
-	// 	return value;
-	// }
 });
