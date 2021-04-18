@@ -9,6 +9,7 @@ import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -119,7 +120,7 @@ public class CenterServerTools extends JettySeverTools {
 		}
 	}
 
-	private static void modified(Path war, Path dir) throws IOException {
+	private static void modified(Path war, Path dir) throws Exception {
 		Path lastModified = Paths.get(dir.toString(), PathTools.WEB_INF_LASTMODIFIED);
 		if ((!Files.exists(lastModified)) || Files.isDirectory(lastModified)
 				|| (Files.getLastModifiedTime(war).toMillis() != NumberUtils
@@ -135,6 +136,18 @@ public class CenterServerTools extends JettySeverTools {
 			}
 			FileUtils.writeStringToFile(lastModified.toFile(), Files.getLastModifiedTime(war).toMillis() + "",
 					DefaultCharset.charset_utf_8, false);
+		}
+		File commonLang = new File(Config.DIR_COMMONS_LANGUAGE);
+		if(commonLang.exists() && commonLang.isDirectory()){
+			File languageDir = new File(dir.toString(), PathTools.WEB_INF_CLASSES_LANGUAGE);
+			FileTools.forceMkdir(languageDir);
+			File[] files = commonLang.listFiles();
+			for(File file : files){
+				if(!file.isDirectory()){
+					File languageFile = new File(languageDir, file.getName());
+					FileUtils.copyFile(file, languageFile);
+				}
+			}
 		}
 	}
 }

@@ -1,12 +1,14 @@
 package com.x.organization.assemble.personal.jaxrs.person;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
- class ExceptionEmployeeDuplicate extends PromptException {
+ class ExceptionEmployeeDuplicate extends LanguagePromptException {
 
 	private static final long serialVersionUID = -3439770681867963457L;
 
+	 public static String defaultMessage = "用户名错误:{}, {}已有值重复.";
+
 	 ExceptionEmployeeDuplicate(String name, String fieldName) {
-		super("用户名错误:" + name + ", " + fieldName + "已有值重复.");
+		super(defaultMessage, name, fieldName);
 	}
 }
