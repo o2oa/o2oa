@@ -12,6 +12,6 @@ public class ExceptionGetAccessTokenFail extends PromptException {
     private static final long serialVersionUID = 8183666222562959262L;
 
     public ExceptionGetAccessTokenFail() {
-        super("获取微信accessToken 失败！");
+        super("获取微信accessToken失败！");
     }
 }

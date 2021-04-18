@@ -2,6 +2,7 @@ package com.x.organization.assemble.personal.jaxrs.password;
 
 import java.util.Date;
 
+import com.x.organization.assemble.personal.jaxrs.reset.ExceptionPersonNotExisted;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
