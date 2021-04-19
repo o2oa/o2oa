@@ -1982,49 +1982,53 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         debugger
         //zip压缩包预览
         var _self = this;
-        var zipViewNode = new Element("div");
+        var zipViewNode = new Element("div",{"text":"loadding..."});
         o2.load(["../o2_lib/jszip/jszip.min.js", "../o2_lib/jszip/jszip-utils.min.js"], function () {
             this.app.getAttachmentUrl(this.att, function (url) {
+                o2.require("MWF.widget.Tree", function(){
+                    var options = {"style":"form"};
+                    var dlg = o2.DL.open({
+                        "title": _self.att.data.name,
+                        "width": "660px",
+                        "height": "510px",
+                        "mask": true,
+                        "content": zipViewNode,
+                        "container": null,
+                        "positionNode": document.body,
+                        "onQueryClose": function () {
+                            zipViewNode.destroy();
+                        },
+                        "buttonList": [
+                            {
+                                "text": "关闭",
+                                "action": function () {
+                                    dlg.close();
+                                }
+                            }
+                        ],
+                        "onPostShow": function () {
+                            dlg.reCenter();
+                        },
+                        "onPostLoad" : function(){
+
+                        }
+                    });
+                }.bind(this));
+                zipViewNode.empty();
                 JSZipUtils.getBinaryContent(url, function (err, data) {
                     JSZip.loadAsync(data).then(function (zip) {
                         var nodeList = [];
                         zip.forEach(function (relativePath, zipEntry) {
                             nodeList.push(zipEntry.name);
                         });
+                        var tree = new MWF.widget.Tree(zipViewNode, options);
+                        var treeData = _pathToTree(nodeList);
+                        tree.load(treeData);
 
-                        debugger
-                        o2.require("MWF.widget.Tree", function(){
-                            var options = {"style":"form"};
-                            var dlg = o2.DL.open({
-                                "title": _self.att.name,
-                                "width": "660px",
-                                "height": "510px",
-                                "mask": true,
-                                "content": zipViewNode,
-                                "container": null,
-                                "positionNode": document.body,
-                                "onQueryClose": function () {
-                                    zipViewNode.destroy();
-                                },
-                                "buttonList": [
-                                    {
-                                        "text": "关闭",
-                                        "action": function () {
-                                            dlg.close();
-                                        }
-                                    }
-                                ],
-                                "onPostShow": function () {
-                                    debugger
-                                    var tree = new MWF.widget.Tree(zipViewNode, options);
-                                    var treeData = _pathToTree(nodeList);
-                                    tree.load(treeData);
-                                    dlg.reCenter();
-                                }
-                            });
-                        }.bind(this));
+
                     });
                 });
+
             }.bind(this));
         }.bind(this));
         function _pathToTree(pathList) {
@@ -2093,8 +2097,6 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
                     folderList.push(file);
                 }
             });
-
-            debugger
             folderList.each(function (file) {
                 var node = {
                     text: file.name,
@@ -2142,6 +2144,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         }.bind(this));
     },
     previewAce:function(type){
+        debugger
         this.app.getAttachmentUrl(this.att,  function (url) {
             o2.require("o2.widget.ace", null, false);
             var fileRequest = new Request({
@@ -2160,7 +2163,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
 
                     }.bind(this));
                     var dlg = o2.DL.open({
-                        "title": this.att.name,
+                        "title": this.att.data.name,
                         "width": "960px",
                         "height": "610px",
                         "mask": true,
