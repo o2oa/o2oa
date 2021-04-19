@@ -1,8 +1,8 @@
 package com.x.organization.assemble.personal.jaxrs.exmail;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionNewCount extends PromptException {
+class ExceptionNewCount extends LanguagePromptException {
 
 	private static final long serialVersionUID = -3885997486474873786L;
 
