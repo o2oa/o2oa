@@ -86,8 +86,9 @@ if (!window.Promise){
         "path": "../o2_core/o2"
     };
 
-    _lp = _lp.toLowerCase();
-    var supportedLanguages = ["zh-cn", "en"];
+    this.o2.languageName = _lp;
+    _lp = _lp.toLocaleLowerCase();
+    var supportedLanguages = ["zh-CN", "en"];
     if (supportedLanguages.indexOf(_lp)==-1) _lp = "zh-cn";
     this.o2.language = _lp;
     this.o2.splitStr = /\s*(?:,|;)\s*/;
@@ -1490,6 +1491,8 @@ if (!window.Promise){
 
                 res.setHeader("Content-Type", "application/json; charset=utf-8");
                 res.setHeader("Accept", "text/html,application/json,*/*");
+                res.setHeader("Accept-Language", o2.languageName);
+
                 if (window.layout) {
                     if (layout["debugger"]){
                         res.setHeader("x-debugger", "true");

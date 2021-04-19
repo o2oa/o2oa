@@ -38,7 +38,7 @@ MWF.xApplication.Profile.LP = {
     "ipAddressIncorrectNotice" : "IP address format is incorrect:",
     "language": "Language",
     "lps": {
-        "zh-cn": "简体中文",
+        "zh-CN": "简体中文",
         "en": "English(US)"
     },
 
