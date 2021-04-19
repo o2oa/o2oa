@@ -19,35 +19,26 @@ public class LanguageTools {
     }
 
     public static String getValue(String key, String locale) {
-        String message = null;
         if(StringUtils.isBlank(key)){
             return null;
         }
-        try {
-            ResourceBundle resourceBundle = null;
-            if(StringUtils.isBlank(locale)){
-                try {
-                    locale = Config.person().getLanguage();
-                } catch (Exception e) {
-                }
+        if(StringUtils.isBlank(locale)){
+            try {
+                locale = Config.person().getLanguage();
+            } catch (Exception e) {
             }
-            if(StringUtils.isBlank(locale)){
-                resourceBundle = ResourceBundle.getBundle(LANGUAGE_PLATFORM, Locale.getDefault());
-            }else if("zh".equalsIgnoreCase(locale) || "zh_CN".equalsIgnoreCase(locale)) {
-                resourceBundle = ResourceBundle.getBundle(LANGUAGE_PLATFORM, Locale.SIMPLIFIED_CHINESE);
-            }else if(locale.toLowerCase().startsWith("en")) {
-                resourceBundle = ResourceBundle.getBundle(LANGUAGE_PLATFORM, Locale.ENGLISH);
-            }else if("zh_HK".equalsIgnoreCase(locale) || "zh_TW".equalsIgnoreCase(locale)) {
-                resourceBundle = ResourceBundle.getBundle(LANGUAGE_PLATFORM, Locale.TRADITIONAL_CHINESE);
-            }else{
-                resourceBundle = ResourceBundle.getBundle(LANGUAGE_PLATFORM, Locale.getDefault());
-            }
-            message = resourceBundle.getString(key);
-        } catch (Exception e) {
-            logger.print("LanguageTools resourceBundle error:"+e.getMessage());
         }
-
-        return message;
+        if(StringUtils.isNotBlank(locale)) {
+            locale = StringUtils.replace(locale, "-", "_");
+        }
+        String baseName = LANGUAGE_PLATFORM;
+        String[] keys = StringUtils.split(key,".");
+        if(keys.length>2){
+            if(!"base".equals(keys[2].toLowerCase())) {
+                baseName = "language." + keys[2].toLowerCase();
+            }
+        }
+        return getValue(baseName, key, locale);
     }
 
     public static String getValue(String baseName ,String key, String locale) {
@@ -63,20 +54,71 @@ public class LanguageTools {
                 } catch (Exception e) {
                 }
             }
+            if(StringUtils.isNotBlank(locale)) {
+                locale = StringUtils.replace(locale, "-", "_");
+            }
             if(StringUtils.isBlank(locale)){
                 resourceBundle = ResourceBundle.getBundle(baseName, Locale.getDefault());
             }else if("zh".equalsIgnoreCase(locale) || "zh_CN".equalsIgnoreCase(locale)) {
                 resourceBundle = ResourceBundle.getBundle(baseName, Locale.SIMPLIFIED_CHINESE);
             }else if(locale.toLowerCase().startsWith("en")) {
                 resourceBundle = ResourceBundle.getBundle(baseName, Locale.ENGLISH);
-            }else if("zh_HK".equalsIgnoreCase(locale) || "zh_TW".equalsIgnoreCase(locale)) {
-                resourceBundle = ResourceBundle.getBundle(baseName, Locale.TRADITIONAL_CHINESE);
-            }else{
+            }else {
+                String[] locals = StringUtils.split(locale, "_");
+                Locale locale1 = null;
+                if(locals.length>1){
+                    locale1 = new Locale(locals[0].toLowerCase(), locals[1].toUpperCase());
+                }else{
+                    locale1 = new Locale(locals[0].toLowerCase());
+                }
+                resourceBundle = ResourceBundle.getBundle(baseName, locale1);
+            }
+            if(resourceBundle == null){
                 resourceBundle = ResourceBundle.getBundle(baseName, Locale.getDefault());
             }
             message = resourceBundle.getString(key);
         } catch (Exception e) {
-            logger.print("LanguageTools resourceBundle error:"+e.getMessage());
+            return getValueFromBase(key, locale);
+        }
+
+        return message;
+    }
+
+    public static String getValueFromBase(String key, String locale) {
+        String message = null;
+        if(StringUtils.isBlank(key)){
+            return null;
+        }
+        try {
+            ResourceBundle resourceBundle = null;
+            if(StringUtils.isBlank(locale)){
+                try {
+                    locale = Config.person().getLanguage();
+                } catch (Exception e) {
+                }
+            }
+            if(StringUtils.isNotBlank(locale)) {
+                locale = StringUtils.replace(locale, "-", "_");
+            }
+            if(StringUtils.isBlank(locale)){
+                resourceBundle = ResourceBundle.getBundle(LANGUAGE_PLATFORM, Locale.getDefault());
+            }else if("zh".equalsIgnoreCase(locale) || "zh_CN".equalsIgnoreCase(locale)) {
+                resourceBundle = ResourceBundle.getBundle(LANGUAGE_PLATFORM, Locale.SIMPLIFIED_CHINESE);
+            }else if(locale.toLowerCase().startsWith("en")) {
+                resourceBundle = ResourceBundle.getBundle(LANGUAGE_PLATFORM, Locale.ENGLISH);
+            }else{
+                String[] locals = StringUtils.split(locale, "_");
+                Locale locale1 = null;
+                if(locals.length>1){
+                    locale1 = new Locale(locals[0].toLowerCase(), locals[1].toUpperCase());
+                }else{
+                    locale1 = new Locale(locals[0].toLowerCase());
+                }
+                resourceBundle = ResourceBundle.getBundle(LANGUAGE_PLATFORM, locale1);
+            }
+            message = resourceBundle.getString(key);
+        } catch (Exception e) {
+            logger.print("LanguageTools resourceBundle2 error:"+e.getMessage());
         }
 
         return message;
