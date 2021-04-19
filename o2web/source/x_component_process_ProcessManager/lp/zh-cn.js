@@ -18,11 +18,11 @@ MWF.xApplication.process.ProcessManager.LP = {
     "copynew": "新",
 
     "formConfig": "表单配置",
-    // "formConfig": "",
-    // "formConfig": "",
-    // "formConfig": "",
-    // "formConfig": "",
-    // "formConfig": "",
+    "processConfig": "流程配置",
+    "dataConfig": "数据配置",
+    "scriptConfig": "脚本配置",
+    "fileConfig": "资源文件",
+    "applicationConfig": "应用属性",
 
     "findDesigner": "查找设计",
 
