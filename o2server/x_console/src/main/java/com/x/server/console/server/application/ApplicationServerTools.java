@@ -328,16 +328,16 @@ public class ApplicationServerTools extends JettySeverTools {
 			}
 			FileUtils.writeStringToFile(lastModified.toFile(), Files.getLastModifiedTime(war).toMillis() + "",
 					DefaultCharset.charset_utf_8, false);
-			File commonLang = new File(Config.DIR_COMMONS_LANGUAGE);
-			if(commonLang.exists() && commonLang.isDirectory()){
-				File languageDir = new File(dir.toString(), PathTools.WEB_INF_CLASSES_LANGUAGE);
-				FileTools.forceMkdir(languageDir);
-				File[] files = commonLang.listFiles();
-				for(File file : files){
-					if(!file.isDirectory()){
-						File languageFile = new File(languageDir, file.getName());
-						FileUtils.copyFile(file, languageFile);
-					}
+		}
+		File commonLang = new File(Config.DIR_COMMONS_LANGUAGE);
+		if(commonLang.exists() && commonLang.isDirectory()){
+			File languageDir = new File(dir.toString(), PathTools.WEB_INF_CLASSES_LANGUAGE);
+			FileTools.forceMkdir(languageDir);
+			File[] files = commonLang.listFiles();
+			for(File file : files){
+				if(!file.isDirectory()){
+					File languageFile = new File(languageDir, file.getName());
+					FileUtils.copyFile(file, languageFile);
 				}
 			}
 		}
