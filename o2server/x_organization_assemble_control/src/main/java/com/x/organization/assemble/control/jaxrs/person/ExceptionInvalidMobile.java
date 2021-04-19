@@ -1,8 +1,8 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionInvalidMobile extends PromptException {
+class ExceptionInvalidMobile extends LanguagePromptException {
 
 	private static final long serialVersionUID = 1859164370743532895L;
 

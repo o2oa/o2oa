@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.person;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
