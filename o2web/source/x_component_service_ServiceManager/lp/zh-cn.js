@@ -30,6 +30,7 @@ MWF.xApplication.service.ServiceManager.LP = {
     "deleteElement": "是否确定要删除选中的设计元素？",
 
     "agent": {
+	    "name": "代理配置",
         "create": "新建代理",
         "search": "搜索代理",
         "searchText": "请输入关键字",
@@ -46,6 +47,7 @@ MWF.xApplication.service.ServiceManager.LP = {
     },
 
     "invoke": {
+        "name": "接口配置",
         "create": "新建接口",
         "search": "搜索接口",
         "searchText": "请输入关键字",
