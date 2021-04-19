@@ -573,7 +573,7 @@ debugger;
 			this.tree.modules[data.module] = moduleNode;
 		}
 		this.updatePatternCount(moduleNode);
-
+debugger;
 		var appNode = (moduleNode.apps) ? moduleNode.apps[data.appId] : null;
 		if (!appNode){
 			appNode = this.createResultAppItem(data.appName, data.appName, moduleNode);
