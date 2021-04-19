@@ -38,8 +38,8 @@ MWF.xApplication.Profile.LP = {
     "ipAddressIncorrectNotice" : "IP地址格式不正确：",
     "language": "语言设置",
     "lps": {
-        "zh-cn": "简体中文",
-        "en": "English(US)"
+        "zh-CN": "简体中文",
+        "en": "English"
     },
 
     "passwordRule" : "密码规则",
