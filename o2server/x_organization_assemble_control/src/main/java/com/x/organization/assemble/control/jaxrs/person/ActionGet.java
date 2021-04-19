@@ -12,6 +12,7 @@ import javax.persistence.criteria.Root;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 

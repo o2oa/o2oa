@@ -2,6 +2,7 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 
 import java.util.Objects;
 
+import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 

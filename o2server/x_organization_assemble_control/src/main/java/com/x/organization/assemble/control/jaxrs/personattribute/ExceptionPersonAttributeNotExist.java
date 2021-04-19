@@ -1,8 +1,8 @@
 package com.x.organization.assemble.control.jaxrs.personattribute;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionPersonAttributeNotExist extends PromptException {
+class ExceptionPersonAttributeNotExist extends LanguagePromptException {
 
 	private static final long serialVersionUID = -3439770681867963457L;
 
