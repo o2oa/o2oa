@@ -65,7 +65,7 @@ if (!window.Promise){
     var _href = window.location.href;
     var _debug = (_href.indexOf("debugger")!==-1);
     var _par = _href.substr(_href.lastIndexOf("?")+1, _href.length);
-    var _lp = "zh-cn";
+    var _lp = navigator.language || "zh-cn";
     if (_par){
         var _parList = _par.split("&");
         for (var i=0; i<_parList.length; i++){
@@ -85,6 +85,11 @@ if (!window.Promise){
         "isDebugger": _debug,
         "path": "../o2_core/o2"
     };
+
+    this.o2.languageName = _lp;
+    _lp = _lp.toLocaleLowerCase();
+    var supportedLanguages = ["zh-CN", "en"];
+    if (supportedLanguages.indexOf(_lp)==-1) _lp = "zh-cn";
     this.o2.language = _lp;
     this.o2.splitStr = /\s*(?:,|;)\s*/;
 
@@ -1486,6 +1491,8 @@ if (!window.Promise){
 
                 res.setHeader("Content-Type", "application/json; charset=utf-8");
                 res.setHeader("Accept", "text/html,application/json,*/*");
+                res.setHeader("Accept-Language", o2.languageName);
+
                 if (window.layout) {
                     if (layout["debugger"]){
                         res.setHeader("x-debugger", "true");

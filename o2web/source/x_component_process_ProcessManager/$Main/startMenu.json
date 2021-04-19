@@ -33,7 +33,7 @@
 //    "sub": []
 //  },
   {
-    "title": "数据配置",
+    "title": MWF.xApplication.process.ProcessManager.LP.dataConfig,
     "id": "1.1",
     "action": "dataConfig",
     "icon": "process_data.png",
@@ -41,7 +41,7 @@
     "sub": []
   },
   {
-    "title": "脚本配置",
+    "title": MWF.xApplication.process.ProcessManager.LP.scriptConfig,
     "id": "1.1",
     "action": "scriptConfig",
     "icon": "process_script.png",
@@ -49,7 +49,7 @@
     "sub": []
   },
   {
-    "title": "资源文件",
+    "title": MWF.xApplication.process.ProcessManager.LP.fileConfig,
     "id": "1.1",
     "action": "fileConfig",
     "icon": "process_file.png",
@@ -65,7 +65,7 @@
 //    "sub": []
 //  },
   {
-    "title": "应用属性",
+    "title": MWF.xApplication.process.ProcessManager.LP.applicationConfig,
     "id": "1.1",
     "action": "applicationProperty",
     "icon": "process_property.png",
