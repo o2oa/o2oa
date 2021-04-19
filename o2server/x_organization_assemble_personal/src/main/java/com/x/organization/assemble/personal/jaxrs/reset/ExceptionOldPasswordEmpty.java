@@ -1,13 +1,13 @@
 package com.x.organization.assemble.personal.jaxrs.reset;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionOldPasswordEmpty extends PromptException {
+class ExceptionOldPasswordEmpty extends LanguagePromptException {
 
 	private static final long serialVersionUID = -3885997486474873786L;
 
 	ExceptionOldPasswordEmpty() {
-		super("无效的操作请求.");
+		super("原密码不能为空.");
 	}
 
 }

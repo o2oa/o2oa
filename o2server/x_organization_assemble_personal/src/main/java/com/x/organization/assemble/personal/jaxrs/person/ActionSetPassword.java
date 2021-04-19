@@ -20,7 +20,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.assemble.personal.jaxrs.reset.ExceptionInvalidPassword;
-import com.x.organization.assemble.personal.jaxrs.reset.ExceptionPersonNotExisted;
 import com.x.organization.core.entity.Person;
 
 class ActionSetPassword extends BaseAction {
@@ -43,7 +42,7 @@ class ActionSetPassword extends BaseAction {
 				Person person = business.person().pick(effectivePerson.getDistinguishedName());
 				person = emc.find(person.getId(), Person.class);
 				if (null == person) {
-					throw new ExceptionPersonNotExisted(effectivePerson.getDistinguishedName());
+					throw new ExceptionPersonNotExist(effectivePerson.getDistinguishedName());
 				}
 				if (StringUtils.isEmpty(wi.getOldPassword())) {
 					throw new ExceptionOldPasswordEmpty();

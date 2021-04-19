@@ -1,6 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
