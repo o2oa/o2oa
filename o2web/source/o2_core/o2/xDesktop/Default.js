@@ -524,6 +524,13 @@ o2.xDesktop.Default = new Class({
         var img = this.path+this.options.style+"/icons/config.png";
         this.userMenu.addMenuItem(o2.LP.desktop.userConfig, "click", function(e){this.userConfig(e);}.bind(this), img);
 
+        // var lpMenu = new o2.xDesktop.Menu(this.userInforNode, {
+        //     "event": "click", "style": "flatUser", "offsetX": 30, "offsetY":6, "container": this.node
+        // });
+        //
+        // img = this.path+"/lp/zh-cn.png";
+        // var lp = this.userMenu.addMenuMenu(o2.LP.desktop.userLanguage, "click", function(e){this.userConfig(e);}.bind(this), img);
+
         this.userMenu.addMenuLine();
 
         img = this.path+this.options.style+"/icons/logout.png";
