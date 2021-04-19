@@ -17,6 +17,13 @@ MWF.xApplication.process.ProcessManager.LP = {
     "copyConfirm_cancel": "Cancel",
     "copynew": "New",
 
+    "formConfig": "Form",
+    "processConfig": "Process",
+    "dataConfig": "Data",
+    "scriptConfig": "Script",
+    "fileConfig": "Resource",
+    "applicationConfig": "Attributes",
+
     "findDesigner": "FindCode",
 
     "ok": "OK",
