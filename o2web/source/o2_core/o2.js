@@ -77,8 +77,8 @@ if (!window.Promise){
     }
     this.o2 = window.o2 || {};
     this.o2.version = {
-        "v": "6.0",
-        "build": "2020.06.12",
+        "v": "6.1",
+        "build": "2021.04.20",
         "info": "O2OA 活力办公 创意无限. Copyright © 2020, o2oa.net O2 Team All rights reserved."
     };
     if (!this.o2.session) this.o2.session ={
