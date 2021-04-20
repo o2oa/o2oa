@@ -1,8 +1,9 @@
 package com.x.query.assemble.designer.jaxrs.output;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionSelectNotExist extends PromptException {
+class ExceptionSelectNotExist extends LanguagePromptException {
 
 	private static final long serialVersionUID = -9089355008820123519L;
 
