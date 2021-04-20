@@ -21,6 +21,13 @@
 
 				</td>
 			</tr>
+			<tr>
+				<td class="editTableTitle">图片Base64编码:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="base64Encode" text{($.ecnet=='y')?'checked':''} type="radio" value="y"/>启用
+					<input class="editTableRadio" name="base64Encode" text{($.ecnet!='y')?'checked':''} type="radio" value="n"/>禁用
+				</td>
+			</tr>
 		</table>
 
 		<div class="MWFMaplist" name="editorProperties" title="属性"></div>
