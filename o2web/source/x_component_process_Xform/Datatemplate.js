@@ -70,6 +70,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		isEdit: false,
 		options: {
 			/**
+			 * 所有内容加载后执行（包括异步加载）。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#afterLoad
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
 			 * 添加条目时触发。通过this.event可以获取对应的tr。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#addLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -129,7 +134,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @event MWF.xApplication.process.Xform.Datatemplate#import
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
-			"moduleEvents": ["queryLoad","postLoad","load","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport"]
+			"moduleEvents": ["queryLoad","postLoad","load","afterLoad","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -146,24 +151,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.editModules = [];
 			this.node.setStyle("overflow-x", "auto");
 			this.node.setStyle("overflow-y", "hidden");
-			this.table = this.node.getElement("table");
 
-			this.editable = (this.readonly || this.json.isReadonly === true ) ? false : true;
+			this.editable = !(this.readonly || (this.json.isReadonly === true));
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 			}
 
-			this.outerAddActionIdList = (this.json.outerAddActionId || "").split(",");
-			this.outerDeleteActionIdList = (this.json.outerDeleteActionId || "").split(",");
-			this.outerSelectAllIdList = (this.json.outerSelectAllId || "").split(",");
-
-			this.addActionIdList = (this.json.addActionId || "").split(",");
-			this.deleteActionIdList = (this.json.deleteActionId || "").split(",");
-			this.sequenceIdList = (this.json.sequenceId || "").split(",");
-			this.selectorId = this.json.selectorId;
-
-			this.importActionIdList = (this.json.importActionId || "").split(",");
-			this.exportActionIdList = (this.json.exportActionId || "").split(",");
+			this.getRelativeId();
 
 			//允许导入
 			this.importenable  = this.editable && (this.importActionIdList.length > 0) &&
@@ -172,9 +166,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			//允许导出
 			this.exportenable  = (this.exportActionIdList.length > 0) && (this.json.impexpType === "impexp" || this.json.impexpType === "exp");
 
+			debugger;
 			this.data = this._getValue();
 
 			this.lineList = [];
+
+			//this.data为object的时候才有值
+			// this.lineMap = {};
 
 			// this.totalModules = [];
 			this._loadStyles();
@@ -196,6 +194,19 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.fireEvent("load");
 			}.bind(this));
 		},
+		getRelativeId: function(){
+			this.outerAddActionIdList = (this.json.outerAddActionId || "").split(",");
+			this.outerDeleteActionIdList = (this.json.outerDeleteActionId || "").split(",");
+			this.outerSelectAllIdList = (this.json.outerSelectAllId || "").split(",");
+
+			this.addActionIdList = (this.json.addActionId || "").split(",");
+			this.deleteActionIdList = (this.json.deleteActionId || "").split(",");
+			this.sequenceIdList = (this.json.sequenceId || "").split(",");
+			this.selectorId = this.json.selectorId;
+
+			this.importActionIdList = (this.json.importActionId || "").split(",");
+			this.exportActionIdList = (this.json.exportActionId || "").split(",");
+		},
 		getTemplate: function(){
 			this.templateJson = {};
 			this.templateHtml = this.node.get("html");
@@ -209,6 +220,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_loadStyles: function(){
 			this.node.setStyles(this.json.styles);
+			this.node.set(this.json.properties);
 		},
 		setOuterActionsEvents: function(){
 
@@ -227,31 +239,38 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.addActionList = getModules( [].concat(this.addActionIdList, this.outerAddActionIdList) );
 				this.addActionList.each( function (module) {
 					module.node.addEvents({"click": function(e){
-							this._addLine(e.target);
-						}.bind(this)})
+						this._addLine(e);
+					}.bind(this)});
+					if( !this.editable )module.node.hide();
 				}.bind(this));
 
 				this.deleteActionList = getModules( [].concat( this.outerDeleteActionIdList ) );
 				this.deleteActionList.each( function (module) {
 					module.node.addEvents({"click": function(e){
-							this._deleteSelectedLine(e.target);
-						}.bind(this)})
+						this._deleteSelectedLine(e);
+					}.bind(this)});
+					if( !this.editable )module.node.hide();
 				}.bind(this));
 
 				this.selectAllList = getModules( this.outerSelectAllIdList );
 				this.selectAllList.each( function (module) {
-					module.setData(""); //默认不选中
+					// module.setData(""); //默认不选中
 					module.node.addEvents({"click": function(e){
-							this._checkSelectAll(e.target);
-						}.bind(this)})
+						this._checkSelectAll(e);
+					}.bind(this)});
+					if( !this.editable )module.node.hide();
 				}.bind(this));
 				this.selectAllSelector = this.selectAllList[0];
+				if(this.selectAllSelector){
+					this.unselectAll();
+				}
 
 				this.importActionList = getModules( this.importActionIdList );
 				this.importActionList.each( function (module) {
 					module.node.addEvents({"click": function(e){
-							this.importFromExcel();
-						}.bind(this)})
+						this.importFromExcel();
+					}.bind(this)});
+					if( !this.editable )module.node.hide();
 				}.bind(this));
 
 				this.exportActionList = getModules( this.exportActionIdList );
@@ -260,6 +279,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 							this.exportToExcel();
 						}.bind(this)})
 				}.bind(this));
+
+				this.fireEvent("afterLoad");
 				//加载完成以后，删除事件
 				this.form.removeEvent("afterModulesLoad", this.bindEvent );
 			}.bind(this);
@@ -283,7 +304,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_loadDataTemplate: function(callback){
 			var p = o2.promiseAll(this.data).then(function(v){
 				this.data = v;
-				if (o2.typeOf(this.data)=="object") this.data = [this.data];
+				// if (o2.typeOf(this.data)=="object") this.data = [this.data];
 				this._loadLineList(callback);
 				this.moduleValueAG = null;
 				return v;
@@ -298,13 +319,24 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 		},
 		_loadLineList: function(callback){
-			if (this._getBusinessData() && this.data){
+			if(o2.typeOf(this.data)==="object"){ //区段合并后显示
+				var index = 0;
+				Object.each(this.data, function (list, sectionKey) {
+					debugger;
+					list.each(function(data, idx){
+						var div = new Element("div").inject(this.node);
+						var line = this._loadLine(div, data, index, this.editable, idx, sectionKey);
+						this.lineList.push(line);
+						index++;
+					}.bind(this));
+				}.bind(this))
+			}else if(this._getBusinessData() && this.data){
 				this.data.each(function(data, idx){
 					var div = new Element("div").inject(this.node);
 					var line = this._loadLine(div, data, idx );
 					this.lineList.push(line);
 				}.bind(this));
-			}else if( this.editable && this.json.defaultCount.toInt() > 0 ){
+			}else if( this.editable ){ //如果是第一次编辑
 				var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
 				for( var i=0; i<count; i++ ){
 					var div = new Element("div").inject(this.node);
@@ -328,10 +360,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			return false;
 		},
-		_loadLine: function(container, data, index, isEdited){
+		_loadLine: function(container, data, index, isEdited, indexInSection, sectionKey){
 			var line = new MWF.xApplication.process.Xform.Datatemplate.Line(container, this, data, {
 				index : index,
 				indexText : (index+1).toString(),
+				indexInSection: indexInSection,
+				sectionKey: sectionKey,
 				isEdited : typeOf(isEdited) === "boolean" ? isEdited : this.editable
 			});
 			line.load();
@@ -356,13 +390,21 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			//使用数据驱动
 			var index = beforeLine.options.index+1;
-			// var d = Object.clone(this.getTemplateData());
-			var data = this.getData();
-			data.splice(index, 0, {});
+
+			var data;
+			if( beforeLine.options.sectionKey ){ //区段合并后的数据
+				data = this.getData();
+				var sectionData = data[beforeLine.options.sectionKey];
+				sectionData.splice(beforeLine.options.indexInSection+1, 0, {});
+			}else{
+				data = this.getData();
+				data.splice(index, 0, {});
+			}
 			this.setData( data );
 			this.fireEvent("addLine",[this.lineList[index], ev]);
 		},
 		_deleteSelectedLine: function(ev){
+			debugger;
 			var selectedLine = this.lineList.filter(function (line) { return line.selected; });
 			if( selectedLine.length === 0 ){
 				this.form.notice("请先选择条目","info");
@@ -370,8 +412,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			var minCount = this.json.minCount ? this.json.minCount.toInt() : 0;
 			if( minCount > 0 ){
-				if( this.lineList.length - selectedLine < minCount ){
-					this.form.notice("最少需要保留"+minCount+"项，删除后的条目小于需保留的条目，请确认勾选","info");
+				if( this.lineList.length - selectedLine.length < minCount ){
+					this.form.notice("最少需要保留"+minCount+"项，删除后的条目小于需保留的条目，请检查","info");
 					return false;
 				}
 			}
@@ -380,9 +422,16 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				selectedLine.each(function(line){
 					_self.fireEvent("deleteLine", [line]);
 
-					var index = line.options.index;
-					var data = _self.getData();
-					data.splice(index, 1);
+					var data;
+					if( line.options.sectionKey ){ //区段合并后的数据
+						data = _self.getData();
+						var sectionData = data[line.options.sectionKey];
+						sectionData.splice(line.options.indexInSection, 1);
+					}else{
+						var index = line.options.index;
+						data = _self.getData();
+						data.splice(index, 1);
+					}
 					_self.setData( data );
 
 					_self.fireEvent("afterDeleteLine");
@@ -405,9 +454,16 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				_self.fireEvent("deleteLine", [line]);
 
 				//使用数据驱动
-				var index = line.options.index;
-				var data = _self.getData();
-				data.splice(index, 1);
+				var data;
+				if( line.options.sectionKey ){ //区段合并后的数据
+					data = _self.getData();
+					var sectionData = data[line.options.sectionKey];
+					sectionData.splice(line.options.indexInSection, 1);
+				}else {
+					var index = line.options.index;
+					data = _self.getData();
+					data.splice(index, 1);
+				}
 				_self.setData( data );
 				this.close();
 
@@ -417,6 +473,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}, null, null, this.form.json.confirmStyle);
 		},
 		_checkSelectAll: function () {
+			debugger;
 			var selectData = this.selectAllSelector.getData();
 			var selected;
 			if(o2.typeOf(selectData)==="array"){
@@ -424,9 +481,32 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}else{
 				selected = selectData === this.json.outerSelectAllSelectedValue;
 			}
-			this.selected = !selected;
-			if( this.selected ){
-				//???
+			this.selected = selected;
+			this.lineList.each(function (line) {
+				this.selected ? line.select() : line.unselect();
+			}.bind(this))
+		},
+		selectAll: function(){
+			this.selected = true;
+			if(this.selectAllSelector)this.selectAllSelector.setData(this.json.outerSelectAllSelectedValue);
+		},
+		unselectAll: function(){
+			debugger;
+			this.selected = false;
+			if( this.selectAllSelector.getOptionsObj ){
+				var options = this.selectAllSelector.getOptionsObj();
+				var value = "";
+				var arr = options.valueList || [];
+				for( var i=0; i<arr.length; i++ ){
+					var v = arr[i];
+					if( v !== this.json.outerSelectAllSelectedValue ){
+						value = v;
+						break;
+					}
+				}
+				this.selectAllSelector.setData(value);
+			}else{
+				this.selectAllSelector.setData("")
 			}
 		},
 
@@ -490,7 +570,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_setData: function(data){
 			var p = o2.promiseAll(this.data).then(function(v){
 				this.data = v;
-				if (o2.typeOf(data)==="object") data = [data];
+				// if (o2.typeOf(data)==="object") data = [data];
 				this.__setData(data);
 				this.moduleValueAG = null;
 				return v;
@@ -574,18 +654,43 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		getData: function(){
 			if (this.editable!==false){
 				debugger;
-				var data = [];
-				this.lineList.each(function(line, index){
-					data.push(line.getData())
-				});
-
-				this.data = data;
-
-				this._setBusinessData(this.data);
-
-				return (this.data.length) ? this.data : [];
+				// var data = [];
+				// this.lineList.each(function(line, index){
+				// 	data.push(line.getData())
+				// });
+				//
+				// this.data = data;
+				//
+				// this._setBusinessData(this.data);
+				//
+				// return (this.data.length) ? this.data : [];
+				return this._getBusinessData();
 			}else{
 				return this._getBusinessData();
+			}
+		},
+		_getSectionKey: function(){
+			if (this.json.section!=="yes"){
+				return "";
+			}else {
+				switch (this.json.sectionBy){
+					case "person":
+						return layout.desktop.session.user.id;
+					case "unit":
+						return (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+					case "activity":
+						return (this.form.businessData.work) ? this.form.businessData.work.activity : "";
+					case "splitValue":
+						return (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
+					case "script":
+						if( this.json.sectionByScript && this.json.sectionByScript.code){
+							return this.form.Macro.exec(this.json.sectionByScript.code, this) || "";
+						}else{
+							return "";
+						}
+					default:
+						return "";
+				}
 			}
 		},
 		createErrorNode: function(text){
@@ -760,7 +865,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	options: {
 		isEdited : true,
 		index : 0,
-		indexText : "0"
+		indexText : "0",
+		indexInSection: null, //区段合并后数据的data[sectionKey][index]
+		sectionKey: null //区段合并后数据的key
 	},
 	initialize: function (node, template, data, options) {
 
@@ -789,6 +896,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	load: function(){
 		this.node.set("html", this.template.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.node);
+		//this.options.sectionKey 为区段合并后的数据
+		//this.template._getSectionKey() 为当前在区段状态下
+		var sectionKey = this.options.sectionKey || this.template._getSectionKey();
 		moduleNodes.each(function (node) {
 			if (node.get("MWFtype") !== "form") {
 				var _self = this;
@@ -797,20 +907,23 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 				if( tJson ){
 					var json = Object.clone(tJson);
 
-					var templateJsonId = json.id;
-					var id = this.template.json.id + ".."+this.options.index + ".." + json.id;
-					json.id = id;
 					if( !this.options.isEdited )json.isReadonly = true;
 
+					var templateJsonId = json.id;
+
+					var id;
+					var index = this.options.indexInSection || this.options.index;
+					if( sectionKey ){
+						id = this.template.json.id + ".." + sectionKey + ".."+ index + ".." + json.id;
+					}else{
+						id = this.template.json.id + ".." + index + ".." + json.id;
+					}
+					json.id = id;
 					node.set("id", id);
 
-					if( json.type=="Attachment" || json.type=="AttachmentDg" ){
+					if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 						json.type = "AttachmentDg";
-						if( json.site ){
-							json.site = this.template.json.id + ".."+this.options.index + ".." + json.site;
-						}else{
-							json.site = id;
-						}
+						json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
 					}
 
 					if (this.form.all[id]) this.form.all[id] = null;
@@ -836,12 +949,52 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			}
 		}.bind(this));
 	},
+	getAttachmentSite: function(json, templateJsonId, sectionKey){
+		//确保site最长为64，否则后台会报错
+
+		var index = this.options.indexInSection || this.options.index;
+
+		var baseSite;
+		baseSite =  "." + index + "."  + (json.site || templateJsonId);
+
+		var maxLength;
+		var sectionId = "";
+		if( sectionKey ){
+			maxLength = Math.floor((63 - baseSite.length)/2 );
+
+			sectionId = (sectionKey.length > maxLength) ? sectionKey.substr(sectionKey.length-maxLength, maxLength) : sectionKey;
+			sectionId = "." + sectionId;
+		}else{
+			maxLength = 64 - baseSite.length;
+		}
+
+		var templateId = this.template.json.id;
+		templateId = (templateId.length > maxLength) ? templateId.substr(templateId.length-maxLength, maxLength) : templateId;
+
+		return templateId + sectionId + baseSite;
+
+		// if( json.site ){
+		// 	if( sectionKey ){
+		// 		site = this.template.json.id + "." + sectionKey + "."+this.options.index + "." + json.site;
+		// 	}else{
+		// 		site = this.template.json.id + "."+this.options.index + "." + json.site;
+		// 	}
+		// }else{
+		// 	if( sectionKey ){
+		// 		site = this.template.json.id + "." + sectionKey + "."+this.options.index + "." + json.id;
+		// 	}else{
+		// 		site = this.template.json.id + "."+this.options.index + "." + json.id;
+		// 	}
+		// }
+		// json.site = site;
+	},
 	setEvents: function (module, id) {
 		if( this.template.addActionIdList.contains( id )){
 			this.addActionList.push( module );
 			module.node.addEvent("click", function (ev) {
 				this.template._insertLine( ev, this )
 			}.bind(this))
+			if( !this.template.editable )module.node.hide();
 		}
 
 		if( this.template.deleteActionIdList.contains(id)){
@@ -849,14 +1002,17 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			module.node.addEvent("click", function (ev) {
 				this.template._deleteLine( ev, this )
 			}.bind(this))
+			if( !this.template.editable )module.node.hide();
 		}
 
 		if( this.template.selectorId === id){
 			this.selector = module;
-			module.setData(""); //默认不选择
+			// module.setData(""); //默认不选择
 			module.node.addEvent("click", function (ev) {
 				this.checkSelect();
 			}.bind(this))
+			if( !this.template.editable )module.node.hide();
+			this.unselect();
 		}
 
 		if( this.template.sequenceIdList.contains(id)){
@@ -881,7 +1037,29 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		}else{
 			selected = selectData === this.template.json.selectorSelectedValue;
 		}
-		this.selected = !selected;
+		this.selected = selected;
+	},
+	select: function(){
+		this.selected = true;
+		if(this.selector)this.selector.setData(this.template.json.selectorSelectedValue);
+	},
+	unselect: function(){
+		this.selected = false;
+		if( this.selector.getOptionsObj ){
+			var options = this.selector.getOptionsObj();
+			var value = "";
+			var arr = options.valueList || [];
+			for( var i=0; i<arr.length; i++ ){
+				var v = arr[i];
+				if( v !== this.template.json.selectorSelectedValue ){
+					value = v;
+					break;
+				}
+			}
+			this.selector.setData(value);
+		}else{
+			this.selector.setData("")
+		}
 	},
 	clear: function () { //把module清除掉
 		for(var key in this.all){
@@ -897,7 +1075,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		for( var key in this.allField){
 			var module = this.allField[key];
 			var id = key.split("..").getLast();
-			if( module.json.type=="Attachment" || module.json.type=="AttachmentDg" ){
+			if( module.json.type==="Attachment" || module.json.type==="AttachmentDg" ){
 				data[id] = module._getBusinessData();
 			}else{
 				data[id] = module.getData();
