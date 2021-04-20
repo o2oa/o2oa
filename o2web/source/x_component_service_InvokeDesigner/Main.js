@@ -609,6 +609,9 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.invokeMethod+":"}).inject(this.propertyContentArea);
         this.propertyInvokeMethodNode = new Element("div", {"styles": this.css.propertyTextNode, "text": "POST"}).inject(this.propertyContentArea);
 
+        node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.invokeHead+":"}).inject(this.propertyContentArea);
+        this.propertyInvokeHeadTextNode = new Element("div", {"styles": this.css.propertyTextNode, "text": "Content-Type:application/json; charset=utf-8"}).inject(this.propertyContentArea);
+
     },
 	loadPropertyResize: function(){
 //		var size = this.propertyNode.getSize();
