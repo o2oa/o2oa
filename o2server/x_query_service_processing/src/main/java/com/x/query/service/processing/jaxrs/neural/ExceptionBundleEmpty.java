@@ -1,8 +1,9 @@
 package com.x.query.service.processing.jaxrs.neural;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionBundleEmpty extends PromptException {
+class ExceptionBundleEmpty extends LanguagePromptException {
 
 	private static final long serialVersionUID = -9089355008820123519L;
 
