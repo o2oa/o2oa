@@ -1,12 +1,12 @@
 package com.x.processplatform.assemble.surface.jaxrs.serialnumber;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionApplicationNotExist extends PromptException {
+class ExceptionApplicationNotExist extends LanguagePromptException {
 
 	private static final long serialVersionUID = -9089355008820123519L;
 
 	ExceptionApplicationNotExist(String flag) {
-		super("application: {} not existed.", flag);
+		super("指定的应用不存在:{}.", flag);
 	}
 }
