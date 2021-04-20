@@ -1478,8 +1478,8 @@ if (!window.Promise){
                     },
                     onFailure: function(xhr){
                         //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
-
-                        reject(xhr);
+                        var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
+                        (r) ? reject(r) : reject(xhr, "", "");
                         //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                     }.bind(this),
                     onError: function(text, error){
@@ -1513,9 +1513,7 @@ if (!window.Promise){
             // }, function(xhr, text, error){
             //     return o2.runCallback(callback, "failure", [xhr, text, error], null);
             // });
-            p = p.catch(function(xhr, text, error){
-                return o2.runCallback(callback, "failure", [xhr, text, error], null);
-            });
+            p = p.catch(function(xhr, text, error){});
 
             //var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
             var oReturn = p;
