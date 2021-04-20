@@ -127,7 +127,7 @@ o2.addReady(function () {
 
         layout.sessionPromise = new Promise(function(resolve, reject){
             o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
-                if (json.data.language !== o2.languageName){
+                if (json.data.language && (json.data.language !== o2.languageName)){
                     o2.language = json.data.language.toLowerCase();
                     o2.languageName = json.data.language;
                     var lp = o2.session.path + "/lp/" + o2.language + ".js";
