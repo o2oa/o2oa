@@ -6,6 +6,9 @@
     "sequence": "yes",
     "section": "no",
     "sectionBy": "person",
+	"defaultCount": "1",
+	"outerSelectAllSelectedValue" : "yes",
+	"selectorSelectedValue": "yes",
     "sectionByScript": {
       "code": "",
       "html": ""
