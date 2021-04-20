@@ -1,8 +1,9 @@
 package com.x.query.assemble.designer.jaxrs.reveal;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionAccessDenied extends PromptException {
+class ExceptionAccessDenied extends LanguagePromptException {
 
 	private static final long serialVersionUID = -5515077418025884395L;
 
