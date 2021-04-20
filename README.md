@@ -94,19 +94,11 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
                   PostgreSQL, IBM solidDB, Sybase Adaptive Server Enterprise, 达梦DM7+, 人大金仓, 南大通用, 神通数据库
 
 
-# 官方网盘下载\:
-
-百度云盘：https://pan.baidu.com/s/1oBQ1atXGyXdLaYE5uAqF1w   提取码: pnk9
-
-
-# 最新源码编译教程\:http://www.o2oa.net/course/ng5iqb.html
-
-
 # 服务器部署教程
 
-    Windows环境：https://www.o2oa.net/course/qq5gny.html
+    Windows环境：
     
-    Linux环境：https://www.o2oa.net/course/yto8af.html
+    Linux环境：
 
 
 # 最新版本 v6.0.x\:
