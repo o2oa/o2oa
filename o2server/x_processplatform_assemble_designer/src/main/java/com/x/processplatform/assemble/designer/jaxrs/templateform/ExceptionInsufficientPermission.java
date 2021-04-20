@@ -7,6 +7,6 @@ class ExceptionInsufficientPermission extends PromptException {
 	private static final long serialVersionUID = 1148555249431355284L;
 
 	ExceptionInsufficientPermission(String person) {
-		super("insufficient permissions to execute action, person:{}.", person);
+		super("用户:{} 无权限执行此操作.", person);
 	}
 }
