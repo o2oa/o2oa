@@ -7,7 +7,7 @@ class ExceptionWorkNotExistCallback extends CallbackPromptException {
 	private static final long serialVersionUID = -7038279889683420366L;
 
 	ExceptionWorkNotExistCallback(String callbackName, String workId) {
-		super(callbackName, "work id:{}, not existed.", workId);
+		super(callbackName, "指定的工作不存在:{}.", workId);
 	}
 
 }

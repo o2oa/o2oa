@@ -1,12 +1,12 @@
 package com.x.processplatform.assemble.designer.jaxrs.applicationdict;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionApplicationNotExist extends PromptException {
+class ExceptionApplicationNotExist extends LanguagePromptException {
 
-	private static final long serialVersionUID = -9089355008820123519L;
+	private static final long serialVersionUID = -778285754125984911L;
 
 	ExceptionApplicationNotExist(String flag) {
-		super("application: {} not existed.", flag);
+		super("指定的应用不存在:{}.", flag);
 	}
 }
