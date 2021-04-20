@@ -1,8 +1,8 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionCannotAddSplit extends PromptException {
+class ExceptionCannotAddSplit extends LanguagePromptException {
 
 	private static final long serialVersionUID = -3439770681867963457L;
 
