@@ -96,6 +96,7 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
             //    _self.selectCloudFilesImage( e, callback );
             //};
 
+            editorConfig.base64Encode = (this.json.base64Encode === "y");
             editorConfig.localImageMaxWidth = 800;
             editorConfig.reference = this.form.businessData.document.id;
             editorConfig.referenceType = "cmsDocument";
