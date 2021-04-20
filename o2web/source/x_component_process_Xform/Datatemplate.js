@@ -75,6 +75,31 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
+			 * 每初始化一个条目，但未加载的时候触发，通过this.event。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#beforeLoadLine
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
+			 * 每一个条目加载后时候触发，通过this.event。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#afterLoadLine
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
+			 * 区段合并后的展现包含此事件，加载条目前执行。通过this.event。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#loadSectionData,
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
+			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载前执行。通过this.event。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#beforeloadSectionLines,
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
+			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载后执行。通过this.event。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#afterloadSectionLines,
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
 			 * 添加条目时触发。通过this.event可以获取对应的tr。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#addLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -134,7 +159,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @event MWF.xApplication.process.Xform.Datatemplate#import
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
-			"moduleEvents": ["queryLoad","postLoad","load","afterLoad","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport"]
+			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad", "loadSectionData", "beforeloadSectionLines", "afterloadSectionLines",
+				"beforeLoadLine", "afterLoadLine","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -169,6 +195,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			debugger;
 			this.data = this._getValue();
 
+			//object表示数据是区段合并状态
+			this.unionMode = o2.typeOf(this.data)==="object";
+
 			this.lineList = [];
 
 			//this.data为object的时候才有值
@@ -188,10 +217,10 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			//隐藏节点
 			this.node.getChildren().hide();
 
+			this.fireEvent("load");
 			this._loadDataTemplate(function(){
 				// this._loadImportExportAction();
 				this.fireEvent("postLoad");
-				this.fireEvent("load");
 			}.bind(this));
 		},
 		getRelativeId: function(){
@@ -321,14 +350,31 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_loadLineList: function(callback){
 			if(o2.typeOf(this.data)==="object"){ //区段合并后显示
 				var index = 0;
-				Object.each(this.data, function (list, sectionKey) {
+				var sectionKeyList = Object.keys(this.data);
+				//$union默认放最后
+				sectionKeyList.sort(function (a, b) {
+					if( a === "$union" ){
+						return 1;
+					}else if( b === "$union" ){
+						return -1;
+					}else{
+						return 0;
+					}
+				});
+				this.fireEvent("loadSectionData", [sectionKeyList, this.data]);
+				Array.each(sectionKeyList, function (sectionKey, i) {
 					debugger;
+					var list = this.data[sectionKey];
+					this.fireEvent("beforeloadSectionLines", [sectionKey, list]);
+					var sectionLineList = [];
 					list.each(function(data, idx){
 						var div = new Element("div").inject(this.node);
 						var line = this._loadLine(div, data, index, this.editable, idx, sectionKey);
 						this.lineList.push(line);
+						sectionLineList.push(line);
 						index++;
 					}.bind(this));
+					this.fireEvent("afterloadSectionLines", [sectionKey, list, sectionLineList]);
 				}.bind(this))
 			}else if(this._getBusinessData() && this.data){
 				this.data.each(function(data, idx){
@@ -365,20 +411,29 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				index : index,
 				indexText : (index+1).toString(),
 				indexInSection: indexInSection,
+				indexInSectionText: typeOf(indexInSection) === "number" ?  (index+1).toString() : null,
 				sectionKey: sectionKey,
 				isEdited : typeOf(isEdited) === "boolean" ? isEdited : this.editable
 			});
+			this.fireEvent("beforeLoadLine", [line]);
 			line.load();
+			this.fireEvent("afterLoadLine", [line]);
 			return line;
 		},
-		_addLine: function(ev){
+		_addLine: function(ev, editable){
 			if( this.isMax() ){
 				this.form.notice("最多允许添加"+this.json.maxCount+"项","info");
 				return false;
 			}
 			var index = this.lineList.length;
 			var div = new Element("div").inject(this.node);
-			var line = this._loadLine(div, {}, index );
+			var line;
+			if( this.unionMode ){
+				var indexInSection =  this.data["$union"] ? this.data["$union"].length : 0;
+				line = this._loadLine(div, {}, index, editable || this.editable, indexInSection, "$union" );
+			}else{
+				line = this._loadLine(div, {}, index);
+			}
 			this.lineList.push(line);
 			this.fireEvent("addLine", [line, ev]);
 		},
@@ -867,6 +922,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		index : 0,
 		indexText : "0",
 		indexInSection: null, //区段合并后数据的data[sectionKey][index]
+		indexInSectionText: null,
 		sectionKey: null //区段合并后数据的key
 	},
 	initialize: function (node, template, data, options) {
@@ -912,7 +968,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					var templateJsonId = json.id;
 
 					var id;
-					var index = this.options.indexInSection || this.options.index;
+					var index = this.template.unionMode ? this.options.indexInSection : this.options.index;
 					if( sectionKey ){
 						id = this.template.json.id + ".." + sectionKey + ".."+ index + ".." + json.id;
 					}else{
@@ -1017,10 +1073,11 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 		if( this.template.sequenceIdList.contains(id)){
 			this.sequenceNodeList.push( module );
+			var indexText = (this.template.unionMode && this.template.json.sequenceBySection) ?  this.options.indexInSectionText : this.options.indexText;
 			if(this.form.getModuleType(module) === "label"){
-				module.node.set("text", this.options.indexText );
+				module.node.set("text", indexText );
 			}else{
-				module.set( this.options.indexText );
+				module.set( indexText );
 			}
 		}
 
