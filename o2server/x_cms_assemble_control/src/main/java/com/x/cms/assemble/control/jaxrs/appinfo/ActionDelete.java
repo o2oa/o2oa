@@ -26,13 +26,13 @@ public class ActionDelete extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		AppInfo appInfo = null;
 		Boolean check = true;
-		
+
 		if( StringUtils.isEmpty( id ) ){
 			check = false;
 			Exception exception = new ExceptionAppInfoIdEmpty();
 			result.error( exception );
 		}
-		
+
 		if( check ){
 			try {
 				appInfo = appInfoServiceAdv.get( id );
@@ -48,14 +48,14 @@ public class ActionDelete extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){
 			Long count = 0L;
 			try {
 				count = appInfoServiceAdv.countCategoryByAppId( id, "全部" );
 				if ( count > 0 ){
 					check = false;
-					Exception exception = new ExceptionAppInfoCanNotDelete( "该应用栏目内仍存在"+ count +"个分类，请删除分类后再删除栏目信息！" );
+					Exception exception = new ExceptionAppInfoCanNotDelete( count);
 					result.error( exception );
 				}
 			} catch ( Exception e ) {
@@ -70,12 +70,12 @@ public class ActionDelete extends BaseAction {
 				// 删除栏目信息
 				appInfoServiceAdv.delete( id, effectivePerson );
 				new LogService().log( null, effectivePerson.getDistinguishedName(), appInfo.getAppName(), id, "", "", "", "APPINFO", "删除");
-				
+
 				//增加删除栏目批量操作（对分类和文档）的信息
-				new CmsBatchOperationPersistService().addOperation( 
-						CmsBatchOperationProcessService.OPT_OBJ_APPINFO, 
+				new CmsBatchOperationPersistService().addOperation(
+						CmsBatchOperationProcessService.OPT_OBJ_APPINFO,
 						CmsBatchOperationProcessService.OPT_TYPE_DELETE, id, id, "删除栏目：ID=" + id );
-				
+
 				//更新缓存
 				CacheManager.notify( AppInfo.class );
 				CacheManager.notify( AppDict.class );
@@ -83,7 +83,7 @@ public class ActionDelete extends BaseAction {
 				CacheManager.notify( View.class );
 				CacheManager.notify( ViewCategory.class );
 				CacheManager.notify( ViewFieldConfig.class );
-				
+
 				Wo wo = new Wo();
 				wo.setId( appInfo.getId() );
 				result.setData( wo );
@@ -95,7 +95,7 @@ public class ActionDelete extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}
