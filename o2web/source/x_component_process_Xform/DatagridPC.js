@@ -2043,21 +2043,25 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						case "Author":
 						case "Personfield":
 						case "Orgfield":
-							var arr = d.split(/\s*,\s*/g ); //空格,空格
-							if( arr.length === 0 ){
-								value = this.getImportOrgData( d );
-							}else{
+							if( !d ){
 								value = [];
-								arr.each( function(d, idx){
-									var obj = this.getImportOrgData( d );
-									value.push( obj );
-								}.bind(this));
+							}else{
+								var arr = d.split(/\s*,\s*/g ); //空格,空格
+								// if( arr.length === 0 ){
+								// 	value = this.getImportOrgData( d );
+								// }else{
+									value = [];
+									arr.each( function(d, idx){
+										var obj = this.getImportOrgData( d );
+										value.push( obj );
+									}.bind(this));
+								// }
 							}
 							break;
 						case "Combox":
 						case "Address":
 							arr = d.split(/\s*,\s*/g ); //空格,空格
-							value = arr.length === 0  ? arr[0] : arr;
+							value = arr; //arr.length === 1  ? arr[0] : arr;
 							break;
 						case "Checkbox":
 							arr = d.split(/\s*,\s*/g ); //空格,空格
@@ -2249,6 +2253,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 					var d = lineData[text] || "";
 
+					if( !d )return;
+
 					switch (module.json.type) {
 						case "Org":
 						case "Reader":
@@ -2259,8 +2265,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 							arr.each( function(d, idx){
 								var obj = this.getImportOrgData( d );
 								if( obj.errorText ){
-									errorTextList.push( colInfor + obj.errorText + + lp.fullstop );
-									errorTextListExcel.push( colInforExcel + obj.errorText + + lp.fullstop );
+									errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+									errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
 								}
 							}.bind(this));
 							break;

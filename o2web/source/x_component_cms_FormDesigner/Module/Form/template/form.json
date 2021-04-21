@@ -168,11 +168,63 @@
       },
 
       "events": {
-        "help": {
+        "queryLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeModulesLoad":{
+          "code": "",
+          "html": ""
+        },
+        "afterModulesLoad":{
+          "code": "",
+          "html": ""
+        },
+        "postLoad": {
           "code": "",
           "html": ""
         },
         "load": {
+          "code": "",
+          "html": ""
+        },
+        "afterLoad": {
+          "code": "",
+          "html": ""
+        },
+        "beforeSave": {
+          "code": "",
+          "html": ""
+        },
+        "afterSave": {
+          "code": "",
+          "html": ""
+        },
+        "beforeClose": {
+          "code": "",
+          "html": ""
+        },
+        "beforePublish": {
+          "code": "",
+          "html": ""
+        },
+        "afterPublish": {
+          "code": "",
+          "html": ""
+        },
+        "beforeDelete":{
+          "code": "",
+          "html": ""
+        },
+        "afterDelete":{
+          "code": "",
+          "html": ""
+        },
+        "help": {
           "code": "",
           "html": ""
         },
