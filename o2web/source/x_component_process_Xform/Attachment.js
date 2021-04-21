@@ -1986,7 +1986,6 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         o2.load(["../o2_lib/jszip/jszip.min.js", "../o2_lib/jszip/jszip-utils.min.js"], function () {
             this.app.getAttachmentUrl(this.att, function (url) {
                 o2.require("MWF.widget.Tree", function(){
-                    var options = {"style":"form"};
                     var dlg = o2.DL.open({
                         "title": _self.att.data.name,
                         "width": "660px",
@@ -2021,7 +2020,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
                         zip.forEach(function (relativePath, zipEntry) {
                             nodeList.push(zipEntry.name);
                         });
-                        var tree = new MWF.widget.Tree(zipViewNode, options);
+                        var tree = new MWF.widget.Tree(zipViewNode, {"style":"form"});
                         var treeData = _pathToTree(nodeList);
                         tree.load(treeData);
 
