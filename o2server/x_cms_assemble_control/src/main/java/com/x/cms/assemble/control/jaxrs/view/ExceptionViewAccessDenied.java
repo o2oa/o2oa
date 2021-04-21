@@ -1,16 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.view;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionViewAccessDenied extends PromptException {
+class ExceptionViewAccessDenied extends LanguagePromptException {
 
 	private static final long serialVersionUID = 1859164370743532895L;
 
-	ExceptionViewAccessDenied( Throwable e, String message ) {
-		super( message, e );
-	}
-
 	ExceptionViewAccessDenied(String categoryId, String viewId) {
-		super("category id: {} access view id: {} denied.", categoryId, viewId );
+		super("无权限访问视图id: {} 分类id: {}.", categoryId, viewId );
 	}
 }
