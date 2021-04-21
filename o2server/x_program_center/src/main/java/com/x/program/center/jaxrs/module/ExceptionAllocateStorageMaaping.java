@@ -1,8 +1,9 @@
 package com.x.program.center.jaxrs.module;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionAllocateStorageMaaping extends PromptException {
+class ExceptionAllocateStorageMaaping extends LanguagePromptException {
 
 	private static final long serialVersionUID = 1548696203797537170L;
 

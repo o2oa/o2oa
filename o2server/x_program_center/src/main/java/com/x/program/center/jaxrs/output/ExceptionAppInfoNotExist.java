@@ -7,6 +7,6 @@ class ExceptionAppInfoNotExist extends PromptException {
 	private static final long serialVersionUID = -4620752705942326196L;
 
 	ExceptionAppInfoNotExist(String flag) {
-		super("appInfo: {} not existed.", flag);
+		super("应用信息:{} 不存在.", flag);
 	}
 }
