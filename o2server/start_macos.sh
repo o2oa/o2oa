@@ -1,6 +1,7 @@
 #!/bin/bash
 # Copyright (c) http://www.o2oa.net/
 current_dir="$(cd "$(dirname "$0")"; pwd)"
+sudo date
 if [ -d ${current_dir}/local/update ]
 then
 	for D in commons configSample localSample jvm servers store config  local
@@ -47,4 +48,4 @@ then
 		exit 1
 	fi
 fi
-setsid ${current_dir}/jvm/macos_java11/bin/java -Dnashorn.args=--no-deprecation-warning --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
+sudo ${current_dir}/jvm/macos_java11/bin/java -Dnashorn.args=--no-deprecation-warning --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
