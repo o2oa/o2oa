@@ -18,6 +18,11 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
 	Extends: MWF.APP$Module,
     options: {
         /**
+         * 视图参数（options）已经准备好，还未加载视图时执行。可以通过this.event得到视图参数，并可修改this.event修改视图的加载。
+         * @event MWF.xApplication.process.Xform.View#beforeLoadView
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
          * 异步加载查询视图后完成。
          * @event MWF.xApplication.process.Xform.Statement#loadView
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -32,7 +37,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
          * @event MWF.xApplication.process.Xform.Statement#openDocument
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["load", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
+        "moduleEvents": ["load", "beforeLoadView", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
     },
 
     _loadUserInterface: function(){
@@ -98,6 +103,8 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
             "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null,
             "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
         };
+
+        this.fireEvent("beforeLoadView", [viewJson]);
 
         //MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
         /**
