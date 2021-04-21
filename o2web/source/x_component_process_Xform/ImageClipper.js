@@ -24,6 +24,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
         this.field = true;
     },
     _loadUserInterface: function(){
+	    debugger;
         this.field = true;
         this.node.empty();
         var data = this._getBusinessData();
@@ -36,8 +37,8 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
                     "max-width": "90%"
                 })
             }else if( this.json.clipperType == "size" ){
-                var width = this.json.imageWidth;
-                var height = this.json.imageHeight;
+                var width = this.json.imageWidth.toInt();
+                var height = this.json.imageHeight.toInt();
                 if( width && height ){
                     img.setStyles({
                         width : width+"px",
@@ -134,8 +135,8 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
                 "max-width": "90%"
             })
         }else if( this.json.clipperType == "size" ){
-            var width = this.json.imageWidth;
-            var height = this.json.imageHeight;
+            var width = this.json.imageWidth.toInt();
+            var height = this.json.imageHeight.toInt();
             if (width && height) {
                 img.setStyles({
                     width: width + "px",
