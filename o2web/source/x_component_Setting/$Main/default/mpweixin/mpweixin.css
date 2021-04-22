@@ -1,0 +1,484 @@
+a {
+  color: #44b549;
+  text-decoration: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  -webkit-transition: color 0.3s;
+  transition: color 0.3s;
+  -webkit-text-decoration-skip: objects;
+}
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 500;
+}
+
+ul, ol {
+  padding-left: 0;
+  list-style-type: none;
+}
+ol, ul, dl {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+input[type='radio'], input[type='checkbox'] {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+}
+input[type='text'], input[type='password'], input[type='number'], textarea {
+  -webkit-appearance: none;
+}
+
+  .menu_setting_area {
+    margin: 14px 30px 0;
+  }
+
+  .menu_preview_area {
+    float: left;
+    margin-right: 12px;
+    position: relative;
+  }
+
+  .menu_form_area {
+    display: table-cell;
+    vertical-align: top;
+    float: none;
+    width: auto;
+    min-width: 500px;
+  }
+
+  .menu_setting_area:after {
+    content: "\200B";
+    display: block;
+    height: 0;
+    clear: both;
+  }
+
+  .mobile_menu_preview {
+    width: 294px;
+    background-size: contain;
+  }
+
+  .mobile_menu_preview {
+    position: relative;
+    width: 317px;
+    height: 580px;
+    background: transparent url(../x_component_Setting/$Main/default/mpweixin/bg_mobile_head_default49d02c.png) no-repeat 0 0;
+    background-position: 0 0;
+    border: 1px solid #e7e7eb;
+  }
+
+  .mobile_menu_preview .mobile_hd {
+    color: #fff;
+    text-align: center;
+    padding-top: 30px;
+    font-size: 15px;
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    margin: 0 30px;
+  }
+
+  .menu_preview_area .pre_menu_list {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #e7e7eb;
+    background: transparent url(../x_component_Setting/$Main/default/mpweixin/bg_mobile_foot_default49d02c.png) no-repeat 0 0;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    padding-left: 43px;
+  }
+
+  .pre_menu_item {
+    position: relative;
+    float: left;
+    line-height: 50px;
+    text-align: center;
+  }
+
+  .size1of3 {
+    width: 33.33%;
+  }
+  .menu_preview_area .pre_menu_item:first-child .pre_menu_link {
+  border-left-width: 0;
+}
+.pre_menu_item a {
+  display: block;
+  width: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+  color: #616161;
+  text-decoration: none;
+}
+.pre_menu_link {
+  border-left: 1px solid #e7e7eb;
+}
+.no_extra.grid_item {
+  float: none;
+  width: auto;
+  overflow: hidden;
+}
+.sub_pre_menu_box {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border: 1px solid #d0d0d0;
+  bottom: 60px;
+  background-color: #fafafa;
+  border-top-width: 0;
+}
+.menu_preview_area .sub_pre_menu_inner {
+  display: block;
+  border-top: 1px solid #e7e7eb;
+  width: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+  cursor: pointer;
+}
+.sub_pre_menu_list li a {
+  padding: 0 .5em;
+}
+.pre_menu_item a {
+  display: block;
+  width: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+  color: #616161;
+  text-decoration: none;
+}
+
+.menu_preview_area .pre_menu_item.current .pre_menu_link {
+  border: 1px solid #07c160;
+  line-height: 48px;
+  background-color: #fff;
+  color: #07c160;
+}
+.menu_preview_area .icon14_menu_add {
+  background: url(../x_component_Setting/$Main/default/mpweixin/index_z49d030.png) 0 0 no-repeat;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  display: inline-block;
+  margin-top: -2px;
+}
+.menu_preview_area .sub_pre_menu_box {
+  bottom: 60px;
+  background-color: #fafafa;
+  border-top-width: 0;
+}
+.menu_preview_area .sub_pre_menu_list li:first-child {
+  border-top: 1px solid #d0d0d0;
+}
+.menu_preview_area .sub_pre_menu_list li {
+  line-height: 44px;
+  border: 1px solid transparent;
+  margin: 0 -1px -1px;
+}
+.menu_preview_area .sub_pre_menu_list li.current {
+  background-color: #fff;
+  border: 1px solid #07c160;
+  position: relative;
+  z-index: 1;
+  line-height: 45px;
+}
+.menu_preview_area .sub_pre_menu_list li.current a {
+  color: #07c160;
+}
+.sub_pre_menu_box .arrow {
+  position: absolute;
+  left: 50%;
+  margin-left: -6px;
+}
+.sub_pre_menu_box .arrow_in {
+  bottom: -5px;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-width: 6px;
+  border-style: dashed;
+  border-color: transparent;
+  border-bottom-width: 0;
+  border-top-color: #fafafa;
+  border-top-style: solid;
+}
+.sub_pre_menu_box .arrow_out {
+  bottom: -6px;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-width: 6px;
+  border-style: dashed;
+  border-color: transparent;
+  border-bottom-width: 0;
+  border-top-color: #d0d0d0;
+  border-top-style: solid;
+}
+.grid_line:after {
+  content: "\200B";
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+.menu_setting_area:after {
+  content: "\200B";
+  display: block;
+  height: 0;
+  clear: both;
+}
+.portable_editor.to_left {
+  padding-left: 12px;
+}
+.portable_editor {
+  position: relative;
+}
+.menu_form_area .editor_inner {
+  min-height: 560px;
+  padding-bottom: 20px;
+}
+.portable_editor .editor_inner {
+  padding: 0 20px 5px;
+  background-color: #f4f5f9;
+  border: 1px solid #e7e7eb;
+  border-radius: 0;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.menu_form_hd {
+  padding: 9px 0;
+  border-bottom: 1px solid #e7e7eb;
+}
+.global_mod.float_layout .global_info {
+  float: left;
+}
+.menu_form_hd h4 {
+  font-weight: 400;
+}
+.global_mod .global_extra {
+  text-align: right;
+}
+.global_mod.float_layout:after {
+  content: "\200B";
+  display: block;
+  height: 0;
+  clear: both;
+}
+.frm_textarea {
+  height: 80px;
+  margin: 4px 0;
+}
+.frm_input {
+  height: 22px;
+  margin: 4px 0;
+}
+.frm_input, .frm_textarea {
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  outline: 0;
+}
+.portable_editor .frm_control_group {
+  margin-bottom: 10px;
+}
+.portable_editor .frm_control_group {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding-bottom: 0;
+}
+.menu_form_area .frm_label {
+  width: 5em;
+}
+.menu_content .frm_control_group {
+  margin-top: 0;
+}
+
+.frm_label {
+  float: left;
+  width: 5em;
+  margin-top: .3em;
+  margin-right: 1em;
+  font-size: 14px;
+}
+.portable_editor .frm_label .title {
+  font-weight: 400;
+  font-style: normal;
+}
+.frm_controls {
+  display: table-cell;
+  vertical-align: top;
+  float: none;
+  width: auto;
+}
+.frm_vertical_pt {
+  padding-top: .3em;
+}
+.frm_input_box.counter_in {
+  width: 228px;
+  padding-right: 60px;
+}
+.frm_textarea_box.counter_in {
+  width: 228px;
+  padding-right: 60px;
+}
+.frm_textarea_box {
+  display: inline-block;
+  position: relative;
+  line-height: 30px;
+  vertical-align: middle;
+  width: 278px;
+  font-size: 14px;
+  padding: 0 10px;
+  border: 1px solid #e7e7eb;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  border-radius: 0;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  background-color: #fff;
+}
+.frm_input_box {
+  display: inline-block;
+  position: relative;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  width: 278px;
+  font-size: 14px;
+  padding: 0 10px;
+  border: 1px solid #e7e7eb;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  border-radius: 0;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  background-color: #fff;
+}
+.menu_form_area .frm_tips, .menu_form_area .frm_msg {
+  width: auto;
+}
+
+.frm_radio_label, .frm_checkbox_label {
+  display: inline-block;
+  text-align: left;
+  cursor: pointer;
+  margin-right: 1em;
+}
+.icon_radio {
+  background: url(../x_component_Setting/$Main/default/mpweixin/base_z49d030.png) 0 -140px no-repeat;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  display: inline-block;
+}
+.icon_radio.selected, .selected .icon_radio {
+  background: url(../x_component_Setting/$Main/default/mpweixin/base_z49d030.png) 0 -160px no-repeat;
+}
+.icon_radio, .icon_checkbox {
+  margin-right: 3px;
+  margin-top: -2px;
+  *margin-top: 0;
+}
+.frm_radio, .frm_checkbox {
+  position: absolute;
+  left: -999em;
+}
+
+.frm_tips {
+  position: relative;
+}
+.frm_tips, .frm_msg {
+  padding-top: 4px;
+  width: 300px;
+}
+.frm_tips {
+  color: #9a9a9a;
+}
+.frm_msg.fail {
+  color: #fa5151;
+}
+.menu_content_tips {
+  padding-bottom: 10px;
+}
+.tips_global {
+  color: #9a9a9a;
+}
+.dn {
+  display: none;
+}
+
+.menu_content {
+  padding: 16px 20px;
+  border: 1px solid #e7e7eb;
+  background-color: #fff;
+}
+ 
+
+.btn-box {
+  padding: 20px 0 30px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+ 
+.btn_primary {
+  background-color: #07c160;
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0,#07c160),to(#07c160));
+  background-image: linear-gradient(to bottom,#07c160 0,#07c160 100%);
+  border-color: #07c160;
+  color: #fff;
+}
+.btn {
+  display: inline-block;
+  overflow: visible;
+  margin-left: .5em;
+  margin-right: .5em;
+  min-width: 80px !important;
+  padding: 0;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  font-size: 14px;
+  border-width: 1px;
+  border-style: solid;
+  cursor: pointer;
+}
+
+.btn button {
+  color: #fff;
+  width: 90%;
+  display: block;
+  height: 100%;
+  background-color: transparent;
+  border: 0;
+  outline: 0;
+  overflow: visible;
+  cursor: pointer;
+}

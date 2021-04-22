@@ -99,7 +99,7 @@ public class NodeAgent extends Thread {
 
 	@Override
 	public void run() {
-		try{
+		try {
 			serverSocket = new ServerSocket(Config.currentNode().nodeAgentPort());
 			Matcher matcher;
 			while (runFlag) {
@@ -135,8 +135,9 @@ public class NodeAgent extends Thread {
 							}
 							fos.close();
 							Config.flush();
-							if(syncFilePath.indexOf("web.json") > -1 || syncFilePath.indexOf("collect.json") > -1
-									|| syncFilePath.indexOf("portal.json") > -1 || syncFilePath.indexOf("person.json") > -1){
+							if (syncFilePath.indexOf("web.json") > -1 || syncFilePath.indexOf("collect.json") > -1
+									|| syncFilePath.indexOf("portal.json") > -1
+									|| syncFilePath.indexOf("person.json") > -1) {
 								// 更新web服务配置信息
 								WebServers.updateWebServerConfigJson();
 							}
@@ -274,7 +275,7 @@ public class NodeAgent extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if(serverSocket!=null){
+			if (serverSocket != null) {
 				try {
 					serverSocket.close();
 				} catch (IOException e) {
@@ -283,10 +284,10 @@ public class NodeAgent extends Thread {
 		}
 	}
 
-	public void stopAgent(){
+	public void stopAgent() {
 		try {
 			this.runFlag = false;
-			if(serverSocket!=null) {
+			if (serverSocket != null) {
 				this.serverSocket.close();
 				this.serverSocket = null;
 			}
@@ -327,7 +328,7 @@ public class NodeAgent extends Thread {
 									time = curTime;
 								}
 							}
-						}else{
+						} else {
 							continue;
 						}
 						Map<String, String> map = new HashMap<>();
@@ -587,11 +588,10 @@ public class NodeAgent extends Thread {
 	private void customJar(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
 		File jar = new File(Config.dir_custom_jars(true), simpleName + ".jar");
 		FileUtils.writeByteArrayToFile(jar, bytes, false);
-		/*if (rebootApp) {
-			Servers.stopApplicationServer();
-			Thread.sleep(3000);
-			Servers.startApplicationServer();
-		}*/
+		/*
+		 * if (rebootApp) { Servers.stopApplicationServer(); Thread.sleep(3000);
+		 * Servers.startApplicationServer(); }
+		 */
 	}
 
 	private void customZip(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
@@ -600,7 +600,7 @@ public class NodeAgent extends Thread {
 		FileTools.forceMkdir(tempFile);
 		FileUtils.cleanDirectory(tempFile);
 
-		File zipFile = new File(tempFile.getAbsolutePath(), simpleName+".zip");
+		File zipFile = new File(tempFile.getAbsolutePath(), simpleName + ".zip");
 		FileUtils.writeByteArrayToFile(zipFile, bytes);
 		File dist = Config.dir_custom(true);
 		List<String> subs = new ArrayList<>();
@@ -608,24 +608,18 @@ public class NodeAgent extends Thread {
 
 		FileUtils.cleanDirectory(tempFile);
 
-		/*if (rebootApp) {
-			Servers.stopApplicationServer();
-			int i = 0;
-			while (i++<6){
-				try {
-					if(Servers.applicationServerIsRunning()){
-						Thread.sleep(2000);
-					}
-				} catch (Exception e) {
-				}
-			}
-			Servers.startApplicationServer();
-		}*/
+		/*
+		 * if (rebootApp) { Servers.stopApplicationServer(); int i = 0; while (i++<6){
+		 * try { if(Servers.applicationServerIsRunning()){ Thread.sleep(2000); } } catch
+		 * (Exception e) { } } Servers.startApplicationServer(); }
+		 */
 	}
 
 	private List<ClassInfo> listModuleDependencyWith(String name) throws Exception {
 		List<ClassInfo> list = new ArrayList<>();
-		try (ScanResult scanResult = new ClassGraph().addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false,false,false)).enableAnnotationInfo().scan()) {
+		try (ScanResult scanResult = new ClassGraph()
+				.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false, false, false))
+				.enableAnnotationInfo().scan()) {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
 				Class<?> cls = Class.forName(info.getName());
@@ -644,7 +638,9 @@ public class NodeAgent extends Thread {
 	}
 
 	private ClassInfo scanModuleClassInfo(String name) throws Exception {
-		try (ScanResult scanResult = new ClassGraph().addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false, false, false)).enableAnnotationInfo().scan()) {
+		try (ScanResult scanResult = new ClassGraph()
+				.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false, false, false))
+				.enableAnnotationInfo().scan()) {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
 				Class<?> clz = Class.forName(info.getName());
@@ -741,7 +737,7 @@ public class NodeAgent extends Thread {
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
 		/* jersey从AppClassLoader加载 */
-		for (File o : FileUtils.listFiles(Config.dir_commons_ext(), filter, null)) {
+		for (File o : FileUtils.listFiles(Config.dir_commons_ext().toFile(), filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}
 		return jars;
