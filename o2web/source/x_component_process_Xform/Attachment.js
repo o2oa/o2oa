@@ -1942,7 +1942,10 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
 
         var extension = this.att.data.extension;
         if(extension === "ofd"){
-            this.previewOfd();
+            //ofd预览暂时屏蔽ie，等兼容性改好了开启
+            if(Browser.name!=="ie"){
+                this.previewOfd();
+            }
         }
         if(extension === "zip"){
             this.previewZip();
