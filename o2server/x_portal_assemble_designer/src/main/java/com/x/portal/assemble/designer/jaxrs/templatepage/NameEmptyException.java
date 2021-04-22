@@ -1,12 +1,12 @@
 package com.x.portal.assemble.designer.jaxrs.templatepage;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class NameEmptyException extends PromptException {
+class NameEmptyException extends LanguagePromptException {
 
 	private static final long serialVersionUID = -9089355008820123519L;
 
 	NameEmptyException() {
-		super("名称不能为空");
+		super("名称不能为空.");
 	}
 }

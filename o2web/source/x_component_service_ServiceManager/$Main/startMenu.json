@@ -17,7 +17,7 @@
 //  },
 
   {
-    "title": "代理配置",
+    "title": MWF.xApplication.service.ServiceManager.LP.agent.name,
     "id": "1.1",
     "action": "agentConfig",
     "icon": "agent_script.png",
@@ -25,7 +25,7 @@
     "sub": []
  },
   {
-    "title": "接口配置",
+    "title": MWF.xApplication.service.ServiceManager.LP.invoke.name,
     "id": "1.1",
     "action": "invokeConfig",
     "icon": "agent_script.png",

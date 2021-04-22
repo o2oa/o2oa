@@ -1441,7 +1441,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }, null, null, this.form.json.confirmStyle);
     },
     previewAttachment: function (attachments) {
-        var att = attachments[0].data;
+        var att = attachments[0];
         new MWF.xApplication.process.Xform.AttachmenPreview(att,this);
     },
     deleteAttachment: function (attachment) {
@@ -1623,7 +1623,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
                 } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({ 
+                    wx.miniProgram.navigateTo({
                         url: '../file/download?attId=' + att.data.id + '&type=work&work=' + this.form.businessData.work.id
                     });
                 } else {
@@ -1647,7 +1647,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
                 } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({ 
+                    wx.miniProgram.navigateTo({
                         url: '../file/download?attId=' + att.data.id + '&type=work&workCompleted=' + this.form.businessData.workCompleted.id
                     });
                 } else {
@@ -1674,7 +1674,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
                 } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({ 
+                    wx.miniProgram.navigateTo({
                         url: '../file/download?attId=' + att.data.id + '&type=work&work=' + this.form.businessData.work.id
                     });
                 } else {
@@ -1699,7 +1699,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
                 } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({ 
+                    wx.miniProgram.navigateTo({
                         url: '../file/download?attId=' + att.data.id + '&type=work&workCompleted=' + this.form.businessData.workCompleted.id
                     });
                 } else {
@@ -1940,12 +1940,12 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
     },
     load:function(){
 
-        var extension = this.att.extension;
+        var extension = this.att.data.extension;
         if(extension === "ofd"){
             this.previewOfd();
         }
         if(extension === "zip"){
-            //this.previewZip();
+            this.previewZip();
         }
         if(extension === "pdf"){
             this.previewPdf();
@@ -1978,105 +1978,158 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             this.previewAce("text");
         }
     },
-    // previewZip : function (){
-    //     //zip压缩包预览
-    //     var _self = this;
-    //     var zipViewNode = new Element("div.ztree").inject(document.body);
-    //     o2.load("/o2_lib/zipjs/zip-fs.js",function(){
-    //
-    //         this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
-    //             var cookie = Cookie.read("x-token");
-    //             url = url + "?x-token=" + cookie;
-    //             unzip().catch(error => console.error(error));
-    //             async function unzip() {
-    //                 zip.configure({ chunkSize: 128 });
-    //                 let zipFs = new zip.fs.FS();
-    //                 let directory = zipFs.addDirectory("import");
-    //                 await directory.importHttpContent(url);
-    //
-    //                 o2.loadCss("/o2_lib/zTree/zTreeStyle.css",function(){
-    //                     o2.load(["/o2_lib/jquery/jquery.min.js","/o2_lib/zTree/jquery.ztree.core.min.js"], {"sequence": true}, function(){
-    //                         jQuery = jQuery.noConflict(true); //避免js框架冲突
-    //                         var nodes = [];
-    //                         loadNodes(directory,nodes);
-    //                         jQuery.fn.zTree.init(jQuery(zipViewNode), {}, nodes);
-    //
-    //                         var dlg = o2.DL.open({
-    //                             "title": _self.att.name,
-    //                             "width": "660px",
-    //                             "height": "510px",
-    //                             "mask": true,
-    //                             "content": zipViewNode,
-    //                             "container": null,
-    //                             "positionNode": document.body,
-    //                             "onQueryClose": function () {
-    //                                 zipViewNode.destroy();
-    //                             },
-    //                             "buttonList": [
-    //                                 {
-    //                                     "text": "关闭",
-    //                                     "action": function () {
-    //                                         dlg.close();
-    //                                     }
-    //                                 }
-    //                             ],
-    //                             "onPostShow": function () {
-    //                                 dlg.reCenter();
-    //                             }
-    //                         });
-    //
-    //
-    //                     }.bind(this));
-    //                 })
-    //             }
-    //
-    //             function loadNodes(directory,nodes){
-    //                 var folderList = [];
-    //                 var fileList = [];
-    //                 directory.children.each(function(file){
-    //                     if(file.directory){
-    //                         folderList.push(file)
-    //                     }
-    //                 })
-    //                 directory.children.each(function(file){
-    //                     if(!file.directory){
-    //                         fileList.push(file)
-    //                     }
-    //                 })
-    //                 folderList.append(fileList);
-    //                 folderList.each(function(file){
-    //                     var node = {
-    //                         name : file.name
-    //                     }
-    //                     if(nodes.children){
-    //                         nodes.children.push(node);
-    //                     }else{
-    //                         nodes.push(node);
-    //                     }
-    //                     if(file.directory){
-    //                         node.children = [];
-    //                         loadNodes(file,node);
-    //                     }
-    //                 })
-    //             }
-    //         }.bind(this));
-    //     }.bind(this));
-    // },
+    previewZip: function () {
+        debugger
+        //zip压缩包预览
+        var _self = this;
+        var zipViewNode = new Element("div",{"text":"loadding..."});
+        o2.load(["../o2_lib/jszip/jszip.min.js", "../o2_lib/jszip/jszip-utils.min.js"], function () {
+            this.app.getAttachmentUrl(this.att, function (url) {
+                o2.require("MWF.widget.Tree", function(){
+                    var options = {"style":"form"};
+                    var dlg = o2.DL.open({
+                        "title": _self.att.data.name,
+                        "width": "660px",
+                        "height": "510px",
+                        "mask": true,
+                        "content": zipViewNode,
+                        "container": null,
+                        "positionNode": document.body,
+                        "onQueryClose": function () {
+                            zipViewNode.destroy();
+                        },
+                        "buttonList": [
+                            {
+                                "text": "关闭",
+                                "action": function () {
+                                    dlg.close();
+                                }
+                            }
+                        ],
+                        "onPostShow": function () {
+                            dlg.reCenter();
+                        },
+                        "onPostLoad" : function(){
+
+                        }
+                    });
+                }.bind(this));
+                zipViewNode.empty();
+                JSZipUtils.getBinaryContent(url, function (err, data) {
+                    JSZip.loadAsync(data).then(function (zip) {
+                        var nodeList = [];
+                        zip.forEach(function (relativePath, zipEntry) {
+                            nodeList.push(zipEntry.name);
+                        });
+                        var tree = new MWF.widget.Tree(zipViewNode, options);
+                        var treeData = _pathToTree(nodeList);
+                        tree.load(treeData);
+
+
+                    });
+                });
+
+            }.bind(this));
+        }.bind(this));
+        function _pathToTree(pathList) {
+            var pathJsonList = [];
+            for (var i = 0; i < pathList.length; i++) {
+                var chain = pathList[i].split("/");
+                var currentNode = pathJsonList;
+                for (var j = 0; j < chain.length; j++) {
+                    if (chain[j] === "") {
+                        break;
+                    }
+                    var wantedNode = chain[j];
+                    var lastNode = currentNode;
+                    for (var k = 0; k < currentNode.length; k++) {
+                        if (currentNode[k].name == wantedNode) {
+                            currentNode = currentNode[k].sub;
+                            break;
+                        }
+                    }
+                    if (lastNode == currentNode) {
+                        var obj = {
+                            key: pathList[i],
+                            name: wantedNode,
+                            title:wantedNode,
+                            text:wantedNode,
+                            sub: []
+                        };
+                        var newNode = (currentNode[k] = obj);
+                        if (wantedNode.indexOf(".") > -1) {
+                            obj.dir = false;
+                            obj.icon = "file.png";
+                            delete obj.sub;
+                        } else {
+                            obj.dir = true;
+                            obj.expand = false;
+                            currentNode = newNode.sub;
+                            //delete obj.sub;
+                        }
+                    } else {
+                        delete currentNode.sub;
+                    }
+                }
+            }
+            var nodes = [];
+
+            var folder = {
+                "title" : _self.att.name,
+                "text" : _self.att.name,
+                "sub" : []
+            };
+            pathJsonList.each(function(path){
+                folder.sub.push(path);
+            })
+            _sortPath(folder, nodes);
+            return nodes;
+        }
+        function _sortPath(pathJsonList, nodes) {
+            var folderList = [];
+            pathJsonList.sub.each(function (file) {
+                if (file.dir) {
+                    folderList.push(file);
+                }
+            });
+            pathJsonList.sub.each(function (file) {
+                if (!file.dir) {
+                    folderList.push(file);
+                }
+            });
+            folderList.each(function (file) {
+                var node = {
+                    text: file.name,
+                    title: file.name,
+                    expand : false
+                };
+                if (!file.dir) {
+                    node.icon = "file.png";
+                }
+                nodes.push(node);
+                if(file.sub && file.sub.length>0){
+                    node.sub = [];
+                    _sortPath(file,node.sub);
+                }
+
+            })
+        }
+    },
     previewPdf : function(){
-        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+        this.app.getAttachmentUrl(this.att, function (url) {
             window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url)
         });
     },
     previewOfd : function(){
-        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+        this.app.getAttachmentUrl(this.att,  function (url) {
             window.open("../o2_lib/ofdjs/index.html?file=" + url)
         });
     },
     previewImage : function(){
-        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+        this.app.getAttachmentUrl(this.att, function (url) {
             var imgNode = new Element("img",{"src":url,"alt":this.att.name}).inject(document.body).hide();
-            o2.loadCss("../m_app/yunFile/css/viewer.css", document.body,function(){
-                o2.load("../m_app/yunFile/js/viewer.js", function(){
+            o2.loadCss("../o2_lib/viewer/viewer.css", document.body,function(){
+                o2.load("../o2_lib/viewer/viewer.js", function(){
                     this.viewer = new Viewer(imgNode,{
                         navbar : false,
                         toolbar : false,
@@ -2091,7 +2144,8 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         }.bind(this));
     },
     previewAce:function(type){
-        this.app.form.workAction.getAttachmentUrl(this.att.id, this.app.form.businessData.work.id, function (url) {
+        debugger
+        this.app.getAttachmentUrl(this.att,  function (url) {
             o2.require("o2.widget.ace", null, false);
             var fileRequest = new Request({
                 url: url,
@@ -2109,7 +2163,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
 
                     }.bind(this));
                     var dlg = o2.DL.open({
-                        "title": this.att.name,
+                        "title": this.att.data.name,
                         "width": "960px",
                         "height": "610px",
                         "mask": true,
