@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>o2oa</groupId>
 	<artifactId>o2server</artifactId>
-	<version>6.0</version>
+	<version>6.1.java8</version>
 	<packaging>pom</packaging>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -12,6 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8
 		</project.reporting.outputEncoding>
+		<o2.version>6.1.java8</o2.version>
 	</properties>
 	<modules>
 		<module>x_base_core_project</module>
@@ -816,7 +817,7 @@
 			<dependency>
 				<groupId>org.mnode.ical4j</groupId>
 				<artifactId>ical4j</artifactId>
-				<version>2.2.0</version>
+				<version>3.0.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.xbean</groupId>
@@ -913,147 +914,147 @@
 			<dependency>
 				<groupId>com.microsoft.playwright</groupId>
 				<artifactId>playwright</artifactId>
-				<version>1.9.1-alpha-0</version>
+				<version>1.10.0</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_base_core_project</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_attendance_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_bbs_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_calendar_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_cms_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_cms_core_express</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_component_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_file_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_general_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_hotpic_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_meeting_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_message_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_mind_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_organization_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_jpush_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_organization_core_express</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_portal_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_processplatform_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_processplatform_core_express</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_query_core_express</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_report_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_strategydeploy_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_strategydeploy_assemble_control</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_program_center</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_program_center_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_teamwork_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_workschedu_core_entity</artifactId>
-				<version>6.0</version>
+				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>net.lingala.zip4j</groupId>
