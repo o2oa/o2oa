@@ -602,7 +602,7 @@ MWF.xScript.Environment = function(ev){
 
 
     //dict
-    this.Dict = MWF.xScript.createDict(_form.json.application);
+    this.Dict = MWF.xScript.createDict((_form.businessData.work || _form.businessData.workCompleted).application);
 
     //unit
     var orgActions = null;
@@ -3085,7 +3085,7 @@ MWF.xScript.Environment = function(ev){
      * @o2syntax
      * var currentRouteName = this.form.currentRouteName;
      */
-    this.form.currentRouteName = _form.json.currentRouteName;
+    //this.form.currentRouteName = _form.json.currentRouteName;
 
     /**
      * 在用户提交的时候，输入的意见。仅在表单的“校验意见”和“校验路由”脚本中可用。只读。<b>（仅流程表单中可用）</b>。
@@ -3096,7 +3096,7 @@ MWF.xScript.Environment = function(ev){
      * @o2syntax
      * var opinion = this.form.opinion;
      */
-    this.form.opinion = _form.json.opinion;
+    //this.form.opinion = _form.json.opinion;
 
     /**
      * 在提交的时候，用户的手写意见以及录音意见，仅在表单的“校验意见”和“校验路由”脚本中可用。只读。<b>（仅流程表单中可用）</b>。
