@@ -18,6 +18,8 @@ public class MPweixin extends ConfigObject  {
 
     @FieldDescribe("是否启用.")
     private Boolean enable;
+    @FieldDescribe("是否启用发布.")
+    private Boolean enablePublish;
     @FieldDescribe("微信开放平台appid")
     private String appid;
     @FieldDescribe("微信开放平台appSecret")
@@ -51,6 +53,7 @@ public class MPweixin extends ConfigObject  {
 
     public MPweixin() {
         this.enable = default_enable;
+        this.enablePublish = default_enable; // 禁用发布功能，sample上防止用户乱发布菜单
         this.appid = "";
         this.appSecret = "";
         this.token = "";
@@ -103,6 +106,14 @@ public class MPweixin extends ConfigObject  {
         }
     }
 
+
+    public Boolean getEnablePublish() {
+        return enablePublish;
+    }
+
+    public void setEnablePublish(Boolean enablePublish) {
+        this.enablePublish = enablePublish;
+    }
 
     public Boolean getEnable() {
         return enable;
