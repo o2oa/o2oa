@@ -390,10 +390,10 @@ if (!window.Promise){
         return url;
     };
     this.o2.filterUrl = _filterUrl;
-    var _xhr_get = function(url, success, failure, completed){
+    var _xhr_get = function(url, success, failure, completed, sync){
         var xhr = new _request();
         url = _filterUrl(url);
-        xhr.open("GET", url, true);
+        xhr.open("GET", url, !sync);
 
         var _checkCssLoaded= function(_, err){
             if (!(xhr.readyState == 4)) return;
