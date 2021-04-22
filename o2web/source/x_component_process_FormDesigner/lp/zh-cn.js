@@ -413,7 +413,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "handler": "处理人",
         "handlerUnit": "处理人所在组织",
         "activityId": "活动ID",
-        "splitValue": "拆分值"
+        "splitValue": "拆分值",
+
+        "decimal": "小数点"
     },
     "actionBar": {
         "close":"关闭",
