@@ -27,7 +27,7 @@ public class ActionDelete extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		CategoryInfo categoryInfo = null;
 		Boolean check = true;
-		
+
 		if ( StringUtils.isEmpty( id )) {
 			check = false;
 			Exception exception = new ExceptionIdEmpty();
@@ -48,29 +48,29 @@ public class ActionDelete extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
 			Long count = documentServiceAdv.countByCategoryId( id );
 			if ( count > 0 ) {
 				check = false;
-				Exception exception = new ExceptionEditNotAllowed( "该分类中仍有" + count + "个文档，请删除所有文档后再删除分类信息！");
+				Exception exception = new ExceptionEditNotAllowed(count);
 				result.error(exception);
 			}
 		}
-		
+
 		if (check) {
 			try {
-				categoryInfoServiceAdv.delete( id, effectivePerson );				
-				
+				categoryInfoServiceAdv.delete( id, effectivePerson );
+
 				Wo wo = new Wo();
 				wo.setId( categoryInfo.getId() );
-				result.setData( wo );				
-				
+				result.setData( wo );
+
 				//增加删除栏目批量操作（对分类和文档）的信息
-				new CmsBatchOperationPersistService().addOperation( 
-						CmsBatchOperationProcessService.OPT_OBJ_CATEGORY, 
+				new CmsBatchOperationPersistService().addOperation(
+						CmsBatchOperationProcessService.OPT_OBJ_CATEGORY,
 						CmsBatchOperationProcessService.OPT_TYPE_DELETE, id, id, "删除分类：ID=" + id );
-				
+
 				new LogService().log(null, effectivePerson.getDistinguishedName(), categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName(), id, "", "", "", "CATEGORY", "删除");
 
 				CacheManager.notify( AppInfo.class );
