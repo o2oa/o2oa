@@ -392,7 +392,32 @@ MWF.xApplication.process.FormDesigner.LP = {
         "none": "none",
         "default": "default",
         "byScript": "byScript",
-        "languageDefaultInfo": "The system will automatically load a data dictionary named (\"lp-\"+o2.language) as a language pack"
+        "languageDefaultInfo": "The system will automatically load a data dictionary named (\"lp-\"+o2.language) as a language pack",
+
+        "prefix": "Prefix",
+        "suffix": "Suffix",
+
+        "value": "Value",
+        "textValue": "TextValue",
+
+        "showIcon": "Show icon",
+        "readonly": "Readonly",
+        "AIInput": "AI Input",
+        "inputStyle": "Input Style",
+        "compute": "Compute",
+        "create": "Create",
+        "save": "Save",
+
+        "defaultValue": "DefaultValue",
+        "verificationScript": "Verification Script",
+        "section": "Section",
+        "enableSection": "Enable Section",
+        "sectionBy": "SectionBy",
+        "handler": "Handler",
+        "handlerUnit": "Handler Unit",
+        "activityId": "Activity Id",
+        "splitValue": "Split Value"
+
     },
     "actionBar": {
         "close":"Close",
