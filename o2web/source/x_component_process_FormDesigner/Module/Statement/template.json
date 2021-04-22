@@ -20,6 +20,10 @@
 		  "code": "",
 		  "html": ""
 		},
+		"beforeLoadView": {
+			"code": "",
+			"html": ""
+		},
 	  	"loadView" : {
 		  "code": "",
 		  "html": ""
