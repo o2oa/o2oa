@@ -1,8 +1,9 @@
 package com.x.program.center.qiyeweixin;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionRootOrg extends PromptException {
+class ExceptionRootOrg extends LanguagePromptException {
 
 	private static final long serialVersionUID = 4132300948670472899L;
 
