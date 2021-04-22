@@ -86,6 +86,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadViewFilter();
                     this.loadStatementFilter();
                     this.loadDocumentTempleteSelect();
+                    this.loadFieldConfig()
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
                     //this.testRestful();
@@ -619,6 +620,31 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 }.bind(this));
 
                 //new MWF.xApplication.process.FormDesigner.widget.ValidationEditor(node, this.designer);
+            }.bind(this));
+        }
+    },
+
+    loadFieldConfig: function(){
+        var nodes = this.propertyContent.getElements(".MWFFieldConfigArea");
+        if (nodes.length){
+            nodes.each(function(node){
+                debugger;
+                var name = node.get("name");
+                var data;
+               if( this.data[name] ){
+                   data = this.data[name];
+               }else{
+                   data = this.data[name] = [];
+               }
+                MWF.xDesktop.requireApp("process.FormDesigner", "widget.FiledConfigurator", function(){
+                    var filedConfigurator = new MWF.xApplication.process.FormDesigner.widget.FiledConfigurator(node, this.designer, {
+                        "onChange": function(){
+                            debugger;
+                            this.data[name] = filedConfigurator.getData();
+                        }.bind(this)
+                    }, data);
+                    filedConfigurator.load()
+                }.bind(this));
             }.bind(this));
         }
     },
