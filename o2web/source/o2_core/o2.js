@@ -65,7 +65,7 @@ if (!window.Promise){
     var _href = window.location.href;
     var _debug = (_href.indexOf("debugger")!==-1);
     var _par = _href.substr(_href.lastIndexOf("?")+1, _href.length);
-    var _lp = "zh-cn";
+    var _lp = navigator.language || "zh-cn";
     if (_par){
         var _parList = _par.split("&");
         for (var i=0; i<_parList.length; i++){
@@ -77,14 +77,19 @@ if (!window.Promise){
     }
     this.o2 = window.o2 || {};
     this.o2.version = {
-        "v": "6.0",
-        "build": "2020.06.12",
+        "v": "6.1",
+        "build": "2021.04.20",
         "info": "O2OA 活力办公 创意无限. Copyright © 2020, o2oa.net O2 Team All rights reserved."
     };
     if (!this.o2.session) this.o2.session ={
         "isDebugger": _debug,
         "path": "../o2_core/o2"
     };
+
+    this.o2.languageName = _lp;
+    _lp = _lp.toLocaleLowerCase();
+    var supportedLanguages = ["zh-CN", "en"];
+    if (supportedLanguages.indexOf(_lp)==-1) _lp = "zh-cn";
     this.o2.language = _lp;
     this.o2.splitStr = /\s*(?:,|;)\s*/;
 
@@ -1473,8 +1478,8 @@ if (!window.Promise){
                     },
                     onFailure: function(xhr){
                         //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
-
-                        reject(xhr);
+                        var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
+                        (r) ? reject(r) : reject(xhr, "", "");
                         //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                     }.bind(this),
                     onError: function(text, error){
@@ -1486,6 +1491,8 @@ if (!window.Promise){
 
                 res.setHeader("Content-Type", "application/json; charset=utf-8");
                 res.setHeader("Accept", "text/html,application/json,*/*");
+                res.setHeader("Accept-Language", o2.languageName);
+
                 if (window.layout) {
                     if (layout["debugger"]){
                         res.setHeader("x-debugger", "true");
@@ -1506,9 +1513,7 @@ if (!window.Promise){
             // }, function(xhr, text, error){
             //     return o2.runCallback(callback, "failure", [xhr, text, error], null);
             // });
-            p = p.catch(function(xhr, text, error){
-                return o2.runCallback(callback, "failure", [xhr, text, error], null);
-            });
+            p = p.catch(function(xhr, text, error){});
 
             //var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
             var oReturn = p;

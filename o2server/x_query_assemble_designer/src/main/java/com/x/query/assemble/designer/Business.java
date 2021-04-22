@@ -242,8 +242,8 @@ public class Business {
 					classNames);
 
 			List<File> classPath = new ArrayList<>();
-			classPath.addAll(FileUtils.listFiles(Config.dir_commons_ext(), FileFilterUtils.suffixFileFilter(DOT_JAR),
-					DirectoryFileFilter.INSTANCE));
+			classPath.addAll(FileUtils.listFiles(Config.dir_commons_ext().toFile(),
+					FileFilterUtils.suffixFileFilter(DOT_JAR), DirectoryFileFilter.INSTANCE));
 			classPath.addAll(FileUtils.listFiles(Config.dir_store_jars(), FileFilterUtils.suffixFileFilter(DOT_JAR),
 					DirectoryFileFilter.INSTANCE));
 
@@ -284,29 +284,14 @@ public class Business {
 
 	private void enhance(File target, File resources) throws Exception {
 
-		File commandJavaFile = null;
-		if (SystemUtils.IS_OS_AIX) {
-			commandJavaFile = new File(Config.dir_jvm_aix(), "bin/java");
-		} else if (SystemUtils.IS_OS_LINUX) {
-			if (Config.dir_jvm_neokylin_loongson().exists()) {
-				commandJavaFile = new File(Config.dir_jvm_neokylin_loongson(), "bin/java");
-			} else {
-				commandJavaFile = new File(Config.dir_jvm_linux(), "bin/java");
-			}
-		} else if (SystemUtils.IS_OS_MAC) {
-			commandJavaFile = new File(Config.dir_jvm_macos(), "bin/java");
-		} else {
-			commandJavaFile = new File(Config.dir_jvm_windows(), "bin/java.exe");
-		}
-
 		List<String> paths = new ArrayList<>();
 
 		paths.add(Config.dir_store_jars().getAbsolutePath() + File.separator + "*");
-		paths.add(Config.dir_commons_ext().getAbsolutePath() + File.separator + "*");
+		paths.add(Config.dir_commons_ext().toString() + File.separator + "*");
 		paths.add(target.getAbsolutePath());
 		paths.add(resources.getAbsolutePath());
 
-		String command = commandJavaFile.getAbsolutePath() + " -classpath \""
+		String command = Config.command_java_path().toString() + " -classpath \""
 				+ StringUtils.join(paths, File.pathSeparator) + "\" " + Enhance.class.getName() + " \""
 				+ target.getAbsolutePath() + "\"";
 
@@ -314,19 +299,13 @@ public class Business {
 
 		ProcessBuilder processBuilder = new ProcessBuilder();
 
-		if (SystemUtils.IS_OS_AIX) {
-			processBuilder.command("sh", "-c", command);
-		} else if (SystemUtils.IS_OS_LINUX) {
-			processBuilder.command("sh", "-c", command);
-		} else if (SystemUtils.IS_OS_MAC) {
-			processBuilder.command("sh", "-c", command);
-		} else {
+		if (SystemUtils.IS_OS_WINDOWS) {
 			processBuilder.command("cmd", "/c", command);
+		} else {
+			processBuilder.command("sh", "-c", command);
 		}
 
 		Process process = processBuilder.start();
-
-		// process.waitFor();
 
 		String resp = IOUtils.toString(process.getErrorStream(), DefaultCharset.charset_utf_8);
 

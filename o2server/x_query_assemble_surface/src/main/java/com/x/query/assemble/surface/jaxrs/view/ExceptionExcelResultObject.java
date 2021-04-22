@@ -1,8 +1,9 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionExcelResultObject extends PromptException {
+class ExceptionExcelResultObject extends LanguagePromptException {
 
 	private static final long serialVersionUID = -4908883340253465376L;
 

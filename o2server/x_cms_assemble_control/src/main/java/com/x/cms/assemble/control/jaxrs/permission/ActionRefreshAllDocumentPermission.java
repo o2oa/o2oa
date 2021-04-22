@@ -30,7 +30,7 @@ public class ActionRefreshAllDocumentPermission extends BaseAction {
 				wo.setValue("权限处理完成！");
 				result.setData(wo);
 			} catch (Exception e) {
-				Exception exception = new ExceptionDocumentPermissionProcess(e, "文档权限管理时出现异常。");
+				Exception exception = new ExceptionDocumentPermissionProcess();
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}

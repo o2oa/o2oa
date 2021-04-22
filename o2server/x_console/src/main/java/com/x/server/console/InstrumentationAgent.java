@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
@@ -25,7 +26,27 @@ public class InstrumentationAgent {
 	private static final String STORE_JARS = "store/jars";
 	private static final String COMMONS_EXT = "commons/ext";
 
+	public static String JAVAVERSION = "java8";
+
+	public static String OS = "windows";
+
+	public static final String JAVAVERSION_JAVA8 = "java8";
+	public static final String JAVAVERSION_JAVA11 = "java11";
+
+	public static final String OS_WINDOWS = "windows";
+	public static final String OS_LINUX = "linux";
+	public static final String OS_MACOS = "macos";
+	public static final String OS_RASPI = "raspi";
+	public static final String OS_ARM = "arm";
+	public static final String OS_MIPS = "mips";
+
 	public static void premain(String args, Instrumentation inst) {
+		String version = System.getProperty("java.vm.specification.version");
+		if (version.startsWith("1.8")) {
+			JAVAVERSION = JAVAVERSION_JAVA8;
+		} else {
+			JAVAVERSION = JAVAVERSION_JAVA11;
+		}
 		INST = inst;
 		try {
 			Path base = getBasePath();
@@ -36,10 +57,14 @@ public class InstrumentationAgent {
 				load(base, DYNAMIC_JARS);
 			}
 			loadWithCfg(base, STORE_JARS);
-			loadWithCfg(base, COMMONS_EXT);
+			loadWithCfg(base, ext());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static String ext() {
+		return JAVAVERSION.equals(JAVAVERSION_JAVA8) ? COMMONS_EXT : COMMONS_EXT + "_" + JAVAVERSION;
 	}
 
 	private static void loadWithCfg(Path base, String sub) throws IOException {
