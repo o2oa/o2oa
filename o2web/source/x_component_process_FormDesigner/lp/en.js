@@ -416,7 +416,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "handler": "Handler",
         "handlerUnit": "Handler Unit",
         "activityId": "Activity Id",
-        "splitValue": "Split Value"
+        "splitValue": "Split Value",
+
+        "decimal": "Decimal"
 
     },
     "actionBar": {
