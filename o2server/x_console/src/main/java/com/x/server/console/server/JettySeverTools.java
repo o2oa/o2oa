@@ -120,7 +120,7 @@ public abstract class JettySeverTools {
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
 		/* jersey从AppClassLoader加载 */
-		for (File o : FileUtils.listFiles(Config.dir_commons_ext(), filter, null)) {
+		for (File o : FileUtils.listFiles(Config.dir_commons_ext().toFile(), filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}
 		return jars;

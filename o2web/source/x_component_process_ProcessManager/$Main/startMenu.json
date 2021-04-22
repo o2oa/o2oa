@@ -1,6 +1,6 @@
 [
   {
-    "title": "表单配置",
+    "title": MWF.xApplication.process.ProcessManager.LP.formConfig,
     "id": "1.1",
     "action": "formConfig",
     "icon": "process_form.png",
