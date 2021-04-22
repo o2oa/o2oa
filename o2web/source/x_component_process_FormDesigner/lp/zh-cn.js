@@ -389,9 +389,31 @@ MWF.xApplication.process.FormDesigner.LP = {
         "none": "无",
         "default": "默认",
         "byScript": "根据脚本",
-        "languageDefaultInfo": "系统会自动载入名称为 \"lp-\"+o2.language 的数据字典，作为语言包"
+        "languageDefaultInfo": "系统会自动载入名称为 \"lp-\"+o2.language 的数据字典，作为语言包",
 
+        "prefix": "前缀",
+        "suffix": "后缀",
 
+        "value": "值",
+        "textValue": "固定值",
+
+        "showIcon": "显示图标",
+        "readonly": "是否只读",
+        "AIInput": "智能输入",
+        "inputStyle": "Input样式",
+        "compute": "计算",
+        "create": "创建",
+        "save": "保存",
+
+        "defaultValue": "默认值",
+        "verificationScript": "校验脚本",
+        "section": "区段",
+        "enableSection": "启用区段",
+        "sectionBy": "区段依据",
+        "handler": "处理人",
+        "handlerUnit": "处理人所在组织",
+        "activityId": "活动ID",
+        "splitValue": "拆分值"
     },
     "actionBar": {
         "close":"关闭",
