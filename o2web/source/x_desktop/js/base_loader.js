@@ -127,7 +127,16 @@ o2.addReady(function () {
 
         layout.sessionPromise = new Promise(function(resolve, reject){
             o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
-                if (resolve) resolve(json.data);
+                if (json.data.language !== o2.languageName){
+                    o2.language = json.data.language.toLowerCase();
+                    o2.languageName = json.data.language;
+                    var lp = o2.session.path + "/lp/" + o2.language + ".js";
+                    o2.load(lp, {"reload": true}, function(){
+                        if (resolve) resolve(json.data);
+                    });
+                }else{
+                    if (resolve) resolve(json.data);
+                }
             }.bind(this), function (xhr, text, error) {
                 if (reject) reject({"xhr": xhr, "text": text, "error": error});
             }.bind(this));
