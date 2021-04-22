@@ -2389,7 +2389,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         tableList.setStyles({
                             "margin-left": "",
                             "margin-right": "",
-                            "word-break": "break-word"
+                            "word-break": "break-all"
                         });
                     }
                     var tdList = tmp.getElements("td");
@@ -2439,7 +2439,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         e.data.$.setStyles({
                             "margin-left": "",
                             "margin-right": "",
-                            "word-break": "break-word"
+                            "word-break": "break-all"
                         });
                     }
 
@@ -2890,7 +2890,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     tableList.setStyles({
                         "margin-left": "",
                         "margin-right": "",
-                        "word-break": "break-word"
+                        "word-break": "break-all"
                     });
                 }
             }
