@@ -28,10 +28,24 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">显示卡片:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="showCard" value="yes" text{($.showCard!='no')?'checked':''}/>是
+                    <input type="radio" name="showCard" value="no" text{($.showCard=='no')?'checked':''}/>否
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">允许输入:</td>
                 <td class="editTableValue">
                     <input type="radio" name="isInput" value="true" text{($.isInput)?'checked':''}/>是
                     <input type="radio" name="isInput" value="false" text{(!$.isInput)?'checked':''}/>否
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">数据保存:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="storeRange" value="full" text{($.section=='full')?'checked':''}/>完整
+                    <input type="radio" name="storeRange" value="simple" text{($.section!=='full')?'checked':''}/>精简
                 </td>
             </tr>
             <tr>
@@ -104,6 +118,9 @@
         </table>
 
         <div class="MWFFormulaArea" name="defaultValue" title="默认值脚本 (S)"></div>
+
+        <div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">显示文本：</div>
+        <div class="MWFFormulaArea" name="displayTextScript" title="显示文本脚本 (S)"></div>
 
         <div class="MWFValidation" name="validationConfig"></div>
         <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
@@ -416,19 +433,6 @@
             <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">排除</div>
             <div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过编写脚本排除组织、身份、个人和群组的选择范围</div>
             <div class="MWFFormulaArea" name="exclude" title="脚本 (S)"></div>
-        </div>
-
-        <div>
-            <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">数据保存</div>
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">数据保存:</td>
-                    <td class="editTableValue">
-                        <input type="radio" name="storeRange" value="full" text{($.section!='simple')?'checked':''}/>完整
-                        <input type="radio" name="storeRange" value="simple" text{($.section=='simple')?'checked':''}/>精简
-                    </td>
-                </tr>
-            </table>
         </div>
     </div>
     <div title="事件"  class="MWFTab">
