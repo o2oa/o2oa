@@ -176,7 +176,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.container = $(node);
         this.container.setStyle("-webkit-user-select", "text");
         if (Browser.firefox) this.container.setStyle("opacity", 0);
+
         this.data = data;
+        var jsonData = JSON.parse(data)
 
         /**
          * @summary 表单的配置信息，比如表单名称，提交方式等等.
@@ -186,8 +188,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
          * var json = this.form.getApp().appForm.json; //表单配置信息
          * var name = json.name; //表单名称
          */
-        this.json = data.json;
-        this.html = data.html;
+        this.json = jsonData.json;
+        this.html = jsonData.html;
 
         this.path = "../x_component_process_Xform/$Form/";
         this.cssPath = this.options.cssPath || "../x_component_process_Xform/$Form/" + this.options.style + "/css.wcss";
@@ -359,45 +361,69 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     load: function (callback) {
-        this.checkLock();
-        this.loadExtendStyle(function () {
-            if (this.app) {
-                if (this.app.formNode) this.app.formNode.setStyles(this.json.styles);
-                if (this.app.addEvent) {
-                    this.app.addEvent("resize", function () {
-                        this.fireEvent("resize");
-                    }.bind(this));
-                    this.app.addEvent("queryClose", function () {
-                        this.beforeCloseWork();
-                    }.bind(this));
+        this.loadMacro(function () {
+            debugger;
+            this.loadLanguage(function(flag){
+                if (flag){
+                    var data = o2.bindJson(this.data,  {"lp": MWF.xApplication.process.Xform.LP.form});
+                    this.data = JSON.parse(data);
+
+                    /**
+                     * @summary 表单的配置信息，比如表单名称，提交方式等等.
+                     * @member {Object}
+                     * @example
+                     *  //可以在脚本中获取表单配置信息
+                     * var json = this.form.getApp().appForm.json; //表单配置信息
+                     * var name = json.name; //表单名称
+                     */
+                    this.json = this.data.json;
+                    this.html = this.data.html;
                 }
-            }
-            if (!this.businessData.control.allowSave) this.setOptions({ "readonly": true });
+                this.checkLock();
 
-            var cssClass = "";
-            if (this.json.css && this.json.css.code) cssClass = this.loadCss();
+                this.loadExtendStyle(function () {
+                    if (this.app) {
+                        if (this.app.formNode) this.app.formNode.setStyles(this.json.styles);
+                        if (this.app.addEvent) {
+                            this.app.addEvent("resize", function () {
+                                this.fireEvent("resize");
+                            }.bind(this));
+                            this.app.addEvent("queryClose", function () {
+                                this.beforeCloseWork();
+                            }.bind(this));
+                        }
+                    }
+                    if (!this.businessData.control.allowSave) this.setOptions({ "readonly": true });
 
-            this.loadMacro(function () {
-                //this.container.setStyle("opacity", 0);
+                    var cssClass = "";
+                    if (this.json.css && this.json.css.code) cssClass = this.loadCss();
 
-                this.container.set("html", this.html);
-                this.node = this.container.getFirst();
-                if (cssClass) this.node.addClass(cssClass);
 
-                this._loadEvents();
+                    //this.container.setStyle("opacity", 0);
 
-                this.loadRelatedScript();
-                //this.loadResource( function () {
-                // this.loadDictionaryList(function () {
 
-                this.fireEvent("queryLoad");
-                if (this.event_resolve) {
-                    this.event_resolve(function () {
-                        this.loadForm(callback)
-                    }.bind(this));
-                } else {
-                    this.loadForm(callback);
-                }
+                    this.container.set("html", this.html);
+                    this.node = this.container.getFirst();
+                    if (cssClass) this.node.addClass(cssClass);
+
+                    this._loadEvents();
+
+                    this.loadRelatedScript();
+                    //this.loadResource( function () {
+                    // this.loadDictionaryList(function () {
+
+                    this.fireEvent("queryLoad");
+                    if (this.event_resolve) {
+                        this.event_resolve(function () {
+                            this.loadForm(callback)
+                        }.bind(this));
+                    } else {
+                        this.loadForm(callback);
+                    }
+
+                }.bind(this));
+
+
 
                 // }.bind(this));
 
@@ -405,6 +431,35 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             }.bind(this));
         }.bind(this));
+    },
+    loadLanguage: function(callback){
+        var language = MWF.xApplication.process.Xform.LP.form;
+        var languageJson = null;
+
+        if (this.json.languageType=="script"){
+            if (this.json.languageScript && this.json.languageScript.code){
+                languageJson = this.Macro.exec(this.json.languageScript.code, this);
+            }
+        }else{
+            if (this.app.relatedLanguage) languageJson = JSON.parse(this.app.relatedLanguage);
+        }
+
+        if (languageJson){
+            if (languageJson.then && o2.typeOf(languageJson.then)=="function"){
+                languageJson.then(function(json) {
+                    MWF.xApplication.process.Xform.LP.form = Object.merge(MWF.xApplication.process.Xform.LP.form, json);
+                    if (callback) callback(true);
+                }, function(){
+                    if (callback) callback(false);
+                })
+            }else{
+                MWF.xApplication.process.Xform.LP.form = Object.merge(MWF.xApplication.process.Xform.LP.form, languageJson);
+                if (callback) callback(true);
+            }
+        }else{
+            if (callback) callback();
+        }
+
     },
     loadRelatedScript: function () {
 
@@ -540,19 +595,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/" + this.json.styleConfig.extendFile;
         MWF.getJSON(stylesUrl, {
-            "onSuccess": function (responseJSON) {
-                if (responseJSON && responseJSON.form) {
-                    this.json = Object.merge(this.json, responseJSON.form);
-                }
-                if (callback) callback();
-            }.bind(this),
-            "onRequestFailure": function () {
-                if (callback) callback();
-            }.bind(this),
-            "onError": function () {
-                if (callback) callback();
-            }.bind(this)
-        }
+                "onSuccess": function (responseJSON) {
+                    if (responseJSON && responseJSON.form) {
+                        this.json = Object.merge(this.json, responseJSON.form);
+                    }
+                    if (callback) callback();
+                }.bind(this),
+                "onRequestFailure": function () {
+                    if (callback) callback();
+                }.bind(this),
+                "onError": function () {
+                    if (callback) callback();
+                }.bind(this)
+            }
         );
     },
     loadMacro: function (callback) {
@@ -2633,6 +2688,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "width": width,
                 "height": height,
                 "url": this.app.path + "split.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
                 "container": this.app.content,
                 "isClose": true,
                 "buttonList": [
@@ -3245,6 +3301,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "width": width,
                 "height": height,
                 "url": this.app.path + "reset.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
                 "container": this.app.content,
                 "isClose": true,
                 "buttonList": [
@@ -3682,6 +3739,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "width": width,
                 "height": height,
                 "url": this.app.path + "reroute.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
                 "container": this.app.content,
                 "isClose": true,
                 "buttonList": [
@@ -3813,6 +3871,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }.bind(this));
                 }
             });
+            debugger;
             dlg.show();
         }.bind(this));
     },
