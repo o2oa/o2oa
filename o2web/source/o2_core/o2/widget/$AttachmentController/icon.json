@@ -28,26 +28,27 @@
 	"pot": "pptx_win.png",
 	"potx": "pptx_win.png",
 	"potm": "pptx_win.png",
-	
+
 	"css": "css.png",
 	"mp3": "mp3.png",
 	"wav": "wav.png",
 	"wma": "wma.png",
 	"wmv": "wmv.png",
-	
+
 	"bmp": "bmp.png",
 	"gif": "gif.png",
 	"png": "png.png",
 	"psd": "psd.png",
 	"jpeg": "jpeg.png",
 	"jpg": "jpeg.png",
-	
+
 	"pdf": "pdf.png",
 	"rar": "rar.png",
 	"txt": "text.png",
 	"zip": "zip.png",
-	
+
 	"exe": "exe.png",
-	
+	"ofd": "ofd.png",
+
 	"unknow": "unknow.png"
 }

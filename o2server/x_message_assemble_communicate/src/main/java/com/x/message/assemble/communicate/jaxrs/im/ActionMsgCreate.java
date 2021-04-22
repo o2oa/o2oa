@@ -18,6 +18,7 @@ import com.x.message.assemble.communicate.ws.collaboration.ActionCollaboration;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMMsg;
 import com.x.message.core.entity.Message;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -45,6 +46,8 @@ public class ActionMsgCreate extends BaseAction {
                 throw new ExceptionMsgEmptyBody();
             }
             msg.setCreatePerson(effectivePerson.getDistinguishedName());
+            escapeHTML(msg);
+            logger.info("escape html json:" + msg.getBody());
 
             emc.beginTransaction(IMMsg.class);
             emc.persist(msg, CheckPersistType.all);
@@ -96,6 +99,18 @@ public class ActionMsgCreate extends BaseAction {
             Wo wo = Wo.copier.copy(msg);
             result.setData(wo);
             return result;
+        }
+    }
+
+    private void escapeHTML(IMMsg msg) {
+        String json = msg.getBody();
+        IMMessageBody body = gson.fromJson(json, IMMessageBody.class);
+        if ("text".equals(body.getType())) {
+            String msgBody = body.getBody();
+            String msgBodyEscape = StringEscapeUtils.escapeHtml4(msgBody);
+            logger.info(msgBodyEscape);
+            body.setBody(msgBodyEscape);
+            msg.setBody(gson.toJson(body));
         }
     }
 

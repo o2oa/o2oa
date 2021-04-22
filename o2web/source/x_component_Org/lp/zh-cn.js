@@ -215,7 +215,6 @@ MWF.xApplication.Org.LP = {
     "personReadLogin": "用户于{date}最后一次登录，地址为：{ip}，客户端：{client}",
     "personReadCreate": "用户创建于{date}，最后修改于：{date2}",
     "personReadPassword": "密码到期时间{date}，密码最后修改于：{date2}",
-    "roleName": "角色名",
     "roleFullName": "角色全称",
 
     "unlockPerson" : "解锁登录",

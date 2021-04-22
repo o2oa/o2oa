@@ -1,12 +1,14 @@
 package com.x.organization.assemble.personal.jaxrs.person;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
- class ExceptionMobileDuplicate extends PromptException {
+ class ExceptionMobileDuplicate extends LanguagePromptException {
 
 	private static final long serialVersionUID = 4433998001143598936L;
 
+	 public static String defaultMessage = "手机号错误:{}，{}已有值重复.";
+
 	 ExceptionMobileDuplicate(String mobile, String fieldName) {
-		super("手机号错误:" + mobile + ", " + fieldName + "已有值重复.");
+		super(defaultMessage, mobile, fieldName);
 	}
 }

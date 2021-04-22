@@ -785,7 +785,7 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             if (!this.view.Macro) {
                 MWF.require("MWF.xScript.Macro", function () {
                     this.view.businessData = {};
-                    this.view.Macro = new MWF.Macro.PageContext(this.view);
+                    this.view.Macro = new MWF.Macro.ViewContext(this.view);
                 }.bind(this), false);
             }
             td.addEvent("click", function (ev) {
