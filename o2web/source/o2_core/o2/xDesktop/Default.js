@@ -2731,10 +2731,11 @@ o2.xDesktop.Default.Lnk = new Class({
         this.actionNode = new Element("div.layout_menu_lnk_item_action", {"title": o2.LP.desktop.deleteLnk}).inject(this.node);
         this.actionNode.addClass("icon_off_light");
 
-        var icon = this.getIcon();
-        this.iconNode.setStyle("background-image", "url("+icon+")");
+        this.getIcon(function (icon) {
+            this.iconNode.setStyle("background-image", "url("+icon+")");
+            this.setEvent();
+        }.bind(this));
 
-        this.setEvent();
 
     },
     setEvent: function(){
@@ -2920,15 +2921,35 @@ o2.xDesktop.Default.Lnk = new Class({
         o2.release(this);
     },
 
-    getIcon: function(){
+    getIcon: function( callback ){
         if (this.data.icon) return this.data.icon;
 
         var icon;
         if (this.data.name.substring(0, 4)==="@url"){
-            if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon){
-                icon = this.layout.path+"appicons/"+this.layout.iconsJson["Url"].icon;
-            }else{
-                icon = this.layout.path+"appicons/url.png";
+            if (this.data.iconData){
+                icon = "data:image/png;base64,"+this.data.iconData+"";
+            }else if (this.data.iconPath){
+                icon = this.data.iconPath;
+            }else {
+                o2.Actions.load("x_component_assemble_control").ComponentAction.get(this.data.title, function(json){
+                    if (json.data && json.data.iconData){
+                        icon = "data:image/png;base64,"+json.data.iconData+"";
+                    }else if (json.data && json.data.iconPath){
+                        icon = json.data.iconPath;
+                    }else if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon) {
+                        icon = this.layout.path + "appicons/" + this.layout.iconsJson["Url"].icon;
+                    } else {
+                        icon = this.layout.path + "appicons/url.png";
+                    }
+                    if(callback)callback(icon)
+                }.bind(this), function(){
+                    if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon) {
+                        icon = this.layout.path + "appicons/" + this.layout.iconsJson["Url"].icon;
+                    } else {
+                        icon = this.layout.path + "appicons/url.png";
+                    }
+                    if(callback)callback(icon)
+                }.bind(this))
             }
         }else{
             if (this.data.iconData){
@@ -2943,6 +2964,7 @@ o2.xDesktop.Default.Lnk = new Class({
                     icon = "../x_component_"+this.data.name.replace(/\./g, "_")+"/$Main/appicon.png";
                 }
             }
+            if(callback)callback(icon)
         }
         return icon;
     }
