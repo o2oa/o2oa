@@ -1148,27 +1148,28 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 	exportToExcel : function () {
 		debugger;
 		var resultArr = [];
-
 		var titleArr = this.template.json.excelFieldConfig.map(function(config){
 			return config.title;
 		});
-
-		var colWidthArr = this.getColWidthArray();
-		var dateIndexArr = this.getDateIndexArray(); //日期格式列下标
-
-
 		resultArr.push( titleArr );
 
 		this.template.lineList.each(function (line, index) {
 			resultArr.push( this.getLineExportData(line, index) );
 		}.bind(this));
 
-		var title = this.getExcelName();
-
-		var arg = { data : resultArr, colWidthArray : colWidthArr, title : title };
+		var arg = {
+			data : resultArr,
+			colWidthArray : colWidthArr,
+			title : this.getExcelName()
+		};
 		this.fireEvent("export", [arg]);
 
-		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+		new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
+			resultArr,
+			arg.title || this.getExcelName(),
+			this.getColWidthArray(),
+			this.getDateIndexArray()  //日期格式列下标
+		);
 	},
 	getLineExportData: function(line, index ){
 		var exportData = [];
@@ -1177,33 +1178,65 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			var module = line.all_templateId[config.field];
 			var json = module ? module.json : "";
 
-			if ( !module || !json || !this.isAvaliableColumn( json ) ) {
+			if ( !module || !json || !this.isAvaliableField( json ) ) {
 				exportData.push("");
 			}else{
 				var value = module.getData();
 				var text = "";
 
-				if( value ) {
-					if ( ["Org", "Reader", "Author", "Personfield", "Orgfield"].contains(json.type)) {
-						if (o2.typeOf(value) === "array") {
-							var textArray = [];
-							value.each(function (item) {
-								if (o2.typeOf(item) === "object") {
-									textArray.push(item.distinguishedName);
-								} else {
-									textArray.push(item);
-								}
-							}.bind(this));
-							text = textArray.join(", \n");
-						} else if (typeOf(value) === "object") {
-							text = value.distinguishedName;
-						} else {
+
+				if( value ){
+					switch (module.json.type) {
+						case "Org":
+						case "Reader":
+						case "Author":
+						case "Personfield":
+						case "Orgfield":
+							if (o2.typeOf(value) === "array") {
+								var textArray = [];
+								value.each(function (item) {
+									if (o2.typeOf(item) === "object") {
+										textArray.push(item.distinguishedName);
+									} else {
+										textArray.push(item);
+									}
+								}.bind(this));
+								text = textArray.join(", \n");
+							} else if (o2.typeOf(value) === "object") {
+								text = value.distinguishedName;
+							} else {
+								text = value;
+							}
+							break;
+						case "Combox":
+						case "Address":
+							text = o2.typeOf(value) === "array" ? value.join(", ") : value;
+							break;
+						case "Checkbox":
+							var options = module.getOptionsObj();
+							var value = o2.typeOf(value) === "array" ? value : [value];
+							var arr = [];
+							value.each( function( a, i ){
+								var idx = options.valueList.indexOf( a );
+								arr.push( idx > -1 ? options.textList[ idx ] : "") ;
+							});
+							text = arr.join(", ");
+							break;
+						case "Radio":
+						case "Select":
+							var options = module.getOptionsObj();
+							var idx = options.textList.indexOf( value );
+							text = idx > -1 ? options.valueList[ idx ] : "";
+							break;
+						case "Textarea":
 							text = value;
-						}
-					} else if ( json.type === "Textarea") {
-						text = value;
-					} else {
-						text = this._getValueText(this.editable ? (index - 1) : index, value);
+							break;
+						case "Calendar":
+							text = value;
+							break;
+						default:
+							text = value;
+							break;
 					}
 				} else if ( json.type === "Label" && module.node) {
 					text = module.node.get("text");
@@ -1216,9 +1249,10 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 				exportData.push( text );
 			}
 		});
+		return exportData;
 	},
-	isAvaliableColumn : function(json){
-		if (["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains( json.type) )return false; //图片，附件,Label列不导入导出
+	isAvaliableField : function(json){
+		if (["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains( json.type) )return false; //图片，附件,Label不导入导出
 		return true;
 	},
 	getExcelName: function(){
@@ -1307,21 +1341,15 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		title = titleA.join(".");
 
 		var arg = { data : resultArr, colWidthArray : colWidthArr, title : title, withError : true };
-		this.fireEvent("export", [arg]);
+		this.template.fireEvent("export", [arg]);
 
-		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this.template ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
 	}
 });
 
 MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 	Implements: [Options, Events],
 	options: {
-		isEdited : true,
-		index : 0,
-		indexText : "0",
-		indexInSection: null, //区段合并后数据的data[sectionKey][index]
-		indexInSectionText: null,
-		sectionKey: null //区段合并后数据的key
 	},
 	initialize: function (template, options) {
 
@@ -1331,55 +1359,27 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		this.form = this.template.form;
 
 	},
-	isAvaliableColumn : function(thJson, module, type){
-		if (thJson && ( thJson.isShow === false || thJson.isImpExp === false ))return false; //隐藏列，不允许导入导出
-		if (module && (module.json.type == "sequence" || module.json.cellType == "sequence") )return false; //序号列
-		if (module && ["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains(module.json.type) )return false; //图片，附件,Label列不导入导出
-		// if (type==="import" && module && ["Label"].contains(module.json.type))return false; //Label 不导入
+	isAvaliableField : function(json, module, type){
+		if (["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains( json.type) )return false; //图片，附件,Label不导入导出
 		return true;
 	},
 	importFromExcel : function () {
-		debugger;
-		var columnList = [];
+		var fieldArray = this.getFieldArray();
+		var dateColArray = this.getDateIndexArray(); //日期列
+		var orgTitleArray = this.getOrgTitleArray();
 
-		var dateColArray = []; //日期列
-		var titleThs = this.titleTr.getElements("th");
-
-		var idx = 1;
-		var orgTitleList = [];
-		titleThs.each(function(th, index){
-			if (this.editable && (index===0 || index === titleThs.length-1 ))return; //第一列操作列和最后一列排序列
-			var module = this.editModules[this.editable ? (index-1) : index];
-			var thJson = this.form._getDomjson( th );
-			if ( this.isAvaliableImpExpColumn( thJson, module, "import" )){
-				columnList.push({
-					text : th.get("text").trim(),
-					index: idx,
-					thJson: thJson,
-					module: module
-				});
-				idx++;
-				if (module && module.json.type === "Calendar"){
-					dateColArray.push(idx);
-				}else if( module && ["Org","Reader","Author","Personfield","Orgfield"].contains(module.json.type) ){
-					orgTitleList.push(th.get("text"));
-				}
-			}
-		}.bind(this));
-
-
-		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).upload( dateColArray, function (importedData) {
+		new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).upload( dateColArray, function (data) {
 
 			var checkAndImport = function () {
-				if( !this.checkImportedData( columnList, importedData ) ){
-					this.openImportedErrorDlg( columnList, importedData );
+				if( !this.checkData( fieldArray, data ) ){
+					this.openErrorDlg( fieldArray, data );
 				}else{
-					this.setImportData( columnList, importedData )
+					this.setImportData( fieldArray, data )
 				}
 			}.bind(this);
 
-			if( orgTitleList.length > 0 ){
-				this.listImportAllOrgData( orgTitleList, importedData, function () {
+			if( orgTitleArray.length > 0 ){
+				this.listAllOrgData( orgTitleArray, data, function () {
 					checkAndImport();
 				}.bind(this));
 			}else{
@@ -1389,27 +1389,97 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 
 		}.bind(this));
 	},
+	destroySimulateModule: function(){
+		Object.keys(this.simelateModuleMap).each(function (key, i) {
+			delete this.simelateModuleMap[key];
+		})
+		this.simulateNode.destroy();
+	},
+	loadSimulateModule: function(){
+		//加载模拟字段
+		this.simelateModuleMap = {};
+		this.simulateNode = new Element("div").inject(this.template.node);
+		this.simulateNode.set("html", this.template.templateHtml);
+		var moduleNodes = this.form._getModuleNodes(this.simulateNode);
+		moduleNodes.each(function (node) {
+			if (node.get("MWFtype") !== "form") {
+				var _self = this;
 
-	setImportData: function(columnList, importedData){
+				var tJson = this.form._getDomjson(node);
+				if( tJson && this.isAvaliableField(tJson) ){
+					var json = Object.clone(tJson);
 
-		var data = {
-			"data" : []
-		};
+					var templateJsonId = json.id;
 
-		importedData.each( function( importedLineData, lineIndex ){
+					json.id = "dtSimulate_"+json.id;
+					node.set("id", json.id);
+
+					if (!MWF["APP" + json.type]) {
+						MWF.xDesktop.requireApp("process.Xform", json.type, null, false);
+					}
+					var module = new MWF["APP" + json.type](node, json, this);
+
+					this.simelateModuleMap[templateJsonId] = module;
+
+					module.load();
+
+				}
+			}
+		}.bind(this));
+	},
+	getFieldArray: function(){
+		this.loadSimulateModule();
+		var fieldArray = []; //日期格式列下标
+		this.template.json.excelFieldConfig.each(function (config, i) {
+			fieldArray.push({
+				"text": config.title,
+				"field": config.field,
+				"index": i,
+				"module": this.simelateModuleMap[config.field],
+				"json": this.form.json.moduleList[config.field]
+			})
+		}.bind(this));
+		return fieldArray;
+	},
+	getDateIndexArray : function(){
+		var dateIndexArr = []; //日期格式列下标
+		this.template.json.excelFieldConfig.each(function (config, i) {
+			var json = this.form.json.moduleList[config.field];
+			if (json && json.type === "Calendar") {
+				dateIndexArr.push(i);
+			}
+		}.bind(this));
+		return dateIndexArr;
+	},
+	getOrgTitleArray : function(){
+		var orgTitleArr = []; //日期格式列下标
+		this.template.json.excelFieldConfig.each(function (config, i) {
+			var json = this.form.json.moduleList[config.field];
+			if (json && ["Org","Reader","Author","Personfield","Orgfield"].contains(json.type) ) {
+				orgTitleArr.push(config.title);
+			}
+		}.bind(this));
+		return orgTitleArr;
+	},
+
+	importData: function(fieldArray, idata){
+
+		var data = [];
+
+		idata.each( function( ilineData ){
 
 			var lineData = {};
 
-			columnList.each( function (obj, i) {
+			fieldArray.each( function (obj, i) {
 				var index = obj.index;
 				var module = obj.module;
-				var thJson = obj.thJson;
+				var json = obj.json;
 				var text = obj.text;
 
-				var d = importedLineData[text] || "";
+				var d = ilineData[text] || "";
 
 				var value;
-				switch (module.json.type) {
+				switch (json.type) {
 					case "Org":
 					case "Reader":
 					case "Author":
@@ -1417,11 +1487,11 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					case "Orgfield":
 						var arr = d.split(/\s*,\s*/g ); //空格,空格
 						if( arr.length === 0 ){
-							value = this.getImportOrgData( d );
+							value = this.getOrgData( d );
 						}else{
 							value = [];
 							arr.each( function(d, idx){
-								var obj = this.getImportOrgData( d );
+								var obj = this.getOrgData( d );
 								value.push( obj );
 							}.bind(this));
 						}
@@ -1436,7 +1506,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 						var options = module.getOptionsObj();
 						arr.each( function( a, i ){
 							var idx = options.textList.indexOf( a );
-							arr[ i ] = idx > -1 ? options.valueList[ idx ] : "";
+							arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
 						});
 						value = arr.length === 1  ? arr[0] : arr;
 						break;
@@ -1445,7 +1515,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 						value = d.replace(/&#10;/g,""); //换行符&#10;
 						var options = module.getOptionsObj();
 						var idx = options.textList.indexOf( value );
-						value = idx > -1 ? options.valueList[ idx ] : "";
+						value = idx > -1 ? options.valueList[ idx ] : value;
 						break;
 					case "Textarea":
 						value = d.replace(/&#10;/g,"\n"); //换行符&#10;
@@ -1454,14 +1524,14 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 						value = d.replace(/&#10;/g,""); //换行符&#10;
 						if( value ){
 							var format;
-							if (!module.json.format){
-								if (module.json.selectType==="datetime" || module.json.selectType==="time"){
-									format = (module.json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
+							if (!json.format){
+								if (json.selectType==="datetime" || json.selectType==="time"){
+									format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
 								}else{
 									format = Locale.get("Date").shortDate;
 								}
 							}else{
-								format = module.json.format;
+								format = json.format;
 							}
 							value = Date.parse( value ).format( format );
 						}
@@ -1471,21 +1541,20 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 						break;
 				}
 
-				lineData[ thJson.id ] = {};
-				lineData[ thJson.id ][ module.json.id ] = value;
+				lineData[ json.id ] = value;
 
 			}.bind(this));
 
-			data.data.push( lineData );
+			data.push( lineData );
 		}.bind(this));
 
-		this.fireEvent("import", [data] );
+		this.template.fireEvent("import", [data] );
 
-		this.setData( data );
+		this.template.setData( data );
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
 	},
-	openImportedErrorDlg : function( columnList, tableData ){
+	openErrorDlg : function( fieldArray, eData ){
 		var _self = this;
 
 		var objectToString = function (obj, type) {
@@ -1505,7 +1574,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 
 		var titleStyle = objectToString( this.json.titleStyles, "style" );
 		htmlArray.push( "<tr>" );
-		columnList.each( function (obj, i) {
+		fieldArray.each( function (obj, i) {
 			htmlArray.push( "<th style='"+titleStyle+"'>"+obj.text+"</th>" );
 		});
 		htmlArray.push( "<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>" );
@@ -1515,10 +1584,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
 		var contentStyle = objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
 
-		tableData.each( function( lineData, lineIndex ){
+		eData.each( function( lineData, lineIndex ){
 
 			htmlArray.push( "<tr>" );
-			columnList.each( function (obj, i) {
+			fieldArray.each( function (obj, i) {
 				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ obj.text ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
 			});
 			htmlArray.push( "<td style='"+contentStyle+"'>"+( lineData.errorTextList ? lineData.errorTextList.join("<br/>") : "" )+"</td>" );
@@ -1540,7 +1609,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				{
 					"type": "exportWithError",
 					"text": MWF.xApplication.process.Xform.LP.datagridExport,
-					"action": function () { _self.exportWithImportDataToExcel(columnList, tableData); }
+					"action": function () { _self.exportWithImportDataToExcel(fieldArray, eData); }
 				},
 				{
 					"type": "cancel",
@@ -1554,66 +1623,23 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		});
 
 	},
-	exportWithImportDataToExcel : function ( columnList, importedData ) {
-		debugger;
-		var titleThs = this.titleTr.getElements("th");
-		// var editorTds = this.editorTr.getElements("td");
-
-		var resultArr = [];
-
-		var colWidthArr = this.getExportColWidthArray();
-		colWidthArr.push( 220 );
-
-		var dateIndexArr = this.getExportDateIndexArray(); //日期格式列下标
-
-		var titleArr = this.getExportTitleArray("import");
-		titleArr.push( MWF.xApplication.process.Xform.LP.validationInfor );
-		resultArr.push( titleArr );
-
-		importedData.each( function( lineData, lineIndex ){
-			var array = [];
-			columnList.each( function (obj, i) {
-				array.push( ( lineData[ obj.text ] || '' ).replace(/&#10;/g, "\n") );
-			});
-			array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
-
-			resultArr.push( array );
-		}.bind(this));
-
-		var title;
-		if( this.json.excelName && this.json.excelName.code ){
-			title = this.form.Macro.exec(this.json.excelName.code, this);
-		}else{
-			title = MWF.xApplication.process.Xform.LP.exportDefaultName;
-		}
-		var titleA = title.split(".");
-		if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
-			titleA.splice( titleA.length-1 );
-		}
-		title = titleA.join(".");
-
-		var arg = { data : resultArr, colWidthArray : colWidthArr, title : title, withError : true };
-		this.fireEvent("export", [arg]);
-
-		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
-	},
-	checkImportedData : function( columnList, tableData ){
+	checkData : function( fieldArray, idata ){
 		var flag = true;
 
 		var lp = MWF.xApplication.process.Xform.LP;
 		var columnText =  lp.importValidationColumnText;
 		var columnTextExcel = lp.importValidationColumnTextExcel;
-		var excelUtil = new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this );
+		var excelUtil = new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template );
 
-		tableData.each( function(lineData, lineIndex){
+		idata.each( function(lineData){
 
 			var errorTextList = [];
 			var errorTextListExcel = [];
 
-			columnList.each( function (obj, i) {
+			fieldArray.each( function (obj, i) {
 				var index = obj.index;
+				var json = obj.json;
 				var module = obj.module;
-				var thJson = obj.thJson;
 				var text = obj.text;
 
 				var colInfor = columnText.replace( "{n}", index );
@@ -1621,7 +1647,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 
 				var d = lineData[text] || "";
 
-				switch (module.json.type) {
+				switch (json && json.type) {
 					case "Org":
 					case "Reader":
 					case "Author":
@@ -1629,7 +1655,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					case "Orgfield":
 						var arr = d.split(/\s*,\s*/g ); //空格,空格
 						arr.each( function(d, idx){
-							var obj = this.getImportOrgData( d );
+							var obj = this.getOrgData( d );
 							if( obj.errorText ){
 								errorTextList.push( colInfor + obj.errorText + + lp.fullstop );
 								errorTextListExcel.push( colInforExcel + obj.errorText + + lp.fullstop );
@@ -1651,7 +1677,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					default:
 						break;
 				}
-				if (module.json.type!="sequence" && module.setData){
+				if (module && module.setData){
 					module.setData();
 					module.validationMode();
 					if (!module.validation()){
@@ -1668,43 +1694,41 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				flag = false;
 			}
 
-			debugger;
-
 		}.bind(this));
 
 		var arg = {
 			validted : flag,
 			data : tableData
 		};
-		this.fireEvent( "validImport", [arg] );
+		this.template.fireEvent( "validImport", [arg] );
 
 		return arg.validted;
 	},
-	getImportOrgData : function( str ){
+	getOrgData : function( str ){
 		str = str.trim();
 		var flag = str.substr(str.length-2, 2);
 		switch (flag.toLowerCase()){
 			case "@i":
-				return this.identityMapImported[str] || {"errorText": str + MWF.xApplication.process.Xform.LP.notExistInSystem };
+				return this.identityMap[str] || {"errorText": str + MWF.xApplication.process.Xform.LP.notExistInSystem };
 			case "@p":
-				return this.personMapImported[str] || {"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
+				return this.personMap[str] || {"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
 			case "@u":
-				return this.unitMapImported[str] ||  {"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
+				return this.unitMap[str] ||  {"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
 			case "@g":
-				return this.groupMapImported[str] ||  {"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
+				return this.groupMap[str] ||  {"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
 			default:
-				return this.identityMapImported[str] ||
-					this.personMapImported[str] ||
-					this.unitMapImported[str] ||
-					this.groupMapImported[str] ||
+				return this.identityMap[str] ||
+					this.personMap[str] ||
+					this.unitMap[str] ||
+					this.groupMap[str] ||
 					{"errorText":  str + MWF.xApplication.process.Xform.LP.notExistInSystem };
 
 		}
 	},
-	listImportAllOrgData : function (orgTitleList, tableData, callback) {
+	listAllOrgData : function (orgTitleList, iData, callback) {
 		var identityList = [], personList = [], unitList = [], groupList = [];
 		if( orgTitleList.length > 0 ){
-			tableData.each( function( lineData, lineIndex ){
+			iData.each( function( lineData, lineIndex ){
 				// if( lineIndex === 0 )return;
 
 				orgTitleList.each( function (title, index) {
@@ -1741,10 +1765,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				}
 			};
 
-			this.identityMapImported = {};
+			this.identityMap = {};
 			if( identityList.length ){
 				o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : identityList }, function (json) {
-					json.data.each( function (d) { this.identityMapImported[ d.matchKey ] = d; }.bind(this));
+					json.data.each( function (d) { this.identityMap[ d.matchKey ] = d; }.bind(this));
 					identityLoaded = true;
 					check();
 				}.bind(this))
@@ -1753,10 +1777,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				check();
 			}
 
-			this.personMapImported = {};
+			this.personMap = {};
 			if( personList.length ){
 				o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList }, function (json) {
-					json.data.each( function (d) { this.personMapImported[ d.matchKey ] = d; }.bind(this));
+					json.data.each( function (d) { this.personMap[ d.matchKey ] = d; }.bind(this));
 					personLoaded = true;
 					check();
 				}.bind(this))
@@ -1765,10 +1789,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				check();
 			}
 
-			this.unitMapImported = {};
+			this.unitMap = {};
 			if( unitList.length ){
 				o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList }, function (json) {
-					json.data.each( function (d) { this.unitMapImported[ d.matchKey ] = d; }.bind(this));
+					json.data.each( function (d) { this.unitMap[ d.matchKey ] = d; }.bind(this));
 					unitLoaded = true;
 					check();
 				}.bind(this))
@@ -1777,10 +1801,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				check();
 			}
 
-			this.groupMapImported = {};
+			this.groupMap = {};
 			if( groupList.length ){
 				o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({ groupList : groupList }, function (json) {
-					json.data.each( function (d) { this.groupMapImported[ d.matchKey ] = d; }.bind(this));
+					json.data.each( function (d) { this.groupMap[ d.matchKey ] = d; }.bind(this));
 					groupLoaded = true;
 					check();
 				}.bind(this))
@@ -1793,9 +1817,9 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 });
 
 MWF.xApplication.process.Xform.Datatemplate.ExcelUtils = new Class({
-	initialize: function( datagrid ){
-		this.datagrid = datagrid;
-		this.form = datagrid.form;
+	initialize: function( datatemplate ){
+		this.datatemplate = datatemplate;
+		this.form = datatemplate.form;
 		if (!FileReader.prototype.readAsBinaryString) {
 			FileReader.prototype.readAsBinaryString = function (fileData) {
 				var binary = "";
@@ -1891,7 +1915,7 @@ MWF.xApplication.process.Xform.Datatemplate.ExcelUtils = new Class({
 				}
 
 				//第三个参数是日期的列
-				this.import( file, function(json){
+				this.importFromExcel( file, function(json){
 					//json为导入的结果
 					if(callback)callback(json);
 					uploadFileAreaNode.destroy();
@@ -1902,11 +1926,11 @@ MWF.xApplication.process.Xform.Datatemplate.ExcelUtils = new Class({
 		var fileNode = uploadFileAreaNode.getFirst();
 		fileNode.click();
 	},
-	export : function(array, fileName, colWidthArr, dateIndexArray){
+	exportToExcel : function(array, fileName, colWidthArr, dateIndexArray){
 		// var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
 		// array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
 		// array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
-		// this.export(array, "导出数据"+(new Date).format("db"));
+		// this.exportToExcel(array, "导出数据"+(new Date).format("db"));
 		this._loadResource( function(){
 			var data = window.xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
 			var wb = window.xlsxUtils.format2WB(data, "sheet1", undefined);
@@ -1976,7 +2000,7 @@ MWF.xApplication.process.Xform.Datatemplate.ExcelUtils = new Class({
 			this._openDownloadDialog(window.xlsxUtils.format2Blob(wb), fileName +".xlsx");
 		}.bind(this))
 	},
-	import : function( file, callback, dateColArray ){
+	importFromExcel : function( file, callback, dateColArray ){
 		this._loadResource( function(){
 			var reader = new FileReader();
 			var workbook, data;
@@ -2042,3 +2066,4 @@ MWF.xApplication.process.Xform.Datatemplate.ExcelUtils = new Class({
 		})
 	}
 });
+
