@@ -493,7 +493,16 @@ MWF.xApplication.process.FormDesigner.LP = {
         "dynamic": "Dynamic",
         "canSelectCount": "Select Count",
         "showSeparator": "Show Separator",
-        "optionDynamicScript": "Option Dynamic Script"
+        "optionDynamicScript": "Option Dynamic Script",
+
+        "handwriting": "Handwriting",
+        "writingBoard": "Writing Board",
+        "width": "Width",
+        "height": "Height",
+        "recording": "Record",
+        "writingPreview": "Writing Preview",
+
+        "addressStyle": "Address Style"
 
     },
     "actionBar": {
