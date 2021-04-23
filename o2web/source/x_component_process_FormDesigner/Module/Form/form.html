@@ -1,20 +1,20 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue">text{$.id}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">分类:</td>
+                <td class="editTableTitle">{{$.lp.category}}:</td>
                 <td class="editTableValue"><input type="text" name="category" value="text{$.category}" class="editTableInput"/></td>
             </tr>
             <!--<tr>-->
@@ -48,7 +48,7 @@
 <!--                </td>-->
 <!--            </tr>-->
             <tr>
-                <td class="editTableTitle">表单样式:</td>
+                <td class="editTableTitle">{{$.lp.formStyle}}:</td>
                 <td class="editTableValue">
                     <!--                    <select class="MWFFormStyle" name="formStyleType"></select>-->
                     <div class="MWFFormStyleSelect" name="formStyleType"></div>
@@ -56,11 +56,11 @@
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">图标:</td>
+                <td class="editTableTitle">{{$.lp.icon}}:</td>
                 <td class="editTableValue"><div class="MWFIcon" name="formIcon"></div></td>
             </tr>
             <tr>
-                <td class="editTableTitle">打印表单:</td>
+                <td class="editTableTitle">{{$.lp.printForm}}:</td>
                 <td class="editTableValue">
                     <div class="MWFFormSelect" name="printForm"></div>
                 </td>
@@ -74,13 +74,13 @@
         </table>
 <!--        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">预加载数据字典</div>-->
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">预加载脚本</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.preloadScript}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">脚本:</td>
+                <td class="editTableTitle">{{$.lp.script}}:</td>
                 <td class="editTableValue">
                     <div class="MWFScriptSelect" data-count=0 name="includeScripts"></div>
-                    <div class="MWFScriptSelectAction"><div style="color: #0b58a2; cursor: pointer; float: left">复制</div><div style="color: #0b58a2; cursor: pointer; float: left; margin-left:10px">粘贴</div></div>
+                    <div class="MWFScriptSelectAction"><div style="color: #0b58a2; cursor: pointer; float: left">{{$.lp.copy}}</div><div style="color: #0b58a2; cursor: pointer; float: left; margin-left:10px">{{$.lp.paste}}</div></div>
                 </td>
             </tr>
         </table>
@@ -90,16 +90,33 @@
 		<!--<div class="MWFArraylist" name="cssLinks" title="CSS引用"></div>-->
 		<!--<div class="MWFArraylist" name="scriptSrc" title="JS引用"></div>-->
 
-		<div class="MWFMaplist" name="styles" title="样式"></div>
-		<div class="MWFMaplist" name="properties" title="属性"></div>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
         <div class="MWFCssArea" name="css" title="CSS"></div>
 		<!--<div class="MWFScriptArea" name="jsheader" title="JS Header"></div>-->
 
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.language}}:</td>
+                <td class="editTableValue">
+<!--                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'none'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType!=='default' && $.languageType!=='script')?'checked':''} type="radio" value="none"/>{{$.lp.none}}-->
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'block'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType!=='script')?'checked':''} type="radio" value="default"/>{{$.lp.default}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageScriptArea').setStyle('display', 'block'); $('text{$.pid}languageDefaultArea').setStyle('display', 'none'); }" name="languageType" text{($.languageType==='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}languageDefaultArea" style="display: text{($.languageType!=='script')?'block':'none'}">
+            <div style="padding: 5px;">{{$.lp.languageDefaultInfo}}</div>
+        </div>
+        <div id="text{$.pid}languageScriptArea" style="display: text{($.languageType=='script')?'block':'none'}">
+            <div class="MWFScriptArea" name="languageScript" title="{{$.lp.languageScript}}"></div>
+            <div style="padding: 5px;">{{$.lp.languageInfo}}</div>
+        </div>
 	</div>
-	<div title="提交" class="MWFTab">
+	<div title="{{$.lp.submit}}" class="MWFTab">
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">提交界面</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.SubmitUI}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableValue" colspan="2">
@@ -107,17 +124,17 @@
                         $('text{$.pid}selectSubmitForm').setStyle('display', 'none');
                         $('text{$.pid}scriptSubmitForm').setStyle('display', 'none');
                         $('text{$.pid}submitScript').setStyle('display', 'none');
-                    }" name="submitFormType" value="default" text{($.submitFormType!='script' && $.submitFormType!='select' )?'checked':''}/>系统默认
+                    }" name="submitFormType" value="default" text{($.submitFormType!='script' && $.submitFormType!='select' )?'checked':''}/>{{$.lp.systemDefault}}
                     <input type="radio" onclick="if (this.checked) {
                         $('text{$.pid}selectSubmitForm').setStyle('display', 'block');
                         $('text{$.pid}scriptSubmitForm').setStyle('display', 'none');
                         $('text{$.pid}submitScript').setStyle('display', 'block');
-                    }" name="submitFormType" value="select" text{($.submitFormType=='select')?'checked':''}/>选择表单
+                    }" name="submitFormType" value="select" text{($.submitFormType=='select')?'checked':''}/>{{$.lp.selectForm}}
                     <input type="radio" onclick="if (this.checked) {
                         $('text{$.pid}selectSubmitForm').setStyle('display', 'none');
                         $('text{$.pid}scriptSubmitForm').setStyle('display', 'block');}
                         $('text{$.pid}submitScript').setStyle('display', 'block');
-                    " name="submitFormType" value="script" text{($.submitFormType=='script')?'checked':''}/>计算表单<br/>
+                    " name="submitFormType" value="script" text{($.submitFormType=='script')?'checked':''}/>{{$.lp.computeForm}}<br/>
                 </td>
             </tr>
         </table>
@@ -125,13 +142,13 @@
         <div id="text{$.pid}selectSubmitForm" class="MWFSubFormSelectContainer" style="display: text{($.submitFormType=='select')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">应用:</td>
+                    <td class="editTableTitle">{{$.lp.application}}:</td>
                     <td class="editTableValue">
                         <div class="MWFSubformAppSelect" name="submitFormAppSelected"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">表单:</td>
+                    <td class="editTableTitle">{{$.lp.form}}:</td>
                     <td class="editTableValue">
                         <div class="MWFSubformSelect" name="submitFormSelected"></div>
                     </td>
@@ -139,55 +156,55 @@
             </table>
         </div>
         <div id="text{$.pid}scriptSubmitForm" style="display: text{($.submitFormType=='script')?'block':'none'}">
-            <div style="padding: 5px;">跨应用：<br/>return { <br/>
-                &nbsp;&nbsp;"application" : "应用名称", //应用名称、别名、id <br/>
-                &nbsp;&nbsp;"form" : "表单名称" //表单、id<br/>
-                }; <br/> 本应用：<br/>return "表单名称"; </div>
-            <div class="MWFScriptArea" name="submitFormScript" title="提交表单脚本 (S)"></div>
+            <div style="padding: 5px;">{{$.lp.crossApplication}}：<br/>return { <br/>
+                &nbsp;&nbsp;"application" : "applicationName", //{{$.lp.computeSubmitAnnotation1}} <br/>
+                &nbsp;&nbsp;"form" : "formName" //{{$.lp.computeSubmitAnnotation2}}<br/>
+                }; <br/> {{$.lp.thisApplication}}：<br/>return "formName"; </div>
+            <div class="MWFScriptArea" name="submitFormScript" title="{{$.lp.submitFormScript}} (S)"></div>
         </div>
         <div id="text{$.pid}submitScript" style="display: text{($.submitFormType=='script' || $.submitFormType=='select')?'block':'none'}">
-            <div class="MWFScriptArea" name="submitScript" title="提交（继续流转）操作脚本"></div>
+            <div class="MWFScriptArea" name="submitScript" title="{{$.lp.flowActionScript}}"></div>
         </div>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td colspan="2" class="editTableValue"><b>提交意见手写板宽度:</b>
+                <td colspan="2" class="editTableValue"><b>{{$.lp.handwritingWidth}}:</b>
                     <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 50px;margin-right:3px;" />px
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;({{$.lp.effectivePC}})</span>
                 </td>
             </tr>
             <tr>
-                <td colspan="2" class="editTableValue"><b>提交意见手写板高度:</b>
+                <td colspan="2" class="editTableValue"><b>{{$.lp.handwritingHeight}}:</b>
                     <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:3px;" />px
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;({{$.lp.effectivePC}})</span>
                 </td>
             </tr>
         </table>
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">流转后提示框</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.promptBoxFlow}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td colspan="2" class="editTableValue"><b>流转后提示框:</b>
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}promptArea').setStyle('display', 'block');}" name="isPrompt" text{($.isPrompt!==false)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}promptArea').setStyle('display', 'none'); }" name="isPrompt" text{($.isPrompt===false)?'checked':''} type="radio" value="false"/>否
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(仅用于新浏览器窗口打开时)</span>
+                <td colspan="2" class="editTableValue"><b>{{$.lp.promptBoxFlow}}:</b>
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}promptArea').setStyle('display', 'block');}" name="isPrompt" text{($.isPrompt!==false)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}promptArea').setStyle('display', 'none'); }" name="isPrompt" text{($.isPrompt===false)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;({{$.lp.usedNewWindow}})</span>
                 </td>
             </tr>
         </table>
         <table style="display: text{($.isPrompt!==false)?'block':'none'}" id="text{$.pid}promptArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td colspan="2" class="editTableValue"><b>提示框位置:</b>
-                    <input class="editTableRadio" name="promptPosition" text{(['lefttop','righttop','leftbottom','rightbottom'].indexOf($.promptPosition)==-1)?'checked':''} type="radio" value="center"/>中央
-                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='lefttop')?'checked':''} type="radio" value="lefttop"/>左上
-                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='righttop')?'checked':''} type="radio" value="righttop"/>右上
-                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='leftbottom')?'checked':''} type="radio" value="leftbottom"/>左下
-                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='rightbottom')?'checked':''} type="radio" value="rightbottom"/>右下
+                <td colspan="2" class="editTableValue"><b>{{$.lp.promptLocation}}:</b>
+                    <input class="editTableRadio" name="promptPosition" text{(['lefttop','righttop','leftbottom','rightbottom'].indexOf($.promptPosition)==-1)?'checked':''} type="radio" value="center"/>{{$.lp.center}}
+                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='lefttop')?'checked':''} type="radio" value="lefttop"/>{{$.lp.lefttop}}
+                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='righttop')?'checked':''} type="radio" value="righttop"/>{{$.lp.righttop}}
+                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='leftbottom')?'checked':''} type="radio" value="leftbottom"/>{{$.lp.leftbottom}}
+                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='rightbottom')?'checked':''} type="radio" value="rightbottom"/>{{$.lp.rightbottom}}
                 </td>
             </tr>
             <tr>
-                <td colspan="2" class="editTableValue"><b>提示框
+                <td colspan="2" class="editTableValue"><b>{{$.lp.prompt}}
                     <select name="promptCloseTime">
-                        <option value="0" text{($.promptCloseTime==0)?'selected':''}>不关闭</option>
+                        <option value="0" text{($.promptCloseTime==0)?'selected':''}>{{$.lp.notClose}}</option>
                         <option value="1" text{($.promptCloseTime==1)?'selected':''}>1</option>
                         <option value="2" text{($.promptCloseTime==2)?'selected':''}>2</option>
                         <option value="3" text{($.promptCloseTime==3)?'selected':''}>3</option>
@@ -198,37 +215,37 @@
                         <option value="8" text{($.promptCloseTime==8)?'selected':''}>8</option>
                         <option value="9" text{($.promptCloseTime==9)?'selected':''}>9</option>
                     </select>
-                    秒后自动关闭</b></td>
+                    {{$.lp.closeInfo}}</b></td>
             </tr>
         </table>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">流转后:</td>
+                <td class="editTableTitle">{{$.lp.afterFlow}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}afterProcessActionArea').setStyle('display', 'none');}" name="afterProcessAction" text{($.afterProcessAction!=='redirect')?'checked':''} type="radio" value="close"/>关闭窗口
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}afterProcessActionArea').setStyle('display', 'block'); }" name="afterProcessAction" text{($.afterProcessAction==='redirect')?'checked':''} type="radio" value="redirect"/>重定向
-                    <div>(仅用于新浏览器窗口打开时)</div>
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}afterProcessActionArea').setStyle('display', 'none');}" name="afterProcessAction" text{($.afterProcessAction!=='redirect')?'checked':''} type="radio" value="close"/>{{$.lp.closeWindow}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}afterProcessActionArea').setStyle('display', 'block'); }" name="afterProcessAction" text{($.afterProcessAction==='redirect')?'checked':''} type="radio" value="redirect"/>{{$.lp.redirect}}
+                    <div>({{$.lp.usedNewWindow}})</div>
                 </td>
             </tr>
         </table>
         <div style="display: text{($.afterProcessAction=='redirect')?'block':'none'}" id="text{$.pid}afterProcessActionArea">
-            <div class="MWFScriptArea" name="afterProcessRedirectScript" title="重定向地址脚本"></div>
-            <span>(返回一个URL用于重定向)</span>
+            <div class="MWFScriptArea" name="afterProcessRedirectScript" title="{{$.lp.redirectScript}}"></div>
+            <span>({{$.lp.returnUrl}})</span>
         </div>
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">校验</div>
-        <div class="MWFScriptArea" name="validationOpinion" title="校验意见 (S)"></div>
-        <div class="MWFScriptArea" name="validationRoute" title="校验路由 (S)"></div>
-        <div class="MWFScriptArea" name="validationFormCustom" title="流转校验 (S)"></div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.check}}</div>
+        <div class="MWFScriptArea" name="validationOpinion" title="{{$.lp.checkOpinion}} (S)"></div>
+        <div class="MWFScriptArea" name="validationRoute" title="{{$.lp.checkRoute}} (S)"></div>
+        <div class="MWFScriptArea" name="validationFormCustom" title="{{$.lp.checkFlow}} (S)"></div>
 
     </div>
     <div title="操作"  class="MWFTab" style="overflow: hidden; display: text{($.mode=='Mobile')?'block':'none'}">
         <div class="MWFDefaultActionArea" name="defaultTools" data-target="mobileForm"></div>
         <div class="MWFActionArea" name="tools"></div>
     </div>
-	<div title="事件"  class="MWFTab">
-        <div style="padding: 5px;color:#999;">注：当以子表单嵌入时，下列事件不会被执行</div>
+	<div title="{{$.lp.event}}"  class="MWFTab">
+        <div style="padding: 5px;color:#999;">{{$.lp.noEventInfo}}</div>
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
     <div title="HTML"  class="MWFTab">
