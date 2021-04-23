@@ -3,8 +3,9 @@
   <span>{{$.convName}}</span>
   <div class="o2_im_chat_content_title_more" data-o2-element="chatTitleMoreBtnNode"></div>
   <div class="o2_im_chat_content_title_menu" data-o2-element="chatTitleMoreMenuNode">
-    <div class="o2_im_chat_content_title_menu_item" data-o2-element="chatTitleMoreMenuItem1Node" data-o2-events="click:tapUpdateConvTitle">修改群名</div>
-    <div class="o2_im_chat_content_title_menu_item" data-o2-element="chatTitleMoreMenuItem2Node" data-o2-events="click:tapUpdateConvMembers">修改成员</div>
+    <div class="o2_im_chat_content_title_menu_item" data-o2-element="chatTitleMoreMenuItem1Node" data-o2-events="click:tapUpdateConvTitle">{{$.lp.modifyGroupName}}</div>
+    <div class="o2_im_chat_content_title_menu_item" data-o2-element="chatTitleMoreMenuItem2Node" data-o2-events="click:tapUpdateConvMembers">
+      {{$.lp.modifyMember}}</div>
   </div>
 </div>
 <!-- 聊天内容 -->
@@ -17,11 +18,11 @@
     <img src="../x_component_IMV2/$Main/default/icons/icon-file.png" data-o2-element="chatBottomAreaToolFileNode" data-o2-events="click:showChooseFile" />
   </div>
   <div class="chat-bottom-area-textarea">
-    <textarea data-o2-element="chatBottomAreaTextareaNode" placeholder="输入消息内容"></textarea>
+    <textarea data-o2-element="chatBottomAreaTextareaNode" placeholder="{{$.lp.enterMessage}}"></textarea>
   </div>
   <div class="chat-bottom-area-send-space">
     <div class="chat-bottom-area-send" data-o2-element="chatBottomAreaSendAreaNode">
-      <span class="chat-bottom-area-send-btn" data-o2-element="chatBottomAreaSendBtnNode" data-o2-events="click:sendMsg">发送</span>
+      <span class="chat-bottom-area-send-btn" data-o2-element="chatBottomAreaSendBtnNode" data-o2-events="click:sendMsg">{{$.lp.send}}</span>
     </div>
   </div>
 </div>
