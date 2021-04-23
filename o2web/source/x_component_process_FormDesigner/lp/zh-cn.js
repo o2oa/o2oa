@@ -490,8 +490,21 @@ MWF.xApplication.process.FormDesigner.LP = {
         "dynamic": "动态计算",
         "canSelectCount": "可选数量",
         "showSeparator": "显示分隔符",
-        "optionDynamicScript": "可选值动态脚本"
+        "optionDynamicScript": "可选值动态脚本",
 
+        "handwriting": "手写",
+        "writingBoard": "手写板",
+        "width": "宽度",
+        "height": "高度",
+        "recording": "录音",
+        "writingPreview": "手写预览",
+
+        "addressStyle": "Address样式",
+
+        "location": "位置",
+        "right": "右",
+        "left": "左",
+        "relocate": "重新定位"
     },
     "actionBar": {
         "close":"关闭",
