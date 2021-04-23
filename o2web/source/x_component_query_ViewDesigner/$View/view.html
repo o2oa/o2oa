@@ -268,13 +268,13 @@
                 </tr>
             </table>
         </div>
-        <div id="text{$.id}dateRangeType_YearArea" style="display: text{(['year','season','month'].indexOf($.data.where.dateRange.dateRangeType)!=-1)?'block':'none'}">
+        <div id="text{$.id}dateRangeType_YearArea" style="display: text{(['year','season','month','week','date'].indexOf($.data.where.dateRange.dateRangeType)!=-1)?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
                     <td class="editTableTitle">年度:</td>
                     <td class="editTableValue"><select name="data.where.dateRange.year">
                         <option value="">当前年度</option>
-                        fun{var y=(new Date()).getFullYear(); var html = ""; for (var i=0; i<10; i++)html+="<option value='"+(y-i)+"'>"+(y-i)+"</option>"; return html;}
+                        fun{var y=(new Date()).getFullYear(); var html = ""; for (var i=0; i<10; i++)html+="<option "+( $.data.where.dateRange.year==(y-i).toString() ? "selected" : "" )+" value='"+(y-i)+"'>"+(y-i)+"</option>"; return html;}
                     </select></td>
                 </tr>
             </table>
@@ -283,34 +283,36 @@
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
                     <td class="editTableTitle">季度:</td>
-                    <td class="editTableValue"><select name="data.where.dateRange.season">
-                        <option value="">当前季度</option>
-                        <option value="1">第一季度</option>
-                        <option value="2">第二季度</option>
-                        <option value="3">第三季度</option>
-                        <option value="4">第四季度</option>
-                    </select></td>
+                    <td class="editTableValue">
+                        <select name="data.where.dateRange.season">
+                            <option value="" text{($.data.where.dateRange.season=='')?'selected':''}>当前季度</option>
+                            <option value="1" text{($.data.where.dateRange.season=='1')?'selected':''}>第一季度</option>
+                            <option value="2" text{($.data.where.dateRange.season=='2')?'selected':''}>第二季度</option>
+                            <option value="3" text{($.data.where.dateRange.season=='3')?'selected':''}>第三季度</option>
+                            <option value="4" text{($.data.where.dateRange.season=='4')?'selected':''}>第四季度</option>
+                        </select>
+                    </td>
                 </tr>
             </table>
         </div>
-        <div id="text{$.id}dateRangeType_MonthArea" style="display: text{($.data.where.dateRange.dateRangeType=='month')?'block':'none'}">
+        <div id="text{$.id}dateRangeType_MonthArea" style="display: text{(['month','date'].indexOf($.data.where.dateRange.dateRangeType)!=-1)?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
                     <td class="editTableTitle">月份:</td>
                     <td class="editTableValue"><select name="data.where.dateRange.month">
-                        <option value="">当前月份</option>
-                        <option value="01">1月</option>
-                        <option value="02">2月</option>
-                        <option value="03">3月</option>
-                        <option value="04">4月</option>
-                        <option value="05">5月</option>
-                        <option value="06">6月</option>
-                        <option value="07">7月</option>
-                        <option value="08">8月</option>
-                        <option value="09">9月</option>
-                        <option value="10">10月</option>
-                        <option value="11">11月</option>
-                        <option value="12">12月</option>
+                        <option value="" text{($.data.where.dateRange.month=='')?'selected':''}>当前月份</option>
+                        <option value="01" text{($.data.where.dateRange.month=='01')?'selected':''}>1月</option>
+                        <option value="02" text{($.data.where.dateRange.month=='02')?'selected':''}>2月</option>
+                        <option value="03" text{($.data.where.dateRange.month=='03')?'selected':''}>3月</option>
+                        <option value="04" text{($.data.where.dateRange.month=='04')?'selected':''}>4月</option>
+                        <option value="05" text{($.data.where.dateRange.month=='05')?'selected':''}>5月</option>
+                        <option value="06" text{($.data.where.dateRange.month=='06')?'selected':''}>6月</option>
+                        <option value="07" text{($.data.where.dateRange.month=='07')?'selected':''}>7月</option>
+                        <option value="08" text{($.data.where.dateRange.month=='08')?'selected':''}>8月</option>
+                        <option value="09" text{($.data.where.dateRange.month=='09')?'selected':''}>9月</option>
+                        <option value="10" text{($.data.where.dateRange.month=='10')?'selected':''}>10月</option>
+                        <option value="11" text{($.data.where.dateRange.month=='11')?'selected':''}>11月</option>
+                        <option value="12" text{($.data.where.dateRange.month=='12')?'selected':''}>12月</option>
                     </select></td>
                 </tr>
             </table>
@@ -321,19 +323,19 @@
                     <td class="editTableTitle">周:</td>
                     <td class="editTableValue"><select name="data.where.dateRange.week">
                         <option value="">当前周</option>
-                        fun{var html = ""; for (var i=1; i<56; i++)html+="<option value='"+i+"'>第"+i+"周</option>"; return html;}
+                        fun{var html = ""; for (var i=1; i<56; i++)html+="<option "+ ( $.data.where.dateRange.week==i.toString() ? "selected" : "" ) +" value='"+i+"'>第"+i+"周</option>"; return html;}
                     </select></td>
                 </tr>
             </table>
         </div>
 
-        <div id="text{$.id}dateRangeType_DateArea" style="display: text{($.data.where.dateRange.dateRangeType=='week')?'block':'none'}">
+        <div id="text{$.id}dateRangeType_DateArea" style="display: text{($.data.where.dateRange.dateRangeType=='date')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
                     <td class="editTableTitle">日期:</td>
                     <td class="editTableValue"><select name="data.where.dateRange.date">
                         <option value="">当天</option>
-                        fun{var html = ""; for (var i=1; i<32; i++)html+="<option value='"+(i<10 ? ("0"+i) : i)+"'>"+i+"日</option>"; return html;}
+                        fun{var html = ""; for (var i=1; i<32; i++)html+="<option "+( $.data.where.dateRange.date==(i<10 ? ("0"+i) : i).toString() ? "selected" : "" )+" value='"+(i<10 ? ("0"+i) : i)+"'>"+i+"日</option>"; return html;}
                     </select></td>
                 </tr>
             </table>
