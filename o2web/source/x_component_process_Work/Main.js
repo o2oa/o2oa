@@ -104,9 +104,10 @@ MWF.xApplication.process.Work.Main = new Class({
         }
     },
     reload: function(data){
-        if (this.form){
+        if (this.appForm){
             this.formNode.empty();
-            MWF.release(this.form);
+            MWF.release(this.appForm);
+            this.appForm = null;
             this.form = null;
         }
         if (data){
@@ -510,7 +511,8 @@ MWF.xApplication.process.Work.Main = new Class({
         this.control = controlData;
         if (formData){
             if (formData.form){
-                this.form = (formData.form.data) ? JSON.decode(MWF.decodeJsonString(formData.form.data)): null;
+                //this.form = (formData.form.data) ? JSON.decode(MWF.decodeJsonString(formData.form.data)): null;
+                this.form = (formData.form.data) ? MWF.decodeJsonString(formData.form.data): null;
                 //
                 // var rex = /mwftype="subform"/gi;
                 //
@@ -518,10 +520,12 @@ MWF.xApplication.process.Work.Main = new Class({
                 // debugger;
                 this.relatedFormMap = formData.relatedFormMap;
                 this.relatedScriptMap = formData.relatedScriptMap;
+                this.relatedLanguage = formData.relatedLanguage;
                 delete formData.form.data;
                 this.formInfor = formData.form;
             }else{
-                this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
+                //this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
+                this.form = (formData.data) ? MWF.decodeJsonString(formData.data): null;
                 delete formData.data;
                 this.formInfor = formData;
             }

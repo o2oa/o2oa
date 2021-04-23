@@ -1,103 +1,110 @@
 {
   "label": {
     "icon": "label.png",
-    "text": "文本",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.label,
     "className": "Label"
   },
   "textfield": {
     "icon": "textfield.png",
-    "text": "文本字段",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.textfield,
     "className": "Textfield"
   },
   "number": {
     "icon": "number.png",
-    "text": "数字字段",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.number,
     "className": "Number"
   },
-//  "personfield": {
-//    "icon": "personfield.png",
-//    "text": "人员",
-//    "className": "Personfield"
-//  },
-//  "orgfield": {
-//    "icon": "orgfield.png",
-//    "text": "组织",
-//    "className": "Orgfield"
-//  },
+  //  "personfield": {
+  //    "icon": "personfield.png",
+  //    "text": "人员",
+  //    "className": "Personfield"
+  //  },
+  //  "orgfield": {
+  //    "icon": "orgfield.png",
+  //    "text": "组织",
+  //    "className": "Orgfield"
+  //  },
   "org": {
     "icon": "personfield.png",
-    "text": "人员组织",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.org,
     "className": "Org"
   },
   "calendar": {
     "icon": "calendar.png",
-    "text": "日期选择",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.calendar,
     "className": "Calendar"
   },
   "textarea": {
     "icon": "textarea.png",
-    "text": "多行文本",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.textarea,
     "className": "Textarea"
   },
   "select": {
     "icon": "select.png",
-    "text": "下拉框",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.select,
     "className": "Select"
   },
   "radio": {
     "icon": "radio.png",
-    "text": "单选框",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.radio,
     "className": "Radio"
   },
   "checkbox": {
     "icon": "checkbox.png",
-    "text": "多选框",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.checkbox,
     "className": "Checkbox"
+  },
+  "combox": {
+    "icon": "combox.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.combox,
+    "className": "Combox"
   },
   "opinion": {
     "icon": "opinion.png",
-    "text": "意见框",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.opinion,
     "className": "Opinion"
   },
+
   "button": {
     "icon": "button.png",
-    "text": "按钮",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.button,
     "className": "Button"
   },
   "Address": {
     "icon": "address.png",
-    "text": "地址",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.Address,
     "className": "Address"
   },
   "Actionbar": {
     "icon": "actionbar.png",
-    "text": "操作条",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.Actionbar,
     "className": "Actionbar"
   },
+
   "Sidebar": {
     "icon": "sidebar.png",
-    "text": "侧边操作条",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.Sidebar,
     "className": "Sidebar"
   },
 
   "image": {
     "icon": "image.png",
-    "text": "图片",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.image,
     "className": "Image"
   },
   "imageclipper": {
     "icon": "imageclipper.png",
-    "text": "图片编辑",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.imageclipper,
     "className": "ImageClipper"
   },
   "attachment": {
     "icon": "attachment.png",
-    "text": "附件",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.attachment,
     "className": "Attachment"
   },
   "div": {
     "icon": "div.png",
-    "text": "容器",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.div,
     "className": "Div"
   },
   //  "splitdiv": {
@@ -107,82 +114,92 @@
   //  },
   "table": {
     "icon": "table.png",
-    "text": "表格",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.table,
     "className": "Table"
   },
   "datagrid": {
     "icon": "datagrid.png",
-    "text": "数据网格",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.datagrid,
     "className": "Datagrid"
+  },
+  "subform": {
+    "icon": "subform.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.subform,
+    "className": "Subform"
   },
   "ViewSelector": {
     "icon": "viewSelector.png",
-    "text": "选择视图",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.ViewSelector,
     "className": "ViewSelector"
   },
   "view": {
     "icon": "view.png",
-    "text": "嵌入视图",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.view,
     "className": "View"
+  },
+  "stat": {
+    "icon": "stat.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.stat,
+    "className": "Stat"
   },
   "html": {
     "icon": "html.png",
-    "text": "HTML",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.html,
     "className": "Html"
   },
   "common": {
     "icon": "common.png",
-    "text": "通用元素",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.common,
     "className": "Common"
   },
   "tab": {
     "icon": "tabs.png",
-    "text": "分页",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.tab,
     "className": "Tab"
   },
   "tree": {
     "icon": "tree.png",
-    "text": "树",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.tree,
     "className": "Tree"
   },
   "log": {
     "icon": "log.png",
-    "text": "流程记录",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.tree,
     "className": "Log"
   },
   "monitor": {
     "icon": "monitor.png",
-    "text": "流程监控",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.monitor,
     "className": "Monitor"
   },
   "iframe": {
     "icon": "iframe.png",
-    "text": "Iframe",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.iframe,
     "className": "Iframe"
   },
   "documenteditor": {
     "icon": "documenteditor.png",
-    "text": "公文编辑器",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.documenteditor,
     "className": "Documenteditor"
   },
   "htmledit": {
     "icon": "htmleditor.png",
-    "text": "HTML编辑器",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.htmledit,
     "className": "Htmleditor"
   },
   "office": {
     "icon": "office.png",
-    "text": "Office控件",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.office,
     "className": "Office"
   },
   "statementSelector": {
     "icon": "statementSelector.png",
-    "text": "选择查询视图",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.statementSelector,
     "className": "StatementSelector"
   },
   "statement": {
     "icon": "statement.png",
-    "text": "嵌入查询视图",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.statement,
     "className": "Statement"
   }
 }
