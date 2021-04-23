@@ -283,7 +283,54 @@ MWF.xApplication.process.Xform.LP = {
     "readed" : "已阅",
 
     "attachmentArea": "附件区域",
-    "intelligentCorrection" : "智能纠错"
+    "intelligentCorrection" : "智能纠错",
+
+    "form": {
+        "close":"关闭",
+        "closeTitle": "关闭文档",
+        "save": "保存",
+        "saveTitle": "保存文档",
+        "flow": "继续流转",
+        "flowTitle": "继续流转文档",
+        "reroute": "调度",
+        "rerouteTitle": "调度文档",
+        "reset": "重置处理人",
+        "resetTitle": "重置处理人",
+        "split": "增加分支",
+        "splitTitle": "增加拆分分支",
+        "retract": "撤回",
+        "retractTitle": "待办撤回",
+        "rollback": "流程回溯",
+        "rollbackTitle": "回溯到指定的环节，不保留流程记录",
+        "delete": "删除文档",
+        "deleteTitle": "删除文件",
+        "print": "打印",
+        "printTitle": "打印文档",
+        "press": "催促办理",
+        "pressTitle": "催促办理",
+        "pause": "挂起",
+        "pauseTitle": "待办挂起",
+        "resume": "挂起恢复",
+        "resumeTitle": "从挂起状态恢复",
+        "downloadAll": "一键下载",
+        "downloadAllTitle": "一键下载",
+
+        "rerouteActivity": "调度到：",
+        "reroutePerson": "调度给：",
+        "selectPerson": "选择人员",
+        "retouteOpinion": "调度意见：",
+
+        "resetPerson": "重置给：",
+        "resetOpinion": "重置意见：",
+        "keepTask": "保留我的待办",
+
+        "rollbackInfo": "请选择文件要回溯到的位置",
+        "addSplitInfo": "根据您的业务设置拆分数据，此处设置的数据应与流程中设置的拆分依据匹配。<br/>多个值请用半角逗号(,)分隔",
+        "selectUnit": "选择组织或人员",
+        "excludeBranches": "排除已有分支",
+        "yes": "是",
+        "no": "否"
+    }
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

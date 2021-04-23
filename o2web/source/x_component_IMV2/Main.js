@@ -126,7 +126,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	tapConv: function (conv) {
 		this._setCheckNode(conv);
 		var url = this.path + this.options.style + "/chat.html";
-		var data = { "convName": conv.title };
+		var data = { "convName": conv.title, "lp": this.lp };
 		this.conversationId = conv.id;
 		this.chatNode.empty();
 		this.chatNode.loadHtml(url, { "bind": data, "module": this }, function () {
@@ -169,7 +169,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				members = c.data.personList;
 			}
 		}
-		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": "修改成员", "personCount": 0, "personSelected": members, "isUpdateMember": true }, { app: this.app });
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": this.lp.modifyMember, "personCount": 0, "personSelected": members, "isUpdateMember": true }, { app: this.app });
 		form.create()
 	},
 	//点击发送消息
@@ -179,7 +179,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			this.chatBottomAreaTextareaNode.value = "";
 			this._newAndSendTextMsg(text, "text");
 		} else {
-			console.log("没有消息内容！");
+			console.log(this.lp.noMessage);
 		}
 	},
 	//点击表情按钮
@@ -258,12 +258,12 @@ MWF.xApplication.IMV2.Main = new Class({
 	tapCreateSingleConv: function () {
 		// var form = new MWF.xApplication.IMV2.SingleForm(this, {}, {}, { app: this.app });
 		// form.create()
-		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": "创建单聊", "personCount": 1 }, { app: this.app });
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": this.lp.createSingle, "personCount": 1 }, { app: this.app });
 		form.create()
 	},
 	//点击创建群聊按钮
 	tapCreateGroupConv: function () {
-		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": "创建群聊", "personCount": 0, "personSelected": [] }, { app: this.app });
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": this.lp.createDroup, "personCount": 0, "personSelected": [] }, { app: this.app });
 		form.create()
 	},
 	//更新群名
@@ -354,7 +354,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		var distinguishedName = layout.session.user.distinguishedName;
 		var time = this._currentTime();
 		var body = {
-			"body": "[文件]",
+			"body": this.lp.file,
 			"type": type,
 			"fileId": fileId,
 			"fileExtension": fileExt,
@@ -372,7 +372,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		};
 		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(message,
 			function (json) {
-				console.log("消息发送成功！");
+				console.log(this.lp.sendSuccess);
 			}.bind(this),
 			function (error) {
 				console.log(error);
@@ -399,7 +399,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(textMessage,
 			function (json) {
 				//data = json.data;
-				console.log("消息发送成功！");
+				console.log(this.lp.sendSuccess);
 			}.bind(this),
 			function (error) {
 				console.log(error);
@@ -723,9 +723,9 @@ MWF.xApplication.IMV2.Main = new Class({
 			if (todayTime > time) {
 				hour = parseInt((todayTime - time) / 3600000);
 				if (hour == 0) {
-					retTime = Math.max(parseInt((todayTime - time) / 60000), 1) + "分钟前"
+					retTime = Math.max(parseInt((todayTime - time) / 60000), 1) + this.lp.minutesBefore
 				} else {
-					retTime = hour + "小时前"
+					retTime = hour + this.lp.hoursBefore
 				}
 
 			}
@@ -736,17 +736,17 @@ MWF.xApplication.IMV2.Main = new Class({
 		if (todaydates > dates) {
 			var days = (todaydates - dates);
 			if (days == 1) {
-				retTime = "昨天";
+				retTime = this.lp.yesterday;
 			} else if (days == 2) {
-				retTime = "前天 ";
+				retTime = this.lp.beforeYesterday;
 			} else if (days > 2 && days < 31) {
-				retTime = days + "天前";
+				retTime = days + this.lp.daysBefore;
 			} else if (days >= 31 && days <= 2 * 31) {
-				retTime = "一个月前";
+				retTime = this.lp.monthAgo;
 			} else if (days > 2 * 31 && days <= 3 * 31) {
-				retTime = "2个月前";
+				retTime = this.lp.towMonthAgo;
 			} else if (days > 3 * 31 && days <= 4 * 31) {
-				retTime = "3个月前";
+				retTime = this.lp.threeMonthAgo;
 			} else {
 				retTime = this._formatDate(date);
 			}
@@ -925,7 +925,7 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 		"hasTop": true,
 		"hasIcon": false,
 		"draggable": true,
-		"title": "创建单聊"
+		"title": MWF.xApplication.IMV2.LP.createSingle
 	},
 	_createTableContent: function () {
 		var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
@@ -943,7 +943,7 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 			style: "minder",
 			hasColon: true,
 			itemTemplate: {
-				person: { text: "选择人员", type: "org", orgType: "person", count: 0, notEmpty: true, exclude: exclude },
+				person: { text: MWF.xApplication.IMV2.LP.selectPerson, type: "org", orgType: "person", count: 0, notEmpty: true, exclude: exclude },
 			}
 		}, this.app);
 		this.form.load();
@@ -953,7 +953,7 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 		if (this.isNew || this.isEdited) {
 			this.okActionNode = new Element("button.inputOkButton", {
 				"styles": this.css.inputOkButton,
-				"text": "确定"
+				"text": MWF.xApplication.IMV2.LP.ok
 			}).inject(this.formBottomNode);
 			this.okActionNode.addEvent("click", function (e) {
 				this.save(e);
@@ -961,7 +961,7 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 		}
 		this.cancelActionNode = new Element("button.inputCancelButton", {
 			"styles": (this.isEdited || this.isNew || this.getEditPermission()) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-			"text": "关闭"
+			"text": MWF.xApplication.IMV2.LP.close
 		}).inject(this.formBottomNode);
 		this.cancelActionNode.addEvent("click", function (e) {
 			this.close(e);
@@ -989,7 +989,7 @@ MWF.xApplication.IMV2.CreateConversationForm = new Class({
 		"hasTop": true,
 		"hasIcon": false,
 		"draggable": true,
-		"title": "创建单聊",
+		"title": MWF.xApplication.IMV2.LP.createSingle,
 		"personCount": 1, //1 是单选  0 是多选,
 		"personSelected": [],
 		"isUpdateMember": false
@@ -1010,7 +1010,7 @@ MWF.xApplication.IMV2.CreateConversationForm = new Class({
 			style: "minder",
 			hasColon: true,
 			itemTemplate: {
-				person: { text: "选择人员", type: "org", orgType: "person", count: this.options["personCount"], notEmpty: true, exclude: exclude, value: this.options["personSelected"] },
+				person: { text: MWF.xApplication.IMV2.LP.selectPerson, type: "org", orgType: "person", count: this.options["personCount"], notEmpty: true, exclude: exclude, value: this.options["personSelected"] },
 			}
 		}, this.app);
 		this.form.load();
@@ -1020,7 +1020,7 @@ MWF.xApplication.IMV2.CreateConversationForm = new Class({
 		if (this.isNew || this.isEdited) {
 			this.okActionNode = new Element("button.inputOkButton", {
 				"styles": this.css.inputOkButton,
-				"text": "确定"
+				"text": MWF.xApplication.IMV2.LP.ok
 			}).inject(this.formBottomNode);
 			this.okActionNode.addEvent("click", function (e) {
 				this.save(e);
@@ -1028,7 +1028,7 @@ MWF.xApplication.IMV2.CreateConversationForm = new Class({
 		}
 		this.cancelActionNode = new Element("button.inputCancelButton", {
 			"styles": (this.isEdited || this.isNew || this.getEditPermission()) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-			"text": "关闭"
+			"text": MWF.xApplication.IMV2.LP.close
 		}).inject(this.formBottomNode);
 		this.cancelActionNode.addEvent("click", function (e) {
 			this.close(e);
@@ -1062,7 +1062,7 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 		"hasTop": true,
 		"hasIcon": false,
 		"draggable": true,
-		"title": "修改群名"
+		"title": MWF.xApplication.IMV2.LP.modifyGroupName
 	},
 	_createTableContent: function () {
 		var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
@@ -1076,7 +1076,7 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 			style: "minder",
 			hasColon: true,
 			itemTemplate: {
-				title: { text: "群名", type: "text", notEmpty: true },
+				title: { text: MWF.xApplication.IMV2.LP.groupName, type: "text", notEmpty: true },
 			}
 		}, this.app);
 		this.form.load();
@@ -1086,7 +1086,7 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 		if (this.isNew || this.isEdited) {
 			this.okActionNode = new Element("button.inputOkButton", {
 				"styles": this.css.inputOkButton,
-				"text": "确定"
+				"text": MWF.xApplication.IMV2.LP.ok
 			}).inject(this.formBottomNode);
 			this.okActionNode.addEvent("click", function (e) {
 				this.save(e);
@@ -1094,7 +1094,7 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 		}
 		this.cancelActionNode = new Element("button.inputCancelButton", {
 			"styles": (this.isEdited || this.isNew || this.getEditPermission()) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-			"text": "关闭"
+			"text": MWF.xApplication.IMV2.LP.close
 		}).inject(this.formBottomNode);
 		this.cancelActionNode.addEvent("click", function (e) {
 			this.close(e);
