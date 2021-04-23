@@ -284,23 +284,59 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             this.form.Macro.environment.list = null;
             flag = this.form.Macro.exec(this.json.filterScript.code, this);
         }else{
+            var isExactMatch = function (property) {
+                return property && o2.typeOf(property)==="array" && property.length && property[0] === "yes";
+            };
             if (this.json.filterActivity && this.json.filterActivity.length){
                 filterActivitys = this.json.filterActivity;
-                flag = (filterActivitys.indexOf(log.fromActivityName)!==-1);
+                if(isExactMatch(this.json.filterActivityExactMatch)){ //精确匹配
+                    flag = filterActivitys.split(/[;|,|\n]/gm).contains(log.fromActivityName); //用;,和空格分隔成数组
+                }else{
+                    flag = (filterActivitys.indexOf(log.fromActivityName)!==-1);
+                }
             }
+
             if (this.json.filterActivityAlias){
                 if (this.json.filterActivityAlias.length){
                     filterActivityAlias = this.json.filterActivityAlias;
-                    flag = ((log.fromActivityAlias) && filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
+                    //flag = ((log.fromActivityAlias) && filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
+                    if(log.fromActivityAlias){
+                        if(isExactMatch(this.json.filterActivityAliasExactMatch)){ //精确匹配
+                            flag = filterActivityAlias.split(/[;|,|\n]/gm).contains(log.fromActivityAlias); //用;,和空格分隔成数组
+                        }else{
+                            flag = (filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
+                        }
+                    }
                 }
             }
             if (this.json.filterPerson && this.json.filterPerson.length){
-                flag = (this.json.filterPerson.indexOf(log.person)!==-1);
-                if (!flag) flag = (this.json.filterPerson.indexOf(o2.name.cn(log.person))!==-1);
+                if(isExactMatch(this.json.filterPersonExactMatch)) { //精确匹配
+                    flag = false;
+                    var filterPersonsList = this.json.filterPerson.split(/[;|,|\n]/gm);
+                    var matchArr = log.person.split("@").concat([log.person]);
+                    for(var i=0; i < filterPersonsList.length; i++){
+                        if( matchArr.contains(filterPersonsList[i]) ){
+                            flag = true;
+                            break;
+                        }
+                    }
+                }else{
+                    flag = (this.json.filterPerson.indexOf(log.person)!==-1);
+                    if (!flag) flag = (this.json.filterPerson.indexOf(o2.name.cn(log.person))!==-1);
+                }
             }
+
+            //if (this.json.filterRoute && this.json.filterRoute.length){
+            //    filterRoutes = this.json.filterRoute;
+            //    flag = (filterRoutes.indexOf(log.properties.routeName)!==-1);
+            //}
             if (this.json.filterRoute && this.json.filterRoute.length){
                 filterRoutes = this.json.filterRoute;
-                flag = (filterRoutes.indexOf(log.properties.routeName)!==-1);
+                if(isExactMatch(this.json.filterRouteExactMatch)){ //精确匹配
+                    flag = filterRoutes.split(/[;|,|\n]/gm).contains(log.properties.routeName); //用;,和空格分隔成数组
+                }else{
+                    flag = (filterRoutes.indexOf(log.properties.routeName)!==-1);
+                }
             }
         }
         return flag;
@@ -1387,25 +1423,53 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             this.form.Macro.environment.list = null;
             flag = this.form.Macro.exec(this.json.filterScript.code, this);
         }else{
+            debugger;
+            var isExactMatch = function (property) {
+                return property && o2.typeOf(property)==="array" && property.length && property[0] === "yes";
+            };
             if (this.json.filterActivity && this.json.filterActivity.length){
                 filterActivitys = this.json.filterActivity;
-                flag = (filterActivitys.indexOf(log.fromActivityName)!==-1);
+                if(isExactMatch(this.json.filterActivityExactMatch)){ //精确匹配
+                    flag = filterActivitys.split(/[;|,|\n]/gm).contains(log.fromActivityName); //用;,和空格分隔成数组
+                }else{
+                    flag = (filterActivitys.indexOf(log.fromActivityName)!==-1);
+                }
             }
             if (this.json.filterActivityAlias){
                 if (this.json.filterActivityAlias.length){
                     filterActivityAlias = this.json.filterActivityAlias;
-                    flag = ((log.fromActivityAlias) && filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
+                    if(log.fromActivityAlias){
+                        if(isExactMatch(this.json.filterActivityAliasExactMatch)){ //精确匹配
+                            flag = filterActivityAlias.split(/[;|,|\n]/gm).contains(log.fromActivityAlias); //用;,和空格分隔成数组
+                        }else{
+                            flag = (filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
+                        }
+                    }
                 }
             }
             if (this.json.filterPerson && this.json.filterPerson.length){
                 flag = false;
                 filterPersons = this.json.filterPerson;
+
                 var tmpTaskCompletedList = [];
-                log.taskCompletedList.each(function(taskCompleted){
-                    if ((filterPersons.indexOf(taskCompleted.person)!==-1) || (filterPersons.indexOf(taskCompleted.identity)!==-1)){
-                        tmpTaskCompletedList.push(taskCompleted);
-                    }
-                }.bind(this));
+                if(isExactMatch(this.json.filterPersonExactMatch)) { //精确匹配
+                    var filterPersonsList = filterPersons.split(/[;|,|\n]/gm);
+                    log.taskCompletedList.each(function(taskCompleted){
+                        var matchArr = (taskCompleted.person + "@" + taskCompleted.identity).split("@").concat([taskCompleted.person, taskCompleted.identity]);
+                        for(var i=0; i < filterPersonsList.length; i++){
+                            if( matchArr.contains(filterPersonsList[i]) ){
+                                tmpTaskCompletedList.push(taskCompleted);
+                                break;
+                            }
+                        }
+                    }.bind(this));
+                }else{
+                    log.taskCompletedList.each(function(taskCompleted){
+                        if ((filterPersons.indexOf(taskCompleted.person)!==-1) || (filterPersons.indexOf(taskCompleted.identity)!==-1)){
+                            tmpTaskCompletedList.push(taskCompleted);
+                        }
+                    }.bind(this));
+                }
                 if (tmpTaskCompletedList.length){
                     //log.taskCompletedList = [];
                     //log.taskCompletedList = tmpTaskCompletedList;
@@ -1414,7 +1478,11 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             }
             if (this.json.filterRoute && this.json.filterRoute.length){
                 filterRoutes = this.json.filterRoute;
-                flag = (filterRoutes.indexOf(log.routeName)!==-1);
+                if(isExactMatch(this.json.filterRouteExactMatch)){ //精确匹配
+                    flag = filterRoutes.split(/[;|,|\n]/gm).contains(log.routeName); //用;,和空格分隔成数组
+                }else{
+                    flag = (filterRoutes.indexOf(log.routeName)!==-1);
+                }
             }
         }
         return flag;
@@ -1426,9 +1494,28 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             this.form.Macro.environment.list = list;
             flag = this.form.Macro.exec(this.json.filterScript.code, this);
         }else{
+            var isExactMatch = function (property) {
+                return property && o2.typeOf(property)==="array" && property.length && property[0] === "yes";
+            };
             if (this.json.filterPerson && this.json.filterPerson.length){
-                flag = ((filterPersons.indexOf(list.person)!==-1)|| (filterPersons.indexOf(list.identity)!==-1));
+                var filterPerson = this.json.filterPerson;
+                flag = false;
+                if(isExactMatch(this.json.filterPersonExactMatch)) { //精确匹配
+                    var filterPersonsList = filterPerson.split(/[;|,|\n]/gm);
+                    var matchArr = (list.person + "@" + list.identity).split("@").concat([list.person, list.identity]);
+                    for(var i=0; i < filterPersonsList.length; i++){
+                        if( matchArr.contains(filterPersonsList[i]) ){
+                            flag = true;
+                            break;
+                        }
+                    }
+                }else{
+                    flag = ((filterPersons.indexOf(list.person)!==-1)|| (filterPersons.indexOf(list.identity)!==-1));
+                }
             }
+            // if (this.json.filterPerson && this.json.filterPerson.length){
+            //     flag = ((filterPersons.indexOf(list.person)!==-1)|| (filterPersons.indexOf(list.identity)!==-1));
+            // }
         }
         return flag;
     },

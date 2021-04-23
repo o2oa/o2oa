@@ -112,16 +112,40 @@
 
 	</div>
 	<div title="过滤" class="MWFTab">
-		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px">活动过滤</div>
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterActivityExactMatch" value="yes"
+					   text{($.filterActivityExactMatch && $.filterActivityExactMatch.indexOf('yes')!=-1)?'checked':''}>精确匹配
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">活动过滤</div>
+		</div>
 		<div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivity">text{$.filterActivity}</textarea></div>
 
-		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">活动别名过滤</div>
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterActivityAliasExactMatch" value="yes"
+					   text{($.filterActivityAliasExactMatch && $.filterActivityAliasExactMatch.indexOf('yes')!=-1)?'checked':''}>精确匹配
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">活动别名过滤</div>
+		</div>
 		<div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivityAlias">text{$.filterActivityAlias}</textarea></div>
 
-		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">处理人过滤</div>
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterPersonExactMatch" value="yes"
+					   text{($.filterPersonExactMatch && $.filterPersonExactMatch.indexOf('yes')!=-1)?'checked':''}>精确匹配
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">处理人过滤</div>
+		</div>
 		<div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterPerson">text{$.filterPerson}</textarea></div>
 
-		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">路由过滤</div>
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterRouteExactMatch" value="yes"
+					   text{($.filterRouteExactMatch && $.filterRouteExactMatch.indexOf('yes')!=-1)?'checked':''}>精确匹配
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">路由过滤</div>
+		</div>
 		<div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterRoute">text{$.filterRoute}</textarea></div>
 
 		<div><div id="labelEditScriptValue" class="MWFScriptArea" name="filterScript" title="通过脚本过滤(S)"></div></div>
