@@ -4,8 +4,8 @@
  * @property {Array} data - 数据网格列表数据
  * @property {Object} total - 统计数据
  * @example
-	[ //数据模板数据条目
-        {
+ [ //数据模板数据条目
+ {
             "org": [{
                 "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
                 "id": "bf007525-99a3-4178-a474-32865bdddec8",
@@ -46,8 +46,8 @@
                 }
             ]
         },
-        ...
-    ]
+ ...
+ ]
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Datatemplate 数据模板组件。
@@ -268,16 +268,16 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.addActionList = getModules( [].concat(this.addActionIdList, this.outerAddActionIdList) );
 				this.addActionList.each( function (module) {
 					module.node.addEvents({"click": function(e){
-						this._addLine(e);
-					}.bind(this)});
+							this._addLine(e);
+						}.bind(this)});
 					if( !this.editable )module.node.hide();
 				}.bind(this));
 
 				this.deleteActionList = getModules( [].concat( this.outerDeleteActionIdList ) );
 				this.deleteActionList.each( function (module) {
 					module.node.addEvents({"click": function(e){
-						this._deleteSelectedLine(e);
-					}.bind(this)});
+							this._deleteSelectedLine(e);
+						}.bind(this)});
 					if( !this.editable )module.node.hide();
 				}.bind(this));
 
@@ -285,8 +285,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.selectAllList.each( function (module) {
 					// module.setData(""); //默认不选中
 					module.node.addEvents({"click": function(e){
-						this._checkSelectAll(e);
-					}.bind(this)});
+							this._checkSelectAll(e);
+						}.bind(this)});
 					if( !this.editable )module.node.hide();
 				}.bind(this));
 				this.selectAllSelector = this.selectAllList[0];
@@ -297,8 +297,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.importActionList = getModules( this.importActionIdList );
 				this.importActionList.each( function (module) {
 					module.node.addEvents({"click": function(e){
-						this.importFromExcel();
-					}.bind(this)});
+							this.importFromExcel();
+						}.bind(this)});
 					if( !this.editable )module.node.hide();
 				}.bind(this));
 
@@ -571,6 +571,14 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				}
 			}.bind(this));
 			return flag;
+		},
+		exportToExcel: function(){
+			var exporter = new MWF.xApplication.process.Xform.Datatemplate.Exporter(this);
+			exporter.exportToExcel();
+		},
+		importFromExcel: function(){
+			var importer = new MWF.xApplication.process.Xform.Datatemplate.Importer(this);
+			importer.importFromExcel();
 		},
 
 
@@ -1157,17 +1165,20 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			resultArr.push( this.getLineExportData(line, index) );
 		}.bind(this));
 
+		var colWidthArr = this.getColWidthArray();
+		var excelName = this.getExcelName();
+
 		var arg = {
 			data : resultArr,
 			colWidthArray : colWidthArr,
-			title : this.getExcelName()
+			title : excelName
 		};
 		this.fireEvent("export", [arg]);
 
 		new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
 			resultArr,
-			arg.title || this.getExcelName(),
-			this.getColWidthArray(),
+			arg.title || excelName,
+			colWidthArr,
 			this.getDateIndexArray()  //日期格式列下标
 		);
 	},
@@ -1248,7 +1259,7 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 
 				exportData.push( text );
 			}
-		});
+		}.bind(this));
 		return exportData;
 	},
 	isAvaliableField : function(json){
@@ -1417,7 +1428,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					if (!MWF["APP" + json.type]) {
 						MWF.xDesktop.requireApp("process.Xform", json.type, null, false);
 					}
-					var module = new MWF["APP" + json.type](node, json, this);
+					var module = new MWF["APP" + json.type](node, json, this.form);
 
 					this.simelateModuleMap[templateJsonId] = module;
 
@@ -1647,35 +1658,38 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 
 				var d = lineData[text] || "";
 
-				switch (json && json.type) {
-					case "Org":
-					case "Reader":
-					case "Author":
-					case "Personfield":
-					case "Orgfield":
-						var arr = d.split(/\s*,\s*/g ); //空格,空格
-						arr.each( function(d, idx){
-							var obj = this.getOrgData( d );
-							if( obj.errorText ){
-								errorTextList.push( colInfor + obj.errorText + + lp.fullstop );
-								errorTextListExcel.push( colInforExcel + obj.errorText + + lp.fullstop );
+				if(d){
+
+					switch (json && json.type) {
+						case "Org":
+						case "Reader":
+						case "Author":
+						case "Personfield":
+						case "Orgfield":
+							var arr = d.split(/\s*,\s*/g ); //空格,空格
+							arr.each( function(d, idx){
+								var obj = this.getOrgData( d );
+								if( obj.errorText ){
+									errorTextList.push( colInfor + obj.errorText + + lp.fullstop );
+									errorTextListExcel.push( colInforExcel + obj.errorText + + lp.fullstop );
+								}
+							}.bind(this));
+							break;
+						case "Number":
+							if (parseFloat(d).toString() === "NaN"){
+								errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+								errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
 							}
-						}.bind(this));
-						break;
-					case "Number":
-						if (parseFloat(d).toString() === "NaN"){
-							errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
-							errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
-						}
-						break;
-					case "Calendar":
-						if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-							errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-							errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-						}
-						break;
-					default:
-						break;
+							break;
+						case "Calendar":
+							if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+								errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+								errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+							}
+							break;
+						default:
+							break;
+					}
 				}
 				if (module && module.setData){
 					module.setData();
@@ -1698,7 +1712,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 
 		var arg = {
 			validted : flag,
-			data : tableData
+			data : idata
 		};
 		this.template.fireEvent( "validImport", [arg] );
 
