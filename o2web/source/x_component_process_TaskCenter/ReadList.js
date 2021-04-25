@@ -138,7 +138,7 @@ MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({
     setReadedClose: function(e){
         var _self = this;
         var text = this.list.app.lp.setReadedConfirmContent.replace("{title}", this.data.title );
-        this.list.app.confirm("infor", e, this.list.app.lp.setReadedConfirmTitle, text, 350, 130, function(){
+        this.list.app.confirm("infor", e, this.list.app.lp.setReadedConfirmTitle, text, 350, 230, function(){
             _self.list.app.action.setReaded(function(){
                 this.node.destroy();
                 this.list.refresh();
@@ -152,7 +152,7 @@ MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({
         var _self = this;
         // var text = "您确定要将“"+this.data.title+"”标记为已阅吗？"
         var text = this.list.app.lp.setReadedConfirmContent.replace("{title}", this.data.title );
-        this.list.app.confirm("infor", e, this.list.app.lp.setReadedConfirmTitle, text, 350, 130, function(){
+        this.list.app.confirm("infor", e, this.list.app.lp.setReadedConfirmTitle, text, 350, 230, function(){
             _self.list.app.action.setReaded(function(){
                 this.closeTaskCompleted(function(){
                     this.node.destroy();
