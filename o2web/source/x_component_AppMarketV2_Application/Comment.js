@@ -62,20 +62,22 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
                         this.app.collectUrl = data.collectUrl;
                         this.app.collectToken = data.collectToken;
                         this.loadCommentsGrade(this,this.commentsGrade.bind(this));
-                        this.loadCommentPower(this,this.commentsPower.bind(this));
+                        //this.loadCommentPower(this,this.commentsPower.bind(this));
+                        this.loadCommentPower(this);
                         this.loadCommentsList(this,this.commentsView.bind(this));
                     }
                 }.bind(this),null,false //同步执行 
             );
         }else{
             this.loadCommentsGrade(this,this.commentsGrade.bind(this));
-            this.loadCommentPower(this,this.commentsPower.bind(this));
+            //this.loadCommentPower(this,this.commentsPower.bind(this));
+            this.loadCommentPower(this);
             this.loadCommentsList(this,this.commentsView.bind(this));
         }      
     },
     loadCommentsGrade: function(content,callback){
         var json = null;
-        var commenturl = content.app.collectUrl +'/o2_collect_assemble/jaxrs/comment/stat/grade/app/'+content.appdata.id+'?time='+(new Date()).getMilliseconds();
+        var commenturl =  content.app.lp.commentpath +'/x_bbs_assemble_control/jaxrs/subject/statgrade/sectionName/'+content.app.lp.title+'/subjectType/'+content.appdata.name+'?time='+(new Date()).getMilliseconds();
         var res = new Request.JSON({
             url: commenturl,
             headers : {'x-debugger' : true,'Authorization':content.app.collectToken,'c-token':content.app.collectToken},
@@ -86,6 +88,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             contentType : 'application/json',
             crossDomain : true,
             onSuccess: function(responseJSON, responseText){
+                debugger;
                 json = responseJSON;
                 if (typeOf(callback).toLowerCase() == 'function'){
                     callback(responseJSON);
@@ -103,18 +106,38 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         res.send();
     },
     loadCommentPower: function(content,callback){
-        var json = null;
-        var commenturl = content.app.collectUrl +'/o2_collect_assemble/jaxrs/comment/app/'+content.appdata.id+'/available?time='+(new Date()).getMilliseconds();
+        var bbsurl = content.app.lp.bbsurl;
+        debugger;
+        var commentbuttondiv = new Element("div",{"class":"o2_appmarket_application_comment_middle_tip"}).inject(this.content.applicationcommentmiddle);
+        new Element("span",{
+            "class":"o2_appmarket_application_introduce_tab_current",
+            "text":content.app.lp.bbsNotice
+        }).inject(commentbuttondiv);
+        commentbuttondiv.addEvents({
+            "click": function(e){
+                window.open(bbsurl);
+            }
+        })
+    },
+    loadCommentsList:function(content,callback){
+        var commentdata = {};
+        commentdata["sectionName"] = content.app.lp.title;
+        commentdata["subjectType"] = content.appdata.name;
+        var commenturl = content.app.lp.commentpath+'/x_bbs_assemble_control/jaxrs/subject/filter/listsubjectinfo/page/1/count/10';
+        debugger;
         var res = new Request.JSON({
-            url: commenturl,
-            headers : {'x-debugger' : true,'Authorization':content.app.collectToken,'c-token':content.app.collectToken},
+            "url": commenturl,
+            "headers" : {"Content-Type": "application/json; charset=utf-8","x-debugger" : true},
             secure: false,
-            method: "get",
+            "method": "POST",
             async: true,
+            emulation: false,
+            noCache: true,
             withCredentials: true,
-            contentType : 'application/json',
             crossDomain : true,
+            "data": JSON.stringify(commentdata),
             onSuccess: function(responseJSON, responseText){
+                debugger;
                 json = responseJSON;
                 if (typeOf(callback).toLowerCase() == 'function'){
                     callback(responseJSON);
@@ -123,15 +146,18 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
                 }
             }.bind(this),
             onFailure: function(xhr){
+                debugger;
                 o2.runCallback(callback, "requestFailure", [xhr]);
             }.bind(this),
             onError: function(text, error){
+                debugger;
                 o2.runCallback(callback, "error", [text, error]);
             }.bind(this)
         });
-        res.send();        
+        debugger;
+        res.send();
     },
-    loadCommentsList:function(content,callback){
+    loadCommentsList_bak:function(content,callback){
         var json = null;
         var commenturl = content.app.collectUrl +'/o2_collect_assemble/jaxrs/comment/list/app/'+content.appdata.id+'?time='+(new Date()).getMilliseconds();
         var res = new Request.JSON({
@@ -310,7 +336,35 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         }
     },
     commentsView:function(commentdata){
-        var commentsList = commentdata.data;        
+        var commentsList = commentdata.data;
+        debugger
+        commentsList.each(function(percomment){
+            var commentcontentdiv = new Element("div",{"class":"o2_appmarket_application_comment_content"}).inject(this.content.applicationcommentbottom);
+            var commentcontentleft = new Element("div",{"class":"o2_appmarket_application_comment_content_left"}).inject(commentcontentdiv);
+            var iconpersondiv = new Element("div",{"class":"o2_appmarket_application_comment_content_left_icon"}).inject(commentcontentleft);
+            new Element("img",{"src":this.content.iconPath+"icon_men.png"}).inject(iconpersondiv);
+            debugger;
+            new Element("div",{"class":"o2_appmarket_application_comment_content_left_name","text":percomment.creatorName}).inject(commentcontentleft);
+            var commentcontentright = new Element("div",{"class":"o2_appmarket_application_comment_content_right"}).inject(commentcontentdiv);
+            var commentangulardiv = new Element("div").inject(commentcontentright);
+            for (var tmpi=0;tmpi<parseInt(percomment.grade);tmpi++){
+                new Element("img",{"src":this.content.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(commentangulardiv)
+            }
+            for (var tmpi=0;tmpi<5-parseInt(percomment.grade);tmpi++){
+                new Element("img",{"src":this.content.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(commentangulardiv)
+            }
+            var content = percomment.content;
+            var percommentConent = content.replace("<p>","").replace("</p>","");
+            new Element("div",{"class":"o2_appmarket_application_comment_content_title","text":percomment.title}).inject(commentcontentright);
+            var conentDiv = new Element("div",{"class":"o2_appmarket_application_comment_content_text"}).inject(commentcontentright);
+
+            var conentHtml = percomment.content;
+            conentDiv.set("html",conentHtml);
+            
+        }.bind(this))
+    },
+    commentsView_bak:function(commentdata){
+        var commentsList = commentdata.data;
         commentsList.each(function(percomment){
             var commentcontentdiv = new Element("div",{"class":"o2_appmarket_application_comment_content"}).inject(this.content.applicationcommentbottom);
             var commentcontentleft = new Element("div",{"class":"o2_appmarket_application_comment_content_left"}).inject(commentcontentdiv);
@@ -327,7 +381,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             }
             new Element("div",{"class":"o2_appmarket_application_comment_content_title","text":percomment.title}).inject(commentcontentright);
             new Element("div",{"class":"o2_appmarket_application_comment_content_text","text":percomment.comment,"title":percomment.comment}).inject(commentcontentright);
-            
+
         }.bind(this))
     },
     reload: function(){
