@@ -12,8 +12,10 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
         if (!this.propertyContent) {
             this.getHtmlString(function () {
                 if (this.htmlString) {
+                    this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.query.StatementDesigner.LP.propertyTemplate});
                     this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
                     this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.propertyNode);
+                    //var htmlStr = this.JsonTemplate.load();
                     this.propertyContent.set("html", this.JsonTemplate.load());
 
                     this.setEditNodeEvent();
