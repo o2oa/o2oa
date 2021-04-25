@@ -17,7 +17,7 @@
 	"verificationNode": {
 	    "background-color": "#fbe8e8",
 	    "color": "#ff0000",
-	    "height": "24px",
+	    "height": "auto",
 	    "line-height": "24px"
 	},
 	"verificationTextNode": {

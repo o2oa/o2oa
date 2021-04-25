@@ -2,63 +2,63 @@
 	<div title="基本" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">列标题:</td>
+                <td class="editTableTitle">{{$.lp.columnTitle}}:</td>
                 <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">列名:</td>
+                <td class="editTableTitle">{{$.lp.columnName}}:</td>
                 <td class="editTableValue"><input type="text" name="column" value="text{$.column}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">默认值:</td>
+                <td class="editTableTitle">{{$.lp.defaultValue}}:</td>
                 <td class="editTableValue"><input type="text" name="defaultValue" value="text{$.defaultValue}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">打开文档:</td>
+                <td class="editTableTitle">{{$.lp.openDocument}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="allowOpen" text{($.allowOpen===true)?'checked':''} type="radio" value="true"
                            onclick="if(this.checked){
                                $('text{$.pid}clickCodeTr').setStyle('display', '');
                                $('text{$.pid}idPathTr').setStyle('display', '');
-                           }"/>是
+                           }"/>{{$.lp.yes}}
                     <input class="editTableRadio" name="allowOpen" text{($.allowOpen!==true)?'checked':''} type="radio" value="false"
                            onclick="if(this.checked){
                                $('text{$.pid}clickCodeTr').setStyle('display', 'none');
                                $('text{$.pid}idPathTr').setStyle('display', 'none');
-                           }"/>否
+                           }"/>{{$.lp.no}}
                 </td>
             </tr>
             <tr id="text{$.pid}clickCodeTr" style="display:text{($.allowOpen===true)?'':'none'}">
                 <td class="editTableValue" colspan="2">
-                    <div class="MWFFormulaArea" name="clickCode" title="打开文档脚本(S)"></div>
+                    <div class="MWFFormulaArea" name="clickCode" title="{{$.lp.openDocumentScript}}(S)"></div>
                 </td>
             </tr>
             <tr id="text{$.pid}idPathTr" style="display:text{($.allowOpen===true)?'':'none'}">
-                <td class="editTableTitle">id路径:</td>
+                <td class="editTableTitle">{{$.lp.idPath}}:</td>
                 <td class="editTableValue">
                     <input type="text" name="idPath" value="text{$.idPath}" class="editTableInput"/>
-                    <div style="line-height: 20px;color:#999;">注：指Id（cms文档id/流程work id）相对单条数据的路径，用于打开文档。</div>
+                    <div style="line-height: 20px;color:#999;">{{$.lp.idPathNote}}</div>
                 </td>
             </tr>
         </table>
 
         <div style="border-top: 1px solid #999; margin-top:10px">
-            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">数据</div>
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.data}}</div>
             <div class="MWFDataData" id="text{$.pid}dataDataEditor">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="table-layout: fixed;">
                     <tr>
-                        <td class="editTableTitle">选择路径:</td>
+                        <td class="editTableTitle">{{$.lp.selectPath}}:</td>
                         <td class="editTableValue">
                             <select class="MWFDataPathSelect" id="text{$.pid}dataPathSelected" onchange=" var v=this.options[this.selectedIndex].value; if (true){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">
                             </select>
-                            <div style="line-height: 20px;color:#999;">注：正确填写了查询语句，再测试语句或刷新视图数据可显示(刷新)选择路径。</div>
+                            <div style="line-height: 20px;color:#999;">{{$.lp.selectPathNote}}</div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">数据路径:</td>
+                        <td class="editTableTitle">{{$.lp.dataPath}}:</td>
                         <td class="editTableValue">
                             <input id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/>
-                            <div style="line-height: 20px;color:#999;">注：指该列相对单条数据的路径。比如 0，title，或 0.title</div>
+                            <div style="line-height: 20px;color:#999;">{{$.lp.dataPathNote}}</div>
                         </td>
                     </tr>
                 </table>
@@ -68,37 +68,37 @@
         <div style="border-top: 1px solid #999; margin-top:10px">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr class="MWFColumnExportHide">
-                    <td class="editTableTitle">隐藏:</td>
+                    <td class="editTableTitle">{{$.lp.hidden}}:</td>
                     <td class="editTableValue">
-                        <input class="MWFWorkDataCheck" name="hideColumn" type="radio" value="true" text{($.hideColumn)===true?'checked':''}/>是
-                        <input class="MWFWorkDataCheck" name="hideColumn" type="radio" value="false" text{($.hideColumn)!==true?'checked':''}/>否
+                        <input class="MWFWorkDataCheck" name="hideColumn" type="radio" value="true" text{($.hideColumn)===true?'checked':''}/>{{$.lp.yes}}
+                        <input class="MWFWorkDataCheck" name="hideColumn" type="radio" value="false" text{($.hideColumn)!==true?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
                 <tr class="MWFColumnExportGroup">
-                    <td class="editTableTitle">组织对象:</td>
+                    <td class="editTableTitle">{{$.lp.org}}:</td>
                     <td class="editTableValue">
-                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>是
-                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>否
+                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>{{$.lp.yes}}
+                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
                 <tr class="MWFColumnExportGroup">
-                    <td class="editTableTitle">HTML值:</td>
+                    <td class="editTableTitle">{{$.lp.htmlValue}}:</td>
                     <td class="editTableValue">
-                        <input class="MWFWorkDataCheck" name="isHtml" type="radio" value="true" text{($.isHtml)===true?'checked':''}/>是
-                        <input class="MWFWorkDataCheck" name="isHtml" type="radio" value="false" text{($.isHtml)!==true?'checked':''}/>否
+                        <input class="MWFWorkDataCheck" name="isHtml" type="radio" value="true" text{($.isHtml)===true?'checked':''}/>{{$.lp.yes}}
+                        <input class="MWFWorkDataCheck" name="isHtml" type="radio" value="false" text{($.isHtml)!==true?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
             </table>
         </div>
-        <div class="MWFFormulaArea" name="code" title="显示脚本 (S)"></div>
+        <div class="MWFFormulaArea" name="code" title="{{$.lp.showScript}}(S)"></div>
 	</div>
-    <div title="样式" class="MWFTab">
-        <div class="MWFMaplist" name="titleStyles" title="标题单元格样式"></div>
-        <div class="MWFMaplist" name="titleProperties" title="标题单元格属性"></div>
-        <div class="MWFMaplist" name="contentStyles" title="内容单元格样式"></div>
-        <div class="MWFMaplist" name="contentProperties" title="内容单元格属性"></div>
+    <div title="{{$.lp.id}}" class="MWFTab">
+        <div class="MWFMaplist" name="titleStyles" title="{{$.lp.titleStyles}}"></div>
+        <div class="MWFMaplist" name="titleProperties" title="{{$.lp.titleProperties}}"></div>
+        <div class="MWFMaplist" name="contentStyles" title="{{$.lp.contentStyles}}"></div>
+        <div class="MWFMaplist" name="contentProperties" title="{{$.lp.contentProperties}}"></div>
     </div>
-    <div title="事件"  class="MWFTab">
+    <div title="{{$.lp.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="events"></div>
     </div>
 	<div title="JSON"  class="MWFTab">
