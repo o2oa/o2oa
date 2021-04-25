@@ -78,5 +78,30 @@ MWF.xApplication.query.TableDesigner.LP = {
 
     "buildAllViewInfor": "即将编译所有数据表，包括所有数据应用中的数据表，编译后您可能需要重启服务器后才能使用此数据表。您确定要执行此操作吗？",
     "buildAllView_success": "已编译所有数据表，新的更改需要您重启服务器后生效",
-    "tableHelp": "数据表能够在系统数据库中自动创建真实表，并生成java实体对象，您可以使用JPQL操作数据表。创建数据表需要以下步骤：<br><br>1、创建数据表，并创建每一列；<br>2、点击工具栏按钮，将数据表发布到编译状态；<br>3、点击工具栏按钮，执行“编译所有数据表”操作<br>4、重启服务器，数据表就可以使用了。"
+    "tableHelp": "数据表能够在系统数据库中自动创建真实表，并生成java实体对象，您可以使用JPQL操作数据表。创建数据表需要以下步骤：<br><br>1、创建数据表，并创建每一列；<br>2、点击工具栏按钮，将数据表发布到编译状态；<br>3、点击工具栏按钮，执行“编译所有数据表”操作<br>4、重启服务器，数据表就可以使用了。",
+    "propertyTemplate": {
+        "base": "基本",
+        "event": "事件",
+        "html": "HTML",
+        "json": "JSON",
+        "action": "操作",
+        "select": "选择",
+        "alias": "别名",
+
+        "id": "标识",
+        "name": "名称",
+        "description": "描述",
+        "style": "样式",
+        "attribute": "属性",
+        "type": "类型",
+        "status": "状态",
+        "draft": "草稿",
+        "published": "已发布",
+
+        "authority":"执行权限",
+        "readPersonList":"可读人",
+        "readUnitList":"可读组织",
+        "editPersonList":"可编辑人",
+        "editUnitList":"可编辑组织"
+    }
 };
