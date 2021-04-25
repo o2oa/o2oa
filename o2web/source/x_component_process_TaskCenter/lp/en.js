@@ -5,11 +5,11 @@ MWF.xApplication.process.TaskCenter.LP = {
     "searchKey": "Please enter key words",
 
     "task": "Task",
-    "done": "TaskCompany",
+    "done": "Task Completed",
     "draft": "Draft",
     "myfile": "MyDocument",
     "read": "Read",
-    "readed": "ReadCompany",
+    "readed": "Read Completed",
     "review": "Review",
     "start": "Start",
     "startTop5": "Common Process",
