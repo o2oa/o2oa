@@ -2,65 +2,65 @@
 	<div title="基本" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">列标题:</td>
+                <td class="editTableTitle">{{$.lp.columnTitle}}:</td>
                 <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">列名:</td>
+                <td class="editTableTitle">{{$.lp.columnName}}:</td>
                 <td class="editTableValue"><input type="text" name="column" value="text{$.column}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">默认值:</td>
+                <td class="editTableTitle">{{$.lp.defaultValue}}:</td>
                 <td class="editTableValue"><input type="text" name="defaultValue" value="text{$.defaultValue}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">打开文档:</td>
+                <td class="editTableTitle">{{$.lp.openDocument}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="allowOpen" text{($.allowOpen===true)?'checked':''} type="radio" value="true"
-                           onclick="if(this.checked){ $('text{$.pid}clickCodeTr').setStyle('display', '');}"/>是
+                           onclick="if(this.checked){ $('text{$.pid}clickCodeTr').setStyle('display', '');}"/>{{$.lp.yes}}
                     <input class="editTableRadio" name="allowOpen" text{($.allowOpen!==true)?'checked':''} type="radio" value="false"
-                           onclick="if(this.checked){ $('text{$.pid}clickCodeTr').setStyle('display', 'none');}"/>否
+                           onclick="if(this.checked){ $('text{$.pid}clickCodeTr').setStyle('display', 'none');}"/>{{$.lp.no}}
                 </td>
             </tr>
             <tr id="text{$.pid}clickCodeTr" style="display:text{($.allowOpen===true)?'':'none'}">
                 <td class="editTableValue" colspan="2">
-                    <div class="MWFFormulaArea" name="clickCode" title="打开文档脚本(S)"></div>
+                    <div class="MWFFormulaArea" name="clickCode" title="{{$.lp.openDocumentScript}}(S)"></div>
                 </td>
             </tr>
         </table>
 
         <div style="border-top: 1px solid #999; margin-top:10px">
-            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">数据</div>
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.data}}</div>
             <div class="MWFDataData" id="text{$.pid}dataDataEditor">
                 <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}dataPathSelectedProcessArea" class="text{$.vid}dataPathSelectedProcessArea">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">选择数据:</td>
+                            <td class="editTableTitle">{{$.lp.selectData}}:</td>
                             <td class="editTableValue"><select id="text{$.pid}dataPathSelected" onchange=" var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">
-                                <option value="" selected>(请选择)</option>
-                                <option value="$work.title">标题</option>
-                                <option value="$work.startTime">创建时间</option>
-                                <option value="$work.startTimeMonth">创建月份</option>
-                                <option value="$work.completedTime">完成时间</option>
-                                <option value="$work.completedTimeMonth">完成月份</option>
-                                <option value="$work.creatorPerson">拟稿人</option>
-                                <option value="$work.creatorIdentity">拟稿人身份</option>
-                                <option value="$work.creatorUnit">拟稿组织</option>
-                                <option value="$work.creatorUnitLevelName">拟稿组织层级</option>
-                                <option value="$work.application">应用ID</option>
-                                <option value="$work.applicationName">应用名称</option>
-                                <option value="$work.applicationAlias">应用别名</option>
-                                <option value="$work.process">流程ID</option>
-                                <option value="$work.processName">流程名称</option>
-                                <option value="$work.processAlias">流程别名</option>
-                                <option value="$work.serial">编号</option>
-                                <option value="$work.activityType">活动类型</option>
-                                <option value="$work.activityName">活动名称</option>
-                                <option value="$work.activityArrivedTime">活动到达时间</option>
-                                <option value="$work.workId">工作ID</option>
-                                <option value="$work.workCompletedId">已完成工作ID</option>
-                                <option value="$work.job">JOB的ID(job)</option>
-                                <option value="$work.completed">是否已完成(completed)</option>
+                                <option value="" selected>{{$.lp.selectTitle}}</option>
+                                <option value="$work.title">{{$.lp.title}}</option>
+                                <option value="$work.startTime">{{$.lp.startTime}}</option>
+                                <option value="$work.startTimeMonth">{{$.lp.startTimeMonth}}</option>
+                                <option value="$work.completedTime">{{$.lp.completedTime}}</option>
+                                <option value="$work.completedTimeMonth">{{$.lp.completedTimeMonth}}</option>
+                                <option value="$work.creatorPerson">{{$.lp.creatorPerson}}</option>
+                                <option value="$work.creatorIdentity">{{$.lp.creatorIdentity}}</option>
+                                <option value="$work.creatorUnit">{{$.lp.creatorUnit}}</option>
+                                <option value="$work.creatorUnitLevelName">{{$.lp.creatorUnitLevelName}}</option>
+                                <option value="$work.application">{{$.lp.application}}</option>
+                                <option value="$work.applicationName">{{$.lp.applicationName}}</option>
+                                <option value="$work.applicationAlias">{{$.lp.applicationAlias}}</option>
+                                <option value="$work.process">{{$.lp.process}}</option>
+                                <option value="$work.processName">{{$.lp.processName}}</option>
+                                <option value="$work.processAlias">{{$.lp.processAlias}}</option>
+                                <option value="$work.serial">{{$.lp.serial}}</option>
+                                <option value="$work.activityType">{{$.lp.activityType}}</option>
+                                <option value="$work.activityName">{{$.lp.activityName}}</option>
+                                <option value="$work.activityArrivedTime">{{$.lp.activityArrivedTime}}</option>
+                                <option value="$work.workId">{{$.lp.workId}}</option>
+                                <option value="$work.workCompletedId">{{$.lp.workCompletedId}}</option>
+                                <option value="$work.job">{{$.lp.job}}</option>
+                                <option value="$work.completed">{{$.lp.completed}}</option>
                             </select></td>
                         </tr>
                     </table>
@@ -68,28 +68,28 @@
                 <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}dataPathSelectedCMSArea" class="text{$.vid}dataPathSelectedCMSArea">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">选择数据:</td>
+                            <td class="editTableTitle">{{$.lp.selectData}}:</td>
                             <td class="editTableValue"><select  id="text{$.pid}dataPathSelectedCMS" onchange="var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">
-                                <option value="" selected>(请选择)</option>
-                                <option value="$document.title">标题</option>
-                                <option value="$document.publishTime">发布时间</option>
-                                <option value="$document.creatorPerson">拟稿人</option>
-                                <option value="$document.creatorIdentity">拟稿人身份</option>
-                                <option value="$document.creatorUnitName">拟稿组织</option>
-                                <option value="$document.creatorTopUnitName">拟稿顶级组织</option>
-                                <option value="$document.appId">栏目ID</option>
-                                <option value="$document.appName">栏目名称</option>
-                                <option value="$document.categoryId">分类ID</option>
-                                <option value="$document.categoryName">分类名称</option>
-                                <option value="$document.categoryAlias">分类别名</option>
-                                <option value="$document.id">文档ID</option>
+                                <option value="" selected>{{$.lp.selectTitle}}</option>
+                                <option value="$document.title">{{$.lp.title}}</option>
+                                <option value="$document.publishTime">{{$.lp.publishTime}}</option>
+                                <option value="$document.creatorPerson">{{$.lp.creatorPerson}}</option>
+                                <option value="$document.creatorIdentity">{{$.lp.creatorIdentity}}</option>
+                                <option value="$document.creatorUnitName">{{$.lp.creatorUnitName}}</option>
+                                <option value="$document.creatorTopUnitName">{{$.lp.creatorTopUnitName}}</option>
+                                <option value="$document.appId">{{$.lp.appId}}</option>
+                                <option value="$document.appName">{{$.lp.appName}}</option>
+                                <option value="$document.categoryId">{{$.lp.categoryId}}</option>
+                                <option value="$document.categoryName">{{$.lp.categoryName}}</option>
+                                <option value="$document.categoryAlias">{{$.lp.categoryAlias}}</option>
+                                <option value="$document.id">{{$.lp.documentId}}</option>
                             </select></td>
                         </tr>
                     </table>
                 </div>
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">数据路径:</td>
+                        <td class="editTableTitle">{{$.lp.dataPath}}:</td>
                         <td class="editTableValue"><input onkeypress="$('text{$.pid}dataPathSelected').getElement('option').set('selected', true); $('text{$.pid}dataPathSelectedCMS').getElement('option').set('selected', true)" id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
                     </tr>
                 </table>
@@ -100,7 +100,7 @@
             <div class="MWFColumnExport" id="text{$.pid}columnExportEditor">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">排序:</td>
+                        <td class="editTableTitle">{{$.lp.order}}:</td>
                         <td class="editTableValue"><select name="orderType" onchange="
                             var node = $(this).getParent('table').getElement('.MWFColumnExportNumberOrder');
                             if(this.options[this.selectedIndex].value==='none'){
@@ -110,60 +110,60 @@
                                 node.setStyle('display','table-row');
                             }
                         ">
-                            <option value="none" text{(($.orderType)!='asc' && ($.orderType)!='desc') ?'selected':''}>无</option>
-                            <option value="asc" text{($.orderType)=='asc' ?'selected':''}>升序</option>
-                            <option value="desc" text{($.orderType)=='desc' ?'selected':''}>降序</option>
+                            <option value="none" text{(($.orderType)!='asc' && ($.orderType)!='desc') ?'selected':''}>{{$.lp.none}}</option>
+                            <option value="asc" text{($.orderType)=='asc' ?'selected':''}>{{$.lp.asc}}</option>
+                            <option value="desc" text{($.orderType)=='desc' ?'selected':''}>{{$.lp.desc}}</option>
                         </select></td>
                     </tr>
                     <tr class="MWFColumnExportNumberOrder" style="display: text{(($.orderType)!='asc' && ($.orderType)!='desc') ?'none':'table-row'}">
-                        <td class="editTableTitle">转换成数字排序:</td>
+                        <td class="editTableTitle">{{$.lp.orderToNumber}}:</td>
                         <td class="editTableValue">
-                            <input class="MWFWorkDataCheck" name="numberOrder" type="radio" value="true" text{($.numberOrder)===true?'checked':''}/>是
-                            <input class="MWFWorkDataCheck" name="numberOrder" type="radio" value="false" text{($.numberOrder)!==true?'checked':''}/>否
+                            <input class="MWFWorkDataCheck" name="numberOrder" type="radio" value="true" text{($.numberOrder)===true?'checked':''}/>{{$.lp.yes}}
+                            <input class="MWFWorkDataCheck" name="numberOrder" type="radio" value="false" text{($.numberOrder)!==true?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                     <tr class="MWFColumnExportGroup">
-                        <td class="editTableTitle">分类:</td>
+                        <td class="editTableTitle">{{$.lp.category}}:</td>
                         <td class="editTableValue">
-                            <input class="MWFWorkDataCheck" name="groupEntry" type="radio" value="true" text{($.groupEntry)===true?'checked':''}/>是
-                            <input class="MWFWorkDataCheck" name="groupEntry" type="radio" value="false" text{($.groupEntry)!==true?'checked':''}/>否
+                            <input class="MWFWorkDataCheck" name="groupEntry" type="radio" value="true" text{($.groupEntry)===true?'checked':''}/>{{$.lp.yes}}
+                            <input class="MWFWorkDataCheck" name="groupEntry" type="radio" value="false" text{($.groupEntry)!==true?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                 </table>
             </div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr class="MWFColumnExportHide">
-                    <td class="editTableTitle">隐藏:</td>
+                    <td class="editTableTitle">{{$.lp.hidden}}:</td>
                     <td class="editTableValue">
-                        <input class="MWFWorkDataCheck" name="hideColumn" type="radio" value="true" text{($.hideColumn)===true?'checked':''}/>是
-                        <input class="MWFWorkDataCheck" name="hideColumn" type="radio" value="false" text{($.hideColumn)!==true?'checked':''}/>否
+                        <input class="MWFWorkDataCheck" name="hideColumn" type="radio" value="true" text{($.hideColumn)===true?'checked':''}/>{{$.lp.yes}}
+                        <input class="MWFWorkDataCheck" name="hideColumn" type="radio" value="false" text{($.hideColumn)!==true?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
                 <tr class="MWFColumnExportGroup">
-                    <td class="editTableTitle">组织对象:</td>
+                    <td class="editTableTitle">{{$.lp.org}}:</td>
                     <td class="editTableValue">
-                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>是
-                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>否
+                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>{{$.lp.yes}}
+                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
                 <tr class="MWFColumnExportGroup">
-                    <td class="editTableTitle">HTML值:</td>
+                    <td class="editTableTitle">{{$.lp.htmlValue}}:</td>
                     <td class="editTableValue">
-                        <input class="MWFWorkDataCheck" name="isHtml" type="radio" value="true" text{($.isHtml)===true?'checked':''}/>是
-                        <input class="MWFWorkDataCheck" name="isHtml" type="radio" value="false" text{($.isHtml)!==true?'checked':''}/>否
+                        <input class="MWFWorkDataCheck" name="isHtml" type="radio" value="true" text{($.isHtml)===true?'checked':''}/>{{$.lp.yes}}
+                        <input class="MWFWorkDataCheck" name="isHtml" type="radio" value="false" text{($.isHtml)!==true?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
             </table>
         </div>
-        <div class="MWFFormulaArea" name="code" title="显示脚本 (S)"></div>
+        <div class="MWFFormulaArea" name="code" title="{{$.lp.showScript}}(S)"></div>
 	</div>
-    <div title="样式" class="MWFTab">
-        <div class="MWFMaplist" name="titleStyles" title="标题单元格样式"></div>
-        <div class="MWFMaplist" name="titleProperties" title="标题单元格属性"></div>
-        <div class="MWFMaplist" name="contentStyles" title="内容单元格样式"></div>
-        <div class="MWFMaplist" name="contentProperties" title="内容单元格属性"></div>
+    <div title="{{$.lp.id}}" class="MWFTab">
+        <div class="MWFMaplist" name="titleStyles" title="{{$.lp.titleStyles}}"></div>
+        <div class="MWFMaplist" name="titleProperties" title="{{$.lp.titleProperties}}"></div>
+        <div class="MWFMaplist" name="contentStyles" title="{{$.lp.contentStyles}}"></div>
+        <div class="MWFMaplist" name="contentProperties" title="{{$.lp.contentProperties}}"></div>
     </div>
-    <div title="事件"  class="MWFTab">
+    <div title="{{$.lp.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="events"></div>
     </div>
 	<div title="JSON"  class="MWFTab">
