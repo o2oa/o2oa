@@ -3,17 +3,11 @@ package com.x.bbs.assemble.control.jaxrs.subjectinfo;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -175,6 +169,56 @@ public class SubjectInfoAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionRoleInfoProcess(e, "列示根据过滤条件的推荐主题列表时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示根据过滤条件(版块名称，标题类别)的SubjectInfo,下一页.", action = ActionSubjectListWithSubjectTypeForPage.class)
+	@POST
+	@Path("filter/listsubjectinfo/page/{page}/count/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listSubjectWithSubjectTypeForPage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								   @JaxrsParameterDescribe("显示页码") @PathParam("page") Integer page,
+								   @JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		ActionResult<List<ActionSubjectListWithSubjectTypeForPage.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionSubjectListWithSubjectTypeForPage().execute(request, effectivePerson, page, count, jsonElement);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionRoleInfoProcess(e, "列示根据过滤条件的推荐主题列表时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "统计根据过滤条件(版块名称，标题类别)的SubjectInfo的评分", action = ActionSubjectStatGradeWithSubjectType.class)
+	@GET
+	@Path("statgrade/sectionName/{sectionName}/subjectType/{subjectType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void statSubjectGrade(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+												  @JaxrsParameterDescribe("版块名称") @PathParam("sectionName") String sectionName,
+												  @JaxrsParameterDescribe("主题类别") @PathParam("subjectType") String subjectType) {
+		ActionResult<List<ActionSubjectStatGradeWithSubjectType.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionSubjectStatGradeWithSubjectType().execute(effectivePerson, sectionName, subjectType);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionRoleInfoProcess(e, "统计根据过滤条件(版块名称，标题类别)的SubjectInfo的评分时发生异常！");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
