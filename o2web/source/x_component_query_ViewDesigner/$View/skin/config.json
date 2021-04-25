@@ -1,41 +1,41 @@
 {
   "default": {
-    "name": "默认样式",
+    "name": MWF.xApplication.query.ViewDesigner.LP.viewStyle.default,
     "file": "styles_default.json",
     "mode": [
       "pc"
     ]
   },
   "red-simple": {
-    "name": "红色简洁",
+    "name": MWF.xApplication.query.ViewDesigner.LP.viewStyle.redSimple,
     "file": "styles_red-simple.json",
     "mode": [
       "pc"
     ]
   },
   "blue-simple": {
-    "name": "蓝色简洁",
+    "name": MWF.xApplication.query.ViewDesigner.LP.viewStyle.blueSimple,
     "file": "styles_blue-simple.json",
     "mode": [
       "pc"
     ]
   },
   "official": {
-    "name": "公文样式",
+    "name": MWF.xApplication.query.ViewDesigner.LP.viewStyle.official,
     "file": "styles_official.json",
     "mode": [
       "pc"
     ]
   },
   "cmcc": {
-    "name": "集团样式",
+    "name": MWF.xApplication.query.ViewDesigner.LP.viewStyle.deepBlue,
     "file": "styles_cmcc.json",
     "mode": [
       "pc"
     ]
   },
   "blue-flat": {
-    "name": "蓝白扁平",
+    "name": MWF.xApplication.query.ViewDesigner.LP.viewStyle.blueFlat,
     "file": "styles_blue-flat.json",
     "mode": [
       "pc"
