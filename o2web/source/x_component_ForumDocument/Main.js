@@ -50,7 +50,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		this.restActions = this.actions = MWF.Actions.get("x_bbs_assemble_control"); //new MWF.xApplication.Forum.Actions.RestActions();
 
 		this.path = "../x_component_ForumDocument/$Main/"+this.options.style+"/";
-
+		this.selectstar = 0;
 		if( this.status ){
 			this.setOptions( this.status )
 		}
@@ -146,6 +146,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		this.restActions.listSectionPermission( sectionId, function( permission ){
 			this.sectionPermission = permission.data;
 			this.restActions.getSection( sectionId, function( json ) {
+				debugger;
 				this.sectionData = json.data;
 				//this.access.hasSectionAdminAuthority( this.sectionData , function( flag ){
 				//	this.isAdmin = flag;
@@ -282,7 +283,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		//		}
 		//	});
 		//}.bind(this));
-
+		debugger;
 		if( this.options.isNew || this.options.isEdited ){
 			this._createMiddleNode_eidt();
 		}else{
@@ -312,6 +313,10 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			"</tr><tr>" +
 			"   <td styles='formTableTitle' lable='content'></td>" +
 			"   <td styles='formTableValue' item='content' colspan='3'></td>" +
+			"</tr>" +
+			"<tr style='display:none' item='gradeArea'>" +
+			"   <td styles='formTableTitle'>"+ this.lp.sectionGrade +"</td>" +
+			"   <td item='gradeContainer' colspan='3'></td>" +
 			"</tr><tr>" +
 			"   <td styles='formTableTitle'>"+ this.lp.attachment +"</td>" +
 			"   <td item='attachment' colspan='3'></td>" +
@@ -333,12 +338,17 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		}
 
 		var subjectTypeSelectValue;
-		if( this.sectionData.subjectType ){
-			subjectTypeSelectValue = this.sectionData.subjectType.split("|");
-		}else if( this.forumData.subjectType ){
-			subjectTypeSelectValue = this.forumData.subjectType.split("|");
+		debugger;
+		if(this.sectionData.subjectTypeList && this.sectionData.subjectTypeList.length>0){
+			subjectTypeSelectValue = this.sectionData.subjectTypeList;
 		}else{
-			subjectTypeSelectValue = this.lp.subjectTypeDefaultValue.split("|");
+			if( this.sectionData.subjectType ){
+				subjectTypeSelectValue = this.sectionData.subjectType.split("|");
+			}else if( this.forumData.subjectType ){
+				subjectTypeSelectValue = this.forumData.subjectType.split("|");
+			}else{
+				subjectTypeSelectValue = this.lp.subjectTypeDefaultValue.split("|");
+			}
 		}
 		var typeCategorySelectValue;
 		if( this.sectionData.typeCategory ){
@@ -361,7 +371,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 					},
 					typeCategory :{ type : "select", selectValue : typeCategorySelectValue , notEmpty : true, event : {
 						change : function(item, ev){
-							if(item.getValue() == this.lp.vote || item.getValue() == "投票"){
+							if( item.getValue() == this.lp.vote ){
 								this.contentDiv.getElements( "[item='voteArea']").setStyle("display","");
 								this.loadVoteArea();
 							}else{
@@ -398,11 +408,15 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			}, this, this.css);
 			this.form.load();
 		}.bind(this), true);
-
-		if( this.data.typeCategory == this.lp.vote || this.data.typeCategory == "投票" ){
+		if( this.data.typeCategory == this.lp.vote ){
 			this.contentDiv.getElement( "[item='voteArea']").setStyle("display","");
 			this.loadVoteArea();
 		}
+		if(this.sectionData.sectionGrade){
+			this.contentDiv.getElements( "[item='gradeArea']").setStyle("display","");
+			this.loadGradeArea();
+		}
+
 
 		var actionTd = this.contentDiv.getElements("[item='action']")[0];
 		this.saveAction = new Element("div",{
@@ -450,6 +464,47 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			this.vote.load();
 		}.bind(this), true)
 	},
+	loadGradeArea : function(){
+		this.gradeContainer = this.contentDiv.getElement("[item='gradeContainer']");
+		var content = new Element("div").inject(this.gradeContainer);
+		var xingdiv = new Element("div").inject(content);
+		var xingpngdiv = new Element("div",{"class":"comment_dlg_png"}).inject(xingdiv);
+		var starnode;
+		var _self = this;
+		debugger;
+		for (var tmpi=0;tmpi<5;tmpi++){
+			starnode = new Element("img",{"src":_self.path+"icon/whitefiveangular.png","class":tmpi+"star comment_dlg_star"}).inject(xingpngdiv);
+			starnode.store("id",tmpi);
+			if(this.data.grade && this.data.grade<6){
+			    if(this.data.grade>tmpi){
+                    var starblacknode = starnode;
+                    while(starblacknode){
+                        starblacknode.set("src",_self.path+"icon/blackfiveangular.png");
+                        starblacknode = starblacknode.previousElementSibling;
+                    }
+                }
+            }else{
+                starnode.addEvents({
+                    "click": function(e){
+                        var idnum = this.retrieve("id");
+                        _self.selectstar = idnum + 1;
+                        var starblacknode = this;
+                        var starwhitenode = this.nextElementSibling;
+                        while(starwhitenode){
+                            starwhitenode.set("src",_self.path+"icon/whitefiveangular.png");
+                            starwhitenode = starwhitenode.nextElementSibling;
+                        }
+                        while(starblacknode){
+                            starblacknode.set("src",_self.path+"icon/blackfiveangular.png");
+                            starblacknode = starblacknode.previousElementSibling
+                        }
+                    }
+                });
+            }
+		}
+		var cleardiv = new Element("div",{"style":"clear:both"}).inject(content);
+		var commentdiv = new Element("div").inject(content);
+	},
 	reloadAllParents : function(){
 		var aid = "Forum";
 		if (this.desktop.apps[aid] && this.desktop.apps[aid].reload){
@@ -472,12 +527,12 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		if( !data ){ //校验没通过
 			// 校验投票
 			var typeCategory = this.form.getItem("typeCategory");
-			if( typeCategory.getValue() == this.lp.vote || typeCategory.getValue() == "投票"){
+			if( typeCategory.getValue() == this.lp.vote ){
 				this.vote.getVoteInfor()
 			}
 			return;
 		}
-		if( data.typeCategory == this.lp.vote || data.typeCategory == "投票" ){
+		if( data.typeCategory == this.lp.vote ){
 			var voteData = this.vote.getVoteInfor();
 			if( !voteData )return;
 			for( var key in voteData ){
@@ -494,31 +549,38 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		}
 	},
 	_saveSubject : function( data ){
+		debugger;
 		if( this.advanceId )data.id = this.advanceId;
 		data.attachmentList = this.attachment.getAttachmentIds();
-		if (data) {
-			data.sectionId = this.sectionData.id;
-			//data.picId = this.picId || "";
-			this.restActions.saveSubject(data, function (json) {
-				this.notice(this.options.isNew ? this.lp.createSuccess : this.lp.updateSuccess, "success");
-				this.fireEvent("postPublish");
+		if(this.sectionData.sectionGrade && this.selectstar==0){
+			MWF.xDesktop.notice("error", {x: "right", y:"top"}, this.lp.gradeNotice);
+		}else{
+			data.grade = this.selectstar;
+			if (data) {
+				data.sectionId = this.sectionData.id;
+				//data.picId = this.picId || "";
+				this.restActions.saveSubject(data, function (json) {
+					this.notice(this.options.isNew ? this.lp.createSuccess : this.lp.updateSuccess, "success");
+					this.fireEvent("postPublish");
 
-				this.reloadAllParents();
+					this.reloadAllParents();
 
-				var oldId = "ForumDocument"+ ( this.options.isNew ? this.sectionData.id : this.data.id );
-				var appId = "ForumDocument"+json.data.id;
-				this.advanceId = "";
-				this.setOptions({
-					"id" : json.data.id,
-					"appId": appId,
-					"isEdited" : false,
-					"isNew" : false //,
-					//"index" : nextIndex
-				});
-				this.reload(oldId , appId );
+					var oldId = "ForumDocument"+ ( this.options.isNew ? this.sectionData.id : this.data.id );
+					var appId = "ForumDocument"+json.data.id;
+					this.advanceId = "";
+					this.setOptions({
+						"id" : json.data.id,
+						"appId": appId,
+						"isEdited" : false,
+						"isNew" : false //,
+						//"index" : nextIndex
+					});
+					this.reload(oldId , appId );
 
-			}.bind(this))
+				}.bind(this))
+			}
 		}
+
 	},
 	_createMiddleNode_read: function(){
 		this.isReplyPublisher = this.permission.replyPublishAble; //this.access.isReplyPublisher( this.sectionData );
@@ -536,7 +598,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			"styles" : this.css.subjectConainer
 		}).inject( contentConainer );
 
-		if( this.data.typeCategory == this.lp.question || this.data.typeCategory == "问题" ){
+		if( this.data.typeCategory == this.lp.question ){
 			this.satisfiedReplyViewConainer = new Element("div.satisfiedReplyViewConainer",{
 				"styles" : this.css.replyViewConainer
 			}).inject( contentConainer );
@@ -549,7 +611,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		this.createPagingBar();
 
 		this.createSubject();
-		if( this.data.typeCategory == this.lp.question || this.data.typeCategory == "问题" ) {
+		if( this.data.typeCategory == this.lp.question ) {
 			if( this.data.acceptReplyId ){
 				this.createSatisfiedReplyView();
 			}
@@ -710,9 +772,9 @@ MWF.xApplication.ForumDocument.Main = new Class({
 				"styles" : this.css.toolbarPrime,
 				"title" : (this.data.screamSetterName || "").split("@")[0]+ this.lp.at + this.data.screamSetterTime + this.lp.setPrime
 			}).inject( this.toolbarRight );
-		}else if( this.data.typeCategory == this.lp.vote || this.data.typeCategory == "投票" ){
+		}else if( this.data.typeCategory == this.lp.vote ){
 			new Element( "div.vote", { "styles" : this.css.toolbarVote, "title" : this.lp.vote }).inject( this.toolbarRight );
-		}else if( this.data.typeCategory == this.lp.question || this.data.typeCategory == "问题" ){
+		}else if( this.data.typeCategory == this.lp.question ){
 			new Element( "div.question", { "styles" : this.css.toolbarQuestion, "title" : this.lp.question }).inject( this.toolbarRight );
 		}
 
@@ -976,7 +1038,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			})
 		}
 
-		if( this.data.typeCategory != this.lp.vote && this.data.typeCategory != "投票" ){
+		if( this.data.typeCategory != this.lp.vote ){
 			if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName ){
 				action = new Element("div", {
 					"styles" : this.css.actionItem,
@@ -1680,13 +1742,34 @@ MWF.xApplication.ForumDocument.SubjectDocument = new Class({
 	_postCreateDocumentNode: function( itemNode, itemData ){
 		var toolbar = itemNode.getElement("[item='itemSubjectTools']");
 		this.app.createActionBar(toolbar);
+debugger;
+        if(this.data.grade && this.data.grade<6) {
+            //itemNode.getElements("[lable='grade']")[0].set("text", this.app.lp.sectionGrade);
+            var gradediv = new Element("div", {"class": "comment_dlg_png"}).inject(itemNode.getElements("[item='grade']")[0]);
+
+            for (var tmpi = 0; tmpi < 5; tmpi++) {
+                starnode = new Element("img", {
+                    "src": this.app.path + "icon/whitefiveangular.png",
+                    "class": tmpi + "star comment_dlg_star"
+                }).inject(gradediv);
+                starnode.store("id", tmpi);
+                if (this.data.grade > tmpi) {
+                    var starblacknode = starnode;
+                    while (starblacknode) {
+                        starblacknode.set("src", this.app.path + "icon/blackfiveangular.png");
+                        starblacknode = starblacknode.previousElementSibling;
+                    }
+                }
+                //itemNode.getElements( "[item='grade']" )[0].set("text", 222);
+            }
+        }
 
 		if( this.data.attachmentList && this.data.attachmentList.length > 0 ){
 			var attachmentArea = itemNode.getElement("[item='attachment']");
 			this.app.loadAttachment(attachmentArea);
 		}
 
-		if( this.data.typeCategory == this.lp.vote || this.data.typeCategory == "投票" ){
+		if( this.data.typeCategory == this.lp.vote ){
 			var voteArea = itemNode.getElement("[item='vote']");
 			MWF.xDesktop.requireApp("ForumDocument", "Vote", function(){
 				this.vote = new MWF.xApplication.ForumDocument.Vote(voteArea, this.app, {
