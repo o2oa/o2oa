@@ -1,124 +1,124 @@
 <div style="background-color: #FFF; overflow: hidden">
-    <div title="基本" class="MWFTab">
+    <div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue">text{$.id}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">别名:</td>
+                <td class="editTableTitle">{{$.lp.alias}}:</td>
                 <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">隐藏视图:</td>
+                <td class="editTableTitle">{{$.lp.hideView}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="display" text{($.display===false)?'checked':''} type="radio" value="false"/>是
-                    <input class="editTableRadio" name="display" text{($.display!==false)?'checked':''} type="radio" value="true"/>否
+                    <input class="editTableRadio" name="display" text{($.display===false)?'checked':''} type="radio" value="false"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="display" text{($.display!==false)?'checked':''} type="radio" value="true"/>{{$.lp.no}}
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">视图样式:</td>
+                <td class="editTableTitle">{{$.lp.viewStyles}}:</td>
                 <td class="editTableValue">
                     <select class="MWFViewStyle" name="data.viewStyleType"></select>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">展开分类:</td>
+                <td class="editTableTitle">{{$.lp.expandView}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand==='yes')?'checked':''} type="radio" value="yes"/>是
-                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand!=='yes')?'checked':''} type="radio" value="no"/>否
+                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand==='yes')?'checked':''} type="radio" value="yes"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand!=='yes')?'checked':''} type="radio" value="no"/>{{$.lp.no}}
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">显示序号:</td>
+                <td class="editTableTitle">{{$.lp.showSequence}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.isSequence" text{($.data.isSequence==='yes')?'checked':''} type="radio" value="yes"/>是
-                    <input class="editTableRadio" name="data.isSequence" text{($.data.isSequence!=='yes')?'checked':''} type="radio" value="no"/>否
+                    <input class="editTableRadio" name="data.isSequence" text{($.data.isSequence==='yes')?'checked':''} type="radio" value="yes"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="data.isSequence" text{($.data.isSequence!=='yes')?'checked':''} type="radio" value="no"/>{{$.lp.no}}
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitleNoWidth">最大行数:</td>
+                <td class="editTableTitleNoWidth">{{$.lp.maxRow}}:</td>
                 <td class="editTableValue"><input type="number" name="count" value="text{$.count || 600}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitleNoWidth">每页行数:</td>
+                <td class="editTableTitleNoWidth">{{$.lp.pageSize}}:</td>
                 <td class="editTableValue">
                     <input type="number" name="pageSize" value="text{$.pageSize || 20}" class="editTableInput"/>
-                    <div style="color:#999;">注：每页最大行数为2000条</div>
+                    <div style="color:#999;">{{$.lp.pageMaxCountNotice}}</div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">隐藏操作条:</td>
+                <td class="editTableTitle">{{$.lp.actionbarHidden}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.actionbarHidden" text{($.data.actionbarHidden!==false)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="data.actionbarHidden" text{($.data.actionbarHidden===false)?'checked':''} type="radio" value="false"/>否
+                    <input class="editTableRadio" name="data.actionbarHidden" text{($.data.actionbarHidden!==false)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="data.actionbarHidden" text{($.data.actionbarHidden===false)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">选择:</td>
+                <td class="editTableTitle">{{$.lp.select}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="data.select" text{($.data.select!=='single' || $.data.select!=='multi' )?'checked':''} type="radio" value="none" onclick="
                     if (this.checked){
                         $('text{$.id}selectBoxShowTr').setStyle('display', 'none');
                         $('text{$.id}allowSelectAllTr').setStyle('display', 'none');
                         $('text{$.id}selectedAbleScript').setStyle('display', 'none');
-                    }"/>无
+                    }"/>{{$.lp.none}}
                     <input class="editTableRadio" name="data.select" text{($.data.select==='single')?'checked':''} type="radio" value="single" onclick="
                     if (this.checked){
                         $('text{$.id}selectBoxShowTr').setStyle('display', 'table-row');
                         $('text{$.id}allowSelectAllTr').setStyle('display', 'none');
                         $('text{$.id}selectedAbleScript').setStyle('display', 'block');
-                    }"/>单选
+                    }"/>{{$.lp.radio}}
                     <input class="editTableRadio" name="data.select" text{($.data.select==='multi')?'checked':''} type="radio" value="multi" onclick="
                     if (this.checked){
                         $('text{$.id}selectBoxShowTr').setStyle('display', 'table-row');
                         $('text{$.id}allowSelectAllTr').setStyle('display', 'table-row');
                         $('text{$.id}selectedAbleScript').setStyle('display', 'block');
-                    }"/>多选
+                    }"/>{{$.lp.checkbox}}
                 </td>
             </tr>
             <tr id="text{$.id}selectBoxShowTr" style="display: text{($.data.select=='single' || $.data.select=='multi')?'':'none'}">
-                <td class="editTableTitle">选择框显示:</td>
+                <td class="editTableTitle">{{$.lp.selectBoxShow}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow==='always')?'checked':''} type="radio" value="always"/>一直显示
-                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow!=='always')?'checked':''} type="radio" value="mouseover"/>鼠标经过时
+                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow==='always')?'checked':''} type="radio" value="always"/>{{$.lp.always}}
+                    <input class="editTableRadio" name="data.selectBoxShow" text{($.data.selectBoxShow!=='always')?'checked':''} type="radio" value="mouseover"/>{{$.lp.mouseover}}
                 </td>
             </tr>
             <tr id="text{$.id}allowSelectAllTr" style="display: text{($.data.select=='multi')?'':'none'}">
-                <td class="editTableTitle" id="">允许全选:</td>
+                <td class="editTableTitle" id="">{{$.lp.allowSelectAll}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.allowSelectAll" text{($.data.allowSelectAll===true)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="data.allowSelectAll" text{($.data.allowSelectAll!==true)?'checked':''} type="radio" value="false"/>否
+                    <input class="editTableRadio" name="data.allowSelectAll" text{($.data.allowSelectAll===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="data.allowSelectAll" text{($.data.allowSelectAll!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">无分类和选择隐藏首列</td>
+                <td class="editTableTitle">{{$.lp.firstTdHidden}}</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden===true)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden!==true)?'checked':''} type="radio" value="false"/>否
+                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">无数据显示:</td>
+                <td class="editTableTitle">{{$.lp.noDataText}}:</td>
                 <td class="editTableValue">
                     <input type="text" name="data.noDataText" value="text{$.data.noDataText}" class="editTableInput"/>
                 </td>
             </tr>
 
             <tr>
-                <td class="editTableTitle">启用缓存:</td>
+                <td class="editTableTitle">{{$.lp.cacheAccess}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="cacheAccess" text{($.cacheAccess===true)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="cacheAccess" text{($.cacheAccess!==true)?'checked':''} type="radio" value="false"/>否
-                    <div style="color:#999;">注：启用缓存则范围中的权限失效！</div>
+                    <input class="editTableRadio" name="cacheAccess" text{($.cacheAccess===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="cacheAccess" text{($.cacheAccess!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                    <div style="color:#999;">{{$.lp.cacheAccessNotice}}</div>
                 </td>
             </tr>
             <!--<tr>-->
@@ -127,16 +127,16 @@
             <!--</tr>-->
         </table>
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">可执行者</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.executable}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>
-                <td class="editTableTitle">可执行人:</td>
+                <td class="editTableTitle">{{$.lp.availableIdentityList}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonIdentity" name="availableIdentityList"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">执行组织:</td>
+                <td class="editTableTitle">{{$.lp.availableUnitList}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonUnit" name="availableUnitList"></div>
                 </td>
@@ -155,8 +155,8 @@
             <!--</tr>-->
         </table>
 
-        <div class="MWFFormulaArea" name="data.defaultSelectedScript" title="默认选中行脚本"></div>
-        <div class="MWFFormulaArea" name="data.selectedAbleScript" title="允许选择行脚本" id="text{$.id}selectedAbleScript"
+        <div class="MWFFormulaArea" name="data.defaultSelectedScript" title="{{$.lp.defaultSelectedScript}}"></div>
+        <div class="MWFFormulaArea" name="data.selectedAbleScript" title="{{$.lp.selectedAbleScript}}" id="text{$.id}selectedAbleScript"
              style="display: text{($.data.select=='single' || $.data.select=='multi')?'':'none'}"></div>
 
 
@@ -170,11 +170,11 @@
     </div>
 
 
-    <div title="范围"  class="MWFTab">
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">时段</div>
-        <div style="height:24px; line-height: 24px; padding:5px;border-bottom: 1px dashed rgb(204, 204, 204);">注：建议设定时间范围有助于提高效率！</div>
+    <div title="{{$.lp.range}}"  class="MWFTab">
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.timeRange}}</div>
+        <div style="height:auto; line-height: 24px; padding:5px;border-bottom: 1px dashed rgb(204, 204, 204);">{{$.lp.timeRangeNotice}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr><td class="editTableTitle">时段类型:</td><td class="editTableValue">
+            <tr><td class="editTableTitle">{{$.lp.rangeType}}:</td><td class="editTableValue">
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
                        onclick="if (this.checked){
                            $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
@@ -185,7 +185,7 @@
                            $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none');
                            $('text{$.id}dateRangeType_adjust').setStyle('display', 'none');
                        }"
-                       type="radio" text{(['year','season','month','week','date','season'].indexOf($.data.where.dateRange.dateRangeType)==-1)?'checked':''} value="none"/>全部
+                       type="radio" text{(['year','season','month','week','date','season'].indexOf($.data.where.dateRange.dateRangeType)==-1)?'checked':''} value="none"/>{{$.lp.all}}
 
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
                        onclick="if (this.checked){
@@ -197,7 +197,7 @@
                            $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none');
                            $('text{$.id}dateRangeType_adjust').setStyle('display', 'none');
                        }"
-                       type="radio" text{($.data.where.dateRange.dateRangeType=='range')?'checked':''} value="range"/>范围<br/>
+                       type="radio" text{($.data.where.dateRange.dateRangeType=='range')?'checked':''} value="range"/>{{$.lp.range}}<br/>
 
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
                        onclick="if (this.checked){
@@ -209,7 +209,7 @@
                            $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none');
                            $('text{$.id}dateRangeType_adjust').setStyle('display', '');
                        }"
-                       type="radio" text{($.data.where.dateRange.dateRangeType=='year')?'checked':''} value="year"/>年度
+                       type="radio" text{($.data.where.dateRange.dateRangeType=='year')?'checked':''} value="year"/>{{$.lp.year}}
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
                        onclick="if (this.checked){
                            $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block');
@@ -220,7 +220,7 @@
                            $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
                            $('text{$.id}dateRangeType_adjust').setStyle('display', '');
                        }"
-                       type="radio" text{($.data.where.dateRange.dateRangeType=='season')?'checked':''} value="season"/>季度
+                       type="radio" text{($.data.where.dateRange.dateRangeType=='season')?'checked':''} value="season"/>{{$.lp.season}}
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
                        onclick="if (this.checked){
                            $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block');
@@ -231,7 +231,7 @@
                            $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
                            $('text{$.id}dateRangeType_adjust').setStyle('display', '');
                        }"
-                       type="radio" text{($.data.where.dateRange.dateRangeType=='month')?'checked':''} value="month"/>月度
+                       type="radio" text{($.data.where.dateRange.dateRangeType=='month')?'checked':''} value="month"/>{{$.lp.monthly}}
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
                        onclick="if (this.checked){
                            $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block');
@@ -242,7 +242,7 @@
                            $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
                            $('text{$.id}dateRangeType_adjust').setStyle('display', '');
                        }"
-                       type="radio" text{($.data.where.dateRange.dateRangeType=='week')?'checked':''} value="week"/>周
+                       type="radio" text{($.data.where.dateRange.dateRangeType=='week')?'checked':''} value="week"/>{{$.lp.week}}
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
                        onclick="if (this.checked){
                            $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block');
@@ -253,17 +253,17 @@
                            $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
                            $('text{$.id}dateRangeType_adjust').setStyle('display', '');
                        }"
-                       type="radio" text{($.data.where.dateRange.dateRangeType=='date')?'checked':''} value="date"/>日
+                       type="radio" text{($.data.where.dateRange.dateRangeType=='date')?'checked':''} value="date"/>{{$.lp.date}}
             </td></tr>
         </table>
         <div id="text{$.id}dateRangeType_RangeArea" style="display: text{($.data.where.dateRange.dateRangeType=='range')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">开始日期:</td>
+                    <td class="editTableTitle">{{$.lp.beginDate}}:</td>
                     <td class="editTableValue"><input readonly type="text" name="data.where.dateRange.start" value="text{$.data.where.dateRange.start}" class="editTableInputDate"/></td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">结束日期:</td>
+                    <td class="editTableTitle">{{$.lp.endDate}}:</td>
                     <td class="editTableValue"><input readonly type="text" name="data.where.dateRange.completed" value="text{$.data.where.dateRange.completed}" class="editTableInputDate"/></td>
                 </tr>
             </table>
@@ -271,9 +271,9 @@
         <div id="text{$.id}dateRangeType_YearArea" style="display: text{(['year','season','month','week','date'].indexOf($.data.where.dateRange.dateRangeType)!=-1)?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">年度:</td>
+                    <td class="editTableTitle">{{$.lp.year}}:</td>
                     <td class="editTableValue"><select name="data.where.dateRange.year">
-                        <option value="">当前年度</option>
+                        <option value="">{{$.lp.currentYear}}</option>
                         fun{var y=(new Date()).getFullYear(); var html = ""; for (var i=0; i<10; i++)html+="<option "+( $.data.where.dateRange.year==(y-i).toString() ? "selected" : "" )+" value='"+(y-i)+"'>"+(y-i)+"</option>"; return html;}
                     </select></td>
                 </tr>
@@ -282,14 +282,14 @@
         <div id="text{$.id}dateRangeType_SeasonArea" style="display: text{($.data.where.dateRange.dateRangeType=='season')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">季度:</td>
+                    <td class="editTableTitle">{{$.lp.season}}:</td>
                     <td class="editTableValue">
                         <select name="data.where.dateRange.season">
-                            <option value="" text{($.data.where.dateRange.season=='')?'selected':''}>当前季度</option>
-                            <option value="1" text{($.data.where.dateRange.season=='1')?'selected':''}>第一季度</option>
-                            <option value="2" text{($.data.where.dateRange.season=='2')?'selected':''}>第二季度</option>
-                            <option value="3" text{($.data.where.dateRange.season=='3')?'selected':''}>第三季度</option>
-                            <option value="4" text{($.data.where.dateRange.season=='4')?'selected':''}>第四季度</option>
+                            <option value="" text{($.data.where.dateRange.season=='')?'selected':''}>{{$.lp.currentSeason}}</option>
+                            <option value="1" text{($.data.where.dateRange.season=='1')?'selected':''}>{{$.lp.firstSeason}}</option>
+                            <option value="2" text{($.data.where.dateRange.season=='2')?'selected':''}>{{$.lp.secondSeason}}</option>
+                            <option value="3" text{($.data.where.dateRange.season=='3')?'selected':''}>{{$.lp.thirdSeason}}</option>
+                            <option value="4" text{($.data.where.dateRange.season=='4')?'selected':''}>{{$.lp.fourthSeason}}</option>
                         </select>
                     </td>
                 </tr>
@@ -298,21 +298,21 @@
         <div id="text{$.id}dateRangeType_MonthArea" style="display: text{(['month','date'].indexOf($.data.where.dateRange.dateRangeType)!=-1)?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">月份:</td>
+                    <td class="editTableTitle">{{$.lp.monthly}}:</td>
                     <td class="editTableValue"><select name="data.where.dateRange.month">
-                        <option value="" text{($.data.where.dateRange.month=='')?'selected':''}>当前月份</option>
-                        <option value="01" text{($.data.where.dateRange.month=='01')?'selected':''}>1月</option>
-                        <option value="02" text{($.data.where.dateRange.month=='02')?'selected':''}>2月</option>
-                        <option value="03" text{($.data.where.dateRange.month=='03')?'selected':''}>3月</option>
-                        <option value="04" text{($.data.where.dateRange.month=='04')?'selected':''}>4月</option>
-                        <option value="05" text{($.data.where.dateRange.month=='05')?'selected':''}>5月</option>
-                        <option value="06" text{($.data.where.dateRange.month=='06')?'selected':''}>6月</option>
-                        <option value="07" text{($.data.where.dateRange.month=='07')?'selected':''}>7月</option>
-                        <option value="08" text{($.data.where.dateRange.month=='08')?'selected':''}>8月</option>
-                        <option value="09" text{($.data.where.dateRange.month=='09')?'selected':''}>9月</option>
-                        <option value="10" text{($.data.where.dateRange.month=='10')?'selected':''}>10月</option>
-                        <option value="11" text{($.data.where.dateRange.month=='11')?'selected':''}>11月</option>
-                        <option value="12" text{($.data.where.dateRange.month=='12')?'selected':''}>12月</option>
+                        <option value="" text{($.data.where.dateRange.month=='')?'selected':''}>{{$.lp.currentMonth}}</option>
+                        <option value="01" text{($.data.where.dateRange.month=='01')?'selected':''}>1{{$.lp.monthNumber}}</option>
+                        <option value="02" text{($.data.where.dateRange.month=='02')?'selected':''}>2{{$.lp.monthNumber}}</option>
+                        <option value="03" text{($.data.where.dateRange.month=='03')?'selected':''}>3{{$.lp.monthNumber}}</option>
+                        <option value="04" text{($.data.where.dateRange.month=='04')?'selected':''}>4{{$.lp.monthNumber}}</option>
+                        <option value="05" text{($.data.where.dateRange.month=='05')?'selected':''}>5{{$.lp.monthNumber}}</option>
+                        <option value="06" text{($.data.where.dateRange.month=='06')?'selected':''}>6{{$.lp.monthNumber}}</option>
+                        <option value="07" text{($.data.where.dateRange.month=='07')?'selected':''}>7{{$.lp.monthNumber}}</option>
+                        <option value="08" text{($.data.where.dateRange.month=='08')?'selected':''}>8{{$.lp.monthNumber}}</option>
+                        <option value="09" text{($.data.where.dateRange.month=='09')?'selected':''}>9{{$.lp.monthNumber}}</option>
+                        <option value="10" text{($.data.where.dateRange.month=='10')?'selected':''}>10{{$.lp.monthNumber}}</option>
+                        <option value="11" text{($.data.where.dateRange.month=='11')?'selected':''}>11{{$.lp.monthNumber}}</option>
+                        <option value="12" text{($.data.where.dateRange.month=='12')?'selected':''}>12{{$.lp.monthNumber}}</option>
                     </select></td>
                 </tr>
             </table>
@@ -320,10 +320,10 @@
         <div id="text{$.id}dateRangeType_WeekArea" style="display: text{($.data.where.dateRange.dateRangeType=='week')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">周:</td>
+                    <td class="editTableTitle">{{$.lp.week}}:</td>
                     <td class="editTableValue"><select name="data.where.dateRange.week">
-                        <option value="">当前周</option>
-                        fun{var html = ""; for (var i=1; i<56; i++)html+="<option "+ ( $.data.where.dateRange.week==i.toString() ? "selected" : "" ) +" value='"+i+"'>第"+i+"周</option>"; return html;}
+                        <option value="">{{$.lp.currentWeek}}</option>
+                        fun{var html = ""; for (var i=1; i<56; i++)html+="<option "+ ( $.data.where.dateRange.week==i.toString() ? "selected" : "" ) +" value='"+i+"'>"+"{{$.lp.weekNumber}}".replace("(i)",i)+"</option>"; return html;}
                     </select></td>
                 </tr>
             </table>
@@ -332,10 +332,10 @@
         <div id="text{$.id}dateRangeType_DateArea" style="display: text{($.data.where.dateRange.dateRangeType=='date')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">日期:</td>
+                    <td class="editTableTitle">{{$.lp.date}}:</td>
                     <td class="editTableValue"><select name="data.where.dateRange.date">
-                        <option value="">当天</option>
-                        fun{var html = ""; for (var i=1; i<32; i++)html+="<option "+( $.data.where.dateRange.date==(i<10 ? ("0"+i) : i).toString() ? "selected" : "" )+" value='"+(i<10 ? ("0"+i) : i)+"'>"+i+"日</option>"; return html;}
+                        <option value="">{{$.lp.today}}</option>
+                        fun{var html = ""; for (var i=1; i<32; i++)html+="<option "+( $.data.where.dateRange.date==(i<10 ? ("0"+i) : i).toString() ? "selected" : "" )+" value='"+(i<10 ? ("0"+i) : i)+"'>"+"{{$.lp.dateNumber}}".replace("(i)",i)+"</option>"; return html;}
                     </select></td>
                 </tr>
             </table>
@@ -344,7 +344,7 @@
         <div id="text{$.id}dateRangeType_adjust" style="display: text{($.data.where.dateRange.dateRangeType=='none'||$.data.where.dateRange.dateRangeType=='range')?'none':''}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">偏移量:</td>
+                    <td class="editTableTitle">{{$.lp.adjust}}:</td>
                     <td class="editTableValue">
                         <input type="text" name="data.where.dateRange.adjust" value="text{$.data.where.dateRange.adjust}" class="editTableInput"/>
                     </td>
@@ -352,7 +352,7 @@
             </table>
         </div>
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">范围</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.range}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableValue" colspan="2" align="center">
@@ -362,48 +362,48 @@
                         $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
                         $$('.text{$.id}dataPathSelectedProcessArea').setStyle('display', '');
                         $$('.text{$.id}dataPathSelectedCMSArea').setStyle('display', 'none');
-                    }" name="text{$.id}*type" text{($.type!='cms')?'checked':''} type="radio" value="process"/>流程平台数据
+                    }" name="text{$.id}*type" text{($.type!='cms')?'checked':''} type="radio" value="process"/>{{$.lp.processPlatform}}
                     <input class="editTableRadio" onclick="
                     if (this.checked){
                         $('text{$.id}dateRangeType_process').setStyle('display', 'none');
                         $('text{$.id}dateRangeType_cms').setStyle('display', 'block');
                         $$('.text{$.id}dataPathSelectedProcessArea').setStyle('display', 'none');
                         $$('.text{$.id}dataPathSelectedCMSArea').setStyle('display', '');
-                     }" name="text{$.id}*type" text{($.type=='cms')?'checked':''} type="radio" value="cms"/>内容管理数据
+                     }" name="text{$.id}*type" text{($.type=='cms')?'checked':''} type="radio" value="cms"/>{{$.lp.cmsPlatform}}
                 </td>
             </tr>
         </table>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">权限:</td>
+                <td class="editTableTitle">{{$.lp.authority}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="text{$.id}*data.where.accessible" text{($.data.where.accessible)?'checked':''} type="radio" value="true"/>带权限
-                    <input class="editTableRadio" name="text{$.id}*data.where.accessible" text{(!$.data.where.accessible)?'checked':''} type="radio" value="false"/>忽略
+                    <input class="editTableRadio" name="text{$.id}*data.where.accessible" text{($.data.where.accessible)?'checked':''} type="radio" value="true"/>{{$.lp.check}}
+                    <input class="editTableRadio" name="text{$.id}*data.where.accessible" text{(!$.data.where.accessible)?'checked':''} type="radio" value="false"/>{{$.lp.ignore}}
                 </td>
             </tr>
         </table>
         <div id="text{$.id}dateRangeType_process" style="display: text{($.type!='cms')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">流转状态:</td>
+                    <td class="editTableTitle">{{$.lp.processStatus}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='workCompleted' && $.data.where.scope!='all' && $.data.where.scope!='cms_info' && $.data.where.scope!='cms_data')?'checked':''} type="radio" value="work"/>流转中
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='workCompleted')?'checked':''} type="radio" value="workCompleted"/>已完成
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='workCompleted' && $.data.where.scope!='all' && $.data.where.scope!='cms_info' && $.data.where.scope!='cms_data')?'checked':''} type="radio" value="work"/>{{$.lp.work}}
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='workCompleted')?'checked':''} type="radio" value="workCompleted"/>{{$.lp.workCompleted}}
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>{{$.lp.all}}
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableValue" colspan="2">取应用和流程的并集:</td>
+                    <td class="editTableValue" colspan="2">{{$.lp.selectApplicationNotice}}:</td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">选择应用:</td>
+                    <td class="editTableTitle">{{$.lp.selectApplication}}:</td>
                     <td class="editTableValue">
                         <div class="MWFSelectApplication" name="data.where.applicationList"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">选择流程:</td>
+                    <td class="editTableTitle">{{$.lp.selectProcess}}:</td>
                     <td class="editTableValue">
                         <div class="MWFSelectProcess" name="data.where.processList"></div>
                     </td>
@@ -413,31 +413,31 @@
         <div id="text{$.id}dateRangeType_cms" style="display: text{($.type=='cms')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">数据类型:</td>
+                    <td class="editTableTitle">{{$.lp.dataType}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='cms_data' && $.data.where.scope!='all' && $.data.where.scope!='workCompleted' && $.data.where.scope!='work')?'checked':''} type="radio" value="cms_info"/>信息类
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='cms_data')?'checked':''} type="radio" value="cms_data"/>数据类
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='cms_data' && $.data.where.scope!='all' && $.data.where.scope!='workCompleted' && $.data.where.scope!='work')?'checked':''} type="radio" value="cms_info"/>{{$.lp.dataTypeValue[0]}}
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='cms_data')?'checked':''} type="radio" value="cms_data"/>{{$.lp.dataTypeValue[1]}}
                         <!--                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部-->
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">返回草稿:</td>
+                    <td class="editTableTitle">{{$.lp.showDraft}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="text{$.id}*data.where.draft" text{($.data.where.draft)?'checked':''} type="radio" value="true"/>是
-                        <input class="editTableRadio" name="text{$.id}*data.where.draft" text{(!$.data.where.draft)?'checked':''} type="radio" value="false"/>否
+                        <input class="editTableRadio" name="text{$.id}*data.where.draft" text{($.data.where.draft)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                        <input class="editTableRadio" name="text{$.id}*data.where.draft" text{(!$.data.where.draft)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableValue" colspan="2">取栏目和分类的并集：</td>
+                    <td class="editTableValue" colspan="2">{{$.lp.selectColumnNotice}}：</td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">选择栏目:</td>
+                    <td class="editTableTitle">{{$.lp.selectColumn}}:</td>
                     <td class="editTableValue">
                         <div class="MWFSelectCMSApplication" name="data.where.appInfoList"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">选择分类:</td>
+                    <td class="editTableTitle">{{$.lp.selectCategory}}:</td>
                     <td class="editTableValue">
                         <div class="MWFSelecCMStCategory" name="data.where.categoryInfoList"></div>
                     </td>
@@ -446,22 +446,22 @@
         </div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableValue" colspan="2">取组织、人员和身份的并集：</td>
+                <td class="editTableValue" colspan="2">{{$.lp.selectOrgNotice}}：</td>
             </tr>
             <tr>
-                <td class="editTableTitle">拟稿组织:</td>
+                <td class="editTableTitle">{{$.lp.selectUnit}}:</td>
                 <td class="editTableValue">
                     <div class="MWFSelectUnit" name="data.where.creatorUnitList"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">拟稿人员:</td>
+                <td class="editTableTitle">{{$.lp.selectPerson}}:</td>
                 <td class="editTableValue">
                     <div class="MWFSelectPerson" name="data.where.creatorPersonList"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">拟稿身份:</td>
+                <td class="editTableTitle">{{$.lp.selectIdentity}}:</td>
                 <td class="editTableValue">
                     <div class="MWFSelectIdentity" name="data.where.creatorIdentityList"></div>
                 </td>
@@ -469,20 +469,20 @@
         </table>
     </div>
 
-    <div title="过滤"  class="MWFTab">
+    <div title="{{$.lp.filter}}"  class="MWFTab">
         <div class="MWFViewFilter">
             <div class="inputAreaNode_vf">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable restrictViewFilterTable_vf">
                     <tr>
-                        <td class="editTableTitle">标题:</td>
+                        <td class="editTableTitle">{{$.lp.title}}:</td>
                         <td class="editTableValue"><input type="text" class="editTableInput titleInput_vf"/></td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">路径:</td>
+                        <td class="editTableTitle">{{$.lp.path}}:</td>
                         <td class="editTableValue"><input type="text" class="editTableInput pathInput_vf"/></td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">数据类型:</td>
+                        <td class="editTableTitle">{{$.lp.dataType}}:</td>
                         <td class="editTableValue"><select class="datatypeInput_vf"
                                 onchange="if (this.selectedIndex==2){
                                     $('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'block');
@@ -521,12 +521,12 @@
                                     $('text{$.id}viewFilterTextFormulaSelector').setStyle('display', 'none');
                                     // $('text{$.id}viewFilterTextFormulaSelector2').setStyle('display', 'none')
                                 }">
-                            <option value="textValue" selected>文本</option>
-                            <option value="numberValue">数字</option>
-                            <option value="dateTimeValue">日期时间</option>
-                            <option value="dateValue">日期</option>
-                            <option value="timeValue">时间</option>
-                            <option value="booleanValue">布尔</option>
+                            <option value="textValue" selected>{{$.lp.textValue}}</option>
+                            <option value="numberValue">{{$.lp.numberValue}}</option>
+                            <option value="dateTimeValue">{{$.lp.dateTimeValue}}</option>
+                            <option value="dateValue">{{$.lp.dateValue}}</option>
+                            <option value="timeValue">{{$.lp.timeValue}}</option>
+                            <option value="booleanValue">{{$.lp.booleanValue}}</option>
                         </select></td>
                     </tr>
                     <tr>
@@ -535,26 +535,26 @@
                             <input type="radio" class="restrictFilterInput_vf" value="restrict" name="text{$.id}viewFilterType" onclick="if (this.checked){
                                 $('text{$.id}viewFilterRestrict').setStyle('display', 'block');
                                 $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'none');
-                            }"/>作为默认过滤条件<br>
+                            }"/>{{$.lp.filterRestrict}}<br>
                             <input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
                                 $('text{$.id}viewFilterRestrict').setStyle('display', 'none');
                                 $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'block');
-                            }" checked/>作为自定义过滤数据
+                            }" checked/>{{$.lp.customFilterRestrict}}
                         </td>
                     </tr>
                 </table>
                 <div id="text{$.id}viewFilterRestrict"  style="display: none">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">逻辑:</td>
+                            <td class="editTableTitle">{{$.lp.logic}}:</td>
                             <td class="editTableValue"><select class="logicInput_vf">
-                                <option selected value="and">并且(and)</option>
-                                <option value="or">或者(or)</option>
+                                <option selected value="and">{{$.lp.and}}(and)</option>
+                                <option value="or">{{$.lp.or}}(or)</option>
                             </select></td>
                         </tr>
 
                         <tr>
-                            <td class="editTableTitle">比较:</td>
+                            <td class="editTableTitle">{{$.lp.comparison}}:</td>
                             <td class="editTableValue"><select class="comparisonInput_vf" onchange="
                                 // if (this.selectedIndex==8){
                                 //     $('text{$.id}viewFilterValue2Area').setStyle('display', 'block');
@@ -564,20 +564,20 @@
                                 //     $('text{$.id}viewFilterValueTitleArea').set('text', '值');
                                 // }"
                                 >
-                                <option value="equals" selected>等于(==)</option>
-                                <option value="notEquals">不等于(!=)</option>
-                                <option value="greaterThan">大于(>)</option>
-                                <option value="greaterThanOrEqualTo">大于等于(>=)</option>
-                                <option value="lessThan">小于(<)</option>
-                                <option value="lessThanOrEqualTo">小于等于(<=)</option>
-                                <option value="like">匹配(like)</option>
-                                <option value="notLike">不匹配(not-like)</option>
-                                <option value="range">范围(range)</option>
-                                <option value="in">包含(in)</option>
+                                <option value="equals" selected>{{$.lp.equals}}(==)</option>
+                                <option value="notEquals">{{$.lp.notEquals}}(!=)</option>
+                                <option value="greaterThan">{{$.lp.greaterThan}}(>)</option>
+                                <option value="greaterThanOrEqualTo">{{$.lp.greaterThanOrEqualTo}}(>=)</option>
+                                <option value="lessThan">{{$.lp.lessThan}}(<)</option>
+                                <option value="lessThanOrEqualTo">{{$.lp.lessThanOrEqualTo}}(<=)</option>
+                                <option value="like">{{$.lp.like}}(like)</option>
+                                <option value="notLike">{{$.lp.notLike}}(not-like)</option>
+                                <option value="range">{{$.lp.inRange}}(range)</option>
+                                <option value="in">{{$.lp.in}}(in)</option>
                             </select></td>
                         </tr>
                         <tr>
-                            <td class="editTableTitle" id="text{$.id}viewFilterValueTitleArea">值:</td>
+                            <td class="editTableTitle" id="text{$.id}viewFilterValueTitleArea">{{$.lp.value}}:</td>
                             <td class="editTableValue" id="text{$.id}viewFilterValueArea">
                                 <input type="text" class="editTableInput valueTextInput_vf" style="display: block" onkeypress="$('text{$.id}viewFilterTextFormulaSelector').getElements('input').set('checked', false)"/>
                                 <input type="number" class="editTableInput valueNumberInput_vf" style="display: none"/>
@@ -585,10 +585,10 @@
                                 <input type="text" class="editTableInput valueDateInput_vf" style="display: none" readonly/>
                                 <input type="text" class="editTableInput valueTimeInput_vf" style="display: none" readonly/>
                                 <select class="valueBooleanInput_vf" style="display: none">
-                                    <option value="true" selected>是(True)</option>
-                                    <option value="false">否(False)</option>
+                                    <option value="true" selected>{{$.lp.yes}}(True)</option>
+                                    <option value="false">{{$.lp.no}}(False)</option>
                                 </select>
-                                <div class="multiValueNotice_vf" style="display: none;color: #999;line-height: 24px;">多值用半角逗号(,)隔开</div>
+                                <div class="multiValueNotice_vf" style="display: none;color: #999;line-height: 24px;">{{$.lp.multiValueNotice}}</div>
                             </td>
                         </tr>
 
@@ -598,11 +598,11 @@
                             <tr>
                                 <td class="editTableTitle"></td>
                                 <td class="editTableValue">
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@year" />当前年度
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@season" />当前季度
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@month" />当前月份<br/>
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@time" />当前时间
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@date" />当天
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@year" />{{$.lp.currentYear}}
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@season" />{{$.lp.currentSeason}}
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@month" />{{$.lp.currentMonth}}<br/>
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@time" />{{$.lp.now}}
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDatetimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@date" />{{$.lp.today}}
 
                                 </td>
                             </tr>
@@ -613,10 +613,10 @@
                             <tr>
                                 <td class="editTableTitle"></td>
                                 <td class="editTableValue">
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@year" />当前年度
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@season" />当前季度
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@month" />当前月份<br/>
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@date" />当天
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@year" />{{$.lp.currentYear}}
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@season" />{{$.lp.currentSeason}}
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@month" />{{$.lp.currentMonth}}<br/>
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueDateInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@date" />{{$.lp.today}}
 
                                 </td>
                             </tr>
@@ -627,7 +627,7 @@
                             <tr>
                                 <td class="editTableTitle"></td>
                                 <td class="editTableValue">
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@time" />当前时间
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTimeInput_vf').set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@time" />{{$.lp.now}}
                                 </td>
                             </tr>
                         </table>
@@ -638,10 +638,10 @@
                             <tr>
                                 <td class="editTableTitle"></td>
                                 <td class="editTableValue">
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" onclick="" type="radio" value="@person" />当前人
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" type="radio" value="@identityList" />当前身份<br/>
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" type="radio" value="@unitList" />当前人所在直接组织<br/>
-                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" type="radio" value="@unitAllList" />当前人所在所有组织
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" onclick="" type="radio" value="@person" />{{$.lp.currentPerson}}
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" type="radio" value="@identityList" />{{$.lp.currentIdentity}}<br/>
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" type="radio" value="@unitList" />{{$.lp.currentPersonDirectUnit}}<br/>
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElement('.valueTextInput_vf').set('value', this.value)" name="text{$.id}viewFilterTextFormula" type="radio" value="@unitAllList" />{{$.lp.currentPersonAllUnit}}
                                 </td>
                             </tr>
                         </table>
@@ -650,7 +650,7 @@
                     <div id="text{$.id}viewFilterValue2Area"  style="display: none">
                         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                             <tr>
-                                <td class="editTableTitle">到:</td>
+                                <td class="editTableTitle">{{$.lp.to}}:</td>
                                 <td class="editTableValue" id="text{$.id}viewFilterValueArea2">
                                     <input type="text" class="editTableInput valueTextInput2_vf" style="display: block">
 <!--                                    onkeypress="$('text{$.id}viewFilterTextFormulaSelector2').getElements('input').set('checked', false)"/>-->
@@ -659,8 +659,8 @@
                                     <input type="text" class="editTableInput valueDateInput2_vf" style="display: none" readonly/>
                                     <input type="text" class="editTableInput valueTimeInput2_vf" style="display: none" readonly/>
                                     <select class="valueBooleanInput2_vf" style="display: none">
-                                        <option value="true" selected>是(True)</option>
-                                        <option value="false">否(False)</option>
+                                        <option value="true" selected>{{$.lp.yes}}(True)</option>
+                                        <option value="false">{{$.lp.no}}(False)</option>
                                     </select>
                                 </td>
                             </tr>
@@ -725,29 +725,29 @@
                 <div id="text{$.id}viewCustomFilterRestrict"  style="display: block">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">值:</td>
+                            <td class="editTableTitle">{{$.lp.value}}:</td>
                             <td class="editTableValue">
                                 <input class="editTableRadio" onclick="
                                 if (this.checked){
                                     $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'none');
-                                }" name="viewCustomFilterValueType" checked type="radio" value="input"/>输入
+                                }" name="viewCustomFilterValueType" checked type="radio" value="input"/>{{$.lp.input}}
                                 <input class="editTableRadio" onclick="
                                 if (this.checked){
                                     $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'block');
-                                }" name="viewCustomFilterValueType" type="radio" value="script"/>可选
+                                }" name="viewCustomFilterValueType" type="radio" value="script"/>{{$.lp.selectable}}
                             </td>
                         </tr>
                     </table>
                     <div style="display:none" id="text{$.id}viewCustomFilterValueScriptDiv">
-                        <div style="padding: 5px">return ["选项文本|选项值"]</div>
-                        <div name="text{$.id}viewCustomFilterValueScript" title="选项脚本"></div>
+                        <div style="padding: 5px">{{$.lp.selectOptionScriptNotice}}</div>
+                        <div name="text{$.id}viewCustomFilterValueScript" title="{{$.lp.selectOptionScript}}"></div>
                     </div>
                 </div>
             </div>
             <div class="actionAreaNode_vf"></div>
-            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">默认过滤条件</div>
+            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">{{$.lp.defaultFilterCondition}}</div>
             <div class="listAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
-            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">自定义过滤数据</div>
+            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">{{$.lp.customFilterCondition}}</div>
             <div class="fieldListAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
         </div>
     </div>
@@ -760,11 +760,11 @@
 <!--        <div class="MWFMaplist" name="contentTdSelectedStyles" collapse="true" title="内容单元格选中样式"></div>-->
 <!--    </div>-->
 
-    <div title="样式"  class="MWFTab">
+    <div title="{{$.lp.style}}"  class="MWFTab">
         <div class="MWFViewStylesArea" name="data.viewStyles"></div>
     </div>
 
-    <div title="事件"  class="MWFTab">
+    <div title="{{$.lp.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="data.events"></div>
     </div>
 
