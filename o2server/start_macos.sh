@@ -19,7 +19,7 @@ then
 			if [ -d ${current_dir}/local/update/o2server/$D ]
 			then
 				echo "update ${current_dir}/$D."
-				cp -Rf ${current_dir}/local/update/o2server/$D  ${current_dir}/
+				cp -Rf -p ${current_dir}/local/update/o2server/$D  ${current_dir}/
 			fi
 		done
 		for F in console.jar index.html src.zip
@@ -27,7 +27,7 @@ then
 			if [ -f ${current_dir}/local/update/o2server/$F ]
 			then
 				echo "update ${current_dir}/$F."
-				cp -f ${current_dir}/local/update/o2server/$F ${current_dir}/
+				cp -f -p ${current_dir}/local/update/o2server/$F ${current_dir}/
 			fi
 		done
 		for A in "start" "stop" "restart" "console" "service"
@@ -36,7 +36,7 @@ then
 			do
 				if [ -f ${current_dir}/local/update/o2server/$A$B ]; then
 					echo "update ${current_dir}/$A$B."
-					cp -f ${current_dir}/local/update/o2server/$A$B ${current_dir}/
+					cp -f -p ${current_dir}/local/update/o2server/$A$B ${current_dir}/
 				fi
 			done
 		done
