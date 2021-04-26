@@ -2017,9 +2017,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 			}.bind(this));
 		},
-
-		setImportData: function(columnList, importedData){
-
+		parseImportedData: function(columnList, importedData){
 			var data = {
 				"data" : []
 			};
@@ -2050,11 +2048,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 								// if( arr.length === 0 ){
 								// 	value = this.getImportOrgData( d );
 								// }else{
-									value = [];
-									arr.each( function(d, idx){
-										var obj = this.getImportOrgData( d );
-										value.push( obj );
-									}.bind(this));
+								value = [];
+								arr.each( function(d, idx){
+									var obj = this.getImportOrgData( d );
+									value.push( obj );
+								}.bind(this));
 								// }
 							}
 							break;
@@ -2110,6 +2108,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 				data.data.push( lineData );
 			}.bind(this));
+			return data;
+		},
+		setImportData: function(columnList, importedData){
+
+			var data = this.parseImportedData( columnList, importedData );
 
 			this.fireEvent("import", [data] );
 
@@ -2232,12 +2235,16 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		checkImportedData : function( columnList, tableData ){
 			var flag = true;
 
+			var parsedData = this.parseImportedData(columnList, tableData);
+
 			var lp = MWF.xApplication.process.Xform.LP;
 			var columnText =  lp.importValidationColumnText;
 			var columnTextExcel = lp.importValidationColumnTextExcel;
 			var excelUtil = new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils(this);
 
 			tableData.each( function(lineData, lineIndex){
+
+				var parsedLineData = (parsedData && parsedData.data) ? parsedData.data[lineIndex] : {};
 
 				var errorTextList = [];
 				var errorTextListExcel = [];
@@ -2253,40 +2260,44 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 					var d = lineData[text] || "";
 
-					if( !d )return;
+					var parsedD = "";
+					var ptd = parsedLineData[thJson.id];
+					if( typeOf(ptd) === "object")parsedD = ptd[module.json.id];
 
-					switch (module.json.type) {
-						case "Org":
-						case "Reader":
-						case "Author":
-						case "Personfield":
-						case "Orgfield":
-							var arr = d.split(/\s*,\s*/g ); //空格,空格
-							arr.each( function(d, idx){
-								var obj = this.getImportOrgData( d );
-								if( obj.errorText ){
-									errorTextList.push( colInfor + obj.errorText + lp.fullstop );
-									errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+					if( d ){
+						switch (module.json.type) {
+							case "Org":
+							case "Reader":
+							case "Author":
+							case "Personfield":
+							case "Orgfield":
+								var arr = d.split(/\s*,\s*/g ); //空格,空格
+								arr.each( function(d, idx){
+									var obj = this.getImportOrgData( d );
+									if( obj.errorText ){
+										errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+										errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+									}
+								}.bind(this));
+								break;
+							case "Number":
+								if (parseFloat(d).toString() === "NaN"){
+									errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+									errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
 								}
-							}.bind(this));
-							break;
-						case "Number":
-							if (parseFloat(d).toString() === "NaN"){
-								errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
-								errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
-							}
-							break;
-						case "Calendar":
-							if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-								errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-								errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-							}
-							break;
-						default:
-							break;
+								break;
+							case "Calendar":
+								if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+									errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+									errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+								}
+								break;
+							default:
+								break;
+						}
 					}
-					if (module.json.type!="sequence" && module.setData){
-						module.setData();
+					if (module.json.type!="sequence" && module.setData && module.json.type!=="Address"){
+						module.setData(parsedD);
 						module.validationMode();
 						if (!module.validation()){
 							errorTextList.push(colInfor + module.errNode.get("text"));
