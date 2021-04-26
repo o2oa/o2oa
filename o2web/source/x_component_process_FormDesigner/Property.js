@@ -45,11 +45,12 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         if (!this.propertyContent){
             this.getHtmlString(function(){
                 if (this.htmlString){
+                    this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate});
                     this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
                     this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.propertyNode);
-                    var htmlStr = this.JsonTemplate.load();
-                    this.propertyContent.injectHtml(htmlStr, {"bind": {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate}});
-                    //this.propertyContent.set("html", );
+                    // var htmlStr = this.JsonTemplate.load();
+                    // this.propertyContent.injectHtml(htmlStr, {"bind": {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate}});
+                    this.propertyContent.set("html", this.JsonTemplate.load());
 
                     this.setEditNodeEvent();
                     this.setEditNodeStyles(this.propertyContent);
