@@ -598,7 +598,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			"styles" : this.css.subjectConainer
 		}).inject( contentConainer );
 
-		if( this.data.typeCategory == this.lp.question ){
+		if( this.data.typeCategory == this.lp.question || this.data.typeCategory =="问题"){
 			this.satisfiedReplyViewConainer = new Element("div.satisfiedReplyViewConainer",{
 				"styles" : this.css.replyViewConainer
 			}).inject( contentConainer );
@@ -611,7 +611,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		this.createPagingBar();
 
 		this.createSubject();
-		if( this.data.typeCategory == this.lp.question ) {
+		if( this.data.typeCategory == this.lp.question || this.data.typeCategory =="问题") {
 			if( this.data.acceptReplyId ){
 				this.createSatisfiedReplyView();
 			}
@@ -774,7 +774,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			}).inject( this.toolbarRight );
 		}else if( this.data.typeCategory == this.lp.vote || this.data.typeCategory == "投票"){
 			new Element( "div.vote", { "styles" : this.css.toolbarVote, "title" : this.lp.vote }).inject( this.toolbarRight );
-		}else if( this.data.typeCategory == this.lp.question ){
+		}else if( this.data.typeCategory == this.lp.question || this.data.typeCategory =="问题"){
 			new Element( "div.question", { "styles" : this.css.toolbarQuestion, "title" : this.lp.question }).inject( this.toolbarRight );
 		}
 
