@@ -136,6 +136,7 @@ public class ActionSubjectSave extends BaseAction {
 			subjectInfo.setVoteLimitTime(wrapIn.getVoteLimitTime());
 			subjectInfo.setVotePersonVisible(wrapIn.getVotePersonVisible());
 			subjectInfo.setVoteResultVisible(wrapIn.getVoteResultVisible());
+			subjectInfo.setGrade(wrapIn.getGrade());
 		}
 
 		if (check) {
