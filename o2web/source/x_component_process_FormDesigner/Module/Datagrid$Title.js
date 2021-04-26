@@ -162,6 +162,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 				"width": 300,
 				"height": 180,
 				"url": url,
+				"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate,
 				"buttonList": [
 				    {
 				    	"text": MWF.APPFD.LP.button.ok,

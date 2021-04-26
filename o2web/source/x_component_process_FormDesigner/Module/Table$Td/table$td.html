@@ -16,16 +16,16 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.type}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="cellType" text{($.cellType=='title')?'checked':''} type="radio" value="title"/>标题单元格 <br/>
-                    <input class="editTableRadio" name="cellType" text{($.cellType=='content')?'checked':''} type="radio" value="content"/>内容单元格 <br/>
-                    <input class="editTableRadio" name="cellType" text{($.cellType=='layout')?'checked':''} type="radio" value="layout"/>布局单元格 <br/>
-                    <input class="editTableRadio" name="cellType" text{(($.cellType!='title') && ($.cellType!='content') && ($.cellType!='layout'))?'checked':''} type="radio" value="other"/>其他 <br/>
+                    <input class="editTableRadio" name="cellType" text{($.cellType=='title')?'checked':''} type="radio" value="title"/>{{$.lp.titleCell}} <br/>
+                    <input class="editTableRadio" name="cellType" text{($.cellType=='content')?'checked':''} type="radio" value="content"/>{{$.lp.contentCell}} <br/>
+                    <input class="editTableRadio" name="cellType" text{($.cellType=='layout')?'checked':''} type="radio" value="layout"/>{{$.lp.layoutCell}} <br/>
+                    <input class="editTableRadio" name="cellType" text{(($.cellType!='title') && ($.cellType!='content') && ($.cellType!='layout'))?'checked':''} type="radio" value="other"/>{{$.lp.other}} <br/>
                 </td>
             </tr>
         </table>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
-        <div class="MWFMaplist" name="properties" title="属性"></div>
+        <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
     </div>
     <div title="{{$.lp.event}}"  class="MWFTab">
