@@ -1472,9 +1472,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		}.bind(this));
 		return orgTitleArr;
 	},
-
-	importData: function(fieldArray, idata){
-
+	parseImportedData: function(fieldArray, idata){
 		var data = [];
 
 		idata.each( function( ilineData ){
@@ -1559,6 +1557,12 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			data.push( lineData );
 		}.bind(this));
 
+		return data;
+	},
+	importData: function(fieldArray, idata){
+
+		var data = this.parseImportedData(fieldArray, idata);
+
 		this.template.fireEvent("import", [data] );
 
 		this.template.setData( data );
@@ -1642,10 +1646,14 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		var columnTextExcel = lp.importValidationColumnTextExcel;
 		var excelUtil = new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template );
 
-		idata.each( function(lineData){
+		var parsedData = this.parseImportedData(fieldArray, idata);
+
+		idata.each( function(lineData, lineIndex){
 
 			var errorTextList = [];
 			var errorTextListExcel = [];
+
+			var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
 
 			fieldArray.each( function (obj, i) {
 				var index = obj.index;
@@ -1657,6 +1665,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index-1 ) );
 
 				var d = lineData[text] || "";
+				var parseD = parsedLineData[json.id] || "";
 
 				if(d){
 
@@ -1691,10 +1700,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 							break;
 					}
 				}
-				if (module && module.setData){
-					module.setData();
+				if (module && module.setData && json.type !== "Address"){
+					module.setData(parseD);
 					module.validationMode();
-					if (!module.validation()){
+					if (!module.validation() && module.errNode){
 						errorTextList.push(colInfor + module.errNode.get("text"));
 						errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
 						module.errNode.destroy();
