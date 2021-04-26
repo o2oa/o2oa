@@ -683,7 +683,25 @@ MWF.xApplication.process.FormDesigner.LP = {
         "dataStyle": "数据样式",
         "loadNow": "立即载入",
         "showTitle": "显示标题",
-        "allowSelect": "选择文件"
+        "allowSelect": "选择文件",
+
+        "stat": "统计",
+        "showChart": "显示图表",
+        "showLegend": "显示图例",
+        "showTable": "显示表格",
+
+        "selectTag": "选择标签",
+        "elementTag": "元素标签",
+        "innerHtml": "内置HTML",
+
+        "delayedTabInfo": "延时加载为是时，未显示的tab页内容不会加载，只有在tab页第一次显示时才会加载内容",
+        "tabContainerStyle": "Tab容器样式",
+        "contentContainerStyle": "内容容器样式",
+        "baseTabStyle": "基本Tab样式",
+        "baseTabSpanStyle": "基本Tab字体样式",
+        "currentTabStyle": "当前Tab样式",
+        "currentTabSpanStyle": "当前Tab字体样式"
+
 
     },
     "actionBar": {
