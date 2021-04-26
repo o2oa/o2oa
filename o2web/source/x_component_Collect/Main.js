@@ -617,7 +617,9 @@ MWF.xApplication.Collect.RegisterForm = new Class({
         this.setInputNodeEvent(this.usernameNode, this.usernameInput, this.lp.username, this.lp.errorUsername, "username");
         this.setInputNodeEvent(this.passwordNode, this.passwordInput, this.lp.password, this.lp.errorPassword, "password");
         this.setInputNodeEvent(this.mobileNode, this.mobileInput, this.lp.mobile, this.lp.errorMobile, "mobile");
-        this.setInputNodeEvent(this.mailNode, this.mailInput, this.lp.mail, this.lp.errorMail, "mail");
+        if( this.mailNode && this.mailInput ){
+            this.setInputNodeEvent(this.mailNode, this.mailInput, this.lp.mail, this.lp.errorMail, "mail");
+        }
         this.setInputNodeEvent(this.codeNode, this.codeInput, this.lp.code, this.lp.errorCode, "code");
         this.resetCodeNode();
     },
