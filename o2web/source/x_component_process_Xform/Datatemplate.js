@@ -1569,7 +1569,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
 	},
-	openErrorDlg : function( fieldArray, eData ){
+	openErrorDlg : function(fieldArray, eData){
 		var _self = this;
 
 		var objectToString = function (obj, type) {
@@ -1582,18 +1582,18 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					arr.push( key + "='"+ value +"'" )
 				}
 			})
-			return arr.join( " " )
+			return arr.join(" ")
 		}
 
 		var htmlArray = ["<table "+ objectToString( this.json.properties ) +" style='"+objectToString( this.json.tableStyles, "style" )+"'>"];
 
-		var titleStyle = objectToString( this.json.titleStyles, "style" );
-		htmlArray.push( "<tr>" );
-		fieldArray.each( function (obj, i) {
+		var titleStyle = objectToString(this.json.titleStyles, "style");
+		htmlArray.push("<tr>");
+		fieldArray.each(function (obj, i) {
 			htmlArray.push( "<th style='"+titleStyle+"'>"+obj.text+"</th>" );
 		});
-		htmlArray.push( "<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>" );
-		htmlArray.push( "</tr>" );
+		htmlArray.push("<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>");
+		htmlArray.push("</tr>" );
 
 		var contentStyles = Object.clone( this.json.contentStyles );
 		if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
