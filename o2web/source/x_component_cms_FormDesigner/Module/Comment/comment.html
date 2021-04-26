@@ -1,16 +1,16 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">标识:</td>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
 				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">名称:</td>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
 				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">描述:</td>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
 				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 			</tr>
 			<tr>
@@ -19,22 +19,22 @@
 			</tr>
 			<tr>
 				<td class="editTableValue" colspan="2">
-					<b>每页评论数:</b>
-					<input type="text" name="countPerPage" value="text{$.countPerPage}" class="editTableInputNoWidth" style="width: 50px;margin-right:5px;"/>条
+					<b>{{$.lp.commentPerPage}}:</b>
+					<input type="text" name="countPerPage" value="text{$.countPerPage}" class="editTableInputNoWidth" style="width: 50px;margin-right:5px;"/>{{$.lp.tiao}}
 				</td>
 			</tr>
 			<tr>
 				<td class="editTableValue" colspan="2">
-					<b>发表后允许修改:</b>
-					<input class="editTableRadio" name="isAllowModified" text{($.isAllowModified!=false)?'checked':''} type="radio" value="true"/>是
-					<input class="editTableRadio" name="isAllowModified" text{($.isAllowModified==false)?'checked':''} type="radio" value="false"/>否
+					<b>{{$.lp.allowModifyComment}}:</b>
+					<input class="editTableRadio" name="isAllowModified" text{($.isAllowModified!=false)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+					<input class="editTableRadio" name="isAllowModified" text{($.isAllowModified==false)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
 				<td class="editTableValue" colspan="2">
-					<b>允许发表评论:</b>
-					<input class="editTableRadio" name="isAllowPublish" text{($.isAllowPublish!=false)?'checked':''} type="radio" value="true"/>是
-					<input class="editTableRadio" name="isAllowPublish" text{($.isAllowPublish==false)?'checked':''} type="radio" value="false"/>否
+					<b>{{$.lp.allowComment}}:</b>
+					<input class="editTableRadio" name="isAllowPublish" text{($.isAllowPublish!=false)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+					<input class="editTableRadio" name="isAllowPublish" text{($.isAllowPublish==false)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
@@ -80,14 +80,14 @@
 	<!--<div><div id="labelEditScriptValue" class="MWFScriptArea" name="filterScript" title="通过脚本过滤(S)"></div></div>-->
 	<!--</div>-->
 
-	<div title="编辑器"  class="MWFTab">
+	<div title="{{$.lp.editor}}"  class="MWFTab">
 		<div class="MWFMaplist" name="editorProperties" title="CKEditor Config"></div>
-		<div class="MWFScriptArea" name="config" title="CKEditor Config 脚本"></div>
-		<div>返回CKEditor的Config对象，用于编辑器初始化</div>
-		<div style="text-align:center">更多属性帮助请查看 <a target="_blank" href="http://docs.ckeditor.com/">CKEditor Documentation</a></div>
+		<div class="MWFScriptArea" name="config" title="{{$.lp.editorTitle}}"></div>
+		<div>{{$.lp.editorConfigNote}}</div>
+		<div style="text-align:center">{{$.lp.editorConfigLinkNote}}<a target="_blank" href="http://docs.ckeditor.com/">CKEditor Documentation</a></div>
 	</div>
 
-	<div title="事件"  class="MWFTab">
+	<div title="{{$.lp.event}}"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
 	<div title="HTML"  class="MWFTab">
