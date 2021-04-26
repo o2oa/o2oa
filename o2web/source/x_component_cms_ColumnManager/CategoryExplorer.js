@@ -1788,7 +1788,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
             this.saveExtContent();
         }
         if( repeated.length > 0 ){
-            var text = MWF.xApplication.cms.ColumnManager.LP.conflictedListNotice.replace("{text}", repeated.join("、"));
+            var text = MWF.xApplication.cms.ColumnManager.LP.conflictedListNotice.replace("{text}", repeated.join(","));
             this.app.notice( text, "error" );
         }
     },
@@ -1840,7 +1840,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
             this.saveExtContent();
         }
         if( repeated.length > 0 ){
-            var text = MWF.xApplication.cms.ColumnManager.LP.conflictedViewNotice.replace("{text}", repeated.join("、"));
+            var text = MWF.xApplication.cms.ColumnManager.LP.conflictedViewNotice.replace("{text}", repeated.join(","));
             this.app.notice( text , "error");
         }
     },

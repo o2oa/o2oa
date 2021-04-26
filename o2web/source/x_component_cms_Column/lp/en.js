@@ -26,7 +26,7 @@ MWF.xApplication.cms.Column.LP = {
         "nameLabel": "Name",
         "aliasLabel": "Alias",
         "descriptionLabel": "Description",
-        "sortLabel": "Queue number",
+        "sortLabel": "Order",
         "iconLabel": "Icon",
         "typeLabel": "Type",
         "cancel": "Cancel",
