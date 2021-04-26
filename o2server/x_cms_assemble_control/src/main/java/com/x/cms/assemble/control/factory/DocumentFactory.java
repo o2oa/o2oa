@@ -1,28 +1,34 @@
 package com.x.cms.assemble.control.factory;
 
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.jaxrs.document.ActionQueryListWithFilterPagingAdmin;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Document_;
 import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.Review_;
 import com.x.cms.core.express.tools.CriteriaBuilderTools;
 import com.x.cms.core.express.tools.filter.QueryFilter;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 /**
  * 文档信息基础功能服务类
- * 
+ *
  * @author O2LEE
  */
 public class DocumentFactory extends AbstractFactory {
-	
+
 	public DocumentFactory(Business business) throws Exception {
 		super(business);
 	}
@@ -87,7 +93,7 @@ public class DocumentFactory extends AbstractFactory {
 		}
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
-	
+
 	public List<String> listByCategoryId( String categoryId, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -97,7 +103,7 @@ public class DocumentFactory extends AbstractFactory {
 		cq.select(root.get( Document_.id)).where(p);
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
-	
+
 	/**
 	 * 根据指定分类里的文档ID，支持按指定列排序
 	 * @param categoryId
@@ -114,7 +120,7 @@ public class DocumentFactory extends AbstractFactory {
 		CriteriaQuery<Document> cq = cb.createQuery( Document.class );
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
-		
+
 		if( StringUtils.isNotEmpty( orderField ) && StringUtils.isNotEmpty( orderType ) ) {
 			Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Document_.class, orderField, orderType );
 			if( orderWithField != null ) {
@@ -123,7 +129,7 @@ public class DocumentFactory extends AbstractFactory {
 		}
 		//SELECT * FROM Document d WHERE d.categoryId = 'a1385543-c077-4db4-bc54-e9753ca0db73' ORDER BY d.createTime
 		List<Document> docmentList = em.createQuery( cq.where(p) ).setMaxResults(maxCount).getResultList();
-		
+
 		if( ListTools.isNotEmpty( docmentList )) {
 			for( Document document : docmentList ) {
 				docIds.add( document.getId() );
@@ -131,7 +137,7 @@ public class DocumentFactory extends AbstractFactory {
 		}
 		return docIds;
 	}
-	
+
 	public List<String> listByCategoryIdAndNotEqualAppName( String categoryId, String appName, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -142,7 +148,7 @@ public class DocumentFactory extends AbstractFactory {
 		cq.select(root.get( Document_.id)).where(p);
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
-	
+
 	public List<String> listByCategoryIdAndCategoryName( String categoryId, String categoryName, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -164,7 +170,7 @@ public class DocumentFactory extends AbstractFactory {
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
-	
+
 	public Long countByCategoryIdAndNotEqualAppName( String categoryId, String appName ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -175,7 +181,7 @@ public class DocumentFactory extends AbstractFactory {
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
-	
+
 	public Long countByCategoryIdAndNotEqualsCategoryName( String categoryId, String categoryName ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -186,7 +192,7 @@ public class DocumentFactory extends AbstractFactory {
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
-	
+
 	public Long countByAppId( String appId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -222,7 +228,7 @@ public class DocumentFactory extends AbstractFactory {
 			}
 			p = cb.and( p, p_seq);
 		}
-		
+
 		List<Order> orders = new ArrayList<>();
 		Order isTopOrder = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.isTop_FIELDNAME, "desc" );
 		if( isTopOrder != null ){
@@ -278,7 +284,7 @@ public class DocumentFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
 	}
-	
+
 	/**
 	 * 根据条件查询指定数量的符合条件的文档信息列表
 	 * @param orderField
@@ -286,8 +292,8 @@ public class DocumentFactory extends AbstractFactory {
 	 * @param queryFilter
 	 * @param maxCount
 	 * @return
-	 * @throws SecurityException 
-	 * @throws NoSuchFieldException 
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
 	 */
 	public List<Document> listNextWithCondition( String orderField, String orderType, QueryFilter queryFilter, int maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
@@ -301,12 +307,12 @@ public class DocumentFactory extends AbstractFactory {
 		if( isTopOrder != null ){
 			orders.add( isTopOrder );
 		}
-		
+
 		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Document_.class, orderField, orderType );
 		if( orderWithField != null ){
 			orders.add( orderWithField );
 		}
-		
+
 		if( !Document.isFieldInSequence(orderField)) {
 			//如果是没有做sequence的列，很可能排序值不唯一，比如有多个文档有相同的值，所以使用多一列排序列来确定每次查询的顺序
 			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.id_FIELDNAME, orderType );
@@ -368,7 +374,7 @@ public class DocumentFactory extends AbstractFactory {
 		cq.select(root.get( Document_.id));
 		return em.createQuery(cq.where(p)).setMaxResults(maxCount).getResultList();
 	}
-	
+
 	public List<String> listReviewedIdsByAppId( String appId, Integer maxCount ) throws Exception {
 		if( StringUtils.isEmpty( appId ) ){
 			throw new Exception("appId is empty!");
@@ -386,9 +392,9 @@ public class DocumentFactory extends AbstractFactory {
 		cq.select(root.get( Document_.id));
 		return em.createQuery(cq.where(p)).setMaxResults(maxCount).getResultList();
 	}
-	
 
-	
+
+
 	public List<String> listUnReviewIds(Integer maxCount) throws Exception {
 		if( maxCount == null ){
 			maxCount = 500;
@@ -402,7 +408,7 @@ public class DocumentFactory extends AbstractFactory {
 		cq.select(root.get( Document_.id));
 		return em.createQuery(cq.where(p)).setMaxResults(maxCount).getResultList();
 	}
-	
+
 	public Long countWithConditionOutofPermission(QueryFilter queryFilter) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -430,7 +436,8 @@ public class DocumentFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		EntityManager em1 = this.entityManagerContainer().get( Review.class );
 		CriteriaBuilder cb1 = em1.getCriteriaBuilder();
-		CriteriaQuery<Document> cq = cb.createQuery(Document.class);
+		//CriteriaQuery<Document> cq = cb.createQuery(Document.class);
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Document> root = cq.from(Document.class);
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
 
@@ -446,7 +453,13 @@ public class DocumentFactory extends AbstractFactory {
 			subquery.where(p_permission);
 			p = cb.and(p, cb.exists(subquery));
 		}
-		cq.select(root).where(p);
+		List<String> fields = DocumentWo.copier.getCopyFields();
+		List<Selection<?>> selections = new ArrayList<>();
+		for (String str : fields) {
+			selections.add(root.get(str));
+		}
+		cq.multiselect(selections).where(p);
+		//cq.select(root).where(p);
 
 		//排序，添加排序列，默认使用sequence
 		List<Order> orders = new ArrayList<>();
@@ -470,8 +483,19 @@ public class DocumentFactory extends AbstractFactory {
 		if( ListTools.isNotEmpty(  orders )){
 			cq.orderBy( orders );
 		}
-		return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
+
+		//return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize).getResultList();
+		List<Tuple> list = em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
 				.getResultList();
+		List<Document> documentList = new ArrayList<>();
+		for (Tuple o : list){
+			Document doc = new Document();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(doc, fields.get(i), o.get(selections.get(i)));
+			}
+			documentList.add(doc);
+		}
+		return documentList;
 	}
 
 	/**
@@ -520,93 +544,11 @@ public class DocumentFactory extends AbstractFactory {
 		cq.select(root.get( Document_.id));
 		return em.createQuery(cq.where(p)).setMaxResults(999).getResultList();
 	}
-//
-//
-//	public List<String> listByCategoryIdAndAppName( String categoryId, String appName, Integer maxCount ) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get( Document.class );
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<String> cq = cb.createQuery( String.class );
-//		Root<Document> root = cq.from( Document.class );
-//		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
-//		p = cb.and( p, cb.equal(root.get( Document_.appName ), appName ) );
-//		cq.select(root.get( Document_.id)).where(p);
-//		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
-//	}
-//
-//	public List<String> listByCategoryIdAndNotEqualCategoryName( String categoryId, String categoryName, Integer maxCount ) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get( Document.class );
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<String> cq = cb.createQuery( String.class );
-//		Root<Document> root = cq.from( Document.class );
-//		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
-//		p = cb.and( p, cb.notEqual(root.get( Document_.categoryName ), categoryName ) );
-//		cq.select(root.get( Document_.id)).where(p);
-//		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
-//	}
-//
-//	public Long countByCategoryIdAndCategoryName( String categoryId, String categoryName ) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get( Document.class );
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-//		Root<Document> root = cq.from(Document.class);
-//		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
-//		p = cb.and( p, cb.equal(root.get( Document_.categoryName ), categoryName ) );
-//		cq.select(cb.count(root)).where(p);
-//		return em.createQuery(cq).getSingleResult();
-//	}
-//
-//	public Long countByCategoryIdAndAppName( String categoryId, String appName ) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get( Document.class );
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-//		Root<Document> root = cq.from(Document.class);
-//		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
-//		p = cb.and( p, cb.equal(root.get( Document_.appName ), appName ) );
-//		cq.select(cb.count(root)).where(p);
-//		return em.createQuery(cq).getSingleResult();
-//	}
-//
-//	public List<Document> listReviewedDocumentList( Integer maxCount ) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get(Document.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Document> cq = cb.createQuery(Document.class);
-//		Root<Document> root = cq.from(Document.class);
-//		Predicate p = cb.equal( root.get(Document_.documentType), "信息");
-//		p = cb.and(p, cb.isTrue( root.get(Document_.reviewed ) ));
-//		return em.createQuery(cq.where(p)).setMaxResults( maxCount ).getResultList();
-//	}
 
-//	public List<String> listUnReviewDocIdsByCategory( String categoryId, Integer maxCount) throws Exception {
-//		if( StringUtils.isEmpty( categoryId ) ){
-//			throw new Exception("categoryId is empty!");
-//		}
-//		if( maxCount == null ){
-//			maxCount = 1000;
-//		}
-//		EntityManager em = this.entityManagerContainer().get( Document.class );
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<String> cq = cb.createQuery( String.class );
-//		Root<Document> root = cq.from( Document.class );
-//		Predicate p = cb.isFalse(  root.get( Document_.reviewed ) );
-//		p = cb.and( p, cb.equal( root.get( Document_.categoryId ), categoryId ));
-//		cq.select(root.get( Document_.id));
-//		return em.createQuery(cq.where(p)).setMaxResults(maxCount).getResultList();
-//	}
-//
-//	public List<String> listUnReviewDocIdsByAppId( String appId, Integer maxCount) throws Exception {
-//		if( StringUtils.isEmpty( appId ) ){
-//			throw new Exception("appId is empty!");
-//		}
-//		if( maxCount == null ){
-//			maxCount = 1000;
-//		}
-//		EntityManager em = this.entityManagerContainer().get( Document.class );
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<String> cq = cb.createQuery( String.class );
-//		Root<Document> root = cq.from( Document.class );
-//		Predicate p = cb.isFalse(  root.get( Document_.reviewed ) );
-//		p = cb.and( p, cb.equal( root.get( Document_.appId ), appId ));
-//		cq.select(root.get( Document_.id));
-//		return em.createQuery(cq.where(p)).setMaxResults(maxCount).getResultList();
-//	}
+	public static class DocumentWo extends Document{
+
+		static WrapCopier<Document, DocumentWo> copier = WrapCopierFactory.wo(Document.class, DocumentWo.class,
+				JpaObject.singularAttributeField(Document.class, true, true), null);
+	}
+
 }
