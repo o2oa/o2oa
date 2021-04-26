@@ -681,7 +681,24 @@ MWF.xApplication.process.FormDesigner.LP = {
         "dataStyle": "Data Style",
         "loadNow": "instantLoading",
         "showTitle": "Show Title",
-        "allowSelect": "Allow Select"
+        "allowSelect": "Allow Select",
+
+        "stat": "Stat",
+        "showChart": "Show Chart",
+        "showLegend": "Show Legend",
+        "showTable": "Show Table",
+
+        "selectTag": "Select Tag",
+        "elementTag": "Tag",
+        "innerHtml": "Inner Html",
+
+        "delayedTabInfo": "When delayed loading, the content of the tab page that is not displayed will not be loaded, and the content will be loaded only when the tab page is first displayed",
+        "tabContainerStyle": "Tab Container Style",
+        "contentContainerStyle": "Content Container Style",
+        "baseTabStyle": "Default Tab Style",
+        "baseTabSpanStyle": "Default Tab Font Style",
+        "currentTabStyle": "Selected Tab Style",
+        "currentTabSpanStyle": "Selected Tab Font Style"
 
     },
     "actionBar": {
