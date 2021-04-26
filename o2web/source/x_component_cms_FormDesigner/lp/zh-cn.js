@@ -5,8 +5,41 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( MWF.xApplication.process.Fo
     "validation" : {
         "publish" : "发布时"
     },
+    "modules": {
+        "reader": "读者",
+        "author": "作者",
+        "log": "阅读记录",
+        "comment": "评论"
+    },
+    "formStyle":{
+        "noneStyle": "空样式",
+        "defaultStyle": "传统样式",
+        "redSimple": "红色简洁",
+        "blueSimple": "蓝色简洁",
+        "defaultMobileStyle": "手机样式",
+        "banner": "横幅",
+        "title": "标题",
+        "sectionTitle": "区段标题",
+        "section": "区段"
+    },
     "propertyTemplate": {
+        "setPopular": "设置热点操作",
 
+        "commentPerPage": "每页评论数",
+        "tiao": "条",
+        "allowModifyComment": "发表后允许修改",
+        "allowComment": "允许发表评论",
+        "editor": "编辑器",
+        "editorTitle": "CKEditor Config 脚本",
+        "editorConfigNote": "返回CKEditor的Config对象，用于编辑器初始化",
+        "editorConfigLinkNote": "更多属性帮助请查看",
+
+        "table": "表格",
+        "text": "文本",
+        "format": "格式",
+
+        "validationSave": "保存校验",
+        "validationPublish": "发布校验"
     },
     "actionBar": {
         "close":"关闭",

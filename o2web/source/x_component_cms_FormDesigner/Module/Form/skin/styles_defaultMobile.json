@@ -1,5 +1,5 @@
 {
-  "name": "手机样式",
+  "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.defaultMobileStyle,
   "form": {
     "styles":{
       "background-color": "#f0f0f0"
@@ -7,7 +7,7 @@
   },
   "label": {
     "title": {
-      "name": "标题",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.title,
       "styles": {
         "text-align": "center",
         "font-size": "24px",
@@ -20,7 +20,7 @@
     },
 
     "section": {
-      "name": "区段标题",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.sectionTitle,
       "styles": {
         "height": "40px",
         "background-color": "#ffffff",
@@ -36,7 +36,7 @@
 
   "div": {
     "title": {
-      "name": "标题",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.title,
       "styles": {
         "height": "40px",
         "background-color": "#ffffff",
@@ -49,7 +49,7 @@
       }
     },
     "section": {
-      "name": "区段",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.section,
       "styles": {
         "margin": "20px auto",
         "background-color": "#ffffff",
