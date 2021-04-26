@@ -37,6 +37,11 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
             //
             //this.toolbarWidget.load();
             if( this.json.multiTools ){
+
+                var jsonStr = JSON.stringify(this.json.multiTools);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.cms.Xform.LP.form.actionBar});
+                this.json.multiTools = JSON.parse(jsonStr);
+
                 this.json.multiTools.each( function (tool) {
                     if( tool.system ){
                         if( !this.json.hideSystemTools ){
