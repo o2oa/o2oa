@@ -344,6 +344,22 @@ public class BBSSubjectInfoServiceAdv {
 			throw e;
 		}
 	}
+
+	public List<BBSSubjectInfo> listSubjectWithSubjectTypeForPage(String sectionName,String subjectType, String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, Integer maxRecordCount, List<String> viewSectionIds,Date startTime , Date endTime ) throws Exception {
+		if( viewSectionIds == null || viewSectionIds.isEmpty() ){
+			return null;
+		}
+		if( maxRecordCount == null ){
+			maxRecordCount = 20;
+		}
+		Business business = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			business = new Business(emc);
+			return business.subjectInfoFactory().listSubjectWithSubjectTypeForPage(sectionName,subjectType,searchTitle, forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, maxRecordCount, viewSectionIds , startTime , endTime);
+		}catch( Exception e ){
+			throw e;
+		}
+	}
 	
 	public Long countSubjectInSectionForPage( String searchTitle,
 			String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, 
@@ -354,7 +370,23 @@ public class BBSSubjectInfoServiceAdv {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.subjectInfoFactory().countSubjectInSectionForPage( searchTitle,
+			return business.subjectInfoFactory().countSubjectInSectionForPage(searchTitle,
+					forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, viewSectionIds ,  startTime ,  endTime);
+		}catch( Exception e ){
+			throw e;
+		}
+	}
+
+	public Long countSubjectWithSubjectTypeForPage( String sectionName,String subjectType,String searchTitle,
+											  String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject,
+											  List<String> viewSectionIds , Date startTime , Date endTime) throws Exception {
+		if( viewSectionIds == null || viewSectionIds.isEmpty() ){
+			return 0L;
+		}
+		Business business = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			business = new Business(emc);
+			return business.subjectInfoFactory().countSubjectWithSubjectTypeSectionForPage(sectionName, subjectType,searchTitle,
 					forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, viewSectionIds ,  startTime ,  endTime);
 		}catch( Exception e ){
 			throw e;
