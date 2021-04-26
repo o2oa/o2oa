@@ -1,16 +1,16 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue">text{$.id}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
             <!--<tr>-->
@@ -20,30 +20,30 @@
                 <!--</td>-->
             <!--</tr>-->
             <tr>
-                <td class="editTableTitle">表单样式:</td>
+                <td class="editTableTitle">{{$.lp.formStyle}}:</td>
                 <td class="editTableValue">
                     <select class="MWFFormStyle" name="formStyleType"></select>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">图标:</td>
+                <td class="editTableTitle">{{$.lp.icon}}:</td>
                 <td class="editTableValue"><div class="MWFIcon" name="formIcon"></div></td>
             </tr>
             <tr>
-                <td class="editTableTitle">打印表单:</td>
+                <td class="editTableTitle">{{$.lp.printForm}}:</td>
                 <td class="editTableValue">
                     <div class="MWFFormSelect" name="printForm"></div>
                 </td>
             </tr>
         </table>
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">预加载脚本</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.preloadScript}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">脚本:</td>
+                <td class="editTableTitle">{{$.lp.script}}:</td>
                 <td class="editTableValue">
                     <div class="MWFScriptSelect" data-count=0 name="includeScripts"></div>
-                    <div class="MWFScriptSelectAction"><div style="color: #0b58a2; cursor: pointer; float: left">复制</div><div style="color: #0b58a2; cursor: pointer; float: left; margin-left:10px">粘贴</div></div>
+                    <div class="MWFScriptSelectAction"><div style="color: #0b58a2; cursor: pointer; float: left">{{$.lp.copy}}</div><div style="color: #0b58a2; cursor: pointer; float: left; margin-left:10px">{{$.lp.paste}}</div></div>
                 </td>
             </tr>
         </table>
@@ -51,19 +51,19 @@
 		<!--<div class="MWFArraylist" name="cssLinks" title="CSS引用"></div>-->
 		<!--<div class="MWFArraylist" name="scriptSrc" title="JS引用"></div>-->
 		
-		<div class="MWFMaplist" name="styles" title="样式"></div>
-		<div class="MWFMaplist" name="properties" title="属性"></div>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
         <div class="MWFCssArea" name="css" title="CSS"></div>
 		
 		<!--<div class="MWFScriptArea" name="jsheader" title="JS Header"></div>-->
 
-        <div class="MWFScriptArea" name="validationSave" title="保存校验 (S)"></div>
-        <div class="MWFScriptArea" name="validationPublish" title="发布校验 (S)"></div>
+        <div class="MWFScriptArea" name="validationSave" title="{{$.lp.validationSave}} (S)"></div>
+        <div class="MWFScriptArea" name="validationPublish" title="{{$.lp.validationPublish}} (S)"></div>
 
 	</div>
-	<div title="事件"  class="MWFTab">
-        <div style="padding: 5px;color:#999;">注：当以子表单嵌入时，下列事件不会被执行</div>
+	<div title="{{$.lp.event}}"  class="MWFTab">
+        <div style="padding: 5px;color:#999;">{{$.lp.noEventInfo}}</div>
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
 	<!--<div title="HTML"  class="MWFTab">-->

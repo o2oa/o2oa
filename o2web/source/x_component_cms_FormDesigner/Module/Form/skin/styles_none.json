@@ -1,5 +1,5 @@
 {
-  "name": "空样式",
+  "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.noneStyle,
   "form": {
     "styles":{
       "background-color": "#ffffff"
@@ -7,33 +7,33 @@
   },
   "label": {
     "banner": {
-      "name": "横幅",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.banner,
       "styles": {}
     },
 
     "title": {
-      "name": "标题",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.title,
       "styles": {}
     },
 
     "section": {
-      "name": "区段标题",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.sectionTitle,
       "styles": {}
     }
   },
 
   "div": {
     "banner": {
-      "name": "横幅",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.banner,
       "styles": {}
     },
 
     "title": {
-      "name": "标题",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.title,
       "styles": {}
     },
     "section": {
-      "name": "区段",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.section,
       "styles": {}
     }
   },
