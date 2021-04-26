@@ -47,7 +47,7 @@ MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP,
     "commentTitle": "Comment Area",
     "commentCountText": "Total {count} comments",
 
-    "saveComment": "Save Comment",
+    "saveComment": "Comment",
     "saveCommentSuccess": "Save Comment Success",
     "deleteCommentTitle": "Delete Comment Confirmation",
     "deleteCommentText": "After deleting a comment, it cannot be restored. Are you sure you want to delete this comment?",
@@ -66,6 +66,24 @@ MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP,
     "severalDayAgo": "{count} days ago",
     "severalHourAgo": "{count}hours ago",
     "severalMintuesAgo": "{count} minutes ago",
-    "justNow": "JustNow"
+    "justNow": "JustNow",
+    "actionBar": {
+        "close":"Close",
+        "closeTitle": "Close Document",
+        "edit": "Edit",
+        "editTitle": "Edit Document",
+        "save": "Save",
+        "saveTitle": "Save Document",
+        "publish": "Publish",
+        "publishTitle": "Publish Document",
+        "saveDraft": "Save Draft",
+        "saveDraftTitle": "Save Draft",
+        "popular": "Set Popular",
+        "popularTitle": "Set as Popular Document",
+        "delete": "Delete",
+        "deleteTitle": "Delete Document",
+        "print": "Print",
+        "printTitle": "Print Document"
+    }
 });
 MWF.xApplication.cms.Xform["lp."+o2.language] = MWF.xApplication.cms.Xform.LP;
