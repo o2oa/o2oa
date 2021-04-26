@@ -271,14 +271,85 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			return em.createQuery(cq.where(p)).setMaxResults( maxResults ).getResultList();
 		}
 	}
-	
+
 	//@MethodDescribe( "根据版块ID, 主版块ID，版块ID，创建者姓名查询符合要求所有主题列表，不包括子版块内的主题数量" )
-	public Long countSubjectInSectionForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, List<String> viewSectionIds , Date startTime , Date endTime) throws Exception {
+	public Long countSubjectInSectionForPage(String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, List<String> viewSectionIds , Date startTime , Date endTime) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(BBSSubjectInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isNotNull( root.get(BBSSubjectInfo_.id ) );
+
+		if( StringUtils.isNotEmpty( forumId ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId));
+		}
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId));
+		}
+
+		if( StringUtils.isNotEmpty( forumId ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId));
+		}
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId));
+		}
+		if( StringUtils.isNotEmpty( sectionId ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
+		}
+		if( BooleanUtils.isTrue(needPicture) ){
+			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
+		}
+		if( StringUtils.isNotEmpty( creatorName ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
+		}
+		if( ListTools.isNotEmpty( viewSectionIds ) ){
+			p = cb.and( p, root.get( BBSSubjectInfo_.sectionId ).in( viewSectionIds ) );
+		}
+		if( isTopSubject != null ){
+			if( isTopSubject ){
+				p = cb.and( p, cb.isTrue( root.get( BBSSubjectInfo_.isTopSubject ) ) );
+			}else{
+				p = cb.and( p, cb.isFalse( root.get( BBSSubjectInfo_.isTopSubject ) ) );
+			}
+		}
+		if( StringUtils.isNotEmpty( searchTitle ) ){
+			p = cb.and( p, cb.like( root.get( BBSSubjectInfo_.title ), searchTitle ) );
+		}
+
+		if(startTime!= null) {
+			p = cb.and(p, cb.greaterThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), startTime));
+		}
+
+		if(endTime!= null) {
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), endTime));
+		}
+
+		cq.select( cb.count( root ) );
+		//SELECT COUNT(b) FROM BBSSubjectInfo b WHERE ((b.id IS NOT NULL AND b.sectionId IN ('1c1d9dfc-0034-4d9a-adc7-bb4b3925bbd5')) AND b.title LIKE 'Count')
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+
+	//@MethodDescribe( "根据版块名称，标题类别, 主版块ID，版块ID，创建者姓名查询符合要求所有主题列表，不包括子版块内的主题数量" )
+	public Long countSubjectWithSubjectTypeSectionForPage(String sectionName,String subjectType, String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, List<String> viewSectionIds , Date startTime , Date endTime) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(BBSSubjectInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
+		Predicate p = cb.isNotNull( root.get(BBSSubjectInfo_.id ) );
+
+		if( StringUtils.isNotEmpty( sectionName ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionName ), sectionName));
+		}
+		if( StringUtils.isNotEmpty( subjectType ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.type ), subjectType));
+		}
+
+		if( StringUtils.isNotEmpty( forumId ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId));
+		}
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId));
+		}
 
 		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId));
@@ -371,7 +442,65 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.latestReplyTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults( maxRecordCount ).getResultList();
-	}	
+	}
+
+	//@MethodDescribe( "根据版块名称,主题类别,根据版块ID, 主版块ID，版块ID，创建者姓名查询符合要求所有主题列表，不包括子版块内的主题" )
+	public List<BBSSubjectInfo> listSubjectWithSubjectTypeForPage(String sectionName,String subjectType, String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, Integer maxRecordCount, List<String> viewSectionIds, Date startTime , Date endTime) throws Exception {
+		if( maxRecordCount == null ){
+			throw new Exception( "maxRecordCount is null." );
+		}
+		EntityManager em = this.entityManagerContainer().get(BBSSubjectInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<BBSSubjectInfo> cq = cb.createQuery(BBSSubjectInfo.class);
+		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
+		Predicate p = cb.isNotNull( root.get(BBSSubjectInfo_.id ) );
+
+		if( StringUtils.isNotEmpty( sectionName ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionName ), sectionName));
+		}
+		if( StringUtils.isNotEmpty( subjectType ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.type ), subjectType));
+		}
+		if( StringUtils.isNotEmpty( forumId ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId));
+		}
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId));
+		}
+		if( StringUtils.isNotEmpty( sectionId ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
+		}
+		if( BooleanUtils.isTrue(needPicture) ){
+			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
+		}
+		if( StringUtils.isNotEmpty( creatorName ) ){
+			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
+		}
+		if( ListTools.isNotEmpty( viewSectionIds ) ){
+			p = cb.and( p, root.get( BBSSubjectInfo_.sectionId ).in( viewSectionIds ) );
+		}
+		if( isTopSubject != null ){
+			if( isTopSubject ){
+				p = cb.and( p, cb.isTrue( root.get( BBSSubjectInfo_.isTopSubject ) ) );
+			}else{
+				p = cb.and( p, cb.isFalse( root.get( BBSSubjectInfo_.isTopSubject ) ) );
+			}
+		}
+		if( StringUtils.isNotEmpty( searchTitle ) ){
+			p = cb.and( p, cb.like( root.get( BBSSubjectInfo_.title ), searchTitle ) );
+		}
+
+		if(startTime!= null) {
+			p = cb.and(p, cb.greaterThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), startTime));
+		}
+
+		if(endTime!= null) {
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), endTime));
+		}
+
+		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.latestReplyTime ) ) );
+		return em.createQuery(cq.where(p)).setMaxResults( maxRecordCount ).getResultList();
+	}
 
 	//@MethodDescribe( "根据指定的主题ID获取上一个主题的ID，根据最新回帖时间排序" )
 	public List<BBSSubjectInfo> listLastSubject( Date latestReplyTime ) throws Exception {

@@ -193,6 +193,18 @@ public class BBSSectionInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> moderatorNames;
 
+	public static final String subjectTypeList_FIELDNAME = "subjectTypeList";
+	@FieldDescribe("论坛版块-应用类型（从应用市场同步）")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ subjectTypeList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+			+ subjectTypeList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + subjectTypeList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + subjectTypeList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> subjectTypeList;
+
 	public static final String sectionType_FIELDNAME = "sectionType";
 	@FieldDescribe("版块类别：图片新闻，普通新闻，公告，经典（默认）")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + sectionType_FIELDNAME)
@@ -303,6 +315,21 @@ public class BBSSectionInfo extends SliceJpaObject {
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + subjectMessageNotifyType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String subjectMessageNotifyType = "0,0";
+
+	public static final String sectionGrade_FIELDNAME = "sectionGrade";
+	@FieldDescribe("版块是否支持评分：true|false")
+	@Column(name = ColumnNamePrefix + sectionGrade_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + sectionGrade_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean sectionGrade = false;
+
+	public Boolean getSectionGrade() {
+		return sectionGrade;
+	}
+
+	public void setSectionGrade(Boolean sectionGrade) {
+		this.sectionGrade = sectionGrade;
+	}
 
 	public Boolean getSubjectMessageNotify() { return this.subjectMessageNotify == null?false:this.subjectMessageNotify; }
 
@@ -542,6 +569,14 @@ public class BBSSectionInfo extends SliceJpaObject {
 		this.moderatorNames = moderatorNames;
 	}
 
+	public List<String> getSubjectTypeList() {
+		return this.subjectTypeList;
+	}
+
+	public void setSubjectTypeList(final List<String> subjectTypeList) {
+		this.subjectTypeList = subjectTypeList;
+	}
+
 	public List<String> addVisitPermission(String permissoin) {
 		if (this.visiblePermissionList == null) {
 			this.visiblePermissionList = new ArrayList<>();
@@ -596,5 +631,15 @@ public class BBSSectionInfo extends SliceJpaObject {
 			this.moderatorNames.add(person);
 		}
 		return this.moderatorNames;
+	}
+
+	public List<String> addSubjectTypeList(String person) {
+		if (this.subjectTypeList == null) {
+			this.subjectTypeList = new ArrayList<>();
+		}
+		if (!this.subjectTypeList.contains(person)) {
+			this.subjectTypeList.add(person);
+		}
+		return this.subjectTypeList;
 	}
 }
