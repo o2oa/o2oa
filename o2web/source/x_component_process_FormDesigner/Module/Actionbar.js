@@ -225,18 +225,18 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
 
                 this.setMultiToolbars(Array.clone(this.multiToolsJson), this.toolbarNode);
 
-                this.setToolbars(this.multiToolsJson, this.toolbarNode);
+                // this.setToolbars(this.multiToolsJson, this.toolbarNode);
                 this.toolbarWidget.load();
             }.bind(this), null,null,true);
 
             // MWF.getJSON(this.path+"toolbars.json", function(json){
-            //     this.json.multiTools = json.map( function (d) { d.system = true; return d; });
-            //     if (this.json.tools){
-            //         this.json.multiTools = this.json.multiTools.concat( this.json.tools )
-            //     }
-            //     this.setMultiToolbars(Array.clone(this.json.multiTools), this.toolbarNode);
-            //     this.toolbarWidget.load();
-            // }.bind(this), false);
+            //             //     this.json.multiTools = json.map( function (d) { d.system = true; return d; });
+            //             //     if (this.json.tools){
+            //             //         this.json.multiTools = this.json.multiTools.concat( this.json.tools )
+            //             //     }
+            //             //     this.setMultiToolbars(Array.clone(this.json.multiTools), this.toolbarNode);
+            //             //     this.toolbarWidget.load();
+            //             // }.bind(this), false);
         }
     },
     setMultiToolbars: function(tools, node){
