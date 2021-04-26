@@ -1,5 +1,5 @@
 {
-  "name": "默认样式",
+  "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.defaultStyle,
   "form": {
     "styles":{
       "background-color": "#f0f0f0"
@@ -7,7 +7,7 @@
   },
   "label": {
     "banner": {
-      "name": "横幅",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.banner,
       "styles": {
         "background-color": "#3c76b7",
         "height": "40px",
@@ -20,7 +20,7 @@
     },
 
     "title": {
-      "name": "标题",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.title,
       "styles": {
         "text-align": "center",
         "font-size": "24px",
@@ -32,7 +32,7 @@
     },
 
     "section": {
-      "name": "区段标题",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.sectionTitle,
       "styles": {
         "height": "40px",
         "background-color": "#666666",
@@ -47,7 +47,7 @@
 
   "div": {
     "banner": {
-      "name": "横幅",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.banner,
       "styles": {
         "background-color": "#3c76b7",
         "height": "40px",
@@ -60,7 +60,7 @@
     },
 
     "title": {
-      "name": "标题",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.title,
       "styles": {
         "text-align": "center",
         "font-size": "24px",
@@ -71,7 +71,7 @@
       }
     },
     "section": {
-      "name": "区段",
+      "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.section,
       "styles": {
         "background-color": "#FFF",
         "border": "1px solid #cccccc"
