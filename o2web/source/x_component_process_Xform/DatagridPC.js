@@ -2306,7 +2306,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						if( !hasError ){
 							module.setData(parsedD);
 							module.validationMode();
-							if (!module.validation()){
+							if (!module.validation() && module.errNode){
 								errorTextList.push(colInfor + module.errNode.get("text"));
 								errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
 								module.errNode.destroy();
