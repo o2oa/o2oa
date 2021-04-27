@@ -92,22 +92,35 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             "isDelete": (this.json.isDelete === "y" || this.json.isDelete === "true"),
             "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
             "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
+            "isPreviewAtt": (this.json.isPreviewAtt === "y" || this.json.isPreviewAtt === "true"),
             "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
             "readonly": (this.json.readonly === "y" || this.json.readonly === "true"),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
-            "toolbarGroupHidden": this.json.toolbarGroupHidden || []
+            "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "onOrder": function () {
+                this.fireEvent("change");
+            }.bind(this)
             //"downloadEvent" : this.json.downloadEvent
         };
         if (this.readonly) options.readonly = true;
+
+        this.fireEvent("queryLoadController", [options]);
+
         this.attachmentController = new MWF.xApplication.cms.Xform.AttachmentController(this.node, this, options);
+
+        this.fireEvent("loadController");
+
         this.attachmentController.load();
 
+        this.fireEvent("postLoadController");
+
         this.form.businessData.attachmentList.each(function (att) {
-            if (att.site == this.json.id) this.attachmentController.addAttachment(att);
+            if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
             //if (att.fileType.toLowerCase()==this.json.id.toLowerCase()) this.attachmentController.addAttachment(att);
         }.bind(this));
+        this.setAttachmentBusinessData();
         //}.bind(this));
     },
     loadAttachmentSelecter: function (option, callback) {
