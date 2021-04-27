@@ -144,6 +144,25 @@
             <div class="MWFFormulaArea" name="excelName" title="导出文件名称"></div>
             <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">导入导出字段配置</div>
             <div class="MWFFieldConfigArea" name="excelFieldConfig"></div>
+            <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">校验弹出框配置</div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitleWithoutWith" width="80px">弹出框宽度:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="impExpDlgWidth" value="text{$.impExpDlgWidth}" class="editTableInputNoWidth" style="width: 100px;"/>px
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">弹出框高度:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="impExpDlgHeight" value="text{$.impExpDlgHeight}" class="editTableInputNoWidth" style="width: 100px;"/>px
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFMaplist" name="impExpTableStyles" collapse="true" title="校验表格样式"></div>
+            <div class="MWFMaplist" name="impExpTableTitleStyles" collapse="true" title="校验标题单元格样式"></div>
+            <div class="MWFMaplist" name="impExpTableContentStyles" collapse="true" title="校验内容单元格样式"></div>
+            <div class="MWFMaplist" name="impExpTableProperties" collapse="true" title="校验表格属性"></div>
         </div>
     </div>
     <div title="区段" class="MWFTab">
