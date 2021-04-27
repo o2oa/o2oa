@@ -7,8 +7,8 @@
     "allowList": ["xadmin", "Manager"]
   },
   {
-    "name": "AppMarket",
-    "path": "AppMarket",
+    "name": "AppMarketV2",
+    "path": "AppMarketV2",
     "title": "应用市场",
     "iconPath": "appicon.png",
     "allowList": ["xadmin", "Manager"]
