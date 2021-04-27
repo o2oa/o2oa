@@ -1585,9 +1585,9 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			return arr.join(" ")
 		}
 
-		var htmlArray = ["<table "+ objectToString( this.json.properties ) +" style='"+objectToString( this.json.tableStyles, "style" )+"'>"];
+		var htmlArray = ["<table "+ objectToString( this.template.json.impExpTableProperties ) +" style='"+objectToString( this.template.json.impExpTableStyles, "style" )+"'>"];
 
-		var titleStyle = objectToString(this.json.titleStyles, "style");
+		var titleStyle = objectToString(this.template.json.impExpTableTitleStyles, "style");
 		htmlArray.push("<tr>");
 		fieldArray.each(function (obj, i) {
 			htmlArray.push( "<th style='"+titleStyle+"'>"+obj.text+"</th>" );
@@ -1595,7 +1595,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		htmlArray.push("<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>");
 		htmlArray.push("</tr>" );
 
-		var contentStyles = Object.clone( this.json.contentStyles );
+		var contentStyles = Object.clone( this.template.json.impExpTableContentStyles );
 		if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
 		var contentStyle = objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
 
@@ -1611,6 +1611,11 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		}.bind(this));
 		htmlArray.push( "</table>" );
 
+		var width = this.template.json.impExpDlgWidth || 1000;
+		var height = this.template.json.impExpDlgHeight || 700;
+		width = width.toInt();
+		height = height.toInt();
+
 		var div = new Element("div", { style : "padding:10px;", html : htmlArray.join("") });
 		var dlg = o2.DL.open({
 			"style" : this.form.json.dialogStyle || "user",
@@ -1618,8 +1623,8 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			"content": div,
 			"offset": {"y": 0},
 			"isMax": true,
-			"width": 1000,
-			"height": 700,
+			"width": width,
+			"height": height,
 			"buttonList": [
 				{
 					"type": "exportWithError",
@@ -1640,6 +1645,8 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 	},
 	checkData : function( fieldArray, idata ){
 		var flag = true;
+
+		debugger;
 
 		var lp = MWF.xApplication.process.Xform.LP;
 		var columnText =  lp.importValidationColumnText;
@@ -1679,8 +1686,8 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 							arr.each( function(d, idx){
 								var obj = this.getOrgData( d );
 								if( obj.errorText ){
-									errorTextList.push( colInfor + obj.errorText + + lp.fullstop );
-									errorTextListExcel.push( colInforExcel + obj.errorText + + lp.fullstop );
+									errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+									errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
 								}
 							}.bind(this));
 							break;
@@ -1701,7 +1708,15 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					}
 				}
 				if (module && module.setData && json.type !== "Address"){
-					module.setData(parseD);
+					if(["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)){
+						var hasError = false;
+						if(o2.typeOf(parseD)==="array" && parseD.length){
+							hasError = parseD.some(function (item) { return item.errorText; })
+						}
+						if(!hasError)module.setData(parseD);
+					}else{
+						module.setData(parseD);
+					}
 					module.validationMode();
 					if (!module.validation() && module.errNode){
 						errorTextList.push(colInfor + module.errNode.get("text"));
