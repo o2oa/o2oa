@@ -48,7 +48,7 @@
 		"display": "inline-block",
 		"height": "18px"
 	},
-	"fieldIcon": {
+	"textfieldIcon": {
 		"background": "url("+"../x_component_cms_FormDesigner/Module/Author/default/icon/selectauthor.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
