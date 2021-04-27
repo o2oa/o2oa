@@ -62,10 +62,15 @@ if (!window.Promise){
 })(window.Node || window.Element);
 
 (function(){
+    var _language = localStorage.getItem("o2.language");
+
     var _href = window.location.href;
     var _debug = (_href.indexOf("debugger")!==-1);
     var _par = _href.substr(_href.lastIndexOf("?")+1, _href.length);
-    var _lp = navigator.language || "zh-cn";
+
+    var _lp = _language || navigator.language || "zh-cn";
+    //if (!_lp) _lp = "zh-cn";
+
     if (_par){
         var _parList = _par.split("&");
         for (var i=0; i<_parList.length; i++){
@@ -76,6 +81,7 @@ if (!window.Promise){
         }
     }
     this.o2 = window.o2 || {};
+    //this.o2.storageData = _storageData;
     this.o2.version = {
         "v": "6.1",
         "build": "2021.04.20",
@@ -1513,7 +1519,7 @@ if (!window.Promise){
             // }, function(xhr, text, error){
             //     return o2.runCallback(callback, "failure", [xhr, text, error], null);
             // });
-            p = p.catch(function(xhr, text, error){});
+            //p = p.catch(function(xhr, text, error){});
 
             //var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
             var oReturn = p;
