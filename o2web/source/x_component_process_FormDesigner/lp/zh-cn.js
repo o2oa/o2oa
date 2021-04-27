@@ -721,6 +721,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readReaded": "待阅已阅",
         "readTitle": "待阅标题",
         "readedTitle": "已阅标题",
+        "exactMatch": "精确匹配",
         "filterActivity": "活动过滤",
         "filterActivityAlias": "活动别名过滤",
         "filterPerson": "处理人过滤",

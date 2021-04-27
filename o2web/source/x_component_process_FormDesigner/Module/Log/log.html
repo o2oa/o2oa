@@ -112,16 +112,40 @@
 
 	</div>
 	<div title="{{$.lp.filter}}" class="MWFTab">
-		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px">{{$.lp.filterActivity}}</div>
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterActivityExactMatch" value="yes"
+					   text{($.filterActivityExactMatch && $.filterActivityExactMatch.indexOf('yes')!=-1)?'checked':''}>{{$.lp.exactMatch}}
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">{{$.lp.filterActivity}}</div>
+		</div>
 		<div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivity">text{$.filterActivity}</textarea></div>
 
-		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">{{$.lp.filterActivityAlias}}</div>
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterActivityAliasExactMatch" value="yes"
+					   text{($.filterActivityAliasExactMatch && $.filterActivityAliasExactMatch.indexOf('yes')!=-1)?'checked':''}>{{$.lp.exactMatch}}
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">{{$.lp.filterActivityAlias}}</div>
+		</div>
 		<div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivityAlias">text{$.filterActivityAlias}</textarea></div>
 
-		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">{{$.lp.filterPerson}}</div>
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterPersonExactMatch" value="yes"
+					   text{($.filterPersonExactMatch && $.filterPersonExactMatch.indexOf('yes')!=-1)?'checked':''}>{{$.lp.exactMatch}}
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">{{$.lp.filterPerson}}</div>
+		</div>
 		<div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterPerson">text{$.filterPerson}</textarea></div>
 
-		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">{{$.lp.filterRoute}}</div>
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterRouteExactMatch" value="yes"
+					   text{($.filterRouteExactMatch && $.filterRouteExactMatch.indexOf('yes')!=-1)?'checked':''}>{{$.lp.exactMatch}}
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">{{$.lp.filterRoute}}</div>
+		</div>
 		<div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterRoute">text{$.filterRoute}</textarea></div>
 
 		<div><div id="labelEditScriptValue" class="MWFScriptArea" name="filterScript" title="{{$.lp.filterScript}} (S)"></div></div>
