@@ -232,6 +232,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
 
         this.pathInputSelect.addEvent("change", function ( ev ) {
             var option = ev.target.options[ev.target.selectedIndex];
+            if(this.verificationNode)this.verificationNode.destroy();
             if( !this.statementData )return;
             debugger;
             var type = option.retrieve("type");

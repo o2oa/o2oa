@@ -47,6 +47,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         if( this.options.formEditId && !this.options.editFormId )this.options.editFormId = this.options.formEditId;
 
         if( this.options.readonly === "false" )this.options.readonly = false;
+        if( this.options.readonly === "true" )this.options.readonly = true;
         if( this.options.documentId && this.options.documentId!=""){
             this.options.appId = "cms.Document"+this.options.documentId;
         }
@@ -217,7 +218,9 @@ MWF.xApplication.cms.Document.Main = new Class({
                     this.parseDocumentV2(this.json_document.data);
 
                     //编辑状态要先获取document再判断有没有权限编辑
-                    var toLoadForm = this.options.readonly !== true && !this.options.anonymousAccess;
+
+                    var toLoadForm = !(this.options.readonly !== false || this.options.anonymousAccess);
+                    // var toLoadForm = this.options.readonly !== true && !this.options.anonymousAccess;
                     this.checkLoad( toLoadForm )
                 }else{
                     this.errorLoadingV2();

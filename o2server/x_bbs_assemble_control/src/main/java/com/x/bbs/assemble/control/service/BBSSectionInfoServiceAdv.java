@@ -49,10 +49,27 @@ public class BBSSectionInfoServiceAdv {
 			throw e;
 		}
 	}
+
+	/**
+	 * 据传入的板块名称从数据库查询BBSSectionInfo对象
+	 * @param mainSectionName
+	 * @return
+	 * @throws Exception
+	 */
+	public BBSSectionInfo getMainSectionBySectionName( String mainSectionName ) throws Exception {
+		if( mainSectionName  == null || mainSectionName.isEmpty() ){
+			throw new Exception( "mainSectionName is null!" );
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return sectionInfoService.getMainSectionBySectionName( emc, mainSectionName);
+		}catch( Exception e ){
+			throw e;
+		}
+	}
 	
 	/**
 	 * 向数据库保存BBSSectionInfo对象
-	 * @param wrapIn
+	 * @param _bBSSectionInfo
 	 */
 	public BBSSectionInfo save( BBSSectionInfo _bBSSectionInfo ) throws Exception {
 		if( _bBSSectionInfo  == null ){
@@ -67,7 +84,7 @@ public class BBSSectionInfoServiceAdv {
 	
 	/**
 	 * 根据ID从数据库中删除BBSSectionInfo对象
-	 * @param id
+	 * @param sectionId
 	 * @throws Exception
 	 */
 	public void delete( String sectionId ) throws Exception {
@@ -159,7 +176,7 @@ public class BBSSectionInfoServiceAdv {
 	 * 强制删除一个版块，或者是主版块
 	 * 1、如果是主版块，会删除主版块下的所有子版块
 	 * 2、删除子版块、主题、回帖、权限、角色等信息
-	 * @param id
+	 * @param sectionId
 	 * @throws Exception 
 	 */
 	public void deleteForce( String sectionId ) throws Exception {
@@ -345,7 +362,7 @@ public class BBSSectionInfoServiceAdv {
 
 	/**
 	 * 根据论坛ID查询论坛中所有的主版块信息数量
-	 * @param id
+	 * @param forumId
 	 * @return
 	 * @throws Exception 
 	 */
@@ -362,7 +379,7 @@ public class BBSSectionInfoServiceAdv {
 	
 	/**
 	 * 根据主版块ID查询主版块中所有的子版块信息数量
-	 * @param id
+	 * @param sectionId
 	 * @return
 	 * @throws Exception 
 	 */

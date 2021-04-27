@@ -386,13 +386,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         //     return true;
         // }
         if( this.options && this.options.select ){
-            return  this.options.select === "none";
+            return  this.options.select === "none" || this.options.select === "no";
         }
         if( this.json && this.json.select ){
-            return  this.json.select === "none";
+            return  this.json.select === "none" || this.json.select === "no";
         }
         if( this.viewJson && this.viewJson.select ){
-            return  this.viewJson.select === "none";
+            return  this.viewJson.select === "none" || this.viewJson.select === "no";
         }
         return true;
         // if( this.json.select === "single" || this.json.select === "multi" || this.json.defaultSelectedScript || this.viewJson.defaultSelectedScript ){
