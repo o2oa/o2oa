@@ -2297,12 +2297,20 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						}
 					}
 					if (module.json.type!="sequence" && module.setData && module.json.type!=="Address"){
-						module.setData(parsedD);
-						module.validationMode();
-						if (!module.validation()){
-							errorTextList.push(colInfor + module.errNode.get("text"));
-							errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
-							module.errNode.destroy();
+						var hasError = false;
+						if(["Org","Reader","Author","Personfield","Orgfield"].contains(module.json.type)){
+							if(o2.typeOf(parsedD)==="array" && parsedD.length){
+								hasError = parsedD.some(function (item) { return item.errorText; })
+							}
+						}
+						if( !hasError ){
+							module.setData(parsedD);
+							module.validationMode();
+							if (!module.validation()){
+								errorTextList.push(colInfor + module.errNode.get("text"));
+								errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
+								module.errNode.destroy();
+							}
 						}
 					}
 				}.bind(this));
