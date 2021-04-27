@@ -1,59 +1,59 @@
 <div style="background-color: #FFF; overflow: hidden">
-    <div title="基本" class="MWFTab">
+    <div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue">text{$.id}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue">
                     <input type="text" name="name" value="text{$.name}" class="editTableInput" style="display: text{($.status=='build')?'none':''}"/>
                     <div style="display: text{($.status=='build')?'':'none'}">text{$.name}</div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">别名:</td>
+                <td class="editTableTitle">{{$.lp.alias}}:</td>
                 <td class="editTableValue">
                     <input type="text" name="alias" value="text{$.alias}" class="editTableInput" style="display: text{($.status=='build')?'none':''}"/>
                     <div style="display: text{($.status=='build')?'':'none'}">text{$.alias}</div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">状态:</td>
-                <td class="editTableValue"><div>text{$.status==='draft'?'草稿':'已发布'}</div></td>
+                <td class="editTableTitle">{{$.lp.status}}:</td>
+                <td class="editTableValue"><div>text{$.status==='draft'?'{{$.lp.draft}}':'{{$.lp.published}}'}</div></td>
             </tr>
             <!--<tr>-->
             <!--<td class="editTableTitle">选择视图:</td>-->
             <!--<td class="editTableValue"><div class="MWFViewSelect" name="view"></div></td>-->
             <!--</tr>-->
         </table>
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">执行权限</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.authority}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>
-                <td class="editTableTitle">可读人:</td>
+                <td class="editTableTitle">{{$.lp.readPersonList}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonIdentity" name="readPersonList"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">可读组织:</td>
+                <td class="editTableTitle">{{$.lp.readUnitList}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonUnit" name="readUnitList"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">可编辑人:</td>
+                <td class="editTableTitle">{{$.lp.editPersonList}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonIdentity" name="editPersonList"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">可编辑组织:</td>
+                <td class="editTableTitle">{{$.lp.editUnitList}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonUnit" name="editUnitList"></div>
                 </td>

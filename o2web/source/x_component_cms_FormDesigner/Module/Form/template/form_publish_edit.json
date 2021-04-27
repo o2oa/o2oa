@@ -2198,8 +2198,8 @@
           "type": "ImageClipper",
           "description": "",
           "clipperType": "size",
-          "imageWidth": "",
-          "imageHeight": "",
+          "imageWidth": "240",
+          "imageHeight": "160",
           "imageRatio": "",
           "events": {
             "click": {

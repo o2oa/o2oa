@@ -10,8 +10,8 @@
         <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.statementCategory}}: </div>
         <div class="o2_statement_statementDesignerCategoryContent" style="float: left">
             <select>
-                <option value="official" {{if $.data.entityCategory!=='dynamic' && $.data.entityCategory!=='custom'}} selected {{end if}}>系统表</option>
-                <option value="dynamic" {{if $.data.entityCategory=='dynamic'}} selected {{end if}}>自建数据表</option>
+                <option value="official" {{if $.data.entityCategory!=='dynamic' && $.data.entityCategory!=='custom'}} selected {{end if}}>{{$.lp.systemTable}}</option>
+                <option value="dynamic" {{if $.data.entityCategory=='dynamic'}} selected {{end if}}>{{$.lp.customTable}}</option>
 <!--                <option value="custom" {{if $.data.entityCategory=='custom'}} selected {{end if}}>自定义应用</option>-->
             </select>
         </div>
@@ -41,14 +41,14 @@
             <div class="o2_statement_statementDesignerOfficialTable">
                 <select>
                     <option value=""></option>
-                    <option value="com.x.processplatform.core.entity.content.Task" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Task'}} selected {{end if}}>待办(Task)</option>
-                    <option value="com.x.processplatform.core.entity.content.TaskCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.TaskCompleted'}} selected {{end if}}>已办(TaskCompleted)</option>
-                    <option value="com.x.processplatform.core.entity.content.Read" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Read'}} selected {{end if}}>待阅(Read)</option>
-                    <option value="com.x.processplatform.core.entity.content.ReadCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.ReadCompleted'}} selected {{end if}}>已阅(ReadCompleted)</option>
-                    <option value="com.x.processplatform.core.entity.content.Work" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Work'}} selected {{end if}}>流程实例(Work)</option>
-                    <option value="com.x.processplatform.core.entity.content.WorkCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.WorkCompleted'}} selected {{end if}}>已完成流程实例(WorkCompleted)</option>
-                    <option value="com.x.processplatform.core.entity.content.Review" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Review'}} selected {{end if}}>可阅读(Review)</option>
-                    <option value="com.x.cms.core.entity.Document" {{if $.data.entityClassName =='com.x.cms.core.entity.Document'}} selected {{end if}}>内容管理文档(Document)</option>
+                    <option value="com.x.processplatform.core.entity.content.Task" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Task'}} selected {{end if}}>{{$.lp.taskInstance}}</option>
+                    <option value="com.x.processplatform.core.entity.content.TaskCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.TaskCompleted'}} selected {{end if}}>{{$.lp.taskCompletedInstance}}</option>
+                    <option value="com.x.processplatform.core.entity.content.Read" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Read'}} selected {{end if}}>{{$.lp.readInstance}}</option>
+                    <option value="com.x.processplatform.core.entity.content.ReadCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.ReadCompleted'}} selected {{end if}}>{{$.lp.readedInstance}}</option>
+                    <option value="com.x.processplatform.core.entity.content.Work" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Work'}} selected {{end if}}>{{$.lp.workInstance}}</option>
+                    <option value="com.x.processplatform.core.entity.content.WorkCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.WorkCompleted'}} selected {{end if}}>{{$.lp.workCompletedInstance}}</option>
+                    <option value="com.x.processplatform.core.entity.content.Review" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Review'}} selected {{end if}}>{{$.lp.reviewInstance}}</option>
+                    <option value="com.x.cms.core.entity.Document" {{if $.data.entityClassName =='com.x.cms.core.entity.Document'}} selected {{end if}}>{{$.lp.documentInstance}}</option>
                 </select>
             </div>
         </div>

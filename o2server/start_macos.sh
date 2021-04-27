@@ -1,6 +1,7 @@
 #!/bin/bash
 # Copyright (c) http://www.o2oa.net/
 current_dir="$(cd "$(dirname "$0")"; pwd)"
+sudo date
 if [ -d ${current_dir}/local/update ]
 then
 	for D in commons configSample localSample jvm servers store config  local
@@ -18,7 +19,7 @@ then
 			if [ -d ${current_dir}/local/update/o2server/$D ]
 			then
 				echo "update ${current_dir}/$D."
-				cp -Rf ${current_dir}/local/update/o2server/$D  ${current_dir}/
+				cp -Rf -p ${current_dir}/local/update/o2server/$D  ${current_dir}/
 			fi
 		done
 		for F in console.jar index.html src.zip
@@ -26,7 +27,7 @@ then
 			if [ -f ${current_dir}/local/update/o2server/$F ]
 			then
 				echo "update ${current_dir}/$F."
-				cp -f ${current_dir}/local/update/o2server/$F ${current_dir}/
+				cp -f -p ${current_dir}/local/update/o2server/$F ${current_dir}/
 			fi
 		done
 		for A in "start" "stop" "restart" "console" "service"
@@ -35,7 +36,7 @@ then
 			do
 				if [ -f ${current_dir}/local/update/o2server/$A$B ]; then
 					echo "update ${current_dir}/$A$B."
-					cp -f ${current_dir}/local/update/o2server/$A$B ${current_dir}/
+					cp -f -p ${current_dir}/local/update/o2server/$A$B ${current_dir}/
 				fi
 			done
 		done
@@ -47,4 +48,4 @@ then
 		exit 1
 	fi
 fi
-setsid ${current_dir}/jvm/macos_java11/bin/java -Dnashorn.args=--no-deprecation-warning --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
+sudo ${current_dir}/jvm/macos_java11/bin/java -Dnashorn.args=--no-deprecation-warning --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar

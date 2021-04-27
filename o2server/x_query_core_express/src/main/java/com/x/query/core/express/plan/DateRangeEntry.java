@@ -119,9 +119,10 @@ public class DateRangeEntry extends GsonPropertyObject {
 			break;
 		case DATERANGETYPE_NONE:
 			this.completed = now;
-			Calendar cal = Calendar.getInstance();
+			this.start = null;
+			/*Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.YEAR, -1);
-			//this.start = cal.getTime();
+			this.start = cal.getTime();*/
 			break;
 		default:
 			break;

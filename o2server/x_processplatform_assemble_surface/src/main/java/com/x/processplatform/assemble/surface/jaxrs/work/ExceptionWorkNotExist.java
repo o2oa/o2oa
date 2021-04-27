@@ -1,12 +1,12 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionWorkNotExist extends PromptException {
+class ExceptionWorkNotExist extends LanguagePromptException {
 
 	private static final long serialVersionUID = -9089355008820123519L;
 
 	ExceptionWorkNotExist(String str) {
-		super("work: {} not existed.", str);
+		super("指定的工作不存在:{}.", str);
 	}
 }

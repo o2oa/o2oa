@@ -1,11 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.form;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -146,11 +142,12 @@ public class FormAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2Get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+					  @JaxrsParameterDescribe("标识") @PathParam("id") String id,
+					  @JaxrsParameterDescribe("缓存标志") @QueryParam("t") String t) {
 		ActionResult<V2Get.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new V2Get().execute(effectivePerson, id);
+			result = new V2Get().execute(effectivePerson, id, t);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -164,11 +161,12 @@ public class FormAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2GetMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+							@JaxrsParameterDescribe("标识") @PathParam("id") String id,
+							@JaxrsParameterDescribe("缓存标志") @QueryParam("t") String t) {
 		ActionResult<V2GetMobile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new V2GetMobile().execute(effectivePerson, id);
+			result = new V2GetMobile().execute(effectivePerson, id, t);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

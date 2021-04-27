@@ -7,7 +7,7 @@ class ExceptionDocumentAccessDenied extends PromptException {
 	private static final long serialVersionUID = 9085364457175859374L;
 
 	ExceptionDocumentAccessDenied(String person, String title, String docId) {
-		super("person:{} access cms document title:{} id:{}, denied.", person, title, docId);
+		super("用户:{} 没有权限访问文档 name: {} id: {}.", person, title, docId);
 	}
 
 }

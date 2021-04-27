@@ -26,13 +26,13 @@ import net.sf.ehcache.Element;
 public class ActionGetAnonymous extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger( ActionGetAnonymous.class );
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, String flag, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = null;
 		CategoryInfo categoryInfo = null;
 		Boolean check = true;
-		
+
 		if( StringUtils.isEmpty( flag ) ){
 			check = false;
 			Exception exception = new ExceptionIdEmpty();
@@ -55,7 +55,7 @@ public class ActionGetAnonymous extends BaseAction {
 					}else {
 						if( !categoryInfo.getAnonymousAble() ){
 							check = false;
-							Exception exception = new ExceptionCategoryInfoAccessDenied("分类信息不允许匿名访问！");
+							Exception exception = new ExceptionCategoryInfoAccessDenied();
 							result.error( exception );
 						}
 					}
@@ -66,7 +66,7 @@ public class ActionGetAnonymous extends BaseAction {
 					logger.error( e, effectivePerson, request, null);
 				}
 			}
-			
+
 			if( check ){
 				try {
 					wo = Wo.copier.copy( categoryInfo );
@@ -83,13 +83,13 @@ public class ActionGetAnonymous extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends CategoryInfo {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		@FieldDescribe("扩展信息JSON内容")
 		private String extContent = null;
 

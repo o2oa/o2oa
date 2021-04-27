@@ -1,11 +1,14 @@
 package com.x.processplatform.assemble.surface.jaxrs.form;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -25,14 +28,15 @@ import com.x.processplatform.core.entity.content.WorkCompletedProperties.Related
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormProperties;
 import com.x.processplatform.core.entity.element.Script;
+import org.apache.commons.lang3.StringUtils;
 
 class V2Get extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(V2Get.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String tag) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		CacheKey cacheKey = new CacheKey(this.getClass(), id);
+		CacheKey cacheKey = new CacheKey(this.getClass(), id, tag);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
 			result.setData((Wo) optional.get());
@@ -47,23 +51,28 @@ class V2Get extends BaseAction {
 			}
 			Wo wo = new Wo();
 			final FormProperties properties = form.getProperties();
-			wo.setFastETag(form.getId() + form.getUpdateTime().getTime());
+			final List<String> list = new CopyOnWriteArrayList<>();
 			wo.setForm(new RelatedForm(form, form.getDataOrMobileData()));
-			CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(properties);
+			CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(properties, list);
 			CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture = this
-					.getRelatedScriptFuture(properties);
+					.getRelatedScriptFuture(properties, list);
 			wo.setRelatedFormMap(
 					getRelatedFormFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
 			wo.setRelatedScriptMap(
 					getRelatedScriptFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
-			wo.setMaxAge(3600 * 24);
+			if(StringUtils.isNotBlank(tag)) {
+				wo.setMaxAge(3600 * 24);
+			}
+			list.add(form.getId() + form.getUpdateTime().getTime());
+			List<String> sortList = list.stream().sorted().collect(Collectors.toList());
+			wo.setFastETag(StringUtils.join(sortList, "#"));
 			CacheManager.put(cacheCategory, cacheKey, wo);
 			result.setData(wo);
 		}
 		return result;
 	}
 
-	private CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture(FormProperties properties) {
+	private CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture(FormProperties properties, final List<String> list) {
 		return CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedForm> map = new TreeMap<>();
 			if (ListTools.isNotEmpty(properties.getRelatedFormList())) {
@@ -74,6 +83,7 @@ class V2Get extends BaseAction {
 						f = bus.form().pick(id);
 						if (null != f) {
 							map.put(id, new RelatedForm(f, f.getDataOrMobileData()));
+							list.add(f.getId() + f.getUpdateTime().getTime());
 						}
 					}
 				} catch (Exception e) {
@@ -84,13 +94,13 @@ class V2Get extends BaseAction {
 		});
 	}
 
-	private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(FormProperties properties) {
+	private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(FormProperties properties, final List<String> list) {
 		return CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedScript> map = new TreeMap<>();
 			if ((null != properties.getRelatedScriptMap()) && (properties.getRelatedScriptMap().size() > 0)) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
-					map = convertScript(business, properties);
+					map = convertScript(business, properties, list);
 				} catch (Exception e) {
 					logger.error(e);
 				}
@@ -99,7 +109,7 @@ class V2Get extends BaseAction {
 		});
 	}
 
-	private Map<String, RelatedScript> convertScript(Business bus, FormProperties properties) throws Exception {
+	private Map<String, RelatedScript> convertScript(Business bus, FormProperties properties, final List<String> list) throws Exception {
 		Map<String, RelatedScript> map = new TreeMap<>();
 		for (Entry<String, String> entry : properties.getRelatedScriptMap().entrySet()) {
 			switch (entry.getValue()) {
@@ -108,6 +118,7 @@ class V2Get extends BaseAction {
 				if (null != pp) {
 					map.put(entry.getKey(),
 							new RelatedScript(pp.getId(), pp.getName(), pp.getAlias(), pp.getText(), entry.getValue()));
+					list.add(pp.getId() + pp.getUpdateTime().getTime());
 				}
 				break;
 			case WorkCompletedProperties.RelatedScript.TYPE_CMS:
@@ -115,6 +126,7 @@ class V2Get extends BaseAction {
 				if (null != cms) {
 					map.put(entry.getKey(), new RelatedScript(cms.getId(), cms.getName(), cms.getAlias(), cms.getText(),
 							entry.getValue()));
+					list.add(cms.getId() + cms.getUpdateTime().getTime());
 				}
 				break;
 			case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
@@ -122,6 +134,7 @@ class V2Get extends BaseAction {
 				if (null != p) {
 					map.put(entry.getKey(),
 							new RelatedScript(p.getId(), p.getName(), p.getAlias(), p.getText(), entry.getValue()));
+					list.add(p.getId() + p.getUpdateTime().getTime());
 				}
 				break;
 			default:
