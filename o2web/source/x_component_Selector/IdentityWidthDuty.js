@@ -5,7 +5,7 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectIdentity,
+        "title": "",
         "dutys": [],
         "units": [],
         "values": [],
@@ -18,6 +18,9 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
         "selectAllEnable" : true, //分类是否允许全选下一层
         "exclude" : [],
         "selectType" : "identity"
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectIdentity});
     },
     _init : function(){
 	    this.selectType = "identity";
