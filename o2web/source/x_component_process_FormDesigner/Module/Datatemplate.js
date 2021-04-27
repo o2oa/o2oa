@@ -46,37 +46,6 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 		}).inject(this.form.container);
 	},
 
-	// _dragComplete: function(){
-	// 	if (!this.node){
-	// 		this._createNode(function(){
-	// 			this._dragMoveComplete();
-	// 		}.bind(this));
-	// 	}else{
-	// 		this._dragMoveComplete();
-	// 	}
-	// },
-	// _dragMoveComplete: function(){
-	// 	this._resetTreeNode();
-	// 	this.node.inject(this.copyNode, "before");
-	//
-	// 	this._initModule();
-	//
-	// 	var thisDisplay = this.node.retrieve("thisDisplay");
-	// 	if (thisDisplay){
-	// 		this.node.setStyle("display", thisDisplay);
-	// 	}
-	//
-	// 	if (this.copyNode) this.copyNode.destroy();
-	// 	if (this.moveNode) this.moveNode.destroy();
-	// 	this.moveNode = null;
-	// 	this.copyNode = null;
-	// 	this.nextModule = null;
-	// 	this.form.moveModule = null;
-	//
-	// 	this.form.json.moduleList[this.json.id] = this.json;
-	// 	this.selected();
-	// },
-
 	_initModule: function(){
 		if (!this.initialized){
 			if (this.json.initialized!=="yes")this.setStyleTemplate();
@@ -87,6 +56,10 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 			this.setPropertiesOrStyles("styles");
 			this.setPropertiesOrStyles("properties");
 
+			if( !this.json.impExpTableStyles ){
+				this.setImpExpTableStyles()
+			}
+
 			this._setNodeProperty();
 			if (!this.form.isSubform) this._createIconAction();
 
@@ -96,6 +69,15 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 
 			this.initialized = true;
 			this.json.initialized = "yes";
+		}
+	},
+	setImpExpTableStyles: function(){
+		//设置导入导出表格样式
+		if(this.form.templateStyles.table){
+			this.json.impExpTableStyles = Object.merge(this.json.impExpTableStyles||{}, this.form.templateStyles.table.styles||{});
+			this.json.impExpTableTitleStyles = Object.merge(this.json.impExpTableTitleStyles||{}, this.form.templateStyles.table.titleStyles||{});
+			this.json.impExpTableContentStyles = Object.merge(this.json.impExpTableContentStyles||{}, this.form.templateStyles.table.contentStyles||{});
+			this.json.impExpTableProperties = Object.merge(this.json.impExpTableProperties||{}, this.form.templateStyles.table.properties||{});
 		}
 	},
 	setPropertiesOrStyles: function(name){
@@ -156,6 +138,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 	setAllStyles: function(){
 		this.setPropertiesOrStyles("styles");
 		this.setPropertiesOrStyles("properties");
+
+		this.setImpExpTableStyles();
 
 		this.reloadMaplist();
 	},
