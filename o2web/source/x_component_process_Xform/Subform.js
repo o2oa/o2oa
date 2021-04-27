@@ -237,7 +237,8 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
         subformDataStr = data.data;
         this.subformData = null;
         if (subformDataStr) {
-            this.subformData = JSON.decode(MWF.decodeJsonString(subformDataStr));
+            var jsonStr = o2.bindJson(MWF.decodeJsonString(subformDataStr),  {"lp": MWF.xApplication.process.Xform.LP.form});
+            this.subformData = JSON.decode(jsonStr);
             this.subformData.updateTime = data.updateTime;
         }
     }

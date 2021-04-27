@@ -5,11 +5,14 @@ MWF.xApplication.Selector.ProcessFile = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectFile,
+        "title": "",
         "values": [],
         "names": [],
         "expand": false,
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectFile});
     },
     _init : function(){
         this.selectType = "file";

@@ -12,7 +12,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 		"icon": "icon.png",
 		"width": "1200",
 		"height": "680",
-		"title": MWF.xApplication.cms.Document.LP.title,
+		"title": "",
         "documentId": "",
         "isControl": false,
         "readonly": true,
@@ -26,6 +26,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         "editFormId" : null //强制的编辑表单，优先于表单的formId
 	},
 	onQueryLoad: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.cms.Document.LP.title})
 		this.lp = MWF.xApplication.cms.Document.LP;
         if (this.status){
             this.options.documentId = this.status.documentId;
@@ -110,8 +111,9 @@ MWF.xApplication.cms.Document.Main = new Class({
     },
     reload: function(){
         this.formNode.empty();
-        if (this.form){
-            MWF.release(this.form);
+        if (this.appForm){
+            MWF.release(this.appForm);
+            this.appForm = null;
             this.form = null;
         }
         // this.parseDocumentV2(data);
@@ -298,19 +300,24 @@ MWF.xApplication.cms.Document.Main = new Class({
 
     parseFormV2: function( json ){
         if (json.form){
-            this.form = (json.form.data) ? JSON.decode(MWF.decodeJsonString(json.form.data)): null;
+            this.formDataText = (json.form.data) ? MWF.decodeJsonString(json.form.data): "";
+            this.form = (this.formDataText) ? JSON.decode(this.formDataText): null;
+
             this.relatedFormMap = json.relatedFormMap;
             this.relatedScriptMap = json.relatedScriptMap;
             if( json.form.data )delete json.form.data;
             this.formInfor = json.form;
         }else{
             if( layout.mobile ){
-                this.form = (json.data.mobileData) ? JSON.decode(MWF.decodeJsonString(json.data.mobileData)): null;
-                if( !this.form ){
-                    this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
-                }
+                var formDataStr = json.data.mobileData || json.data.data;
+                this.formDataText = (formDataStr) ? MWF.decodeJsonString(formDataStr): "";
+                this.form = (this.formDataText) ? JSON.decode(this.formDataText): null;
+                // if( !this.form ){
+                //     this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
+                // }
             }else{
-                this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
+                this.formDataText = (json.data.data) ? MWF.decodeJsonString(json.data.data): "";
+                this.form = (this.formDataText) ? JSON.decode(this.formDataText): null;
             }
             if( json.data.data )delete json.data.data;
             if( json.data.mobileData )delete json.data.mobileData;
@@ -650,6 +657,7 @@ MWF.xApplication.cms.Document.Main = new Class({
                         "readonly": this.readonly
                     }
                 };
+                this.appForm.formDataText = this.formDataText;
                 this.appForm.documentAction = this.action;
                 this.appForm.app = this;
                 this.appForm.load();

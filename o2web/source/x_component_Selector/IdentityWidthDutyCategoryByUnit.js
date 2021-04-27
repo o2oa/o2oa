@@ -5,7 +5,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectIdentity,
+        "title": "",
         "dutys": [],
         "units": [],
         "values": [],
@@ -20,6 +20,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         "dutyUnitLevelBy": "duty", //组织层级是按身份所在群组还是职务,
         "identitySortBy" : "identityNumber", //身份排序按身份排序号，还是传入的duty
         "selectType": "identity"
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectIdentity});
     },
     _init: function () {
         this.selectType = "identity";

@@ -5,10 +5,13 @@ MWF.xApplication.Selector.Portal = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectApplication,
+        "title": "",
         "values": [],
         "expand": false,
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectApplication});
     },
     _init : function(){
         this.selectType = "portal";
