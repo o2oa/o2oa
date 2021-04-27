@@ -13,7 +13,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         "icon": "icon.png",
         "width": "1200",
         "height": "800",
-        "title": MWF.xApplication.portal.Portal.LP.title,
+        "title": "",
         "portalId": "",
         "pageId": "",
         "widgetId" : "",
@@ -23,6 +23,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         "readonly": false
     },
     onQueryLoad: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.portal.Portal.LP.title});
         this.lp = MWF.xApplication.portal.Portal.LP;
         if (this.status){
             this.options.portalId = this.status.portalId;

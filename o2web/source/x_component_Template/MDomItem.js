@@ -27,7 +27,7 @@
  verify( isShowWarning ) 参数isShowWarning,校验不通过的是否提示用户。根据isShowWarning参数和options的notEmpty、warningType、validRule属性校验对象，返回boolean
  */
 
-MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
+//MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
 var MDomItem_ClassType = {
     "text" : "Text",
     "textarea" : "Textarea",

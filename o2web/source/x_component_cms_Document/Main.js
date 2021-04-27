@@ -12,7 +12,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 		"icon": "icon.png",
 		"width": "1200",
 		"height": "680",
-		"title": MWF.xApplication.cms.Document.LP.title,
+		"title": "",
         "documentId": "",
         "isControl": false,
         "readonly": true,
@@ -26,6 +26,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         "editFormId" : null //强制的编辑表单，优先于表单的formId
 	},
 	onQueryLoad: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.cms.Document.LP.title})
 		this.lp = MWF.xApplication.cms.Document.LP;
         if (this.status){
             this.options.documentId = this.status.documentId;
