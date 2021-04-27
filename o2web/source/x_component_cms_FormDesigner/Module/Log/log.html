@@ -1,16 +1,16 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 		  <tr>
-		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableTitle">{{$.lp.id}}:</td>
 		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
 		  </tr>
 		  <tr>
-		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableTitle">{{$.lp.name}}:</td>
 		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
 		  </tr>
 		  <tr>
-		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableTitle">{{$.lp.description}}:</td>
 		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 		  </tr>
 		  <tr>
@@ -19,20 +19,20 @@
 		  </tr>
 		</table>
 		
-		<div class="MWFMaplist" name="styles" title="样式"></div>
-		<div class="MWFMaplist" name="properties" title="属性"></div>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 		  <tr>
-		    <td class="editTableTitle">样式:</td>
+		    <td class="editTableTitle">{{$.lp.style}}:</td>
 		    <td class="editTableValue">
-				<input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}labelTextStyleValue').setStyle('display', 'none')}"  name="mode" text{($.mode=='table')?'checked':''} type="radio" value="table"/>表格
-		    	<input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}labelTextStyleValue').setStyle('display', 'block')}"  name="mode" text{($.mode=='text')?'checked':''} type="radio" value="text"/>文本
+				<input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}labelTextStyleValue').setStyle('display', 'none')}"  name="mode" text{($.mode=='table')?'checked':''} type="radio" value="table"/>{{$.lp.table}}
+		    	<input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}labelTextStyleValue').setStyle('display', 'block')}"  name="mode" text{($.mode=='text')?'checked':''} type="radio" value="text"/>{{$.lp.text}}
 		    </td>
 		  </tr>
 		</table>
-		<div id="text{$.id}labelTextStyleValue" title="格式" style="display: text{(($.mode=='text') || ($.mode=='defalut')) ?'block':'none'}">
+		<div id="text{$.id}labelTextStyleValue" title="{{$.lp.format}}" style="display: text{(($.mode=='text') || ($.mode=='defalut')) ?'block':'none'}">
 			<textarea  name="textStyle" class="editTableTextarea">text{$.textStyle}</textarea>
 		</div>
 
@@ -59,7 +59,7 @@
 
         <!--<div><div id="labelEditScriptValue" class="MWFScriptArea" name="filterScript" title="通过脚本过滤(S)"></div></div>-->
     <!--</div>-->
-	<div title="事件"  class="MWFTab">
+	<div title="{{$.lp.event}}"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
 	<div title="HTML"  class="MWFTab">

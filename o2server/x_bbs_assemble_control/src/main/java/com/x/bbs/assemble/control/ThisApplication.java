@@ -2,6 +2,7 @@ package com.x.bbs.assemble.control;
 
 import java.util.List;
 
+import com.x.bbs.assemble.control.schedule.*;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.Context;
@@ -13,10 +14,6 @@ import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.queue.QueueNewReplyNotify;
 import com.x.bbs.assemble.control.queue.QueueNewSubjectNotify;
-import com.x.bbs.assemble.control.schedule.SubjectReplyTotalStatisticTask;
-import com.x.bbs.assemble.control.schedule.SubjectTotalStatisticTask;
-import com.x.bbs.assemble.control.schedule.UserCountTodaySetZeroTask;
-import com.x.bbs.assemble.control.schedule.UserSubjectReplyPermissionStatisticTask;
 import com.x.bbs.assemble.control.service.BBSConfigSettingService;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSPermissionInfoService;
@@ -54,6 +51,8 @@ public class ThisApplication {
 			context().startQueue(queueNewSubjectNotify);
 			context.schedule(SubjectTotalStatisticTask.class, "0 0 1 * * ?"); // 每天凌晨一点执行
 			context.schedule(UserCountTodaySetZeroTask.class, "0 1 0 * * ?"); // 每天凌晨执行
+			context.schedule(MarketSubjectTypeTask.class, "0 0 1 * * ?"); // 每天凌晨一点执行
+			//context.schedule(MarketSubjectTypeTask.class, "* 0/05 * * * ? "); // 每天凌晨一点执行
 			context.schedule(SubjectReplyTotalStatisticTask.class, "0 40 * * * ?");
 			context.schedule(UserSubjectReplyPermissionStatisticTask.class, "0 0/30 * * * ?");
 		} catch (Exception e) {

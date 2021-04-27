@@ -724,6 +724,7 @@
 						}, {
 							type: "hbox",
 							widths: ["100%"],
+							hidden: !editor.config.base64Encode,
 							children: [{
 								id: "base64enable",
 								type: "checkbox",

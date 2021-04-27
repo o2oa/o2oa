@@ -302,7 +302,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     loadJpqlTypeSelect : function(){
       this.jpqlTypeSelect.empty();
       var optionList = [{text:"SELECT", value:"select"}];
-        if( this.data.entityCategory === "dynamic" || this.data.description.indexOf("update")>-1){
+        if( this.data.entityCategory === "dynamic" || (this.data.description && this.data.description.indexOf("update")>-1)){
           optionList = optionList.concat([
               {text:"UPDATE", value:"update"},
               {text:"DELETE", value:"delete"}

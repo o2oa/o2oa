@@ -94,6 +94,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 }
             }
 
+            editorConfig.base64Encode = (this.json.base64Encode === "y");
             editorConfig.localImageMaxWidth = 800;
             editorConfig.reference = this.form.businessData.work.job;
             editorConfig.referenceType = "processPlatformJob";

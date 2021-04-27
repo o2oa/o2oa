@@ -84,7 +84,7 @@ MWF.xApplication.cms.Column.Main = new Class({
 
         this.columnAllTypeNode =  new Element("div.columnTop_All",{
             "styles" : this.css.columnTop_All,
-            "text" : "全部栏目"
+            "text" : this.lp.allApp
         }).inject( this.columnToolbarAreaNode );
         this.columnAllTypeNode.addEvents({
             "mouseover" : function(){

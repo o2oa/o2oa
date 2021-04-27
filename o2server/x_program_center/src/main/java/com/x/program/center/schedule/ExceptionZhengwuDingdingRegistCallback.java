@@ -1,8 +1,9 @@
 package com.x.program.center.schedule;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionZhengwuDingdingRegistCallback extends PromptException {
+class ExceptionZhengwuDingdingRegistCallback extends LanguagePromptException {
 
 	private static final long serialVersionUID = -3439770681867963457L;
 

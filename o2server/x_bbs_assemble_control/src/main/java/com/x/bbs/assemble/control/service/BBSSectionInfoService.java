@@ -43,6 +43,25 @@ public class BBSSectionInfoService {
 	}
 
 	/**
+	 * 据传入的板块名称从数据库查询BBSSectionInfo对象
+	 * @param mainSectionName
+	 * @return
+	 * @throws Exception
+	 */
+	public BBSSectionInfo getMainSectionBySectionName( EntityManagerContainer emc, String mainSectionName ) throws Exception {
+		if( mainSectionName  == null || mainSectionName.isEmpty() ){
+			throw new Exception( "mainSectionName is null!" );
+		}
+		Business business = new Business( emc );
+		List<BBSSectionInfo> bBSSectionInfoList= business.sectionInfoFactory().getMainSectionBySectionName( mainSectionName );
+		if(ListTools.isNotEmpty(bBSSectionInfoList)){
+			return bBSSectionInfoList.get(0);
+		}else{
+			return null;
+		}
+	}
+
+	/**
 	 * 向数据库保存BBSSectionInfo对象
 	 * @param emc
 	 * @param _bBSSectionInfo

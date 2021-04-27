@@ -1,20 +1,20 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue">text{$.id}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">别名:</td>
+                <td class="editTableTitle">{{$.lp.alias}}:</td>
                 <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
             <!--<tr>-->
@@ -22,24 +22,24 @@
                 <!--<td class="editTableValue"><div class="MWFViewSelect" name="view"></div></td>-->
             <!--</tr>-->
         </table>
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">图表</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.chart}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr><td>
-                <input class="editTableRadio" name="data.calculate.chart" text{(($.data.calculate.chart) && $.data.calculate.chart.indexOf('bar')!=-1)?'checked':''} type="checkbox" value="bar"/>柱状图
-                <input class="editTableRadio" name="data.calculate.chart" text{(($.data.calculate.chart) && $.data.calculate.chart.indexOf('pie')!=-1)?'checked':''} type="checkbox" value="pie"/>饼状图
-                <input class="editTableRadio" name="data.calculate.chart" text{(($.data.calculate.chart) && $.data.calculate.chart.indexOf('line')!=-1)?'checked':''} type="checkbox" value="line"/>折线图
+                <input class="editTableRadio" name="data.calculate.chart" text{(($.data.calculate.chart) && $.data.calculate.chart.indexOf('bar')!=-1)?'checked':''} type="checkbox" value="bar"/>{{$.lp.bar}}
+                <input class="editTableRadio" name="data.calculate.chart" text{(($.data.calculate.chart) && $.data.calculate.chart.indexOf('pie')!=-1)?'checked':''} type="checkbox" value="pie"/>{{$.lp.pie}}
+                <input class="editTableRadio" name="data.calculate.chart" text{(($.data.calculate.chart) && $.data.calculate.chart.indexOf('line')!=-1)?'checked':''} type="checkbox" value="line"/>{{$.lp.line}}
             </td></tr>
         </table>
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">执行权限</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.authority}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>
-                <td class="editTableTitle">可执行人:</td>
+                <td class="editTableTitle">{{$.lp.availableIdentity}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonIdentity" name="availableIdentityList"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">执行组织:</td>
+                <td class="editTableTitle">{{$.lp.availableUnit}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonUnit" name="availableUnitList"></div>
                 </td>
@@ -63,7 +63,7 @@
     </div>
 
 
-    <div class="MWFTab" title="分类">
+    <div class="MWFTab" title="{{$.lp.category}}">
         <!--<div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">过滤范围</div>-->
         <!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
             <!--<tr>-->
@@ -88,14 +88,14 @@
                 <!--</td>-->
             <!--</tr>-->
         <!--</table>-->
-        <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">分类统计</div>
+        <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.isGroup}}</div>
         <!--<div class="MWFIsGroupArea" style="display: text{($.data.calculate.isGroup)?'block':'none'}">-->
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">分类统计:</td>
+                <td class="editTableTitle">{{$.lp.isGroup}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'block');" value="true" text{($.data.calculate.isGroup)===true?'checked':''}/>是
-                    <input class="editTableRadio" name="data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'none');" value="false" text{($.data.calculate.isGroup)!==true?'checked':''}/>否
+                    <input class="editTableRadio" name="data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'block');" value="true" text{($.data.calculate.isGroup)===true?'checked':''}/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'none');" value="false" text{($.data.calculate.isGroup)!==true?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
         </table>
@@ -103,55 +103,55 @@
         <div id="text{$.id}isAmountArea" style="display: text{($.data.calculate.isGroup)?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">分类标题:</td>
+                    <td class="editTableTitle">{{$.lp.categoryTitle}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableInput" name="data.calculate.title" type="text" value="text{$.data.calculate.title || '分类'}"/>
+                        <input class="editTableInput" name="data.calculate.title" type="text" value="text{$.data.calculate.title || '{{$.lp.category}}'}"/>
                     </td>
                 </tr>
             </table>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">合计:</td>
+                    <td class="editTableTitle">{{$.lp.isAmount}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="data.calculate.isAmount" type="radio" value="true" text{($.data.calculate.isAmount)===true?'checked':''}/>是
-                        <input class="editTableRadio" name="data.calculate.isAmount" type="radio" value="false" text{($.data.calculate.isAmount)!==true?'checked':''}/>否
+                        <input class="editTableRadio" name="data.calculate.isAmount" type="radio" value="true" text{($.data.calculate.isAmount)===true?'checked':''}/>{{$.lp.yes}}
+                        <input class="editTableRadio" name="data.calculate.isAmount" type="radio" value="false" text{($.data.calculate.isAmount)!==true?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
             </table>
 
-            <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">排序</div>
+            <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.sort}}</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">排序:</td>
+                    <td class="editTableTitle">{{$.lp.sort}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="data.calculate.orderType" type="radio" value="original" text{(($.data.calculate.orderType)!='desc' && ($.data.calculate.orderType)!='asc')?'checked':''}/>无
-                        <input class="editTableRadio" name="data.calculate.orderType" type="radio" value="desc" text{($.data.calculate.orderType)=='desc'?'checked':''}/>降序
-                        <input class="editTableRadio" name="data.calculate.orderType" type="radio" value="asc" text{($.data.calculate.orderType)=='asc'?'checked':''}/>升序
+                        <input class="editTableRadio" name="data.calculate.orderType" type="radio" value="original" text{(($.data.calculate.orderType)!='desc' && ($.data.calculate.orderType)!='asc')?'checked':''}/>{{$.lp.none}}
+                        <input class="editTableRadio" name="data.calculate.orderType" type="radio" value="desc" text{($.data.calculate.orderType)=='desc'?'checked':''}/>{{$.lp.desc}}
+                        <input class="editTableRadio" name="data.calculate.orderType" type="radio" value="asc" text{($.data.calculate.orderType)=='asc'?'checked':''}/>{{$.lp.asc}}
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">排序列:</td>
+                    <td class="editTableTitle">{{$.lp.orderColumn}}:</td>
                     <td class="editTableValue"><select class="MWFStatSelectColumn" name="data.calculate.orderColumn">
-                        <option value="" text{($.data.calculate.orderColumn)=='value'?'selected':''}>分类</option>
+                        <option value="" text{($.data.calculate.orderColumn)=='value'?'selected':''}>{{$.lp.category}}</option>
                     </select></td>
                 </tr>
             </table>
 
-            <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">分类值</div>
+            <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.categoryValue}}</div>
 
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">分类显示:</td>
+                    <td class="editTableTitle">{{$.lp.categoryDisplay}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="item" text{(($.data.calculate.groupMergeType)!='specified' && ($.data.calculate.orderType)!='intersection' && ($.data.calculate.orderType)!='sum')?'checked':''}/>根据列视图计算<br/>
-                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="specified" text{($.data.calculate.groupMergeType)=='specified'?'checked':''}/>根据指定的分类值<br/>
-                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="intersection" text{($.data.calculate.groupMergeType)=='intersection'?'checked':''}/>列视图计算与指定分类值的交集<br/>
-                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="sum" text{($.data.calculate.groupMergeType)=='sum'?'checked':''}/>列视图计算与指定分类值的合集
+                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="item" text{(($.data.calculate.groupMergeType)!='specified' && ($.data.calculate.orderType)!='intersection' && ($.data.calculate.orderType)!='sum')?'checked':''}/>{{$.lp.item}}<br/>
+                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="specified" text{($.data.calculate.groupMergeType)=='specified'?'checked':''}/>{{$.lp.specified}}<br/>
+                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="intersection" text{($.data.calculate.groupMergeType)=='intersection'?'checked':''}/>{{$.lp.intersection}}<br/>
+                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="sum" text{($.data.calculate.groupMergeType)=='sum'?'checked':''}/>{{$.lp.sum1}}
                     </td>
                 </tr>
             </table>
 
-            <div class="MWFArraylist" name="data.calculate.groupSpecifiedList" title="指定分类值"></div>
+            <div class="MWFArraylist" name="data.calculate.groupSpecifiedList" title="{{$.lp.groupSpecifiedList}}"></div>
 
 
     </div>
