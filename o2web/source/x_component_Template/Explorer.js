@@ -2,7 +2,7 @@ MWF.xApplication.Template = MWF.xApplication.Template || {};
 MWF.xApplication.Template.Explorer = MWF.xApplication.Template.Explorer || {};
 
 MWF.require("MWF.widget.O2Identity", null, false);
-MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
+//MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
 
 String.implement({
 
@@ -1050,7 +1050,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         hasTruningBar : true,
         hasJumper : true,
         hasReturn : true,
-        returnText : MWF.xApplication.Template.LP.explorer.returnText,
+        returnText : "",
         hiddenWithDisable: true,
         text : {
             prePage : "",
@@ -1060,6 +1060,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         }
     },
     initialize: function (topContainer, bottomContainer, options, css) {
+        if (!options.returnText) options.returnText = MWF.xApplication.Template.LP.explorer.returnText;
         this.setOptions( options || {});
         this.topContainer = topContainer;
         this.bottomContainer = bottomContainer;
