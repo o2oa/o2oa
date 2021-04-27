@@ -41,6 +41,8 @@ var git = require('gulp-git');
 //     "windows": "/build/windows.tar.gz"
 // };
 
+var supportedLanguage = ["zh-cn", "en"];
+
 var downloadHost = "git.o2oa.net";
 var protocol = "https";
 var commonUrl = "/o2oa/evn-o2server-commons/-/archive/master/evn-o2server-commons-master.tar.gz?path=commons";
@@ -710,10 +712,46 @@ function build_concat_basework_clean(cb) {
     return del(dest, cb);
 }
 
+
+
+// function build_concat_lp() {
+var lpTasks = {};
+supportedLanguage.forEach(function(lp){
+    var src = [
+        'o2web/source/o2_core/o2/lp/'+(lp)+'.js',
+        'o2web/source/x_component_process_Work/lp/'+(lp)+'.js',
+        'o2web/source/x_component_process_Xform/lp/'+(lp)+'.js',
+        'o2web/source/x_component_Selector/lp/'+(lp)+'.js',
+        'o2web/source/x_component_Template/lp/'+(lp)+'.js',
+        'o2web/source/x_component_portal_Portal/lp/'+(lp)+'.js',
+        'o2web/source/x_component_cms_Document/lp/'+(lp)+'.js',
+        'o2web/source/x_component_cms_Xform/lp/'+(lp)+'.js',
+    ];
+    var dest = 'target/o2server/servers/webServer/x_desktop/js/';
+    lpTasks["build_concat_lp_"+lp] = function(){
+        return gulp.src(src, {"allowEmpty": true})
+            .pipe(sourceMap.init())
+            .pipe(concat('base_lp_' + lp + '.js'))
+            .pipe(gulp.dest(dest))
+            .pipe(concat('base_lp_' + lp + '.min.js'))
+            .pipe(uglify())
+            //.pipe(rename({ extname: '.min.js' }))
+            .pipe(sourceMap.write(""))
+            .pipe(gulp.dest(dest));
+    };
+});
+
+var build_concat_lp = gulp.parallel( Object.values(lpTasks) );
+
+//     return gulp.parallel(lpTasks);
+// }
+
+
+
 function build_concat_basework_body() {
     var src = [
         'o2web/source/x_desktop/js/base_concat_head.js',
-        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
+        //'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
 
         'o2web/source/x_desktop/js/base_work_style_temp.js',
 
@@ -735,10 +773,10 @@ function build_concat_basework_body() {
         'o2web/source/o2_core/o2/xDesktop/Window.js',
         'o2web/source/x_component_Common/Main.js',
 
-        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_process_Work/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_process_Work/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
 
         'o2web/source/x_component_process_Work/Main.js',
         'o2web/source/x_component_Selector/package.js',
@@ -820,7 +858,7 @@ function build_concat_baseportal_clean(cb) {
 function build_concat_baseportal_body() {
     var src = [
         'o2web/source/x_desktop/js/base_concat_head.js',
-        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
+        //'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
 
         'o2web/source/x_desktop/js/base_portal_style_temp.js',
 
@@ -842,10 +880,10 @@ function build_concat_baseportal_body() {
 
         'o2web/source/x_component_Common/Main.js',
 
-        'o2web/source/x_component_process_Work/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_portal_Portal/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_process_Work/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_portal_Portal/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
 
         'o2web/source/x_component_portal_Portal/Main.js',
 
@@ -923,7 +961,7 @@ function build_concat_basedocument_clean(cb) {
 function build_concat_basedocument_body() {
     var src = [
         'o2web/source/x_desktop/js/base_concat_head.js',
-        'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
+        //'o2web/source/o2_core/o2/lp/'+(options.lp || 'zh-cn')+'.js',
 
         'o2web/source/x_desktop/js/base_document_style_temp.js',
 
@@ -945,10 +983,10 @@ function build_concat_basedocument_body() {
 
         'o2web/source/x_component_Common/Main.js',
 
-        'o2web/source/x_component_cms_Document/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
-        'o2web/source/x_component_cms_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_cms_Document/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_process_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_Selector/lp/'+(options.lp || 'zh-cn')+'.js',
+        // 'o2web/source/x_component_cms_Xform/lp/'+(options.lp || 'zh-cn')+'.js',
 
         'o2web/source/x_component_cms_Document/Main.js',
 
@@ -987,6 +1025,7 @@ exports.build_concat = gulp.parallel(
     build_concat_xform,
     build_concat_cms_xform,
     build_bundle,
+    build_concat_lp,
     gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
     gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean),
     gulp.series(build_concat_basedocument_style, build_concat_basedocument_action, build_concat_basedocument_body,build_concat_basedocument_clean)
@@ -1146,6 +1185,7 @@ exports.build_web = gulp.series(
         build_concat_desktop,
         build_concat_xform,
         build_concat_cms_xform,
+        build_concat_lp,
         gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
         gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean),
         gulp.series(build_concat_basedocument_style, build_concat_basedocument_action, build_concat_basedocument_body,build_concat_basedocument_clean),
