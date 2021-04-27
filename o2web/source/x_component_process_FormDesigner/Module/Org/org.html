@@ -143,7 +143,7 @@
         </table>
 
         <div style="padding:0px 5px;">
-            <div id="text{$.pid}identityProperties" title="身份" class="MWFTab" data-style="formPropertyListLevel2" data-group="selectType" style="display: text{($.selectType.indexOf('identity')!=-1)?'block':'none'};">
+            <div id="text{$.pid}identityProperties" title="{{$.lp.identity}}" class="MWFTab" data-style="formPropertyListLevel2" data-group="selectType" style="display: text{($.selectType.indexOf('identity')!=-1)?'block':'none'};">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">{{$.lp.selectCount}}:</td>
@@ -453,7 +453,7 @@
         <div id="text{$.pid}exclude" style="border-bottom: 1px solid #999; ">
             <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">{{$.lp.exclude}}</div>
             <div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.excludeInfo}}</div>
-            <div class="MWFFormulaArea" name="exclude" title="脚本 (S)"></div>
+            <div class="MWFFormulaArea" name="exclude" title="{{$.lp.script}} (S)"></div>
         </div>
 
     </div>
