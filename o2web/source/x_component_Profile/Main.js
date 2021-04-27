@@ -852,6 +852,7 @@ MWF.xApplication.Profile.Main = new Class({
 
         this.action.updatePerson(this.personData, function(){
             this.notice(this.lp.saveInforOk, "success");
+            localStorage.setItem('o2.language', this.personData.language);
         }.bind(this));
     },
 
