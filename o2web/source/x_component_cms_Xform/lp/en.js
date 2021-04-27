@@ -67,7 +67,7 @@ MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP,
     "severalHourAgo": "{count}hours ago",
     "severalMintuesAgo": "{count} minutes ago",
     "justNow": "JustNow",
-    "actionBar": {
+    "form": {
         "close":"Close",
         "closeTitle": "Close Document",
         "edit": "Edit",
