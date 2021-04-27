@@ -511,8 +511,10 @@ MWF.xApplication.process.Work.Main = new Class({
         this.control = controlData;
         if (formData){
             if (formData.form){
-                //this.form = (formData.form.data) ? JSON.decode(MWF.decodeJsonString(formData.form.data)): null;
-                this.form = (formData.form.data) ? MWF.decodeJsonString(formData.form.data): null;
+                this.formDataText = (formData.form.data) ? MWF.decodeJsonString(formData.form.data) : "";
+                this.form = (this.formDataText) ? JSON.decode(this.formDataText): null;
+
+                //this.form = (formData.form.data) ? MWF.decodeJsonString(formData.form.data): null;
                 //
                 // var rex = /mwftype="subform"/gi;
                 //
@@ -524,8 +526,10 @@ MWF.xApplication.process.Work.Main = new Class({
                 delete formData.form.data;
                 this.formInfor = formData.form;
             }else{
-                //this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
-                this.form = (formData.data) ? MWF.decodeJsonString(formData.data): null;
+                this.formDataText = (formData.data) ? MWF.decodeJsonString(formData.data) : "";
+                this.form = (this.formDataText) ? JSON.decode(this.formDataText): null;
+
+                //this.form = (formData.data) ? MWF.decodeJsonString(formData.data): null;
                 delete formData.data;
                 this.formInfor = formData;
             }
@@ -728,6 +732,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 };
                 this.appForm.workAction = this.action;
                 this.appForm.app = this;
+                this.appForm.formDataText = this.formDataText;
 
                 if( this.$events && this.$events.queryLoadForm ){
                     this.appForm.addEvent( "queryLoad", function () {
