@@ -331,6 +331,5 @@ MWF.xApplication.process.Xform.LP = {
         "yes": "是",
         "no": "否"
     }
-
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

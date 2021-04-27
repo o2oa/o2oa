@@ -17,9 +17,10 @@ MWF.xApplication.Template.Main = new Class({
 		"height": "700",
 		"isResize": false,
 		"isMax": true,
-		"title": MWF.xApplication.Template.LP.title
+		"title": ""
 	},
 	onQueryLoad: function(){
+		if (!this.options.title) this.setOptions({"title": MWF.xApplication.Template.LP.title});
 		this.lp = MWF.xApplication.Template.LP;
 	},
 	loadApplication: function(callback){
