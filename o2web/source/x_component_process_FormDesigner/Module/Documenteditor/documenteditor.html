@@ -238,7 +238,7 @@
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}copiesSecretPriorityShowScriptArea" style="display: text{($.redHeaderShow=='s')?'block':'none'}" class="MWFFormulaArea" name="copiesSecretPriorityShowScript" title="{{$.lp.copiesSecretPriorityShowScript}} (S)"></div>
+			<div id="text{$.pid}copiesSecretPriorityShowScriptArea" style="display: text{($.redHeaderShow=='s')?'block':'none'}" class="MWFFormulaArea" name="copiesSecretPriorityShowScript" title="{{$.lp.showScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------份数密级紧急度------------------------------------------------------------------->
 
@@ -663,20 +663,20 @@
 <!-----------------------------------------------主送------------------------------------------------------------------->
 
 <!-----------------------------------------------附件------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">附件（attachment）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.attachment}} (attachment)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentShowScriptArea').setStyle('display', 'none')}" name="attachmentShow" text{($.attachmentShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentShowScriptArea').setStyle('display', 'none')}" name="attachmentShow" text{($.attachmentShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentShowScriptArea').setStyle('display', 'none')}" name="attachmentShow" text{($.attachmentShow!='y' && $.attachmentShow!='n' && $.attachmentShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentShowScriptArea').setStyle('display', 'block')}" name="attachmentShow" text{($.attachmentShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentShowScriptArea').setStyle('display', 'none')}" name="attachmentShow" text{($.attachmentShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentShowScriptArea').setStyle('display', 'none')}" name="attachmentShow" text{($.attachmentShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentShowScriptArea').setStyle('display', 'none')}" name="attachmentShow" text{($.attachmentShow!='y' && $.attachmentShow!='n' && $.attachmentShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentShowScriptArea').setStyle('display', 'block')}" name="attachmentShow" text{($.attachmentShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}attachmentShowScriptArea" style="display: text{($.attachmentShow=='s')?'block':'none'}" class="MWFFormulaArea" name="attachmentShowScript" title="附件显示脚本 (S)"></div>
+			<div id="text{$.pid}attachmentShowScriptArea" style="display: text{($.attachmentShow=='s')?'block':'none'}" class="MWFFormulaArea" name="attachmentShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 <!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 <!--				<tr>-->
@@ -692,91 +692,91 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentValueDataArea').setStyle('display', 'block'); $('text{$.pid}attachmentValueScriptArea').setStyle('display', 'none')}" name="attachmentValueType" text{($.attachmentValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentValueDataArea').setStyle('display', 'none'); $('text{$.pid}attachmentValueScriptArea').setStyle('display', 'block')}" name="attachmentValueType" text{($.attachmentValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentValueDataArea').setStyle('display', 'block'); $('text{$.pid}attachmentValueScriptArea').setStyle('display', 'none')}" name="attachmentValueType" text{($.attachmentValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentValueDataArea').setStyle('display', 'none'); $('text{$.pid}attachmentValueScriptArea').setStyle('display', 'block')}" name="attachmentValueType" text{($.attachmentValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}attachmentValueDataArea" style="display: text{($.attachmentValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="attachmentValueData" value="text{$.attachmentValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}attachmentValueScriptArea" style="display: text{($.attachmentValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="attachmentValueScript" title="附件绑定值脚本 (S)"></div>
+			<div id="text{$.pid}attachmentValueScriptArea" style="display: text{($.attachmentValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="attachmentValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------附件------------------------------------------------------------------->
 
 <!-----------------------------------------------成文单位------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">成文单位（issuanceUnit）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.issuanceUnit}} (issuanceUnit)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitShowScriptArea').setStyle('display', 'none')}" name="issuanceUnitShow" text{($.issuanceUnitShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitShowScriptArea').setStyle('display', 'none')}" name="issuanceUnitShow" text{($.issuanceUnitShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitShowScriptArea').setStyle('display', 'none')}" name="issuanceUnitShow" text{($.issuanceUnitShow!='y' && $.issuanceUnitShow!='n' && $.issuanceUnitShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitShowScriptArea').setStyle('display', 'block')}" name="issuanceUnitShow" text{($.issuanceUnitShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitShowScriptArea').setStyle('display', 'none')}" name="issuanceUnitShow" text{($.issuanceUnitShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitShowScriptArea').setStyle('display', 'none')}" name="issuanceUnitShow" text{($.issuanceUnitShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitShowScriptArea').setStyle('display', 'none')}" name="issuanceUnitShow" text{($.issuanceUnitShow!='y' && $.issuanceUnitShow!='n' && $.issuanceUnitShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitShowScriptArea').setStyle('display', 'block')}" name="issuanceUnitShow" text{($.issuanceUnitShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}issuanceUnitShowScriptArea" style="display: text{($.issuanceUnitShow=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitShowScript" title="成文单位显示脚本 (S)"></div>
+			<div id="text{$.pid}issuanceUnitShowScriptArea" style="display: text{($.issuanceUnitShow=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">允许编辑:</td>
+					<td class="editTableTitle">{{$.lp.allowEdit}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit!='y' && $.issuanceUnitEdit!='s')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'block')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit!='y' && $.issuanceUnitEdit!='s')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'block')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}issuanceUnitEditScriptArea" style="display: text{($.issuanceUnitEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitEditScript" title="成文单位编辑脚本 (S)"></div>
+			<div id="text{$.pid}issuanceUnitEditScriptArea" style="display: text{($.issuanceUnitEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitEditScript" title="{{$.lp.editScript}} (S)"></div>
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitValueDataArea').setStyle('display', 'block'); $('text{$.pid}issuanceUnitValueScriptArea').setStyle('display', 'none')}" name="issuanceUnitValueType" text{($.issuanceUnitValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitValueDataArea').setStyle('display', 'none'); $('text{$.pid}issuanceUnitValueScriptArea').setStyle('display', 'block')}" name="issuanceUnitValueType" text{($.issuanceUnitValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitValueDataArea').setStyle('display', 'block'); $('text{$.pid}issuanceUnitValueScriptArea').setStyle('display', 'none')}" name="issuanceUnitValueType" text{($.issuanceUnitValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitValueDataArea').setStyle('display', 'none'); $('text{$.pid}issuanceUnitValueScriptArea').setStyle('display', 'block')}" name="issuanceUnitValueType" text{($.issuanceUnitValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}issuanceUnitValueDataArea" style="display: text{($.issuanceUnitValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="issuanceUnitValueData" value="text{$.issuanceUnitValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}issuanceUnitValueScriptArea" style="display: text{($.issuanceUnitValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitValueScript" title="成文单位绑定值脚本 (S)"></div>
+			<div id="text{$.pid}issuanceUnitValueScriptArea" style="display: text{($.issuanceUnitValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------成文单位------------------------------------------------------------------->
 
 <!-----------------------------------------------成文日期------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">成文日期（issuanceDate）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.issuanceDate}} (issuanceDate)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateShowScriptArea').setStyle('display', 'none')}" name="issuanceDateShow" text{($.issuanceDateShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateShowScriptArea').setStyle('display', 'none')}" name="issuanceDateShow" text{($.issuanceDateShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateShowScriptArea').setStyle('display', 'none')}" name="issuanceDateShow" text{($.issuanceDateShow!='y' && $.issuanceDateShow!='n' && $.issuanceDateShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateShowScriptArea').setStyle('display', 'block')}" name="issuanceDateShow" text{($.issuanceDateShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateShowScriptArea').setStyle('display', 'none')}" name="issuanceDateShow" text{($.issuanceDateShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateShowScriptArea').setStyle('display', 'none')}" name="issuanceDateShow" text{($.issuanceDateShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateShowScriptArea').setStyle('display', 'none')}" name="issuanceDateShow" text{($.issuanceDateShow!='y' && $.issuanceDateShow!='n' && $.issuanceDateShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateShowScriptArea').setStyle('display', 'block')}" name="issuanceDateShow" text{($.issuanceDateShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}issuanceDateShowScriptArea" style="display: text{($.issuanceDateShow=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceDateShowScript" title="成文日期显示脚本 (S)"></div>
+			<div id="text{$.pid}issuanceDateShowScriptArea" style="display: text{($.issuanceDateShow=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceDateShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 <!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 <!--				<tr>-->
@@ -792,41 +792,41 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateValueDataArea').setStyle('display', 'block'); $('text{$.pid}issuanceDateValueScriptArea').setStyle('display', 'none')}" name="issuanceDateValueType" text{($.issuanceDateValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateValueDataArea').setStyle('display', 'none'); $('text{$.pid}issuanceDateValueScriptArea').setStyle('display', 'block')}" name="issuanceDateValueType" text{($.issuanceDateValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateValueDataArea').setStyle('display', 'block'); $('text{$.pid}issuanceDateValueScriptArea').setStyle('display', 'none')}" name="issuanceDateValueType" text{($.issuanceDateValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateValueDataArea').setStyle('display', 'none'); $('text{$.pid}issuanceDateValueScriptArea').setStyle('display', 'block')}" name="issuanceDateValueType" text{($.issuanceDateValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}issuanceDateValueDataArea" style="display: text{($.issuanceDateValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="issuanceDateValueData" value="text{$.issuanceDateValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}issuanceDateValueScriptArea" style="display: text{($.issuanceDateValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="issuanceDateValueScript" title="成文日期绑定值脚本 (S)"></div>
+			<div id="text{$.pid}issuanceDateValueScriptArea" style="display: text{($.issuanceDateValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="issuanceDateValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------成文日期------------------------------------------------------------------->
 
 <!-----------------------------------------------附注------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">附注（annotation）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.annotation}} (annotation)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationShowScriptArea').setStyle('display', 'none')}" name="annotationShow" text{($.annotationShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationShowScriptArea').setStyle('display', 'none')}" name="annotationShow" text{($.annotationShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationShowScriptArea').setStyle('display', 'none')}" name="annotationShow" text{($.annotationShow!='y' && $.annotationShow!='n' && $.annotationShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationShowScriptArea').setStyle('display', 'block')}" name="annotationShow" text{($.annotationShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationShowScriptArea').setStyle('display', 'none')}" name="annotationShow" text{($.annotationShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationShowScriptArea').setStyle('display', 'none')}" name="annotationShow" text{($.annotationShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationShowScriptArea').setStyle('display', 'none')}" name="annotationShow" text{($.annotationShow!='y' && $.annotationShow!='n' && $.annotationShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationShowScriptArea').setStyle('display', 'block')}" name="annotationShow" text{($.annotationShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}annotationShowScriptArea" style="display: text{($.annotationShow=='s')?'block':'none'}" class="MWFFormulaArea" name="annotationShowScript" title="附注显示脚本 (S)"></div>
+			<div id="text{$.pid}annotationShowScriptArea" style="display: text{($.annotationShow=='s')?'block':'none'}" class="MWFFormulaArea" name="annotationShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 <!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 <!--				<tr>-->
@@ -842,41 +842,41 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationValueDataArea').setStyle('display', 'block'); $('text{$.pid}annotationValueScriptArea').setStyle('display', 'none')}" name="annotationValueType" text{($.annotationValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationValueDataArea').setStyle('display', 'none'); $('text{$.pid}annotationValueScriptArea').setStyle('display', 'block')}" name="annotationValueType" text{($.annotationValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationValueDataArea').setStyle('display', 'block'); $('text{$.pid}annotationValueScriptArea').setStyle('display', 'none')}" name="annotationValueType" text{($.annotationValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationValueDataArea').setStyle('display', 'none'); $('text{$.pid}annotationValueScriptArea').setStyle('display', 'block')}" name="annotationValueType" text{($.annotationValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}annotationValueDataArea" style="display: text{($.annotationValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="annotationValueData" value="text{$.annotationValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}annotationValueScriptArea" style="display: text{($.annotationValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="annotationValueScript" title="附注绑定值脚本 (S)"></div>
+			<div id="text{$.pid}annotationValueScriptArea" style="display: text{($.annotationValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="annotationValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------附注------------------------------------------------------------------->
 
 <!-----------------------------------------------抄送------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">抄送（copyto）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.copyto}} (copyto)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoShowScriptArea').setStyle('display', 'none')}" name="copytoShow" text{($.copytoShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoShowScriptArea').setStyle('display', 'none')}" name="copytoShow" text{($.copytoShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoShowScriptArea').setStyle('display', 'none')}" name="copytoShow" text{($.copytoShow!='y' && $.copytoShow!='n' && $.copytoShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoShowScriptArea').setStyle('display', 'block')}" name="copytoShow" text{($.copytoShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoShowScriptArea').setStyle('display', 'none')}" name="copytoShow" text{($.copytoShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoShowScriptArea').setStyle('display', 'none')}" name="copytoShow" text{($.copytoShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoShowScriptArea').setStyle('display', 'none')}" name="copytoShow" text{($.copytoShow!='y' && $.copytoShow!='n' && $.copytoShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoShowScriptArea').setStyle('display', 'block')}" name="copytoShow" text{($.copytoShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}copytoShowScriptArea" style="display: text{($.copytoShow=='s')?'block':'none'}" class="MWFFormulaArea" name="copytoShowScript" title="抄送显示脚本 (S)"></div>
+			<div id="text{$.pid}copytoShowScriptArea" style="display: text{($.copytoShow=='s')?'block':'none'}" class="MWFFormulaArea" name="copytoShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 <!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 <!--				<tr>-->
@@ -892,41 +892,41 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoValueDataArea').setStyle('display', 'block'); $('text{$.pid}copytoValueScriptArea').setStyle('display', 'none')}" name="copytoValueType" text{($.copytoValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoValueDataArea').setStyle('display', 'none'); $('text{$.pid}copytoValueScriptArea').setStyle('display', 'block')}" name="copytoValueType" text{($.copytoValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoValueDataArea').setStyle('display', 'block'); $('text{$.pid}copytoValueScriptArea').setStyle('display', 'none')}" name="copytoValueType" text{($.copytoValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoValueDataArea').setStyle('display', 'none'); $('text{$.pid}copytoValueScriptArea').setStyle('display', 'block')}" name="copytoValueType" text{($.copytoValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}copytoValueDataArea" style="display: text{($.copytoValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="copytoValueData" value="text{$.copytoValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}copytoValueScriptArea" style="display: text{($.copytoValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="copytoValueScript" title="抄送绑定值脚本 (S)"></div>
+			<div id="text{$.pid}copytoValueScriptArea" style="display: text{($.copytoValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="copytoValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------抄送------------------------------------------------------------------->
 
 <!-----------------------------------------------发------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">发（copyto2）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.copyto2}} (copyto2)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'none')}" name="copyto2Show" text{($.copyto2Show=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'none')}" name="copyto2Show" text{($.copyto2Show=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'none')}" name="copyto2Show" text{($.copyto2Show!='y' && $.copyto2Show!='n' && $.copyto2Show!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'block')}" name="copyto2Show" text{($.copyto2Show=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'none')}" name="copyto2Show" text{($.copyto2Show=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'none')}" name="copyto2Show" text{($.copyto2Show=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'none')}" name="copyto2Show" text{($.copyto2Show!='y' && $.copyto2Show!='n' && $.copyto2Show!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'block')}" name="copyto2Show" text{($.copyto2Show=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}copyto2ShowScriptArea" style="display: text{($.copyto2Show=='s')?'block':'none'}" class="MWFFormulaArea" name="copyto2ShowScript" title="抄送显示脚本 (S)"></div>
+			<div id="text{$.pid}copyto2ShowScriptArea" style="display: text{($.copyto2Show=='s')?'block':'none'}" class="MWFFormulaArea" name="copyto2ShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 			<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 			<!--				<tr>-->
@@ -942,41 +942,41 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ValueDataArea').setStyle('display', 'block'); $('text{$.pid}copyto2ValueScriptArea').setStyle('display', 'none')}" name="copyto2ValueType" text{($.copyto2ValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ValueDataArea').setStyle('display', 'none'); $('text{$.pid}copyto2ValueScriptArea').setStyle('display', 'block')}" name="copyto2ValueType" text{($.copyto2ValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ValueDataArea').setStyle('display', 'block'); $('text{$.pid}copyto2ValueScriptArea').setStyle('display', 'none')}" name="copyto2ValueType" text{($.copyto2ValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ValueDataArea').setStyle('display', 'none'); $('text{$.pid}copyto2ValueScriptArea').setStyle('display', 'block')}" name="copyto2ValueType" text{($.copyto2ValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}copyto2ValueDataArea" style="display: text{($.copyto2ValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="copyto2ValueData" value="text{$.copyto2ValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}copyto2ValueScriptArea" style="display: text{($.copyto2ValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="copyto2ValueScript" title="抄送绑定值脚本 (S)"></div>
+			<div id="text{$.pid}copyto2ValueScriptArea" style="display: text{($.copyto2ValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="copyto2ValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------抄送------------------------------------------------------------------->
 
 <!-----------------------------------------------印发单位------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">印发单位（editionUnit）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.editionUnit}} (editionUnit)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitShowScriptArea').setStyle('display', 'none')}" name="editionUnitShow" text{($.editionUnitShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitShowScriptArea').setStyle('display', 'none')}" name="editionUnitShow" text{($.editionUnitShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitShowScriptArea').setStyle('display', 'none')}" name="editionUnitShow" text{($.editionUnitShow!='y' && $.editionUnitShow!='n' && $.editionUnitShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitShowScriptArea').setStyle('display', 'block')}" name="editionUnitShow" text{($.editionUnitShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitShowScriptArea').setStyle('display', 'none')}" name="editionUnitShow" text{($.editionUnitShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitShowScriptArea').setStyle('display', 'none')}" name="editionUnitShow" text{($.editionUnitShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitShowScriptArea').setStyle('display', 'none')}" name="editionUnitShow" text{($.editionUnitShow!='y' && $.editionUnitShow!='n' && $.editionUnitShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitShowScriptArea').setStyle('display', 'block')}" name="editionUnitShow" text{($.editionUnitShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}editionUnitShowScriptArea" style="display: text{($.editionUnitShow=='s')?'block':'none'}" class="MWFFormulaArea" name="editionUnitShowScript" title="印发单位显示脚本 (S)"></div>
+			<div id="text{$.pid}editionUnitShowScriptArea" style="display: text{($.editionUnitShow=='s')?'block':'none'}" class="MWFFormulaArea" name="editionUnitShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 <!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 <!--				<tr>-->
@@ -992,41 +992,41 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitValueDataArea').setStyle('display', 'block'); $('text{$.pid}editionUnitValueScriptArea').setStyle('display', 'none')}" name="editionUnitValueType" text{($.editionUnitValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitValueDataArea').setStyle('display', 'none'); $('text{$.pid}editionUnitValueScriptArea').setStyle('display', 'block')}" name="editionUnitValueType" text{($.editionUnitValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitValueDataArea').setStyle('display', 'block'); $('text{$.pid}editionUnitValueScriptArea').setStyle('display', 'none')}" name="editionUnitValueType" text{($.editionUnitValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitValueDataArea').setStyle('display', 'none'); $('text{$.pid}editionUnitValueScriptArea').setStyle('display', 'block')}" name="editionUnitValueType" text{($.editionUnitValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}editionUnitValueDataArea" style="display: text{($.editionUnitValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="editionUnitValueData" value="text{$.editionUnitValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}editionUnitValueScriptArea" style="display: text{($.editionUnitValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="editionUnitValueScript" title="印发单位绑定值脚本 (S)"></div>
+			<div id="text{$.pid}editionUnitValueScriptArea" style="display: text{($.editionUnitValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="editionUnitValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------印发单位------------------------------------------------------------------->
 
 <!-----------------------------------------------印发日期------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">印发日期（editionDate）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.editionDate}} (editionDate)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateShowScriptArea').setStyle('display', 'none')}" name="editionDateShow" text{($.editionDateShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateShowScriptArea').setStyle('display', 'none')}" name="editionDateShow" text{($.editionDateShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateShowScriptArea').setStyle('display', 'none')}" name="editionDateShow" text{($.editionDateShow!='y' && $.editionDateShow!='n' && $.editionDateShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateShowScriptArea').setStyle('display', 'block')}" name="editionDateShow" text{($.editionDateShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateShowScriptArea').setStyle('display', 'none')}" name="editionDateShow" text{($.editionDateShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateShowScriptArea').setStyle('display', 'none')}" name="editionDateShow" text{($.editionDateShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateShowScriptArea').setStyle('display', 'none')}" name="editionDateShow" text{($.editionDateShow!='y' && $.editionDateShow!='n' && $.editionDateShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateShowScriptArea').setStyle('display', 'block')}" name="editionDateShow" text{($.editionDateShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}editionDateShowScriptArea" style="display: text{($.editionDateShow=='s')?'block':'none'}" class="MWFFormulaArea" name="editionDateShowScript" title="印发单位显示脚本 (S)"></div>
+			<div id="text{$.pid}editionDateShowScriptArea" style="display: text{($.editionDateShow=='s')?'block':'none'}" class="MWFFormulaArea" name="editionDateShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 <!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 <!--				<tr>-->
@@ -1042,41 +1042,41 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateValueDataArea').setStyle('display', 'block'); $('text{$.pid}editionDateValueScriptArea').setStyle('display', 'none')}" name="editionDateValueType" text{($.editionDateValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateValueDataArea').setStyle('display', 'none'); $('text{$.pid}editionDateValueScriptArea').setStyle('display', 'block')}" name="editionDateValueType" text{($.editionDateValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateValueDataArea').setStyle('display', 'block'); $('text{$.pid}editionDateValueScriptArea').setStyle('display', 'none')}" name="editionDateValueType" text{($.editionDateValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateValueDataArea').setStyle('display', 'none'); $('text{$.pid}editionDateValueScriptArea').setStyle('display', 'block')}" name="editionDateValueType" text{($.editionDateValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}editionDateValueDataArea" style="display: text{($.editionDateValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="editionDateValueData" value="text{$.editionDateValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}editionDateValueScriptArea" style="display: text{($.editionDateValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="editionDateValueScript" title="印发单位绑定值脚本 (S)"></div>
+			<div id="text{$.pid}editionDateValueScriptArea" style="display: text{($.editionDateValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="editionDateValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------印发日期------------------------------------------------------------------->
 
 <!-----------------------------------------------会议出席------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">会议出席（meetingAttend）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.meetingAttend}} (meetingAttend)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendShowScriptArea').setStyle('display', 'none')}" name="meetingAttendShow" text{($.meetingAttendShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendShowScriptArea').setStyle('display', 'none')}" name="meetingAttendShow" text{($.meetingAttendShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendShowScriptArea').setStyle('display', 'none')}" name="meetingAttendShow" text{($.meetingAttendShow!='y' && $.meetingAttendShow!='n' && $.meetingAttendShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendShowScriptArea').setStyle('display', 'block')}" name="meetingAttendShow" text{($.meetingAttendShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendShowScriptArea').setStyle('display', 'none')}" name="meetingAttendShow" text{($.meetingAttendShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendShowScriptArea').setStyle('display', 'none')}" name="meetingAttendShow" text{($.meetingAttendShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendShowScriptArea').setStyle('display', 'none')}" name="meetingAttendShow" text{($.meetingAttendShow!='y' && $.meetingAttendShow!='n' && $.meetingAttendShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendShowScriptArea').setStyle('display', 'block')}" name="meetingAttendShow" text{($.meetingAttendShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}meetingAttendShowScriptArea" style="display: text{($.meetingAttendShow=='s')?'block':'none'}" class="MWFFormulaArea" name="meetingAttendShowScript" title="会议出席显示脚本 (S)"></div>
+			<div id="text{$.pid}meetingAttendShowScriptArea" style="display: text{($.meetingAttendShow=='s')?'block':'none'}" class="MWFFormulaArea" name="meetingAttendShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 			<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 			<!--				<tr>-->
@@ -1092,41 +1092,41 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendValueDataArea').setStyle('display', 'block'); $('text{$.pid}meetingAttendValueScriptArea').setStyle('display', 'none')}" name="meetingAttendValueType" text{($.meetingAttendValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendValueDataArea').setStyle('display', 'none'); $('text{$.pid}meetingAttendValueScriptArea').setStyle('display', 'block')}" name="meetingAttendValueType" text{($.meetingAttendValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendValueDataArea').setStyle('display', 'block'); $('text{$.pid}meetingAttendValueScriptArea').setStyle('display', 'none')}" name="meetingAttendValueType" text{($.meetingAttendValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingAttendValueDataArea').setStyle('display', 'none'); $('text{$.pid}meetingAttendValueScriptArea').setStyle('display', 'block')}" name="meetingAttendValueType" text{($.meetingAttendValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}meetingAttendValueDataArea" style="display: text{($.meetingAttendValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="meetingAttendValueData" value="text{$.meetingAttendValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}meetingAttendValueScriptArea" style="display: text{($.meetingAttendValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="meetingAttendValueScript" title="会议出席绑定值脚本 (S)"></div>
+			<div id="text{$.pid}meetingAttendValueScriptArea" style="display: text{($.meetingAttendValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="meetingAttendValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------会议出席------------------------------------------------------------------->
 
 <!-----------------------------------------------会议请假------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">会议请假（meetingLeave）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.meetingLeave}} (meetingLeave)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveShowScriptArea').setStyle('display', 'none')}" name="meetingLeaveShow" text{($.meetingLeaveShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveShowScriptArea').setStyle('display', 'none')}" name="meetingLeaveShow" text{($.meetingLeaveShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveShowScriptArea').setStyle('display', 'none')}" name="meetingLeaveShow" text{($.meetingLeaveShow!='y' && $.meetingLeaveShow!='n' && $.meetingLeaveShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveShowScriptArea').setStyle('display', 'block')}" name="meetingLeaveShow" text{($.meetingLeaveShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveShowScriptArea').setStyle('display', 'none')}" name="meetingLeaveShow" text{($.meetingLeaveShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveShowScriptArea').setStyle('display', 'none')}" name="meetingLeaveShow" text{($.meetingLeaveShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveShowScriptArea').setStyle('display', 'none')}" name="meetingLeaveShow" text{($.meetingLeaveShow!='y' && $.meetingLeaveShow!='n' && $.meetingLeaveShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveShowScriptArea').setStyle('display', 'block')}" name="meetingLeaveShow" text{($.meetingLeaveShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}meetingLeaveShowScriptArea" style="display: text{($.meetingLeaveShow=='s')?'block':'none'}" class="MWFFormulaArea" name="meetingLeaveShowScript" title="会议请假显示脚本 (S)"></div>
+			<div id="text{$.pid}meetingLeaveShowScriptArea" style="display: text{($.meetingLeaveShow=='s')?'block':'none'}" class="MWFFormulaArea" name="meetingLeaveShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 			<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 			<!--				<tr>-->
@@ -1142,41 +1142,41 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveValueDataArea').setStyle('display', 'block'); $('text{$.pid}meetingLeaveValueScriptArea').setStyle('display', 'none')}" name="meetingLeaveValueType" text{($.meetingLeaveValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveValueDataArea').setStyle('display', 'none'); $('text{$.pid}meetingLeaveValueScriptArea').setStyle('display', 'block')}" name="meetingLeaveValueType" text{($.meetingLeaveValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveValueDataArea').setStyle('display', 'block'); $('text{$.pid}meetingLeaveValueScriptArea').setStyle('display', 'none')}" name="meetingLeaveValueType" text{($.meetingLeaveValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingLeaveValueDataArea').setStyle('display', 'none'); $('text{$.pid}meetingLeaveValueScriptArea').setStyle('display', 'block')}" name="meetingLeaveValueType" text{($.meetingLeaveValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}meetingLeaveValueDataArea" style="display: text{($.meetingLeaveValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="meetingLeaveValueData" value="text{$.meetingLeaveValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}meetingLeaveValueScriptArea" style="display: text{($.meetingLeaveValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="meetingLeaveValueScript" title="会议请假绑定值脚本 (S)"></div>
+			<div id="text{$.pid}meetingLeaveValueScriptArea" style="display: text{($.meetingLeaveValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="meetingLeaveValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------会议请假------------------------------------------------------------------->
 
 <!-----------------------------------------------会议列席------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">会议列席（meetingSit）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.meetingSit}} (meetingSit)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitShowScriptArea').setStyle('display', 'none')}" name="meetingSitShow" text{($.meetingSitShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitShowScriptArea').setStyle('display', 'none')}" name="meetingSitShow" text{($.meetingSitShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitShowScriptArea').setStyle('display', 'none')}" name="meetingSitShow" text{($.meetingSitShow!='y' && $.meetingSitShow!='n' && $.meetingSitShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitShowScriptArea').setStyle('display', 'block')}" name="meetingSitShow" text{($.meetingSitShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitShowScriptArea').setStyle('display', 'none')}" name="meetingSitShow" text{($.meetingSitShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitShowScriptArea').setStyle('display', 'none')}" name="meetingSitShow" text{($.meetingSitShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitShowScriptArea').setStyle('display', 'none')}" name="meetingSitShow" text{($.meetingSitShow!='y' && $.meetingSitShow!='n' && $.meetingSitShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitShowScriptArea').setStyle('display', 'block')}" name="meetingSitShow" text{($.meetingSitShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}meetingSitShowScriptArea" style="display: text{($.meetingSitShow=='s')?'block':'none'}" class="MWFFormulaArea" name="meetingSitShowScript" title="会议列席显示脚本 (S)"></div>
+			<div id="text{$.pid}meetingSitShowScriptArea" style="display: text{($.meetingSitShow=='s')?'block':'none'}" class="MWFFormulaArea" name="meetingSitShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 			<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 			<!--				<tr>-->
@@ -1192,41 +1192,41 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitValueDataArea').setStyle('display', 'block'); $('text{$.pid}meetingSitValueScriptArea').setStyle('display', 'none')}" name="meetingSitValueType" text{($.meetingSitValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitValueDataArea').setStyle('display', 'none'); $('text{$.pid}meetingSitValueScriptArea').setStyle('display', 'block')}" name="meetingSitValueType" text{($.meetingSitValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitValueDataArea').setStyle('display', 'block'); $('text{$.pid}meetingSitValueScriptArea').setStyle('display', 'none')}" name="meetingSitValueType" text{($.meetingSitValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingSitValueDataArea').setStyle('display', 'none'); $('text{$.pid}meetingSitValueScriptArea').setStyle('display', 'block')}" name="meetingSitValueType" text{($.meetingSitValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}meetingSitValueDataArea" style="display: text{($.meetingSitValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="meetingSitValueData" value="text{$.meetingSitValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}meetingSitValueScriptArea" style="display: text{($.meetingSitValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="meetingSitValueScript" title="会议列席绑定值脚本 (S)"></div>
+			<div id="text{$.pid}meetingSitValueScriptArea" style="display: text{($.meetingSitValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="meetingSitValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------会议列席------------------------------------------------------------------->
 
 <!-----------------------------------------------会议记录------------------------------------------------------------------->
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">会议记录（meetingRecord）</div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.meetingRecord}} (meetingRecord)</div>
 		<div style="display: none">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">是否显示</td>
+					<td class="editTableTitle">{{$.lp.isShow}}</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordShowScriptArea').setStyle('display', 'none')}" name="meetingRecordShow" text{($.meetingRecordShow=='y')?'checked':''} type="radio" value="y"/>显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordShowScriptArea').setStyle('display', 'none')}" name="meetingRecordShow" text{($.meetingRecordShow=='n')?'checked':''} type="radio" value="n"/>不显示
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordShowScriptArea').setStyle('display', 'none')}" name="meetingRecordShow" text{($.meetingRecordShow!='y' && $.meetingRecordShow!='n' && $.meetingRecordShow!='s')?'checked':''} type="radio" value="a"/>自动
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordShowScriptArea').setStyle('display', 'block')}" name="meetingRecordShow" text{($.meetingRecordShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordShowScriptArea').setStyle('display', 'none')}" name="meetingRecordShow" text{($.meetingRecordShow=='y')?'checked':''} type="radio" value="y"/>{{$.lp.show}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordShowScriptArea').setStyle('display', 'none')}" name="meetingRecordShow" text{($.meetingRecordShow=='n')?'checked':''} type="radio" value="n"/>{{$.lp.hide}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordShowScriptArea').setStyle('display', 'none')}" name="meetingRecordShow" text{($.meetingRecordShow!='y' && $.meetingRecordShow!='n' && $.meetingRecordShow!='s')?'checked':''} type="radio" value="a"/>{{$.lp.auto}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordShowScriptArea').setStyle('display', 'block')}" name="meetingRecordShow" text{($.meetingRecordShow=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 					</td>
 				</tr>
 			</table>
-			<div id="text{$.pid}meetingRecordShowScriptArea" style="display: text{($.meetingRecordShow=='s')?'block':'none'}" class="MWFFormulaArea" name="meetingRecordShowScript" title="会议记录显示脚本 (S)"></div>
+			<div id="text{$.pid}meetingRecordShowScriptArea" style="display: text{($.meetingRecordShow=='s')?'block':'none'}" class="MWFFormulaArea" name="meetingRecordShowScript" title="{{$.lp.showScript}} (S)"></div>
 
 			<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 			<!--				<tr>-->
@@ -1242,30 +1242,30 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableTitle">{{$.lp.bindValue}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordValueDataArea').setStyle('display', 'block'); $('text{$.pid}meetingRecordValueScriptArea').setStyle('display', 'none')}" name="meetingRecordValueType" text{($.meetingRecordValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordValueDataArea').setStyle('display', 'none'); $('text{$.pid}meetingRecordValueScriptArea').setStyle('display', 'block')}" name="meetingRecordValueType" text{($.meetingRecordValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordValueDataArea').setStyle('display', 'block'); $('text{$.pid}meetingRecordValueScriptArea').setStyle('display', 'none')}" name="meetingRecordValueType" text{($.meetingRecordValueType!='script')?'checked':''} type="radio" value="data"/>{{$.lp.formData}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}meetingRecordValueDataArea').setStyle('display', 'none'); $('text{$.pid}meetingRecordValueScriptArea').setStyle('display', 'block')}" name="meetingRecordValueType" text{($.meetingRecordValueType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}meetingRecordValueDataArea" style="display: text{($.meetingRecordValueType!='script')?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
-						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableTitle">{{$.lp.formData}}:</td>
 						<td class="editTableValue"><input type="text" name="meetingRecordValueData" value="text{$.meetingRecordValueData}" class="editTableInput"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id="text{$.pid}meetingRecordValueScriptArea" style="display: text{($.meetingRecordValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="meetingRecordValueScript" title="会议记录绑定值脚本 (S)"></div>
+			<div id="text{$.pid}meetingRecordValueScriptArea" style="display: text{($.meetingRecordValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="meetingRecordValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------会议记录------------------------------------------------------------------->
 
-		<div class="MWFMaplist" name="customFields" title="自定义元素配置"></div>
+		<div class="MWFMaplist" name="customFields" title="{{$.lp.customElement}}"></div>
 
 	</div>
-	<div title="事件"  class="MWFTab" style="overflow: hidden">
+	<div title="{{$.lp.event}}"  class="MWFTab" style="overflow: hidden">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
 	<div title="HTML"  class="MWFTab">
