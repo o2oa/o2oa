@@ -786,3 +786,11 @@ MWF.org = {
         }
     }
 };
+//var lp = o2.session.path + "/lp/" + o2.language + ".js";
+// var lp = "../x_desktop/js/base_lp_" + o2.language +((o2.session.isDebugger) ? "" : ".min")+ ".js";
+// if (!o2.LP){
+//     new Request({
+//         "url": lp,
+//         "method": "get"
+//     }).send();
+// }

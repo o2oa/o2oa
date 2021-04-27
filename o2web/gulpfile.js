@@ -23,6 +23,8 @@ var assetRev = require('gulp-tm-asset-rev');
 var apps = require('./gulpapps.js');
 var ftpconfig = require('./gulpconfig.js');
 
+var supportedLanguage = ["zh-cn", "en"];
+
 var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
     string: ["ev", "upload", "location", "host", "user", "pass", "port", "remotePath", "dest", "src", "lp"]
 });
@@ -595,10 +597,10 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/js/base_concat_head.js',
-            'source/o2_core/o2/lp/'+(option.lp || 'zh-cn')+'.js',
-            'source/x_component_process_Work/lp/'+(option.lp || 'zh-cn')+'.js',
-            'source/x_component_process_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
-            'source/x_component_Selector/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/o2_core/o2/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_process_Work/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_process_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_Selector/lp/'+(option.lp || 'zh-cn')+'.js',
 
             'source/' + path + '/js/base_work_style_temp.js',
 
@@ -667,8 +669,63 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
             })))
             .pipe(gulp.dest(dest))
 
-            .pipe(uglify())
             .pipe(concat('js/base_work.min.js'))
+            .pipe(uglify())
+            .pipe( sourceMap.write("") )
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+    });
+}
+function createBaseWorkConcatLanguageTask(path, thisOptions, language){
+    gulp.task(path+".base_lp : "+language, function(){
+        var option = thisOptions || options;
+        var src = [
+            'source/o2_core/o2/lp/'+(language)+'.js',
+            'source/x_component_process_Work/lp/'+(language)+'.js',
+            'source/x_component_process_Xform/lp/'+(language)+'.js',
+            'source/x_component_Selector/lp/'+(language)+'.js',
+            'source/x_component_Template/lp/'+(language)+'.js',
+            'source/x_component_portal_Portal/lp/'+(language)+'.js',
+            'source/x_component_cms_Document/lp/'+(language)+'.js',
+            'source/x_component_cms_Xform/lp/'+(language)+'.js',
+        ];
+        var dest = option.dest+'/' + path + '/';
+        return gulp.src(src, {allowEmpty: true})
+            .pipe(sourceMap.init())
+            .pipe(concat('js/base_lp_'+language+'.js'))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+
+            .pipe(uglify())
+            .pipe(concat('js/base_lp_'+language+'.min.js'))
             .pipe( sourceMap.write("") )
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
@@ -693,7 +750,7 @@ function createBaseWorkConcatTask(path, isMin, thisOptions){
     createBaseWorkConcatStyleTask(path);
     createBaseWorkConcatBodyTask(path, isMin, thisOptions);
     createBaseWorkConcatDelTempTask(path);
-    gulp.task( path+".base_work", gulp.series(path+".base_work : action", path+".base_work : style", path+".base_work : concat", path+".base_work : clean"));
+    gulp.task( path+".base_work", gulp.series(path+".base_work : action", path+".base_work : style", path+".base_work : concat", lpTasks, path+".base_work : clean"));
 }
 
 function createBasePortalConcatStyleTask(path){
@@ -743,7 +800,7 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/js/base_concat_head.js',
-            'source/o2_core/o2/lp/'+(option.lp || 'zh-cn')+'.js',
+            //'source/o2_core/o2/lp/'+(option.lp || 'zh-cn')+'.js',
 
             'source/' + path + '/js/base_portal_style_temp.js',
 
@@ -765,10 +822,10 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
 
             'source/x_component_Common/Main.js',
 
-            'source/x_component_process_Work/lp/'+(option.lp || 'zh-cn')+'.js',
-            'source/x_component_portal_Portal/lp/'+(option.lp || 'zh-cn')+'.js',
-            'source/x_component_process_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
-            'source/x_component_Selector/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_process_Work/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_portal_Portal/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_process_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_Selector/lp/'+(option.lp || 'zh-cn')+'.js',
 
             'source/x_component_portal_Portal/Main.js',
 
@@ -846,7 +903,7 @@ function createBasePortalConcatTask(path, isMin, thisOptions){
     createBasePortalConcatStyleTask(path);
     createBasePortalConcatBodyTask(path, isMin, thisOptions);
     createBasePortalConcatDelTempTask(path);
-    gulp.task( path+".base_portal", gulp.series(path+".base_portal : action", path+".base_portal : style", path+".base_portal : concat", path+".base_portal : clean"));
+    gulp.task( path+".base_portal", gulp.series(path+".base_portal : action", path+".base_portal : style", path+".base_portal : concat", lpTasks, path+".base_portal : clean"));
 }
 
 
@@ -883,7 +940,7 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/js/base_concat_head.js',
-            'source/o2_core/o2/lp/'+(option.lp || 'zh-cn')+'.js',
+            //'source/o2_core/o2/lp/'+(option.lp || 'zh-cn')+'.js',
 
             'source/' + path + '/js/base_document_style_temp.js',
 
@@ -905,10 +962,10 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
 
             'source/x_component_Common/Main.js',
 
-            'source/x_component_cms_Document/lp/'+(option.lp || 'zh-cn')+'.js',
-            'source/x_component_process_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
-            'source/x_component_Selector/lp/'+(option.lp || 'zh-cn')+'.js',
-            'source/x_component_cms_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_cms_Document/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_process_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_Selector/lp/'+(option.lp || 'zh-cn')+'.js',
+            // 'source/x_component_cms_Xform/lp/'+(option.lp || 'zh-cn')+'.js',
 
             'source/x_component_cms_Document/Main.js',
 
@@ -987,7 +1044,7 @@ function createBaseDocumentConcatTask(path, isMin, thisOptions){
     createBaseDocumentConcatStyleTask(path);
     createBaseDocumentConcatBodyTask(path, isMin, thisOptions);
     createBaseDocumentConcatDelTempTask(path);
-    gulp.task( path+".base_document", gulp.series(path+".base_document : action", path+".base_document : style", path+".base_document : concat", path+".base_document : clean"));
+    gulp.task( path+".base_document", gulp.series(path+".base_document : action", path+".base_document : style", path+".base_document : concat", lpTasks, path+".base_document : clean"));
 }
 
 
@@ -1043,6 +1100,7 @@ function createBaseConcatTask(path, isMin, thisOptions){
     });
 }
 
+var lpTasks = [];
 function getAppTask(path, isMin, thisOptions) {
     if (path==="x_component_process_Xform") {
         createDefaultTask(path, isMin, thisOptions);
@@ -1058,6 +1116,12 @@ function getAppTask(path, isMin, thisOptions) {
         return gulp.series(path, path+" : concat", path+".xDesktop : concat",  path+" : bundle");
     }else if (path==="x_desktop") {
         createDefaultTask(path, isMin, thisOptions);
+
+        supportedLanguage.forEach(function(lp){
+            createBaseWorkConcatLanguageTask(path, thisOptions, lp);
+            lpTasks.push(path+".base_lp : "+lp);
+        })
+
         createBaseWorkConcatTask(path, isMin, thisOptions);
         createBasePortalConcatTask(path, isMin, thisOptions);
         createBaseDocumentConcatTask(path, isMin, thisOptions);

@@ -1,5 +1,5 @@
 MWF.xDesktop.requireApp("Template", "MDomItem", null, false);
-MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
+//MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
 var MGrid = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
