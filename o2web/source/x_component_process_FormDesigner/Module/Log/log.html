@@ -213,7 +213,7 @@
 			<div class="MWFMaplist" name="contentDivStyles" collapse="true" title="{{$.lp.categoryContentCellInnerStyle}}"></div>
 		</div>
 
-		<div title="展开折叠区域"  id="text{$.pid}expandArea" style="display: text{($.category && $.category!=='none') ?'block':'none'}">
+		<div title="{{$.lp.expandOrCollapse}}"  id="text{$.pid}expandArea" style="display: text{($.category && $.category!=='none') ?'block':'none'}">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
 					<td class="editTableTitle">{{$.lp.expandOrCollapse}}:</td>
@@ -227,7 +227,7 @@
 					</td>
 				</tr>
 			</table>
-			<div title="展开折叠设置"  id="text{$.pid}expandStyleArea" style="display: text{($.expand && $.expand=='enable') ?'block':'none'}">
+			<div title="{{$.lp.defaultExpandCount}}"  id="text{$.pid}expandStyleArea" style="display: text{($.expand && $.expand=='enable') ?'block':'none'}">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
 						<td class="editTableTitle">{{$.lp.defaultExpandCount}}:</td>
