@@ -35,7 +35,6 @@
     "gulp-if": "^2.0.2",
     "gulp-rename": "^1.4.0",
     "gulp-sftp-up4": "^0.1.8",
-    "gulp-sourcemaps": "^3.0.0",
     "gulp-tm-asset-rev": "^0.0.18",
     "gulp-tm-uglify": "3.0.1",
     "gulp-uglify-es": "^2.0.0",
