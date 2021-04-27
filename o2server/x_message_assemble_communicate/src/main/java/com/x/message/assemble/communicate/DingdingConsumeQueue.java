@@ -90,7 +90,12 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 			logger.info("o2oa workUrl："+workUrl);
 			o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + workUrl;
 			logger.info("o2oa 地址："+o2oaUrl);
-			return o2oaUrl;
+			String talkUrl = "dingtalk://dingtalkclient/action/openapp?corpid="+Config.dingding().getCorpId()
+					+"&container_type=work_platform&app_id=0_"
+					+ Config.dingding().getAgentId() + "&redirect_type=jump&redirect_url="
+					+ URLEncoder.encode(o2oaUrl, DefaultCharset.name);
+			logger.info("dingtalk地址："+talkUrl);
+			return talkUrl;
 		}catch (Exception e) {
 			logger.error(e);
 		}
