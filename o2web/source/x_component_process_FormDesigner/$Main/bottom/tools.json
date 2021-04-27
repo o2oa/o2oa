@@ -164,7 +164,7 @@
   },
   "log": {
     "icon": "log.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.tree,
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.log,
     "className": "Log"
   },
   "monitor": {

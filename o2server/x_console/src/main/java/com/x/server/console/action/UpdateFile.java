@@ -1,16 +1,21 @@
 package com.x.server.console.action;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Date;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.SystemUtils;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
@@ -88,5 +93,17 @@ public class UpdateFile extends ActionBase {
 		if (dir_config.exists()) {
 			FileUtils.forceDelete(dir_config);
 		}
+		// 非windows设置解压文件权限
+		if (!SystemUtils.IS_OS_WINDOWS) {
+			Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
+			Files.walk(dir.toPath()).forEach(p -> {
+				try {
+					Files.setPosixFilePermissions(p, permissions);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		}
+		
 	}
 }
