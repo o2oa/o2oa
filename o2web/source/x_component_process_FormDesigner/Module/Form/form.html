@@ -100,8 +100,8 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.language}}:</td>
                 <td class="editTableValue">
-<!--                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'none'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType!=='default' && $.languageType!=='script')?'checked':''} type="radio" value="none"/>{{$.lp.none}}-->
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'block'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType!=='script')?'checked':''} type="radio" value="default"/>{{$.lp.default}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'none'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType!=='default' && $.languageType!=='script')?'checked':''} type="radio" value="none"/>{{$.lp.none}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'block'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType==='default')?'checked':''} type="radio" value="default"/>{{$.lp.default}}
                     <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageScriptArea').setStyle('display', 'block'); $('text{$.pid}languageDefaultArea').setStyle('display', 'none'); }" name="languageType" text{($.languageType==='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
                 </td>
             </tr>
