@@ -62,7 +62,10 @@ if (!window.Promise){
 })(window.Node || window.Element);
 
 (function(){
-    var _language = localStorage.getItem("o2.language");
+    var _language = ""
+    try{
+        _language = localStorage.getItem("o2.language");
+    }catch(e){};
 
     var _href = window.location.href;
     var _debug = (_href.indexOf("debugger")!==-1);
