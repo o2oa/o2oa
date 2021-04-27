@@ -21,7 +21,7 @@ var assetRev = require('gulp-tm-asset-rev');
 const os = require('os');
 var through2 = require('through2');
 var path = require('path');
-var sourceMap = require('gulp-sourcemaps');
+//var sourceMap = require('gulp-sourcemaps');
 
 var git = require('gulp-git');
 
@@ -418,15 +418,15 @@ function build_concat_o2(){
         'o2web/source/o2_core/o2.js'
     ];
     var dest = 'target/o2server/servers/webServer/o2_core/';
-    return gulp.src(src)
-        .pipe(sourceMap.init())
+    return gulp.src(src, {sourcemaps: true})
+        //.pipe(sourceMap.init())
         .pipe(concat('o2.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('o2.min.js'))
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
-        .pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest))
+        //.pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest, {sourcemaps: '.'}))
 }
 function build_concat_base(){
     var src = [
@@ -434,15 +434,15 @@ function build_concat_base(){
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
-    return gulp.src(src)
-        .pipe(sourceMap.init())
+    return gulp.src(src, {sourcemaps: true})
+        //.pipe(sourceMap.init())
         //.pipe(concat('o2.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('base.min.js'))
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
-        .pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest));
+        //.pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest, {sourcemaps: '.'}));
 }
 function build_concat_desktop(){
     let path = "o2_core";
@@ -464,15 +464,15 @@ function build_concat_desktop(){
         'o2web/source/x_component_Common/Main.js'
     ];
     var dest = 'target/o2server/servers/webServer/o2_core/o2/xDesktop/';
-    return gulp.src(src)
-        .pipe(sourceMap.init())
+    return gulp.src(src, {sourcemaps: true})
+        //.pipe(sourceMap.init())
         .pipe(concat('$all.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('$all.min.js'))
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
-        .pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest))
+        //.pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest, {sourcemaps: '.'}))
 }
 function build_concat_xform(){
     let path = "x_component_process_Xform";
@@ -497,15 +497,15 @@ function build_concat_xform(){
         '!o2web/source/' + path + '/Office.js'
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
-    return gulp.src(src)
-        .pipe(sourceMap.init())
+    return gulp.src(src, {sourcemaps: true})
+        //.pipe(sourceMap.init())
         .pipe(concat('$all.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('$all.min.js'))
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
-        .pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest))
+        //.pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest, {sourcemaps: '.'}))
 }
 
 function build_concat_cms_xform(){
@@ -592,15 +592,15 @@ function build_concat_cms_xform(){
         // '!source/' + path + '/Office.js'
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
-    return gulp.src(src)
-        .pipe(sourceMap.init())
+    return gulp.src(src, {sourcemaps: true})
+        //.pipe(sourceMap.init())
         .pipe(concat('$all.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('$all.min.js'))
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
-        .pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest))
+        //.pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest, {sourcemaps: '.'}))
 }
 
 function build_bundle(){
@@ -614,15 +614,15 @@ function build_bundle(){
         "o2web/source/o2_core/o2/framework.js"
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
-    return gulp.src(src)
-        .pipe(sourceMap.init())
+    return gulp.src(src, {sourcemaps: true})
+        //.pipe(sourceMap.init())
         .pipe(concat('bundle.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('bundle.min.js'))
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
-        .pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest))
+        //.pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest, {sourcemaps: '.'}))
 }
 
 
@@ -714,37 +714,43 @@ function build_concat_basework_clean(cb) {
 
 
 
-// function build_concat_lp() {
-var lpTasks = {};
-supportedLanguage.forEach(function(lp){
-    var src = [
-        'o2web/source/o2_core/o2/lp/'+(lp)+'.js',
-        'o2web/source/x_component_process_Work/lp/'+(lp)+'.js',
-        'o2web/source/x_component_process_Xform/lp/'+(lp)+'.js',
-        'o2web/source/x_component_Selector/lp/'+(lp)+'.js',
-        'o2web/source/x_component_Template/lp/'+(lp)+'.js',
-        'o2web/source/x_component_portal_Portal/lp/'+(lp)+'.js',
-        'o2web/source/x_component_cms_Document/lp/'+(lp)+'.js',
-        'o2web/source/x_component_cms_Xform/lp/'+(lp)+'.js',
-    ];
-    var dest = 'target/o2server/servers/webServer/x_desktop/js/';
-    lpTasks["build_concat_lp_"+lp] = function(){
-        return gulp.src(src, {"allowEmpty": true})
-            .pipe(sourceMap.init())
-            .pipe(concat('base_lp_' + lp + '.js'))
+function build_concat_lp(cb) {
+    var lpTasks = [];
+    supportedLanguage.forEach(function(lp){
+        var src = [
+            'o2web/source/o2_core/o2/lp/'+(lp)+'.js',
+            'o2web/source/x_component_process_Work/lp/'+(lp)+'.js',
+            'o2web/source/x_component_process_Xform/lp/'+(lp)+'.js',
+            'o2web/source/x_component_Selector/lp/'+(lp)+'.js',
+            'o2web/source/x_component_Template/lp/'+(lp)+'.js',
+            'o2web/source/x_component_portal_Portal/lp/'+(lp)+'.js',
+            'o2web/source/x_component_cms_Document/lp/'+(lp)+'.js',
+            'o2web/source/x_component_cms_Xform/lp/'+(lp)+'.js',
+        ];
+        var dest = 'target/o2server/servers/webServer/x_desktop/js/';
+        // lpTasks["build_concat_lp_"+lp] = function(){
+        //     return
+        // };
+        var stream = gulp.src(src, {"allowEmpty": true, sourcemaps: true});
+        lpTasks.push(new Promise((resolve)=>{
+            stream.on("end", ()=>{  resolve(); });
+        }));
+            //.pipe(sourceMap.init())
+        stream.pipe(concat('base_lp_' + lp + '.js'))
             .pipe(gulp.dest(dest))
             .pipe(concat('base_lp_' + lp + '.min.js'))
             .pipe(uglify())
             //.pipe(rename({ extname: '.min.js' }))
-            .pipe(sourceMap.write(""))
-            .pipe(gulp.dest(dest));
-    };
-});
+            // .pipe(sourceMap.write(""))
+            .pipe(gulp.dest(dest, {sourcemaps: '.' }));
+    });
 
-var build_concat_lp = gulp.parallel( Object.values(lpTasks) );
+    return Promise.all(lpTasks);
+
+//var build_concat_lp = gulp.parallel( Object.values(lpTasks) );
 
 //     return gulp.parallel(lpTasks);
-// }
+}
 
 
 
@@ -807,15 +813,15 @@ function build_concat_basework_body() {
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
-    return gulp.src(src)
-        .pipe(sourceMap.init())
+    return gulp.src(src, {sourcemaps: true})
+        //.pipe(sourceMap.init())
         .pipe(concat('base_work.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('base_work.min.js'))
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
-        .pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest));
+        //.pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest, {sourcemaps: '.'}));
 }
 
 function build_concat_baseportal_style(){
@@ -914,15 +920,15 @@ function build_concat_baseportal_body() {
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
-    return gulp.src(src)
-        .pipe(sourceMap.init())
+    return gulp.src(src, {sourcemaps: true})
+        //.pipe(sourceMap.init())
         .pipe(concat('base_portal.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('base_portal.min.js'))
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
-        .pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest));
+        //.pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest, {sourcemaps: '.'}));
 }
 
 
@@ -1007,15 +1013,15 @@ function build_concat_basedocument_body() {
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
-    return gulp.src(src)
-        .pipe(sourceMap.init())
+    return gulp.src(src, {sourcemaps: true})
+        //.pipe(sourceMap.init())
         .pipe(concat('base_document.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('base_document.min.js'))
         .pipe(uglify())
         //.pipe(rename({ extname: '.min.js' }))
-        .pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest));
+        //.pipe(sourceMap.write(""))
+        .pipe(gulp.dest(dest, {sourcemaps: '.'}));
 }
 
 exports.build_concat = gulp.parallel(
