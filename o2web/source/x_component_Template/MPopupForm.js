@@ -1,5 +1,5 @@
 MWF.xApplication.Template = MWF.xApplication.Template || {};
-MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
+//MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
 MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],

@@ -1,3 +1,6 @@
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.Work = MWF.xApplication.process.Work || {};
 MWF.xApplication.process.Work.options = Object.clone(o2.xApplication.Common.options);
 MWF.xApplication.process.Work.options.multitask = true;
 MWF.xApplication.process.Work.Main = new Class({
@@ -10,7 +13,7 @@ MWF.xApplication.process.Work.Main = new Class({
 		"icon": "icon.png",
 		"width": "1200",
 		"height": "800",
-		"title": MWF.xApplication.process.Work.LP.title,
+		"title": "",
         "workId": "",
         "draftId": "",
         "draft": null,
@@ -25,7 +28,9 @@ MWF.xApplication.process.Work.Main = new Class({
         "worklogType": "record" //record, worklog
 	},
 	onQueryLoad: function(){
-	    debugger;
+        if (!this.options.title) this.setOptions({
+            "title": MWF.xApplication.process.Work.LP.title
+        });
 		this.lp = MWF.xApplication.process.Work.LP;
         if (!this.status) {
         } else {
