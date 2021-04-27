@@ -1,12 +1,12 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
-MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
+//MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
 //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
 o2.xApplication.Selector.package = MWF.O2Selector = new Class({
     Implements: [Options],
     options: {
         "count": 0,
         "type": "person",
-        "title": MWF.xApplication.Selector.LP.multiSelectTitle,
+        "title": "",
         "groups": [],
         "roles": [],
         "units": [],
@@ -19,6 +19,7 @@ o2.xApplication.Selector.package = MWF.O2Selector = new Class({
     initialize: function(container, options, delayLoad){
         //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
         this.loading = true;
+        if (!options.title) options.title = MWF.xApplication.Selector.LP.multiSelectTitle;
         this.setOptions(options);
         this.container = container;
 
