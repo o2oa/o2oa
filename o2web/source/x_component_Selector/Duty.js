@@ -5,9 +5,12 @@ MWF.xApplication.Selector.Duty = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectDuty,
+        "title": "",
         "values": [],
         "expand": false
+    },
+    setInitTitle: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.Selector.LP.selectDuty});
     },
     _init : function(){
         this.selectType = "duty";

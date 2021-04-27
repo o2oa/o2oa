@@ -5,11 +5,14 @@ MWF.xApplication.Selector.PlatApp = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectProcess,
+        "title": "",
         "values": [],
         "names": [],
         "expand": false,
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectProcess});
     },
     _init : function(){
         this.selectType = "platApp";

@@ -5,7 +5,6 @@ MWF.xApplication.Selector.UnitWithType = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectUnit,
         "units": [],
         "unitType": "",
         "values": [],
@@ -15,6 +14,9 @@ MWF.xApplication.Selector.UnitWithType = new Class({
         "selectType" : "unit",
         "expandSubEnable" : true, //是否允许展开下一层
         "selectAllEnable" : true //分类是否允许全选下一层
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectUnit});
     },
     _init : function(){
         this.selectType = "unit";

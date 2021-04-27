@@ -10,9 +10,10 @@ MWF.xApplication.Selector.Main = new Class({
 		"height": "700",
 		"isResize": false,
 		"isMax": false,
-		"title": MWF.xApplication.Selector.LP.title
+		"title": ""
 	},
 	onQueryLoad: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.title});
 		this.lp = MWF.xApplication.Selector.LP;
 	},
 	loadApplication: function(callback){
