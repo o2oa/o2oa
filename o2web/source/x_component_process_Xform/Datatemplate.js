@@ -1672,7 +1672,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index-1 ) );
 
 				var d = lineData[text] || "";
-				var parseD = parsedLineData[json.id] || "";
+				var parsedD = parsedLineData[json.id] || "";
 
 				if(d){
 
@@ -1708,20 +1708,20 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					}
 				}
 				if (module && module.setData && json.type !== "Address"){
+					var hasError = false;
 					if(["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)){
-						var hasError = false;
-						if(o2.typeOf(parseD)==="array" && parseD.length){
-							hasError = parseD.some(function (item) { return item.errorText; })
+						if(o2.typeOf(parsedD)==="array" && parsedD.length){
+							hasError = parsedD.some(function (item) { return item.errorText; })
 						}
-						if(!hasError)module.setData(parseD);
-					}else{
-						module.setData(parseD);
 					}
-					module.validationMode();
-					if (!module.validation() && module.errNode){
-						errorTextList.push(colInfor + module.errNode.get("text"));
-						errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
-						module.errNode.destroy();
+					if(!hasError){
+						module.setData(parsedD);
+						module.validationMode();
+						if (!module.validation() && module.errNode){
+							errorTextList.push(colInfor + module.errNode.get("text"));
+							errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
+							module.errNode.destroy();
+						}
 					}
 				}
 			}.bind(this));
