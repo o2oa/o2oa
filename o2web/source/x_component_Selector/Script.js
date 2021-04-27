@@ -5,12 +5,14 @@ MWF.xApplication.Selector.Script = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectScript,
         "values": [],
         "names": [],
         "appType" : ["process","portal","cms"],
         "expand": false,
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectScript});
     },
     _init : function(){
         this.selectType = "script";

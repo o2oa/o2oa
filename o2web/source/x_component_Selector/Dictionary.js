@@ -5,12 +5,15 @@ MWF.xApplication.Selector.Dictionary = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectDictionary,
+        "title": "",
         "values": [],
         "names": [],
         "appType" : ["process","cms"],
         "expand": false,
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.Selector.LP.selectDictionary});
     },
     _init : function(){
         this.selectType = "dictionary";
