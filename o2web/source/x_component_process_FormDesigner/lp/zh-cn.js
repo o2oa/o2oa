@@ -606,6 +606,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "centerbottom": "中下",
         "importText": "导入按钮文本",
         "importExcel": "导入Excel",
+        "exportExcel": "导出Excel",
         "importButtonStyle": "导入按钮样式",
         "exportFileName": "导出文件名称",
         "actionCellStyles": "操作单元格样式",
