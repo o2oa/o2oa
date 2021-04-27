@@ -104,7 +104,7 @@
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
                     <td class="editTableTitle">{{$.lp.exportText}}:</td>
-                    <td class="editTableValue"><input type="text" name="exportActionText" value="text{$.exportActionText || '导出Excel'}" class="editTableInput"/></td>
+                    <td class="editTableValue"><input type="text" name="exportActionText" value="text{$.exportActionText || '{{$.lp.exportExcel}}'}" class="editTableInput"/></td>
                 </tr>
             </table>
             <div class="MWFMaplist" name="exportActionStyles" collapse="true" title="{{$.lp.exporButtonStyle}}"></div>
@@ -119,7 +119,7 @@
         <div class="MWFMaplist" name="contentStyles" collapse="true" title="{{$.lp.contentCellStyle}}"></div>
         <div class="MWFMaplist" name="actionStyles" collapse="true" title="{{$.lp.actionCellStyles}}"></div>
         <div class="MWFMaplist" name="editStyles" collapse="true" title="{{$lp.editCellStyles}}"></div>
-        <div class="MWFMaplist" name="amountStyles" collapse="true" title="(($.lp.amountCellStyle))"></div>
+        <div class="MWFMaplist" name="amountStyles" collapse="true" title="{{$.lp.amountCellStyle}}"></div>
         <div class="MWFMaplist" name="itemTitleStyles" collapse="true" title="{{$.lp.itemTitleStyle}}"></div>
     </div>
     <div title="{{$.lp.section}}" class="MWFTab">
