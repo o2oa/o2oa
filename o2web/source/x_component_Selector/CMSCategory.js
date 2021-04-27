@@ -5,11 +5,14 @@ MWF.xApplication.Selector.CMSCategory = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectCMSCategory,
+        "title": "",
         "values": [],
         "names": [],
         "expand": false,
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.Selector.LP.selectCMSCategory});
     },
     _init : function(){
         this.selectType = "cmscategory";
