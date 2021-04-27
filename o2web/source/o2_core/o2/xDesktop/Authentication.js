@@ -164,11 +164,16 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         "hasBottom": false,
         "hasScroll": false,
         "hasMark": false,
-        "title": (layout.config && (layout.config.systemTitle || layout.config.title)) ? (layout.config.title || layout.config.systemTitle) : MWF.LP.authentication.LoginFormTitle,
+        "title": "",
         "draggable": true,
         "closeAction": true
     },
-
+    load: function () {
+        this.setOptions({
+            "title": (layout.config && (layout.config.systemTitle || layout.config.title)) ? (layout.config.title || layout.config.systemTitle) : MWF.LP.authentication.LoginFormTitle
+        });
+        this._loadCss();
+    },
     //Camera Login
     _createTopContent: function () {
         this.actions = MWF.Actions.get("x_organization_assemble_authentication");
@@ -1162,9 +1167,15 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
         "hasTopIcon": true,
         "hasTopContent": true,
         "hasBottom": false,
-        "title": MWF.LP.authentication.SignUpFormTitle,
+        "title": "",
         "draggable": true,
         "closeAction": true
+    },
+    load: function () {
+        if (!this.options.title) this.setOptions({
+            "title": MWF.LP.authentication.SignUpFormTitle
+        });
+        this._loadCss();
     },
     _createTableContent: function () {
         var self = this;
@@ -1648,9 +1659,15 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
         "hasTopIcon": true,
         "hasTopContent": true,
         "hasBottom": false,
-        "title": MWF.LP.authentication.ResetPasswordFormTitle,
+        "title": "",
         "draggable": true,
         "closeAction": true
+    },
+    load: function () {
+        if (!this.options.title) this.setOptions({
+            "title": MWF.LP.authentication.ResetPasswordFormTitle
+        });
+        this._loadCss();
     },
     _createTopContent: function () {
 
@@ -2102,10 +2119,16 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
         "hasBottom": false,
         "hasScroll": false,
         "hasMark": false,
-        "title": MWF.LP.authentication.ChangePasswordFormTitle,
+        "title": "",
         "draggable": true,
         "closeAction": true,
         "userName" : ""
+    },
+    load: function () {
+        if (!this.options.title) this.setOptions({
+            "title": MWF.LP.authentication.ChangePasswordFormTitle
+        });
+        this._loadCss();
     },
     _createTableContent: function () {
         var self = this;

@@ -5,13 +5,16 @@ MWF.xApplication.Selector.FormField = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectField,
+        "title": "",
         "fieldType": "",
         "values": [],
         "application": "",
         "include" : [],
         "expand": false,
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.Selector.LP.selectField});
     },
     _init : function(){
         this.selectType = "formfield";

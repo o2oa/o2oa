@@ -4,12 +4,15 @@ MWF.xApplication.Selector.Role = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectRole,
+        "title": "",
         "groups": [],
         "roles": [],
         "values": [],
         "names": [],
         "selectType" : "role"
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectRole});
     },
     _init : function(){
         this.selectType = "role";
