@@ -1,4 +1,5 @@
-MWF.xApplication.Template.LP = {
+o2.xApplication.Template = o2.xApplication.Template || {};
+o2.xApplication.Template.LP = {
 	"title": "Template",
 	"delete": "Delete",
 	"deleteDocumentTitle": "Delete Confirmation",
