@@ -1,23 +1,23 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.event}}" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 		  <tr>
-		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableTitle">{{$.lp.id}}:</td>
 		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
 		  </tr>
 		  <tr>
-		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableTitle">{{$.lp.name}}:</td>
 		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
 		  </tr>
 		  <tr>
-		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableTitle">{{$.lp.description}}:</td>
 		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 		  </tr>
 			<tr title="延时加载为是时，需要使用this.form.get(subformId).active()加载">
-				<td class="editTableTitle">延时加载:</td>
+				<td class="editTableTitle">{{$.lp.delayedLoading}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>是
-					<input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>否
+					<input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		  <!--<tr>-->
@@ -28,8 +28,8 @@
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
 				<td class="editTableValue" colspan="2">
-					<input type="radio" onclick="if (this.checked) {$('text{$.pid}selectSubform').setStyle('display', 'block'); $('text{$.pid}scriptSubform').setStyle('display', 'none');}" name="subformType" value="select" text{($.subformType!='script')?'checked':''}/>选择子表单
-					<input type="radio" onclick="if (this.checked) {$('text{$.pid}selectSubform').setStyle('display', 'none'); $('text{$.pid}scriptSubform').setStyle('display', 'block');}" name="subformType" value="script" text{($.subformType=='script')?'checked':''}/>计算子表单<br/>
+					<input type="radio" onclick="if (this.checked) {$('text{$.pid}selectSubform').setStyle('display', 'block'); $('text{$.pid}scriptSubform').setStyle('display', 'none');}" name="subformType" value="select" text{($.subformType!='script')?'checked':''}/>{{$.lp.selectSubform}}
+					<input type="radio" onclick="if (this.checked) {$('text{$.pid}selectSubform').setStyle('display', 'none'); $('text{$.pid}scriptSubform').setStyle('display', 'block');}" name="subformType" value="script" text{($.subformType=='script')?'checked':''}/>{{$.lp.calculationSubform}}<br/>
 				</td>
 			</tr>
 		</table>
@@ -37,13 +37,13 @@
 		<div id="text{$.pid}selectSubform" class="MWFSubFormSelectContainer" style="display: text{($.subformType!='script')?'block':'none'}">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">应用:</td>
+					<td class="editTableTitle">{{$.lp.application}}:</td>
 					<td class="editTableValue">
 						<div class="MWFSubformAppSelect" name="subformAppSelected"></div>
 					</td>
 				</tr>
 				<tr>
-					<td class="editTableTitle">子表单:</td>
+					<td class="editTableTitle">{{$.lp.subform}}:</td>
 					<td class="editTableValue">
 						<div class="MWFSubformSelect" name="subformSelected"></div>
 					</td>
@@ -57,11 +57,11 @@
 			</table>
 		</div>
 		<div id="text{$.pid}scriptSubform" style="display: text{($.subformType=='script')?'block':'none'}">
-			<div style="padding: 5px;">跨应用：<br/>return { <br/>
-				&nbsp;&nbsp;"application" : "应用名称", //应用名称、别名、id <br/>
-				&nbsp;&nbsp;"subform" : "表单名称" //表单、id<br/>
-				}; <br/> 本应用：<br/>return "表单名称"; </div>
-			<div class="MWFScriptArea" name="subformScript" title="子表单脚本 (S)"></div>
+			<div style="padding: 5px;">{{$.lp.crossApplication}}：<br/>return { <br/>
+				&nbsp;&nbsp;"application" : "applicationName", //{{$.lp.computeSubmitAnnotation1}} <br/>
+				&nbsp;&nbsp;"subform" : "formName" //{{$.lp.computeSubmitAnnotation2}}<br/>
+				}; <br/> {{$.lp.thisApplication}}：<br/>return "formName"; </div>
+			<div class="MWFScriptArea" name="subformScript" title="{{$.lp.subformScript}} (S)"></div>
 		</div>
 
 	<!--<div title="事件"  class="MWFTab">-->
