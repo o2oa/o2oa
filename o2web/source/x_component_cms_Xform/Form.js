@@ -213,7 +213,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
         this.loadLanguage(function(flag) {
             if (flag && this.formDataText) {
-                var data = o2.bindJson(this.formDataText, {"lp": MWF.xApplication.process.Xform.LP.form});
+                var data = o2.bindJson(this.formDataText, {"lp": MWF.xApplication.cms.Xform.LP.form});
                 this.data = JSON.parse(data);
 
                 this.json = this.data.json;
@@ -227,8 +227,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             this.loadRelatedScript();
 
             if (this.fireEvent("queryLoad")) {
+                // MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
 
-                MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
                 //		this.container.setStyles(this.css.container);
                 this._loadBusinessData();
                 this.fireEvent("beforeLoad");
@@ -238,6 +238,48 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }
 
         }.bind(this));
+    },
+    loadLanguage: function(callback){
+        MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
+
+        //formDataText
+        if (this.json.languageType!=="script" && this.json.languageType!=="default"){
+            if (callback) callback();
+            return true;
+        }
+
+        var language = MWF.xApplication.cms.Xform.LP.form;
+        var languageJson = null;
+
+        if (this.json.languageType=="script"){
+            if (this.json.languageScript && this.json.languageScript.code){
+                languageJson = this.Macro.exec(this.json.languageScript.code, this);
+            }
+        }else if (this.json.languageType=="default") {
+            var name = "lp-"+o2.language;
+            var application = this.businessData.document.application;
+            languageJson = this.documentAction.getDictRoot(name, application, function(d){
+                return d.data;
+            }, function(){})
+            // if (this.app.relatedLanguage) languageJson = JSON.parse(this.app.relatedLanguage);
+        }
+
+        if (languageJson){
+            if (languageJson.then && o2.typeOf(languageJson.then)=="function"){
+                languageJson.then(function(json) {
+                    MWF.xApplication.cms.Xform.LP.form = Object.merge(MWF.xApplication.cms.Xform.LP.form, json);
+                    if (callback) callback(true);
+                }, function(){
+                    if (callback) callback(true);
+                })
+            }else{
+                MWF.xApplication.cms.Xform.LP.form = Object.merge(MWF.xApplication.cms.Xform.LP.form, languageJson);
+                if (callback) callback(true);
+            }
+        }else{
+            if (callback) callback(true);
+        }
+
     },
     loadRelatedScript: function () {
         if (this.json.includeScripts && this.json.includeScripts.length) {
