@@ -94,8 +94,10 @@
   "deleteScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
   "updataScript": {"uri": "/jaxrs/script/{id}", "method": "PUT"},
   "getScriptByName": {"uri": "/jaxrs/script/list/app/{appId}/name/{name}"},
+  "getScriptByNameV2": {"uri": "/jaxrs/script/{uniqueName}/app/{flag}/imported"},
 
-  "listAppByManager" : {"uri":"/jaxrs/appinfo/list/manage"},
+
+"listAppByManager" : {"uri":"/jaxrs/appinfo/list/manage"},
   "isAppInfoManager" : {"uri":"/jaxrs/permission/appInfo/{id}/manageable"},
 
   "isCategoryInfoManagers" : {"uri":"/jaxrs/permission/categoryInfo/{id}/manageable"},
