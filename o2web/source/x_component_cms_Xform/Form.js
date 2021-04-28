@@ -257,7 +257,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }
         }else if (this.json.languageType=="default") {
             var name = "lp-"+o2.language;
-            var application = this.businessData.document.application;
+            var application = this.businessData.document.appId;
             languageJson = this.documentAction.getDictRoot(name, application, function(d){
                 return d.data;
             }, function(){})
