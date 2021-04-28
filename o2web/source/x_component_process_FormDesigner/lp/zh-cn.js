@@ -857,7 +857,25 @@ MWF.xApplication.process.FormDesigner.LP = {
         "querySelectBox": "查询选择框",
         "selectBoxTitle": "选择框标题",
         "query": "查询",
-        "pathInfo": "注：路径的写法是\"表别名.字段名\"，如：o.title"
+        "pathInfo": "注：路径的写法是\"表别名.字段名\"，如：o.title",
+
+        "source": "数据源",
+        "method": "方法",
+        "systemSource": "平台数据源",
+        "applicationService": "服务应用",
+        "parameter": "参数",
+        "requestBody": "请求正文",
+        "test": "测试",
+        "hostPort": "主机/端口",
+
+        "handle": "处理",
+
+        "widget": "部件",
+        "widgetScript": "部件脚本",
+        "parameterScript": "参数脚本 (返回对象)",
+        "insertWidget": "插入部件元素",
+        "selectWidget": "选择部件",
+        "inDiv": "是否包裹div"
 
     },
     "actionBar": {
