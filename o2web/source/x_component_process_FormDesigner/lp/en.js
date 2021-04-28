@@ -853,7 +853,25 @@ MWF.xApplication.process.FormDesigner.LP = {
         "querySelectBox": "Query Select Box",
         "selectBoxTitle": "Select Box Title",
         "query": "Query",
-        "pathInfo": "Note: The path is written as \"table alias. field name\", such as: o.title"
+        "pathInfo": "Note: The path is written as \"table alias. field name\", such as: o.title",
+
+        "source": "Source",
+        "method": "Method",
+        "systemSource": "System Source",
+        "applicationService": "Application",
+        "parameter": "Parameter",
+        "requestBody": "Request Body",
+        "test": "Test",
+        "hostPort": "Host/Port",
+
+        "handle": "Handle",
+
+        "widget": "widget",
+        "widgetScript": "Widget Script",
+        "parameterScript": "Parameter Script (Return JSON Object)",
+        "insertWidget": "Tnsert Widget",
+        "selectWidget": "Select Widget",
+        "inDiv": "Wrapped in a div"
 
     },
     "actionBar": {

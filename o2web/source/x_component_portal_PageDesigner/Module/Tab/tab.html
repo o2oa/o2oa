@@ -1,41 +1,41 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">标识:</td>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
 				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">名称:</td>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
 				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">描述:</td>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
 				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 			</tr>
-			<tr title="延时加载为是时，未显示的tab页内容不会加载，只有在tab页第一次显示时才会加载内容">
-				<td class="editTableTitle">延时加载:</td>
+			<tr title="{{$.lp.delayedTabInfo}}">
+				<td class="editTableTitle">{{$.lp.delayedLoading}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>是
-					<input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>否
+					<input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
 		
-		<div class="MWFMaplist" name="styles" title="样式"></div>
-		<div class="MWFMaplist" name="properties" title="属性"></div>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
 	</div>
-    <div title="样式"  class="MWFTab">
-        <div class="MWFMaplist" name="tabNodeContainer" collapse="true" title="Tab容器样式"></div>
-        <div class="MWFMaplist" name="contentNodeContainer" collapse="true" title="内容容器样式"></div>
-        <div class="MWFMaplist" name="tabStyles" collapse="true" title="基本Tab样式"></div>
-        <div class="MWFMaplist" name="tabTextStyles" collapse="true" title="基本Tab字体样式"></div>
-        <div class="MWFMaplist" name="tabCurrentStyles" collapse="true" title="当前Tab样式"></div>
-        <div class="MWFMaplist" name="tabTextCurrentStyles" collapse="true" title="当前Tab字体样式"></div>
+    <div title="{{$.lp.style}}"  class="MWFTab">
+        <div class="MWFMaplist" name="tabNodeContainer" collapse="true" title="{{$.lp.tabContainerStyle}}"></div>
+        <div class="MWFMaplist" name="contentNodeContainer" collapse="true" title="{{$.lp.contentContainerStyle}}"></div>
+        <div class="MWFMaplist" name="tabStyles" collapse="true" title="{{$.lp.baseTabStyle}}"></div>
+        <div class="MWFMaplist" name="tabTextStyles" collapse="true" title="{{$.lp.baseTabSpanStyle}}"></div>
+        <div class="MWFMaplist" name="tabCurrentStyles" collapse="true" title="{{$.lp.currentTabStyle}}"></div>
+        <div class="MWFMaplist" name="tabTextCurrentStyles" collapse="true" title="{{$.lp.currentTabSpanStyle}}"></div>
     </div>
 
-	<div title="事件"  class="MWFTab">
+	<div title="{{$.lp.event}}"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
 	<div title="HTML"  class="MWFTab">
