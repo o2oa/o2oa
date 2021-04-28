@@ -258,10 +258,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         }else if (this.json.languageType=="default") {
             var name = "lp-"+o2.language;
             var application = this.businessData.document.appId;
-            languageJson = this.documentAction.getDictRoot(name, application, function(d){
+
+            var p1 = this.documentAction.getDictRoot(name, application, function(d){
                 return d.data;
-            }, function(){})
-            // if (this.app.relatedLanguage) languageJson = JSON.parse(this.app.relatedLanguage);
+            }, function(){});
+            var p2 = this.documentAction.getScriptByNameV2(name, application, function(d){
+                return this.Macro.exec(d.data.text, this);
+            }.bind(this), function(){});
+            languageJson = Promise.any([p1, p2]);
         }
 
         if (languageJson){
