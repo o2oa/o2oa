@@ -7,7 +7,7 @@ layout.desktop = layout;
 layout.session = layout.session || {};
 
 o2.addReady(function () {
-    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js", "../o2_core/o2/widget/Common.js"], { "sequence": true }, function () {
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], { "sequence": true }, function () {
         //MWF.defaultPath = "../x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
         MWF.require("MWF.xDesktop.Layout", function () {
@@ -77,11 +77,11 @@ o2.addReady(function () {
                                             }.bind(this)
                                         });
                                     }.bind(this),
-                                    onFail: function (err) { console.log(err);}
+                                    onFail: function (err) { }
                                 });
 
 
-                            }.bind(this), "failure": function (xhr, text, error) { console.log(error); }.bind(this)
+                            }.bind(this), "failure": function (xhr, text, error) { }.bind(this)
                         });
                     });
                 };
