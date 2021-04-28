@@ -1,81 +1,81 @@
 <div class="editNode">
-    <div title="基本" class="MWFTab">
+    <div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue">text{$.id}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">创建人:</td>
+                <td class="editTableTitle">{{$.lp.creator}}:</td>
                 <td class="editTableValue">text{$.creatorPerson}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">创建时间:</td>
+                <td class="editTableTitle">{{$.lp.createTime}}:</td>
                 <td class="editTableValue">text{$.createTime}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">更新人:</td>
+                <td class="editTableTitle">{{$.lp.updater}}:</td>
                 <td class="editTableValue">text{$.lastUpdatePerson}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">更新时间:</td>
+                <td class="editTableTitle">{{$.lp.updateTime}}:</td>
                 <td class="editTableValue">text{$.lastUpdateTime}</td>
             </tr>
 
             <tr>
-                <td class="editTableTitle">应用:</td>
+                <td class="editTableTitle">{{$.lp.application}}:</td>
                 <td class="editTableValue">text{$.applicationName}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">别名:</td>
+                <td class="editTableTitle">{{$.lp.alias}}:</td>
                 <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><textarea  name="description" class="editTableTextarea">text{$.description}</textarea></td>
             </tr>
             <tr>
-                <td class="editTableTitle">图标:</td>
+                <td class="editTableTitle">{{$.lp.icon}}:</td>
                 <td class="editTableValue"><div class="MWFIcon" name="icon"></div></td>
             </tr>
             <tr>
-                <td class="editTableTitle">使用路由<br>名称作为<br>缺省意见:</td>
+                <td class="editTableTitle">{{$.lp.routeAsOpinion}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="routeNameAsOpinion" text{($.routeNameAsOpinion===true)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="routeNameAsOpinion" text{($.routeNameAsOpinion!==true)?'checked':''} type="radio" value="false"/>否
-                    <br/>(选择“否”：处理意见没填写则意见为空)
+                    <input class="editTableRadio" name="routeNameAsOpinion" text{($.routeNameAsOpinion===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="routeNameAsOpinion" text{($.routeNameAsOpinion!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                    <br/>{{$.lp.opinionInfo}}
                 </td>
             </tr>
         </table>
         <div data-o2-advanced="yes">
-            <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">版 本</div>
+            <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">{{$.lp.version}}</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">版本名称:</td>
+                    <td class="editTableTitle">{{$.lp.versionName}}:</td>
                     <td class="editTableValue">text{$.editionName}</td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">版本标识:</td>
+                    <td class="editTableTitle">{{$.lp.versionId}}:</td>
                     <td class="editTableValue">text{$.edition}</td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">版本描述:</td>
+                    <td class="editTableTitle">{{$.lp.versionDescription}}:</td>
                     <td class="editTableValue"><textarea  name="editionDes" class="editTableTextarea">text{$.editionDes}</textarea></td>
                 </tr>
             </table>
 
 
-            <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">启 动</div>
+            <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">{{$.lp.startup}}</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">启动终端:</td>
+                    <td class="editTableTitle">{{$.lp.startTerminal}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal!=='client' && $.startableTerminal!=='mobile')?'checked':''} type="radio" value="all"/>PC端和移动端
-                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='client')?'checked':''} type="radio" value="client"/>仅PC端
+                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal!=='client' && $.startableTerminal!=='mobile')?'checked':''} type="radio" value="all"/>{{$.lp.pcAndMobile}}
+                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='client')?'checked':''} type="radio" value="client"/>{{$.lp.onlyPc}}
     <!--                    <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='mobile')?'checked':''} type="radio" value="mobile"/>移动端-->
                     </td>
                 </tr>
@@ -83,12 +83,12 @@
 
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">启动模式:</td>
+                    <td class="editTableTitle">{{$.lp.startMode}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="defaultStartMode" onclick="if (this.checked){ $('text{$.id}checkDraftArea').setStyle('display', 'block');}"  text{($.defaultStartMode!=='draft')?'checked':''} type="radio" value="instance"/>实例模式
-                        <span style="color: #999999; font-size: 12px"> (新建流程时直接创建流程实例，给拟稿人生成待办)</span>
-                        <br/><input class="editTableRadio" name="defaultStartMode" onclick="if (this.checked){ $('text{$.id}checkDraftArea').setStyle('display', 'none');}" text{($.defaultStartMode==='draft')?'checked':''} type="radio" value="draft"/>草稿模式
-                        <span style="color: #999999; font-size: 12px"> (新建流程时不创建流程实例，不生成待办，产生一个草稿文档，直到流转时才创建流程实例)</span>
+                        <input class="editTableRadio" name="defaultStartMode" onclick="if (this.checked){ $('text{$.id}checkDraftArea').setStyle('display', 'block');}"  text{($.defaultStartMode!=='draft')?'checked':''} type="radio" value="instance"/>{{$.lp.instanceMode}}
+                        <span style="color: #999999; font-size: 12px"> {{$.lp.instanceModeInfo}}</span>
+                        <br/><input class="editTableRadio" name="defaultStartMode" onclick="if (this.checked){ $('text{$.id}checkDraftArea').setStyle('display', 'none');}" text{($.defaultStartMode==='draft')?'checked':''} type="radio" value="draft"/>{{$.lp.draftMode}}
+                        <span style="color: #999999; font-size: 12px"> {{$.lp.draftModeInfo}}</span>
                     </td>
                 </tr>
             </table>
@@ -96,27 +96,27 @@
             <div id="text{$.id}checkDraftArea" style="display: text{($.defaultStartMode=='draft')?'none':'block'};">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">新建检查:</td>
+                        <td class="editTableTitle">{{$.lp.checkDraft}}:</td>
                         <td class="editTableValue">
-                            <input class="editTableRadio" name="checkDraft" text{($.checkDraft===true)?'checked':''} type="radio" value="true"/>是
-                            <input class="editTableRadio" name="checkDraft" text{($.checkDraft!==true)?'checked':''} type="radio" value="false"/>否
-                            <br/>(选择“是”：未保存过的流程实例不会保留)
+                            <input class="editTableRadio" name="checkDraft" text{($.checkDraft===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                            <input class="editTableRadio" name="checkDraft" text{($.checkDraft!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                            <br/>{{$.lp.checkDraftInfo}}
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
 
-        <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">权 限</div>
+        <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">{{$.lp.power}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>
-                <td class="editTableTitle">启动人:</td>
+                <td class="editTableTitle">{{$.lp.stratIdentity}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonIdentity" name="startableIdentityList"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">启动组织:</td>
+                <td class="editTableTitle">{{$.lp.startUnit}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonUnit" name="startableUnitList"></div>
                 </td>
@@ -137,7 +137,7 @@
         <hr />
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">管理者:</td>
+                <td class="editTableTitle">{{$.lp.manager}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonPerson" name="controllerList"></div>
                 </td>
@@ -179,33 +179,33 @@
             <!--</tr>-->
 <!--        </table>-->
     </div>
-    <div title="编号"  class="MWFTab" data-o2-advanced="yes">
+    <div title="{{$.lp.number}}"  class="MWFTab" data-o2-advanced="yes">
         <div class="MWFSerial" name="serialTexture"></div>
         <div style="border-top: 1px solid #CCC">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">编号活动:</td>
+                    <td class="editTableTitle">{{$.lp.numberActivity}}:</td>
                     <td class="editTableValue">
                         <div class="MWFSericalActivitySelect" name="serialActivity"></div></td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">触发条件:</td>
+                    <td class="editTableTitle">{{$.lp.trigger}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="serialPhase" text{($.serialPhase!="inquire")?'checked':''} type="radio" value="arrive"/>到达
-                        <input class="editTableRadio" name="serialPhase" text{($.serialPhase=="inquire")?'checked':''} type="radio" value="inquire"/>提交
+                        <input class="editTableRadio" name="serialPhase" text{($.serialPhase!="inquire")?'checked':''} type="radio" value="arrive"/>{{$.lp.arrivals}}
+                        <input class="editTableRadio" name="serialPhase" text{($.serialPhase=="inquire")?'checked':''} type="radio" value="inquire"/>{{$.lp.submit}}
                     </td>
                 </tr>
             </table>
         </div>
     </div>
-    <div title="时效"  class="MWFTab" data-o2-advanced="yes">
+    <div title="{{$.lp.aging}}"  class="MWFTab" data-o2-advanced="yes">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">流程超时:</td>
+                <td class="editTableTitle">{{$.lp.processTimeLimit}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'none'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'none');}" name="expireType" text{($.expireType!='appoint' && $.expireType!='script')?'checked':''} type="radio" value="never"/>不超时
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'block'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'none');}" name="expireType" text{($.expireType=='appoint')?'checked':''} type="radio" value="appoint"/>指定时长
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'none'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'block');}" name="expireType" text{($.expireType=='script')?'checked':''} type="radio" value="script"/>通过脚本设定
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'none'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'none');}" name="expireType" text{($.expireType!='appoint' && $.expireType!='script')?'checked':''} type="radio" value="never"/>{{$.lp.noLimit}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'block'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'none');}" name="expireType" text{($.expireType=='appoint')?'checked':''} type="radio" value="appoint"/>{{$.lp.specifyDuration}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'none'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'block');}" name="expireType" text{($.expireType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
                 </td>
             </tr>
         </table>
@@ -213,17 +213,17 @@
         <div id="text{$.id}expireTypeAppointEditArea" style="display: text{($.expireType=='appoint')?'block':'none'}; margin-top: 5px;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">超时时长:</td>
+                    <td class="editTableTitle">{{$.lp.timeLimit}}:</td>
                     <td class="editTableValue">
-                        <input type="text" name="expireDay" value="text{ $.expireDay === 0 ? 0 : ($.expireDay || 7) }" style="width: 80px; border: 1px solid #cccccc"/> 天 <br/>
-                        <input type="text" name="expireHour" value="text{($.expireHour) ? $.expireHour : 0}" style="width: 80px; border: 1px solid #cccccc"/> 小时
+                        <input type="text" name="expireDay" value="text{ $.expireDay === 0 ? 0 : ($.expireDay || 7) }" style="width: 80px; border: 1px solid #cccccc"/> {{$.lp.days}} <br/>
+                        <input type="text" name="expireHour" value="text{($.expireHour) ? $.expireHour : 0}" style="width: 80px; border: 1px solid #cccccc"/> {{$.lp.hours}}
                     </td>
                 </tr>
                 <tr>
                     <td class="editTableTitle"></td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="expireWorkTime" text{!($.expireWorkTime===false)?'checked':''} type="radio" value="true"/>仅计算工作时间
-                        <input class="editTableRadio" name="expireWorkTime" text{($.expireWorkTime===false)?'checked':''} type="radio" value="false"/>包含非指定时长
+                        <input class="editTableRadio" name="expireWorkTime" text{!($.expireWorkTime===false)?'checked':''} type="radio" value="true"/>{{$.lp.workTimeOnly}}
+                        <input class="editTableRadio" name="expireWorkTime" text{($.expireWorkTime===false)?'checked':''} type="radio" value="false"/>{{$.lp.includeNoworkTime}}
                     </td>
                 </tr>
             </table>
@@ -232,38 +232,38 @@
         <div id="text{$.id}expireTypeScriptEditArea" style="display: text{($.expireType=='script')?'block':'none'}; margin-top: 5px;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">脚本:</td>
+                    <td class="editTableTitle">{{$.lp.script}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="expireScript"></div>
                     </td>
                 </tr>
             </table>
             <div class="MWFScriptText" name="expireScriptText"></div><hr />
-            <div style="margin: 5px;">脚本返回JSON数据: <br>
+            <div style="margin: 5px;">{{$.lp.returnJson}}: <br>
                 {<br>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>hour: 3  <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//几小时后超时<br>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>workHour: 5   <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//几个工作小时后超时<br>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>date: '2016-08-01'    <span>&nbsp;&nbsp;</span>//到达指定时间后超时<br>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>hour: 3  <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourTimeout}}<br>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>workHour: 5   <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourWorkTimeout}}<br>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>date: '2016-08-01'    <span>&nbsp;&nbsp;</span>//{{$.lp.specifyTimeout}}<br>
                 }<br>
-                三个值任选其一</div>
+                {{$.lp.oneOfThree}}</div>
         </div>
 
     </div>
 
-    <div title="映射"  class="MWFTab" data-o2-advanced="yes">
+    <div title="{{$.lp.mapping}}"  class="MWFTab" data-o2-advanced="yes">
         <div class="MWFProjection" name="projection">
-            <div style="margin: 0px; height: 20px; padding: 5px; background-color: #F6F6F6; line-height: 20px; text-align: center">映射业务数据</div>
+            <div style="margin: 0px; height: 20px; padding: 5px; background-color: #F6F6F6; line-height: 20px; text-align: center">{{$.lp.mappingData}}</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">数据名称:</td>
+                    <td class="editTableTitle">{{$.lp.dataName}}:</td>
                     <td class="editTableValue"><input type="text" value="" class="editTableInput"/></td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">数据路径:</td>
+                    <td class="editTableTitle">{{$.lp.dataPath}}:</td>
                     <td class="editTableValue"><input type="text" value="" class="editTableInput"/></td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">数据类型:</td>
+                    <td class="editTableTitle">{{$.lp.dataType}}:</td>
                     <td class="editTableValue"><select>
                         <option value='string'>string</option>
                         <option value='long'>long</option>
@@ -282,25 +282,25 @@
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableValue">
-                    <b>每次流转刷新映射数据：</b>
-                    <input class="editTableRadio" name="projectionFully" text{($.projectionFully!==false)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="projectionFully" text{($.projectionFully===false)?'checked':''} type="radio" value="false"/>否
+                    <b>{{$.lp.mappingOnFlow}}: </b>
+                    <input class="editTableRadio" name="projectionFully" text{($.projectionFully!==false)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="projectionFully" text{($.projectionFully===false)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                 </td>
             </tr>
         </table>
 
     </div>
 
-    <div title="事件"  class="MWFTab" data-o2-advanced="yes">
+    <div title="{{$.lp.event}}"  class="MWFTab" data-o2-advanced="yes">
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeBeginScript || $.beforeBeginScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 0px 5px;">流程启动前</div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.beforeBegin}}</div>
         </div>
 
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">流程启动前:</td>
+                    <td class="editTableTitle">{{$.lp.beforeBegin}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="beforeBeginScript"></div>
                     </td>
@@ -310,17 +310,17 @@
         </div>
         <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">
             <div style="height: 46px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">启动流程生成work实例</div>
+            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">{{$.lp.eventInfo1}}</div>
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterBeginScript || $.afterBeginScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 0px 5px;">流程启动后</div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.afterBegin}}</div>
         </div>
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">流程启动后:</td>
+                    <td class="editTableTitle">{{$.lp.afterBegin}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="afterBeginScript"></div>
                     </td>
@@ -337,13 +337,13 @@
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeArriveScript || $.beforeArriveScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 0px 5px;">活动到达前</div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.beforeArrive}}</div>
         </div>
 
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">活动到达前:</td>
+                    <td class="editTableTitle">{{$.lp.beforeArrive}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="beforeArriveScript"></div>
                     </td>
@@ -353,17 +353,17 @@
         </div>
         <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">
             <div style="height: 46px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">执行Arrive操作<br/>活动属性设置</div>
+            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">{{$.lp.eventInfo2}}</div>
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterArriveScript || $.afterArriveScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 0px 5px;">活动到达后</div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.afterArrive}}</div>
         </div>
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">活动到达后:</td>
+                    <td class="editTableTitle">{{$.lp.afterArrive}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="afterArriveScript"></div>
                     </td>
@@ -378,13 +378,13 @@
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeExecuteScript || $.beforeExecuteScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 0px 5px;">活动执行前</div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.beforeExecute}}</div>
         </div>
 
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">活动执行前:</td>
+                    <td class="editTableTitle">{{$.lp.beforeExecute}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="beforeExecuteScript"></div>
                     </td>
@@ -394,17 +394,17 @@
         </div>
         <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">
             <div style="height: 46px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">执行Execute操作<br/>执行自动活动任务</div>
+            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">{{$.lp.eventInfo3}}</div>
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterExecuteScript || $.afterExecuteScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 0px 5px;">活动执行后</div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.afterExecute}}</div>
         </div>
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">活动执行后:</td>
+                    <td class="editTableTitle">{{$.lp.afterExecute}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="afterExecuteScript"></div>
                     </td>
@@ -419,13 +419,13 @@
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeInquireScript || $.beforeInquireScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 0px 5px;">路由查询前</div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.beforeInquire}}</div>
         </div>
 
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">路由查询前:</td>
+                    <td class="editTableTitle">{{$.lp.beforeInquire}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="beforeInquireScript"></div>
                     </td>
@@ -435,17 +435,17 @@
         </div>
         <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">
             <div style="height: 46px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">执行Inquire操作<br/>查询到达下一个活动的路由</div>
+            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">{{$.lp.eventInfo4}}</div>
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterInquireScript || $.afterInquireScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 0px 5px;">路由查询后</div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.afterInquire}}</div>
         </div>
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">路由查询后:</td>
+                    <td class="editTableTitle">{{$.lp.afterInquire}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="afterInquireScript"></div>
                     </td>
@@ -460,13 +460,13 @@
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeEndScript || $.beforeEndScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 0px 5px;">流程结束前</div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.beforeEnd}}</div>
         </div>
 
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">流程结束前:</td>
+                    <td class="editTableTitle">{{$.lp.beforeEnd}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="beforeEndScript"></div>
                     </td>
@@ -476,17 +476,17 @@
         </div>
         <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">
             <div style="height: 46px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">结束流程<br/>生成workCompleted</div>
+            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">{{$.lp.eventInfo5}}</div>
         </div>
 
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterEndScript || $.afterEndScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
-            <div style="margin-left: 20px; padding: 0px 5px;">流程结束后</div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.afterEnd}}</div>
         </div>
         <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">流程结束后:</td>
+                    <td class="editTableTitle">{{$.lp.afterEnd}}:</td>
                     <td class="editTableValue">
                         <div class="MWFScript" name="afterEndScript"></div>
                     </td>
