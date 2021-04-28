@@ -39,6 +39,8 @@ MWF.xApplication.cms.Index.Newer = new Class({
     },
     initialize: function (columnData, categoryData, app, view, options) {
 
+        debugger;
+
         this.path = "../x_component_cms_Index/$Newer/";
         this.cssPath = "../x_component_cms_Index/$Newer/"+this.options.style+"/css.wcss";
         this._loadCss();
@@ -47,6 +49,11 @@ MWF.xApplication.cms.Index.Newer = new Class({
         this.lp = MWF.xApplication.cms.Index.Newer.lp;
 
         this.options.title = this.lp.createDocument;
+
+        this.orginOptions = {};
+        if(o2.typeOf(options)==="object"){
+            this.orginOptions = Object.clone(options);
+        }
 
         this.setOptions(options);
 
@@ -60,21 +67,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
             this.initData();
         }
 
-        if( this.columnData ) {
-            this.columnData.config = this.columnData.config || {};
-            if (typeOf(this.columnData.config) === "string") {
-                this.columnData.config = JSON.parse(this.columnData.config || {});
-            } else {
-                this.columnData.config = Object.clone(this.columnData.config || {});
-            }
-
-            if (typeOf(options.ignoreTitle) !== "boolean" && typeOf(this.columnData.config.ignoreTitle) === "boolean") {
-                this.options.ignoreTitle = this.columnData.config.ignoreTitle;
-            }
-            if (typeOf(options.latest) !== "boolean" && typeOf(this.columnData.config.latest) === "boolean") {
-                this.options.latest = this.columnData.config.latest;
-            }
-        }
+        this.parseConfig();
 
         this.documentAction = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.Index.Actions.RestActions();
         //this.orgAction = new MWF.xAction.org.express.RestActions();
@@ -97,6 +90,24 @@ MWF.xApplication.cms.Index.Newer = new Class({
                     }.bind(this), null, false)
                 }
             }.bind(this), null, false)
+        }
+    },
+    parseConfig: function(){
+        if( this.columnData ) {
+            this.columnData.config = this.columnData.config || {};
+            if (typeOf(this.columnData.config) === "string") {
+                this.columnData.config = JSON.parse(this.columnData.config || "{}");
+            } else {
+                this.columnData.config = Object.clone(this.columnData.config || {});
+            }
+
+            var options = this.orginOptions;
+            if (typeOf(options.ignoreTitle) !== "boolean" && typeOf(this.columnData.config.ignoreTitle) === "boolean") {
+                this.options.ignoreTitle = this.columnData.config.ignoreTitle;
+            }
+            if (typeOf(options.latest) !== "boolean" && typeOf(this.columnData.config.latest) === "boolean") {
+                this.options.latest = this.columnData.config.latest;
+            }
         }
     },
     load : function(){
@@ -240,7 +251,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
     },
     isIgnoreTitle : function(){
         if( this.options.ignoreTitle )return true;
-        return this.categoryData && this.categoryData.documentType != this.lp.documentTypeInfor
+        return this.categoryData && ( ![this.lp.documentTypeInfor, "信息"].contains(this.categoryData.documentType));
     },
     checkSubject: function(){
         if( this.categoryData ){
@@ -300,6 +311,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
         this.currentColumn = column;
     },
     setCurrentCategory: function( category ){
+        debugger;
         if( this.currentCategory && this.currentCategory != category ){
             this.currentCategory.node.setStyles( this.css.categoryItemNode );
             this.currentCategory.options.isCurrent = false;
@@ -311,17 +323,20 @@ MWF.xApplication.cms.Index.Newer = new Class({
             "creatorList": [layout.desktop.session.user.distinguishedName]
         };
 
-        this.documentAction.listDraftNext("(0)", 1, fielter, function(j){
 
-            if( j.data && j.data.length > 0 && this.options.latest){
-                this._openDocument(j.data[0].id);
-                this.close();
-            }else{
-                this.documentAction.getColumn( category.data.appId , function( json ){
-                    this.columnData = json.data;
-                    if (this.columnData.appIcon){
-                        this.columnIconNode.set("src", "data:image/png;base64,"+this.columnData.appIcon+"");
-                    }else{
+        this.documentAction.getColumn( category.data.appId , function( json ) {
+            this.columnData = json.data;
+            this.parseConfig();
+
+            this.documentAction.listDraftNext("(0)", 1, fielter, function (j) {
+
+                if (j.data && j.data.length > 0 && this.options.latest) {
+                    this._openDocument(j.data[0].id);
+                    this.close();
+                } else {
+                    if (this.columnData.appIcon) {
+                        this.columnIconNode.set("src", "data:image/png;base64," + this.columnData.appIcon + "");
+                    } else {
                         this.columnIconNode.set("src", "../x_component_cms_Index/$Main/default/icon/column.png");
                     }
                     this.columnTextNode.set("text", this.columnData.appName);
@@ -330,14 +345,14 @@ MWF.xApplication.cms.Index.Newer = new Class({
                     this.categoryData = category.data;
                     this.checkSubject();
                     this.categoryTextNode.set("text", this.categoryData.categoryName);
-                    this.startTitleNode.set("text",this.lp.start+" - "+this.categoryData.categoryName);
+                    this.startTitleNode.set("text", this.lp.start + " - " + this.categoryData.categoryName);
                     this.sel.closeArea();
-                    if( this.isIgnoreTitle() && this.identityList.length == 1 ){
+                    if (this.isIgnoreTitle() && this.identityList.length == 1) {
                         this.okStart();
                     }
+                }
+            }.bind(this));
 
-                }.bind(this));
-            }
         }.bind(this));
     },
     setStartFormContent: function(){
