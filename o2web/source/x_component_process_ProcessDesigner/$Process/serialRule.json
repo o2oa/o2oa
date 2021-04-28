@@ -1,34 +1,34 @@
 {
   "text": {
-    "text": "文本",
+    "text": MWF.APPPD.LP.serial.text[0],
     "content": "",
-    "description": "固定文本"
+    "description": MWF.APPPD.LP.serial.text[1]
   },
   "year":{
-    "text": "年",
+    "text": MWF.APPPD.LP.serial.year[0],
     "content": "",
-    "description": "拟稿时间年度"
+    "description": MWF.APPPD.LP.serial.year[1]
   },
   "month": {
-    "text": "月",
+    "text": MWF.APPPD.LP.serial.month[0],
     "content": "",
-    "description": "拟稿时间月份"
-  },
+    "description": MWF.APPPD.LP.serial.month[1]
+},
   "day": {
-    "text": "日",
+    "text": MWF.APPPD.LP.serial.day[0],
     "content": "",
-    "description": "拟稿时间日"
+    "description": MWF.APPPD.LP.serial.day[1]
   },
   "unit": {
-    "text": "组织",
+    "text": MWF.APPPD.LP.serial.unit[0],
     "content": "",
-    "description": "拟稿人所在直接组织"
+    "description": MWF.APPPD.LP.serial.unit[1]
   },
   "unitAttribute": {
-    "text": "组织属性",
+    "text": MWF.APPPD.LP.serial.unitAttribute[0],
     "content": "",
-    "description": "拟稿人所在直接组织的属性"
-  },
+    "description": MWF.APPPD.LP.serial.unitAttribute[1]
+},
 //  "company": {
 //    "text": "公司",
 //    "content": "",
@@ -50,13 +50,13 @@
 //    "description": "拟稿人所在部门的属性"
 //  },
   "script": {
-    "text": "脚本",
+    "text": MWF.APPPD.LP.serial.script[0],
     "content": "",
-    "description": "脚本"
+    "description": MWF.APPPD.LP.serial.script[1]
   },
   "number": {
-    "text": "流水号",
+    "text": MWF.APPPD.LP.serial.number[0],
     "content": "",
-    "description": "流水号"
+    "description": MWF.APPPD.LP.serial.number[1]
   }
 }
