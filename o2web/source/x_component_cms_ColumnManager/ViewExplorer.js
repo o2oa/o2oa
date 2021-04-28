@@ -502,6 +502,9 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer.View = new Class({
     _open: function(e){
         var _self = this;
         var options = {
+            "appId": "cms.ViewDesigner"+_self.data.id,
+            "id": _self.data.id,
+            "application":_self.explorer.app.options.column.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

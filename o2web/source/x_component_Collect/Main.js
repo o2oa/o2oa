@@ -349,7 +349,7 @@ MWF.xApplication.Collect.LoginForm = new Class({
                             this.loginCanceled();
                             this.collect.showContent("checkContentNode");
                             this.collect.backNode.setStyle("display", "none");
-                            this.check.recheck();
+                            this.collect.check.recheck();
                         }.bind(this), function(xhr, text, error){
                             var errorText = error+":"+text;
                             if (xhr) errorText = xhr.responseText;

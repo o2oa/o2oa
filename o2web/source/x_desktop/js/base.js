@@ -343,7 +343,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
 
     layout.load = function (appNames, options, statusObj) {
         layout.apps = [];
-        layout.node = $("layout");
+        layout.node = $("layout") || $("appContent") || document.body;
         var appName = appNames, m_status = statusObj, option = options;
 
         var topWindow = window.opener;
@@ -356,6 +356,21 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         }
         layout.openApplication(null, appName, option || {}, m_status);
     };
+
+    layout.getFormDesignerStyle = function(callback){
+        if (!this.formDesignerStyle){
+            this.formDesignerStyle = "default";
+            MWF.UD.getData("formDesignerStyle", function(json) {
+                if (json.data) {
+                    var styles = JSON.decode(json.data);
+                    this.formDesignerStyle = styles.style;
+                }
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    }
 
 })(layout);
 

@@ -76,7 +76,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         if (!this.process){
             this.logProcessChartNode.empty();
             this.loadToolbar();
-            this.paperNode =  new Element("div", {"styles": (layout.mobile) ? this.css.paperNodeMobile : this.css.paperNode}).inject(this.logProcessChartNode);
+            this.paperNode =  new Element("div.paperNode", {"styles": (layout.mobile) ? this.css.paperNodeMobile : this.css.paperNode}).inject(this.logProcessChartNode);
             //this.paperNode.addEvent("scroll", function(){
             //    this.setCountNodePosition();
             //}.bind(this));
@@ -416,6 +416,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }.bind(this.process));
     },
     getlogNodePosition: function(activity, node, offset, psize){
+        offset.x = 0;
+        offset.y = 0;
         var size = node.getSize();
         var y = 0;
         var x = activity.point.x+activity.width+15+offset.x;

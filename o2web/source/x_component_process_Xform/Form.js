@@ -425,6 +425,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
     },
     loadLanguage: function(callback){
+        debugger;
         //formDataText
         if (this.json.languageType!=="script" && this.json.languageType!=="default"){
             if (callback) callback();
@@ -440,11 +441,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         }else if (this.json.languageType=="default") {
             var name = "lp-"+o2.language;
-            var application = (this.businessData.work || this.businessData.workCompleted).application;
-            languageJson = this.workAction.getDictRoot(name, application, function(d){
-                return d.data;
-            }, function(){})
-            // if (this.app.relatedLanguage) languageJson = JSON.parse(this.app.relatedLanguage);
+
+            if (this.options.macro==="PageContext"){
+                var portal = this.app.portal.id;
+                languageJson = this.workAction.getScriptByNameV2(portal, name, function(d){
+                    return this.Macro.exec(d.data.text, this);
+                }.bind(this), function(){});
+            }else{
+                var application = (this.businessData.work || this.businessData.workCompleted).application;
+                var p1 = this.workAction.getDictRoot(name, application, function(d){
+                    return d.data;
+                }, function(){});
+                var p2 = this.workAction.getScriptByNameV2(name, application, function(d){
+                    return this.Macro.exec(d.data.text, this);
+                }.bind(this), function(){});
+                languageJson = Promise.any([p1, p2]);
+            }
         }
 
         if (languageJson){

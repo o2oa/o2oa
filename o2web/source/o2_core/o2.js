@@ -62,7 +62,10 @@ if (!window.Promise){
 })(window.Node || window.Element);
 
 (function(){
-    var _language = localStorage.getItem("o2.language");
+    var _language = ""
+    try{
+        _language = localStorage.getItem("o2.language");
+    }catch(e){};
 
     var _href = window.location.href;
     var _debug = (_href.indexOf("debugger")!==-1);
@@ -2220,6 +2223,22 @@ o2.core = true;
     function isBody(element){
         return (/^(?:body|html)$/i).test(element.tagName);
     }
+
+    var heightComponents = ['height', 'paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth'],
+        widthComponents = ['width', 'paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth'];
+    var svgCalculateSize = function(el){
+
+        var gCS = window.getComputedStyle(el),
+            bounds = {x: 0, y: 0};
+
+        heightComponents.each(function(css){
+            bounds.y += parseFloat(gCS[css]);
+        });
+        widthComponents.each(function(css){
+            bounds.x += parseFloat(gCS[css]);
+        });
+        return bounds;
+    };
 
     [Document, Window].invoke('implement', {
         getSize: function(){
