@@ -9,7 +9,7 @@
         "height": "24px",
         "width": "24px",
         "cursor": "pointer",
-        "background": "url("+"../x_component_cms_QueryViewDesigner/widget/$PersonSelector/default/icon/addPerson.png)  center center no-repeat"
+        "background": "url("+"../x_component_cms_FormDesigner/widget/$PersonSelector/default/icon/addPerson.png)  center center no-repeat"
     },
 
     "dutyMaskNode": {

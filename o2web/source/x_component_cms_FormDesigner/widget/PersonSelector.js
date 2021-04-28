@@ -1,6 +1,6 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
-MWF.xApplication.cms.QueryViewDesigner = MWF.xApplication.cms.QueryViewDesigner || {};
-MWF.xApplication.cms.QueryViewDesigner.widget = MWF.xApplication.cms.QueryViewDesigner.widget || {};
+MWF.xApplication.cms.FormDesigner = MWF.xApplication.cms.FormDesigner || {};
+MWF.xApplication.cms.FormDesigner.widget = MWF.xApplication.cms.FormDesigner.widget || {};
 MWF.xDesktop.requireApp("Selector", "package", null, false);
 MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
@@ -33,7 +33,7 @@ MWF.widget.O2CMSCategory = new Class({
     }
 });
 
-MWF.xApplication.cms.QueryViewDesigner.widget.PersonSelector = new Class({
+MWF.xApplication.cms.FormDesigner.widget.PersonSelector = new Class({
     Implements: [Options, Events],
     Extends: MWF.xApplication.process.ProcessDesigner.widget.PersonSelector,
     options: {
@@ -134,7 +134,7 @@ MWF.xApplication.cms.QueryViewDesigner.widget.PersonSelector = new Class({
                         }.bind(this));
                         if (this.options.type.toLowerCase()=="duty") {
                             items.each(function(item){
-                                new MWF.xApplication.cms.QueryViewDesigner.widget.PersonSelector.DutyInput(this, item.data, this.node, explorer, 20000);
+                                new MWF.xApplication.cms.FormDesigner.widget.PersonSelector.DutyInput(this, item.data, this.node, explorer, 20000);
                             }.bind(this));
                         }
 
@@ -147,6 +147,6 @@ MWF.xApplication.cms.QueryViewDesigner.widget.PersonSelector = new Class({
         }.bind(this));
     }
 });
-MWF.xApplication.cms.QueryViewDesigner.widget.PersonSelector.DutyInput = Class({
+MWF.xApplication.cms.FormDesigner.widget.PersonSelector.DutyInput = Class({
     Extends : MWF.xApplication.process.ProcessDesigner.widget.PersonSelector.DutyInput
 });
