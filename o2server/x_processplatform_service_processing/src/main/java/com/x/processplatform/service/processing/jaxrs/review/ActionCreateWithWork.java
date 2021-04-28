@@ -63,11 +63,15 @@ class ActionCreateWithWork extends BaseAction {
 					if (ListTools.isNotEmpty(people)) {
 						emc.beginTransaction(Review.class);
 						for (String person : people) {
-							Review review = new Review(work, person);
-							emc.persist(review, CheckPersistType.all);
-							Wo wo = new Wo();
-							wo.setId(review.getId());
-							wos.add(wo);
+							Long count = emc.countEqualAndEqual(Review.class, Review.job_FIELDNAME, work.getJob(),
+									Review.person_FIELDNAME, person);
+							if(count < 1) {
+								Review review = new Review(work, person);
+								emc.persist(review, CheckPersistType.all);
+								Wo wo = new Wo();
+								wo.setId(review.getId());
+								wos.add(wo);
+							}
 						}
 						emc.commit();
 					}
