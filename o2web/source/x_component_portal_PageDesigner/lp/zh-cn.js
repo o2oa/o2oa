@@ -262,5 +262,5 @@ MWF.APPPD.LP = {
         "sourceText": "数据文本",
         "widget": "部件",
         "widgetmodules": "部件元素"
-    },
+    }
 };
