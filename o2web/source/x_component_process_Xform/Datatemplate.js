@@ -913,7 +913,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.currentRouteName = "";
 
 			if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-			if (flag.toString()!="true"){
+			if (flag.toString()!=="true"){
 				this.notValidationMode(flag);
 				return false;
 			}
@@ -1154,12 +1154,15 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 
 	},
 	exportToExcel : function () {
-		debugger;
 		var resultArr = [];
 		var titleArr = this.template.json.excelFieldConfig.map(function(config){
 			return config.title;
 		});
+		if( this.template.unionMode ){
+			titleArr.push( "系统字段" );
+		}
 		resultArr.push( titleArr );
+
 
 		this.template.lineList.each(function (line, index) {
 			resultArr.push( this.getLineExportData(line, index) );
@@ -1260,6 +1263,9 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 				exportData.push( text );
 			}
 		}.bind(this));
+		if( this.template.unionMode ){
+			exportData.push( line.options.sectionKey );
+		}
 		return exportData;
 	},
 	isAvaliableField : function(json){
@@ -1300,6 +1306,9 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 				colWidthArr.push(150);
 			}
 		}.bind(this));
+		if( this.template.unionMode ){
+			colWidthArr.push(340);
+		}
 		return colWidthArr;
 	},
 	getDateIndexArray : function(){
@@ -1385,8 +1394,9 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				if( !this.checkData( fieldArray, data ) ){
 					this.openErrorDlg( fieldArray, data );
 				}else{
-					this.setImportData( fieldArray, data )
+					this.importData( fieldArray, data )
 				}
+				this.destroySimulateModule();
 			}.bind(this);
 
 			if( orgTitleArray.length > 0 ){
@@ -1403,10 +1413,11 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 	destroySimulateModule: function(){
 		Object.keys(this.simelateModuleMap).each(function (key, i) {
 			delete this.simelateModuleMap[key];
-		})
+		}.bind(this))
 		this.simulateNode.destroy();
 	},
 	loadSimulateModule: function(){
+		debugger;
 		//加载模拟字段
 		this.simelateModuleMap = {};
 		this.simulateNode = new Element("div").inject(this.template.node);
@@ -1472,11 +1483,18 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		}.bind(this));
 		return orgTitleArr;
 	},
-	parseImportedData: function(fieldArray, idata){
-		var data = [];
+	parseImportedData: function(fieldArray, idata, ignoreSectionKey){
+		var data;
+		var sectionData;
+		if( !ignoreSectionKey && this.template.unionMode ){
+			sectionData = {};
+		}else{
+			data = [];
+		}
+
+		var sectionKey;
 
 		idata.each( function( ilineData ){
-
 			var lineData = {};
 
 			fieldArray.each( function (obj, i) {
@@ -1488,76 +1506,86 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				var d = ilineData[text] || "";
 
 				var value;
-				switch (json.type) {
-					case "Org":
-					case "Reader":
-					case "Author":
-					case "Personfield":
-					case "Orgfield":
-						var arr = d.split(/\s*,\s*/g ); //空格,空格
-						if( arr.length === 0 ){
-							value = this.getOrgData( d );
-						}else{
-							value = [];
-							arr.each( function(d, idx){
-								var obj = this.getOrgData( d );
-								value.push( obj );
-							}.bind(this));
-						}
-						break;
-					case "Combox":
-					case "Address":
-						arr = d.split(/\s*,\s*/g ); //空格,空格
-						value = arr.length === 0  ? arr[0] : arr;
-						break;
-					case "Checkbox":
-						arr = d.split(/\s*,\s*/g ); //空格,空格
-						var options = module.getOptionsObj();
-						arr.each( function( a, i ){
-							var idx = options.textList.indexOf( a );
-							arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
-						});
-						value = arr.length === 1  ? arr[0] : arr;
-						break;
-					case "Radio":
-					case "Select":
-						value = d.replace(/&#10;/g,""); //换行符&#10;
-						var options = module.getOptionsObj();
-						var idx = options.textList.indexOf( value );
-						value = idx > -1 ? options.valueList[ idx ] : value;
-						break;
-					case "Textarea":
-						value = d.replace(/&#10;/g,"\n"); //换行符&#10;
-						break;
-					case "Calendar":
-						value = d.replace(/&#10;/g,""); //换行符&#10;
-						if( value ){
-							var format;
-							if (!json.format){
-								if (json.selectType==="datetime" || json.selectType==="time"){
-									format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
-								}else{
-									format = Locale.get("Date").shortDate;
-								}
+				if( d === "" || d === undefined || d === null ){
+					value = "";
+				}else{
+					switch (json.type) {
+						case "Org":
+						case "Reader":
+						case "Author":
+						case "Personfield":
+						case "Orgfield":
+							var arr = d.split(/\s*,\s*/g ); //空格,空格
+							if( arr.length === 0 ){
+								value = this.getOrgData( d );
 							}else{
-								format = json.format;
+								value = [];
+								arr.each( function(d, idx){
+									var obj = this.getOrgData( d );
+									value.push( obj );
+								}.bind(this));
 							}
-							value = Date.parse( value ).format( format );
-						}
-						break;
-					default:
-						value = d.replace(/&#10;/g,""); //换行符&#10;
-						break;
+							break;
+						case "Combox":
+						case "Address":
+							arr = d.split(/\s*,\s*/g ); //空格,空格
+							value = arr.length === 0  ? arr[0] : arr;
+							break;
+						case "Checkbox":
+							arr = d.split(/\s*,\s*/g ); //空格,空格
+							var options = module.getOptionsObj();
+							arr.each( function( a, i ){
+								var idx = options.textList.indexOf( a );
+								arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
+							});
+							value = arr.length === 1  ? arr[0] : arr;
+							break;
+						case "Radio":
+						case "Select":
+							value = d.replace(/&#10;/g,""); //换行符&#10;
+							var options = module.getOptionsObj();
+							var idx = options.textList.indexOf( value );
+							value = idx > -1 ? options.valueList[ idx ] : value;
+							break;
+						case "Textarea":
+							value = d.replace(/&#10;/g,"\n"); //换行符&#10;
+							break;
+						case "Calendar":
+							value = d.replace(/&#10;/g,""); //换行符&#10;
+							if( value ){
+								var format;
+								if (!json.format){
+									if (json.selectType==="datetime" || json.selectType==="time"){
+										format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
+									}else{
+										format = Locale.get("Date").shortDate;
+									}
+								}else{
+									format = json.format;
+								}
+								value = Date.parse( value ).format( format );
+							}
+							break;
+						default:
+							value = d.replace(/&#10;/g,""); //换行符&#10;
+							break;
+					}
 				}
 
 				lineData[ json.id ] = value;
 
 			}.bind(this));
 
-			data.push( lineData );
+			if(sectionData){
+				sectionKey = ilineData["系统字段"];
+				if( !sectionData[sectionKey])sectionData[sectionKey] = [];
+				sectionData[sectionKey].push( lineData );
+			}else{
+				data.push( lineData );
+			}
 		}.bind(this));
 
-		return data;
+		return sectionData || data;
 	},
 	importData: function(fieldArray, idata){
 
@@ -1653,7 +1681,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		var columnTextExcel = lp.importValidationColumnTextExcel;
 		var excelUtil = new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template );
 
-		var parsedData = this.parseImportedData(fieldArray, idata);
+		var parsedData = this.parseImportedData(fieldArray, idata, true);
 
 		idata.each( function(lineData, lineIndex){
 
@@ -1725,6 +1753,15 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					}
 				}
 			}.bind(this));
+			if( this.template.unionMode ){
+				if( !lineData["系统字段"]){
+					var colInfor = columnText.replace( "{n}", fieldArray.length+1 );
+					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName(fieldArray.length) );
+
+					errorTextList.push( colInfor + "系统字段不能为空" );
+					errorTextList.push( colInforExcel + "系统字段不能为空" );
+				}
+			}
 
 			if(errorTextList.length>0){
 				lineData.errorTextList = errorTextList;
