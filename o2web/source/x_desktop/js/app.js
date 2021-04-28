@@ -1,5 +1,6 @@
 layout.addReady(function(){
     (function(layout){
+        debugger;
         var uri = new URI(window.location.href);
         var appNames = uri.getData("app");
         var optionsStr = uri.getData("option");
@@ -13,7 +14,8 @@ layout.addReady(function(){
             // layout.message.load();
             //}.bind(this));
             layout.apps = [];
-            layout.node = $("layout");
+            //layout.node = $("layout");
+            layout.node = $("layout") || $("appContent") || document.body;
             var appName=appNames, m_status=statusObj, option=options;
 
             var topWindow = window.opener;

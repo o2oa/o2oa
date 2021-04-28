@@ -225,6 +225,8 @@ MWF.xApplication.cms.ColumnManager.ScriptExplorer.Script = new Class({
 		var _self = this;
 		var options = {
             "appId": "cms.ScriptDesigner"+_self.data.id,
+            "id": _self.data.id,
+            "application": (_self.explorer.app.options.application || _self.explorer.app.options.column).id,
 			"onQueryLoad": function(){
 				this.actions = _self.explorer.actions;
 				this.category = _self;
