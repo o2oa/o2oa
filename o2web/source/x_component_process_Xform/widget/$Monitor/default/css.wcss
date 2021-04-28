@@ -5,13 +5,15 @@
         "background-image": "url("+"../x_component_process_ProcessDesigner/$Main/default/griddingbg.gif)",
         "margin": "15px",
         "box-shadow": "0px 0px 20px #606060",
-        "height": "600px"
+        "height": "600px",
+        "position": "relative"
     },
     "paperNodeMobile": {
         "overflow": "auto",
         "background-color": "#FFF",
         "background-image": "url("+"../x_component_process_ProcessDesigner/$Main/default/griddingbg.gif)",
-        "height": "600px"
+        "height": "600px",
+        "position": "relative"
     },
     "paperInNode": {
         "height": "600px",
