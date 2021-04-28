@@ -50,6 +50,7 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
                 "width": 360,
                 "height": 200,
                 "url": url,
+                "lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate,
                 "buttonList": [
                     {
                         "text": MWF.APPFD.LP.button.ok,
