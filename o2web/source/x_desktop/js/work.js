@@ -9,7 +9,8 @@ layout.addReady(function(){
             // layout.message = new MWF.xDesktop.MessageMobile();
             // layout.message.load();
             layout.apps = [];
-            layout.node = $("layout");
+            //layout.node = $("layout");
+            layout.node = $("layout") || $("appContent") || document.body;
             var appName=appNames, m_status=statusObj, option=options;
 
             var topWindow = window.opener;

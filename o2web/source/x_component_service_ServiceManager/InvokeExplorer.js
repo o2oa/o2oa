@@ -276,6 +276,7 @@ MWF.xApplication.service.ServiceManager.InvokeExplorer.Invoke= new Class({
         var _self = this;
         var options = {
             "appId": "service.InvokeDesigner"+_self.data.id,
+            "id": _self.data.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;
