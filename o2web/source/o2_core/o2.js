@@ -2224,6 +2224,22 @@ o2.core = true;
         return (/^(?:body|html)$/i).test(element.tagName);
     }
 
+    var heightComponents = ['height', 'paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth'],
+        widthComponents = ['width', 'paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth'];
+    var svgCalculateSize = function(el){
+
+        var gCS = window.getComputedStyle(el),
+            bounds = {x: 0, y: 0};
+
+        heightComponents.each(function(css){
+            bounds.y += parseFloat(gCS[css]);
+        });
+        widthComponents.each(function(css){
+            bounds.x += parseFloat(gCS[css]);
+        });
+        return bounds;
+    };
+
     [Document, Window].invoke('implement', {
         getSize: function(){
             var doc = this.getDocument();
