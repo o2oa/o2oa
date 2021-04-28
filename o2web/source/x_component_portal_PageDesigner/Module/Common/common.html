@@ -1,24 +1,24 @@
 <div style="background-color: #FFF; overflow: hidden">
-    <div title="基本" class="MWFTab">
+    <div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">外观类型:</td>
+                <td class="editTableTitle">{{$.lp.appearance}}:</td>
                 <td class="editTableValue"><select class="MWFDivTemplate" name="templateType"></select></td>
             </tr>
             <tr>
-                <td class="editTableTitle">选择标签:</td>
+                <td class="editTableTitle">{{$.lp.selectTag}}:</td>
                 <td class="editTableValue">
                     <select onchange="if (this.options[this.selectedIndex].value){ $('text{$.pid}tagName').set('value', this.options[this.selectedIndex].value); $('text{$.pid}tagName').focus();}">
                         <option value=""></option>
@@ -49,17 +49,17 @@
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">元素标签:</td>
+                <td class="editTableTitle">{{$.lp.elementTag}}:</td>
                 <td class="editTableValue"><input type="text" id="text{$.pid}tagName" name="tagName" value="text{$.tagName}" class="editTableInput"/></td>
             </tr>
         </table>
 
-        <div class="MWFMaplist" name="styles" title="样式"></div>
-        <div class="MWFMaplist" name="properties" title="属性"></div>
+        <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+        <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
-        <div class="MWFHtmlEditorArea" name="innerHTML" title="内置HTML (H)"></div>
+        <div class="MWFHtmlEditorArea" name="innerHTML" title="{{$.lp.innerHtml}} (H)"></div>
     </div>
-    <div title="事件"  class="MWFTab">
+    <div title="{{$.lp.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="events"></div>
     </div>
     <div title="HTML"  class="MWFTab">
