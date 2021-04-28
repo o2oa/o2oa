@@ -131,6 +131,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 						obj.setUnit(aeiObjects.business().organization().unit().getWithIdentity(obj.getIdentity()));
 						obj.setProcessingType(TaskCompleted.PROCESSINGTYPE_SAMETARGET);
 						obj.setRouteName(route.getName());
+						obj.setOpinion(route.getOpinion());
 						Date now = new Date();
 						obj.setStartTime(now);
 						obj.setStartTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
