@@ -189,7 +189,7 @@ public class FilterEntry extends GsonPropertyObject {
 					otherValue = DateTools.ceilDate(otherValue, 0);
 				}
 				if (null != value) {
-					value = DateTools.ceilDate(value, 0);
+					value = DateTools.floorDate(value, 0);
 					if (Comparison.isNotEquals(this.comparison)) {
 						/** 不等于返回等于值,在外部运算 */
 						p = cb.and(p, cb.or(cb.isNull(root.get(Item_.dateValue)),
@@ -666,7 +666,7 @@ public class FilterEntry extends GsonPropertyObject {
 					otherValue = DateTools.ceilDate(otherValue, 0);
 				}
 				if (null != value) {
-					value = DateTools.ceilDate(value, 0);
+					value = DateTools.floorDate(value, 0);
 					if (Comparison.isNotEquals(this.comparison)) {
 						p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
 								cb.not(cb.equal(root.get(paramName), value))));
