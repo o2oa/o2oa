@@ -300,5 +300,5 @@ MWF.APPPD.LP = {
         "sourceText": "SourceText",
         "widget": "Widget",
         "widgetmodules": "WidgetEl"
-    },
+    }
 };
