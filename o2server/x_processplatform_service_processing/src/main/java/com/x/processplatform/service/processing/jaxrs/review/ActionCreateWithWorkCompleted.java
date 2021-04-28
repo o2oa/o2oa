@@ -59,11 +59,15 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 					if (ListTools.isNotEmpty(people)) {
 						emc.beginTransaction(Review.class);
 						for (String person : people) {
-							Review review = new Review(workCompleted, person);
-							emc.persist(review, CheckPersistType.all);
-							Wo wo = new Wo();
-							wo.setId(review.getId());
-							wos.add(wo);
+							Long count = emc.countEqualAndEqual(Review.class, Review.job_FIELDNAME, workCompleted.getJob(),
+									Review.person_FIELDNAME, person);
+							if(count < 1) {
+								Review review = new Review(workCompleted, person);
+								emc.persist(review, CheckPersistType.all);
+								Wo wo = new Wo();
+								wo.setId(review.getId());
+								wos.add(wo);
+							}
 						}
 						emc.commit();
 					}
@@ -83,6 +87,7 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 		@FieldDescribe("已完成工作标识")
 		private String workCompleted;
 
+		@FieldDescribe("人员列表")
 		private List<String> personList = new ArrayList<>();
 
 		public String getWorkCompleted() {
