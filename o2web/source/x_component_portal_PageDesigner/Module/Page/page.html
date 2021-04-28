@@ -2,15 +2,15 @@
 	<div title="基本" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue">text{$.id}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
             <!--<tr>-->
@@ -20,38 +20,56 @@
                 <!--</td>-->
             <!--</tr>-->
             <tr>
-                <td class="editTableTitle">样式:</td>
+                <td class="editTableTitle">{{$.lp.formStyle}}:</td>
                 <td class="editTableValue">
-                    <select class="MWFFormStyle" name="formStyleType"></select>
+                    <div class="MWFFormStyleSelect" name="formStyleType"></div>
+                    <div class="MWFScriptSelectRefresh"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">图标:</td>
+                <td class="editTableTitle">{{$.lp.icon}}:</td>
                 <td class="editTableValue"><div class="MWFIcon" name="formIcon"></div></td>
             </tr>
         </table>
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">预加载脚本</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.preloadScript}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">脚本:</td>
+                <td class="editTableTitle">{{$.lp.script}}:</td>
                 <td class="editTableValue">
                     <div class="MWFScriptSelect" data-count=0 name="includeScripts"></div>
-                    <div class="MWFScriptSelectAction"><div style="color: #0b58a2; cursor: pointer; float: left">复制</div><div style="color: #0b58a2; cursor: pointer; float: left; margin-left:10px">粘贴</div></div>
+                    <div class="MWFScriptSelectAction"><div style="color: #0b58a2; cursor: pointer; float: left">{{$.lp.copy}}</div><div style="color: #0b58a2; cursor: pointer; float: left; margin-left:10px">{{$.lp.paste}}</div></div>
                 </td>
             </tr>
         </table>
 		
 		<!--<div class="MWFArraylist" name="cssLinks" title="CSS引用"></div>-->
 		<!--<div class="MWFArraylist" name="scriptSrc" title="JS引用"></div>-->
-		
-		<div class="MWFMaplist" name="styles" title="样式"></div>
-		<div class="MWFMaplist" name="properties" title="属性"></div>
-        <div class="MWFCssArea" name="css" title="CSS"></div>
-        <div class="MWFScriptArea" name="jsheader" title="JS Header"></div>
 
+        <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+        <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
+        <div class="MWFCssArea" name="css" title="CSS"></div>
+<!--        <div class="MWFScriptArea" name="jsheader" title="JS Header"></div>-->
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.language}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'none'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType!=='default' && $.languageType!=='script')?'checked':''} type="radio" value="none"/>{{$.lp.none}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'block'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType==='default')?'checked':''} type="radio" value="default"/>{{$.lp.default}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageScriptArea').setStyle('display', 'block'); $('text{$.pid}languageDefaultArea').setStyle('display', 'none'); }" name="languageType" text{($.languageType==='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}languageDefaultArea" style="display: text{($.languageType!=='script')?'block':'none'}">
+            <div style="padding: 5px;">{{$.lp.languageDefaultInfo}}</div>
+        </div>
+        <div id="text{$.pid}languageScriptArea" style="display: text{($.languageType=='script')?'block':'none'}">
+            <div class="MWFScriptArea" name="languageScript" title="{{$.lp.languageScript}}"></div>
+            <div style="padding: 5px;">{{$.lp.languageInfo}}</div>
+        </div>
 	</div>
-	<div title="事件"  class="MWFTab">
+	<div title="{{$.lp.event}}"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
 	<div title="HTML"  class="MWFTab">
