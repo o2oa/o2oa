@@ -421,6 +421,8 @@ MWF.xApplication.process.ProcessManager.FormExplorer.Form = new Class({
             var options = {
                 "style": layout.desktop.formDesignerStyle,
                 "appId": "process.FormDesigner"+_self.data.id,
+                "id": _self.data.id,
+                "application": _self.explorer.app.options.application.id,
                 "onQueryLoad": function(){
                     this.actions = _self.explorer.actions;
                     this.category = _self;
