@@ -67,7 +67,7 @@ MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP,
     "severalHourAgo" : "{count}小时前",
     "severalMintuesAgo" : "{count}分钟前",
     "justNow" : "刚才",
-    "actionBar": {
+    "form": {
         "close":"关闭",
         "closeTitle": "关闭文档",
         "edit": "编辑",
