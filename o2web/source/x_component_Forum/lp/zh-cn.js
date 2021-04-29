@@ -139,6 +139,8 @@ MWF.xApplication.Forum.LP = {
 	"subSectionCreateAble" : "允许创建子版块",
 	"sectionStatus" : "状态",
 	"sectionStatusValue" : "启用,停用",
+    "sectionGrade" : "评分",
+    "sectionGradeValue" : "否,是",
 	"sectionIcon" : "版块图标",
 	"uploadIcon" : "上传本地图标",
 	"selectIcon" : "选择图标",
@@ -173,6 +175,7 @@ MWF.xApplication.Forum.LP = {
 	"subjectType" : "主题类别选项",
 	"subjectTypeDefaultValue" : "讨论|新闻|动态|知识|灌水",
 	"vote" : "投票",
+	"sectionApp" : "应用市场",
 	"typeCategoryDefaultValue" : "信息|问题|投票",
 	"typeCatagory" : "主题类型选项",
 	"typeCategorySelectValue" : "信息|问题|投票",
@@ -334,9 +337,9 @@ MWF.xApplication.Forum.LP = {
 	"justNow" : "刚才",
 	"publishJustNow": "刚刚发表",
 
+	"gradeNotice":"请评分后提交",
+
 	"selectTargetSection" : "选择移动到的版块",
-	"moveSuccess": "帖子已经移动到{section}",
-	"poster": "发帖人",
-	"replyAbbr" : "评"
+	"moveSuccess": "帖子已经移动到{section}"
 
 };
