@@ -393,7 +393,7 @@
     "color" : "#333"
   },
   "actionBar" : {
-    "width" : "auto",
+    "width" : "750px",
     "float" : "left",
     "border-right" : "1px solid #ddd",
     "padding-right" : "5px",
@@ -558,7 +558,6 @@
   "itemUserStat2" : {
     "margin-top" : "5px",
     "text-align" : "center",
-    "height" : "20px",
     "ling-height" : "20px",
     "overflow" : "hidden",
     "font-size" : "12px"
