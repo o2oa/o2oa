@@ -181,6 +181,20 @@ MWF.xApplication.process.ProcessManager.LP = {
     "selectorButton" : {
         "ok" : "OK",
         "cancel" : "Cancel"
-    }
+    },
+
+    "defaultProcess": "Default",
+    "sequenceProcess": "Sequence",
+    "choiceProcess": "Choice",
+    "parallelProcess": "Parallel",
+
+    "emptyForm": "Empty",
+    "commonForm": "Common",
+    "blueForm": "Blue Style",
+    "redForm": "Red Style",
+    "publishForm": "Publish",
+    "fileForm": "File Form",
+    "submitPcForm": "SubmitForm (PC)",
+    "submitMobileForm": "SubmitForm (Mobile)"
 
 };
