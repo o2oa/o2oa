@@ -170,6 +170,9 @@ MWF.xApplication.Setting.LP = {
     "mobile_style_imgs_defaultTitle": "默认图片确认",
     "mobile_style_imgs_defaultInfor": "您确定要将{name}，替换成默认图像吗？",
 
+    "mpweixin": "公众号",
+    "publishMpweixin": "发布到微信公众号",
+    "mpweixinInfo": "⚠️ 微信公众号菜单功能需要先启用相关的配置文件[mpweixin.json]，并到微信的公众号管理后台，开发模块中启用服务器配置！",
     "mobile_mpweixin_menu_msg_publish_2_wxmp": "注意！当前操作会把所有保存的菜单数据覆盖到微信公众号，确定要继续吗？",
     "mobile_mpweixin_menu_msg_publish_success": "发布成功，会在24小时后在手机端同步显示！",
     "mobile_mpweixin_menu_msg_first_max_len": "一级菜单最多只能创建3个！",
