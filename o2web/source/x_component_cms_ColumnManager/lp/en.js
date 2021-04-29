@@ -38,6 +38,13 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "templateCategory": "Template Category:",
     "all": "All",
 
+    "formType": {
+        "empty": "Empty form",
+        "publishEdit": "Publish Edit Form",
+        "publishRead": "Publish Reading Form",
+        "dataInput": "Data Input Form"
+    },
+
     "category": {
         "create": "New category",
         "search": "Search Category",

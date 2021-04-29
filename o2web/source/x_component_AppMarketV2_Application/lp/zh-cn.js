@@ -1,5 +1,5 @@
 MWF.xApplication.AppMarketV2.Application.LP = {
-	"title": "应用市场",
+    "title": "应用市场",
     "implodeLocal": "从本地导入",
     "download": "免费下载",
     "setup": "安装",
