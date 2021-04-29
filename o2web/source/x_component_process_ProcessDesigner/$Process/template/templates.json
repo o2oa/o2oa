@@ -1,17 +1,17 @@
 [
   {
     "name": "process.json",
-    "title": "默认流程",
+    "title": MWF.xApplication.process.ProcessManager.LP.defaultProcess,
     "icon": "process.png"
   },
   {
     "name": "process_sequence.json",
-    "title": "顺序流程",
+    "title": MWF.xApplication.process.ProcessManager.LP.sequenceProcess,
     "icon": "process_sequence.png"
   },
   {
     "name": "process_choice.json",
-    "title": "选择流程",
+    "title": MWF.xApplication.process.ProcessManager.LP.choiceProcess,
     "icon": "process_choice.png"
   },
 //  {
@@ -21,7 +21,7 @@
 //  },
   {
     "name": "process_parallel.json",
-    "title": "并行流程",
+    "title": MWF.xApplication.process.ProcessManager.LP.parallelProcess,
     "icon": "process_parallel.png"
   }
 ]
