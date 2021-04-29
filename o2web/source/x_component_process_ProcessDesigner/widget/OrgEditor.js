@@ -384,6 +384,8 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor.Property = new Class({
         if (!this.process.options.isView){
             if (!this.propertyContent){
                 this.getHtmlString(function(){
+                    this.htmlString = o2.bindJson(this.htmlString, {"lp": o2.APPPD.LP.propertyTemplate});
+
                     this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.node);
                     //this.process.panel.propertyTabPage.showTabIm();
                     this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
