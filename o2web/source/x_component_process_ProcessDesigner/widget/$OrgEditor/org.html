@@ -1,63 +1,63 @@
 <div style="background-color: #FFF; overflow: hidden">
-    <div title="基本" class="MWFTab">
+    <div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <!--<tr>-->
                 <!--<td class="editTableTitle">标识:</td>-->
                 <!--<td class="editTableValue">text{$.id}</td>-->
             <!--</tr>-->
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">标题:</td>
-                <td class="editTableValue"><input type="text" name="title" value="text{$.title}" class="editTableInput"/><div>如：请选择部门经理</div></td>
+                <td class="editTableTitle">{{$.lp.title}}:</td>
+                <td class="editTableValue"><input type="text" name="title" value="text{$.title}" class="editTableInput"/><div>{{$.lp.titleInfo}}</div></td>
             </tr>
         </table>
         <br/>
 
-        <div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">默认值：</div>
+        <div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.defaultValue}}: </div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">用户标识:</td>
+                <td class="editTableTitle">{{$.lp.identity}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonIdentity" name="identityValue"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">组　　织:</td>
+                <td class="editTableTitle">{{$.lp.unit}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonUnit" name="unitValue" type="unit"></div>
                 </td>
             </tr>
         </table>
 
-        <div class="MWFFormulaArea" name="defaultValue" title="默认值脚本 (S)"></div>
+        <div class="MWFFormulaArea" name="defaultValue" title="{{$.lp.defaultValueScript}} (S)"></div>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">校验数量:</td>
+                <td class="editTableTitle">{{$.lp.checkCount}}:</td>
                 <td class="editTableValue">
-                    选择的个数不少于<input type="text" name="validationCount" value="text{$.validationCount||1}" style="border:1px solid #eee; width: 80px"/>
+                    {{$.lp.checkCountInfo}}<input type="text" name="validationCount" value="text{$.validationCount||1}" style="border:1px solid #eee; width: 80px"/>
                 </td>
             </tr>
         </table>
-        <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
-        <div class="MWFScriptArea" name="hiddenScript" title="隐藏条件 (返回true隐藏)"></div>
+        <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
+        <div class="MWFScriptArea" name="hiddenScript" title="{{$.lp.hideCondition}} {{$.lp.hideConditionInfo}}"></div>
 
     </div>
     <div title="选择" class="MWFTab">
-        <div style="height: 24px; line-height:24px; font-weight:bold;background-color: #DDD; border-top:1px solid #999; padding: 0px 6px">人员组织选择配置</div>
+        <div style="height: 24px; line-height:24px; font-weight:bold;background-color: #DDD; border-top:1px solid #999; padding: 0px 6px">{{$.lp.unitSelectConfig}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">选择类型:</td>
+                <td class="editTableTitle">{{$.lp.selectType}}:</td>
                 <td class="editTableValue">
                     <input type="radio" name="selectType" value="identity" text{($.selectType.indexOf('identity')!=-1)?'checked':''}
                             onchange="$('text{$.pid}identityProperties').setStyle('display','');
-                    $('text{$.pid}unitProperties').setStyle('display','none');"/>身份
+                    $('text{$.pid}unitProperties').setStyle('display','none');"/>{{$.lp.personIdentity}}
                     <input type="radio" name="selectType" value="unit" text{($.selectType.indexOf('unit')!=-1)?'checked':''}
                             onchange="$('text{$.pid}identityProperties').setStyle('display','none');
-                    $('text{$.pid}unitProperties').setStyle('display','');"/>组织
+                    $('text{$.pid}unitProperties').setStyle('display','');"/>{{$.lp.unit}}
                     <!--<input type="radio" name="selectType" value="group" text{($.selectType.indexOf('group')!=-1)?'checked':''}-->
                             <!--onchange="var tab = $('text{$.pid}groupProperty').retrieve('tab'); this.checked ? tab.enableTab() : tab.disableTab();"/>群组-->
                 </td>
@@ -69,63 +69,63 @@
             <div id="text{$.pid}identityProperties" style="display: text{($.selectType.indexOf('identity')!=-1)?'block':'none'}";>
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">选择数量:</td>
+                        <td class="editTableTitle">{{$.lp.selectCount}}:</td>
                         <td class="editTableValue"><input type="text" name="identityCount" value="text{$.identityCount}" class="editTableInput"/></td>
                     </tr>
                     <tr id="text{$.pid}isCheckEmpowerTd" style="display: text{$.identityResultType==='person'?'none':''};">
-                        <td class="editTableTitle">检查待办授权:</td>
+                        <td class="editTableTitle">{{$.lp.checkEmpower}}:</td>
                         <td class="editTableValue">
-                            <input type="radio" name="isCheckEmpower" value="true" text{$.isCheckEmpower?'checked':''}/>是
-                            <input type="radio" name="isCheckEmpower" value="false" text{$.isCheckEmpower?'':'checked'}/>否
+                            <input type="radio" name="isCheckEmpower" value="true" text{$.isCheckEmpower?'checked':''}/>{{$.lp.yes}}
+                            <input type="radio" name="isCheckEmpower" value="false" text{$.isCheckEmpower?'':'checked'}/>{{$.lp.no}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">只使用自定义选项:</td>
+                        <td class="editTableTitle">{{$.lp.onlyCustom}}:</td>
                         <td class="editTableValue">
                             <input type="radio" name="identityOnlyUseInclude" value="true" text{$.identityOnlyUseInclude?'checked':''}
                             onchange="if (this.checked){
                                 $('text{$.pid}identityUnitRangeArea').setStyle('display', 'none');
                                 $('text{$.pid}dutyRangeSelectArea').setStyle('display', 'none');
-                            }" />是
+                            }" />{{$.lp.yes}}
                             <input type="radio" name="identityOnlyUseInclude" value="false" text{$.identityOnlyUseInclude?'':'checked'}
                                 onchange="if (this.checked){
                                     $('text{$.pid}identityUnitRangeArea').setStyle('display', '');
                                     $('text{$.pid}dutyRangeSelectArea').setStyle('display', '');
-                            }" />否
+                            }" />{{$.lp.no}}
                         </td>
                     </tr>
                 </table>
                 <div id="text{$.pid}identityUnitRangeArea" style="display: text{($.identityOnlyUseInclude)?'none':''};">
-                    <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc; font-weight: bold;">组织范围</div>
+                    <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc; font-weight: bold;">{{$.lp.unitRange}}</div>
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">组织范围:</td>
+                            <td class="editTableTitle">{{$.lp.unitRange}}:</td>
                             <td class="editTableValue">
                                 <input type="radio" onclick="
                                     if (this.checked) {
                                         $('text{$.pid}identityRangeNextArea').setStyle('display', 'none');
                                         $('text{$.pid}identityRangeScriptValue').setStyle('display', 'none');
                                     }
-                                    " name="identityRange" value="all" text{(['unit', 'draftUnit', 'currentUnit'].indexOf($.identityRange)==-1)?'checked':''}/>所有组织
+                                    " name="identityRange" value="all" text{(['unit', 'draftUnit', 'currentUnit'].indexOf($.identityRange)==-1)?'checked':''}/>{{$.lp.allUnit}}
                                 <input type="radio" onclick="
                                     if (this.checked) {
                                         $('text{$.pid}identityRangeNextArea').setStyle('display', 'none');
                                         $('text{$.pid}identityRangeScriptValue').setStyle('display', 'block');
-                                     }" name="identityRange" value="unit" text{($.identityRange.indexOf('unit')!=-1)?'checked':''}/>指定组织<br/>
+                                     }" name="identityRange" value="unit" text{($.identityRange.indexOf('unit')!=-1)?'checked':''}/>{{$.lp.specifyUnit}}<br/>
                                 <input type="radio" onclick="
                                     if (this.checked) {
                                         $('text{$.pid}identityRangeNextArea').setStyle('display', 'block');
                                         $('text{$.pid}identityRangeScriptValue').setStyle('display', 'none');
-                                    }" name="identityRange" value="draftUnit" text{($.identityRange.indexOf('draftUnit')!=-1)?'checked':''}/>拟稿人所在的组织<br/>
+                                    }" name="identityRange" value="draftUnit" text{($.identityRange.indexOf('draftUnit')!=-1)?'checked':''}/>{{$.lp.draftUnit}}<br/>
                                 <input type="radio" onclick="
                                     if (this.checked) {
                                         $('text{$.pid}identityRangeNextArea').setStyle('display', 'block');
                                         $('text{$.pid}identityRangeScriptValue').setStyle('display', 'none');}
-                                    " name="identityRange" value="currentUnit" text{($.identityRange.indexOf('currentUnit')!=-1)?'checked':''}/>当前人所在的组织<br/>
+                                    " name="identityRange" value="currentUnit" text{($.identityRange.indexOf('currentUnit')!=-1)?'checked':''}/>{{$.lp.currentUnit}}<br/>
 
                                 <div id="text{$.pid}identityRangeNextArea" style="border-top: 1px solid #999; display: text{($.identityRange=='draftUnit' || $.identityRange=='currentUnit')?'block':'none'}; ">
-                                    <input type="radio" name="identityRangeNext" value="direct" text{(['level', 'type'].indexOf($.identityRangeNext)==-1)?'checked':''}/>直接所属组织<br/>
-                                    <input type="radio" name="identityRangeNext" value="level" text{(($.identityRangeNext) && $.identityRangeNext.indexOf('level')!=-1)?'checked':''}/>第
+                                    <input type="radio" name="identityRangeNext" value="direct" text{(['level', 'type'].indexOf($.identityRangeNext)==-1)?'checked':''}/>{{$.lp.inUnit}}<br/>
+                                    <input type="radio" name="identityRangeNext" value="level" text{(($.identityRangeNext) && $.identityRangeNext.indexOf('level')!=-1)?'checked':''}/>{{$.lp.levelIs}}
                                     <div style="display: inline"><select name="identityRangeNextLevel">
                                         <option value="1" text{($.identityRangeNextLevel=='1')?'selected':''}>1</option>
                                         <option value="2" text{($.identityRangeNextLevel=='2')?'selected':''}>2</option>
@@ -136,10 +136,10 @@
                                         <option value="7" text{($.identityRangeNextLevel=='7')?'selected':''}>7</option>
                                         <option value="8" text{($.identityRangeNextLevel=='8')?'selected':''}>8</option>
                                         <option value="9" text{($.identityRangeNextLevel=='9')?'selected':''}>9</option>
-                                    </select>层组织</div><br/>
-                                    <input style="float: left" type="radio" name="identityRangeNext" value="type" text{(($.identityRangeNext) && $.identityRangeNext.indexOf('type')!=-1)?'checked':''}/>类型为
+                                    </select>{{$.lp.levelUnit}}</div><br/>
+                                    <input style="float: left" type="radio" name="identityRangeNext" value="type" text{(($.identityRangeNext) && $.identityRangeNext.indexOf('type')!=-1)?'checked':''}/>{{$.lp.unitTypeIs}}
                                     <div class="MWFFormUnitTypeSelector" name="identityRangeNextUnitType" style="display: inline"></div>
-                                    的组织<br/>
+                                    {{$.lp.deUnit}}<br/>
                                 </div>
                             </td>
                         </tr>
@@ -149,10 +149,10 @@
                         <!--<div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过选择表单数据指定选择范围</div>-->
                         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                             <tr>
-                                <td class="editTableTitle">展开下级:</td>
+                                <td class="editTableTitle">{{$.lp.expandNext}}:</td>
                                 <td class="editTableValue">
-                                    <input type="radio" name="identityExpandSubEnable" value="yes" text{($.identityExpandSubEnable!='no')?'checked':''}/>是
-                                    <input type="radio" name="identityExpandSubEnable" value="no" text{($.identityExpandSubEnable=='no')?'checked':''}/>否
+                                    <input type="radio" name="identityExpandSubEnable" value="yes" text{($.identityExpandSubEnable!='no')?'checked':''}/>{{$.lp.yes}}
+                                    <input type="radio" name="identityExpandSubEnable" value="no" text{($.identityExpandSubEnable=='no')?'checked':''}/>{{$.lp.no}}
                                 </td>
                             </tr>
                         </table>
@@ -162,28 +162,28 @@
                         <!--<div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过选择表单数据指定选择范围</div>-->
                         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                             <tr>
-                                <td class="editTableTitle">选择组织:</td>
+                                <td class="editTableTitle">{{$.lp.selectUnit}}:</td>
                                 <td class="editTableValue"><div class="MWFPersonUnit" name="identityRangeUnit" type="rangeUnit"></div></td>
                             </tr>
                             <tr>
-                                <td class="editTableTitle">表单数据:</td>
+                                <td class="editTableTitle">{{$.lp.formData}}:</td>
                                 <td class="editTableValue"><div class="MWFFormFieldPerson" name="identityRangeField" type="formField"></div></td>
                             </tr>
                         </table>
 
                         <!--<div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过编写脚本指定选择范围</div>-->
-                        <div class="MWFFormulaArea" name="identityRangeKey" title="脚本 (S)"></div>
+                        <div class="MWFFormulaArea" name="identityRangeKey" title="{{$.lp.script}} (S)"></div>
                     </div>
                 </div>
 
                 <div id="text{$.pid}dutyRangeSelectArea" style="border-bottom: 1px solid #999; display: text{($.identityOnlyUseInclude)?'none':''}; ">
-                    <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">职务范围</div>
+                    <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">{{$.lp.dutyRange}}</div>
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">职务范围:</td>
+                            <td class="editTableTitle">{{$.lp.dutyRange}}:</td>
                             <td class="editTableValue">
-                                <input type="radio" onclick="if (this.checked) {$('text{$.pid}dutyRangeScriptValue').setStyle('display', 'none');}" name="dutyRange" value="all" text{(['duty'].indexOf($.dutyRange)==-1)?'checked':''}/>所有
-                                <input type="radio" onclick="if (this.checked) {$('text{$.pid}dutyRangeScriptValue').setStyle('display', 'block');}" name="dutyRange" value="duty" text{($.dutyRange && ($.dutyRange.indexOf('duty')!=-1))?'checked':''}/>指定职务<br/>
+                                <input type="radio" onclick="if (this.checked) {$('text{$.pid}dutyRangeScriptValue').setStyle('display', 'none');}" name="dutyRange" value="all" text{(['duty'].indexOf($.dutyRange)==-1)?'checked':''}/>{{$.lp.all}}
+                                <input type="radio" onclick="if (this.checked) {$('text{$.pid}dutyRangeScriptValue').setStyle('display', 'block');}" name="dutyRange" value="duty" text{($.dutyRange && ($.dutyRange.indexOf('duty')!=-1))?'checked':''}/>{{$.lp.specifyDuty}}<br/>
 
                             </td>
                         </tr>
@@ -192,41 +192,41 @@
                     <div id="text{$.pid}dutyRangeScriptValue" style="border-bottom: 1px solid #999; display: text{($.dutyRange=='duty')?'block':'none'}; ">
                         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                             <tr>
-                                <td class="editTableTitle">分类:</td>
+                                <td class="editTableTitle">{{$.lp.category}}:</td>
                                 <td class="editTableValue">
                                     <input type="radio" name="categoryType" value="unit" text{(['duty'].indexOf($.categoryType)==-1)?'checked':''}
-                                    onclick="if (this.checked) {$('text{$.pid}dutyUnitLevelByTr').setStyle('display', '');}" />按组织
+                                    onclick="if (this.checked) {$('text{$.pid}dutyUnitLevelByTr').setStyle('display', '');}" />{{$.lp.byUnit}}
                                     <input type="radio" name="categoryType" value="duty" text{($.categoryType && ($.categoryType.indexOf('duty')!=-1))?'checked':''}
-                                    onclick="if (this.checked) {$('text{$.pid}dutyUnitLevelByTr').setStyle('display', 'none');}"/>按职务<br/>
+                                    onclick="if (this.checked) {$('text{$.pid}dutyUnitLevelByTr').setStyle('display', 'none');}"/>{{$.lp.byDuty}}<br/>
                                 </td>
                             </tr>
                             <tr id="text{$.pid}dutyUnitLevelByTr" style="display: text{($.categoryType=='duty')?'none':''}; ">
-                                <td class="editTableTitle">展现层级:</td>
+                                <td class="editTableTitle">{{$.lp.showLevel}}:</td>
                                 <td class="editTableValue">
-                                    <input type="radio" name="dutyUnitLevelBy" value="duty" text{(['identity'].indexOf($.dutyUnitLevelBy)==-1)?'checked':''}/>按职务所在组织<br/>
-                                    <input type="radio" name="dutyUnitLevelBy" value="identity" text{($.dutyUnitLevelBy && ($.dutyUnitLevelBy.indexOf('identity')!=-1))?'checked':''}/>按身份所在组织
+                                    <input type="radio" name="dutyUnitLevelBy" value="duty" text{(['identity'].indexOf($.dutyUnitLevelBy)==-1)?'checked':''}/>{{$.lp.byDutyUnit}}<br/>
+                                    <input type="radio" name="dutyUnitLevelBy" value="identity" text{($.dutyUnitLevelBy && ($.dutyUnitLevelBy.indexOf('identity')!=-1))?'checked':''}/>{{$.lp.byIdentityUnit}}
                                 </td>
                             </tr>
                             <tr>
-                                <td class="editTableTitle">选择职务:</td>
+                                <td class="editTableTitle">{{$.lp.selectDuty}}:</td>
                                 <td class="editTableValue"><div class="MWFPersonDuty" name="rangeDuty" type="rangeDuty"></div></td>
                             </tr>
                             <tr>
-                                <td class="editTableTitle">表单数据:</td>
+                                <td class="editTableTitle">{{$.lp.formData}}:</td>
                                 <td class="editTableValue"><div class="MWFFormFieldPerson" name="rangeDutyField" type="formField"></div></td>
                             </tr>
                         </table>
-                        <div class="MWFFormulaArea" name="rangeDutyKey" title="脚本 (S)"></div>
+                        <div class="MWFFormulaArea" name="rangeDutyKey" title="{{$.lp.script}} (S)"></div>
                     </div>
                 </div>
 
 
                 <div id="text{$.pid}identityIncludeArea" style="border-bottom: 1px solid #999; ">
-                    <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">自定义选项</div>
+                    <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">{{$.lp.customOption}}</div>
                     <div style="height: 24px; line-height:24px; padding: 0px 6px; border-top: 1px solid #999">
-                        使用脚本添加身份
+                        {{$.lp.useScriptAddId}}
                     </div>
-                    <div class="MWFFormulaArea" name="identityIncludeKey" title="脚本 (S)"></div>
+                    <div class="MWFFormulaArea" name="identityIncludeKey" title="{{$.lp.script}} (S)"></div>
                 </div>
             </div>
 
@@ -239,44 +239,44 @@
                 <!--<div style="float: left">组织类型：</div><div class="MWFFormUnitTypeSelector" name="selectUnitType" style="float: left"></div>-->
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">选择数量:</td>
+                        <td class="editTableTitle">{{$.lp.selectCount}}:</td>
                         <td class="editTableValue"><input type="text" name="unitCount" value="text{$.unitCount}" class="editTableInput"/></td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">组织类型:</td>
+                        <td class="editTableTitle">{{$.lp.unitType}}:</td>
                         <td class="editTableValue"><div class="MWFFormUnitTypeSelector" name="selectUnitType"></div></td>
                     </tr>
                 </table>
-                <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc; font-weight: bold;">组织范围</div>
+                <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc; font-weight: bold;">{{$.lp.unitRange}}</div>
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">组织范围:</td>
+                        <td class="editTableTitle">{{$.lp.unitRange}}:</td>
                         <td class="editTableValue">
                             <input type="radio" onclick="
                                 if (this.checked) {
                                     $('text{$.pid}unitRangeNextArea').setStyle('display', 'none');
                                     $('text{$.pid}unitRangeScriptValue').setStyle('display', 'none');
                                 }
-                                " name="unitRange" value="all" text{(['unit', 'draftUnit', 'currentUnit'].indexOf($.unitRange)==-1)?'checked':''}/>所有组织
+                                " name="unitRange" value="all" text{(['unit', 'draftUnit', 'currentUnit'].indexOf($.unitRange)==-1)?'checked':''}/>{{$.lp.allUnit}}
                             <input type="radio" onclick="
                                 if (this.checked) {
                                     $('text{$.pid}unitRangeNextArea').setStyle('display', 'none');
                                     $('text{$.pid}unitRangeScriptValue').setStyle('display', 'block');
-                                 }" name="unitRange" value="unit" text{($.unitRange.indexOf('unit')!=-1)?'checked':''}/>指定组织<br/>
+                                 }" name="unitRange" value="unit" text{($.unitRange.indexOf('unit')!=-1)?'checked':''}/>{{$.lp.specifyUnit}}<br/>
                             <input type="radio" onclick="
                                 if (this.checked) {
                                     $('text{$.pid}unitRangeNextArea').setStyle('display', 'block');
                                     $('text{$.pid}unitRangeScriptValue').setStyle('display', 'none');
-                                }" name="unitRange" value="draftUnit" text{($.unitRange.indexOf('draftUnit')!=-1)?'checked':''}/>拟稿人所在的组织<br/>
+                                }" name="unitRange" value="draftUnit" text{($.unitRange.indexOf('draftUnit')!=-1)?'checked':''}/>{{$.lp.draftUnit}}<br/>
                             <input type="radio" onclick="
                                 if (this.checked) {
                                     $('text{$.pid}unitRangeNextArea').setStyle('display', 'block');
                                     $('text{$.pid}unitRangeScriptValue').setStyle('display', 'none');}
-                                " name="unitRange" value="currentUnit" text{($.unitRange.indexOf('currentUnit')!=-1)?'checked':''}/>当前人所在的组织<br/>
+                                " name="unitRange" value="currentUnit" text{($.unitRange.indexOf('currentUnit')!=-1)?'checked':''}/>{{$.lp.currentUnit}}<br/>
 
                             <div id="text{$.pid}unitRangeNextArea" style="border-top: 1px solid #999; display: text{($.unitRange=='draftUnit' || $.unitRange=='currentUnit')?'block':'none'}; ">
-                                <input type="radio" name="unitRangeNext" value="direct" text{(['level', 'type'].indexOf($.unitRangeNext)==-1)?'checked':''}/>直接所属组织<br/>
-                                <input type="radio" name="unitRangeNext" value="level" text{(($.unitRangeNext) && $.unitRangeNext.indexOf('level')!=-1)?'checked':''}/>第
+                                <input type="radio" name="unitRangeNext" value="direct" text{(['level', 'type'].indexOf($.unitRangeNext)==-1)?'checked':''}/>{{$.lp.inUnit}}<br/>
+                                <input type="radio" name="unitRangeNext" value="level" text{(($.unitRangeNext) && $.unitRangeNext.indexOf('level')!=-1)?'checked':''}/>{{$.lp.levelIs}}
                                 <div style="display: inline"><select name="unitRangeNextLevel">
                                     <option value="1" text{($.unitRangeNextLevel=='1')?'selected':''}>1</option>
                                     <option value="2" text{($.unitRangeNextLevel=='2')?'selected':''}>2</option>
@@ -287,10 +287,10 @@
                                     <option value="7" text{($.unitRangeNextLevel=='7')?'selected':''}>7</option>
                                     <option value="8" text{($.unitRangeNextLevel=='8')?'selected':''}>8</option>
                                     <option value="9" text{($.unitRangeNextLevel=='9')?'selected':''}>9</option>
-                                </select>层组织</div><br/>
-                                <input style="float: left" type="radio" name="unitRangeNext" value="type" text{(($.unitRangeNext) && $.unitRangeNext.indexOf('type')!=-1)?'checked':''}/>类型为
+                                </select>{{$.lp.levelUnit}}</div><br/>
+                                <input style="float: left" type="radio" name="unitRangeNext" value="type" text{(($.unitRangeNext) && $.unitRangeNext.indexOf('type')!=-1)?'checked':''}/>{{$.lp.unitTypeIs}}
                                 <div class="MWFFormUnitTypeSelector" name="unitRangeNextUnitType" style="display: inline"></div>
-                                的组织<br/>
+                                {{$.lp.deUnit}}<br/>
                             </div>
                         </td>
                     </tr>
@@ -300,10 +300,10 @@
                     <!--<div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过选择表单数据指定选择范围</div>-->
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">展开下级:</td>
+                            <td class="editTableTitle">{{$.lp.expandNext}}:</td>
                             <td class="editTableValue">
-                                <input type="radio" name="unitExpandSubEnable" value="yes" text{($.unitExpandSubEnable!='no')?'checked':''}/>是
-                                <input type="radio" name="unitExpandSubEnable" value="no" text{($.unitExpandSubEnable=='no')?'checked':''}/>否
+                                <input type="radio" name="unitExpandSubEnable" value="yes" text{($.unitExpandSubEnable!='no')?'checked':''}/>{{$.lp.yes}}
+                                <input type="radio" name="unitExpandSubEnable" value="no" text{($.unitExpandSubEnable=='no')?'checked':''}/>{{$.lp.no}}
                             </td>
                         </tr>
                     </table>
@@ -313,17 +313,17 @@
                     <!--<div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过选择表单数据指定选择范围</div>-->
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">选择组织:</td>
+                            <td class="editTableTitle">{{$.lp.selectUnit}}:</td>
                             <td class="editTableValue"><div class="MWFPersonUnit" name="unitRangeUnit" type="rangeUnit"></div></td>
                         </tr>
                         <tr>
-                            <td class="editTableTitle">表单数据:</td>
+                            <td class="editTableTitle">{{$.lp.formData}}:</td>
                             <td class="editTableValue"><div class="MWFFormFieldPerson" name="unitRangeField" type="formField"></div></td>
                         </tr>
                     </table>
 
                     <!--<div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过编写脚本指定选择范围</div>-->
-                    <div class="MWFFormulaArea" name="unitRangeKey" title="脚本 (S)"></div>
+                    <div class="MWFFormulaArea" name="unitRangeKey" title="{{$.lp.script}} (S)"></div>
                 </div>
             </div>
 
@@ -355,34 +355,34 @@
 
 
         <div id="text{$.pid}exclude" style="border-bottom: 1px solid #999; ">
-            <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">排除</div>
-            <div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过编写脚本排除组织、身份的选择范围</div>
+            <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">{{$.lp.exclude}}</div>
+            <div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.excludeInfo}}</div>
             <div class="MWFFormulaArea" name="exclude" title="脚本 (S)"></div>
         </div>
 
         <div>
-            <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">数据保存</div>
+            <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">{{$.lp.dataStructure}}</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">数据保存:</td>
+                    <td class="editTableTitle">{{$.lp.dataStructure}}:</td>
                     <td class="editTableValue">
-                        <input type="radio" name="storeRange" value="full" text{($.section!='simple')?'checked':''}/>完整
-                        <input type="radio" name="storeRange" value="simple" text{($.section=='simple')?'checked':''}/>精简
+                        <input type="radio" name="storeRange" value="full" text{($.section!='simple')?'checked':''}/>{{$.lp.complete}}
+                        <input type="radio" name="storeRange" value="simple" text{($.section=='simple')?'checked':''}/>{{$.lp.simple}}
                     </td>
                 </tr>
             </table>
         </div>
     </div>
-    <div title="事件"  class="MWFTab">
+    <div title="{{$.lp.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="events"></div>
     </div>
-    <div title="区段" class="MWFTab">
+    <div title="{{$.lp.section}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">启用区段:</td>
+                <td class="editTableTitle">{{$.lp.enableSection}}:</td>
                 <td class="editTableValue">
-                    <input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'block')}" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>是
-                    <input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'none')}" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>否
+                    <input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'block')}" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'none')}" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
         </table>
@@ -390,18 +390,18 @@
         <div id="text{$.pid}sectionByEditArea" style="display: text{($.section=='yes')?'block':'none'};">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">区段依据:</td>
+                    <td class="editTableTitle">{{$.lp.sectionBy}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='unit' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>处理人<br/>
-                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='department')?'checked':''} type="radio" value="unit"/>处理人所在组织<br/>
-                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>活动ID<br/>
-                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='splitValue')?'checked':''} type="radio" value="splitValue"/>拆分值<br/>
-                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>脚本<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='unit' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>{{$.lp.handler}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='department')?'checked':''} type="radio" value="unit"/>{{$.lp.handlerUnit}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>{{$.lp.activityId}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='splitValue')?'checked':''} type="radio" value="splitValue"/>{{$.lp.splitValue}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}<br/>
                     </td>
                 </tr>
             </table>
             <div id="text{$.pid}sectionByScriptEditArea" style="display: text{($.sectionBy=='script')?'block':'none'};">
-                <div class="MWFScriptArea" name="sectionByScript" title="区段依据 (S)"></div>
+                <div class="MWFScriptArea" name="sectionByScript" title="{{$.lp.sectionBy}} (S)"></div>
             </div>
         </div>
     </div>
