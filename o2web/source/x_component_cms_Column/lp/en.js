@@ -19,7 +19,7 @@ MWF.xApplication.cms.Column.LP = {
     "column": {
         "title" :"AppInfo Management",
         "create": "New App",
-        "findDesigner": "Search in Design",
+        "findDesigner": "FindCode",
         "searchText": "Please enter a keyword",
         "loadding": "Loading...",
         "loaded": "AppInfo loaded",
