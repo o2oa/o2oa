@@ -49,6 +49,8 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         this.page = 1;
         this.pageSize = 100;
         this.querydata = {};
+        this.bbsUrlPath = "";
+        this.bbsUrl = "";
         this.load();
         
     },
@@ -61,6 +63,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
                         data = json.data; //为变量data赋值
                         this.app.collectUrl = data.collectUrl;
                         this.app.collectToken = data.collectToken;
+                        this.loadBbsInfo(this);
                         this.loadCommentsGrade(this,this.commentsGrade.bind(this));
                         //this.loadCommentPower(this,this.commentsPower.bind(this));
                         this.loadCommentPower(this);
@@ -69,11 +72,45 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
                 }.bind(this),null,false //同步执行 
             );
         }else{
+            this.loadBbsInfo(this);
             this.loadCommentsGrade(this,this.commentsGrade.bind(this));
             //this.loadCommentPower(this,this.commentsPower.bind(this));
             this.loadCommentPower(this);
             this.loadCommentsList(this,this.commentsView.bind(this));
         }      
+    },
+    loadBbsInfo: function(content){
+        var json = null;
+        var commenturl = content.app.collectUrl +'/o2_collect_assemble/jaxrs/collect/config/key/(0)?time='+(new Date()).getMilliseconds();
+        debugger;
+        var res = new Request.JSON({
+            url: commenturl,
+            headers : {'x-debugger' : true,'Authorization':content.app.collectToken,'c-token':content.app.collectToken},
+            secure: false,
+            method: "get",
+            async: false,
+            withCredentials: true,
+            contentType : 'application/json',
+            crossDomain : true,
+            onSuccess: function(responseJSON, responseText){
+                json = responseJSON;
+                debugger;
+                this.bbsUrlPath = json.data.bbsUrlPath;
+                this.bbsUrl = json.data.bbsUrl;
+                /*if (typeOf(callback).toLowerCase() == 'function'){
+                    callback(responseJSON);
+                }else{
+                    o2.runCallback(callback, "success", [responseJSON, responseText]);
+                }*/
+            }.bind(this),
+            onFailure: function(xhr){
+                o2.runCallback(callback, "requestFailure", [xhr]);
+            }.bind(this),
+            onError: function(text, error){
+                o2.runCallback(callback, "error", [text, error]);
+            }.bind(this)
+        });
+        res.send();
     },
     loadCommentsGrade: function(content,callback){
         var json = null;
@@ -106,7 +143,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         res.send();
     },
     loadCommentPower: function(content,callback){
-        var bbsurl = content.app.lp.bbsurl;
+        //var bbsurl = content.app.lp.bbsurl;
         debugger;
         var commentbuttondiv = new Element("div",{"class":"o2_appmarket_application_comment_middle_tip"}).inject(this.content.applicationcommentmiddle);
         new Element("span",{
@@ -115,7 +152,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         }).inject(commentbuttondiv);
         commentbuttondiv.addEvents({
             "click": function(e){
-                window.open(bbsurl);
+                window.open(this.bbsUrl);
             }
         })
     },
@@ -123,7 +160,8 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         var commentdata = {};
         commentdata["sectionName"] = content.app.lp.title;
         commentdata["subjectType"] = content.appdata.name;
-        var commenturl = content.app.lp.commentpath+'/x_bbs_assemble_control/jaxrs/subject/filter/listsubjectinfo/page/1/count/10';
+        //var commenturl = content.app.lp.commentpath+'/x_bbs_assemble_control/jaxrs/subject/filter/listsubjectinfo/page/1/count/10';
+        var commenturl = this.bbsUrlPath+'/x_bbs_assemble_control/jaxrs/subject/filter/listsubjectinfo/page/1/count/10';
         debugger;
         var res = new Request.JSON({
             "url": commenturl,
