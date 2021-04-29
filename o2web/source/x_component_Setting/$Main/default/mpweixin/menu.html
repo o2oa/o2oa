@@ -1,9 +1,9 @@
 <div class="menu_setting_area" data-o2-element="mpwxMenuNode">
-  <div style="margin: 30px 0 30px 0;font-size:16px;font-weight: 400;">⚠️ 微信公众号菜单功能需要先启用相关的配置文件[mpweixin.json]，并到微信的公众号管理后台，开发模块中启用服务器配置！</div>
+  <div style="margin: 30px 0 30px 0;font-size:16px;font-weight: 400;">{{$.lp.mpweixinInfo}}</div>
   <!-- 编辑区 -->
   <div class="menu_preview_area">
     <div class="mobile_menu_preview">
-      <div class="mobile_hd tc">公众号</div>
+      <div class="mobile_hd tc">{{$.lp.mpweixin}}</div>
       <div class="mobile_bd">
         <ul class="pre_menu_list grid_line" data-o2-element="mpwxMenuListNode">
           <!-- 菜单展现 -->
@@ -25,6 +25,6 @@
   </div>
   <!-- 发布按钮 -->
   <div class="btn-box" style="justify-content: start;margin-top: 30px;" >
-    <span class="btn btn_input btn_primary" data-o2-element="mpwxPublishBtnNode"><button>发布到微信公众号</button></span>
+    <span class="btn btn_input btn_primary" data-o2-element="mpwxPublishBtnNode"><button>{{$.lp.publishMpweixin}}</button></span>
   </div>
 </div>
