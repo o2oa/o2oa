@@ -1,5 +1,5 @@
 MWF.xApplication.AppMarketV2.Application.LP = {
-	"title": "应用市场",
+    "title": "应用市场",
     "implodeLocal": "从本地导入",
     "download": "免费下载",
     "setup": "安装",
@@ -21,9 +21,6 @@ MWF.xApplication.AppMarketV2.Application.LP = {
     "bbsname":"藕粉社区",
     "bbslink":"http://forum.o2oa.net/x_desktop/forum.html?app=ForumSection&id=b1895d5a-7ef2-4d74-b2d1-a7ae10daaa28",
     "bbstip":"如果您有什么疑问或想法，请来我们的藕粉社区交流吧！",
-    "commentpath":"https://forum.o2oa.net:40020",
-    "bbsurl":"http://forum.o2oa.net/x_desktop/forum.html?app=ForumSection&id=b1895d5a-7ef2-4d74-b2d1-a7ae10daaa28",
-    "bbsNotice":"评论请点此链接至o2论坛",
 
     "commentCountText":"共{n}个评分",
     "category" : "分类",
