@@ -19,9 +19,9 @@ MWF.xApplication.AppMarketV2.Application.Comment = new Class({
                 this.fireEvent("load");
             }.bind(this));
         }.bind(this));
-    },    
+    },
 
-    loadApplication: function(callback){        
+    loadApplication: function(callback){
         if (!this.isLoading){
             if (!this.applicationsContentV){
                 this.applicationsContentV = new MWF.xApplication.AppMarketV2.Application.Comment.ViewPage(this, {
@@ -31,7 +31,7 @@ MWF.xApplication.AppMarketV2.Application.Comment = new Class({
                 this.applicationsContentV.load();
             }
         }
-    }        
+    }
 });
 
 MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
@@ -50,7 +50,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         this.pageSize = 100;
         this.querydata = {};
         this.load();
-        
+
     },
     load: function(){
         if (this.app.collectToken=="" || this.app.collectUrl==""){
@@ -65,13 +65,13 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
                         this.loadCommentPower(this,this.commentsPower.bind(this));
                         this.loadCommentsList(this,this.commentsView.bind(this));
                     }
-                }.bind(this),null,false //同步执行 
+                }.bind(this),null,false //同步执行
             );
         }else{
             this.loadCommentsGrade(this,this.commentsGrade.bind(this));
             this.loadCommentPower(this,this.commentsPower.bind(this));
             this.loadCommentsList(this,this.commentsView.bind(this));
-        }      
+        }
     },
     loadCommentsGrade: function(content,callback){
         var json = null;
@@ -129,7 +129,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
                 o2.runCallback(callback, "error", [text, error]);
             }.bind(this)
         });
-        res.send();        
+        res.send();
     },
     loadCommentsList:function(content,callback){
         var json = null;
@@ -164,7 +164,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         debugger;
         var commentcount = 0;
         var grade = 0;
-        var totalgrade = 0; 
+        var totalgrade = 0;
         var commentratiolist = commentdata.data;
         var gradeList = ["0","0","0","0","0"];
         commentratiolist.each(function(pergrade){
@@ -180,26 +180,26 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         }
         debugger;
         this.content.applicationcommenttopgrade.set("text",grade+"");
-		var intgrade = parseInt(grade);
+        var intgrade = parseInt(grade);
         var dotgrade = grade - intgrade;
-        
 
-		for (var tmpnum=0;tmpnum<intgrade;tmpnum++){
-				new Element("img",{"src":this.content.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.content.applicationcommenttopangular)
-		}
-		if (dotgrade>=0.5){
-			new Element("img",{"src":this.content.iconPath+"halffiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.content.applicationcommenttopangular);
-			intgrade++;
-		}
-		for (var tmpnum=0;tmpnum<5-intgrade;tmpnum++){
-			new Element("img",{"src":this.content.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.content.applicationcommenttopangular);
+
+        for (var tmpnum=0;tmpnum<intgrade;tmpnum++){
+            new Element("img",{"src":this.content.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.content.applicationcommenttopangular)
+        }
+        if (dotgrade>=0.5){
+            new Element("img",{"src":this.content.iconPath+"halffiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.content.applicationcommenttopangular);
+            intgrade++;
+        }
+        for (var tmpnum=0;tmpnum<5-intgrade;tmpnum++){
+            new Element("img",{"src":this.content.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.content.applicationcommenttopangular);
         }
 
         new Element("span",{
             "class":"o2_appmarket_application_introduce_memo_remark_inner_text",
             "text":this.app.lp.commentCountText.replace("{n}",commentcount)
         }).inject(this.content.applicationcommenttopangular);
-        
+
         //5星
         new Element("div",{"text":"5","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightfive);
         gradeangular = new Element("div",{"class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightfive);
@@ -214,7 +214,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             blackratio = parseInt(gradeList[4])/commentcount;
             blackratiowidth = blackratio*graderratiodivwidth;
             blackratiodiv.setStyle("width",blackratiowidth+"px");
-        }        
+        }
         new Element("div",{"text":this.numberFix(blackratio*100,1)+"%","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightfive);
         debugger;
         //4星
@@ -231,7 +231,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             blackratio = parseInt(gradeList[3])/commentcount;
             blackratiowidth = blackratio*graderratiodivwidth;
             blackratiodiv.setStyle("width",blackratiowidth+"px");
-        }   
+        }
         new Element("div",{"text":this.numberFix(blackratio*100,1)+"%","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightfour);
         //3星
         new Element("div",{"text":"3","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightthree);
@@ -247,40 +247,40 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             blackratio = (parseInt(gradeList[2])/commentcount).toFixed(4);
             blackratiowidth = blackratio*graderratiodivwidth;
             blackratiodiv.setStyle("width",blackratiowidth+"px");
-        }   
+        }
         new Element("div",{"text":this.numberFix(blackratio*100,1)+"%","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightthree);
-         //2星
-         new Element("div",{"text":"2","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrighttwo);
-         gradeangular = new Element("div",{"class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrighttwo);
-         new Element("img",{"src":this.content.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(gradeangular)
-         graderatiodiv = new Element("div",{"class":"o2_appmarket_application_comment_gradetotal"}).inject(this.content.applicationcommentrighttwo);
-         blackratiodiv = new Element("div",{"class":"o2_appmarket_application_comment_graderatio"}).inject(graderatiodiv);
-         graderratiodivwidth = graderatiodiv.clientWidth;
-         if (commentcount==0){
+        //2星
+        new Element("div",{"text":"2","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrighttwo);
+        gradeangular = new Element("div",{"class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrighttwo);
+        new Element("img",{"src":this.content.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(gradeangular)
+        graderatiodiv = new Element("div",{"class":"o2_appmarket_application_comment_gradetotal"}).inject(this.content.applicationcommentrighttwo);
+        blackratiodiv = new Element("div",{"class":"o2_appmarket_application_comment_graderatio"}).inject(graderatiodiv);
+        graderratiodivwidth = graderatiodiv.clientWidth;
+        if (commentcount==0){
             blackratio = 0;
             blackratiodiv.setStyle("width","0px");
         }else{
             blackratio = (parseInt(gradeList[1])/commentcount).toFixed(4);
             blackratiowidth = blackratio*graderratiodivwidth;
             blackratiodiv.setStyle("width",blackratiowidth+"px");
-        }   
+        }
         new Element("div",{"text":this.numberFix(blackratio*100,1)+"%","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrighttwo);
-         //1星
-         new Element("div",{"text":"1","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightone);
-         gradeangular = new Element("div",{"class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightone);
-         new Element("img",{"src":this.content.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(gradeangular)
-         graderatiodiv = new Element("div",{"class":"o2_appmarket_application_comment_gradetotal"}).inject(this.content.applicationcommentrightone);
-         blackratiodiv = new Element("div",{"class":"o2_appmarket_application_comment_graderatio"}).inject(graderatiodiv); 
-         graderratiodivwidth = graderatiodiv.clientWidth;
-         if (commentcount==0){
+        //1星
+        new Element("div",{"text":"1","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightone);
+        gradeangular = new Element("div",{"class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightone);
+        new Element("img",{"src":this.content.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(gradeangular)
+        graderatiodiv = new Element("div",{"class":"o2_appmarket_application_comment_gradetotal"}).inject(this.content.applicationcommentrightone);
+        blackratiodiv = new Element("div",{"class":"o2_appmarket_application_comment_graderatio"}).inject(graderatiodiv);
+        graderratiodivwidth = graderatiodiv.clientWidth;
+        if (commentcount==0){
             blackratio = 0;
             blackratiodiv.setStyle("width","0px");
         }else{
             blackratio = (parseInt(gradeList[0])/commentcount).toFixed(4);
             blackratiowidth = blackratio*graderratiodivwidth;
             blackratiodiv.setStyle("width",blackratiowidth+"px");
-        }   
-        new Element("div",{"text":this.numberFix(blackratio*100,1)+"%","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightone);        
+        }
+        new Element("div",{"text":this.numberFix(blackratio*100,1)+"%","class":"o2_appmarket_application_comment_top_right_graderatioItem"}).inject(this.content.applicationcommentrightone);
     },
     commentsPower:function(commentdata){
         var commentText = "";
@@ -301,16 +301,16 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             var _self = this;
             commentbuttondiv.addEvents({
                 "click": function(e){
-                     _self.createComment(e);
+                    _self.createComment(e);
                 }
             })
-            
+
         }else{
             new Element("div",{"class":"o2_appmarket_application_comment_middle_tip","text":commentText}).inject(this.content.applicationcommentmiddle);
         }
     },
     commentsView:function(commentdata){
-        var commentsList = commentdata.data;        
+        var commentsList = commentdata.data;
         commentsList.each(function(percomment){
             var commentcontentdiv = new Element("div",{"class":"o2_appmarket_application_comment_content"}).inject(this.content.applicationcommentbottom);
             var commentcontentleft = new Element("div",{"class":"o2_appmarket_application_comment_content_left"}).inject(commentcontentdiv);
@@ -327,7 +327,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             }
             new Element("div",{"class":"o2_appmarket_application_comment_content_title","text":percomment.title}).inject(commentcontentright);
             new Element("div",{"class":"o2_appmarket_application_comment_content_text","text":percomment.comment,"title":percomment.comment}).inject(commentcontentright);
-            
+
         }.bind(this))
     },
     reload: function(){
@@ -353,18 +353,18 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             starnode.store("id",tmpi);
             starnode.addEvents({
                 "click": function(e){
-                     var idnum = this.retrieve("id");
-                     selectstar = idnum + 1;
-                     var starblacknode = this;
-                     var starwhitenode = this.nextElementSibling;
-                     while(starwhitenode){
+                    var idnum = this.retrieve("id");
+                    selectstar = idnum + 1;
+                    var starblacknode = this;
+                    var starwhitenode = this.nextElementSibling;
+                    while(starwhitenode){
                         starwhitenode.set("src",_self.content.iconPath+"whitefiveangular.png");
                         starwhitenode = starwhitenode.nextElementSibling;
-                     }
-                     while(starblacknode){
+                    }
+                    while(starblacknode){
                         starblacknode.set("src",_self.content.iconPath+"blackfiveangular.png");
                         starblacknode = starblacknode.previousElementSibling
-                     }
+                    }
                 }
             })
         }
@@ -392,7 +392,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
                             commentdata["application"] = _self.appdata.id;
                             commentdata["grade"] = selectstar+"";
                             commentdata["comment"] = commentcontentNode.get("value");
-                            _self.submitComment(commentdata);                        
+                            _self.submitComment(commentdata);
                             this.close();
                         }
                     }
@@ -416,7 +416,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             secure: false,
             emulation: false,
             noCache: true,
-            withCredentials: true, 
+            withCredentials: true,
             crossDomain : true,
             "data": JSON.stringify(commentdata),
             onSuccess: function(responseJSON, responseText){
@@ -442,7 +442,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         var s = 1 + numbers;
         // 如果是整数需要添加后面的0
         var spot = "." + numbers;
-        // Math.round四舍五入  
+        // Math.round四舍五入
         //  parseFloat() 函数可解析一个字符串，并返回一个浮点数。
         var value = Math.round(parseFloat(data) * s) / s;
         // 从小数点后面进行分割
@@ -458,5 +458,5 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             return value;
         }
     }
-    
+
 })
