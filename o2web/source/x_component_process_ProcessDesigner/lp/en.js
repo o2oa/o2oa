@@ -401,8 +401,35 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"manualBeforeTask": "manualBeforeTask",
 		"eventInfo9": "Process task, generate taskComplete",
 		"manualAfterTask": "manualAfterTask",
-		"eventInfo10": "Determine whether the conditions are met and enter the next activity"
+		"eventInfo10": "Determine whether the conditions are met and enter the next activity",
 
+		"updataTime": "UpdataTime",
+		"num": "SerialNumber",
+		"defaultOpinion": "Default Opinion",
+		"opinionRequired": "Opinion Required",
+		"routeType": "RouteType",
+		"defaultRoute": "Default Route",
+		"backRoute": "Back Route",
+		"appendTask": "AppendTask（Must point to the same activity）",
+		"appendTaskInfo": "The AppendTask does not trigger the activity event",
+		"appendTo": "AppendTo",
+		"byRoute": "By Route",
+		"appendToScript": "AppendTo Script",
+		"asyncReturn": "Async Return",
+		"expand": "Expand",
+		"decisionGroup": "Decision Group",
+		"decisionGroupInfo": "Separate multiple decision groups with # signs, and add an integer before the name for the sort value. Such as \"1agree#2disagree\".",
+		"prefRouting": "Pref Routing",
+		"routeNow": "Route Immediately",
+		"routeNowInfo": "(When you select \"Yes\", as long as you select this route in multi-person processing, the document will be transferred immediately according to this route)",
+		"autoFlowTime": "Auto flow when the activity timeout",
+		"autoFlowPerson": "Auto flow when the handler is the same as the previous activity",
+		"routeCheck": "Route Verification",
+		"routeCheckInfo": "(Return true to pass, return string to indicate error)",
+		"showName": "Show Name",
+		"hideCondition": "Hide Condition",
+		"hideConditionInfo": "(Return true to hide)",
+		"select": "Select"
 	}
 
 };
