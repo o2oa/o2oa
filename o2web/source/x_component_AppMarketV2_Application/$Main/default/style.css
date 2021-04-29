@@ -28,7 +28,7 @@
 .o2_appmarket_application_introduce_icon{
     width:300px;
     height:450px;
-    border-radius:16px;    
+    border-radius:16px;
     position:absolute;
     left:0px;
     top:0px;
@@ -47,7 +47,7 @@
     font-size:16px;
     font-family:MicrosoftYaHei;
     color:rgba(74,144,226,1);
-    line-height:21px;    
+    line-height:21px;
 }
 .o2_appmarket_application_introduce_memo_name{
     height:51px;
@@ -55,7 +55,7 @@
     font-family:MicrosoftYaHei;
     color:rgba(51,51,51,1);
     line-height:47px;
-    overflow:hidden;       
+    overflow:hidden;
 }
 .o2_appmarket_application_introduce_memo_recommend{
     width:437px;
@@ -63,7 +63,7 @@
     font-size:36px;
     font-family:MicrosoftYaHei;
     color:rgba(51,51,51,1);
-    line-height:47px;       
+    line-height:47px;
 }
 .o2_appmarket_application_introduce_memo_remark{
     width:90%;
@@ -71,7 +71,7 @@
     font-size:14px;
     font-family:MicrosoftYaHei;
     color:rgba(102,102,102,1);
-    line-height:19px;        
+    line-height:19px;
 }
 .o2_appmarket_application_introduce_memo_category{
     width:90%;
@@ -114,8 +114,8 @@
     font-size:18px;
     font-family:MicrosoftYaHei;
     color:rgba(102,102,102,1);
-    line-height:24px;   
-    margin-left:8px; 
+    line-height:24px;
+    margin-left:8px;
 }
 .o2_appmarket_application_introduce_download{
     width:16%;
@@ -130,15 +130,15 @@
     font-family:MicrosoftYaHei;
     color:rgba(74,144,226,1);
     line-height:37px;
-    margin:0px 0px 20px 20px;  
+    margin:0px 0px 20px 20px;
 }
 .o2_appmarket_application_introduce_download_downbtn{
     width:240px;
     height:58px;
     background:rgba(74,144,226,1);
     border-radius:30px;
-    text-align: center;     
-    cursor: pointer; 
+    text-align: center;
+    cursor: pointer;
 }
 .o2_appmarket_application_introduce_download_downbtn_text{
     width:94px;
@@ -148,7 +148,7 @@
     color:rgba(255,255,255,1);
     line-height:29px;
     padding-top:15px;
-    margin:auto auto;        
+    margin:auto auto;
 }
 .o2_appmarket_application_introduce_download_forumbtn{
     width:240px;
@@ -156,8 +156,8 @@
     background: #F0F0F0;
     border-radius:30px;
     text-align: center;
-    margin-top:15px;   
-    cursor: pointer;   
+    margin-top:15px;
+    cursor: pointer;
 }
 .o2_appmarket_application_introduce_download_forumbtn_text{
     width: 143px;
@@ -176,7 +176,7 @@
     width: 20px;
     height: 20px;
     background-image: url("../x_component_AppMarketV2_Application/$Main/default/icon/icon_deng.png");
-    float:left;        
+    float:left;
 }
 .o2_appmarket_application_introduce_download_bbstitle{
     width: 97px;
@@ -201,9 +201,9 @@
     width:240px;
     height:58px;
     background:rgba(240,240,240,1);
-    border-radius:30px; 
-    margin-top:58px; 
-    text-align: center;        
+    border-radius:30px;
+    margin-top:58px;
+    text-align: center;
 }
 .o2_appmarket_application_introduce_download_favbtn_text{
     width:143px;
@@ -211,9 +211,9 @@
     font-size:22px;
     font-family:MicrosoftYaHei;
     color:rgba(102,102,102,1);
-    line-height:29px; 
+    line-height:29px;
     padding-top:10px;
-    margin:auto auto;       
+    margin:auto auto;
 }
 
 .o2_appmarket_application_introduce_bottom{
@@ -226,7 +226,7 @@
 
 .o2_appmarket_application_introduce_tabdiv{
     height:128px;
-    background:rgba(216,216,216,0); 
+    background:rgba(216,216,216,0);
     text-align: center;
 }
 .o2_appmarket_application_introduce_tab_current{
@@ -260,8 +260,8 @@
     width:100%;
     min-height:672px;
     background:rgba(216,216,216,0);
-    border-radius:6px; 
-    margin:20px 0px 20px 20px; 
+    border-radius:6px;
+    margin:20px 0px 20px 20px;
 }
 .o2_appmarket_application_introduce_content{
     width:100%;
@@ -326,7 +326,7 @@
 .o2_appmarket_application_comment_gradetotal{
     width:85%;
     height:14px;
-    border-radius:4px;    
+    border-radius:4px;
     background:rgba(216,216,216,1);
     float:left;
     margin-top:26px;
@@ -347,8 +347,8 @@
     width:200px;
     height:50px;
     background:rgba(230,230,230,1);
-    border-radius:30px;  
-    float:left;  
+    border-radius:30px;
+    float:left;
     text-align:center;
     position:relative;
     cursor: pointer;
@@ -380,7 +380,7 @@
     width:98%;
     height:220px;
     background:rgba(255,255,255,1);
-    border-radius:16px; 
+    border-radius:16px;
     margin-top:20px;
 }
 .o2_appmarket_application_comment_content_right{
@@ -407,7 +407,7 @@
 
 }
 .o2_appmarket_application_comment_content_left{
-    width:20%;
+    width:30%;
     height:220px;
     float:left;
     margin-top:10px;
@@ -428,6 +428,7 @@
     font-family:MicrosoftYaHei;
     color:rgba(51,51,51,1);
     line-height:21px;
+    overflow: hidden;
 
 }
 .comment_dlg_title{
@@ -450,7 +451,7 @@
     height:200px;
     background:rgba(255,255,255,1);
     border-radius:10px;
-    border:1px solid rgba(222,222,222,1);   
+    border:1px solid rgba(222,222,222,1);
 
 }
 .comment_dlg_star{
