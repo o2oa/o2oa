@@ -1050,6 +1050,12 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
             "       <div styles='formItemSpan' item='replyPublishResult'></div>"+
             " </td>" +
 
+            "</tr><tr>" +
+            "   <td styles='formTableTitle' lable='sectionGrade'></td>" +
+            "   <td styles='formTableValue' item='sectionGrade'></td>" +
+            "   <td styles='formTableValue' colspan='2'></td>" +
+            "</tr>" +
+
             "</tr><tr item='indexRecommendTr' style='"+ ( this.data.sectionVisible == this.lp.byPermission  ? "display:none;" : "display:;" ) +"'>" +
             "   <td styles='formTableTitle' lable='indexRecommendable'></td>" +
             "   <td styles='formTableValue' item='indexRecommendable'></td>" +
@@ -1088,11 +1094,19 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
             }.bind(this))
         }.bind(this), null ,false);
 
-        if( !this.data.typeCatagory ){
-            this.data.typeCatagory = this.lp.typeCategorySelectValue.split("|");
+        if( this.data.typeCategory ){
+            this.data.typeCatagory = typeof this.data.typeCategory == "string" ? this.data.typeCategory.split("|") : this.data.typeCategory;
         }else{
-            this.data.typeCatagory = typeof this.data.typeCatagory == "string" ? this.data.typeCatagory.split("|") : this.data.typeCatagory;
+            this.data.typeCatagory = this.lp.typeCategorySelectValue.split("|");
+            //this.data.typeCatagory = typeof this.data.typeCatagory == "string" ? this.data.typeCatagory.split("|") : this.data.typeCatagory;
         }
+        if(this.data.subjectTypeList && this.data.subjectTypeList.length>0){
+            this.data.subjectType = this.data.subjectTypeList.join("|");
+        }
+        if(this.data.sectionGrade){
+            this.data.sectionGrade = "是";
+        }
+        debugger;
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, this.data, {
                 style: "forum",
@@ -1159,6 +1173,7 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
                     creatorName: { text: this.lp.creatorName, type : "org", isEdited : false, "defaultValue" : this.app.userName },
                     createTime: {text: this.lp.createTime, type : "innerText" },
                     sectionStatus: {text: this.lp.sectionStatus, type : "select", selectValue : this.lp.sectionStatusValue.split(",") },
+                    sectionGrade: {text: this.lp.sectionGrade, type : "select", selectValue : this.lp.sectionGradeValue.split(",") },
                     orderNumber: {text: this.lp.orderNumber, tType : "number" },
                     subjectType: {text: this.lp.subjectType, defaultValue : this.lp.subjectTypeDefaultValue },
                     typeCatagory: {text: this.lp.typeCatagory, selectValue : this.lp.typeCategorySelectValue.split("|"),  type : "checkbox", notEmpty : true},
@@ -1360,7 +1375,16 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
             data.moderatorNames = data.moderatorNames.split(",");
         }
         data.sectionLevel = MWF.xApplication.Forum.LP.mainSection;
-        data.typeCatagory = data.typeCatagory.split(",").join("|");
+        data.typeCategory = data.typeCatagory.split(",").join("|");
+        var subjectType = data.subjectType;
+        subjectType = subjectType.replace(/[^\x00-\xff]/g, 'xx')
+        if(subjectType && subjectType.length>255){
+            data.subjectType = this.lp.subjectTypeDefaultValue;
+        }
+        if(data.sectionGrade && data.sectionGrade === "是"){
+            data.sectionGrade = true;
+        }
+        debugger;
         this.app.restActions.saveSection( data, function(json){
             if( this.formData ){
                 this.saveIcon( json.data.id, function(){
