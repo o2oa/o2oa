@@ -38,6 +38,13 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "templateCategory": "模板分类：",
     "all": "全部",
 
+    "formType": {
+        "empty": "空白表单",
+        "publishEdit": "发布类编辑表单",
+        "publishRead": "发布类阅读表单",
+        "dataInput": "数据录入类表单"
+    },
+
 	"category": {
         "create": "新建分类",
         "search": "搜索分类",

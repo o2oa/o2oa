@@ -3,6 +3,12 @@ MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner ||
 MWF.xDesktop.requireApp("process.FormDesigner", "lp."+MWF.language, null, false);
 MWF.xApplication.cms.FormDesigner.LP = Object.merge( MWF.xApplication.process.FormDesigner.LP, {
     "selectApplication" : "选择应用",
+    "formType": {
+        "empty": "空白表单",
+        "publishEdit": "发布类编辑表单",
+        "publishRead": "发布类阅读表单",
+        "dataInput": "数据录入类表单"
+    },
     "validation" : {
         "publish" : "发布时"
     },
