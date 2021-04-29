@@ -127,6 +127,10 @@ o2.LP.process = {
 };
 o2.LP.desktop = {
 	"homepage": "Homepage",
+	"taskCenter": "TaskCenter",
+	"info": "Information",
+	"calendar": "Calendar",
+	"profile": "Profile",
 	"loadding": "System is loadding, please wait......",
 	"lowBrowser": " Your browser version is too low! ~ IE8 and the following versions are not supported!",
 	"upgradeBrowser": "Please upgrade your browser：",
