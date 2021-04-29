@@ -400,7 +400,36 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"manualBeforeTask": "待办处理前",
 		"eventInfo9": "处理待办，转已办",
 		"manualAfterTask": "待办处理后",
-		"eventInfo10": "判断是否满足条件进入下一个活动"
+		"eventInfo10": "判断是否满足条件进入下一个活动",
+
+		"updataTime": "更新时间",
+		"num": "顺序号",
+		"defaultOpinion": "默认意见",
+		"opinionRequired": "意见必填",
+		"routeType": "路由类型",
+		"defaultRoute": "默认路由",
+		"backRoute": "回退路由",
+		"appendTask": "转交（仅指向同活动时生效）",
+		"appendTaskInfo": "转交活动不触发活动事件",
+		"appendTo": "转交人员",
+		"byRoute": "根据路由选择",
+		"appendToScript": "转交人脚本",
+		"asyncReturn": "异步返回",
+		"expand": "扩展",
+		"decisionGroup": "决策组",
+		"decisionGroupInfo": "多个决策组请用#号分隔，名称前加整数为排序值。如“1同意#2不同意”。",
+		"prefRouting": "优先路由",
+		"routeNow": "立即路由",
+		"routeNowInfo": "(当选择“是”，多人处理时只要选择此路由，则立即按此路由流转文档)",
+		"autoFlowTime": "活动超时时自动流转",
+		"autoFlowPerson": "与上一活动处理人相同时自动流转",
+		"routeCheck": "路由校验",
+		"routeCheckInfo": "(返回true通过，返回string为错误提示)",
+		"showName": "显示名称",
+		"hideCondition": "隐藏条件",
+		"hideConditionInfo": "(返回true隐藏)",
+		"select": "选择",
+
 
 	}
 };
