@@ -440,18 +440,18 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             }
         }
 
-        var p = this.paperNode.getScroll();
-        var scrollY = 0;
-        var scrollX = 0;
-        var tmpNode = this.paperNode.getParent();
-        while (tmpNode){
-            var s = tmpNode.getScroll();
-            scrollY += s.y;
-            scrollX += s.x;
-            tmpNode = tmpNode.getParent();
-        }
-        y = y-p.y-scrollY;
-        x = x-p.x-scrollX;
+        // var p = this.paperNode.getScroll();
+        // var scrollY = 0;
+        // var scrollX = 0;
+        // var tmpNode = this.paperNode.getParent();
+        // while (tmpNode){
+        //     var s = tmpNode.getScroll();
+        //     scrollY += s.y;
+        //     scrollX += s.x;
+        //     tmpNode = tmpNode.getParent();
+        // }
+        // y = y-p.y-scrollY;
+        // x = x-p.x-scrollX;
 
         return {"x": x, "y": y};
     },
