@@ -452,9 +452,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var p1 = this.workAction.getDictRoot(name, application, function(d){
                     return d.data;
                 }, function(){});
-                var p2 = this.workAction.getScriptByNameV2(name, application, function(d){
-                    return this.Macro.exec(d.data.text, this);
-                }.bind(this), function(){});
+                var p2 = new Promise(function(resolve, reject){
+                    this.workAction.getScriptByNameV2(name, application, function(d){
+                        if (d.data.text) {
+                            resolve(this.Macro.exec(d.data.text, this));
+                        }else{
+                            reject("");
+                        }
+                    }.bind(this), function(){reject("");});
+                }.bind(this));
                 languageJson = Promise.any([p1, p2]);
             }
         }
