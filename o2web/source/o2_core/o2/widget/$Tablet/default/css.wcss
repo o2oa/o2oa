@@ -83,5 +83,9 @@
         "height": "40px",
         "float": "left",
         "border-left": "1px solid rgba(0,0,0,0.12)"
+    },
+    "canvasWrap": {
+        "border": "1px solid #ccc",
+        "margin": "0px auto"
     }
 }
