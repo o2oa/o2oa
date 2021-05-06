@@ -71,6 +71,7 @@ class ActionCreate extends BaseAction {
 								ScriptContext scriptContext = new SimpleScriptContext();
 								Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 								bindings.put("body", body);
+								bindings.put("message", cpwi);
 								Object o = compiledScript.eval(scriptContext);
 								cpwi.setBody(body);
 								if (o != null) {
@@ -329,7 +330,7 @@ class ActionCreate extends BaseAction {
 		message.setInstant(instant.getId());
 		return message;
 	}
-	
+
 	private Message defaultMessage(EffectivePerson effectivePerson, Business business, Wi wi, String consumer,
 			Instant instant) {
 		Message message = new Message();
