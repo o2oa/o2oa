@@ -294,6 +294,7 @@
 
   "loadWorkV2": {"uri": "/jaxrs/work/v2/workorworkcompleted/{workOrWorkCompleted}"},
   "lookupFormWithWork": {"uri": "/jaxrs/form/v2/lookup/workorworkcompleted/{workOrWorkCompleted}"},
+  "lookupFormWithWorkMobile": {"uri": "/jaxrs/form/v2/lookup/workorworkcompleted/{workOrWorkCompleted}/mobile"},
 
   "listTaskByJob": {"uri": "/jaxrs/task/list/job/{job}"},
   "listTaskCompletedByJob": {"uri": "/jaxrs/taskcompleted/list/job/{job}"},
