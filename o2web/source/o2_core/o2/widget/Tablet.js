@@ -145,6 +145,13 @@ o2.widget.Tablet = o2.Tablet = new Class({
         if( this.contentHeight < 150 )this.contentHeight = 150;
         this.contentNode.setStyle("height", this.contentHeight );
 
+        if(this.canvasWrap){
+            this.canvasWrap.setStyles({
+                width : this.contentWidth+"px",
+                height : this.contentHeight+"px"
+            });
+        }
+
         if( this.canvas ){
             var d = this.ctx.getImageData(0,0,this.canvas.clientWidth,this.canvas.clientHeight);
             this.canvas.set("width", this.contentWidth );
@@ -187,10 +194,17 @@ o2.widget.Tablet = o2.Tablet = new Class({
     },
     loadContent : function( ){
 
+        this.canvasWrap = new Element("div.canvasWrap", { styles :  this.css.canvasWrap}).inject(this.contentNode);
+        this.canvasWrap.setStyles({
+            width : this.contentWidth+"px",
+            height : this.contentHeight+"px"
+        });
+
         this.canvas = new Element("canvas", {
             width : this.contentWidth,
             height : this.contentHeight
-        }).inject( this.contentNode );
+        }).inject( this.canvasWrap );
+
         this.ctx = this.canvas.getContext("2d");
 
 
@@ -203,7 +217,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             var ctx = this.ctx;
             var canvas = this.canvas;
             var container = this.contentNode;
-            var position = this.contentNode.getPosition();
+            var position = this.canvasWrap.getPosition();
             var doc = $(document);
             //ctx.strokeStyle="#0000ff" 线条颜色; 默认 #000000
             if( this.options.color )ctx.strokeStyle= this.currentColor || this.options.color; // 线条颜色; 默认 #000000
@@ -451,7 +465,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 height : size.height
             });
 
-            var mover = new o2.widget.Tablet.ImageMover( this, imageNode, this.contentNode , {
+            var mover = new o2.widget.Tablet.ImageMover( this, imageNode, this.canvasWrap , {
                 onPostOk : function(){
                     var coordinate =  mover.getCoordinage();
                     this.storeToPreArray();
