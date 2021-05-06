@@ -212,7 +212,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     //this.close();
                 }.bind(this)}, id, id, id, [this.options.formid || this.options.form.id]);
         }else{
-            this.action.lookupFormWithWork(id, function(json){
+            this.action[((layout.mobile) ? "lookupFormWithWorkMobile" : "lookupFormWithWork")](id, function(json){
                 var formId = json.data.id;
                 if (json.data.form){
                     json_form = json;
