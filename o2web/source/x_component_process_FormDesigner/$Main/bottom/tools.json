@@ -122,6 +122,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.datagrid,
     "className": "Datagrid"
   },
+  "subform": {
+    "icon": "subform.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.subform,
+    "className": "Subform"
+  },
   "datatemplate": {
     "icon": "datagrid.png",
     "text": "数据模板",
