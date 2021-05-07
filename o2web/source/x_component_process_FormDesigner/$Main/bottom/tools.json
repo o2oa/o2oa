@@ -127,6 +127,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.subform,
     "className": "Subform"
   },
+  "datatemplate": {
+    "icon": "datagrid.png",
+    "text": "数据模板",
+    "className": "Datatemplate"
+  },
   "ViewSelector": {
     "icon": "viewSelector.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.ViewSelector,

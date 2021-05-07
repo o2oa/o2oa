@@ -1174,7 +1174,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     moduleNodes.push(subDom);
                 }
                 // && mwftype !== "tab$Content"
-                if (mwftype !== "datagrid" && mwftype !== "subSource" && mwftype !== "tab$Content") {
+                if (mwftype !== "datagrid" && mwftype !== "subSource" && mwftype !== "tab$Content" && mwftype !== "datatemplate") {
                     moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom));
                 }
             } else {
@@ -1269,6 +1269,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //var data = Object.clone(this.businessData.data);
         var data = this.businessData.data;
         Object.each(this.forms, function (module, id) {
+
+            //对id类似于 xx..0..xx 的字段 不处理
+            if( id.indexOf("..") > 0 )return;
+
             if (module.json.type === "Opinion") {
 
                 if (issubmit) {
@@ -4425,6 +4429,32 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter").toURI().go();
                 }
             }
+        }
+    },
+    /**
+     * @summary 获取组件的类型(小写).
+     * @param {Object|String} module - 组件或组件Id
+     * @return {String} 组件类型（小写）
+     * @example
+     * //假设有一个文本输入组件id为subject
+     * var module = this.form.get("subject");
+     * //moduleType 为 textfield;
+     * var moduleType = this.form.getApp().appForm.getModuleType();
+     * @example
+     * //假设有一个附件组件id为att,
+     * var moduleType = this.form.getApp().appForm.getModuleType("att");
+     * //moduleType 为 attachment;
+     */
+    getModuleType : function (module) {
+        if( typeOf(module) === "string" )module = this.all[module];
+        if( module ){
+            var moduleType = module.json.moduleName || "";
+            if( !moduleType ){
+                moduleType = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
+            }
+            return moduleType.toLowerCase();
+        }else{
+            return "";
         }
     }
 
