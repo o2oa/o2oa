@@ -468,7 +468,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                         });
                         initIds.push( id );
                     }
-                };
+                }
 
                 function checkUnit(unit) {
                     if(unit.identityList && unit.identityList.length){
