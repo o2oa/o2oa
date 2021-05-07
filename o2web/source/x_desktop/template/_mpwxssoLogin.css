@@ -1,0 +1,97 @@
+
+    .login-box {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      box-sizing: border-box;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .login-mode {
+      height: 42px;
+    }
+
+    .login-mode .mode-sp {
+      margin: 0 10px;
+      font-size: 1.2em;
+      line-height: 46px;
+    }
+
+    .login-mode .mode-text {
+      color: #999999;
+      font-size: 1em;
+      line-height: 42px;
+      cursor: pointer;
+    }
+
+    .login-mode .mode-active {
+      color: #333333;
+    }
+
+    .input {
+      width: 100%;
+      height: 50px;
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 1px #EEEEEE solid;
+      margin-top: 10px;
+      font-size: 1em;
+    }
+
+    .input-code-box {
+      width: 100%;
+      height: 50px;
+      margin-top: 10px;
+      display: flex;
+      flex-direction: row;
+
+    }
+    .input-code-box input {
+      border: 0;
+      border-bottom: 1px #EEEEEE solid;
+      font-size: 1em;
+    }
+    .code-btn {
+      width: 50%;
+      height: 40px;
+      line-height: 40px;
+      line-height: 40px;
+      background-color: #fb4747;
+      color: white;
+      font-size: 1em;
+      border: 0;
+      border-radius: 20px;
+    }
+    .code-btn-sending {
+      width: 50%;
+      height: 40px;
+      line-height: 40px;
+      line-height: 40px;
+      background-color: #c8c8c8;
+      color: white;
+      font-size: 1em;
+      border: 0;
+      border-radius: 20px;
+    }
+
+    .login-btn {
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      background-color: #fb4747;
+      color: white;
+      border: 0;
+      border-radius: 20px;
+      margin-top: 60px;
+      text-align: center;
+      font-size: 1.2em;
+    }

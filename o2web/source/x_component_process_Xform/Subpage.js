@@ -160,7 +160,8 @@ MWF.xApplication.process.Xform.Subpage = MWF.APPSubpage =  new Class({
         subpageDataStr = data.data;
         this.subpageData = null;
         if (subpageDataStr){
-            this.subpageData = JSON.decode(MWF.decodeJsonString(subpageDataStr));
+            var jsonStr = o2.bindJson(MWF.decodeJsonString(subpageDataStr),  {"lp": MWF.xApplication.process.Xform.LP.form});
+            this.subpageData = JSON.decode(jsonStr);
             this.subpageData.updateTime = data.updateTime;
         }
     },

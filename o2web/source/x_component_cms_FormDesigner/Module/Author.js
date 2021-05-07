@@ -34,7 +34,7 @@ MWF.xApplication.cms.FormDesigner.Module.Author = MWF.CMSFCAuthor = new Class({
 		}).inject(this.form.container);
 
 		var icon = new Element("div", {
-			"styles": this.css.fieldIcon
+			"styles": this.css.textfieldIcon
 		}).inject(this.moveNode);
 		var text = new Element("div", {
 			"styles": this.css.moduleText,

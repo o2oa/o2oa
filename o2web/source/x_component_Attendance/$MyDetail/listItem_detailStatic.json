@@ -1,6 +1,6 @@
 [
   {
-    "title" : "部门",
+    "title" : MWF.xApplication.Attendance.LP.unit,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function( d ){ return d.unitName.split('@')[0] }",
@@ -8,7 +8,7 @@
     "width" : "10%"
   },
   {
-    "title" : "姓名",
+    "title" : MWF.xApplication.Attendance.LP.name,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function( d ){ return d.employeeName.split('@')[0] }",
@@ -16,7 +16,7 @@
     "width" : "10%"
   },
   {
-    "title" : "月份",
+    "title" : MWF.xApplication.Attendance.LP.months,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function( data ){ return data.statisticYear + '-' + data.statisticMonth }",
@@ -24,7 +24,7 @@
     "width" : "8%"
   },
   {
-    "title" : "上班打卡次数",
+    "title" : MWF.xApplication.Attendance.LP.onDutyTimes,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "onDutyTimes",
@@ -32,7 +32,7 @@
     "width" : "8%"
   },
   {
-    "title" : "下班打卡次数",
+    "title" : MWF.xApplication.Attendance.LP.offDutyTimes,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "offDutyTimes",
@@ -40,7 +40,7 @@
     "width" : "8%"
   },
   {
-    "title" : "出勤天数",
+    "title" : MWF.xApplication.Attendance.LP.onDutyDayCount1,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "onDutyDayCount",
@@ -48,7 +48,7 @@
     "width" : "8%"
   },
   {
-    "title" : "请假或外出报备天数",
+    "title" : MWF.xApplication.Attendance.LP.onSelfHolidayCount1,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "onSelfHolidayCount",
@@ -56,7 +56,7 @@
     "width" : "8%"
   },
   {
-    "title" : "缺勤天数",
+    "title" : MWF.xApplication.Attendance.LP.absentCount,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "absenceDayCount",
@@ -64,7 +64,7 @@
     "width" : "8%"
   },
   {
-    "title" : "迟到次数",
+    "title" : MWF.xApplication.Attendance.LP.lateTimes,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "lateTimes",
@@ -80,7 +80,7 @@
 //    "width" : "8%"
 //  },
   {
-    "title" : "工时不足人次",
+    "title" : MWF.xApplication.Attendance.LP.lackOfTimeCount,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "lackOfTimeCount",
@@ -88,7 +88,7 @@
     "width" : "8%"
   },
   {
-    "title" : "异常打卡人次",
+    "title" : MWF.xApplication.Attendance.LP.abNormalDutyCount,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "abNormalDutyCount",

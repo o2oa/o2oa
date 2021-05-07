@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import javax.imageio.ImageIO;
 
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import org.apache.commons.codec.binary.Base64;
 import org.imgscalr.Scalr;
 

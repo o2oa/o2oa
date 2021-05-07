@@ -19,6 +19,7 @@ o2.widget.Dialog = o2.DL = new Class({
 		"text": "",
 		"url": "",
 		"content": null,
+		"lp": null,
 
 		"isMax": false,
 		"isClose": false,
@@ -416,7 +417,7 @@ o2.widget.Dialog = o2.DL = new Class({
 			this.options.content.inject(this.content);
 		}else if (this.options.url){
 			this.content.set("load", {"method": "get", "async": false});
-			$(this.content).load(this.options.url);
+			$(this.content).loadHtml(this.options.url, {"bind": {"lp": this.options.lp}});
 /*
 			var request = new Request.HTML({
 				url: this.options.url,

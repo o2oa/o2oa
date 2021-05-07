@@ -1,6 +1,6 @@
 [
   {
-    "title": "分类配置",
+    "title": MWF.xApplication.cms.ColumnManager.LP.categorySetting,
     "id": "categoryConfig",
     "action": "cagetoryConfig",
     "icon": "icon_fen_lei.png",
@@ -12,7 +12,7 @@
     "sub": []
   },
   {
-    "title": "表单配置",
+    "title": MWF.xApplication.cms.ColumnManager.LP.formSetting,
     "id": "formConfig",
     "action": "formConfig",
     "icon": "icon_biao_dan_pei_zhi.png",
@@ -23,7 +23,7 @@
     "sub": []
   },
   {
-    "title": "列表配置",
+    "title": MWF.xApplication.cms.ColumnManager.LP.listSetting,
     "id": "viewConfig",
     "action": "viewConfig",
     "icon": "icon_lie_biao.png",
@@ -45,7 +45,7 @@
 //    "sub": []
 //  },
   {
-    "title": "数据配置",
+    "title": MWF.xApplication.cms.ColumnManager.LP.dataSetting,
     "id": "dataConfig",
     "action": "dataConfig",
     "icon": "icon_shu_ju_shi_tu.png",
@@ -56,7 +56,7 @@
     "sub": []
   },
   {
-    "title": "脚本配置",
+    "title": MWF.xApplication.cms.ColumnManager.LP.scriptSetting,
     "id": "scriptConfig",
     "action": "scriptConfig",
     "icon": "icon_jiao_ben.png",
@@ -67,7 +67,7 @@
     "sub": []
   },
   {
-    "title": "资源文件",
+    "title": MWF.xApplication.cms.ColumnManager.LP.resourceFile,
     "id": "fileConfig",
     "action": "fileConfig",
     "icon": "icon_jiao_ben.png",
@@ -78,7 +78,7 @@
     "sub": []
   },
   {
-    "title": "栏目属性",
+    "title": MWF.xApplication.cms.ColumnManager.LP.appProperty,
     "id": "applicationProperty",
     "action": "applicationProperty",
     "icon": "icon_lan_mu.png",
@@ -87,7 +87,7 @@
     "sub": []
   },
   {
-    "title": "查找设计",
+    "title": MWF.xApplication.cms.ColumnManager.LP.findDesign,
     "id": "findDesigner",
     "action": "findDesigner",
     "icon": "icons_find.png",

@@ -52,9 +52,12 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         if (!this.propertyContent) {
             this.getHtmlString(function () {
                 if (this.htmlString) {
+                    this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.query.ViewDesigner.LP.propertyTemplate});
                     this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
                     this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.propertyNode);
+                    //var htmlStr = this.JsonTemplate.load();
                     this.propertyContent.set("html", this.JsonTemplate.load());
+                    //this.propertyContent.injectHtml(htmlStr);
 
                     this.setEditNodeEvent();
                     this.setEditNodeStyles(this.propertyContent);

@@ -1,3 +1,6 @@
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.Work = MWF.xApplication.process.Work || {};
 MWF.xApplication.process.Work.options = Object.clone(o2.xApplication.Common.options);
 MWF.xApplication.process.Work.options.multitask = true;
 MWF.xApplication.process.Work.Main = new Class({
@@ -10,7 +13,7 @@ MWF.xApplication.process.Work.Main = new Class({
 		"icon": "icon.png",
 		"width": "1200",
 		"height": "800",
-		"title": MWF.xApplication.process.Work.LP.title,
+		"title": "",
         "workId": "",
         "draftId": "",
         "draft": null,
@@ -25,7 +28,9 @@ MWF.xApplication.process.Work.Main = new Class({
         "worklogType": "record" //record, worklog
 	},
 	onQueryLoad: function(){
-	    debugger;
+        if (!this.options.title) this.setOptions({
+            "title": MWF.xApplication.process.Work.LP.title
+        });
 		this.lp = MWF.xApplication.process.Work.LP;
         if (!this.status) {
         } else {
@@ -104,9 +109,10 @@ MWF.xApplication.process.Work.Main = new Class({
         }
     },
     reload: function(data){
-        if (this.form){
+        if (this.appForm){
             this.formNode.empty();
-            MWF.release(this.form);
+            MWF.release(this.appForm);
+            this.appForm = null;
             this.form = null;
         }
         if (data){
@@ -206,7 +212,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     //this.close();
                 }.bind(this)}, id, id, id, [this.options.formid || this.options.form.id]);
         }else{
-            this.action.lookupFormWithWork(id, function(json){
+            this.action[((layout.mobile) ? "lookupFormWithWorkMobile" : "lookupFormWithWork")](id, function(json){
                 var formId = json.data.id;
                 if (json.data.form){
                     json_form = json;
@@ -510,7 +516,10 @@ MWF.xApplication.process.Work.Main = new Class({
         this.control = controlData;
         if (formData){
             if (formData.form){
-                this.form = (formData.form.data) ? JSON.decode(MWF.decodeJsonString(formData.form.data)): null;
+                this.formDataText = (formData.form.data) ? MWF.decodeJsonString(formData.form.data) : "";
+                this.form = (this.formDataText) ? JSON.decode(this.formDataText): null;
+
+                //this.form = (formData.form.data) ? MWF.decodeJsonString(formData.form.data): null;
                 //
                 // var rex = /mwftype="subform"/gi;
                 //
@@ -518,10 +527,14 @@ MWF.xApplication.process.Work.Main = new Class({
                 // debugger;
                 this.relatedFormMap = formData.relatedFormMap;
                 this.relatedScriptMap = formData.relatedScriptMap;
+                this.relatedLanguage = formData.relatedLanguage;
                 delete formData.form.data;
                 this.formInfor = formData.form;
             }else{
-                this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
+                this.formDataText = (formData.data) ? MWF.decodeJsonString(formData.data) : "";
+                this.form = (this.formDataText) ? JSON.decode(this.formDataText): null;
+
+                //this.form = (formData.data) ? MWF.decodeJsonString(formData.data): null;
                 delete formData.data;
                 this.formInfor = formData;
             }
@@ -724,6 +737,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 };
                 this.appForm.workAction = this.action;
                 this.appForm.app = this;
+                this.appForm.formDataText = this.formDataText;
 
                 if( this.$events && this.$events.queryLoadForm ){
                     this.appForm.addEvent( "queryLoad", function () {

@@ -159,6 +159,8 @@ public class ResourceFactory {
 				properties.setProperty("druid.stat.slowSqlMillis", ds.getSlowSqlMillis().toString());
 				dataSource.setProperties(properties);
 			}
+			// 增加autoCommit设置
+			dataSource.setAutoCommitOnClose(ds.getAutoCommit());
 			String name = Config.externalDataSources().name(ds);
 			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
 		}
@@ -189,6 +191,8 @@ public class ResourceFactory {
 				properties.setProperty("druid.stat.slowSqlMillis", entry.getValue().getSlowSqlMillis().toString());
 				dataSource.setProperties(properties);
 			}
+			// 增加autoCommit设置
+			dataSource.setAutoCommitOnClose(false);
 			String name = Config.nodes().dataServers().name(entry.getValue());
 			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
 		}

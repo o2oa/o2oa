@@ -300,8 +300,10 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                 "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
             };
             var options = {};
-            var width = options.width || "850";
-            var height = options.height || "700";
+            // var width = options.width || "850";
+            // var height = options.height || "700";
+            var width = this.json.DialogWidth || "850";
+            var height = this.json.DialogHeight || "700";
 
             if (layout.mobile){
                 var size = document.body.getSize();

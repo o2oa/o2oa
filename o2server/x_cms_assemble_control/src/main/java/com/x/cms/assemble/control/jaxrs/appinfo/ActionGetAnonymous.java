@@ -20,13 +20,13 @@ import java.util.Optional;
 public class ActionGetAnonymous extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger( ActionGetAnonymous.class );
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String flag ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = null;
 		AppInfo appInfo = null;
 		Boolean check = true;
-		
+
 		if( StringUtils.isEmpty(flag) ){
 			check = false;
 			Exception exception = new ExceptionAppInfoIdEmpty();
@@ -49,7 +49,7 @@ public class ActionGetAnonymous extends BaseAction {
 					}else {
 						if( !appInfo.getAnonymousAble() ){
 							check = false;
-							Exception exception = new ExceptionAppInfoAccessDenied("栏目信息不允许匿名访问！");
+							Exception exception = new ExceptionAppInfoAccessDenied();
 							result.error( exception );
 						}
 					}
@@ -72,7 +72,7 @@ public class ActionGetAnonymous extends BaseAction {
 				}
 			}
 		}
-		
+
 		return result;
 	}
 }

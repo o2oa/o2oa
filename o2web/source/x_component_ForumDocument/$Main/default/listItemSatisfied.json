@@ -97,7 +97,7 @@
             "value": "",
             "attr" : "src^^function( d ){ if( d.userIcon ){ return d.userIcon }else{ return '../x_component_ForumDocument/$Main/default/icon/noavatar_big.gif' } }"
           },
-          "index" : { "value" : "function(){ return '满意回复'}" },
+          "index" : { "value" : "function(){ return MWF.xApplication.Forum.LP.satisfiedAnswer }" },
           "messageAction": {
             "text" : "sendMessage",
             "action": "sendMessage",

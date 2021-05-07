@@ -1,6 +1,6 @@
 [
   {
-    "title" : "年度",
+    "title" : MWF.xApplication.Attendance.LP.annuaal,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "configYear",
@@ -8,7 +8,7 @@
     "width" : "20%"
   },
   {
-    "title" : "假期名称",
+    "title" : MWF.xApplication.Attendance.LP.holiday.name,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "configName",
@@ -16,7 +16,7 @@
     "width" : "20%"
   },
   {
-    "title" : "日期",
+    "title" : MWF.xApplication.Attendance.LP.date,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "configDate",
@@ -24,23 +24,23 @@
     "width" : "20%"
   },
   {
-    "title" : "类型",
+    "title" : MWF.xApplication.Attendance.LP.type,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(data){ return data.configType == 'Holiday' ? '假日' : '补班'  }",
+    "item" : "function(data){ return data.configType == 'Holiday' ? MWF.xApplication.Attendance.LP.holi : MWF.xApplication.Attendance.LP.work  }",
     "name" : "configType",
     "width" : "20%"
   },
   {
     "access" : "admin",
-    "title" : "操作",
+    "title" : MWF.xApplication.Attendance.LP.action,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "actions",
     "name" : "actions",
     "width" : "5%",
     "sub" : [{
-      "title" : "删除文件",
+      "title": MWF.xApplication.Attendance.LP.delete,
       "action" : "remove",
       "styles" : "actionDeleteNode",
       "overStyles" : "actionDeleteNode_over",

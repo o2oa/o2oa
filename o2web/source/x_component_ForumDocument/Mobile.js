@@ -45,7 +45,7 @@ MWF.xApplication.ForumDocument.Mobile = new Class({
             "styles" : this.css.subjectConainer
         }).inject( this.middleNode );
 
-        if( this.data.typeCategory == this.lp.question ){
+        if( this.data.typeCategory == this.lp.question || this.data.typeCategory == "问题" ){
             this.satisfiedReplyViewConainer = new Element("div.satisfiedReplyViewConainer",{
                 "styles" : this.css.replyViewConainer
             }).inject( this.middleNode );
@@ -58,7 +58,7 @@ MWF.xApplication.ForumDocument.Mobile = new Class({
         //this.createPagingBar();
 
         this.createSubject();
-        if( this.data.typeCategory == this.lp.question ) {
+        if( this.data.typeCategory == this.lp.question || this.data.typeCategory == "问题" ) {
             if( this.data.acceptReplyId ){
                 this.createSatisfiedReplyView();
             }
@@ -209,7 +209,7 @@ MWF.xApplication.ForumDocument.Mobile.SubjectDocument = new Class({
             });
         }.bind(this));
 
-        if( this.data.typeCategory == this.lp.vote ){
+        if( this.data.typeCategory == this.lp.vote || this.data.typeCategory == "投票" ){
             var voteArea = itemNode.getElement("[item='vote']");
             MWF.xDesktop.requireApp("ForumDocument", "Vote", function(){
                 this.vote = new MWF.xApplication.ForumDocument.Vote(voteArea, this.app, {

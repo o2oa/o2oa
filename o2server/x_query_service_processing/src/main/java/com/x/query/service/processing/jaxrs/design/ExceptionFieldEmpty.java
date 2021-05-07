@@ -1,8 +1,9 @@
 package com.x.query.service.processing.jaxrs.design;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-public class ExceptionFieldEmpty extends PromptException {
+public class ExceptionFieldEmpty extends LanguagePromptException {
 
 
 	private static final long serialVersionUID = -87643358931771164L;

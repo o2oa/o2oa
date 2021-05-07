@@ -1,8 +1,8 @@
 package com.x.organization.assemble.control.jaxrs.export;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionResultNotFound extends PromptException {
+class ExceptionResultNotFound extends LanguagePromptException {
 
 	private static final long serialVersionUID = -2139584911736169462L;
 

@@ -19,7 +19,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Token.Sso;
-import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
@@ -31,6 +31,7 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.Crypto;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
+import com.x.organization.core.express.assemble.authentication.jaxrs.sso.ActionPostLoginWi;
 
 class ActionPostLogin extends BaseAction {
 
@@ -102,28 +103,9 @@ class ActionPostLogin extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	public static class Wi extends ActionPostLoginWi {
 
-		@FieldDescribe("令牌")
-		private String token;
-		@FieldDescribe("客户标识")
-		private String client;
-
-		public String getToken() {
-			return token;
-		}
-
-		public void setToken(String token) {
-			this.token = token;
-		}
-
-		public String getClient() {
-			return client;
-		}
-
-		public void setClient(String client) {
-			this.client = client;
-		}
+		private static final long serialVersionUID = -8661957417697956724L;
 
 	}
 
@@ -138,7 +120,10 @@ class ActionPostLogin extends BaseAction {
 
 		static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class, null, Excludes);
 
+		@FieldDescribe("令牌")
 		private String token;
+
+		@FieldDescribe("角色")
 		private List<String> roleList;
 
 		public String getToken() {

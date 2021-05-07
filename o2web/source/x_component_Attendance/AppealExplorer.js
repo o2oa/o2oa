@@ -91,7 +91,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
         }).inject(this.node);
 
         var table = new Element("table", {
-            "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.filterTable, "class" : "filterTable"
+            "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.filterTable, "class" : "filterTable"
         }).inject( this.fileterNode );
         var tr = new Element("tr").inject(table);
 

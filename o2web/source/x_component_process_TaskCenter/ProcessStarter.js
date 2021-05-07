@@ -1,7 +1,7 @@
 MWF.require("MWF.widget.Mask", null, false);
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.TaskCenter = MWF.xApplication.process.TaskCenter || {};
-MWF.xDesktop.requireApp("process.TaskCenter", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("process.TaskCenter", "lp."+o2.language, null, false);
 MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],

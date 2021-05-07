@@ -1,6 +1,6 @@
 <div style="padding: 5px 30px 0px 30px; font-size:14px;">
     <div style="line-height: 18px; height: 40px; color: #999999; overflow: hidden">
-        请根据您的业务设置拆分数据，此处设置的数据应与流程中设置的拆分依据匹配。<br/>多个值请用半角逗号(,)分隔
+        {{$.lp.addSplitInfo}}
     </div>
     <div style="height: 38px; margin-bottom:10px;overflow-y:auto;">
         <input style="width: 98%; overflow:auto; height: 30px;" type="text" />
@@ -8,9 +8,9 @@
     <div>
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
             <tr>
-                <td><div class="o2_addSplit_selector" style="background: #eeeeee;margin-bottom:10px;border-radius: 5px; border: 1px solid #666; color: #666; height: 24px; line-height: 24px; width:130px;text-align:center; cursor: pointer;">选择组织或人员</div></td>
-                <td valign="top" align="right"><b>排除已有分支</b></td>
-                <td valign="top" align="right"><input class="o2_addSplit_radio" type="radio" value="true" name="o2_addSplit_radioCheck" checked/>是 <input class="o2_addSplit_radio" type="radio" value="false" name="o2_addSplit_radioCheck"/>否</td>
+                <td><div class="o2_addSplit_selector" style="background: #eeeeee;margin-bottom:10px;border-radius: 5px; border: 1px solid #666; color: #666; height: 24px; line-height: 24px; width:130px;text-align:center; cursor: pointer;">{{$.lp.selectUnit}}</div></td>
+                <td valign="top" align="right"><b>{{$.lp.excludeBranches}}</b></td>
+                <td valign="top" align="right"><input class="o2_addSplit_radio" type="radio" value="true" name="o2_addSplit_radioCheck" checked/>{{$.lp.yes}} <input class="o2_addSplit_radio" type="radio" value="false" name="o2_addSplit_radioCheck"/>{{$.lp.no}}</td>
             </tr>
         </table>
     </div>

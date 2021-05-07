@@ -350,6 +350,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				"width": 300,
 				"height": 180,
 				"url": url,
+				"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate,
 				"buttonList": [
 				    {
 				    	"text": MWF.APPFD.LP.button.ok,
@@ -444,6 +445,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				"width": 300,
 				"height": 180,
 				"url": url,
+				"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate,
 				"buttonList": [
 				    {
 				    	"text": MWF.APPFD.LP.button.ok,

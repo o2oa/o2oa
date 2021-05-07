@@ -95,16 +95,48 @@ o2.addReady(function () {
             }
         };
 
+        // 是否ip
+        var _isIp = function(ip) {
+            var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+            return reg.test(ip);
+        };
+        
+
         //修改支持x-token
         var uri = new URI(window.location.href);
         var options = uri.get("data");
         if (options["x-token"]) {
-            Cookie.write("x-token", options["x-token"]);
+            // 删除
+            Cookie.dispose("x-token");
+            // 写入
+            var host = window.location.host; // 域名 
+            var domain = null;
+            if (_isIp(host)) {
+                domain = host;
+            }else {
+                if (host.indexOf(".") > 0) {
+                    domain = host.substring(host.indexOf(".")); // 上级域名 如 .o2oa.net
+                }
+            }
+            if (domain) {
+                Cookie.write("x-token", options["x-token"], {domain: domain, path:"/"});
+            }else {
+                Cookie.write("x-token", options["x-token"]);
+            }
         }
 
         layout.sessionPromise = new Promise(function(resolve, reject){
             o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
-                if (resolve) resolve(json.data);
+                if (json.data.language && (json.data.language !== o2.languageName)){
+                    o2.language = json.data.language.toLowerCase();
+                    o2.languageName = json.data.language;
+                    var lp = "../x_desktop/js/base_lp_" + o2.language +((o2.session.isDebugger) ? "" : ".min")+ ".js";
+                    o2.load(lp, {"reload": true}, function(){
+                        if (resolve) resolve(json.data);
+                    });
+                }else{
+                    if (resolve) resolve(json.data);
+                }
             }.bind(this), function (xhr, text, error) {
                 if (reject) reject({"xhr": xhr, "text": text, "error": error});
             }.bind(this));
@@ -186,7 +218,8 @@ o2.addReady(function () {
     var configLoaded = false;
     var lpLoaded = false;
     var commonLoaded = false;
-    var lp = o2.session.path + "/lp/" + o2.language + ".js";
+    //var lp = o2.session.path + "/lp/" + o2.language + ".js";
+    var lp = "../x_desktop/js/base_lp_" + o2.language +((o2.session.isDebugger) ? "" : ".min")+ ".js";
 
     if (o2.session.isDebugger && (o2.session.isMobile || layout.mobile)) o2.load("../o2_lib/eruda/eruda.js");
     var loadModuls = function () {

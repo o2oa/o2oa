@@ -4,7 +4,7 @@
 	"jsp": "url.png",
 	"asp": "url.png",
 	"js": "url.png",
-	
+
 	"avi": "avi.png",
 	"mkv": "avi.png",
     "mov": "avi.png",
@@ -20,21 +20,21 @@
 	"docx": "docx_win.png",
 	"dotx": "docx_win.png",
 	"dot": "docx_win.png",
-	
+
 	"vsd": "vsd.png",
-	
+
 	"xls": "xlsx_win.png",
 	"xlsx": "xlsx_win.png",
 	"xlsm": "xlsx_win.png",
 	"xlt": "xlsx_win.png",
 	"xltx": "xlsx_win.png",
-	
+
 	"pptx": "pptx_win.png",
 	"ppt": "pptx_win.png",
 	"pot": "pptx_win.png",
 	"potx": "pptx_win.png",
 	"potm": "pptx_win.png",
-	
+
 	"css": "css.png",
 	"mp3": "mp3.png",
 	"wav": "wav.png",
@@ -49,13 +49,14 @@
 	"jpg": "jpeg.png",
     "jpe": "jpeg.png",
     "ico": "jpeg.png",
-	
+
 	"pdf": "pdf.png",
 	"rar": "rar.png",
 	"txt": "text.png",
 	"zip": "zip.png",
-	
+
 	"exe": "exe.png",
-	
+	"ofd": "ofd.png",
+
 	"unknow": "unknow.png"
 }

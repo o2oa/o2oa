@@ -84,6 +84,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         this.load(data);
         this.selected();
     },
+
 	load : function(data){
 		debugger;
 		this.data = data;
@@ -1120,7 +1121,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 					"<td></td>";
 				node.set("html", html);
 				var actionNode = new Element("div",{"styles":{
-						"width": "30px",
+						"width": "60px",
 						"padding": "0px 3px",
 						"border-radius": "20px",
 						"cursor" : "pointer",

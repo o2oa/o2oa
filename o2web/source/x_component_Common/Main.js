@@ -560,6 +560,8 @@ MWF.xApplication.Common.Main = new Class({
 					y = y - parseFloat(height);
 				}
 				if (y < 0) y = 0;
+				// 鼠标位置往左偏移
+				x = x - 20;
 			}
 
 
@@ -582,9 +584,9 @@ MWF.xApplication.Common.Main = new Class({
 				"title": title,
 				"style": style || "o2",
 				"top": y,
-				"left": x - 20,
+				"left": x,
 				"fromTop": y,
-				"fromLeft": x - 20,
+				"fromLeft": x,
 				"width": width,
 				"height": height,
 				"text": ctext,

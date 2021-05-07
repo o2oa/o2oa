@@ -1,67 +1,67 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">手写:</td>
+                <td class="editTableTitle">{{$.lp.handwriting}}:</td>
                 <td class="editTableValue">
                     <input type="radio" onclick="if (this.checked){
                         $('text{$.pid}tabletWidth').setStyle('display', '');
                         $('text{$.pid}tabletHeight').setStyle('display', '')
-                       }" name="isHandwriting" value="yes" text{($.isHandwriting!='no')?'checked':''}/>是
+                       }" name="isHandwriting" value="yes" text{($.isHandwriting!='no')?'checked':''}/>{{$.lp.yes}}
                     <input type="radio" onclick="if (this.checked){
                         $('text{$.pid}tabletWidth').setStyle('display', 'none');
                         $('text{$.pid}tabletHeight').setStyle('display', 'none');
-                       }" name="isHandwriting" value="no" text{($.isHandwriting=='no')?'checked':''}/>否
+                       }" name="isHandwriting" value="no" text{($.isHandwriting=='no')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
             <tr id="text{$.pid}tabletWidth" style="display: text{($.isHandwriting=='no')?'none':''};">
-                <td class="editTableTitle">手写板<br/>宽度:</td>
+                <td class="editTableTitle">{{$.lp.writingBoard}}<br/>{{$.lp.width}}:</td>
                 <td class="editTableValue">
                     <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 100px;margin-right:5px;" />px
                 </td>
             </tr>
             <tr id="text{$.pid}tabletHeight" style="display: text{($.isHandwriting=='no')?'none':''};">
-                <td class="editTableTitle">手写板<br/>高度:</td>
+                <td class="editTableTitle">{{$.lp.writingBoard}}<br/>{{$.lp.height}}:</td>
                 <td class="editTableValue">
                     <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 100px;;margin-right:5px;" />px
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">录音:</td>
+                <td class="editTableTitle">{{$.lp.recording}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="isAudio" value="yes" text{($.isAudio!='no')?'checked':''}/>是
-                    <input type="radio" name="isAudio" value="no" text{($.isAudio=='no')?'checked':''}/>否
+                    <input type="radio" name="isAudio" value="yes" text{($.isAudio!='no')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isAudio" value="no" text{($.isAudio=='no')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">手写预览:</td>
+                <td class="editTableTitle">{{$.lp.writingPreview}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="isHandwritingPreview" value="yes" text{($.isHandwritingPreview!='no')?'checked':''}/>是
-                    <input type="radio" name="isHandwritingPreview" value="no" text{($.isHandwritingPreview=='no')?'checked':''}/>否
+                    <input type="radio" name="isHandwritingPreview" value="yes" text{($.isHandwritingPreview!='no')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isHandwritingPreview" value="no" text{($.isHandwritingPreview=='no')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
         </table>
 		
-		<div class="MWFMaplist" name="styles" title="样式"></div>
-        <div class="MWFMaplist" name="inputStyles" title="Input样式"></div>
-		<div class="MWFMaplist" name="properties" title="属性"></div>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+        <div class="MWFMaplist" name="inputStyles" title="{{$.lp.inputStyle}}"></div>
+		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
         <div class="MWFValidation" name="validationConfig"></div>
-        <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
+        <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
 	</div>
-	<div title="事件"  class="MWFTab">
+	<div title="{{$.lp.event}}"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
 	<div title="HTML"  class="MWFTab">

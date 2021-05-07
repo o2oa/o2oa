@@ -23,6 +23,7 @@ import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.Instant;
 import com.x.message.core.entity.Message;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.script.Bindings;
@@ -70,6 +71,7 @@ class ActionCreate extends BaseAction {
 								ScriptContext scriptContext = new SimpleScriptContext();
 								Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 								bindings.put("body", body);
+								bindings.put("message", cpwi);
 								Object o = compiledScript.eval(scriptContext);
 								cpwi.setBody(body);
 								if (o != null) {
@@ -113,6 +115,9 @@ class ActionCreate extends BaseAction {
 						break;
 					case MessageConnector.CONSUME_MQ:
 						message = this.MQMessage(effectivePerson, business, cpwi, instant);
+						break;
+					case MessageConnector.CONSUME_MPWEIXIN:
+						message = this.mpweixinMessage(effectivePerson, business, cpwi, instant);
 						break;
 					default:
 						message = this.defaultMessage(effectivePerson, business, cpwi, consumer, instant);
@@ -178,6 +183,11 @@ class ActionCreate extends BaseAction {
 			case MessageConnector.CONSUME_MQ:
 				if (Config.mq().getEnable()) {
 					ThisApplication.mqConsumeQueue.send(message);
+				}
+				break;
+			case MessageConnector.CONSUME_MPWEIXIN:
+				if (BooleanUtils.isTrue(Config.mPweixin().getEnable()) && BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
+					ThisApplication.mpWeixinConsumeQueue.send(message);
 				}
 				break;
 			default:
@@ -285,6 +295,18 @@ class ActionCreate extends BaseAction {
 		return message;
 	}
 
+	private Message mpweixinMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
+		Message message = new Message();
+		message.setBody(Objects.toString(wi.getBody()));
+		message.setType(wi.getType());
+		message.setPerson(wi.getPerson());
+		message.setTitle(wi.getTitle());
+		message.setConsumer(MessageConnector.CONSUME_MPWEIXIN);
+		message.setConsumed(false);
+		message.setInstant(instant.getId());
+		return message;
+	}
+
 	private Message calendarMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
 		Message message = new Message();
 		message.setBody(Objects.toString(wi.getBody()));
@@ -308,7 +330,7 @@ class ActionCreate extends BaseAction {
 		message.setInstant(instant.getId());
 		return message;
 	}
-	
+
 	private Message defaultMessage(EffectivePerson effectivePerson, Business business, Wi wi, String consumer,
 			Instant instant) {
 		Message message = new Message();

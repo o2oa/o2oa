@@ -5,7 +5,7 @@ MWF.xApplication.Selector.CMSFormField = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectField,
+        "title": "",
         "fieldType": "",
         "values": [],
         "names": [],
@@ -13,6 +13,9 @@ MWF.xApplication.Selector.CMSFormField = new Class({
         "form" : "",
         "expand": false,
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.Selector.LP.selectField});
     },
     _init : function(){
         this.selectType = "formfield";

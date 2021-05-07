@@ -15,6 +15,7 @@ MWF.xApplication.cms.Column.LP = {
 	"close" : "关闭",
 	"cancel" : "取消",
 	"export_ok" : "确定",
+	"allApp": "全部栏目",
 	"column" : {
 		"title" :"栏目管理",
 		"create" : "新建栏目",

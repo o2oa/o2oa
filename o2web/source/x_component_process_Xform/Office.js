@@ -115,9 +115,8 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 			"min-height": "100px"
 		});
         // this.isActive = true;
-        debugger;
-        if (Browser.name==="ie" || Browser.name==="chrome" || Browser.name==="firefox"){
-		//if (Browser.name==="ie"){
+        //if (Browser.name==="ie" || Browser.name==="chrome" || Browser.name==="firefox"){
+		if (Browser.name==="ie"){
             this.isActive = true;
             this.file = null;
             if (!this.form.officeList) this.form.officeList=[];
@@ -958,14 +957,16 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
             this.officeForm = this.officeNode.getFirst();
             this.officeOCX = this.officeNode.getFirst().getFirst();
 
-            if(window.navigator.platform=="Win64"){
-                this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
-            }
-            if(window.navigator.platform=="Win32"){
-                this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
-            }
+            if (this.officeOCX){
+                if(window.navigator.platform=="Win64"){
+                    this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
+                }
+                if(window.navigator.platform=="Win32"){
+                    this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
+                }
 
-            this.doOfficeOCXEvents();
+                this.doOfficeOCXEvents();
+            }
         }
 
         var url = this.getOfficeFileUrl();

@@ -18,7 +18,7 @@
         "   <img styles='itemLeftIcon' item='icon'>"+
         " </div>"+
         " <div styles='itemLeftContent_type_2_0'>"+
-        "   <div styles='itemTopDiv'><div styles='itemTitleNode' item='sectionName' style='width:100px;'></div><div styles='itemToday' item='totalToday'></div></div>"+
+        "   <div styles='itemTopDiv'><div styles='itemTitleNode' item='sectionName' style='max-width:90px;'></div><div styles='itemToday' item='totalToday'></div></div>"+
         "   <div styles='itemTopDiv'>"+
         "     <div styles='itemTopInfor' item='subjectTotalLable'></div><div styles='itemTopInfor' item='subjectTotalColon'>：</div><div styles='itemTopInfor' item='subjectTotal'></div>"+
         "     <div styles='itemTopInfor'>，</div><div styles='itemTopInfor' lable='replyCount'></div><div styles='itemTopInfor'>：</div><div styles='itemTopInfor' item='replyTotal'></div>"+

@@ -41,7 +41,7 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
     _loadFilterContent : function(){
 	    var lp = MWF.xApplication.Attendance.LP;
         var _self = this;
-        var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable' width='1350'>"+
+        var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr>" +
             "    <td styles='formTableTitle' lable='q_topUnitName'></td>"+
             "    <td styles='formTableValue' item='q_topUnitName'></td>"+
@@ -63,7 +63,12 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
                 style : "filter",
                 isEdited : true,
                 itemTemplate : {
-                    q_topUnitName : { "text" : lp.selectCompany, "type" : "org", "orgType" : "unit", style : {"min-width" : "200px"} },
+                    q_topUnitName : { "text" : lp.selectCompany, "type" : "org", "orgType" : "unit", style : {"min-width" : "200px"} , event: {
+                            change : function (item, ev) {
+                                debugger;
+                            }
+                        }
+                    },
                     q_unitName : { "text" : lp.selectDepartment, "type" : "org", "orgType" : "unit", style : {"min-width" : "250px"} },
                     q_empName : {  "text" : lp.selectPerson, "type" : "org", "orgType" : "person", style : {"min-width" : "100px"} },
                     startdateString : {  "text" : lp.startTime, "tType" : "date",style : {"border" : "1px solid rgb(153, 153, 153)","background":'url("../x_component_Template/$MForm/default/icon/calendar.png") 98% center no-repeat',"border-radius":"3px","box-shadow":"rgb(204, 204, 204) 0px 0px 6px","height":"26px","width":"100px"} },

@@ -222,6 +222,8 @@ MWF.xApplication.portal.PortalManager.ScriptExplorer.Script = new Class({
 		var _self = this;
 		var options = {
             "appId": "portal.ScriptDesigner"+_self.data.id,
+            "id": _self.data.id,
+            "application": _self.explorer.app.options.application.id,
 			"onQueryLoad": function(){
 				this.actions = _self.explorer.actions;
 				this.category = _self;

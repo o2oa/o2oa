@@ -153,13 +153,13 @@
             //"access": "admin",
             "title": "edit",
             "action": "edit",
-            "condition": "function( d ){ return d.typeCategory!='投票' && (this.isAdmin() || (d.creatorName == this.app.userName)) }",
+            "condition": "function( d ){ return (d.typeCategory!='投票' && d.typeCategory!=this.app.lp.vote) && (this.isAdmin() || (d.creatorName == this.app.userName)) }",
             "styles": "actionEditNode",
             "mouseoverStyles": "actionEditNode_over",
             "mousedownStyles": "actionEditNode_over"
           },
           "placeholder" : {
-            "show": "function( d ){ return !(d.typeCategory!='投票' && (this.isAdmin() || (d.creatorName == this.app.userName))) }"
+            "show": "function( d ){ return !((d.typeCategory!='投票' && d.typeCategory!=this.app.lp.vote) && (this.isAdmin() || (d.creatorName == this.app.userName))) }"
           },
           "remove": {
             "title": "remove",

@@ -1,12 +1,14 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionDisableCollect extends PromptException {
+class ExceptionDisableCollect extends LanguagePromptException {
 
 	private static final long serialVersionUID = 6351023802034208595L;
 
+	public static String defaultMessage = "系统没有启用节点连接.";
+
 	ExceptionDisableCollect() {
-		super("系统没有启用节点连接.");
+		super(defaultMessage);
 	}
 }

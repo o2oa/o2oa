@@ -135,7 +135,7 @@ class ActionListLike extends BaseAction {
 		}
 		if (ListTools.isNotEmpty(wi.getUnitList())) {
 			List<String> units = business.expendUnitToUnit(wi.getUnitList());
-			if (units.isEmpty()) {
+			if (!units.isEmpty()) {
 				p = cb.and(p, root.get(Identity_.unit).in(units));
 			}
 		}

@@ -13,6 +13,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         "isDelete": true,
         "isReplace": true,
         "isDownload": true,
+        "isPreviewAtt": true,
         "isSizeChange": true,
         "readonly": false,
         "availableListStyles" : ["list","seq","icon","preview"],
@@ -1116,9 +1117,11 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             this.doFormDataUploadAttachment(obj, action, invokeUrl, parameter, callback, multiple, accept, accept, size);
         }
     },
-
-
-
+    previewAttachment: function(e, node){
+        if (this.selectedAttachments.length){
+            if (this.module) this.module.previewAttachment(this.selectedAttachments);
+        }
+    },
     downloadAttachment: function(e, node){
         if (this.selectedAttachments.length){
             if (this.module) this.module.downloadAttachment(e, node, this.selectedAttachments);

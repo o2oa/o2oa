@@ -2,9 +2,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "close.png",
-    "title": "关闭工作",
+    "title": "{{$.lp.closeTitle}}",
     "action": "closeWork",
-    "text": "关闭",
+    "text": "{{$.lp.close}}",
     "id": "action_close",
     "condition": "",
     "read": true
@@ -12,9 +12,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "save.png",
-    "title": "保存工作",
+    "title": "{{$.lp.saveTitle}}",
     "action": "saveWork",
-    "text": "保存",
+    "text": "{{$.lp.save}}",
     "id": "action_saveData",
     "control": "allowSave",
     "condition": "",
@@ -23,9 +23,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "submit.png",
-    "title": "继续流转文件",
+    "title": "{{$.lp.flowTitle}}",
     "action": "processWork",
-    "text": "继续流转",
+    "text": "{{$.lp.flow}}",
     "id": "action_processWork",
     "control": "allowProcessing",
     "condition": "",
@@ -34,9 +34,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "reroute.png",
-    "title": "调度",
+    "title": "{{$.lp.rerouteTitle}}",
     "action": "rerouteWork",
-    "text": "调度",
+    "text": "{{$.lp.reroute}}",
     "id": "action_reroute",
     "control": "allowReroute",
     "condition": "",
@@ -45,9 +45,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "reset.png",
-    "title": "重置处理人",
+    "title": "{{$.lp.resetTitle}}",
     "action": "resetWork",
-    "text": "重置处理人",
+    "text": "{{$.lp.reset}}",
     "id": "action_reset",
     "control": "allowReset",
     "condition": "",
@@ -56,9 +56,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "split.png",
-    "title": "增加拆分分支",
+    "title": "{{$.lp.splitTitle}}",
     "action": "addSplit",
-    "text": "增加分支",
+    "text": "{{$.lp.split}}",
     "id": "action_split",
     "control": "allowAddSplit",
     "condition": "",
@@ -67,9 +67,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "retract.png",
-    "title": "撤回",
+    "title": "{{$.lp.retractTitle}}",
     "action": "retractWork",
-    "text": "撤回",
+    "text": "{{$.lp.retract}}",
     "id": "action_retract",
     "control": "allowRetract",
     "condition": "",
@@ -78,9 +78,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "rollback.png",
-    "title": "回溯到指定的环节，不保留流程记录",
+    "title": "{{$.lp.rollbackTitle}}",
     "action": "rollback",
-    "text": "流程回溯",
+    "text": "{{$.lp.rollback}}",
     "id": "action_rollback",
     "control": "allowRollback",
     "condition": "",
@@ -89,9 +89,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "del.png",
-    "title": "删除文件",
+    "title": "{{$.lp.deleteTitle}}",
     "action": "deleteWork",
-    "text": "删除文件",
+    "text": "{{$.lp.delete}}",
     "id": "action_delete",
     "control": "allowDelete",
     "condition": "",
@@ -100,9 +100,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "print.png",
-    "title": "打印文件",
+    "title": "{{$.lp.printTitle}}",
     "action": "printWork",
-    "text": "打印",
+    "text": "{{$.lp.print}}",
     "id": "action_print",
     "control": "",
     "condition": "",
@@ -111,9 +111,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "press.png",
-    "title": "催促办理",
+    "title": "{{$.lp.pressTitle}}",
     "action": "pressWork",
-    "text": "催促办理",
+    "text": "{{$.lp.press}}",
     "id": "action_press",
     "control": "allowPress",
     "condition": "",
@@ -122,9 +122,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "pause.png",
-    "title": "待办挂起",
+    "title": "{{$.lp.pauseTitle}}",
     "action": "pauseTask",
-    "text": "挂起",
+    "text": "{{$.lp.pause}}",
     "id": "action_pause",
     "control": "allowPause",
     "condition": "",
@@ -133,9 +133,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "resume.png",
-    "title": "挂起恢复",
+    "title": "{{$.lp.resumeTitle}}",
     "action": "resumeTask",
-    "text": "挂起恢复",
+    "text": "{{$.lp.resume}}",
     "id": "action_resume",
     "control": "allowResume",
     "condition": "",
@@ -144,34 +144,12 @@
   {
     "type": "MWFToolBarButton",
     "img": "downloadAll.png",
-    "title": "一键下载",
+    "title": "{{$.lp.downloadAllTitle}}",
     "action": "downloadAll",
-    "text": "一键下载",
+    "text": "{{$.lp.downloadAll}}",
     "id": "action_downloadAll",
     "control": "",
     "condition": "",
     "read": true
   }
-//  {
-//    "type": "MWFToolBarMenu",
-//    "img": "tool.png",
-//    "title": "管理工具",
-//    "action": "",
-//    "text": "工具",
-//    "id": "action_tools",
-//    "condition": "",
-//    "read": true,
-//    "sub": [
-//
-//    ]
-//  },
-//  {
-//    "type": "MWFToolBarSeparator",
-//    "img": "",
-//    "title": "",
-//    "action": "",
-//    "text": "",
-//    "condition": "",
-//    "read": true
-//  }
 ]

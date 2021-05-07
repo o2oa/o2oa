@@ -42,5 +42,52 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "countStatement": "总数语句",
 
     "mastInputParameter" : "请输入参数",
-    "pathExecption" : "路径的写法是\"表别名.字段名\",格式不正确"
+    "pathExecption" : "路径的写法是\"表别名.字段名\",格式不正确",
+
+    "systemTable":"系统表",
+    "customTable":"自建数据表",
+    "taskInstance":"待办(Task)",
+    "taskCompletedInstance": "已办(TaskCompleted)",
+    "readInstance":"待阅(Read)",
+    "readedInstance":"已阅(ReadCompleted)",
+    "workInstance":"流程实例(Work)",
+    "workCompletedInstance":"已完成流程实例(WorkCompleted)",
+    "reviewInstance":"可阅读(Review)",
+    "documentInstance":"内容管理文档(Document)",
+
+    "propertyTemplate": {
+        // "statementFormat": "如何创建语句：",
+        // "statementJpql": "直接编写JPQL创建语句",
+        // "statementScript": "通过脚本创建语句",
+        // "statementCategory": "访问对象类型",
+
+        "idPath":  "id路径",
+        "idPathNote": "注：指Id（cms文档id/流程work id）相对单条数据的路径，用于打开文档。",
+        "selectPath": "选择路径",
+        "selectPathNote": "注：正确填写了查询语句，再测试语句或刷新视图数据可显示(刷新)选择路径。",
+        "dataPathNote": "注：指该列相对单条数据的路径。比如 0，title，或 0.title",
+        "executionAuthority": "执行权限",
+        "anonymousAccess": "匿名访问",
+        "allowed": "允许",
+        "disAllowed": "不允许",
+        "executePerson": "执行人",
+        "executeUnit": "执行组织",
+
+        // "systemTable":"系统表",
+        // "customTable":"自建数据表",
+        // "taskInstance":"待办",
+        // "taskCompletedInstance": "已办",
+        // "readInstance":"待阅",
+        // "readedInstance":"已阅",
+        // "workInstance":"流程实例",
+        // "workCompletedInstance":"已完成流程实例",
+        // "reviewInstance":"可阅读",
+        // "documentInstance":"内容管理文档",
+
+        "parameter":"参数",
+        "parameterNote":"注：参数对应查询语句和总数语句中形如\":field\"的where条件，填写\"field\"。",
+        "pathNote":"注：路径的写法是\"表别名.字段名\"，如：o.title",
+        "userInput":"用户输入"
+
+    }
 });

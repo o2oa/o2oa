@@ -2,6 +2,7 @@ package com.x.organization.assemble.personal.jaxrs.reset;
 
 import java.util.Date;
 
+import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,7 +46,7 @@ class ActionReset extends BaseAction {
 			}
 			Person person = business.person().getWithCredential(credential);
 			if (null == person) {
-				throw new ExceptionPersonNotExisted(credential);
+				throw new ExceptionPersonNotExist(credential);
 			}
 			person = emc.find(person.getId(), Person.class, ExceptionWhen.not_found);
 			if (BooleanUtils.isTrue(Config.person().getSuperPermission())

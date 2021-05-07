@@ -276,7 +276,7 @@ MWF.xApplication.Setting.UIModuleDocument.UserComponent = new Class({
             "click": function(e){
                 var _self = this;
                 var text = this.deployment.lp.removeComponent.replace(/{name}/, this.data.title);
-                this.deployment.app.confirm("warn", e, this.deployment.lp.removeComponentTitle, text, 300, 130, function(){
+                this.deployment.app.confirm("warn", e, this.deployment.lp.removeComponentTitle, text, 500, 170, function(){
                     _self.removeComponent();
                     this.close();
                 }, function(){

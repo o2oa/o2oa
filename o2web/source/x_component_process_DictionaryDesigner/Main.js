@@ -678,7 +678,7 @@ MWF.xApplication.process.DictionaryDesigner.Main = new Class({
 
 		this.getDictionaryData(this.options.id, function(ddata){
             this.setTitle(this.options.appTitle + "-"+ddata.name);
-            this.taskitem.setText(this.options.appTitle + "-"+ddata.name);
+            if (this.taskitem) this.taskitem.setText(this.options.appTitle + "-"+ddata.name);
             this.options.appTitle = this.options.appTitle + "-"+ddata.name;
 
             if (this.options.readMode){

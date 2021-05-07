@@ -5,7 +5,7 @@ MWF.xApplication.Selector.Identity = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectIdentity,
+        "title": "",
         "units": [],
         "values": [],
         "dutys": [],
@@ -17,6 +17,9 @@ MWF.xApplication.Selector.Identity = new Class({
         "resultType" : "", //可以设置成个人，那么结果返回个人
         "expandSubEnable" : true, //是否允许展开下一层,
         "selectAllEnable" : true  //分类是否允许全选下一层
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectIdentity});
     },
     _init : function(){
         this.selectType = "identity";

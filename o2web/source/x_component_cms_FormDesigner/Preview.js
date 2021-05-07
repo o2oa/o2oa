@@ -25,6 +25,10 @@ MWF.xApplication.cms.FormDesigner.Preview = MWF.CMSFCPreview = new Class({
         MWF.getJSON("../x_desktop/res/preview/cmsdoc.json", function(json){
             MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
                 this.appForm = new MWF.CMSForm(node, this.data);
+
+                this.dataStr = JSON.stringify(this.data);
+
+                this.appForm.formDataText = this.dataStr;
                 this.appForm.app = this.form.designer;
                 this.appForm.load();
             }.bind(this));
