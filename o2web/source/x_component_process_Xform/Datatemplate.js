@@ -1411,9 +1411,15 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		}.bind(this));
 	},
 	destroySimulateModule: function(){
-		Object.keys(this.simelateModuleMap).each(function (key, i) {
-			if(this.form.businessData[key])this.form.businessData[key];
-			delete this.simelateModuleMap[key];
+		debugger;
+		var keys = Object.keys(this.simelateModuleMap);
+		keys.each(function (key, i) {
+			var module = this.simelateModuleMap[key];
+			if( module ){
+				var id = module.json.id;
+				if( this.form.businessData.data.hasOwnProperty(id) )delete this.form.businessData.data[id];
+				delete this.simelateModuleMap[key];
+			}
 		}.bind(this))
 		this.simulateNode.destroy();
 	},
