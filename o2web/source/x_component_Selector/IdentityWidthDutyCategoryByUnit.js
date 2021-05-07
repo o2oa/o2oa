@@ -460,7 +460,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                         }
                         var pinyin = text.toPY().toLowerCase();
                         var firstPY = text.toPYFirst().toLowerCase();
-                        this.itemsSearchData.push({
+                        _self.itemsSearchData.push({
                             "text": text,
                             "pinyin": pinyin,
                             "firstPY": firstPY,
@@ -478,7 +478,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                     }
                     if(unit.unitList && unit.unitList.length){
                         unit.unitList.each( function (unit) {
-                            checkUnit(identity);
+                            checkUnit(unit);
                         })
                     }
                 }
