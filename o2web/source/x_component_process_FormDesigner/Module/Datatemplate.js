@@ -22,6 +22,20 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 
 		this.form = form;
 	},
+	_getDroppableNodes: function(){
+		var nodes = [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
+		this.form.moduleList.each( function(module){
+			//数据模板不能往数据模板里拖
+			if( module.moduleName === "datatemplate" ){
+				var subDoms = this.form.getModuleNodes(module.node);
+				nodes.erase( module.node );
+				subDoms.each(function (dom) {
+					nodes.erase( dom );
+				})
+			}
+		}.bind(this));
+		return nodes;
+	},
 	clearTemplateStyles: function(styles){
 		if (styles){
 			if (styles.styles) this.removeStyles(styles.styles, "styles");
