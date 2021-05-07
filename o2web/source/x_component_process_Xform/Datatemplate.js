@@ -1,7 +1,7 @@
 /**
  * 数据模板数据结构.
  * @typedef {Object} DatatemplateData
- * @property {Array} data - 数据网格列表数据
+ * @property {Array} data - 数据模板列表数据
  * @property {Object} total - 统计数据
  * @example
  [ //数据模板数据条目
@@ -155,7 +155,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * }
 			 */
 			/**
-			 * 在导入excel，数据校验成功将要设置回数据网格的时候触发，this.event指向整理过的导入数据，格式见{@link DatatemplateData}。
+			 * 在导入excel，数据校验成功将要设置回数据模板的时候触发，this.event指向整理过的导入数据，格式见{@link DatatemplateData}。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#import
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
@@ -585,7 +585,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_afterLoaded: function(){
 		},
 		/**
-		 * @summary 重置数据网格的值为默认值或置空。
+		 * @summary 重置数据模板的值为默认值或置空。
 		 *  @example
 		 * this.form.get('fieldId').resetData();
 		 */
@@ -594,7 +594,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
-		 * @summary 为数据网格赋值。
+		 * @summary 为数据模板赋值。
 		 * @param data{DatatemplateData|Promise|Array} 必选，数组或Promise.
 		 * @example
 		 *  this.form.get("fieldId").setData([]); //赋空值
@@ -659,7 +659,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this._loadDataTemplate()
 		},
 		/**
-		 * @summary 判断数据网格是否为空.
+		 * @summary 判断数据模板是否为空.
 		 * @example
 		 * if( this.form.get('fieldId').isEmpty() ){
 		 *     this.form.notice('至少需要添加一条数据', 'warn');
@@ -683,7 +683,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * this.data[fieldId] 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
 		 * {@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}<br/>
 		 * 2、当表单上没有对应组件的时候，可以使用this.data[fieldId]获取值，但是this.form.get('fieldId')无法获取到组件。
-		 * @summary 获取数据网格数据.
+		 * @summary 获取数据模板数据.
 		 * @example
 		 * var data = this.form.get('fieldId').getData();
 		 *@example
@@ -1412,6 +1412,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 	},
 	destroySimulateModule: function(){
 		Object.keys(this.simelateModuleMap).each(function (key, i) {
+			if(this.form.businessData[key])this.form.businessData[key];
 			delete this.simelateModuleMap[key];
 		}.bind(this))
 		this.simulateNode.destroy();
