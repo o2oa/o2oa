@@ -1,16 +1,16 @@
 [
   {
-    "title" : "系统设置",
+    "title" : MWF.xApplication.Forum.LP.systemSettingFormTitle,
     "icon" :"systemSetting.png",
     "action" : "openSystemSetting"
   },
   {
-    "title" : "分区设置",
+    "title" : MWF.xApplication.Forum.LP.categoryFormTitle,
     "icon" :"categorize.png",
     "action" : "openCategorySetting"
   },
   {
-    "title" : "板块设置",
+    "title" : MWF.xApplication.Forum.LP.sectionFormTitle,
     "icon" :"squared.png",
     "action" : "openSectionSetting"
   }

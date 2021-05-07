@@ -1110,6 +1110,7 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
     show: function(){
         if (!this.process.options.isView){
             if (!this.propertyContent){
+                this.htmlString = o2.bindJson(this.htmlString, {"lp": o2.APPPD.LP.propertyTemplate});
                 this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.process.propertyListNode);
                 this.process.panel.propertyTabPage.showTabIm();
                 this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);

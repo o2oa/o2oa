@@ -512,7 +512,7 @@ MWF.xApplication.Attendance.Echarts = new Class({
                     }
                 }
                 obj[n].data.push( d.data[n] );
-                obj[n].month.push( d.year + this.lp.year + d.month + this.lp.month );
+                obj[n].month.push( d.year + "-" + d.month  );
             }
         }.bind(this));
 
@@ -596,7 +596,7 @@ MWF.xApplication.Attendance.MonthSelector = new Class({
             var m = idx+1;
             td.store("month", m);
             td.setStyles(this.css.calendarMonthSelectTdNode);
-            td.set("text", ""+m+this.app.lp.month);
+            td.set("text", ""+m);
 
             td.setStyle("background-color", "#FFF");
             if ((this.year == thisY) && (idx == thisM)){

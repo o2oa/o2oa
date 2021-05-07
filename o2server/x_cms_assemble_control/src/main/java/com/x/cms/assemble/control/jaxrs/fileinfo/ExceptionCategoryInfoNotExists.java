@@ -7,6 +7,6 @@ class ExceptionCategoryInfoNotExists extends PromptException {
 	private static final long serialVersionUID = 1859164370743532895L;
 
 	ExceptionCategoryInfoNotExists( String id ) {
-		super("指定的分类信息不存在。ID:" + id );
+		super("指定的分类不存在:{}.", id );
 	}
 }

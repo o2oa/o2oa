@@ -22,6 +22,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         "processData": null
 	},
 	onQueryLoad: function(){
+	    debugger;
+        debugger;
         this.shortcut = true;
 		if (this.status){
 			this.options.id = this.status.id;

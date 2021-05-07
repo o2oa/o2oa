@@ -1,6 +1,6 @@
 [
   {
-    "title" : "标题",
+    "title" : MWF.xApplication.cms.Module.LP.subject,
     "headStyles" : "titleAreaHeadNode",
     "contentStyles" : "titleAreaContentNode",
     "item" : "title",
@@ -9,7 +9,7 @@
     "width" : "42%"
   },
   {
-    "title" : "创建人",
+    "title" : MWF.xApplication.cms.Module.LP.creatorCompany,
     "headStyles" : "personAreaHeadNode",
     "contentStyles" : "personAreaContentNode",
     "item" : "creatorPersonShort",
@@ -18,7 +18,7 @@
     "width" : "13%"
   },
   {
-    "title" : "创建部门",
+    "title" : MWF.xApplication.cms.Module.LP.creatorDepartment,
     "headStyles" : "departmentAreaHeadNode",
     "contentStyles" : "departmentAreaContentNode",
     "item" : "creatorUnitNameShort",
@@ -27,7 +27,7 @@
     "width" : "13%"
   },
   {
-    "title" : "发布时间",
+    "title" : MWF.xApplication.cms.Module.LP.publishTime,
     "headStyles" : "timeAreaHeadNode",
     "contentStyles" : "timeAreaContentNode",
     "item" : "publishTime",
@@ -37,7 +37,7 @@
   },
   {
     "access" : "admin",
-    "title" : "操作",
+    "title" : MWF.xApplication.cms.Module.LP.action,
     "headStyles" : "actionAreaHeadNode",
     "contentStyles" : "actionAreaContentNode",
     "item" : "action",

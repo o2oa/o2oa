@@ -5,10 +5,12 @@ MWF.xApplication.Selector.View = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectView,
         "values": [],
         "names": [],
         "expand": false
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectView});
     },
     _init : function(){
         this.selectType = "view";

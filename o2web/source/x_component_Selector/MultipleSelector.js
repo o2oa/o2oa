@@ -1,5 +1,5 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
-MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
+//MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
 //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
 MWF.xApplication.Selector.MultipleSelector = new Class({
     Extends: MWF.widget.Common,
@@ -9,7 +9,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         "style": "default",
         "types" : [],
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.multiSelectTitle,
+        "title": "",
         "groups": [], //选person, group, role 时的范围
         "roles": [], //选选person, group, role 时的范围
         "units": [], //选 company, department, duty, identity 时的范围
@@ -23,6 +23,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
     },
     initialize: function(container, options){
         this.active = true;
+        if (!options.title)  options.title = MWF.xApplication.Selector.LP.multiSelectTitle;
         this.setOptions(options);
 
         this.path = "../x_component_Selector/$Selector/";

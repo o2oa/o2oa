@@ -4,13 +4,16 @@ MWF.xApplication.Selector.Group = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectGroup,
+        "title": "",
         "groups": [],
         "roles": [],
         "values": [],
         "names": [],
         "include" : [],
         "selectType" : "group"
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectGroup});
     },
     _init : function(){
         this.selectType = "group";

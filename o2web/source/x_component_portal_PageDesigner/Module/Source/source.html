@@ -1,27 +1,27 @@
 <div style="background-color: #FFF; overflow: hidden">
-    <div title="基本" class="MWFTab">
+    <div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
         </table>
 
-        <div class="MWFMaplist" name="styles" title="样式"></div>
-        <div class="MWFMaplist" name="properties" title="属性"></div>
+        <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+        <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
     </div>
-    <div title="数据源"  class="MWFTab">
+    <div title="{{$.lp.source}}"  class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">方法:</td>
+                <td class="editTableTitle">{{$.lp.method}}:</td>
                 <td class="editTableValue">
                     <select name="httpMethod" onchange="var i=this.selectedIndex; if (i==1 || i==2 || i==3){$('text{$.pid}requestBodyArea').setStyle('display', 'block');}else{$('text{$.pid}requestBodyArea').setStyle('display', 'none');}">
                         <option value="GET" text{($.httpMethod=='GET')?'selected':''}>GET</option>
@@ -37,7 +37,7 @@
             <tr>
                 <td class="editTableTitle"></td>
                 <td class="editTableValue">
-                    <input type="radio" name="sourceType" value="o2" text{($.sourceType!='other')?'checked':''} onclick="if (this.checked){ $('text{$.pid}sourceO2Area').setStyle('display', 'block'); $('text{$.pid}sourceOtherArea').setStyle('display', 'none')}"/>平台数据源
+                    <input type="radio" name="sourceType" value="o2" text{($.sourceType!='other')?'checked':''} onclick="if (this.checked){ $('text{$.pid}sourceO2Area').setStyle('display', 'block'); $('text{$.pid}sourceOtherArea').setStyle('display', 'none')}"/>{{$.lp.systemSource}}
                     <!--<input type="radio" name="sourceType" value="other" text{($.sourceType=='other')?'checked':''} onclick="if (this.checked){ $('text{$.pid}sourceO2Area').setStyle('display', 'none'); $('text{$.pid}sourceOtherArea').setStyle('display', 'block')}"/>外部数据源-->
                 </td>
             </tr>
@@ -45,7 +45,7 @@
         <div id="text{$.pid}sourceO2Area" style="display: text{($.sourceType!='other')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">服务应用:</td>
+                    <td class="editTableTitle">{{$.lp.applicationService}}:</td>
                     <td class="editTableValue"><div class="MWFContextRoot" name="contextRoot">
                         <select></select>
                         <select style="display: none"></select><br/>
@@ -58,7 +58,7 @@
         <div id="text{$.pid}sourceOtherArea" style="display: text{($.sourceType=='other')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">主机/端口:</td>
+                    <td class="editTableTitle">{{$.lp.hostPort}}:</td>
                     <td class="editTableValue"><input type="text" name="otherHost" value="text{$.otherHost}" class="editTableInput"/></td>
                 </tr>
             </table>
@@ -70,25 +70,25 @@
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">路径:</td>
+                <td class="editTableTitle">{{$.lp.path}}:</td>
                 <td class="editTableValue"><input type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
             </tr>
         </table>
-        <div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center;">参数</div>
+        <div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center;">{{$.lp.parameter}}</div>
         <div class="MWFParameterArea" name="parameters"></div>
 
         <div id="text{$.pid}requestBodyArea" style="display: text{($.httpMethod=='PUT' || $.httpMethod=='POST' || $.httpMethod=='PATCH')?'block':'none'}">
-            <div class="MWFFormulaArea" name="requestBody" title="请求正文"></div>
+            <div class="MWFFormulaArea" name="requestBody" title="{{$.lp.requestBody}}"></div>
         </div>
 
         <div class="MWFSourceTestRestful">
-            <div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center; cursor:pointer">测试</div>
+            <div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center; cursor:pointer">{{$.lp.test}}</div>
             <div style="margin: 10px; text-align:center"></div>
         </div>
 
 
     </div>
-    <div title="事件"  class="MWFTab">
+    <div title="{{$.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="events"></div>
     </div>
     <div title="HTML"  class="MWFTab">

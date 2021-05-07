@@ -345,19 +345,20 @@
     padding: 10px 10px 10px 10px;
     border-radius: 7px;
     text-indent: -12px;
+    word-wrap: break-word;
   }
   .chat-sender .img-chat {
     width:192px;
     height:144px;
     display: table-cell;
     vertical-align: middle;
-}
-.chat-sender .img-chat img  {
-    max-width: 100%;
-    max-height: 100%;
-    display: block;
-    margin: auto;
-}
+  }
+  .chat-sender .img-chat img  {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      margin: auto;
+  }
   
   .chat-receiver {
     clear: both;
@@ -396,6 +397,7 @@
     margin: 0px 50px 10px 50px;
     padding: 10px 10px 10px 10px;
     border-radius: 7px;
+    word-wrap: break-word;
   }
 
   .chat-receiver div:first-child img,

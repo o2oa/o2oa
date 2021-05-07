@@ -210,22 +210,80 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
         this.Macro = new MWF.CMSMacro.CMSFormContext(this);
 
-        this.container.set("html", this.html);
-        this.node = this.container.getFirst();
 
-        this._loadEvents();
-        this.loadRelatedScript();
+        this.loadLanguage(function(flag) {
+            if (flag && this.formDataText) {
+                var data = o2.bindJson(this.formDataText, {"lp": MWF.xApplication.cms.Xform.LP.form});
+                this.data = JSON.parse(data);
 
-        if (this.fireEvent("queryLoad")) {
+                this.json = this.data.json;
+                this.html = this.data.html;
+            }
 
-            MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
-            //		this.container.setStyles(this.css.container);
-            this._loadBusinessData();
-            this.fireEvent("beforeLoad");
-            if (this.app) if (this.app.fireEvent) this.app.fireEvent("beforeLoad");
+            this.container.set("html", this.html);
+            this.node = this.container.getFirst();
 
-            this.loadContent(callback)
+            this._loadEvents();
+            this.loadRelatedScript();
+
+            if (this.fireEvent("queryLoad")) {
+                // MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
+
+                //		this.container.setStyles(this.css.container);
+                this._loadBusinessData();
+                this.fireEvent("beforeLoad");
+                if (this.app) if (this.app.fireEvent) this.app.fireEvent("beforeLoad");
+
+                this.loadContent(callback)
+            }
+
+        }.bind(this));
+    },
+    loadLanguage: function(callback){
+        MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
+
+        //formDataText
+        if (this.json.languageType!=="script" && this.json.languageType!=="default"){
+            if (callback) callback();
+            return true;
         }
+
+        var language = MWF.xApplication.cms.Xform.LP.form;
+        var languageJson = null;
+
+        if (this.json.languageType=="script"){
+            if (this.json.languageScript && this.json.languageScript.code){
+                languageJson = this.Macro.exec(this.json.languageScript.code, this);
+            }
+        }else if (this.json.languageType=="default") {
+            var name = "lp-"+o2.language;
+            var application = this.businessData.document.appId;
+
+            var p1 = this.documentAction.getDictRoot(name, application, function(d){
+                return d.data;
+            }, function(){});
+            var p2 = this.documentAction.getScriptByNameV2(name, application, function(d){
+                return this.Macro.exec(d.data.text, this);
+            }.bind(this), function(){});
+            languageJson = Promise.any([p1, p2]);
+        }
+
+        if (languageJson){
+            if (languageJson.then && o2.typeOf(languageJson.then)=="function"){
+                languageJson.then(function(json) {
+                    MWF.xApplication.cms.Xform.LP.form = Object.merge(MWF.xApplication.cms.Xform.LP.form, json);
+                    if (callback) callback(true);
+                }, function(){
+                    if (callback) callback(true);
+                })
+            }else{
+                MWF.xApplication.cms.Xform.LP.form = Object.merge(MWF.xApplication.cms.Xform.LP.form, languageJson);
+                if (callback) callback(true);
+            }
+        }else{
+            if (callback) callback(true);
+        }
+
     },
     loadRelatedScript: function () {
         if (this.json.includeScripts && this.json.includeScripts.length) {

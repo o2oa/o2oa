@@ -16,6 +16,13 @@ MWF.xApplication.portal.PortalManager.LP = {
     "copyConfirm_skip": "跳过",
     "copyConfirm_cancel": "取消",
     "copynew": "新",
+
+    "pageConfig": "页面配置",
+    "widgetConfig": "部件配置",
+    "scriptConfig": "脚本配置",
+    "fileConfig": "资源文件",
+    "applicationConfig": "门户属性",
+
     "edit": "编辑",
     "save": "保存",
     "cancel": "取消",

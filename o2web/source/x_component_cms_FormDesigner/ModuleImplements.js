@@ -49,9 +49,9 @@ if( !MWF.CMSProperty_Process ){
         loadFormFieldInput_Process : MWF.CMSProperty_Process.loadFormFieldInput,
         loadFormFieldInput_CMS: function(){
             var fieldNodes = this.propertyContent.getElements(".MWFFormFieldPerson");
-            MWF.xDesktop.requireApp("cms.QueryViewDesigner", "widget.PersonSelector", function(){
+            MWF.xDesktop.requireApp("cms.FormDesigner", "widget.PersonSelector", function(){
                 fieldNodes.each(function(node){
-                    new MWF.xApplication.cms.QueryViewDesigner.widget.PersonSelector(node, this.form.designer, {
+                    new MWF.xApplication.cms.FormDesigner.widget.PersonSelector(node, this.form.designer, {
                         "type": "formField",
                         "form": this.form.json.id,
                         "fieldType": "person",

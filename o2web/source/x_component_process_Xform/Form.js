@@ -176,7 +176,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.container = $(node);
         this.container.setStyle("-webkit-user-select", "text");
         if (Browser.firefox) this.container.setStyle("opacity", 0);
+
         this.data = data;
+        //var jsonData = JSON.parse(data)
 
         /**
          * @summary 表单的配置信息，比如表单名称，提交方式等等.
@@ -359,45 +361,61 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     load: function (callback) {
-        this.checkLock();
-        this.loadExtendStyle(function () {
-            if (this.app) {
-                if (this.app.formNode) this.app.formNode.setStyles(this.json.styles);
-                if (this.app.addEvent) {
-                    this.app.addEvent("resize", function () {
-                        this.fireEvent("resize");
-                    }.bind(this));
-                    this.app.addEvent("queryClose", function () {
-                        this.beforeCloseWork();
-                    }.bind(this));
+        this.loadMacro(function () {
+            debugger;
+            this.loadLanguage(function(flag){
+                if (flag && this.formDataText){
+                    var data = o2.bindJson(this.formDataText,  {"lp": MWF.xApplication.process.Xform.LP.form});
+                    this.data = JSON.parse(data);
+
+                    this.json = this.data.json;
+                    this.html = this.data.html;
                 }
-            }
-            if (!this.businessData.control.allowSave) this.setOptions({ "readonly": true });
+                this.checkLock();
 
-            var cssClass = "";
-            if (this.json.css && this.json.css.code) cssClass = this.loadCss();
+                this.loadExtendStyle(function () {
+                    if (this.app) {
+                        if (this.app.formNode) this.app.formNode.setStyles(this.json.styles);
+                        if (this.app.addEvent) {
+                            this.app.addEvent("resize", function () {
+                                this.fireEvent("resize");
+                            }.bind(this));
+                            this.app.addEvent("queryClose", function () {
+                                this.beforeCloseWork();
+                            }.bind(this));
+                        }
+                    }
+                    if (!this.businessData.control.allowSave) this.setOptions({ "readonly": true });
 
-            this.loadMacro(function () {
-                //this.container.setStyle("opacity", 0);
+                    var cssClass = "";
+                    if (this.json.css && this.json.css.code) cssClass = this.loadCss();
 
-                this.container.set("html", this.html);
-                this.node = this.container.getFirst();
-                if (cssClass) this.node.addClass(cssClass);
 
-                this._loadEvents();
+                    //this.container.setStyle("opacity", 0);
 
-                this.loadRelatedScript();
-                //this.loadResource( function () {
-                // this.loadDictionaryList(function () {
 
-                this.fireEvent("queryLoad");
-                if (this.event_resolve) {
-                    this.event_resolve(function () {
-                        this.loadForm(callback)
-                    }.bind(this));
-                } else {
-                    this.loadForm(callback);
-                }
+                    this.container.set("html", this.html);
+                    this.node = this.container.getFirst();
+                    if (cssClass) this.node.addClass(cssClass);
+
+                    this._loadEvents();
+
+                    this.loadRelatedScript();
+                    //this.loadResource( function () {
+                    // this.loadDictionaryList(function () {
+
+                    this.fireEvent("queryLoad");
+                    if (this.event_resolve) {
+                        this.event_resolve(function () {
+                            this.loadForm(callback)
+                        }.bind(this));
+                    } else {
+                        this.loadForm(callback);
+                    }
+
+                }.bind(this));
+
+
 
                 // }.bind(this));
 
@@ -405,6 +423,64 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             }.bind(this));
         }.bind(this));
+    },
+    loadLanguage: function(callback){
+        debugger;
+        //formDataText
+        if (this.json.languageType!=="script" && this.json.languageType!=="default"){
+            if (callback) callback();
+            return true;
+        }
+
+        var language = MWF.xApplication.process.Xform.LP.form;
+        var languageJson = null;
+
+        if (this.json.languageType=="script"){
+            if (this.json.languageScript && this.json.languageScript.code){
+                languageJson = this.Macro.exec(this.json.languageScript.code, this);
+            }
+        }else if (this.json.languageType=="default") {
+            var name = "lp-"+o2.language;
+
+            if (this.options.macro==="PageContext"){
+                var portal = this.app.portal.id;
+                languageJson = this.workAction.getScriptByNameV2(portal, name, function(d){
+                    return this.Macro.exec(d.data.text, this);
+                }.bind(this), function(){});
+            }else{
+                var application = (this.businessData.work || this.businessData.workCompleted).application;
+                var p1 = this.workAction.getDictRoot(name, application, function(d){
+                    return d.data;
+                }, function(){});
+                var p2 = new Promise(function(resolve, reject){
+                    this.workAction.getScriptByNameV2(name, application, function(d){
+                        if (d.data.text) {
+                            resolve(this.Macro.exec(d.data.text, this));
+                        }else{
+                            reject("");
+                        }
+                    }.bind(this), function(){reject("");});
+                }.bind(this));
+                languageJson = Promise.any([p1, p2]);
+            }
+        }
+
+        if (languageJson){
+            if (languageJson.then && o2.typeOf(languageJson.then)=="function"){
+                languageJson.then(function(json) {
+                    MWF.xApplication.process.Xform.LP.form = Object.merge(MWF.xApplication.process.Xform.LP.form, json);
+                    if (callback) callback(true);
+                }, function(){
+                    if (callback) callback(true);
+                })
+            }else{
+                MWF.xApplication.process.Xform.LP.form = Object.merge(MWF.xApplication.process.Xform.LP.form, languageJson);
+                if (callback) callback(true);
+            }
+        }else{
+            if (callback) callback(true);
+        }
+
     },
     loadRelatedScript: function () {
 
@@ -540,19 +616,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/" + this.json.styleConfig.extendFile;
         MWF.getJSON(stylesUrl, {
-            "onSuccess": function (responseJSON) {
-                if (responseJSON && responseJSON.form) {
-                    this.json = Object.merge(this.json, responseJSON.form);
-                }
-                if (callback) callback();
-            }.bind(this),
-            "onRequestFailure": function () {
-                if (callback) callback();
-            }.bind(this),
-            "onError": function () {
-                if (callback) callback();
-            }.bind(this)
-        }
+                "onSuccess": function (responseJSON) {
+                    if (responseJSON && responseJSON.form) {
+                        this.json = Object.merge(this.json, responseJSON.form);
+                    }
+                    if (callback) callback();
+                }.bind(this),
+                "onRequestFailure": function () {
+                    if (callback) callback();
+                }.bind(this),
+                "onError": function () {
+                    if (callback) callback();
+                }.bind(this)
+            }
         );
     },
     loadMacro: function (callback) {
@@ -2512,11 +2588,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             //     x = x-parseFloat(width);
             // }
             if (x < 0) x = 20;
+            if (!layout.mobile) { // pc上鼠标位置偏移20
+                x = x - 20
+            }
             var dlg = new MWF.xDesktop.Dialog({
                 "title": title,
                 "style": style || "o2",
                 "top": y,
-                "left": x - 20,
+                "left": x,
                 "fromTop": e.event.y,
                 "fromLeft": (Browser.name === "firefox") ? e.event.clientX - 20 : e.event.x - 20,
                 "width": width,
@@ -2634,6 +2713,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "width": width,
                 "height": height,
                 "url": this.app.path + "split.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
                 "container": this.app.content,
                 "isClose": true,
                 "buttonList": [
@@ -3246,6 +3326,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "width": width,
                 "height": height,
                 "url": this.app.path + "reset.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
                 "container": this.app.content,
                 "isClose": true,
                 "buttonList": [
@@ -3683,6 +3764,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "width": width,
                 "height": height,
                 "url": this.app.path + "reroute.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
                 "container": this.app.content,
                 "isClose": true,
                 "buttonList": [
@@ -3814,6 +3896,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }.bind(this));
                 }
             });
+            debugger;
             dlg.show();
         }.bind(this));
     },
@@ -4325,6 +4408,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             window.webkit.messageHandlers.closeWork.postMessage("");
         } else if (window.wx && window.__wxjs_environment === 'miniprogram') { //微信小程序 关闭页面
             wx.miniProgram.navigateBack({ delta: 1 });
+        } else if (uni && uni.navigateBack) { // uniapp 关闭页面
+            uni.navigateBack();
         } else if (this.json.afterProcessAction === "redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code) {
             var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
             (new URI(url)).go();

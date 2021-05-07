@@ -162,6 +162,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 				"width": 360,
 				"height": 260,
 				"url": url,
+				"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate,
 				"buttonList": [
 					{
 						"text": MWF.APPFD.LP.button.ok,

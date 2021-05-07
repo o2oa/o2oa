@@ -79,6 +79,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
 
                 if( this.json.multiTools ){ //自定义操作和系统操作混合的情况，用 system : true 来区分系统和自定义
                     var addReadActionFlag = !this.json.hideSystemTools && !this.json.hideReadedAction; //是否需要增加已阅
+                    var jsonStr = JSON.stringify(this.json.multiTools);
+                    jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                    this.json.multiTools = JSON.parse(jsonStr);
                     this.json.multiTools.each( function (tool) {
                         if( tool.system ){
                             if( !this.json.hideSystemTools ){

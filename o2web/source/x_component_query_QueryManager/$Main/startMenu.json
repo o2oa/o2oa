@@ -17,7 +17,7 @@
 //  },
 
   {
-    "title": "视图配置",
+    "title": MWF.xApplication.query.QueryManager.LP.navi.viewConfig,
     "id": "1.1",
     "action": "viewConfig",
     "icon": "query_view.png",
@@ -25,7 +25,7 @@
     "sub": []
   },
   {
-    "title": "统计配置",
+    "title": MWF.xApplication.query.QueryManager.LP.navi.statConfig,
     "id": "1.1",
     "action": "statConfig",
     "icon": "query_stat.png",
@@ -33,7 +33,7 @@
     "sub": []
   },
   {
-    "title": "数据表",
+    "title": MWF.xApplication.query.QueryManager.LP.navi.tableConfig,
     "id": "1.1",
     "action": "tableConfig",
     "icon": "query_table.png",
@@ -41,7 +41,7 @@
     "sub": []
   },
   {
-    "title": "查询配置",
+    "title": MWF.xApplication.query.QueryManager.LP.navi.statementConfig,
     "id": "1.1",
     "action": "statementConfig",
     "icon": "query_statement.png",
@@ -57,7 +57,7 @@
 //    "sub": []
 //  },
   {
-    "title": "数据应用属性",
+    "title": MWF.xApplication.query.QueryManager.LP.navi.queryProperty,
     "id": "1.1",
     "action": "queryProperty",
     "icon": "query_property.png",

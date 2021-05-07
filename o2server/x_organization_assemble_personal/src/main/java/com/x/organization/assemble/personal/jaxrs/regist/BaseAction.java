@@ -49,4 +49,18 @@ abstract class BaseAction extends StandardJaxrsAction {
 			return false;
 		}
 	}
+
+	Boolean mailExisted(EntityManagerContainer emc, String mail) throws Exception {
+		EntityManager em = emc.get(Person.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Person> root = cq.from(Person.class);
+		Predicate p = cb.equal(root.get(Person_.mail), mail);
+		cq.select(cb.count(root.get(Person_.id))).where(p);
+		if (em.createQuery(cq).getSingleResult() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

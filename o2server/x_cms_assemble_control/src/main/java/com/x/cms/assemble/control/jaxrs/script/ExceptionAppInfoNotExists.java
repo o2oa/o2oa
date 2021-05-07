@@ -1,12 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.script;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionAppInfoNotExists extends PromptException {
+class ExceptionAppInfoNotExists extends LanguagePromptException {
 
 	private static final long serialVersionUID = 1859164370743532895L;
 
 	ExceptionAppInfoNotExists(String flag ) {
-		super("指定ID的应用栏目信息对象不存在。flag:" + flag );
+		super("指定的应用不存在：{}." + flag );
 	}
 }

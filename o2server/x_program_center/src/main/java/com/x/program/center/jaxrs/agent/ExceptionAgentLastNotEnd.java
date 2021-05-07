@@ -1,8 +1,9 @@
 package com.x.program.center.jaxrs.agent;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionAgentLastNotEnd extends PromptException {
+class ExceptionAgentLastNotEnd extends LanguagePromptException {
 
 	private static final long serialVersionUID = -7954335762204386602L;
 

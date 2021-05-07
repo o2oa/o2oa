@@ -331,6 +331,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				"width": 360,
 				"height": 260,
 				"url": url,
+				"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate,
 				"buttonList": [
 				    {
 				    	"text": MWF.APPFD.LP.button.ok,

@@ -70,7 +70,7 @@ MWF.xApplication.Attendance.AddressExplorer = new Class({
         this.wdList = new Element("div", {
             styles : this.css.wdList
         }).inject( this.wpContent );
-        this.wdList.setStyle( "width" , this.toolbarNode.getSize().x - 370 + "px" );
+        this.wdList.setStyle( "width" , this.toolbarNode.getSize().x - 470 + "px" );
 
         data.each( function( d ){
             var placeItem = new Element( "div", {

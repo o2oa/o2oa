@@ -142,6 +142,8 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		/* 密码规则 */
 		map.put("passwordRegex", Config.person().getPasswordRegex());
 		map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
+		/* 平台语言 */
+		map.put("language", Config.person().getLanguage());
 
 		/* RSA */
 		File publicKeyFile = new File(Config.base(), "config/public.key");

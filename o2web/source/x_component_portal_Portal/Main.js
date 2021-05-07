@@ -13,7 +13,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         "icon": "icon.png",
         "width": "1200",
         "height": "800",
-        "title": MWF.xApplication.portal.Portal.LP.title,
+        "title": "",
         "portalId": "",
         "pageId": "",
         "widgetId" : "",
@@ -23,6 +23,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         "readonly": false
     },
     onQueryLoad: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.portal.Portal.LP.title});
         this.lp = MWF.xApplication.portal.Portal.LP;
         if (this.status){
             this.options.portalId = this.status.portalId;
@@ -102,13 +103,15 @@ MWF.xApplication.portal.Portal.Main = new Class({
                     this.setTitle((this.portal && this.portal.name) ? this.portal.name+"-"+pageName : pageName);
                     var page;
                     if (pageJson.data.page){
-                        page = (pageJson.data.page.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.page.data)): null;
+                        this.pageDataText = (pageJson.data.page.data) ? MWF.decodeJsonString(pageJson.data.page.data): "";
+                        page = (this.pageDataText) ? JSON.decode(this.pageDataText): null;
                         this.relatedFormMap = pageJson.data.relatedWidgetMap;
                         this.relatedScriptMap = pageJson.data.relatedScriptMap;
                         delete pageJson.data.page.data;
                         this.pageInfor = pageJson.data.page;
                     }else{
-                        page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
+                        this.pageDataText = (pageJson.data.data) ? MWF.decodeJsonString(pageJson.data.data): "";
+                        page = (this.pageDataText) ? JSON.decode(this.pageDataText): null;
                         delete pageJson.data.data;
                         this.pageInfor = pageJson.data;
                     }
@@ -173,13 +176,15 @@ MWF.xApplication.portal.Portal.Main = new Class({
         var pageName = pageJson.data.page ? pageJson.data.page.name : pageJson.data.name;
         this.setTitle((this.portal && this.portal.name) ? this.portal.name+"-"+pageName : pageName);
         if (pageJson.data.page){
-            this.page = (pageJson.data.page.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.page.data)): null;
+            this.pageDataText = (pageJson.data.page.data) ? MWF.decodeJsonString(pageJson.data.page.data): "";
+            this.page = (this.pageDataText) ? JSON.decode(this.pageDataText): null;
             this.relatedFormMap = pageJson.data.relatedWidgetMap;
             this.relatedScriptMap = pageJson.data.relatedScriptMap;
             delete pageJson.data.page.data;
             this.pageInfor = pageJson.data.page;
         }else{
-            this.page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
+            this.pageDataText = (pageJson.data.data) ? MWF.decodeJsonString(pageJson.data.data): "";
+            this.page = (this.pageDataText) ? JSON.decode(this.pageDataText): null;
             delete pageJson.data.data;
             this.pageInfor = pageJson.data;
         }
@@ -262,6 +267,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
 
                 this.appForm.workAction = this.action;
                 this.appForm.app = this;
+                this.appForm.formDataText = this.pageDataText;
 
                 this.appForm.load();
 

@@ -356,6 +356,7 @@
                 }, {
                     type: "hbox",
                     widths: ["100%"],
+                    hidden: !d.config.base64Encode,
                     children: [{
                         id: "base64enable",
                         type: "checkbox",

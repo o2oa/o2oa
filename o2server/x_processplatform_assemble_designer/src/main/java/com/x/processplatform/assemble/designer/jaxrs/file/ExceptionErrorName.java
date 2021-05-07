@@ -1,12 +1,12 @@
 package com.x.processplatform.assemble.designer.jaxrs.file;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionErrorName extends PromptException {
+class ExceptionErrorName extends LanguagePromptException {
 
 	private static final long serialVersionUID = -9089355008820123519L;
 
 	ExceptionErrorName(String name) {
-		super("{} 名称错误.");
+		super("{} 名称错误.", name);
 	}
 }

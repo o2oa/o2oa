@@ -1,14 +1,14 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionWorkCompletedNotContainsAttachment extends PromptException {
+class ExceptionWorkCompletedNotContainsAttachment extends LanguagePromptException {
 
 	private static final long serialVersionUID = -7038279889683420366L;
 
 	ExceptionWorkCompletedNotContainsAttachment(String title, String workCompletedId, String attachmentName,
 			String attachmentId) {
-		super("workCompleted title:{} id:{}, not contains attachment name:{} id:{} .", title, workCompletedId,
+		super("已完成工作 title:{} id:{}, 没有查找到附件 name:{} id:{}.", title, workCompletedId,
 				attachmentName, attachmentId);
 	}
 

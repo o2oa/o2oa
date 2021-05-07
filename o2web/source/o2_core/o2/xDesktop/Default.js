@@ -495,9 +495,9 @@ o2.xDesktop.Default = new Class({
     changeToDesktopStyle: function(e){
         //MWF.xDesktop.confirm("infor", e, o2.LP.desktop.changeViewTitle, {"html": o2.LP.desktop.changeView}, 500, 100, function(){
         //        this.close();
-                var uri = new URI(window.location.href);
-                uri.setData("view", "layout");
-                uri.go();
+        var uri = new URI(window.location.href);
+        uri.setData("view", "layout");
+        uri.go();
         //     }, function(){
         //         this.close();
         //     }, null, null, "o2"
@@ -523,6 +523,13 @@ o2.xDesktop.Default = new Class({
     loadUserMenuItems: function(){
         var img = this.path+this.options.style+"/icons/config.png";
         this.userMenu.addMenuItem(o2.LP.desktop.userConfig, "click", function(e){this.userConfig(e);}.bind(this), img);
+
+        // var lpMenu = new o2.xDesktop.Menu(this.userInforNode, {
+        //     "event": "click", "style": "flatUser", "offsetX": 30, "offsetY":6, "container": this.node
+        // });
+        //
+        // img = this.path+"/lp/zh-cn.png";
+        // var lp = this.userMenu.addMenuMenu(o2.LP.desktop.userLanguage, "click", function(e){this.userConfig(e);}.bind(this), img);
 
         this.userMenu.addMenuLine();
 
@@ -599,11 +606,11 @@ o2.xDesktop.Default = new Class({
         //     url = url.replace("{name}", "layout");
         //     navigator.sendBeacon(url, status);
         // } else {
-       try{
-           o2.UD.putData("layout", status, function(){
-               if (callback) callback();
-           });
-       }catch(e){};
+        try{
+            o2.UD.putData("layout", status, function(){
+                if (callback) callback();
+            });
+        }catch(e){};
 
         // }
 
@@ -661,12 +668,12 @@ o2.xDesktop.Default = new Class({
                     "style": app.options.style,
                     "title": app.options.title,
                     "window": {
-                    //     //"size": app.window.node.getSize(),
-                    //     "size": {"x": app.window.css.to.width.toFloat(), "y": app.window.css.to.height.toFloat()},
-                    //     "position": {"x": app.window.css.to.left.toFloat(), "y": app.window.css.to.top.toFloat()},
-                    //     "isMax": app.window.isMax,
-                    //     "isHide": app.window.isHide,
-                    //     "style": app.window.options.style
+                        //     //"size": app.window.node.getSize(),
+                        //     "size": {"x": app.window.css.to.width.toFloat(), "y": app.window.css.to.height.toFloat()},
+                        //     "position": {"x": app.window.css.to.left.toFloat(), "y": app.window.css.to.top.toFloat()},
+                        //     "isMax": app.window.isMax,
+                        //     "isHide": app.window.isHide,
+                        //     "style": app.window.options.style
                     },
                     "app": null
                 };
@@ -1153,27 +1160,27 @@ o2.xDesktop.Default.StartMenu = new Class({
         if (user.groupList) currentNames = currentNames.concat(user.groupList);
 
         //this.getCurrentName( function (currentNames) {
-            if (this.layoutJson && this.layoutJson.length) this.layoutJson.each(function(v){
-                if ( this.checkMenuItem(v, currentNames) ){
-                    if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
-                        this.createApplicationMenuItem(v);
-                    }
+        if (this.layoutJson && this.layoutJson.length) this.layoutJson.each(function(v){
+            if ( this.checkMenuItem(v, currentNames) ){
+                if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
+                    this.createApplicationMenuItem(v);
                 }
-            }.bind(this));
+            }
+        }.bind(this));
 
-            if (this.componentJson && this.componentJson.length) this.componentJson.each(function(v){
-                if ( this.checkMenuItem(v, currentNames) ){
-                    if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
-                        this.createApplicationMenuItem(v);
-                    }
+        if (this.componentJson && this.componentJson.length) this.componentJson.each(function(v){
+            if ( this.checkMenuItem(v, currentNames) ){
+                if ((v.title.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.title.toPY().toLowerCase().indexOf(value)!==-1) || (v.title.indexOf(value)!==-1)){
+                    this.createApplicationMenuItem(v);
                 }
-            }.bind(this));
+            }
+        }.bind(this));
 
-            if (this.portalJson && this.portalJson.length) this.portalJson.each(function(v){
-                if ((v.name.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.name.toPY().toLowerCase().indexOf(value)!==-1) || (v.name.indexOf(value)!==-1)){
-                    this.createPortalMenuItem(v);
-                }
-            }.bind(this));
+        if (this.portalJson && this.portalJson.length) this.portalJson.each(function(v){
+            if ((v.name.toPYFirst().toLowerCase().indexOf(value)!==-1) || (v.name.toPY().toLowerCase().indexOf(value)!==-1) || (v.name.indexOf(value)!==-1)){
+                this.createPortalMenuItem(v);
+            }
+        }.bind(this));
         //})
     },
     searchProcesses: function(value){
@@ -1288,8 +1295,8 @@ o2.xDesktop.Default.StartMenu = new Class({
         //     this.lnkContentNode.empty();
         //     this.createLnkMenuItem();
         // }else{
-            this.lnkAreaNode.hide();
-            this.lineNode.hide();
+        this.lnkAreaNode.hide();
+        this.lineNode.hide();
         //}
     },
     createLnkMenuItem: function(){
@@ -1718,7 +1725,31 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.badgeNode.set("title", o2.LP.desktop.addLnk).addClass("icon_add_red");
     },
     loadText: function(){
-        this.textNode.set("text", this.data.title || this.data.name);
+        debugger;
+        var appNames = this.data.path.split(".");
+        var o = o2.xApplication;
+        appNames.each(function(name){
+            if (!o[name]) o[name] = {};
+            o = o[name];
+        });
+
+        o2.xDesktop.requireApp(this.data.path, "lp." + o2.language, {
+            "onSuccess": function(){
+                if (o.LP && o.LP.title) {
+                    this.textNode.set("text", o.LP.title);
+                }else{
+                    this.textNode.set("text", this.data.title || this.data.name);
+                }
+            }.bind(this),
+            "onFailure": function () {
+                this.textNode.set("text", this.data.title || this.data.name);
+            }.bind(this)
+        }, false);
+
+        // var root = "x_component_"+this.data.path.join("_");
+        // var lp = "../"+root+"/lp/"+o2.language+".js";
+        // o2.load(lp, loadModuls);
+
     },
     setEvent: function(){
         this.node.addEvents({
@@ -1726,7 +1757,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
             "mouseout": function(){ this.badgeNode.fade("out"); }.bind(this),
             "click": function(e){
                 //this.menu.hide(function(){
-                    this.open(e);
+                this.open(e);
                 //}.bind(this));
             }.bind(this)
         });
@@ -2551,7 +2582,7 @@ o2.xDesktop.Default.TaskItem = new Class({
                         this.app.setCurrent();
                     }
                 }else{
-                 //   this.app.refresh();
+                    //   this.app.refresh();
                 }
             }.bind(this),
             "dblclick": function(){
@@ -2560,10 +2591,10 @@ o2.xDesktop.Default.TaskItem = new Class({
         });
         this.closeNode.addEvents({
             "mouseover": function(){
-            //    if (!this.layout.currentApp || this.layout.currentApp.taskitem!=this) this.node.setStyles(this.layout.css.taskItemNode_over);
+                //    if (!this.layout.currentApp || this.layout.currentApp.taskitem!=this) this.node.setStyles(this.layout.css.taskItemNode_over);
             }.bind(this),
             "mouseout": function(){
-            //    if (!this.layout.currentApp || this.layout.currentApp.taskitem!=this) this.node.setStyles(this.layout.css.taskItemNode);
+                //    if (!this.layout.currentApp || this.layout.currentApp.taskitem!=this) this.node.setStyles(this.layout.css.taskItemNode);
             }.bind(this),
             "click": function(){
                 if (!this.app.window){
@@ -2700,10 +2731,11 @@ o2.xDesktop.Default.Lnk = new Class({
         this.actionNode = new Element("div.layout_menu_lnk_item_action", {"title": o2.LP.desktop.deleteLnk}).inject(this.node);
         this.actionNode.addClass("icon_off_light");
 
-        var icon = this.getIcon();
-        this.iconNode.setStyle("background-image", "url("+icon+")");
+        this.getIcon(function (icon) {
+            this.iconNode.setStyle("background-image", "url("+icon+")");
+            this.setEvent();
+        }.bind(this));
 
-        this.setEvent();
 
     },
     setEvent: function(){
@@ -2889,15 +2921,35 @@ o2.xDesktop.Default.Lnk = new Class({
         o2.release(this);
     },
 
-    getIcon: function(){
+    getIcon: function( callback ){
         if (this.data.icon) return this.data.icon;
 
         var icon;
         if (this.data.name.substring(0, 4)==="@url"){
-            if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon){
-                icon = this.layout.path+"appicons/"+this.layout.iconsJson["Url"].icon;
-            }else{
-                icon = this.layout.path+"appicons/url.png";
+            if (this.data.iconData){
+                icon = "data:image/png;base64,"+this.data.iconData+"";
+            }else if (this.data.iconPath){
+                icon = this.data.iconPath;
+            }else {
+                o2.Actions.load("x_component_assemble_control").ComponentAction.get(this.data.title, function(json){
+                    if (json.data && json.data.iconData){
+                        icon = "data:image/png;base64,"+json.data.iconData+"";
+                    }else if (json.data && json.data.iconPath){
+                        icon = json.data.iconPath;
+                    }else if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon) {
+                        icon = this.layout.path + "appicons/" + this.layout.iconsJson["Url"].icon;
+                    } else {
+                        icon = this.layout.path + "appicons/url.png";
+                    }
+                    if(callback)callback(icon)
+                }.bind(this), function(){
+                    if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon) {
+                        icon = this.layout.path + "appicons/" + this.layout.iconsJson["Url"].icon;
+                    } else {
+                        icon = this.layout.path + "appicons/url.png";
+                    }
+                    if(callback)callback(icon)
+                }.bind(this))
             }
         }else{
             if (this.data.iconData){
@@ -2912,6 +2964,7 @@ o2.xDesktop.Default.Lnk = new Class({
                     icon = "../x_component_"+this.data.name.replace(/\./g, "_")+"/$Main/appicon.png";
                 }
             }
+            if(callback)callback(icon)
         }
         return icon;
     }

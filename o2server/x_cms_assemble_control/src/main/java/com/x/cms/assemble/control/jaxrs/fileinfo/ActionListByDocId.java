@@ -31,29 +31,14 @@ import net.sf.ehcache.Element;
 public class ActionListByDocId extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListByDocId.class);
-	
+
 	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String docId ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = null;
-		Boolean isAnonymous = effectivePerson.isAnonymous();
-		Boolean isManager = false;
 		Boolean check = true;
-		
-		if (check) {
-			try {
-				if ( effectivePerson.isManager() ) {
-					isManager = true;
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionFileInfoProcess(e, "判断用户是否是系统管理员时发生异常！user:" + effectivePerson.getDistinguishedName() );
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-		
-		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), docId, isAnonymous, isManager, effectivePerson.getDistinguishedName() );
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), docId);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
 		if (optional.isPresent()) {
@@ -63,12 +48,12 @@ public class ActionListByDocId extends BaseAction {
 			if (check) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
-					FileInfoFactory fileInfoFactory = business.getFileInfoFactory();					
+					FileInfoFactory fileInfoFactory = business.getFileInfoFactory();
 					List<String> ids = fileInfoFactory.listAttachmentByDocument( docId );// 获取指定文档的所有附件列表
-					List<FileInfo> fileInfoList = emc.list( FileInfo.class, ids );// 查询ID IN ids 的所有文件或者附件信息列表				
+					List<FileInfo> fileInfoList = emc.list( FileInfo.class, ids );// 查询ID IN ids 的所有文件或者附件信息列表
 					List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 					List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-					
+
 					Wo wo = null;
 					wos = new ArrayList<>();
 					if( ListTools.isNotEmpty( fileInfoList )) {
@@ -94,13 +79,13 @@ public class ActionListByDocId extends BaseAction {
 
 		return result;
 	}
-	
+
 	public static class Wo extends FileInfo {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		private WoControl control = new WoControl();
 
 		public WoControl getControl() {
@@ -110,10 +95,10 @@ public class ActionListByDocId extends BaseAction {
 		public void setControl(WoControl control) {
 			this.control = control;
 		}
-		
+
 		public static WrapCopier<FileInfo, Wo> copier = WrapCopierFactory.wo( FileInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
 	}
-	
+
 	public static class WoControl extends GsonPropertyObject {
 
 		private Boolean allowRead = false;
@@ -144,7 +129,7 @@ public class ActionListByDocId extends BaseAction {
 			this.allowControl = allowControl;
 		}
 	}
-	
+
 	private boolean read(Wo woFileInfo, EffectivePerson effectivePerson, List<String> identities, List<String> units) throws Exception {
 		boolean value = false;
 		if (effectivePerson.isPerson(woFileInfo.getCreatorUid())) {

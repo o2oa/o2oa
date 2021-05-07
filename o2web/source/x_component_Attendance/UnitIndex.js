@@ -374,7 +374,7 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
             }).inject(this.statusColorTable)
             var td = new Element("td",{
                 "styles" : this.css.statusTextTd,
-                "text" : this.lp[status] +totalData[status]+ this.lp.day +"("+rateData[status]+")"
+                "text" : this.lp[status] +":"+totalData[status]+ " " +this.lp.day +"("+rateData[status]+")"
             }).inject(tr)
         }
     },

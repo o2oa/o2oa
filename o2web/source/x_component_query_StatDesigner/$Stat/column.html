@@ -1,19 +1,19 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">ID:</td>
                 <td class="editTableValue">text{$.id}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">视图:</td>
+                <td class="editTableTitle">{{$.lp.view}}:</td>
                 <td class="editTableValue">
                     <div class="MWFQueryViewSelect" name="view"></div>
-                    <div>视图需要设置分类列</div>
+                    <div>{{$.lp.viewNote}}</div>
                 </td>
             </tr>
             <!--<tr>-->
@@ -21,42 +21,42 @@
                 <!--<td class="editTableValue"><div class="MWFViewSelect" name="view"></div></td>-->
             <!--</tr>-->
             <tr>
-                <td class="editTableTitle">视图列:</td>
+                <td class="editTableTitle">{{$.lp.column}}:</td>
                 <td class="editTableValue">
                     <select class="MWFViewColumnSelect" name="column">
-                        <option>请先为统计选择视图</option>
+                        <option>{{$.lp.columnNote}}</option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">计算类型:</td>
+                <td class="editTableTitle">{{$.lp.calculateType}}:</td>
                 <td class="editTableValue"><select name="calculateType">
-                    <option value="sum" text{($.calculateType)=='sum'?'selected':''}>总和(sum)</option>
-                    <option value="average" text{($.calculateType)=='average'?'selected':''}>平均(average)</option>
-                    <option value="count" text{($.calculateType)=='count'?'selected':''}>数量(count)</option>
+                    <option value="sum" text{($.calculateType)=='sum'?'selected':''}>{{$.lp.sum}}</option>
+                    <option value="average" text{($.calculateType)=='average'?'selected':''}>{{$.lp.average}}</option>
+                    <option value="count" text{($.calculateType)=='count'?'selected':''}>{{$.lp.count}}</option>
                     <!--<option value="groupSum" text{($.calculateType)=='groupSum'?'selected':''}>分类总和(groupSum)</option>-->
                     <!--<option value="groupAverage" text{($.calculateType)=='groupAverage'?'selected':''}>分类平均(groupAverage)</option>-->
                     <!--<option value="groupCount" text{($.calculateType)=='groupCount'?'selected':''}>分类数量(groupCount)</option>-->
                 </select></td>
             </tr>
             <tr>
-                <td class="editTableTitle">格式:</td>
+                <td class="editTableTitle">{{$.lp.formatType}}:</td>
                 <td class="editTableValue"><select name="formatType">
-                    <option value="number" text{($.formatType=='number')?'selected':''}>数字</option>
-                    <option value="percent" text{($.formatType=='percent')?'selected':''}>百分比</option>
-                    <option value="currency" text{($.formatType=='currency')?'selected':''}>货币</option>
+                    <option value="number" text{($.formatType=='number')?'selected':''}>{{$.lp.number}}</option>
+                    <option value="percent" text{($.formatType=='percent')?'selected':''}>{{$.lp.percent}}</option>
+                    <option value="currency" text{($.formatType=='currency')?'selected':''}>{{$.lp.currency}}</option>
                 </select></td>
             </tr>
             <tr>
-                <td class="editTableTitle">小数点位数:</td>
+                <td class="editTableTitle">{{$.lp.decimal}}:</td>
                 <td class="editTableValue"><input type="number" name="decimal" value="text{$.decimal}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">默认值:</td>
+                <td class="editTableTitle">{{$.lp.defaultValue}}:</td>
                 <td class="editTableValue"><input type="text" name="defaultValue" value="text{$.defaultValue}" class="editTableInput"/></td>
             </tr>
         </table>
-        <div class="MWFFormulaArea" name="code" title="显示脚本 (S)"></div>
+        <div class="MWFFormulaArea" name="code" title="{{$.lp.code}} (S)"></div>
 	</div>
 	<div title="JSON"  class="MWFTab">
 		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>

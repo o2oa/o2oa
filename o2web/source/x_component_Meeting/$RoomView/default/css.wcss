@@ -82,7 +82,7 @@
     },
 
     "roomHourRangeNode": {
-        "width": "240px",
+        "width": "300px",
         "float": "left",
         "line-height": "50px",
         "margin-right": "20px",

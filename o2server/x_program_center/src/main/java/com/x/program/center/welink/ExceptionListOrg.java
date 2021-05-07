@@ -1,8 +1,9 @@
 package com.x.program.center.welink;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionListOrg extends PromptException {
+class ExceptionListOrg extends LanguagePromptException {
 
 	private static final long serialVersionUID = 4132300948670472899L;
 
