@@ -443,26 +443,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             }
         }
     },
-    search: function(){
-        var key = this.searchInput.get("value");
-        if (key){
-            this.initSearchArea(true);
-            var createdId = this.searchInItems(key) || [];
-            if( this.options.include && this.options.include.length ){
-                this.includeObject.listByFilter( "key", key, function( array ){
-                    array.each( function(d){
-                        if( !createdId.contains( d.distinguishedName ) ){
-                            if( !this.isExcluded( d ) ) {
-                                this._newItem( d, this, this.itemSearchAreaNode);
-                            }
-                        }
-                    }.bind(this))
-                }.bind(this))
-            }
-        }else{
-            this.initSearchArea(false);
-        }
-    },
     createItemsSearchData: function(callback){
         if (!this.itemsSearchData){
             this.itemsSearchData = [];
