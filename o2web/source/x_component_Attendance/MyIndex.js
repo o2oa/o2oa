@@ -618,7 +618,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             }).inject(this.statusColorTable);
             var td = new Element("td",{
                 "styles" : this.css.statusTextTd,
-                "text" : this.lp[status] +this.totalData[status]+ this.app.lp.day + ( this.rateData[status] ? "("+this.rateData[status]+")" : "" )
+                "text" : this.lp[status] +":"+this.totalData[status] + " "+ this.app.lp.day + ( this.rateData[status] ? "("+this.rateData[status]+")" : "" )
             }).inject(tr)
         }
     },

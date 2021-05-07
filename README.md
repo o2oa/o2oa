@@ -1,23 +1,18 @@
-# O2OA相关教程
-
-[安装管理及配置](https://www.yuque.com/o2oa/course/wqq0co)
-
-[业务开发与设计](https://www.yuque.com/o2oa/course/gty5yx)
-
-[平台内置应用介绍](https://www.yuque.com/o2oa/course/kls5ye)
-
-[源码的编译及管理](https://www.yuque.com/o2oa/course/ng5iqb)
-
-***
-
 # O2OA : Java企业信息化系统,开源OA openSource OA Platform
 
-O2OA是基于J2EE架构，集成移动办公、智能办公，支持私有化部署，自适应负载能力的，能够很大程度上节约企业软件开发成本的基于AGPL协议开放源代码的企业信息化系统需求定制开发解决方案，对外提供专业的开发运维等技术服务。
+O2OA应用开发平台是兰德纵横网络技术股份有限公司发布和维护的开源产品，是使用JavaEE技术栈，分布式架构设计的一款真正全代码开源的企业应用定制化开发平台。适用于企业OA、协同办公类信息化系统的建设和开发。
 
 ![o2oa](https://static.oschina.net/uploads/space/2018/0918/200301_N9TG_3931542.png)
 
 O2OA平台拥有流程管理、门户管理、信息管理、数据管理和服务管理五大核心能力。用户可以直接使用平台已有功能进行信息信息化建设，平台提供了完整的用户管理，权限管理，流程和信息管理体系，并且提供了大量的开发组件和开箱即用的应用，可以大幅度减化企业信息化建设成本和业务应用开发难度。
 
+### 若开发者学习研究O2OA，企业在O2OA应用开发平台上建设内部使用的办公系统，不闭源分发版本，不参与商业项目的使用行为不会构成侵权风险。
+
+### 如果需要进行转售，闭源分发或者在商业项目中作为项目的一部分使用，请主动联系兰德网络公司购买商用许可。
+
+商用许可说明：https://www.o2oa.net/license.html
+
+技术支持服务：https://www.o2oa.net/support.html
 
 # 其主要能力如下：
 
@@ -63,10 +58,9 @@ Gitee : https://gitee.com/o2oa/O2OA
 
 Github : https://github.com/o2oa/o2oa
 
-语雀文档 : https://www.yuque.com/o2oa/course
+语雀文档 : https://www.o2oa.net/course
 
-脚本API：http://www.o2oa.net/x_desktop/portal.html?id=dcd8e168-2da0-4496-83ee-137dc976c7f6
-
+脚本API：http://www.o2oa.net/api/
 
 
 # 关于正式环境数据安全相关的建议\:
@@ -78,26 +72,26 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
 另外，O2OA提供数据定期备份和恢复的能力，建议您开启正式环境的数据定期备份的功能，以确保数据库异常时可以进行数据恢复。
 
 
-# 最新版本服务器安装包下载[o2server_V5.3.0]\:
+# 最新版本服务器安装包下载地址\: https://www.o2oa.net/download.html
 
-windows 64Bit : http://download.o2oa.net/download/o2server-5.3.0-windows-x64.zip
+## 支持操作系统：
 
-Linux 64Bit : http://download.o2oa.net/download/o2server-5.3.0-linux-x64.zip
+    Windows 64Bit, Linux 64Bit[CentOS, RedHat, Ubuntu等], MacOS, AIX, Raspberrypi(树莓派),
 
-MacOS : http://download.o2oa.net/download/o2server-5.3.0-macos.zip
+    ARM_Linux,
+    
+    MIPS_Linux,
+    
+    UOS,麒麟等国产操作系统
 
-AIX : http://download.o2oa.net/download/o2server-5.3.0-aix.zip
+## 支持数据库：
 
-raspberrypi(树莓派)：http://download.o2oa.net/download/o2server-5.3.0-raspi.zip
+    自带H2数据库.
 
-ARM[深度Linux(deepin)，优麒麟(Ubuntu),中标麒麟(NeoKylin),威科乐恩Linux（WiOS）]：
-
-http://download.o2oa.net/download/o2server-5.3.0-linux-arm.zip
-
-RISC-V[Debian GNU/Linux，银河麒麟飞腾]：
-
-http://download.o2oa.net/download/o2server-5.3.0-linux-mips.zip
-
+    第三方数据库: Apache Derby, Borland Interbase, Borland JDataStore, DB2, Empress, Firebird, H2 Database Engine, 
+                  Hypersonic Database Engine, Informix Dynamic Server, Ingres Database, InterSystems Cache,
+                  Microsoft Access, Microsoft SQL Server, Microsoft Visual FoxPro, MySQL, Oracle, Pointbase,
+                  PostgreSQL, IBM solidDB, Sybase Adaptive Server Enterprise, 达梦DM7+, 人大金仓, 南大通用, 神通数据库
 
 
 # 官方网盘下载\:
@@ -105,187 +99,96 @@ http://download.o2oa.net/download/o2server-5.3.0-linux-mips.zip
 百度云盘：https://pan.baidu.com/s/1oBQ1atXGyXdLaYE5uAqF1w   提取码: pnk9
 
 
-# 最新版本 v5.3\:
+# 最新源码编译教程\:http://www.o2oa.net/course/ng5iqb.html
+
+
+# 服务器部署教程
+
+    Windows环境：https://www.o2oa.net/course/qq5gny.html
+    
+    Linux环境：https://www.o2oa.net/course/yto8af.html
+
+
+# 最新版本 v6.0.x\:
 
 功能新增
 
-[移动办公]新增了企业微信通讯录同步回调功能
+[前端通用]新增了服务器中自带前端API文档的功能
 
-[移动办公]新增了钉钉通讯录同步回调功能
+[前端通用]前端API文档增加了表单组件的说明
 
-[数据库连接]新增了人大金仓数据库V8R6适配器
+[前端通用]前端API文档增加了Promise的说明
 
-[流程平台]新增了表单组件的默认值等脚本支持异步返回
+[前端通用]前端API文档中workContext、documentContext、org的样例根据后台最新数据获取
 
-[流程平台]优化表单展现速度，增加预加载脚本
+[移动办公]移动端原生能力支持的JSAPI文档
 
-[流程平台]新增了数据网格支持插入附件功能
+[数据中心]新增了自建表数据导出到Excel文件、从Excel文件中导入数据到自建表的功能
 
-[流程平台]新增了V2版本的work接口
+[平台主页]新增了任务栏tab页的“全部关闭”和“关闭其他”等功能
 
-[流程平台]新增了V2版本的form接口
+[平台主页]新增了应用菜单的排序和分组功能
 
-[文件存储]新增了对sftp协议的支持
+[内容管理]新增了发布文档允许上传其他cms文档的附件的功能
 
-[系统服务]新增了工作时间计算的前端接口
+[内容管理]新增了根据url上传附件接口
 
-[人员组织]新增了组织关联用户、身份是否存在的校验接口
+[流程平台]新增了根据job获取工作附件列表的接口
 
-[人员组织]新增了根据职务名称和组织查询职务信息接口
+[流程平台]新增了批量上传附件到多个work的接口
 
-[人员组织]新增了组织成员按身份排序的按钮
-
-[中心服务]新增了手动发起同步区域数据接口
-
-[内容管理]新增了点赞信息查询接口
-
-[内容管理]新增了根据id列表查询doc数据接口
-
-[数据中心]新增了查询语句的视图配置
-
-[数据中心]新增了查询语句的API
-
-[数据中心]新增了获取实体对象的属性信息接口
-
-[数据中心]新增了视图数组类型in语句查询条件
-
-[数据中心]新增了查询语句查询数据与查询总数同时执行的接口
-
-[数据中心]新增了视图中的全选功能
-
-[数据中心]新增了视图中按脚本设置默认选中条目的功能
-
-[数据中心]新增了视图中按脚本设置选中条目权限的功能
-
-[平台架构]打包应用jar包上传到maven仓库
-
-[平台架构]新增了自定义应用模板创建
-
-[平台架构]引入Promise对象，所有前端Action的请求全部返回Promise对象
-
-[平台架构]新增了web.json配置，可配置configMapping减少获取服务地址请求
-
-[考勤管理]新增了工作地点的百度开发者账号设置
+[流程平台]新增了根据url上传附件接口
 
 功能优化
 
-[缓存]简化ETag计算,减少ETag计算开销
+[移动办公]IM聊天消息功能结构优化
 
-[服务器]ctl -hs 命令增加对center,application,web服务器的dump
+[移动办公]云盘分享功能改进
 
-[流程平台]优化优先路由功能,增加立即执行配置项
+[移动办公]附件缓存功能优化
 
-[流程平台]增加在拆分合并状态下的拆分值的回滚
+[系统配置]系统设置中配置修改实时生效，无需重启server（除了node配置修改）
 
-[流程平台]增加提交时人员选择的隐藏条件
+[人员组织]根据职务和组织查询身份同时返回关联组织的排序号
 
-[流程平台]修改服务调用活动颜色，以免和流程监控的已流转过活动颜色过于接近
+[用户认证]兼容支持用户密码为md5加密的密码登录
 
-[流程平台]多人处理时，优先路由是立即执行还是所有人处理完成后执行，现在可以在流程配置时选择
+[数据中心]视图支持数组查询和展现
 
-[流程平台]默认隐藏流程配置的高级属性
+[内容管理]表单结构优化，前端加载速度优化
 
-[流程平台]流程配置事件增加了有代码的提示标志
-
-[系统服务]接口脚本改由编译后缓存执行
-
-[数据库连接]增加数据库连接池借入借出的testConnection配置项
-
-[服务器]ctl -td命令改由调用jcmd执行
-
-[数据中心]优化自建表查询，允许自建表间关联查询、子查询、join查询
-
-[数据中心]自建表编译优化，支持集群同时编译
-
-[数据中心]取消视图查询时默认时间范围1年限制
-
-[数据中心]限制了自检表的表名为文本加日期
-
-[数据中心、流程引擎、内容管理]操作条的系统操作和自定义操作可以混合排序
-
-[内容管理]缓存及权限刷新修改
-
-[内容管理]增加了评论的编辑器设置
-
-[人员组织]修改根据组织和职务名称查询身份信息接口(优化查询速度)
-
-[人员组织]增加了组织中按照人员拼音排序的功能
-
-[门户管理]优化门户展现速度
-
-[云文件]支持管理员设置用户最大使用容量、可上传的文件类型限制
+[人员组织]补充微信、钉钉等单点认证审计日志
 
 问题修复
 
-[移动办公]修复了Android app 下载更新的bug
+[移动办公]修复了钉钉扫码功能
 
-[移动办公]修复了Android app 指纹认证登录不成功的bug
+[流程平台]修复了待阅打开附件报权限错误的问题
 
-[移动办公]修复了Android app 会议处理页面的bug
+[流程平台]修复了处理转交的授权没有record流转记录的问题
 
-[移动办公]修复了钉钉工作页面无法关闭的bug
+[流程平台]修复了回溯到拟稿环节没有待办的问题
 
-[论坛管理]修复了内外网域名不同图片不能正确显示的bug
+[内容管理]修复了内容管理编辑者无法编辑文档的问题
 
-[数据库连接]修复了神州通用数据库Boolean映射错误的bug
+[数据中心]修复了自建表不能修改可读或可编辑人员组织的问题
 
-[自定义表]修复了驼峰式命名单个小写字母转换的错误
+[平台架构]修复了服务请求的Promise rejection错误的问题
 
-[流程平台]修复了一键下载文件标题包含特殊字符、标题过长的问题
+[平台架构]修复了double数据类型数据失真的问题
 
-[流程平台]修复了提交时选人可能重复出现人员的问题
+# 协议
 
-[流程平台]修复了关闭WORK页面时，有时beforeunload事件会执行两次的问题
-
-[流程平台]修复了版式文件粘贴大段内容后容器高度异常问题
-
-[流程平台]修复了数据网格中多行文本的显示问题
-
-[应用中心]修复了导入应用覆盖时应用本身信息没有覆盖的问题
-
-[内容管理]修复了附件update权限判断错误的问题
-
-[数据中心]修复了数据中心应用删除时关联的子表数据未删除完全的问题
-
-[系统服务]修复了代理模式代理url特殊字符比如|的问题
-
-[平台首页]修复了首页日程安排标题显示重叠的问题
-
-
-# 配置编译环境\:
-
-## 操作教程：http://www.o2oa.net/course/ng5iqb.html
-
-
-# 服务器部署
-
-## 部署教程
-
-开源中国技术博客：https://my.oschina.net/u/3931542
-
-## windows部署步骤：
-
-1.下载o2server_yyyyMMddHHmmss_windows.zip程序包。
-
-2.解压下载后的压缩包到任意目录。
-
-3.确认开通服务器的80、20020、20030端口。
-
-4.打开o2server文件夹，选择start_windows.bat双击打开。
-
-5.启动服务,等待相关服务启动完成。
-
-6.启动完成后打开浏览器访问http://127.0.0.1。
-
-7.输入用户名xadmin密码o2登陆系统。
-
-# 温馨提醒
-
-O2OA自带的H2数据库是一个内嵌式的内存数据库，比适合用于开发环境、功能演示环境，并不适合用作正式环境使用。
-
-如果作为正式环境使用，建议您使用拥有更高性能，更加稳定的商用级别数据库，如Mysql8，Oracle12C，SQLServer 2012等。
-
-O2OA提供数据定期备份和恢复的能力，建议您开启正式环境的数据定期备份的功能，以确保数据库异常时可以进行数据恢复。
+[AGPL-3.0 开源协议。](./LICENSE)
 
 
 
+# 关于
+
+[![img](./assets/O2OA-logo.jpg)](./assets/O2OA-logo.jpg)
+
+
+
+O2OA开发平台是由 **浙江兰德纵横网路技术股份有限公司** 建立和维护的。O2OA 的名字和标志是属于 **浙江兰德纵横网路技术股份有限公司** 的注册商标。
+
+我们 ❤️ 开源软件！看一下[我们的其他开源项目](https://github.com/o2oa)，瞅一眼[我们的博客](https://my.oschina.net/o2oa)。

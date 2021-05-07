@@ -1,12 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionViewInfoNotExists extends PromptException {
+class ExceptionViewInfoNotExists extends LanguagePromptException {
 
 	private static final long serialVersionUID = 1859164370743532895L;
 
 	ExceptionViewInfoNotExists( String id ) {
-		super("ID为{}的数据视图信息不存在。", id );
+		super("com.x.cms.assemble.control.jaxrs.comment.ExceptionCommentIdForQueryEmpty", id );
 	}
 }

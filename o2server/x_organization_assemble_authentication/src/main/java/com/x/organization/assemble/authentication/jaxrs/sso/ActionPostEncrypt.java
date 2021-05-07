@@ -5,20 +5,18 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Token.Sso;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.DefaultCharset;
+import com.x.organization.core.express.assemble.authentication.jaxrs.sso.ActionPostEncryptWi;
+import com.x.organization.core.express.assemble.authentication.jaxrs.sso.ActionPostEncryptWo;
 
 class ActionPostEncrypt extends BaseAction {
 
@@ -43,8 +41,9 @@ class ActionPostEncrypt extends BaseAction {
 			throw new ExceptionClientNotExist(wi.getClient());
 		}
 		String str = wi.getCredential() + TOKEN_SPLIT + new Date().getTime();
-		//byte[] bs = Crypto.encrypt(str.getBytes(DefaultCharset.charset), wi.getKey().getBytes());
-		//String token = new String(Base64.encodeBase64(bs), DefaultCharset.charset);
+		// byte[] bs = Crypto.encrypt(str.getBytes(DefaultCharset.charset),
+		// wi.getKey().getBytes());
+		// String token = new String(Base64.encodeBase64(bs), DefaultCharset.charset);
 		String token = Crypto.encrypt(str, wi.getKey());
 		Wo wo = new Wo();
 		wo.setToken(token);
@@ -52,52 +51,11 @@ class ActionPostEncrypt extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
-
-		@FieldDescribe("客户标识")
-		private String client;
-		@FieldDescribe("用户标识")
-		private String credential;
-		@FieldDescribe("加密密钥")
-		private String key;
-
-		public String getClient() {
-			return client;
-		}
-
-		public void setClient(String client) {
-			this.client = client;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-		}
-
-		public String getCredential() {
-			return credential;
-		}
-
-		public void setCredential(String credential) {
-			this.credential = credential;
-		}
+	public static class Wi extends ActionPostEncryptWi {
 
 	}
 
-	public static class Wo extends GsonPropertyObject {
-
-		private String token;
-
-		public String getToken() {
-			return token;
-		}
-
-		public void setToken(String token) {
-			this.token = token;
-		}
+	public static class Wo extends ActionPostEncryptWo {
 
 	}
 

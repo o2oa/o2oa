@@ -1964,7 +1964,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			var arg = { data : resultArr, colWidthArray : colWidthArr, title : title };
 			this.fireEvent("export", [arg]);
 
-			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils(this).exportToExcel( resultArr, arg.title || title, colWidthArr, dateIndexArr );
 		},
 		importFromExcel : function () {
 			debugger;
@@ -1996,7 +1996,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			}.bind(this));
 
 
-			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).upload( dateColArray, function (importedData) {
+			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils(this).upload( dateColArray, function (importedData) {
 
 				var checkAndImport = function () {
 					if( !this.checkImportedData( columnList, importedData ) ){
@@ -2017,9 +2017,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 			}.bind(this));
 		},
-
-		setImportData: function(columnList, importedData){
-
+		parseImportedData: function(columnList, importedData){
 			var data = {
 				"data" : []
 			};
@@ -2043,21 +2041,25 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						case "Author":
 						case "Personfield":
 						case "Orgfield":
-							var arr = d.split(/\s*,\s*/g ); //空格,空格
-							if( arr.length === 0 ){
-								value = this.getImportOrgData( d );
+							if( !d ){
+								value = [];
 							}else{
+								var arr = d.split(/\s*,\s*/g ); //空格,空格
+								// if( arr.length === 0 ){
+								// 	value = this.getImportOrgData( d );
+								// }else{
 								value = [];
 								arr.each( function(d, idx){
 									var obj = this.getImportOrgData( d );
 									value.push( obj );
 								}.bind(this));
+								// }
 							}
 							break;
 						case "Combox":
 						case "Address":
 							arr = d.split(/\s*,\s*/g ); //空格,空格
-							value = arr.length === 0  ? arr[0] : arr;
+							value = arr; //arr.length === 1  ? arr[0] : arr;
 							break;
 						case "Checkbox":
 							arr = d.split(/\s*,\s*/g ); //空格,空格
@@ -2106,6 +2108,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 				data.data.push( lineData );
 			}.bind(this));
+			return data;
+		},
+		setImportData: function(columnList, importedData){
+
+			var data = this.parseImportedData( columnList, importedData );
 
 			this.fireEvent("import", [data] );
 
@@ -2223,17 +2230,21 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			var arg = { data : resultArr, colWidthArray : colWidthArr, title : title, withError : true };
 			this.fireEvent("export", [arg]);
 
-			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils(this).exportToExcel( resultArr, arg.title || title, colWidthArr, dateIndexArr );
 		},
 		checkImportedData : function( columnList, tableData ){
 			var flag = true;
 
+			var parsedData = this.parseImportedData(columnList, tableData);
+
 			var lp = MWF.xApplication.process.Xform.LP;
 			var columnText =  lp.importValidationColumnText;
 			var columnTextExcel = lp.importValidationColumnTextExcel;
-			var excelUtil = new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this );
+			var excelUtil = new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils(this);
 
 			tableData.each( function(lineData, lineIndex){
+
+				var parsedLineData = (parsedData && parsedData.data) ? parsedData.data[lineIndex] : {};
 
 				var errorTextList = [];
 				var errorTextListExcel = [];
@@ -2249,43 +2260,57 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 					var d = lineData[text] || "";
 
-					switch (module.json.type) {
-						case "Org":
-						case "Reader":
-						case "Author":
-						case "Personfield":
-						case "Orgfield":
-							var arr = d.split(/\s*,\s*/g ); //空格,空格
-							arr.each( function(d, idx){
-								var obj = this.getImportOrgData( d );
-								if( obj.errorText ){
-									errorTextList.push( colInfor + obj.errorText + + lp.fullstop );
-									errorTextListExcel.push( colInforExcel + obj.errorText + + lp.fullstop );
+					var parsedD = "";
+					var ptd = parsedLineData[thJson.id];
+					if( typeOf(ptd) === "object")parsedD = ptd[module.json.id];
+
+					if( d ){
+						switch (module.json.type) {
+							case "Org":
+							case "Reader":
+							case "Author":
+							case "Personfield":
+							case "Orgfield":
+								var arr = d.split(/\s*,\s*/g ); //空格,空格
+								arr.each( function(d, idx){
+									var obj = this.getImportOrgData( d );
+									if( obj.errorText ){
+										errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+										errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+									}
+								}.bind(this));
+								break;
+							case "Number":
+								if (parseFloat(d).toString() === "NaN"){
+									errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+									errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
 								}
-							}.bind(this));
-							break;
-						case "Number":
-							if (parseFloat(d).toString() === "NaN"){
-								errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
-								errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
-							}
-							break;
-						case "Calendar":
-							if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-								errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-								errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-							}
-							break;
-						default:
-							break;
+								break;
+							case "Calendar":
+								if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+									errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+									errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+								}
+								break;
+							default:
+								break;
+						}
 					}
-					if (module.json.type!="sequence" && module.setData){
-						module.setData();
-						module.validationMode();
-						if (!module.validation()){
-							errorTextList.push(colInfor + module.errNode.get("text"));
-							errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
-							module.errNode.destroy();
+					if (module.json.type!="sequence" && module.setData && module.json.type!=="Address"){
+						var hasError = false;
+						if(["Org","Reader","Author","Personfield","Orgfield"].contains(module.json.type)){
+							if(o2.typeOf(parsedD)==="array" && parsedD.length){
+								hasError = parsedD.some(function (item) { return item.errorText; })
+							}
+						}
+						if( !hasError ){
+							module.setData(parsedD);
+							module.validationMode();
+							if (!module.validation() && module.errNode){
+								errorTextList.push(colInfor + module.errNode.get("text"));
+								errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
+								module.errNode.destroy();
+							}
 						}
 					}
 				}.bind(this));
@@ -2583,7 +2608,7 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 				}
 
 				//第三个参数是日期的列
-				this.import( file, function(json){
+				this.importFromExcel( file, function(json){
 					//json为导入的结果
 					if(callback)callback(json);
 					uploadFileAreaNode.destroy();
@@ -2594,11 +2619,11 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 		var fileNode = uploadFileAreaNode.getFirst();
 		fileNode.click();
 	},
-	export : function(array, fileName, colWidthArr, dateIndexArray){
+	exportToExcel : function(array, fileName, colWidthArr, dateIndexArray){
 		// var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
 		// array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
 		// array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
-		// this.export(array, "导出数据"+(new Date).format("db"));
+		// this.exportToExcel(array, "导出数据"+(new Date).format("db"));
 		this._loadResource( function(){
 			var data = window.xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
 			var wb = window.xlsxUtils.format2WB(data, "sheet1", undefined);
@@ -2668,7 +2693,7 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 			this._openDownloadDialog(window.xlsxUtils.format2Blob(wb), fileName +".xlsx");
 		}.bind(this))
 	},
-	import : function( file, callback, dateColArray ){
+	importFromExcel : function( file, callback, dateColArray ){
 		this._loadResource( function(){
 			var reader = new FileReader();
 			var workbook, data;

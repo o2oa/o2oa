@@ -1,23 +1,23 @@
 <div style="background-color: #FFF; overflow: hidden">
-    <div title="基本" class="MWFTab">
+    <div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">是否只读:</td>
+                <td class="editTableTitle">{{$.lp.readonly}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>是
-                    <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>否
+                    <input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
             <!--<tr>-->
@@ -25,22 +25,22 @@
             <!--<td class="editTableValue"><input type="text" name="src" value="text{$.src}" class="editTableInput"/></td>-->
             <!--</tr>-->
             <tr>
-                <td class="editTableTitle">图片裁剪</td>
+                <td class="editTableTitle">{{$.lp.imageCropping}}</td>
                 <td class="editTableValue">
-                    <input type="radio" onclick="if (this.checked){ $('text{$.pid}imageSizeArea').setStyle('display', 'none'); $('text{$.pid}imageRatioArea').setStyle('display', 'none') }" name="clipperType" value="unrestricted" text{($.clipperType.indexOf('unrestricted')!=-1)?'checked':''}/>不限制
-                    <input type="radio" onclick="if (this.checked){ $('text{$.pid}imageSizeArea').setStyle('display', ''); $('text{$.pid}imageRatioArea').setStyle('display', 'none') }" name="clipperType" value="size" text{($.clipperType.indexOf('size')!=-1)?'checked':''}/>固定大小
-                    <input type="radio" onclick="if (this.checked){ $('text{$.pid}imageSizeArea').setStyle('display', 'none'); $('text{$.pid}imageRatioArea').setStyle('display', '') }" name="clipperType" value="ratio" text{($.clipperType.indexOf('ratio')!=-1)?'checked':''}/>固定比例
+                    <input type="radio" onclick="if (this.checked){ $('text{$.pid}imageSizeArea').setStyle('display', 'none'); $('text{$.pid}imageRatioArea').setStyle('display', 'none') }" name="clipperType" value="unrestricted" text{($.clipperType.indexOf('unrestricted')!=-1)?'checked':''}/>{{$.lp.unlimited}}
+                    <input type="radio" onclick="if (this.checked){ $('text{$.pid}imageSizeArea').setStyle('display', ''); $('text{$.pid}imageRatioArea').setStyle('display', 'none') }" name="clipperType" value="size" text{($.clipperType.indexOf('size')!=-1)?'checked':''}/>{{$.lp.fixedSize}}
+                    <input type="radio" onclick="if (this.checked){ $('text{$.pid}imageSizeArea').setStyle('display', 'none'); $('text{$.pid}imageRatioArea').setStyle('display', '') }" name="clipperType" value="ratio" text{($.clipperType.indexOf('ratio')!=-1)?'checked':''}/>{{$.lp.fixedRatio}}
                 </td>
             </tr>
         </table>
         <div id="text{$.pid}imageSizeArea" style="display: text{($.clipperType!='size')?'none':'block'};">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">宽度(px)</td>
+                    <td class="editTableTitle">{{$.lp.width}}(px)</td>
                     <td class="editTableValue">
                         <input type="text" name="imageWidth" value="text{$.imageWidth}" class="editTableInput"/>
                     </td>
-                    <td class="editTableTitle">高度(px)</td>
+                    <td class="editTableTitle">{{$.lp.height}}(px)</td>
                     <td class="editTableValue">
                         <input type="text" name="imageHeight" value="text{$.imageHeight}" class="editTableInput"/>
                     </td>
@@ -50,7 +50,7 @@
         <div id="text{$.pid}imageRatioArea" style="display: text{($.clipperType!='ratio')?'none':'block'};">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">宽高比</td>
+                    <td class="editTableTitle">{{$.lp.aspectRatio}}</td>
                     <td class="editTableValue">
                         <input type="text" name="imageRatio" value="text{$.imageRatio}" class="editTableInput"/>
                     </td>
@@ -58,12 +58,12 @@
             </table>
         </div>
 
-        <div class="MWFMaplist" name="styles" title="样式"></div>
-        <div class="MWFMaplist" name="properties" title="属性"></div>
+        <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+        <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
         <div class="MWFValidation" name="validationConfig"></div>
     </div>
-    <div title="事件"  class="MWFTab">
+    <div title="{{$.lp.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="events"></div>
     </div>
     <div title="HTML"  class="MWFTab">

@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
+import com.x.processplatform.assemble.surface.jaxrs.anonymous.AnonymousAction;
 import com.x.processplatform.assemble.surface.jaxrs.application.ApplicationAction;
 import com.x.processplatform.assemble.surface.jaxrs.applicationdict.ApplicationDictAction;
 import com.x.processplatform.assemble.surface.jaxrs.attachment.AttachmentAction;
@@ -63,6 +64,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ServiceAction.class);
 		classes.add(DraftAction.class);
 		classes.add(SnapAction.class);
+		classes.add(AnonymousAction.class);
 		return classes;
 	}
 }

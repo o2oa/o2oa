@@ -9,7 +9,7 @@
     "width" : "5%"
   },
   {
-    "title" : "员工姓名",
+    "title" : MWF.xApplication.Attendance.LP.employeeName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.empName.split('@')[0] }",
@@ -17,7 +17,7 @@
     "width" : "9%"
   },
   {
-    "title" : "所在部门",
+    "title" : MWF.xApplication.Attendance.LP.department,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.unitName.split('@')[0] }",
@@ -25,7 +25,7 @@
     "width" : "9%"
   },
   {
-    "title" : "考勤日期",
+    "title" : MWF.xApplication.Attendance.LP.recordDate,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "recordDateString",
@@ -41,7 +41,7 @@
   //    "width" : "10%"
   //  },
   {
-    "title" : "申诉原因",
+    "title" : MWF.xApplication.Attendance.LP.appealReason,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "appealReason",
@@ -49,35 +49,35 @@
     "width" : "9%"
   },
   {
-    "title" : "请假类型",
+    "title" : MWF.xApplication.Attendance.LP.leaveType,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "selfHolidayType",
     "name" : "selfHolidayType",
     "width" : "9%"
   },{
-  "title" : "开始时间",
+  "title" : MWF.xApplication.Attendance.LP.start,
   "headStyles" : "normalThNode",
   "contentStyles" : "normalTdNode",
   "item" : "startTime",
   "name" : "startTime",
   "width" : "9%"
 },{
-  "title" : "结束时间",
+  "title" : MWF.xApplication.Attendance.LP.end,
   "headStyles" : "normalThNode",
   "contentStyles" : "normalTdNode",
   "item" : "endTime",
   "name" : "endTime",
   "width" : "9%"
 },{
-  "title" : "地点",
+  "title" : MWF.xApplication.Attendance.LP.address,
   "headStyles" : "normalThNode",
   "contentStyles" : "normalTdNode",
   "item" : "address",
   "name" : "address",
   "width" : "9%"
 },{
-  "title" : "事由",
+  "title" : MWF.xApplication.Attendance.LP.appealDescriptoin,
   "headStyles" : "normalThNode",
   "contentStyles" : "normalTdNode",
   "item" : "appealDescription",
@@ -85,29 +85,29 @@
   "width" : "9%"
 },
   {
-    "title": "审批状态",
+    "title": MWF.xApplication.Attendance.LP.auditStatus,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( d ){  if(d.status==0){ return '待处理' }else if(d.status==-1){ return '未通过' }else if(d.status==1){ return '通过' }else{ return '' } }",
+    "item": "function( d ){  if(d.status==0){ return MWF.xApplication.Attendance.LP.todo }else if(d.status==-1){ return MWF.xApplication.Attendance.LP.deny }else if(d.status==1){ return MWF.xApplication.Attendance.LP.approve }else{ return '' } }",
     "name" : "status",
     "width" : "7%"
   },
   {
-    "title" : "操作",
+    "title" :MWF.xApplication.Attendance.LP.action,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "actions",
     "name" : "actions",
     "width" : "8%",
     "sub" : [{
-      "title" : "同意",
+      "title" : MWF.xApplication.Attendance.LP.agree,
       "action" : "agree",
       "condition" : "function(d){ return d.APPEALABLE&&d.APPEAL_AUDIFLOWTYPE=='BUILTIN';  }",
       "styles" : "actionAgreeNode",
       "overStyles" : "actionAgreeNode_over",
       "downStyles" : "actionAgreeNode_down"
     }, {
-      "title" : "不同意",
+      "title" : MWF.xApplication.Attendance.LP.disagree,
       "action" : "deny",
       "condition" : "function(d){ return d.APPEALABLE&&d.APPEAL_AUDIFLOWTYPE=='BUILTIN'; }",
       "styles" : "actionDenyNode",

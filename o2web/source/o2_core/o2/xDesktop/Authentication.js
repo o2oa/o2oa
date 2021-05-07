@@ -164,11 +164,16 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         "hasBottom": false,
         "hasScroll": false,
         "hasMark": false,
-        "title": (layout.config && (layout.config.systemTitle || layout.config.title)) ? (layout.config.title || layout.config.systemTitle) : MWF.LP.authentication.LoginFormTitle,
+        "title": "",
         "draggable": true,
         "closeAction": true
     },
-
+    load: function () {
+        this.setOptions({
+            "title": (layout.config && (layout.config.systemTitle || layout.config.title)) ? (layout.config.title || layout.config.systemTitle) : MWF.LP.authentication.LoginFormTitle
+        });
+        this._loadCss();
+    },
     //Camera Login
     _createTopContent: function () {
         this.actions = MWF.Actions.get("x_organization_assemble_authentication");
@@ -1162,9 +1167,15 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
         "hasTopIcon": true,
         "hasTopContent": true,
         "hasBottom": false,
-        "title": MWF.LP.authentication.SignUpFormTitle,
+        "title": "",
         "draggable": true,
         "closeAction": true
+    },
+    load: function () {
+        if (!this.options.title) this.setOptions({
+            "title": MWF.LP.authentication.SignUpFormTitle
+        });
+        this._loadCss();
     },
     _createTableContent: function () {
         var self = this;
@@ -1176,9 +1187,10 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
             signUpMode = json.data.value;
         }.bind(this), null, false);
 
+        this.formTopNode.setStyle("height","50px");
         this.formTableContainer.setStyles({
             "width": "890px",
-            "margin-top": "50px"
+            "margin-top": "40px"
         });
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
@@ -1194,9 +1206,9 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
             "<tr><td styles='formTableTitle' lable='genderType'></td>" +
             "   <td styles='formTableValue' item='genderType'></td>" +
             "   <td styles='formTableValue' item='genderTypeTip'></td></tr>" +
-            //"<tr><td styles='formTableTitle' lable='mail'></td>" +
-            //"   <td styles='formTableValue' item='mail'></td>" +
-            //"   <td styles='formTableValue' item='mailTip'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='mail'></td>" +
+            "   <td styles='formTableValue' item='mail'></td>" +
+            "   <td styles='formTableValue' item='mailTip'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='mobile'></td>" +
             "   <td styles='formTableValue' item='mobile'></td>" +
             "   <td styles='formTableValue' item='mobileTip'></td></tr>";
@@ -1234,7 +1246,7 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
                     form.getItem("name").tipNode = table.getElement("[item='nameTip']");
                     form.getItem("password").tipNode = table.getElement("[item='passwordTip']");
                     form.getItem("confirmPassword").tipNode = table.getElement("[item='confirmPasswordTip']");
-                    //form.getItem("mail").tipNode = table.getElement("[item='mailTip']")[0];
+                    form.getItem("mail").tipNode = table.getElement("[item='mailTip']");
                     form.getItem("genderType").tipNode = table.getElement("[item='genderTypeTip']");
                     form.getItem("mobile").tipNode = table.getElement("[item='mobileTip']");
                     this.tipNode = table.getElement("[item='signUpTip']");
@@ -1315,14 +1327,33 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
                     },
                     mail: {
                         text: this.lp.mail, defaultValue: this.lp.inputYourMail, className: "inputMail",
-                        notEmpty: true, defaultValueAsEmpty: true, emptyTip: this.lp.inputYourMail, validRule: { email: true }, event: {
-                            focus: function (it) { if (this.lp.inputYourMail === it.getValue()) it.setValue(""); if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive); }.bind(this),
-                            blur: function (it) { it.verify(true); if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputMail); }.bind(this),
+                        notEmpty: false, defaultValueAsEmpty: true, emptyTip: this.lp.inputYourMail,
+                        validRule: { isFormatInvalid: function (value, it) {
+                            if( (!value || value===this.lp.inputYourMail) ||
+                                /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test( value ) ){
+                                it.tipNode.empty();
+                                it.warningStatus = false;
+                                return true;
+                            }else{
+                                it.warningStatus = true;
+                                return false;
+                            }
+                        }.bind(this) },
+                        validMessage: { isFormatInvalid: this.lp.mailFormatError },
+                        event: { //validRule: { email: false },
+                            focus: function (it) {
+                                if (this.lp.inputYourMail === it.getValue()) it.setValue("");
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
+                            }.bind(this),
+                            blur: function (it) {
+                                it.verify(true);
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputMail);
+                            }.bind(this),
                             keyup: function (it, ev) { if (ev.event.keyCode === 13) { this.ok() } }.bind(this)
                         }, onEmpty: function (it) {
-                            it.getElements()[0].setStyles(this.css.inputEmpty);
+                            // it.getElements()[0].setStyles(this.css.inputEmpty);
                         }.bind(this), onUnempty: function (it) {
-                            it.getElements()[0].setStyles(this.css.inputMail);
+                            // it.getElements()[0].setStyles(this.css.inputMail);
                         }.bind(this)
                     },
                     genderType: {
@@ -1628,9 +1659,15 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
         "hasTopIcon": true,
         "hasTopContent": true,
         "hasBottom": false,
-        "title": MWF.LP.authentication.ResetPasswordFormTitle,
+        "title": "",
         "draggable": true,
         "closeAction": true
+    },
+    load: function () {
+        if (!this.options.title) this.setOptions({
+            "title": MWF.LP.authentication.ResetPasswordFormTitle
+        });
+        this._loadCss();
     },
     _createTopContent: function () {
 
@@ -2082,10 +2119,16 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
         "hasBottom": false,
         "hasScroll": false,
         "hasMark": false,
-        "title": MWF.LP.authentication.ChangePasswordFormTitle,
+        "title": "",
         "draggable": true,
         "closeAction": true,
         "userName" : ""
+    },
+    load: function () {
+        if (!this.options.title) this.setOptions({
+            "title": MWF.LP.authentication.ChangePasswordFormTitle
+        });
+        this._loadCss();
     },
     _createTableContent: function () {
         var self = this;

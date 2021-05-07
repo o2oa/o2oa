@@ -502,6 +502,9 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer.View = new Class({
     _open: function(e){
         var _self = this;
         var options = {
+            "appId": "cms.ViewDesigner"+_self.data.id,
+            "id": _self.data.id,
+            "application":_self.explorer.app.options.column.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;
@@ -573,9 +576,10 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer.View = new Class({
         //}.bind(this), function(){
         //    selectForm();
         //}.bind(this));
+        var text =  MWF.xApplication.cms.ColumnManager.LP.selectRelateFormNotice;
         this.explorer.loadSelectFormDialog( function( e, form ){
             this._saveItemAs(item, form);
-        }.bind(this), "请选择需粘贴视图的关联表单", item.id);
+        }.bind(this), text, item.id);
     },
     _saveItemAs: function(item, form){
         this.app = this.app || this.explorer.app;

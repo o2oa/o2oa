@@ -5,10 +5,13 @@ MWF.xApplication.Selector.Application = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectAppliction,
+        "title": "",
         "values": [],
         "expand": false,
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.Selector.LP.selectAppliction});
     },
     _init : function(){
         this.selectType = "application";

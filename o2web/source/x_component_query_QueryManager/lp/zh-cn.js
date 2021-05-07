@@ -116,7 +116,15 @@ MWF.xApplication.query.QueryManager.LP = {
         "id": "数据应用标识",
         "firstPage": "数据应用主页",
         "controllerList": "管理者",
-        "available": "可用范围"
+        "available": "可用范围",
+
+        "changeIcon" : "更改图标",
+        "setManager" : "设置管理者",
+        "setAppManager" : "设置应用管理者",
+        "setUsableIdentity" : "设置可用身份",
+        "setUsableUnit" : "设置可用组织",
+        "setAppUsableIdentity" : "设置应用可用身份",
+        "setAppUsableUnit" : "设置应用可用组织"
     },
     "createSelectTemplate": "新建：选择模板",
     "templateCategory": "模板分类：",
@@ -124,5 +132,12 @@ MWF.xApplication.query.QueryManager.LP = {
     "selectorButton" : {
         "ok" : "确　定",
         "cancel" : "取 消"
+    },
+    "navi":{
+	    "viewConfig":"视图配置",
+        "statConfig":"统计配置",
+        "tableConfig":"数据表",
+        "statementConfig":"查询配置",
+        "queryProperty":"数据应用属性"
     }
 };

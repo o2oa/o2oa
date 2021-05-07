@@ -1,8 +1,9 @@
 package com.x.program.center.zhengwudingding;
 
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionDetailOrg extends PromptException {
+class ExceptionDetailOrg extends LanguagePromptException {
 
 	private static final long serialVersionUID = 4132300948670472899L;
 

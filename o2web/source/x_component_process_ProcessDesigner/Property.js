@@ -42,7 +42,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         if (!this.process.options.isView){
             if (!this.propertyContent){
                 this.getHtmlString(function(){
-                    debugger;
+                    this.htmlString = o2.bindJson(this.htmlString, {"lp": o2.APPPD.LP.propertyTemplate});
                     this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.process.propertyListNode);
                     this.process.panel.propertyTabPage.showTabIm();
                     this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
@@ -134,12 +134,12 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             var id = this.process.process.id;
             if (this.activity) id = this.activity.data.id;
             if (this.route) id = this.route.data.id;
-            input.set("name", id+jsondata);
 
 			if (jsondata){
 				var inputType = input.get("type").toLowerCase();
 				switch (inputType){
 					case "radio":
+                        input.set("name", id+jsondata);
 						input.addEvent("change", function(e){
 							property.setRadioValue(jsondata, this);
 						});
@@ -152,6 +152,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                         property.setRadioValue(jsondata, input);
 						break;
 					case "checkbox":
+                        input.set("name", id+jsondata);
                         input.addEvent("keydown", function(e){
                             e.stopPropagation();
                         });
@@ -392,8 +393,10 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         if (!node.retrieve("calendar")){
             var calendar = new MWF.widget.Calendar(node, {
                 "isTime": true,
-                "target": node.getParent(),
+                // "target": node.getParent(),
                 "style": "xform",
+                "secondEnable": true,
+                "format": "db",
                 "onChange": function(dv, date, t){
                     this.setValue(node.get("name"), dv)
                 }.bind(this)

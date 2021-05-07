@@ -1,9 +1,9 @@
 package com.x.organization.assemble.control.jaxrs.role;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.http.EffectivePerson;
 
-class ExceptionDenyDeleteDefaultRole extends PromptException {
+class ExceptionDenyDeleteDefaultRole extends LanguagePromptException {
 
 	private static final long serialVersionUID = 4132300948670472899L;
 

@@ -127,6 +127,10 @@ o2.LP.process = {
 };
 o2.LP.desktop = {
     "homepage": "首页",
+    "taskCenter": "办公中心",
+    "info": "信息平台",
+    "calendar": "日程安排",
+    "profile": "个人设置",
     "loadding": "正在为您加载系统资源，请稍候......",
     "lowBrowser": "您的浏览器版本过低啦！~系统已经不支持IE8及以下版本了!",
     "upgradeBrowser": "请升级您的浏览器：",
@@ -140,6 +144,7 @@ o2.LP.desktop = {
     "showMessage": "消息",
     "logout": "注销",
     "userConfig": "个人设置",
+    "userLanguage": "语言设置",
     "application": "组件",
     "widget": "小工具",
     "process": "应用",
@@ -305,6 +310,7 @@ o2.LP.widget = {
     "uploadTitle": "上传文件",
     "uploadInfor": "请选择要上传的文件",
     "delete": "删除",
+    "previewAtt" : "预览",
     "replace": "替换",
     "select": "选择",
 
@@ -437,6 +443,7 @@ o2.LP.authentication = {
     "resendVerification": "重新发送",
     "passwordIsSimple": "请使用数字字母混合且至少7位",
     "mobileIsRegisted": "手机号码已经被注册",
+    "mailFormatError": "请输入正确格式的邮件地址",
     "hasAccount": "已有账号？",
     "gotoLogin": "去登录",
     "weak": "弱",
@@ -446,6 +453,7 @@ o2.LP.authentication = {
     "userNotExist": "用户不存在",
     "passwordNotEqual": "密码与上面不一致，请重新输入",
     "changeVerification": "换一张",
+    "mail": "邮件",
     "genderType": "性别",
     "genderTypeText": ",男,女",
     "genderTypeValue": ",m,f",

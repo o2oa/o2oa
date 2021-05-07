@@ -1,6 +1,6 @@
 [
   {
-    "title" : "姓名",
+    "title": MWF.xApplication.Attendance.LP.name,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "empName",
@@ -8,7 +8,7 @@
     "width" : "20%"
   },
   {
-    "title" : "日期",
+    "title": MWF.xApplication.Attendance.LP.date,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "defaultSort" : "desc",
@@ -19,16 +19,16 @@
   },
 
   {
-    "title" : "说明",
+    "title": MWF.xApplication.Attendance.LP.description,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function( data ){ if(data.isHoliday){return '节假日'}else if(data.isWeekend){return '周末'}else if(data.isWorkday){return '调休工作日'}else{return '工作日'}  }",
+    "item" : "function( data ){ if(data.isHoliday){ return MWF.xApplication.Attendance.LP.holiday1 }else if(data.isWeekend){return MWF.xApplication.Attendance.LP.weekend }else if(data.isWorkday){return MWF.xApplication.Attendance.LP.workDaysoff }else{return MWF.xApplication.Attendance.LP.workDay }  }",
     "name" : "description",
     "width" : "20%"
   },
 
   {
-    "title" : "上班打卡时间",
+    "title": MWF.xApplication.Attendance.LP.onDutyTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "sort" : "asc,desc",
@@ -37,7 +37,7 @@
     "width" : "15%"
   },
   {
-    "title" : "下班打卡时间",
+    "title": MWF.xApplication.Attendance.LP.offDutyTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "sort" : "asc,desc",
@@ -46,10 +46,10 @@
     "width" : "15%"
   },
   {
-    "title": "考勤状态",
+    "title": MWF.xApplication.Attendance.LP.attendanceStatus,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ status = '请假或外出报备' }else if(d.isLate){ status = '迟到' }else if(d.isLeaveEarlier){ status = '早退' }else if(d.isAbsent){ status = '缺勤' }else{ status = '正常' }; return status; }",
+    "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ if(d.leaveType && d.leaveType!=''){status =d.leaveType }else{status = MWF.xApplication.Attendance.LP.levelAsked } }else if(d.isLate){ status = MWF.xApplication.Attendance.LP.late }else if(d.isLeaveEarlier){ status = MWF.xApplication.Attendance.LP.leaveEarly }else if(d.isAbsent){ status = MWF.xApplication.Attendance.LP.noSign }else if(d.isAbnormalDuty){ status = MWF.xApplication.Attendance.LP.abNormalDuty }else if(d.isLackOfTime){ status = MWF.xApplication.Attendance.LP.lackOfTime }else{ status = MWF.xApplication.Attendance.LP.normal }; return status; }",
     "name" : "status",
     "width" : "15%"
   } //,

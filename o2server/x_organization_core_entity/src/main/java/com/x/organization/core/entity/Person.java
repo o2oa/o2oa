@@ -394,6 +394,14 @@ public class Person extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String qiyeweixinHash;
 
+
+	public static final String mpweixinOpenId_FIELDNAME = "mpwxopenId";
+	@FieldDescribe("微信公众号人员openid.")
+	@Column(length = length_255B, name = ColumnNamePrefix + mpweixinOpenId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + mpweixinOpenId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String mpwxopenId;
+
 	public static final String open1Id_FIELDNAME = "open1Id";
 	@Flag
 	@FieldDescribe("oauth登录id1.")
@@ -447,6 +455,13 @@ public class Person extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Integer failureCount;
 	/* flag标志位 */
+
+	public static final String language_FIELDNAME = "language";
+	@FieldDescribe("国际化语言,如：zh-CN,zh,en,zh_TW等.")
+	@Column(length = length_255B, name = ColumnNamePrefix + language_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + language_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String language;
 
 	public static final String topUnitList_FIELDNAME = "topUnitList";
 	@FieldDescribe("所属顶层组织.")
@@ -834,4 +849,20 @@ public class Person extends SliceJpaObject {
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
+
+	public String getMpwxopenId() {
+		return mpwxopenId;
+	}
+
+	public void setMpwxopenId(String mpwxopenId) {
+		this.mpwxopenId = mpwxopenId;
+	}
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 }

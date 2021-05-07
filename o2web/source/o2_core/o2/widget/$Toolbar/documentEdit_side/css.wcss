@@ -51,7 +51,8 @@
 		"text-align": "center",
 		"line-height": "16px",
 		"margin": "auto",
-		"margin-top": "3px"
+		"margin-top": "3px",
+		"writing-mode": "vertical-lr"
 	},
 
 	"buttonDisable": {

@@ -222,6 +222,8 @@ MWF.xApplication.query.QueryManager.StatementExplorer.Statement= new Class({
         var _self = this;
         var options = {
             "appId": "query.StatementDesigner"+_self.data.id,
+            "id": _self.data.id,
+            "application":_self.explorer.app.options.application.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

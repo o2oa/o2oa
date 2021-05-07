@@ -265,6 +265,7 @@
   "getScriptByName": {"uri": "/jaxrs/script/{name}/application/{applicationId}","method": "POST"},
   "getFormV2": {"uri": "/jaxrs/form/v2/{id}?t={tag}"},
   "getFormV2Mobile": {"uri": "/jaxrs/form/v2/{id}/mobile?t={tag}"},
+  "getScriptByNameV2": {"uri": "/jaxrs/script/{flag}/application/{applicationFlag}/imported"},
 
   "sendReaderByWork" : {"uri":"/jaxrs/read/work/{workId}", "method": "POST"},
   "sendReaderByWorkCompleted" : {"uri":"/jaxrs/read/workcompleted/{workCompletedId}", "method": "POST"},
@@ -293,6 +294,7 @@
 
   "loadWorkV2": {"uri": "/jaxrs/work/v2/workorworkcompleted/{workOrWorkCompleted}"},
   "lookupFormWithWork": {"uri": "/jaxrs/form/v2/lookup/workorworkcompleted/{workOrWorkCompleted}"},
+  "lookupFormWithWorkMobile": {"uri": "/jaxrs/form/v2/lookup/workorworkcompleted/{workOrWorkCompleted}/mobile"},
 
   "listTaskByJob": {"uri": "/jaxrs/task/list/job/{job}"},
   "listTaskCompletedByJob": {"uri": "/jaxrs/taskcompleted/list/job/{job}"},

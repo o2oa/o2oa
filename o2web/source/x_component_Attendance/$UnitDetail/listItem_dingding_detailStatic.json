@@ -1,6 +1,6 @@
 [
   {
-    "title": "人员",
+    "title" : MWF.xApplication.Attendance.LP.person,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "function( d ){ return d.o2User.split('@')[0] }",
@@ -8,7 +8,7 @@
     "width": "9%"
   },
   {
-    "title": "月份",
+    "title" : MWF.xApplication.Attendance.LP.months,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "function( data ){ return data.statisticYear + '-' + data.statisticMonth  }",
@@ -16,7 +16,7 @@
     "width": "9%"
   },
   {
-    "title": "上班打卡次数",
+    "title" : MWF.xApplication.Attendance.LP.onDutyTimes,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "onDutyTimes",
@@ -24,7 +24,7 @@
     "width": "9%"
   },
   {
-    "title": "下班打卡次数",
+    "title" : MWF.xApplication.Attendance.LP.offDutyTimes,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "offDutyTimes",
@@ -32,7 +32,7 @@
     "width": "9%"
   },
   {
-    "title": "出勤人天数",
+    "title" : MWF.xApplication.Attendance.LP.onDutyDayCount,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "workDayCount",
@@ -40,7 +40,7 @@
     "width": "9%"
   },
   {
-    "title": "迟到次数",
+    "title" : MWF.xApplication.Attendance.LP.lateTimes,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "lateTimes",
@@ -48,7 +48,7 @@
     "width": "9%"
   },
   {
-    "title": "早退次数",
+    "title" : MWF.xApplication.Attendance.LP.leaveEarlyTimes,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "leaveEarlyTimes",
@@ -56,7 +56,7 @@
     "width": "9%"
   },
   {
-    "title": "未打卡次数",
+    "title" : MWF.xApplication.Attendance.LP.notSignedCount,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "notSignedCount",
@@ -64,7 +64,7 @@
     "width": "9%"
   },
   {
-    "title": "严重迟到次数",
+    "title" : MWF.xApplication.Attendance.LP.seriousLateTimes,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "seriousLateTimes",
@@ -72,7 +72,7 @@
     "width": "9%"
   },
   {
-    "title": "旷工次数",
+    "title" : MWF.xApplication.Attendance.LP.absenteeismTimes,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "absenteeismTimes",

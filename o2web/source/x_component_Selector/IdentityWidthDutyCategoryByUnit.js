@@ -5,7 +5,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectIdentity,
+        "title": "",
         "dutys": [],
         "units": [],
         "values": [],
@@ -20,6 +20,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         "dutyUnitLevelBy": "duty", //组织层级是按身份所在群组还是职务,
         "identitySortBy" : "identityNumber", //身份排序按身份排序号，还是传入的duty
         "selectType": "identity"
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectIdentity});
     },
     _init: function () {
         this.selectType = "identity";
@@ -151,6 +154,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     _loadSelectItems: function (identityList) {
         //this.listAllIdentityInUnitObject( identityList );
         var unitTree = this.listNestedUnitByIdentity(identityList);
+        this.dataTree = unitTree;
         this.uniqueIdentity(unitTree);
         if (this.options.dutyUnitLevelBy === "duty") {
             this.level1Container = [];
@@ -437,6 +441,56 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             for (var i = 0; i < tree.unitList.length; i++) {
                 this.uniqueIdentity(tree.unitList[i]);
             }
+        }
+    },
+    createItemsSearchData: function(callback){
+        if (!this.itemsSearchData){
+            this.itemsSearchData = [];
+            MWF.require("MWF.widget.PinYin", function(){
+                var initIds = [];
+
+                var _self = this;
+                function checkIdentity(data) {
+                    var id = data.distinguishedName || data.id || data.name || data.text;
+                    if (initIds.indexOf( id )==-1){
+                        var text = data.name || "";
+                        if( !text && data.distinguishedName ){
+                            var dn = data.distinguishedName.split("@");
+                            text = dn[0];
+                        }
+                        var pinyin = text.toPY().toLowerCase();
+                        var firstPY = text.toPYFirst().toLowerCase();
+                        _self.itemsSearchData.push({
+                            "text": text,
+                            "pinyin": pinyin,
+                            "firstPY": firstPY,
+                            "data": data
+                        });
+                        initIds.push( id );
+                    }
+                }
+
+                function checkUnit(unit) {
+                    if(unit.identityList && unit.identityList.length){
+                        unit.identityList.each( function (identity) {
+                            checkIdentity(identity);
+                        })
+                    }
+                    if(unit.unitList && unit.unitList.length){
+                        unit.unitList.each( function (unit) {
+                            checkUnit(unit);
+                        })
+                    }
+                }
+
+                this.dataTree.unitList.each(function(unit){
+                    checkUnit(unit);
+                }.bind(this));
+                delete initIds;
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
         }
     },
     //listNestedUnitByIdentity : function( identityList ){

@@ -111,6 +111,7 @@ public class PersonFactory extends AbstractFactory {
 		p = cb.or(p, cb.equal(root.get(Person_.weixin), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.mobile), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.employee), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.mpwxopenId), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.open1Id), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.open2Id), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.open3Id), credential));

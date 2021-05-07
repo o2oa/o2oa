@@ -1,48 +1,48 @@
 <div style="background-color: #FFF; overflow: hidden">
-    <div title="基本" class="MWFTab">
+    <div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue">text{$.id}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">别名:</td>
+                <td class="editTableTitle">{{$.lp.alias}}:</td>
                 <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
         </table>
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">执行权限</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.executionAuthority}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>
-                <td class="editTableTitle">匿名访问:</td>
+                <td class="editTableTitle">{{$.lp.anonymousAccess}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="anonymousAccessible" text{($.anonymousAccessible===true)?'checked':''} type="radio" value="true"
                            onclick="if(this.checked){
                                $('text{$.pid}executePersonListTr').setStyle('display', 'none');
                                $('text{$.pid}executeUnitListTr').setStyle('display', 'none');
-                            }"/>允许
+                            }"/>{{$.lp.allowed}}
                     <input class="editTableRadio" name="anonymousAccessible" text{($.anonymousAccessible!==true)?'checked':''} type="radio" value="false"
                            onclick="if(this.checked){
                                $('text{$.pid}executePersonListTr').setStyle('display', '');
                                $('text{$.pid}executeUnitListTr').setStyle('display', '');
-                            }"/>不允许
+                            }"/>{{$.lp.disAllowed}}
                 </td>
             </tr>
             <tr id="text{$.pid}executePersonListTr" style="display:text{($.anonymousAccessible==true)?'none':''}">
-                <td class="editTableTitle">执行人:</td>
+                <td class="editTableTitle">{{$.lp.executePerson}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonIdentity" name="executePersonList"></div>
                 </td>
             </tr>
             <tr id="text{$.pid}executeUnitListTr" style="display:text{($.anonymousAccessible==true)?'none':''}">
-                <td class="editTableTitle">执行组织:</td>
+                <td class="editTableTitle">{{$.lp.executeUnit}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonUnit" name="executeUnitList"></div>
                 </td>

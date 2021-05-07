@@ -1348,16 +1348,16 @@ MWFCalendarMonthView.MonthSelector = new Class({
             if ((this.year == todayY) && (idx == todayM)){
                 new Element("div", {
                     styles : _self.css.calendarMonthSelectTodayNode,
-                    text : ""+m+this.app.lp.month
+                    text : ""+m+ (MWF.language.substr(0,2) === "zh" ? this.app.lp.month : "")
                 }).inject( td );
             }else if ((this.year == thisY) && (idx == thisM)){
                 //td.setStyle("background-color", "#EEE");
                 new Element("div", {
                     styles : _self.css.calendarMonthSelectCurrentNode,
-                    text : ""+m+this.app.lp.month
+                    text : ""+m+ (MWF.language.substr(0,2) === "zh" ? this.app.lp.month : "")
                 }).inject( td );
             }else{
-                td.set("text", ""+m+this.app.lp.month);
+                td.set("text", ""+m+ (MWF.language.substr(0,2) === "zh" ? this.app.lp.month : ""));
             }
 
             td.addEvents({

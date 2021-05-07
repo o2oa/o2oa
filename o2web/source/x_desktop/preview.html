@@ -32,8 +32,14 @@
 
                                 MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                                     layout.appForm = new MWF.APPForm($("layout"), preview.data);
-                                    layout.appForm.app = {"content": document.body, "fireEvent": function(){}};
+                                    layout.appForm.formDataText = JSON.stringify(preview.data);
+                                    layout.appForm.app = {"content": document.body, "fireEvent": function(){},"addEvent": function(){}};
+                                    layout.appForm.workAction = MWF.Actions.get("x_processplatform_assemble_surface");
                                     MWF.getJSON("res/preview/work.json", function(data){
+                                        debugger;
+                                        if( preview.form && preview.form.designer && preview.form.designer.application && preview.form.designer.application.id ){
+                                            data.work.application = preview.form.designer.application.id;
+                                        }
                                         layout.appForm.businessData = {
                                             "data": data.data,
                                             "taskList": data.taskList,

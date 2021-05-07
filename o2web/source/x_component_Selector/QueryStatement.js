@@ -5,11 +5,14 @@ MWF.xApplication.Selector.QueryStatement = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectStatement,
+        "title": "",
         "values": [],
         "names": [],
         "expand": false,
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectStatement});
     },
     _init : function(){
         this.selectType = "querystatement";

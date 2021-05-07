@@ -434,7 +434,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		if( !this.isAdmin )return;
 		this.copyAction = new Element("div", {
 			"styles": this.css.copyDocumentAction,
-			"text" : "启用复制"
+			"text" : this.lp.enableCopy
 		}).inject(this.titleActionBar);
 		this.copyAction.addEvents({
 			"click": function(e){
@@ -831,7 +831,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		MWF.xDesktop.requireApp("Template", "Selector.Custom", null, false);
 		var opt  = {
 			"count": 1,
-			"title": "选择分类",
+			"title": this.lp.selectCategory,
 			"selectableItems" : this.categoryList,
 			"values": [],
 			"onComplete": function( array ){

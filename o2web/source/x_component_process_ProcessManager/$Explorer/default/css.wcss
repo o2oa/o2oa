@@ -157,7 +157,7 @@
 
 
 	"deleteItemsAction": {
-		"width": "140px",
+		"padding": "0 10px",
 		"height": "30px",
 		"cursor": "pointer",
 		"position": "absolute",

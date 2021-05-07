@@ -5,12 +5,15 @@ MWF.xApplication.Selector.FormStyle = new Class({
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectFormStyle,
+        "title": "",
         "values": [],
         "names": [],
         "expand": false,
         "mode" : "pc",
         "forceSearchInItem" : true
+    },
+    setInitTitle: function(){
+        if (!this.options.title) this.setOptions({"title": MWF.xApplication.Selector.LP.selectFormStyle});
     },
     _init : function(){
         this.selectType = "formstyle";

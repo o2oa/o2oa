@@ -32,10 +32,23 @@ MWF.xApplication.IMV2.Main = new Class({
 			};
 			this.emojiList.push(emoji);
 		}
+
 	},
 	onQueryClose: function () {
-		this.closeListening()
+		this.closeListening();
 	},
+	// 获取组件名称
+	loadComponentName: function () {
+		o2.Actions.load("x_component_assemble_control").ComponentAction.get("IMV2", function (json) {
+			var imComponent = json.data;
+			if (imComponent && imComponent.title) {
+				this.setTitle(imComponent.title);
+			}
+		}.bind(this), function (err) {
+			console.log(err);
+		})
+	},
+	// 加载应用
 	loadApplication: function (callback) {
 		var url = this.path + this.options.style + "/im.html";
 		this.content.loadHtml(url, { "bind": { "lp": this.lp, "data": {} }, "module": this }, function () {
@@ -52,29 +65,38 @@ MWF.xApplication.IMV2.Main = new Class({
 			}.bind(this));
 
 		}.bind(this));
+		this.loadComponentName();
 	},
+	// 监听ws消息
 	startListening: function () {
-		this.messageNumber = layout.desktop.message.items.length;
-		//查询ws消息 如果增加
-		if (this.listener) {
-			clearInterval(this.listener);
-		}
-		this.listener = setInterval(function () {
-			var newNumber = layout.desktop.message.items.length;
-			//判断是否有新的ws消息
-			if (newNumber > this.messageNumber) {
-				//查询会话数据
-				this._checkConversationMessage();
-				//查询聊天数据
-				this._checkNewMessage();
-				this.messageNumber = newNumber;
+		if (layout.desktop && layout.desktop.message) {
+			this.messageNumber = layout.desktop.message.items.length;
+			//查询ws消息 如果增加
+			if (this.listener) {
+				clearInterval(this.listener);
 			}
-		}.bind(this), 1000);
+			this.listener = setInterval(function () {
+				var newNumber = layout.desktop.message.items.length;
+				//判断是否有新的ws消息
+				if (newNumber > this.messageNumber) {
+					this.reciveNewMessage();
+					this.messageNumber = newNumber;
+				}
+			}.bind(this), 1000);
+		}
 	},
+	// 关闭监听
 	closeListening: function () {
 		if (this.listener) {
 			clearInterval(this.listener);
 		}
+	},
+	// 接收新的消息 会话列表更新 或者 聊天窗口更新
+	reciveNewMessage: function () {
+		//查询会话数据
+		this._checkConversationMessage();
+		//查询聊天数据
+		this._checkNewMessage();
 	},
 	//加载会话列表
 	loadConversationList: function (list) {
@@ -104,7 +126,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	tapConv: function (conv) {
 		this._setCheckNode(conv);
 		var url = this.path + this.options.style + "/chat.html";
-		var data = { "convName": conv.title };
+		var data = { "convName": conv.title, "lp": this.lp };
 		this.conversationId = conv.id;
 		this.chatNode.empty();
 		this.chatNode.loadHtml(url, { "bind": data, "module": this }, function () {
@@ -132,13 +154,13 @@ MWF.xApplication.IMV2.Main = new Class({
 		}.bind(this));
 	},
 	//修改群名
-	tapUpdateConvTitle: function() {
+	tapUpdateConvTitle: function () {
 		this.chatTitleMoreMenuNode.setStyle("display", "none");
 		var form = new MWF.xApplication.IMV2.UpdateConvTitleForm(this, {}, {}, { app: this.app });
 		form.create();
 	},
 	//修改群成员
-	tapUpdateConvMembers: function() {
+	tapUpdateConvMembers: function () {
 		this.chatTitleMoreMenuNode.setStyle("display", "none");
 		var members = [];
 		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
@@ -147,7 +169,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				members = c.data.personList;
 			}
 		}
-		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": "修改成员", "personCount": 0, "personSelected": members, "isUpdateMember": true }, { app: this.app });
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": this.lp.modifyMember, "personCount": 0, "personSelected": members, "isUpdateMember": true }, { app: this.app });
 		form.create()
 	},
 	//点击发送消息
@@ -157,7 +179,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			this.chatBottomAreaTextareaNode.value = "";
 			this._newAndSendTextMsg(text, "text");
 		} else {
-			console.log("没有消息内容！");
+			console.log(this.lp.noMessage);
 		}
 	},
 	//点击表情按钮
@@ -180,6 +202,49 @@ MWF.xApplication.IMV2.Main = new Class({
 		this.hideFun = this.hideEmojiBox.bind(this);
 		document.body.addEvent("mousedown", this.hideFun);
 	},
+	// 点击发送文件消息
+	showChooseFile: function () {
+		if (!this.uploadFileAreaNode) {
+			this.createUploadFileNode();
+		}
+		this.fileUploadNode.click();
+	},
+	//创建文件选择框
+	createUploadFileNode: function () {
+		this.uploadFileAreaNode = new Element("div");
+		var html = "<input name=\"file\" type=\"file\" multiple/>";
+		this.uploadFileAreaNode.set("html", html);
+		this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+		this.fileUploadNode.addEvent("change", function () {
+			var files = this.fileUploadNode.files;
+			if (files.length) {
+				var file = files.item(0);
+				var formData = new FormData();
+				formData.append('file', file);
+				formData.append('fileName', file.name);
+				var fileExt = file.name.substring(file.name.lastIndexOf("."));
+				// 图片消息
+				var type = "file"
+				if (fileExt.toLowerCase() == ".bmp" || fileExt.toLowerCase() == ".jpeg"
+					|| fileExt.toLowerCase() == ".png" || fileExt.toLowerCase() == ".jpg") {
+					type = "image"
+				} else { // 文件消息
+					type = "file"
+				}
+				//上传文件
+				o2.Actions.load("x_message_assemble_communicate").ImAction.uploadFile(this.conversationId, type, formData, "{}", function (json) {
+					if (json.data) {
+						var fileId = json.data.id
+						var fileExtension = json.data.fileExtension
+						var fileName = json.data.fileName
+						this._newImageOrFileMsgAndSend(type, fileId, fileName, fileExtension)
+					}
+				}.bind(this), function (error) {
+					console.log(error);
+				}.bind(this))
+			}
+		}.bind(this));
+	},
 	hideEmojiBox: function () {
 		//关闭emojiBoxNode
 		this.emojiBoxNode.setStyle("display", "none");
@@ -193,16 +258,16 @@ MWF.xApplication.IMV2.Main = new Class({
 	tapCreateSingleConv: function () {
 		// var form = new MWF.xApplication.IMV2.SingleForm(this, {}, {}, { app: this.app });
 		// form.create()
-		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": "创建单聊", "personCount": 1 }, { app: this.app });
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": this.lp.createSingle, "personCount": 1 }, { app: this.app });
 		form.create()
 	},
 	//点击创建群聊按钮
 	tapCreateGroupConv: function () {
-		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": "创建群聊", "personCount": 0, "personSelected": [] }, { app: this.app });
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": this.lp.createDroup, "personCount": 0, "personSelected": [] }, { app: this.app });
 		form.create()
 	},
 	//更新群名
-	updateConversationTitle: function(title, convId) {
+	updateConversationTitle: function (title, convId) {
 		var conv = {
 			id: convId,
 			title: title,
@@ -226,7 +291,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		}.bind(this))
 	},
 	//更新群成员
-	updateConversationMembers: function(members, convId) {
+	updateConversationMembers: function (members, convId) {
 		var conv = {
 			id: convId,
 			personList: members,
@@ -284,6 +349,38 @@ MWF.xApplication.IMV2.Main = new Class({
 			}
 		}
 	},
+	//创建图片或文件消息
+	_newImageOrFileMsgAndSend: function (type, fileId, fileName, fileExt) {
+		var distinguishedName = layout.session.user.distinguishedName;
+		var time = this._currentTime();
+		var body = {
+			"body": this.lp.file,
+			"type": type,
+			"fileId": fileId,
+			"fileExtension": fileExt,
+			"fileName": fileName
+		};
+		var bodyJson = JSON.stringify(body);
+		var uuid = (new MWF.widget.UUID).toString();
+		var message = {
+			"id": uuid,
+			"conversationId": this.conversationId,
+			"body": bodyJson,
+			"createPerson": distinguishedName,
+			"createTime": time,
+			"sendStatus": 1
+		};
+		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(message,
+			function (json) {
+				console.log(this.lp.sendSuccess);
+			}.bind(this),
+			function (error) {
+				console.log(error);
+			}.bind(this));
+		this.messageList.push(message);
+		this._buildSender(body, distinguishedName, false);
+		this._refreshConvMessage(message);
+	},
 	//创建文本消息 并发送
 	_newAndSendTextMsg: function (text, type) {
 		var distinguishedName = layout.session.user.distinguishedName;
@@ -302,7 +399,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(textMessage,
 			function (json) {
 				//data = json.data;
-				console.log("消息发送成功！");
+				console.log(this.lp.sendSuccess);
 			}.bind(this),
 			function (error) {
 				console.log(error);
@@ -438,7 +535,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		} else if (msgBody.type == "file") { //文件
 			var mapBox = new Element("span").inject(lastNode);
 			var fileIcon = this._getFileIcon(msgBody.fileExtension);
-			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/"+fileIcon, "width": 48, "height": 48 }).inject(mapBox);
+			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
 			var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
 			new Element("a", { "href": downloadUrl, "target": "_blank", "text": msgBody.fileName }).inject(mapBox);
 		} else {//text
@@ -498,7 +595,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		} else if (msgBody.type == "file") { //文件
 			var mapBox = new Element("span").inject(lastNode);
 			var fileIcon = this._getFileIcon(msgBody.fileExtension);
-			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/"+fileIcon, "width": 48, "height": 48 }).inject(mapBox);
+			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
 			var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
 			new Element("a", { "href": downloadUrl, "target": "_blank", "text": msgBody.fileName }).inject(mapBox);
 		} else {//text
@@ -600,10 +697,10 @@ MWF.xApplication.IMV2.Main = new Class({
 				return "icon_file_psd.png";
 			} else if (ext === "tmp") {
 				return "icon_file_tmp.png";
-			}else {
+			} else {
 				return "icon_file_unkown.png";
 			}
-		}else {
+		} else {
 			return "icon_file_unkown.png";
 		}
 	},
@@ -626,9 +723,9 @@ MWF.xApplication.IMV2.Main = new Class({
 			if (todayTime > time) {
 				hour = parseInt((todayTime - time) / 3600000);
 				if (hour == 0) {
-					retTime = Math.max(parseInt((todayTime - time) / 60000), 1) + "分钟前"
+					retTime = Math.max(parseInt((todayTime - time) / 60000), 1) + this.lp.minutesBefore
 				} else {
-					retTime = hour + "小时前"
+					retTime = hour + this.lp.hoursBefore
 				}
 
 			}
@@ -639,17 +736,17 @@ MWF.xApplication.IMV2.Main = new Class({
 		if (todaydates > dates) {
 			var days = (todaydates - dates);
 			if (days == 1) {
-				retTime = "昨天";
+				retTime = this.lp.yesterday;
 			} else if (days == 2) {
-				retTime = "前天 ";
+				retTime = this.lp.beforeYesterday;
 			} else if (days > 2 && days < 31) {
-				retTime = days + "天前";
+				retTime = days + this.lp.daysBefore;
 			} else if (days >= 31 && days <= 2 * 31) {
-				retTime = "一个月前";
+				retTime = this.lp.monthAgo;
 			} else if (days > 2 * 31 && days <= 3 * 31) {
-				retTime = "2个月前";
+				retTime = this.lp.towMonthAgo;
 			} else if (days > 3 * 31 && days <= 4 * 31) {
-				retTime = "3个月前";
+				retTime = this.lp.threeMonthAgo;
 			} else {
 				retTime = this._formatDate(date);
 			}
@@ -796,7 +893,7 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 			this.messageTimeNode.set("text", time);
 		}
 	},
-	refreshConvTitle: function(title) {
+	refreshConvTitle: function (title) {
 		this.titleNode.set("text", title);
 	},
 	addCheckClass: function () {
@@ -828,7 +925,7 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 		"hasTop": true,
 		"hasIcon": false,
 		"draggable": true,
-		"title": "创建单聊"
+		"title": MWF.xApplication.IMV2.LP.createSingle
 	},
 	_createTableContent: function () {
 		var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
@@ -846,7 +943,7 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 			style: "minder",
 			hasColon: true,
 			itemTemplate: {
-				person: { text: "选择人员", type: "org", orgType: "person", count: 0, notEmpty: true, exclude: exclude },
+				person: { text: MWF.xApplication.IMV2.LP.selectPerson, type: "org", orgType: "person", count: 0, notEmpty: true, exclude: exclude },
 			}
 		}, this.app);
 		this.form.load();
@@ -856,7 +953,7 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 		if (this.isNew || this.isEdited) {
 			this.okActionNode = new Element("button.inputOkButton", {
 				"styles": this.css.inputOkButton,
-				"text": "确定"
+				"text": MWF.xApplication.IMV2.LP.ok
 			}).inject(this.formBottomNode);
 			this.okActionNode.addEvent("click", function (e) {
 				this.save(e);
@@ -864,7 +961,7 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 		}
 		this.cancelActionNode = new Element("button.inputCancelButton", {
 			"styles": (this.isEdited || this.isNew || this.getEditPermission()) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-			"text": "关闭"
+			"text": MWF.xApplication.IMV2.LP.close
 		}).inject(this.formBottomNode);
 		this.cancelActionNode.addEvent("click", function (e) {
 			this.close(e);
@@ -892,7 +989,7 @@ MWF.xApplication.IMV2.CreateConversationForm = new Class({
 		"hasTop": true,
 		"hasIcon": false,
 		"draggable": true,
-		"title": "创建单聊",
+		"title": MWF.xApplication.IMV2.LP.createSingle,
 		"personCount": 1, //1 是单选  0 是多选,
 		"personSelected": [],
 		"isUpdateMember": false
@@ -913,7 +1010,7 @@ MWF.xApplication.IMV2.CreateConversationForm = new Class({
 			style: "minder",
 			hasColon: true,
 			itemTemplate: {
-				person: { text: "选择人员", type: "org", orgType: "person", count: this.options["personCount"], notEmpty: true, exclude: exclude, value: this.options["personSelected"] },
+				person: { text: MWF.xApplication.IMV2.LP.selectPerson, type: "org", orgType: "person", count: this.options["personCount"], notEmpty: true, exclude: exclude, value: this.options["personSelected"] },
 			}
 		}, this.app);
 		this.form.load();
@@ -923,7 +1020,7 @@ MWF.xApplication.IMV2.CreateConversationForm = new Class({
 		if (this.isNew || this.isEdited) {
 			this.okActionNode = new Element("button.inputOkButton", {
 				"styles": this.css.inputOkButton,
-				"text": "确定"
+				"text": MWF.xApplication.IMV2.LP.ok
 			}).inject(this.formBottomNode);
 			this.okActionNode.addEvent("click", function (e) {
 				this.save(e);
@@ -931,7 +1028,7 @@ MWF.xApplication.IMV2.CreateConversationForm = new Class({
 		}
 		this.cancelActionNode = new Element("button.inputCancelButton", {
 			"styles": (this.isEdited || this.isNew || this.getEditPermission()) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-			"text": "关闭"
+			"text": MWF.xApplication.IMV2.LP.close
 		}).inject(this.formBottomNode);
 		this.cancelActionNode.addEvent("click", function (e) {
 			this.close(e);
@@ -943,10 +1040,10 @@ MWF.xApplication.IMV2.CreateConversationForm = new Class({
 		if (data) {
 			if (this.options["isUpdateMember"] === true) {
 				this.app.updateConversationMembers(data.person, this.app.conversationId);
-			}else {
-				this.app.newConversation(data.person, this.options["personCount"] === 1 ? "single": "group");
+			} else {
+				this.app.newConversation(data.person, this.options["personCount"] === 1 ? "single" : "group");
 			}
-			
+
 			this.close();
 		}
 	}
@@ -965,7 +1062,7 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 		"hasTop": true,
 		"hasIcon": false,
 		"draggable": true,
-		"title": "修改群名"
+		"title": MWF.xApplication.IMV2.LP.modifyGroupName
 	},
 	_createTableContent: function () {
 		var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
@@ -973,13 +1070,13 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 			"    <td styles='formTableValue14' item='title' colspan='3'></td></tr>" +
 			"</table>";
 		this.formTableArea.set("html", html);
-		 
+
 		this.form = new MForm(this.formTableArea, this.data || {}, {
 			isEdited: true,
 			style: "minder",
 			hasColon: true,
 			itemTemplate: {
-				title: {text: "群名", type: "text", notEmpty: true },
+				title: { text: MWF.xApplication.IMV2.LP.groupName, type: "text", notEmpty: true },
 			}
 		}, this.app);
 		this.form.load();
@@ -989,7 +1086,7 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 		if (this.isNew || this.isEdited) {
 			this.okActionNode = new Element("button.inputOkButton", {
 				"styles": this.css.inputOkButton,
-				"text": "确定"
+				"text": MWF.xApplication.IMV2.LP.ok
 			}).inject(this.formBottomNode);
 			this.okActionNode.addEvent("click", function (e) {
 				this.save(e);
@@ -997,7 +1094,7 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 		}
 		this.cancelActionNode = new Element("button.inputCancelButton", {
 			"styles": (this.isEdited || this.isNew || this.getEditPermission()) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-			"text": "关闭"
+			"text": MWF.xApplication.IMV2.LP.close
 		}).inject(this.formBottomNode);
 		this.cancelActionNode.addEvent("click", function (e) {
 			this.close(e);

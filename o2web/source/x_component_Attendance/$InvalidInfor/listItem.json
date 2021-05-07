@@ -8,7 +8,7 @@
     "width" : "5%"
   },
   {
-    "title" : "姓名",
+    "title": MWF.xApplication.Attendance.LP.name,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "empName",
@@ -16,7 +16,7 @@
     "width" : "15%"
   },
   {
-    "title" : "日期",
+    "title": MWF.xApplication.Attendance.LP.date,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "defaultSort" : "desc",
@@ -25,7 +25,7 @@
     "width" : "15%"
   },
   {
-    "title" : "上班打卡时间",
+    "title": MWF.xApplication.Attendance.LP.onDutyTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "onDutyTime",
@@ -33,7 +33,7 @@
     "width" : "15%"
   },
   {
-    "title" : "下班打卡时间",
+    "title": MWF.xApplication.Attendance.LP.offDutyTime,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
     "item" : "offDutyTime",
@@ -41,7 +41,7 @@
     "width" : "15%"
   },
   {
-    "title": "错误描述",
+    "title": MWF.xApplication.Attendance.LP.leaveDayCount,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
     "item": "description",
@@ -50,14 +50,14 @@
   } ,
     {
       "access" : "admin",
-      "title" : "操作",
+      "title": MWF.xApplication.Attendance.LP.action,
       "headStyles" : "normalThNode",
       "contentStyles" : "normalTdNode",
       "item" : "actions",
       "name" : "actions",
       "width" : "10%",
       "sub" : [{
-        "title" : "删除文件",
+        "title": MWF.xApplication.Attendance.LP.delete,
         "action" : "remove",
         "styles" : "actionDeleteNode",
         "overStyles" : "actionDeleteNode_over",

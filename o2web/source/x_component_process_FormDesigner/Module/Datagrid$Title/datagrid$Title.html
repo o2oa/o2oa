@@ -1,47 +1,47 @@
 <div style="background-color: #FFF; overflow: hidden">
-    <div title="基本" class="MWFTab">
+    <div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}</td>
                 <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">合计:</td>
+                <td class="editTableTitle">{{$.lp.total}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="total" text{!($.total) || ($.total=='no')?'checked':''} type="radio" value="no"/>不需要 <br/>
-                    <input class="editTableRadio" name="total" text{($.total=='number')?'checked':''} type="radio" value="number"/>合计数值 <br/>
-                    <input class="editTableRadio" name="total" text{($.total=='count')?'checked':''} type="radio" value="count"/>合计数量 <br/>
+                    <input class="editTableRadio" name="total" text{!($.total) || ($.total=='no')?'checked':''} type="radio" value="no"/>{{$.lp.notNeeded}} <br/>
+                    <input class="editTableRadio" name="total" text{($.total=='number')?'checked':''} type="radio" value="number"/>{{$.lp.totalValue}} <br/>
+                    <input class="editTableRadio" name="total" text{($.total=='count')?'checked':''} type="radio" value="count"/>{{$.lp.totalCount}} <br/>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">隐藏:</td>
+                <td class="editTableTitle">hide:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="isShow" text{($.isShow!==false)?'checked':''} type="radio" value="true"/>显示该列 <br/>
-                    <input class="editTableRadio" name="isShow" text{($.isShow==false)?'checked':''} type="radio" value="false"/>隐藏该列 <br/>
+                    <input class="editTableRadio" name="isShow" text{($.isShow!==false)?'checked':''} type="radio" value="true"/>{{$.lp.showCol}} <br/>
+                    <input class="editTableRadio" name="isShow" text{($.isShow==false)?'checked':''} type="radio" value="false"/>{{$.lp.hideCol}} <br/>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">导入导出:</td>
+                <td class="editTableTitle">{{$.lp.exportImport}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="isImpExp" text{($.isImpExp!==false)?'checked':''} type="radio" value="true"/>允许 <br/>
-                    <input class="editTableRadio" name="isImpExp" text{($.isImpExp==false)?'checked':''} type="radio" value="false"/>不允许 <br/>
+                    <input class="editTableRadio" name="isImpExp" text{($.isImpExp!==false)?'checked':''} type="radio" value="true"/>{{$.lp.allow}} <br/>
+                    <input class="editTableRadio" name="isImpExp" text{($.isImpExp==false)?'checked':''} type="radio" value="false"/>{{$.lp.notAllow}} <br/>
                 </td>
             </tr>
         </table>
 
-        <div class="MWFMaplist" name="styles" title="样式"></div>
-        <div class="MWFMaplist" name="properties" title="属性"></div>
+        <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+        <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
     </div>
-    <div title="事件"  class="MWFTab">
+    <div title="{{$.lp.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="events"></div>
     </div>
     <div title="HTML"  class="MWFTab">

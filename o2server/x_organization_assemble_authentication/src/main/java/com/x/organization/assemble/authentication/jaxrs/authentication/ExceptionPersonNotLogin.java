@@ -1,12 +1,14 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
-import com.x.base.core.project.exception.PromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 
-class ExceptionPersonNotLogin extends PromptException {
+class ExceptionPersonNotLogin extends LanguagePromptException {
 
 	private static final long serialVersionUID = -6124481323896411121L;
 
+	public static String defaultMessage = "用户未登录.";
+
 	ExceptionPersonNotLogin() {
-		super("用户未登录.");
+		super(defaultMessage);
 	}
 }

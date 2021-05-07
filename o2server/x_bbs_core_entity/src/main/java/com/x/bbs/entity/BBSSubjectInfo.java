@@ -402,6 +402,12 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String hostIp = "";
 
+	public static final String grade_FIELDNAME = "grade";
+	@FieldDescribe("评分")
+	@Column(name = ColumnNamePrefix + grade_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer grade = 10;
+
 	public String getForumName() {
 		return forumName;
 	}
@@ -818,4 +824,11 @@ public class BBSSubjectInfo extends SliceJpaObject {
 		this.votePersonVisible = votePersonVisible;
 	}
 
+	public Integer getGrade() {
+		return grade;
+	}
+
+	public void setGrade(Integer grade) {
+		this.grade = grade;
+	}
 }

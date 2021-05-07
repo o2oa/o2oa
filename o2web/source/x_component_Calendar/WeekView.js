@@ -1596,7 +1596,12 @@ MWFCalendarWeekView.WeekCalendar = new Class({
         var thisMonth = (month!=undefined) ? month : this.options.baseDate.getMonth();
         thisMonth++;
 
-        var text = thisYear+ MWF.xApplication.Calendar.LP.year +thisMonth+ MWF.xApplication.Calendar.LP.month;
+        var text;
+        if( MWF.language.substr(0, 2) === "zh" ){
+            text = thisYear+ MWF.xApplication.Calendar.LP.year +thisMonth+ MWF.xApplication.Calendar.LP.month;
+        }else{
+            text = thisYear+ "-" +thisMonth;
+        }
         var thisNode = node || this.currentTextNode;
         thisNode.set("text", text);
 
@@ -1616,7 +1621,7 @@ MWFCalendarWeekView.WeekCalendar = new Class({
         var days_abbr = MWF.LP.widget.days_abbr;
         cells.each(function(item, idx){
             if( idx == 0 ){
-                item.set("text", "周");
+                item.set("text", MWF.xApplication.Calendar.LP.week);
             }else{
                 //var index;
                 //if( this.options.weekBegin == "0" ){

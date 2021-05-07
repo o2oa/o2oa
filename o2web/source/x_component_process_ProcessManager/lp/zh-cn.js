@@ -17,6 +17,13 @@ MWF.xApplication.process.ProcessManager.LP = {
     "copyConfirm_cancel": "取消",
     "copynew": "新",
 
+    "formConfig": "表单配置",
+    "processConfig": "流程配置",
+    "dataConfig": "数据配置",
+    "scriptConfig": "脚本配置",
+    "fileConfig": "资源文件",
+    "applicationConfig": "应用属性",
+
     "findDesigner": "查找设计",
 
     "ok": "确定",
@@ -178,6 +185,20 @@ MWF.xApplication.process.ProcessManager.LP = {
     "selectorButton" : {
         "ok" : "确　定",
         "cancel" : "取 消"
-    }
+    },
+
+    "defaultProcess": "默认流程",
+    "sequenceProcess": "顺序流程",
+    "choiceProcess": "选择流程",
+    "parallelProcess": "并行流程",
+
+    "emptyForm": "空白表单",
+    "commonForm": "通用表单模板",
+    "blueForm": "标准表单样式(蓝色)",
+    "redForm": "标准表单样式(红色)",
+    "publishForm": "发布类审批表单",
+    "fileForm": "公文表单模板",
+    "submitPcForm": "自定义提交表单模板(PC)",
+    "submitMobileForm": "自定义提交表单模板(Mobile)"
 
 };
