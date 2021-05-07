@@ -7,7 +7,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		"style": "default",
 		"propertyPath": "../x_component_process_FormDesigner/Module/Form/form.html",
         "mode": "PC",
-		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office", "Orgfield", "org", "Personfield", "Radio", "Select", "Textarea", "Textfield"],
+		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Datatemplate","Htmleditor", "Number", "Office", "Orgfield", "org", "Personfield", "Radio", "Select", "Textarea", "Textfield"],
 		"injectActions" : [
 			{
 				"name" : "top",
@@ -375,6 +375,27 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.treeNode = this.domTree.appendChild(o);
         this.treeNode.setText(text);
 		this.treeNode.module = this;
+	},
+
+	getModuleNodes: function (dom, ignoreMultipleModule) {
+		var moduleNodes = [];
+		var subDom = dom.getFirst();
+		while (subDom) {
+			var mwftype = subDom.get("MWFtype") || subDom.get("mwftype");
+			if (mwftype) {
+				if( ignoreMultipleModule ){
+					var type = mwftype;
+					if ( type.indexOf("$") === -1)moduleNodes.push(subDom);
+				}else{
+					moduleNodes.push(subDom);
+				}
+				moduleNodes = moduleNodes.concat(this.getModuleNodes(subDom));
+			} else {
+				moduleNodes = moduleNodes.concat(this.getModuleNodes(subDom));
+			}
+			subDom = subDom.getNext();
+		}
+		return moduleNodes;
 	},
 
 	parseModules: function(parent, dom){
