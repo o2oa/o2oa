@@ -494,10 +494,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (module) module._dragIn(this);
 		this._onEnterOther(dragging, inObj);
 	},
+	_getDroppableNodes: function(){
+		return [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
+	},
 	_setNodeMove: function(e){
 		this._setMoveNodePosition(e);
 		this.form.node.focus();
-		var droppables = [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
+		var droppables = this._getDroppableNodes();
 		var nodeDrag = new Drag.Move(this.moveNode, {
 			"droppables": droppables,
 			"onEnter": function(dragging, inObj){

@@ -23,6 +23,7 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Image", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.ImageClipper", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Table", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Datagrid", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Datatemplate", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Subform", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.ViewSelector", null, false); 
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.View", null, false);
