@@ -362,6 +362,10 @@
 			<groupId>org.jsr107.ri</groupId>
 			<artifactId>cache-ri-impl</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.github.whvcse</groupId>
+			<artifactId>easy-captcha</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -406,7 +410,8 @@
 						</compilerArgs>
 					</configuration>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -845,7 +850,7 @@
 				<artifactId>javapoet</artifactId>
 				<version>1.11.1</version>
 			</dependency>
-			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId>
+			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId> 
 				<version>20200316</version> </dependency -->
 			<dependency>
 				<groupId>com.github.neuroph</groupId>
@@ -882,7 +887,7 @@
 				<artifactId>simplecaptcha</artifactId>
 				<version>1.2.1</version>
 			</dependency>
-			<!-- dependency> <groupId>cglib</groupId> <artifactId>cglib</artifactId>
+			<!-- dependency> <groupId>cglib</groupId> <artifactId>cglib</artifactId> 
 				<version>3.2.0</version> </dependency -->
 			<dependency>
 				<groupId>com.alibaba</groupId>
@@ -1083,6 +1088,11 @@
 				<groupId>org.jsr107.ri</groupId>
 				<artifactId>cache-ri-impl</artifactId>
 				<version>1.1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.whvcse</groupId>
+				<artifactId>easy-captcha</artifactId>
+				<version>1.6.2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
