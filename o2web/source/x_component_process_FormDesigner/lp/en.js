@@ -302,6 +302,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "div": "Div",
         "table": "Table",
         "datagrid": "Datagrid",
+        "datatemplate": "Datatemplate",
         "subform": "Subform",
         "ViewSelector": "ViewSelector",
         "view": "View",
@@ -871,7 +872,34 @@ MWF.xApplication.process.FormDesigner.LP = {
         "parameterScript": "Parameter Script (Return JSON Object)",
         "insertWidget": "Tnsert Widget",
         "selectWidget": "Select Widget",
-        "inDiv": "Wrapped in a div"
+        "inDiv": "Wrapped in a div",
+
+        "outerSideModuleId": "external related component ID",
+        "addButtonId": "Add button ID",
+        "deleteSelectedButtonId": "Delete selected item button ID",
+        "selectAllModuleId": "Select All component ID",
+        "selectedValue": "Selected Value",
+        "innerSideModuleId": "Internal related component ID",
+        "deleteButtonId": "Delete Button ID",
+        "sequenctModuleId": "Sequence number component ID",
+        "selectModuleId": "Select component ID",
+        "defaultShow": "Default Show",
+        "item": "Item",
+        "maxItemCount": "Maximum Add",
+        "minItemCount": "Minimum Keep",
+        "dtImportInfor": "Note: Pictures, attachments, datagrids, and sub datatemplates cannot be imported or exported.",
+        "importButtonId": "Import Button Id",
+        "exportButtonId": "Export Button Id",
+        "importExporConfig": "Import and export field configuration",
+        "validationPopFormConfig": "PopForm Config",
+        "validationPopFormHeight": "PopForm Height",
+        "validationPopFormWidth": "PopForm Width",
+        "validationTableStyle": "Validation Table Style",
+        "validationTitleTdStyle": "Validation Title Cell Style",
+        "validationContentTdStyle": "Validation Content Td Style",
+        "validationTableAttribute": "Validation Table Attribute",
+        "count": "Count",
+        "import" : "Import"
 
     },
     "actionBar": {
@@ -903,6 +931,15 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resumeTitle": "Resume the task from pending",
         "downloadAll": "Download",
         "downloadAllTitle": "Download the form and all attachments"
+    },
+    "filedConfigurator": {
+        "sequence": "Sequence",
+        "fieldTitle": "Field Title",
+        "fieldId": "Field ID",
+        "action": "Action",
+        "moveup": "Move to the previous line",
+        "deleteRow": "Delete Row",
+        "insertRow": "Insert Row"
     }
 
 };
