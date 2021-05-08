@@ -422,7 +422,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_addLine: function(ev, editable){
 			if( this.isMax() ){
-				this.form.notice("最多允许添加"+this.json.maxCount+"项","info");
+				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
+				this.form.notice(text,"info");
 				return false;
 			}
 			var index = this.lineList.length;
@@ -440,7 +441,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_insertLine: function(ev, beforeLine){
 			debugger;
 			if( this.isMax() ){
-				this.form.notice("最多允许添加"+this.json.maxCount+"项","info");
+				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
+				this.form.notice(text,"info");
 				return false;
 			}
 			//使用数据驱动
@@ -462,18 +464,19 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			debugger;
 			var selectedLine = this.lineList.filter(function (line) { return line.selected; });
 			if( selectedLine.length === 0 ){
-				this.form.notice("请先选择条目","info");
+				this.form.notice( MWF.xApplication.process.Xform.LP.selectItemNotice,"info");
 				return false;
 			}
 			var minCount = this.json.minCount ? this.json.minCount.toInt() : 0;
 			if( minCount > 0 ){
 				if( this.lineList.length - selectedLine.length < minCount ){
-					this.form.notice("最少需要保留"+minCount+"项，删除后的条目小于需保留的条目，请检查","info");
+					var text = MWF.xApplication.process.Xform.LP.minItemNotice.replace("{n}", minCount );
+					this.form.notice(text,"info");
 					return false;
 				}
 			}
 			var _self = this;
-			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, "确定要删除选中的条目", 300, 120, function(){
+			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteSelectedItemNotice, 300, 120, function(){
 
 				var data = _self.getData();
 
@@ -501,7 +504,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_deleteLine: function(ev, line){
 			if( this.isMin() ){
-				this.form.notice("请最少保留"+this.json.minCount+"项","info");
+				var text = MWF.xApplication.process.Xform.LP.minItemCountNotice.replace("{n}", this.json.minCount );
+				this.form.notice(text,"info");
 				return false;
 			}
 			var _self = this;
@@ -1159,7 +1163,7 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			return config.title;
 		});
 		if( this.template.unionMode ){
-			titleArr.push( "系统字段" );
+			titleArr.push( MWF.xApplication.process.Xform.LP.systemField );
 		}
 		resultArr.push( titleArr );
 
@@ -1584,7 +1588,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			}.bind(this));
 
 			if(sectionData){
-				sectionKey = ilineData["系统字段"];
+				sectionKey = ilineData[ MWF.xApplication.process.Xform.LP.systemField ];
 				if( !sectionData[sectionKey])sectionData[sectionKey] = [];
 				sectionData[sectionKey].push( lineData );
 			}else{
@@ -1761,12 +1765,12 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				}
 			}.bind(this));
 			if( this.template.unionMode ){
-				if( !lineData["系统字段"]){
+				if( !lineData[ MWF.xApplication.process.Xform.LP.systemField ] && !lineData["系统字段"] ){
 					var colInfor = columnText.replace( "{n}", fieldArray.length+1 );
 					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName(fieldArray.length) );
 
-					errorTextList.push( colInfor + "系统字段不能为空" );
-					errorTextList.push( colInforExcel + "系统字段不能为空" );
+					errorTextList.push( colInfor + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
+					errorTextList.push( colInforExcel + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
 				}
 			}
 
