@@ -46,6 +46,7 @@ public class Person extends ConfigObject {
 	public static final String DEFAULT_PASSWORDREGEX = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$";
 	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";
 	public static final String DEFAULT_LANGUAGE = "zh-CN";
+	public static final String DEFAULT_CAPTCHAFONT = "";
 
 	public Person() {
 		this.captchaLogin = DEFAULT_CAPTCHALOGIN;
@@ -61,6 +62,7 @@ public class Person extends ConfigObject {
 		this.personUnitOrderByAsc = DEFAULT_PERSONUNITORDERBYASC;
 		this.tokenCookieHttpOnly = DEFAULT_TOKENCOOKIEHTTPONLY;
 		this.language = DEFAULT_LANGUAGE;
+		this.captchaFont = DEFAULT_CAPTCHAFONT;
 	}
 
 	public static Person defaultInstance() {
@@ -122,6 +124,9 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("平台语言：zh-CN(中文，默认)、en(英语)")
 	private String language;
+
+	@FieldDescribe("验证码字体,默认为空,代表使用系统自带字体.")
+	private String captchaFont;
 
 	public Boolean getTokenCookieHttpOnly() {
 		return BooleanUtils.isTrue(this.tokenCookieHttpOnly);
@@ -243,6 +248,10 @@ public class Person extends ConfigObject {
 
 	public String getMobileRegex() {
 		return StringUtils.isEmpty(this.mobileRegex) ? StringTools.MOBILE_REGEX.toString() : this.mobileRegex;
+	}
+
+	public String getCaptchaFont() {
+		return StringUtils.isBlank(this.captchaFont) ? DEFAULT_CAPTCHAFONT : this.captchaFont;
 	}
 
 	/*
