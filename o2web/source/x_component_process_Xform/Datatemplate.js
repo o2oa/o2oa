@@ -1,12 +1,10 @@
 /**
  * 数据模板数据结构.
- * @typedef {Object} DatatemplateData
- * @property {Array} data - 数据模板列表数据
- * @property {Object} total - 统计数据
+ * @typedef {Array} DatatemplateData
  * @example
  [ //数据模板数据条目
- {
-            "org": [{
+ 		{
+           "org": [{
                 "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
                 "id": "bf007525-99a3-4178-a474-32865bdddec8",
                 "name": "张三",
@@ -46,7 +44,7 @@
                 }
             ]
         },
- ...
+ 	...
  ]
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
@@ -75,37 +73,40 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 每初始化一个条目，但未加载的时候触发，通过this.event。
+			 * 每初始化一个条目，但未加载的时候触发，通过this.event可以获取条目对象。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#beforeLoadLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 每一个条目加载后时候触发，通过this.event。
+			 * 每一个条目加载后时候触发，通过this.event可以获取条目对象。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#afterLoadLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 区段合并后的展现包含此事件，加载条目前执行。通过this.event。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#loadSectionData,
+			 * 区段合并后的展现包含此事件，加载条目前执行。通过this.event.sectionKeyList获取所有区段标识，
+			 * 通过this.event.data获取数据。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#loadSectionData
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载前执行。通过this.event。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#beforeloadSectionLines,
+			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载前执行。通过this.event.sectionKey获取当前区段标识，
+			 * 通过this.event.sectionData获取当前区段数据。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#beforeloadSectionLines
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载后执行。通过this.event。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#afterloadSectionLines,
+			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载后执行。通过this.event.sectionKey获取当前区段标识，
+			 * 通过this.event.sectionData获取当前区段数据，通过this.event.sectionLineList获取当前区段的所有条目。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#afterloadSectionLines
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 添加条目时触发。通过this.event可以获取对应的tr。
+			 * 添加条目时触发。通过this.event.line可以获取对应的条目对象，this.event.ev可以获得事件触发的Event。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#addLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 删除条目前触发。通过this.event可以获取对应的tr。
+			 * 删除条目前触发。通过this.event可以获取对应的条目对象。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#deleteLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
@@ -361,11 +362,17 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						return 0;
 					}
 				});
-				this.fireEvent("loadSectionData", [sectionKeyList, this.data]);
+				this.fireEvent("loadSectionData", [{
+					"sectionKeyList": sectionKeyList,
+					"data": this.data
+				}]);
 				Array.each(sectionKeyList, function (sectionKey, i) {
 					debugger;
 					var list = this.data[sectionKey];
-					this.fireEvent("beforeloadSectionLines", [sectionKey, list]);
+					this.fireEvent("beforeloadSectionLines", [{
+						"sectionKey": sectionKey,
+						"sectionData": list
+					}]);
 					var sectionLineList = [];
 					list.each(function(data, idx){
 						var div = new Element("div").inject(this.node);
@@ -374,7 +381,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						sectionLineList.push(line);
 						index++;
 					}.bind(this));
-					this.fireEvent("afterloadSectionLines", [sectionKey, list, sectionLineList]);
+					this.fireEvent("afterloadSectionLines", [{
+						"sectionKey": sectionKey,
+						"sectionData": list,
+						"sectionLineList" : sectionLineList
+					}]);
 				}.bind(this))
 			}else if(this._getBusinessData() && this.data){
 				this.data.each(function(data, idx){
@@ -436,7 +447,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				line = this._loadLine(div, {}, index);
 			}
 			this.lineList.push(line);
-			this.fireEvent("addLine", [line, ev]);
+			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
 		},
 		_insertLine: function(ev, beforeLine){
 			debugger;
@@ -458,7 +469,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				data.splice(index, 0, {});
 			}
 			this.setData( data );
-			this.fireEvent("addLine",[this.lineList[index], ev]);
+			this.fireEvent("addLine",[{"line":this.lineList[index], "ev":ev}]);
 		},
 		_deleteSelectedLine: function(ev){
 			debugger;
