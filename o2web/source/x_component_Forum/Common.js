@@ -40,7 +40,7 @@ MWFForum.getDateDiff = function (publishTime, justNowStr) {
     } else if (hourC >= 1) {
         result = parseInt(hourC) + MWF.xApplication.Forum.LP.hourAgo;
     } else if (minC >= 1) {
-        result = parseInt(minC) + MWF.xApplication.Forum.LP.minuteAgo;
+        result = parseInt(minC) + MWF.xApplication.Forum.LP.weekAgo;
     } else
         result = justNowStr || MWF.xApplication.Forum.LP.publishJustNow;
     return result;
