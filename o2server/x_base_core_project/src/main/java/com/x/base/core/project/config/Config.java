@@ -6,7 +6,11 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,7 +24,6 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.poi.hslf.util.SystemTimeUtils;
 import org.eclipse.jetty.http.MimeTypes;
 
 import com.google.gson.JsonElement;
@@ -102,6 +105,7 @@ public class Config {
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
 	public static final String DIR_COMMONS_EXT = "commons/ext";
 	public static final String DIR_COMMONS_LANGUAGE = "commons/language";
+	public static final String DIR_COMMONS_FONTS = "commons/fonts";
 	public static final String DIR_CONFIG = "config";
 	public static final String DIR_CONFIG_COVERTOWEBSERVER = "config/coverToWebServer";
 	public static final String DIR_CONFIGSAMPLE = "configSample";
@@ -214,6 +218,10 @@ public class Config {
 
 	public static File dir_commons_tess4j_tessdata() throws Exception {
 		return new File(base(), DIR_COMMONS_TESS4J_TESSDATA);
+	}
+
+	public static Path dir_commons_fonts() throws Exception {
+		return Paths.get(base()).resolve(DIR_COMMONS_FONTS);
 	}
 
 //	public static File dir_commons_ext() throws Exception {
