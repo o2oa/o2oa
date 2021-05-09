@@ -916,6 +916,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         e.preventDefault();
                         e.stopPropagation();
                     }else{
+                        if (this.json.subjectEditBindFormData){
+                            this.form.Macro.environment.data[this.json.subjectEditBindFormData]=subject;
+                        }
                         this.getData();
                     }
                 }.bind(this));
