@@ -805,6 +805,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "meetingSit": "Meeting Sit",
         "meetingRecord": "Meeting Record",
         "customElement": "Custom element configuration",
+        "subjectEditBindFormData": "Bind Data",
 
         "autoCorrect": "Auto Correct",
         "ckeditorInfo": "For more attribute help, please see ",
