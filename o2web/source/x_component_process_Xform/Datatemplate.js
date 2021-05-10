@@ -590,12 +590,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return flag;
 		},
 		exportToExcel: function(){
-			var exporter = new MWF.xApplication.process.Xform.Datatemplate.Exporter(this);
-			exporter.exportToExcel();
+			this.exporter = new MWF.xApplication.process.Xform.Datatemplate.Exporter(this);
+			this.exporter.exportToExcel();
 		},
 		importFromExcel: function(){
-			var importer = new MWF.xApplication.process.Xform.Datatemplate.Importer(this);
-			importer.importFromExcel();
+			this.importer = new MWF.xApplication.process.Xform.Datatemplate.Importer(this);
+			this.importer.importFromExcel();
 		},
 
 
@@ -774,6 +774,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * @return {DatatemplateData}
 		 */
 		getData: function(){
+			if( this.importer ){
+				this.importer.destroySimulateModule();
+			}
 			if (this.editable!==false){
 				debugger;
 				// var data = [];
@@ -1477,6 +1480,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 	},
 	destroySimulateModule: function(){
 		debugger;
+		if( !this.simelateModuleMap )return;
 		var keys = Object.keys(this.simelateModuleMap);
 		keys.each(function (key, i) {
 			var module = this.simelateModuleMap[key];
@@ -1486,13 +1490,22 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				delete this.simelateModuleMap[key];
 			}
 		}.bind(this))
-		this.simulateNode.destroy();
+		this.simelateModuleMap = null;
+
+		if(this.simulateNode){
+			this.simulateNode.destroy();
+			this.simulateNode = null;
+		}
 	},
 	loadSimulateModule: function(){
 		debugger;
+		if( this.simelateModuleMap ){
+			this.destroySimulateModule();
+		}
 		//加载模拟字段
 		this.simelateModuleMap = {};
 		this.simulateNode = new Element("div").inject(this.template.node);
+		this.simulateNode.hide();
 		this.simulateNode.set("html", this.template.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.simulateNode);
 		moduleNodes.each(function (node) {
