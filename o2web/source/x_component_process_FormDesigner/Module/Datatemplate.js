@@ -87,7 +87,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 	},
 	setImpExpTableStyles: function(){
 		//设置导入导出表格样式
-		if(this.form.templateStyles.table){
+		if(this.form.templateStyles && this.form.templateStyles.table){
 			this.json.impExpTableStyles = Object.merge(this.json.impExpTableStyles||{}, this.form.templateStyles.table.styles||{});
 			this.json.impExpTableTitleStyles = Object.merge(this.json.impExpTableTitleStyles||{}, this.form.templateStyles.table.titleStyles||{});
 			this.json.impExpTableContentStyles = Object.merge(this.json.impExpTableContentStyles||{}, this.form.templateStyles.table.contentStyles||{});
