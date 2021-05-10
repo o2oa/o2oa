@@ -12,7 +12,7 @@
 	},
 	"actionNode": {
 	    "height": "20px",
-	    "background": "url("+"../x_component_process_ViewDesigner/widget/$ViewFilter/default/down.png) no-repeat center -2px"
+	    "background": "url(../x_component_query_ViewDesigner/widget/$ViewFilter/default/down.png) no-repeat center -2px"
 	},
 	"verificationNode": {
 	    "background-color": "#fbe8e8",
@@ -21,7 +21,7 @@
 	    "line-height": "24px"
 	},
 	"verificationTextNode": {
-	    "background": "url("+"../x_component_process_ViewDesigner/widget/$ViewFilter/default/icon/error.png) no-repeat 5px center",
+	    "background": "url(../x_component_query_ViewDesigner/widget/$ViewFilter/default/icon/error.png) no-repeat 5px center",
 	    "padding-left": "26px"
 	},
 
@@ -43,7 +43,7 @@
         "width": "20px",
         "height": "24px",
         "float": "right",
-        "background": "url("+"../x_component_process_ViewDesigner/widget/$ViewFilter/default/icon/delete1.png) no-repeat center center",
+        "background": "url(../x_component_query_ViewDesigner/widget/$ViewFilter/default/icon/delete1.png) no-repeat center center",
         "cursor": "pointer"
     },
     "itemContentNode": {
