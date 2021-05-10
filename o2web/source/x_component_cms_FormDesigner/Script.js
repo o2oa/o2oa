@@ -70,6 +70,8 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadDatagrid$DataScript(v); break;
             case "Datagrid$Title":
                 this.loadDatagrid$TitleScript(v); break;
+            case "Datatemplate":
+                this.loadDatatemplateScript(v); break;
             case "Htmleditor":
                 this.loadHtmleditorScript(v); break;
             case "ImageClipper":

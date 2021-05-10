@@ -1,12 +1,10 @@
 /**
  * 数据模板数据结构.
- * @typedef {Object} DatatemplateData
- * @property {Array} data - 数据模板列表数据
- * @property {Object} total - 统计数据
+ * @typedef {Array} DatatemplateData
  * @example
  [ //数据模板数据条目
- {
-            "org": [{
+ 		{
+           "org": [{
                 "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
                 "id": "bf007525-99a3-4178-a474-32865bdddec8",
                 "name": "张三",
@@ -46,7 +44,7 @@
                 }
             ]
         },
- ...
+ 	...
  ]
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
@@ -75,37 +73,40 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 每初始化一个条目，但未加载的时候触发，通过this.event。
+			 * 每初始化一个条目，但未加载的时候触发，通过this.event可以获取条目对象。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#beforeLoadLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 每一个条目加载后时候触发，通过this.event。
+			 * 每一个条目加载后时候触发，通过this.event可以获取条目对象。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#afterLoadLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 区段合并后的展现包含此事件，加载条目前执行。通过this.event。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#loadSectionData,
+			 * 区段合并后的展现包含此事件，加载条目前执行。通过this.event.sectionKeyList获取所有区段标识，
+			 * 通过this.event.data获取数据。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#loadSectionData
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载前执行。通过this.event。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#beforeloadSectionLines,
+			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载前执行。通过this.event.sectionKey获取当前区段标识，
+			 * 通过this.event.sectionData获取当前区段数据。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#beforeloadSectionLines
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载后执行。通过this.event。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#afterloadSectionLines,
+			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载后执行。通过this.event.sectionKey获取当前区段标识，
+			 * 通过this.event.sectionData获取当前区段数据，通过this.event.sectionLineList获取当前区段的所有条目。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#afterloadSectionLines
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 添加条目时触发。通过this.event可以获取对应的tr。
+			 * 添加条目时触发。通过this.event.line可以获取对应的条目对象，this.event.ev可以获得事件触发的Event。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#addLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 删除条目前触发。通过this.event可以获取对应的tr。
+			 * 删除条目前触发。通过this.event可以获取对应的条目对象。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#deleteLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
@@ -349,6 +350,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_loadLineList: function(callback){
 			if(o2.typeOf(this.data)==="object"){ //区段合并后显示
+				this.lineList_sectionkey = {};
 				var index = 0;
 				var sectionKeyList = Object.keys(this.data);
 				//$union默认放最后
@@ -361,12 +363,19 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						return 0;
 					}
 				});
-				this.fireEvent("loadSectionData", [sectionKeyList, this.data]);
+				this.fireEvent("loadSectionData", [{
+					"sectionKeyList": sectionKeyList,
+					"data": this.data
+				}]);
 				Array.each(sectionKeyList, function (sectionKey, i) {
 					debugger;
 					var list = this.data[sectionKey];
-					this.fireEvent("beforeloadSectionLines", [sectionKey, list]);
+					this.fireEvent("beforeloadSectionLines", [{
+						"sectionKey": sectionKey,
+						"sectionData": list
+					}]);
 					var sectionLineList = [];
+					this.lineList_sectionkey[sectionKey] = sectionLineList;
 					list.each(function(data, idx){
 						var div = new Element("div").inject(this.node);
 						var line = this._loadLine(div, data, index, this.editable, idx, sectionKey);
@@ -374,7 +383,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						sectionLineList.push(line);
 						index++;
 					}.bind(this));
-					this.fireEvent("afterloadSectionLines", [sectionKey, list, sectionLineList]);
+					this.fireEvent("afterloadSectionLines", [{
+						"sectionKey": sectionKey,
+						"sectionData": list,
+						"sectionLineList" : sectionLineList
+					}]);
 				}.bind(this))
 			}else if(this._getBusinessData() && this.data){
 				this.data.each(function(data, idx){
@@ -422,7 +435,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_addLine: function(ev, editable){
 			if( this.isMax() ){
-				this.form.notice("最多允许添加"+this.json.maxCount+"项","info");
+				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
+				this.form.notice(text,"info");
 				return false;
 			}
 			var index = this.lineList.length;
@@ -435,12 +449,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				line = this._loadLine(div, {}, index);
 			}
 			this.lineList.push(line);
-			this.fireEvent("addLine", [line, ev]);
+			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
 		},
 		_insertLine: function(ev, beforeLine){
 			debugger;
 			if( this.isMax() ){
-				this.form.notice("最多允许添加"+this.json.maxCount+"项","info");
+				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
+				this.form.notice(text,"info");
 				return false;
 			}
 			//使用数据驱动
@@ -456,24 +471,25 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				data.splice(index, 0, {});
 			}
 			this.setData( data );
-			this.fireEvent("addLine",[this.lineList[index], ev]);
+			this.fireEvent("addLine",[{"line":this.lineList[index], "ev":ev}]);
 		},
 		_deleteSelectedLine: function(ev){
 			debugger;
 			var selectedLine = this.lineList.filter(function (line) { return line.selected; });
 			if( selectedLine.length === 0 ){
-				this.form.notice("请先选择条目","info");
+				this.form.notice( MWF.xApplication.process.Xform.LP.selectItemNotice,"info");
 				return false;
 			}
 			var minCount = this.json.minCount ? this.json.minCount.toInt() : 0;
 			if( minCount > 0 ){
 				if( this.lineList.length - selectedLine.length < minCount ){
-					this.form.notice("最少需要保留"+minCount+"项，删除后的条目小于需保留的条目，请检查","info");
+					var text = MWF.xApplication.process.Xform.LP.minItemNotice.replace("{n}", minCount );
+					this.form.notice(text,"info");
 					return false;
 				}
 			}
 			var _self = this;
-			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, "确定要删除选中的条目", 300, 120, function(){
+			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteSelectedItemNotice, 300, 120, function(){
 
 				var data = _self.getData();
 
@@ -501,7 +517,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_deleteLine: function(ev, line){
 			if( this.isMin() ){
-				this.form.notice("请最少保留"+this.json.minCount+"项","info");
+				var text = MWF.xApplication.process.Xform.LP.minItemCountNotice.replace("{n}", this.json.minCount );
+				this.form.notice(text,"info");
 				return false;
 			}
 			var _self = this;
@@ -573,12 +590,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return flag;
 		},
 		exportToExcel: function(){
-			var exporter = new MWF.xApplication.process.Xform.Datatemplate.Exporter(this);
-			exporter.exportToExcel();
+			this.exporter = new MWF.xApplication.process.Xform.Datatemplate.Exporter(this);
+			this.exporter.exportToExcel();
 		},
 		importFromExcel: function(){
-			var importer = new MWF.xApplication.process.Xform.Datatemplate.Importer(this);
-			importer.importFromExcel();
+			this.importer = new MWF.xApplication.process.Xform.Datatemplate.Importer(this);
+			this.importer.importFromExcel();
 		},
 
 
@@ -672,7 +689,52 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			if( o2.typeOf( data ) === "array" ){
 				return data.data.length === 0;
 			}
+			if( o2.typeOf( data ) === "object" ){
+				return Object.keys(data).length === 0;
+			}
 			return false;
+		},
+		/**
+		 * 获取对应表单组件。该方法在有无区段的情况下都可以使用。
+		 * @param {Number} index 条目序号，从零开始
+		 * @param {String} id 组件标识
+		 * @return {FormComponent} 对应表单组件
+		 * @example
+		 * //获取数据模板“dt1”的第一个条目的subject字段。
+		 * var module = this.form.get("dt1").getModule(0, "subject");
+		 * //获取subject字段的值
+		 * var data = module.getData();
+		 * //设置subject字段的值
+		 * module.setData("test1");
+		 */
+		getModule: function(index, id){
+			var line = this.lineList[index];
+			if( !line )return null;
+			return line.getModule(id);
+		},
+
+		/**
+		 * 该方法在区段合并后可以使用，用来获取区段合并后对应表单组件。
+		 * @param {String} sectionKey 区段标识
+		 * @param {Number} index 对应区段中的条目序号，从零开始
+		 * @param {String} id 组件标识
+		 * @return {FormComponent} 对应表单组件
+		 * @example
+		 * //假设在流程中有节点A->B，在A中的数据模板中设置了区段，区段依据是部门，B中没有设置区段。
+		 * //现在有一个流程实例在节点B，A节点包括了“开发部@kfb@U”的处理人。此时获取上述处理人在数据模板“dt1”添加的第一个节点的标题字段如下：
+		 * var dataTemplate = this.form.get("dt1"); //获取数据模板dt1
+		 * var module = dataTemplate.getModuleWithSection("开发部@kfb@U", 0, "subject"); //获取标题字段
+		 * //获取subject字段的值
+		 * var data = module.getData();
+		 * //设置subject字段的值
+		 * module.setData("test1");
+		 */
+		getModuleWithSection: function(sectionKey, index, id){
+			var lineList = this.lineList_sectionkey[sectionKey];
+			if( !lineList )return null;
+			var line = lineList[index];
+			if( !line )return null;
+			return line.getModule(id);
 		},
 
 		/**
@@ -712,6 +774,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * @return {DatatemplateData}
 		 */
 		getData: function(){
+			if( this.importer ){
+				this.importer.destroySimulateModule();
+			}
 			if (this.editable!==false){
 				debugger;
 				// var data = [];
@@ -1019,6 +1084,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			}
 		}.bind(this));
 	},
+	getModule: function(templateJsonId){
+		return this.all_templateId[templateJsonId];
+	},
 	getAttachmentSite: function(json, templateJsonId, sectionKey){
 		//确保site最长为64，否则后台会报错
 
@@ -1159,7 +1227,7 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			return config.title;
 		});
 		if( this.template.unionMode ){
-			titleArr.push( "系统字段" );
+			titleArr.push( MWF.xApplication.process.Xform.LP.systemField );
 		}
 		resultArr.push( titleArr );
 
@@ -1277,7 +1345,7 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		if( this.form.json.excelName && this.form.json.excelName.code ){
 			title = this.form.Macro.exec(this.form.json.excelName.code, this);
 		}else{
-			title = MWF.xApplication.process.Xform.LP.exportDefaultName;
+			title = MWF.xApplication.process.Xform.LP.datatemplateExportDefaultName;
 		}
 		var titleA = title.split(".");
 		if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
@@ -1412,6 +1480,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 	},
 	destroySimulateModule: function(){
 		debugger;
+		if( !this.simelateModuleMap )return;
 		var keys = Object.keys(this.simelateModuleMap);
 		keys.each(function (key, i) {
 			var module = this.simelateModuleMap[key];
@@ -1421,13 +1490,22 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				delete this.simelateModuleMap[key];
 			}
 		}.bind(this))
-		this.simulateNode.destroy();
+		this.simelateModuleMap = null;
+
+		if(this.simulateNode){
+			this.simulateNode.destroy();
+			this.simulateNode = null;
+		}
 	},
 	loadSimulateModule: function(){
 		debugger;
+		if( this.simelateModuleMap ){
+			this.destroySimulateModule();
+		}
 		//加载模拟字段
 		this.simelateModuleMap = {};
 		this.simulateNode = new Element("div").inject(this.template.node);
+		this.simulateNode.hide();
 		this.simulateNode.set("html", this.template.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.simulateNode);
 		moduleNodes.each(function (node) {
@@ -1584,7 +1662,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			}.bind(this));
 
 			if(sectionData){
-				sectionKey = ilineData["系统字段"];
+				sectionKey = ilineData[ MWF.xApplication.process.Xform.LP.systemField ];
 				if( !sectionData[sectionKey])sectionData[sectionKey] = [];
 				sectionData[sectionKey].push( lineData );
 			}else{
@@ -1761,12 +1839,12 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				}
 			}.bind(this));
 			if( this.template.unionMode ){
-				if( !lineData["系统字段"]){
+				if( !lineData[ MWF.xApplication.process.Xform.LP.systemField ] && !lineData["系统字段"] ){
 					var colInfor = columnText.replace( "{n}", fieldArray.length+1 );
 					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName(fieldArray.length) );
 
-					errorTextList.push( colInfor + "系统字段不能为空" );
-					errorTextList.push( colInforExcel + "系统字段不能为空" );
+					errorTextList.push( colInfor + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
+					errorTextList.push( colInforExcel + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
 				}
 			}
 
