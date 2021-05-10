@@ -209,10 +209,10 @@ MWF.xApplication.query.ViewDesigner.ViewBase = new Class({
                                     if (subtrs[0]){
                                         if (subtrs[0].getStyle("display")=="none"){
                                             subtrs.each(function(subtr){ subtr.setStyle("display", "table-row"); });
-                                            iconNode.setStyle("background", "url("+"../x_component_process_ViewDesigner/$View/default/icon/down.png) center center no-repeat");
+                                            iconNode.setStyle("background", "url("+"../x_component_query_ViewDesigner/$View/default/icon/down.png) center center no-repeat");
                                         }else{
                                             subtrs.each(function(subtr){ subtr.setStyle("display", "none"); });
-                                            iconNode.setStyle("background", "url("+"../x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat");
+                                            iconNode.setStyle("background", "url("+"../x_component_query_ViewDesigner/$View/default/icon/right.png) center center no-repeat");
                                         }
                                     }
                                     _self.setContentHeight();
