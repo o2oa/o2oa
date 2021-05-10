@@ -11,6 +11,7 @@ MWF.xApplication.process.Xform.LP = {
     "datagridImport": "Import Excel",
     "datagridExport": "Export Excel",
     "exportDefaultName": "DataGrid",
+    "datatemplateExportDefaultName": "DataTemplate",
     "importSuccess": "Import successful!",
     "validationInfor": "Verification Information",
     "importFail": "Import failed",
@@ -285,6 +286,14 @@ MWF.xApplication.process.Xform.LP = {
 
     "attachmentArea": "Attachments",
     "intelligentCorrection": "Intelligent Error Correction",
+
+    "maxItemCountNotice": "A maximum of {n} items allowed to be added",
+    "selectItemNotice": "Please select item",
+    "minItemNotice": "At least {n} items need to be kept. The deleted item is less than the item to be kept, please check",
+    "deleteSelectedItemNotice": "Are you sure you want to delete the selected item",
+    "minItemCountNotice": "Please keep at least {n} items",
+    "systemField": "System Field",
+    "systemFieldEmptyNotice": "System Field cannot be empty",
 
     "form": {
         "close":"Close",
