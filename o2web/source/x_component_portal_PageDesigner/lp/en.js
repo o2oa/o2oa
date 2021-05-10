@@ -279,6 +279,7 @@ MWF.APPPD.LP = {
         "div": "Div",
         "table": "Table",
         "datagrid": "Datagrid",
+        "datatemplate": "Datatemplate",
         "subform": "Subform",
         "ViewSelector": "ViewSelector",
         "view": "View",
@@ -300,5 +301,14 @@ MWF.APPPD.LP = {
         "sourceText": "SourceText",
         "widget": "Widget",
         "widgetmodules": "WidgetEl"
+    },
+    "filedConfigurator": {
+        "sequence": "Sequence",
+        "fieldTitle": "Field Title",
+        "fieldId": "Field ID",
+        "action": "Action",
+        "moveup": "Move to the previous line",
+        "deleteRow": "Delete Row",
+        "insertRow": "Insert Row"
     }
 };
