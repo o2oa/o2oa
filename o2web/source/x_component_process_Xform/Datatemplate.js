@@ -350,6 +350,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_loadLineList: function(callback){
 			if(o2.typeOf(this.data)==="object"){ //区段合并后显示
+				this.lineList_sectionkey = {};
 				var index = 0;
 				var sectionKeyList = Object.keys(this.data);
 				//$union默认放最后
@@ -374,6 +375,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						"sectionData": list
 					}]);
 					var sectionLineList = [];
+					this.lineList_sectionkey[sectionKey] = sectionLineList;
 					list.each(function(data, idx){
 						var div = new Element("div").inject(this.node);
 						var line = this._loadLine(div, data, index, this.editable, idx, sectionKey);
@@ -693,7 +695,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return false;
 		},
 		/**
-		 * 获取对应表单组件
+		 * 获取对应表单组件。该方法在有无区段的情况下都可以使用。
 		 * @param {Number} index 条目序号，从零开始
 		 * @param {String} id 组件标识
 		 * @return {FormComponent} 对应表单组件
@@ -708,7 +710,31 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		getModule: function(index, id){
 			var line = this.lineList[index];
 			if( !line )return null;
-			return line.all_templateId[id];
+			return line.getModule(id);
+		},
+
+		/**
+		 * 该方法在区段合并后可以使用，用来获取区段合并后对应表单组件。
+		 * @param {String} sectionKey 区段标识
+		 * @param {Number} index 对应区段中的条目序号，从零开始
+		 * @param {String} id 组件标识
+		 * @return {FormComponent} 对应表单组件
+		 * @example
+		 * //假设在流程中有节点A->B，在A中的数据模板中设置了区段，区段依据是部门，B中没有设置区段。
+		 * //现在有一个流程实例在节点B，A节点包括了“开发部@kfb@U”的处理人。此时获取上述处理人在数据模板“dt1”添加的第一个节点的标题字段如下：
+		 * var dataTemplate = this.form.get("dt1"); //获取数据模板dt1
+		 * var module = dataTemplate.getModuleWithSection("开发部@kfb@U", 0, "subject"); //获取标题字段
+		 * //获取subject字段的值
+		 * var data = module.getData();
+		 * //设置subject字段的值
+		 * module.setData("test1");
+		 */
+		getModuleWithSection: function(sectionKey, index, id){
+			var lineList = this.lineList_sectionkey[sectionKey];
+			if( !lineList )return null;
+			var line = lineList[index];
+			if( !line )return null;
+			return line.getModule(id);
 		},
 
 		/**
@@ -1054,6 +1080,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 				}
 			}
 		}.bind(this));
+	},
+	getModule: function(templateJsonId){
+		return this.all_templateId[templateJsonId];
 	},
 	getAttachmentSite: function(json, templateJsonId, sectionKey){
 		//确保site最长为64，否则后台会报错
