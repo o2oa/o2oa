@@ -1,510 +1,384 @@
 o2.xApplication.process.Xform.widget = o2.xApplication.process.Xform.widget || {};
 o2.xApplication.process.Xform.widget.OOXML = o2.xApplication.process.Xform.widget.OOXML || {};
+o2.OOXML = o2.OOXML || {};
 o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new Class({
     Implements: [Options, Events],
     options: {
-        "style": "default"
+        "AppVersion": "16.0000",
+        "Application": "o2oa",
+        "Company": "",
+        "ScaleCrop": "false",
+        "LinksUpToDate": "false",
+        "SharedDoc": "false",
+        "HyperlinksChanged": "false"
     },
     initialize: function(container, worklog, processid, options){
         this.setOptions(options);
         this.path = "../x_component_process_Xform/widget/$OOXML/WordprocessingML/";
     },
-    load: function(){
-        this.logProcessChartNode = new Element("div", {"styles": this.css.logProcessChartNode}).inject(this.container);
-        this.logPathChartNode = new Element("div", {"styles": this.css.logPathChartNode}).inject(this.container);
-
-        this.checkMonitorOpen();
-    },
-
-    checkMonitorOpen: function(){
-        var moduleNode = this.container;
-        var module = moduleNode.retrieve("module");
-        var isDisplayNode = false;
-        var isTabContent = false;
-        while (true){
-            if (moduleNode.getStyle("display")==="none"){
-                isDisplayNode = true;
-            }
-            if (module && module.json.type==="Tab$Content"){
-                isTabContent = true;
-            }
-            if (isDisplayNode && isTabContent) break;
-
-            moduleNode = moduleNode.getParent();
-
-            if (!moduleNode) break;
-
-            if (!isTabContent) module = moduleNode.retrieve("module");
-        }
-
-        if (isDisplayNode){
-            if (isTabContent){
-                for (var i=0; i<module.tab.tab.pages.length; i++){
-                    if (module.tab.tab.pages[i].contentNode === module.node) break;
-                }
-                module.tab.tab.pages[i].setOptions({
-                    "onPostShow": function(){
-                        this.openProcess();
-                    }.bind(this)
-                });
-            }else{
-                this.openProcessChartAction = new Element("div", {"styles": this.css.openProcessChartAction, "text": "Show Process"}).inject(this.logProcessChartNode);
-                this.openProcessChartAction.addEvent("click", function(e){
-                    this.openProcess(e);
-                }.bind(this));
-            }
-
-        }else{
-            this.openProcess();
-        }
-    },
-
-    openProcess: function(){
-        if (!this.process){
-            this.logProcessChartNode.empty();
-            this.loadToolbar();
-            this.paperNode =  new Element("div.paperNode", {"styles": (layout.mobile) ? this.css.paperNodeMobile : this.css.paperNode}).inject(this.logProcessChartNode);
-            //this.paperNode.addEvent("scroll", function(){
-            //    this.setCountNodePosition();
-            //}.bind(this));
-
-            this.getProcess(function(json){
-                this.processData = json.data;
-                this.loadPaper();
-            }.bind(this));
-        }
-    },
-    loadToolbar: function(){
-        MWF.require("MWF.widget.Toolbar", function(){
-            this.toolbarNode = new Element("div").inject(this.logProcessChartNode);
-            this.createToolbarNode("play.png", "logPlay", "");
-            //this.createToolbarNode("pause.png", "logPause", "true");
-            //this.createToolbarNode("stop.png", "playStop", "true");
-            //this.createToolbarNode("prev.png", "logPrev", "true");
-            //this.createToolbarNode("next.png", "logNext", "");
-            this.toolbar = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.options.style}, this);
-            this.toolbar.load();
-        }.bind(this));
-    },
-    createToolbarNode: function(img, action, disabled){
-        new Element("div", {
-            "MWFnodetype": "MWFToolBarButton",
-            "MWFButtonImage": this.path+""+this.options.style+"/tools/"+img,
-            "title": "",
-            "MWFButtonAction": action,
-            "MWFButtonText": "",
-            "MWFButtonDisable": disabled
-        }).inject(this.toolbarNode);
-    },
-
-    logPlay: function(){
-
-        if (this.process){
-            this.isPlaying = true;
-            this.toolbar.childrenButton[0].setDisable(true);
-            //this.toolbar.childrenButton[1].setDisable(false);
-            //this.toolbar.childrenButton[2].setDisable(false);
-
-            this.processReturnStyle();
-
-            this.playBegin();
-            this.playToNextActivity();
-        }
-    },
-    playBegin: function(){
-        var src = "../x_component_process_Xform/widget/$Monitor/"+this.options.style+"/fly.png";
-        this.playIcon = this.paper.image(src, this.process.begin.center.x-16, this.process.begin.center.y-16, 32, 32);
-        this.playLogNode = null;
-        this.playsStatus = {
-            "index": 0
-        };
-        this.isPlaying = true;
-    },
-    playGetNextActivity: function(){
-        var log = this.worklog[this.playsStatus.index];
-        var activityType = log.fromActivityType;
-        var activity = (activityType.toLowerCase()=="begin") ? this.process.begin : this.process[activityType+"s"][log.fromActivity];
-        return {"log": log, "activity": activity};
-    },
-    playToNextActivity: function(route){
-        var activity = this.playGetNextActivity();
-        if (this.playsStatus.index == 0){
-            this.playToActivityStop(activity.activity, activity.log);
-        }else{
-            this.playMoveToActivity(activity.activity, activity.log, route);
-        }
-    },
-    playMoveToActivity: function(activity, log, route){
-        if (route){
-            var points = [route.beginPoint];
-            points = points.concat(route.positionPoints, [route.endPoint], [{"x": activity.center.x, "y": activity.center.y}]);
-            this.playMoveByRoutePoint(points, function(){
-                this.playToActivityStop(activity, log, route);
-            }.bind(this));
-        }else{
-            this.playToActivityStop(activity, log, route);
-        }
-    },
-    playMoveByRoutePoint: function(points, callback){
-
-        var p = {"x": this.playIcon.attr("x").toFloat(), "y": this.playIcon.attr("y").toFloat()};
-        var toP = points.shift();
-
-        var d = MWFRaphael.getPointDistance(p, toP);
-        var ms = d/0.2;
-
-        this.playIcon.animate({"x": toP.x-16, "y": toP.y-16}, ms, "linear", function() {
-            if (points.length) {
-                this.playMoveByRoutePoint(points, callback);
-            } else {
-                if (callback) callback();
-            }
-        }.bind(this));
-    },
-
-    playToActivityStop: function(activity, log, prevRoute){
-        this.playIcon.attr({
-            "x": activity.center.x-16,
-            "y": activity.center.y-16
+    getZipTemplate: function(){
+        return fetch(this.path+"template.zip").then(function(res){
+            return res.blob().then(JSZip.loadAsync);
         });
-        if (log.connected){
-            activity.shap.attr(this.css.passedActivityShap);
-        }else{
-            activity.shap.attr(this.css.currentActivityShap);
-        }
-        var route = this.process.routes[log.route];
-        if (prevRoute){
-            prevRoute.line.attr(this.css.passedRouteShap);
-            prevRoute.point.attr(this.css.passedRouteFillShap);
-            prevRoute.arrow.attr(this.css.passedRouteFillShap);
-        }
-
-
-        this.showPlayLog(activity,log);
-        this.playsStatus.index++;
-
-        window.setTimeout(function(){
-            if (this.worklog.length<=this.playsStatus.index){
-                this.playStop();
-            }else{
-                this.playLogNode.destroy();
-                this.playLogNode = null;
-                this.playToNextActivity(route);
-            }
-        }.bind(this), 2000);
     },
-    showPlayLog: function(activity,log){
-        var offset = this.paperNode.getPosition(this.paperNode.getOffsetParent());
-        var size = this.paperNode.getSize();
-        this.playLogNode = this.createWorkLogNode([log]);
-        this.playLogNode.setStyle("display", "block");
-        var p = this.getlogNodePosition(activity, this.playLogNode, offset, size);
-        this.playLogNode.setPosition({"x": p.x, "y": p.y});
-    },
-
-    playStop: function(){
-        this.playIcon.remove();
-        if (this.playLogNode) this.playLogNode.destroy();
-        this.playLogNode = null;
-        this.playsStatus = {
-            "index": 0
-        };
-        this.isPlaying = false;
-
-        this.toolbar.childrenButton[0].setDisable(false);
-        //this.toolbar.childrenButton[1].setDisable(true);
-        //this.toolbar.childrenButton[2].setDisable(true);
-
-        this.loadWorkLog();
-    },
-
-
-
-    processReturnStyle: function(){
-        this.worklog.each(function(log){
-            var activityType = log.fromActivityType;
-            var activity = (activityType.toLowerCase()=="begin") ? this.process.begin : this.process[activityType+"s"][log.fromActivity];
-            activity.shap.attr(activity.style.shap);
-            activity.passedCount = 0;
-            activity.worklogs = [];
-
-            var route = this.process.routes[log.route];
-            if (route){
-                route.line.attr(this.process.css.route.line.normal);
-                route.point.attr(this.process.css.route.decision.normal);
-                route.arrow.attr(this.process.css.route.arrow.normal);
-            }
-
-            if (log.taskCompletedList && log.taskCompletedList.length){
-                log.taskCompletedList.each(function(tc){
-                    if (tc.processingType === "appendTask"){
-                        if (activity.routes && activity.routes.length){
-                            activity.routes.each(function(r){
-                                if (tc.routeName === r.data.name){
-                                    r.line.attr(this.process.css.route.line.normal);
-                                    r.point.attr(this.process.css.route.decision.normal);
-                                    r.arrow.attr(this.process.css.route.arrow.normal);
-                                }
-                            }.bind(this));
-                        }
-                    }
-                }.bind(this));
-            }
-
-            if (activity.countSet) activity.countSet.remove();
-        }.bind(this));
-
-    },
-
-
-
-    loadPaper: function(){
-        MWFRaphael.load(function(){
-            this.paperInNode =  new Element("div", {"styles": this.css.paperInNode}).inject(this.paperNode);
-            this.paper = Raphael(this.paperInNode, "98%", "99%");
-            if (layout.mobile){
-                var s = this.paper.canvas.getSize();
-                var x = s.x*2;
-                var y = s.y*2;
-                this.paper.canvas.set({
-                    "viewBox": "0 0 "+x+" "+y+"",
-                    "preserveAspectRatio": "xMinYMin meet"
-                });
-            }
-            this.paper.container = this.paperNode;
-
-            MWF.xDesktop.requireApp("process.ProcessDesigner", "Process", function(){
-                this.process = new MWF.APPPD.Process(this.paper, this.processData, this, {"style":"flat", "isView": true,
-                    "onPostLoad": function(){
-                        this.loadWorkLog();
-                        this.fireEvent("postLoad");
-                    }.bind(this)
-                });
-                this.process.load();
+    load: function(data){
+        o2.load(["/o2_lib/jszip/jszip.min.js", "/o2_lib/jszip/FileSaver.js", "/o2_lib/xml/wgxpath.install.js"], function(){
+            this.getZipTemplate().then(function(zip){
+                //console.log(zip.files);
+                this.zip = zip;
+                this.processDocument(data);
             }.bind(this));
         }.bind(this));
+
+        //
+        // var zip = new JSZip();
+        // zip.file("Hello.txt", "Hello World\n");
+        // var img = zip.folder("images");
+        // img.file("smile.gif", imgData, {base64: true});
+        // zip.generateAsync({type:"blob"}).then(function(content) {
+        //     // see FileSaver.js
+        //     saveAs(content, "example.zip");
+        // });
     },
-    getProcess: function(callback){
-        this.action = MWF.Actions.get("x_processplatform_assemble_surface");
-        //this.action = new MWF.xApplication.process.Xform.widget.RestActions("x_processplatform_assemble_surface");
-        //this.action = new MWF.xApplication.process.Xform.widget.RestActions("x_processplatform_assemble_designer");
+    processDocument: function(data){
+        var documentPromise = this.zip.file("word/document.xml").async("text").then(function(xmlString){
+            return this.processWordDocument(xmlString, data);
+        }.bind(this)).then(function(xmlstr){
+            this.zip.file("word/document.xml", xmlstr).generateAsync({type:"blob"}).then(function(content) {
+                o2.saveAs(content, "example.docx");
+            });
+        }.bind(this));
+        //var documentXml = processWordDocument(xmlString);
 
-        this.action.getProcess(function(json){
-            if (callback) callback(json);
-        }, null, this.processid)
     },
 
+    getPageRule: function(cssRules){
+        var pageRule = null;
+        if (cssRules){
+            for (var i=0; i<cssRules.length; i++){
+                if (cssRules[i].type===CSSRule.PAGE_RULE){
+                    pageRule = cssRules[i];
+                    break;
+                }
+            }
+        }
+        return pageRule;
+    },
+    processWordDocument: function(xmlString, data){
+        wgxpath.install();
 
-    loadWorkLog: function(){
-        this.countNodes = [];
-        var activitys = {};
-        this.worklogToken = {};
-        this.worklog.each(function(log){
-            this.worklogToken[log.fromActivityToken] = log;
-            var activityType = log.fromActivityType;
-            var activity = (activityType.toLowerCase()=="begin") ? this.process.begin : this.process[activityType+"s"][log.fromActivity];
-            if (log.connected){
-                activity.shap.attr(this.css.passedActivityShap);
+        var domparser = new DOMParser();
+        var xmlDoc = domparser.parseFromString(xmlString, "text/xml");
+        var body = xmlDoc.evaluate("//w:document/w:body", xmlDoc, this.nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+        var tmpDiv = new Element("div", {"styles": {"display": "none"}}).set("html", data).inject(document.body);
+        var pageRule = this.getPageRule(tmpDiv.getElement("style").sheet.cssRules);
+        if (pageRule) this.processPageSection(pageRule, body);
+
+        var wordSection = tmpDiv.getElement(".WordSection1");
+        if (wordSection){
+            this.processPageSection(wordSection, body);
+            this.processDom(wordSection, body);
+
+
+
+        }
+
+
+
+        debugger;
+        tmpDiv.destroy();
+
+
+        // var p = this.createParagraph(xmlDoc);
+        // var r = this.createRun(xmlDoc, {
+        //     "text": "份数文本",
+        //     "font": {
+        //         "hint": "eastAsia",
+        //         "eastAsia": "黑体",
+        //         "other": "Times New Roman"
+        //     },
+        //     "rPrs": {
+        //         "b": { val: "true" },
+        //         "color": { val: "FF0000" }
+        //     }
+        // });
+        // this.insertChildren(body, [p, r], "afterbegin");
+        //
+        var s = new XMLSerializer();
+        return s.serializeToString(xmlDoc);
+    },
+    processDom: function(dom, body){
+        var dom = dom.getFirst();
+        while (dom){
+            if (dom.tagName.toLowerCase() === "p"){
+                this.processParagraph(dom, body);
+            }else if (dom.tagName.toLowerCase() === "table") {
+
             }else{
-                activity.shap.attr(this.css.currentActivityShap);
+                this.processDom(dom, body);
             }
-            var route = this.process.routes[log.route];
-            if (route){
-                route.line.attr(this.css.passedRouteShap);
-                route.point.attr(this.css.passedRouteFillShap);
-                route.arrow.attr(this.css.passedRouteFillShap);
-            }
-
-
-            if (log.taskCompletedList && log.taskCompletedList.length){
-                log.taskCompletedList.each(function(tc){
-                    if (tc.processingType === "appendTask"){
-                        if (activity.routes && activity.routes.length){
-                            activity.routes.each(function(r){
-                                if (tc.routeName === r.data.name){
-                                    r.line.attr(this.css.passedRouteShap);
-                                    r.point.attr(this.css.passedRouteFillShap);
-                                    r.arrow.attr(this.css.passedRouteFillShap);
-                                }
-                            }.bind(this));
-                        }
-                    }
-                }.bind(this));
-            }
-
-
-            var passedCount = log.taskCompletedList.length;
-            //var passedCount = log.taskCompletedList.length || 1;
-            if (passedCount) activity.passedCount = (activity.passedCount) ? activity.passedCount+passedCount : passedCount;
-            if (!activity.worklogs) activity.worklogs = [];
-            activity.worklogs.push(log);
-            if (!activitys[log.fromActivity]) activitys[log.fromActivity] = activity
-        }.bind(this));
-
-        var offset = this.paperNode.getPosition(this.paperNode.getOffsetParent());
-        var size = this.paperNode.getSize();
-        Object.each(activitys, function(activity){
-            this.writePassCount(activity);
-            this.writeWorkLog(activity, offset, size);
-        }.bind(this));
-    },
-    writePassCount: function(activity){
-        if (activity.passedCount){
-            var x = activity.point.x+activity.width;
-            var y = activity.point.y;
-            var shap = this.paper.circle(x, y, 9);
-            shap.attr(this.css.activityPassedCount);
-
-            text = this.paper.text(x, y, activity.passedCount);
-            text.attr(this.css.activityPassedCountText);
-
-            activity.countSet = this.paper.set();
-            activity.countSet.push(shap, text);
+            dom = dom.getNext();
         }
     },
-    writeWorkLog: function(activity, offset, size){
-        var _self = this;
-        activity.set.click(function(e){
-            if (!_self.isPlaying){
-                if (this.process.selectedActivitys.length){
-                    if (!this.noselected){
-                        this.selected();
-                        _self.showWorklog(this, offset, size);
+    processParagraph: function(dom, body){
+        var pPrs = {};
+        for (var i = 0; i<dom.style.length; i++){
+            switch (dom.style[i]){
+                case "text-align":
+                    var align = dom.style["textAlign"].toLowerCase();
+                    var jc = "start"
+                    switch (align){
+                        case "center": jc = "center"; break;
+                        case "right":
+                        case "end": jc = "end"; break;
+                        case "justify": jc = "both"; break;
                     }
-                    this.noselected = false;
-                }
-                if (this.countSet) this.countSet.toFront();
+                    pPrs.jc = {"val": jc};
+                    break;
+                default:
+                //nothing
             }
-            e.stopPropagation();
-        }.bind(activity));
-        activity.set.mousedown(function(e){
-            if (!_self.isPlaying) {
-                if (!this.process.selectedActivitys.length) {
-                    this.selected();
-                    _self.showWorklog(this, offset, size);
-                }
-                if (this.countSet) this.countSet.toFront();
-            }
-            e.stopPropagation();
-        }.bind(activity));
 
-        this.paper.canvas.addEvent("click", function(e){
-            if (!_self.isPlaying) {
-                if (this.unSelectedEvent) {
-                    if (this.currentSelected || this.selectedActivitys.length) {
-                        this.unSelected(e);
+        }
+        var p = this.createParagraph(body.ownerDocument, {"pPrs": pPrs});
+        var spans = dom.getChildren("span");
+        spans.each(function(span){
+            this.processRun(span, p)
+        }.bind(this));
 
-                        _self.hideCurrentWorklog();
-                    }
-                } else {
-                    this.unSelectedEvent = true;
-                }
-            }
-        }.bind(this.process));
-    },
-    getlogNodePosition: function(activity, node, offset, psize){
-        offset.x = 0;
-        offset.y = 0;
-        var size = node.getSize();
-        var y = 0;
-        var x = activity.point.x+activity.width+15+offset.x;
-        tmpX = x + size.x;
-        if (tmpX>offset.x+psize.x){
-            x = activity.point.x - size.x - 15 + offset.x;
-            if (x<offset.x){
-                y = activity.point.y-size.y-15+offset.y;
-                x = activity.center.x - (size.x/2) + offset.x;
-            }else{
-                y = activity.center.y - (size.y/2) + offset.y;
-                if (y<offset.y){
-                    y = offset.y
-                }
-            }
+        var sectPr = this.getEl(body, "sectPr");
+        if (sectPr){
+            this.insertSiblings(sectPr, [p], "beforebegin");
         }else{
-            y = activity.center.y - (size.y/2) + offset.y;
-            if (y<offset.y){
-                y = offset.y
-            }
-        }
-
-        // var p = this.paperNode.getScroll();
-        // var scrollY = 0;
-        // var scrollX = 0;
-        // var tmpNode = this.paperNode.getParent();
-        // while (tmpNode){
-        //     var s = tmpNode.getScroll();
-        //     scrollY += s.y;
-        //     scrollX += s.x;
-        //     tmpNode = tmpNode.getParent();
-        // }
-        // y = y-p.y-scrollY;
-        // x = x-p.x-scrollX;
-
-        return {"x": x, "y": y};
-    },
-    showWorklog: function(activity, offset, psize){
-        this.hideCurrentWorklog();
-        if (!activity.worklogNode) activity.worklogNode = this.createWorkLogNode(activity.worklogs);
-
-        this.currentWorklogNode = activity.worklogNode;
-        this.currentWorklogNode.setStyle("display", "block");
-
-        var p = this.getlogNodePosition(activity, activity.worklogNode, offset, psize)
-        activity.worklogNode.setPosition({"x": p.x, "y": p.y});
-    },
-    hideCurrentWorklog: function(){
-        if (this.currentWorklogNode){
-            this.currentWorklogNode.setStyle("display", "none");
-            this.currentWorklogNode = null;
+            this.insertChildren(body, [p]);
         }
     },
-
-    createWorkLogNode: function(worklogs){
-        var node = new Element("div", {"styles": this.css.workLogNode});
-        worklogs.each(function(log, idx){
-            var workNode = new Element("div", {"styles": this.css.workLogWorkNode}).inject(node);
-            if ((idx % 2)==0){
-                workNode.setStyle("background-color", "#FFF");
-            }else{
-                workNode.setStyle("background-color", "#EEE");
+    processRun: function(span, p){
+        var rPrs = {};
+        var font = null;
+        for (var i = 0; i<span.style.length; i++){
+            switch (span.style[i]){
+                case "font-size":
+                    rPrs.sz = {"val": span.style["fontSize"].toFloat()*2};
+                    break;
+                case "color":
+                    rPrs.color = {"val": span.style["color"]};
+                    break;
+                case "letter-spacing":
+                    rPrs.spacing = {"val": span.style["letterSpacing"].toFloat()*20};
+                    break;
+                case "font-weight":
+                    var b = span.style["fontWeight"];
+                    if (b.toLowerCase()=="normal"){
+                        //nothing
+                    }else if (b.toLowerCase()=="bold") {
+                        rPrs.b = {"val": "true"};
+                    }else{
+                        var n = b.toFloat();
+                        if (n>=600) rPrs.b = {"val": "true"};
+                    }
+                    break;
+                case "font-family":
+                    var fonts = span.style["fontFamily"].split(/,\s*/);
+                    font = {
+                        "hint": "eastAsia",
+                        "eastAsia": fonts[0]
+                    }
+                    if (fonts.length>1){
+                        font.other = fonts[1];
+                    }
+                    break;
+                default:
+                //nothing
             }
+        }
+        var text = span.get("text");
+        var run = this.createRun(p.ownerDocument, {"rPrs": rPrs, "font": font, "text": text});
+        p.appendChild(run);
+    },
 
-            if (log.taskCompletedList.length+log.taskList.length<1){
-                if (log.connected){
-                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold'>"+MWF.xApplication.process.Xform.LP.systemProcess+" </div>";
-                    html += "<div style='text-align: right'>"+log.arrivedTime+"</div>";
-                    taskNode.set("html", html);
-                }else{
-                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold; color: red'>"+MWF.xApplication.process.Xform.LP.systemProcess+" </div>";
-                    taskNode.set("html", html);
+
+    processPageSection: function(pageRule, xmlBody){
+        var sectPr = this.getOrCreateEl(xmlBody, "sectPr");
+        if (sectPr){
+            for (var i = 0; i<pageRule.style.length; i++){
+                switch (pageRule.style[i]){
+                    case "size":
+                        var v = pageRule.style["size"].split(/\s/);
+                        var w = v[0].toFloat()*20, h=v[1].toFloat()*20;
+                        var pgSz = this.getOrCreateEl(sectPr, "pgSz");
+                        this.setAttrs(pgSz, {"w": w, "h": h});
+                        break;
+                    case "margin-top":
+                    case "margin-right":
+                    case "margin-bottom":
+                    case "margin-left":
+                        var p = pageRule.style[i].split("-")[1];
+                        var v = pageRule.style["margin"+p.capitalize()].toFloat()*20;
+                        var pgMar = this.getOrCreateEl(sectPr, "pgMar");
+                        var attrs = {};
+                        attrs[p] = v
+                        this.setAttrs(pgMar, attrs);
+                        break;
+                    case "line-height":
+                    case "letter-spacing":
+                        var docGrid = this.getOrCreateEl(sectPr, "docGrid");
+                        var lh = pageRule.style["lineHeight"].toFloat()*20;
+                        var cs = pageRule.style["letterSpacing"].toFloat()*4096;
+                        var attrs = {"type": "linesAndChars"};
+                        if (lh) attrs["linePitch"] = lh;
+                        if (cs) attrs["charSpace"] = cs;
+                        this.setAttrs(docGrid, attrs);
+                        break;
+                    default:
+                    //nothing
                 }
-            }else{
-                log.taskCompletedList.each(function(task){
-                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold'>"+task.person.substring(0, task.person.indexOf("@"))+": </div>";
-                    html += "<div style='margin-left: 10px'>["+(task.routeName || "")+"] "+task.opinion+"</div>";
-                    html += "<div style='text-align: right'>"+task.completedTime+"</div>";
-                    taskNode.set("html", html);
-                }.bind(this));
 
-                log.taskList.each(function(task){
-                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold; color: red'>"+task.person.substring(0, task.person.indexOf("@"))+" "+MWF.xApplication.process.Xform.LP.processing+" </div>";
-                    taskNode.set("html", html);
-                }.bind(this));
             }
+        }
 
-        }.bind(this));
-        node.inject(this.paperNode);
+    },
+
+    getOrCreateEl: function(el, tag){
+        var node = this.getEl(el, tag);
+        if (!node){
+            node = this.createEl(el.ownerDocument, tag);
+            el.appendChild(node);
+        }
         return node;
-    }
-});
+    },
 
-MWF.xApplication.process.Xform.widget.Monitor.Animation = new Class({
-    Implements: [Events],
+    createParagraph: function(xmlDoc, options){
+        var p = this.createEl(xmlDoc,"p");
+        var pPr = this.createEl(xmlDoc,"pPr");
 
-    initialize: function(monitor, log){
+        /*
+        * //如：对齐方式描述如下
+        * {
+        *   "jc": { val: "both" },
+        * }
+        * */
+        if (options && options.pPrs){
+            Object.keys(options.pPrs).each(function(k){
+                var node = this.createEl(xmlDoc, k);
+                this.setAttrs(node, options.pPrs[k]);
+                pPr.appendChild(node);
+            }.bind(this));
+        }
+
+        p.appendChild(pPr);
+        return p;
+    },
+    createRun: function(xmlDoc, options){
+        var r = this.createEl(xmlDoc, "r");
+        var rPr = this.createEl(xmlDoc,"rPr");
+        r.appendChild(rPr);
+
+        if (options && options.text){
+            var t = this.createEl(xmlDoc,"t");
+            t.appendChild(xmlDoc.createTextNode(options.text));
+            r.appendChild(t);
+        }
+        if (options && options.font){
+            var rFonts = this.createEl(xmlDoc,"rFonts");
+            var font = {
+                "eastAsia": options.font.eastAsia || options.font.font,
+                "ascii": options.font.ascii || options.font.other || options.font.eastAsia || options.font.font,
+                "hAnsi": options.font.hAnsi || options.font.other || options.font.eastAsia || options.font.font,
+            }
+            if (options.font.hint) font.hint = options.font.hint;
+            this.setAttrs(rFonts, font);
+            rPr.appendChild(rFonts);
+        }
+        /*
+        * //如：粗体和字体颜色描述如下
+        * {
+        *   "b": { val: "true" },
+        *   "color": { val: "FF0000" }
+        * }
+        * */
+        if (options && options.rPrs){
+            Object.keys(options.rPrs).each(function(k){
+                var node = this.createEl(xmlDoc, k);
+                this.setAttrs(node, options.rPrs[k]);
+                rPr.appendChild(node);
+            }.bind(this));
+        }
+
+        return r;
+    },
+
+    insertChildren: function(p, els, position){
+        this.insertAdjacent(p, els, position, "beforeend");
+    },
+    insertSiblings: function(p, els, position){
+        this.insertAdjacent(p, els, position, "afterend");
+    },
+    insertAdjacent: function(p, els, posFirst, posNext){
+        var pos = posFirst || "beforeend"
+        els.each(function(e){
+            p.insertAdjacentElement(pos, e);
+            p = e;
+            pos = posNext || "afterend";
+        });
+    },
+    getEl: function(el, tag, ns){
+        return this.getEls(el, tag, ns)[0];
+    },
+    getEls: function(el, tag, ns){
+        var n = ns || "w";
+        return el.getElementsByTagNameNS(this.nsResolver(n), tag);
+    },
+    createEl: function(xmlDoc, tag, ns){
+        var n = ns || "w";
+        return xmlDoc.createElementNS(this.nsResolver(n), tag);
+    },
+    setAttr: function(node, name, value, ns){
+        var n = ns || "w";
+        node.setAttributeNS(this.nsResolver(n), name, value);
+    },
+    setAttrs: function(node, attrs, ns){
+        var n = this.nsResolver(ns || "w");
+        Object.keys(attrs).forEach(function(key){
+            node.setAttributeNS(n, key, attrs[key]);
+        });
+    },
+    nsResolver: function(prefix){
+        var ns = {
+            "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+            "wpc": "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas",
+            "cx": "http://schemas.microsoft.com/office/drawing/2014/chartex",
+            "cx1": "http://schemas.microsoft.com/office/drawing/2015/9/8/chartex",
+            "cx2": "http://schemas.microsoft.com/office/drawing/2015/10/21/chartex",
+            "cx3": "http://schemas.microsoft.com/office/drawing/2016/5/9/chartex",
+            "cx4": "http://schemas.microsoft.com/office/drawing/2016/5/10/chartex",
+            "cx5": "http://schemas.microsoft.com/office/drawing/2016/5/11/chartex",
+            "cx6": "http://schemas.microsoft.com/office/drawing/2016/5/12/chartex",
+            "cx7": "http://schemas.microsoft.com/office/drawing/2016/5/13/chartex",
+            "cx8": "http://schemas.microsoft.com/office/drawing/2016/5/14/chartex",
+            "mc": "http://schemas.openxmlformats.org/markup-compatibility/2006",
+            "aink": "http://schemas.microsoft.com/office/drawing/2016/ink",
+            "am3d": "http://schemas.microsoft.com/office/drawing/2017/model3d",
+            "o": "urn:schemas-microsoft-com:office:office",
+            "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+            "m": "http://schemas.openxmlformats.org/officeDocument/2006/math",
+            "v": "urn:schemas-microsoft-com:vml",
+            "wp14": "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing",
+            "wp": "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing",
+            "w10": "urn:schemas-microsoft-com:office:word",
+            "w14": "http://schemas.microsoft.com/office/word/2010/wordml",
+            "w15": "http://schemas.microsoft.com/office/word/2012/wordml",
+            "w16cex": "http://schemas.microsoft.com/office/word/2018/wordml/cex",
+            "w16cid": "http://schemas.microsoft.com/office/word/2016/wordml/cid",
+            "w16": "http://schemas.microsoft.com/office/word/2018/wordml",
+            "w16sdtdh": "http://schemas.microsoft.com/office/word/2020/wordml/sdtdatahash",
+            "w16se": "http://schemas.microsoft.com/office/word/2015/wordml/symex",
+            "wpg": "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup",
+            "wpi": "http://schemas.microsoft.com/office/word/2010/wordprocessingInk",
+            "wne": "http://schemas.microsoft.com/office/word/2006/wordml",
+            "wps": "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
+        };
+        return ns[prefix] || null;
     }
 });

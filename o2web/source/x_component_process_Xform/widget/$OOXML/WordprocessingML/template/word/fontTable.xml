@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:fonts xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+         xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+         xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+         xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
+         xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml"
+         xmlns:w16cex="http://schemas.microsoft.com/office/word/2018/wordml/cex"
+         xmlns:w16cid="http://schemas.microsoft.com/office/word/2016/wordml/cid"
+         xmlns:w16="http://schemas.microsoft.com/office/word/2018/wordml"
+         xmlns:w16sdtdh="http://schemas.microsoft.com/office/word/2020/wordml/sdtdatahash"
+         xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex"
+         mc:Ignorable="w14 w15 w16se w16cid w16 w16cex w16sdtdh">
+    <w:font w:name="等线">
+        <w:altName w:val="DengXian"/>
+        <w:panose1 w:val="02010600030101010101"/>
+        <w:charset w:val="86"/>
+        <w:family w:val="auto"/>
+        <w:pitch w:val="variable"/>
+        <w:sig w:usb0="A00002BF" w:usb1="38CF7CFA" w:usb2="00000016" w:usb3="00000000" w:csb0="0004000F"
+               w:csb1="00000000"/>
+    </w:font>
+    <w:font w:name="Times New Roman">
+        <w:panose1 w:val="02020603050405020304"/>
+        <w:charset w:val="00"/>
+        <w:family w:val="roman"/>
+        <w:pitch w:val="variable"/>
+        <w:sig w:usb0="E0002AFF" w:usb1="C0007843" w:usb2="00000009" w:usb3="00000000" w:csb0="000001FF"
+               w:csb1="00000000"/>
+    </w:font>
+    <w:font w:name="仿宋_GB2312">
+        <w:altName w:val="仿宋"/>
+        <w:panose1 w:val="02010609030101010101"/>
+        <w:charset w:val="86"/>
+        <w:family w:val="modern"/>
+        <w:pitch w:val="fixed"/>
+        <w:sig w:usb0="00000001" w:usb1="080E0000" w:usb2="00000010" w:usb3="00000000" w:csb0="00040000"
+               w:csb1="00000000"/>
+    </w:font>
+    <w:font w:name="宋体">
+        <w:altName w:val="SimSun"/>
+        <w:panose1 w:val="02010600030101010101"/>
+        <w:charset w:val="86"/>
+        <w:family w:val="auto"/>
+        <w:pitch w:val="variable"/>
+        <w:sig w:usb0="00000003" w:usb1="288F0000" w:usb2="00000016" w:usb3="00000000" w:csb0="00040001"
+               w:csb1="00000000"/>
+    </w:font>
+    <w:font w:name="等线 Light">
+        <w:panose1 w:val="02010600030101010101"/>
+        <w:charset w:val="86"/>
+        <w:family w:val="auto"/>
+        <w:pitch w:val="variable"/>
+        <w:sig w:usb0="A00002BF" w:usb1="38CF7CFA" w:usb2="00000016" w:usb3="00000000" w:csb0="0004000F"
+               w:csb1="00000000"/>
+    </w:font>
+</w:fonts>
