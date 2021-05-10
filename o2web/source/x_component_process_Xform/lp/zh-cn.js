@@ -11,6 +11,7 @@ MWF.xApplication.process.Xform.LP = {
     "datagridImport" : "导入Excel",
     "datagridExport" : "导出Excel",
     "exportDefaultName" : "数据网格",
+    "datatemplateExportDefaultName": "数据模板",
     "importSuccess" : "导入成功！",
     "validationInfor" : "校验信息",
     "importFail" : "导入失败",
@@ -284,6 +285,14 @@ MWF.xApplication.process.Xform.LP = {
 
     "attachmentArea": "附件区域",
     "intelligentCorrection" : "智能纠错",
+
+    "maxItemCountNotice": "最多允许添加{n}项",
+    "selectItemNotice": "请先选择条目",
+    "minItemNotice": "最少需要保留{n}项，删除后的条目小于需保留的条目，请检查",
+    "deleteSelectedItemNotice": "确定要删除选中的条目",
+    "minItemCountNotice": "请最少保留{n}项",
+    "systemField": "系统字段",
+    "systemFieldEmptyNotice": "系统字段不能为空",
 
     "form": {
         "close":"关闭",

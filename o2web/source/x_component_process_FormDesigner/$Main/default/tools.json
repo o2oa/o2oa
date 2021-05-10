@@ -123,8 +123,8 @@
     "className": "Datagrid"
   },
   "datatemplate": {
-    "icon": "datagrid.png",
-    "text": "数据模板",
+    "icon": "datatemplate.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.datatemplate,
     "className": "Datatemplate"
   },
   "subform": {
