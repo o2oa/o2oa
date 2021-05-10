@@ -136,6 +136,8 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadDatagrid$DataScript(v); break;
             case "Datagrid$Title":
                 this.loadDatagrid$TitleScript(v); break;
+            case "Datatemplate":
+                this.loadDatatemplateScript(v); break;
             case "Htmleditor":
                 this.loadHtmleditorScript(v); break;
             case "ImageClipper":
@@ -368,6 +370,15 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.addScriptItem(data.editableScript, "code", data, "editableScript");
         this.addScriptItem(data.validation, "code", data, "validation");
         this.addScriptItem(data.sectionByScript, "code", data, "sectionByScript");
+        this.addScriptItem(data.excelName, "code", data, "excelName");
+        this.loadEventsScript(data);
+    },
+    loadDatatemplateScript: function(data){
+        this.addScriptItem(data.defaultData, "code", data, "defaultData");
+        this.addScriptItem(data.editableScript, "code", data, "editableScript");
+        this.addScriptItem(data.validation, "code", data, "validation");
+        this.addScriptItem(data.sectionByScript, "code", data, "sectionByScript");
+        this.addScriptItem(data.excelName, "code", data, "excelName");
         this.loadEventsScript(data);
     },
     loadDatagrid$DataScript: function(data){  this.loadEventsScript(data); },
