@@ -1342,7 +1342,7 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		if( this.form.json.excelName && this.form.json.excelName.code ){
 			title = this.form.Macro.exec(this.form.json.excelName.code, this);
 		}else{
-			title = MWF.xApplication.process.Xform.LP.exportDefaultName;
+			title = MWF.xApplication.process.Xform.LP.datatemplateExportDefaultName;
 		}
 		var titleA = title.split(".");
 		if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
