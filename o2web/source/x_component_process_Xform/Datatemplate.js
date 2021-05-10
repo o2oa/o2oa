@@ -687,7 +687,28 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			if( o2.typeOf( data ) === "array" ){
 				return data.data.length === 0;
 			}
+			if( o2.typeOf( data ) === "object" ){
+				return Object.keys(data).length === 0;
+			}
 			return false;
+		},
+		/**
+		 * 获取对应表单组件
+		 * @param {Number} index 条目序号，从零开始
+		 * @param {String} id 组件标识
+		 * @return {FormComponent} 对应表单组件
+		 * @example
+		 * //获取数据模板“dt1”的第一个条目的subject字段。
+		 * var module = this.form.get("dt1").getModule(0, "subject");
+		 * //获取subject字段的值
+		 * var data = module.getData();
+		 * //设置subject字段的值
+		 * module.setData("test1");
+		 */
+		getModule: function(index, id){
+			var line = this.lineList[index];
+			if( !line )return null;
+			return line.all_templateId[id];
 		},
 
 		/**
