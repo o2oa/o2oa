@@ -112,7 +112,7 @@
 		"background": "#FFF",
 		"-webkit-user-select": "none",
 		"overflow": "hidden",
-		"background": "url("+"../x_component_process_ViewDesigner/$Main/default/designerBg.png)",
+		"background": "url(../x_component_query_ViewDesigner/$Main/default/designerBg.png)",
 		"-moz-user-select": "none" 
 	},
 	"propertyTitleNode": {
