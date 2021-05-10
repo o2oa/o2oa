@@ -22,10 +22,10 @@ MWF.xApplication.process.FormDesigner.widget.FiledConfigurator = new Class({
         this.table = new Element("table").inject(this.node);
 
         var tr = new Element("tr").inject(this.table);
-        new Element("th", {"text":"序号", "width":"10%"}).inject(tr);
-        new Element("th", {"text":"字段标题", "width":"35%"}).inject(tr);
-        new Element("th", {"text":"字段标识", "width":"35%"}).inject(tr);
-        var td = new Element("th", {"text":"操作", "width":"20%"}).inject(tr);
+        new Element("th", {"text": this.app.lp.filedConfigurator.sequence, "width":"10%"}).inject(tr);
+        new Element("th", {"text": this.app.lp.filedConfigurator.fieldTitle, "width":"35%"}).inject(tr);
+        new Element("th", {"text": this.app.lp.filedConfigurator.fieldId, "width":"35%"}).inject(tr);
+        var td = new Element("th", {"text": this.app.lp.filedConfigurator.action, "width":"20%"}).inject(tr);
 
         this.addNewItemAction = new Element("div", {"styles": this.css.addNewItemAction, "text": "+"}).inject(this.node);
         this.addNewItemAction.addEvent("click", function(){
@@ -121,6 +121,8 @@ MWF.xApplication.process.FormDesigner.widget.FiledConfigurator.Item = new Class(
         this.create();
     },
     create: function () {
+        var lp = this.configurator.app.lp.filedConfigurator;
+
         this.tr = new Element("tr").inject(this.configurator.table);
         var td;
 
@@ -157,7 +159,7 @@ MWF.xApplication.process.FormDesigner.widget.FiledConfigurator.Item = new Class(
 
         this.upAction = new Element("div", {
             text : "↑",
-            "title": "移动到上一行",
+            "title": lp.moveup,
             styles: this.configurator.css.addAction,
             events: {
                 click: function (ev) {
@@ -168,7 +170,7 @@ MWF.xApplication.process.FormDesigner.widget.FiledConfigurator.Item = new Class(
 
         this.delectAction = new Element("div", {
             text : "-",
-            "title": "删除行",
+            "title": lp.deleteRow,
             styles: this.configurator.css.delectAction,
             events: {
                 click: function (ev) {
@@ -179,7 +181,7 @@ MWF.xApplication.process.FormDesigner.widget.FiledConfigurator.Item = new Class(
 
         this.addAction = new Element("div", {
             text : "+",
-            "title": "插入行",
+            "title": lp.insertRow,
             styles: this.configurator.css.addAction,
             events: {
                 click: function (ev) {
