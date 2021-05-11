@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -12,10 +13,13 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Read;
@@ -29,12 +33,16 @@ import com.x.processplatform.core.entity.element.Process;
 
 class ActionManageGetAssignment extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ActionManageGetAssignment.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wo = new Wo();
+		Work work;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wo wo = new Wo();
+
 			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class);
+			work = emc.find(id, Work.class);
 			if (null == work) {
 				throw new ExceptionWorkNotExist(id);
 			}
@@ -45,84 +53,120 @@ class ActionManageGetAssignment extends BaseAction {
 			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			List<Task> tasks = emc.listEqual(Task.class, Task.work_FIELDNAME, work.getId());
-			List<TaskCompleted> taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.work_FIELDNAME,
-					work.getId());
-			List<Read> reads = emc.listEqual(Read.class, Read.work_FIELDNAME, work.getId());
-			List<ReadCompleted> readCompleteds = emc.listEqual(ReadCompleted.class, ReadCompleted.work_FIELDNAME,
-					work.getId());
-			List<Review> reviews = emc.listEqual(Review.class, Review.work_FIELDNAME, work.getId());
-			tasks = tasks.stream()
-					.sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
-			taskCompleteds = taskCompleteds.stream()
-					.sorted(Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
-			reads = reads.stream()
-					.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
-			readCompleteds = readCompleteds.stream()
-					.sorted(Comparator.comparing(ReadCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
-			reviews = reviews.stream()
-					.sorted(Comparator.comparing(Review::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
-			List<WoTask> woTasks = new ArrayList<>();
-			List<WoTaskCompleted> woTaskCompleteds = new ArrayList<>();
-			List<WoRead> woReads = new ArrayList<>();
-			List<WoReadCompleted> woReadCompleteds = new ArrayList<>();
-			List<WoReview> woReviews = new ArrayList<>();
-			for (Task o : tasks) {
-				WoTask w = WoTask.copier.copy(o);
-				w.setControl(business.getControl(effectivePerson, o, WoControl.class));
-				woTasks.add(w);
-			}
-			for (TaskCompleted o : taskCompleteds) {
-				WoTaskCompleted w = WoTaskCompleted.copier.copy(o);
-				w.setControl(business.getControl(effectivePerson, o, WoControl.class));
-				woTaskCompleteds.add(w);
-			}
-			for (Read o : reads) {
-				WoRead w = WoRead.copier.copy(o);
-				w.setControl(business.getControl(effectivePerson, o, WoControl.class));
-				woReads.add(w);
-			}
-			for (ReadCompleted o : readCompleteds) {
-				WoReadCompleted w = WoReadCompleted.copier.copy(o);
-				w.setControl(business.getControl(effectivePerson, o, WoControl.class));
-				woReadCompleteds.add(w);
-			}
-			for (Review o : reviews) {
-				WoReview w = WoReview.copier.copy(o);
-				w.setControl(business.getControl(effectivePerson, o, WoControl.class));
-				woReviews.add(w);
-			}
-			wo.setTaskList(woTasks);
-			wo.setTaskCompletedList(woTaskCompleteds);
-			wo.setReadList(woReads);
-			wo.setReadCompletedList(woReadCompleteds);
-			wo.setReviewList(woReviews);
-			result.setData(wo);
-			return result;
+
+			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			wo.setControl(control);
 		}
+
+		final String job = work.getJob();
+		CompletableFuture<Void> future_task = CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.listEqual(Task.class, Task.job_FIELDNAME, job).stream().sorted(
+						Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
+						.forEach(o -> {
+							try {
+								WoTask w = WoTask.copier.copy(o);
+								wo.getTaskList().add(w);
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						});
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+		CompletableFuture<Void> future_taskCompleted = CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, job).stream().sorted(
+						Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
+						.forEach(o -> {
+							try {
+								WoTaskCompleted w = WoTaskCompleted.copier.copy(o);
+								wo.getTaskCompletedList().add(w);
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						});
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+		CompletableFuture<Void> future_read = CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.listEqual(Read.class, Read.job_FIELDNAME, job).stream()
+						.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
+						.forEach(o -> {
+							try {
+								WoRead w = WoRead.copier.copy(o);
+								wo.getReadList().add(w);
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						});
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+		CompletableFuture<Void> future_readCompleted = CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, job).stream().sorted(
+						Comparator.comparing(ReadCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
+						.forEach(o -> {
+							try {
+								WoReadCompleted w = WoReadCompleted.copier.copy(o);
+								wo.getReadCompletedList().add(w);
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						});
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+		CompletableFuture<Void> future_review = CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.listEqual(Review.class, Review.job_FIELDNAME, job).stream()
+						.sorted(Comparator.comparing(Review::getStartTime, Comparator.nullsLast(Date::compareTo)))
+						.forEach(o -> {
+							try {
+								WoReview w = WoReview.copier.copy(o);
+								wo.getReviewList().add(w);
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						});
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+		future_task.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		future_review.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		future_taskCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		future_read.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		future_readCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends GsonPropertyObject {
 
 		@FieldDescribe("待办对象")
-		private List<WoTask> taskList;
+		private List<WoTask> taskList = new ArrayList<>();
 
 		@FieldDescribe("已办对象")
-		private List<WoTaskCompleted> taskCompletedList;
+		private List<WoTaskCompleted> taskCompletedList= new ArrayList<>();;
 
 		@FieldDescribe("待阅对象")
-		private List<WoRead> readList;
+		private List<WoRead> readList= new ArrayList<>();;
 
 		@FieldDescribe("已阅对象")
-		private List<WoReadCompleted> readCompletedList;
+		private List<WoReadCompleted> readCompletedList= new ArrayList<>();;
 
 		@FieldDescribe("参阅对象")
-		private List<WoReview> reviewList;
+		private List<WoReview> reviewList= new ArrayList<>();;
+
+		@FieldDescribe("权限")
+		private WoControl control;
 
 		public List<WoTask> getTaskList() {
 			return taskList;
@@ -164,6 +208,13 @@ class ActionManageGetAssignment extends BaseAction {
 			this.reviewList = reviewList;
 		}
 
+		public WoControl getControl() {
+			return control;
+		}
+
+		public void setControl(WoControl control) {
+			this.control = control;
+		}
 	}
 
 	public static class WoTask extends Task {
