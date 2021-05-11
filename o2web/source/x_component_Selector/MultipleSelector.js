@@ -490,8 +490,12 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             if ((type.toLowerCase()==="unit") && ( options.unitType)){
                 t = "UnitWithType";
             }
-            if ((type.toLowerCase()==="identity") && (( options.dutys) && options.dutys.length && options.categoryType.toLowerCase()==="duty")){
-                t = "IdentityWidthDuty";
+            if ((type.toLowerCase()==="identity") && (( options.dutys) && options.dutys.length)){
+                if( options.categoryType.toLowerCase()==="duty" ){
+                    t = "IdentityWidthDuty";
+                }else{
+                    t = "IdentityWidthDutyCategoryByUnit"
+                }
             }
 
             MWF.xDesktop.requireApp("Selector", t, function(){
