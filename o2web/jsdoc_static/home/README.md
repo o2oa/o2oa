@@ -118,6 +118,11 @@
         <td><a href="MWF.xApplication.process.Xform.StatementSelector.html">选择查询视图 - StatementSelector</a></td>
         <td><a href="MWF.xApplication.process.Xform.Statement.html">嵌入查询视图 - Statement</a></td>
     </tr>
+    <tr>
+        <td><a href="MWF.xApplication.process.Xform.Datatemplate.html">数据模板 - Datatemplate</a></td>
+        <td></td>
+        <td></td>
+    </tr>
 </table>
 
 
@@ -187,7 +192,7 @@
     <tr>
         <td><a href="MWF.xApplication.process.Xform.StatementSelector.html">选择查询视图 - StatementSelector</a></td>
         <td><a href="MWF.xApplication.process.Xform.Statement.html">嵌入查询视图 - Statement</a></td>
-        <td></td>
+        <td><a href="MWF.xApplication.process.Xform.Datatemplate.html">数据模板 - Datatemplate</a></td>
      </tr>
 </table>
 
@@ -235,7 +240,7 @@
     </tr>
     <tr>
         <td><a href="MWF.xApplication.process.Xform.Statement.html">嵌入查询视图 - Statement</a></td>
-        <td></td>
+        <td><a href="MWF.xApplication.process.Xform.Datatemplate.html">数据模板 - Datatemplate</a></td>
         <td></td>
     </tr>
 </table>
