@@ -433,7 +433,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.fireEvent("afterLoadLine", [line]);
 			return line;
 		},
-		_addLine: function(ev, editable){
+		_addLine: function(ev, editable, sectionKey, data){
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -443,13 +443,28 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var div = new Element("div").inject(this.node);
 			var line;
 			if( this.unionMode ){
-				var indexInSection =  this.data["$union"] ? this.data["$union"].length : 0;
-				line = this._loadLine(div, {}, index, editable || this.editable, indexInSection, "$union" );
+				var key = sectionKey || "$union";
+				var indexInSection =  this.data[key] ? this.data[key].length : 0;
+				line = this._loadLine(div, data || {}, index, editable || this.editable, indexInSection, sectionKey || "$union" );
 			}else{
-				line = this._loadLine(div, {}, index);
+				line = this._loadLine(div, data || {}, index);
 			}
 			this.lineList.push(line);
 			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
+			return line;
+		},
+		_setLineData: function(line, d){
+			var index = line.options.index;
+			var data;
+			if( line.options.sectionKey ){ //区段合并后的数据
+				data = this.getData();
+				var sectionData = data[line.options.sectionKey];
+				sectionData[index] = d;
+			}else{
+				data = this.getData();
+				data[index] = d;
+			}
+			this.setData( data );
 		},
 		_insertLine: function(ev, beforeLine){
 			debugger;
@@ -473,6 +488,29 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.setData( data );
 			this.fireEvent("addLine",[{"line":this.lineList[index], "ev":ev}]);
 		},
+		_insertLineByIndex: function(ev, sectionKey, index, d){
+			debugger;
+			if( this.isMax() ){
+				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
+				this.form.notice(text,"info");
+				return false;
+			}
+			//使用数据驱动
+			var data;
+			if( sectionKey ){ //区段合并后的数据
+				data = this.getData();
+				var sectionData = data[sectionKey];
+				if( o2.typeOf(sectionData) !== "array" || sectionData.length < index )return null;
+				sectionData.splice(index, 0, d||{});
+			}else{
+				data = this.getData();
+				if(data.length < index )return null;
+				data.splice(index, 0, d||{});
+			}
+			this.setData( data );
+			this.fireEvent("addLine",[{"line":this.lineList[index], "ev":ev}]);
+			return this.lineList[index];
+		},
 		_deleteSelectedLine: function(ev){
 			debugger;
 			var selectedLine = this.lineList.filter(function (line) { return line.selected; });
@@ -491,22 +529,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var _self = this;
 			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteSelectedItemNotice, 300, 120, function(){
 
-				var data = _self.getData();
-
-				selectedLine.reverse().each(function(line){
-					_self.fireEvent("deleteLine", [line]);
-
-					if( line.options.sectionKey ){ //区段合并后的数据
-						var sectionData = data[line.options.sectionKey];
-						sectionData.splice(line.options.indexInSection, 1);
-					}else{
-						data.splice(line.options.index, 1);
-					}
-
-					_self.fireEvent("afterDeleteLine");
-				});
-
-				_self.setData( data );
+				_self._delLines( selectedLine );
 
 				this.close();
 
@@ -514,6 +537,25 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.close();
 			}, null, null, this.form.json.confirmStyle);
 
+		},
+		_delLines: function(lines){
+			var _self = this;
+			var data = _self.getData();
+
+			lines.reverse().each(function(line){
+				_self.fireEvent("deleteLine", [line]);
+
+				if( line.options.sectionKey ){ //区段合并后的数据
+					var sectionData = data[line.options.sectionKey];
+					sectionData.splice(line.options.indexInSection, 1);
+				}else{
+					data.splice(line.options.index, 1);
+				}
+
+				_self.fireEvent("afterDeleteLine");
+			});
+
+			_self.setData( data );
 		},
 		_deleteLine: function(ev, line){
 			if( this.isMin() ){
@@ -523,23 +565,25 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			var _self = this;
 			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteDatagridLine, 300, 120, function(){
-				_self.fireEvent("deleteLine", [line]);
-
-				//使用数据驱动
-				var data = _self.getData();
-				if( line.options.sectionKey ){ //区段合并后的数据
-					var sectionData = data[line.options.sectionKey];
-					sectionData.splice(line.options.indexInSection, 1);
-				}else {
-					data.splice(line.options.index, 1);
-				}
-				_self.setData( data );
+				_self._delSingleLine(line);
 				this.close();
-
-				_self.fireEvent("afterDeleteLine");
 			}, function(){
 				this.close();
 			}, null, null, this.form.json.confirmStyle);
+		},
+		_delSingleLine: function(line){
+			this.fireEvent("deleteLine", [line]);
+
+			//使用数据驱动
+			var data = this.getData();
+			if( line.options.sectionKey ){ //区段合并后的数据
+				var sectionData = data[line.options.sectionKey];
+				sectionData.splice(line.options.indexInSection, 1);
+			}else {
+				data.splice(line.options.index, 1);
+			}
+			this.setData( data );
+			this.fireEvent("afterDeleteLine");
 		},
 		_checkSelectAll: function () {
 			debugger;
@@ -694,6 +738,60 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			return false;
 		},
+		//api 相关开始
+		/**
+		 * 获取对应的条目。该方法在有无区段的情况下都可以使用。
+		 * @param {Number} index 条目序号，从零开始
+		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line | Null} 对应的数据模板条目
+		 * @example
+		 * //获取数据模板“dt1”的第一个条目。
+		 * var line = this.form.get("dt1").getLine(0);
+		 * //获取第一个条目subject字段的值
+		 * var data = line.getModule("subject").getData();
+		 * //设置subject字段的值
+		 * line.getModule("subject").setData("test1");
+		 */
+		getLine: function(index){
+			var line = this.lineList[index];
+			return line || null;
+		},
+		/**
+		 * 在数据模板末尾添加条目。如果当前是区段合并后的数据，会往区段标识为$union的区段中插入条目。
+		 * @param {Object} [data] 添加条目的数据。
+		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line} 添加的数据模板条目
+		 * @example
+		 * var line = this.form.get("dt1").addLine();
+		 */
+		addLine: function( data ){
+			return this._addLine( null, null, null, data );
+		},
+		/**
+		 * 在数据模板指定位置添加条目。
+		 * @param {Number} index 条目序号，从零开始，如果下标超过当前数据模板条目数，插入失败并返回null。
+		 * @param {Object} [data] 添加条目的数据。
+		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line | Null} 插入的数据模板条目
+		 * @example
+		 * var line = this.form.get("dt1").insertLine(0);
+		 */
+		insertLine: function(index, data){
+			return this._insertLineByIndex(null, null, index, data);
+		},
+		/**
+		 * 删除指定位置的条目。
+		 * @param {Number} index 条目序号，从零开始，如果下标超过当前数据模板条目数，删除失败。
+		 * @example
+		 * //直接删除第一个条目
+		 * this.form.get("dt1").deleteLine(0);
+		 */
+		deleteLine: function(index, ev){
+			var line = this.lineList[index];
+			if( !line )return null;
+			// if( ev ){
+			// 	this._deleteLine(ev, line);
+			// }else{
+			this._delSingleLine(line);
+			// }
+		},
 		/**
 		 * 获取对应表单组件。该方法在有无区段的情况下都可以使用。
 		 * @param {Number} index 条目序号，从零开始
@@ -713,6 +811,76 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return line.getModule(id);
 		},
 
+
+		/**
+		 * 该方法在区段合并后可以使用，用来获取区段合并后对应的条目。
+		 * @param {String} sectionKey 区段标识
+		 * @param {Number} index 对应区段中的条目序号，从零开始
+		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line} 对应的数据模板条目
+		 * @example
+		 * //假设在流程中有节点A->B，在A中的数据模板中设置了区段，区段依据是部门，B中没有设置区段。
+		 * //流转的时候，在A节点“开发部@kfb@U”的处理人添加了数据模板。
+		 * //现在在节点B，获取数据模板“dt1”->“开发部@kfb@U”区段下的第一个条目。
+		 * var line = this.form.get("dt1").getSectionLine("开发部@kfb@U",0);
+		 * //获取第一个条目subject字段的值
+		 * var data = line.getModule("subject").getData();
+		 * //设置subject字段的值
+		 * line.getModule("subject").setData("test1");
+		 */
+		getSectionLine: function(sectionKey,index){
+			if( !this.unionMode )return;
+			var lineList = this.lineList_sectionkey[sectionKey];
+			if( !lineList )return null;
+			var line = lineList[index];
+			return line || null;
+		},
+		/**
+		 * 该方法在区段合并后可以使用，用来在数据模板指定区段后添加条目。
+		 * @param {String} sectionKey 区段标识，如果数据中无对应区段会自动创建一个区段
+		 * @param {Object} [data] 添加条目的数据。
+		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line} 添加的数据模板条目
+		 * @example
+		 * var line = this.form.get("dt1").addSectionLine("开发部@kfb@U", 0);
+		 */
+		addSectionLine: function(sectionKey, data){
+			if( !this.unionMode )return;
+			return this._addLine(null, null, sectionKey, data);
+		},
+		/**
+		 * 该方法在区段合并后可以使用，用来在数据模板指定位置添加条目。
+		 * @param {String} sectionKey 区段标识，如果数据中无对应区段会自动创建一个区段。
+		 * @param {Number} index 对应区段中的条目序号，从零开始，如果下标超过当前区段条目数，插入失败并返回null。
+		 * @param {Object} [data] 添加条目的数据。
+		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line} 插入的数据模板条目
+		 * @example
+		 * var line = this.form.get("dt1").insertSectionLine("开发部@kfb@U", 0);
+		 */
+		insertSectionLine: function(sectionKey, index, data){
+			if( !this.unionMode )return;
+			if( !this.data[sectionKey] ){
+				return this._addLine(null, null, sectionKey, data);
+			}else{
+				return this._insertLineByIndex(null, sectionKey, index, data);
+			}
+		},
+		/**
+		 * 该方法在区段合并后可以使用，删除指定位置的条目。
+		 * @param {String} sectionKey 对应区段中的条目序号
+		 * @param {Number} index 对应区段中的条目序号，从零开始，如果下标超过当前数据模板条目数，删除失败。
+		 * @example
+		 * //直接删除第一个条目
+		 * this.form.get("dt1").deleteSectionLine("开发部@kfb@U", 0);
+		 */
+		deleteSectionLine: function(sectionKey, index, ev){
+			if( !this.unionMode )return;
+			var line = this.getSectionLine(sectionKey, index);
+			if( !line )return null;
+			// if( ev ){
+			// 	this._deleteLine(ev, line);
+			// }else{
+				this._delSingleLine(line);
+			// }
+		},
 		/**
 		 * 该方法在区段合并后可以使用，用来获取区段合并后对应表单组件。
 		 * @param {String} sectionKey 区段标识
@@ -721,21 +889,24 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * @return {FormComponent} 对应表单组件
 		 * @example
 		 * //假设在流程中有节点A->B，在A中的数据模板中设置了区段，区段依据是部门，B中没有设置区段。
-		 * //现在有一个流程实例在节点B，A节点包括了“开发部@kfb@U”的处理人。此时获取上述处理人在数据模板“dt1”添加的第一个节点的标题字段如下：
+		 * //流转的时候，在A节点“开发部@kfb@U”的处理人添加了数据模板条目。
+		 * //现在流转到了节点B，那么获取上述处理人在数据模板“dt1”添加的第一个节点的标题字段如下：
 		 * var dataTemplate = this.form.get("dt1"); //获取数据模板dt1
-		 * var module = dataTemplate.getModuleWithSection("开发部@kfb@U", 0, "subject"); //获取标题字段
+		 * var module = dataTemplate.getSectionModule("开发部@kfb@U", 0, "subject"); //获取标题字段
 		 * //获取subject字段的值
 		 * var data = module.getData();
 		 * //设置subject字段的值
 		 * module.setData("test1");
 		 */
-		getModuleWithSection: function(sectionKey, index, id){
+		getSectionModule: function(sectionKey, index, id){
+			if( !this.unionMode )return;
 			var lineList = this.lineList_sectionkey[sectionKey];
 			if( !lineList )return null;
 			var line = lineList[index];
 			if( !line )return null;
 			return line.getModule(id);
 		},
+		//api 相关
 
 		/**
 		 * 在脚本中使用 this.data[fieldId] 也可以获取组件值。
@@ -1185,6 +1356,16 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			this.selector.setData("")
 		}
 	},
+	reload: function(){
+		for(var key in this.all){
+			var module = this.all[key];
+			this.form.modules.erase(module);
+			if (this.form.all[key]) delete this.form.all[key];
+			if (this.form.forms[key])delete this.form.forms[key];
+		}
+		this.node.empty();
+		this.load();
+	},
 	clear: function () { //把module清除掉
 		for(var key in this.all){
 			var module = this.all[key];
@@ -1206,6 +1387,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			}
 		}
 		return data;
+	},
+	setData: function (data) {
+		this.template._setLineData(this, data);
 	}
 });
 
