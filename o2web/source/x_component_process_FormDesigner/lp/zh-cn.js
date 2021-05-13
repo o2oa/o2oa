@@ -624,7 +624,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "totalValue": "合计数值",
         "totalCount": "合计数量",
         "showCol": "显示该列",
-        "hideCol": "显示该列",
+        "hideCol": "隐藏该列",
 
         "delayedLoading": "延时加载",
         "selectSubform": "选择子表单",
