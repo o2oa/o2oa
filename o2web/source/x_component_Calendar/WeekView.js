@@ -1218,7 +1218,7 @@ MWFCalendarWeekView.Calendar.WholeDayDocument = new Class({
                         isFull : true
                 }, {app:this.app});
                     form.view = this.view;
-                    form.edit();
+                    this.calendar.app.isEventEditable(this.data) ? form.edit() : form.open();
                 }.bind(this),
                 "mouseover" : function () {
                     this.node.setStyle("border-color", this.data.color );
@@ -1437,7 +1437,7 @@ MWFCalendarWeekView.Calendar.Document = new Class({
                         isFull : true
                     }, {app:this.app});
                     form.view = this.view;
-                    form.edit();
+                    this.calendar.app.isEventEditable(this.data) ? form.edit() : form.open();
                 }.bind(this),
                 "mouseover" : function () {
                     this.node.setStyle("border-color", this.data.color );
@@ -1460,7 +1460,7 @@ MWFCalendarWeekView.Calendar.Document = new Class({
 
         var titleNode = new Element("div",{
             styles : {
-                "padding-top" : "10px",
+                "padding-top" : "5px",
                 "padding-left" : "5px",
                 "font-size" : "12px"
             },

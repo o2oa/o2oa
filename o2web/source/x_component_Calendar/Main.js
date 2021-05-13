@@ -483,10 +483,10 @@ MWF.xApplication.Calendar.Main = new Class({
         form.create();
     },
     editCalendar: function( data ){
-        var form = new MWF.xApplication.Calendar.CalendarForm(this,data, {
+        var form = new MWF.xApplication.Calendar.CalendarForm(this, data, {
         }, {app:this});
         form.view = this.leftNavi;
-        form.edit();
+        this.isEventEditable(data) ? form.edit() : form.open();
     },
     openCalendar: function( data ){
         var form = new MWF.xApplication.Calendar.CalendarForm(this,data, {
@@ -632,6 +632,12 @@ MWF.xApplication.Calendar.Main = new Class({
             form.view = this.currentView;
             form.open();
         }.bind(this))
+    },
+    isEventEditable: function (data) {
+        if( MWF.AC.isAdministrator() )return true;
+        if( (data.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
+        if( data.createPerson === layout.desktop.session.user.distinguishedName )return true;
+        return false;
     }
 });
 
