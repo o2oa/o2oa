@@ -552,6 +552,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowUpload": "允许上载",
         "allowPreview": "允许预览",
         "allowDownload": "允许下载",
+        "allowEdit": "允许编辑",
         "allowDelete": "允许删除",
         "allowDelMyAtt": "仅允许本人上传的文件",
         "allowDelCurActivityAtt": "仅允许本活动上传的文件",
@@ -591,6 +592,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "layoutCell": "布局单元格",
         "other": "其他",
 
+        "permission": "权限",
+
+        "containerStyles": "容器样式",
+        "tableAttribute": "表格属性",
         "border": "边框",
         "backgroundColor": "背景颜色",
         "alternateRow": "交替行",

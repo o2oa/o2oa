@@ -14,7 +14,30 @@
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
         </table>
+        <div class="MWFFormulaArea" name="defaultData" title="{{$.lp.defaultData}} (S)"></div>
 
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.count}}</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle" width="80px">{{$.lp.defaultShow}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="defaultCount" value="text{$.defaultCount}" class="editTableInputNoWidth" style="width: 100px;"/>{{$.lp.item}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.maxItemCount}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="maxCount" value="text{$.maxCount}" class="editTableInputNoWidth" style="width: 100px;"/>{{$.lp.item}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.minItemCount}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="minCount" value="text{$.minCount}" class="editTableInputNoWidth" style="width: 100px;"/>{{$.lp.item}}
+                </td>
+            </tr>
+        </table>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.permission}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">{{$.lp.allowDelete}}:</td>
@@ -31,28 +54,7 @@
                 </td>
             </tr>
         </table>
-        <div class="MWFFormulaArea" name="editableScript" title="{{$.lp.canEdit}} (S)"></div>
-
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">{{$.lp.border}}:</td>
-                <td class="editTableValue"><input type="text" name="border" value="text{$.border}" class="editTableInput"/></td>
-            </tr>
-            <tr>
-                <td class="editTableTitle">{{$.lp.backgroundColor}}:</td>
-                <td class="editTableValue"><input type="color" name="backgroundColor" value="text{$.backgroundColor}" class="editTableInput"/></td>
-            </tr>
-            <tr>
-                <td class="editTableTitle">{{$.lp.alternateRow}}:</td>
-                <td class="editTableValue"><input type="color" name="zebraColor" value="text{$.zebraColor}" class="editTableInput"/></td>
-            </tr>
-        </table>
-
-        <div class="MWFMaplist" name="styles" collapse="true" title="{{$.lp.style}}"></div>
-        <div class="MWFMaplist" name="tableStyles" collapse="true" title="{{$.lp.tableStyle}}"></div>
-
-        <div class="MWFMaplist" name="properties" collapse="true" title="{{$.lp.attribute}}"></div>
-        <div class="MWFScriptArea" name="defaultData" title="{{$.lp.defaultData}} (S)"></div>
+        <div class="MWFFormulaArea" name="editableScript" title="{{$.lp.allowEdit}} (S)"></div>
 
 
 
@@ -111,6 +113,24 @@
         <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
     </div>
     <div title="{{$.lp.style}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.border}}:</td>
+                <td class="editTableValue"><input type="text" name="border" value="text{$.border}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.backgroundColor}}:</td>
+                <td class="editTableValue"><input type="color" name="backgroundColor" value="text{$.backgroundColor}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.alternateRow}}:</td>
+                <td class="editTableValue"><input type="color" name="zebraColor" value="text{$.zebraColor}" class="editTableInput"/></td>
+            </tr>
+        </table>
+        <div class="MWFMaplist" name="styles" collapse="true" title="{{$.lp.containerStyles}}"></div>
+        <div class="MWFMaplist" name="tableStyles" collapse="true" title="{{$.lp.tableStyle}}"></div>
+        <div class="MWFMaplist" name="properties" collapse="true" title="{{$.lp.tableAttribute}}"></div>
+
         <div class="MWFMaplist" name="titleStyles" collapse="true" title="{{$.lp.titleCellStyle}}"></div>
         <div class="MWFMaplist" name="contentStyles" collapse="true" title="{{$.lp.contentCellStyle}}"></div>
         <div class="MWFMaplist" name="actionStyles" collapse="true" title="{{$.lp.actionCellStyles}}"></div>
