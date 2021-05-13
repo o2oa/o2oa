@@ -550,6 +550,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowUpload": "Allow Upload",
         "allowPreview": "Allow Preview",
         "allowDownload": "Allow Download",
+        "allowEdit": "Allow Edit",
         "allowDelete": "Allow Delete",
         "allowDelMyAtt": "Only allow delete files uploaded by yourself",
         "allowDelCurActivityAtt": "Only allow delete files uploaded on current activity",
@@ -589,6 +590,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "layoutCell": "Layout Cell",
         "other": "Other",
 
+        "permission": "Permission",
+
+        "containerStyles": "Container Styles",
+        "tableAttribute": "Table Attribute",
         "border": "Border",
         "backgroundColor": "Background Color",
         "alternateRow": "Alternate Row",
