@@ -133,6 +133,7 @@ MWF.xApplication.Calendar.Main = new Class({
         }).inject(this.node);
     },
     loadLayout: function(){
+        debugger;
         if( this.status && this.status.action ) {
             this.defaultAction = this.status.action;
         }else if( this.options.defaultAction ){
