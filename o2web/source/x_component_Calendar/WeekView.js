@@ -1460,7 +1460,7 @@ MWFCalendarWeekView.Calendar.Document = new Class({
 
         var titleNode = new Element("div",{
             styles : {
-                "padding-top" : "5px",
+                "padding-top" : "7px",
                 "padding-left" : "5px",
                 "font-size" : "12px"
             },
@@ -1478,7 +1478,7 @@ MWFCalendarWeekView.Calendar.Document = new Class({
     getCoordinate : function(){
         var data = this.data;
         var range = this.range;
-        var width_div = 8;
+        var width_div = 4;
         var top_div = 0;
         if(Browser.name === "ie" ){
             width_div = 4;
