@@ -128,7 +128,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }else if (dom.tagName.toLowerCase() === "hr") {
                 this.processHr(dom, oo_body);
             }else if (dom.tagName.toLowerCase() === "table") {
-
+                this.processTable(dom, oo_body);
             }else{
                 this.processDom(dom, oo_body);
             }
@@ -212,16 +212,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_positionV = this.createEl(oo_doc, "positionV", "wp");
         this.setAttrs(oo_positionV, {"relativeFrom": "paragraph"}, false);
         var oo_posOffset = this.createEl(oo_doc, "posOffset", "wp");
-
-        debugger;
-        var x = hr.getStyle("line-height")
-
-        oo_posOffset.appendChild(oo_doc.createTextNode("161290"));  //此处需要根据行高来设置数值
+        oo_posOffset.appendChild(oo_doc.createTextNode("161290"));  //此处需要根据行高来设置数值,暂时固定数值
         oo_positionV.appendChild(oo_posOffset);
 
         var oo_extent = this.createEl(oo_doc, "extent", "wp");
-        var cx = this.pxToPt(hr.offsetWidth)*12700;
-        hr.getOffsetParent()
+        var cx = this.pxToPt(hr.clientWidth)*12700;
         this.setAttrs(oo_extent, {"cx": cx, "cy": "0"}, false);   //cx为线长度（pt*12700）
 
         var oo_effectExtent = this.createEl(oo_doc, "effectExtent", "wp");
@@ -251,7 +246,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_off = this.createEl(oo_doc, "off", "a");
         this.setAttrs(oo_off, {"x": "0", "y": "0"}, false);
         var oo_ext = this.createEl(oo_doc, "ext", "a");
-        this.setAttrs(oo_ext, {"cx": "5631180", "cy": "0"}, false); //查看含义
+        this.setAttrs(oo_ext, {"cx": cx, "cy": "0"}, false);
 
         this.insertSiblings(oo_xfrm, [oo_off, oo_ext], "beforeend");
 
@@ -261,10 +256,18 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         oo_prstGeom.appendChild(oo_avLst);
 
         var oo_ln = this.createEl(oo_doc, "ln", "a");
-        this.setAttrs(oo_ln, {"w": "19050"}, false);    //pt*12700
+
+        debugger;
+        var w = this.pxToPt(hr.clientHeight)*12700;
+        this.setAttrs(oo_ln, {"w": w}, false);    //线的粗细 pt*12700
         var oo_solidFill = this.createEl(oo_doc, "solidFill", "a");
         var oo_srgbClr = this.createEl(oo_doc, "srgbClr", "a");
-        this.setAttrs(oo_srgbClr, {"val": "FF0000"}, false);    //line color
+
+        debugger;
+        var color = this.getColorHex(hr.get("color"));
+        if (!color) color = this.getColorHex(hr.getStyle("background-color"));
+        if (!color) color = "FF0000";
+        this.setAttrs(oo_srgbClr, {"val": color}, false);    //line color
         oo_solidFill.appendChild(oo_srgbClr);
         oo_ln.appendChild(oo_solidFill);
 
@@ -359,7 +362,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     rPrs.color = {"val": span.style["color"]};
                     break;
                 case "letter-spacing":
-                    rPrs.spacing = {"val": span.style["letterSpacing"].toFloat()*20};
+                    rPrs.spacing = {"val": (span.style["letterSpacing"].toFloat()*20 || 0)};
                     break;
                 case "font-weight":
                     var b = span.style["fontWeight"];
@@ -585,5 +588,28 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             "a": "http://schemas.openxmlformats.org/drawingml/2006/main"
         };
         return ns[prefix] || null;
+    },
+    getColorHex: function(clr){
+        if (!clr) return "";
+        var colorKeys = {
+            "black": "000000",
+            "silver": "c0c0c0",
+            "gray": "808080",
+            "white": "ffffff",
+            "maroon": "800000",
+            "red": "ff0000",
+            "purple": "800080",
+            "fuchsia": "ff00ff",
+            "green": "008000",
+            "lime": "00ff00",
+            "olive": "808000",
+            "yellow": "ffff00",
+            "navy": "000080",
+            "blue": "0000ff",
+            "teal": "008080",
+            "aqua": "00ffff"
+        }
+        if (colorKeys[clr]) return colorKeys[clr];
+        return clr.rgbToHex() || clr;
     }
 });
