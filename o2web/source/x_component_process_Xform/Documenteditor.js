@@ -1642,7 +1642,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     //this._singlePage();
                 }
             }.bind(this));
-            if (this.json.canDoublePage==="n" && !layout.mobile) this.doublePageAction.hide();
+            if (this.json.canDoublePage==="n" || layout.mobile) this.doublePageAction.hide();
         //}
 
         this.zoomActionArea =  new Element("div", {"styles": {"float": "right", "margin-right": "10px"}}).inject(this.toolbarNode);

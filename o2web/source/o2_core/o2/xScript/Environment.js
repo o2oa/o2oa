@@ -15,7 +15,7 @@ MWF.xScript.Environment = function(ev){
         "isPrint": true
     };
     //data
-    var getJSONData = function(jData){
+    var getJSONData = function(jData){a
         return new MWF.xScript.JSONData(jData, function(data, key, _self){
             var p = {"getKey": function(){return key;}, "getParent": function(){return _self;}};
             while (p && !_forms[p.getKey()]) p = p.getParent();
