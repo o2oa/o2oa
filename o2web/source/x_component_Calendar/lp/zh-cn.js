@@ -103,6 +103,7 @@ MWF.xApplication.Calendar.LP = {
     "eventAttachment": "附件",
     "eventDetail" : "日程详情",
     "content" : "内容",
+    "none": "无",
 
     "address" : "地点",
     "locationName" : "地点",
