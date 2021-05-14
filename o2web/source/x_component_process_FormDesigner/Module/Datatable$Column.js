@@ -1,7 +1,7 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.$Container", null, false);
 MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$Column = new Class({
-	Extends: MWF.FC$Element,
+	Extends: MWF.FCTable$Td,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
@@ -21,7 +21,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
 		    	"action": "deleteCol",
 		    	"title": MWF.LP.process.formAction.deleteCol
 		    }
-		]
+		],
+		"allowModules": ["textfield", "number", "personfield", "orgfield", "org", "calendar", "textarea", "select", "radio", "checkbox", "combox", "image", "label", "htmleditor", "button","imageclipper", "address", "attachment"]
 	},
 	
 	initialize: function(form, options){
@@ -31,7 +32,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
 		this.cssPath = "../x_component_process_FormDesigner/Module/Datatable$Column/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
-		this.moduleType = "element";
+		this.moduleType = "container";
 		this.moduleName = "datatable$Column";
 		
 		this.Node = null;
@@ -47,9 +48,9 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
         this.setPropertiesOrStyles("properties");
         this.reloadMaplist();
     },
-	_dragIn: function(module){
-		this.parentContainer._dragIn(module);
-	},
+	//_dragIn: function(module){
+	//	this.parentContainer._dragIn(module);
+	//},
 	
 	over: function(){
 		if (this.form.selectedModules.indexOf(this)==-1){
@@ -111,6 +112,9 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
 			this._switchShow();
 		}
 	},
+    _setEditStyle_custom: function(name, obj, oldValue) {
+        if (name == "cellType") this.checkSequence(obj, oldValue);
+    },
 	
 	_createMoveNode: function(){
 		return false;
