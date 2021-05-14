@@ -309,10 +309,15 @@ o2.widget.Dialog = o2.DL = new Class({
 		var mbottom4 = this.content.getStyle("margin-bottom").toFloat();
         offsetHeight += ptop4 + pbottom4 + mtop4 + mbottom4;
 
+        var maxHeight = 0;
         if (nodeHeight){
             nodeHeight = nodeHeight + offsetHeight+2;
         }else {
             height = height - offsetHeight;
+			if( height < 0 ){
+				maxHeight = (this.options.container || $(document.body)).getSize().y;
+				maxHeight = maxHeight - offsetHeight - 10;
+			}
         }
 
         //if (this.content.getParent().getStyle("overflow-x")!="hidden" ) height = height-18;
@@ -352,6 +357,7 @@ o2.widget.Dialog = o2.DL = new Class({
 
         if (!height || height<0){
             this.content.setStyles({"overflow": "hidden", "height": "auto", "width": ""+width+"px"});
+            if( maxHeight )this.content.setStyles({"max-height": maxHeight+"px"});
             height = this.content.getSize().y;
             var h = height + h1 + ptop1 + pbottom1 + mtop1 + mbottom1;
             h = h + h2 + ptop2 + pbottom2 + mtop2 + mbottom2;
