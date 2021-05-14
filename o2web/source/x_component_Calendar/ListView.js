@@ -432,7 +432,7 @@ MWF.xApplication.Calendar.ListView.View.Line = new Class({
             isFull : true
         }, {app:this.app});
         this.form.view = this.view;
-        this.form.edit();
+        this.app.isEventEditable(this.data) ? this.form.edit() : this.form.open();
     },
     destroy: function(){
         if (this.node) this.node.destroy();
