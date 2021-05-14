@@ -15,6 +15,14 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     initialize: function(container, worklog, processid, options){
         this.setOptions(options);
         this.path = "../x_component_process_Xform/widget/$OOXML/WordprocessingML/";
+        this.dpi = this.getDPI();
+    },
+    getDPI: function(){
+        debugger;
+        var div = new Element("div", {"styles": {"width": "1in", "height": "1in"}}).inject(document.body);
+        var dpi = div.offsetWidth.toInt();
+        div.destroy();
+        return dpi;
     },
     getZipTemplate: function(){
         return fetch(this.path+"template.zip").then(function(res){
@@ -41,11 +49,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         // });
     },
     processDocument: function(data){
-        var documentPromise = this.zip.file("word/document.xml").async("text").then(function(xmlString){
-            return this.processWordDocument(xmlString, data);
-        }.bind(this)).then(function(xmlstr){
-            this.zip.file("word/document.xml", xmlstr).generateAsync({type:"blob"}).then(function(content) {
-                o2.saveAs(content, "example.docx");
+        var documentPromise = this.zip.file("word/document.xml").async("text").then(function(oo_string){
+            return this.processWordDocument(oo_string, data);
+        }.bind(this)).then(function(oo_str){
+            this.zip.file("word/document.xml", oo_str).generateAsync({type:"blob"}).then(function(oo_content) {
+                o2.saveAs(oo_content, "example.docx");
             });
         }.bind(this));
         //var documentXml = processWordDocument(xmlString);
@@ -64,21 +72,25 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         }
         return pageRule;
     },
-    processWordDocument: function(xmlString, data){
+    processWordDocument: function(oo_string, data){
         wgxpath.install();
 
         var domparser = new DOMParser();
-        var xmlDoc = domparser.parseFromString(xmlString, "text/xml");
-        var body = xmlDoc.evaluate("//w:document/w:body", xmlDoc, this.nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        var oo_doc = domparser.parseFromString(oo_string, "text/xml");
+        var oo_body = oo_doc.evaluate("//w:document/w:body", oo_doc, this.nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-        var tmpDiv = new Element("div", {"styles": {"display": "none"}}).set("html", data).inject(document.body);
-        var pageRule = this.getPageRule(tmpDiv.getElement("style").sheet.cssRules);
-        if (pageRule) this.processPageSection(pageRule, body);
+        var dom_div = new Element("div", {"styles": {
+                "display": "block",
+                "width": "442.2pt",
+                "padding": "104.9pt 73.7pt 99.25pt 79.4pt",
+            }}).set("html", data).inject(document.body);
+        var dom_pageRule = this.getPageRule(dom_div.getElement("style").sheet.cssRules);
+        if (dom_pageRule) this.processPageSection(dom_pageRule, oo_body);
 
-        var wordSection = tmpDiv.getElement(".WordSection1");
-        if (wordSection){
-            this.processPageSection(wordSection, body);
-            this.processDom(wordSection, body);
+        var dom_wordSection = dom_div.getElement(".WordSection1");
+        if (dom_wordSection){
+            this.processPageSection(dom_wordSection, oo_body);
+            this.processDom(dom_wordSection, oo_body);
 
 
 
@@ -87,7 +99,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
 
         debugger;
-        tmpDiv.destroy();
+        dom_div.destroy();
 
 
         // var p = this.createParagraph(xmlDoc);
@@ -106,22 +118,24 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         // this.insertChildren(body, [p, r], "afterbegin");
         //
         var s = new XMLSerializer();
-        return s.serializeToString(xmlDoc);
+        return s.serializeToString(oo_doc);
     },
-    processDom: function(dom, body){
+    processDom: function(dom, oo_body){
         var dom = dom.getFirst();
         while (dom){
             if (dom.tagName.toLowerCase() === "p"){
-                this.processParagraph(dom, body);
+                this.processParagraph(dom, oo_body);
+            }else if (dom.tagName.toLowerCase() === "hr") {
+                this.processHr(dom, oo_body);
             }else if (dom.tagName.toLowerCase() === "table") {
 
             }else{
-                this.processDom(dom, body);
+                this.processDom(dom, oo_body);
             }
             dom = dom.getNext();
         }
     },
-    processParagraph: function(dom, body){
+    processParagraph: function(dom, oo_body){
         var pPrs = {};
         for (var i = 0; i<dom.style.length; i++){
             switch (dom.style[i]){
@@ -141,21 +155,200 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
 
         }
-        var p = this.createParagraph(body.ownerDocument, {"pPrs": pPrs});
+        var oo_p = this.createParagraph(oo_body.ownerDocument, {"pPrs": pPrs});
         var spans = dom.getChildren("span");
         spans.each(function(span){
-            this.processRun(span, p)
+            this.processRun(span, oo_p)
         }.bind(this));
 
-        var sectPr = this.getEl(body, "sectPr");
-        if (sectPr){
-            this.insertSiblings(sectPr, [p], "beforebegin");
+        // debugger;
+        // var hrs = dom.getChildren("hr");
+        // hrs.each(function(hr){
+        //     this.processHr(hr, oo_p)
+        // }.bind(this));
+
+
+
+        var oo_sectPr = this.getEl(oo_body, "sectPr");
+        if (oo_sectPr){
+            this.insertSiblings(oo_sectPr, [oo_p], "beforebegin");
         }else{
-            this.insertChildren(body, [p]);
+            this.insertChildren(oo_body, [oo_p]);
         }
     },
-    processRun: function(span, p){
-        var rPrs = {};
+
+    pxToPt: function(px){
+        return (px.toFloat()/this.dpi)*72;
+    },
+    processHr: function(hr, oo_body){
+        var oo_doc = oo_body.ownerDocument;
+
+        var oo_p = this.createParagraph(oo_doc, {});
+        var oo_sectPr = this.getEl(oo_body, "sectPr");
+        if (oo_sectPr){
+            this.insertSiblings(oo_sectPr, [oo_p], "beforebegin");
+        }else{
+            this.insertChildren(oo_body, [oo_p]);
+        }
+
+        var oo_run = this.createRun(oo_doc, {"rPrs": {"noProof":{}}});
+        var oo_drawing = this.createEl(oo_doc, "drawing");
+        var oo_anchor = this.createEl(oo_doc, "anchor", "wp");
+        this.setAttrs(oo_anchor, {
+            "distT": "0", "distB": "0", "distL": "0", "distR": "0", "simplePos": "false","behindDoc": "false","relativeHeight": "500", "locked": "false", "layoutInCell":"true", "allowOverlap": "false"
+        }, false);
+        oo_run.appendChild(oo_drawing);
+        oo_drawing.appendChild(oo_anchor);
+
+        var oo_simplePos = this.createEl(oo_doc, "simplePos", "wp");
+        this.setAttrs(oo_simplePos, {"x": "0", "y": "0"}, false);
+
+        var oo_positionH = this.createEl(oo_doc, "positionH", "wp");
+        this.setAttrs(oo_positionH, {"relativeFrom": "column"}, false);
+        var oo_posOffset = this.createEl(oo_doc, "posOffset", "wp");
+        oo_posOffset.appendChild(oo_doc.createTextNode("0"));
+        oo_positionH.appendChild(oo_posOffset);
+
+        var oo_positionV = this.createEl(oo_doc, "positionV", "wp");
+        this.setAttrs(oo_positionV, {"relativeFrom": "paragraph"}, false);
+        var oo_posOffset = this.createEl(oo_doc, "posOffset", "wp");
+
+        debugger;
+        var x = hr.getStyle("line-height")
+
+        oo_posOffset.appendChild(oo_doc.createTextNode("161290"));  //此处需要根据行高来设置数值
+        oo_positionV.appendChild(oo_posOffset);
+
+        var oo_extent = this.createEl(oo_doc, "extent", "wp");
+        var cx = this.pxToPt(hr.offsetWidth)*12700;
+        hr.getOffsetParent()
+        this.setAttrs(oo_extent, {"cx": cx, "cy": "0"}, false);   //cx为线长度（pt*12700）
+
+        var oo_effectExtent = this.createEl(oo_doc, "effectExtent", "wp");
+        this.setAttrs(oo_effectExtent, {"l": "0", "t": "0", "r": "0", "b": "0"}, false);
+
+        var oo_wrapNone = this.createEl(oo_doc, "wrapNone", "wp");
+
+        var oo_docPr = this.createEl(oo_doc, "docPr", "wp");
+        id = (Math.random()*100).toInt();
+        this.setAttrs(oo_docPr, {"id": id, "name": "Red Line"}, false);   //id设置随机整数
+
+        var oo_cNvGraphicFramePr = this.createEl(oo_doc, "cNvGraphicFramePr", "wp");
+
+        this.insertSiblings(oo_anchor, [oo_simplePos, oo_positionH, oo_positionV, oo_extent, oo_effectExtent, oo_wrapNone, oo_docPr, oo_cNvGraphicFramePr], "beforeend");
+
+        var oo_graphic = this.createEl(oo_doc, "graphic", "a");
+        var oo_graphicData = this.createEl(oo_doc, "graphicData", "a");
+        this.setAttrs(oo_graphicData, {"uri": "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"}, false);
+        var oo_wsp = this.createEl(oo_doc, "wsp", "wps");
+
+        this.insertChildren(oo_anchor, [oo_graphic, oo_graphicData, oo_wsp], "beforeend");
+
+        var oo_cNvCnPr = this.createEl(oo_doc, "cNvCnPr", "wps");
+        var oo_spPr = this.createEl(oo_doc, "spPr", "wps")
+
+        var oo_xfrm = this.createEl(oo_doc, "xfrm", "a");
+        var oo_off = this.createEl(oo_doc, "off", "a");
+        this.setAttrs(oo_off, {"x": "0", "y": "0"}, false);
+        var oo_ext = this.createEl(oo_doc, "ext", "a");
+        this.setAttrs(oo_ext, {"cx": "5631180", "cy": "0"}, false); //查看含义
+
+        this.insertSiblings(oo_xfrm, [oo_off, oo_ext], "beforeend");
+
+        var oo_prstGeom = this.createEl(oo_doc, "prstGeom", "a");
+        this.setAttrs(oo_prstGeom, {"prst": "line"}, false);
+        var oo_avLst = this.createEl(oo_doc, "avLst", "a");
+        oo_prstGeom.appendChild(oo_avLst);
+
+        var oo_ln = this.createEl(oo_doc, "ln", "a");
+        this.setAttrs(oo_ln, {"w": "19050"}, false);    //pt*12700
+        var oo_solidFill = this.createEl(oo_doc, "solidFill", "a");
+        var oo_srgbClr = this.createEl(oo_doc, "srgbClr", "a");
+        this.setAttrs(oo_srgbClr, {"val": "FF0000"}, false);    //line color
+        oo_solidFill.appendChild(oo_srgbClr);
+        oo_ln.appendChild(oo_solidFill);
+
+        this.insertSiblings(oo_spPr, [oo_xfrm, oo_prstGeom, oo_ln], "beforeend");
+
+        var oo_style = this.createEl(oo_doc, "style", "wps");
+        //oo_style.innerHTML = '<a:lnRef idx="1"><a:schemeClr val="accent1"/></a:lnRef><a:fillRef idx="0"><a:schemeClr val="accent1"/></a:fillRef><a:effectRef idx="0"><a:schemeClr val="accent1"/></a:effectRef><a:fontRef idx="minor"><a:schemeClr val="tx1"/></a:fontRef>';
+
+        var oo_lnRef = this.createEl(oo_doc, "lnRef", "a");
+        this.setAttrs(oo_lnRef, {"idx": "1"}, false);
+        var oo_schemeClr = this.createEl(oo_doc, "schemeClr", "a");
+        this.setAttrs(oo_schemeClr, {"val": "accent1"}, false);
+        oo_lnRef.appendChild(oo_schemeClr);
+
+        var oo_fillRef = this.createEl(oo_doc, "fillRef", "a");
+        this.setAttrs(oo_fillRef, {"idx": "0"}, false);
+        var oo_schemeClr = this.createEl(oo_doc, "schemeClr", "a");
+        this.setAttrs(oo_schemeClr, {"val": "accent1"}, false);
+        oo_fillRef.appendChild(oo_schemeClr);
+
+        var oo_effectRef = this.createEl(oo_doc, "effectRef", "a");
+        this.setAttrs(oo_effectRef, {"idx": "0"}, false);
+        var oo_schemeClr = this.createEl(oo_doc, "schemeClr", "a");
+        this.setAttrs(oo_schemeClr, {"val": "accent1"}, false);
+        oo_effectRef.appendChild(oo_schemeClr);
+
+        var oo_fontRef = this.createEl(oo_doc, "fontRef", "a");
+        this.setAttrs(oo_fontRef, {"idx": "minor"}, false);
+        var oo_schemeClr = this.createEl(oo_doc, "schemeClr", "a");
+        this.setAttrs(oo_schemeClr, {"val": "tx1"}, false);
+        oo_fontRef.appendChild(oo_schemeClr);
+
+        this.insertSiblings(oo_style, [oo_lnRef, oo_fillRef, oo_effectRef, oo_fontRef], "beforeend");
+
+        var oo_bodyPr = this.createEl(oo_doc, "bodyPr", "wps");
+
+
+
+        this.insertSiblings(oo_wsp, [oo_cNvCnPr, oo_spPr, oo_style, oo_bodyPr], "beforeend");
+
+
+        // <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+        //     <a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
+        //         <wps:wsp>
+        //             <wps:cNvCnPr/>
+        //             <wps:spPr>
+        //                 <a:xfrm>
+        //                     <a:off x="0" y="0"/>
+        //                     <a:ext cx="5631180" cy="0"/>
+        //                 </a:xfrm>
+        //                 <a:prstGeom prst="line">
+        //                     <a:avLst/>
+        //                 </a:prstGeom>
+        //                 <a:ln w="19050">
+        //                     <a:solidFill>
+        //                         <a:srgbClr val="FF0000"/>
+        //                     </a:solidFill>
+        //                 </a:ln>
+        //             </wps:spPr>
+        //             <wps:style>
+        //                 <a:lnRef idx="1">
+        //                     <a:schemeClr val="accent1"/>
+        //                 </a:lnRef>
+        //                 <a:fillRef idx="0">
+        //                     <a:schemeClr val="accent1"/>
+        //                 </a:fillRef>
+        //                 <a:effectRef idx="0">
+        //                     <a:schemeClr val="accent1"/>
+        //                 </a:effectRef>
+        //                 <a:fontRef idx="minor">
+        //                     <a:schemeClr val="tx1"/>
+        //                 </a:fontRef>
+        //             </wps:style>
+        //             <wps:bodyPr/>
+        //         </wps:wsp>
+        //     </a:graphicData>
+        // </a:graphic>
+
+        oo_p.appendChild(oo_run);
+    },
+
+
+    processRun: function(span, oo_p){
+        var rPrs = {"noProof": {}};
         var font = null;
         for (var i = 0; i<span.style.length; i++){
             switch (span.style[i]){
@@ -194,42 +387,43 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
         }
         var text = span.get("text");
-        var run = this.createRun(p.ownerDocument, {"rPrs": rPrs, "font": font, "text": text});
-        p.appendChild(run);
+        if (!text.trim()) text = "";
+        var oo_run = this.createRun(oo_p.ownerDocument, {"rPrs": rPrs, "font": font, "text": text});
+        oo_p.appendChild(oo_run);
     },
 
 
-    processPageSection: function(pageRule, xmlBody){
-        var sectPr = this.getOrCreateEl(xmlBody, "sectPr");
-        if (sectPr){
-            for (var i = 0; i<pageRule.style.length; i++){
-                switch (pageRule.style[i]){
+    processPageSection: function(dom_pageRule, oo_body){
+        var oo_sectPr = this.getOrCreateEl(oo_body, "sectPr");
+        if (oo_sectPr){
+            for (var i = 0; i<dom_pageRule.style.length; i++){
+                switch (dom_pageRule.style[i]){
                     case "size":
-                        var v = pageRule.style["size"].split(/\s/);
+                        var v = dom_pageRule.style["size"].split(/\s/);
                         var w = v[0].toFloat()*20, h=v[1].toFloat()*20;
-                        var pgSz = this.getOrCreateEl(sectPr, "pgSz");
-                        this.setAttrs(pgSz, {"w": w, "h": h});
+                        var oo_pgSz = this.getOrCreateEl(oo_sectPr, "pgSz");
+                        this.setAttrs(oo_pgSz, {"w": w, "h": h});
                         break;
                     case "margin-top":
                     case "margin-right":
                     case "margin-bottom":
                     case "margin-left":
-                        var p = pageRule.style[i].split("-")[1];
-                        var v = pageRule.style["margin"+p.capitalize()].toFloat()*20;
-                        var pgMar = this.getOrCreateEl(sectPr, "pgMar");
+                        var p = dom_pageRule.style[i].split("-")[1];
+                        var v = dom_pageRule.style["margin"+p.capitalize()].toFloat()*20;
+                        var oo_pgMar = this.getOrCreateEl(oo_sectPr, "pgMar");
                         var attrs = {};
                         attrs[p] = v
-                        this.setAttrs(pgMar, attrs);
+                        this.setAttrs(oo_pgMar, attrs);
                         break;
                     case "line-height":
                     case "letter-spacing":
-                        var docGrid = this.getOrCreateEl(sectPr, "docGrid");
-                        var lh = pageRule.style["lineHeight"].toFloat()*20;
-                        var cs = pageRule.style["letterSpacing"].toFloat()*4096;
+                        var oo_docGrid = this.getOrCreateEl(oo_sectPr, "docGrid");
+                        var lh = dom_pageRule.style["lineHeight"].toFloat()*20;
+                        var cs = dom_pageRule.style["letterSpacing"].toFloat()*4096;
                         var attrs = {"type": "linesAndChars"};
                         if (lh) attrs["linePitch"] = lh;
                         if (cs) attrs["charSpace"] = cs;
-                        this.setAttrs(docGrid, attrs);
+                        this.setAttrs(oo_docGrid, attrs);
                         break;
                     default:
                     //nothing
@@ -335,14 +529,24 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         return xmlDoc.createElementNS(this.nsResolver(n), tag);
     },
     setAttr: function(node, name, value, ns){
-        var n = ns || "w";
-        node.setAttributeNS(this.nsResolver(n), name, value);
+        if (ns===false){
+            node.setAttribute(name, value);
+        }else{
+            var n = ns || "w";
+            node.setAttributeNS(this.nsResolver(n), name, value);
+        }
     },
     setAttrs: function(node, attrs, ns){
-        var n = this.nsResolver(ns || "w");
-        Object.keys(attrs).forEach(function(key){
-            node.setAttributeNS(n, key, attrs[key]);
-        });
+        if (ns===false){
+            Object.keys(attrs).forEach(function(key){
+                node.setAttribute(key, attrs[key]);
+            });
+        }else{
+            var n = this.nsResolver(ns || "w");
+            Object.keys(attrs).forEach(function(key){
+                node.setAttributeNS(n, key, attrs[key]);
+            });
+        }
     },
     nsResolver: function(prefix){
         var ns = {
@@ -377,7 +581,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             "wpg": "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup",
             "wpi": "http://schemas.microsoft.com/office/word/2010/wordprocessingInk",
             "wne": "http://schemas.microsoft.com/office/word/2006/wordml",
-            "wps": "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
+            "wps": "http://schemas.microsoft.com/office/word/2010/wordprocessingShape",
+            "a": "http://schemas.openxmlformats.org/drawingml/2006/main"
         };
         return ns[prefix] || null;
     }
