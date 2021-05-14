@@ -89,6 +89,13 @@
                             <div class="MWFSelectProcess" name="data.process"></div>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="editTableTitle">流程状态:</td>
+                        <td class="editTableValue">
+                            <input name="processStatus" type="radio" value="draft" text{($.processStatus)!=='completed'?'checked':''}/>起草活动（第一个人工节点）
+                            <input name="processStatus" type="radio" value="completed" text{($.processStatus)==='completed'?'checked':''}/>结束活动
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>
