@@ -2179,7 +2179,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         //editorConfig.removeButtons = 'NewPage,Templates,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,Iframe,Styles,Font,FontSize,TextColor,BGColor,ShowBlocks,About';
         editorConfig.removePlugins = ['magicline'];
-        editorConfig.enterMode = 3;
+        editorConfig.enterMode = CKEDITOR.ENTER_DIV;
+        editorConfig.pasteFilter = "plain-text";
         // editorConfig.extraPlugins = ['ecnet','mathjax'];
         // editorConfig.removePlugins = ['magicline'];
         // editorConfig.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML';
@@ -2350,8 +2351,19 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.filetextEditor.on( 'paste', function( e ) {
                     var html = e.data.dataValue;
                     //if (this.json.fullWidth=="y") html = html.replace(/\x20/g, "　");
+                    var rexbr = /\<br\>|\<br \/\>|\<br\/\>/g;
+                    var rexp = /\<p\>/g;
+                    if (rexbr.test(html) && !rexp.test(html)){
+                        var ps = html.split(/\<br\>|\<br \/\>|\<br\/\>/g);
+                        html = "";
+                        ps.each(function(p){
+                            html = html + "<p>"+p+"</p>";
+                        });
+                    }
+
                     var tmp = new Element("div")
                     tmp.set("html", html);
+
                     var pList = tmp.getElements("p");
                     pList.each(function(p, i){
                         //if (Browser.name=="ie"){
