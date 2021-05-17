@@ -562,7 +562,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideLayoutButton": "Hide Layout Buttons",
         "hideSettingButton": "Hide Setting Buttons",
         "hideModeButton": "Hide Mode Button",
-        "showInDatagrid": "Show In Datagrid",
+        "showInDatagrid": "Show In Datagrid Or Datatable",
 
         "tableSize": "Table Size",
         "row": "Row",

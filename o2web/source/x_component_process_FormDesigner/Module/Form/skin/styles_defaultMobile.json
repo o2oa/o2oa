@@ -352,8 +352,8 @@
       "width": "100%"
     }
   },
-  "datatable$Column": {
-    "titleStyles": {
+  "datatable$Title": {
+    "styles": {
       "background-color": "#ffffff"
     }
   },
