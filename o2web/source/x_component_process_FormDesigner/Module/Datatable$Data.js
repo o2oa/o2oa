@@ -1,11 +1,10 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.$Container", null, false);
-MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$Column = new Class({
+MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Data = new Class({
 	Extends: MWF.FCTable$Td,
 	Implements: [Options, Events],
 	options: {
-		"style": "default",
-		"propertyPath": "../x_component_process_FormDesigner/Module/Datatable$Column/datatable$Column.html",
+        "propertyPath": "../x_component_process_FormDesigner/Module/Datatable$Data/datatable$Data.html",
 		"actions": [
 		    {
 		    	"name": "insertCol",
@@ -28,16 +27,17 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "../x_component_process_FormDesigner/Module/Datatable$Column/";
-		this.cssPath = "../x_component_process_FormDesigner/Module/Datatable$Column/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Datatable$Data/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Datatable$Data/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "container";
-		this.moduleName = "datatable$Column";
+		this.moduleName = "datatable$Data";
 		
 		this.Node = null;
 		this.form = form;
 	},
+
     setAllStyles: function(){
         Object.each(this.json.styles, function(value, key){
             var reg = /^border\w*/ig;
@@ -48,43 +48,12 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
         this.setPropertiesOrStyles("properties");
         this.reloadMaplist();
     },
-	//_dragIn: function(module){
-	//	this.parentContainer._dragIn(module);
-	//},
-	
-	over: function(){
-		if (this.form.selectedModules.indexOf(this)==-1){
-			if (!this.form.moveModule) if (this.form.currentSelectedModule!=this) this.node.setStyles({
-				"border-width": "1px",
-				"border-color": "#0072ff"
-			});
-		}
-	},
-	unOver: function(){
-		if (this.form.selectedModules.indexOf(this)==-1){
-			if (!this.form.moveModule) if (this.form.currentSelectedModule!=this) this.node.setStyles({
-				"border-width": "1px",
-				"border-color": "#999"
-			});
-		}
-	},
-	unSelected: function(){
-		this.node.setStyles({
-			"border-width": "1px",
-			"border-color": "#999"
-		});
-		this._hideActions();
-		this.form.currentSelectedModule = null;
-		
-		this.hideProperty();
-	},
-	
+
 	load : function(json, node, parent){
 		this.json = json;
 		this.node= node;
 		this.node.store("module", this);
 		this.node.setStyles(this.css.moduleNode);
-		this.node.set("text", this.json.name || "DataTitle");
 		
 		if (!this.json.id){
 			var id = this._getNewId(parent.json.id);
@@ -92,10 +61,10 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
 		}
 		
 		node.set({
-			"MWFType": "datatable$Column",
+			"MWFType": "datatable$Data",
 			"id": this.json.id
 		});
-		
+
 		if (!this.form.json.moduleList[this.json.id]){
 			this.form.json.moduleList[this.json.id] = this.json;
 		}
@@ -108,6 +77,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
         this.checkSequence();
         this.json.moduleName = this.moduleName;
 
+        debugger;
 		if( this.json.isShow === false ){
 			this._switchShow();
 		}
@@ -115,80 +85,109 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
     _setEditStyle_custom: function(name, obj, oldValue) {
         if (name == "cellType") this.checkSequence(obj, oldValue);
     },
-	
-	_createMoveNode: function(){
-		return false;
-	},
-	// _setEditStyle_custom: function(name){
-	//
-	// },
-	_dragInLikeElement: function(module){
-		return false;
-	},
 
-	setCustomStyles: function(){
-		this._recoveryModuleData();
-
-		var border = this.node.getStyle("border");
+	_preprocessingModuleData: function(){
 		this.node.clearStyles();
-		this.node.setStyles(this.css.moduleNode);
+		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
+		this.json.recoveryStyles = Object.clone(this.json.styles);
 
-		if (this.initialStyles) this.node.setStyles(this.initialStyles);
-		this.node.setStyle("border", border);
-
-		Object.each(this.json.styles, function(value, key){
-			var reg = /^border\w*/ig;
-			if (!key.test(reg)){
+		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+				//需要运行时处理
+			}else{
 				this.node.setStyle(key, value);
+				delete this.json.styles[key];
 			}
 		}.bind(this));
+	},
+	_recoveryModuleData: function(){
+		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+		this.json.recoveryStyles = null;
+	},
+    setCustomStyles: function(){
+		debugger;
+		this._recoveryModuleData();
 
-		this.setCustomNodeStyles(this.node, this.parentContainer.json.titleStyles);
+        var border = this.node.getStyle("border");
+        this.node.clearStyles();
+        this.node.setStyles(this.css.moduleNode);
+
+        if (this.initialStyles) this.node.setStyles(this.initialStyles);
+        this.node.setStyle("border", border);
+
+        Object.each(this.json.styles, function(value, key){
+            var reg = /^border\w*/ig;
+            if (!key.test(reg)){
+                this.node.setStyle(key, value);
+            }
+        }.bind(this));
+
+		this.setCustomNodeStyles(this.node, this.parentContainer.json.contentStyles);
 
 		if( this.json.isShow === false ){
 			this._switchShow();
 		}
 	},
+    checkSequence: function(obj, oldValue){
+        if ((this.json.cellType == "sequence") && (oldValue != "sequence")){
+            if (this.treeNode.firstChild){
+                var _self = this;
+                var module = this.treeNode.firstChild.module;
+                this.form.designer.confirm("warn", module.node, MWF.APPFD.LP.notice.changeToSequenceTitle, MWF.APPFD.LP.notice.changeToSequence, 300, 120, function(){
 
-	insertCol: function(){
-		var module = this;
-		var url = this.path+"insertCol.html";
-		MWF.require("MWF.widget.Dialog", function(){
-			var size = $(document.body).getSize();			
-			var x = size.x/2-150;
-			var y = size.y/2-90;
+                    module.destroy();
+                    this.close();
 
-			var dlg = new MWF.DL({
-				"title": "Insert Col",
-				"style": "property",
-				"top": y,
-				"left": x-40,
-				"fromTop":size.y/2-45,
-				"fromLeft": size.x/2,
-				"width": 300,
-				"height": 180,
-				"url": url,
-				"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate,
-				"buttonList": [
-				    {
-				    	"text": MWF.APPFD.LP.button.ok,
-				    	"action": function(){
+                    if (!_self.sequenceNode){
+                        _self.node.empty();
+                        _self.sequenceNode = new Element("div", {"styles": _self.css.sequenceNode, "text": "(N)", "MWFType1": "MWFTemp"}).inject(_self.node);
+                    }
 
-				    		module._insertCol();
-				    		this.close();
-				    	}
-				    },
-				    {
-				    	"text": MWF.APPFD.LP.button.cancel,
-				    	"action": function(){
-				    		this.close();
-				    	}
-				    }
-				]
-			});
-			
-			dlg.show();
-		}.bind(this));
+                }, function(){
+                    _self.json.cellType = "content";
+                    obj.checked = false;
+
+                    this.close();
+                }, null);
+            }else{
+                if (!this.sequenceNode){
+                    this.node.empty();
+                    this.sequenceNode = new Element("div", {"styles": this.css.sequenceNode, "text": "(N)", "MWFType1": "MWFTemp"}).inject(this.node);
+                }
+            }
+        }else if (oldValue == "sequence") {
+        }else{
+            if (this.sequenceNode){
+                this.sequenceNode.destroy();
+                this.sequenceNode = null;
+            }
+        }
+    },
+	_dragIn: function(module){
+		if (this.treeNode.firstChild || this.json.cellType == "sequence"){
+			this.parentContainer._dragIn(module);
+		}else{
+			if (this.options.allowModules.indexOf(module.moduleName)!=-1){
+				if (!this.Component) module.inContainer = this;
+				module.parentContainer = this;
+				module.nextModule = null;
+				this.node.setStyles({"border": "1px solid #ffa200"});
+
+				//this._showInjectAction( module );
+
+				var copyNode = module._getCopyNode();
+				copyNode.inject(this.node);
+			}else{
+				this.parentContainer._dragIn(module);
+			}
+		}
+	},
+	
+	_showActions: function(){
+		if (this.actionArea){
+			this._setActionAreaPosition();
+			this.actionArea.setStyle("display", "block");
+		}
 	},
 	_insertCol: function(){
 		var cols = $("MWFInsertColNumber").get("value");
@@ -211,9 +210,9 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
 		var baseTh = titleTr.cells[colIndex];
 		for (var m=1; m<=cols; m++){
 			var newTh = new Element("th").inject(baseTh, position);
-			this.form.getTemplateData("Datatable$Column", function(data){
+			this.form.getTemplateData("Datatable$Title", function(data){
 				var moduleData = Object.clone(data);
-				var thElement = new MWF.FCDatatable$Column(this.form);
+				var thElement = new MWF.FCDatatable$Title(this.form);
 				thElement.load(moduleData, newTh, this.parentContainer);
 				this.parentContainer.elements.push(thElement);
 			}.bind(this));
@@ -232,16 +231,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
 		
 		this.unSelected();
 		this.selected();
-	},
-	
-	deleteCol: function(e){
-		var module = this;
-		this.form.designer.confirm("warn", e, MWF.LP.process.notice.deleteColTitle, MWF.LP.process.notice.deleteCol, 300, 120, function(){
-			module._deleteCol();
-			this.close();
-		}, function(){
-			this.close();
-		}, null);
+		
 	},
 	_deleteCol: function(){
 		var tr = this.node.getParent("tr");
@@ -250,9 +240,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
 		
 		var titleTr = table.rows[0];
 		var dataTr = table.rows[1];
-
-		this.unSelected();
-
+		
 		if (tr.cells.length<=1){
 			this.parentContainer.destroy();
 		}else{
@@ -270,40 +258,16 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Column = MWF.FCDatatable$
 				tdModule.parentContainer.containers.erase(tdModule);
 				tdModule.destroy();
 			}
+			
 		}
 	},
-	_setEditStyle_custom: function(name){
-		if (name=="name"){
-			if (!this.json.name){
-				this.node.set("text", "DataTitle");
-			}else{
-				this.node.set("text", this.json.name);
-			}
+	_switchShow : function (isShow) {
+		if( typeOf(isShow) === "boolean" ){
+			this.json.isShow = isShow;
+		}else{
+			isShow = this.json.isShow !== false ;
 		}
-		if( name=="isShow" ){
-			this._switchShow( true );
-		}
-	},
-	_switchShow: function( isChangeTd ){
-		debugger;
-		var tr = this.node.getParent("tr");
-		var table = tr.getParent("table");
-		var colIndex = this.node.cellIndex;
-		var isShow = this.json.isShow !== false;
-
-		var titleTr = table.rows[0];
-		var currentTh = titleTr.cells[colIndex];
-		if( currentTh ){
-			currentTh.setStyle("opacity", isShow ? "1" : "0.3")
-		}
-
-		if(isChangeTd){
-			var dataTr = table.rows[1];
-			var currentTd = dataTr.cells[colIndex];
-			if( currentTd ){
-				var module = currentTd.retrieve("module");
-				if( module )module._switchShow( isShow );
-			}
-		}
+		this.node.setStyle("opacity", isShow ? "1" : "0.3");
 	}
+	
 });

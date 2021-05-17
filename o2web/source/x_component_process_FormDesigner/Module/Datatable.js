@@ -1,7 +1,8 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.$Container", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.$Component", null, false);
-MWF.xDesktop.requireApp("process.FormDesigner", "Module.Datagrid$Data", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Datatable$Data", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Datatable$Title", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Table$Td", null, false);
 MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new Class({
 	Extends: MWF.FC$Component,
@@ -87,19 +88,19 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 
 		var tds = this.node.getElements("td");
 
-		this.form.getTemplateData("Datagrid$Data", function(data){
+		this.form.getTemplateData("Datatable$Data", function(data){
 			tds.each(function(td){
 				var json = this.form.getDomjson(td);
 				var tdContainer = null;
 				if (!json){
 					var moduleData = Object.clone(data);
-					tdContainer = new MWF.FCDatagrid$Data(this.form);
+					tdContainer = new MWF.FCDatatable$Data(this.form);
 					tdContainer.load(moduleData, td, this);
 				}else{
 					var moduleData = Object.clone(data);
 					Object.merge(moduleData, json);
 					Object.merge(json, moduleData);
-					tdContainer = new MWF.FCDatagrid$Data(this.form);
+					tdContainer = new MWF.FCDatatable$Data(this.form);
 					tdContainer.load(json, td, this);
 				}
 				this.containers.push(tdContainer);
@@ -110,19 +111,19 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		//this.elements.push(this);
 		var ths = this.node.getElements("th");
 
-		this.form.getTemplateData("Datagrid$Title", function(data){
+		this.form.getTemplateData("Datatable$Title", function(data){
 			ths.each(function(th){
 				var json = this.form.getDomjson(th);
 				var thElement = null;
 				if (!json){
 					var moduleData = Object.clone(data);
-					thElement = new MWF.FCDatagrid$Title(this.form);
+					thElement = new MWF.FCDatatable$Title(this.form);
 					thElement.load(moduleData, th, this);
 				}else{
 					var moduleData = Object.clone(data);
 					Object.merge(moduleData, json);
 					Object.merge(json, moduleData);
-					thElement = new MWF.FCDatagrid$Title(this.form);
+					thElement = new MWF.FCDatatable$Title(this.form);
 					thElement.load(json, th, this);
 				}
 				this.elements.push(thElement);
