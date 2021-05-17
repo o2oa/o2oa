@@ -225,11 +225,14 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 		},
 		_loadTemplate: function(){
 			this.templateJson = {};
-			this.templateTr = this.table.getLast("tr");
+
+			var trs = this.table.getElements("tr");
+			this.templateTr = trs[trs.length-1];
+
 			this.templateNode = this.templateTr;
 
 			this.templateHtml = this.templateNode.get("html");
-			var moduleNodes = this.form._getModuleNodes(this.node);
+			var moduleNodes = this.form._getModuleNodes(this.templateNode);
 			moduleNodes.each(function (node) {
 				if (node.get("MWFtype") !== "form") {
 					var json = this.form._getDomjson(node);
@@ -302,8 +305,8 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 					var sectionLineList = [];
 					this.lineList_sectionkey[sectionKey] = sectionLineList;
 					list.each(function(data, idx){
-						var div = new Element("div").inject(this.node);
-						var line = this._loadLine(div, data, index, this.editable, idx, sectionKey);
+						var node = this._createLineNode();
+						var line = this._loadLine(node, data, index, this.editable, idx, sectionKey);
 						this.lineList.push(line);
 						sectionLineList.push(line);
 						index++;
@@ -316,19 +319,23 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 				}.bind(this))
 			}else if(this._getBusinessData() && this.data){
 				this.data.data.each(function(data, idx){
-					var div = new Element("div").inject(this.node);
-					var line = this._loadLine(div, data, idx );
+					var node = this._createLineNode();
+					var line = this._loadLine(node, data, idx );
 					this.lineList.push(line);
 				}.bind(this));
 			}else if( this.editable ){ //如果是第一次编辑
 				var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
 				for( var i=0; i<count; i++ ){
-					var div = new Element("div").inject(this.node);
-					var line = this._loadLine(div, {}, i );
+					var node = this._createLineNode();
+					var line = this._loadLine(node, {}, i );
 					this.lineList.push(line);
 				}
 			}
 			if (callback) callback();
+		},
+		_createLineNode: function(){
+			var tr = new Element("tr").inject(this.table);
+			return tr;
 		},
 		isMax : function(){
 			var maxCount = this.json.maxCount ? this.json.maxCount.toInt() : 0;
@@ -365,14 +372,14 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 				return false;
 			}
 			var index = this.lineList.length;
-			var div = new Element("div").inject(this.node);
+			var node = this._createLineNode();
 			var line;
 			if( this.unionMode ){
 				var key = sectionKey || "$union";
 				var indexInSection =  this.data[key] ? this.data[key].length : 0;
-				line = this._loadLine(div, data || {}, index, editable || this.editable, indexInSection, sectionKey || "$union" );
+				line = this._loadLine(node, data || {}, index, editable || this.editable, indexInSection, sectionKey || "$union" );
 			}else{
-				line = this._loadLine(div, data || {}, index);
+				line = this._loadLine(node, data || {}, index);
 			}
 			this.lineList.push(line);
 			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
@@ -1167,8 +1174,72 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 		importFromExcel: function(){
 			this.importer = new MWF.xApplication.process.Xform.Datatable.Importer(this);
 			this.importer.importFromExcel();
-		},
+		}
 	});
+
+MWF.xApplication.process.Xform.Datatable$Title =  new Class({
+	Extends: MWF.APP$Module,
+	_afterLoaded: function(){
+		this.dataGrid = this.node.retrieve("dataGrid");
+		if ((this.json.total == "number") || (this.json.total == "count")){
+			this.dataGrid.totalModules.push({
+				"module": this,
+				"index": (this.dataGrid.editable!=false) ? this.node.cellIndex+1 : this.node.cellIndex,
+				"type": this.json.total
+			})
+		}
+		//	this.form._loadModules(this.node);
+	}
+});
+
+MWF.xApplication.process.Xform.Datatable$Data =  new Class({
+	Extends: MWF.APP$Module,
+	_afterLoaded: function(){
+		//this.form._loadModules(this.node);
+		this.dataGrid = this.node.retrieve("dataGrid");
+
+		var td = this.node;
+
+		if (this.json.cellType == "sequence"){
+			var flag = true;
+			for (var i=0; i<this.dataGrid.editModules.length; i++){
+				if (this.dataGrid.editModules[i].json.id == this.json.id){
+					flag = false;
+					break;
+				}
+			}
+			if (flag){
+				this.dataGrid.editModules.push({
+					"json": {"type": "sequence", "id": this.json.id},
+					"node": td  ,
+					"focus": function(){}
+				});
+			}
+		}else{
+			var moduleNodes = this.form._getModuleNodes(this.node);
+			moduleNodes.each(function(node){
+				var json = this.form._getDomjson(node);
+				if( json ){
+					var isField = false;
+					if (json.type=="Attachment" || json.type=="AttachmentDg" ){
+						json.type = "AttachmentDg";
+						//json.site = this.dataGrid.getAttachmentRandomSite();
+						//json.id = json.site;
+					}
+					var module = this.form._loadModule(json, node, function(){
+						isField = this.field;
+						this.field = false;
+					});
+					if( isField ){
+						module.node.setStyle("padding-right","0px");
+					}
+					module.dataModule = this;
+					this.dataGrid.editModules.push(module);
+				}
+			}.bind(this));
+		}
+	}
+});
 
 MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 	Implements: [Options, Events],
@@ -1196,14 +1267,6 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		this.fields = [];
 		this.allField = {};
 		this.allField_templateId = {};
-
-		this.addActionList = [];
-		this.deleteActionList = [];
-		this.sequenceNodeList = [];
-		this.selector = null;
-		this.importActionList = [];
-		this.exportActionList = [];
-
 
 	},
 	load: function(){
@@ -1624,7 +1687,7 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 		var arg = { data : resultArr, colWidthArray : colWidthArr, title : title, withError : true };
 		this.template.fireEvent("export", [arg]);
 
-		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this.template ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.template ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
 	}
 });
 
