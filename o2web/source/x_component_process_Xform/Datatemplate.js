@@ -1575,20 +1575,21 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 	},
 
 	exportWithImportDataToExcel : function ( columnList, importedData ) {
-		debugger;
-		var titleThs = this.titleTr.getElements("th");
-		// var editorTds = this.editorTr.getElements("td");
 
 		var resultArr = [];
-
-		var colWidthArr = this.getExportColWidthArray();
-		colWidthArr.push( 220 );
-
-		var dateIndexArr = this.getExportDateIndexArray(); //日期格式列下标
-
-		var titleArr = this.getExportTitleArray("import");
+		var titleArr = this.template.json.excelFieldConfig.map(function(config){
+			return config.title;
+		});
+		if( this.template.unionMode ){
+			titleArr.push( MWF.xApplication.process.Xform.LP.systemField );
+		}
 		titleArr.push( MWF.xApplication.process.Xform.LP.validationInfor );
 		resultArr.push( titleArr );
+
+
+		// this.template.lineList.each(function (line, index) {
+		// 	resultArr.push( this.getLineExportData(line, index) );
+		// }.bind(this));
 
 		importedData.each( function( lineData, lineIndex ){
 			var array = [];
@@ -1600,22 +1601,24 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			resultArr.push( array );
 		}.bind(this));
 
-		var title;
-		if( this.json.excelName && this.json.excelName.code ){
-			title = this.form.Macro.exec(this.json.excelName.code, this);
-		}else{
-			title = MWF.xApplication.process.Xform.LP.exportDefaultName;
-		}
-		var titleA = title.split(".");
-		if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
-			titleA.splice( titleA.length-1 );
-		}
-		title = titleA.join(".");
+		var colWidthArr = this.getColWidthArray();
+		colWidthArr.push(300); //提示信息
 
-		var arg = { data : resultArr, colWidthArray : colWidthArr, title : title, withError : true };
-		this.template.fireEvent("export", [arg]);
+		var excelName = this.getExcelName();
 
-		new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils( this.template ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+		var arg = {
+			data : resultArr,
+			colWidthArray : colWidthArr,
+			title : excelName
+		};
+		this.fireEvent("export", [arg]);
+
+		new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
+			resultArr,
+			arg.title || excelName,
+			colWidthArr,
+			this.getDateIndexArray()  //日期格式列下标
+		);
 	}
 });
 
@@ -1939,6 +1942,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			}.bind(this)
 		});
 
+	},
+	exportWithImportDataToExcel: function(fieldArray, eData){
+		var exporter = new MWF.xApplication.process.Xform.Datatemplate.Exporter(this.template);
+		exporter.exportWithImportDataToExcel(fieldArray, eData)
 	},
 	checkData : function( fieldArray, idata ){
 		var flag = true;
