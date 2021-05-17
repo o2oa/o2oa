@@ -146,8 +146,8 @@
     "exportActionStyles" : {},
     "properties": {}
   },
-  "datatable$Column": {
-    "titleStyles": {}
+  "datatable$Title": {
+    "styles": {}
   },
   "address": {
     "styles": {},
