@@ -1747,8 +1747,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     },
     /**
      * @summary 为组件重新设置附件，该附件必须已经上传。
-     *  @param data {Object}.
-     *  <pre><code class='language-js'>{
+     *  @param data {Array}.
+     *  <pre><code class='language-js'>[{
      *     "id": "56c4e86f-a4c8-4cc2-a150-1a0d2c5febcb",   //附件ID
      *     "name": "133203a2-92e6-4653-9954-161b72ddb7f9.png", //附件名称
      *     "extension": "png",                             //附件扩展名
@@ -1761,7 +1761,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
      *     "activityType": "manual",                           //附件上传的活动类型
      *     "site": "$mediaOpinion",                        //附件存储位置（一般用于区分附件在哪个表单元素中显示）
      *     "type": "image/png"                             //附件类型（contentType）
-     * }</code></pre>
+     * }]</code></pre>
      */
     setData: function(data){
         this.attachmentController.clear();
