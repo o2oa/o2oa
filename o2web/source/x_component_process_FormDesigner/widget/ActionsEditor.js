@@ -153,8 +153,13 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
         if( !list.length )return;
         var selectableItems = [];
         list.each( function(d){
+            var title = "";
+            if( d.text && this.designer.lp.actionBar ){
+                title = this.designer.lp.actionBar[ d.text.split(".").getLast().replace("}}","") ] || "";
+                title = title ? ("  (" + title + ")") : "";
+            }
             selectableItems.push( {
-                name : d.text,
+                name : d.text + title,
                 id : d.id
             })
         }.bind(this));
@@ -224,6 +229,11 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
 
         this.iconNode = new Element("div", {"styles": this.css.actionIconNode}).inject(this.titleNode);
         this.textNode = new Element("div", {"styles": this.css.actionTextNode, "text": this.data.text}).inject(this.titleNode);
+
+        if( this.data.text && this.editor.designer.lp.actionBar){
+            var title = this.editor.designer.lp.actionBar[ this.data.text.split(".").getLast().replace("}}","") ] || "";
+            this.textNode.set("title", title || "");
+        }
 
         this.upButton = new Element("div", {"styles": this.css.actionUpButtonNode, "title": this.editor.designer.lp.actionbar.up}).inject(this.titleNode);
 
