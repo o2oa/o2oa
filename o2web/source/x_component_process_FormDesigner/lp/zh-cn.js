@@ -934,7 +934,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resume": "挂起恢复",
         "resumeTitle": "从挂起状态恢复",
         "downloadAll": "一键下载",
-        "downloadAllTitle": "一键下载"
+        "downloadAllTitle": "一键下载",
+        "setReaded" : "标记为已阅",
+        "readed" : "已阅"
     },
     "filedConfigurator": {
 		 "sequence": "序号",
