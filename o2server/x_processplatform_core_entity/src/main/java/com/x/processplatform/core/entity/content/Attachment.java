@@ -491,6 +491,27 @@ public class Attachment extends StorageObject {
 	@CheckPersist(allowEmpty = true)
 	private String fromPath;
 
+	public static final String stringValue01_FIELDNAME = "stringValue01";
+	@FieldDescribe("业务数据String值01.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue01;
+
+	public static final String stringValue02_FIELDNAME = "stringValue02";
+	@FieldDescribe("业务数据String值02.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue02;
+
+	public static final String stringValue03_FIELDNAME = "stringValue03";
+	@FieldDescribe("业务数据String值03.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue03_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue03_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue03;
+
 	public String getJob() {
 		return job;
 	}
@@ -705,5 +726,29 @@ public class Attachment extends StorageObject {
 
 	public void setFromPath(String fromPath) {
 		this.fromPath = fromPath;
+	}
+
+	public String getStringValue01() {
+		return stringValue01;
+	}
+
+	public void setStringValue01(String stringValue01) {
+		this.stringValue01 = stringValue01;
+	}
+
+	public String getStringValue02() {
+		return stringValue02;
+	}
+
+	public void setStringValue02(String stringValue02) {
+		this.stringValue02 = stringValue02;
+	}
+
+	public String getStringValue03() {
+		return stringValue03;
+	}
+
+	public void setStringValue03(String stringValue03) {
+		this.stringValue03 = stringValue03;
 	}
 }
