@@ -931,7 +931,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resume": "Resume",
         "resumeTitle": "Resume the task from pending",
         "downloadAll": "Download",
-        "downloadAllTitle": "Download the form and all attachments"
+        "downloadAllTitle": "Download the form and all attachments",
+        "setReaded": "Mark as read",
+        "readed": "Readed"
     },
     "filedConfigurator": {
         "sequence": "Sequence",
