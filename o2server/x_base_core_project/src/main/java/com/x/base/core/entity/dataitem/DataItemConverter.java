@@ -44,6 +44,7 @@ public class DataItemConverter<T extends DataItem> {
 		 * 20170905 通过 javascripting 转换的Map将 array -> {0:"xxxxx"}
 		 * 的格式,变成了一个对象而非array,所以这里需要进行单独的判断,把用数字下标的Map强制设置为List
 		 */
+		// fixme 使用 ListIterator 替代后面的for循环。 消除List::get的使用
 		for (int i = 0; i < (list.size() - 1); i++) {
 			/** 因为要取下一个,循环不用取最后一个数. */
 			T t = list.get(i);
@@ -270,53 +271,53 @@ public class DataItemConverter<T extends DataItem> {
 //		}
 //		return result;
 //	}
-//
-//	public boolean equate(T t1, T t2) {
-//		if (!Objects.equals(t1.getPath0(), t2.getPath0())) {
-//			return false;
-//		}
-//		if (!Objects.equals(t1.getPath1(), t2.getPath1())) {
-//			return false;
-//		}
-//		if (!Objects.equals(t1.getPath2(), t2.getPath2())) {
-//			return false;
-//		}
-//		if (!Objects.equals(t1.getPath3(), t2.getPath3())) {
-//			return false;
-//		}
-//		if (!Objects.equals(t1.getPath4(), t2.getPath4())) {
-//			return false;
-//		}
-//		if (!Objects.equals(t1.getPath5(), t2.getPath5())) {
-//			return false;
-//		}
-//		if (!Objects.equals(t1.getPath6(), t2.getPath6())) {
-//			return false;
-//		}
-//		if (!Objects.equals(t1.getPath7(), t2.getPath7())) {
-//			return false;
-//		}
-//		if (!Objects.equals(t1.getItemType(), t2.getItemType())) {
-//			return false;
-//		} else if (Objects.equals(t1.getItemType(), ItemType.p)) {
-//			if (!Objects.equals(t1.getItemPrimitiveType(), t2.getItemPrimitiveType())) {
-//				return false;
-//			} else {
-//				if (t1.getItemPrimitiveType().equals(ItemPrimitiveType.s)) {
-//					if (!Objects.equals(t1.getItemStringValueType(), t2.getItemStringValueType())) {
-//						return false;
-//					} else {
-//						return Objects.equals(t1.getStringValue(), t2.getStringValue());
-//					}
-//				} else if (t1.getItemPrimitiveType().equals(ItemPrimitiveType.n)) {
-//					return Objects.equals(t1.getNumberValue(), t2.getNumberValue());
-//				} else if (t1.getItemPrimitiveType().equals(ItemPrimitiveType.b)) {
-//					return Objects.equals(t1.getBooleanValue(), t2.getBooleanValue());
-//				}
-//			}
-//		}
-//		return true;
-//	}
+
+	public boolean equate(T t1, T t2) {
+		if (!Objects.equals(t1.getPath0(), t2.getPath0())) {
+			return false;
+		}
+		if (!Objects.equals(t1.getPath1(), t2.getPath1())) {
+			return false;
+		}
+		if (!Objects.equals(t1.getPath2(), t2.getPath2())) {
+			return false;
+		}
+		if (!Objects.equals(t1.getPath3(), t2.getPath3())) {
+			return false;
+		}
+		if (!Objects.equals(t1.getPath4(), t2.getPath4())) {
+			return false;
+		}
+		if (!Objects.equals(t1.getPath5(), t2.getPath5())) {
+			return false;
+		}
+		if (!Objects.equals(t1.getPath6(), t2.getPath6())) {
+			return false;
+		}
+		if (!Objects.equals(t1.getPath7(), t2.getPath7())) {
+			return false;
+		}
+		if (!Objects.equals(t1.getItemType(), t2.getItemType())) {
+			return false;
+		} else if (Objects.equals(t1.getItemType(), ItemType.p)) {
+			if (!Objects.equals(t1.getItemPrimitiveType(), t2.getItemPrimitiveType())) {
+				return false;
+			} else {
+				if (t1.getItemPrimitiveType().equals(ItemPrimitiveType.s)) {
+					if (!Objects.equals(t1.getItemStringValueType(), t2.getItemStringValueType())) {
+						return false;
+					} else {
+						return Objects.equals(t1.getStringValue(), t2.getStringValue());
+					}
+				} else if (t1.getItemPrimitiveType().equals(ItemPrimitiveType.n)) {
+					return Objects.equals(t1.getNumberValue(), t2.getNumberValue());
+				} else if (t1.getItemPrimitiveType().equals(ItemPrimitiveType.b)) {
+					return Objects.equals(t1.getBooleanValue(), t2.getBooleanValue());
+				}
+			}
+		}
+		return true;
+	}
 
 	public String text(List<T> items, boolean escapeNumber, boolean escapeBoolean, boolean escapeId,
 			boolean simplifyDistinguishedName, boolean htmlToText, String split) {
@@ -446,4 +447,41 @@ public class DataItemConverter<T extends DataItem> {
 			return true;
 		}
 	}
+
+//	private final List<Pair<BiFunction<Object, Object, Integer>, Function<T, Object>>> COMPARE_SEQ = Arrays.asList(
+//			comparePathLocationOf(DataItem::getPath0Location), comparePathLocationOf(DataItem::getPath1Location),
+//			comparePathOf(DataItem::getPath1), comparePathLocationOf(DataItem::getPath2Location),
+//			comparePathOf(DataItem::getPath2), comparePathLocationOf(DataItem::getPath3Location),
+//			comparePathOf(DataItem::getPath3), comparePathLocationOf(DataItem::getPath4Location),
+//			comparePathOf(DataItem::getPath4), comparePathLocationOf(DataItem::getPath5Location),
+//			comparePathOf(DataItem::getPath5), comparePathLocationOf(DataItem::getPath6Location),
+//			comparePathOf(DataItem::getPath6), comparePathLocationOf(DataItem::getPath7Location),
+//			comparePathOf(DataItem::getPath7));
+//
+//	private Pair<BiFunction<Object, Object, Integer>, Function<T, Object>> comparePathLocationOf(
+//			final Function<T, Object> mapper) {
+//		return Pair.of(DataItemConverter::comparePathLocation, mapper);
+//	}
+//
+//	private Pair<BiFunction<Object, Object, Integer>, Function<T, Object>> comparePathOf(
+//			final Function<T, Object> mapper) {
+//		return Pair.of(DataItemConverter::comparePath, mapper);
+//	}
+//
+//	private   final Comparator<T> comparator = new Comparator<T>() {
+//			public int compare(final T o1, final T o2) {
+//				return COMPARE_SEQ.stream()
+//					.mapToInt(t -> {
+//						final Function<T, Object> getter = Pair.getRight();
+//						return Pair.getLeft().apply(getter.apply(o1), getter.apply(o2));
+//					})
+//					.filter(t -> t != 0)
+//					.findAny()
+//					.orElse(0);
+//			}
+//		}
+//
+//	public void sort(List<T> list) {
+//		Collections.sort(list, comparator);
+//	}
 }
