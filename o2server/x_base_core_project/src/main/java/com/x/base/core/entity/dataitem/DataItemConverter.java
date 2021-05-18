@@ -3,6 +3,7 @@ package com.x.base.core.entity.dataitem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -16,6 +17,8 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.StringTools;
 
@@ -24,6 +27,8 @@ public class DataItemConverter<T extends DataItem> {
 	public static final int STRING_VALUE_MAX_LENGTH = JpaObject.length_255B;
 
 	private Class<T> clz;
+
+	private static Logger logger = LoggerFactory.getLogger(DataItemConverter.class);
 
 	public DataItemConverter(Class<T> clz) {
 		this.clz = clz;
@@ -39,6 +44,7 @@ public class DataItemConverter<T extends DataItem> {
 		 * 20170905 通过 javascripting 转换的Map将 array -> {0:"xxxxx"}
 		 * 的格式,变成了一个对象而非array,所以这里需要进行单独的判断,把用数字下标的Map强制设置为List
 		 */
+		// fixme 使用 ListIterator 替代后面的for循环。 消除List::get的使用
 		for (int i = 0; i < (list.size() - 1); i++) {
 			/** 因为要取下一个,循环不用取最后一个数. */
 			T t = list.get(i);
@@ -46,7 +52,6 @@ public class DataItemConverter<T extends DataItem> {
 				T next = list.get(i + 1);
 				/** 是一个数字的值,说明是数组中的一个 */
 				if (StringUtils.isNumeric(next.paths().get(next.paths().size() - 1))) {
-					// if (NumberUtils.isNumber(next.paths().get(next.paths().size() - 1))) {
 					/** 说明上一个T应该是一个Array */
 					t.setItemType(ItemType.a);
 				}
@@ -116,7 +121,7 @@ public class DataItemConverter<T extends DataItem> {
 			}
 			return root;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 		return null;
 	}
@@ -150,14 +155,12 @@ public class DataItemConverter<T extends DataItem> {
 		for (int i = 0; i < paths.size() - 1; i++) {
 			String path = paths.get(i);
 			if (!StringUtils.isNumeric(path)) {
-				// if (!NumberUtils.isNumber(path)) {
 				o = o.getAsJsonObject().get(path);
 			} else {
 				o = o.getAsJsonArray().get(Integer.parseInt(path));
 			}
 		}
 		if (!StringUtils.isNumeric(name)) {
-			// if (!NumberUtils.isNumber(name)) {
 			o.getAsJsonObject().add(name, jsonElement);
 		} else {
 			try {
@@ -250,24 +253,24 @@ public class DataItemConverter<T extends DataItem> {
 		return ObjectUtils.compare(pl1, pl2);
 	}
 
-	public List<T> subtract(List<T> l1, List<T> l2) throws Exception {
-		List<T> result = new ArrayList<>();
-		List<T> list2 = new ArrayList<>(l2);
-		T dummy = null;
-		next: for (T t1 : l1) {
-			if (null != dummy) {
-				list2.remove(dummy);
-			}
-			for (T t2 : list2) {
-				if (this.equate(t1, t2)) {
-					dummy = t2;
-					continue next;
-				}
-			}
-			result.add(t1);
-		}
-		return result;
-	}
+//	public List<T> subtract(List<T> l1, List<T> l2) throws Exception {
+//		List<T> result = new ArrayList<>();
+//		List<T> list2 = new ArrayList<>(l2);
+//		T dummy = null;
+//		next: for (T t1 : l1) {
+//			if (null != dummy) {
+//				list2.remove(dummy);
+//			}
+//			for (T t2 : list2) {
+//				if (this.equate(t1, t2)) {
+//					dummy = t2;
+//					continue next;
+//				}
+//			}
+//			result.add(t1);
+//		}
+//		return result;
+//	}
 
 	public boolean equate(T t1, T t2) {
 		if (!Objects.equals(t1.getPath0(), t2.getPath0())) {
@@ -318,7 +321,7 @@ public class DataItemConverter<T extends DataItem> {
 
 	public String text(List<T> items, boolean escapeNumber, boolean escapeBoolean, boolean escapeId,
 			boolean simplifyDistinguishedName, boolean htmlToText, String split) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder builder = new StringBuilder();
 		this.sort(items);
 		for (T t : items) {
 			if (Objects.equals(t.getItemType(), ItemType.p)) {
@@ -328,29 +331,157 @@ public class DataItemConverter<T extends DataItem> {
 						continue;
 					}
 					if (simplifyDistinguishedName && OrganizationDefinition.isDistinguishedName(t.getStringValue())) {
-						buffer.append(OrganizationDefinition.name(t.getStringValue()));
-						buffer.append(split);
+						builder.append(OrganizationDefinition.name(t.getStringValue()));
+						builder.append(split);
 						continue;
 					}
 					if (htmlToText) {
-						buffer.append(t.getStringValue().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", ""));
-						buffer.append(split);
+						builder.append(t.getStringValue().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", ""));
+						builder.append(split);
 						continue;
 					}
-					buffer.append(t.getStringValue());
+					builder.append(t.getStringValue());
 				}
 				if (Objects.equals(t.getItemPrimitiveType(), ItemPrimitiveType.b) && (null != t.getBooleanValue())
 						&& (!escapeBoolean)) {
-					buffer.append(Objects.toString(t.getBooleanValue()));
-					buffer.append(split);
+					builder.append(Objects.toString(t.getBooleanValue()));
+					builder.append(split);
 				}
 				if (Objects.equals(t.getItemPrimitiveType(), ItemPrimitiveType.n) && (null != t.getNumberValue())
 						&& (!escapeNumber)) {
-					buffer.append(Objects.toString(t.getNumberValue()));
-					buffer.append(split);
+					builder.append(Objects.toString(t.getNumberValue()));
+					builder.append(split);
 				}
 			}
 		}
-		return buffer.toString();
+		return builder.toString();
 	}
+
+	/**
+	 * 此方法在item数据较大(>20000) 时由于双重循环导致运行时间较长( > 5000ms) 改为新的使用hashMap实现.<br>
+	 * Thanks 李舟<lizhou@mochasoft.com.cn>
+	 **/
+	public List<T> subtract(List<T> l1, List<T> l2) throws Exception {
+		List<T> result = new ArrayList<>();
+		HashMap<Wrap, T> map = new HashMap<>();
+		for (T t2 : l2) {
+			map.put(new Wrap(t2), t2);
+		}
+		for (T t1 : l1) {
+			T t2 = map.get(new Wrap(t1));
+			if (null == t2) {
+				result.add(t1);
+			}
+		}
+		return result;
+	}
+
+	private static class Wrap {
+
+		private DataItem item;
+
+		private Wrap(DataItem item) {
+			this.item = item;
+		}
+
+		@Override
+		public int hashCode() {
+			return this.item.path().hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			Wrap other = (Wrap) obj;
+			if (!Objects.equals(this.item.getPath0(), other.item.getPath0())) {
+				return false;
+			}
+			if (!Objects.equals(this.item.getPath1(), other.item.getPath1())) {
+				return false;
+			}
+			if (!Objects.equals(this.item.getPath2(), other.item.getPath2())) {
+				return false;
+			}
+			if (!Objects.equals(this.item.getPath3(), other.item.getPath3())) {
+				return false;
+			}
+			if (!Objects.equals(this.item.getPath4(), other.item.getPath4())) {
+				return false;
+			}
+			if (!Objects.equals(this.item.getPath5(), other.item.getPath5())) {
+				return false;
+			}
+			if (!Objects.equals(this.item.getPath6(), other.item.getPath6())) {
+				return false;
+			}
+			if (!Objects.equals(this.item.getPath7(), other.item.getPath7())) {
+				return false;
+			}
+			if (!Objects.equals(this.item.getItemType(), other.item.getItemType())) {
+				return false;
+			} else if (Objects.equals(this.item.getItemType(), ItemType.p)) {
+				if (!Objects.equals(this.item.getItemPrimitiveType(), other.item.getItemPrimitiveType())) {
+					return false;
+				} else {
+					if (this.item.getItemPrimitiveType().equals(ItemPrimitiveType.s)) {
+						if (!Objects.equals(this.item.getItemStringValueType(), other.item.getItemStringValueType())) {
+							return false;
+						} else {
+							return Objects.equals(this.item.getStringValue(), other.item.getStringValue());
+						}
+					} else if (this.item.getItemPrimitiveType().equals(ItemPrimitiveType.n)) {
+						return Objects.equals(this.item.getNumberValue(), other.item.getNumberValue());
+					} else if (this.item.getItemPrimitiveType().equals(ItemPrimitiveType.b)) {
+						return Objects.equals(this.item.getBooleanValue(), other.item.getBooleanValue());
+					}
+				}
+			}
+			return true;
+		}
+	}
+
+//	private final List<Pair<BiFunction<Object, Object, Integer>, Function<T, Object>>> COMPARE_SEQ = Arrays.asList(
+//			comparePathLocationOf(DataItem::getPath0Location), comparePathLocationOf(DataItem::getPath1Location),
+//			comparePathOf(DataItem::getPath1), comparePathLocationOf(DataItem::getPath2Location),
+//			comparePathOf(DataItem::getPath2), comparePathLocationOf(DataItem::getPath3Location),
+//			comparePathOf(DataItem::getPath3), comparePathLocationOf(DataItem::getPath4Location),
+//			comparePathOf(DataItem::getPath4), comparePathLocationOf(DataItem::getPath5Location),
+//			comparePathOf(DataItem::getPath5), comparePathLocationOf(DataItem::getPath6Location),
+//			comparePathOf(DataItem::getPath6), comparePathLocationOf(DataItem::getPath7Location),
+//			comparePathOf(DataItem::getPath7));
+//
+//	private Pair<BiFunction<Object, Object, Integer>, Function<T, Object>> comparePathLocationOf(
+//			final Function<T, Object> mapper) {
+//		return Pair.of(DataItemConverter::comparePathLocation, mapper);
+//	}
+//
+//	private Pair<BiFunction<Object, Object, Integer>, Function<T, Object>> comparePathOf(
+//			final Function<T, Object> mapper) {
+//		return Pair.of(DataItemConverter::comparePath, mapper);
+//	}
+//
+//	private   final Comparator<T> comparator = new Comparator<T>() {
+//			public int compare(final T o1, final T o2) {
+//				return COMPARE_SEQ.stream()
+//					.mapToInt(t -> {
+//						final Function<T, Object> getter = Pair.getRight();
+//						return Pair.getLeft().apply(getter.apply(o1), getter.apply(o2));
+//					})
+//					.filter(t -> t != 0)
+//					.findAny()
+//					.orElse(0);
+//			}
+//		}
+//
+//	public void sort(List<T> list) {
+//		Collections.sort(list, comparator);
+//	}
 }
