@@ -1,31 +1,17 @@
 package com.x.program.center.jaxrs.module;
 
-import com.x.base.core.project.Application;
-import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.Nodes;
-import com.x.base.core.project.connection.ActionResponse;
-import com.x.base.core.project.connection.CipherConnectionAction;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
 import com.x.program.center.Business;
-import com.x.program.center.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+
 
 class ActionDispatchResource extends BaseAction {
 
@@ -41,10 +27,16 @@ class ActionDispatchResource extends BaseAction {
 			throw new Exception("非zip文件的filePath属性不能为空");
 		}
 		if(StringUtils.isNotEmpty(filePath)){
-			if(filePath.startsWith("o2_") || filePath.startsWith("x_")){
-				throw new Exception("filePath can not start with 'o2_' or 'x_'!");
+			File webServerDir = Config.dir_servers_webServer();
+			File tempDie = new File(webServerDir, filePath);
+			if(!tempDie.getCanonicalPath().startsWith(webServerDir.getCanonicalPath())){
+				throw new Exception("非法附件存放路径!");
+			}
+			if(filePath.indexOf("../") > -1){
+				throw new Exception("附件存放路径不能包含'../'!");
 			}
 		}
+
 		if(bytes==null || bytes.length==0){
 			throw new Exception("file must be not empty!");
 		}
