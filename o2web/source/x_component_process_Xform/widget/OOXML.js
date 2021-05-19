@@ -176,10 +176,118 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             this.insertChildren(oo_body, [oo_p]);
         }
     },
+    getTableTblW: function(table){
+        var type = "auto";
+        var w = table.get("width").toFloat();
+        if (w) w = this.pxToPt(w);
+        if (!w) w = table.getStyle("width").toFloat();
+        if (!w){
+            w = 0;
+        }else{
+            type = "dxa";
+            w = w*20;
+        }
+        return {"w": w, "type": type};
+    },
+    getTableBorder: function(table, where){
+        var attr = {
+            "space": "0",
+            "val": "single",
+            "color": "auto",
+            "sz": "0"
+        }
+        var sz = table.get("border").toFloat();
+        if (sz) sz = this.pxToPt(b);
+        if (!sz) sz = table.getStyle("border-"+where+"-width").toFloat();
+        if (!sz) sz = 0;
+        attr.sz = sz*20;
+
+        var color = this.getColorHex(table.getStyle("border-"+where+"-color"));
+        if (!color) color = "auto";
+        attr.color = color;
+
+        var style = table.getStyle("border-"+where+"-style");
+        switch (style){
+            case "dashed": case "dotted": case "double": attr.val = "double"; break;
+            default: attr.val = "single";
+        }
+
+        var space = table.get("cellspacing").toFloat();
+        if (space) attr.space = this.pxToPt(space)*20;
+
+        return attr;
+    },
+    getTableTblGrid: function(table){
+        var grids = [];
+        var trs = table.getElements("tr");
+        for (var i = 0; i < trs.length; i++){
+            var idx = 0;
+            tds = trs[i].cells;
+            tds.each(function(td){
+                var colspan = td.get("colspan");
+                if (!colspan) {
+                    while (grids.length<=idx) grids.push(0);
+                    var pt = this.pxToPt(td.clientWidth);
+                    if (pt>grids[idx]) grids[idx] = pt;
+                }else{
+                    idx = idx + (colspan.toInt()-1);
+                    while (grids.length<=idx) grids.push(0);
+                }
+                idx++;
+            });
+        }
+        return grids;
+    },
     processTable: function(table, oo_body){
         var oo_doc = oo_body.ownerDocument;
 
+        var oo_tbl = this.createEl(oo_doc, "tbl");
+        var oo_tblPr = this.createEl(oo_doc, "tblPr");
 
+        //表格宽度属性
+        var oo_tblW = this.createEl(oo_doc, "tblW");
+        var tblW = this.getTableTblW(table);
+        this.setAttrs(oo_tblW, tblW, false);
+        oo_tblPr.appendChild(oo_tblW);
+
+        //表格边框属性
+        var oo_tblBorders = this.createEl(oo_doc, "tblBorders");
+        var oo_top = this.createEl(oo_doc, "top");
+        this.setAttrs(oo_top, this.getTableBorder(table, "top"), false);
+        var oo_left = this.createEl(oo_doc, "left");
+        this.setAttrs(oo_left, this.getTableBorder(table, "left"), false);
+        var oo_bottom = this.createEl(oo_doc, "bottom");
+        this.setAttrs(oo_bottom, this.getTableBorder(table, "bottom"), false);
+        var oo_right = this.createEl(oo_doc, "right");
+        this.setAttrs(oo_right, this.getTableBorder(table, "right"), false);
+        this.insertSiblings(oo_tblBorders, [oo_top, oo_left, oo_bottom, oo_right], "beforeend")
+        oo_tblPr.appendChild(oo_tblBorders);
+
+
+        var mar = table.get("cellpadding").toFloat();
+        if (mar){
+            mar = this.pxToPt(b)*20;
+            var oo_tblCellMar = this.createEl(oo_doc, "tblCellMar");
+            var oo_mar = this.createEl(oo_doc, "left");
+            this.setAttrs(oo_mar, {"type": "dxa", "w": mar});
+            oo_tblCellMar.appendChild(oo_mar);
+            oo_mar = this.createEl(oo_doc, "right");
+            this.setAttrs(oo_mar, {"type": "dxa", "w": mar});
+            oo_tblCellMar.appendChild(oo_mar);
+            oo_mar = this.createEl(oo_doc, "top");
+            this.setAttrs(oo_mar, {"type": "dxa", "w": mar});
+            oo_tblCellMar.appendChild(oo_mar);
+            oo_mar = this.createEl(oo_doc, "bottom");
+            this.setAttrs(oo_mar, {"type": "dxa", "w": mar});
+            oo_tblCellMar.appendChild(oo_mar);
+            oo_tblPr.appendChild(oo_tblCellMar);
+        }
+
+
+        // <w:tblGrid>
+        //     <w:gridCol w:w="4597"/>
+        //     <w:gridCol w:w="4237"/>
+        // </w:tblGrid>
     },
 
     pxToPt: function(px){
