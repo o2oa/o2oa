@@ -3,7 +3,7 @@
  * @typedef {Array} DatatableData
  * @example
  [ //数据模板数据条目
- 		{
+ {
            "org": [{
                 "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
                 "id": "bf007525-99a3-4178-a474-32865bdddec8",
@@ -44,7 +44,7 @@
                 }
             ]
         },
- 	...
+ ...
  ]
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
@@ -179,6 +179,7 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			this.node.setStyle("overflow-x", "auto");
 			this.node.setStyle("overflow-y", "hidden");
 			this.table = this.node.getElement("table");
+			this.tBody = this.table.getElement("tbody");
 
 			this.editable = !(this.readonly || (this.json.isReadonly === true));
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
@@ -193,23 +194,30 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			//允许导出
 			this.exportenable  = this.json.impexpType === "impexp" || this.json.impexpType === "exp";
 
+			//是否有总计列
+			this.totalFlag = false;
+			this.totalColumns = [];
+			this.totalNumberModuleIds = [];
+
+			// this.hiddenColIndexList = [];
+
 			this.data = this._getValue();
 
+			//是否多行同时编辑
+			this.multiEditMode = this.json.editMode === "multi";
+
 			//object表示数据是区段合并状态 ???
-			this.unionMode = o2.typeOf(this.data)==="object";
+			this.unionMode = false; //o2.typeOf(this.data)==="object";
 
 			this.lineList = [];
 
-			//this.data为object的时候才有值
-			// this.lineMap = {};
-
-			// this.totalModules = [];
 			this._loadStyles();
+
+			debugger;
 
 			this._loadTitleTr();
 			this._loadTemplate();
-
-			debugger;
+			this._loadTotalTr();
 
 			this.fireEvent("load");
 			this._loadDatatable(function(){
@@ -218,10 +226,41 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			}.bind(this));
 		},
 		_loadTitleTr: function(){
-		    this.titleTr = this.table.getElement("tr");
-		    if(this.editable && this.addable){
-		        //todo 添加按钮
-		    }
+			this.titleTr = this.table.getElement("tr");
+
+			var ths = this.titleTr.getElements("th");
+			if (this.json.titleStyles)ths.setStyles(this.json.titleStyles);
+
+			//datatable$Title Module
+			ths.each(function(th, index){
+				var json = this.form._getDomjson(th);
+				th.store("dataTable", this);
+				th.addClass("mwf_origional");
+				if (json){
+					var module = this.form._loadModule(json, th);
+					this.form.modules.push(module);
+					if( json.isShow === false )th.hide(); //隐藏列
+					if((json.total === "number") || (json.total === "count"))this.totalFlag = true;
+				}
+			}.bind(this));
+
+
+			if(this.editable || this.addable){
+				var actionTh = new Element("th", {"styles": {"width": "46px"}}).inject(this.titleTr, "top"); //操作列
+				if(this.addable){
+					var addLineAction = new Element("div", {
+						"styles": this.form.css.addLineAction,
+						"events": {
+							"click": function(e){ this._addLine(e.target, true); }.bind(this)
+						}
+					}).inject(actionTh);
+				}
+				var moveTh = new Element("th").inject(this.titleTr, "bottom"); //总计列
+				if (this.json.titleStyles){
+					actionTh.setStyles(this.json.titleStyles);
+					moveTh.setStyles(this.json.titleStyles);
+				}
+			}
 		},
 		_loadTemplate: function(){
 			this.templateJson = {};
@@ -230,6 +269,32 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			this.templateTr = trs[trs.length-1];
 
 			this.templateNode = this.templateTr;
+
+			var tds = this.templateNode.getElements("td");
+
+			if (this.json.contentStyles)tds.setStyles(this.json.contentStyles);
+
+			//datatable$Data Module
+			tds.each(function(td, index){
+				var json = this.form._getDomjson(td);
+				td.store("dataTable", this);
+				td.addClass("mwf_origional");
+				if (json){
+					var module = this.form._loadModule(json, td);
+					this.form.modules.push(module);
+					if( json.cellType === "sequence" )td.addClass("mwf_sequence"); //序号列
+					if( json.isShow === false )td.hide(); //隐藏列
+				}
+			}.bind(this));
+
+			if(this.editable || this.addable){
+				var eTd = new Element("td.mwf_editaction",{"styles": this.json.actionStyles || {}}).inject(this.templateNode, "top"); //操作列
+				var mTd = new Element("td.mwf_moveaction", {"styles": this.form.css.gridMoveActionCell || {}}).inject(this.templateNode, "bottom"); //排序列
+				if (this.json.contentStyles){
+					eTd.setStyles(this.json.contentStyles);
+					mTd.setStyles(this.json.contentStyles);
+				}
+			}
 
 			this.templateHtml = this.templateNode.get("html");
 			var moduleNodes = this.form._getModuleNodes(this.templateNode);
@@ -240,6 +305,78 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 				}
 			}.bind(this));
 			this.templateNode.hide();
+		},
+		_loadTotalTr: function(){
+			if( !this.totalFlag )return;
+			this.totalTr = new Element("tr.mwf_totaltr", {"styles": this.form.css.datagridTotalTr}).inject(this.tBody||this.table);
+
+			var ths = this.titleTr.getElements("th");
+			//datatable$Title Module
+			ths.each(function(th, index){
+				var td = new Element("td", {"text": "", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
+				if (this.json.amountStyles) td.setStyles(this.json.amountStyles);
+
+				var json = this.form._getDomjson(th);
+				if (json){
+					if( json.isShow === false )td.hide(); //隐藏列
+					if ((json.total === "number") || (json.total === "count")){
+						this.totalColumns.push({
+							"th" : th,
+							"td" : td,
+							"index": index,
+							"type": json.total
+						})
+					}
+				}
+			}.bind(this));
+
+			var tds = this.templateTr.getElements("td");
+			//datatable$Data Module
+			tds.each(function(td, index){
+				var json = this.form._getDomjson(td);
+				if (json){
+					//总计列
+					var tColumn = this.totalColumns.find(function(a){ return  a.index === index });
+					if(tColumn){
+						var moduleNodes = this.form._getModuleNodes(td); //获取总计列内的填写组件
+						if( moduleNodes.length > 0 ){
+							tColumn.moduleJson = this.form._getDomjson(moduleNodes[0]);
+							if(tColumn.type === "number")this.totalNumberModuleIds.push( tColumn.moduleJson.id );
+						}
+					}
+				}
+			}.bind(this));
+		},
+		_loadTotal: function(){
+			var totalData = {};
+			if (!this.totalFlag)return totalData;
+			if (!this.totalTr)this._loadTotalTr();
+			var data = this.getData();
+			this.totalColumns.each(function(column, index){
+				var json = column.moduleJson;
+				if (column.type === "count"){
+					tmpV = data.data.length;
+				}else if(column.type === "number"){
+					var tmpV = new Decimal(0);
+					for (var i=0; i<data.data.length; i++){
+						var d = data.data[i];
+						if(d[json.id])tmpV = tmpV.plus(d[json.id].toFloat() || 0);
+					}
+				}
+				totalData[json.id] = tmpV.toString();
+				column.td.set("text", isNaN( tmpV ) ? "" : tmpV );
+			}.bind(this));
+			data.total = totalData;
+			return totalData;
+		},
+		_createLineNode: function(){
+			var tr;
+			if( this.totalTr ){
+				tr = new Element("tr").inject(this.totalTr, "before");
+			}else{
+				tr = new Element("tr").inject(this.tBody || this.table);
+			}
+			return tr;
 		},
 		_loadStyles: function(){
 			this.node.setStyles(this.json.styles);
@@ -262,7 +399,10 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			var p = o2.promiseAll(this.data).then(function(v){
 				this.data = v;
 
-				this._loadLineList(callback);
+				this._loadLineList(function(){
+					this._loadTotal();
+					if(callback)callback();
+				}.bind(this));
 
 				this.moduleValueAG = null;
 				return v;
@@ -277,65 +417,67 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			}.bind(this));
 		},
 		_loadLineList: function(callback){
-			if(o2.typeOf(this.data)==="object"){ //区段合并后显示 ???
-				this.lineList_sectionkey = {};
-				var index = 0;
-				var sectionKeyList = Object.keys(this.data);
-				//$union默认放最后
-				sectionKeyList.sort(function (a, b) {
-					if( a === "$union" ){
-						return 1;
-					}else if( b === "$union" ){
-						return -1;
-					}else{
-						return 0;
-					}
-				});
-				this.fireEvent("loadSectionData", [{
-					"sectionKeyList": sectionKeyList,
-					"data": this.data
-				}]);
-				Array.each(sectionKeyList, function (sectionKey, i) {
-					debugger;
-					var list = this.data[sectionKey];
-					this.fireEvent("beforeloadSectionLines", [{
-						"sectionKey": sectionKey,
-						"sectionData": list
-					}]);
-					var sectionLineList = [];
-					this.lineList_sectionkey[sectionKey] = sectionLineList;
-					list.each(function(data, idx){
-						var node = this._createLineNode();
-						var line = this._loadLine(node, data, index, this.editable, idx, sectionKey);
-						this.lineList.push(line);
-						sectionLineList.push(line);
-						index++;
-					}.bind(this));
-					this.fireEvent("afterloadSectionLines", [{
-						"sectionKey": sectionKey,
-						"sectionData": list,
-						"sectionLineList" : sectionLineList
-					}]);
-				}.bind(this))
-			}else if(this._getBusinessData() && this.data){
+			// if(o2.typeOf(this.data)==="object"){ //区段合并后显示 ???
+			// 	this.lineList_sectionkey = {};
+			// 	var index = 0;
+			// 	var sectionKeyList = Object.keys(this.data);
+			// 	//$union默认放最后
+			// 	sectionKeyList.sort(function (a, b) {
+			// 		if( a === "$union" ){
+			// 			return 1;
+			// 		}else if( b === "$union" ){
+			// 			return -1;
+			// 		}else{
+			// 			return 0;
+			// 		}
+			// 	});
+			// 	this.fireEvent("loadSectionData", [{
+			// 		"sectionKeyList": sectionKeyList,
+			// 		"data": this.data
+			// 	}]);
+			// 	Array.each(sectionKeyList, function (sectionKey, i) {
+			// 		debugger;
+			// 		var list = this.data[sectionKey];
+			// 		this.fireEvent("beforeloadSectionLines", [{
+			// 			"sectionKey": sectionKey,
+			// 			"sectionData": list
+			// 		}]);
+			// 		var sectionLineList = [];
+			// 		this.lineList_sectionkey[sectionKey] = sectionLineList;
+			// 		list.each(function(data, idx){
+			// 			var node = this._createLineNode();
+			// 			var line = this._loadLine(node, data, index, this.editable, idx, sectionKey);
+			// 			this.lineList.push(line);
+			// 			sectionLineList.push(line);
+			// 			index++;
+			// 		}.bind(this));
+			// 		this.fireEvent("afterloadSectionLines", [{
+			// 			"sectionKey": sectionKey,
+			// 			"sectionData": list,
+			// 			"sectionLineList" : sectionLineList
+			// 		}]);
+			// 	}.bind(this))
+			// }else
+			debugger;
+			if(this._getBusinessData() && this.data && this.data.data){
 				this.data.data.each(function(data, idx){
+					var isEdited = (!this.multiEditMode && o2.typeOf(this.editedLineIndex) === "number") ? idx === this.editedLineIndex : this.multiEditMode;
 					var node = this._createLineNode();
-					var line = this._loadLine(node, data, idx );
+					var line = this._loadLine(node, data, idx, isEdited );
 					this.lineList.push(line);
 				}.bind(this));
+				this.editedLineIndex = null;
 			}else if( this.editable ){ //如果是第一次编辑
 				var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
 				for( var i=0; i<count; i++ ){
+					var isEdited = (!this.multiEditMode && o2.typeOf(this.editedLineIndex) === "number") ? idx === this.editedLineIndex : this.multiEditMode;
 					var node = this._createLineNode();
-					var line = this._loadLine(node, {}, i );
+					var line = this._loadLine(node, {}, i, isEdited );
 					this.lineList.push(line);
 				}
+				this.editedLineIndex = null;
 			}
 			if (callback) callback();
-		},
-		_createLineNode: function(){
-			var tr = new Element("tr").inject(this.table);
-			return tr;
 		},
 		isMax : function(){
 			var maxCount = this.json.maxCount ? this.json.maxCount.toInt() : 0;
@@ -358,14 +500,17 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 				indexInSection: indexInSection,
 				indexInSectionText: typeOf(indexInSection) === "number" ?  (index+1).toString() : null,
 				sectionKey: sectionKey,
-				isEdited : typeOf(isEdited) === "boolean" ? isEdited : this.editable
+				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
+				isEditable: this.editable,
+				isDeleteable: this.deleteable,
+				isAddable: this.addable
 			});
 			this.fireEvent("beforeLoadLine", [line]);
 			line.load();
 			this.fireEvent("afterLoadLine", [line]);
 			return line;
 		},
-		_addLine: function(ev, editable, sectionKey, data){
+		_addLine: function(ev, edited, sectionKey, data){
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -377,25 +522,24 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			if( this.unionMode ){
 				var key = sectionKey || "$union";
 				var indexInSection =  this.data[key] ? this.data[key].length : 0;
-				line = this._loadLine(node, data || {}, index, editable || this.editable, indexInSection, sectionKey || "$union" );
+				line = this._loadLine(node, data || {}, index, edited || this.editable, indexInSection, sectionKey || "$union" );
 			}else{
 				line = this._loadLine(node, data || {}, index);
 			}
 			this.lineList.push(line);
+			this._loadTotal();
 			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
 			return line;
 		},
 		_setLineData: function(line, d){
 			var index = line.options.index;
-			var data;
-			if( line.options.sectionKey ){ //区段合并后的数据
-				data = this.getTableData();
-				var sectionData = data[line.options.sectionKey];
-				sectionData[index] = d;
-			}else{
-				data = this.getTableData();
-				data[index] = d;
-			}
+			var data = this.getData();
+			// if( line.options.sectionKey ){ //区段合并后的数据
+			// 	var sectionData = data[line.options.sectionKey];
+			// 	sectionData[index] = d;
+			// }else{
+			data.data[index] = d;
+			// }
 			this.setData( data );
 		},
 		_insertLine: function(ev, beforeLine){
@@ -408,15 +552,14 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			//使用数据驱动
 			var index = beforeLine.options.index+1;
 
-			var data;
-			if( beforeLine.options.sectionKey ){ //区段合并后的数据
-				data = this.getTableData();
-				var sectionData = data[beforeLine.options.sectionKey];
-				sectionData.splice(beforeLine.options.indexInSection+1, 0, {});
-			}else{
-				data = this.getTableData();
-				data.splice(index, 0, {});
-			}
+			var data = this.getData();
+			// if( beforeLine.options.sectionKey ){ //区段合并后的数据
+			// 	var sectionData = data[beforeLine.options.sectionKey];
+			// 	sectionData.splice(beforeLine.options.indexInSection+1, 0, {});
+			// }else{
+			data.data.splice(index, 0, {});
+			this.editedLineIndex = index;
+			// }
 			this.setData( data );
 			this.fireEvent("addLine",[{"line":this.lineList[index], "ev":ev}]);
 		},
@@ -428,17 +571,15 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 				return false;
 			}
 			//使用数据驱动
-			var data;
-			if( sectionKey ){ //区段合并后的数据
-				data = this.getTableData();
-				var sectionData = data[sectionKey];
-				if( o2.typeOf(sectionData) !== "array" || sectionData.length < index )return null;
-				sectionData.splice(index, 0, d||{});
-			}else{
-				data = this.getTableData();
-				if(data.length < index )return null;
-				data.splice(index, 0, d||{});
-			}
+			var data = this.getData();
+			// if( sectionKey ){ //区段合并后的数据
+			// 	var sectionData = data.data[sectionKey];
+			// 	if( o2.typeOf(sectionData) !== "array" || sectionData.length < index )return null;
+			// 	sectionData.splice(index, 0, d||{});
+			// }else{
+			if(data.data.length < index )return null;
+			data.data.splice(index, 0, d||{});
+			// }
 			this.setData( data );
 			this.fireEvent("addLine",[{"line":this.lineList[index], "ev":ev}]);
 			return this.lineList[index];
@@ -472,17 +613,17 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 		},
 		_delLines: function(lines){
 			var _self = this;
-			var data = _self.getTableData();
+			var data = _self.getData();
 
 			lines.reverse().each(function(line){
 				_self.fireEvent("deleteLine", [line]);
 
-				if( line.options.sectionKey ){ //区段合并后的数据
-					var sectionData = data[line.options.sectionKey];
-					sectionData.splice(line.options.indexInSection, 1);
-				}else{
-					data.splice(line.options.index, 1);
-				}
+				// if( line.options.sectionKey ){ //区段合并后的数据
+				// 	var sectionData = data.data[line.options.sectionKey];
+				// 	sectionData.splice(line.options.indexInSection, 1);
+				// }else{
+				data.data.splice(line.options.index, 1);
+				// }
 
 				_self.fireEvent("afterDeleteLine");
 			});
@@ -507,53 +648,53 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			this.fireEvent("deleteLine", [line]);
 
 			//使用数据驱动
-			var data = this.getTableData();
-			if( line.options.sectionKey ){ //区段合并后的数据
-				var sectionData = data[line.options.sectionKey];
-				sectionData.splice(line.options.indexInSection, 1);
-			}else {
-				data.splice(line.options.index, 1);
-			}
+			var data = this.getData();
+			// if( line.options.sectionKey ){ //区段合并后的数据
+			// 	var sectionData = data.data[line.options.sectionKey];
+			// 	sectionData.splice(line.options.indexInSection, 1);
+			// }else {
+			data.data.splice(line.options.index, 1);
+			// }
 			this.setData( data );
 			this.fireEvent("afterDeleteLine");
 		},
-		_checkSelectAll: function () {
-			debugger;
-			var selectData = this.selectAllSelector.getData();
-			var selected;
-			if(o2.typeOf(selectData)==="array"){
-				selected = selectData.contains(this.json.outerSelectAllSelectedValue);
-			}else{
-				selected = selectData === this.json.outerSelectAllSelectedValue;
-			}
-			this.selected = selected;
-			this.lineList.each(function (line) {
-				this.selected ? line.select() : line.unselect();
-			}.bind(this))
-		},
-		selectAll: function(){
-			this.selected = true;
-			if(this.selectAllSelector)this.selectAllSelector.setData(this.json.outerSelectAllSelectedValue);
-		},
-		unselectAll: function(){
-			debugger;
-			this.selected = false;
-			if( this.selectAllSelector.getOptionsObj ){
-				var options = this.selectAllSelector.getOptionsObj();
-				var value = "";
-				var arr = options.valueList || [];
-				for( var i=0; i<arr.length; i++ ){
-					var v = arr[i];
-					if( v !== this.json.outerSelectAllSelectedValue ){
-						value = v;
-						break;
-					}
-				}
-				this.selectAllSelector.setData(value);
-			}else{
-				this.selectAllSelector.setData("")
-			}
-		},
+		// _checkSelectAll: function () {
+		// 	debugger;
+		// 	var selectData = this.selectAllSelector.getData();
+		// 	var selected;
+		// 	if(o2.typeOf(selectData)==="array"){
+		// 		selected = selectData.contains(this.json.outerSelectAllSelectedValue);
+		// 	}else{
+		// 		selected = selectData === this.json.outerSelectAllSelectedValue;
+		// 	}
+		// 	this.selected = selected;
+		// 	this.lineList.each(function (line) {
+		// 		this.selected ? line.select() : line.unselect();
+		// 	}.bind(this))
+		// },
+		// selectAll: function(){
+		// 	this.selected = true;
+		// 	if(this.selectAllSelector)this.selectAllSelector.setData(this.json.outerSelectAllSelectedValue);
+		// },
+		// unselectAll: function(){
+		// 	debugger;
+		// 	this.selected = false;
+		// 	if( this.selectAllSelector.getOptionsObj ){
+		// 		var options = this.selectAllSelector.getOptionsObj();
+		// 		var value = "";
+		// 		var arr = options.valueList || [];
+		// 		for( var i=0; i<arr.length; i++ ){
+		// 			var v = arr[i];
+		// 			if( v !== this.json.outerSelectAllSelectedValue ){
+		// 				value = v;
+		// 				break;
+		// 			}
+		// 		}
+		// 		this.selectAllSelector.setData(value);
+		// 	}else{
+		// 		this.selectAllSelector.setData("")
+		// 	}
+		// },
 
 		editValidation: function(){
 			var flag = true;
@@ -654,15 +795,15 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 		 * @return {Boolean} 是否为空
 		 */
 		isEmpty: function(){
-			var data = this.getTableData();
-			if( !data )return true;
-			if( o2.typeOf( data ) === "array" ){
+			var data = this.getData();
+			if( !data || !data.data )return true;
+			if( o2.typeOf( data.data ) === "array" ){
 				return data.data.length === 0;
 			}
 			//????
-			if( o2.typeOf( data ) === "object" ){
-				return Object.keys(data).length === 0;
-			}
+			// if( o2.typeOf( data ) === "object" ){
+			// 	return Object.keys(data).length === 0;
+			// }
 			return false;
 		},
 		//api 相关开始
@@ -805,7 +946,7 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			// if( ev ){
 			// 	this._deleteLine(ev, line);
 			// }else{
-				this._delSingleLine(line);
+			this._delSingleLine(line);
 			// }
 		},
 		/**
@@ -891,10 +1032,6 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			}else{
 				return this._getBusinessData();
 			}
-		},
-		getTableData: function(){
-			var data = this.getData();
-			return data.data || [];
 		},
 		_getSectionKey: function(){
 			if (this.json.section!=="yes"){
@@ -1177,74 +1314,76 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 		}
 	});
 
-MWF.xApplication.process.Xform.Datatable$Title =  new Class({
+MWF.xApplication.process.Xform.Datatable$Title = MWF.APPDatatable$Title = new Class({
 	Extends: MWF.APP$Module,
 	_afterLoaded: function(){
-		this.dataGrid = this.node.retrieve("dataGrid");
-		if ((this.json.total == "number") || (this.json.total == "count")){
-			this.dataGrid.totalModules.push({
-				"module": this,
-				"index": (this.dataGrid.editable!=false) ? this.node.cellIndex+1 : this.node.cellIndex,
-				"type": this.json.total
-			})
-		}
-		//	this.form._loadModules(this.node);
+		// this.dataTable = this.node.retrieve("dataTable");
+		// if ((this.json.total == "number") || (this.json.total == "count")){
+		// 	this.dataTable.totalModules.push({
+		// 		"module": this,
+		// 		"index": (this.dataGrid.editable!=false) ? this.node.cellIndex+1 : this.node.cellIndex,
+		// 		"type": this.json.total
+		// 	})
+		// }
 	}
 });
 
-MWF.xApplication.process.Xform.Datatable$Data =  new Class({
+MWF.xApplication.process.Xform.Datatable$Data = MWF.APPDatatable$Data =  new Class({
 	Extends: MWF.APP$Module,
 	_afterLoaded: function(){
 		//this.form._loadModules(this.node);
-		this.dataGrid = this.node.retrieve("dataGrid");
+		// this.dataGrid = this.node.retrieve("dataGrid");
+		//
+		// var td = this.node;
 
-		var td = this.node;
-
-		if (this.json.cellType == "sequence"){
-			var flag = true;
-			for (var i=0; i<this.dataGrid.editModules.length; i++){
-				if (this.dataGrid.editModules[i].json.id == this.json.id){
-					flag = false;
-					break;
-				}
-			}
-			if (flag){
-				this.dataGrid.editModules.push({
-					"json": {"type": "sequence", "id": this.json.id},
-					"node": td  ,
-					"focus": function(){}
-				});
-			}
-		}else{
-			var moduleNodes = this.form._getModuleNodes(this.node);
-			moduleNodes.each(function(node){
-				var json = this.form._getDomjson(node);
-				if( json ){
-					var isField = false;
-					if (json.type=="Attachment" || json.type=="AttachmentDg" ){
-						json.type = "AttachmentDg";
-						//json.site = this.dataGrid.getAttachmentRandomSite();
-						//json.id = json.site;
-					}
-					var module = this.form._loadModule(json, node, function(){
-						isField = this.field;
-						this.field = false;
-					});
-					if( isField ){
-						module.node.setStyle("padding-right","0px");
-					}
-					module.dataModule = this;
-					this.dataGrid.editModules.push(module);
-				}
-			}.bind(this));
-		}
+		// if (this.json.cellType == "sequence"){
+		// var flag = true;
+		// for (var i=0; i<this.dataGrid.editModules.length; i++){
+		// 	if (this.dataGrid.editModules[i].json.id == this.json.id){
+		// 		flag = false;
+		// 		break;
+		// 	}
+		// }
+		// if (flag){
+		// 	this.dataGrid.editModules.push({
+		// 		"json": {"type": "sequence", "id": this.json.id},
+		// 		"node": td  ,
+		// 		"focus": function(){}
+		// 	});
+		// }
+		// }else{
+		// var moduleNodes = this.form._getModuleNodes(this.node);
+		// moduleNodes.each(function(node){
+		// 	var json = this.form._getDomjson(node);
+		// 	if( json ){
+		// 		var isField = false;
+		// 		if (json.type=="Attachment" || json.type=="AttachmentDg" ){
+		// 			json.type = "AttachmentDg";
+		// 			//json.site = this.dataGrid.getAttachmentRandomSite();
+		// 			//json.id = json.site;
+		// 		}
+		// 		var module = this.form._loadModule(json, node, function(){
+		// 			isField = this.field;
+		// 			this.field = false;
+		// 		});
+		// 		if( isField ){
+		// 			module.node.setStyle("padding-right","0px");
+		// 		}
+		// 		module.dataModule = this;
+		// 		this.dataGrid.editModules.push(module);
+		// 	}
+		// }.bind(this));
+		// }
 	}
 });
 
 MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 	Implements: [Options, Events],
 	options: {
-		isEdited : true,
+		isEdited : true, //是否正在编辑
+		isEditable : true, //能否被编辑
+		isDeleteable: true, //能否被删除
+		isAddable: true, //能否添加
 		index : 0,
 		indexText : "0",
 		indexInSection: null, //区段合并后数据的data[sectionKey][index]
@@ -1270,62 +1409,72 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 
 	},
 	load: function(){
+		if( !this.template.multiEditMode && this.options.isEdited )this.template.currentEditedLine = this;
+
 		this.node.set("html", this.template.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.node);
 		//this.options.sectionKey 为区段合并后的数据
 		//this.template._getSectionKey() 为当前在区段状态下
 		var sectionKey = this.options.sectionKey || this.template._getSectionKey();
 		moduleNodes.each(function (node) {
-			if (node.get("MWFtype") !== "form") {
-				var _self = this;
+			var mwfType = node.get("MWFtype");
+			if (mwfType === "form")return;
 
-				var tJson = this.form._getDomjson(node);
-				if( tJson ){
-					var json = Object.clone(tJson);
+			var _self = this;
 
-					if( !this.options.isEdited )json.isReadonly = true;
+			var tJson = this.form._getDomjson(node);
+			if( tJson ){
+				var json = Object.clone(tJson);
 
-					var templateJsonId = json.id;
+				if( !this.options.isEdited || !this.options.isEditable )json.isReadonly = true;
 
-					var id;
-					var index = this.template.unionMode ? this.options.indexInSection : this.options.index;
-					if( sectionKey ){
-						id = this.template.json.id + ".." + sectionKey + ".."+ index + ".." + json.id;
-					}else{
-						id = this.template.json.id + ".." + index + ".." + json.id;
+				var templateJsonId = json.id;
+
+				var id;
+				var index = this.template.unionMode ? this.options.indexInSection : this.options.index;
+				if( sectionKey ){
+					id = this.template.json.id + "..data.." + sectionKey + ".."+ index + ".." + json.id;
+				}else{
+					id = this.template.json.id + "..data.." + index + ".." + json.id;
+				}
+				json.id = id;
+				node.set("id", id);
+
+				if( json.type==="Attachment" || json.type==="AttachmentDg" ){
+					json.type = "AttachmentDg";
+					json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
+				}
+
+				if (this.form.all[id]) this.form.all[id] = null;
+				if (this.form.forms[id])this.form.forms[id] = null;
+
+				var module = this.form._loadModule(json, node, function () {});
+				this.form.modules.push(module);
+
+				this.modules.push(module);
+				this.all[id] = module;
+				this.all_templateId[templateJsonId] = module;
+
+				if (module.field) {
+					if(this.data.hasOwnProperty(templateJsonId)){
+						module.setData(this.data[templateJsonId]);
 					}
-					json.id = id;
-					node.set("id", id);
+					this.allField[id] = module;
+					this.allField_templateId[templateJsonId] = module;
+					this.fields.push( module );
 
-					if( json.type==="Attachment" || json.type==="AttachmentDg" ){
-						json.type = "AttachmentDg";
-						json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
+					//该字段是合集数值字段
+					if(this.template.multiEditMode && this.template.totalNumberModuleIds.contains(templateJsonId)){
+						//module
+						module.addEvent("change", function(){
+							this.template._loadTotal();
+						}.bind(this))
 					}
-
-					if (this.form.all[id]) this.form.all[id] = null;
-					if (this.form.forms[id])this.form.forms[id] = null;
-
-					var module = this.form._loadModule(json, node, function () {});
-					this.form.modules.push(module);
-
-					this.modules.push(module);
-					this.all[id] = module;
-					this.all_templateId[templateJsonId] = module;
-
-					if (module.field) {
-						if(this.data.hasOwnProperty(templateJsonId)){
-							module.setData(this.data[templateJsonId]);
-						}
-						this.allField[id] = module;
-						this.allField_templateId[templateJsonId] = module;
-						this.fields.push( module );
-					}
-
-					this.setEvents(module, templateJsonId);
-
 				}
 			}
 		}.bind(this));
+		this.loadSequence();
+		this.createActions();
 	},
 	getModule: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
@@ -1354,80 +1503,122 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 
 		return templateId + sectionId + baseSite;
 	},
-	setEvents: function (module, id) {
-		if( this.template.addActionIdList.contains( id )){
-			this.addActionList.push( module );
-			module.node.addEvent("click", function (ev) {
-				this.template._insertLine( ev, this )
-			}.bind(this))
-			if( !this.template.editable )module.node.hide();
-		}
+	loadSequence: function(){
+		var sequenceTd = this.node.getElement("td.mwf_sequence");
+		if(sequenceTd)sequenceTd.set("text", this.options.indexText)
+	},
+	createActions: function () {
+		//不允许编辑，直接返回
+		if(!this.options.isEditable)return;
 
-		if( this.template.deleteActionIdList.contains(id)){
-			this.deleteActionList.push( module );
-			module.node.addEvent("click", function (ev) {
-				this.template._deleteLine( ev, this )
-			}.bind(this))
-			if( !this.template.editable )module.node.hide();
-		}
+		var editActionTd = this.node.getElement("td.mwf_editaction");
+		//this.moveActionTd = this.node.getElement(".moveAction");
 
-		if( this.template.selectorId === id){
-			this.selector = module;
-			// module.setData(""); //默认不选择
-			module.node.addEvent("click", function (ev) {
-				this.checkSelect();
-			}.bind(this))
-			if( !this.template.editable )module.node.hide();
-			this.unselect();
+		if(this.template.multiEditMode){ //多行编辑模式
+			if(this.options.isAddable)this.createAddAction(editActionTd);
+			if(this.options.isDeleteable)this.createDelAction(editActionTd);
+		}else{ //单行编辑模式
+			if(this.options.isAddable)this.createAddAction(editActionTd);
+			if(this.options.isDeleteable)this.createDelAction(editActionTd);
+			this.createCompleteAction(editActionTd);
+			this.createCancelEditAction(editActionTd);
+			this.checkActionDisplay();
 		}
-
-		if( this.template.sequenceIdList.contains(id)){
-			this.sequenceNodeList.push( module );
-			var indexText = (this.template.unionMode && this.template.json.sequenceBySection) ?  this.options.indexInSectionText : this.options.indexText;
-			if(this.form.getModuleType(module) === "label"){
-				module.node.set("text", indexText );
-			}else{
-				module.set( indexText );
-			}
-		}
-
-		//???
-		// if( this.template.importActionIdList.contains(id))this.importActionList.push( module );
-		// if( this.template.exportActionIdList.contains(id))this.exportActionList.push( module );
 
 	},
-	checkSelect: function () {
-		var selectData = this.selector.getData();
-		var selected;
-		if(o2.typeOf(selectData)==="array"){
-			selected = selectData.contains(this.template.json.selectorSelectedValue);
+	checkActionDisplay: function(){
+		if( this.options.isEdited ){
+			if( this.addLineAction )this.addLineAction.hide();
+			if( this.delLineAction )this.delLineAction.hide();
+			if( this.completeLineAction )this.completeLineAction.show();
+			if( this.cancelLineEditAction )this.cancelLineEditAction.show();
 		}else{
-			selected = selectData === this.template.json.selectorSelectedValue;
+			if( this.addLineAction )this.addLineAction.show();
+			if( this.delLineAction )this.delLineAction.show();
+			if( this.completeLineAction )this.completeLineAction.hide();
+			if( this.cancelLineEditAction )this.cancelLineEditAction.hide();
 		}
-		this.selected = selected;
 	},
-	select: function(){
-		this.selected = true;
-		if(this.selector)this.selector.setData(this.template.json.selectorSelectedValue);
-	},
-	unselect: function(){
-		this.selected = false;
-		if( this.selector.getOptionsObj ){
-			var options = this.selector.getOptionsObj();
-			var value = "";
-			var arr = options.valueList || [];
-			for( var i=0; i<arr.length; i++ ){
-				var v = arr[i];
-				if( v !== this.template.json.selectorSelectedValue ){
-					value = v;
-					break;
-				}
+	createAddAction: function(td){
+		this.addLineAction = new Element("div", {
+			"styles": this.form.css.addLineAction,
+			"events": {
+				"click": function(ev){
+					this.template.currentEditedLine = null;
+					this.template._insertLine( ev, this );
+					ev.stopPropagation();
+				}.bind(this)
 			}
-			this.selector.setData(value);
-		}else{
-			this.selector.setData("")
-		}
+		}).inject(td);
 	},
+	createCompleteAction: function(td){
+		this.completeLineAction = new Element("div", {
+			"styles": this.form.css.completeLineAction,
+			"events": {
+				"click": function(ev){
+					this.template.currentEditedLine = null;
+					this.template._completeLineEdit(ev);
+					ev.stopPropagation();
+				}.bind(this)
+			}
+		}).inject(td);
+	},
+	createCancelEditAction: function(td){
+		this.cancelLineEditAction = new Element("div", {
+			"styles": this.form.css.delLineAction,
+			"events": {
+				"click": function(ev){
+					this.template.currentEditedLine = null;
+					this._cancelLineEdit(ev);
+					ev.stopPropagation();
+				}.bind(this)
+			}
+		}).inject(td);
+	},
+	createDelAction: function(td){
+		this.delLineAction = new Element("div", {
+			"styles": this.form.css.delLineAction,
+			"events": {
+				"click": function(ev){
+					if( this.template.currentEditedLine === this )this.template.currentEditedLine = null;
+					this.template._deleteLine( ev, this );
+					ev.stopPropagation();
+				}.bind(this)
+			}
+		}).inject(td);
+	},
+	// checkSelect: function () {
+	// 	var selectData = this.selector.getData();
+	// 	var selected;
+	// 	if(o2.typeOf(selectData)==="array"){
+	// 		selected = selectData.contains(this.template.json.selectorSelectedValue);
+	// 	}else{
+	// 		selected = selectData === this.template.json.selectorSelectedValue;
+	// 	}
+	// 	this.selected = selected;
+	// },
+	// select: function(){
+	// 	this.selected = true;
+	// 	if(this.selector)this.selector.setData(this.template.json.selectorSelectedValue);
+	// },
+	// unselect: function(){
+	// 	this.selected = false;
+	// 	if( this.selector.getOptionsObj ){
+	// 		var options = this.selector.getOptionsObj();
+	// 		var value = "";
+	// 		var arr = options.valueList || [];
+	// 		for( var i=0; i<arr.length; i++ ){
+	// 			var v = arr[i];
+	// 			if( v !== this.template.json.selectorSelectedValue ){
+	// 				value = v;
+	// 				break;
+	// 			}
+	// 		}
+	// 		this.selector.setData(value);
+	// 	}else{
+	// 		this.selector.setData("")
+	// 	}
+	// },
 	reload: function(){
 		for(var key in this.all){
 			var module = this.all[key];
@@ -1462,6 +1653,17 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 	},
 	setData: function (data) {
 		this.template._setLineData(this, data);
+	},
+	validation: function(){
+		if( !this.options.isEdited || !this.options.isEditable )return true;
+		var flag = true;
+		this.fields.each(function(field, key){
+			if (field.json.type!="sequence" && field.validationMode ){
+				field.validationMode();
+				if (!field.validation()) flag = false;
+			}
+		}.bind(this));
+		return flag;
 	}
 });
 

@@ -910,7 +910,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "validationContentTdStyle": "校验内容单元格样式",
         "validationTableAttribute": "校验表格属性",
         "count": "数量",
-        "import" : "导入"
+        "import" : "导入",
+        "datatableEditMode": "编辑方式",
+        "datatableEditModeValue": ["每次编辑单行","同时编辑多行"]
     },
     "actionBar": {
         "close":"关闭",
