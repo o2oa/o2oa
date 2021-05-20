@@ -105,7 +105,15 @@ MWF.xApplication.portal.PortalManager.LP = {
         "mobileClient": "移动端",
         "true": "启用",
         "false": "禁用",
-        "anonymousAccess" : "匿名访问"
+        "anonymousAccess" : "匿名访问",
+
+        "changeIcon" : "更改图标",
+        "setManager" : "设置管理者",
+        "setAppManager" : "设置应用管理者",
+        "setUsableIdentity" : "设置可用身份",
+        "setUsableUnit" : "设置可用组织",
+        "setAppUsableIdentity" : "设置应用可用身份",
+        "setAppUsableUnit" : "设置应用可用组织"
     },
     "createSelectTemplate": "新建：选择模板",
     "templateCategory": "模板分类：",
