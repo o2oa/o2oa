@@ -217,8 +217,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			//设置节点外的操作：添加、删除、导入、导出
 			this.setOuterActionsEvents();
 
-			debugger;
-
 			//隐藏节点
 			this.node.getChildren().hide();
 
@@ -399,7 +397,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					"data": this.data
 				}]);
 				Array.each(sectionKeyList, function (sectionKey, i) {
-					debugger;
 					var list = this.data[sectionKey];
 					this.fireEvent("beforeloadSectionLines", [{
 						"sectionKey": sectionKey,
@@ -478,6 +475,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.setData( data );
 		},
 		_addLine: function(ev, sectionKey, d){
+
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -489,7 +487,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			if( this.unionMode ){
 				var key =  sectionKey || "$union";
 				this.newLineSectionKey = key;
-				var sectionData = data[key] || [];
+				if(!data[key]) data[key] = [];
+				var sectionData = data[key];
 				sectionData.push(d || {});
 				var index = sectionData.length-1;
 				this.newLineIndex = index;
@@ -507,7 +506,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return newLine;
 		},
 		_insertLine: function(ev, beforeLine){
-			debugger;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -538,7 +536,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return newLine;
 		},
 		_insertLineByIndex: function(ev, sectionKey, index, d){
-			debugger;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -549,6 +546,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			if( sectionKey ){ //区段合并后的数据
 				this.newLineSectionKey = sectionKey;
 				data = this.getData();
+				if(!data[sectionKey]) data[sectionKey] = [];
 				var sectionData = data[sectionKey];
 				if( o2.typeOf(sectionData) !== "array" || sectionData.length < index )return null;
 				sectionData.splice(index, 0, d||{});
@@ -567,7 +565,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return newLine;
 		},
 		_deleteSelectedLine: function(ev){
-			debugger;
 			var selectedLine = this.lineList.filter(function (line) { return line.selected; });
 			if( selectedLine.length === 0 ){
 				this.form.notice( MWF.xApplication.process.Xform.LP.selectItemNotice,"info");
@@ -597,8 +594,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var _self = this;
 			var data = _self.getData();
 
+			var saveFlag = false;
+
 			lines.reverse().each(function(line){
 				_self.fireEvent("deleteLine", [line]);
+
+				if(line.deleteAttachment())saveFlag = true;
 
 				if( line.options.sectionKey ){ //区段合并后的数据
 					var sectionData = data[line.options.sectionKey];
@@ -611,6 +612,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			});
 
 			_self.setData( data );
+			if(saveFlag)this.form.saveFormData();
 		},
 		_deleteLine: function(ev, line){
 			if( this.isMin() ){
@@ -620,15 +622,16 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			var _self = this;
 			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteDatagridLine, 300, 120, function(){
-				_self._delSingleLine(line);
+				_self._delLine(line);
 				this.close();
 			}, function(){
 				this.close();
 			}, null, null, this.form.json.confirmStyle);
 		},
-		_delSingleLine: function(line){
+		_delLine: function(line){
 			this.fireEvent("deleteLine", [line]);
 
+			var saveFlag = line.deleteAttachment();
 			//使用数据驱动
 			var data = this.getData();
 			if( line.options.sectionKey ){ //区段合并后的数据
@@ -639,9 +642,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			this.setData( data );
 			this.fireEvent("afterDeleteLine");
+			if(saveFlag)this.form.saveFormData();
 		},
 		_checkSelectAll: function () {
-			debugger;
 			var selectData = this.selectAllSelector.getData();
 			var selected;
 			if(o2.typeOf(selectData)==="array"){
@@ -659,7 +662,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			if(this.selectAllSelector)this.selectAllSelector.setData(this.json.outerSelectAllSelectedValue);
 		},
 		unselectAll: function(){
-			debugger;
 			this.selected = false;
 			if( this.selectAllSelector.getOptionsObj ){
 				var options = this.selectAllSelector.getOptionsObj();
@@ -844,7 +846,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			// if( ev ){
 			// 	this._deleteLine(ev, line);
 			// }else{
-			this._delSingleLine(line);
+			this._delLine(line);
 			// }
 		},
 		/**
@@ -933,7 +935,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			// if( ev ){
 			// 	this._deleteLine(ev, line);
 			// }else{
-				this._delSingleLine(line);
+				this._delLine(line);
 			// }
 		},
 		/**
@@ -1004,7 +1006,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.importer.destroySimulateModule();
 			}
 			if (this.editable!==false){
-				debugger;
 				// var data = [];
 				// this.lineList.each(function(line, index){
 				// 	data.push(line.getData())
@@ -1290,6 +1291,13 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					if (this.form.forms[id])this.form.forms[id] = null;
 
 					var module = this.form._loadModule(json, node, function () {});
+
+					if( json.type==="Attachment" || json.type==="AttachmentDg" ){
+						module.addEvent("change", function(){
+							_self.form.saveFormData();
+						}.bind(this))
+					}
+
 					this.form.modules.push(module);
 
 					this.modules.push(module);
@@ -1451,6 +1459,20 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	},
 	setData: function (data) {
 		this.template._setLineData(this, data);
+	},
+	deleteAttachment: function(){
+		var saveFlag = false;
+		for( var key in this.allField){
+			var module = this.allField[key];
+			if( module.json.type==="Attachment" || module.json.type==="AttachmentDg" ){
+				var array = module._getBusinessData();
+				(array || []).each(function(d){
+					saveFlag = true;
+					this.form.workAction.deleteAttachment(d.id, this.form.businessData.work.id);
+				}.bind(this))
+			}
+		}
+		return saveFlag;
 	}
 });
 
@@ -1727,7 +1749,6 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		}.bind(this));
 	},
 	destroySimulateModule: function(){
-		debugger;
 		if( !this.simelateModuleMap )return;
 		var keys = Object.keys(this.simelateModuleMap);
 		keys.each(function (key, i) {
@@ -1746,7 +1767,6 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		}
 	},
 	loadSimulateModule: function(){
-		debugger;
 		if( this.simelateModuleMap ){
 			this.destroySimulateModule();
 		}
@@ -2010,8 +2030,6 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 	},
 	checkData : function( fieldArray, idata ){
 		var flag = true;
-
-		debugger;
 
 		var lp = MWF.xApplication.process.Xform.LP;
 		var columnText =  lp.importValidationColumnText;
@@ -2388,8 +2406,6 @@ MWF.xApplication.process.Xform.Datatemplate.ExcelUtils = new Class({
 					if( !di.s.alignment )di.s.alignment = {};
 					di.s.alignment.wrapText = true;
 
-					debugger;
-
 					if( dateIndexArray && dateIndexArray.length ){
 						var colName = key.replace(/\d+/g,''); //清除数字
 						var rowNum = key.replace( colName, '');
@@ -2430,7 +2446,6 @@ MWF.xApplication.process.Xform.Datatemplate.ExcelUtils = new Class({
 				if (workbook.Sheets.hasOwnProperty(sheet)) {
 					// fromTo = workbook.Sheets[sheet]['!ref'];
 					// console.log(fromTo);
-					debugger;
 					var worksheet = workbook.Sheets[sheet];
 
 					if( dateColArray && typeOf(dateColArray) == "array" && dateColArray.length ){
