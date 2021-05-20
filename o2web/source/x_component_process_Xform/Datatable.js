@@ -201,7 +201,11 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 
 			// this.hiddenColIndexList = [];
 
-			this.data = this._getValue();
+			this.data = this.getValue();
+			if( !this._getBusinessData() ){
+				this.isNew = true;
+				this._setValue(this.data);
+			}
 
 			//是否多行同时编辑
 			this.multiEditMode = this.json.editMode === "multi";
@@ -351,7 +355,7 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			var totalData = {};
 			if (!this.totalFlag)return totalData;
 			if (!this.totalTr)this._loadTotalTr();
-			var data = this.getData();
+			var data = this.getValue();
 			this.totalColumns.each(function(column, index){
 				var json = column.moduleJson;
 				if (column.type === "count"){
@@ -389,10 +393,39 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 				if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
 				if (!value.then) if (o2.typeOf(value)==="array") value = {"data": value || [], "total":{}};
 			}
-			return value || {"data": [], "total":{}};
+			if(!value){
+				value = {"data": [], "total":{}};
+				var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
+				for( var i=0; i<count; i++ ){
+					value.data.push({})
+				}
+			}
+			return value;
 		},
 		getValue: function(){
 			return this._getValue();
+		},
+
+		_setValue: function(value){
+			if (!!value && o2.typeOf(value.then)=="function"){
+				var p = o2.promiseAll(value).then(function(v){
+					this.__setValue(v);
+				}.bind(this), function(){});
+				this.moduleValueAG = p;
+				p.then(function(){
+					this.moduleValueAG = null;
+				}.bind(this), function(){
+					this.moduleValueAG = null;
+				}.bind(this));
+			}else{
+				this.moduleValueAG = null;
+				this.__setValue(value);
+			}
+		},
+		__setValue: function(value){
+			this._setBusinessData(value);
+			this.moduleValueAG = null;
+			return value;
 		},
 
 		_loadDatatable: function(callback){
@@ -417,6 +450,18 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			}.bind(this));
 		},
 		_loadLineList: function(callback){
+			debugger;
+			this.data.data.each(function(data, idx){
+				var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
+				var isEdited = (!this.multiEditMode && o2.typeOf(this.newLineIndex) === "number") ? idx === this.newLineIndex : this.multiEditMode;
+				var node = this._createLineNode();
+				var line = this._loadLine(node, data, idx, isEdited, isNew );
+				this.lineList.push(line);
+			}.bind(this));
+			this.isNew = false;
+			this.newLineIndex = null;
+			if (callback) callback();
+
 			// if(o2.typeOf(this.data)==="object"){ //区段合并后显示 ???
 			// 	this.lineList_sectionkey = {};
 			// 	var index = 0;
@@ -458,26 +503,28 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			// 		}]);
 			// 	}.bind(this))
 			// }else
-			debugger;
-			if(this._getBusinessData() && this.data && this.data.data){
-				this.data.data.each(function(data, idx){
-					var isEdited = (!this.multiEditMode && o2.typeOf(this.editedLineIndex) === "number") ? idx === this.editedLineIndex : this.multiEditMode;
-					var node = this._createLineNode();
-					var line = this._loadLine(node, data, idx, isEdited );
-					this.lineList.push(line);
-				}.bind(this));
-				this.editedLineIndex = null;
-			}else if( this.editable ){ //如果是第一次编辑
-				var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
-				for( var i=0; i<count; i++ ){
-					var isEdited = (!this.multiEditMode && o2.typeOf(this.editedLineIndex) === "number") ? idx === this.editedLineIndex : this.multiEditMode;
-					var node = this._createLineNode();
-					var line = this._loadLine(node, {}, i, isEdited );
-					this.lineList.push(line);
-				}
-				this.editedLineIndex = null;
-			}
-			if (callback) callback();
+			// debugger;
+			// if(this._getBusinessData() && this.data && this.data.data){
+			// 	this.data.data.each(function(data, idx){
+			// 		var isNew = o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false;
+			// 		var isEdited = (!this.multiEditMode && o2.typeOf(this.newLineIndex) === "number") ? idx === this.newLineIndex : this.multiEditMode;
+			// 		var node = this._createLineNode();
+			// 		var line = this._loadLine(node, data, idx, isEdited, isNew );
+			// 		this.lineList.push(line);
+			// 	}.bind(this));
+			// 	this.newLineIndex = null;
+			// }else if( this.editable ){ //如果是第一次编辑
+			// 	var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
+			// 	for( var i=0; i<count; i++ ){
+			// 		var isNew = o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false;
+			// 		var isEdited = (!this.multiEditMode && o2.typeOf(this.newLineIndex) === "number") ? idx === this.newLineIndex : this.multiEditMode;
+			// 		var node = this._createLineNode();
+			// 		var line = this._loadLine(node, {}, i, isEdited, isNew );
+			// 		this.lineList.push(line);
+			// 	}
+			// 	this.newLineIndex = null;
+			// }
+			// if (callback) callback();
 		},
 		isMax : function(){
 			var maxCount = this.json.maxCount ? this.json.maxCount.toInt() : 0;
@@ -493,13 +540,14 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			}
 			return false;
 		},
-		_loadLine: function(container, data, index, isEdited, indexInSection, sectionKey){
+		_loadLine: function(container, data, index, isEdited, isNew, indexInSection, sectionKey){
 			var line = new MWF.xApplication.process.Xform.Datatable.Line(container, this, data, {
 				index : index,
 				indexText : (index+1).toString(),
 				indexInSection: indexInSection,
 				indexInSectionText: typeOf(indexInSection) === "number" ?  (index+1).toString() : null,
 				sectionKey: sectionKey,
+				isNew: isNew,
 				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
 				isEditable: this.editable,
 				isDeleteable: this.deleteable,
@@ -508,27 +556,6 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			this.fireEvent("beforeLoadLine", [line]);
 			line.load();
 			this.fireEvent("afterLoadLine", [line]);
-			return line;
-		},
-		_addLine: function(ev, edited, sectionKey, data){
-			if( this.isMax() ){
-				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
-				this.form.notice(text,"info");
-				return false;
-			}
-			var index = this.lineList.length;
-			var node = this._createLineNode();
-			var line;
-			if( this.unionMode ){
-				var key = sectionKey || "$union";
-				var indexInSection =  this.data[key] ? this.data[key].length : 0;
-				line = this._loadLine(node, data || {}, index, edited || this.editable, indexInSection, sectionKey || "$union" );
-			}else{
-				line = this._loadLine(node, data || {}, index);
-			}
-			this.lineList.push(line);
-			this._loadTotal();
-			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
 			return line;
 		},
 		_setLineData: function(line, d){
@@ -541,6 +568,49 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			data.data[index] = d;
 			// }
 			this.setData( data );
+		},
+		// _addLine: function(ev, edited, sectionKey, data){
+		// 	if( this.isMax() ){
+		// 		var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
+		// 		this.form.notice(text,"info");
+		// 		return false;
+		// 	}
+		// 	var index = this.lineList.length;
+		// var node = this._createLineNode();
+		// var line;
+		// if( this.unionMode ){
+		// 	var key = sectionKey || "$union";
+		// 	var indexInSection =  this.data[key] ? this.data[key].length : 0;
+		// 	line = this._loadLine(node, data || {}, index, edited || this.editable, indexInSection, sectionKey || "$union" );
+		// }else{
+		// 	line = this._loadLine(node, data || {}, index);
+		// }
+		// this.lineList.push(line);
+		// this._loadTotal();
+		// 	this.fireEvent("addLine", [{"line":line, "ev":ev}]);
+		// 	return line;
+		// },
+		_addLine: function(ev, edited, sectionKey, data){
+			if( this.isMax() ){
+				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
+				this.form.notice(text,"info");
+				return false;
+			}
+			var index = this.lineList.length;
+			var data = this.getData();
+
+			// if( this.unionMode ){
+			// 	var key = sectionKey || "$union";
+			// 	var sectionData = data[key] || [];
+			// 	sectionData.push({});
+			// }else{
+				data.data.push({});
+				this.newLineIndex = index;
+			// }
+
+			this.setData( data );
+			this.fireEvent("addLine", [{"line":this.lineList[index], "ev":ev}]);
+			return this.lineList[index];
 		},
 		_insertLine: function(ev, beforeLine){
 			debugger;
@@ -558,10 +628,11 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			// 	sectionData.splice(beforeLine.options.indexInSection+1, 0, {});
 			// }else{
 			data.data.splice(index, 0, {});
-			this.editedLineIndex = index;
+			this.newLineIndex = index;
 			// }
 			this.setData( data );
 			this.fireEvent("addLine",[{"line":this.lineList[index], "ev":ev}]);
+			return this.lineList[index];
 		},
 		_insertLineByIndex: function(ev, sectionKey, index, d){
 			debugger;
@@ -657,6 +728,17 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			// }
 			this.setData( data );
 			this.fireEvent("afterDeleteLine");
+		},
+		_completeLineEdit: function(){
+			debugger;
+			var line = this.currentEditedLine;
+			if( !line )return true;
+			if( !line.validation() )return false;
+			line.data = line.getData();
+			this._loadTotal();
+			this.currentEditedLine = false;
+			this.fireEvent("completeLineEdit", [line]);
+			return true;
 		},
 		// _checkSelectAll: function () {
 		// 	debugger;
@@ -1018,16 +1100,13 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			}
 			if (this.editable!==false){
 				debugger;
-				// var data = [];
 				// this.lineList.each(function(line, index){
-				// 	data.push(line.getData())
+				// 	if( !this.multiEditMode && line.options.isEdited ){
+				// 		line.data = line.getData();
+				// 	}else{
+				// 		line.data = line.getData();
+				// 	}
 				// });
-				//
-				// this.data = data;
-				//
-				// this._setBusinessData(this.data);
-				//
-				// return (this.data.length) ? this.data : [];
 				return this._getBusinessData();
 			}else{
 				return this._getBusinessData();
@@ -1380,6 +1459,7 @@ MWF.xApplication.process.Xform.Datatable$Data = MWF.APPDatatable$Data =  new Cla
 MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 	Implements: [Options, Events],
 	options: {
+		isNew: false,
 		isEdited : true, //是否正在编辑
 		isEditable : true, //能否被编辑
 		isDeleteable: true, //能否被删除
@@ -1390,14 +1470,14 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		indexInSectionText: null,
 		sectionKey: null //区段合并后数据的key
 	},
-	initialize: function (node, template, data, options) {
+	initialize: function (node, datatable, data, options) {
 
 		this.setOptions(options);
 
 		this.node = node;
-		this.template = template;
+		this.datatable = datatable;
 		this.data = data;
-		this.form = this.template.form;
+		this.form = this.datatable.form;
 
 		this.modules = [];
 		this.all = {};
@@ -1409,13 +1489,14 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 
 	},
 	load: function(){
-		if( !this.template.multiEditMode && this.options.isEdited )this.template.currentEditedLine = this;
+		debugger;
+		if( !this.datatable.multiEditMode && this.options.isEdited )this.datatable.currentEditedLine = this;
 
-		this.node.set("html", this.template.templateHtml);
+		this.node.set("html", this.datatable.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.node);
 		//this.options.sectionKey 为区段合并后的数据
-		//this.template._getSectionKey() 为当前在区段状态下
-		var sectionKey = this.options.sectionKey || this.template._getSectionKey();
+		//this.datatable._getSectionKey() 为当前在区段状态下
+		var sectionKey = this.options.sectionKey || this.datatable._getSectionKey();
 		moduleNodes.each(function (node) {
 			var mwfType = node.get("MWFtype");
 			if (mwfType === "form")return;
@@ -1431,11 +1512,11 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 				var templateJsonId = json.id;
 
 				var id;
-				var index = this.template.unionMode ? this.options.indexInSection : this.options.index;
+				var index = this.datatable.unionMode ? this.options.indexInSection : this.options.index;
 				if( sectionKey ){
-					id = this.template.json.id + "..data.." + sectionKey + ".."+ index + ".." + json.id;
+					id = this.datatable.json.id + "..data.." + sectionKey + ".."+ index + ".." + json.id;
 				}else{
-					id = this.template.json.id + "..data.." + index + ".." + json.id;
+					id = this.datatable.json.id + "..data.." + index + ".." + json.id;
 				}
 				json.id = id;
 				node.set("id", id);
@@ -1464,10 +1545,10 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 					this.fields.push( module );
 
 					//该字段是合集数值字段
-					if(this.template.multiEditMode && this.template.totalNumberModuleIds.contains(templateJsonId)){
+					if(this.datatable.multiEditMode && this.datatable.totalNumberModuleIds.contains(templateJsonId)){
 						//module
 						module.addEvent("change", function(){
-							this.template._loadTotal();
+							this.datatable._loadTotal();
 						}.bind(this))
 					}
 				}
@@ -1475,6 +1556,21 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		}.bind(this));
 		this.loadSequence();
 		this.createActions();
+
+		if(!this.datatable.multiEditMode && this.options.isEditable){
+			this.editFun = function(){
+				if( !this.options.isEdited ){
+					this.changeEditMode(true)
+				}
+			}.bind(this)
+			this.node.addEvent("click", this.editFun)
+		}
+
+		if(this.options.isNew){
+			debugger;
+			this.data = this.getData();
+			this.options.isNew = false;
+		}
 	},
 	getModule: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
@@ -1498,7 +1594,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			maxLength = 64 - baseSite.length;
 		}
 
-		var templateId = this.template.json.id;
+		var templateId = this.datatable.json.id;
 		templateId = (templateId.length > maxLength) ? templateId.substr(templateId.length-maxLength, maxLength) : templateId;
 
 		return templateId + sectionId + baseSite;
@@ -1514,7 +1610,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		var editActionTd = this.node.getElement("td.mwf_editaction");
 		//this.moveActionTd = this.node.getElement(".moveAction");
 
-		if(this.template.multiEditMode){ //多行编辑模式
+		if(this.datatable.multiEditMode){ //多行编辑模式
 			if(this.options.isAddable)this.createAddAction(editActionTd);
 			if(this.options.isDeleteable)this.createDelAction(editActionTd);
 		}else{ //单行编辑模式
@@ -1544,8 +1640,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			"styles": this.form.css.addLineAction,
 			"events": {
 				"click": function(ev){
-					this.template.currentEditedLine = null;
-					this.template._insertLine( ev, this );
+					this.datatable._insertLine( ev, this );
 					ev.stopPropagation();
 				}.bind(this)
 			}
@@ -1556,8 +1651,9 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			"styles": this.form.css.completeLineAction,
 			"events": {
 				"click": function(ev){
-					this.template.currentEditedLine = null;
-					this.template._completeLineEdit(ev);
+					this.datatable._completeLineEdit(ev);
+					this.changeEditMode(false);
+					this.datatable.currentEditedLine = null;
 					ev.stopPropagation();
 				}.bind(this)
 			}
@@ -1568,7 +1664,6 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			"styles": this.form.css.delLineAction,
 			"events": {
 				"click": function(ev){
-					this.template.currentEditedLine = null;
 					this._cancelLineEdit(ev);
 					ev.stopPropagation();
 				}.bind(this)
@@ -1580,26 +1675,42 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			"styles": this.form.css.delLineAction,
 			"events": {
 				"click": function(ev){
-					if( this.template.currentEditedLine === this )this.template.currentEditedLine = null;
-					this.template._deleteLine( ev, this );
+					this.datatable._deleteLine( ev, this );
+					if( this.datatable.currentEditedLine === this )this.datatable.currentEditedLine = null;
 					ev.stopPropagation();
 				}.bind(this)
 			}
 		}).inject(td);
 	},
+	changeEditMode: function( isEdited ){
+		if( isEdited === this.options.isEdited )return;
+		if( !this.options.isEditable )return;
+		if( !this.datatable.multiEditMode ){
+			if(isEdited && !this.datatable._completeLineEdit())return;
+			// if( this.datatable.currentEditedLine ){
+			// 	if(this.datatable.currentEditedLine !== this){
+			// 		if(isEdited && !this.datatable._completeLineEdit())return;
+			// 	}else{
+			// 		this.data = this.getData();
+			// 	}
+			// }
+		}
+		this.options.isEdited = isEdited;
+		this.reload();
+	},
 	// checkSelect: function () {
 	// 	var selectData = this.selector.getData();
 	// 	var selected;
 	// 	if(o2.typeOf(selectData)==="array"){
-	// 		selected = selectData.contains(this.template.json.selectorSelectedValue);
+	// 		selected = selectData.contains(this.datatable.json.selectorSelectedValue);
 	// 	}else{
-	// 		selected = selectData === this.template.json.selectorSelectedValue;
+	// 		selected = selectData === this.datatable.json.selectorSelectedValue;
 	// 	}
 	// 	this.selected = selected;
 	// },
 	// select: function(){
 	// 	this.selected = true;
-	// 	if(this.selector)this.selector.setData(this.template.json.selectorSelectedValue);
+	// 	if(this.selector)this.selector.setData(this.datatable.json.selectorSelectedValue);
 	// },
 	// unselect: function(){
 	// 	this.selected = false;
@@ -1609,7 +1720,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 	// 		var arr = options.valueList || [];
 	// 		for( var i=0; i<arr.length; i++ ){
 	// 			var v = arr[i];
-	// 			if( v !== this.template.json.selectorSelectedValue ){
+	// 			if( v !== this.datatable.json.selectorSelectedValue ){
 	// 				value = v;
 	// 				break;
 	// 			}
@@ -1627,6 +1738,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			if (this.form.forms[key])delete this.form.forms[key];
 		}
 		this.node.empty();
+		this.node.removeEvent("click", this.editFun);
 		this.load();
 	},
 	clear: function () { //把module清除掉
@@ -1639,7 +1751,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		this.node.destroy();
 	},
 	getData: function () {
-		var data = {};
+		var data = this.data;
 		for( var key in this.allField){
 			var module = this.allField[key];
 			var id = key.split("..").getLast();
@@ -1652,7 +1764,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		return data;
 	},
 	setData: function (data) {
-		this.template._setLineData(this, data);
+		this.datatable._setLineData(this, data);
 	},
 	validation: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
@@ -1671,26 +1783,26 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 	Implements: [Options, Events],
 	options: {
 	},
-	initialize: function (template, options) {
+	initialize: function (datatable, options) {
 
 		this.setOptions(options);
 
-		this.template = template;
-		this.form = this.template.form;
+		this.datatable = datatable;
+		this.form = this.datatable.form;
 
 	},
 	exportToExcel : function () {
 		var resultArr = [];
-		var titleArr = this.template.json.excelFieldConfig.map(function(config){
+		var titleArr = this.datatable.json.excelFieldConfig.map(function(config){
 			return config.title;
 		});
-		if( this.template.unionMode ){
+		if( this.datatable.unionMode ){
 			titleArr.push( MWF.xApplication.process.Xform.LP.systemField );
 		}
 		resultArr.push( titleArr );
 
 
-		this.template.lineList.each(function (line, index) {
+		this.datatable.lineList.each(function (line, index) {
 			resultArr.push( this.getLineExportData(line, index) );
 		}.bind(this));
 
@@ -1704,7 +1816,7 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 		};
 		this.fireEvent("export", [arg]);
 
-		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.template ).exportToExcel(
+		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.datatable ).exportToExcel(
 			resultArr,
 			arg.title || excelName,
 			colWidthArr,
@@ -1713,7 +1825,7 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 	},
 	getLineExportData: function(line, index ){
 		var exportData = [];
-		this.template.json.excelFieldConfig.each(function (config) {
+		this.datatable.json.excelFieldConfig.each(function (config) {
 
 			var module = line.all_templateId[config.field];
 			var json = module ? module.json : "";
@@ -1789,7 +1901,7 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 				exportData.push( text );
 			}
 		}.bind(this));
-		if( this.template.unionMode ){
+		if( this.datatable.unionMode ){
 			exportData.push( line.options.sectionKey );
 		}
 		return exportData;
@@ -1814,7 +1926,7 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 	},
 	getColWidthArray : function(){
 		var colWidthArr = [];
-		this.template.json.excelFieldConfig.each(function (config) {
+		this.datatable.json.excelFieldConfig.each(function (config) {
 			var json = this.form.json.moduleList[config.field];
 			if ( !json ){
 				colWidthArr.push(150);
@@ -1832,14 +1944,14 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 				colWidthArr.push(150);
 			}
 		}.bind(this));
-		if( this.template.unionMode ){
+		if( this.datatable.unionMode ){
 			colWidthArr.push(340);
 		}
 		return colWidthArr;
 	},
 	getDateIndexArray : function(){
 		var dateIndexArr = []; //日期格式列下标
-		this.template.json.excelFieldConfig.each(function (config, i) {
+		this.datatable.json.excelFieldConfig.each(function (config, i) {
 			var json = this.form.json.moduleList[config.field];
 			if (json && json.type === "Calendar") {
 				dateIndexArr.push(i);
@@ -1887,9 +1999,9 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 		title = titleA.join(".");
 
 		var arg = { data : resultArr, colWidthArray : colWidthArr, title : title, withError : true };
-		this.template.fireEvent("export", [arg]);
+		this.datatable.fireEvent("export", [arg]);
 
-		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.template ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.datatable ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
 	}
 });
 
@@ -1897,12 +2009,12 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 	Implements: [Options, Events],
 	options: {
 	},
-	initialize: function (template, options) {
+	initialize: function (datatable, options) {
 
 		this.setOptions(options);
 
-		this.template = template;
-		this.form = this.template.form;
+		this.datatable = datatable;
+		this.form = this.datatable.form;
 
 	},
 	isAvaliableField : function(json, module, type){
@@ -1914,7 +2026,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		var dateColArray = this.getDateIndexArray(); //日期列
 		var orgTitleArray = this.getOrgTitleArray();
 
-		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.template ).upload( dateColArray, function (data) {
+		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.datatable ).upload( dateColArray, function (data) {
 
 			var checkAndImport = function () {
 				if( !this.checkData( fieldArray, data ) ){
@@ -1962,9 +2074,9 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		}
 		//加载模拟字段
 		this.simelateModuleMap = {};
-		this.simulateNode = new Element("div").inject(this.template.node);
+		this.simulateNode = new Element("div").inject(this.datatable.node);
 		this.simulateNode.hide();
-		this.simulateNode.set("html", this.template.templateHtml);
+		this.simulateNode.set("html", this.datatable.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.simulateNode);
 		moduleNodes.each(function (node) {
 			if (node.get("MWFtype") !== "form") {
@@ -1995,7 +2107,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 	getFieldArray: function(){
 		this.loadSimulateModule();
 		var fieldArray = []; //日期格式列下标
-		this.template.json.excelFieldConfig.each(function (config, i) {
+		this.datatable.json.excelFieldConfig.each(function (config, i) {
 			fieldArray.push({
 				"text": config.title,
 				"field": config.field,
@@ -2008,7 +2120,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 	},
 	getDateIndexArray : function(){
 		var dateIndexArr = []; //日期格式列下标
-		this.template.json.excelFieldConfig.each(function (config, i) {
+		this.datatable.json.excelFieldConfig.each(function (config, i) {
 			var json = this.form.json.moduleList[config.field];
 			if (json && json.type === "Calendar") {
 				dateIndexArr.push(i);
@@ -2018,7 +2130,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 	},
 	getOrgTitleArray : function(){
 		var orgTitleArr = []; //日期格式列下标
-		this.template.json.excelFieldConfig.each(function (config, i) {
+		this.datatable.json.excelFieldConfig.each(function (config, i) {
 			var json = this.form.json.moduleList[config.field];
 			if (json && ["Org","Reader","Author","Personfield","Orgfield"].contains(json.type) ) {
 				orgTitleArr.push(config.title);
@@ -2029,7 +2141,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 	parseImportedData: function(fieldArray, idata, ignoreSectionKey){
 		var data;
 		var sectionData;
-		if( !ignoreSectionKey && this.template.unionMode ){
+		if( !ignoreSectionKey && this.datatable.unionMode ){
 			sectionData = {};
 		}else{
 			data = [];
@@ -2134,9 +2246,9 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 
 		var data = this.parseImportedData(fieldArray, idata);
 
-		this.template.fireEvent("import", [data] );
+		this.datatable.fireEvent("import", [data] );
 
-		this.template.setData( data );
+		this.datatable.setData( data );
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
 	},
@@ -2156,9 +2268,9 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 			return arr.join(" ")
 		}
 
-		var htmlArray = ["<table "+ objectToString( this.template.json.impExpTableProperties ) +" style='"+objectToString( this.template.json.impExpTableStyles, "style" )+"'>"];
+		var htmlArray = ["<table "+ objectToString( this.datatable.json.impExpTableProperties ) +" style='"+objectToString( this.datatable.json.impExpTableStyles, "style" )+"'>"];
 
-		var titleStyle = objectToString(this.template.json.impExpTableTitleStyles, "style");
+		var titleStyle = objectToString(this.datatable.json.impExpTableTitleStyles, "style");
 		htmlArray.push("<tr>");
 		fieldArray.each(function (obj, i) {
 			htmlArray.push( "<th style='"+titleStyle+"'>"+obj.text+"</th>" );
@@ -2166,7 +2278,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		htmlArray.push("<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>");
 		htmlArray.push("</tr>" );
 
-		var contentStyles = Object.clone( this.template.json.impExpTableContentStyles );
+		var contentStyles = Object.clone( this.datatable.json.impExpTableContentStyles );
 		if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
 		var contentStyle = objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
 
@@ -2182,8 +2294,8 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		}.bind(this));
 		htmlArray.push( "</table>" );
 
-		var width = this.template.json.impExpDlgWidth || 1000;
-		var height = this.template.json.impExpDlgHeight || 700;
+		var width = this.datatable.json.impExpDlgWidth || 1000;
+		var height = this.datatable.json.impExpDlgHeight || 700;
 		width = width.toInt();
 		height = height.toInt();
 
@@ -2222,7 +2334,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		var lp = MWF.xApplication.process.Xform.LP;
 		var columnText =  lp.importValidationColumnText;
 		var columnTextExcel = lp.importValidationColumnTextExcel;
-		var excelUtil = new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.template );
+		var excelUtil = new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.datatable );
 
 		var parsedData = this.parseImportedData(fieldArray, idata, true);
 
@@ -2296,7 +2408,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 					}
 				}
 			}.bind(this));
-			if( this.template.unionMode ){
+			if( this.datatable.unionMode ){
 				if( !lineData[ MWF.xApplication.process.Xform.LP.systemField ] && !lineData["系统字段"] ){
 					var colInfor = columnText.replace( "{n}", fieldArray.length+1 );
 					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName(fieldArray.length) );
@@ -2318,7 +2430,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 			validted : flag,
 			data : idata
 		};
-		this.template.fireEvent( "validImport", [arg] );
+		this.datatable.fireEvent( "validImport", [arg] );
 
 		return arg.validted;
 	},
