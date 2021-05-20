@@ -906,8 +906,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "validationContentTdStyle": "Validation Content Td Style",
         "validationTableAttribute": "Validation Table Attribute",
         "count": "Count",
-        "import" : "Import"
-
+        "import" : "Import",
+        "datatableEditMode": "Edit Mode",
+        "datatableEditModeValue": ["single row","multiple rows"]
     },
     "actionBar": {
         "close":"Close",

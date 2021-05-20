@@ -13,6 +13,13 @@
                 <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.datatableEditMode}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="editMode" value="single" text{($.editMode!=='single')?'checked':''}/>{{$.lp.datatableEditModeValue[0]}}
+                    <input type="radio" name="editMode" value="multi" text{($.editMode==='multi')?'checked':''}/>{{$.lp.datatableEditModeValue[1]}}
+                </td>
+            </tr>
         </table>
         <div class="MWFFormulaArea" name="defaultData" title="{{$.lp.defaultData}} (S)"></div>
 
