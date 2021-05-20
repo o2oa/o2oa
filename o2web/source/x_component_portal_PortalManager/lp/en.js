@@ -100,8 +100,15 @@ MWF.xApplication.portal.PortalManager.LP = {
         "type": "Portal Type",
         "icon": "Icon",
         "id": "Portal ID",
+        "url": "Portal URL",
+        "firstPage": "Portal Homepage",
         "controllerList": "Manager",
         "available": "Available range",
+        "pcClient": "PC",
+        "mobileClient": "Mobile",
+        "true": "Enabled",
+        "false": "Disabled",
+        "anonymousAccess" : "Anonymous Access",
 
         "changeIcon": "Change Icon",
         "setManager": "Set Manager",
@@ -110,15 +117,6 @@ MWF.xApplication.portal.PortalManager.LP = {
         "setUsableUnit": "Set UsableUnit",
         "setAppUsableIdentity": "Set AppUsableIdentity",
         "setAppUsableUnit": "Set AppUsableUnit",
-
-        "url": "Portal URL",
-        "firstPage": "Portal Homepage",
-
-        "pcClient": "PC",
-        "mobileClient": "Mobile",
-        "true": "Enabled",
-        "false": "Disabled",
-        "anonymousAccess" : "Anonymous Access"
     },
     "createSelectTemplate": "Create: Select template",
     "templateCategory": "Template Category: ",
