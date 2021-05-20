@@ -142,7 +142,10 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 			var v = this.getInputData("change");
 			this._setBusinessData(v);
             this.validationMode();
-            if (this.validation()) this._setBusinessData(v);
+            if (this.validation()) {
+				this._setBusinessData(v);
+				this.fireEvent("change");
+			}
         }.bind(this));
 
 	},
