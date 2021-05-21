@@ -131,13 +131,19 @@ public class ImportModel extends SliceJpaObject {
 	public static final String enableCheck_FIELDNAME = "enableCheck";
 	@FieldDescribe("是否启用校验.")
 	@Column(name = ColumnNamePrefix + enableCheck_FIELDNAME)
-	private Boolean enableCheck;
+	private Boolean enableValid;
 
 	public static final String type_FIELDNAME = "type";
 	@FieldDescribe("类型.")
 	@Column(length = length_32B, name = ColumnNamePrefix + type_FIELDNAME)
 	@CheckPersist(allowEmpty = false, simplyString = false)
 	private String type;
+
+	public static final String processStatus_FIELDNAME = "processStatus";
+	@FieldDescribe("流程状态.")
+	@Column(length = length_32B, name = ColumnNamePrefix + processStatus_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String processStatus;
 
 	public static final String availableIdentityList_FIELDNAME = "availableIdentityList";
 	@FieldDescribe("允许使用的用户.")
@@ -225,12 +231,12 @@ public class ImportModel extends SliceJpaObject {
 		this.code = code;
 	}
 
-	public Boolean getEnableCheck() {
-		return enableCheck;
+	public Boolean getEnableValid() {
+		return enableValid;
 	}
 
-	public void setEnableCheck(Boolean enableCheck) {
-		this.enableCheck = enableCheck;
+	public void setEnableValid(Boolean enableValid) {
+		this.enableValid = enableValid;
 	}
 
 	public String getData() {
@@ -259,5 +265,13 @@ public class ImportModel extends SliceJpaObject {
 
 	public void setCount(Integer count) {
 		this.count = count;
+	}
+
+	public String getProcessStatus() {
+		return processStatus;
+	}
+
+	public void setProcessStatus(String processStatus) {
+		this.processStatus = processStatus;
 	}
 }
