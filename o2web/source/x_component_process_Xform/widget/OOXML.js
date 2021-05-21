@@ -120,22 +120,22 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var s = new XMLSerializer();
         return s.serializeToString(oo_doc);
     },
-    processDom: function(dom, oo_body){
+    processDom: function(dom, oo_body, append){
         var dom = dom.getFirst();
         while (dom){
             if (dom.tagName.toLowerCase() === "p"){
-                this.processParagraph(dom, oo_body);
+                this.processParagraph(dom, oo_body, append);
             }else if (dom.tagName.toLowerCase() === "hr") {
-                this.processHr(dom, oo_body);
+                this.processHr(dom, oo_body, append);
             }else if (dom.tagName.toLowerCase() === "table") {
-                this.processTable(dom, oo_body);
+                this.processTable(dom, oo_body, append);
             }else{
-                this.processDom(dom, oo_body);
+                this.processDom(dom, oo_body, append);
             }
             dom = dom.getNext();
         }
     },
-    processParagraph: function(dom, oo_body){
+    processParagraph: function(dom, oo_body, append){
         var pPrs = {};
         for (var i = 0; i<dom.style.length; i++){
             switch (dom.style[i]){
@@ -156,6 +156,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
         }
         var oo_p = this.createParagraph(oo_body.ownerDocument, {"pPrs": pPrs});
+
+
+
         var spans = dom.getChildren("span");
         spans.each(function(span){
             this.processRun(span, oo_p)
@@ -168,24 +171,40 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         // }.bind(this));
 
 
-
-        var oo_sectPr = this.getEl(oo_body, "sectPr");
-        if (oo_sectPr){
-            this.insertSiblings(oo_sectPr, [oo_p], "beforebegin");
+        if (append){
+            oo_body.appendChild(oo_p);
         }else{
-            this.insertChildren(oo_body, [oo_p]);
+            var oo_sectPr = this.getEl(oo_body, "sectPr");
+            if (oo_sectPr){
+                this.insertSiblings(oo_sectPr, [oo_p], "beforebegin");
+            }else{
+                this.insertChildren(oo_body, [oo_p]);
+            }
         }
     },
     getTableTblW: function(table){
-        var type = "auto";
-        var w = table.get("width").toFloat();
-        if (w) w = this.pxToPt(w);
-        if (!w) w = table.getStyle("width").toFloat();
-        if (!w){
+        debugger;
+        var type = "dxa";
+        var w = table.style.width;
+        if (!w) w = table.get("width");
+        //if (w) w = this.pxToPt(w);
+        if (w && o2.typeOf(w)==="string"){
+            var u = w.substring(w.length-1, w.length);
+            if (u==="%"){
+                type = "pct";
+            }else{
+                u = w.substring(w.length-2, w.length);
+                if (u.toLowerCase()!=="pt"){
+                    w = this.pxToPt(w);
+                }
+            }
+        }
+        if (!w || !w.toFloat()){
             w = 0;
+            type = "auto";
         }else{
-            type = "dxa";
-            w = w*20;
+            //w = w.toFloat();
+            if (type === "dxa") w = w.toFloat()*20;
         }
         return {"w": w, "type": type};
     },
@@ -196,36 +215,57 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             "color": "auto",
             "sz": "0"
         }
-        var sz = table.get("border").toFloat();
-        if (sz) sz = this.pxToPt(b);
-        if (!sz) sz = table.getStyle("border-"+where+"-width").toFloat();
-        if (!sz) sz = 0;
-        attr.sz = sz*20;
+        var border = table.getStyle("border-"+where);
+        if (border==="none"){
+            attr.val = "none";
+        }else{
+            var sz = table.getStyle("border-"+where+"-width");
+            if (!sz) sz = table.get("border");
+            if (sz && o2.typeOf(sz)==="string"){
+                u = sz.substring(sz.length-2, sz.length);
+                if (u.toLowerCase()!=="pt"){
+                    sz = this.pxToPt(sz);
+                }
+            }
+            if (!sz || !sz.toFloat()) sz = 0;
+            attr.sz = sz.toFloat()*8;
 
-        var color = this.getColorHex(table.getStyle("border-"+where+"-color"));
-        if (!color) color = "auto";
-        attr.color = color;
+            var color = this.getColorHex(table.getStyle("border-"+where+"-color"));
+            if (!color) color = "auto";
+            attr.color = color;
 
-        var style = table.getStyle("border-"+where+"-style");
-        switch (style){
-            case "dashed": case "dotted": case "double": attr.val = "double"; break;
-            default: attr.val = "single";
+            var style = table.getStyle("border-"+where+"-style");
+            switch (style){
+                case "dashed": case "dotted": case "double": attr.val = "double"; break;
+                default: attr.val = "single";
+            }
+            if (attr.sz===0) attr.val="none";
         }
 
-        var space = table.get("cellspacing").toFloat();
-        if (space) attr.space = this.pxToPt(space)*20;
+        // var sz = table.get("border");
+        // if (sz) sz = this.pxToPt(sz);
+        // if (!sz) sz = table.getStyle("border-"+where+"-width");
+        // if (!sz || !sz.toFloat()) sz = 0;
+        // attr.sz = sz.toFloat()*20;
+
+
+        var space = table.get("cellspacing");
+        if (space) attr.space = this.pxToPt(space);
+
 
         return attr;
     },
     getTableTblGrid: function(table){
+        debugger;
         var grids = [];
-        var trs = table.getElements("tr");
+        var trs = table.rows;
         for (var i = 0; i < trs.length; i++){
             var idx = 0;
             tds = trs[i].cells;
-            tds.each(function(td){
+            for (var j=0; j<tds.length; j++){
+                var td = tds[j];
                 var colspan = td.get("colspan");
-                if (!colspan) {
+                if (!colspan || colspan.toInt()===1) {
                     while (grids.length<=idx) grids.push(0);
                     var pt = this.pxToPt(td.clientWidth);
                     if (pt>grids[idx]) grids[idx] = pt;
@@ -234,11 +274,38 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     while (grids.length<=idx) grids.push(0);
                 }
                 idx++;
-            });
+            }
         }
         return grids;
     },
-    processTable: function(table, oo_body){
+    getTdValign: function(td){
+        var v = "";
+        var valign = td.getStyle("vertical-align") || td.get("valign");
+        if (valign) {
+            switch (valign){
+                case "bottom": v = "bottom"; break;
+                case "top": v = "top"; break;
+                default: v = "center";
+            }
+        }
+        return v;
+    },
+    getMsoStyle: function(dom){
+        var s = dom.getAttribute("style");
+        var sList = s.split(/\s*;\s*/g);
+        var o = {};
+        sList.map(function(style){
+            var styles = style.split(/\s*:\s*/g);
+            if (styles.length===2){
+                if (styles[0].substr(0,3).toLowerCase()==="mso"){
+                    o[styles[0]] = styles[1];
+                }
+            }
+            return false;
+        });
+        return o;
+    },
+    processTable: function(table, oo_body, append){
         var oo_doc = oo_body.ownerDocument;
 
         var oo_tbl = this.createEl(oo_doc, "tbl");
@@ -247,23 +314,23 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         //表格宽度属性
         var oo_tblW = this.createEl(oo_doc, "tblW");
         var tblW = this.getTableTblW(table);
-        this.setAttrs(oo_tblW, tblW, false);
+        this.setAttrs(oo_tblW, tblW);
         oo_tblPr.appendChild(oo_tblW);
 
         //表格边框属性
         var oo_tblBorders = this.createEl(oo_doc, "tblBorders");
         var oo_top = this.createEl(oo_doc, "top");
-        this.setAttrs(oo_top, this.getTableBorder(table, "top"), false);
-        var oo_left = this.createEl(oo_doc, "left");
-        this.setAttrs(oo_left, this.getTableBorder(table, "left"), false);
+        this.setAttrs(oo_top, this.getTableBorder(table, "top"));
+        var oo_start = this.createEl(oo_doc, "start");
+        this.setAttrs(oo_start, this.getTableBorder(table, "left"));
         var oo_bottom = this.createEl(oo_doc, "bottom");
-        this.setAttrs(oo_bottom, this.getTableBorder(table, "bottom"), false);
-        var oo_right = this.createEl(oo_doc, "right");
-        this.setAttrs(oo_right, this.getTableBorder(table, "right"), false);
-        this.insertSiblings(oo_tblBorders, [oo_top, oo_left, oo_bottom, oo_right], "beforeend")
+        this.setAttrs(oo_bottom, this.getTableBorder(table, "bottom"));
+        var oo_end = this.createEl(oo_doc, "end");
+        this.setAttrs(oo_end, this.getTableBorder(table, "right"));
+        this.insertSiblings(oo_tblBorders, [oo_top, oo_start, oo_bottom, oo_end], "beforeend");
         oo_tblPr.appendChild(oo_tblBorders);
 
-
+        //表格边距
         var mar = table.get("cellpadding").toFloat();
         if (mar){
             mar = this.pxToPt(b)*20;
@@ -283,25 +350,206 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             oo_tblPr.appendChild(oo_tblCellMar);
         }
 
+        //左右对齐
+        var align = table.get("align");
+        if (align){
+            var jc = "start"
+            switch (align){
+                case "center": jc = "center"; break;
+                case "right":
+                case "end": jc = "end"; break;
+                case "justify": jc = "both"; break;
+            }
+            var oo_jc = this.createEl(oo_doc, "jc");
+            this.setAttrs(oo_jc, {"val": jc});
+            oo_tblPr.appendChild(oo_jc);
+        }
 
-        // <w:tblGrid>
-        //     <w:gridCol w:w="4597"/>
-        //     <w:gridCol w:w="4237"/>
-        // </w:tblGrid>
+        //表格浮动
+        debugger;
+        var msoStyle = this.getMsoStyle(table);
+
+        // table.style
+        //
+        // mso-table-anchor-vertical:margin; mso-table-anchor-horizontal:column;mso-table-left:left;mso-table-top:bottom
+        //
+        // <w:tblpPr w:tblpYSpec="bottom" w:tblpXSpec="center" w:horzAnchor="margin"/>
+        // <w:tblOverlap w:val="never"/>
+
+
+
+        oo_tbl.appendChild(oo_tblPr);
+
+        //表格网格
+        var grids = this.getTableTblGrid(table);
+        var oo_tblGrid = this.createEl(oo_doc, "tblGrid");
+        grids.each(function(grid){
+            var oo_gridCol = this.createEl(oo_doc, "gridCol");
+            this.setAttrs(oo_gridCol, {"w": grid*20});
+            oo_tblGrid.appendChild(oo_gridCol);
+        }.bind(this));
+        oo_tbl.appendChild(oo_tblGrid);
+
+        var vmge = {};
+        var trs = table.rows;
+        for (var i=0; i<trs.length; i++){
+            var tr = trs[i];
+
+        // }
+        // trs.each(function(tr){
+            var oo_tr = this.createEl(oo_doc, "tr");
+
+            var tdIdx = 0;
+            //垂直合并单元格
+            var nextIdx = tdIdx;
+            var mge = vmge["td"+nextIdx];
+            while (mge){
+                vmge["td"+nextIdx]--;
+
+                var oo_mtc = this.createEl(oo_doc, "tc");
+                var oo_mtcPr = this.createEl(oo_doc, "tcPr");
+                var oo_mvMerge = this.createEl(oo_doc, "vMerge");
+                oo_mtcPr.appendChild(oo_mvMerge);
+                oo_mtc.appendChild(oo_mtcPr);
+                oo_tr.appendChild(oo_tc);
+                tdIdx++;
+
+                nextIdx++;
+                mge = vmge["td"+nextIdx];
+            }
+
+            // var tds = tr.getElements("td");
+            var tds = tr.cells;
+
+            for (var j=0; j<tds.length; j++){
+                var td = tds[j];
+            //}
+            // tds.each(function(td, idx){
+                 var oo_tc = this.createEl(oo_doc, "tc");
+
+                 var oo_tcPr = this.createEl(oo_doc, "tcPr");
+                 //单元格宽度
+                 var oo_tcW = this.createEl(oo_doc, "tcW");
+                var tcW = this.getTableTblW(td);
+                this.setAttrs(oo_tcW, tcW);
+                 //this.setAttrs(oo_tcW, {"w": this.pxToPt(td.clientWidth)*20, "type": "dxa"});
+                 oo_tcPr.appendChild(oo_tcW);
+
+                 //水平合并单元格
+                 var colspan = td.get("colspan");
+                 if (colspan && colspan.toInt()>1){
+                     tdIdx = tdIdx+(colspan.toInt()-1);
+                     var oo_gridSpan = this.createEl(oo_doc, "gridSpan");
+                     this.setAttrs(oo_gridSpan, {"val": colspan});
+                     oo_tcPr.appendChild(oo_gridSpan);
+                 }
+
+                 //垂直合并单元格
+                 var rowspan = td.get("rowspan");
+                 if (rowspan && rowspan.toInt()>1){
+                     vmge["td"+tdIdx] = rowspan.toInt()-1;
+                     var oo_vMerge = this.createEl(oo_doc, "vMerge");
+                     this.setAttrs(oo_vMerge, {"val": "restart"});
+                     oo_tcPr.appendChild(oo_vMerge);
+                 }
+
+                 //单元格边框
+                 var oo_tcBorders = this.createEl(oo_doc, "tcBorders");
+                 var oo_top = this.createEl(oo_doc, "top");
+                 this.setAttrs(oo_top, this.getTableBorder(td, "top"));
+                 var oo_start = this.createEl(oo_doc, "start");
+                 this.setAttrs(oo_start, this.getTableBorder(td, "left"));
+                 var oo_bottom = this.createEl(oo_doc, "bottom");
+                 this.setAttrs(oo_bottom, this.getTableBorder(td, "bottom"));
+                 var oo_end = this.createEl(oo_doc, "end");
+                 this.setAttrs(oo_end, this.getTableBorder(td, "right"));
+                 this.insertSiblings(oo_tcBorders, [oo_top, oo_start, oo_bottom, oo_end], "beforeend");
+                 oo_tcPr.appendChild(oo_tcBorders);
+
+                 var v = this.getTdValign(td);
+                 if (v){
+                     var oo_vAlign = this.createEl(oo_doc, "vAlign");
+                     this.setAttrs(oo_vAlign, {"val": v});
+                     oo_tcPr.appendChild(oo_vAlign);
+                 }
+
+                 var oo_hideMark = this.createEl(oo_doc, "hideMark");
+                 oo_tcPr.appendChild(oo_hideMark);
+
+                 oo_tc.appendChild(oo_tcPr);
+                 //表格内容；
+                 this.processDom(td, oo_tc, true);
+
+                 var pflag = false;
+                 var node = oo_tc.firstChild;
+                 while (node){
+                     if (node.tagName==="p"){
+                         pflag = true;
+                         break;
+                     }
+                     node = node.nextSibling;
+                 }
+
+                 if (!pflag){
+                     var oo_p = this.createEl(oo_doc, "p");
+                     oo_tc.appendChild(oo_p);
+                 }
+
+                 oo_tr.appendChild(oo_tc);
+
+                 //垂直合并单元格
+                 var nextIdx = tdIdx+1;
+                 var mge = vmge["td"+nextIdx];
+                 while (mge){
+                     vmge["td"+nextIdx]--;
+
+                     var oo_mtc = this.createEl(oo_doc, "tc");
+                     var oo_mtcPr = this.createEl(oo_doc, "tcPr");
+                     var oo_mvMerge = this.createEl(oo_doc, "vMerge");
+                     oo_mtcPr.appendChild(oo_mvMerge);
+                     oo_mtc.appendChild(oo_mtcPr);
+                     oo_tr.appendChild(oo_tc);
+                     tdIdx++;
+
+                     nextIdx++;
+                     mge = vmge["td"+nextIdx];
+                 }
+
+                 tdIdx++;
+             }
+
+            oo_tbl.appendChild(oo_tr);
+        }
+
+
+        if (append){
+            oo_body.appendChild(oo_tbl);
+        }else{
+            var oo_sectPr = this.getEl(oo_body, "sectPr");
+            if (oo_sectPr){
+                this.insertSiblings(oo_sectPr, [oo_tbl], "beforebegin");
+            }else{
+                this.insertChildren(oo_body, [oo_tbl]);
+            }
+        }
     },
 
     pxToPt: function(px){
         return (px.toFloat()/this.dpi)*72;
     },
-    processHr: function(hr, oo_body){
+    processHr: function(hr, oo_body, append){
         var oo_doc = oo_body.ownerDocument;
 
         var oo_p = this.createParagraph(oo_doc, {});
-        var oo_sectPr = this.getEl(oo_body, "sectPr");
-        if (oo_sectPr){
-            this.insertSiblings(oo_sectPr, [oo_p], "beforebegin");
+        if (append){
+            oo_body.appendChild(oo_p);
         }else{
-            this.insertChildren(oo_body, [oo_p]);
+            var oo_sectPr = this.getEl(oo_body, "sectPr");
+            if (oo_sectPr){
+                this.insertSiblings(oo_sectPr, [oo_p], "beforebegin");
+            }else{
+                this.insertChildren(oo_body, [oo_p]);
+            }
         }
 
         var oo_run = this.createRun(oo_doc, {"rPrs": {"noProof":{}}});
@@ -503,7 +751,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
         }
         var text = span.get("text");
-        if (!text.trim()) text = "";
+        //if (!text.trim()) text = "";
         var oo_run = this.createRun(oo_p.ownerDocument, {"rPrs": rPrs, "font": font, "text": text});
         oo_p.appendChild(oo_run);
     },
@@ -720,9 +968,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             "navy": "000080",
             "blue": "0000ff",
             "teal": "008080",
-            "aqua": "00ffff"
+            "aqua": "00ffff",
+            "initial": "000000"
         }
         if (colorKeys[clr]) return colorKeys[clr];
-        return clr.rgbToHex() || clr;
+        var color = clr.rgbToHex() || clr;
+        return color.replace("#", "");
     }
 });
