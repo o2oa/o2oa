@@ -1,6 +1,8 @@
 package com.x.cms.assemble.control.jaxrs.permission;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -14,6 +16,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.ExceptionWrapInConvert;
 import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
+import com.x.cms.assemble.control.service.ReviewService;
 import com.x.cms.core.entity.Document;
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,14 +53,6 @@ public class ActionRefreshDocumentPermission extends BaseAction {
 		}
 
 		if (check) {
-			if ( ListTools.isEmpty(wi.getPermissionList())) {
-				check = false;
-				Exception exception = new ExceptionServiceLogic("文档权限为空，该文档将没有任何用户可以访问。ID：" + wi.getDocId());
-				result.error(exception);
-			}
-		}
-
-		if (check) {
 			try {
 				document = documentQueryService.get(wi.getDocId());
 				if (document == null) {
@@ -75,7 +70,14 @@ public class ActionRefreshDocumentPermission extends BaseAction {
 
 		if (check) {
 			try {
-				documentPersistService.refreshDocumentPermission(document.getId(), wi.getPermissionList());
+				if ( ListTools.isEmpty(wi.getPermissionList())) {
+					ReviewService reviewService = new ReviewService();
+					try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+						reviewService.refreshDocumentReview(emc, wi.getDocId());
+					}
+				} else {
+					documentPersistService.refreshDocumentPermission(document.getId(), wi.getPermissionList());
+				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionServiceLogic(e, "系统在为文档设置用户访问权限过程中发生异常。ID：" + wi.getDocId());
