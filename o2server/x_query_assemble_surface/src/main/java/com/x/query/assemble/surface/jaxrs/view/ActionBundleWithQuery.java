@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.tools.MD5Tool;
 import org.apache.commons.collections4.list.TreeList;
 
 import com.google.gson.JsonElement;
@@ -57,11 +59,23 @@ class ActionBundleWithQuery extends BaseAction {
 		}
 		Wo wo = new Wo();
 		wo.setValueList(this.fetchBundle(business, view, runtime));
+		wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName()+ Config.token().getCipher()));
 		result.setData(wo);
 		return result;
 	}
 
 	public static class Wo extends WrapStringList {
+
+		@FieldDescribe("访问execute秘钥串.")
+		private String key;
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
+		}
 
 	}
 
