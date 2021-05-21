@@ -410,7 +410,7 @@
 						</compilerArgs>
 					</configuration>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -638,48 +638,47 @@
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-core</artifactId>
-				<version>3.3.7</version>
+				<version>3.3.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-frontend-jaxws</artifactId>
-				<version>3.3.7</version>
+				<version>3.3.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-frontend-simple</artifactId>
-				<version>3.3.7</version>
+				<version>3.3.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-wsdl</artifactId>
-				<version>3.3.7</version>
+				<version>3.3.10</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-databinding-jaxb</artifactId>
-				<version>3.3.7</version>
+				<version>3.3.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-transports-http</artifactId>
-				<version>3.3.7</version>
+				<version>3.3.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-bindings-soap</artifactId>
-				<version>3.3.7</version>
+				<version>3.3.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-bindings-xml</artifactId>
-				<version>3.3.7</version>
+				<version>3.3.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-ws-addr</artifactId>
-				<version>3.3.7</version>
+				<version>3.3.10</version>
 			</dependency>
 
 			<dependency>
@@ -702,17 +701,22 @@
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
-				<version>4.0.1</version>
+				<version>4.1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml</artifactId>
-				<version>4.0.1</version>
+				<version>4.1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml-schemas</artifactId>
-				<version>4.0.1</version>
+				<version>4.1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-scratchpad</artifactId>
+				<version>4.1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>fr.opensagres.xdocreport</groupId>
@@ -808,7 +812,7 @@
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz</artifactId>
-				<version>2.3.0</version>
+				<version>2.3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.imgscalr</groupId>
@@ -850,7 +854,7 @@
 				<artifactId>javapoet</artifactId>
 				<version>1.11.1</version>
 			</dependency>
-			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId> 
+			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId>
 				<version>20200316</version> </dependency -->
 			<dependency>
 				<groupId>com.github.neuroph</groupId>
@@ -887,7 +891,7 @@
 				<artifactId>simplecaptcha</artifactId>
 				<version>1.2.1</version>
 			</dependency>
-			<!-- dependency> <groupId>cglib</groupId> <artifactId>cglib</artifactId> 
+			<!-- dependency> <groupId>cglib</groupId> <artifactId>cglib</artifactId>
 				<version>3.2.0</version> </dependency -->
 			<dependency>
 				<groupId>com.alibaba</groupId>
