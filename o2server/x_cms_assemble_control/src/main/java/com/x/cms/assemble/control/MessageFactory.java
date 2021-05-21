@@ -14,4 +14,10 @@ public class MessageFactory {
 		logger.debug("cms send notification:[" +  title + "] for target person：" + person );
 		MessageConnector.send(MessageConnector.TYPE_CMS_PUBLISH,  title, person, messageWo);
 	}
+
+	public static void cms_publish_creator(MessageWo messageWo) throws Exception {
+		String title = "新信息发布:" + messageWo.getTitle();
+		logger.debug("cms send notification:[" +  title + "] for target person：" + messageWo.getCreatorPerson() );
+		MessageConnector.send(MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR,  title, messageWo.getCreatorPerson(), messageWo);
+	}
 }
