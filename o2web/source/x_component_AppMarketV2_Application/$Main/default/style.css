@@ -407,7 +407,7 @@
 
 }
 .o2_appmarket_application_comment_content_left{
-    width:30%;
+    width:20%;
     height:220px;
     float:left;
     margin-top:10px;
@@ -428,7 +428,6 @@
     font-family:MicrosoftYaHei;
     color:rgba(51,51,51,1);
     line-height:21px;
-    overflow: hidden;
 
 }
 .comment_dlg_title{
