@@ -161,7 +161,7 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad", "loadSectionData", "beforeloadSectionLines", "afterloadSectionLines",
-				"beforeLoadLine", "afterLoadLine","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport"]
+				"beforeLoadLine", "afterLoadLine", "addLine", "deleteLine", "afterDeleteLine","completeLineEdit", "cancelLineEdit", "export", "import", "validImport"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -194,6 +194,9 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			//允许导出
 			this.exportenable  = this.json.impexpType === "impexp" || this.json.impexpType === "exp";
 
+			//是否多行同时编辑
+			this.multiEditMode = this.json.editMode === "multi";
+
 			//是否有总计列
 			this.totalFlag = false;
 			this.totalColumns = [];
@@ -206,9 +209,6 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 				this.isNew = true;
 				this._setValue(this.data);
 			}
-
-			//是否多行同时编辑
-			this.multiEditMode = this.json.editMode === "multi";
 
 			//object表示数据是区段合并状态 ???
 			this.unionMode = false; //o2.typeOf(this.data)==="object";
@@ -393,14 +393,14 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 				if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
 				if (!value.then) if (o2.typeOf(value)==="array") value = {"data": value || [], "total":{}};
 			}
-			if(!value){
+			if(!value && this.multiEditMode){
 				value = {"data": [], "total":{}};
 				var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
 				for( var i=0; i<count; i++ ){
 					value.data.push({})
 				}
 			}
-			return value;
+			return value || {"data": [], "total":{}};
 		},
 		getValue: function(){
 			return this._getValue();
@@ -591,6 +591,7 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 		// 	return line;
 		// },
 		_addLine: function(ev, edited, sectionKey, data){
+			if( !this._completeLineEdit() )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -609,10 +610,14 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			// }
 
 			this.setData( data );
-			this.fireEvent("addLine", [{"line":this.lineList[index], "ev":ev}]);
-			return this.lineList[index];
+			var line = this.getLine(index);
+			line.isNewAdd = true;
+
+			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
+			return line;
 		},
 		_insertLine: function(ev, beforeLine){
+			if( !this._completeLineEdit() )return;
 			debugger;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
@@ -631,10 +636,14 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			this.newLineIndex = index;
 			// }
 			this.setData( data );
-			this.fireEvent("addLine",[{"line":this.lineList[index], "ev":ev}]);
-			return this.lineList[index];
+			var line = this.getLine(index);
+			line.isNewAdd = true;
+
+			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
+			return line;
 		},
 		_insertLineByIndex: function(ev, sectionKey, index, d){
+			if( !this._completeLineEdit() )return;
 			debugger;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
@@ -652,8 +661,11 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			data.data.splice(index, 0, d||{});
 			// }
 			this.setData( data );
-			this.fireEvent("addLine",[{"line":this.lineList[index], "ev":ev}]);
-			return this.lineList[index];
+			var line = this.getLine(index);
+			line.isNewAdd = true;
+
+			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
+			return line;
 		},
 		_deleteSelectedLine: function(ev){
 			debugger;
@@ -684,10 +696,14 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 		},
 		_delLines: function(lines){
 			var _self = this;
+			var saveFlag = false;
+
 			var data = _self.getData();
 
 			lines.reverse().each(function(line){
 				_self.fireEvent("deleteLine", [line]);
+
+				if(line.deleteAttachment())saveFlag = true;
 
 				// if( line.options.sectionKey ){ //区段合并后的数据
 				// 	var sectionData = data.data[line.options.sectionKey];
@@ -696,10 +712,13 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 				data.data.splice(line.options.index, 1);
 				// }
 
+				if(this.currentEditedLine === line)this.currentEditedLine = null;
+
 				_self.fireEvent("afterDeleteLine");
 			});
 
 			_self.setData( data );
+			if(saveFlag)this.form.saveFormData();
 		},
 		_deleteLine: function(ev, line){
 			if( this.isMin() ){
@@ -709,15 +728,16 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			}
 			var _self = this;
 			this.form.confirm("warn", ev, MWF.xApplication.process.Xform.LP.deleteDatagridLineTitle, MWF.xApplication.process.Xform.LP.deleteDatagridLine, 300, 120, function(){
-				_self._delSingleLine(line);
+				_self._delLine(line);
 				this.close();
 			}, function(){
 				this.close();
 			}, null, null, this.form.json.confirmStyle);
 		},
-		_delSingleLine: function(line){
+		_delLine: function(line){
 			this.fireEvent("deleteLine", [line]);
 
+			var saveFlag = line.deleteAttachment();
 			//使用数据驱动
 			var data = this.getData();
 			// if( line.options.sectionKey ){ //区段合并后的数据
@@ -726,19 +746,58 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			// }else {
 			data.data.splice(line.options.index, 1);
 			// }
+			if(this.currentEditedLine === line)this.currentEditedLine = null;
 			this.setData( data );
 			this.fireEvent("afterDeleteLine");
+
+			if(saveFlag)this.form.saveFormData();
+		},
+		_cancelLineEdit: function(){
+			var line = this.currentEditedLine;
+			if( !line )return true;
+			if( line.isNewAdd ){
+				var saveFlag = line.deleteAttachment();
+				this._delLine( line );
+				this.currentEditedLine = null;
+				if(saveFlag)this.form.saveFormData();
+			}else{
+				if(line.attachmentChangeFlag){
+					this.form.saveFormData();
+					line.attachmentChangeFlag = false;
+				}
+				line.data = Object.clone(line.originalData);
+				line.changeEditMode(false);
+				this._loadTotal();
+				this.currentEditedLine = null;
+				this.fireEvent("cancelLineEdit", [line]);
+			}
+			return true;
 		},
 		_completeLineEdit: function(){
 			debugger;
 			var line = this.currentEditedLine;
 			if( !line )return true;
 			if( !line.validation() )return false;
-			line.data = line.getData();
+			if(line.attachmentChangeFlag){
+				this.form.saveFormData();
+				line.attachmentChangeFlag = false;
+			}
+			line.isNewAdd = false;
+			// line.data = line.getData();
+			line.originalData = Object.clone(line.data);
+			line.changeEditMode(false);
 			this._loadTotal();
-			this.currentEditedLine = false;
+			this.currentEditedLine = null;
 			this.fireEvent("completeLineEdit", [line]);
 			return true;
+		},
+		_changeEditedLine: function(line){
+			if( this.currentEditedLine ){
+				if( line ===  this.currentEditedLine )return;
+				if( !this._completeLineEdit() )return;
+			}
+			line.changeEditMode(true);
+			this.currentEditedLine = line;
 		},
 		// _checkSelectAll: function () {
 		// 	debugger;
@@ -939,7 +998,7 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			// if( ev ){
 			// 	this._deleteLine(ev, line);
 			// }else{
-			this._delSingleLine(line);
+			this._delLine(line);
 			// }
 		},
 		/**
@@ -1028,7 +1087,7 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			// if( ev ){
 			// 	this._deleteLine(ev, line);
 			// }else{
-			this._delSingleLine(line);
+			this._delLine(line);
 			// }
 		},
 		/**
@@ -1479,6 +1538,14 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		this.data = data;
 		this.form = this.datatable.form;
 
+		if( !this.datatable.multiEditMode && !this.options.isNew){
+			this.originalData = Object.clone(data);
+		}
+
+		this.init()
+
+	},
+	init: function(){
 		this.modules = [];
 		this.all = {};
 		this.all_templateId = {};
@@ -1487,6 +1554,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		this.allField = {};
 		this.allField_templateId = {};
 
+		this.changedAttachmentMap = {};
 	},
 	load: function(){
 		debugger;
@@ -1523,6 +1591,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 
 				if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 					json.type = "AttachmentDg";
+					json.ignoreSite = true;
 					json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
 				}
 
@@ -1530,6 +1599,17 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 				if (this.form.forms[id])this.form.forms[id] = null;
 
 				var module = this.form._loadModule(json, node, function () {});
+
+				if((json.type==="Attachment" || json.type==="AttachmentDg")){
+					module.addEvent("change", function(){
+						if( this.datatable.multiEditMode ){
+							_self.form.saveFormData();
+						}else{
+							_self.attachmentChangeFlag = true;
+						}
+					}.bind(this))
+				}
+
 				this.form.modules.push(module);
 
 				this.modules.push(module);
@@ -1560,7 +1640,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		if(!this.datatable.multiEditMode && this.options.isEditable){
 			this.editFun = function(){
 				if( !this.options.isEdited ){
-					this.changeEditMode(true)
+					this.datatable._changeEditedLine(this)
 				}
 			}.bind(this)
 			this.node.addEvent("click", this.editFun)
@@ -1569,6 +1649,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		if(this.options.isNew){
 			debugger;
 			this.data = this.getData();
+			if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
 			this.options.isNew = false;
 		}
 	},
@@ -1598,6 +1679,29 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		templateId = (templateId.length > maxLength) ? templateId.substr(templateId.length-maxLength, maxLength) : templateId;
 
 		return templateId + sectionId + baseSite;
+	},
+	deleteAttachment: function(){
+		var saveFlag = false;
+		for( var key in this.allField){
+			var module = this.allField[key];
+			if( module.json.type==="Attachment" || module.json.type==="AttachmentDg" ){
+				var array = module._getBusinessData();
+				(array || []).each(function(d){
+					saveFlag = true;
+					this.form.workAction.deleteAttachment(d.id, this.form.businessData.work.id);
+
+					for( var i=0; i<this.form.businessData.attachmentList.length; i++ ){
+						var attData = this.form.businessData.attachmentList[i];
+						if( attData.id === d.id ){
+							this.form.businessData.attachmentList.erase(attData);
+							break;
+						}
+					}
+
+				}.bind(this))
+			}
+		}
+		return saveFlag;
 	},
 	loadSequence: function(){
 		var sequenceTd = this.node.getElement("td.mwf_sequence");
@@ -1652,8 +1756,6 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			"events": {
 				"click": function(ev){
 					this.datatable._completeLineEdit(ev);
-					this.changeEditMode(false);
-					this.datatable.currentEditedLine = null;
 					ev.stopPropagation();
 				}.bind(this)
 			}
@@ -1664,7 +1766,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			"styles": this.form.css.delLineAction,
 			"events": {
 				"click": function(ev){
-					this._cancelLineEdit(ev);
+					this.datatable._cancelLineEdit(ev, this);
 					ev.stopPropagation();
 				}.bind(this)
 			}
@@ -1676,7 +1778,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			"events": {
 				"click": function(ev){
 					this.datatable._deleteLine( ev, this );
-					if( this.datatable.currentEditedLine === this )this.datatable.currentEditedLine = null;
+					// if( this.datatable.currentEditedLine === this )this.datatable.currentEditedLine = null;
 					ev.stopPropagation();
 				}.bind(this)
 			}
@@ -1685,51 +1787,9 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 	changeEditMode: function( isEdited ){
 		if( isEdited === this.options.isEdited )return;
 		if( !this.options.isEditable )return;
-		if( !this.datatable.multiEditMode ){
-			if(isEdited && !this.datatable._completeLineEdit())return;
-			// if( this.datatable.currentEditedLine ){
-			// 	if(this.datatable.currentEditedLine !== this){
-			// 		if(isEdited && !this.datatable._completeLineEdit())return;
-			// 	}else{
-			// 		this.data = this.getData();
-			// 	}
-			// }
-		}
 		this.options.isEdited = isEdited;
 		this.reload();
 	},
-	// checkSelect: function () {
-	// 	var selectData = this.selector.getData();
-	// 	var selected;
-	// 	if(o2.typeOf(selectData)==="array"){
-	// 		selected = selectData.contains(this.datatable.json.selectorSelectedValue);
-	// 	}else{
-	// 		selected = selectData === this.datatable.json.selectorSelectedValue;
-	// 	}
-	// 	this.selected = selected;
-	// },
-	// select: function(){
-	// 	this.selected = true;
-	// 	if(this.selector)this.selector.setData(this.datatable.json.selectorSelectedValue);
-	// },
-	// unselect: function(){
-	// 	this.selected = false;
-	// 	if( this.selector.getOptionsObj ){
-	// 		var options = this.selector.getOptionsObj();
-	// 		var value = "";
-	// 		var arr = options.valueList || [];
-	// 		for( var i=0; i<arr.length; i++ ){
-	// 			var v = arr[i];
-	// 			if( v !== this.datatable.json.selectorSelectedValue ){
-	// 				value = v;
-	// 				break;
-	// 			}
-	// 		}
-	// 		this.selector.setData(value);
-	// 	}else{
-	// 		this.selector.setData("")
-	// 	}
-	// },
 	reload: function(){
 		for(var key in this.all){
 			var module = this.all[key];
@@ -1738,7 +1798,11 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			if (this.form.forms[key])delete this.form.forms[key];
 		}
 		this.node.empty();
-		this.node.removeEvent("click", this.editFun);
+		if(this.editFun){
+			this.node.removeEvent("click", this.editFun);
+			this.editFun = null;
+		}
+		this.init();
 		this.load();
 	},
 	clear: function () { //把module清除掉
@@ -1749,16 +1813,17 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			if (this.form.forms[key])delete this.form.forms[key];
 		}
 		this.node.destroy();
+		this.init();
 	},
 	getData: function () {
 		var data = this.data;
-		for( var key in this.allField){
-			var module = this.allField[key];
-			var id = key.split("..").getLast();
+		for( var key in this.allField_templateId){
+			var module = this.allField_templateId[key];
+			// var id = key.split("..").getLast();
 			if( module.json.type==="Attachment" || module.json.type==="AttachmentDg" ){
-				data[id] = module._getBusinessData();
+				data[key] = module._getBusinessData();
 			}else{
-				data[id] = module.getData();
+				data[key] = module.getData();
 			}
 		}
 		return data;
