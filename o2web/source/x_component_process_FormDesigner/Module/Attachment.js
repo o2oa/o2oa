@@ -66,8 +66,10 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 
 	_initModule: function(){
 		this.node.empty();
-		if (this.parentContainer && this.parentContainer.json.moduleName == "datagrid$Data" && !this.json.size) this.json.size = "min";
-		if (this.parentContainer && this.parentContainer.json.moduleName == "datagrid$Data" && !this.json.listStyle) this.json.listStyle = "sequence";
+		// if (this.parentContainer && this.parentContainer.json.moduleName == "datagrid$Data" && !this.json.size) this.json.size = "min";
+		// if (this.parentContainer && this.parentContainer.json.moduleName == "datagrid$Data" && !this.json.listStyle) this.json.listStyle = "sequence";
+		if (this.parentContainer && ["datagrid$Data","datatable$Data"].contains(this.parentContainer.json.moduleName) && !this.json.size) this.json.size = "min";
+		if (this.parentContainer && ["datagrid$Data","datatable$Data"].contains(this.parentContainer.json.moduleName) && !this.json.listStyle) this.json.listStyle = "sequence";
 		this.loadAttachmentController(this.json.editorProperties);
 
 		this.setPropertiesOrStyles("styles");
