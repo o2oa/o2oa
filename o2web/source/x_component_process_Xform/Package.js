@@ -23,6 +23,7 @@ MWF.xApplication.process.Xform.require = function(callback){
         ["process.Xform", "Address"],
         ["process.Xform", "Table"],
         ["process.Xform", "Datagrid"],
+        ["process.Xform", "Datatable"],
         ["process.Xform", "Datatemplate"],
         ["process.Xform", "Tab"],
         ["process.Xform", "Tree"],
