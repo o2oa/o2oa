@@ -122,6 +122,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.datagrid,
     "className": "Datagrid"
   },
+//  "datatable": {
+//    "icon": "datagrid.png",
+//    "text": MWF.xApplication.process.FormDesigner.LP.modules.datatable,
+//    "className": "Datatable"
+//  },
   "datatemplate": {
     "icon": "datatemplate.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.datatemplate,
