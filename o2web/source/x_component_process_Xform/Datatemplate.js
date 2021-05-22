@@ -1284,6 +1284,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 					if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 						json.type = "AttachmentDg";
+						json.ignoreSite = true;
 						json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
 					}
 
