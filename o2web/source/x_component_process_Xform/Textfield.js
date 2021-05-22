@@ -149,7 +149,10 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
             var v = this.getInputData("change");
             this._setBusinessData(v);
             this.validationMode();
-            if (this.validation()) this._setBusinessData(v);
+            if (this.validation()) {
+                this._setBusinessData(v);
+                this.fireEvent("change");
+            }
         }.bind(this));
         if (this.json.ANNModel){
             this.node.getFirst().addEvent("focus", function(){

@@ -301,7 +301,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "attachment": "Attachment",
         "div": "Div",
         "table": "Table",
+        // "datagrid": "Datagrid(Deprecated)",
         "datagrid": "Datagrid",
+        "datatable": "Datatable",
         "datatemplate": "Datatemplate",
         "subform": "Subform",
         "ViewSelector": "ViewSelector",
@@ -549,6 +551,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowUpload": "Allow Upload",
         "allowPreview": "Allow Preview",
         "allowDownload": "Allow Download",
+        "allowEdit": "Allow Edit",
         "allowDelete": "Allow Delete",
         "allowDelMyAtt": "Only allow delete files uploaded by yourself",
         "allowDelCurActivityAtt": "Only allow delete files uploaded on current activity",
@@ -560,7 +563,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideLayoutButton": "Hide Layout Buttons",
         "hideSettingButton": "Hide Setting Buttons",
         "hideModeButton": "Hide Mode Button",
-        "showInDatagrid": "Show In Datagrid",
+        "showInDatagrid": "Show In Datagrid Or Datatable",
 
         "tableSize": "Table Size",
         "row": "Row",
@@ -588,6 +591,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "layoutCell": "Layout Cell",
         "other": "Other",
 
+        "permission": "Permission",
+
+        "containerStyles": "Container Styles",
+        "tableAttribute": "Table Attribute",
         "border": "Border",
         "backgroundColor": "Background Color",
         "alternateRow": "Alternate Row",
@@ -900,8 +907,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "validationContentTdStyle": "Validation Content Td Style",
         "validationTableAttribute": "Validation Table Attribute",
         "count": "Count",
-        "import" : "Import"
-
+        "import" : "Import",
+        "datatableEditMode": "Edit Mode",
+        "datatableEditModeValue": ["single row","multiple rows"]
     },
     "actionBar": {
         "close":"Close",
