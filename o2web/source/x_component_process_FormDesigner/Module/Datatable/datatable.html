@@ -16,8 +16,10 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.datatableEditMode}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="editMode" value="single" text{($.editMode!=='single')?'checked':''}/>{{$.lp.datatableEditModeValue[0]}}
-                    <input type="radio" name="editMode" value="multi" text{($.editMode==='multi')?'checked':''}/>{{$.lp.datatableEditModeValue[1]}}
+                    <input type="radio" name="editMode" value="single" text{($.editMode!=='multi')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}defaultCountEditTr').setStyle('display', 'none')}" />{{$.lp.datatableEditModeValue[0]}}
+                    <input type="radio" name="editMode" value="multi" text{($.editMode==='multi')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}defaultCountEditTr').setStyle('display', '')}" />{{$.lp.datatableEditModeValue[1]}}
                 </td>
             </tr>
         </table>
@@ -25,7 +27,7 @@
 
         <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.count}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
+            <tr id="text{$.pid}defaultCountEditTr" style="display: text{($.editMode!=='multi')?'none':''};">
                 <td class="editTableTitle" width="80px">{{$.lp.defaultShow}}:</td>
                 <td class="editTableValue">
                     <input type="text" name="defaultCount" value="text{$.defaultCount}" class="editTableInputNoWidth" style="width: 100px;"/>{{$.lp.item}}

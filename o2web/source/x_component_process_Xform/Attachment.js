@@ -1315,6 +1315,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 this.form.workAction.getAttachment(o.id, this.form.businessData.work.id, function (json) {
                     if (json.data) {
                         if (!json.data.control) json.data.control = {};
+
+                        this.form.businessData.attachmentList.push(json.data);
+
                         this.attachmentController.addAttachment(json.data, o.messageId);
                     }
                     this.attachmentController.checkActions();
@@ -1450,6 +1453,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         this.form.workAction.deleteAttachment(attachment.data.id, this.form.businessData.work.id, function (josn) {
             this.attachmentController.removeAttachment(attachment);
             this.attachmentController.checkActions();
+
+            for( var i=0; i<this.form.businessData.attachmentList.length; i++ ){
+                var attData = this.form.businessData.attachmentList[i];
+                if( attData.id === id ){
+                    this.form.businessData.attachmentList.erase(attData);
+                    break;
+                }
+            }
 
             if (this.form.officeList) {
                 this.form.officeList.each(function (office) {
@@ -2218,6 +2229,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "ignoreSite": this.json.ignoreSite,
             "onOrder": function () {
                 this.fireEvent("change");
             }.bind(this)
@@ -2241,9 +2253,15 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         // if (d) d.each(function (att) {
         //     this.attachmentController.addAttachment(att);
         // }.bind(this));
-        this.form.businessData.attachmentList.each(function (att) {
-            if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
-        }.bind(this));
+        if(this.json.ignoreSite) {
+            ( this._getBusinessData() || [] ).each(function (att) {
+                this.attachmentController.addAttachment(att);
+            }.bind(this));
+        }else{
+            this.form.businessData.attachmentList.each(function (att) {
+                if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
+            }.bind(this));
+        }
         this.setAttachmentBusinessData();
     },
     setAttachmentBusinessData: function(){
