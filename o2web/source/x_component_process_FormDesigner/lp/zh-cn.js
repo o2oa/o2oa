@@ -299,7 +299,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "attachment": "附件",
         "div": "容器",
         "table": "表格",
+        // "datagrid": "数据网格(过时)",
         "datagrid": "数据网格",
+        "datatable": "数据表格",
         "datatemplate": "数据模板",
         "subform": "子表单",
         "ViewSelector": "选择视图",
@@ -551,6 +553,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowUpload": "允许上载",
         "allowPreview": "允许预览",
         "allowDownload": "允许下载",
+        "allowEdit": "允许编辑",
         "allowDelete": "允许删除",
         "allowDelMyAtt": "仅允许本人上传的文件",
         "allowDelCurActivityAtt": "仅允许本活动上传的文件",
@@ -562,7 +565,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideLayoutButton": "隐藏布局操作组",
         "hideSettingButton": "隐藏设置操作组",
         "hideModeButton": "隐藏模式操作",
-        "showInDatagrid": "数据网格中的展现",
+        "showInDatagrid": "数据网格或数据表格中的展现",
 
         "tableSize": "表格大小",
         "row": "行",
@@ -590,6 +593,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "layoutCell": "布局单元格",
         "other": "其他",
 
+        "permission": "权限",
+
+        "containerStyles": "容器样式",
+        "tableAttribute": "表格属性",
         "border": "边框",
         "backgroundColor": "背景颜色",
         "alternateRow": "交替行",
@@ -904,7 +911,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "validationContentTdStyle": "校验内容单元格样式",
         "validationTableAttribute": "校验表格属性",
         "count": "数量",
-        "import" : "导入"
+        "import" : "导入",
+        "datatableEditMode": "编辑方式",
+        "datatableEditModeValue": ["每次编辑单行","同时编辑多行"]
     },
     "actionBar": {
         "close":"关闭",
