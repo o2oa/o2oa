@@ -233,6 +233,12 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			this.titleTr = this.table.getElement("tr");
 
 			var ths = this.titleTr.getElements("th");
+			if (this.json.border){
+				ths.setStyles({
+					"border-bottom": this.json.border,
+					"border-right": this.json.border
+				});
+			}
 			if (this.json.titleStyles)ths.setStyles(this.json.titleStyles);
 
 			//datatable$Title Module
@@ -249,7 +255,7 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			}.bind(this));
 
 
-			if(this.editable || this.addable){
+			if(this.editable){
 				var actionTh = new Element("th", {"styles": {"width": "46px"}}).inject(this.titleTr, "top"); //操作列
 				if(this.addable){
 					var addLineAction = new Element("div", {
@@ -260,6 +266,14 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 					}).inject(actionTh);
 				}
 				var moveTh = new Element("th").inject(this.titleTr, "bottom"); //总计列
+				if (this.json.border){
+					Array.each([actionTh,moveTh], function(th){
+						th.setStyles({
+							"border-bottom": this.json.border,
+							"border-right": this.json.border
+						})
+					}.bind(this));
+				}
 				if (this.json.titleStyles){
 					actionTh.setStyles(this.json.titleStyles);
 					moveTh.setStyles(this.json.titleStyles);
@@ -276,6 +290,13 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 
 			var tds = this.templateNode.getElements("td");
 
+			if (this.json.border) {
+				tds.setStyles({
+					"border-bottom": this.json.border,
+					"border-right": this.json.border,
+					"background": "transparent"
+				});
+			}
 			if (this.json.contentStyles)tds.setStyles(this.json.contentStyles);
 
 			//datatable$Data Module
@@ -291,9 +312,18 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 				}
 			}.bind(this));
 
-			if(this.editable || this.addable){
+			if(this.editable){
 				var eTd = new Element("td.mwf_editaction",{"styles": this.json.actionStyles || {}}).inject(this.templateNode, "top"); //操作列
 				var mTd = new Element("td.mwf_moveaction", {"styles": this.form.css.gridMoveActionCell || {}}).inject(this.templateNode, "bottom"); //排序列
+				if (this.json.border){
+					Array.each([eTd,mTd], function(td){
+						td.setStyles({
+							"border-bottom": this.json.border,
+							"border-right": this.json.border,
+							"background": "transparent"
+						})
+					}.bind(this));
+				}
 				if (this.json.contentStyles){
 					eTd.setStyles(this.json.contentStyles);
 					mTd.setStyles(this.json.contentStyles);
@@ -358,6 +388,7 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			var data = this.getValue();
 			this.totalColumns.each(function(column, index){
 				var json = column.moduleJson;
+				if(!json)return;
 				if (column.type === "count"){
 					tmpV = data.data.length;
 				}else if(column.type === "number"){
@@ -383,6 +414,12 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			return tr;
 		},
 		_loadStyles: function(){
+			if (this.json.border) {
+				this.table.setStyles({
+					"border-top": this.json.border,
+					"border-left": this.json.border
+				});
+			}
 			this.node.setStyles(this.json.styles);
 			this.node.set(this.json.properties);
 		},
@@ -756,18 +793,19 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			var line = this.currentEditedLine;
 			if( !line )return true;
 			if( line.isNewAdd ){
-				var saveFlag = line.deleteAttachment();
+				// var saveFlag = line.deleteAttachment();
 				this._delLine( line );
 				this.currentEditedLine = null;
-				if(saveFlag)this.form.saveFormData();
+				// if(saveFlag)this.form.saveFormData();
 			}else{
+				// line.data = Object.clone(line.getOriginalDataWithCheckAttachment());
+				line.resetDataWithOriginalData();
+				line.changeEditMode(false);
+				this._loadTotal();
 				if(line.attachmentChangeFlag){
 					this.form.saveFormData();
 					line.attachmentChangeFlag = false;
 				}
-				line.data = Object.clone(line.originalData);
-				line.changeEditMode(false);
-				this._loadTotal();
 				this.currentEditedLine = null;
 				this.fireEvent("cancelLineEdit", [line]);
 			}
@@ -778,15 +816,15 @@ MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = new Class(
 			var line = this.currentEditedLine;
 			if( !line )return true;
 			if( !line.validation() )return false;
-			if(line.attachmentChangeFlag){
-				this.form.saveFormData();
-				line.attachmentChangeFlag = false;
-			}
 			line.isNewAdd = false;
 			// line.data = line.getData();
 			line.originalData = Object.clone(line.data);
 			line.changeEditMode(false);
 			this._loadTotal();
+			if(line.attachmentChangeFlag){
+				this.form.saveFormData();
+				line.attachmentChangeFlag = false;
+			}
 			this.currentEditedLine = null;
 			this.fireEvent("completeLineEdit", [line]);
 			return true;
@@ -1538,9 +1576,9 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		this.data = data;
 		this.form = this.datatable.form;
 
-		if( !this.datatable.multiEditMode && !this.options.isNew){
-			this.originalData = Object.clone(data);
-		}
+		// if( !this.datatable.multiEditMode && !this.options.isNew){
+		// 	this.originalData = Object.clone(data);
+		// }
 
 		this.init()
 
@@ -1598,6 +1636,8 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 				if (this.form.all[id]) this.form.all[id] = null;
 				if (this.form.forms[id])this.form.forms[id] = null;
 
+				var hasData = this.data.hasOwnProperty(templateJsonId);
+
 				var module = this.form._loadModule(json, node, function () {});
 
 				if((json.type==="Attachment" || json.type==="AttachmentDg")){
@@ -1617,8 +1657,10 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 				this.all_templateId[templateJsonId] = module;
 
 				if (module.field) {
-					if(this.data.hasOwnProperty(templateJsonId)){
+					if(hasData){
 						module.setData(this.data[templateJsonId]);
+					}else if(this.options.isEdited){
+						this.data[templateJsonId] = module.getData();
 					}
 					this.allField[id] = module;
 					this.allField_templateId[templateJsonId] = module;
@@ -1636,6 +1678,7 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		}.bind(this));
 		this.loadSequence();
 		this.createActions();
+		this.loadZebraStyle()
 
 		if(!this.datatable.multiEditMode && this.options.isEditable){
 			this.editFun = function(){
@@ -1646,12 +1689,16 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			this.node.addEvent("click", this.editFun)
 		}
 
-		if(this.options.isNew){
-			debugger;
-			this.data = this.getData();
-			if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
-			this.options.isNew = false;
+		if( !this.datatable.multiEditMode ){
+			this.originalData = Object.clone(this.data);
 		}
+
+		// if(this.options.isNew && this.options.isEdited){
+		// 	debugger;
+		// 	this.data = this.getData();
+		// 	if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
+		// 	this.options.isNew = false;
+		// }
 	},
 	getModule: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
@@ -1706,6 +1753,13 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 	loadSequence: function(){
 		var sequenceTd = this.node.getElement("td.mwf_sequence");
 		if(sequenceTd)sequenceTd.set("text", this.options.indexText)
+	},
+	loadZebraStyle: function(){
+		if ((this.options.index%2)===0 && this.datatable.json.zebraColor){
+			this.node.setStyle("background-color", this.datatable.json.zebraColor);
+		}else if(this.datatable.json.backgroundColor){
+			this.node.setStyle("background-color", this.datatable.json.backgroundColor);
+		}
 	},
 	createActions: function () {
 		//不允许编辑，直接返回
@@ -1841,6 +1895,24 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			}
 		}.bind(this));
 		return flag;
+	},
+	resetDataWithOriginalData: function () {
+		debugger;
+		var data = this.originalData;
+		var attachmentList = this.form.businessData.attachmentList;
+		for( var key in this.allField_templateId){
+			var module = this.allField_templateId[key];
+			if( module.json.type==="Attachment" || module.json.type==="AttachmentDg" ){
+				data[key] = (data[key] || []).filter(function(att, index){
+					for( var i=0; i<attachmentList.length; i++){
+						if( attachmentList[i].id === att.id )return true;
+					}
+					return false;
+				}.bind(this))
+			}
+			this.data[key] = data[key];
+		}
+		return data;
 	}
 });
 
