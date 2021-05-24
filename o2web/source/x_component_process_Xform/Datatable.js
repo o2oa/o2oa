@@ -1678,7 +1678,8 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		}.bind(this));
 		this.loadSequence();
 		this.createActions();
-		this.loadZebraStyle()
+		this.loadZebraStyle();
+		this.loadEditedStyle();
 
 		if(!this.datatable.multiEditMode && this.options.isEditable){
 			this.editFun = function(){
@@ -1759,6 +1760,12 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 			this.node.setStyle("background-color", this.datatable.json.zebraColor);
 		}else if(this.datatable.json.backgroundColor){
 			this.node.setStyle("background-color", this.datatable.json.backgroundColor);
+		}
+	},
+	loadEditedStyle: function(){
+		if (!this.datatable.multiEditMode && this.options.isEdited && this.datatable.json.editStyles){
+			var tds = this.node.getElements("td");
+			tds.setStyles(this.datatable.json.editStyles);
 		}
 	},
 	createActions: function () {
