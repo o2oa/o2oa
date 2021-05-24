@@ -1038,7 +1038,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return text;
     },
     checkSaveNewEdition: function(callback){
-        debugger;
         if (!this.allowEdit || !this.data.filetext || this.data.filetext == this.json.defaultValue.filetext) return false;
         if (this.form.businessData.work){
             var originaData = this.form.businessData.originalData[this.json.id];
@@ -1088,7 +1087,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     resizeToolbar: function(node){
-        debugger;
         if (this.toolbarNode){
             var p = this.toolNode.getPosition(node || this.scrollNode);
             var size = this.toolNode.getSize();
@@ -1828,7 +1826,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * this.form.get("fieldId").scaleTo(0.5);
     */
     scaleTo: function(scale){
-        debugger;
         this._returnScale();
         this.scale = scale;
         this.zoom();
@@ -2388,7 +2385,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     if (tableList && tableList.length){
                         var w = this.layout_filetext.offsetWidth.toFloat();
                         tableList.each(function(table){
-                            debugger;
                             var twstyle = table.getStyle("width");
                             var tws = (twstyle) ? (twstyle.toFloat() || 0) : 0;
                             var twatt = table.get("width");
@@ -2509,8 +2505,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this._computeItemFieldData(name, dataItem);
                 //if (this.data[name]){
                 if (this[dom]){
-                    if (dom=="layout_redHeader" || dom=="layout_subject" || dom=="layout_issuanceUnit" || dom=="layout_meetingAttendContent" || dom=="layout_meetingLeaveContent" || dom=="layout_meetingSitContent" || dom=="layout_meetingRecordContent"){
-                        this[dom].set("html", this.data[name]|| "");
+                    if (dom=="layout_redHeader" ||dom=="layout_issuanceUnit" || dom=="layout_meetingAttendContent" || dom=="layout_meetingLeaveContent" || dom=="layout_meetingSitContent" || dom=="layout_meetingRecordContent") {
+                        this[dom].set("html", this.data[name] || "");
+                    }else if (dom=="layout_subject"){
+                        this[dom].set("html", (this.data[name] || ""));
                     }else if (dom=="layout_attachment"){
                         this.setAttachmentData();
                     }else{
@@ -2556,6 +2554,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             this.data[name] = v + "：";
                             break;
                         default:
+                            if (name==="subject") v = o2.txt(v);
                             this.data[name] = v;
                     }
                     break;
@@ -2663,8 +2662,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 //if (this.data[name]){
                 if (this[dom]){
 
-                    if (dom=="layout_redHeader" || dom=="layout_subject" || dom=="layout_issuanceUnit"){
-                        this[dom].set("html", this.data[name]|| "");
+                    if (dom=="layout_redHeader" || dom=="layout_issuanceUnit") {
+                        this[dom].set("html", this.data[name] || "");
+                    }else if (dom=="layout_subject"){
+                        this[dom].set("html", (this.data[name] || ""));
                     }else if (dom=="layout_attachment"){
                         this.setAttachmentData();
                     }else{
@@ -2767,7 +2768,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     */
     getData: function(){
         //if (this.editMode){
-
         if (this.layout_copies) this.data.copies = this.layout_copies.get("text");
         if (this.layout_secret) this.data.secret = this.layout_secret.get("text");
         if (this.layout_priority) this.data.priority = this.layout_priority.get("text");
