@@ -1,7 +1,7 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "lp."+MWF.language, null, false);
-MWF.xApplication.cms.FormDesigner.LP = Object.merge( MWF.xApplication.process.FormDesigner.LP, {
+MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.process.FormDesigner.LP, {
     "selectApplication" : "Select App",
     "formType": {
         "empty": "Empty form",
