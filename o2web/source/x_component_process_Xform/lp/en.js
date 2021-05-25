@@ -294,6 +294,8 @@ MWF.xApplication.process.Xform.LP = {
     "minItemCountNotice": "Please keep at least {n} items",
     "systemField": "System Field",
     "systemFieldEmptyNotice": "System Field cannot be empty",
+    "importTooManyNotice ":" you import {n1} data, allowed to import {n2} data maximum ",
+    "importTooFewNotice ": "you import {n1} data, need to keep at least {n2} data ",
 
     "form": {
         "close":"Close",
