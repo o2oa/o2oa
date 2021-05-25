@@ -118,36 +118,62 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
             // }.bind(this));
 
             cmscategoryNodes.each(function (node) {
+                var count = node.get("count") ? node.get("count").toInt() : 0;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "CMSCategory",
                     "names": (this.data.data) ? this.data.data.category : {},
+                    "count" : count,
                     "onChange": function (ids) {
-                        this.savePersonSelectItem(node, ids);
+                        this.savePersonSelectItem(node, ids, count);
                     }.bind(this)
                 });
             }.bind(this));
 
             querytableNodes.each(function (node) {
+                var count = node.get("count") ? node.get("count").toInt() : 0;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "QueryTable",
                     "names": (this.data.data) ? this.data.data.querytable : {},
+                    "count" : count,
                     "onChange": function (ids) {
                         debugger;
-                        this.savePersonSelectItem(node, ids);
+                        this.savePersonSelectItem(node, ids, count);
                     }.bind(this)
                 });
             }.bind(this));
 
             processNodes.each(function (node) {
+                var count = node.get("count") ? node.get("count").toInt() : 0;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "process",
                     "names": (this.data.data) ? this.data.data.process: {},
+                    "count" : count,
                     "onChange": function (ids) {
-                        this.savePersonSelectItem(node, ids);
+                        this.savePersonSelectItem(node, ids, count);
                     }.bind(this)
                 });
             }.bind(this));
 
         }.bind(this));
+    },
+    savePersonSelectItem: function (node, ids, count) {
+        //this.initWhereEntryData();
+        var values = [];
+        ids.each(function (id) {
+            values.push({"name": (id.data.distinguishedName || id.data.name), "id": id.data.id});
+            //values.push((id.data.distinguishedName || id.data.id || id.data.name));
+        }.bind(this));
+        var name = node.get("name");
+
+        key = name.split(".");
+        var o = this.data;
+        var len = key.length - 1;
+        key.each(function (n, i) {
+            if (!o[n]) o[n] = {};
+            if (i < len) o = o[n];
+        }.bind(this));
+        o[key[len]] = count === 1 ? (values[0] || {}) : values;
+
+        //this.data.data.restrictWhereEntry[node.get("name")] = values;
     }
 });
