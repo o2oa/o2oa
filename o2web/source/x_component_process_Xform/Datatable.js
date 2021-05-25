@@ -1595,9 +1595,35 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 		this.changedAttachmentMap = {};
 	},
 	load: function(){
-		debugger;
 		if( !this.datatable.multiEditMode && this.options.isEdited )this.datatable.currentEditedLine = this;
+		debugger;
+		this.loadModules();
+		this.loadSequence();
+		this.createActions();
+		this.loadZebraStyle();
+		this.loadEditedStyle();
 
+		if(!this.datatable.multiEditMode && this.options.isEditable){
+			this.editFun = function(){
+				if( !this.options.isEdited ){
+					this.datatable._changeEditedLine(this)
+				}
+			}.bind(this)
+			this.node.addEvent("click", this.editFun)
+		}
+
+		if( !this.datatable.multiEditMode ){
+			this.originalData = Object.clone(this.data);
+		}
+
+		// if(this.options.isNew && this.options.isEdited){
+		// 	debugger;
+		// 	this.data = this.getData();
+		// 	if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
+		// 	this.options.isNew = false;
+		// }
+	},
+	loadModules: function(){
 		this.node.set("html", this.datatable.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.node);
 		//this.options.sectionKey 为区段合并后的数据
@@ -1676,30 +1702,6 @@ MWF.xApplication.process.Xform.Datatable.Line =  new Class({
 				}
 			}
 		}.bind(this));
-		this.loadSequence();
-		this.createActions();
-		this.loadZebraStyle();
-		this.loadEditedStyle();
-
-		if(!this.datatable.multiEditMode && this.options.isEditable){
-			this.editFun = function(){
-				if( !this.options.isEdited ){
-					this.datatable._changeEditedLine(this)
-				}
-			}.bind(this)
-			this.node.addEvent("click", this.editFun)
-		}
-
-		if( !this.datatable.multiEditMode ){
-			this.originalData = Object.clone(this.data);
-		}
-
-		// if(this.options.isNew && this.options.isEdited){
-		// 	debugger;
-		// 	this.data = this.getData();
-		// 	if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
-		// 	this.options.isNew = false;
-		// }
 	},
 	getModule: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
@@ -1934,12 +1936,13 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 		this.datatable = datatable;
 		this.form = this.datatable.form;
 
+		this.columnJsonList = [];
 	},
 	exportToExcel : function () {
+		this.getColumnList();
+
 		var resultArr = [];
-		var titleArr = this.datatable.json.excelFieldConfig.map(function(config){
-			return config.title;
-		});
+		var titleArr = this.getTitleArray();
 		if( this.datatable.unionMode ){
 			titleArr.push( MWF.xApplication.process.Xform.LP.systemField );
 		}
@@ -1958,7 +1961,7 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 			colWidthArray : colWidthArr,
 			title : excelName
 		};
-		this.fireEvent("export", [arg]);
+		this.datatable.fireEvent("export", [arg]);
 
 		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.datatable ).exportToExcel(
 			resultArr,
@@ -1967,22 +1970,47 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 			this.getDateIndexArray()  //日期格式列下标
 		);
 	},
+	getColumnList: function(){
+		this.columnJsonList = [];
+
+		var ths = this.datatable.titleTr.getElements("th.mwf_origional");
+		var tds = this.datatable.templateTr.getElements("td.mwf_origional");
+
+		ths.each(function(th, index){
+			var thJson = this.form._getDomjson( th );
+
+			var mJson;
+			if(tds[index]){
+				var mNodes = this.form._getModuleNodes(tds[index]); //获取总计列内的填写组件
+				if( mNodes.length > 0 )mJson = this.form._getDomjson(mNodes[0]);
+			}
+
+			if(thJson && mJson && this.isAvaliableColumn(thJson, mJson)){
+				this.columnJsonList.push({
+					"thJson": thJson,
+					"title": th.get("text"),
+					"mJson" : mJson,
+					"available": true
+				})
+			}
+		}.bind(this));
+	},
 	getLineExportData: function(line, index ){
 		var exportData = [];
-		this.datatable.json.excelFieldConfig.each(function (config) {
+		this.columnJsonList.each(function (column) {
 
-			var module = line.all_templateId[config.field];
-			var json = module ? module.json : "";
-
-			if ( !module || !json || !this.isAvaliableField( json ) ) {
+			var module;
+			if( column.mJson && column.available ){
+				module = line.all_templateId[column.mJson.id];
+			}
+			if ( !module ) {
 				exportData.push("");
 			}else{
 				var value = module.getData();
 				var text = "";
 
-
 				if( value ){
-					switch (module.json.type) {
+					switch (column.mJson.type) {
 						case "Org":
 						case "Reader":
 						case "Author":
@@ -2034,7 +2062,7 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 							text = value;
 							break;
 					}
-				} else if ( json.type === "Label" && module.node) {
+				} else if ( column.mJson.type === "Label" && module.node) {
 					text = module.node.get("text");
 				}
 
@@ -2050,9 +2078,54 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 		}
 		return exportData;
 	},
-	isAvaliableField : function(json){
-		if (["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains( json.type) )return false; //图片，附件,Label不导入导出
+	isAvaliableColumn : function(thJson, mJson){
+		if (thJson && ( thJson.isShow === false || thJson.isImpExp === false ))return false; //隐藏列，不允许导入导出
+		if (mJson && (mJson.type == "sequence" || mJson.cellType == "sequence") )return false; //序号列
+		if (mJson && ["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
+		// if (type==="import" && module && ["Label"].contains(module.json.type))return false; //Label 不导入
 		return true;
+	},
+	getColWidthArray : function(){
+		var colWidthArr = [];
+		this.columnJsonList.each(function(c, index){
+			if ( c.available ) {
+				if (c.mJson && ["Org","Reader","Author","Personfield","Orgfield"].contains(c.mJson.type)) {
+					colWidthArr.push(340);
+				} else if (c.mJson && c.mJson.type === "Address") {
+					colWidthArr.push(170);
+				} else if (c.mJson && c.mJson.type === "Textarea") {
+					colWidthArr.push(260);
+				} else if (c.mJson && c.mJson.type === "Htmleditor") {
+					colWidthArr.push(500);
+				} else if (c.mJson && c.mJson.type === "Calendar") {
+					colWidthArr.push(150);
+				} else {
+					colWidthArr.push(150);
+				}
+			}
+		}.bind(this));
+		if( this.datatable.unionMode ){
+			colWidthArr.push(340);
+		}
+		return colWidthArr;
+	},
+	getDateIndexArray : function(){
+		var dateIndexArr = []; //日期格式列下标
+		var idx=0;
+		this.columnJsonList.each(function(c){
+			if ( c.available && c.mJson && c.mJson.type === "Calendar") {
+				dateIndexArr.push(idx);
+				idx++;
+			}
+		}.bind(this));
+		return dateIndexArr;
+	},
+	getTitleArray : function(){
+		var arr = [];
+		this.columnJsonList.each(function(c, index){
+			if ( c.available && c.mJson )arr.push(c.title);
+		}.bind(this));
+		return arr;
 	},
 	getExcelName: function(){
 		var title;
@@ -2068,84 +2141,49 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 		title = titleA.join(".");
 		return title;
 	},
-	getColWidthArray : function(){
-		var colWidthArr = [];
-		this.datatable.json.excelFieldConfig.each(function (config) {
-			var json = this.form.json.moduleList[config.field];
-			if ( !json ){
-				colWidthArr.push(150);
-			}else if ( ["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)) {
-				colWidthArr.push(340);
-			} else if (json.type === "Address") {
-				colWidthArr.push(170);
-			} else if (json.type === "Textarea") {
-				colWidthArr.push(260);
-			} else if (json.type === "Htmleditor") {
-				colWidthArr.push(500);
-			} else if (json.type === "Calendar") {
-				colWidthArr.push(150);
-			} else {
-				colWidthArr.push(150);
-			}
-		}.bind(this));
-		if( this.datatable.unionMode ){
-			colWidthArr.push(340);
-		}
-		return colWidthArr;
-	},
-	getDateIndexArray : function(){
-		var dateIndexArr = []; //日期格式列下标
-		this.datatable.json.excelFieldConfig.each(function (config, i) {
-			var json = this.form.json.moduleList[config.field];
-			if (json && json.type === "Calendar") {
-				dateIndexArr.push(i);
-			}
-		}.bind(this));
-		return dateIndexArr;
-	},
 
-	exportWithImportDataToExcel : function ( columnList, importedData ) {
+	exportWithImportDataToExcel : function ( importedData ) {
 		debugger;
-		var titleThs = this.titleTr.getElements("th");
-		// var editorTds = this.editorTr.getElements("td");
+		this.getColumnList();
 
 		var resultArr = [];
 
-		var colWidthArr = this.getExportColWidthArray();
-		colWidthArr.push( 220 );
-
-		var dateIndexArr = this.getExportDateIndexArray(); //日期格式列下标
-
-		var titleArr = this.getExportTitleArray("import");
+		var titleArr = this.getTitleArray("import");
+		if( this.datatable.unionMode ){
+			titleArr.push( MWF.xApplication.process.Xform.LP.systemField );
+		}
 		titleArr.push( MWF.xApplication.process.Xform.LP.validationInfor );
 		resultArr.push( titleArr );
 
 		importedData.each( function( lineData, lineIndex ){
 			var array = [];
-			columnList.each( function (obj, i) {
-				array.push( ( lineData[ obj.text ] || '' ).replace(/&#10;/g, "\n") );
+			this.columnJsonList.each( function (obj, i) {
+				array.push( ( lineData[ obj.title ] || '' ).replace(/&#10;/g, "\n") );
 			});
 			array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
 
 			resultArr.push( array );
 		}.bind(this));
 
-		var title;
-		if( this.json.excelName && this.json.excelName.code ){
-			title = this.form.Macro.exec(this.json.excelName.code, this);
-		}else{
-			title = MWF.xApplication.process.Xform.LP.exportDefaultName;
-		}
-		var titleA = title.split(".");
-		if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
-			titleA.splice( titleA.length-1 );
-		}
-		title = titleA.join(".");
+		var colWidthArr = this.getColWidthArray();
+		colWidthArr.push( 300 ); //提示信息
 
-		var arg = { data : resultArr, colWidthArray : colWidthArr, title : title, withError : true };
+		var excelName = this.getExcelName();
+
+		var arg = {
+		    data : resultArr,
+		    colWidthArray : colWidthArr,
+		    title : excelName,
+		    withError : true
+		};
 		this.datatable.fireEvent("export", [arg]);
 
-		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.datatable ).export( resultArr, arg.title || title, colWidthArr, dateIndexArr );
+		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.datatable ).exportToExcel(
+		    resultArr,
+		    arg.title || excelName,
+		    colWidthArr,
+		    this.getDateIndexArray() //日期格式列下标
+		 );
 	}
 });
 
@@ -2160,23 +2198,27 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		this.datatable = datatable;
 		this.form = this.datatable.form;
 
+		this.columnJsonList = [];
 	},
-	isAvaliableField : function(json, module, type){
-		if (["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains( json.type) )return false; //图片，附件,Label不导入导出
+	isAvaliableColumn : function(thJson, mJson){
+		if (thJson && ( thJson.isShow === false || thJson.isImpExp === false ))return false; //隐藏列，不允许导入导出
+		if (mJson && (mJson.type == "sequence" || mJson.cellType == "sequence") )return false; //序号列
+		if (mJson && ["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
+		// if (type==="import" && module && ["Label"].contains(module.json.type))return false; //Label 不导入
 		return true;
 	},
 	importFromExcel : function () {
-		var fieldArray = this.getFieldArray();
+		this.getColumnList();
 		var dateColArray = this.getDateIndexArray(); //日期列
 		var orgTitleArray = this.getOrgTitleArray();
 
 		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.datatable ).upload( dateColArray, function (data) {
 
 			var checkAndImport = function () {
-				if( !this.checkData( fieldArray, data ) ){
-					this.openErrorDlg( fieldArray, data );
+				if( !this.checkData( data ) ){
+					this.openErrorDlg( data );
 				}else{
-					this.importData( fieldArray, data )
+					this.importData( data )
 				}
 				this.destroySimulateModule();
 			}.bind(this);
@@ -2227,7 +2269,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 				var _self = this;
 
 				var tJson = this.form._getDomjson(node);
-				if( tJson && this.isAvaliableField(tJson) ){
+				if( tJson && this.isAvaliableColumn(null, tJson) ){
 					var json = Object.clone(tJson);
 
 					var templateJsonId = json.id;
@@ -2248,41 +2290,58 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 			}
 		}.bind(this));
 	},
-	getFieldArray: function(){
+	getColumnList: function(){
 		this.loadSimulateModule();
-		var fieldArray = []; //日期格式列下标
-		this.datatable.json.excelFieldConfig.each(function (config, i) {
-			fieldArray.push({
-				"text": config.title,
-				"field": config.field,
-				"index": i,
-				"module": this.simelateModuleMap[config.field],
-				"json": this.form.json.moduleList[config.field]
-			})
+
+		this.columnJsonList = [];
+
+		var ths = this.datatable.titleTr.getElements("th.mwf_origional");
+		var tds = this.datatable.templateTr.getElements("td.mwf_origional");
+
+		ths.each(function(th, index){
+			var thJson = this.form._getDomjson( th );
+
+			var mJson;
+			if(tds[index]){
+				var mNodes = this.form._getModuleNodes(tds[index]); //获取总计列内的填写组件
+				if( mNodes.length > 0 )mJson = this.form._getDomjson(mNodes[0]);
+			}
+
+			if(thJson && mJson && this.isAvaliableColumn(thJson, mJson)){
+				this.columnJsonList.push({
+					"thJson": thJson,
+					"title": th.get("text"),
+					"mJson" : mJson,
+					"field": mJson.id,
+					"index": index,
+					"module": this.simelateModuleMap[mJson.id]
+				})
+			}
 		}.bind(this));
-		return fieldArray;
+
+		return this.columnJsonList;
 	},
 	getDateIndexArray : function(){
 		var dateIndexArr = []; //日期格式列下标
-		this.datatable.json.excelFieldConfig.each(function (config, i) {
-			var json = this.form.json.moduleList[config.field];
-			if (json && json.type === "Calendar") {
-				dateIndexArr.push(i);
+		var idx=0;
+		this.columnJsonList.each(function(c){
+			if ( c.mJson && c.mJson.type === "Calendar") {
+				dateIndexArr.push(idx);
+				idx++;
 			}
 		}.bind(this));
 		return dateIndexArr;
 	},
 	getOrgTitleArray : function(){
-		var orgTitleArr = []; //日期格式列下标
-		this.datatable.json.excelFieldConfig.each(function (config, i) {
-			var json = this.form.json.moduleList[config.field];
-			if (json && ["Org","Reader","Author","Personfield","Orgfield"].contains(json.type) ) {
-				orgTitleArr.push(config.title);
+		var orgTitleArr = [];
+		this.columnJsonList.each(function(c){
+			if ( c.mJson && ["Org","Reader","Author","Personfield","Orgfield"].contains(c.mJson.type) ) {
+				orgTitleArr.push(c.title);
 			}
 		}.bind(this));
 		return orgTitleArr;
 	},
-	parseImportedData: function(fieldArray, idata, ignoreSectionKey){
+	parseImportedData: function(idata, ignoreSectionKey){
 		var data;
 		var sectionData;
 		if( !ignoreSectionKey && this.datatable.unionMode ){
@@ -2296,11 +2355,11 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		idata.each( function( ilineData ){
 			var lineData = {};
 
-			fieldArray.each( function (obj, i) {
+			this.columnJsonList.each( function (obj, i) {
 				var index = obj.index;
 				var module = obj.module;
-				var json = obj.json;
-				var text = obj.text;
+				var json = obj.mJson;
+				var text = obj.title;
 
 				var d = ilineData[text] || "";
 
@@ -2386,17 +2445,17 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 
 		return sectionData || data;
 	},
-	importData: function(fieldArray, idata){
+	importData: function(idata){
 
-		var data = this.parseImportedData(fieldArray, idata);
+		var data = this.parseImportedData(idata);
 
 		this.datatable.fireEvent("import", [data] );
 
-		this.datatable.setData( data );
+		this.datatable.setData( { "data" : data } );
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
 	},
-	openErrorDlg : function(fieldArray, eData){
+	openErrorDlg : function(eData){
 		var _self = this;
 
 		var objectToString = function (obj, type) {
@@ -2416,8 +2475,8 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 
 		var titleStyle = objectToString(this.datatable.json.impExpTableTitleStyles, "style");
 		htmlArray.push("<tr>");
-		fieldArray.each(function (obj, i) {
-			htmlArray.push( "<th style='"+titleStyle+"'>"+obj.text+"</th>" );
+		this.columnJsonList.each(function (obj, i) {
+			htmlArray.push( "<th style='"+titleStyle+"'>"+obj.title+"</th>" );
 		});
 		htmlArray.push("<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>");
 		htmlArray.push("</tr>" );
@@ -2429,8 +2488,8 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		eData.each( function( lineData, lineIndex ){
 
 			htmlArray.push( "<tr>" );
-			fieldArray.each( function (obj, i) {
-				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ obj.text ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
+			this.columnJsonList.each( function (obj, i) {
+				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ obj.title ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
 			});
 			htmlArray.push( "<td style='"+contentStyle+"'>"+( lineData.errorTextList ? lineData.errorTextList.join("<br/>") : "" )+"</td>" );
 			htmlArray.push( "</tr>" );
@@ -2456,7 +2515,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 				{
 					"type": "exportWithError",
 					"text": MWF.xApplication.process.Xform.LP.datagridExport,
-					"action": function () { _self.exportWithImportDataToExcel(fieldArray, eData); }
+					"action": function () { _self.exportWithImportDataToExcel(eData); }
 				},
 				{
 					"type": "cancel",
@@ -2470,7 +2529,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		});
 
 	},
-	checkData : function( fieldArray, idata ){
+	checkData : function( idata ){
 		var flag = true;
 
 		debugger;
@@ -2480,7 +2539,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		var columnTextExcel = lp.importValidationColumnTextExcel;
 		var excelUtil = new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.datatable );
 
-		var parsedData = this.parseImportedData(fieldArray, idata, true);
+		var parsedData = this.parseImportedData(idata, true);
 
 		idata.each( function(lineData, lineIndex){
 
@@ -2489,11 +2548,11 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 
 			var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
 
-			fieldArray.each( function (obj, i) {
+			this.columnJsonList.each( function (obj, i) {
 				var index = obj.index;
-				var json = obj.json;
+				var json = obj.mJson;
 				var module = obj.module;
-				var text = obj.text;
+				var text = obj.title;
 
 				var colInfor = columnText.replace( "{n}", index );
 				var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index-1 ) );
@@ -2554,8 +2613,8 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 			}.bind(this));
 			if( this.datatable.unionMode ){
 				if( !lineData[ MWF.xApplication.process.Xform.LP.systemField ] && !lineData["系统字段"] ){
-					var colInfor = columnText.replace( "{n}", fieldArray.length+1 );
-					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName(fieldArray.length) );
+					var colInfor = columnText.replace( "{n}", this.columnJsonList.length+1 );
+					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName(this.columnJsonList.length) );
 
 					errorTextList.push( colInfor + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
 					errorTextList.push( colInforExcel + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
@@ -2576,7 +2635,12 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		};
 		this.datatable.fireEvent( "validImport", [arg] );
 
+		debugger;
 		return arg.validted;
+	},
+	exportWithImportDataToExcel: function(eData){
+		var exporter = new MWF.xApplication.process.Xform.Datatable.Exporter(this.datatable);
+		exporter.exportWithImportDataToExcel(eData)
 	},
 	getOrgData : function( str ){
 		str = str.trim();
@@ -2849,8 +2913,6 @@ MWF.xApplication.process.Xform.Datatable.ExcelUtils = new Class({
 					if( !di.s )di.s = {};
 					if( !di.s.alignment )di.s.alignment = {};
 					di.s.alignment.wrapText = true;
-
-					debugger;
 
 					if( dateIndexArray && dateIndexArray.length ){
 						var colName = key.replace(/\d+/g,''); //清除数字
