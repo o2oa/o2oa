@@ -12,6 +12,7 @@ MWF.xApplication.process.Xform.LP = {
     "datagridExport": "Export Excel",
     "exportDefaultName": "DataGrid",
     "datatemplateExportDefaultName": "DataTemplate",
+    "datatableExportDefaultName": "DataTable",
     "importSuccess": "Import successful!",
     "validationInfor": "Verification Information",
     "importFail": "Import failed",
