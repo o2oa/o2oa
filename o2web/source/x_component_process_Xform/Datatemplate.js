@@ -1512,7 +1512,7 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			colWidthArray : colWidthArr,
 			title : excelName
 		};
-		this.fireEvent("export", [arg]);
+		this.template.fireEvent("export", [arg]);
 
 		new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
 			resultArr,
@@ -1680,6 +1680,10 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			columnList.each( function (obj, i) {
 				array.push( ( lineData[ obj.text ] || '' ).replace(/&#10;/g, "\n") );
 			});
+			if( this.template.unionMode ){
+				var text = lineData[ MWF.xApplication.process.Xform.LP.systemField ] || lineData["系统字段"] || '';
+				array.push( ( text ).replace(/&#10;/g, "\n") );
+			}
 			array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
 
 			resultArr.push( array );
@@ -1693,9 +1697,10 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		var arg = {
 			data : resultArr,
 			colWidthArray : colWidthArr,
-			title : excelName
+			title : excelName,
+			withError: true
 		};
-		this.fireEvent("export", [arg]);
+		this.template.fireEvent("export", [arg]);
 
 		new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
 			resultArr,
@@ -1730,6 +1735,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).upload( dateColArray, function (data) {
 
 			var checkAndImport = function () {
+				if( !this.checkCount(data) )return;
 				if( !this.checkData( fieldArray, data ) ){
 					this.openErrorDlg( fieldArray, data );
 				}else{
@@ -1974,6 +1980,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		fieldArray.each(function (obj, i) {
 			htmlArray.push( "<th style='"+titleStyle+"'>"+obj.text+"</th>" );
 		});
+		if( this.template.unionMode ){
+			var text = MWF.xApplication.process.Xform.LP.systemField || "系统字段";
+			htmlArray.push( "<th style='"+titleStyle+"'>"+text+"</th>" );
+		}
 		htmlArray.push("<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>");
 		htmlArray.push("</tr>" );
 
@@ -1987,6 +1997,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			fieldArray.each( function (obj, i) {
 				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ obj.text ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
 			});
+			if( this.template.unionMode ){
+				var text = lineData[ MWF.xApplication.process.Xform.LP.systemField ] || lineData["系统字段"] || '';
+				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( text ).replace(/&#10;/g,"<br/>") +"</td>" );
+			}
 			htmlArray.push( "<td style='"+contentStyle+"'>"+( lineData.errorTextList ? lineData.errorTextList.join("<br/>") : "" )+"</td>" );
 			htmlArray.push( "</tr>" );
 
@@ -2029,6 +2043,30 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		var exporter = new MWF.xApplication.process.Xform.Datatemplate.Exporter(this.template);
 		exporter.exportWithImportDataToExcel(fieldArray, eData)
 	},
+	checkCount: function(idata){
+		var lp = MWF.xApplication.process.Xform.LP;
+
+		var exceeded = false;
+		var maxCount = this.template.json.maxCount ? this.template.json.maxCount.toInt() : 0;
+		if( maxCount > 0 && idata.length >= maxCount )exceeded = true;
+
+		var less = false;
+		var minCount = this.template.json.minCount ? this.template.json.minCount.toInt() : 0;
+		if( minCount > 0 && idata.length <= minCount) less = true;
+
+		if( exceeded ) {
+			var text = lp.importTooManyNotice.replace("{n1}", idata.length).replace("{n2}", this.template.json.maxCount);
+			this.form.notice(text, "error");
+			return false;
+		}
+
+		if( less ){
+			var text = lp.importTooFewNotice.replace("{n1}", idata.length).replace("{n2}", this.template.json.minCount );
+			this.form.notice(text,"error");
+			return false;
+		}
+		return true;
+	},
 	checkData : function( fieldArray, idata ){
 		var flag = true;
 
@@ -2052,8 +2090,8 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				var module = obj.module;
 				var text = obj.text;
 
-				var colInfor = columnText.replace( "{n}", index );
-				var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index-1 ) );
+				var colInfor = columnText.replace( "{n}", index+1 );
+				var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index ) );
 
 				var d = lineData[text] || "";
 				var parsedD = parsedLineData[json.id] || "";
@@ -2115,7 +2153,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName(fieldArray.length) );
 
 					errorTextList.push( colInfor + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
-					errorTextList.push( colInforExcel + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
+					errorTextListExcel.push( colInforExcel + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
 				}
 			}
 
