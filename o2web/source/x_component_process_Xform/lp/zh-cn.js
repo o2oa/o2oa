@@ -293,6 +293,8 @@ MWF.xApplication.process.Xform.LP = {
     "minItemCountNotice": "请最少保留{n}项",
     "systemField": "系统字段",
     "systemFieldEmptyNotice": "系统字段不能为空",
+    "importTooManyNotice": "本次导入了{n1}条数据，最多允许导入{n2}条数据",
+    "importTooFewNotice": "本次导入了{n1}条数据，最少需要保留{n2}条数据",
 
     "form": {
         "close":"关闭",
