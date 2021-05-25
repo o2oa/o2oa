@@ -12,6 +12,7 @@ MWF.xApplication.process.Xform.LP = {
     "datagridExport" : "导出Excel",
     "exportDefaultName" : "数据网格",
     "datatemplateExportDefaultName": "数据模板",
+    "datatableExportDefaultName": "数据表格",
     "importSuccess" : "导入成功！",
     "validationInfor" : "校验信息",
     "importFail" : "导入失败",
