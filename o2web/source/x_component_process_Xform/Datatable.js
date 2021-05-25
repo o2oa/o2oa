@@ -2160,6 +2160,10 @@ MWF.xApplication.process.Xform.Datatable.Exporter = new Class({
 			this.columnJsonList.each( function (obj, i) {
 				array.push( ( lineData[ obj.title ] || '' ).replace(/&#10;/g, "\n") );
 			});
+			if( this.datatable.unionMode ){
+				var text = lineData[ MWF.xApplication.process.Xform.LP.systemField ] || lineData["系统字段"] || '';
+				array.push( ( text ).replace(/&#10;/g, "\n") );
+			}
 			array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
 
 			resultArr.push( array );
@@ -2213,7 +2217,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		var orgTitleArray = this.getOrgTitleArray();
 
 		new MWF.xApplication.process.Xform.Datatable.ExcelUtils( this.datatable ).upload( dateColArray, function (data) {
-
+			if( !this.checkCount(data) )return;
 			var checkAndImport = function () {
 				if( !this.checkData( data ) ){
 					this.openErrorDlg( data );
@@ -2297,6 +2301,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 
 		var ths = this.datatable.titleTr.getElements("th.mwf_origional");
 		var tds = this.datatable.templateTr.getElements("td.mwf_origional");
+		var idx = 0;
 
 		ths.each(function(th, index){
 			var thJson = this.form._getDomjson( th );
@@ -2313,9 +2318,10 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 					"title": th.get("text"),
 					"mJson" : mJson,
 					"field": mJson.id,
-					"index": index,
+					"index": idx,
 					"module": this.simelateModuleMap[mJson.id]
 				})
+				idx++;
 			}
 		}.bind(this));
 
@@ -2478,6 +2484,10 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		this.columnJsonList.each(function (obj, i) {
 			htmlArray.push( "<th style='"+titleStyle+"'>"+obj.title+"</th>" );
 		});
+		if( this.datatable.unionMode ){
+			var text = MWF.xApplication.process.Xform.LP.systemField || "系统字段";
+			htmlArray.push( "<th style='"+titleStyle+"'>"+text+"</th>" );
+		}
 		htmlArray.push("<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>");
 		htmlArray.push("</tr>" );
 
@@ -2491,6 +2501,10 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 			this.columnJsonList.each( function (obj, i) {
 				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ obj.title ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
 			});
+			if( this.datatable.unionMode ){
+				var text = lineData[ MWF.xApplication.process.Xform.LP.systemField ] || lineData["系统字段"] || '';
+				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( text ).replace(/&#10;/g,"<br/>") +"</td>" );
+			}
 			htmlArray.push( "<td style='"+contentStyle+"'>"+( lineData.errorTextList ? lineData.errorTextList.join("<br/>") : "" )+"</td>" );
 			htmlArray.push( "</tr>" );
 
@@ -2529,6 +2543,30 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 		});
 
 	},
+	checkCount: function(idata){
+		var lp = MWF.xApplication.process.Xform.LP;
+
+		var exceeded = false;
+		var maxCount = this.datatable.json.maxCount ? this.datatable.json.maxCount.toInt() : 0;
+		if( maxCount > 0 && idata.length >= maxCount )exceeded = true;
+
+		var less = false;
+		var minCount = this.datatable.json.minCount ? this.datatable.json.minCount.toInt() : 0;
+		if( minCount > 0 && idata.length <= minCount) less = true;
+
+		if( exceeded ) {
+			var text = lp.importTooManyNotice.replace("{n1}", idata.length).replace("{n2}", this.datatable.json.maxCount);
+			this.form.notice(text, "error");
+			return false;
+		}
+
+		if( less ){
+			var text = lp.importTooFewNotice.replace("{n1}", idata.length).replace("{n2}", this.datatable.json.minCount );
+			this.form.notice(text,"error");
+			return false;
+		}
+		return true;
+	},
 	checkData : function( idata ){
 		var flag = true;
 
@@ -2554,8 +2592,8 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 				var module = obj.module;
 				var text = obj.title;
 
-				var colInfor = columnText.replace( "{n}", index );
-				var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index-1 ) );
+				var colInfor = columnText.replace( "{n}", index+1 );
+				var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index ) );
 
 				var d = lineData[text] || "";
 				var parsedD = parsedLineData[json.id] || "";
@@ -2617,7 +2655,7 @@ MWF.xApplication.process.Xform.Datatable.Importer = new Class({
 					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName(this.columnJsonList.length) );
 
 					errorTextList.push( colInfor + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
-					errorTextList.push( colInforExcel + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
+					errorTextListExcel.push( colInforExcel + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
 				}
 			}
 
