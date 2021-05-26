@@ -908,7 +908,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "count": "Count",
         "import" : "Import",
         "datatableEditMode": "Edit Mode",
-        "datatableEditModeValue": ["single row","multiple rows"]
+        "datatableEditModeValue": ["single row","multiple rows"],
+        "onlyPc": "Available on PC only"
     },
     "actionBar": {
         "close":"Close",
