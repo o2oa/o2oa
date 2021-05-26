@@ -912,7 +912,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "count": "数量",
         "import" : "导入",
         "datatableEditMode": "编辑方式",
-        "datatableEditModeValue": ["每次编辑单行","同时编辑多行"]
+        "datatableEditModeValue": ["每次编辑单行","同时编辑多行"],
+        "onlyPc": "仅PC端可用"
     },
     "actionBar": {
         "close":"关闭",
