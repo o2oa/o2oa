@@ -48,8 +48,8 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 				// th.store("dataTable", this);
 				th.addClass("mwf_origional");
 				if (json){
-					var module = this.form._loadModule(json, th);
-					this.form.modules.push(module);
+					// var module = this.form._loadModule(json, th);
+					// this.form.modules.push(module);
 					// if( json.isShow === false )th.hide(); //隐藏列
 					if((json.total === "number") || (json.total === "count"))this.totalFlag = true;
 				}
@@ -72,6 +72,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			if (this.json.contentStyles)tds.setStyles(this.json.contentStyles);
 
 			//datatable$Data Module
+			var idx = 0;
 			tds.each(function(td, index){
 				var json = this.form._getDomjson(td);
 				// td.store("dataTable", this);
@@ -80,7 +81,17 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 					// var module = this.form._loadModule(json, td);
 					// this.form.modules.push(module);
 					if( json.cellType === "sequence" )td.addClass("mwf_sequence"); //序号列
-					// if( json.isShow === false )td.hide(); //隐藏列
+
+					if( json.isShow === false ){
+						td.hide(); //隐藏列
+					}else{
+						if ((idx%2)===0 && this.json.zebraColor){
+							td.setStyle("background-color", this.json.zebraColor);
+						}else if(this.json.backgroundColor){
+							td.setStyle("background-color", this.json.backgroundColor);
+						}
+						idx++;
+					}
 				}
 			}.bind(this));
 
@@ -123,12 +134,14 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 				var thJson = this.form._getDomjson(th);
 				var newTh = th.clone().inject(newTr);
 				newTh.set("html", th.get("html"));
+				newTh.set("MWFId",th.get("id"));
 				if( thJson.isShow === false )newTr.hide();
 
 				var moduleJson;
 				var td = tds[index];
 				var newTd = td.clone().inject(newTr);
 				newTd.set("html", td.get("html"));
+				newTd.set("MWFId",td.get("id"));
 			}.bind(this));
 
 			this.templateHtml = this.templateNode.get("html");
@@ -137,23 +150,70 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			this.templateNode.hide();
 		},
 		_loadTotalTr: function(){
-			return;
 			if( !this.totalFlag )return;
-			this.totalTr = new Element("tr.mwf_totaltr", {"styles": this.form.css.datagridTotalTr}).inject(this.tBody||this.table);
+			this.totalDiv = new Element("div.mwf_totaltr", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
+
+			var titleDiv = new Element("div", {"styles": this.json.itemTitleStyles}).inject(this.totalDiv);
+			titleDiv.setStyle("overflow", "hidden");
+			new Element("div.sequenceDiv", {
+				"styles": {"float": "left"},
+				"text": MWF.xApplication.process.Xform.LP.amount
+			}).inject(titleDiv);
+
+			this.totalTable = new Element("table").inject(this.totalDiv);
+			if (this.json.border) {
+				this.totalTable.setStyles({
+					"border-top": this.json.border,
+					"border-left": this.json.border
+				});
+			}
+			this.totalTable.setStyles(this.json.tableStyles);
+			this.totalTable.set(this.json.properties);
 
 			var ths = this.titleTr.getElements("th");
+			var idx = 0;
 			//datatable$Title Module
 			ths.each(function(th, index){
-				var td = new Element("td", {"text": "", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
-				if (this.json.amountStyles) td.setStyles(this.json.amountStyles);
+				var tr = new Element("tr").inject(this.totalTable);
 
 				var json = this.form._getDomjson(th);
 				if (json){
-					if( json.isShow === false )td.hide(); //隐藏列
 					if ((json.total === "number") || (json.total === "count")){
+
+						var datath = new Element("th").inject(tr);
+						datath.set("text", th.get("text"));
+						if (this.json.border){
+							ths.setStyles({
+								"border-bottom": this.json.border,
+								"border-right": this.json.border
+							});
+						}
+						datath.setStyles(this.json.titleStyles);
+
+						var datatd = new Element("td").inject(tr);
+						if (this.json.border) {
+							datatd.setStyles({
+								"border-bottom": this.json.border,
+								"border-right": this.json.border,
+								"background": "transparent"
+							});
+						}
+						datatd.setStyles(this.json.amountStyles);
+
+						if( json.isShow === false ){
+							tr.hide(); //隐藏列
+						}else{
+							if ((idx%2)===0 && this.json.zebraColor){
+								datatd.setStyle("background-color", this.json.zebraColor);
+							}else if(this.json.backgroundColor){
+								datatd.setStyle("background-color", this.json.backgroundColor);
+							}
+							idx++;
+						}
+
 						this.totalColumns.push({
-							"th" : th,
-							"td" : td,
+							"th" : datath,
+							"td" : datatd,
 							"index": index,
 							"type": json.total
 						})
@@ -181,7 +241,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 		_loadTotal: function(){
 			var totalData = {};
 			if (!this.totalFlag)return totalData;
-			if (!this.totalTr)this._loadTotalTr();
+			if (!this.totalDiv)this._loadTotalTr();
 			var data = this.getValue();
 			this.totalColumns.each(function(column, index){
 				var json = column.moduleJson;
@@ -203,8 +263,8 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 		},
 		_createLineNode: function(){
 			var div;
-			if( this.totalTr ){
-				div = new Element("div").inject(this.totalTr, "before");
+			if( this.totalDiv ){
+				div = new Element("div").inject(this.totalDiv, "before");
 			}else{
 				div = new Element("div").inject(this.node);
 			}

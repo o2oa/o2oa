@@ -1175,10 +1175,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
                 // && mwftype !== "tab$Content"
                 if (mwftype !== "datagrid" && mwftype !== "datatable" && mwftype !== "subSource" && mwftype !== "tab$Content" && mwftype !== "datatemplate") {
-                    moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom));
+                    moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom, dollarFlag));
                 }
             } else {
-                moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom));
+                moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom, dollarFlag));
             }
             subDom = subDom.getNext();
         }
