@@ -83,24 +83,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 区段合并后的展现包含此事件，加载条目前执行。通过this.event.sectionKeyList获取所有区段标识，
-			 * 通过this.event.data获取数据。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#loadSectionData
-			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-			 */
-			/**
-			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载前执行。通过this.event.sectionKey获取当前区段标识，
-			 * 通过this.event.sectionData获取当前区段数据。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#beforeloadSectionLines
-			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-			 */
-			/**
-			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载后执行。通过this.event.sectionKey获取当前区段标识，
-			 * 通过this.event.sectionData获取当前区段数据，通过this.event.sectionLineList获取当前区段的所有条目。
-			 * @event MWF.xApplication.process.Xform.Datatemplate#afterloadSectionLines
-			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-			 */
-			/**
 			 * 添加条目时触发。通过this.event.line可以获取对应的条目对象，this.event.ev可以获得事件触发的Event。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#addLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -160,7 +142,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @event MWF.xApplication.process.Xform.Datatemplate#import
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
-			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad", "loadSectionData", "beforeloadSectionLines", "afterloadSectionLines",
+			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
 				"beforeLoadLine", "afterLoadLine","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport"]
 		},
 
@@ -199,9 +181,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.isNew = true;
 				this._setValue(this.data);
 			}
-
-			//object表示数据是区段合并状态
-			this.unionMode = o2.typeOf(this.data)==="object";
 
 			this.lineList = [];
 
@@ -378,57 +357,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 		},
 		_loadLineList: function(callback){
-			if(this.unionMode){ //区段合并后显示
-				this.lineList_sectionkey = {};
-				var index = 0;
-				var sectionKeyList = Object.keys(this.data);
-				//$union默认放最后
-				sectionKeyList.sort(function (a, b) {
-					if( a === "$union" ){
-						return 1;
-					}else if( b === "$union" ){
-						return -1;
-					}else{
-						return 0;
-					}
-				});
-				this.fireEvent("loadSectionData", [{
-					"sectionKeyList": sectionKeyList,
-					"data": this.data
-				}]);
-				Array.each(sectionKeyList, function (sectionKey, i) {
-					var list = this.data[sectionKey];
-					this.fireEvent("beforeloadSectionLines", [{
-						"sectionKey": sectionKey,
-						"sectionData": list
-					}]);
-					var sectionLineList = [];
-					this.lineList_sectionkey[sectionKey] = sectionLineList;
-					list.each(function(data, idx){
-						var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? (idx === this.newLineIndex && sectionKey === this.newLineSectionKey ): false);
-						var div = new Element("div").inject(this.node);
-						var line = this._loadLine(div, data, index, isNew, idx, sectionKey);
-						this.lineList.push(line);
-						sectionLineList.push(line);
-						index++;
-					}.bind(this));
-					this.fireEvent("afterloadSectionLines", [{
-						"sectionKey": sectionKey,
-						"sectionData": list,
-						"sectionLineList" : sectionLineList
-					}]);
-				}.bind(this));
-				this.newLineIndex = null;
-				this.newLineSectionKey = null;
-			}else{
-				this.data.each(function(data, idx){
-					var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
-					var div = new Element("div").inject(this.node);
-					var line = this._loadLine(div, data, idx, isNew);
-					this.lineList.push(line);
-				}.bind(this));
-				this.newLineIndex = null;
-			}
+			this.data.each(function(data, idx){
+				var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
+				var div = new Element("div").inject(this.node);
+				var line = this._loadLine(div, data, idx, isNew);
+				this.lineList.push(line);
+			}.bind(this));
+			this.newLineIndex = null;
 			this.isNew = false;
 			if (callback) callback();
 		},
@@ -446,13 +381,10 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			return false;
 		},
-		_loadLine: function(container, data, index, isNew, indexInSection, sectionKey){
+		_loadLine: function(container, data, index, isNew){
 			var line = new MWF.xApplication.process.Xform.Datatemplate.Line(container, this, data, {
 				index : index,
 				indexText : (index+1).toString(),
-				indexInSection: indexInSection,
-				indexInSectionText: typeOf(indexInSection) === "number" ?  (index+1).toString() : null,
-				sectionKey: sectionKey,
 				isEdited : this.editable,
 				isNew : isNew
 			});
@@ -463,18 +395,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_setLineData: function(line, d){
 			var index = line.options.index;
-			var data;
-			if( line.options.sectionKey ){ //区段合并后的数据
-				data = this.getData();
-				var sectionData = data[line.options.sectionKey];
-				sectionData[index] = d;
-			}else{
-				data = this.getData();
-				data[index] = d;
-			}
+			var data = this.getData();
+			data[index] = d;
 			this.setData( data );
 		},
-		_addLine: function(ev, sectionKey, d){
+		_addLine: function(ev, d){
 
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
@@ -484,23 +409,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			var data = this.getData();
 			var newLine;
-			if( this.unionMode ){
-				var key =  sectionKey || "$union";
-				this.newLineSectionKey = key;
-				if(!data[key]) data[key] = [];
-				var sectionData = data[key];
-				sectionData.push(d || {});
-				var index = sectionData.length-1;
-				this.newLineIndex = index;
-				this.setData( data );
-				newLine = this.getSectionLine(key, index);
-			}else{
-				data.push(d || {});
-				var index = data.length-1;
-				this.newLineIndex = index;
-				this.setData( data );
-				newLine = this.getLine(index);
-			}
+
+			data.push(d || {});
+			var index = data.length-1;
+			this.newLineIndex = index;
+			this.setData( data );
+			newLine = this.getLine(index);
 
 			this.fireEvent("addLine",[{"line":newLine, "ev":ev}]);
 			return newLine;
@@ -514,53 +428,30 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			//使用数据驱动
 
 			var data, newLine;
-			if( beforeLine.options.sectionKey ){ //区段合并后的数据
-				var key = beforeLine.options.sectionKey;
-				this.newLineSectionKey = key;
-				var index = beforeLine.options.indexInSection+1;
-				data = this.getData();
-				var sectionData = data[key];
-				sectionData.splice(index, 0, {});
-				this.newLineIndex = index;
-				this.setData( data );
-				newLine = this.getSectionLine( key, index);
-			}else{
-				var index = beforeLine.options.index+1;
-				data = this.getData();
-				data.splice(index, 0, {});
-				this.newLineIndex = index;
-				this.setData( data );
-				newLine = this.getLine( index );
-			}
+			var index = beforeLine.options.index+1;
+			data = this.getData();
+			data.splice(index, 0, {});
+			this.newLineIndex = index;
+			this.setData( data );
+			newLine = this.getLine( index );
+
 			this.fireEvent("addLine",[{"line":newLine, "ev":ev}]);
 			return newLine;
 		},
-		_insertLineByIndex: function(ev, sectionKey, index, d){
+		_insertLineByIndex: function(ev, index, d){
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
 				return false;
 			}
 			//使用数据驱动
-			var data, newLine;
-			if( sectionKey ){ //区段合并后的数据
-				this.newLineSectionKey = sectionKey;
-				data = this.getData();
-				if(!data[sectionKey]) data[sectionKey] = [];
-				var sectionData = data[sectionKey];
-				if( o2.typeOf(sectionData) !== "array" || sectionData.length < index )return null;
-				sectionData.splice(index, 0, d||{});
-				this.newLineIndex = index;
-				this.setData( data );
-				newLine = this.getSectionLine( sectionKey, index);
-			}else{
-				data = this.getData();
-				if(data.length < index )return null;
-				data.splice(index, 0, d||{});
-				this.newLineIndex = index;
-				this.setData( data );
-				newLine = this.getLine( index );
-			}
+			var data = this.getData();
+			if(data.length < index )return null;
+			data.splice(index, 0, d||{});
+			this.newLineIndex = index;
+			this.setData( data );
+			var newLine = this.getLine( index );
+
 			this.fireEvent("addLine",[{"line":newLine, "ev":ev}]);
 			return newLine;
 		},
@@ -601,12 +492,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 				if(line.deleteAttachment())saveFlag = true;
 
-				if( line.options.sectionKey ){ //区段合并后的数据
-					var sectionData = data[line.options.sectionKey];
-					sectionData.splice(line.options.indexInSection, 1);
-				}else{
-					data.splice(line.options.index, 1);
-				}
+				data.splice(line.options.index, 1);
 
 				_self.fireEvent("afterDeleteLine");
 			});
@@ -634,12 +520,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var saveFlag = line.deleteAttachment();
 			//使用数据驱动
 			var data = this.getData();
-			if( line.options.sectionKey ){ //区段合并后的数据
-				var sectionData = data[line.options.sectionKey];
-				sectionData.splice(line.options.indexInSection, 1);
-			}else {
-				data.splice(line.options.index, 1);
-			}
+
+			data.splice(line.options.index, 1);
+
 			this.setData( data );
 			this.fireEvent("afterDeleteLine");
 			if(saveFlag)this.form.saveFormData();
@@ -820,7 +703,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * var line = this.form.get("dt1").addLine();
 		 */
 		addLine: function( data ){
-			return this._addLine( null, null, data );
+			return this._addLine( null, data );
 		},
 		/**
 		 * 在数据模板指定位置添加条目。
@@ -831,7 +714,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * var line = this.form.get("dt1").insertLine(0);
 		 */
 		insertLine: function(index, data){
-			return this._insertLineByIndex(null, null, index, data);
+			return this._insertLineByIndex(null, index, data);
 		},
 		/**
 		 * 删除指定位置的条目。
@@ -864,102 +747,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 */
 		getModule: function(index, id){
 			var line = this.lineList[index];
-			if( !line )return null;
-			return line.getModule(id);
-		},
-
-
-		/**
-		 * 该方法在区段合并后可以使用，用来获取区段合并后对应的条目。
-		 * @param {String} sectionKey 区段标识
-		 * @param {Number} index 对应区段中的条目序号，从零开始
-		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line} 对应的数据模板条目
-		 * @example
-		 * //假设在流程中有节点A->B，在A中的数据模板中设置了区段，区段依据是部门，B中没有设置区段。
-		 * //流转的时候，在A节点“开发部@kfb@U”的处理人添加了数据模板。
-		 * //现在在节点B，获取数据模板“dt1”->“开发部@kfb@U”区段下的第一个条目。
-		 * var line = this.form.get("dt1").getSectionLine("开发部@kfb@U",0);
-		 * //获取第一个条目subject字段的值
-		 * var data = line.getModule("subject").getData();
-		 * //设置subject字段的值
-		 * line.getModule("subject").setData("test1");
-		 */
-		getSectionLine: function(sectionKey,index){
-			if( !this.unionMode )return;
-			var lineList = this.lineList_sectionkey[sectionKey];
-			if( !lineList )return null;
-			var line = lineList[index];
-			return line || null;
-		},
-		/**
-		 * 该方法在区段合并后可以使用，用来在数据模板指定区段后添加条目。
-		 * @param {String} sectionKey 区段标识，如果数据中无对应区段会自动创建一个区段
-		 * @param {Object} [data] 添加条目的数据。
-		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line} 添加的数据模板条目
-		 * @example
-		 * var line = this.form.get("dt1").addSectionLine("开发部@kfb@U", 0);
-		 */
-		addSectionLine: function(sectionKey, data){
-			if( !this.unionMode )return;
-			return this._addLine(null,  sectionKey, data);
-		},
-		/**
-		 * 该方法在区段合并后可以使用，用来在数据模板指定位置添加条目。
-		 * @param {String} sectionKey 区段标识，如果数据中无对应区段会自动创建一个区段。
-		 * @param {Number} index 对应区段中的条目序号，从零开始，如果下标超过当前区段条目数，插入失败并返回null。
-		 * @param {Object} [data] 添加条目的数据。
-		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line} 插入的数据模板条目
-		 * @example
-		 * var line = this.form.get("dt1").insertSectionLine("开发部@kfb@U", 0);
-		 */
-		insertSectionLine: function(sectionKey, index, data){
-			if( !this.unionMode )return;
-			if( !this.data[sectionKey] ){
-				return this._addLine(null, sectionKey, data);
-			}else{
-				return this._insertLineByIndex(null, sectionKey, index, data);
-			}
-		},
-		/**
-		 * 该方法在区段合并后可以使用，删除指定位置的条目。
-		 * @param {String} sectionKey 对应区段中的条目序号
-		 * @param {Number} index 对应区段中的条目序号，从零开始，如果下标超过当前数据模板条目数，删除失败。
-		 * @example
-		 * //直接删除第一个条目
-		 * this.form.get("dt1").deleteSectionLine("开发部@kfb@U", 0);
-		 */
-		deleteSectionLine: function(sectionKey, index, ev){
-			if( !this.unionMode )return;
-			var line = this.getSectionLine(sectionKey, index);
-			if( !line )return null;
-			// if( ev ){
-			// 	this._deleteLine(ev, line);
-			// }else{
-				this._delLine(line);
-			// }
-		},
-		/**
-		 * 该方法在区段合并后可以使用，用来获取区段合并后对应表单组件。
-		 * @param {String} sectionKey 区段标识
-		 * @param {Number} index 对应区段中的条目序号，从零开始
-		 * @param {String} id 组件标识
-		 * @return {FormComponent} 对应表单组件
-		 * @example
-		 * //假设在流程中有节点A->B，在A中的数据模板中设置了区段，区段依据是部门，B中没有设置区段。
-		 * //流转的时候，在A节点“开发部@kfb@U”的处理人添加了数据模板条目。
-		 * //现在流转到了节点B，那么获取上述处理人在数据模板“dt1”添加的第一个节点的标题字段如下：
-		 * var dataTemplate = this.form.get("dt1"); //获取数据模板dt1
-		 * var module = dataTemplate.getSectionModule("开发部@kfb@U", 0, "subject"); //获取标题字段
-		 * //获取subject字段的值
-		 * var data = module.getData();
-		 * //设置subject字段的值
-		 * module.setData("test1");
-		 */
-		getSectionModule: function(sectionKey, index, id){
-			if( !this.unionMode )return;
-			var lineList = this.lineList_sectionkey[sectionKey];
-			if( !lineList )return null;
-			var line = lineList[index];
 			if( !line )return null;
 			return line.getModule(id);
 		},
@@ -1019,30 +806,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				return this._getBusinessData();
 			}else{
 				return this._getBusinessData();
-			}
-		},
-		_getSectionKey: function(){
-			if (this.json.section!=="yes"){
-				return "";
-			}else {
-				switch (this.json.sectionBy){
-					case "person":
-						return layout.desktop.session.user.id;
-					case "unit":
-						return (this.form.businessData.task) ? this.form.businessData.task.unit : "";
-					case "activity":
-						return (this.form.businessData.work) ? this.form.businessData.work.activity : "";
-					case "splitValue":
-						return (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
-					case "script":
-						if( this.json.sectionByScript && this.json.sectionByScript.code){
-							return this.form.Macro.exec(this.json.sectionByScript.code, this) || "";
-						}else{
-							return "";
-						}
-					default:
-						return "";
-				}
 			}
 		},
 		createErrorNode: function(text){
@@ -1223,10 +986,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		isNew: false,
 		isEdited : true,
 		index : 0,
-		indexText : "0",
-		indexInSection: null, //区段合并后数据的data[sectionKey][index]
-		indexInSectionText: null,
-		sectionKey: null //区段合并后数据的key
+		indexText : "0"
 	},
 	initialize: function (node, template, data, options) {
 
@@ -1257,9 +1017,6 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	load: function(){
 		this.node.set("html", this.template.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.node);
-		//this.options.sectionKey 为区段合并后的数据
-		//this.template._getSectionKey() 为当前在区段状态下
-		var sectionKey = this.options.sectionKey || this.template._getSectionKey();
 		moduleNodes.each(function (node) {
 			if (node.get("MWFtype") !== "form") {
 				var _self = this;
@@ -1272,13 +1029,11 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 					var templateJsonId = json.id;
 
-					var id;
-					var index = this.template.unionMode ? this.options.indexInSection : this.options.index;
-					if( sectionKey ){
-						id = this.template.json.id + ".." + sectionKey + ".."+ index + ".." + json.id;
-					}else{
-						id = this.template.json.id + ".." + index + ".." + json.id;
-					}
+
+					var index = this.options.index;
+
+					var id = this.template.json.id + ".." + index + ".." + json.id;
+
 					json.id = id;
 					node.set("id", id);
 
@@ -1381,7 +1136,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 		if( this.template.sequenceIdList.contains(id)){
 			this.sequenceNodeList.push( module );
-			var indexText = (this.template.unionMode && this.template.json.sequenceBySection) ?  this.options.indexInSectionText : this.options.indexText;
+			var indexText = this.options.indexText;
 			if(this.form.getModuleType(module) === "label"){
 				module.node.set("text", indexText );
 			}else{
@@ -1494,9 +1249,6 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		var titleArr = this.template.json.excelFieldConfig.map(function(config){
 			return config.title;
 		});
-		if( this.template.unionMode ){
-			titleArr.push( MWF.xApplication.process.Xform.LP.systemField );
-		}
 		resultArr.push( titleArr );
 
 
@@ -1599,9 +1351,6 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 				exportData.push( text );
 			}
 		}.bind(this));
-		if( this.template.unionMode ){
-			exportData.push( line.options.sectionKey );
-		}
 		return exportData;
 	},
 	isAvaliableField : function(json){
@@ -1642,9 +1391,6 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 				colWidthArr.push(150);
 			}
 		}.bind(this));
-		if( this.template.unionMode ){
-			colWidthArr.push(340);
-		}
 		return colWidthArr;
 	},
 	getDateIndexArray : function(){
@@ -1664,9 +1410,6 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		var titleArr = this.template.json.excelFieldConfig.map(function(config){
 			return config.title;
 		});
-		if( this.template.unionMode ){
-			titleArr.push( MWF.xApplication.process.Xform.LP.systemField );
-		}
 		titleArr.push( MWF.xApplication.process.Xform.LP.validationInfor );
 		resultArr.push( titleArr );
 
@@ -1680,10 +1423,6 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			columnList.each( function (obj, i) {
 				array.push( ( lineData[ obj.text ] || '' ).replace(/&#10;/g, "\n") );
 			});
-			if( this.template.unionMode ){
-				var text = lineData[ MWF.xApplication.process.Xform.LP.systemField ] || lineData["系统字段"] || '';
-				array.push( ( text ).replace(/&#10;/g, "\n") );
-			}
 			array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
 
 			resultArr.push( array );
@@ -1844,15 +1583,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		return orgTitleArr;
 	},
 	parseImportedData: function(fieldArray, idata, ignoreSectionKey){
-		var data;
-		var sectionData;
-		if( !ignoreSectionKey && this.template.unionMode ){
-			sectionData = {};
-		}else{
-			data = [];
-		}
-
-		var sectionKey;
+		var data = [];
 
 		idata.each( function( ilineData ){
 			var lineData = {};
