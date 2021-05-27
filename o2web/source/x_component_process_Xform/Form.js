@@ -1284,11 +1284,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     //     var d = this.loadPathData(id);
                     //     if (d) data[id] = d;
                     var v = this.getSectionData(module, data[id]);
-                    if (o2.typeOf(v)==="string") v = o2.txt(v);
+                    //if (o2.typeOf(v)==="string") v = o2.txt(v);
                     data[id] = v
                 } else {
                     var v = module.getData();
-                    if (o2.typeOf(v)==="string") v = o2.txt(v);
+                    //if (o2.typeOf(v)==="string") v = o2.txt(v);
                     data[id] = v;
                 }
             }

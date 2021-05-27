@@ -79,26 +79,29 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_doc = domparser.parseFromString(oo_string, "text/xml");
         var oo_body = oo_doc.evaluate("//w:document/w:body", oo_doc, this.nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-        var dom_div = new Element("div", {"styles": {
-                "display": "block",
-                "width": "442.2pt",
-                "padding": "104.9pt 73.7pt 99.25pt 79.4pt",
-            }}).set("html", data).inject(document.body);
-        var dom_pageRule = this.getPageRule(dom_div.getElement("style").sheet.cssRules);
-        if (dom_pageRule) this.processPageSection(dom_pageRule, oo_body);
+        // var dom_div;
+        // if (o2.typeOf(data) === "string"){
+            var dom_div = new Element("div", {"styles": {
+                    "display": "block",
+                    "width": "442.2pt",
+                    "padding": "104.9pt 73.7pt 99.25pt 79.4pt",
+                }}).set("html", data).inject(document.body);
+        // }else{
+        //     dom_div = data;
+        // }
 
+        var style= dom_div.getElement("style");
+        if (style){
+            var dom_pageRule = this.getPageRule(dom_div.getElement("style").sheet.cssRules);
+            if (dom_pageRule) this.processPageSection(dom_pageRule, oo_body);
+        }
         var dom_wordSection = dom_div.getElement(".WordSection1");
         if (dom_wordSection){
             this.processPageSection(dom_wordSection, oo_body);
             this.processDom(dom_wordSection, oo_body);
-
-
-
         }
 
 
-
-        debugger;
         dom_div.destroy();
 
 
@@ -120,49 +123,92 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var s = new XMLSerializer();
         return s.serializeToString(oo_doc);
     },
-    processDom: function(dom, oo_body, append){
-        var dom = dom.getFirst();
+    processDom: function(dom, oo_body, append, divAsP){
+        dom = dom.getFirst();
         while (dom){
-            if (dom.tagName.toLowerCase() === "p"){
-                this.processParagraph(dom, oo_body, append);
-            }else if (dom.tagName.toLowerCase() === "hr") {
-                this.processHr(dom, oo_body, append);
-            }else if (dom.tagName.toLowerCase() === "table") {
-                this.processTable(dom, oo_body, append);
-            }else{
-                this.processDom(dom, oo_body, append);
-            }
+            //if (dom.nodeType===Node.ELEMENT_NODE){
+                if (dom.tagName.toLowerCase() === "p" || (!!divAsP && dom.tagName.toLowerCase() === "div")){
+                    this.processParagraph(dom, oo_body, append);
+                // }else if (dom.tagName.toLowerCase() === "span") {
+                //     this.processRun(dom, oo_body, append);
+                }else if (dom.tagName.toLowerCase() === "hr") {
+                    this.processHr(dom, oo_body, append);
+                }else if (dom.tagName.toLowerCase() === "table") {
+                    this.processTable(dom, oo_body, append);
+                }else{
+                    this.processDom(dom, oo_body, append, divAsP);
+                }
+            // }else if (dom.nodeType===Node.TEXT_NODE){
+            //     this.processRun(dom.parentElement, oo_body, append);
+            // }else{
+            //     this.processDom(dom, oo_body, append);
+            // }
             dom = dom.getNext();
         }
     },
+
+    processParagraphRun: function(node, oo_p, p){
+        node = node.firstChild;
+        while (node){
+            if (node.nodeType===Node.TEXT_NODE){
+                if (node.nodeValue.trim()) this.processRun(node.parentElement, oo_p, p);
+            }else if (node.nodeType===Node.ELEMENT_NODE){
+                if (node.tagName.toLowerCase() === "span") {
+                    this.processRun(node, oo_p, p);
+                }else{
+                    this.processParagraphRun(node, oo_p, p);
+                }
+            }else{
+                this.processParagraphRun(node, oo_p, p);
+            }
+            node = node.nextSibling;
+        }
+    },
+
     processParagraph: function(dom, oo_body, append){
         var pPrs = {};
-        for (var i = 0; i<dom.style.length; i++){
-            switch (dom.style[i]){
-                case "text-align":
-                    var align = dom.style["textAlign"].toLowerCase();
-                    var jc = "start"
-                    switch (align){
-                        case "center": jc = "center"; break;
-                        case "right":
-                        case "end": jc = "end"; break;
-                        case "justify": jc = "both"; break;
-                    }
-                    pPrs.jc = {"val": jc};
-                    break;
-                default:
-                //nothing
-            }
 
+        var align = dom.getStyle("text-align");
+        if (align){
+            var jc = "start"
+            switch (align){
+                case "center": jc = "center"; break;
+                case "right":
+                case "end": jc = "end"; break;
+                case "justify": jc = "both"; break;
+            }
+            pPrs.jc = {"val": jc};
         }
+
+
+        // for (var i = 0; i<dom.style.length; i++){
+        //     switch (dom.style[i]){
+        //         case "text-align":
+        //             var align = dom.style["textAlign"].toLowerCase();
+        //             var jc = "start"
+        //             switch (align){
+        //                 case "center": jc = "center"; break;
+        //                 case "right":
+        //                 case "end": jc = "end"; break;
+        //                 case "justify": jc = "both"; break;
+        //             }
+        //             pPrs.jc = {"val": jc};
+        //             break;
+        //         default:
+        //         //nothing
+        //     }
+        //
+        // }
         var oo_p = this.createParagraph(oo_body.ownerDocument, {"pPrs": pPrs});
 
+        this.processParagraphRun(dom, oo_p, dom);
 
 
-        var spans = dom.getChildren("span");
-        spans.each(function(span){
-            this.processRun(span, oo_p)
-        }.bind(this));
+
+        // var spans = dom.getChildren("span");
+        // spans.each(function(span){
+        //     this.processRun(span, oo_p)
+        // }.bind(this));
 
         // debugger;
         // var hrs = dom.getChildren("hr");
@@ -181,9 +227,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 this.insertChildren(oo_body, [oo_p]);
             }
         }
+        return oo_p;
     },
     getTableTblW: function(table){
-        debugger;
         var type = "dxa";
         var w = table.style.width;
         if (!w) w = table.get("width");
@@ -256,7 +302,6 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         return attr;
     },
     getTableTblGrid: function(table){
-        debugger;
         var grids = [];
         var trs = table.rows;
         for (var i = 0; i < trs.length; i++){
@@ -291,18 +336,21 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         return v;
     },
     getMsoStyle: function(dom){
-        var s = dom.getAttribute("style");
-        var sList = s.split(/\s*;\s*/g);
         var o = {};
-        sList.map(function(style){
-            var styles = style.split(/\s*:\s*/g);
-            if (styles.length===2){
-                if (styles[0].substr(0,3).toLowerCase()==="mso"){
-                    o[styles[0]] = styles[1];
+
+        var s = dom.getAttribute("style");
+        if (s){
+            var sList = s.split(/\s*;\s*/g);
+            sList.map(function(style){
+                var styles = style.split(/\s*:\s*/g);
+                if (styles.length===2){
+                    if (styles[0].substr(0,3).toLowerCase()==="mso"){
+                        o[styles[0]] = styles[1];
+                    }
                 }
-            }
-            return false;
-        });
+                return false;
+            });
+        }
         return o;
     },
     processTable: function(table, oo_body, append){
@@ -332,23 +380,32 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
         //表格边距
         var mar = table.get("cellpadding").toFloat();
-        if (mar){
-            mar = this.pxToPt(b)*20;
-            var oo_tblCellMar = this.createEl(oo_doc, "tblCellMar");
-            var oo_mar = this.createEl(oo_doc, "left");
-            this.setAttrs(oo_mar, {"type": "dxa", "w": mar});
-            oo_tblCellMar.appendChild(oo_mar);
-            oo_mar = this.createEl(oo_doc, "right");
-            this.setAttrs(oo_mar, {"type": "dxa", "w": mar});
-            oo_tblCellMar.appendChild(oo_mar);
-            oo_mar = this.createEl(oo_doc, "top");
-            this.setAttrs(oo_mar, {"type": "dxa", "w": mar});
-            oo_tblCellMar.appendChild(oo_mar);
-            oo_mar = this.createEl(oo_doc, "bottom");
-            this.setAttrs(oo_mar, {"type": "dxa", "w": mar});
-            oo_tblCellMar.appendChild(oo_mar);
-            oo_tblPr.appendChild(oo_tblCellMar);
-        }
+        if (!mar) mar = 0;
+        //if (mar){
+        mar = this.pxToPt(mar)*20;
+        var left = table.getStyle("padding-left");
+        var right = table.getStyle("padding-right");
+        var top = table.getStyle("padding-top");
+        var bottom = table.getStyle("padding-bottom");
+        left = (left) ? this.pxToPt(left)*20 : 0;
+        right = (right) ? this.pxToPt(right)*20 : 0;
+        top = (top) ? this.pxToPt(top)*20 : 0;
+        bottom = (bottom) ? this.pxToPt(bottom)*20 : 0;
+        var oo_tblCellMar = this.createEl(oo_doc, "tblCellMar");
+        var oo_mar = this.createEl(oo_doc, "start");
+        this.setAttrs(oo_mar, {"type": "dxa", "w": left || mar});
+        oo_tblCellMar.appendChild(oo_mar);
+        oo_mar = this.createEl(oo_doc, "end");
+        this.setAttrs(oo_mar, {"type": "dxa", "w": right || mar});
+        oo_tblCellMar.appendChild(oo_mar);
+        oo_mar = this.createEl(oo_doc, "top");
+        this.setAttrs(oo_mar, {"type": "dxa", "w": top || mar});
+        oo_tblCellMar.appendChild(oo_mar);
+        oo_mar = this.createEl(oo_doc, "bottom");
+        this.setAttrs(oo_mar, {"type": "dxa", "w": bottom || mar});
+        oo_tblCellMar.appendChild(oo_mar);
+        oo_tblPr.appendChild(oo_tblCellMar);
+        //}
 
         //左右对齐
         var align = table.get("align");
@@ -366,8 +423,27 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         }
 
         //表格浮动
-        debugger;
+        var floatTable = false;
         var msoStyle = this.getMsoStyle(table);
+        var horzAnchor = msoStyle["mso-table-anchor-horizontal"];
+        var vertAnchor = msoStyle["mso-table-anchor-vertical"];
+        var tblpXSpec = msoStyle["mso-table-left"];
+        var tblpYSpec = msoStyle["mso-table-top"];
+        if (horzAnchor || vertAnchor || tblpXSpec || tblpYSpec){
+            if (horzAnchor && horzAnchor!=="page" && horzAnchor!=="margin" && horzAnchor!=="text") horzAnchor="margin";
+            if (vertAnchor && vertAnchor!=="page" && vertAnchor!=="margin" && vertAnchor!=="text") vertAnchor="margin";
+            var o = {
+                "horzAnchor": horzAnchor || null,
+                "vertAnchor": vertAnchor || null,
+                "tblpXSpec": tblpXSpec || null,
+                "tblpYSpec": tblpYSpec || null
+            }
+            var oo_tblpPr = this.createEl(oo_doc, "tblpPr");
+            this.setAttrs(oo_tblpPr, o);
+            oo_tblPr.appendChild(oo_tblpPr);
+            floatTable = true;
+        }
+
 
         // table.style
         //
@@ -398,6 +474,15 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         // }
         // trs.each(function(tr){
             var oo_tr = this.createEl(oo_doc, "tr");
+            if (floatTable){
+                var oo_trPr = this.createEl(oo_doc, "trPr");
+                var oo_cantSplit = this.createEl(oo_doc, "cantSplit");
+                var oo_tblHeader = this.createEl(oo_doc, "tblHeader");
+                oo_trPr.appendChild(oo_cantSplit);
+                oo_trPr.appendChild(oo_tblHeader);
+                oo_tr.appendChild(oo_trPr);
+            }
+
 
             var tdIdx = 0;
             //垂直合并单元格
@@ -411,7 +496,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 var oo_mvMerge = this.createEl(oo_doc, "vMerge");
                 oo_mtcPr.appendChild(oo_mvMerge);
                 oo_mtc.appendChild(oo_mtcPr);
-                oo_tr.appendChild(oo_tc);
+                var oo_mp = this.createEl(oo_doc, "p");
+                oo_mtc.appendChild(oo_mp);
+                oo_tr.appendChild(oo_mtc);
                 tdIdx++;
 
                 nextIdx++;
@@ -466,6 +553,30 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                  this.insertSiblings(oo_tcBorders, [oo_top, oo_start, oo_bottom, oo_end], "beforeend");
                  oo_tcPr.appendChild(oo_tcBorders);
 
+                 //单元格边距
+                var left = td.getStyle("padding-left");
+                var right = td.getStyle("padding-right");
+                var top = td.getStyle("padding-top");
+                var bottom = td.getStyle("padding-bottom");
+                left = (left) ? this.pxToPt(left)*20 : 0;
+                right = (right) ? this.pxToPt(right)*20 : 0;
+                top = (top) ? this.pxToPt(top)*20 : 0;
+                bottom = (bottom) ? this.pxToPt(bottom)*20 : 0;
+                var oo_tcMar = this.createEl(oo_doc, "tcMar");
+                var oo_mar = this.createEl(oo_doc, "start");
+                this.setAttrs(oo_mar, {"type": "dxa", "w": left});
+                oo_tcMar.appendChild(oo_mar);
+                oo_mar = this.createEl(oo_doc, "end");
+                this.setAttrs(oo_mar, {"type": "dxa", "w": right});
+                oo_tcMar.appendChild(oo_mar);
+                oo_mar = this.createEl(oo_doc, "top");
+                this.setAttrs(oo_mar, {"type": "dxa", "w": top});
+                oo_tcMar.appendChild(oo_mar);
+                oo_mar = this.createEl(oo_doc, "bottom");
+                this.setAttrs(oo_mar, {"type": "dxa", "w": bottom});
+                oo_tcMar.appendChild(oo_mar);
+                oo_tcPr.appendChild(oo_tcMar);
+
                  var v = this.getTdValign(td);
                  if (v){
                      var oo_vAlign = this.createEl(oo_doc, "vAlign");
@@ -478,7 +589,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
                  oo_tc.appendChild(oo_tcPr);
                  //表格内容；
-                 this.processDom(td, oo_tc, true);
+                 this.processDom(td, oo_tc, true, true);
 
                  var pflag = false;
                  var node = oo_tc.firstChild;
@@ -508,7 +619,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                      var oo_mvMerge = this.createEl(oo_doc, "vMerge");
                      oo_mtcPr.appendChild(oo_mvMerge);
                      oo_mtc.appendChild(oo_mtcPr);
-                     oo_tr.appendChild(oo_tc);
+                     var oo_mp = this.createEl(oo_doc, "p");
+                     oo_mtc.appendChild(oo_mp);
+                     oo_tr.appendChild(oo_mtc);
                      tdIdx++;
 
                      nextIdx++;
@@ -618,13 +731,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
         var oo_ln = this.createEl(oo_doc, "ln", "a");
 
-        debugger;
         var w = this.pxToPt(hr.clientHeight)*12700;
         this.setAttrs(oo_ln, {"w": w}, false);    //线的粗细 pt*12700
         var oo_solidFill = this.createEl(oo_doc, "solidFill", "a");
         var oo_srgbClr = this.createEl(oo_doc, "srgbClr", "a");
 
-        debugger;
         var color = this.getColorHex(hr.get("color"));
         if (!color) color = this.getColorHex(hr.getStyle("background-color"));
         if (!color) color = "FF0000";
@@ -710,23 +821,54 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         oo_p.appendChild(oo_run);
     },
 
+    processRunFont: function(node, rPrs, font){
+        //字体处理缩放
+        var msoStyle = this.getMsoStyle(node);
+        if (msoStyle["mso-font-width"]) rPrs.w = {"val": msoStyle["mso-font-width"]};
 
-    processRun: function(span, oo_p){
+        //处理字号
+        if (msoStyle["mso-ansi-font-size"]) rPrs.sz = {"val": msoStyle["mso-ansi-font-size"].toFloat()*2};
+        if (msoStyle["mso-hansi-font-size"]) rPrs.sz = {"val": msoStyle["mso-hansi-font-size"].toFloat()*2};
+        if (msoStyle["mso-font-size"]) rPrs.sz = {"val": msoStyle["mso-font-size"].toFloat()*2};
+        if (msoStyle["mso-fareast-font-size"]) rPrs.sz = {"val": msoStyle["mso-fareast-font-size"].toFloat()*2};
+
+        //处理字体
+        if (msoStyle["mso-ansi-font-family"]){
+            if (!font) font = { "hint": "eastAsia" };
+            font.ascii = msoStyle["mso-ansi-font-family"];
+        }
+        if (msoStyle["mso-hansi-font-family"]){
+            if (!font) font = { "hint": "eastAsia" };
+            font.hAnsi = msoStyle["mso-hansi-font-family"];
+        }
+        if (msoStyle["mso-font-family"]){
+            if (!font) font = { "hint": "eastAsia" };
+            font.eastAsia = msoStyle["mso-font-family"];
+        }
+        if (msoStyle["mso-fareast-font-family"]){
+            if (!font) font = { "hint": "eastAsia" };
+            font.eastAsia = msoStyle["mso-fareast-font-family"];
+        }
+    },
+    processRun: function(span, oo_p, p){
         var rPrs = {"noProof": {}};
         var font = null;
-        for (var i = 0; i<span.style.length; i++){
-            switch (span.style[i]){
+        var styles = span.getStyles("font-size", "color", "letter-spacing", "font-weight", "font-family")
+        var keys = Object.keys(styles);
+
+        for (var i = 0; i<keys.length; i++){
+            switch (keys[i]){
                 case "font-size":
-                    rPrs.sz = {"val": span.style["fontSize"].toFloat()*2};
+                    rPrs.sz = {"val": styles["font-size"].toFloat()*2};
                     break;
                 case "color":
-                    rPrs.color = {"val": span.style["color"]};
+                    rPrs.color = {"val": this.getColorHex(styles["color"])};
                     break;
                 case "letter-spacing":
-                    rPrs.spacing = {"val": (span.style["letterSpacing"].toFloat()*20 || 0)};
+                    rPrs.spacing = {"val": (styles["letter-spacing"].toFloat()*20 || 0)};
                     break;
                 case "font-weight":
-                    var b = span.style["fontWeight"];
+                    var b = styles["font-weight"];
                     if (b.toLowerCase()=="normal"){
                         //nothing
                     }else if (b.toLowerCase()=="bold") {
@@ -737,19 +879,85 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     }
                     break;
                 case "font-family":
-                    var fonts = span.style["fontFamily"].split(/,\s*/);
+                    var fonts = styles["font-family"].split(/,\s*/);
                     font = {
                         "hint": "eastAsia",
-                        "eastAsia": fonts[0]
+                        "eastAsia": fonts[fonts.length-1]
                     }
                     if (fonts.length>1){
-                        font.other = fonts[1];
+                        font.other = fonts[0];
                     }
                     break;
                 default:
                 //nothing
             }
         }
+        this.processRunFont(p, rPrs, font);
+        this.processRunFont(span, rPrs, font);
+
+        // //字体处理缩放
+        // var msoStyleP = this.getMsoStyle(p);
+        // if (msoStyleP["mso-font-width"]) rPrs.w = {"val": msoStyleP["mso-font-width"]};
+        //
+        // //处理字号
+        // if (msoStyleP["mso-ansi-font-size"]) rPrs.sz = {"val": msoStyleP["mso-ansi-font-size"].toFloat()*2};
+        // if (msoStyleP["mso-hansi-font-size"]) rPrs.sz = {"val": msoStyleP["mso-hansi-font-size"].toFloat()*2};
+        // if (msoStyleP["mso-font-size"]) rPrs.sz = {"val": msoStyleP["mso-font-size"].toFloat()*2};
+        // if (msoStyleP["mso-fareast-font-size"]) rPrs.sz = {"val": msoStyleP["mso-fareast-font-size"].toFloat()*2};
+        //
+        // //处理字体
+        // if (msoStyleP["mso-hansi-font-family"]){
+        //     if (!font) font = { "hint": "eastAsia" };
+        //     font.eastAsia = msoStyleP["mso-hansi-font-family"];
+        // }
+        //
+        // var msoStyle = this.getMsoStyle(span);
+        // if (msoStyle["mso-font-width"]) rPrs.w = {"val": msoStyle["mso-font-width"]};
+        //
+        // if (msoStyle["mso-ansi-font-size"]) rPrs.sz = {"val": msoStyle["mso-ansi-font-size"].toFloat()*2};
+        // if (msoStyle["mso-hansi-font-size"]) rPrs.sz = {"val": msoStyle["mso-hansi-font-size"].toFloat()*2};
+        // if (msoStyle["mso-font-size"]) rPrs.sz = {"val": msoStyle["mso-font-size"].toFloat()*2};
+        // if (msoStyle["mso-fareast-font-size"]) rPrs.sz = {"val": msoStyle["mso-fareast-font-size"].toFloat()*2};
+        // if (msoStyle["mso-hansi-font-family"]){
+        //     if (!font) font = { "hint": "eastAsia" };
+        //     font.eastAsia = msoStyle["mso-hansi-font-family"];
+        // }
+        // for (var i = 0; i<span.style.length; i++){
+        //     switch (span.style[i]){
+        //         case "font-size":
+        //             rPrs.sz = {"val": span.style["fontSize"].toFloat()*2};
+        //             break;
+        //         case "color":
+        //             rPrs.color = {"val": this.getColorHex(span.style["color"])};
+        //             break;
+        //         case "letter-spacing":
+        //             rPrs.spacing = {"val": (span.style["letterSpacing"].toFloat()*20 || 0)};
+        //             break;
+        //         case "font-weight":
+        //             var b = span.style["fontWeight"];
+        //             if (b.toLowerCase()=="normal"){
+        //                 //nothing
+        //             }else if (b.toLowerCase()=="bold") {
+        //                 rPrs.b = {"val": "true"};
+        //             }else{
+        //                 var n = b.toFloat();
+        //                 if (n>=600) rPrs.b = {"val": "true"};
+        //             }
+        //             break;
+        //         case "font-family":
+        //             var fonts = span.style["fontFamily"].split(/,\s*/);
+        //             font = {
+        //                 "hint": "eastAsia",
+        //                 "eastAsia": fonts[0]
+        //             }
+        //             if (fonts.length>1){
+        //                 font.other = fonts[1];
+        //             }
+        //             break;
+        //         default:
+        //         //nothing
+        //     }
+        // }
         var text = span.get("text");
         //if (!text.trim()) text = "";
         var oo_run = this.createRun(oo_p.ownerDocument, {"rPrs": rPrs, "font": font, "text": text});

@@ -199,7 +199,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 v = this.form.businessData.data[this.json.id] || "";
             }
         }
-        if (o2.typeOf(v)==="string") v = o2.dtxt(v);
+        //if (o2.typeOf(v)==="string") v = o2.dtxt(v);
         return v;
     },
     _getBusinessSectionData: function(){
@@ -257,7 +257,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
 
     _setBusinessData: function(v){
-        if (o2.typeOf(v)==="string") v = o2.txt(v);
+        //if (o2.typeOf(v)==="string") v = o2.txt(v);
         if (this.json.section=="yes"){
             this._setBusinessSectionData(v);
         }else {
