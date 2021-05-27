@@ -717,6 +717,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
 
         if (this.layout_issuanceUnit && this.layout_issuanceDate){
+            debugger;
             var table = this.layout_issuanceUnit.getParent("table")
             if (table && !table.hasClass("doc_layout_headIssuance")) {
                 var unitWidth = o2.getTextSize(this.layout_issuanceUnit.get("text"), {
@@ -732,31 +733,58 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 // var unitWidth = this.layout_issuanceUnit.getSize().x;
                 // var dateWidth = this.layout_issuanceDate.getSize().x;
                 if (unitWidth < dateWidth) {
-                    var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                    //日期右空四字，单位相对与日期居中
+                    var flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
                     if (flagTd) {
-                        var pt = ((dateWidth - unitWidth) / 96) * 72 + 32 + 32;
+                        var pt = 16*4;  //空四字
                         flagTd.setStyle("width", "" + pt + "pt");
+
+                        flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "" + pt + "pt");
                     }
-                    table = this.layout_issuanceDate.getParent("table");
-                    table.setStyle("width", "auto");
-                    flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    if (flagTd) flagTd.setStyle("width", "32pt");
-                    var p = this.layout_issuanceDate.getParent("p");
-                    if (p) p.setStyle("text-align", "right");
+                    //var dateTd = this.layout_issuanceDate.getParent("td");
+                    var unitTd = this.layout_issuanceUnit.getParent("td");
+                    unitTd.setStyle("width", dateWidth);
+                    var p = this.layout_issuanceUnit.getParent("p");
+                    if (p) p.setStyle("text-align", "center");
+
+
+                    // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                    // if (flagTd) {
+                    //     var pt = ((dateWidth - unitWidth) / 96) * 72 + 32 + 32;
+                    //     flagTd.setStyle("width", "" + pt + "pt");
+                    // }
+                    // table = this.layout_issuanceDate.getParent("table");
+                    // table.setStyle("width", "auto");
+                    // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                    // if (flagTd) flagTd.setStyle("width", "32pt");
+                    // var p = this.layout_issuanceDate.getParent("p");
+                    // if (p) p.setStyle("text-align", "right");
 
                 } else {
                     var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
                     if (flagTd) flagTd.setStyle("width", "32pt");
-                    var table = this.layout_issuanceUnit.getParent("table");
-                    var x = table.getSize().x;
 
-                    table = this.layout_issuanceDate.getParent("table");
-                    table.setStyle("width", "" + x + "px");
+                    var unitTd = this.layout_issuanceUnit.getParent("td");
+                    unitTd.setStyle("width", "auto");
 
                     flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    if (flagTd) flagTd.setStyle("width", "32pt");
+                    if (flagTd) flagTd.setStyle("width", "64pt");
                     var p = this.layout_issuanceDate.getParent("p");
-                    if (p) p.setStyle("text-align", "center");
+                    if (p) p.setStyle("text-align", "right");
+
+                    // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                    // if (flagTd) flagTd.setStyle("width", "32pt");
+                    // var table = this.layout_issuanceUnit.getParent("table");
+                    // var x = table.getSize().x;
+                    //
+                    // table = this.layout_issuanceDate.getParent("table");
+                    // table.setStyle("width", "" + x + "px");
+                    //
+                    // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                    // if (flagTd) flagTd.setStyle("width", "32pt");
+                    // var p = this.layout_issuanceDate.getParent("p");
+                    // if (p) p.setStyle("text-align", "center");
                 }
             }
         }
@@ -2957,31 +2985,57 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     // var unitWidth = this.layout_issuanceUnit.getSize().x;
                     // var dateWidth = this.layout_issuanceDate.getSize().x;
                     if (unitWidth<dateWidth){
-                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                        if (flagTd){
-                            var pt = ((dateWidth-unitWidth)/96)*72 +32+32;
-                            flagTd.setStyle("width", ""+pt+"pt");
+                        //日期右空四字，单位相对与日期居中
+                        var flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) {
+                            var pt = 16*4;  //空四字
+                            flagTd.setStyle("width", "" + pt + "pt");
+
+                            flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "" + pt + "pt");
                         }
-                        table = this.layout_issuanceDate.getParent("table");
-                        table.setStyle("width", "auto");
-                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                        if (flagTd) flagTd.setStyle("width", "32pt");
-                        var p = this.layout_issuanceDate.getParent("p");
-                        if (p) p.setStyle("text-align", "right");
+                        //var dateTd = this.layout_issuanceDate.getParent("td");
+                        var unitTd = this.layout_issuanceUnit.getParent("td");
+                        unitTd.setStyle("width", dateWidth);
+                        var p = this.layout_issuanceUnit.getParent("p");
+                        if (p) p.setStyle("text-align", "center");
+
+                        // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        // if (flagTd){
+                        //     var pt = ((dateWidth-unitWidth)/96)*72 +32+32;
+                        //     flagTd.setStyle("width", ""+pt+"pt");
+                        // }
+                        // table = this.layout_issuanceDate.getParent("table");
+                        // table.setStyle("width", "auto");
+                        // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        // if (flagTd) flagTd.setStyle("width", "32pt");
+                        // var p = this.layout_issuanceDate.getParent("p");
+                        // if (p) p.setStyle("text-align", "right");
 
                     }else{
                         var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
                         if (flagTd) flagTd.setStyle("width", "32pt");
-                        var table = this.layout_issuanceUnit.getParent("table");
-                        var x = table.getSize().x;
 
-                        table = this.layout_issuanceDate.getParent("table");
-                        table.setStyle("width", ""+x+"px");
+                        var unitTd = this.layout_issuanceUnit.getParent("td");
+                        unitTd.setStyle("width", "auto");
 
                         flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                        if (flagTd) flagTd.setStyle("width", "32pt");
+                        if (flagTd) flagTd.setStyle("width", "64pt");
                         var p = this.layout_issuanceDate.getParent("p");
-                        if (p) p.setStyle("text-align", "center");
+                        if (p) p.setStyle("text-align", "right");
+
+                        // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        // if (flagTd) flagTd.setStyle("width", "32pt");
+                        // var table = this.layout_issuanceUnit.getParent("table");
+                        // var x = table.getSize().x;
+                        //
+                        // table = this.layout_issuanceDate.getParent("table");
+                        // table.setStyle("width", ""+x+"px");
+                        //
+                        // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        // if (flagTd) flagTd.setStyle("width", "32pt");
+                        // var p = this.layout_issuanceDate.getParent("p");
+                        // if (p) p.setStyle("text-align", "center");
                     }
                 }
             }
