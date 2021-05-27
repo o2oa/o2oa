@@ -3682,10 +3682,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         //_self.addRetractMessage(json.data);
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workRetract, "success");
                         _self.app.content.unmask();
+                        if (_self.mask) { _self.mask.hide(); _self.mask = null; }
                         _self.app.reload();
                         //}, null, _self.businessData.work.id);
                         this.close();
-                        if (_self.mask) { _self.mask.hide(); _self.mask = null; }
                     }.bind(this), function (xhr, text, error) {
                         _self.app.content.unmask();
                         var errorText = error + ":" + text;
