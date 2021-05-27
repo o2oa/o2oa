@@ -713,12 +713,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var tools = [];
         this._loadMobileDefaultTools(function () {
             if (this.json.defaultTools) {
+                var jsonStr = JSON.stringify(this.json.defaultTools);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                this.json.defaultTools = JSON.parse(jsonStr);
                 this.json.defaultTools.each(function (tool) {
                     var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
                     if (flag) tools.push(tool);
                 }.bind(this));
             }
             if (this.json.tools) {
+                var jsonStr = JSON.stringify(this.json.tools);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                this.json.tools = JSON.parse(jsonStr);
                 this.json.tools.each(function (tool) {
                     var flag = this._checkCustomMobileActionItem(tool, this.options.readonly);
                     if (flag) tools.push(tool);
@@ -865,6 +871,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.css.html5ActionButton.width = "100%";
             if (count == 2) this.css.html5ActionButton.width = "49%";
             tools.each(function (tool) {
+
                 var action = new Element("div", { "styles": this.css.html5ActionButton, "text": tool.text }).inject(node);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
