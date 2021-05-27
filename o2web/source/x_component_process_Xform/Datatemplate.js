@@ -680,7 +680,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		//api 相关开始
 		/**
-		 * 获取对应的条目。该方法在有无区段的情况下都可以使用。
+		 * 获取对应的条目。
 		 * @param {Number} index 条目序号，从零开始
 		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line | Null} 对应的数据模板条目
 		 * @example
@@ -696,7 +696,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return line || null;
 		},
 		/**
-		 * 在数据模板末尾添加条目。如果当前是区段合并后的数据，会往区段标识为$union的区段中插入条目。
+		 * 在数据模板末尾添加条目。
 		 * @param {Object} [data] 添加条目的数据。
 		 * @return {MWF.xApplication.process.Xform.Datatemplate.Line} 添加的数据模板条目
 		 * @example
@@ -733,7 +733,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			// }
 		},
 		/**
-		 * 获取对应表单组件。该方法在有无区段的情况下都可以使用。
+		 * 获取对应表单组件。
 		 * @param {Number} index 条目序号，从零开始
 		 * @param {String} id 组件标识
 		 * @return {FormComponent} 对应表单组件
@@ -1040,7 +1040,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 						json.type = "AttachmentDg";
 						json.ignoreSite = true;
-						json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
+						json.site = this.getAttachmentSite(json, templateJsonId);
 					}
 
 					if (this.form.all[id]) this.form.all[id] = null;
@@ -1083,29 +1083,20 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	getModule: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
 	},
-	getAttachmentSite: function(json, templateJsonId, sectionKey){
+	getAttachmentSite: function(json, templateJsonId){
 		//确保site最长为64，否则后台会报错
 
-		var index = this.options.indexInSection || this.options.index;
+		var index = this.options.index;
 
 		var baseSite;
 		baseSite =  "." + index + "."  + (json.site || templateJsonId);
 
-		var maxLength;
-		var sectionId = "";
-		if( sectionKey ){
-			maxLength = Math.floor((63 - baseSite.length)/2 );
-
-			sectionId = (sectionKey.length > maxLength) ? sectionKey.substr(sectionKey.length-maxLength, maxLength) : sectionKey;
-			sectionId = "." + sectionId;
-		}else{
-			maxLength = 64 - baseSite.length;
-		}
+		var maxLength = 64 - baseSite.length;
 
 		var templateId = this.template.json.id;
 		templateId = (templateId.length > maxLength) ? templateId.substr(templateId.length-maxLength, maxLength) : templateId;
 
-		return templateId + sectionId + baseSite;
+		return templateId + baseSite;
 	},
 	setEvents: function (module, id) {
 		if( this.template.addActionIdList.contains( id )){
@@ -1582,7 +1573,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		}.bind(this));
 		return orgTitleArr;
 	},
-	parseImportedData: function(fieldArray, idata, ignoreSectionKey){
+	parseImportedData: function(fieldArray, idata){
 		var data = [];
 
 		idata.each( function( ilineData ){
@@ -1667,16 +1658,11 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 
 			}.bind(this));
 
-			if(sectionData){
-				sectionKey = ilineData[ MWF.xApplication.process.Xform.LP.systemField ];
-				if( !sectionData[sectionKey])sectionData[sectionKey] = [];
-				sectionData[sectionKey].push( lineData );
-			}else{
-				data.push( lineData );
-			}
+			data.push( lineData );
+
 		}.bind(this));
 
-		return sectionData || data;
+		return data;
 	},
 	importData: function(fieldArray, idata){
 
@@ -1711,10 +1697,6 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		fieldArray.each(function (obj, i) {
 			htmlArray.push( "<th style='"+titleStyle+"'>"+obj.text+"</th>" );
 		});
-		if( this.template.unionMode ){
-			var text = MWF.xApplication.process.Xform.LP.systemField || "系统字段";
-			htmlArray.push( "<th style='"+titleStyle+"'>"+text+"</th>" );
-		}
 		htmlArray.push("<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>");
 		htmlArray.push("</tr>" );
 
@@ -1728,10 +1710,6 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			fieldArray.each( function (obj, i) {
 				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ obj.text ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
 			});
-			if( this.template.unionMode ){
-				var text = lineData[ MWF.xApplication.process.Xform.LP.systemField ] || lineData["系统字段"] || '';
-				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( text ).replace(/&#10;/g,"<br/>") +"</td>" );
-			}
 			htmlArray.push( "<td style='"+contentStyle+"'>"+( lineData.errorTextList ? lineData.errorTextList.join("<br/>") : "" )+"</td>" );
 			htmlArray.push( "</tr>" );
 
@@ -1878,15 +1856,6 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					}
 				}
 			}.bind(this));
-			if( this.template.unionMode ){
-				if( !lineData[ MWF.xApplication.process.Xform.LP.systemField ] && !lineData["系统字段"] ){
-					var colInfor = columnText.replace( "{n}", fieldArray.length+1 );
-					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName(fieldArray.length) );
-
-					errorTextList.push( colInfor + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
-					errorTextListExcel.push( colInforExcel + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
-				}
-			}
 
 			if(errorTextList.length>0){
 				lineData.errorTextList = errorTextList;
