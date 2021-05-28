@@ -54,7 +54,7 @@
 }
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class DatatablePC 数据表格组件。
+/** @class DatatablePC 数据表格组件。表格形式的多行数据编辑组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -63,7 +63,8 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * var datatable = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @o2category FormComponents
- * @o2range {Process|CMS}
+ * @since v6.1.3
+ * @o2range {Process|CMS|Protal}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.DatatablePC = new Class(
