@@ -1,0 +1,53 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="{{$.lp.base}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.id}}</td>
+                <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.total}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="total" text{!($.total) || ($.total=='no')?'checked':''} type="radio" value="no"/>{{$.lp.notNeeded}} <br/>
+                    <input class="editTableRadio" name="total" text{($.total=='number')?'checked':''} type="radio" value="number"/>{{$.lp.totalValue}} <br/>
+                    <input class="editTableRadio" name="total" text{($.total=='count')?'checked':''} type="radio" value="count"/>{{$.lp.totalCount}} <br/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.hide}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isShow" text{($.isShow!==false)?'checked':''} type="radio" value="true"/>{{$.lp.showCol}} <br/>
+                    <input class="editTableRadio" name="isShow" text{($.isShow==false)?'checked':''} type="radio" value="false"/>{{$.lp.hideCol}} <br/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.exportImport}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isImpExp" text{($.isImpExp!==false)?'checked':''} type="radio" value="true"/>{{$.lp.allow}} <br/>
+                    <input class="editTableRadio" name="isImpExp" text{($.isImpExp==false)?'checked':''} type="radio" value="false"/>{{$.lp.notAllow}} <br/>
+                </td>
+            </tr>
+        </table>
+
+        <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+        <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
+
+    </div>
+    <div title="{{$.lp.event}}"  class="MWFTab">
+        <div class="MWFEventsArea" name="events"></div>
+    </div>
+    <div title="HTML"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>
