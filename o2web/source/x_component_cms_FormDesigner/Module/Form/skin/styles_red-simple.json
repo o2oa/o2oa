@@ -250,7 +250,8 @@
       "text-align": "center",
       "height": "30px",
       "line-height": "30px",
-      "color": "#666"
+      "color": "#666",
+      "border-bottom": "1px solid #ccc"
     },
     "actionStyles": {
       "background-color": "#f7f7f7"
