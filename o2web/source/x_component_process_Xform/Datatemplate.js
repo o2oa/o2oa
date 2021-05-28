@@ -48,7 +48,7 @@
  ]
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class Datatemplate 数据模板组件。
+/** @class Datatemplate 数据模板组件。自定义结构和样式的多行数据编辑组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -57,7 +57,8 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * var datatemplate = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @o2category FormComponents
- * @o2range {Process|CMS}
+ * @since v6.1.3
+ * @o2range {Process|CMS|Protal}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
