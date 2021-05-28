@@ -301,8 +301,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "attachment": "Attachment",
         "div": "Div",
         "table": "Table",
-        // "datagrid": "Datagrid(Deprecated)",
-        "datagrid": "Datagrid",
+        "datagrid": "Datagrid(Deprecated)",
         "datatable": "Datatable",
         "datatemplate": "Datatemplate",
         "subform": "Subform",
@@ -909,7 +908,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "count": "Count",
         "import" : "Import",
         "datatableEditMode": "Edit Mode",
-        "datatableEditModeValue": ["single row","multiple rows"]
+        "datatableEditModeValue": ["single row","multiple rows"],
+        "onlyPc": "Available on PC only"
     },
     "actionBar": {
         "close":"Close",
