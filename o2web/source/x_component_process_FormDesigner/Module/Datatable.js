@@ -53,6 +53,15 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		if (styles.itemTitleStyles) this.copyStyles(styles.itemTitleStyles, "itemTitleStyles");
 		if (styles.properties) this.copyStyles(styles.properties, "properties");
 	},
+	setImpExpTableStyles: function(){
+		//设置导入导出表格样式
+		if(this.form.templateStyles && this.form.templateStyles.table){
+			this.json.impExpTableStyles = Object.merge(this.json.impExpTableStyles||{}, this.form.templateStyles.table.styles||{});
+			this.json.impExpTableTitleStyles = Object.merge(this.json.impExpTableTitleStyles||{}, this.form.templateStyles.table.titleStyles||{});
+			this.json.impExpTableContentStyles = Object.merge(this.json.impExpTableContentStyles||{}, this.form.templateStyles.table.contentStyles||{});
+			this.json.impExpTableProperties = Object.merge(this.json.impExpTableProperties||{}, this.form.templateStyles.table.properties||{});
+		}
+	},
 	_createMoveNode: function(){
 
 		var tableHTML = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"2\" width=\"100%\" align=\"center\">";
@@ -269,6 +278,10 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 			this.setPropertiesOrStyles("styles");
 			this.setPropertiesOrStyles("tableStyles");
 			this.setPropertiesOrStyles("properties");
+
+			if( !this.json.impExpTableStyles ){
+				this.setImpExpTableStyles()
+			}
 
 			this._setNodeProperty();
 			if (!this.form.isSubform) this._createIconAction();
@@ -517,6 +530,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		this.setPropertiesOrStyles("properties");
 
 		this.setDatatableStyles();
+
+		this.setImpExpTableStyles();
 
 		this.reloadMaplist();
 	},

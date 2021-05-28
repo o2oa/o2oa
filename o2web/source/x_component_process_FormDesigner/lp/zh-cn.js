@@ -299,8 +299,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "attachment": "附件",
         "div": "容器",
         "table": "表格",
-        // "datagrid": "数据网格(过时)",
-        "datagrid": "数据网格",
+        "datagrid": "数据网格(过时)",
         "datatable": "数据表格",
         "datatemplate": "数据模板",
         "subform": "子表单",
@@ -913,7 +912,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "count": "数量",
         "import" : "导入",
         "datatableEditMode": "编辑方式",
-        "datatableEditModeValue": ["每次编辑单行","同时编辑多行"]
+        "datatableEditModeValue": ["每次编辑单行","同时编辑多行"],
+        "onlyPc": "仅PC端可用"
     },
     "actionBar": {
         "close":"关闭",
