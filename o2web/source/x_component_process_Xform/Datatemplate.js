@@ -57,7 +57,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * var datatemplate = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @o2category FormComponents
- * @since v6.1.3
+ * @since v6.2
  * @o2range {Process|CMS|Protal}
  * @hideconstructor
  */
