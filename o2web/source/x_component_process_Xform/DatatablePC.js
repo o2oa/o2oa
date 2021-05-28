@@ -698,6 +698,17 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.fireEvent("completeLineEdit", [line]);
 			return true;
 		},
+		_moveUpLine: function(ev, line){
+			if( this.currentEditedLine && !this._completeLineEdit() )return false;
+			if( line.options.index === 0 )return;
+
+			var data = this.getData();
+			var upData = data.data[line.options.index-1];
+			var curData = data.data[line.options.index];
+			data.data[line.options.index] = upData;
+			data.data[line.options.index-1] = curData;
+			this.setData( data );
+		},
 		_changeEditedLine: function(line){
 			if( this.currentEditedLine ){
 				if( line ===  this.currentEditedLine )return;
@@ -706,43 +717,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			line.changeEditMode(true);
 			this.currentEditedLine = line;
 		},
-		// _checkSelectAll: function () {
-		// 	debugger;
-		// 	var selectData = this.selectAllSelector.getData();
-		// 	var selected;
-		// 	if(o2.typeOf(selectData)==="array"){
-		// 		selected = selectData.contains(this.json.outerSelectAllSelectedValue);
-		// 	}else{
-		// 		selected = selectData === this.json.outerSelectAllSelectedValue;
-		// 	}
-		// 	this.selected = selected;
-		// 	this.lineList.each(function (line) {
-		// 		this.selected ? line.select() : line.unselect();
-		// 	}.bind(this))
-		// },
-		// selectAll: function(){
-		// 	this.selected = true;
-		// 	if(this.selectAllSelector)this.selectAllSelector.setData(this.json.outerSelectAllSelectedValue);
-		// },
-		// unselectAll: function(){
-		// 	debugger;
-		// 	this.selected = false;
-		// 	if( this.selectAllSelector.getOptionsObj ){
-		// 		var options = this.selectAllSelector.getOptionsObj();
-		// 		var value = "";
-		// 		var arr = options.valueList || [];
-		// 		for( var i=0; i<arr.length; i++ ){
-		// 			var v = arr[i];
-		// 			if( v !== this.json.outerSelectAllSelectedValue ){
-		// 				value = v;
-		// 				break;
-		// 			}
-		// 		}
-		// 		this.selectAllSelector.setData(value);
-		// 	}else{
-		// 		this.selectAllSelector.setData("")
-		// 	}
-		// },
 
 		editValidation: function(){
 			var flag = true;
@@ -1449,7 +1423,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		if(!this.options.isEditable)return;
 
 		var editActionTd = this.node.getElement(".mwf_editaction");
-		//this.moveActionTd = this.node.getElement(".moveAction");
+		var moveActionTd = this.node.getElement(".mwf_moveaction");
 
 		if(this.datatable.multiEditMode){ //多行编辑模式
 			if(this.options.isAddable)this.createAddAction(editActionTd);
@@ -1461,6 +1435,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			this.createCancelEditAction(editActionTd);
 			this.checkActionDisplay();
 		}
+		this.createMoveAction(moveActionTd);
 
 	},
 	checkActionDisplay: function(){
@@ -1515,6 +1490,19 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			"events": {
 				"click": function(ev){
 					this.datatable._deleteLine( ev, this );
+					// if( this.datatable.currentEditedLine === this )this.datatable.currentEditedLine = null;
+					ev.stopPropagation();
+				}.bind(this)
+			}
+		}).inject(td);
+	},
+	createMoveAction: function(td){
+		this.moveAction = new Element("div", {
+			"styles": this.form.css.datatableMoveLineAction,
+			"text": "↑",
+			"events": {
+				"click": function(ev){
+					this.datatable._moveUpLine( ev, this );
 					// if( this.datatable.currentEditedLine === this )this.datatable.currentEditedLine = null;
 					ev.stopPropagation();
 				}.bind(this)
