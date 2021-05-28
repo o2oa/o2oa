@@ -1,54 +1,60 @@
 /**
- * 数据模板数据结构.
+ * 数据表格数据结构.
  * @typedef {Array} DatatableData
  * @example
- [ //数据模板数据条目
- {
-           "org": [{
-                "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
-                "id": "bf007525-99a3-4178-a474-32865bdddec8",
-                "name": "张三",
-                "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
-                "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
-                "unitLevelName": "兰德纵横/市场营销部",
-                "unitName": "市场营销部"
-            }],
-            "org_1": [{
-                "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
-                "id": "bf007525-99a3-4178-a474-32865bdddec8",
-                "name": "张三",
-                "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
-                "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
-                "unitLevelName": "兰德纵横/市场营销部",
-                "unitName": "市场营销部"
-            }, {
-                "distinguishedName": "李四@bf007525-99a3-4178-a474-32865bdddec8@I",
-                "id": "bf007525-99a3-4178-a474-32865bdddec8",
-                "name": "李四",
-                "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
-                "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
-                "unitLevelName": "兰德纵横/市场营销部",
-                "unitName": "市场营销部"
-            }],
-            "number": "111",
-            "textfield": "杭州",
-            "attachment": [
-                {
-                    "activityName": "拟稿",
-                    "extension": "jpg",
-                    "id": "9514758e-9e28-4bfe-87d7-824f2811f173",
-                    "lastUpdateTime": "2020-12-09 21:48:03",
-                    "length": 452863.0,
-                    "name": "111.jpg",
-                    "person": "李四@lisi@P"
-                }
-            ]
-        },
- ...
- ]
+ { //数据表格数据条目
+  "data": [
+    {
+      "org": [{
+        "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
+        "id": "bf007525-99a3-4178-a474-32865bdddec8",
+        "name": "张三",
+        "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
+        "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
+        "unitLevelName": "兰德纵横/市场营销部",
+        "unitName": "市场营销部"
+      }],
+      "org_1": [{
+        "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
+        "id": "bf007525-99a3-4178-a474-32865bdddec8",
+        "name": "张三",
+        "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
+        "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
+        "unitLevelName": "兰德纵横/市场营销部",
+        "unitName": "市场营销部"
+      }, {
+        "distinguishedName": "李四@bf007525-99a3-4178-a474-32865bdddec8@I",
+        "id": "bf007525-99a3-4178-a474-32865bdddec8",
+        "name": "李四",
+        "person": "0c828550-d8ab-479e-9880-09a59332f1ed",
+        "unit": "9e6ce205-86f6-4d84-96e1-83147567aa8d",
+        "unitLevelName": "兰德纵横/市场营销部",
+        "unitName": "市场营销部"
+      }],
+      "number": "111",
+      "textfield": "杭州",
+      "attachment": [
+        {
+          "activityName": "拟稿",
+          "extension": "jpg",
+          "id": "9514758e-9e28-4bfe-87d7-824f2811f173",
+          "lastUpdateTime": "2020-12-09 21:48:03",
+          "length": 452863.0,
+          "name": "111.jpg",
+          "person": "李四@lisi@P"
+        }
+      ]
+    }
+    ...
+  ],
+  "total": {
+    "number": 222, //总计采用字段id
+    "textfield": 2
+  }
+}
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class DatatablePC 数据模板组件。
+/** @class DatatablePC 数据表格组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -80,24 +86,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			/**
 			 * 每一个条目加载后时候触发，通过this.event可以获取条目对象。
 			 * @event MWF.xApplication.process.Xform.DatatablePC#afterLoadLine
-			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-			 */
-			/**
-			 * 区段合并后的展现包含此事件，加载条目前执行。通过this.event.sectionKeyList获取所有区段标识，
-			 * 通过this.event.data获取数据。
-			 * @event MWF.xApplication.process.Xform.DatatablePC#loadSectionData
-			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-			 */
-			/**
-			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载前执行。通过this.event.sectionKey获取当前区段标识，
-			 * 通过this.event.sectionData获取当前区段数据。
-			 * @event MWF.xApplication.process.Xform.DatatablePC#beforeloadSectionLines
-			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-			 */
-			/**
-			 * 区段合并后的展现包含此事件，该事件在每组区段数据条目加载后执行。通过this.event.sectionKey获取当前区段标识，
-			 * 通过this.event.sectionData获取当前区段数据，通过this.event.sectionLineList获取当前区段的所有条目。
-			 * @event MWF.xApplication.process.Xform.DatatablePC#afterloadSectionLines
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
@@ -156,11 +144,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * }
 			 */
 			/**
-			 * 在导入excel，数据校验成功将要设置回数据模板的时候触发，this.event指向整理过的导入数据，格式见{@link DatatableData}。
+			 * 在导入excel，数据校验成功将要设置回数据表格的时候触发，this.event指向整理过的导入数据，格式见{@link DatatableData}。
 			 * @event MWF.xApplication.process.Xform.DatatablePC#import
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
-			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad", "loadSectionData", "beforeloadSectionLines", "afterloadSectionLines",
+			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
 				"beforeLoadLine", "afterLoadLine", "addLine", "deleteLine", "afterDeleteLine","completeLineEdit", "cancelLineEdit", "export", "import", "validImport"]
 		},
 
@@ -212,8 +200,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this._setValue(this.data);
 			}
 
-			//object表示数据是区段合并状态 ???
-			this.unionMode = false; //o2.typeOf(this.data)==="object";
 
 			this.lineList = [];
 
@@ -501,70 +487,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.isNew = false;
 			this.newLineIndex = null;
 			if (callback) callback();
-
-			// if(o2.typeOf(this.data)==="object"){ //区段合并后显示 ???
-			// 	this.lineList_sectionkey = {};
-			// 	var index = 0;
-			// 	var sectionKeyList = Object.keys(this.data);
-			// 	//$union默认放最后
-			// 	sectionKeyList.sort(function (a, b) {
-			// 		if( a === "$union" ){
-			// 			return 1;
-			// 		}else if( b === "$union" ){
-			// 			return -1;
-			// 		}else{
-			// 			return 0;
-			// 		}
-			// 	});
-			// 	this.fireEvent("loadSectionData", [{
-			// 		"sectionKeyList": sectionKeyList,
-			// 		"data": this.data
-			// 	}]);
-			// 	Array.each(sectionKeyList, function (sectionKey, i) {
-			// 		debugger;
-			// 		var list = this.data[sectionKey];
-			// 		this.fireEvent("beforeloadSectionLines", [{
-			// 			"sectionKey": sectionKey,
-			// 			"sectionData": list
-			// 		}]);
-			// 		var sectionLineList = [];
-			// 		this.lineList_sectionkey[sectionKey] = sectionLineList;
-			// 		list.each(function(data, idx){
-			// 			var node = this._createLineNode();
-			// 			var line = this._loadLine(node, data, index, this.editable, idx, sectionKey);
-			// 			this.lineList.push(line);
-			// 			sectionLineList.push(line);
-			// 			index++;
-			// 		}.bind(this));
-			// 		this.fireEvent("afterloadSectionLines", [{
-			// 			"sectionKey": sectionKey,
-			// 			"sectionData": list,
-			// 			"sectionLineList" : sectionLineList
-			// 		}]);
-			// 	}.bind(this))
-			// }else
-			// debugger;
-			// if(this._getBusinessData() && this.data && this.data.data){
-			// 	this.data.data.each(function(data, idx){
-			// 		var isNew = o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false;
-			// 		var isEdited = (!this.multiEditMode && o2.typeOf(this.newLineIndex) === "number") ? idx === this.newLineIndex : this.multiEditMode;
-			// 		var node = this._createLineNode();
-			// 		var line = this._loadLine(node, data, idx, isEdited, isNew );
-			// 		this.lineList.push(line);
-			// 	}.bind(this));
-			// 	this.newLineIndex = null;
-			// }else if( this.editable ){ //如果是第一次编辑
-			// 	var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
-			// 	for( var i=0; i<count; i++ ){
-			// 		var isNew = o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false;
-			// 		var isEdited = (!this.multiEditMode && o2.typeOf(this.newLineIndex) === "number") ? idx === this.newLineIndex : this.multiEditMode;
-			// 		var node = this._createLineNode();
-			// 		var line = this._loadLine(node, {}, i, isEdited, isNew );
-			// 		this.lineList.push(line);
-			// 	}
-			// 	this.newLineIndex = null;
-			// }
-			// if (callback) callback();
 		},
 		isMax : function(){
 			var maxCount = this.json.maxCount ? this.json.maxCount.toInt() : 0;
@@ -580,13 +502,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return false;
 		},
-		_loadLine: function(container, data, index, isEdited, isNew, indexInSection, sectionKey){
+		_loadLine: function(container, data, index, isEdited, isNew){
 			var line = new MWF.xApplication.process.Xform.DatatablePC.Line(container, this, data, {
 				index : index,
 				indexText : (index+1).toString(),
-				indexInSection: indexInSection,
-				indexInSectionText: typeOf(indexInSection) === "number" ?  (index+1).toString() : null,
-				sectionKey: sectionKey,
 				isNew: isNew,
 				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
 				isEditable: this.editable,
@@ -601,36 +520,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_setLineData: function(line, d){
 			var index = line.options.index;
 			var data = this.getData();
-			// if( line.options.sectionKey ){ //区段合并后的数据
-			// 	var sectionData = data[line.options.sectionKey];
-			// 	sectionData[index] = d;
-			// }else{
 			data.data[index] = d;
-			// }
 			this.setData( data );
 		},
-		// _addLine: function(ev, edited, sectionKey, data){
-		// 	if( this.isMax() ){
-		// 		var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
-		// 		this.form.notice(text,"info");
-		// 		return false;
-		// 	}
-		// 	var index = this.lineList.length;
-		// var node = this._createLineNode();
-		// var line;
-		// if( this.unionMode ){
-		// 	var key = sectionKey || "$union";
-		// 	var indexInSection =  this.data[key] ? this.data[key].length : 0;
-		// 	line = this._loadLine(node, data || {}, index, edited || this.editable, indexInSection, sectionKey || "$union" );
-		// }else{
-		// 	line = this._loadLine(node, data || {}, index);
-		// }
-		// this.lineList.push(line);
-		// this._loadTotal();
-		// 	this.fireEvent("addLine", [{"line":line, "ev":ev}]);
-		// 	return line;
-		// },
-		_addLine: function(ev, edited, sectionKey, data){
+		_addLine: function(ev, edited, d){
 			if( !this._completeLineEdit() )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
@@ -640,14 +533,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var index = this.lineList.length;
 			var data = this.getData();
 
-			// if( this.unionMode ){
-			// 	var key = sectionKey || "$union";
-			// 	var sectionData = data[key] || [];
-			// 	sectionData.push({});
-			// }else{
-				data.data.push({});
+
+				data.data.push(d||{});
 				this.newLineIndex = index;
-			// }
+
 
 			this.setData( data );
 			var line = this.getLine(index);
@@ -667,13 +556,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var index = beforeLine.options.index+1;
 
 			var data = this.getData();
-			// if( beforeLine.options.sectionKey ){ //区段合并后的数据
-			// 	var sectionData = data[beforeLine.options.sectionKey];
-			// 	sectionData.splice(beforeLine.options.indexInSection+1, 0, {});
-			// }else{
 			data.data.splice(index, 0, {});
 			this.newLineIndex = index;
-			// }
 			this.setData( data );
 			var line = this.getLine(index);
 			line.isNewAdd = true;
@@ -681,7 +565,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
 			return line;
 		},
-		_insertLineByIndex: function(ev, sectionKey, index, d){
+		_insertLineByIndex: function(ev, index, d){
 			if( !this._completeLineEdit() )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
@@ -690,14 +574,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			//使用数据驱动
 			var data = this.getData();
-			// if( sectionKey ){ //区段合并后的数据
-			// 	var sectionData = data.data[sectionKey];
-			// 	if( o2.typeOf(sectionData) !== "array" || sectionData.length < index )return null;
-			// 	sectionData.splice(index, 0, d||{});
-			// }else{
 			if(data.data.length < index )return null;
 			data.data.splice(index, 0, d||{});
-			// }
 			this.setData( data );
 			var line = this.getLine(index);
 			line.isNewAdd = true;
@@ -742,12 +620,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 				if(line.deleteAttachment())saveFlag = true;
 
-				// if( line.options.sectionKey ){ //区段合并后的数据
-				// 	var sectionData = data.data[line.options.sectionKey];
-				// 	sectionData.splice(line.options.indexInSection, 1);
-				// }else{
 				data.data.splice(line.options.index, 1);
-				// }
 
 				if(this.currentEditedLine === line)this.currentEditedLine = null;
 
@@ -777,12 +650,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var saveFlag = line.deleteAttachment();
 			//使用数据驱动
 			var data = this.getData();
-			// if( line.options.sectionKey ){ //区段合并后的数据
-			// 	var sectionData = data.data[line.options.sectionKey];
-			// 	sectionData.splice(line.options.indexInSection, 1);
-			// }else {
+
 			data.data.splice(line.options.index, 1);
-			// }
+
 			if(this.currentEditedLine === line)this.currentEditedLine = null;
 			this.setData( data );
 			this.fireEvent("afterDeleteLine");
@@ -889,7 +759,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_afterLoaded: function(){
 		},
 		/**
-		 * @summary 重置数据模板的值为默认值或置空。
+		 * @summary 重置数据表格的值为默认值或置空。
 		 *  @example
 		 * this.form.get('fieldId').resetData();
 		 */
@@ -898,7 +768,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
-		 * @summary 为数据模板赋值。
+		 * @summary 为数据表格赋值。
 		 * @param data{DatatableData|Promise|Array} 必选，数组或Promise.
 		 * @example
 		 *  this.form.get("fieldId").setData([]); //赋空值
@@ -965,7 +835,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this._loadDatatable()
 		},
 		/**
-		 * @summary 判断数据模板是否为空.
+		 * @summary 判断数据表格是否为空.
 		 * @example
 		 * if( this.form.get('fieldId').isEmpty() ){
 		 *     this.form.notice('至少需要添加一条数据', 'warn');
@@ -986,11 +856,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		//api 相关开始
 		/**
-		 * 获取对应的条目。该方法在有无区段的情况下都可以使用。
+		 * 获取对应的条目。
 		 * @param {Number} index 条目序号，从零开始
-		 * @return {MWF.xApplication.process.Xform.DatatablePC.Line | Null} 对应的数据模板条目
+		 * @return {MWF.xApplication.process.Xform.DatatablePC.Line | Null} 对应的数据表格条目
 		 * @example
-		 * //获取数据模板“dt1”的第一个条目。
+		 * //获取数据表格“dt1”的第一个条目。
 		 * var line = this.form.get("dt1").getLine(0);
 		 * //获取第一个条目subject字段的值
 		 * var data = line.getModule("subject").getData();
@@ -1002,29 +872,29 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return line || null;
 		},
 		/**
-		 * 在数据模板末尾添加条目。如果当前是区段合并后的数据，会往区段标识为$union的区段中插入条目。
+		 * 在数据表格末尾添加条目。
 		 * @param {Object} [data] 添加条目的数据。
-		 * @return {MWF.xApplication.process.Xform.DatatablePC.Line} 添加的数据模板条目
+		 * @return {MWF.xApplication.process.Xform.DatatablePC.Line} 添加的数据表格条目
 		 * @example
 		 * var line = this.form.get("dt1").addLine();
 		 */
 		addLine: function( data ){
-			return this._addLine( null, null, null, data );
+			return this._addLine( null, null,  data );
 		},
 		/**
-		 * 在数据模板指定位置添加条目。
-		 * @param {Number} index 条目序号，从零开始，如果下标超过当前数据模板条目数，插入失败并返回null。
+		 * 在数据表格指定位置添加条目。
+		 * @param {Number} index 条目序号，从零开始，如果下标超过当前数据表格条目数，插入失败并返回null。
 		 * @param {Object} [data] 添加条目的数据。
-		 * @return {MWF.xApplication.process.Xform.DatatablePC.Line | Null} 插入的数据模板条目
+		 * @return {MWF.xApplication.process.Xform.DatatablePC.Line | Null} 插入的数据表格条目
 		 * @example
 		 * var line = this.form.get("dt1").insertLine(0);
 		 */
 		insertLine: function(index, data){
-			return this._insertLineByIndex(null, null, index, data);
+			return this._insertLineByIndex(null,  index, data);
 		},
 		/**
 		 * 删除指定位置的条目。
-		 * @param {Number} index 条目序号，从零开始，如果下标超过当前数据模板条目数，删除失败。
+		 * @param {Number} index 条目序号，从零开始，如果下标超过当前数据表格条目数，删除失败。
 		 * @example
 		 * //直接删除第一个条目
 		 * this.form.get("dt1").deleteLine(0);
@@ -1039,12 +909,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			// }
 		},
 		/**
-		 * 获取对应表单组件。该方法在有无区段的情况下都可以使用。
+		 * 获取对应表单组件。
 		 * @param {Number} index 条目序号，从零开始
 		 * @param {String} id 组件标识
 		 * @return {FormComponent} 对应表单组件
 		 * @example
-		 * //获取数据模板“dt1”的第一个条目的subject字段。
+		 * //获取数据表格“dt1”的第一个条目的subject字段。
 		 * var module = this.form.get("dt1").getModule(0, "subject");
 		 * //获取subject字段的值
 		 * var data = module.getData();
@@ -1053,102 +923,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 */
 		getModule: function(index, id){
 			var line = this.lineList[index];
-			if( !line )return null;
-			return line.getModule(id);
-		},
-
-
-		/**
-		 * 该方法在区段合并后可以使用，用来获取区段合并后对应的条目。
-		 * @param {String} sectionKey 区段标识
-		 * @param {Number} index 对应区段中的条目序号，从零开始
-		 * @return {MWF.xApplication.process.Xform.DatatablePC.Line} 对应的数据模板条目
-		 * @example
-		 * //假设在流程中有节点A->B，在A中的数据模板中设置了区段，区段依据是部门，B中没有设置区段。
-		 * //流转的时候，在A节点“开发部@kfb@U”的处理人添加了数据模板。
-		 * //现在在节点B，获取数据模板“dt1”->“开发部@kfb@U”区段下的第一个条目。
-		 * var line = this.form.get("dt1").getSectionLine("开发部@kfb@U",0);
-		 * //获取第一个条目subject字段的值
-		 * var data = line.getModule("subject").getData();
-		 * //设置subject字段的值
-		 * line.getModule("subject").setData("test1");
-		 */
-		getSectionLine: function(sectionKey,index){
-			if( !this.unionMode )return;
-			var lineList = this.lineList_sectionkey[sectionKey];
-			if( !lineList )return null;
-			var line = lineList[index];
-			return line || null;
-		},
-		/**
-		 * 该方法在区段合并后可以使用，用来在数据模板指定区段后添加条目。
-		 * @param {String} sectionKey 区段标识，如果数据中无对应区段会自动创建一个区段
-		 * @param {Object} [data] 添加条目的数据。
-		 * @return {MWF.xApplication.process.Xform.DatatablePC.Line} 添加的数据模板条目
-		 * @example
-		 * var line = this.form.get("dt1").addSectionLine("开发部@kfb@U", 0);
-		 */
-		addSectionLine: function(sectionKey, data){
-			if( !this.unionMode )return;
-			return this._addLine(null, null, sectionKey, data);
-		},
-		/**
-		 * 该方法在区段合并后可以使用，用来在数据模板指定位置添加条目。
-		 * @param {String} sectionKey 区段标识，如果数据中无对应区段会自动创建一个区段。
-		 * @param {Number} index 对应区段中的条目序号，从零开始，如果下标超过当前区段条目数，插入失败并返回null。
-		 * @param {Object} [data] 添加条目的数据。
-		 * @return {MWF.xApplication.process.Xform.DatatablePC.Line} 插入的数据模板条目
-		 * @example
-		 * var line = this.form.get("dt1").insertSectionLine("开发部@kfb@U", 0);
-		 */
-		insertSectionLine: function(sectionKey, index, data){
-			if( !this.unionMode )return;
-			if( !this.data[sectionKey] ){
-				return this._addLine(null, null, sectionKey, data);
-			}else{
-				return this._insertLineByIndex(null, sectionKey, index, data);
-			}
-		},
-		/**
-		 * 该方法在区段合并后可以使用，删除指定位置的条目。
-		 * @param {String} sectionKey 对应区段中的条目序号
-		 * @param {Number} index 对应区段中的条目序号，从零开始，如果下标超过当前数据模板条目数，删除失败。
-		 * @example
-		 * //直接删除第一个条目
-		 * this.form.get("dt1").deleteSectionLine("开发部@kfb@U", 0);
-		 */
-		deleteSectionLine: function(sectionKey, index, ev){
-			if( !this.unionMode )return;
-			var line = this.getSectionLine(sectionKey, index);
-			if( !line )return null;
-			// if( ev ){
-			// 	this._deleteLine(ev, line);
-			// }else{
-			this._delLine(line);
-			// }
-		},
-		/**
-		 * 该方法在区段合并后可以使用，用来获取区段合并后对应表单组件。
-		 * @param {String} sectionKey 区段标识
-		 * @param {Number} index 对应区段中的条目序号，从零开始
-		 * @param {String} id 组件标识
-		 * @return {FormComponent} 对应表单组件
-		 * @example
-		 * //假设在流程中有节点A->B，在A中的数据模板中设置了区段，区段依据是部门，B中没有设置区段。
-		 * //流转的时候，在A节点“开发部@kfb@U”的处理人添加了数据模板条目。
-		 * //现在流转到了节点B，那么获取上述处理人在数据模板“dt1”添加的第一个节点的标题字段如下：
-		 * var datatable = this.form.get("dt1"); //获取数据模板dt1
-		 * var module = datatable.getSectionModule("开发部@kfb@U", 0, "subject"); //获取标题字段
-		 * //获取subject字段的值
-		 * var data = module.getData();
-		 * //设置subject字段的值
-		 * module.setData("test1");
-		 */
-		getSectionModule: function(sectionKey, index, id){
-			if( !this.unionMode )return;
-			var lineList = this.lineList_sectionkey[sectionKey];
-			if( !lineList )return null;
-			var line = lineList[index];
 			if( !line )return null;
 			return line.getModule(id);
 		},
@@ -1162,7 +936,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 * this.data[fieldId] 立即获取数据，可能获取到异步函数生成器，当Promise执行完成以后，会返回修改后的值。<br/>
 		 * {@link https://www.yuque.com/o2oa/ixsnyt/ws07m0#EggIl|具体差异请查看链接}<br/>
 		 * 2、当表单上没有对应组件的时候，可以使用this.data[fieldId]获取值，但是this.form.get('fieldId')无法获取到组件。
-		 * @summary 获取数据模板数据.
+		 * @summary 获取数据表格数据.
 		 * @example
 		 * var data = this.form.get('fieldId').getData();
 		 *@example
@@ -1205,30 +979,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				return this._getBusinessData();
 			}else{
 				return this._getBusinessData();
-			}
-		},
-		_getSectionKey: function(){
-			if (this.json.section!=="yes"){
-				return "";
-			}else {
-				switch (this.json.sectionBy){
-					case "person":
-						return layout.desktop.session.user.id;
-					case "unit":
-						return (this.form.businessData.task) ? this.form.businessData.task.unit : "";
-					case "activity":
-						return (this.form.businessData.work) ? this.form.businessData.work.activity : "";
-					case "splitValue":
-						return (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
-					case "script":
-						if( this.json.sectionByScript && this.json.sectionByScript.code){
-							return this.form.Macro.exec(this.json.sectionByScript.code, this) || "";
-						}else{
-							return "";
-						}
-					default:
-						return "";
-				}
 			}
 		},
 		createErrorNode: function(text){
@@ -1504,10 +1254,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		isDeleteable: true, //能否被删除
 		isAddable: true, //能否添加
 		index : 0,
-		indexText : "0",
-		indexInSection: null, //区段合并后数据的data[sectionKey][index]
-		indexInSectionText: null,
-		sectionKey: null //区段合并后数据的key
+		indexText : "0"
 	},
 	initialize: function (node, datatable, data, options) {
 
@@ -1558,9 +1305,6 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	loadModules: function(){
 		this.node.set("html", this.datatable.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.node, true);
-		//this.options.sectionKey 为区段合并后的数据
-		//this.datatable._getSectionKey() 为当前在区段状态下
-		var sectionKey = this.options.sectionKey || this.datatable._getSectionKey();
 		moduleNodes.each(function (node) {
 			var mwfType = node.get("MWFtype");
 			if (mwfType === "form")return;
@@ -1575,20 +1319,17 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 
 				var templateJsonId = json.id;
 
-				var id;
-				var index = this.datatable.unionMode ? this.options.indexInSection : this.options.index;
-				if( sectionKey ){
-					id = this.datatable.json.id + "..data.." + sectionKey + ".."+ index + ".." + json.id;
-				}else{
-					id = this.datatable.json.id + "..data.." + index + ".." + json.id;
-				}
+				var index = this.options.index;
+
+				var id = this.datatable.json.id + "..data.." + index + ".." + json.id;
+
 				json.id = id;
 				node.set("id", id);
 
 				if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 					json.type = "AttachmentDg";
 					json.ignoreSite = true;
-					json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
+					json.site = this.getAttachmentSite(json, templateJsonId);
 				}
 
 				if (this.form.all[id]) this.form.all[id] = null;
@@ -1638,29 +1379,20 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	getModule: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
 	},
-	getAttachmentSite: function(json, templateJsonId, sectionKey){
+	getAttachmentSite: function(json, templateJsonId){
 		//确保site最长为64，否则后台会报错
 
-		var index = this.options.indexInSection || this.options.index;
+		var index = this.options.index;
 
 		var baseSite;
 		baseSite =  "." + index + "."  + (json.site || templateJsonId);
 
-		var maxLength;
-		var sectionId = "";
-		if( sectionKey ){
-			maxLength = Math.floor((63 - baseSite.length)/2 );
-
-			sectionId = (sectionKey.length > maxLength) ? sectionKey.substr(sectionKey.length-maxLength, maxLength) : sectionKey;
-			sectionId = "." + sectionId;
-		}else{
-			maxLength = 64 - baseSite.length;
-		}
+		var maxLength = 64 - baseSite.length;
 
 		var templateId = this.datatable.json.id;
 		templateId = (templateId.length > maxLength) ? templateId.substr(templateId.length-maxLength, maxLength) : templateId;
 
-		return templateId + sectionId + baseSite;
+		return templateId + baseSite;
 	},
 	deleteAttachment: function(){
 		var saveFlag = false;
@@ -1884,9 +1616,6 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 
 		var resultArr = [];
 		var titleArr = this.getTitleArray();
-		if( this.datatable.unionMode ){
-			titleArr.push( MWF.xApplication.process.Xform.LP.systemField );
-		}
 		resultArr.push( titleArr );
 
 
@@ -2014,9 +1743,6 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 				exportData.push( text );
 			}
 		}.bind(this));
-		if( this.datatable.unionMode ){
-			exportData.push( line.options.sectionKey );
-		}
 		return exportData;
 	},
 	isAvaliableColumn : function(thJson, mJson){
@@ -2045,9 +1771,6 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 				}
 			}
 		}.bind(this));
-		if( this.datatable.unionMode ){
-			colWidthArr.push(340);
-		}
 		return colWidthArr;
 	},
 	getDateIndexArray : function(){
@@ -2089,9 +1812,6 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		var resultArr = [];
 
 		var titleArr = this.getTitleArray("import");
-		if( this.datatable.unionMode ){
-			titleArr.push( MWF.xApplication.process.Xform.LP.systemField );
-		}
 		titleArr.push( MWF.xApplication.process.Xform.LP.validationInfor );
 		resultArr.push( titleArr );
 
@@ -2100,10 +1820,6 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 			this.columnJsonList.each( function (obj, i) {
 				array.push( ( lineData[ obj.title ] || '' ).replace(/&#10;/g, "\n") );
 			});
-			if( this.datatable.unionMode ){
-				var text = lineData[ MWF.xApplication.process.Xform.LP.systemField ] || lineData["系统字段"] || '';
-				array.push( ( text ).replace(/&#10;/g, "\n") );
-			}
 			array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
 
 			resultArr.push( array );
@@ -2285,16 +2001,8 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		}.bind(this));
 		return orgTitleArr;
 	},
-	parseImportedData: function(idata, ignoreSectionKey){
-		var data;
-		var sectionData;
-		if( !ignoreSectionKey && this.datatable.unionMode ){
-			sectionData = {};
-		}else{
-			data = [];
-		}
-
-		var sectionKey;
+	parseImportedData: function(idata){
+		var data = [];
 
 		idata.each( function( ilineData ){
 			var lineData = {};
@@ -2378,16 +2086,10 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 			}.bind(this));
 
-			if(sectionData){
-				sectionKey = ilineData[ MWF.xApplication.process.Xform.LP.systemField ];
-				if( !sectionData[sectionKey])sectionData[sectionKey] = [];
-				sectionData[sectionKey].push( lineData );
-			}else{
-				data.push( lineData );
-			}
+			data.push( lineData );
 		}.bind(this));
 
-		return sectionData || data;
+		return data;
 	},
 	importData: function(idata){
 
@@ -2422,10 +2124,6 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		this.columnJsonList.each(function (obj, i) {
 			htmlArray.push( "<th style='"+titleStyle+"'>"+obj.title+"</th>" );
 		});
-		if( this.datatable.unionMode ){
-			var text = MWF.xApplication.process.Xform.LP.systemField || "系统字段";
-			htmlArray.push( "<th style='"+titleStyle+"'>"+text+"</th>" );
-		}
 		htmlArray.push("<th style='"+titleStyle+"'> "+MWF.xApplication.process.Xform.LP.validationInfor +"</th>");
 		htmlArray.push("</tr>" );
 
@@ -2439,10 +2137,6 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 			this.columnJsonList.each( function (obj, i) {
 				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ obj.title ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
 			});
-			if( this.datatable.unionMode ){
-				var text = lineData[ MWF.xApplication.process.Xform.LP.systemField ] || lineData["系统字段"] || '';
-				htmlArray.push( "<td style='"+contentStyle+"'>"+ ( text ).replace(/&#10;/g,"<br/>") +"</td>" );
-			}
 			htmlArray.push( "<td style='"+contentStyle+"'>"+( lineData.errorTextList ? lineData.errorTextList.join("<br/>") : "" )+"</td>" );
 			htmlArray.push( "</tr>" );
 
@@ -2585,15 +2279,6 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 					}
 				}
 			}.bind(this));
-			if( this.datatable.unionMode ){
-				if( !lineData[ MWF.xApplication.process.Xform.LP.systemField ] && !lineData["系统字段"] ){
-					var colInfor = columnText.replace( "{n}", this.columnJsonList.length+1 );
-					var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName(this.columnJsonList.length) );
-
-					errorTextList.push( colInfor + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
-					errorTextListExcel.push( colInforExcel + MWF.xApplication.process.Xform.LP.systemFieldEmptyNotice );
-				}
-			}
 
 			if(errorTextList.length>0){
 				lineData.errorTextList = errorTextList;
