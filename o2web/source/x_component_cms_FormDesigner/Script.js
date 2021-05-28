@@ -70,6 +70,12 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadDatagrid$DataScript(v); break;
             case "Datagrid$Title":
                 this.loadDatagrid$TitleScript(v); break;
+            case "Datatable":
+                this.loadDatatableScript(v); break;
+            case "Datatable$Data":
+                this.loadDatatable$DataScript(v); break;
+            case "Datatable$Title":
+                this.loadDatatable$TitleScript(v); break;
             case "Datatemplate":
                 this.loadDatatemplateScript(v); break;
             case "Htmleditor":
