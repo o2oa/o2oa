@@ -1,6 +1,6 @@
 {
 	"toolbarNode": {
-		"width": "140px",
+		"width": "150px",
 		"overflow": "hidden",
 		"float": "left",
 		"-webkit-user-select": "none",

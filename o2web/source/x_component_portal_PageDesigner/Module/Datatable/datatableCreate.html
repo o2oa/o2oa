@@ -1,0 +1,34 @@
+<div style="font-size:12px">
+  <div style="height:18px; background-color:#EEE; border-bottom: 1px solid #333; maring-bottom:5px">{{$.lp.tableSize}}</div><br/>
+  <table width="100%" border="0" cellspacing="0" cellpadding="3px">
+    <tr>
+      <td align="right">{{$.lp.col}}</td>
+      <td><input type="text" name="MWFNewTableColumn" id="MWFNewTableColumn" value="3" style="border:1px solid #999; width: 60px; height:18px" /></td>
+      <td align="right"></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td align="right">{{$.lp.tableWidth}}</td>
+      <td colspan="3"><input type="text" name="MWFNewTableWidth" id="MWFNewTableWidth" value="100" style="border:1px solid #999; width: 60px; height:18px" />
+        <select name="MWFNewTableWidthUnit" id="MWFNewTableWidthUnit">
+          <option value="px">{{$.lp.pixel}}</option>
+          <option value="percent" selected="selected">{{$.lp.percent}}</option>
+      </select></td>
+    </tr>
+    <tr>
+      <td align="right">{{$.lp.borderWidth}}</td>
+      <td colspan="3"><input type="text" name="MWFNewTableBorder" id="MWFNewTableBorder" value="0" style="border:1px solid #999; width: 60px; height:18px" />
+        {{$.lp.pixel}}</td>
+    </tr>
+    <tr>
+      <td align="right">{{$.lp.cellpadding}}</td>
+      <td colspan="3"><input type="text" name="MWFNewTableCellpadding" id="MWFNewTableCellpadding" value="3" style="border:1px solid #999; width: 60px; height:18px" />
+        {{$.lp.pixel}}</td>
+    </tr>
+    <tr>
+      <td align="right">{{$.lp.cellspacing}}</td>
+      <td colspan="3"><input type="text" name="MWFNewTableCellspacing" id="MWFNewTableCellspacing" value="0" style="border:1px solid #999; width: 60px; height:18px" />
+        {{$.lp.pixel}}</td>
+    </tr>
+  </table>
+</div>
