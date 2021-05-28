@@ -125,6 +125,20 @@
   "datagrid$Title": {
     "styles": {}
   },
+  "datatable": {
+    "styles": {},
+    "tableStyles": {},
+    "titleStyles": {},
+    "contentStyles": {},
+    "actionStyles": {},
+    "editStyles": {},
+    "amountStyles": {},
+    "itemTitleStyles": {},
+    "properties": {}
+  },
+  "datatable$Title": {
+    "styles": {}
+  },
   "address": {
     "styles": {},
     "inputStyles": {}
