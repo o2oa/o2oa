@@ -1771,7 +1771,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
      *     "activityName": "申请人",                           //附件上传的活动名称
      *     "activityType": "manual",                           //附件上传的活动类型
      *     "site": "$mediaOpinion",                        //附件存储位置（一般用于区分附件在哪个表单元素中显示）
-     *     "type": "image/png"                             //附件类型（contentType）
+     *     "type": "image/png",                             //附件类型（contentType）
+     *     "control": {}
      * }]</code></pre>
      */
     setData: function(data){
@@ -2255,7 +2256,10 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         // }.bind(this));
         if(this.json.ignoreSite) {
             ( this._getBusinessData() || [] ).each(function (att) {
-                this.attachmentController.addAttachment(att);
+                var flag = this.form.businessData.attachmentList.some(function (attData) {
+                    return att.id === attData.id;
+                }.bind(this));
+                if(flag)this.attachmentController.addAttachment(att);
             }.bind(this));
         }else{
             this.form.businessData.attachmentList.each(function (att) {
