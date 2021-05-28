@@ -1170,22 +1170,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
         }
     },
-    _getModuleNodes: function (dom) {
+    _getModuleNodes: function (dom, dollarFlag ) {
         var moduleNodes = [];
         var subDom = dom.getFirst();
         while (subDom) {
             var mwftype = subDom.get("MWFtype") || subDom.get("mwftype");
             if (mwftype) {
                 var type = mwftype;
-                if (type.indexOf("$") === -1) {
+                if (type.indexOf("$") === -1 || dollarFlag===true) {
                     moduleNodes.push(subDom);
                 }
                 // && mwftype !== "tab$Content"
                 if (mwftype !== "datagrid" && mwftype !== "datatable" && mwftype !== "subSource" && mwftype !== "tab$Content" && mwftype !== "datatemplate") {
-                    moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom));
+                    moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom, dollarFlag));
                 }
             } else {
-                moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom));
+                moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom, dollarFlag));
             }
             subDom = subDom.getNext();
         }
