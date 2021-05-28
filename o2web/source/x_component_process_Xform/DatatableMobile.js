@@ -1,12 +1,12 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class DatatablePC 数据模板组件。
+/** @class DatatableMobile 数据网格组件（移动端）。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
  * var datatable = this.form.get("name"); //获取组件
  * //方法2
  * var datatable = this.target; //在组件事件脚本中获取
- * @extends MWF.xApplication.process.Xform.$Module
+ * @extends MWF.xApplication.process.Xform.DatatablePC
  * @o2category FormComponents
  * @o2range {Process|CMS}
  * @hideconstructor
@@ -282,13 +282,10 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			// this.table.set(this.json.properties);
 		},
 
-		_loadLine: function(container, data, index, isEdited, isNew, indexInSection, sectionKey){
+		_loadLine: function(container, data, index, isEdited, isNew){
 			var line = new MWF.xApplication.process.Xform.DatatableMobile.Line(container, this, data, {
 				index : index,
 				indexText : (index+1).toString(),
-				indexInSection: indexInSection,
-				indexInSectionText: typeOf(indexInSection) === "number" ?  (index+1).toString() : null,
-				sectionKey: sectionKey,
 				isNew: isNew,
 				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
 				isEditable: this.editable,
