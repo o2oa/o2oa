@@ -90,8 +90,8 @@
     </tr>
     <tr>
         <td><a href="MWF.xApplication.process.Xform.Table$Td.html">单元格 - Table$Td</a></td>
-        <td><a href="MWF.xApplication.process.Xform.DatagridPC.html">数据网格PC端 - DatagridPC</a></td>
-        <td><a href="MWF.xApplication.process.Xform.DatagridMobile.html">数据网格移动端 - DatagridMobile</a></td>
+        <td><a href="MWF.xApplication.process.Xform.DatagridPC.html">数据网格PC端(过时) - DatagridPC</a></td>
+        <td><a href="MWF.xApplication.process.Xform.DatagridMobile.html">数据网格移动端(过时) - DatagridMobile</a></td>
     </tr>
     <tr>
         <td><a href="MWF.xApplication.process.Xform.Subform.html">子表单 - Subform</a></td>
@@ -120,8 +120,8 @@
     </tr>
     <tr>
         <td><a href="MWF.xApplication.process.Xform.Datatemplate.html">数据模板 - Datatemplate</a></td>
-        <td></td>
-        <td></td>
+        <td><a href="MWF.xApplication.process.Xform.DatatablePC.html">数据表格PC端 - DatatablePC</a></td>
+        <td><a href="MWF.xApplication.process.Xform.DatatableMobile.html">数据表格移动端 - DatatableMobile</a></td>
     </tr>
 </table>
 
@@ -166,8 +166,8 @@
     </tr>
     <tr>
         <td><a href="MWF.xApplication.process.Xform.Table$Td.html">单元格 - Table$Td</a></td>
-        <td><a href="MWF.xApplication.process.Xform.DatagridPC.html">数据网格PC端 - DatagridPC</a></td>
-        <td><a href="MWF.xApplication.process.Xform.DatagridMobile.html">数据网格移动端 - DatagridMobile</a></td>
+        <td><a href="MWF.xApplication.process.Xform.DatagridPC.html">数据网格PC端(过时) - DatagridPC</a></td>
+        <td><a href="MWF.xApplication.process.Xform.DatagridMobile.html">数据网格移动端(过时) - DatagridMobile</a></td>
     </tr>
     <tr>
         <td><a href="MWF.xApplication.process.Xform.Subform.html">子表单 - Subform</a></td>
@@ -194,6 +194,11 @@
         <td><a href="MWF.xApplication.process.Xform.Statement.html">嵌入查询视图 - Statement</a></td>
         <td><a href="MWF.xApplication.process.Xform.Datatemplate.html">数据模板 - Datatemplate</a></td>
      </tr>
+    <tr>
+        <td><a href="MWF.xApplication.process.Xform.DatatablePC.html">数据表格PC端 - DatatablePC</a></td>
+        <td><a href="MWF.xApplication.process.Xform.DatatableMobile.html">数据表格移动端 - DatatableMobile</a></td>
+        <td></td>
+    </tr>
 </table>
 
 #### Portal 门户页面组件
@@ -241,6 +246,11 @@
     <tr>
         <td><a href="MWF.xApplication.process.Xform.Statement.html">嵌入查询视图 - Statement</a></td>
         <td><a href="MWF.xApplication.process.Xform.Datatemplate.html">数据模板 - Datatemplate</a></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><a href="MWF.xApplication.process.Xform.DatatablePC.html">数据表格PC端 - DatatablePC</a></td>
+        <td><a href="MWF.xApplication.process.Xform.DatatableMobile.html">数据表格移动端 - DatatableMobile</a></td>
         <td></td>
     </tr>
 </table>
