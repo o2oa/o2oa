@@ -49,6 +49,7 @@ MWF.xApplication.query.Query.LP = {
     "filterErrorComparison": "请选择比较符",
     "filterErrorValue": "请输入比较值",
 
+
     "workTitle": "标题",
     "activity": "活动",
     "status": "状态",
@@ -144,18 +145,5 @@ MWF.xApplication.query.Query.LP = {
     "selecteAllRow": "选择所有行",
 
     "firstPage": "第一页",
-    "lastPage": "最后一页",
-
-    "viewExport" : {
-	    "exportRange" : "导出范围",
-        "to" : "到",
-        "item" : "条",
-        "description" : "注：一次最多允许导出2000条。有{count}条符合条件的数据。",
-        "inputIntegerNotice" : "开始和结束条目都请输入正整数",
-        "startLargetThanEndNotice" : "开始条目不能大于结束条目"
-    },
-
-    "deleteConfirmContent" : "删除后不能恢复，你确定要删除该文档？",
-    "deleteConfirmTitle" : "删除确认",
-    "deleteSuccessNotice" : "删除成功"
+    "lastPage": "最后一页"
 };
