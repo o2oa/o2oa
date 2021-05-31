@@ -1,31 +1,31 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">字段标题:</td>
+                <td class="editTableTitle">{{$.lp.fieldTitle}}:</td>
                 <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
             </tr>
         </table>
 
         <div style="border-top: 1px solid #999; margin-top:10px">
-            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">数据</div>
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.data}}</div>
             <div class="MWFDataData" id="text{$.pid}dataDataEditor">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">字段路径:</td>
+                        <td class="editTableTitle">{{$.lp.fieldPath}}:</td>
                         <td class="editTableValue"><input id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">组织对象:</td>
+                        <td class="editTableTitle">{{$.lp.isName}}:</td>
                         <td class="editTableValue">
                             <input name="isName" type="radio" value="true" text{($.isName)===true?'checked':''} onclick="if(this.checked){
                                $('text{$.pid}cmsNamePropertyArea').setStyle('display', '');
                                $('text{$.pid}processNamePropertyArea').setStyle('display', '');
-                           }"/>是
+                           }"/>{{$.lp.yes}}
                             <input name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''} onclick="if(this.checked){
                                $('text{$.pid}cmsNamePropertyArea').setStyle('display', 'none');
                                $('text{$.pid}processNamePropertyArea').setStyle('display', 'none');
-                           }"/>否
+                           }"/>{{$.lp.no}}
                         </td>
                     </tr>
                 </table>
@@ -36,7 +36,7 @@
             <div style="display:text{($.vtype!=='querytable')?'block':'none'}" id="text{$.pid}dataTypeSelectedCMSProcessArea" class="text{$.vid}dataTypeSelectedCMSProcessArea">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">字段类型:</td>
+                        <td class="editTableTitle">{{$.lp.fieldType}}:</td>
                         <td class="editTableValue"><select id="text{$.pid}dataTypeSelectedCMSProcess" name="dataType_CMSProcess">
 <!--                                                           onchange=" var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
                             <option value="string" selected>string</option>
@@ -54,7 +54,7 @@
             <div style="display:text{($.vtype=='querytable')?'block':'none'}" id="text{$.pid}dataTypeSelectedQuerytableArea" class="text{$.vid}dataTypeSelectedQuerytableArea">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">字段类型:</td>
+                        <td class="editTableTitle">{{$.lp.fieldType}}:</td>
                         <td class="editTableValue"><select  id="text{$.pid}dataTypeSelectedQuerytable" name="dataType_Querytable">
 <!--                                                            onchange="var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
                             <option value="string">string</option>
@@ -77,46 +77,39 @@
                 </table>
             </div>
 
-            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">校验</div>
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.validation}}</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">允许空值:</td>
+                    <td class="editTableTitle">{{$.lp.allowEmpty}}:</td>
                     <td class="editTableValue">
-                        <input name="allowEmpty" type="radio" value="true" text{($.allowEmpty)!==false?'checked':''}/>是
-                        <input name="allowEmpty" type="radio" value="false" text{($.allowEmpty)===false?'checked':''}/>否
+                        <input name="allowEmpty" type="radio" value="true" text{($.allowEmpty)!==false?'checked':''}/>{{$.lp.yes}}
+                        <input name="allowEmpty" type="radio" value="false" text{($.allowEmpty)===false?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">校验字段类型:</td>
+                    <td class="editTableTitle">{{$.lp.validFieldType}}:</td>
                     <td class="editTableValue">
-                        <input name="validFieldType" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>是
-                        <input name="validFieldType" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>否
+                        <input name="validFieldType" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>{{$.lp.yes}}
+                        <input name="validFieldType" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
             </table>
 
             <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}cmsFieldProperty" class="text{$.vid}cmsFieldProperty">
-                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">cms文档属性</div>
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.cmsProperty}}</div>
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">是否为标题:</td>
+                        <td class="editTableTitleNoWidth" style="width: 110px;">{{$.lp.isTitle}}:</td>
                         <td class="editTableValue">
-                            <input name="isTitle" type="radio" value="true" text{($.isTitle)==true?'checked':''}/>是
-                            <input name="isTitle" type="radio" value="false" text{($.isTitle)!==false?'checked':''}/>否
+                            <input name="isTitle" type="radio" value="true" text{($.isTitle)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isTitle" type="radio" value="false" text{($.isTitle)!==false?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">是否为摘要:</td>
+                        <td class="editTableTitle">{{$.lp.isSummary}}:</td>
                         <td class="editTableValue">
-                            <input name="isSummary" type="radio" value="true" text{($.isSummary)==true?'checked':''}/>是
-                            <input name="isSummary" type="radio" value="false" text{($.isSummary)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否置顶:</td>
-                        <td class="editTableValue">
-                            <input name="isTop" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
-                            <input name="isTop" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
+                            <input name="isSummary" type="radio" value="true" text{($.isSummary)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isSummary" type="radio" value="false" text{($.isSummary)!==false?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                 </table>
@@ -124,24 +117,24 @@
                 <div style="display:text{(($.isName)==true)?'block':'none'}" id="text{$.pid}cmsNamePropertyArea">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">是否为创建人:</td>
+                            <td class="editTableTitleNoWidth" style="width: 110px;">{{$.lp.isPublisher}}:</td>
                             <td class="editTableValue">
-                                <input name="isPublisher" type="radio" value="true" text{($.isPublisher)==true?'checked':''}/>是
-                                <input name="isPublisher" type="radio" value="false" text{($.isPublisher)!==false?'checked':''}/>否
+                                <input name="isPublisher" type="radio" value="true" text{($.isPublisher)==true?'checked':''}/>{{$.lp.yes}}
+                                <input name="isPublisher" type="radio" value="false" text{($.isPublisher)!==false?'checked':''}/>{{$.lp.no}}
                             </td>
                         </tr>
                         <tr>
-                            <td class="editTableTitle">是否为作者:</td>
+                            <td class="editTableTitle">{{$.lp.isAuthor}}:</td>
                             <td class="editTableValue">
-                                <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>是
-                                <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>否
+                                <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>{{$.lp.yes}}
+                                <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>{{$.lp.no}}
                             </td>
                         </tr>
                         <tr>
-                            <td class="editTableTitle">是否为读者:</td>
+                            <td class="editTableTitle">{{$.lp.isReader}}:</td>
                             <td class="editTableValue">
-                                <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>是
-                                <input name="isReader" type="radio" value="false" text{($.isReader)!==false?'checked':''}/>否
+                                <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>{{$.lp.yes}}
+                                <input name="isReader" type="radio" value="false" text{($.isReader)!==false?'checked':''}/>{{$.lp.no}}
                             </td>
                         </tr>
                     </table>
@@ -149,13 +142,13 @@
             </div>
 
             <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}processFieldProperty" class="text{$.vid}processFieldProperty">
-                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">流程work属性</div>
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.workProperty}}</div>
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">是否为标题:</td>
+                        <td class="editTableTitleNoWidth" style="width: 120px;">{{$.lp.isTitle}}:</td>
                         <td class="editTableValue">
-                            <input name="isProcessTitle" type="radio" value="true" text{($.isProcessTitle)==true?'checked':''}/>是
-                            <input name="isProcessTitle" type="radio" value="false" text{($.isProcessTitle)!==false?'checked':''}/>否
+                            <input name="isProcessTitle" type="radio" value="true" text{($.isProcessTitle)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isProcessTitle" type="radio" value="false" text{($.isProcessTitle)!==false?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                 </table>
@@ -163,10 +156,10 @@
                 <div style="display:text{(($.isName)==true)?'block':'none'}" id="text{$.pid}processNamePropertyArea">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">是否为创建人:</td>
+                            <td class="editTableTitleNoWidth" style="width: 120px;">{{$.lp.isProcessDrafter}}:</td>
                             <td class="editTableValue">
-                                <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>是
-                                <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==false?'checked':''}/>否
+                                <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>{{$.lp.yes}}
+                                <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==false?'checked':''}/>{{$.lp.no}}
                             </td>
                         </tr>
                     </table>

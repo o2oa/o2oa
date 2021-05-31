@@ -88,7 +88,7 @@ MWF.xApplication.query.ImporterDesigner.Main = new Class({
     //打开数据表
     loadImporterByData: function(node, e){
         var importer = node.retrieve("importer");
-        if (!importer.isNewImporter){
+        if (!importer.isNewImportModel){
             var openNew = true;
             if (openNew){
                 var _self = this;
@@ -125,7 +125,7 @@ MWF.xApplication.query.ImporterDesigner.Main = new Class({
             "onSuccess": function(obj){
                 this.actions.getUUID(function(id){
                     obj.id=id;
-                    obj.isNewImporter = true;
+                    obj.isNewImportModel = true;
                     obj.application = this.application.id;
                     this.createListViewItem(obj, true);
                     if (callback) callback(obj);
