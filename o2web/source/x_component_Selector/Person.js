@@ -13,6 +13,7 @@ MWF.xApplication.Selector.Person = new Class({
         "roles": [],
         "values": [],
         "exclude" : [],
+        "exclude" : [],
         "zIndex": 1000,
         "expand": true,
         "embedded" : false, //是否嵌入在其他容器中
