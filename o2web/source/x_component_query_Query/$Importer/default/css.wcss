@@ -1,0 +1,40 @@
+{
+    "tableStyles": {
+        "border-top": "1px solid #cfd9df",
+        "border-left": "0px",
+        "border-right" : "0px",
+        "border-bottom" : "0px",
+        "table-layout" : "fixed"
+    },
+    "titleStyles": {
+        "background-color": "#ffffff",
+        "color": "#333",
+        "border-top": "0px",
+        "border-left": "0px",
+        "border-right" : "0px",
+        "border-bottom" : "1px solid #cfd9df",
+        "height": "23px",
+        "font-size": "16px",
+        "width": "65px",
+        "font-weight": "bold",
+        "line-height": "23px",
+        "text-align": "left"
+    },
+    "contentStyles": {
+        "background-color": "#FFFFFF",
+        "color": "#000",
+        "font-size": "16px",
+        "border-top": "0px",
+        "border-left": "0px",
+        "border-right" : "0px",
+        "border-bottom" : "1px solid #cfd9df",
+        "text-align": "right"
+    },
+    "properties": {
+        "width": "100%",
+        "border": "0",
+        "cellpadding": "8",
+        "cellspacing": "0",
+        "align": "center"
+    }
+}
