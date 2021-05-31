@@ -63,7 +63,7 @@ MWF.xApplication.query.ImporterDesigner.Main = new Class({
     },
     loadViewList: function(){
         debugger;
-        this.actions.listTable(this.application.id, function (json) {
+        this.actions.listImportModel(this.application.id, function (json) {
             json.data.each(function(importer){
                 this.createListViewItem(importer);
             }.bind(this));
@@ -140,7 +140,7 @@ MWF.xApplication.query.ImporterDesigner.Main = new Class({
         });
     },
     loadViewData: function(id, callback){
-        this.actions.getTable(id, function(json){
+        this.actions.getImportModel(id, function(json){
             if (json){
                 var data = json.data;
                 data.draftData = JSON.decode(data.draftData);
