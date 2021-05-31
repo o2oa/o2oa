@@ -47,7 +47,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         if(this.designer.application) this.data.applicationName = this.designer.application.name;
         if(this.designer.application) this.data.application = this.designer.application.id;
 
-        this.isNewImporter = (this.data.name) ? false : true;
+        this.isNewImportModel = (this.data.name) ? false : true;
 
         this.items = [];
         this.calculateItems = [];
@@ -68,7 +68,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
 
         this.excelTitleNode = new Element("div#excelTitleNode", {
             "styles": this.css.excelTitleNode,
-            "text" : "列字段："
+            "text" : this.designer.lp.columnField+":"
         }).inject(this.viewTitleNode);
 
         // this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
@@ -96,7 +96,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
 
         this.calculateTitleNode = new Element("div#calculateTitleNode", {
             "styles": this.css.calculateTitleNode,
-            "text" : "计算字段："
+            "text" : this.designer.lp.calculateField+":"
         }).inject(this.viewContentNode);
         this.addCalculateFieldNode = new Element("div#addCalculateFieldNode", {
             "styles": this.css.addCalculateFieldNode,
@@ -123,6 +123,10 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         }.bind(this), 60000);
     },
     parseData: function(){
+        debugger;
+        if( o2.typeOf(this.data.data)==="string"){
+            this.data.data = JSON.parse(this.data.data);
+        }
         this.json = this.data;
         if( !this.json.data.events ){
             var url = "../x_component_query_ImporterDesigner/$Importer/importer.json";
@@ -234,15 +238,15 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
                 "id": id,
                 "displayName": this.designer.lp.unnamed,
             };
-            if (!this.json.data.selectList) this.json.data.selectList = [];
+            if (!this.json.data.columnList) this.json.data.columnList = [];
 
             var column;
-            if( !addToLeft || this.json.data.selectList.length === 0 ){
-                this.json.data.selectList.push(json);
+            if( !addToLeft || this.json.data.columnList.length === 0 ){
+                this.json.data.columnList.push(json);
                 column = new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this, null);
                 this.items.push(column);
             }else{
-                this.json.data.selectList.unshift(json);
+                this.json.data.columnList.unshift(json);
                 column = new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this, this.items[0]);
                 this.items.unshift(column);
             }
@@ -275,9 +279,19 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
 
     loadViewColumns: function(){
         //    for (var i=0; i<10; i++){
-        if (this.json.data.selectList) {
-            this.json.data.selectList.each(function (json, i) {
+        if (this.json.data.columnList) {
+            this.json.data.columnList.each(function (json, i) {
                 this.items.push(new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this, null, i));
+
+            }.bind(this));
+        }
+        //    }
+    },
+    loadViewCalculateFields: function(){
+        //    for (var i=0; i<10; i++){
+        if (this.json.data.calculateFieldList) {
+            this.json.data.calculateFieldList.each(function (json, i) {
+                this.calculateItems.push(new MWF.xApplication.query.ImporterDesigner.Importer.CalculateField(json, this, null, i));
 
             }.bind(this));
         }
@@ -313,6 +327,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         this.loadViewNodes();
         //this.loadViewSelectAllNode();
         this.loadViewColumns();
+        this.loadViewCalculateFields();
 //        this.addTopItemNode.addEvent("click", this.addTopItem.bind(this));
     },
     setViewWidth: function(){
@@ -486,7 +501,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         delete d[this.data.id+"viewFilterType"];
         d[d.id+"viewFilterType"]="custom";
 
-        d.data.selectList.each( function( entry ){
+        d.data.columnList.each( function( entry ){
             entry.id = (new MWF.widget.UUID).id;
         }.bind(this));
 
@@ -735,7 +750,7 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         //     }.bind(this));
         // }
 
-        if (this.view.json.data.selectList) this.view.json.data.selectList.erase(this.json);
+        if (this.view.json.data.columnList) this.view.json.data.columnList.erase(this.json);
         // if (this.view.json.data.calculate) if (this.view.json.data.calculate.calculateList) this.view.json.data.calculate.calculateList.erase(this.json);
         this.view.items.erase(this);
         if (this.view.property) this.view.property.loadStatColumnSelect();
@@ -769,8 +784,8 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
                 };
             }
 
-            var idx = this.view.json.data.selectList.indexOf(this.json);
-            this.view.json.data.selectList.splice(idx, 0, json);
+            var idx = this.view.json.data.columnList.indexOf(this.json);
+            this.view.json.data.columnList.splice(idx, 0, json);
 
             var column = new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this.view, this);
             this.view.items.splice(idx, 0, column);
@@ -848,12 +863,12 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
                     var column = inObj.retrieve("column");
                     this.listNode.inject(column.listNode, "before");
 
-                    this.view.json.data.selectList.erase(this.json);
+                    this.view.json.data.columnList.erase(this.json);
                     this.view.items.erase(this);
 
-                    var idx = this.view.json.data.selectList.indexOf(column.json);
+                    var idx = this.view.json.data.columnList.indexOf(column.json);
 
-                    this.view.json.data.selectList.splice(idx, 0, this.json);
+                    this.view.json.data.columnList.splice(idx, 0, this.json);
                     this.view.items.splice(idx, 0, this);
 
                     if (this.moveNode) this.moveNode.destroy();

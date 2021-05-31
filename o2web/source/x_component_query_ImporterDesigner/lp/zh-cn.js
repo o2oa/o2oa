@@ -21,6 +21,8 @@ MWF.xApplication.query.ImporterDesigner.LP = {
     "copy" : "副本",
     "ok" : "确定",
     "cancel" : "取消",
+    "columnField": "列字段",
+    "calculateField": "计算字段",
 
     "action": {
         "move": "移动",
@@ -51,5 +53,57 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "deleteEvent": "是否确定删除当前事件吗？"
     },
     "mastInputPath": "请输入数据路径",
-    "mastInputTitle": "请输入标题"
+    "mastInputTitle": "请输入标题",
+    "propertyTemplate": {
+        "base": "基本",
+        "event": "事件",
+        "html": "HTML",
+        "json": "JSON",
+        "action": "操作",
+        "select": "选择",
+        "alias": "别名",
+
+        "id": "标识",
+        "name": "名称",
+        "description": "描述",
+        "style": "样式",
+        "attribute": "属性",
+
+        "target": "目标",
+        "importTarget": "导入目标",
+        "cmsData": "内容管理数据",
+        "tableData": "自建表数据",
+        "processPlatformData": "流程平台数据",
+        "selectCategory": "选择分类",
+        "selectTable": "选择自建表",
+        "selectProcess": "选择流程",
+        "processStatus": "流程状态",
+        "draftActivity": "起草活动（第一个人工节点）",
+        "endActivity": "结束活动",
+        "enableValidation": "启用校验",
+        "yes": "是",
+        "no": "否",
+        "ececuter": "可执行者",
+        "ececutablePerson": "可执行人",
+        "ececutableUnit": "执行组织",
+
+        "fieldTitle":"字段标题",
+        "data":"数据",
+        "fieldPath":"字段路径",
+        "valueScript":"值脚本",
+        "cmsProperty":"cms文档属性",
+        "isTitle":"是否为标题(唯一)",
+        "isSummary":"是否为摘要(唯一)",
+        "isPublisher":"是否为创建人(唯一)",
+        "isAuthor":"是否作者",
+        "isReader":"是否读者",
+        "workProperty":"流程work属性",
+        "isProcessDrafter":"是否为流程发起人(唯一)",
+
+        "isName":"组织对象",
+        "fieldType":"字段类型",
+        "validation":"校验",
+        "allowEmpty":"允许空值",
+        "validFieldType":"校验字段类型"
+    }
 };

@@ -190,6 +190,7 @@ MWF.xAction.RestActions.Action["x_query_assemble_designer"] = new Class({
     },
     updateImportModel: function(importModelData, success, failure){
         var data = Object.clone(importModelData);
+        data.data = JSON.encode(data.data);
         data.query = importModelData.application;
         data.queryName = importModelData.applicationName;
         delete data.tableObj;
@@ -197,6 +198,7 @@ MWF.xAction.RestActions.Action["x_query_assemble_designer"] = new Class({
     },
     addImportModel: function(importModelData, success, failure){
         var data = Object.clone(importModelData);
+        data.data = JSON.encode(data.data);
         data.query = importModelData.application;
         data.queryName = importModelData.applicationName;
         delete data.tableObj;

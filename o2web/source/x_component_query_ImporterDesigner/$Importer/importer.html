@@ -1,26 +1,26 @@
 <div style="background-color: #FFF; overflow: hidden">
-    <div title="基本" class="MWFTab">
+    <div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">标识:</td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
                 <td class="editTableValue">text{$.id}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">名称:</td>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">别名:</td>
+                <td class="editTableTitle">{{$.lp.alias}}:</td>
                 <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">描述:</td>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
         </table>
 
-        <div title="目标">
-            <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">导入目标</div>
+        <div title="{{$.lp.target}}">
+            <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.importTarget}}</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
                     <td class="editTableValue" colspan="2" align="center">
@@ -33,7 +33,7 @@
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', '');
                         $$('.text{$.id}processFieldProperty').setStyle('display', 'none');
-                     }" name="text{$.id}*type" text{($.type!='querytable' && $.type!='process')?'checked':''} type="radio" value="cms"/>内容管理数据
+                     }" name="text{$.id}*type" text{($.type!='querytable' && $.type!='process')?'checked':''} type="radio" value="cms"/>{{$.lp.cmsData}}
                         <input class="editTableRadio" onclick="
                     if (this.checked){
                         $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
@@ -43,7 +43,7 @@
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', '');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
                         $$('.text{$.id}processFieldProperty').setStyle('display', 'none');
-                     }" name="text{$.id}*type" text{($.type=='querytable')?'checked':''} type="radio" value="querytable"/>自建表数据
+                     }" name="text{$.id}*type" text{($.type=='querytable')?'checked':''} type="radio" value="querytable"/>{{$.lp.tableData}}
                         <input class="editTableRadio" onclick="
                     if (this.checked){
                         $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
@@ -53,7 +53,7 @@
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
                         $$('.text{$.id}processFieldProperty').setStyle('display', '');
-                    }" name="text{$.id}*type" text{($.type=='process')?'checked':''} type="radio" value="process"/>流程平台数据
+                    }" name="text{$.id}*type" text{($.type=='process')?'checked':''} type="radio" value="process"/>{{$.lp.processPlatformData}}
                     </td>
                 </tr>
             </table>
@@ -62,7 +62,7 @@
             <div id="text{$.id}dateRangeType_cms" style="display: text{($.type!='table' && $.type!='process')?'block':'none'}">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle" width="100px;">选择分类:</td>
+                        <td class="editTableTitle" width="100px;">{{$.lp.selectCategory}}:</td>
                         <td class="editTableValue">
                             <div class="MWFSelecCMStCategory" count=1 name="data.category"></div>
                         </td>
@@ -73,7 +73,7 @@
             <div id="text{$.id}dateRangeType_table" style="display: text{($.type=='querytable')?'block':'none'}">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">选择自建表:</td>
+                        <td class="editTableTitle">{{$.lp.selectTable}}:</td>
                         <td class="editTableValue">
                             <div class="MWFSelecQueryTable" count=1 name="data.querytable"></div>
                         </td>
@@ -84,16 +84,16 @@
             <div id="text{$.id}dateRangeType_process" style="display: text{($.type=='process')?'block':'none'}">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">选择流程:</td>
+                        <td class="editTableTitle">{{$.lp.selectProcess}}:</td>
                         <td class="editTableValue">
                             <div class="MWFSelectProcess" count=1  name="data.process"></div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">流程状态:</td>
+                        <td class="editTableTitle">{{$.lp.processStatus}}:</td>
                         <td class="editTableValue">
-                            <input name="processStatus" type="radio" value="draft" text{($.processStatus)!=='completed'?'checked':''}/>起草活动（第一个人工节点）
-                            <input name="processStatus" type="radio" value="completed" text{($.processStatus)==='completed'?'checked':''}/>结束活动
+                            <input name="processStatus" type="radio" value="draft" text{($.processStatus)!=='completed'?'checked':''}/>{{$.lp.draftActivity}}
+                            <input name="processStatus" type="radio" value="completed" text{($.processStatus)==='completed'?'checked':''}/>{{$.lp.endActivity}}
                         </td>
                     </tr>
                 </table>
@@ -102,24 +102,24 @@
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">启用校验:</td>
+                <td class="editTableTitle">{{$.lp.enableValidation}}:</td>
                 <td class="editTableValue">
-                    <input name="enableValid" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>是
-                    <input name="enableValid" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>否
+                    <input name="enableValid" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>{{$.lp.yes}}
+                    <input name="enableValid" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
         </table>
 
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">可执行者</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.ececuter}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>
-                <td class="editTableTitle">可执行人:</td>
+                <td class="editTableTitle">{{$.lp.ececutablePerson}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonIdentity" name="availableIdentityList"></div>
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">执行组织:</td>
+                <td class="editTableTitle">{{$.lp.ececutableUnit}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonUnit" name="availableUnitList"></div>
                 </td>
@@ -131,7 +131,7 @@
 
 
 
-    <div title="事件"  class="MWFTab">
+    <div title="{{$.lp.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="data.events"></div>
     </div>
 
