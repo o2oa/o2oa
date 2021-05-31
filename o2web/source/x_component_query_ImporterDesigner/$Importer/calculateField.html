@@ -1,18 +1,18 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">字段标题:</td>
+                <td class="editTableTitle">{{$.lp.fieldTitle}}:</td>
                 <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
             </tr>
         </table>
 
         <div style="border-top: 1px solid #999; margin-top:10px">
-            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">数据</div>
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.data}}</div>
             <div class="MWFDataData" id="text{$.pid}dataDataEditor">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">字段路径:</td>
+                        <td class="editTableTitle">{{$.lp.fieldPath}}:</td>
                         <td class="editTableValue"><input id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
                     </tr>
                 </table>
@@ -79,70 +79,63 @@
 <!--                    </td>-->
 <!--                </tr>-->
 <!--            </table>-->
-            <div class="MWFFormulaArea" name="valueScript" title="值脚本"></div>
+            <div class="MWFFormulaArea" name="valueScript" title="{{$.lp.valueScript}}"></div>
             <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}cmsFieldProperty" class="text{$.vid}cmsFieldProperty">
-                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">cms文档属性</div>
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.cmsProperty}}</div>
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">是否为标题:</td>
+                        <td class="editTableTitleNoWidth" style="width: 110px;">{{$.lp.isTitle}}:</td>
                         <td class="editTableValue">
-                            <input name="isTitle" type="radio" value="true" text{($.isTitle)==true?'checked':''}/>是
-                            <input name="isTitle" type="radio" value="false" text{($.isTitle)!==false?'checked':''}/>否
+                            <input name="isTitle" type="radio" value="true" text{($.isTitle)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isTitle" type="radio" value="false" text{($.isTitle)!==false?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">是否为摘要:</td>
+                        <td class="editTableTitle">{{$.lp.isSummary}}:</td>
                         <td class="editTableValue">
-                            <input name="isSummary" type="radio" value="true" text{($.isSummary)==true?'checked':''}/>是
-                            <input name="isSummary" type="radio" value="false" text{($.isSummary)!==false?'checked':''}/>否
+                            <input name="isSummary" type="radio" value="true" text{($.isSummary)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isSummary" type="radio" value="false" text{($.isSummary)!==false?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">是否置顶:</td>
+                        <td class="editTableTitle">{{$.lp.isPublisher}}:</td>
                         <td class="editTableValue">
-                            <input name="isTop" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
-                            <input name="isTop" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
+                            <input name="isPublisher" type="radio" value="true" text{($.isPublisher)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isPublisher" type="radio" value="false" text{($.isPublisher)!==false?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">是否为创建人:</td>
+                        <td class="editTableTitle">{{$.lp.isAuthor}}:</td>
                         <td class="editTableValue">
-                            <input name="isPublisher" type="radio" value="true" text{($.isPublisher)==true?'checked':''}/>是
-                            <input name="isPublisher" type="radio" value="false" text{($.isPublisher)!==false?'checked':''}/>否
+                            <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">是否作者:</td>
+                        <td class="editTableTitle">{{$.lp.isReader}}:</td>
                         <td class="editTableValue">
-                            <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>是
-                            <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否读者:</td>
-                        <td class="editTableValue">
-                            <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>是
-                            <input name="isReader" type="radio" value="false" text{($.isReader)!==false?'checked':''}/>否
+                            <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isReader" type="radio" value="false" text{($.isReader)!==false?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                 </table>
             </div>
 
             <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}processFieldProperty" class="text{$.vid}processFieldProperty">
-                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">流程work属性</div>
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.workProperty}}</div>
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">是否为标题:</td>
+                        <td class="editTableTitleNoWidth" style="width: 120px;">{{$.lp.isTitle}}:</td>
                         <td class="editTableValue">
-                            <input name="isProcessTitle" type="radio" value="true" text{($.isProcessTitle)==true?'checked':''}/>是
-                            <input name="isProcessTitle" type="radio" value="false" text{($.isProcessTitle)!==false?'checked':''}/>否
+                            <input name="isProcessTitle" type="radio" value="true" text{($.isProcessTitle)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isProcessTitle" type="radio" value="false" text{($.isProcessTitle)!==false?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">是否为流程发起人:</td>
+                        <td class="editTableTitle">{{$.lp.isProcessDrafter}}:</td>
                         <td class="editTableValue">
-                            <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>是
-                            <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==false?'checked':''}/>否
+                            <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==false?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                 </table>

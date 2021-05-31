@@ -28,6 +28,7 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
         if (!this.propertyContent) {
             this.getHtmlString(function () {
                 if (this.htmlString) {
+                    this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.query.ImporterDesigner.LP.propertyTemplate});
                     this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
                     this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.propertyNode);
                     this.propertyContent.set("html", this.JsonTemplate.load());

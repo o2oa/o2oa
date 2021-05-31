@@ -105,7 +105,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     },
     getDateColIndexArray: function(){
         var dateColIndexArray = [];
-        this.json.data.selectList.each(function(columnJson, index){
+        this.json.data.columnList.each(function(columnJson, index){
             var dataType = this.json.type === "querytable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
             if( dataType === "date" )dateColIndexArray.push( index );
         }.bind(this));
@@ -113,7 +113,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     },
     getOrgColIndexArray : function(){
         var orgColIndexArray = [];
-        this.json.data.selectList.each(function(columnJson, index){
+        this.json.data.columnList.each(function(columnJson, index){
             if( columnJson.isName ) {
                 orgColIndexArray.push(index);
             }
@@ -218,7 +218,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         var titleStyle = objectToString( this.css.titleStyles, "style" );
         htmlArray.push( "<tr>" );
-        this.json.data.selectList.each( function (columnJson, i) {
+        this.json.data.columnList.each( function (columnJson, i) {
             htmlArray.push( "<th style='"+titleStyle+"'>"+columnJson.displayName+"</th>" );
         });
         htmlArray.push( "<th style='"+titleStyle+"'> "+this.lp.validationInfor +"</th>" );
@@ -233,7 +233,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             var lineData = row.importedData;
 
             htmlArray.push( "<tr>" );
-            this.json.data.selectList.each( function (columnJson, i) {
+            this.json.data.columnList.each( function (columnJson, i) {
                 htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
             });
             htmlArray.push( "<td style='"+contentStyle+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
@@ -481,7 +481,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         var errorTextListExcel = [];
 
 
-        this.importer.json.data.selectList.each( function (columnJson, i) {
+        this.importer.json.data.columnList.each( function (columnJson, i) {
 
             var colInfor = columnText.replace( "{n}", i+1 );
             var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
@@ -584,7 +584,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         var errorTextListExcel = [];
 
 
-        this.importer.json.data.selectList.each( function (columnJson, i) {
+        this.importer.json.data.columnList.each( function (columnJson, i) {
 
             var colInfor = columnText.replace( "{n}", i+1 );
             var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
@@ -640,7 +640,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         var errorTextListExcel = [];
 
 
-        this.importer.json.data.selectList.each( function (columnJson, i) {
+        this.importer.json.data.columnList.each( function (columnJson, i) {
 
             var colInfor = columnText.replace( "{n}", i+1 );
             var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
@@ -697,7 +697,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         this.importer.fireEvent("beforeCreateRowData", [null, this]);
 
         debugger;
-        this.importer.json.data.selectList.each( function (columnJson, i) {
+        this.importer.json.data.columnList.each( function (columnJson, i) {
 
             var dataType = this.importer.json.type === "querytable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
 
