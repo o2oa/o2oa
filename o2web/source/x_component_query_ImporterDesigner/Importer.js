@@ -389,9 +389,9 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         //     }
         // }
 
-        this.designer.actions.saveView(this.data, function(json){
+        this.designer.actions.saveImportModel(this.data, function(json){
             this.data.id = json.data.id;
-            this.isNewView = false;
+            this.isNewImportModel = false;
             //this.page.textNode.set("text", this.data.name);
             if (this.lisNode) {
                 this.lisNode.getLast().set("text", this.data.name+"("+this.data.alias+")");
@@ -430,9 +430,9 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         //     }
         // }
 
-        this.designer.actions.saveView(this.data, function(json){
+        this.designer.actions.saveImportModel(this.data, function(json){
             this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
-            this.isNewView = false;
+            this.isNewImportModel = false;
             this.data.id = json.data.id;
             //this.page.textNode.set("text", this.data.name);
             if (this.lisNode) {
@@ -473,7 +473,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
 
         var d = this.cloneObject( this.data );
 
-        d.isNewView = true;
+        d.isNewImportModel = true;
         d.id = this.designer.actions.getUUID();
         d.name = data.name;
         d.alias = "";
@@ -490,7 +490,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
             entry.id = (new MWF.widget.UUID).id;
         }.bind(this));
 
-        this.designer.actions.saveView(d, function(json){
+        this.designer.actions.saveImportModel(d, function(json){
             this.designer.notice(this.designer.lp.notice.saveAs_success, "success", this.node, {"x": "left", "y": "bottom"});
             if (callback) callback();
         }.bind(this));
