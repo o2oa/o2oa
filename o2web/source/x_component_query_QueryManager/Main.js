@@ -35,6 +35,9 @@ MWF.xApplication.query.QueryManager.Main = new Class({
         if (this.statementConfigurator){
             this.statementConfigurator.keyCopy(e);
         }
+        if (this.importerConfigurator){
+            this.importerConfigurator.keyCopy(e);
+        }
     },
     keyPasteItems: function(e){
         if (this.viewConfigurator){
@@ -48,6 +51,9 @@ MWF.xApplication.query.QueryManager.Main = new Class({
         }
         if (this.statementConfigurator) {
             this.statementConfigurator.keyPaste(e);
+        }
+        if (this.importerConfigurator) {
+            this.importerConfigurator.keyPaste(e);
         }
     },
     loadStartMenu: function(callback){
@@ -109,6 +115,11 @@ MWF.xApplication.query.QueryManager.Main = new Class({
             if (this.statementConfigurator) delete this.statementConfigurator;
             this.statementConfiguratorContent.destroy();
             this.statementConfiguratorContent = null;
+        }
+        if (this.importerConfiguratorContent){
+            if (this.importerConfigurator) delete this.importerConfigurator;
+            this.importerConfiguratorContent.destroy();
+            this.importerConfiguratorContent = null;
         }
     },
 
@@ -207,6 +218,20 @@ MWF.xApplication.query.QueryManager.Main = new Class({
             this.statementConfigurator = new MWF.xApplication.query.QueryManager.StatementExplorer(this.statementConfiguratorContent, this.restActions);
             this.statementConfigurator.app = this;
             this.statementConfigurator.load();
+        }.bind(this));
+    },
+    importerConfig: function(){
+        this.clearContent();
+        this.importerConfiguratorContent = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.loadImporterConfig();
+    },
+    loadImporterConfig: function(){
+        MWF.xDesktop.requireApp("query.QueryManager", "ImporterExplorer", function(){
+            this.importerConfigurator = new MWF.xApplication.query.QueryManager.ImporterExplorer(this.importerConfiguratorContent, this.restActions);
+            this.importerConfigurator.app = this;
+            this.importerConfigurator.load();
         }.bind(this));
     }
 });

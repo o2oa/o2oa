@@ -1,0 +1,232 @@
+{
+  "name": "test11",
+  "id": "97499527-eeb1-416d-befc-f0758f465768",
+  "query": "de6d9aa1-8bc4-430d-b4ff-ef4be7dd68e0",
+  "alias": "",
+  "description": "",
+  "type": "querytable",
+  "data": {
+    "events": {
+      "queryLoad": {
+        "code": "",
+        "html": ""
+      },
+      "postLoad": {
+        "code": "",
+        "html": ""
+      },
+      "queryImportData": {
+        "code": "",
+        "html": ""
+      },
+      "postImportData": {
+        "code": "",
+        "html": ""
+      },
+      "queryImportRowData": {
+        "code": "",
+        "html": ""
+      },
+      "postImportRowData": {
+        "code": "",
+        "html": ""
+      }
+    },
+    "querytable":[{"name":"declaration","id":"b44d3df5-63d1-491c-b316-587dcb04e89e"}],
+    "selectList": [
+      {
+        "id": "C9482DD3ACC000016AB1C5701D801823",
+        "displayName": "标题",
+        "events": {
+          "queryLoad": {
+            "code": "",
+            "html": ""
+          },
+          "postLoad": {
+            "code": "",
+            "html": ""
+          }
+        },
+        "vid": "97499527-eeb1-416d-befc-f0758f465768",
+        "vtype": "cms",
+        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD3ACC000016AB1C5701D801823",
+        "isName": false,
+        "dataType_Querytable" : "string",
+        "path": "workId"
+      },
+      {
+        "id": "C9482DD3CE20000114B8F3881A656F20",
+        "displayName": "日期",
+        "events": {
+          "queryLoad": {
+            "code": "",
+            "html": ""
+          },
+          "postLoad": {
+            "code": "",
+            "html": ""
+          }
+        },
+        "vid": "97499527-eeb1-416d-befc-f0758f465768",
+        "vtype": "cms",
+        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD3CE20000114B8F3881A656F20",
+        "isName": false,
+        "dataType_Querytable" : "string",
+        "path": "sName"
+      },
+      {
+        "id": "C9482DD3EFA000013A6F1B3D815016C5",
+        "displayName": "数字",
+        "events": {
+          "queryLoad": {
+            "code": "",
+            "html": ""
+          },
+          "postLoad": {
+            "code": "",
+            "html": ""
+          }
+        },
+        "vid": "97499527-eeb1-416d-befc-f0758f465768",
+        "vtype": "cms",
+        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD3EFA000013A6F1B3D815016C5",
+        "isName": false,
+        "dataType_Querytable" : "string",
+        "path": "sDate"
+      },
+      {
+        "id": "C9482DD47A10000132A71D231EA0FC20",
+        "displayName": "布尔值",
+        "events": {
+          "queryLoad": {
+            "code": "",
+            "html": ""
+          },
+          "postLoad": {
+            "code": "",
+            "html": ""
+          }
+        },
+        "vid": "97499527-eeb1-416d-befc-f0758f465768",
+        "vtype": "cms",
+        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD47A10000132A71D231EA0FC20",
+        "isName": false,
+        "dataType_Querytable" : "string",
+        "path": "isCorrelation"
+      },
+      {
+        "id": "C9482DD500E000018C58F6F01F9D3700",
+        "displayName": "文本数组",
+        "events": {
+          "queryLoad": {
+            "code": "",
+            "html": ""
+          },
+          "postLoad": {
+            "code": "",
+            "html": ""
+          }
+        },
+        "vid": "97499527-eeb1-416d-befc-f0758f465768",
+        "vtype": "cms",
+        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD500E000018C58F6F01F9D3700",
+        "isName": false,
+        "dataType_Querytable" : "string",
+        "path": "column1"
+      },
+      {
+        "id": "C9482DD51F50000186C41CE0193A1241",
+        "displayName": "日期数组",
+        "events": {
+          "queryLoad": {
+            "code": "",
+            "html": ""
+          },
+          "postLoad": {
+            "code": "",
+            "html": ""
+          }
+        },
+        "vid": "97499527-eeb1-416d-befc-f0758f465768",
+        "vtype": "cms",
+        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD51F50000186C41CE0193A1241",
+        "isName": false,
+        "dataType_Querytable" : "string",
+        "path": "test11"
+      },
+      {
+        "id": "C9482E4C8C900001CEE19E001BF0138F",
+        "displayName": "身份",
+        "events": {
+          "queryLoad": {
+            "code": "",
+            "html": ""
+          },
+          "postLoad": {
+            "code": "",
+            "html": ""
+          }
+        },
+        "vid": "97499527-eeb1-416d-befc-f0758f465768",
+        "vtype": "cms",
+        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482E4C8C900001CEE19E001BF0138F",
+        "isName": true,
+        "dataType_Querytable" : "string",
+        "path": "org"
+      }
+    ],
+    "calculateFieldList": [
+      {
+        "id": "C9482DF45F200001FE257880BB043D00",
+        "displayName": "计算_身份",
+        "events": {
+          "queryLoad": {
+            "code": "",
+            "html": ""
+          },
+          "postLoad": {
+            "code": "",
+            "html": ""
+          }
+        },
+        "vid": "97499527-eeb1-416d-befc-f0758f465768",
+        "vtype": "cms",
+        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DF45F200001FE257880BB043D00",
+        "isName": true,
+        "dataType_Querytable" : "string",
+        "valueScript" : "return this.target.data.subject + \"_aaa\"",
+        "path": "cal_org"
+      },
+      {
+        "id": "C9482E382C50000165A216601F242230",
+        "displayName": "计算_文本数组",
+        "events": {
+          "queryLoad": {
+            "code": "",
+            "html": ""
+          },
+          "postLoad": {
+            "code": "",
+            "html": ""
+          }
+        },
+        "vid": "97499527-eeb1-416d-befc-f0758f465768",
+        "vtype": "cms",
+        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482E382C50000165A216601F242230",
+        "isName": false,
+        "valueScript" : "return this.target.data.subject + \"_bbb\"",
+        "dataType_Querytable" : "stringList",
+        "path": "cal_stringList"
+      }
+    ]
+  },
+  "availableIdentityList": [],
+  "availableUnitList": [],
+  "isNewImporter": true,
+  "application": "de6d9aa1-8bc4-430d-b4ff-ef4be7dd68e0",
+  "applicationName": "BUG管理",
+  "vid": "97499527-eeb1-416d-befc-f0758f465768",
+  "vtype": "Importer",
+  "pid": "97499527-eeb1-416d-befc-f0758f46576897499527-eeb1-416d-befc-f0758f465768",
+  "queryName": "BUG管理"
+}
