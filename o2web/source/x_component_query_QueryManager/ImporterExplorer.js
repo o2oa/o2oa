@@ -55,7 +55,7 @@ MWF.xApplication.query.QueryManager.ImporterExplorer = new Class({
             }.bind(this);
 
             this.selectMarkItems.each(function(item){
-                this.app.restActions.getImporter(item.data.id, function(json){
+                this.app.restActions.getImportModel(item.data.id, function(json){
                     json.data.elementType = "importer";
                     items.push(json.data);
                     i++;
@@ -98,7 +98,7 @@ MWF.xApplication.query.QueryManager.ImporterExplorer = new Class({
         }
     },
     saveItemAs: function(data, success, failure, cancel){
-        this.app.restActions.listImporter(this.app.options.application.id, function(dJson){
+        this.app.restActions.listImportModel(this.app.options.application.id, function(dJson){
             var i=1;
             var someItems = dJson.data.filter(function(d){ return d.id===data.id });
             if (someItems.length){
@@ -147,11 +147,11 @@ MWF.xApplication.query.QueryManager.ImporterExplorer = new Class({
         var name = item.name;
 
         data.id = someItem.id;
-        data.isNewImporter = false;
+        data.isNewImportModel = false;
         data.application = id;
         data.applicationName = name;
 
-        this.app.restActions.saveImporter(data, function(){
+        this.app.restActions.saveImportModel(data, function(){
             if (success) success();
         }.bind(this), function(){
             if (failure) failure();
@@ -170,11 +170,11 @@ MWF.xApplication.query.QueryManager.ImporterExplorer = new Class({
             i++;
         }
         data.id = "";
-        data.isNewImporter = true;
+        data.isNewImportModel = true;
         data.application = id;
         data.applicationName = name;
 
-        this.app.restActions.saveImporter(data, function(){
+        this.app.restActions.saveImportModel(data, function(){
             if (success) success();
         }.bind(this), function(){
             if (failure) failure();
@@ -194,7 +194,7 @@ MWF.xApplication.query.QueryManager.ImporterExplorer = new Class({
     },
 
     _loadItemDataList: function(callback){
-        this.app.restActions.listImporter(this.app.options.application.id,callback);
+        this.app.restActions.listImportModel(this.app.options.application.id,callback);
     },
     _getItemObject: function(item){
         return new MWF.xApplication.query.QueryManager.ImporterExplorer.Importer(this, item);
@@ -243,7 +243,7 @@ MWF.xApplication.query.QueryManager.ImporterExplorer.Importer= new Class({
 		};
 	},
     deleteImporter: function(callback){
-		this.explorer.actions.deleteImporter(this.data.id, function(){
+		this.explorer.actions.deleteImportModel(this.data.id, function(){
 			this.node.destroy();
 			if (callback) callback();
 		}.bind(this));
@@ -265,13 +265,13 @@ MWF.xApplication.query.QueryManager.ImporterExplorer.Importer= new Class({
     saveItemAs: function(item){
         var id = item.id;
         var name = item.name;
-        this.explorer.app.restActions.getImporter(this.data.id, function(json){
+        this.explorer.app.restActions.getImportModel(this.data.id, function(json){
             var data = json.data;
             var dataJson = (data.data) ? JSON.decode(data.data): "";
             data.data = dataJson;
             data.data.id = "";
             var oldName = data.name;
-            this.explorer.app.restActions.listImporter(id, function(dJson){
+            this.explorer.app.restActions.listImportModel(id, function(dJson){
                 var i=1;
                 while (dJson.data.some(function(d){ return d.name==data.name || d.alias==data.name })){
                     data.name = oldName+"_copy"+i;
@@ -279,11 +279,11 @@ MWF.xApplication.query.QueryManager.ImporterExplorer.Importer= new Class({
                     i++;
                 }
                 data.id = "";
-                data.isNewImporter = true;
+                data.isNewImportModel = true;
                 data.application = id;
                 data.applicationName = name;
 
-                this.explorer.app.restActions.saveImporter(data, function(){
+                this.explorer.app.restActions.saveImportModel(data, function(){
                     if (id == this.explorer.app.options.application.id) this.explorer.reload();
                 }.bind(this));
 
