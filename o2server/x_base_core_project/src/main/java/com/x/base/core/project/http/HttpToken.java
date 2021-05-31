@@ -27,7 +27,7 @@ public class HttpToken {
 
 	private static Logger logger = LoggerFactory.getLogger(HttpToken.class);
 
-	public static final String X_Token = "x-token";
+	// public static final String X_Token = "x-token";
 	public static final String X_Authorization = "authorization";
 	public static final String X_Person = "x-person";
 	public static final String X_Client = "x-client";
@@ -99,7 +99,8 @@ public class HttpToken {
 		try {
 			// String cookie = X_Token + "=; path=/; domain=" +
 			// this.domain(request) + "; max-age=0
-			String cookie = X_Token + "=" + COOKIE_ANONYMOUS_VALUE + "; path=/; domain=" + this.domain(request)
+			String cookie = Config.person().getTokenName() + "=" + COOKIE_ANONYMOUS_VALUE + "; path=/; domain="
+					+ this.domain(request)
 					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? "; HttpOnly" : "");
 			response.setHeader(SET_COOKIE, cookie);
 		} catch (Exception e) {
@@ -129,10 +130,11 @@ public class HttpToken {
 	private void setResponseToken(HttpServletRequest request, HttpServletResponse response,
 			EffectivePerson effectivePerson) throws Exception {
 		if (!StringUtils.isEmpty(effectivePerson.getToken())) {
-			String cookie = X_Token + "=" + effectivePerson.getToken() + "; path=/; domain=" + this.domain(request)
+			String cookie = Config.person().getTokenName() + "=" + effectivePerson.getToken() + "; path=/; domain="
+					+ this.domain(request)
 					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? "; HttpOnly" : "");
 			response.setHeader(SET_COOKIE, cookie);
-			response.setHeader(X_Token, effectivePerson.getToken());
+			response.setHeader(Config.person().getTokenName(), effectivePerson.getToken());
 		}
 	}
 
@@ -148,11 +150,11 @@ public class HttpToken {
 
 	public String getToken(HttpServletRequest request) throws Exception {
 		String token = null;
-		token = URLTools.getQueryStringParameter(request.getQueryString(), X_Token);
+		token = URLTools.getQueryStringParameter(request.getQueryString(), Config.person().getTokenName());
 		if (StringUtils.isEmpty(token)) {
 			if (null != request.getCookies()) {
 				for (Cookie c : request.getCookies()) {
-					if (StringUtils.equals(X_Token, c.getName())) {
+					if (StringUtils.equals(Config.person().getTokenName(), c.getName())) {
 						token = c.getValue();
 						break;
 					}
@@ -160,10 +162,10 @@ public class HttpToken {
 			}
 		}
 		if (StringUtils.isEmpty(token)) {
-			token = request.getHeader(X_Token);
+			token = request.getHeader(Config.person().getTokenName());
 		}
 		if (StringUtils.isEmpty(token)) {
-			//如果使用oauth bearer 通过此传递认证信息.需要进行判断,格式为 Bearer xxxxxxx
+			// 如果使用oauth bearer 通过此传递认证信息.需要进行判断,格式为 Bearer xxxxxxx
 			String value = request.getHeader(X_Authorization);
 			if (!StringUtils.contains(value, " ")) {
 				token = value;
