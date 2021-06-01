@@ -509,8 +509,23 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
             this.designer.notice(this.designer.lp.notice.saveAs_success, "success", this.node, {"x": "left", "y": "bottom"});
             if (callback) callback();
         }.bind(this));
+    },
+    checkUniqueSetting: function (column, name , value) {
+        debugger;
+        if (value !== "true")return;
+        ([].concat(this.items, this.calculateItems)).each(function (col) {
+            if( col !== column && (col.json[name] === "true" || col.json[name] === true) ){
+                col.json[name] = false;
+                if(col.property){
+                    var radios = col.property.propertyContent.getElements("input[name$='"+name+"']"); //$匹配结尾
+                    radios.each(function (r) {
+                        if (r.value === "true") r.set("checked", false);
+                        if (r.value === "false") r.set("checked", true);
+                    });
+                }
+            }
+        });
     }
-
 });
 
 
@@ -703,11 +718,17 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
             this.close();
         }, null);
     },
-    setEditStyle: function(name, input, oldValue){
-        if (name=="displayName") this.resetTextNode();
-        if (name=="selectType") this.resetTextNode();
-        if (name=="attribute") this.resetTextNode();
-        if (name=="path") this.resetTextNode();
+    _setEditStyle_custom: function(name, input, oldValue){
+        //column
+        debugger;
+        if (name==="displayName") this.resetTextNode();
+        if (name==="selectType") this.resetTextNode();
+        if (name==="attribute") this.resetTextNode();
+        if (name==="path") this.resetTextNode();
+        if (["isTitle","isSummary","isPublisher","isProcessTitle","isProcessDrafter"].contains(name)){
+            this.view.checkUniqueSetting(this, name, input.get("value"));
+        }
+
     },
     resetTextNode: function( index ){
         var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
@@ -1108,11 +1129,15 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
     //     if (name=="path") this.resetTextNode();
     // },
     _setEditStyle_custom: function(name, input, oldValue){
+        //calculate
         debugger;
         if (name=="displayName") this.resetTextNode();
         if (name=="selectType") this.resetTextNode();
         if (name=="attribute") this.resetTextNode();
         if (name=="path") this.resetTextNode();
+        if (["isTitle","isSummary","isPublisher","isProcessTitle","isProcessDrafter"].contains(name)){
+            this.view.checkUniqueSetting(this, name, input.get("value"));
+        }
     },
     resetTextNode: function( index ){
         // var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
