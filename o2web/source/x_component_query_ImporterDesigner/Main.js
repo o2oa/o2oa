@@ -143,7 +143,7 @@ MWF.xApplication.query.ImporterDesigner.Main = new Class({
         this.actions.getImportModel(id, function(json){
             if (json){
                 var data = json.data;
-                data.draftData = JSON.decode(data.draftData);
+                // data.draftData = JSON.decode(data.draftData);
 
                 if (!this.application){
                     this.actions.getApplication(data.query, function(json){
