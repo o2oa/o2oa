@@ -55,42 +55,42 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         loadingTextNode.set("text", "loading...");
     },
     getImporterJSON: function(callback){
-        var path = "/x_component_query_Query/$Main/importer_test.json"; //_querytable
-        var r = new Request.JSON({
-            url: o2.filterUrl(path),
-            secure: false,
-            async: false,
-            method: "get",
-            noCache: false,
-            onSuccess: function(responseJSON, responseText){
-                this.json = responseJSON;
-                debugger;
-                if(callback)callback();
-                this.fireEvent("postLoadJson");
-            }.bind(this),
-            onError: function(text, error){
-                alert(error + text);
-            }
-        });
-        r.send();
-        return;
+        // var path = "/x_component_query_Query/$Main/importer_test.json"; //_querytable
+        // var r = new Request.JSON({
+        //     url: o2.filterUrl(path),
+        //     secure: false,
+        //     async: false,
+        //     method: "get",
+        //     noCache: false,
+        //     onSuccess: function(responseJSON, responseText){
+        //         this.json = responseJSON;
+        //         debugger;
+        //         if(callback)callback();
+        //         this.fireEvent("postLoadJson");
+        //     }.bind(this),
+        //     onError: function(text, error){
+        //         alert(error + text);
+        //     }
+        // });
+        // r.send();
+        // return;
 
-
-
-        // if (this.json.application){
-        //     this.getViewRes = this.lookupAction.getView(this.json.viewName, this.json.application, function(json){
-        //         this.importerJson = JSON.decode(json.data.data);
-        //         this.json = Object.merge(this.json, json.data);
-        //         if (callback) callback();
-        //     }.bind(this));
-        // }else{
-        //     this.getViewRes = this.lookupAction.getViewById(this.json.viewId, function(json){
-        //         this.importerJson = JSON.decode(json.data.data);
-        //         this.json.application = json.data.query;
-        //         this.json = Object.merge(this.json, json.data);
-        //         if (callback) callback();
-        //     }.bind(this));
-        // }
+        if (this.json.application){
+            this.lookupAction.getView(this.json.viewName, this.json.application, function(json){
+                this.importerJson = JSON.decode(json.data.data);
+                json.data.data = this.importerJson;
+                this.json = Object.merge(this.json, json.data);
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            this.lookupAction.getViewById(this.json.viewId, function(json){
+                this.importerJson = JSON.decode(json.data.data);
+                json.data.data = this.importerJson;
+                this.json.application = json.data.query;
+                this.json = Object.merge(this.json, json.data);
+                if (callback) callback();
+            }.bind(this));
+        }
     },
     _loadModuleEvents : function(){
         Object.each(this.json.data.events, function(e, key){
@@ -856,11 +856,11 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 this.document.readerList = this.document.readerList.concat( array )
             }
         }
-        if( columnJson.isTop ){
-            if( [lp.yes,"yes","true"].contains(data) ){
-                this.document.isTop = true;
-            }
-        }
+        // if( columnJson.isTop ){
+        //     if( [lp.yes,"yes","true"].contains(data) ){
+        //         this.document.isTop = true;
+        //     }
+        // }
     },
     parseCMSDocument_CalculateField : function( fieldJson, data ){
         var lp = this.importer.lp;
@@ -898,11 +898,11 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             var array = this.parseCMSReadAndAuthor( data );
             this.document.readerList = this.document.readerList.concat( array )
         }
-        if( columnJson.isTop ){
-            if( [lp.yes,"yes","true"].contains(data) ){
-                this.document.isTop = true;
-            }
-        }
+        // if( columnJson.isTop ){
+        //     if( [lp.yes,"yes","true"].contains(data) ){
+        //         this.document.isTop = true;
+        //     }
+        // }
     },
     parseCMSReadAndAuthor : function( data ){
         var cnArray = ["组织","群组","人员","人员","角色"];
@@ -1043,7 +1043,7 @@ MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
                 }
 
                 //第三个参数是日期的列
-                this.import( file, function(json){
+                this.importFromExcel( file, function(json){
                     //json为导入的结果
                     if(callback)callback(json);
                     uploadFileAreaNode.destroy();
@@ -1054,7 +1054,7 @@ MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
         var fileNode = uploadFileAreaNode.getFirst();
         fileNode.click();
     },
-    import : function( file, callback, dateColArray ){
+    importFromExcel : function( file, callback, dateColArray ){
         this._loadResource( function(){
             var reader = new FileReader();
             var workbook, data;
