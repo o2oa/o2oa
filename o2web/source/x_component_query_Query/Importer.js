@@ -25,11 +25,16 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         this.parentMacro = parentMacro;
 
+        this.lookupAction = MWF.Actions.get("x_query_assemble_surface");
+        this.designerAction = MWF.Actions.get("x_query_assemble_designer");
+
         this.load();
 
     },
     load: function(){
+
         this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+
         this.getImporterJSON( function () {
             this.loadMacro( function () {
                 this._loadModuleEvents();
@@ -75,22 +80,23 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         // r.send();
         // return;
 
-        if (this.json.application){
-            this.lookupAction.getView(this.json.viewName, this.json.application, function(json){
-                this.importerJson = JSON.decode(json.data.data);
-                json.data.data = this.importerJson;
-                this.json = Object.merge(this.json, json.data);
-                if (callback) callback();
-            }.bind(this));
-        }else{
-            this.lookupAction.getViewById(this.json.viewId, function(json){
+        // if (this.json.application){
+        //     this.lookupAction.getView(this.json.viewName, this.json.application, function(json){
+        //         this.importerJson = JSON.decode(json.data.data);
+        //         json.data.data = this.importerJson;
+        //         this.json = Object.merge(this.json, json.data);
+        //         if (callback) callback();
+        //     }.bind(this));
+        // }else{
+        this.designerAction.getImportModel(this.json.viewId, function(json){
+            debugger;
                 this.importerJson = JSON.decode(json.data.data);
                 json.data.data = this.importerJson;
                 this.json.application = json.data.query;
                 this.json = Object.merge(this.json, json.data);
                 if (callback) callback();
             }.bind(this));
-        }
+        // }
     },
     _loadModuleEvents : function(){
         Object.each(this.json.data.events, function(e, key){
