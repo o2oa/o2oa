@@ -157,6 +157,18 @@ MWF.xApplication.query.Query.LP = {
 
     "deleteConfirmContent" : "删除后不能恢复，你确定要删除该文档？",
     "deleteConfirmTitle" : "删除确认",
-    "deleteSuccessNotice" : "删除成功"
+    "deleteSuccessNotice" : "删除成功",
+
+    "importSuccess" : "导入成功！",
+    "validationInfor" : "校验信息",
+    "importFail" : "导入失败",
+    "importValidationColumnText" : "第{n}列：",
+    "importValidationColumnTextExcel" : "列{n}：",
+    "notValidNumber" : "不是数字",
+    "notValidDate" : "不是日期格式",
+    "fullstop" : "。",
+    "notExistInSystem" : "在系统中不存在",
+    "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格",
+    "canNotBeEmpty": "不能为空"
 
 };

@@ -155,7 +155,19 @@ MWF.xApplication.query.Query.LP = {
         "startLargetThanEndNotice": "The start entry cannot be greater than the end entry"
 },
 
-"deleteConfirmContent": "It cannot be restored after deletion. Are you sure you want to delete this document?",
+    "deleteConfirmContent": "It cannot be restored after deletion. Are you sure you want to delete this document?",
     "deleteConfirmTitle": "Delete Confirmation",
-    "deleteSuccessNotice": "Delete successfully"
+    "deleteSuccessNotice": "Delete successfully",
+
+    "importSuccess": "Import successful!",
+    "validationInfor": "Verification Information",
+    "importFail": "Import failed",
+    "importValidationColumnText": "Column {n}:",
+    "importValidationColumnTextExcel": "Column {n}:",
+    "notValidNumber": "Not a number",
+    "notValidDate": "Not a date format",
+    "fullstop": ".",
+    "notExistInSystem": "Does not exist in the system",
+    "uploadedFilesCannotHaveSpaces": "Uploaded files cannot contain spaces",
+    "canNotBeEmpty": "Can not be empty"
 };

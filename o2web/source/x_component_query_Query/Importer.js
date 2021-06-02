@@ -2,7 +2,7 @@ MWF.xApplication.query = MWF.xApplication.query || {};
 MWF.xApplication.query.Query = MWF.xApplication.query.Query || {};
 MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
-MWF.xDesktop.requireApp("query.Query", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("query.Query", "lp."+o2.language, null, false);
 MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
@@ -10,7 +10,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         "style": "default",
         "moduleEvents": ["queryLoad", "postLoadJson","postLoad", "beforeImport", "afterImport", "validImport", "beforeCreateRowData", "afterCreateRowData", "saveRow"]
     },
-    initialize: function(container, options, app, parentMacro){
+    initialize: function(container, json, options, app, parentMacro){
 
         this.setOptions(options);
 
@@ -20,6 +20,8 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         this.lp = MWF.xApplication.query.Query.LP;
 
         this.app = app;
+
+        this.json = json;
 
         this.contains = container;
 
@@ -88,7 +90,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         //         if (callback) callback();
         //     }.bind(this));
         // }else{
-        this.designerAction.getImportModel(this.json.viewId, function(json){
+        this.designerAction.getImportModel(this.json.id, function(json){
             debugger;
                 this.importerJson = JSON.decode(json.data.data);
                 json.data.data = this.importerJson;
@@ -192,7 +194,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         if( this.json.type === "querytable" ){
             o2.Actions.load("x_query_assemble_designer").TableAction.rowSave(
-                this.json.data.querytable[0].id || this.json.data.querytable[0].name,
+                this.json.data.querytable.id || this.json.data.querytable.name,
                 this.getData(),
                 function(json){
                     this.fireEvent("afterImport", json );
@@ -690,13 +692,13 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         if( this.importer.json.type === "cms" ){
             this.document = {
-                categoryId : this.importer.json.data.category[0].id,
+                categoryId : this.importer.json.data.category.id,
                 readerList : [],
                 authorList : []
             };
         }else if( this.importer.json.type === "process" ){
             this.work = {
-                processFlag : this.importer.json.data.process[0].id
+                processFlag : this.importer.json.data.process.id
             };
         }
 
@@ -791,6 +793,8 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             if( fieldJson.valueScript ){
                 var data = this.importer.Macro.exec( fieldJson.valueScript, this );
 
+                if( o2.typeOf(data) === "null" )return;
+
                 if( this.importer.json.type === "querytable" ){
                     this.data[ fieldJson.path ] = data;
                 }else{
@@ -873,7 +877,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         var fieldInfor = lp.caculateFieldValidationText + ( fieldJson.displayName || fieldJson.path );
 
-        if( columnJson.isTitle ){
+        if( fieldJson.isTitle ){
             if( data.length > 70 ){
                 this.errorTextList.push(  fieldInfor +'"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
                 this.errorTextListExcel.push(  fieldInfor +'"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
@@ -881,7 +885,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 this.document.title = data;
             }
         }
-        if( columnJson.isSummary ){
+        if( fieldJson.isSummary ){
             if( data.length > 70 ){
                 this.errorTextList.push( fieldInfor +'"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
                 this.errorTextListExcel.push( fieldInfor +'"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
@@ -889,22 +893,22 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 this.document.summary = data;
             }
         }
-        if( columnJson.isPublisher ){
+        if( fieldJson.isPublisher ){
             var d = (typeOf(data) === "array" && data.length) ? data[0] : data;
             if( d ){
                 d = typeOf(d) === "object" ? d.distinguishedName : d;
                 this.document.identity = data[0].distinguishedName
             }
         }
-        if( columnJson.isAuthor ){
+        if( fieldJson.isAuthor ){
             var array = this.parseCMSReadAndAuthor( data );
             this.document.authorList = this.document.authorList.concat( array )
         }
-        if( columnJson.isReader ){
+        if( fieldJson.isReader ){
             var array = this.parseCMSReadAndAuthor( data );
             this.document.readerList = this.document.readerList.concat( array )
         }
-        // if( columnJson.isTop ){
+        // if( fieldJson.isTop ){
         //     if( [lp.yes,"yes","true"].contains(data) ){
         //         this.document.isTop = true;
         //     }
