@@ -16,6 +16,8 @@
   "loadView": {"uri": "/jaxrs/view/flag/{flag}/query/{queryFlag}/execute", "method": "PUT"},
   "bundleView": {"uri": "/jaxrs/view/{id}/bundle", "method": "PUT"},
 
+  "getTableById" : { "uri": "/jaxrs/table/{id}" },
+
   "exportViewWithQuery": {"uri": "/jaxrs/view/flag/{flag}/query/{queryFlag}/excel", "method": "PUT"},
   "exportView": {"uri": "/jaxrs/view/{id}/excel", "method": "PUT"},
   "getViewExcel": {"uri": "/jaxrs/view/excel/result/{flag}"},

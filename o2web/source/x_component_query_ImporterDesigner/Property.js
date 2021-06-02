@@ -120,9 +120,11 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
 
             cmscategoryNodes.each(function (node) {
                 var count = node.get("count") ? node.get("count").toInt() : 0;
+                var name = (this.data.data) ? this.data.data.category : {};
+                var names = o2.typeOf(name) === "object" ? [name] : name;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "CMSCategory",
-                    "names": (this.data.data) ? this.data.data.category : {},
+                    "names": names,
                     "count" : count,
                     "onChange": function (ids) {
                         this.savePersonSelectItem(node, ids, count);
@@ -132,9 +134,11 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
 
             querytableNodes.each(function (node) {
                 var count = node.get("count") ? node.get("count").toInt() : 0;
+                var name = (this.data.data) ? this.data.data.dynamicTable : {};
+                var names = o2.typeOf(name) === "object" ? [name] : name;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "QueryTable",
-                    "names": (this.data.data) ? this.data.data.querytable : {},
+                    "names": names,
                     "count" : count,
                     "onChange": function (ids) {
                         debugger;
@@ -145,9 +149,11 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
 
             processNodes.each(function (node) {
                 var count = node.get("count") ? node.get("count").toInt() : 0;
+                var name = (this.data.data) ? this.data.data.process : {};
+                var names = o2.typeOf(name) === "object" ? [name] : name;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "process",
-                    "names": (this.data.data) ? this.data.data.process: {},
+                    "names": names,
                     "count" : count,
                     "onChange": function (ids) {
                         this.savePersonSelectItem(node, ids, count);
