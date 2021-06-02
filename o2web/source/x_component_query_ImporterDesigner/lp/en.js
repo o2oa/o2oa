@@ -50,7 +50,13 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "noModifyName": "Cannot modify the name or alias",
 
         "deleteEventTitle": "Delete Event Confirmation",
-        "deleteEvent": "Are you sure you want to delete the current event?"
+        "deleteEvent": "Are you sure you want to delete the current event?",
+
+        "cmsNoPublisherOrNoTitleTitle": "No title or drafter is set",
+        "cmsNoPublisherOrNoTitle": "The title or drafter is not set for content management. Are you sure to save it?",
+
+        "processNoPublisherOrNoTitleTitle": "No title or drafter is set",
+        "processNoPublisherOrNoTitle": "The process has no title or drafter. Are you sure to save it?"
     },
     "mastInputPath": "Please enter the data path",
     "mastInputTitle": "Please enter a title",
@@ -104,6 +110,10 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "fieldType":"Field Type",
         "validation":"Validation",
         "allowEmpty":"Allow empty values",
-        "validFieldType":"Validation field type"
+        "validFieldType":"Validation field type",
+
+        "documentType": "Document Type",
+        "information": "Information",
+        "data1": "Data"
     }
 };

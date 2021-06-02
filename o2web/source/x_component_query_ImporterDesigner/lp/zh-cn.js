@@ -50,7 +50,13 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "noModifyName": "不能修改名称或者别名",
 
         "deleteEventTitle": "删除事件确认",
-        "deleteEvent": "是否确定删除当前事件吗？"
+        "deleteEvent": "是否确定删除当前事件吗？",
+
+        "cmsNoPublisherOrNoTitleTitle": "未设置标题或起草人",
+        "cmsNoPublisherOrNoTitle": "内容管理未设置标题或起草人，确认保存？",
+
+        "processNoPublisherOrNoTitleTitle": "未设置标题或发起人",
+        "processNoPublisherOrNoTitle": "流程未设置标题或发起人，确认保存？",
     },
     "mastInputPath": "请输入数据路径",
     "mastInputTitle": "请输入标题",
@@ -104,6 +110,10 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "fieldType":"字段类型",
         "validation":"校验",
         "allowEmpty":"允许空值",
-        "validFieldType":"校验字段类型"
+        "validFieldType":"校验字段类型",
+
+        "documentType": "文档类型",
+        "information": "信息",
+        "data1": "数据"
     }
 };

@@ -169,6 +169,9 @@ MWF.xApplication.query.Query.LP = {
     "fullstop" : "。",
     "notExistInSystem" : "在系统中不存在",
     "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格",
-    "canNotBeEmpty": "不能为空"
+    "canNotBeEmpty": "不能为空",
+    "cmsTitleLengthInfor": "标题长度不能超过70个字",
+    "cmsSummaryLengthInfor": "摘要长度不能超过70个字",
+    "caculateFieldValidationText": "计算字段错误:"
 
 };
