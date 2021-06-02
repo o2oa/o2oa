@@ -169,5 +169,8 @@ MWF.xApplication.query.Query.LP = {
     "fullstop": ".",
     "notExistInSystem": "Does not exist in the system",
     "uploadedFilesCannotHaveSpaces": "Uploaded files cannot contain spaces",
-    "canNotBeEmpty": "Can not be empty"
+    "canNotBeEmpty": "Can not be empty",
+    "cmsTitleLengthInfor": "Title length cannot exceed 70 characters",
+    "cmsSummaryLengthInfor": "Summary length cannot exceed 70 characters",
+    "caculateFieldValidationText": "Calculated field error:"
 };

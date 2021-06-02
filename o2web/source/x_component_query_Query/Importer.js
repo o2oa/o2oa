@@ -160,9 +160,11 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         }.bind(this));
     },
     getData : function(){
-        return ( this.rowList || [] ).map( function(row){
-            return row.data;
-        })
+        var data = ( this.rowList || [] ).map( function(row){
+            return row.getResult();
+        });
+        debugger;
+        return data;
     },
     doImportData: function(){
         //创建数据
@@ -189,6 +191,8 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             this.openImportedErrorDlg();
             return;
         }
+
+        console.log(this.getData());
 
         if( this.json.type === "dynamicTable" ){
             o2.Actions.load("x_query_assemble_designer").TableAction.rowSave(
@@ -455,23 +459,16 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         }
         if( !this.importerJson ){
 
-            var title = fileName || this.json.name;
-            var titleA = title.split(".");
-            if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
-                titleA.splice( titleA.length-1 );
-            }
-            title = titleA.join(".");
-
             this.getImporterJSON( function () {
                 var arg = {
-                    data : this.getTitleArray(),
+                    data : [this.getTitleArray()],
                     colWidthArray : this.getColWidthArray(),
-                    title : title
+                    title : this.getFileName(fileName)
                 };
                 if(callback)callback(arg);
 
                 this.excelUtils.exportToExcel(
-                    arg.array,
+                    arg.data,
                     arg.title,
                     arg.colWidthArray,
                     this.getDateIndexArray()
@@ -479,37 +476,74 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             }.bind(this))
         }
     },
+    getFileName: function(fileName){
+        var title = fileName || this.json.name;
+        var titleA = title.split(".");
+        if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
+            titleA.splice( titleA.length-1 );
+        }
+        title = titleA.join(".");
+        return title;
+    },
     getTitleArray: function(){
-
+        var titleArray = [];
+        this.json.data.columnList.each( function (columnJson, i) {
+            titleArray.push( columnJson.displayName );
+        }.bind(this));
+        return titleArray;
     },
     getColWidthArray : function(){
         var colWidthArr = [];
-        this.template.json.excelFieldConfig.each(function (config) {
-            var json = this.form.json.moduleList[config.field];
-            if ( !json ){
-                colWidthArr.push(150);
-            }else if ( ["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)) {
-                colWidthArr.push(340);
-            } else if (json.type === "Address") {
-                colWidthArr.push(170);
-            } else if (json.type === "Textarea") {
-                colWidthArr.push(260);
-            } else if (json.type === "Htmleditor") {
-                colWidthArr.push(500);
-            } else if (json.type === "Calendar") {
-                colWidthArr.push(150);
-            } else {
-                colWidthArr.push(150);
+        this.json.data.columnList.each( function (columnJson, i) {
+            var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+            switch ( dataType ) {
+                case "string":
+                case "stringList":
+                    if( columnJson.isName ){
+                        colWidthArr.push( 340 );
+                    }else if( columnJson.isSummary ){
+                        colWidthArr.push( 260 );
+                    }else{
+                        colWidthArr.push( 150 );
+                    }
+                    break;
+                case "number":
+                case "integer":
+                case "long":
+                case "double":
+                case "numberList":
+                case "integerList":
+                case "longList":
+                case "doubleList":
+                    colWidthArr.push(150);
+                    break;
+                case "date":
+                case "dateTime":
+                case "dateList":
+                case "dateTimeList":
+                    colWidthArr.push(150);
+                    break;
+                default:
+                    colWidthArr.push(150);
+                    break;
             }
         }.bind(this));
+
         return colWidthArr;
     },
     getDateIndexArray : function(){
         var dateIndexArr = []; //日期格式列下标
-        this.template.json.excelFieldConfig.each(function (config, i) {
-            var json = this.form.json.moduleList[config.field];
-            if (json && json.type === "Calendar") {
-                dateIndexArr.push(i);
+        this.json.data.columnList.each( function (columnJson, i) {
+            var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+            switch ( dataType ) {
+                case "date":
+                case "dateTime":
+                case "dateList":
+                case "dateTimeList":
+                    dateIndexArr.push(i);
+                    break;
+                default:
+                    break;
             }
         }.bind(this));
         return dateIndexArr;
@@ -561,8 +595,6 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             var value = this.importedData[i] || "";
 
             var dataType = this.importer.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
-
-            debugger;
 
             if( !columnJson.allowEmpty && !value ){
                 errorTextList.push( colInfor + lp.canNotBeEmpty + lp.fullstop );
@@ -758,17 +790,18 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             this.document = {
                 categoryId : this.importer.json.data.category.id,
                 readerList : [],
-                authorList : []
+                authorList : [],
+                docData : this.data
             };
         }else if( this.importer.json.type === "process" ){
             this.work = {
-                processFlag : this.importer.json.data.process.id
+                processFlag : this.importer.json.data.process.id,
+                data: this.data
             };
         }
 
         this.importer.fireEvent("beforeCreateRowData", [null, this]);
 
-        debugger;
         this.importer.json.data.columnList.each( function (columnJson, i) {
 
             var dataType = this.importer.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
@@ -897,8 +930,6 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 }
             }
         }
-
-        console.log( this.data );
 
 
         this.importer.fireEvent("afterCreateRowData", [null, this]);
@@ -1033,16 +1064,24 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             }
         }
     },
-
-    save : function () {
-        if( this.json.type === "dynamicTable" ){
-
-        }else if( this.json.type === "cms" ){
-
-        }else if( this.json.type === "process" ){
-
+    getResult: function(){
+        if( this.importer.json.type === "cms" ){
+            return this.document;
+        }else if( this.importer.json.type === "process" ){
+            return this.work;
+        }else if( this.json.type === "dynamicTable" ){
+            return this.data;
         }
     }
+    // save : function () {
+    //     if( this.json.type === "dynamicTable" ){
+    //
+    //     }else if( this.json.type === "cms" ){
+    //
+    //     }else if( this.json.type === "process" ){
+    //
+    //     }
+    // }
 });
 
 MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({

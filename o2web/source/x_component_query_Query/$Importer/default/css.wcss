@@ -23,7 +23,7 @@
     "contentStyles": {
         "background-color": "#FFFFFF",
         "color": "#000",
-        "font-size": "16px",
+        "font-size": "14px",
         "border-top": "0px",
         "border-left": "0px",
         "border-right" : "0px",

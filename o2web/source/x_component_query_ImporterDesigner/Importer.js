@@ -415,12 +415,59 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         }.bind(this));
     },
     save: function(callback){
-        //if (this.designer.tab.showPage==this.page){
         if (!this.data.name){
             this.designer.notice(this.designer.lp.notice.inputName, "error");
             return false;
         }
-        //}
+
+        var titleFlag, creatorFlag;
+        if (this.json.type==="cms"){
+            (this.json.data.columnList||[]).each(function (json, i) {
+                if( json.isName && json.isPublisher )creatorFlag = true;
+                if( json.isTitle )titleFlag = true;
+            }.bind(this));
+            (this.json.data.calculateFieldList||[]).each(function (json, i) {
+                if( json.isName && json.isPublisher )creatorFlag = true;
+                if( json.isTitle )titleFlag = true;
+            }.bind(this));
+            if( !titleFlag || !creatorFlag){
+                var _self = this;
+                this.designer.confirm("warn", this.node, MWF.APPDIPD.LP.notice.cmsNoPublisherOrNoTitleTitle, MWF.APPDIPD.LP.notice.cmsNoPublisherOrNoTitle, 300, 120, function(){
+                    _self._save();
+                    this.close();
+                }, function(){
+                    this.close();
+                }, null);
+            }else{
+                this._save(callback)
+            }
+        }else if(this.json.type==="process"){
+            (this.json.data.columnList||[]).each(function (json, i) {
+                if( json.isName && json.isProcessDrafter )creatorFlag = true;
+                if( json.isProcessTitle )titleFlag = true;
+            }.bind(this));
+            (this.json.data.calculateFieldList||[]).each(function (json, i) {
+                if( json.isName && json.isProcessDrafter )creatorFlag = true;
+                if( json.isProcessTitle )titleFlag = true;
+            }.bind(this));
+            if( !titleFlag || !creatorFlag){
+                var _self = this;
+                this.designer.confirm("warn", this.node, MWF.APPDIPD.LP.notice.processNoPublisherOrNoTitleTitle, MWF.APPDIPD.LP.notice.processNoPublisherOrNoTitle, 300, 120, function(){
+                    _self._save();
+                    this.close();
+                }, function(){
+                    this.close();
+                }, null);
+            }else{
+                this._save(callback)
+            }
+        }else{
+            this._save(callback)
+        }
+    },
+    _save: function(callback){
+        //if (this.designer.tab.showPage==this.page){
+
 
         debugger;
         // var list;

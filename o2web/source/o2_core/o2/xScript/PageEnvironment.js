@@ -1325,7 +1325,7 @@ MWF.xScript.PageEnvironment = function (ev) {
     /**
      * 您可以通过importer对象，执行导入模型的Excel导入数据功能。<br/>
      * @module importer
-     * @o2ordernumber 100
+     * @o2ordernumber 93
      * @o2syntax
      * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
      * var importer = this.importer;
