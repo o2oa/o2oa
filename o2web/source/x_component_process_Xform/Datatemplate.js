@@ -1259,9 +1259,9 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		this.template.fireEvent("export", [arg]);
 
 		new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
-			resultArr,
+			arg.data || resultArr,
 			arg.title || excelName,
-			colWidthArr,
+			arg.colWidthArray || colWidthArr,
 			this.getDateIndexArray()  //日期格式列下标
 		);
 	},
@@ -1434,9 +1434,9 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		this.template.fireEvent("export", [arg]);
 
 		new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
-			resultArr,
+			arg.data || resultArr,
 			arg.title || excelName,
-			colWidthArr,
+			arg.colWidthArray || colWidthArr,
 			this.getDateIndexArray()  //日期格式列下标
 		);
 	}
