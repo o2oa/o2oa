@@ -1322,6 +1322,51 @@ MWF.xScript.PageEnvironment = function (ev) {
         }
     };
 
+    /**
+     * 您可以通过importer对象，执行导入模型的Excel导入数据功能。<br/>
+     * @module importer
+     * @o2ordernumber 100
+     * @o2syntax
+     * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
+     * var importer = this.importer;
+     */
+    this.importer = {
+        /**
+         * 根据指定的导入模型进行上传。
+         * @method upload
+         * @static
+         * @param {Object} object - 要执行的导入模型的信息。数据格式如下：
+         * <pre><code class='language-js'>
+         * {
+         *  "name" : "testImporter", //（String）必选，导入模型的名称、别名或ID
+         *  "application" : "testQuery" //（String）必选，导入模型所在应用的名称、别名或ID
+         * }
+         * </code></pre>
+         * @param {Function} [callback] - 访问成功后的回调函数
+         * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
+         * @o2syntax
+         * this.importer.upload(object, callback, async);
+         * @example
+         * this.importer.upload({
+         *  "name": "testImporter",
+         *  "application" : "testQuery",
+         * }, function(json){
+         *
+         * });
+         */
+        "upload": function (object, callback, async) {
+            MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+                new MWF.xApplication.query.Query.Importer(_form.app.content, object, { "style": "select" }, _form.app, _form.Macro);
+            }.bind(this));
+
+            // MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+            //     statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
+            //     function (json) {
+            //         if (callback) callback(json);
+            //     }, null, async);
+        }
+    }
+
     //include 引用脚本
     //optionsOrName : {
     //  type : "", 默认为portal, 可以为 portal  process  cms
