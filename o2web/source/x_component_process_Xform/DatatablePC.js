@@ -1623,9 +1623,9 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		this.datatable.fireEvent("export", [arg]);
 
 		new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable ).exportToExcel(
-			resultArr,
+			arg.data || resultArr,
 			arg.title || excelName,
-			colWidthArr,
+			arg.colWidthArray || colWidthArr,
 			this.getDateIndexArray()  //日期格式列下标
 		);
 	},
@@ -1828,9 +1828,9 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		this.datatable.fireEvent("export", [arg]);
 
 		new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable ).exportToExcel(
-		    resultArr,
+		    arg.data || resultArr,
 		    arg.title || excelName,
-		    colWidthArr,
+		    arg.colWidthArray || colWidthArr,
 		    this.getDateIndexArray() //日期格式列下标
 		 );
 	}
