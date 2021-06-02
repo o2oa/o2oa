@@ -1336,11 +1336,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     // },
     _printDoc: function(){
         var scale = this.scale;
-        this.toWord(function(data){
-            if (this.form.businessData.work && !this.form.businessData.work.completedTime){
-                this.form.workAction.getAttachmentStream(data.id, this.form.businessData.work.id);
+        this.toWord(function(data, filename){
+            if (filename){
+                o2.saveAs(data, filename);
             }else{
-                this.form.workAction.getWorkcompletedAttachmentStream(data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
+                if (this.form.businessData.work && !this.form.businessData.work.completedTime){
+                    this.form.workAction.getAttachmentStream(data.id, this.form.businessData.work.id);
+                }else{
+                    this.form.workAction.getWorkcompletedAttachmentStream(data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
+                }
             }
             this.scaleTo(scale);
         }.bind(this));
@@ -3343,7 +3347,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }.bind(this), function(){
             var fileName = docNmae || this.json.toWordFilename || "$doc";
             var n = fileName.lastIndexOf(".");
-            if (n==-1) fileName = fileName+".doc";
+            if (n==-1) fileName = fileName+".docx";
 
             if (this.json.wordConversionType==="service"){
                 var content = encodeURIComponent(this.getDocumentHtml());
@@ -3369,8 +3373,31 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }else{
                 var content = this.getDocumentHtml();
                 o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
-                    (new o2.OOXML.WML()).load(content);
-                });
+                    (new o2.OOXML.WML()).load(content).then(function(oo_content){
+                        oo_content.name = fileName
+                        var formData = new FormData();
+                        formData.append("site", this.json.toWordSite || "$doc");
+                        formData.append('file', oo_content);
+
+                        if (this.form.businessData.workCompleted){
+                            o2.Actions.get("x_processplatform_assemble_surface").uploadAttachmentByWorkCompleted(this.form.businessData.workCompleted.id, formData, oo_content,function(json){
+                                o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
+                                    if (callback) callback(attjson.data);
+                                    this.showToWord(attjson.data);
+                                }.bind(this));
+                            }.bind(this));
+                        }else{
+                            o2.Actions.get("x_processplatform_assemble_surface").uploadAttachment(this.form.businessData.work.id, formData, oo_content,function(json){
+                                o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
+                                    if (callback) callback(attjson.data);
+                                    this.showToWord(attjson.data);
+                                }.bind(this));
+                            }.bind(this));
+                        }
+
+                        //if (callback) callback(oo_content, fileName);
+                    }.bind(this));
+                }.bind(this));
             }
 
             if (!toEdit){
@@ -3390,6 +3417,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     showToWord: function(att_word){
+        debugger;
         var site = this.json.toWordSite || "$doc";
         var attModule = this.form.all[site];
         if (attModule){

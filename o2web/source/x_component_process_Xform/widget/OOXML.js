@@ -59,66 +59,40 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         return dpi;
     },
     getZipTemplate: function(){
-        // return new Promise(function(s){
-        //     var res = new Request({
-        //         "url": this.path+"template.zip",
-        //         "method": "get",
-        //         "onSuccess": function(text, res1){
-        //             s(res.blob().then(JSZip.loadAsync));
-        //         }
-        //     }).send();
-        // }.bind(this));
-        // JSZipUtils.getBinaryContent(this.path+"template.zip", function(err, data) {
-        //     if(err) {
-        //         throw err; // or handle err
-        //     }
-        //
-        //     JSZip.loadAsync(data).then(function (zip) {
-        //         this.zip = zip;
-        //         this.processDocument(data);
-        //     }.bind(this));
-        // }.bind(this));
-
-
         return fetch(this.path+"template.zip").then(function(res){
             return res.blob().then(JSZip.loadAsync);
         });
     },
     load: function(data){
-        o2.load(["/o2_lib/jszip/jszip.min.js", "/o2_lib/jszip/jszip-utils.min.js", "/o2_lib/jszip/FileSaver.js", "https://polyfill.io/v3/polyfill.js?features=Document", "/o2_lib/xml/wgxpath.install.js"], function(){
-            //this.getZipTemplate();
-            this.getZipTemplate().then(function(zip){
-                //console.log(zip.files);
-                this.zip = zip;
-                this.processDocument(data);
+        return new Promise(function(resolve){
+            o2.load(["/o2_lib/jszip/jszip.min.js", "/o2_lib/jszip/FileSaver.js"], function(){
+                //this.getZipTemplate();
+                this.getZipTemplate().then(function(zip){
+                    //console.log(zip.files);
+                    this.zip = zip;
+                    return this.processDocument(data);
+                }.bind(this)).then(function(oo_content){
+                    resolve(oo_content);
+                });
             }.bind(this));
         }.bind(this));
-
-        //
-        // var zip = new JSZip();
-        // zip.file("Hello.txt", "Hello World\n");
-        // var img = zip.folder("images");
-        // img.file("smile.gif", imgData, {base64: true});
-        //     // see FileSaver.js
-        // zip.generateAsync({type:"blob"}).then(function(content) {
-        //     saveAs(content, "example.zip");
-        // });
     },
     processDocument: function(data){
-        var documentPromise = this.zip.file("word/document.xml").async("text").then(function(oo_string){
+       return this.zip.file("word/document.xml").async("text").then(function(oo_string){
             return this.processWordDocument(oo_string, data);
         }.bind(this)).then(function(oo_str){
             if (oo_str.substring(0, 5)!=="<?xml"){
                 oo_str = oo_str.replace(/<w:document.*\>/, this.options.w_document);
                 oo_str = this.options.xmlHead + oo_str;
             }
-
-            this.zip.file("word/document.xml", oo_str).generateAsync({type:"blob"}).then(function(oo_content) {
-                o2.saveAs(oo_content, "example.docx");
-            });
+            return this.zip.file("word/document.xml", oo_str).generateAsync({type:"blob"});
+            // this.zip.file("word/document.xml", oo_str).generateAsync({type:"blob"}).then(function(oo_content) {
+            //     this.saveAs(oo_content, "example.docx");
+            // }.bind(this));
         }.bind(this));
-        //var documentXml = processWordDocument(xmlString);
-
+    },
+    saveAs: function(content, name){
+        o2.saveAs(content, name);
     },
 
     getPageRule: function(cssRules){
@@ -134,7 +108,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         return pageRule;
     },
     processWordDocument: function(oo_string, data){
-        wgxpath.install();
+        //wgxpath.install();
 
         var domparser = new DOMParser();
         var oo_doc = domparser.parseFromString(oo_string, "text/xml");
