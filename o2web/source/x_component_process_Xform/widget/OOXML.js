@@ -10,7 +10,41 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         "ScaleCrop": "false",
         "LinksUpToDate": "false",
         "SharedDoc": "false",
-        "HyperlinksChanged": "false"
+        "HyperlinksChanged": "false",
+        "w_document": "<w:document xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"\n" +
+            "            xmlns:wpc=\"http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas\"\n" +
+            "            xmlns:cx=\"http://schemas.microsoft.com/office/drawing/2014/chartex\"\n" +
+            "            xmlns:cx1=\"http://schemas.microsoft.com/office/drawing/2015/9/8/chartex\"\n" +
+            "            xmlns:cx2=\"http://schemas.microsoft.com/office/drawing/2015/10/21/chartex\"\n" +
+            "            xmlns:cx3=\"http://schemas.microsoft.com/office/drawing/2016/5/9/chartex\"\n" +
+            "            xmlns:cx4=\"http://schemas.microsoft.com/office/drawing/2016/5/10/chartex\"\n" +
+            "            xmlns:cx5=\"http://schemas.microsoft.com/office/drawing/2016/5/11/chartex\"\n" +
+            "            xmlns:cx6=\"http://schemas.microsoft.com/office/drawing/2016/5/12/chartex\"\n" +
+            "            xmlns:cx7=\"http://schemas.microsoft.com/office/drawing/2016/5/13/chartex\"\n" +
+            "            xmlns:cx8=\"http://schemas.microsoft.com/office/drawing/2016/5/14/chartex\"\n" +
+            "            xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"\n" +
+            "            xmlns:aink=\"http://schemas.microsoft.com/office/drawing/2016/ink\"\n" +
+            "            xmlns:am3d=\"http://schemas.microsoft.com/office/drawing/2017/model3d\"\n" +
+            "            xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n" +
+            "            xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"\n" +
+            "            xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\" xmlns:v=\"urn:schemas-microsoft-com:vml\"\n" +
+            "            xmlns:wp14=\"http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing\"\n" +
+            "            xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\"\n" +
+            "            xmlns:w10=\"urn:schemas-microsoft-com:office:word\"\n" +
+            "            xmlns:w14=\"http://schemas.microsoft.com/office/word/2010/wordml\"\n" +
+            "            xmlns:w15=\"http://schemas.microsoft.com/office/word/2012/wordml\"\n" +
+            "            xmlns:w16cex=\"http://schemas.microsoft.com/office/word/2018/wordml/cex\"\n" +
+            "            xmlns:w16cid=\"http://schemas.microsoft.com/office/word/2016/wordml/cid\"\n" +
+            "            xmlns:w16=\"http://schemas.microsoft.com/office/word/2018/wordml\"\n" +
+            "            xmlns:w16sdtdh=\"http://schemas.microsoft.com/office/word/2020/wordml/sdtdatahash\"\n" +
+            "            xmlns:w16se=\"http://schemas.microsoft.com/office/word/2015/wordml/symex\"\n" +
+            "            xmlns:wpg=\"http://schemas.microsoft.com/office/word/2010/wordprocessingGroup\"\n" +
+            "            xmlns:wpi=\"http://schemas.microsoft.com/office/word/2010/wordprocessingInk\"\n" +
+            "            xmlns:wne=\"http://schemas.microsoft.com/office/word/2006/wordml\"\n" +
+            "            xmlns:wps=\"http://schemas.microsoft.com/office/word/2010/wordprocessingShape\"\n" +
+            "            xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"\n" +
+            "            mc:Ignorable=\"w14 w15 w16se w16cid w16 w16cex w16sdtdh wp14\">",
+        "xmlHead": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
     },
     initialize: function(container, worklog, processid, options){
         this.setOptions(options);
@@ -25,12 +59,34 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         return dpi;
     },
     getZipTemplate: function(){
+        // return new Promise(function(s){
+        //     var res = new Request({
+        //         "url": this.path+"template.zip",
+        //         "method": "get",
+        //         "onSuccess": function(text, res1){
+        //             s(res.blob().then(JSZip.loadAsync));
+        //         }
+        //     }).send();
+        // }.bind(this));
+        // JSZipUtils.getBinaryContent(this.path+"template.zip", function(err, data) {
+        //     if(err) {
+        //         throw err; // or handle err
+        //     }
+        //
+        //     JSZip.loadAsync(data).then(function (zip) {
+        //         this.zip = zip;
+        //         this.processDocument(data);
+        //     }.bind(this));
+        // }.bind(this));
+
+
         return fetch(this.path+"template.zip").then(function(res){
             return res.blob().then(JSZip.loadAsync);
         });
     },
     load: function(data){
-        o2.load(["/o2_lib/jszip/jszip.min.js", "/o2_lib/jszip/FileSaver.js", "/o2_lib/xml/wgxpath.install.js"], function(){
+        o2.load(["/o2_lib/jszip/jszip.min.js", "/o2_lib/jszip/jszip-utils.min.js", "/o2_lib/jszip/FileSaver.js", "https://polyfill.io/v3/polyfill.js?features=Document", "/o2_lib/xml/wgxpath.install.js"], function(){
+            //this.getZipTemplate();
             this.getZipTemplate().then(function(zip){
                 //console.log(zip.files);
                 this.zip = zip;
@@ -43,8 +99,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         // zip.file("Hello.txt", "Hello World\n");
         // var img = zip.folder("images");
         // img.file("smile.gif", imgData, {base64: true});
-        // zip.generateAsync({type:"blob"}).then(function(content) {
         //     // see FileSaver.js
+        // zip.generateAsync({type:"blob"}).then(function(content) {
         //     saveAs(content, "example.zip");
         // });
     },
@@ -52,6 +108,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var documentPromise = this.zip.file("word/document.xml").async("text").then(function(oo_string){
             return this.processWordDocument(oo_string, data);
         }.bind(this)).then(function(oo_str){
+            if (oo_str.substring(0, 5)!=="<?xml"){
+                oo_str = oo_str.replace(/<w:document.*\>/, this.options.w_document);
+                oo_str = this.options.xmlHead + oo_str;
+            }
+
             this.zip.file("word/document.xml", oo_str).generateAsync({type:"blob"}).then(function(oo_content) {
                 o2.saveAs(oo_content, "example.docx");
             });
@@ -77,8 +138,16 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
         var domparser = new DOMParser();
         var oo_doc = domparser.parseFromString(oo_string, "text/xml");
-        var oo_body = oo_doc.evaluate("//w:document/w:body", oo_doc, this.nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
+        //var oo_body = oo_doc.evaluate("//w:document/w:body", oo_doc, this.nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        // var oo_document = oo_doc.documentElement;
+        // var keys = Object.keys(this.options.xmlns);
+        // keys.forEach(function(k){
+        //     oo_document.setAttribute(k, this.options.xmlns[k]);
+        // }.bind(this));
+
+
+        var oo_body = oo_doc.documentElement.querySelector("body");
         // var dom_div;
         // if (o2.typeOf(data) === "string"){
             var dom_div = new Element("div", {"styles": {
@@ -126,11 +195,15 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     processDom: function(dom, oo_body, append, divAsP){
         dom = dom.getFirst();
         while (dom){
-            //if (dom.nodeType===Node.ELEMENT_NODE){
-                if (dom.tagName.toLowerCase() === "p" || (!!divAsP && dom.tagName.toLowerCase() === "div")){
+            if (dom.getStyle("display")!=="none"){
+                if (dom.hasClass("doc_layout_redHeader")){
+                    this.processDom(dom, oo_body, append, true);
+                }else if (dom.hasClass("doc_layout_filetext")){
+                    this.processFiletext(dom, oo_body, append);
+                }else if (dom.tagName.toLowerCase() === "p" || (!!divAsP && dom.tagName.toLowerCase() === "div")){
                     this.processParagraph(dom, oo_body, append);
-                // }else if (dom.tagName.toLowerCase() === "span") {
-                //     this.processRun(dom, oo_body, append);
+                    // }else if (dom.tagName.toLowerCase() === "span") {
+                    //     this.processRun(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "hr") {
                     this.processHr(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "table") {
@@ -138,34 +211,102 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 }else{
                     this.processDom(dom, oo_body, append, divAsP);
                 }
-            // }else if (dom.nodeType===Node.TEXT_NODE){
-            //     this.processRun(dom.parentElement, oo_body, append);
-            // }else{
-            //     this.processDom(dom, oo_body, append);
-            // }
+            }
             dom = dom.getNext();
         }
     },
-
-    processParagraphRun: function(node, oo_p, p){
+    // processFiletextParagraphRun: function(node, oo_p, p){
+    //     node = node.firstChild;
+    //     while (node){
+    //         if (node.nodeType===Node.TEXT_NODE){
+    //             if (node.nodeValue.trim()) this.processRun(node.parentElement, oo_p, p);
+    //         }else if (node.nodeType===Node.ELEMENT_NODE){
+    //             if (node.tagName.toLowerCase() === "span") {
+    //                 this.processRun(node, oo_p, p);
+    //             }else if (node.tagName.toLowerCase() === "table") {
+    //                 this.processTable(node, oo_p, p);
+    //             }else{
+    //                 this.processFiletextParagraphRun(node, oo_p, p);
+    //             }
+    //         }else{
+    //             this.processFiletextParagraphRun(node, oo_p, p);
+    //         }
+    //         node = node.nextSibling;
+    //     }
+    // },
+    processFiletext: function(dom, oo_body, append){
+        node = dom.getFirst();
+        while (node){
+            if (node.tagName.toLowerCase() === "div" || node.tagName.toLowerCase() === "p") {
+                this.processParagraph(node, oo_body, append);
+            }else if (node.tagName.toLowerCase() === "table") {
+                this.processTable(node, oo_body, append);
+            }
+            node = node.getNext();
+        }
+    },
+    // processFiletextParagraph: function(){
+    //
+    // },
+    isEmptyP: function(p){
+        var oo_t = p.querySelector("t");
+        return !oo_t;
+    },
+    processParagraphRun: function(node, oo_p, p, oo_body, append, ilvl){
         node = node.firstChild;
         while (node){
             if (node.nodeType===Node.TEXT_NODE){
-                if (node.nodeValue.trim()) this.processRun(node.parentElement, oo_p, p);
+                if (node.nodeValue.trim()) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
             }else if (node.nodeType===Node.ELEMENT_NODE){
                 if (node.tagName.toLowerCase() === "span") {
-                    this.processRun(node, oo_p, p);
+                    this.processRun(node, oo_p, p, node.get("text"));
+                }else if (node.tagName.toLowerCase() === "br") {
+                    this.processRun(node, oo_p, p, "", "br");
+                }else if (node.tagName.toLowerCase() === "div" || node.tagName.toLowerCase() === "p") {
+                    if (!this.isEmptyP(oo_p)) oo_p = this.createParagraphFromDom(p, oo_body, append);
+                    this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
+                }else if (node.tagName.toLowerCase() === "ul" || node.tagName.toLowerCase() === "ol") {
+                    this.processNumbering(node, oo_p, p, oo_body, append, ilvl);
+                }else if (node.tagName.toLowerCase() === "table") {
+                    this.processTable(node, oo_body);
+                    if (this.isEmptyP(oo_p)) oo_p.destroy();
+                    oo_p = this.createParagraphFromDom(p, oo_body, append);
                 }else{
-                    this.processParagraphRun(node, oo_p, p);
+                    this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
                 }
             }else{
-                this.processParagraphRun(node, oo_p, p);
+                this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
             }
             node = node.nextSibling;
         }
     },
+    processNumbering: function(node, oo_p, p, oo_body, append, ilvl){
+        ilvl = ilvl || 0;
+        var nextIlvl = ilvl + 1;
+        var numId = (node.tagName.toLowerCase() === "ul") ? "1" : "2";
+        var lis = node.getChildren("li");
+        for (var i=0; i<lis.length; i++){
+            var li = lis[i];
+            if (!this.isEmptyP(oo_p)) oo_p = this.createParagraphFromDom(li, oo_body, append);
+            var oo_pPr = oo_p.querySelector("pPr");
+            if (!oo_pPr){
+                oo_pPr = this.createEl(oo_body.ownerDocument, "pPr");
+                oo_p.appendChild(oo_pPr);
+            }
+            oo_numPr = this.createEl(oo_body.ownerDocument, "numPr");
+            oo_ilvl = this.createEl(oo_body.ownerDocument, "ilvl");
+            this.setAttrs(oo_ilvl, {"val": ilvl});
+            oo_numId = this.createEl(oo_body.ownerDocument, "numId");
+            this.setAttrs(oo_numId, {"val": numId});
+            oo_numPr.appendChild(oo_ilvl);
+            oo_numPr.appendChild(oo_numId);
+            oo_pPr.appendChild(oo_numPr);
 
-    processParagraph: function(dom, oo_body, append){
+            this.processParagraphRun(li, oo_p, li, oo_body, append, nextIlvl);
+        }
+    },
+
+    createParagraphFromDom: function(dom, oo_body, append){
         var pPrs = {};
 
         var align = dom.getStyle("text-align");
@@ -180,42 +321,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             pPrs.jc = {"val": jc};
         }
 
-
-        // for (var i = 0; i<dom.style.length; i++){
-        //     switch (dom.style[i]){
-        //         case "text-align":
-        //             var align = dom.style["textAlign"].toLowerCase();
-        //             var jc = "start"
-        //             switch (align){
-        //                 case "center": jc = "center"; break;
-        //                 case "right":
-        //                 case "end": jc = "end"; break;
-        //                 case "justify": jc = "both"; break;
-        //             }
-        //             pPrs.jc = {"val": jc};
-        //             break;
-        //         default:
-        //         //nothing
-        //     }
-        //
-        // }
         var oo_p = this.createParagraph(oo_body.ownerDocument, {"pPrs": pPrs});
-
-        this.processParagraphRun(dom, oo_p, dom);
-
-
-
-        // var spans = dom.getChildren("span");
-        // spans.each(function(span){
-        //     this.processRun(span, oo_p)
-        // }.bind(this));
-
-        // debugger;
-        // var hrs = dom.getChildren("hr");
-        // hrs.each(function(hr){
-        //     this.processHr(hr, oo_p)
-        // }.bind(this));
-
 
         if (append){
             oo_body.appendChild(oo_p);
@@ -229,6 +335,12 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         }
         return oo_p;
     },
+    processParagraph: function(dom, oo_body, append){
+        var oo_p = this.createParagraphFromDom(dom, oo_body, append);
+        this.processParagraphRun(dom, oo_p, dom, oo_body, append);
+        if (this.isEmptyP(oo_p)) oo_p.destroy();
+        return oo_p;
+    },
     getTableTblW: function(table){
         var type = "dxa";
         var w = table.style.width;
@@ -237,6 +349,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         if (w && o2.typeOf(w)==="string"){
             var u = w.substring(w.length-1, w.length);
             if (u==="%"){
+                w = w.toFloat()*50;
                 type = "pct";
             }else{
                 u = w.substring(w.length-2, w.length);
@@ -261,12 +374,21 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             "color": "auto",
             "sz": "0"
         }
-        var border = table.getStyle("border-"+where);
-        if (border==="none"){
-            attr.val = "none";
-        }else{
-            var sz = table.getStyle("border-"+where+"-width");
-            if (!sz) sz = table.get("border");
+        // var border = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where);
+        // if (border==="none") border = table.get("border");
+        // if (!border || border==="none"){
+        //     attr.val = "none";
+        // }else{
+            var sz;
+            var border = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where);
+            if (!border || border==="none"){
+                sz = table.get("border");
+                if (!sz || sz==="none") sz = table.getStyle("border-"+where+"-width");
+            }else{
+                sz = (table.currentStyle) ? table.currentStyle[("border-"+where+"-width").camelCase()] : table.getStyle("border-"+where+"-width");
+                if (!sz || !sz.toFloat()) sz = table.get("border");
+            }
+
             if (sz && o2.typeOf(sz)==="string"){
                 u = sz.substring(sz.length-2, sz.length);
                 if (u.toLowerCase()!=="pt"){
@@ -276,17 +398,17 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             if (!sz || !sz.toFloat()) sz = 0;
             attr.sz = sz.toFloat()*8;
 
-            var color = this.getColorHex(table.getStyle("border-"+where+"-color"));
+            var color = this.getColorHex(((table.currentStyle) ? table.currentStyle[("border-"+where+"-color").camelCase()] : table.getStyle("border-"+where+"-color")));
             if (!color) color = "auto";
             attr.color = color;
 
-            var style = table.getStyle("border-"+where+"-style");
+            var style = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where+"-style");
             switch (style){
                 case "dashed": case "dotted": case "double": attr.val = "double"; break;
                 default: attr.val = "single";
             }
             if (attr.sz===0) attr.val="none";
-        }
+        // }
 
         // var sz = table.get("border");
         // if (sz) sz = this.pxToPt(sz);
@@ -353,7 +475,132 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         }
         return o;
     },
+    processTableDom: function(dom, oo_body, append, divAsP, oo_tc){
+        dom = dom.firstChild;
+        while (dom){
+            if (dom.nodeType===Node.ELEMENT_NODE){
+                if (dom.hasClass("doc_layout_filetext")){
+                    this.processFiletext(dom, oo_body, append);
+                }else if (dom.tagName.toLowerCase() === "p" || (!!divAsP && dom.tagName.toLowerCase() === "div")){
+                    this.processParagraph(dom, oo_body, append);
+                    // }else if (dom.tagName.toLowerCase() === "span") {
+                    //     this.processRun(dom, oo_body, append);
+                }else if (dom.tagName.toLowerCase() === "br") {
+                    this.processRun(dom, oo_body, append, "", "br");
+                }else if (dom.tagName.toLowerCase() === "hr") {
+                    this.processHr(dom, oo_body, append);
+                }else if (dom.tagName.toLowerCase() === "table") {
+                    this.processTable(dom, oo_body, append);
+                }else{
+                    this.processTableDom(dom, oo_body, append, divAsP);
+                }
+            }else if (dom.nodeType===Node.TEXT_NODE){
+                if (dom.nodeValue.trim()){
+                    if (!oo_body || oo_body.tagName.toString().toLowerCase()!=="p") var oo_body = this.createParagraphFromDom(dom.parentElement || dom.parentNode, oo_body, dom.parentElement);
+                    this.processRun(dom.parentElement || dom.parentNode, oo_body, append, dom.nodeValue);
+                }
+            }else{
+                this.processTableDom(dom, oo_body, append);
+            }
+            dom = dom.nextSibling;
+        }
+    },
+    arrangeTable: function(table){
+        debugger;
+        //检查table，不合理的colspan
+        var tableMatrix = [];
+        var trs = table.rows;
+        var rowspan = {};
+        for (var i=0; i<trs.length; i++){
+            tableMatrix[i] = [];
+
+            //垂直合并单元格处理
+            var tdIdx = 0;
+            var rowspanObj = rowspan[tdIdx];
+            while (rowspanObj && rowspanObj.count){
+                rowspanObj.count--;
+                tableMatrix[i].push({"td": rowspanObj.td, type: 0});
+                if (rowspanObj.count<1) delete rowspan[tdIdx];
+                tdIdx++;
+                rowspanObj = rowspan[tdIdx];
+            }
+            var tds = trs[i].cells;
+            for (var j=0; j<tds.length; j++){
+                var td = tds[j];
+                //记录实体单元格
+                tableMatrix[i].push({"td": td, type: 1});
+
+                //记录此单元格是否有垂直合并
+                var rspan = td.get("rowspan");
+                if (rspan && rspan.toInt()>1){
+                    rowspan[tdIdx] = {
+                        "td": td,
+                        "count": rspan.toInt()-1
+                    };
+                }
+
+                //补齐水平合并的虚拟单元格
+                var cspan = td.get("colspan");
+                if (cspan && cspan.toInt()>1){
+                    for (var n=1; n<cspan.toInt(); n++){
+                        tableMatrix[i].push({"td": td, type: 0});
+                    }
+                }
+
+                //检查有没有之前的垂直合并内容
+                var nextIdx = tdIdx+1;
+                var rowspanObj = rowspan[nextIdx];
+                while (rowspanObj && rowspanObj.count){
+                    rowspanObj.count--;
+                    tableMatrix[i].push({"td": rowspanObj.td, type: 0});
+                    if (rowspanObj.count<1) delete rowspan[nextIdx];
+                    nextIdx++;
+                    rowspanObj = rowspan[nextIdx];
+                }
+
+                if (cspan && cspan.toInt()>1){
+                    if (rowspan[tdIdx]){
+                        rowspan[tdIdx].count = (rowspan[tdIdx].count)*cspan.toInt();
+                        for (var n=1; n<cspan.toInt(); n++){
+                            rowspan[tdIdx+n] = rowspan[tdIdx];
+                        }
+                    }
+                }
+
+                tdIdx = nextIdx-1;
+                tdIdx++;
+            }
+        }
+
+        var y = tableMatrix.length;
+        if (y>0){
+            var x = tableMatrix[0].length;
+            for (var x1=0; x1<x; x1++){
+                var flag = 0;
+                for (var y1=0; y1<y; y1++){
+                    if (tableMatrix[y1][x1].type!==0){
+                        flag=1;
+                        break;
+                    }
+                }
+                if (flag===0){
+                    for (var y1=0; y1<y; y1++){
+                        if (y1==tableMatrix[y1][x1].td.getParent("tr").rowIndex){
+                            if (tableMatrix[y1][x1].td){
+                                var colspan = tableMatrix[y1][x1].td.get("colspan");
+                                colspan = colspan.toInt()-1;
+                                tableMatrix[y1][x1].td.set("colspan", colspan);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    },
     processTable: function(table, oo_body, append){
+        this.arrangeTable(table);
+
         var oo_doc = oo_body.ownerDocument;
 
         var oo_tbl = this.createEl(oo_doc, "tbl");
@@ -444,6 +691,15 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             floatTable = true;
         }
 
+        //表格背景
+        var bg = table.getStyle("background-color");
+        if (bg){
+            bg = this.getColorHex(bg);
+            var oo_shd = this.createEl(oo_doc, "shd");
+            this.setAttrs(oo_shd, {"val": "clear", "color": "auto", "fill": bg});
+            oo_tblPr.appendChild(oo_shd);
+        }
+
 
         // table.style
         //
@@ -461,7 +717,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_tblGrid = this.createEl(oo_doc, "tblGrid");
         grids.each(function(grid){
             var oo_gridCol = this.createEl(oo_doc, "gridCol");
-            this.setAttrs(oo_gridCol, {"w": grid*20});
+            //this.setAttrs(oo_gridCol, {"w": grid*20});
             oo_tblGrid.appendChild(oo_gridCol);
         }.bind(this));
         oo_tbl.appendChild(oo_tblGrid);
@@ -489,16 +745,34 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             var nextIdx = tdIdx;
             var mge = vmge["td"+nextIdx];
             while (mge){
-                vmge["td"+nextIdx]--;
+                vmge["td"+nextIdx].idx--;
+                var tcPr = vmge["td"+nextIdx].tcPr;
 
                 var oo_mtc = this.createEl(oo_doc, "tc");
-                var oo_mtcPr = this.createEl(oo_doc, "tcPr");
-                var oo_mvMerge = this.createEl(oo_doc, "vMerge");
-                oo_mtcPr.appendChild(oo_mvMerge);
-                oo_mtc.appendChild(oo_mtcPr);
+                if (tcPr) {
+                    var oo_mtcPr = tcPr.cloneNode(true);
+                    var oo_mvMerge = oo_mtcPr.querySelector("vMerge");
+                    if (oo_mvMerge) oo_mvMerge.destroy();
+                    oo_mvMerge = this.createEl(oo_doc, "vMerge");
+                    oo_mtcPr.appendChild(oo_mvMerge);
+                    oo_mtc.appendChild(oo_mtcPr);
+                }else{
+                    var oo_mtcPr = this.createEl(oo_doc, "tcPr");
+                    var oo_mvMerge = this.createEl(oo_doc, "vMerge");
+                    oo_mtcPr.appendChild(oo_mvMerge);
+                    oo_mtc.appendChild(oo_mtcPr);
+                }
+
+                // var oo_mtc = this.createEl(oo_doc, "tc");
+                // var oo_mtcPr = this.createEl(oo_doc, "tcPr");
+                // var oo_mvMerge = this.createEl(oo_doc, "vMerge");
+                // oo_mtcPr.appendChild(oo_mvMerge);
+                // oo_mtc.appendChild(oo_mtcPr);
                 var oo_mp = this.createEl(oo_doc, "p");
                 oo_mtc.appendChild(oo_mp);
                 oo_tr.appendChild(oo_mtc);
+                if (vmge["td"+nextIdx].idx<1) delete vmge["td"+nextIdx];
+
                 tdIdx++;
 
                 nextIdx++;
@@ -522,24 +796,6 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                  //this.setAttrs(oo_tcW, {"w": this.pxToPt(td.clientWidth)*20, "type": "dxa"});
                  oo_tcPr.appendChild(oo_tcW);
 
-                 //水平合并单元格
-                 var colspan = td.get("colspan");
-                 if (colspan && colspan.toInt()>1){
-                     tdIdx = tdIdx+(colspan.toInt()-1);
-                     var oo_gridSpan = this.createEl(oo_doc, "gridSpan");
-                     this.setAttrs(oo_gridSpan, {"val": colspan});
-                     oo_tcPr.appendChild(oo_gridSpan);
-                 }
-
-                 //垂直合并单元格
-                 var rowspan = td.get("rowspan");
-                 if (rowspan && rowspan.toInt()>1){
-                     vmge["td"+tdIdx] = rowspan.toInt()-1;
-                     var oo_vMerge = this.createEl(oo_doc, "vMerge");
-                     this.setAttrs(oo_vMerge, {"val": "restart"});
-                     oo_tcPr.appendChild(oo_vMerge);
-                 }
-
                  //单元格边框
                  var oo_tcBorders = this.createEl(oo_doc, "tcBorders");
                  var oo_top = this.createEl(oo_doc, "top");
@@ -552,6 +808,15 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                  this.setAttrs(oo_end, this.getTableBorder(td, "right"));
                  this.insertSiblings(oo_tcBorders, [oo_top, oo_start, oo_bottom, oo_end], "beforeend");
                  oo_tcPr.appendChild(oo_tcBorders);
+
+                //单元格背景
+                var bg = td.getStyle("background-color");
+                if (bg && bg!=="transparent"){
+                    bg = this.getColorHex(bg);
+                    var oo_shd = this.createEl(oo_doc, "shd");
+                    this.setAttrs(oo_shd, {"val": "clear", "color": "auto", "fill": bg});
+                    oo_tcPr.appendChild(oo_shd);
+                }
 
                  //单元格边距
                 var left = td.getStyle("padding-left");
@@ -587,9 +852,29 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                  var oo_hideMark = this.createEl(oo_doc, "hideMark");
                  oo_tcPr.appendChild(oo_hideMark);
 
+                //垂直合并单元格
+                var rowspan = td.get("rowspan");
+                if (rowspan && rowspan.toInt()>1){
+                    vmge["td"+tdIdx] = {
+                        "tcPr": oo_tcPr,
+                        "idx": rowspan.toInt()-1
+                    };
+                    var oo_vMerge = this.createEl(oo_doc, "vMerge");
+                    this.setAttrs(oo_vMerge, {"val": "restart"});
+                    oo_tcPr.appendChild(oo_vMerge);
+                }
+                //水平合并单元格
+                var colspan = td.get("colspan");
+                if (colspan && colspan.toInt()>1){
+                    tdIdx = tdIdx+(colspan.toInt()-1);
+                    var oo_gridSpan = this.createEl(oo_doc, "gridSpan");
+                    this.setAttrs(oo_gridSpan, {"val": colspan});
+                    oo_tcPr.appendChild(oo_gridSpan);
+                }
+
                  oo_tc.appendChild(oo_tcPr);
                  //表格内容；
-                 this.processDom(td, oo_tc, true, true);
+                 this.processTableDom(td, oo_tc, td, true, oo_tc);
 
                  var pflag = false;
                  var node = oo_tc.firstChild;
@@ -612,23 +897,48 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                  var nextIdx = tdIdx+1;
                  var mge = vmge["td"+nextIdx];
                  while (mge){
-                     vmge["td"+nextIdx]--;
+                     vmge["td"+nextIdx].idx--;
+                     var tcPr = vmge["td"+nextIdx].tcPr;
 
                      var oo_mtc = this.createEl(oo_doc, "tc");
-                     var oo_mtcPr = this.createEl(oo_doc, "tcPr");
-                     var oo_mvMerge = this.createEl(oo_doc, "vMerge");
-                     oo_mtcPr.appendChild(oo_mvMerge);
-                     oo_mtc.appendChild(oo_mtcPr);
+
+                     if (tcPr) {
+                         var oo_mtcPr = tcPr.cloneNode(true);
+                         var oo_mvMerge = oo_mtcPr.querySelector("vMerge");
+                         if (oo_mvMerge) oo_mvMerge.destroy();
+                         oo_mvMerge = this.createEl(oo_doc, "vMerge");
+                         oo_mtcPr.appendChild(oo_mvMerge);
+                         oo_mtc.appendChild(oo_mtcPr);
+                     }else{
+                         var oo_mtcPr = this.createEl(oo_doc, "tcPr");
+                         var oo_mvMerge = this.createEl(oo_doc, "vMerge");
+                         oo_mtcPr.appendChild(oo_mvMerge);
+                         oo_mtc.appendChild(oo_mtcPr);
+                     }
+
                      var oo_mp = this.createEl(oo_doc, "p");
                      oo_mtc.appendChild(oo_mp);
                      oo_tr.appendChild(oo_mtc);
-                     tdIdx++;
+
+                     if (vmge["td"+nextIdx].idx<1) delete vmge["td"+nextIdx];
+                     //tdIdx++;
 
                      nextIdx++;
                      mge = vmge["td"+nextIdx];
                  }
 
-                 tdIdx++;
+                if (colspan && colspan.toInt()>1){
+                    if (vmge["td"+tdIdx]){
+                        vmge["td"+tdIdx].idx = (vmge["td"+tdIdx].idx)*colspan.toInt();
+                        for (var n=1; n<colspan.toInt(); n++){
+                            var m = tdIdx+n
+                            rowspan[m] = vmge["td"+tdIdx];
+                        }
+                    }
+                }
+
+                tdIdx = nextIdx-1;
+                tdIdx++;
              }
 
             oo_tbl.appendChild(oo_tr);
@@ -827,10 +1137,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         if (msoStyle["mso-font-width"]) rPrs.w = {"val": msoStyle["mso-font-width"]};
 
         //处理字号
-        if (msoStyle["mso-ansi-font-size"]) rPrs.sz = {"val": msoStyle["mso-ansi-font-size"].toFloat()*2};
-        if (msoStyle["mso-hansi-font-size"]) rPrs.sz = {"val": msoStyle["mso-hansi-font-size"].toFloat()*2};
-        if (msoStyle["mso-font-size"]) rPrs.sz = {"val": msoStyle["mso-font-size"].toFloat()*2};
-        if (msoStyle["mso-fareast-font-size"]) rPrs.sz = {"val": msoStyle["mso-fareast-font-size"].toFloat()*2};
+        if (msoStyle["mso-ansi-font-size"]) rPrs.sz = {"val": this.parseFontSize(msoStyle["mso-ansi-font-size"])*2};
+        if (msoStyle["mso-hansi-font-size"]) rPrs.sz = {"val": this.parseFontSize(msoStyle["mso-hansi-font-size"])*2};
+        if (msoStyle["mso-font-size"]) rPrs.sz = {"val": this.parseFontSize(msoStyle["mso-font-size"])*2};
+        if (msoStyle["mso-fareast-font-size"]) rPrs.sz = {"val": this.parseFontSize(msoStyle["mso-fareast-font-size"])*2};
 
         //处理字体
         if (msoStyle["mso-ansi-font-family"]){
@@ -850,7 +1160,24 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             font.eastAsia = msoStyle["mso-fareast-font-family"];
         }
     },
-    processRun: function(span, oo_p, p){
+    parseFont: function(name){
+        if (name.substr(0.1)==="\""){
+            return name.substr(1, name.length-2);
+        }else{
+            return name;
+        }
+    },
+    parseFontSize: function(sz){
+        var size = sz;
+        if (size && o2.typeOf(size)==="string"){
+            u = size.substring(size.length-2, size.length);
+            if (u.toLowerCase()!=="pt"){
+                size = Math.round(this.pxToPt(size));
+            }
+        }
+        return size.toFloat();
+    },
+    processRun: function(span, oo_p, p, text, br){
         var rPrs = {"noProof": {}};
         var font = null;
         var styles = span.getStyles("font-size", "color", "letter-spacing", "font-weight", "font-family")
@@ -859,13 +1186,14 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         for (var i = 0; i<keys.length; i++){
             switch (keys[i]){
                 case "font-size":
-                    rPrs.sz = {"val": styles["font-size"].toFloat()*2};
+                    rPrs.sz = {"val": this.parseFontSize(styles["font-size"])*2};
                     break;
                 case "color":
                     rPrs.color = {"val": this.getColorHex(styles["color"])};
                     break;
                 case "letter-spacing":
-                    rPrs.spacing = {"val": (styles["letter-spacing"].toFloat()*20 || 0)};
+                    //实际测试发现letter-spacing * 0.55 转换word比较合适
+                    rPrs.spacing = {"val": (styles["letter-spacing"].toFloat()*20*0.55 || 0)};
                     break;
                 case "font-weight":
                     var b = styles["font-weight"];
@@ -882,11 +1210,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     var fonts = styles["font-family"].split(/,\s*/);
                     font = {
                         "hint": "eastAsia",
-                        "eastAsia": fonts[fonts.length-1]
+                        "eastAsia": this.parseFont(fonts[fonts.length-1])
                     }
-                    if (fonts.length>1){
-                        font.other = fonts[0];
-                    }
+                    if (fonts.length>1) font.other = this.parseFont(fonts[0]);
                     break;
                 default:
                 //nothing
@@ -895,72 +1221,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         this.processRunFont(p, rPrs, font);
         this.processRunFont(span, rPrs, font);
 
-        // //字体处理缩放
-        // var msoStyleP = this.getMsoStyle(p);
-        // if (msoStyleP["mso-font-width"]) rPrs.w = {"val": msoStyleP["mso-font-width"]};
-        //
-        // //处理字号
-        // if (msoStyleP["mso-ansi-font-size"]) rPrs.sz = {"val": msoStyleP["mso-ansi-font-size"].toFloat()*2};
-        // if (msoStyleP["mso-hansi-font-size"]) rPrs.sz = {"val": msoStyleP["mso-hansi-font-size"].toFloat()*2};
-        // if (msoStyleP["mso-font-size"]) rPrs.sz = {"val": msoStyleP["mso-font-size"].toFloat()*2};
-        // if (msoStyleP["mso-fareast-font-size"]) rPrs.sz = {"val": msoStyleP["mso-fareast-font-size"].toFloat()*2};
-        //
-        // //处理字体
-        // if (msoStyleP["mso-hansi-font-family"]){
-        //     if (!font) font = { "hint": "eastAsia" };
-        //     font.eastAsia = msoStyleP["mso-hansi-font-family"];
-        // }
-        //
-        // var msoStyle = this.getMsoStyle(span);
-        // if (msoStyle["mso-font-width"]) rPrs.w = {"val": msoStyle["mso-font-width"]};
-        //
-        // if (msoStyle["mso-ansi-font-size"]) rPrs.sz = {"val": msoStyle["mso-ansi-font-size"].toFloat()*2};
-        // if (msoStyle["mso-hansi-font-size"]) rPrs.sz = {"val": msoStyle["mso-hansi-font-size"].toFloat()*2};
-        // if (msoStyle["mso-font-size"]) rPrs.sz = {"val": msoStyle["mso-font-size"].toFloat()*2};
-        // if (msoStyle["mso-fareast-font-size"]) rPrs.sz = {"val": msoStyle["mso-fareast-font-size"].toFloat()*2};
-        // if (msoStyle["mso-hansi-font-family"]){
-        //     if (!font) font = { "hint": "eastAsia" };
-        //     font.eastAsia = msoStyle["mso-hansi-font-family"];
-        // }
-        // for (var i = 0; i<span.style.length; i++){
-        //     switch (span.style[i]){
-        //         case "font-size":
-        //             rPrs.sz = {"val": span.style["fontSize"].toFloat()*2};
-        //             break;
-        //         case "color":
-        //             rPrs.color = {"val": this.getColorHex(span.style["color"])};
-        //             break;
-        //         case "letter-spacing":
-        //             rPrs.spacing = {"val": (span.style["letterSpacing"].toFloat()*20 || 0)};
-        //             break;
-        //         case "font-weight":
-        //             var b = span.style["fontWeight"];
-        //             if (b.toLowerCase()=="normal"){
-        //                 //nothing
-        //             }else if (b.toLowerCase()=="bold") {
-        //                 rPrs.b = {"val": "true"};
-        //             }else{
-        //                 var n = b.toFloat();
-        //                 if (n>=600) rPrs.b = {"val": "true"};
-        //             }
-        //             break;
-        //         case "font-family":
-        //             var fonts = span.style["fontFamily"].split(/,\s*/);
-        //             font = {
-        //                 "hint": "eastAsia",
-        //                 "eastAsia": fonts[0]
-        //             }
-        //             if (fonts.length>1){
-        //                 font.other = fonts[1];
-        //             }
-        //             break;
-        //         default:
-        //         //nothing
-        //     }
-        // }
-        var text = span.get("text");
-        //if (!text.trim()) text = "";
-        var oo_run = this.createRun(oo_p.ownerDocument, {"rPrs": rPrs, "font": font, "text": text});
+
+        var oo_run = this.createRun(oo_p.ownerDocument, {"rPrs": rPrs, "font": font, "text": text, "br": br});
         oo_p.appendChild(oo_run);
     },
 
@@ -1046,6 +1308,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             t.appendChild(xmlDoc.createTextNode(options.text));
             r.appendChild(t);
         }
+        if (options && options.br){
+            var oo_br = this.createEl(xmlDoc,"br");
+            r.appendChild(oo_br);
+        }
         if (options && options.font){
             var rFonts = this.createEl(xmlDoc,"rFonts");
             var font = {
@@ -1082,9 +1348,15 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         this.insertAdjacent(p, els, position, "afterend");
     },
     insertAdjacent: function(p, els, posFirst, posNext){
-        var pos = posFirst || "beforeend"
+        var pos = posFirst || "beforeend";
+        var posMapping = {
+            'beforebegin': "before",
+            'afterbegin': "top",
+            'beforeend': "bottom",
+            'afterend': "after"
+        };
         els.each(function(e){
-            p.insertAdjacentElement(pos, e);
+            (p.insertAdjacentElement) ? p.insertAdjacentElement(pos, e) : e.inject(p, posMapping[pos]);
             p = e;
             pos = posNext || "afterend";
         });
@@ -1098,14 +1370,21 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     },
     createEl: function(xmlDoc, tag, ns){
         var n = ns || "w";
-        return xmlDoc.createElementNS(this.nsResolver(n), tag);
+        if (false && Browser.name==="ie"){
+            return xmlDoc.createElement(n+":"+tag);
+        }
+        return xmlDoc.createElementNS(this.nsResolver(n), n+":"+tag);
     },
     setAttr: function(node, name, value, ns){
         if (ns===false){
             node.setAttribute(name, value);
         }else{
             var n = ns || "w";
-            node.setAttributeNS(this.nsResolver(n), name, value);
+            if (false && Browser.name==="ie") {
+                node.setAttribute(n+":"+name, value);
+            }else{
+                node.setAttributeNS(this.nsResolver(n), n+":"+name, value);
+            }
         }
     },
     setAttrs: function(node, attrs, ns){
@@ -1116,7 +1395,12 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         }else{
             var n = this.nsResolver(ns || "w");
             Object.keys(attrs).forEach(function(key){
-                node.setAttributeNS(n, key, attrs[key]);
+                if (false && Browser.name==="ie") {
+                    node.setAttribute((ns || "w")+":"+key, attrs[key]);
+                }else{
+                    node.setAttributeNS(n, (ns || "w")+":"+key, attrs[key]);
+                }
+
             });
         }
     },
@@ -1180,7 +1464,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             "initial": "000000"
         }
         if (colorKeys[clr]) return colorKeys[clr];
-        var color = clr.rgbToHex() || clr;
-        return color.replace("#", "");
+
+        var f = clr.substr(0,1);
+        if (f==="#") return clr.replace("#", "");
+        return clr.rgbToHex() || clr;
     }
 });

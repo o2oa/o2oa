@@ -2195,7 +2195,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         editorConfig.extraPlugins = "quicktable,tableresize";
 
         //editorConfig.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
-        editorConfig.removeButtons = 'NumberedList,Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,BulletedList,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
+        //editorConfig.removeButtons = 'NumberedList,Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,BulletedList,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
+        editorConfig.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
 
         //editorConfig.extraAllowedContent = mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)';
 
@@ -2361,6 +2362,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }else{
                     this.filetextEditor = CKEDITOR.replace(this.layout_filetext, this._getEditorConfig());
                 }
+
                 this.filetextEditor.on("instanceReady", function(e){
                     if (callback) callback(e);
                 }.bind(this));
@@ -2373,7 +2375,16 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     this.filetextEditor.element.$.store("scale", this.scale);
                 }.bind(this) );
 
+                this.filetextEditor.on( 'afterPaste', function( e ) {
+                    debugger;
+                }.bind(this));
+                this.filetextEditor.on( 'afterPasteFromWord', function( e ) {
+                    debugger;
+                }.bind(this));
+
+
                 this.filetextEditor.on( 'paste', function( e ) {
+                    debugger;
                     var html = e.data.dataValue;
                     //if (this.json.fullWidth=="y") html = html.replace(/\x20/g, "　");
                     var rexbr = /\<br\>|\<br \/\>|\<br\/\>/g;
@@ -3330,32 +3341,37 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 "height":"auto"
             });
         }.bind(this), function(){
-            var content = encodeURIComponent(this.getDocumentHtml());
-            //var content = "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
-
             var fileName = docNmae || this.json.toWordFilename || "$doc";
             var n = fileName.lastIndexOf(".");
             if (n==-1) fileName = fileName+".doc";
 
-            var body = {
-                "fileName": fileName,
-                "site": this.json.toWordSite || "$doc",
-                "content": content
-            };
-            o2.Actions.get("x_processplatform_assemble_surface").docToWord(this.form.businessData.work.id, body, function(json){
-                if (this.form.businessData.workCompleted){
-                    o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
-                        if (callback) callback(attjson.data);
-                        this.showToWord(attjson.data);
-                    }.bind(this));
-                }else{
-                    o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
-                        if (callback) callback(attjson.data);
-                        this.showToWord(attjson.data);
-                    }.bind(this));
-                }
-            }.bind(this));
-            //tmpNode.destroy();
+            if (this.json.wordConversionType==="service"){
+                var content = encodeURIComponent(this.getDocumentHtml());
+
+                var body = {
+                    "fileName": fileName,
+                    "site": this.json.toWordSite || "$doc",
+                    "content": content
+                };
+                o2.Actions.get("x_processplatform_assemble_surface").docToWord(this.form.businessData.work.id, body, function(json){
+                    if (this.form.businessData.workCompleted){
+                        o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
+                            if (callback) callback(attjson.data);
+                            this.showToWord(attjson.data);
+                        }.bind(this));
+                    }else{
+                        o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
+                            if (callback) callback(attjson.data);
+                            this.showToWord(attjson.data);
+                        }.bind(this));
+                    }
+                }.bind(this));
+            }else{
+                var content = this.getDocumentHtml();
+                o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
+                    (new o2.OOXML.WML()).load(content);
+                });
+            }
 
             if (!toEdit){
                 this._readFiletext();

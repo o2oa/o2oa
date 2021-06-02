@@ -164,6 +164,13 @@
 		<div id="text{$.pid}toWordArea" style="display: text{($.toWord=='y')?'block':'none'}">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
+					<td class="editTableTitle">{{$.lp.wordConversionType}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" name="wordConversionType" text{($.wordConversionType!='service')?'checked':''} type="radio" value="ooxml"/>OOXML
+						<input class="editTableRadio" name="wordConversionType" text{($.wordConversionType=='service')?'checked':''} type="radio" value="service"/>Service
+					</td>
+				</tr>
+				<tr>
 					<td class="editTableTitle">{{$.lp.fileName}}:</td>
 					<td class="editTableValue"><input type="text" name="toWordFilename" value="text{$.toWordFilename}" class="editTableInput"/></td>
 				</tr>

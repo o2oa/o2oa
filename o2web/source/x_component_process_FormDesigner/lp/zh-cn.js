@@ -768,6 +768,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "fullScreen": "全屏",
         "fullScreenInfo": "是否允许全屏显示",
         "wordConversion": "WORD转换",
+        "wordConversionType": "转换方式",
+        "wordConversionWithService": "使用服务",
         "fileName": "文件名",
         "fileSite": "附件site",
         "addPageNumber": "添加页码",
