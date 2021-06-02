@@ -465,7 +465,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             this.getImporterJSON( function () {
                 var arg = {
                     data : this.getTitleArray(),
-                    colWidthArray : this.getColWidthArray()
+                    colWidthArray : this.getColWidthArray(),
                     title : title
                 };
                 if(callback)callback(arg);
