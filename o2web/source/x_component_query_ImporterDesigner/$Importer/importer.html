@@ -67,6 +67,13 @@
                             <div class="MWFSelecCMStCategory" count=1 name="data.category"></div>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.documentType}}:</td>
+                        <td class="editTableValue">
+                            <input name="data.documentType" type="radio" value="信息" text{($.data.documentType)!=='数据'?'checked':''}/>{{$.lp.information}}
+                            <input name="data.documentType" type="radio" value="数据" text{($.data.documentType)==='数据'?'checked':''}/>{{$.lp.data1}}
+                        </td>
+                    </tr>
                 </table>
             </div>
 
@@ -92,8 +99,8 @@
                     <tr>
                         <td class="editTableTitle">{{$.lp.processStatus}}:</td>
                         <td class="editTableValue">
-                            <input name="processStatus" type="radio" value="draft" text{($.processStatus)!=='completed'?'checked':''}/>{{$.lp.draftActivity}}
-                            <input name="processStatus" type="radio" value="completed" text{($.processStatus)==='completed'?'checked':''}/>{{$.lp.endActivity}}
+                            <input name="data.processStatus" type="radio" value="draft" text{($.data.processStatus)!=='completed'?'checked':''}/>{{$.lp.draftActivity}}
+                            <input name="data.processStatus" type="radio" value="completed" text{($.data.processStatus)==='completed'?'checked':''}/>{{$.lp.endActivity}}
                         </td>
                     </tr>
                 </table>
