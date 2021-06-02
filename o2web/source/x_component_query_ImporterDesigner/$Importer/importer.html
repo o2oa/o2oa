@@ -33,7 +33,7 @@
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', '');
                         $$('.text{$.id}processFieldProperty').setStyle('display', 'none');
-                     }" name="text{$.id}*type" text{($.type!='querytable' && $.type!='process')?'checked':''} type="radio" value="cms"/>{{$.lp.cmsData}}
+                     }" name="text{$.id}*type" text{($.type!='dynamicTable' && $.type!='process')?'checked':''} type="radio" value="cms"/>{{$.lp.cmsData}}
                         <input class="editTableRadio" onclick="
                     if (this.checked){
                         $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
@@ -43,7 +43,7 @@
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', '');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
                         $$('.text{$.id}processFieldProperty').setStyle('display', 'none');
-                     }" name="text{$.id}*type" text{($.type=='querytable')?'checked':''} type="radio" value="querytable"/>{{$.lp.tableData}}
+                     }" name="text{$.id}*type" text{($.type=='dynamicTable')?'checked':''} type="radio" value="dynamicTable"/>{{$.lp.tableData}}
                         <input class="editTableRadio" onclick="
                     if (this.checked){
                         $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
@@ -59,7 +59,7 @@
             </table>
 
 
-            <div id="text{$.id}dateRangeType_cms" style="display: text{($.type!='table' && $.type!='process')?'block':'none'}">
+            <div id="text{$.id}dateRangeType_cms" style="display: text{($.type!='dynamicTable' && $.type!='process')?'block':'none'}">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle" width="100px;">{{$.lp.selectCategory}}:</td>
@@ -70,12 +70,12 @@
                 </table>
             </div>
 
-            <div id="text{$.id}dateRangeType_table" style="display: text{($.type=='querytable')?'block':'none'}">
+            <div id="text{$.id}dateRangeType_table" style="display: text{($.type=='dynamicTable')?'block':'none'}">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">{{$.lp.selectTable}}:</td>
                         <td class="editTableValue">
-                            <div class="MWFSelecQueryTable" count=1 name="data.querytable"></div>
+                            <div class="MWFSelecQueryTable" count=1 name="data.dynamicTable"></div>
                         </td>
                     </tr>
                 </table>
