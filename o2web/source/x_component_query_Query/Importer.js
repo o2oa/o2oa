@@ -30,8 +30,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         this.lookupAction = MWF.Actions.get("x_query_assemble_surface");
         this.designerAction = MWF.Actions.get("x_query_assemble_designer");
 
-        this.load();
-
     },
     load: function(){
 
@@ -114,7 +112,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     getDateColIndexArray: function(){
         var dateColIndexArray = [];
         this.json.data.columnList.each(function(columnJson, index){
-            var dataType = this.json.type === "querytable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+            var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
             if( dataType === "date" )dateColIndexArray.push( index );
         }.bind(this));
         return dateColIndexArray;
@@ -192,9 +190,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             return;
         }
 
-        if( this.json.type === "querytable" ){
+        if( this.json.type === "dynamicTable" ){
             o2.Actions.load("x_query_assemble_designer").TableAction.rowSave(
-                this.json.data.querytable.id || this.json.data.querytable.name,
+                this.json.data.dynamicTable.id || this.json.data.dynamicTable.name,
                 this.getData(),
                 function(json){
                     this.fireEvent("afterImport", json );
@@ -451,6 +449,72 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         }
     },
 
+    downloadTemplate: function(fileName, callback){
+        if( !this.excelUtils ){
+            this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+        }
+        if( !this.importerJson ){
+
+            var title = fileName || this.json.name;
+            var titleA = title.split(".");
+            if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
+                titleA.splice( titleA.length-1 );
+            }
+            title = titleA.join(".");
+
+            this.getImporterJSON( function () {
+                var arg = {
+                    data : this.getTitleArray(),
+                    colWidthArray : this.getColWidthArray()
+                    title : title
+                };
+                if(callback)callback(arg);
+
+                this.excelUtils.exportToExcel(
+                    arg.array,
+                    arg.title,
+                    arg.colWidthArray,
+                    this.getDateIndexArray()
+                )
+            }.bind(this))
+        }
+    },
+    getTitleArray: function(){
+
+    },
+    getColWidthArray : function(){
+        var colWidthArr = [];
+        this.template.json.excelFieldConfig.each(function (config) {
+            var json = this.form.json.moduleList[config.field];
+            if ( !json ){
+                colWidthArr.push(150);
+            }else if ( ["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)) {
+                colWidthArr.push(340);
+            } else if (json.type === "Address") {
+                colWidthArr.push(170);
+            } else if (json.type === "Textarea") {
+                colWidthArr.push(260);
+            } else if (json.type === "Htmleditor") {
+                colWidthArr.push(500);
+            } else if (json.type === "Calendar") {
+                colWidthArr.push(150);
+            } else {
+                colWidthArr.push(150);
+            }
+        }.bind(this));
+        return colWidthArr;
+    },
+    getDateIndexArray : function(){
+        var dateIndexArr = []; //日期格式列下标
+        this.template.json.excelFieldConfig.each(function (config, i) {
+            var json = this.form.json.moduleList[config.field];
+            if (json && json.type === "Calendar") {
+                dateIndexArr.push(i);
+            }
+        }.bind(this));
+        return dateIndexArr;
+    },
+
 
     //api 使用 开始
 
@@ -496,7 +560,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
             var value = this.importedData[i] || "";
 
-            var dataType = this.importer.json.type === "querytable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+            var dataType = this.importer.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
 
             debugger;
 
@@ -707,7 +771,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         debugger;
         this.importer.json.data.columnList.each( function (columnJson, i) {
 
-            var dataType = this.importer.json.type === "querytable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+            var dataType = this.importer.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
 
             var value = this.importedData[i] || "";
 
@@ -720,7 +784,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     case "stringList":
                         if( columnJson.isName ){
                             var  arr = value.split(/\s*,\s*/g ); //空格,空格
-                            if( this.importer.json.type === "querytable" ){
+                            if( this.importer.json.type === "dynamicTable" ){
                                 data = arr
                             }else{
                                 data = arr.map( function(d, idx){
@@ -764,7 +828,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                         break;
                 }
 
-                if( this.importer.json.type === "querytable" ){
+                if( this.importer.json.type === "dynamicTable" ){
                     this.data[ columnJson.path ] = data;
                 }else{
                     var names = columnJson.path.split(".");
@@ -795,7 +859,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
                 if( o2.typeOf(data) === "null" )return;
 
-                if( this.importer.json.type === "querytable" ){
+                if( this.importer.json.type === "dynamicTable" ){
                     this.data[ fieldJson.path ] = data;
                 }else{
                     var names = fieldJson.path.split(".");
@@ -971,7 +1035,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
     },
 
     save : function () {
-        if( this.json.type === "querytable" ){
+        if( this.json.type === "dynamicTable" ){
 
         }else if( this.json.type === "cms" ){
 
@@ -1016,6 +1080,31 @@ MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
             callback();
         }
     },
+	_openDownloadDialog: function(url, saveName){
+		/**
+		 * 通用的打开下载对话框方法，没有测试过具体兼容性
+		 * @param url 下载地址，也可以是一个blob对象，必选
+		 * @param saveName 保存文件名，可选
+		 */
+		if( Browser.name !== 'ie' ){
+			if(typeof url == 'object' && url instanceof Blob){
+				url = URL.createObjectURL(url); // 创建blob地址
+			}
+			var aLink = document.createElement('a');
+			aLink.href = url;
+			aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+			var event;
+			if(window.MouseEvent && typeOf( window.MouseEvent ) == "function" ) event = new MouseEvent('click');
+			else
+			{
+				event = document.createEvent('MouseEvents');
+				event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+			}
+			aLink.dispatchEvent(event);
+		}else{
+			window.navigator.msSaveBlob( url, saveName);
+		}
+	},
     index2ColName : function( index ){
         if (index < 0) {
             return null;
@@ -1064,6 +1153,78 @@ MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
         var fileNode = uploadFileAreaNode.getFirst();
         fileNode.click();
     },
+    exportToExcel : function(array, fileName, colWidthArr, dateIndexArray){
+		// var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
+		// array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
+		// array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
+		// this.exportToExcel(array, "导出数据"+(new Date).format("db"));
+		this._loadResource( function(){
+			var data = window.xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
+			var wb = window.xlsxUtils.format2WB(data, "sheet1", undefined);
+			var wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+			var dataInfo = wb.Sheets[wb.SheetNames[0]];
+
+			var widthArray = [];
+			array[0].each( function( v, i ){ //设置标题行样式
+
+				if( !colWidthArr )widthArray.push( {wpx: 100} );
+
+				var at = String.fromCharCode(97 + i).toUpperCase();
+				var di = dataInfo[at+"1"];
+				// di.v = v;
+				// di.t = "s";
+				di.s = {  //设置副标题样式
+					font: {
+						//name: '宋体',
+						sz: 12,
+						color: {rgb: "#FFFF0000"},
+						bold: true,
+						italic: false,
+						underline: false
+					},
+					alignment: {
+						horizontal: "center" ,
+						vertical: "center"
+					}
+				};
+			}.bind(this));
+
+			if( dateIndexArray && dateIndexArray.length ){
+				dateIndexArray.each( function( value, index ){
+					dateIndexArray[ index ] = this.index2ColName(value);
+				}.bind(this))
+			}
+
+			for( var key in dataInfo ){
+				//设置所有样式，wrapText=true 后 /n会被换行
+				if( key.substr(0, 1) !== "!" ){
+					var di = dataInfo[key];
+					if( !di.s )di.s = {};
+					if( !di.s.alignment )di.s.alignment = {};
+					di.s.alignment.wrapText = true;
+
+					if( dateIndexArray && dateIndexArray.length ){
+						var colName = key.replace(/\d+/g,''); //清除数字
+						var rowNum = key.replace( colName, '');
+						if( rowNum > 1 && dateIndexArray.contains( colName ) ){
+							//di.s.numFmt = "yyyy-mm-dd HH:MM:SS"; //日期列 两种方式都可以
+							di.z = 'yyyy-mm-dd HH:MM:SS'; //日期列
+						}
+					}
+				}
+
+			}
+
+			if( colWidthArr ){
+				colWidthArr.each( function (w) {
+					widthArray.push( {wpx: w} );
+				})
+			}
+			dataInfo['!cols'] = widthArray; //列宽度
+
+			this._openDownloadDialog(window.xlsxUtils.format2Blob(wb), fileName +".xlsx");
+		}.bind(this))
+	},
     importFromExcel : function( file, callback, dateColArray ){
         this._loadResource( function(){
             var reader = new FileReader();
@@ -1082,7 +1243,6 @@ MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
                 if (workbook.Sheets.hasOwnProperty(sheet)) {
                     // fromTo = workbook.Sheets[sheet]['!ref'];
                     // console.log(fromTo);
-                    debugger;
                     var worksheet = workbook.Sheets[sheet];
 
                     if( dateColArray && typeOf(dateColArray) == "array" && dateColArray.length ){
@@ -1109,8 +1269,6 @@ MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
                             }
                         }
                     }
-
-                    debugger;
 
                     var json = window.XLSX.utils.sheet_to_json( worksheet, {header:1} );
                     //var data = window.XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet], {dateNF:'YYYY-MM-DD'});
