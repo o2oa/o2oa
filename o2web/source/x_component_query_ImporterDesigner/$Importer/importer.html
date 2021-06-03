@@ -67,11 +67,63 @@
                             <div class="MWFSelecCMStCategory" count=1 name="data.category"></div>
                         </td>
                     </tr>
+                </table>
+
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.cmsProperty}}</div>
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">{{$.lp.documentType}}:</td>
                         <td class="editTableValue">
                             <input name="data.documentType" type="radio" value="信息" text{($.data.documentType)!=='数据'?'checked':''}/>{{$.lp.information}}
                             <input name="data.documentType" type="radio" value="数据" text{($.data.documentType)==='数据'?'checked':''}/>{{$.lp.data1}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">* {{$.lp.publisher}}:</td>
+                        <td class="editTableValue">
+                            <input name="data.documentPublisher" type="radio" value="importer" text{($.data.documentPublisher)=='importer'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}documentPublisherFieldArea').setStyle('display', 'none');
+                                   }" />{{$.lp.importerAsDrafter}}<br/>
+                            <input name="data.documentPublisher" type="radio" value="field" text{($.data.documentPublisher)!=='importer'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}documentPublisherFieldArea').setStyle('display', '');
+                                   }" />{{$.lp.selectField}}
+                            <div id="text{$.id}documentPublisherFieldArea" style="display:text{(($.data.documentPublisher)!=='importer')?'':'none'}" >
+                                注：请选择组织对象<br>
+                                <div class="MWFSelectField" name="data.documentPublisherField"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">* {{$.lp.publishTime}}发布时间:</td>
+                        <td class="editTableValue">
+                            <input name="data.documentPublishTime" type="radio" value="importer" text{($.data.documentPublishTime)=='importer'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}documentPublisherTimeFieldArea').setStyle('display', 'none');
+                                   }" />{{$.lp.importeTimeAsPublishTime}}导入时间为发布时间<br/>
+                            <input name="data.documentPublishTime" type="radio" value="field" text{($.data.documentPublishTime)!=='importer'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}documentPublisherTimeFieldArea').setStyle('display', '');
+                                   }" />{{$.lp.selectField}}
+                            <div id="text{$.id}documentPublisherTimeFieldArea" style="display:text{(($.data.documentPublishTime)!=='importer')?'':'none'}">
+                                注：请选择日期类型<br>
+                                <div class="MWFSelectField" name="data.documentPublisherTimeField"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.titleField}}标题列/字段:</td>
+                        <td class="editTableValue">
+                            注：请选择文本类型<br>
+                            <div class="MWFSelectField" name="data.documentTitleField"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.summaryField}}摘要列/字段:</td>
+                        <td class="editTableValue">
+                            注：请选择文本类型<br>
+                            <div class="MWFSelectField" name="data.documentSummaryField"></div>
                         </td>
                     </tr>
                 </table>
@@ -103,10 +155,21 @@
                             <input name="data.processStatus" type="radio" value="completed" text{($.data.processStatus)==='completed'?'checked':''}/>{{$.lp.endActivity}}
                         </td>
                     </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.processDrafter}}:</td>
+                        <td class="editTableValue">
+                            <input name="data.processDrafter" type="radio" value="importer" text{($.data.processDrafter)=='importer'?'checked':''}
+                                   onclick="if (this.checked){$$('.text{$.id}isProcessDrafterArea').setStyle('display', 'none');}" />{{$.lp.importerAsDrafter}}<br/>
+                            <input name="data.processDrafter" type="radio" value="field" text{($.data.processDrafter)!=='importer'?'checked':''}
+                                   onclick="if (this.checked){$$('.text{$.id}isProcessDrafterArea').setStyle('display', '');}" />{{$.lp.setDrafterInField}}
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>
 
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.validation}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">{{$.lp.enableValidation}}:</td>

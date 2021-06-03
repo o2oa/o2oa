@@ -48,6 +48,8 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
                     this.loadEventsEditor();
 
                     this.loadMaplist();
+
+                    this.loadSelectField();
                 }
             }.bind(this));
         } else {
@@ -55,6 +57,49 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
         }
 
 
+    },
+    loadSelectField: function(){
+        var selectFieldNodes = this.propertyContent.getElements(".MWFSelectField");
+        selectFieldNodes.each(function(node){
+            node.empty();
+            var select = new Element("select", {
+                "style": "width:200px;"
+            }).inject(node);
+
+            select.addEvent("change", function(e){
+                this.setSelectValue(e.target.getParent("div").get("name"), select);
+            }.bind(this));
+            this.setFieldSelectOptions(node, select);
+        }.bind(this))
+    },
+    setFieldSelectOptions: function(node, select){
+        debugger;
+        var name = node.get("name");
+        select.empty();
+        var option = new Element("option", {"text": "none"}).inject(select);
+        var d = this.data;
+        Array.each(name.split("."), function (n) {
+            if (d) d = d[n];
+        });
+
+        this.view.json.data.columnList.each(function(column){
+
+                var option = new Element("option", {
+                    "text": column.displayName + " - "+column.path,
+                    "value": column.path,
+                    "selected": (d===column.path)
+                }).inject(select);
+
+        }.bind(this));
+        this.view.json.data.calculateFieldList.each(function(column){
+
+                var option = new Element("option", {
+                    "text": column.displayName + " - "+column.path,
+                    "value": column.path,
+                    "selected": (d===column.path)
+                }).inject(select);
+
+        }.bind(this));
     },
     loadPersonSelectInput: function () {
         var personNodes = this.propertyContent.getElements(".MWFSelectPerson");
