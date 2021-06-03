@@ -108,8 +108,8 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
         if (formNodes.length){
             this.getFormList(function(){
                 formNodes.each(function(node){
+                    node.empty();
                     var select = new Element("select").inject(node);
-                    var option = new Element("option", {"text": "none"}).inject(select);
                     select.addEvent("change", function(e){
                         this.setValue(e.target.getParent("div").get("name"), e.target.options[e.target.selectedIndex].value);
                     }.bind(this));
@@ -122,24 +122,38 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
                         }.bind(this), true);
                     }.bind(this));
                 }.bind(this));
-            }.bind(this));
+            }.bind(this), true);
         }
     },
     setFormSelectOptions: function(node, select){
         var name = node.get("name");
         select.empty();
-        var option = new Element("option", {"text": "none"}).inject(select);
-        this.forms.each(function(form){
-            var option = new Element("option", {
-                "text": form.name,
-                "value": form.id,
-                "selected": (this.data[name]==form.id)
+
+        var d = this.data;
+        Array.each(name.split("."), function (n) {
+            if (d) d = d[n];
+        });
+
+        if(this.forms){
+            var option = new Element("option", {"text": "none"}).inject(select);
+            this.forms.each(function(form){
+                var option = new Element("option", {
+                    "text": form.name,
+                    "value": form.id,
+                    "selected": (d===form.id)
+                }).inject(select);
+            }.bind(this));
+        }else{
+            new Element("option", {
+                "text": "请先选择流程",
+                "value": ""
             }).inject(select);
-        }.bind(this));
+        }
     },
     getFormList: function(callback, refresh){
-        if (!this.forms || refresh){
-            this.process.designer.actions.listForm(this.process.designer.application.id, function(json){
+        if (this.view.json.data.process && this.view.json.data.process.application && (!this.forms || refresh)){
+            var action = o2.Actions.load("x_processplatform_assemble_designer");
+            action.FormAction.listWithApplication(this.view.json.data.process.application, function(json){
                 this.forms = json.data;
                 if (callback) callback();
             }.bind(this));
@@ -256,15 +270,30 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
         }.bind(this));
     },
     savePersonSelectItem: function (node, ids, count) {
+        debugger;
         //this.initWhereEntryData();
         var values = [];
         ids.each(function (id) {
-            values.push({"name": (id.data.distinguishedName || id.data.name), "id": id.data.id});
+            var obj = {"name": (id.data.distinguishedName || id.data.name), "id": id.data.id};
+            if( id.data.application )obj.application =  id.data.application;
+            if( id.data.applicationName )obj.applicationName =  id.data.applicationName;
+            values.push(obj);
             //values.push((id.data.distinguishedName || id.data.id || id.data.name));
         }.bind(this));
         var name = node.get("name");
 
-        key = name.split(".");
+        var key = name.split(".");
+
+        var oldValue = this.data;
+        for (var idx = 0; idx < key.length; idx++) {
+            if (!oldValue[key[idx]]) {
+                oldValue = null;
+                break;
+            } else {
+                oldValue = oldValue[key[idx]];
+            }
+        }
+
         var o = this.data;
         var len = key.length - 1;
         key.each(function (n, i) {
@@ -272,6 +301,8 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
             if (i < len) o = o[n];
         }.bind(this));
         o[key[len]] = count === 1 ? (values[0] || {}) : values;
+
+        this.changeData(name, node, oldValue);
 
         //this.data.data.restrictWhereEntry[node.get("name")] = values;
     }

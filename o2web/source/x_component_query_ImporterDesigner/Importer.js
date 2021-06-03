@@ -506,7 +506,10 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
     explode: function(){},
     implode: function(){},
     _setEditStyle: function(name, input, oldValue) {
-
+        debugger;
+        if(name === "data.process"){
+            this.property.loadFormSelect();
+        }
     },
     reloadMaplist: function(){
         if (this.property) Object.each(this.property.maplists, function(map, name){ map.reload(this.json[name]);}.bind(this));
