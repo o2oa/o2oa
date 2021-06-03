@@ -1327,4 +1327,27 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "V2_根据work或workCompleted上传附件,如果同名附件存在则替换.", action = V2UploadWorkOrWorkCompleted.class)
+	@GET
+	@Path("v2/upload/workorworkcompleted/{workOrWorkCompleted}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public void V2UploadWorkOrWorkCompleted(FormDataMultiPart form, @Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted,
+			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site,
+			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
+			@FormDataParam(FILE_FIELD) byte[] bytes,
+			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+		ActionResult<V2UploadWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2UploadWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted, site, fileName,
+					bytes, disposition);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
