@@ -148,23 +148,81 @@
                             <div class="MWFSelectProcess" count=1  name="data.process"></div>
                         </td>
                     </tr>
+                </table>
+
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.workProperty}}</div>
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">{{$.lp.processStatus}}:</td>
                         <td class="editTableValue">
-                            <input name="data.processStatus" type="radio" value="draft" text{($.data.processStatus)!=='completed'?'checked':''}/>{{$.lp.draftActivity}}
-                            <input name="data.processStatus" type="radio" value="completed" text{($.data.processStatus)==='completed'?'checked':''}/>{{$.lp.endActivity}}
+                            <input name="data.processStatus" type="radio" value="draft" text{($.data.processStatus)!=='completed'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}workCompleteArea').setStyle('display', 'none');
+                                   }"
+                            />{{$.lp.draftActivity}}<br/>
+                            <input name="data.processStatus" type="radio" value="completed" text{($.data.processStatus)==='completed'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}workCompleteArea').setStyle('display', '');
+                                   }"
+                            />{{$.lp.endActivity}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">{{$.lp.processDrafter}}:</td>
+                        <td class="editTableTitle">* {{$.lp.processDrafter}}:</td>
                         <td class="editTableValue">
                             <input name="data.processDrafter" type="radio" value="importer" text{($.data.processDrafter)=='importer'?'checked':''}
-                                   onclick="if (this.checked){$$('.text{$.id}isProcessDrafterArea').setStyle('display', 'none');}" />{{$.lp.importerAsDrafter}}<br/>
+                                   onclick="if (this.checked){
+                                       $('text{$.id}processPublisherFieldArea').setStyle('display', 'none');
+                                   }" />{{$.lp.importerAsDrafter}}<br/>
                             <input name="data.processDrafter" type="radio" value="field" text{($.data.processDrafter)!=='importer'?'checked':''}
-                                   onclick="if (this.checked){$$('.text{$.id}isProcessDrafterArea').setStyle('display', '');}" />{{$.lp.setDrafterInField}}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}processPublisherFieldArea').setStyle('display', '');
+                                   }" />{{$.lp.selectField}}
+                            <div id="text{$.id}processPublisherFieldArea" style="display:text{(($.data.processDrafter)!=='importer')?'':'none'}" >
+                                注：请选择组织对象<br>
+                                <div class="MWFSelectField" name="data.processDrafterField"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.titleField}}标题列/字段:</td>
+                        <td class="editTableValue">
+                            注：请选择文本类型<br>
+                            <div class="MWFSelectField" name="data.processTitleField"></div>
                         </td>
                     </tr>
                 </table>
+                <div id="text{$.id}workCompleteArea" style="display:text{(($.data.processStatus)==='completed')?'':'none'}" >
+                    <table>
+                        <tr>
+                            <td class="editTableTitle">* {{$.lp.titleField}}指定表单:</td>
+                            <td class="editTableValue">
+                                <div class="MWFFormSelect" name="form"></div></td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="editTableTitle">{{$.lp.titleField}}序号/文号列:</td>
+                            <td class="editTableValue">
+                                注：请选择文本类型<br>
+                                <div class="MWFSelectField" name="data.processSerialField"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="editTableTitle">* {{$.lp.titleField}}开始日期列/字段:</td>
+                            <td class="editTableValue">
+                                注：请选择日期类型<br>
+                                <div class="MWFSelectField" name="data.processStartTimeField"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="editTableTitle">* {{$.lp.titleField}}结束日期列/字段:</td>
+                            <td class="editTableValue">
+                                注：请选择日期类型<br>
+                                <div class="MWFSelectField" name="data.processCompleteTimeField"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 
