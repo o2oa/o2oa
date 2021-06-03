@@ -50,6 +50,7 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
                     this.loadMaplist();
 
                     this.loadSelectField();
+                    this.loadFormSelect();
                 }
             }.bind(this));
         } else {
@@ -101,6 +102,52 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
 
         }.bind(this));
     },
+
+    loadFormSelect: function(){
+        var formNodes = this.propertyContent.getElements(".MWFFormSelect");
+        if (formNodes.length){
+            this.getFormList(function(){
+                formNodes.each(function(node){
+                    var select = new Element("select").inject(node);
+                    var option = new Element("option", {"text": "none"}).inject(select);
+                    select.addEvent("change", function(e){
+                        this.setValue(e.target.getParent("div").get("name"), e.target.options[e.target.selectedIndex].value);
+                    }.bind(this));
+                    this.setFormSelectOptions(node, select);
+
+                    var refreshNode = new Element("div", {"styles": this.view.css.propertyRefreshFormNode}).inject(node);
+                    refreshNode.addEvent("click", function(e){
+                        this.getFormList(function(){
+                            this.setFormSelectOptions(node, select);
+                        }.bind(this), true);
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+    setFormSelectOptions: function(node, select){
+        var name = node.get("name");
+        select.empty();
+        var option = new Element("option", {"text": "none"}).inject(select);
+        this.forms.each(function(form){
+            var option = new Element("option", {
+                "text": form.name,
+                "value": form.id,
+                "selected": (this.data[name]==form.id)
+            }).inject(select);
+        }.bind(this));
+    },
+    getFormList: function(callback, refresh){
+        if (!this.forms || refresh){
+            this.process.designer.actions.listForm(this.process.designer.application.id, function(json){
+                this.forms = json.data;
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    },
+
     loadPersonSelectInput: function () {
         var personNodes = this.propertyContent.getElements(".MWFSelectPerson");
         var identityNodes = this.propertyContent.getElements(".MWFSelectIdentity");
