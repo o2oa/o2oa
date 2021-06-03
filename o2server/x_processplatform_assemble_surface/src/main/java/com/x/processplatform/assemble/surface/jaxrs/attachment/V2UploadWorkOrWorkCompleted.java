@@ -39,14 +39,6 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 			byte[] bytes, FormDataContentDisposition disposition) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
-		Work work = null;
-		WorkCompleted workCompleted = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			work = emc.find(workOrWorkCompleted, Work.class);
-			if (null == work) {
-				workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
-			}
-		}
 
 		CompletableFuture<Boolean> checkControlFuture = this.readableWithWorkOrWorkCompletedFuture(effectivePerson,
 				workOrWorkCompleted);
@@ -58,7 +50,8 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			work = emc.find(workOrWorkCompleted, Work.class);
+			Work work = emc.find(workOrWorkCompleted, Work.class);
+			WorkCompleted workCompleted = null;
 			if (null == work) {
 				workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
 			}
@@ -82,7 +75,7 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 		if (StringUtils.isEmpty(fileName)) {
 			fileName = this.fileName(disposition);
 		}
-		fileName = this.adjustFileName(business, work.getJob(), fileName);
+		// fileName = this.adjustFileName(business, work.getJob(), fileName);
 		this.verifyConstraint(bytes.length, fileName, null);
 		Attachment attachment = business.entityManagerContainer().firstEqualAndEqualAndEqual(Attachment.class,
 				Attachment.job_FIELDNAME, work.getJob(), Attachment.name_FIELDNAME, fileName, Attachment.site_FIELDNAME,
@@ -90,8 +83,8 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 		if (null != attachment) {
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 					attachment.getStorage());
-			attachment.updateContent(mapping, bytes, fileName);
-			attachment.setType((new Tika()).detect(bytes, fileName));
+			attachment.updateContent(mapping, bytes);
+			attachment.setType((new Tika()).detect(bytes));
 			this.updateText(attachment, bytes);
 			business.entityManagerContainer().beginTransaction(Attachment.class);
 			business.entityManagerContainer().check(attachment, CheckPersistType.all);
@@ -118,7 +111,7 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 		if (StringUtils.isEmpty(fileName)) {
 			fileName = this.fileName(disposition);
 		}
-		fileName = this.adjustFileName(business, workCompleted.getJob(), fileName);
+		// fileName = this.adjustFileName(business, workCompleted.getJob(), fileName);
 		this.verifyConstraint(bytes.length, fileName, null);
 		Attachment attachment = business.entityManagerContainer().firstEqualAndEqualAndEqual(Attachment.class,
 				Attachment.job_FIELDNAME, workCompleted.getJob(), Attachment.name_FIELDNAME, fileName,
@@ -126,8 +119,8 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 		if (null != attachment) {
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 					attachment.getStorage());
-			attachment.updateContent(mapping, bytes, fileName);
-			attachment.setType((new Tika()).detect(bytes, fileName));
+			attachment.updateContent(mapping, bytes);
+			attachment.setType((new Tika()).detect(bytes));
 			this.updateText(attachment, bytes);
 			business.entityManagerContainer().beginTransaction(Attachment.class);
 			business.entityManagerContainer().check(attachment, CheckPersistType.all);
