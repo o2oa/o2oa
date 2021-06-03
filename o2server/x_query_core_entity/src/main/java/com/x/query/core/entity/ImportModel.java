@@ -15,16 +15,16 @@ import java.util.List;
 
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.ImportModel.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.ImportModel.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Import.ImportModel.table, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.Import.ImportModel.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class ImportModel extends SliceJpaObject {
 
-	private static final long serialVersionUID = -7520516033901189347L;
+	private static final long serialVersionUID = 8585967903130343838L;
 
-	private static final String TABLE = PersistenceProperties.ImportModel.table;
+	private static final String TABLE = PersistenceProperties.Import.ImportModel.table;
 
 	public static final Integer MAX_COUNT = 5000;
 
@@ -128,9 +128,9 @@ public class ImportModel extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String code;
 
-	public static final String enableCheck_FIELDNAME = "enableCheck";
+	public static final String enableValid_FIELDNAME = "enableValid";
 	@FieldDescribe("是否启用校验.")
-	@Column(name = ColumnNamePrefix + enableCheck_FIELDNAME)
+	@Column(name = ColumnNamePrefix + enableValid_FIELDNAME)
 	private Boolean enableValid;
 
 	public static final String type_FIELDNAME = "type";
