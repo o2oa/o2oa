@@ -72,7 +72,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.zip = zip;
                     return this.processDocument(data);
                 }.bind(this)).then(function(oo_content){
-                    resolve(oo_content);
+                    var word = new Blob( [oo_content], {type : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"} );
+                    //oo_content.type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    resolve(word);
                 });
             }.bind(this));
         }.bind(this));
@@ -353,35 +355,36 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         // if (!border || border==="none"){
         //     attr.val = "none";
         // }else{
-            var sz;
-            var border = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where);
-            if (!border || border==="none"){
-                sz = table.get("border");
-                if (!sz || sz==="none") sz = table.getStyle("border-"+where+"-width");
-            }else{
-                sz = (table.currentStyle) ? table.currentStyle[("border-"+where+"-width").camelCase()] : table.getStyle("border-"+where+"-width");
-                if (!sz || !sz.toFloat()) sz = table.get("border");
-            }
+        var sz;
+        var border = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where);
+        if (!border || border==="none"){
+            sz = table.get("border");
+            if (!sz || sz==="none") sz = table.getStyle("border-"+where+"-width");
+        }else{
+            sz = (table.currentStyle) ? table.currentStyle[("border-"+where+"-width").camelCase()] : table.getStyle("border-"+where+"-width");
+            if (!sz || !sz.toFloat()) sz = table.get("border");
+        }
 
-            if (sz && o2.typeOf(sz)==="string"){
-                u = sz.substring(sz.length-2, sz.length);
-                if (u.toLowerCase()!=="pt"){
-                    sz = this.pxToPt(sz);
-                }
+        if (sz && o2.typeOf(sz)==="string"){
+            u = sz.substring(sz.length-2, sz.length);
+            if (u.toLowerCase()!=="pt"){
+                sz = this.pxToPt(sz);
             }
-            if (!sz || !sz.toFloat()) sz = 0;
-            attr.sz = sz.toFloat()*8;
+        }
+        if (!sz || !sz.toFloat()) sz = 0;
+        attr.sz = sz.toFloat()*8;
+        if (Browser.name=="firefox") attr.sz = attr.sz*1.25;    //firefox边框计算问题
 
-            var color = this.getColorHex(((table.currentStyle) ? table.currentStyle[("border-"+where+"-color").camelCase()] : table.getStyle("border-"+where+"-color")));
-            if (!color) color = "auto";
-            attr.color = color;
+        var color = this.getColorHex(((table.currentStyle) ? table.currentStyle[("border-"+where+"-color").camelCase()] : table.getStyle("border-"+where+"-color")));
+        if (!color) color = "auto";
+        attr.color = color;
 
-            var style = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where+"-style");
-            switch (style){
-                case "dashed": case "dotted": case "double": attr.val = "double"; break;
-                default: attr.val = "single";
-            }
-            if (attr.sz===0) attr.val="none";
+        var style = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where+"-style");
+        switch (style){
+            case "dashed": case "dotted": case "double": attr.val = "double"; break;
+            default: attr.val = "single";
+        }
+        if (attr.sz===0) attr.val="none";
         // }
 
         // var sz = table.get("border");
@@ -411,8 +414,23 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     var pt = this.pxToPt(td.clientWidth);
                     if (pt>grids[idx]) grids[idx] = pt;
                 }else{
-                    idx = idx + (colspan.toInt()-1);
+                    var addTd = colspan.toInt()-1;
+                    var tempTds = [];
+                    for (var n=0; n<addTd; n++) tempTds.push(new Element("td").inject(td, "after"));
+
                     while (grids.length<=idx) grids.push(0);
+                    var pt = this.pxToPt(td.clientWidth);
+                    if (pt>grids[idx]) grids[idx] = pt;
+
+                    tempTds.each(function(tmpTd){
+                        idx++;
+                        while (grids.length<=idx) grids.push(0);
+                        var pt = this.pxToPt(tmpTd.clientWidth);
+                        if (pt>grids[idx]) grids[idx] = pt;
+                    }.bind(this));
+                    tempTds.each(function(tmpTd){
+                        tmpTd.destroy();
+                    });
                 }
                 idx++;
             }
@@ -667,7 +685,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
         //表格背景
         var bg = table.getStyle("background-color");
-        if (bg){
+        if (bg && bg!=="transparent"){
             bg = this.getColorHex(bg);
             var oo_shd = this.createEl(oo_doc, "shd");
             this.setAttrs(oo_shd, {"val": "clear", "color": "auto", "fill": bg});
@@ -691,7 +709,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_tblGrid = this.createEl(oo_doc, "tblGrid");
         grids.each(function(grid){
             var oo_gridCol = this.createEl(oo_doc, "gridCol");
-            //this.setAttrs(oo_gridCol, {"w": grid*20});
+            this.setAttrs(oo_gridCol, {"w": grid*20});
             oo_tblGrid.appendChild(oo_gridCol);
         }.bind(this));
         oo_tbl.appendChild(oo_tblGrid);
@@ -844,6 +862,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     var oo_gridSpan = this.createEl(oo_doc, "gridSpan");
                     this.setAttrs(oo_gridSpan, {"val": colspan});
                     oo_tcPr.appendChild(oo_gridSpan);
+                    // this.insertChildren(oo_tcPr, [oo_gridSpan], "afterbegin");
                 }
 
                  oo_tc.appendChild(oo_tcPr);
@@ -853,7 +872,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                  var pflag = false;
                  var node = oo_tc.firstChild;
                  while (node){
-                     if (node.tagName==="p"){
+                     if (node.tagName==="w:p"){
                          pflag = true;
                          break;
                      }
@@ -1108,7 +1127,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     processRunFont: function(node, rPrs, font){
         //字体处理缩放
         var msoStyle = this.getMsoStyle(node);
-        if (msoStyle["mso-font-width"]) rPrs.w = {"val": msoStyle["mso-font-width"]};
+        if (msoStyle["mso-font-width"]) rPrs.w = {"val": msoStyle["mso-font-width"].toFloat()};
 
         //处理字号
         if (msoStyle["mso-ansi-font-size"]) rPrs.sz = {"val": this.parseFontSize(msoStyle["mso-ansi-font-size"])*2};
@@ -1119,23 +1138,23 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         //处理字体
         if (msoStyle["mso-ansi-font-family"]){
             if (!font) font = { "hint": "eastAsia" };
-            font.ascii = msoStyle["mso-ansi-font-family"];
+            font.ascii = this.parseFont(msoStyle["mso-ansi-font-family"]);
         }
         if (msoStyle["mso-hansi-font-family"]){
             if (!font) font = { "hint": "eastAsia" };
-            font.hAnsi = msoStyle["mso-hansi-font-family"];
+            font.hAnsi = this.parseFont(msoStyle["mso-hansi-font-family"]);
         }
         if (msoStyle["mso-font-family"]){
             if (!font) font = { "hint": "eastAsia" };
-            font.eastAsia = msoStyle["mso-font-family"];
+            font.eastAsia = this.parseFont(msoStyle["mso-font-family"]);
         }
         if (msoStyle["mso-fareast-font-family"]){
             if (!font) font = { "hint": "eastAsia" };
-            font.eastAsia = msoStyle["mso-fareast-font-family"];
+            font.eastAsia = this.parseFont(msoStyle["mso-fareast-font-family"]);
         }
     },
     parseFont: function(name){
-        if (name.substr(0.1)==="\""){
+        if (name.substr(0, 1)==="\""){
             return name.substr(1, name.length-2);
         }else{
             return name;
