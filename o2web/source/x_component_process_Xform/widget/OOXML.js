@@ -239,7 +239,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 }else if (node.tagName.toLowerCase() === "br") {
                     this.processRun(node, oo_p, p, "", "br");
                 }else if (node.tagName.toLowerCase() === "div" || node.tagName.toLowerCase() === "p") {
-                    if (!this.isEmptyP(oo_p)) oo_p = this.createParagraphFromDom(p, oo_body, append);
+                    if (!this.isEmptyP(oo_p)){
+                        oo_p = this.createParagraphFromDom(node, oo_body, append);
+                    }else{
+                        this.setParagraphAttrFromDom(node, oo_p);
+                    }
                     this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
                 }else if (node.tagName.toLowerCase() === "ul" || node.tagName.toLowerCase() === "ol") {
                     this.processNumbering(node, oo_p, p, oo_body, append, ilvl);
@@ -281,8 +285,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             this.processParagraphRun(li, oo_p, li, oo_body, append, nextIlvl);
         }
     },
-
-    createParagraphFromDom: function(dom, oo_body, append){
+    getPPrs: function(dom){
         var pPrs = {};
 
         var align = dom.getStyle("text-align");
@@ -296,8 +299,55 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
             pPrs.jc = {"val": jc};
         }
+        var left = dom.getStyle("margin-left");
+        if (left && left.toFloat()){
+            var left = this.pxToPt(left)*20;
+            if (left) {
+                if (!pPrs.ind) pPrs.ind = {};
+                pPrs.ind.left = left;
+            }
+        }
 
-        var oo_p = this.createParagraph(oo_body.ownerDocument, {"pPrs": pPrs});
+        var right = dom.getStyle("margin-left");
+        if (right && right.toFloat()){
+            var right = this.pxToPt(right)*20;
+            if (right) {
+                if (!pPrs.ind) pPrs.ind = {};
+                pPrs.ind.right = right;
+            }
+        }
+
+        var indent = dom.getStyle("text-indent");
+        if (indent && indent.toFloat()){
+            var indent = this.pxToPt(indent)*20;
+            if (indent) {
+                if (!pPrs.ind) pPrs.ind = {};
+                if (indent>0){
+                    pPrs.ind.firstLine = indent;
+                }else{
+                    pPrs.ind.hanging = Math.abs(indent);
+                }
+            }
+        }
+        return pPrs;
+    },
+    setParagraphAttrFromDom: function(dom, oo_p){
+        var pPrs = this.getPPrs(dom);
+        var oo_pPr = oo_p.querySelector("pPr");
+        if (!oo_pPr){
+            oo_pPr = this.createEl(oo_p.ownerDocument, "pPr");
+            oo_p.appendChild(oo_pPr);
+        }
+
+        Object.keys(pPrs).each(function(k){
+            var node = oo_pPr.querySelector(k);
+            if (!node) node = this.createEl(oo_p.ownerDocument, k);
+            this.setAttrs(node, pPrs[k]);
+            oo_pPr.appendChild(node);
+        }.bind(this));
+    },
+    createParagraphFromDom: function(dom, oo_body, append){
+        var oo_p = this.createParagraph(oo_body.ownerDocument, {"pPrs": this.getPPrs(dom)});
 
         if (append){
             oo_body.appendChild(oo_p);
@@ -951,7 +1001,18 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     },
 
     pxToPt: function(px){
-        return (px.toFloat()/this.dpi)*72;
+        var v = px;
+        if (px && o2.typeOf(px)==="string"){
+            u = px.substring(px.length-2, px.length);
+            if (u.toLowerCase()!=="pt"){
+                v = (px.toFloat()/this.dpi)*72;
+            }else{
+                v = px.toFloat();
+            }
+        }else{
+            v = (px.toFloat()/this.dpi)*72;
+        }
+        return v;
     },
     processHr: function(hr, oo_body, append){
         var oo_doc = oo_body.ownerDocument;
@@ -1249,7 +1310,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                         var cs = dom_pageRule.style["letterSpacing"].toFloat()*4096;
                         var attrs = {"type": "linesAndChars"};
                         if (lh) attrs["linePitch"] = lh;
-                        if (cs) attrs["charSpace"] = cs;
+                        //if (cs) attrs["charSpace"] = cs;
                         this.setAttrs(oo_docGrid, attrs);
                         break;
                     default:
