@@ -488,7 +488,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 }
             }else if (dom.nodeType===Node.TEXT_NODE){
                 if (dom.nodeValue.trim()){
-                    if (!oo_body || oo_body.tagName.toString().toLowerCase()!=="p") var oo_body = this.createParagraphFromDom(dom.parentElement || dom.parentNode, oo_body, dom.parentElement);
+                    if (!oo_body || oo_body.tagName.toString().toLowerCase()!=="w:p") var oo_body = this.createParagraphFromDom(dom.parentElement || dom.parentNode, oo_body, dom.parentElement);
                     this.processRun(dom.parentElement || dom.parentNode, oo_body, append, dom.nodeValue);
                 }
             }else{
