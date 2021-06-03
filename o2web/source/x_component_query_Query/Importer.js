@@ -458,7 +458,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
         }
         if( !this.importerJson ){
-
             this.getImporterJSON( function () {
                 var arg = {
                     data : [this.getTitleArray()],
