@@ -72,7 +72,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.zip = zip;
                     return this.processDocument(data);
                 }.bind(this)).then(function(oo_content){
-                    resolve(oo_content);
+                    var word = new Blob( [oo_content], {type : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"} );
+                    //oo_content.type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    resolve(word);
                 });
             }.bind(this));
         }.bind(this));
@@ -237,7 +239,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 }else if (node.tagName.toLowerCase() === "br") {
                     this.processRun(node, oo_p, p, "", "br");
                 }else if (node.tagName.toLowerCase() === "div" || node.tagName.toLowerCase() === "p") {
-                    if (!this.isEmptyP(oo_p)) oo_p = this.createParagraphFromDom(p, oo_body, append);
+                    if (!this.isEmptyP(oo_p)){
+                        oo_p = this.createParagraphFromDom(node, oo_body, append);
+                    }else{
+                        this.setParagraphAttrFromDom(node, oo_p);
+                    }
                     this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
                 }else if (node.tagName.toLowerCase() === "ul" || node.tagName.toLowerCase() === "ol") {
                     this.processNumbering(node, oo_p, p, oo_body, append, ilvl);
@@ -279,8 +285,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             this.processParagraphRun(li, oo_p, li, oo_body, append, nextIlvl);
         }
     },
-
-    createParagraphFromDom: function(dom, oo_body, append){
+    getPPrs: function(dom){
         var pPrs = {};
 
         var align = dom.getStyle("text-align");
@@ -294,8 +299,55 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
             pPrs.jc = {"val": jc};
         }
+        var left = dom.getStyle("margin-left");
+        if (left && left.toFloat()){
+            var left = this.pxToPt(left)*20;
+            if (left) {
+                if (!pPrs.ind) pPrs.ind = {};
+                pPrs.ind.left = left;
+            }
+        }
 
-        var oo_p = this.createParagraph(oo_body.ownerDocument, {"pPrs": pPrs});
+        var right = dom.getStyle("margin-left");
+        if (right && right.toFloat()){
+            var right = this.pxToPt(right)*20;
+            if (right) {
+                if (!pPrs.ind) pPrs.ind = {};
+                pPrs.ind.right = right;
+            }
+        }
+
+        var indent = dom.getStyle("text-indent");
+        if (indent && indent.toFloat()){
+            var indent = this.pxToPt(indent)*20;
+            if (indent) {
+                if (!pPrs.ind) pPrs.ind = {};
+                if (indent>0){
+                    pPrs.ind.firstLine = indent;
+                }else{
+                    pPrs.ind.hanging = Math.abs(indent);
+                }
+            }
+        }
+        return pPrs;
+    },
+    setParagraphAttrFromDom: function(dom, oo_p){
+        var pPrs = this.getPPrs(dom);
+        var oo_pPr = oo_p.querySelector("pPr");
+        if (!oo_pPr){
+            oo_pPr = this.createEl(oo_p.ownerDocument, "pPr");
+            oo_p.appendChild(oo_pPr);
+        }
+
+        Object.keys(pPrs).each(function(k){
+            var node = oo_pPr.querySelector(k);
+            if (!node) node = this.createEl(oo_p.ownerDocument, k);
+            this.setAttrs(node, pPrs[k]);
+            oo_pPr.appendChild(node);
+        }.bind(this));
+    },
+    createParagraphFromDom: function(dom, oo_body, append){
+        var oo_p = this.createParagraph(oo_body.ownerDocument, {"pPrs": this.getPPrs(dom)});
 
         if (append){
             oo_body.appendChild(oo_p);
@@ -353,35 +405,36 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         // if (!border || border==="none"){
         //     attr.val = "none";
         // }else{
-            var sz;
-            var border = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where);
-            if (!border || border==="none"){
-                sz = table.get("border");
-                if (!sz || sz==="none") sz = table.getStyle("border-"+where+"-width");
-            }else{
-                sz = (table.currentStyle) ? table.currentStyle[("border-"+where+"-width").camelCase()] : table.getStyle("border-"+where+"-width");
-                if (!sz || !sz.toFloat()) sz = table.get("border");
-            }
+        var sz;
+        var border = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where);
+        if (!border || border==="none"){
+            sz = table.get("border");
+            if (!sz || sz==="none") sz = table.getStyle("border-"+where+"-width");
+        }else{
+            sz = (table.currentStyle) ? table.currentStyle[("border-"+where+"-width").camelCase()] : table.getStyle("border-"+where+"-width");
+            if (!sz || !sz.toFloat()) sz = table.get("border");
+        }
 
-            if (sz && o2.typeOf(sz)==="string"){
-                u = sz.substring(sz.length-2, sz.length);
-                if (u.toLowerCase()!=="pt"){
-                    sz = this.pxToPt(sz);
-                }
+        if (sz && o2.typeOf(sz)==="string"){
+            u = sz.substring(sz.length-2, sz.length);
+            if (u.toLowerCase()!=="pt"){
+                sz = this.pxToPt(sz);
             }
-            if (!sz || !sz.toFloat()) sz = 0;
-            attr.sz = sz.toFloat()*8;
+        }
+        if (!sz || !sz.toFloat()) sz = 0;
+        attr.sz = sz.toFloat()*8;
+        if (Browser.name=="firefox") attr.sz = attr.sz*1.25;    //firefox边框计算问题
 
-            var color = this.getColorHex(((table.currentStyle) ? table.currentStyle[("border-"+where+"-color").camelCase()] : table.getStyle("border-"+where+"-color")));
-            if (!color) color = "auto";
-            attr.color = color;
+        var color = this.getColorHex(((table.currentStyle) ? table.currentStyle[("border-"+where+"-color").camelCase()] : table.getStyle("border-"+where+"-color")));
+        if (!color) color = "auto";
+        attr.color = color;
 
-            var style = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where+"-style");
-            switch (style){
-                case "dashed": case "dotted": case "double": attr.val = "double"; break;
-                default: attr.val = "single";
-            }
-            if (attr.sz===0) attr.val="none";
+        var style = (table.currentStyle) ? table.currentStyle[("border-"+where+"-style").camelCase()] : table.getStyle("border-"+where+"-style");
+        switch (style){
+            case "dashed": case "dotted": case "double": attr.val = "double"; break;
+            default: attr.val = "single";
+        }
+        if (attr.sz===0) attr.val="none";
         // }
 
         // var sz = table.get("border");
@@ -411,8 +464,23 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     var pt = this.pxToPt(td.clientWidth);
                     if (pt>grids[idx]) grids[idx] = pt;
                 }else{
-                    idx = idx + (colspan.toInt()-1);
+                    var addTd = colspan.toInt()-1;
+                    var tempTds = [];
+                    for (var n=0; n<addTd; n++) tempTds.push(new Element("td").inject(td, "after"));
+
                     while (grids.length<=idx) grids.push(0);
+                    var pt = this.pxToPt(td.clientWidth);
+                    if (pt>grids[idx]) grids[idx] = pt;
+
+                    tempTds.each(function(tmpTd){
+                        idx++;
+                        while (grids.length<=idx) grids.push(0);
+                        var pt = this.pxToPt(tmpTd.clientWidth);
+                        if (pt>grids[idx]) grids[idx] = pt;
+                    }.bind(this));
+                    tempTds.each(function(tmpTd){
+                        tmpTd.destroy();
+                    });
                 }
                 idx++;
             }
@@ -470,7 +538,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 }
             }else if (dom.nodeType===Node.TEXT_NODE){
                 if (dom.nodeValue.trim()){
-                    if (!oo_body || oo_body.tagName.toString().toLowerCase()!=="p") var oo_body = this.createParagraphFromDom(dom.parentElement || dom.parentNode, oo_body, dom.parentElement);
+                    if (!oo_body || oo_body.tagName.toString().toLowerCase()!=="w:p") var oo_body = this.createParagraphFromDom(dom.parentElement || dom.parentNode, oo_body, dom.parentElement);
                     this.processRun(dom.parentElement || dom.parentNode, oo_body, append, dom.nodeValue);
                 }
             }else{
@@ -667,7 +735,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
         //表格背景
         var bg = table.getStyle("background-color");
-        if (bg){
+        if (bg && bg!=="transparent"){
             bg = this.getColorHex(bg);
             var oo_shd = this.createEl(oo_doc, "shd");
             this.setAttrs(oo_shd, {"val": "clear", "color": "auto", "fill": bg});
@@ -691,7 +759,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_tblGrid = this.createEl(oo_doc, "tblGrid");
         grids.each(function(grid){
             var oo_gridCol = this.createEl(oo_doc, "gridCol");
-            //this.setAttrs(oo_gridCol, {"w": grid*20});
+            this.setAttrs(oo_gridCol, {"w": grid*20});
             oo_tblGrid.appendChild(oo_gridCol);
         }.bind(this));
         oo_tbl.appendChild(oo_tblGrid);
@@ -844,6 +912,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     var oo_gridSpan = this.createEl(oo_doc, "gridSpan");
                     this.setAttrs(oo_gridSpan, {"val": colspan});
                     oo_tcPr.appendChild(oo_gridSpan);
+                    // this.insertChildren(oo_tcPr, [oo_gridSpan], "afterbegin");
                 }
 
                  oo_tc.appendChild(oo_tcPr);
@@ -853,7 +922,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                  var pflag = false;
                  var node = oo_tc.firstChild;
                  while (node){
-                     if (node.tagName==="p"){
+                     if (node.tagName==="w:p"){
                          pflag = true;
                          break;
                      }
@@ -932,7 +1001,18 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     },
 
     pxToPt: function(px){
-        return (px.toFloat()/this.dpi)*72;
+        var v = px;
+        if (px && o2.typeOf(px)==="string"){
+            u = px.substring(px.length-2, px.length);
+            if (u.toLowerCase()!=="pt"){
+                v = (px.toFloat()/this.dpi)*72;
+            }else{
+                v = px.toFloat();
+            }
+        }else{
+            v = (px.toFloat()/this.dpi)*72;
+        }
+        return v;
     },
     processHr: function(hr, oo_body, append){
         var oo_doc = oo_body.ownerDocument;
@@ -1108,7 +1188,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     processRunFont: function(node, rPrs, font){
         //字体处理缩放
         var msoStyle = this.getMsoStyle(node);
-        if (msoStyle["mso-font-width"]) rPrs.w = {"val": msoStyle["mso-font-width"]};
+        if (msoStyle["mso-font-width"]) rPrs.w = {"val": msoStyle["mso-font-width"].toFloat()};
 
         //处理字号
         if (msoStyle["mso-ansi-font-size"]) rPrs.sz = {"val": this.parseFontSize(msoStyle["mso-ansi-font-size"])*2};
@@ -1119,23 +1199,23 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         //处理字体
         if (msoStyle["mso-ansi-font-family"]){
             if (!font) font = { "hint": "eastAsia" };
-            font.ascii = msoStyle["mso-ansi-font-family"];
+            font.ascii = this.parseFont(msoStyle["mso-ansi-font-family"]);
         }
         if (msoStyle["mso-hansi-font-family"]){
             if (!font) font = { "hint": "eastAsia" };
-            font.hAnsi = msoStyle["mso-hansi-font-family"];
+            font.hAnsi = this.parseFont(msoStyle["mso-hansi-font-family"]);
         }
         if (msoStyle["mso-font-family"]){
             if (!font) font = { "hint": "eastAsia" };
-            font.eastAsia = msoStyle["mso-font-family"];
+            font.eastAsia = this.parseFont(msoStyle["mso-font-family"]);
         }
         if (msoStyle["mso-fareast-font-family"]){
             if (!font) font = { "hint": "eastAsia" };
-            font.eastAsia = msoStyle["mso-fareast-font-family"];
+            font.eastAsia = this.parseFont(msoStyle["mso-fareast-font-family"]);
         }
     },
     parseFont: function(name){
-        if (name.substr(0.1)==="\""){
+        if (name.substr(0, 1)==="\""){
             return name.substr(1, name.length-2);
         }else{
             return name;
@@ -1230,7 +1310,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                         var cs = dom_pageRule.style["letterSpacing"].toFloat()*4096;
                         var attrs = {"type": "linesAndChars"};
                         if (lh) attrs["linePitch"] = lh;
-                        if (cs) attrs["charSpace"] = cs;
+                        //if (cs) attrs["charSpace"] = cs;
                         this.setAttrs(oo_docGrid, attrs);
                         break;
                     default:
