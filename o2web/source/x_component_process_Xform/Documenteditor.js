@@ -3377,23 +3377,41 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         oo_content.name = fileName
                         var formData = new FormData();
                         formData.append("site", this.json.toWordSite || "$doc");
+                        formData.append("fileName", fileName);
                         formData.append('file', oo_content);
 
-                        if (this.form.businessData.workCompleted){
-                            o2.Actions.get("x_processplatform_assemble_surface").uploadAttachmentByWorkCompleted(this.form.businessData.workCompleted.id, formData, oo_content,function(json){
+                        o2.Actions.get("x_processplatform_assemble_surface").V2UploadWorkOrWorkCompleted(this.form.businessData.work.id, formData, oo_content, function(json){
+                            if (this.form.businessData.workCompleted){
                                 o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
                                     if (callback) callback(attjson.data);
                                     this.showToWord(attjson.data);
                                 }.bind(this));
-                            }.bind(this));
-                        }else{
-                            o2.Actions.get("x_processplatform_assemble_surface").uploadAttachment(this.form.businessData.work.id, formData, oo_content,function(json){
+                            }else{
                                 o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
                                     if (callback) callback(attjson.data);
                                     this.showToWord(attjson.data);
                                 }.bind(this));
-                            }.bind(this));
-                        }
+                            }
+                        }.bind(this));
+
+                        //
+                        //
+                        //
+                        // if (this.form.businessData.workCompleted){
+                        //     o2.Actions.get("x_processplatform_assemble_surface").uploadAttachmentByWorkCompleted(this.form.businessData.workCompleted.id, formData, oo_content,function(json){
+                        //         o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
+                        //             if (callback) callback(attjson.data);
+                        //             this.showToWord(attjson.data);
+                        //         }.bind(this));
+                        //     }.bind(this));
+                        // }else{
+                        //     o2.Actions.get("x_processplatform_assemble_surface").uploadAttachment(this.form.businessData.work.id, formData, oo_content,function(json){
+                        //         o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
+                        //             if (callback) callback(attjson.data);
+                        //             this.showToWord(attjson.data);
+                        //         }.bind(this));
+                        //     }.bind(this));
+                        // }
 
                         //if (callback) callback(oo_content, fileName);
                     }.bind(this));

@@ -223,6 +223,8 @@
 
   "uploadAttachment": {"uri": "/jaxrs/attachment/upload/work/{id}", "method": "POST", "enctype": "formData"},
   "uploadAttachmentByWorkCompleted": {"uri": "/jaxrs/attachment/upload/workcompleted/{id}", "method": "POST", "enctype": "formData"},
+  "V2UploadWorkOrWorkCompleted": {"uri": "/jaxrs/attachment/v2/upload/workorworkcompleted/{workOrWorkCompleted}", "method": "POST", "enctype": "formData"},
+
 
   "replaceAttachment": {"uri": "/jaxrs/attachment/update/{id}/work/{workid}", "method": "POST", "enctype": "formData"},
 
