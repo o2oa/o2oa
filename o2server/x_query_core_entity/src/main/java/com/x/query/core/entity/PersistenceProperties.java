@@ -12,8 +12,16 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "QRY_VIEW";
 	}
 
-	public static class ImportModel {
-		public static final String table = "QRY_IMPORT_MODEL";
+	public static class Import {
+		public static class ImportModel {
+			public static final String table = "QRY_IMPORT_MODEL";
+		}
+		public static class ImportRecord {
+			public static final String table = "QRY_IMPORT_RECORD";
+		}
+		public static class ImportRecordItem {
+			public static final String table = "QRY_IMPORT_RECORD_ITEM";
+		}
 	}
 
 	public static class Stat {
