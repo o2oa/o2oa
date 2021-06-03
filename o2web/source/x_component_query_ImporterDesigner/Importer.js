@@ -765,16 +765,23 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
             this.close();
         }, null);
     },
-    _setEditStyle_custom: function(name, input, oldValue){
+    _setEditStyle: function(name, input, oldValue){
         //column
         debugger;
-        if (name==="displayName") this.resetTextNode();
+        if (name==="displayName") {
+            this.resetTextNode();
+            this.view.property.loadSelectField();
+        }
+        if (name==="path") {
+            this.resetTextNode();
+            this.view.property.loadSelectField();
+        }
         if (name==="selectType") this.resetTextNode();
         if (name==="attribute") this.resetTextNode();
-        if (name==="path") this.resetTextNode();
-        if (["isTitle","isSummary","isPublisher","isProcessTitle","isProcessDrafter"].contains(name)){
-            this.view.checkUniqueSetting(this, name, input.get("value"));
-        }
+
+        // if (["isTitle","isSummary","isPublisher","isProcessTitle","isProcessDrafter"].contains(name)){
+        //     this.view.checkUniqueSetting(this, name, input.get("value"));
+        // }
 
     },
     resetTextNode: function( index ){
@@ -824,6 +831,9 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         if (this.view.property) this.view.property.loadStatColumnSelect();
 
         this.areaNode.destroy();
+
+        this.view.property.loadSelectField();
+
         this.view.selected();
 
         this.view.setViewWidth();
@@ -1178,13 +1188,19 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
     _setEditStyle_custom: function(name, input, oldValue){
         //calculate
         debugger;
-        if (name=="displayName") this.resetTextNode();
+        if (name=="displayName"){
+            this.resetTextNode();
+            this.view.property.loadSelectField();
+        }
         if (name=="selectType") this.resetTextNode();
         if (name=="attribute") this.resetTextNode();
-        if (name=="path") this.resetTextNode();
-        if (["isTitle","isSummary","isPublisher","isProcessTitle","isProcessDrafter"].contains(name)){
-            this.view.checkUniqueSetting(this, name, input.get("value"));
+        if (name=="path"){
+            this.resetTextNode();
+            this.view.property.loadSelectField();
         }
+        // if (["isTitle","isSummary","isPublisher","isProcessTitle","isProcessDrafter"].contains(name)){
+        //     this.view.checkUniqueSetting(this, name, input.get("value"));
+        // }
     },
     resetTextNode: function( index ){
         // var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
@@ -1216,7 +1232,12 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
         if (this.view.property) this.view.property.loadStatColumnSelect();
 
         this.areaNode.destroy();
+
+
+        this.view.property.loadSelectField();
+
         this.view.selected();
+
 
         // this.view.setViewWidth();
 

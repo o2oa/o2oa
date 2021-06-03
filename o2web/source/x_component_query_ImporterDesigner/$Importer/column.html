@@ -97,32 +97,8 @@
 
             <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}cmsFieldProperty" class="text{$.vid}cmsFieldProperty">
                 <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.cmsProperty}}</div>
-                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                    <tr>
-                        <td class="editTableTitleNoWidth" style="width: 110px;">{{$.lp.isTitle}}:</td>
-                        <td class="editTableValue">
-                            <input name="isTitle" type="radio" value="true" text{($.isTitle)==true?'checked':''}/>{{$.lp.yes}}
-                            <input name="isTitle" type="radio" value="false" text{($.isTitle)!==true?'checked':''}/>{{$.lp.no}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">{{$.lp.isSummary}}:</td>
-                        <td class="editTableValue">
-                            <input name="isSummary" type="radio" value="true" text{($.isSummary)==true?'checked':''}/>{{$.lp.yes}}
-                            <input name="isSummary" type="radio" value="false" text{($.isSummary)!==true?'checked':''}/>{{$.lp.no}}
-                        </td>
-                    </tr>
-                </table>
-
                 <div style="display:text{(($.isName)==true)?'block':'none'}" id="text{$.pid}cmsNamePropertyArea">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                        <tr>
-                            <td class="editTableTitleNoWidth" style="width: 110px;">{{$.lp.isPublisher}}:</td>
-                            <td class="editTableValue">
-                                <input name="isPublisher" type="radio" value="true" text{($.isPublisher)==true?'checked':''}/>{{$.lp.yes}}
-                                <input name="isPublisher" type="radio" value="false" text{($.isPublisher)!==true?'checked':''}/>{{$.lp.no}}
-                            </td>
-                        </tr>
                         <tr>
                             <td class="editTableTitle">{{$.lp.isAuthor}}:</td>
                             <td class="editTableValue">
@@ -154,15 +130,17 @@
                 </table>
 
                 <div style="display:text{(($.isName)==true)?'block':'none'}" id="text{$.pid}processNamePropertyArea">
-                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                        <tr>
-                            <td class="editTableTitleNoWidth" style="width: 120px;">{{$.lp.isProcessDrafter}}:</td>
-                            <td class="editTableValue">
-                                <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>{{$.lp.yes}}
-                                <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==true?'checked':''}/>{{$.lp.no}}
-                            </td>
-                        </tr>
-                    </table>
+                    <div style="display:text{(($.vProcessDrafter)==='importer')?'none':''}" class="text{$.vid}isProcessDrafterArea">
+                        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                            <tr>
+                                <td class="editTableTitleNoWidth" style="width: 120px;">{{$.lp.isProcessDrafter}}:</td>
+                                <td class="editTableValue">
+                                    <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>{{$.lp.yes}}
+                                    <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==true?'checked':''}/>{{$.lp.no}}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
 

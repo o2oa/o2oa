@@ -114,6 +114,11 @@ MWF.xApplication.query.ImporterDesigner.LP = {
 
         "documentType": "Document Type",
         "information": "Information",
-        "data1": "Data"
+        "data1": "Data",
+
+        "processDrafter": "Process Drafter",
+        "publisher": "Document Creator",
+        "importerAsDrafter": "Identity of importer",
+        "setDrafterInField": "Set in the field (column)"
     }
 };

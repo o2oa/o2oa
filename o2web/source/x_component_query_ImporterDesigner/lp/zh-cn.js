@@ -53,10 +53,10 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "deleteEvent": "是否确定删除当前事件吗？",
 
         "cmsNoPublisherOrNoTitleTitle": "未设置标题或起草人",
-        "cmsNoPublisherOrNoTitle": "内容管理未设置标题或起草人，确认保存？",
+        "cmsNoPublisherOrNoTitle": "未设置标题或起草人，确认保存？",
 
         "processNoPublisherOrNoTitleTitle": "未设置标题或发起人",
-        "processNoPublisherOrNoTitle": "流程未设置标题或发起人，确认保存？",
+        "processNoPublisherOrNoTitle": "未设置标题或发起人，确认保存？",
     },
     "mastInputPath": "请输入数据路径",
     "mastInputTitle": "请输入标题",
@@ -114,6 +114,12 @@ MWF.xApplication.query.ImporterDesigner.LP = {
 
         "documentType": "文档类型",
         "information": "信息",
-        "data1": "数据"
+        "data1": "数据",
+
+        "processDrafter": "流程发起人",
+        "publisher": "文档创建者",
+        "selectField": "选择列/字段",
+        "importerAsDrafter": "导入时操作人的身份",
+        "setDrafterInField": "在列/字段中设置"
     }
 };
