@@ -2014,7 +2014,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 						case "Author":
 						case "Personfield":
 						case "Orgfield":
-							var arr = d.split(/\s*,\s*/g ); //空格,空格
+							var arr = this.stringToArray(d);
 							if( arr.length === 0 ){
 								value = this.getOrgData( d );
 							}else{
@@ -2027,11 +2027,11 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 							break;
 						case "Combox":
 						case "Address":
-							arr = d.split(/\s*,\s*/g ); //空格,空格
+							arr = this.stringToArray(d);
 							value = arr.length === 0  ? arr[0] : arr;
 							break;
 						case "Checkbox":
-							arr = d.split(/\s*,\s*/g ); //空格,空格
+							arr = this.stringToArray(d);
 							var options = module.getOptionsObj();
 							arr.each( function( a, i ){
 								var idx = options.textList.indexOf( a );
@@ -2079,6 +2079,11 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		}.bind(this));
 
 		return data;
+	},
+	stringToArray: function(string){
+		return string.replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){
+			return !!s;
+		});
 	},
 	importData: function(idata){
 
@@ -2169,11 +2174,11 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 		var exceeded = false;
 		var maxCount = this.datatable.json.maxCount ? this.datatable.json.maxCount.toInt() : 0;
-		if( maxCount > 0 && idata.length >= maxCount )exceeded = true;
+		if( maxCount > 0 && idata.length > maxCount )exceeded = true;
 
 		var less = false;
 		var minCount = this.datatable.json.minCount ? this.datatable.json.minCount.toInt() : 0;
-		if( minCount > 0 && idata.length <= minCount) less = true;
+		if( minCount > 0 && idata.length < minCount) less = true;
 
 		if( exceeded ) {
 			var text = lp.importTooManyNotice.replace("{n1}", idata.length).replace("{n2}", this.datatable.json.maxCount);
@@ -2225,7 +2230,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 						case "Author":
 						case "Personfield":
 						case "Orgfield":
-							var arr = d.split(/\s*,\s*/g ); //空格,空格
+							var arr = this.stringToArray(d);
 							arr.each( function(d, idx){
 								var obj = this.getOrgData( d );
 								if( obj.errorText ){
@@ -2320,7 +2325,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 					if( !lineData[title] )return;
 
-					var arr = lineData[title].split(/\s*,\s*/g );
+					var arr = this.stringToArray(lineData[title]);
 					arr.each( function( a ){
 						a = a.trim();
 						var flag = a.substr(a.length-2, 2);
@@ -2341,8 +2346,8 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 								break;
 						}
 					})
-				})
-			});
+				}.bind(this))
+			}.bind(this));
 			var identityLoaded, personLoaded, unitLoaded, groupLoaded;
 			var check = function () {
 				if( identityLoaded && personLoaded && unitLoaded && groupLoaded ){
