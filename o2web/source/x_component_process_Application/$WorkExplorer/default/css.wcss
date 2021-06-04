@@ -1083,7 +1083,7 @@
         "float": "left",
         "width": "20px",
         "height": "20px",
-        "background": "url("+"../x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat",
+        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/right.png) center center no-repeat",
     },
     "viewContentTdGroupTextNode": {
         "height": "20px",

@@ -27,6 +27,8 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Image", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.ImageClipper", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Table", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Datagrid", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Datatable", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Datatemplate", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Subform", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.ViewSelector", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.View", null, false);

@@ -209,10 +209,10 @@ MWF.xApplication.query.ViewDesigner.ViewBase = new Class({
                                     if (subtrs[0]){
                                         if (subtrs[0].getStyle("display")=="none"){
                                             subtrs.each(function(subtr){ subtr.setStyle("display", "table-row"); });
-                                            iconNode.setStyle("background", "url("+"../x_component_process_ViewDesigner/$View/default/icon/down.png) center center no-repeat");
+                                            iconNode.setStyle("background", "url("+"../x_component_query_ViewDesigner/$View/default/icon/down.png) center center no-repeat");
                                         }else{
                                             subtrs.each(function(subtr){ subtr.setStyle("display", "none"); });
-                                            iconNode.setStyle("background", "url("+"../x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat");
+                                            iconNode.setStyle("background", "url("+"../x_component_query_ViewDesigner/$View/default/icon/right.png) center center no-repeat");
                                         }
                                     }
                                     _self.setContentHeight();
@@ -931,10 +931,12 @@ MWF.xApplication.query.ViewDesigner.ViewBase.Column = new Class({
                     this.areaNode.inject(inObj, "before");
                     var column = inObj.retrieve("column");
                     this.listNode.inject(column.listNode, "before");
-                    var idx = this.view.json.data.selectList.indexOf(column.json);
+                    // var idx = this.view.json.data.selectList.indexOf(column.json);
 
                     this.view.json.data.selectList.erase(this.json);
                     this.view.items.erase(this);
+
+                    var idx = this.view.json.data.selectList.indexOf(column.json);
 
                     this.view.json.data.selectList.splice(idx, 0, this.json);
                     this.view.items.splice(idx, 0, this);

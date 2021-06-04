@@ -235,7 +235,10 @@ debugger;
 
         this.node.getFirst().addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) this._setBusinessData(this.getInputData("change"));
+            if (this.validation()) {
+                this._setBusinessData(this.getInputData("change"));
+                this.fireEvent("change");
+            }
         }.bind(this));
 
         this.node.getFirst().addEvent("blur", function(){

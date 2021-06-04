@@ -301,7 +301,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "attachment": "Attachment",
         "div": "Div",
         "table": "Table",
-        "datagrid": "Datagrid",
+        "datagrid": "Datagrid(Deprecated)",
+        "datatable": "Datatable",
+        "datatemplate": "Datatemplate",
         "subform": "Subform",
         "ViewSelector": "ViewSelector",
         "view": "View",
@@ -548,6 +550,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowUpload": "Allow Upload",
         "allowPreview": "Allow Preview",
         "allowDownload": "Allow Download",
+        "allowEdit": "Allow Edit",
         "allowDelete": "Allow Delete",
         "allowDelMyAtt": "Only allow delete files uploaded by yourself",
         "allowDelCurActivityAtt": "Only allow delete files uploaded on current activity",
@@ -559,7 +562,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideLayoutButton": "Hide Layout Buttons",
         "hideSettingButton": "Hide Setting Buttons",
         "hideModeButton": "Hide Mode Button",
-        "showInDatagrid": "Show In Datagrid",
+        "showInDatagrid": "Show In Datagrid Or Datatable",
 
         "tableSize": "Table Size",
         "row": "Row",
@@ -587,6 +590,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "layoutCell": "Layout Cell",
         "other": "Other",
 
+        "permission": "Permission",
+
+        "containerStyles": "Container Styles",
+        "tableAttribute": "Table Attribute",
         "border": "Border",
         "backgroundColor": "Background Color",
         "alternateRow": "Alternate Row",
@@ -807,6 +814,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "meetingSit": "Meeting Sit",
         "meetingRecord": "Meeting Record",
         "customElement": "Custom element configuration",
+        "subjectEditBindFormData": "Bind Data",
 
         "autoCorrect": "Auto Correct",
         "ckeditorInfo": "For more attribute help, please see ",
@@ -873,8 +881,37 @@ MWF.xApplication.process.FormDesigner.LP = {
         "parameterScript": "Parameter Script (Return JSON Object)",
         "insertWidget": "Tnsert Widget",
         "selectWidget": "Select Widget",
-        "inDiv": "Wrapped in a div"
+        "inDiv": "Wrapped in a div",
 
+        "outerSideModuleId": "external related component ID",
+        "addButtonId": "Add button ID",
+        "deleteSelectedButtonId": "Delete selected item button ID",
+        "selectAllModuleId": "Select All component ID",
+        "selectedValue": "Selected Value",
+        "innerSideModuleId": "Internal related component ID",
+        "deleteButtonId": "Delete Button ID",
+        "sequenctModuleId": "Sequence number component ID",
+        "selectModuleId": "Select component ID",
+        "defaultShow": "Default Show",
+        "item": "Item",
+        "maxItemCount": "Maximum Add",
+        "minItemCount": "Minimum Keep",
+        "dtImportInfor": "Note: Pictures, attachments, datagrids, and sub datatemplates cannot be imported or exported.",
+        "importButtonId": "Import Button Id",
+        "exportButtonId": "Export Button Id",
+        "importExporConfig": "Import and export field configuration",
+        "validationPopFormConfig": "PopForm Config",
+        "validationPopFormHeight": "PopForm Height",
+        "validationPopFormWidth": "PopForm Width",
+        "validationTableStyle": "Validation Table Style",
+        "validationTitleTdStyle": "Validation Title Cell Style",
+        "validationContentTdStyle": "Validation Content Td Style",
+        "validationTableAttribute": "Validation Table Attribute",
+        "count": "Count",
+        "import" : "Import",
+        "datatableEditMode": "Edit Mode",
+        "datatableEditModeValue": ["single row","multiple rows"],
+        "onlyPc": "Available on PC only"
     },
     "actionBar": {
         "close":"Close",
@@ -904,7 +941,18 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resume": "Resume",
         "resumeTitle": "Resume the task from pending",
         "downloadAll": "Download",
-        "downloadAllTitle": "Download the form and all attachments"
+        "downloadAllTitle": "Download the form and all attachments",
+        "setReaded": "Mark as read",
+        "readed": "Readed"
+    },
+    "filedConfigurator": {
+        "sequence": "Sequence",
+        "fieldTitle": "Field Title",
+        "fieldId": "Field ID",
+        "action": "Action",
+        "moveup": "Move to the previous line",
+        "deleteRow": "Delete Row",
+        "insertRow": "Insert Row"
     }
 
 };

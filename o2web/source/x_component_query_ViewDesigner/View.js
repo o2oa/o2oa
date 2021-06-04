@@ -261,14 +261,14 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                                         if (subtrs[0].getStyle("display")=="none"){
                                             subtrs.each(function(subtr){ subtr.setStyle("display", "table-row"); });
                                             if( iconNode ) {
-                                                iconNode.setStyle("background", "url(" + "../x_component_process_ViewDesigner/$View/default/icon/down.png) center center no-repeat");
+                                                iconNode.setStyle("background", "url(" + "../x_component_query_ViewDesigner/$View/default/icon/down.png) center center no-repeat");
                                             }else{
                                                 this.setStyles( _self.json.data.viewStyles["groupExpandNode"] )
                                             }
                                         }else{
                                             subtrs.each(function(subtr){ subtr.setStyle("display", "none"); });
                                             if( iconNode ) {
-                                                iconNode.setStyle("background", "url(" + "../x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat");
+                                                iconNode.setStyle("background", "url(" + "../x_component_query_ViewDesigner/$View/default/icon/right.png) center center no-repeat");
                                             }else{
                                                 this.setStyles( _self.json.data.viewStyles["groupCollapseNode"] )
                                             }
@@ -1704,10 +1704,12 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
                     this.areaNode.inject(inObj, "before");
                     var column = inObj.retrieve("column");
                     this.listNode.inject(column.listNode, "before");
-                    var idx = this.view.json.data.selectList.indexOf(column.json);
+                    // var idx = this.view.json.data.selectList.indexOf(column.json);
 
                     this.view.json.data.selectList.erase(this.json);
                     this.view.items.erase(this);
+
+                    var idx = this.view.json.data.selectList.indexOf(column.json);
 
                     this.view.json.data.selectList.splice(idx, 0, this.json);
                     this.view.items.splice(idx, 0, this);

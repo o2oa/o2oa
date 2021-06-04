@@ -208,7 +208,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
        if ((i+1)%rowappnum!=0){
             applicationdiv.setStyle("margin-right",rowappmargin+"px");
        }else{
-            applicationdiv.setStyle("margin-right","30px");
+            applicationdiv.setStyle("margin-right","0px");
        }
        var applicationicon = new Element("div",{"class":"o2_appmarket_application_icon"}).inject(applicationdiv);
        applicationicon.setStyle("background-image", "url(data:image/png;base64,"+d.icon+")");

@@ -6,8 +6,12 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.cms.assemble.control.Business;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -40,7 +44,6 @@ public class ActionQueryViewDocument extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Boolean isManager = false;
 		Boolean check = true;
-		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
 		Long viewCount = 0L;
 
@@ -63,7 +66,7 @@ public class ActionQueryViewDocument extends BaseAction {
 			}
 		}
 
-		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id, isAnonymous, isManager, effectivePerson.getDistinguishedName() );
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id, effectivePerson.getDistinguishedName() );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
 		if (optional.isPresent()) {
@@ -105,7 +108,7 @@ public class ActionQueryViewDocument extends BaseAction {
 	 * @param isManager 当前用户是否是系统管理或者CMS管理员
 	 * @return
 	 */
-	private ActionResult<Wo> getDocumentQueryResult( String id, HttpServletRequest request, EffectivePerson effectivePerson, Boolean isManager ) {
+	private ActionResult<Wo> getDocumentQueryResult( String id, HttpServletRequest request, EffectivePerson effectivePerson, Boolean isManager ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		WoDocument woOutDocument = null;
@@ -121,6 +124,10 @@ public class ActionQueryViewDocument extends BaseAction {
 		List<String> groupNames = null;
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+		}
 
 		if( !isAnonymous ) {
 			try {
@@ -148,6 +155,12 @@ public class ActionQueryViewDocument extends BaseAction {
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null );
 			}
+		}
+
+		check = this.hasReadPermission(business, document, null, null, effectivePerson, null);
+
+		if(!check){
+			throw new ExceptionAccessDenied(effectivePerson, document);
 		}
 
 		if (check) {

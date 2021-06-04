@@ -1315,6 +1315,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 this.form.workAction.getAttachment(o.id, this.form.businessData.work.id, function (json) {
                     if (json.data) {
                         if (!json.data.control) json.data.control = {};
+
+                        this.form.businessData.attachmentList.push(json.data);
+
                         this.attachmentController.addAttachment(json.data, o.messageId);
                     }
                     this.attachmentController.checkActions();
@@ -1450,6 +1453,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         this.form.workAction.deleteAttachment(attachment.data.id, this.form.businessData.work.id, function (josn) {
             this.attachmentController.removeAttachment(attachment);
             this.attachmentController.checkActions();
+
+            for( var i=0; i<this.form.businessData.attachmentList.length; i++ ){
+                var attData = this.form.businessData.attachmentList[i];
+                if( attData.id === id ){
+                    this.form.businessData.attachmentList.erase(attData);
+                    break;
+                }
+            }
 
             if (this.form.officeList) {
                 this.form.officeList.each(function (office) {
@@ -1747,8 +1758,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     },
     /**
      * @summary 为组件重新设置附件，该附件必须已经上传。
-     *  @param data {Object}.
-     *  <pre><code class='language-js'>{
+     *  @param data {Array}.
+     *  <pre><code class='language-js'>[{
      *     "id": "56c4e86f-a4c8-4cc2-a150-1a0d2c5febcb",   //附件ID
      *     "name": "133203a2-92e6-4653-9954-161b72ddb7f9.png", //附件名称
      *     "extension": "png",                             //附件扩展名
@@ -1760,8 +1771,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
      *     "activityName": "申请人",                           //附件上传的活动名称
      *     "activityType": "manual",                           //附件上传的活动类型
      *     "site": "$mediaOpinion",                        //附件存储位置（一般用于区分附件在哪个表单元素中显示）
-     *     "type": "image/png"                             //附件类型（contentType）
-     * }</code></pre>
+     *     "type": "image/png",                             //附件类型（contentType）
+     *     "control": {}
+     * }]</code></pre>
      */
     setData: function(data){
         this.attachmentController.clear();
@@ -2203,7 +2215,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         //MWF.require("MWF.widget.AttachmentController", function() {
         var options = {
             "style": this.json.style || "default",
-            "title": MWF.xApplication.process.Xform.LP.attachmentArea+"DG",
+            "title": MWF.xApplication.process.Xform.LP.attachmentArea,
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
             "resize": (this.json.resize === "y" || this.json.resize === "true"),
@@ -2213,11 +2225,12 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
             "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
             "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
-            "readonly": (this.json.readonly === "y" || this.json.readonly === "true"),
+            "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "ignoreSite": this.json.ignoreSite,
             "onOrder": function () {
                 this.fireEvent("change");
             }.bind(this)
@@ -2226,16 +2239,33 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         if (this.form.json.attachmentStyle) {
             options = Object.merge(options, this.form.json.attachmentStyle);
         }
+
+        this.fireEvent("queryLoadController", [options]);
+
         this.attachmentController = new MWF.xApplication.process.Xform.AttachmentController(this.node, this, options);
+
+        this.fireEvent("loadController");
+
         this.attachmentController.load();
+
+        this.fireEvent("postLoadController");
 
         // var d = this._getBusinessData();
         // if (d) d.each(function (att) {
         //     this.attachmentController.addAttachment(att);
         // }.bind(this));
-        this.form.businessData.attachmentList.each(function (att) {
-            if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
-        }.bind(this));
+        if(this.json.ignoreSite) {
+            ( this._getBusinessData() || [] ).each(function (att) {
+                var flag = this.form.businessData.attachmentList.some(function (attData) {
+                    return att.id === attData.id;
+                }.bind(this));
+                if(flag)this.attachmentController.addAttachment(att);
+            }.bind(this));
+        }else{
+            this.form.businessData.attachmentList.each(function (att) {
+                if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
+            }.bind(this));
+        }
         this.setAttachmentBusinessData();
     },
     setAttachmentBusinessData: function(){

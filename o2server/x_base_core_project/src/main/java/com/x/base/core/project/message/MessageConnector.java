@@ -95,18 +95,20 @@ public class MessageConnector {
 	public static final String TYPE_CALENDAR_ALARM = "calendar_alarm";
 
 	public static final String TYPE_CUSTOM_CREATE = "custom_create";
-	
+
 	public static final String TYPE_TEAMWORK_TASKCREATE = "teamwork_taskCreate";
-	
+
 	public static final String TYPE_TEAMWORK_TASKUPDATE = "teamwork_taskUpdate";
-	
+
 	public static final String TYPE_TEAMWORK_TASKDELETE = "teamwork_taskDelelte";
-	
+
 	public static final String TYPE_TEAMWORK_TASKOVERTIME = "teamwork_taskOvertime";
-	
+
 	public static final String TYPE_TEAMWORK_CHAT = "teamwork_taskChat";
-	
+
 	public static final String TYPE_CMS_PUBLISH = "cms_publish";
+
+	public static final String TYPE_CMS_PUBLISH_TO_CREATOR = "cms_publish_to_creator";
 
 	public static final String TYPE_BBS_SUBJECTCREATE = "bbs_subjectCreate";
 
@@ -138,7 +140,7 @@ public class MessageConnector {
 	public static final String CONSUME_MPWEIXIN = "mpweixin"; // 微信公众号
 
 	public static final String CONSUME_MQ = "mq";
-	
+
 	private static Context context;
 
 	private static LinkedBlockingQueue<Wrap> connectQueue = new LinkedBlockingQueue<>();

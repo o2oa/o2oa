@@ -45,7 +45,7 @@
       "height": "30px",
       "line-height": "30px",
       "padding-left" : "20px",
-      "background-image": "url(../x_component_process_ViewDesigner/$View/default/icon/right.png)",
+      "background-image": "url(../x_component_query_ViewDesigner/$View/default/icon/right.png)",
       "background-repeat" : "no-repeat",
       "background-position": "left center"
     },
@@ -53,7 +53,7 @@
       "height": "30px",
       "line-height": "30px",
       "padding-left" : "20px",
-      "background-image": "url(../x_component_process_ViewDesigner/$View/default/icon/down.png)",
+      "background-image": "url(../x_component_query_ViewDesigner/$View/default/icon/down.png)",
       "background-repeat" : "no-repeat",
       "background-position": "left center"
     },

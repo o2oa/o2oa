@@ -954,7 +954,7 @@ MWFCalendarMonthView.Calendar.WholeDayWeek = new Class({
                         isFull : true
                     }, {app:this.app});
                     form.view = this.view;
-                    form.edit();
+                    this.calendar.app.isEventEditable(this.data) ? form.edit() : form.open();
                 }.bind(this),
                 mouseover : function(){
                     this.document.setMouseOver();
@@ -1100,7 +1100,7 @@ MWFCalendarMonthView.Calendar.InOnDayDocument = new Class({
                         isFull : true
                     }, {app:this.app});
                     form.view = this.view;
-                    form.edit();
+                    this.app.isEventEditable(this.data) ? form.edit() : form.open();
                 }.bind(this),
                 "mouseover" : function () {
                     this.node.setStyle("border-color", this.data.color );
