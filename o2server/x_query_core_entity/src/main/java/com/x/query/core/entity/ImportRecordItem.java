@@ -99,11 +99,19 @@ public class ImportRecordItem extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String distribution;
 
+	public static final String srcData_FIELDNAME = "srcData";
+	@FieldDescribe("原始数据.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + srcData_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String srcData;
+
 	public static final String data_FIELDNAME = "data";
 	@FieldDescribe("导入数据.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
@@ -177,5 +185,13 @@ public class ImportRecordItem extends SliceJpaObject {
 
 	public void setDistribution(String distribution) {
 		this.distribution = distribution;
+	}
+
+	public String getSrcData() {
+		return srcData;
+	}
+
+	public void setSrcData(String srcData) {
+		this.srcData = srcData;
 	}
 }
