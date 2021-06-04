@@ -137,6 +137,7 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "serialField": "序号/文号",
         "startTimeField": "开始日期",
         "completeTimeField": "结束日期",
-        "selectProcess1": "请先选择流程"
+        "selectProcess1": "请先选择流程",
+        "lineBreak": "换行符"
     }
 };

@@ -37,17 +37,24 @@
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">{{$.lp.fieldType}}:</td>
-                        <td class="editTableValue"><select id="text{$.pid}dataTypeSelectedCMSProcess" name="dataType_CMSProcess">
-<!--                                                           onchange=" var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
-                            <option value="string" selected>string</option>
-                            <option value="date">date</option>
-                            <option value="number">number</option>
-                            <option value="boolean">boolean</option>
-                            <option value="stringList">stringList</option>
-                            <option value="dateList">dateList</option>
-                            <option value="numberList">numberList</option>
-                            <option value="booleanList">booleanList</option>
+                        <td class="editTableValue">
+                            <select id="text{$.pid}dataTypeSelectedCMSProcess" name="dataType_CMSProcess"
+                                    onchange="$('text{$.pid}lineBreak_CMSProcess_Tr').setStyle('display',this.options[this.selectedIndex].value==='string'?'':'none');">
+                            <option value="string" text{($.dataType_CMSProcess=='string')?'selected':''}>string</option>
+                            <option value="date" text{($.dataType_CMSProcess=='date')?'selected':''}>date</option>
+                            <option value="number" text{($.dataType_CMSProcess=='number')?'selected':''}>number</option>
+                            <option value="boolean" text{($.dataType_CMSProcess=='boolean')?'selected':''}>boolean</option>
+                            <option value="stringList" text{($.dataType_CMSProcess=='stringList')?'selected':''}>stringList</option>
+                            <option value="dateList" text{($.dataType_CMSProcess=='dateList')?'selected':''}>dateList</option>
+                            <option value="numberList" text{($.dataType_CMSProcess=='numberList')?'selected':''}>numberList</option>
+                            <option value="booleanList" text{($.dataType_CMSProcess=='booleanList')?'selected':''}>booleanList</option>
                         </select></td>
+                    </tr>
+                    <tr id="text{$.pid}lineBreak_CMSProcess_Tr" style="display:text{($.dataType_CMSProcess==='string')?'':'none'}">
+                        <td class="editTableTitle">{{$.lp.lineBreak}}:</td>
+                        <td class="editTableValue">
+                            <input type="text" style="width: 150px;" name="lineBreak_CMSProcess" value="text{$.lineBreak_CMSProcess}" class="editTableInputNoWidth"/>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -55,24 +62,31 @@
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">{{$.lp.fieldType}}:</td>
-                        <td class="editTableValue"><select  id="text{$.pid}dataTypeSelectedQuerytable" name="dataType_Querytable">
-<!--                                                            onchange="var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
-                            <option value="string">string</option>
-                            <option value="integer">integer</option>
-                            <option value="long">long</option>
-                            <option value="double">double</option>
-                            <option value="boolean">boolean</option>
-                            <option value="date">date</option>
-                            <option value="time">time</option>
-                            <option value="dateTime">dateTime</option>
-                            <option value="stringList">stringList</option>
-                            <option value="integerList">integerList</option>
-                            <option value="longList">longList</option>
-                            <option value="doubleList">doubleList</option>
-                            <option value="booleanList">booleanList</option>
-                            <option value="stringLob">stringLob</option>
-                            <option value="stringMap">stringMap</option>
+                        <td class="editTableValue">
+                            <select  id="text{$.pid}dataTypeSelectedQuerytable" name="dataType_Querytable"
+                                     onchange="$('text{$.pid}lineBreak_Querytable_Tr').setStyle('display',this.options[this.selectedIndex].value==='string'?'':'none');">
+                             <option value="string" text{($.dataType_Querytable=='string')?'selected':''}>string</option>
+                            <option value="integer" text{($.dataType_Querytable=='integer')?'selected':''}>integer</option>
+                            <option value="long" text{($.dataType_Querytable=='long')?'selected':''}>long</option>
+                            <option value="double" text{($.dataType_Querytable=='double')?'selected':''}>double</option>
+                            <option value="boolean" text{($.dataType_Querytable=='boolean')?'selected':''}>boolean</option>
+                            <option value="date" text{($.dataType_Querytable=='date')?'selected':''}>date</option>
+                            <option value="time" text{($.dataType_Querytable=='time')?'selected':''}>time</option>
+                            <option value="dateTime" text{($.dataType_Querytable=='dateTime')?'selected':''}>dateTime</option>
+                            <option value="stringList" text{($.dataType_Querytable=='stringList')?'selected':''}>stringList</option>
+                            <option value="integerList" text{($.dataType_Querytable=='integerList')?'selected':''}>integerList</option>
+                            <option value="longList" text{($.dataType_Querytable=='longList')?'selected':''}>longList</option>
+                            <option value="doubleList" text{($.dataType_Querytable=='doubleList')?'selected':''}>doubleList</option>
+                            <option value="booleanList" text{($.dataType_Querytable=='booleanList')?'selected':''}>booleanList</option>
+                            <option value="stringLob" text{($.dataType_Querytable=='stringLob')?'selected':''}>stringLob</option>
+                            <option value="stringMap" text{($.dataType_Querytable=='stringMap')?'selected':''}>stringMap</option>
                         </select></td>
+                    </tr>
+                    <tr id="text{$.pid}lineBreak_Querytable_Tr" style="display:text{($.dataType_Querytable==='string')?'':'none'}">
+                        <td class="editTableTitle">{{$.lp.lineBreak}}:</td>
+                        <td class="editTableValue">
+                            <input type="text" style="width: 150px;" name="lineBreak_Querytable" value="text{$.lineBreak_Querytable}" class="editTableInputNoWidth"/>
+                        </td>
                     </tr>
                 </table>
             </div>
