@@ -642,28 +642,65 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         this.errorTextList = this.errorTextList.concat( errorTextList );
         this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
 
+        if(this.errorTextList.length>0){
+            return false;
+        }
+
+        this.createData();
+
         if( this.importer.json.type === "cms" ){
             this.checkCMS( true );
         }else if( this.importer.json.type === "process" ){
             this.checkProcess( true );
         }
 
-        if(this.errorTextList.length>0){
-            return false;
-        }
-
         return true;
-
-
+    },
+    getColInfor: function(key, isExcel){
+        var lp = this.lp;
+        if( this.pathIndexMap && typeOf(this.pathIndexMap[key]) === "number"){
+            var i = this.pathIndexMap[key];
+            if( isExcel ){
+                var text = lp.importValidationColumnTextExcel;
+                return text.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
+            }else{
+                var text =  lp.importValidationColumnText;
+                return text.replace( "{n}", i+1 );
+            }
+        }
+        return ""
     },
     checkCMS : function( notCheckName ){
-        var lp = this.lp;
 
-        var columnText =  lp.importValidationColumnText;
-        var columnTextExcel = lp.importValidationColumnTextExcel;
+        var data = this.document.identity;
+        if(!data){
+            this.errorTextList.push( this.getColInfor("identity") + "未设置拟稿人身份或者拟稿人在系统中不存在" + lp.fullstop );
+            this.errorTextListExcel.push(this.getColInfor("identity", true) + "未设置拟稿人身份或者拟稿人在系统中不存在" + lp.fullstop );
+        }else if(data.split("@").getLast().toLowerCase() !== "i"){
+            this.errorTextList.push( '"'+ data +'"'+ "拟稿人未设置成身份" + lp.fullstop );
+            this.errorTextListExcel.push(  '"'+ data +'"'+ "拟稿人未设置成身份" + lp.fullstop );
+        }
 
-        var errorTextList = [];
-        var errorTextListExcel = [];
+        var data = this.document.publishTime;
+        if(!data){
+            this.errorTextList.push( "未设置发布时间或者发布时间在系统中不存在" + lp.fullstop );
+            this.errorTextListExcel.push( "未设置发布时间或者发布时间在系统中不存在" + lp.fullstop );
+        }else if( ! new Date(data).isValid(data) ){
+            this.errorTextList.push( '"'+ data +'"'+ "发布时间格式不正确" + lp.fullstop );
+            this.errorTextListExcel.push( '"'+ data +'"'+ "发布时间格式不正确" + lp.fullstop );
+        }
+
+        data = this.document.title;
+        if( data && data > 70){
+            this.errorTextList.push( '"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
+            this.errorTextListExcel.push( '"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
+        }
+
+        data = this.document.summary;
+        if( data && data.length > 70 ){
+            this.errorTextList.push( '"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
+            this.errorTextListExcel.push( '"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
+        }
 
         this.importer.json.data.columnList.each( function (columnJson, i) {
 
@@ -761,6 +798,8 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         return true;
     },
+
+
     createData : function(){
 
         var json = this.importer.json;
@@ -783,98 +822,27 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         json.data.columnList.each( function (columnJson, i) {
 
-            var dataType = json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
-
             var value = this.importedData[i] || "";
+            if( !value )return;
 
-            var data;
+            var data = this.parseData(value, (json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess), columnJson.isName);
+            if( !data )return;
 
-            if( value ){
+            if( json.type === "dynamicTable" ){
+                this.data[ columnJson.path ] = data;
+            }else{
+                this.setDataWithPath(this.data, columnJson.path, data);
+            }
 
-                switch ( dataType ) {
-                    case "string":
-                    case "stringList":
-                        if( columnJson.isName ){
-                            var  arr = value.split(/\s*,\s*/g ); //空格,空格
-                            if( json.type === "dynamicTable" ){
-                                data = arr
-                            }else{
-                                data = arr.map( function(d, idx){
-                                    return this.importer.getOrgData( d, true, true ) || d;
-                                }.bind(this)).clean();
-                            }
-                        }else{
-                            data = dataType === "string" ? value : value.split(/\s*,\s*/g );
-                        }
-                        break;
-                    case "number":
-                    case "integer":
-                    case "long":
-                        data = parseInt( value );
-                        break;
-                    case "double":
-                        data = parseFloat(value);
-                        break;
-                    case "numberList":
-                    case "integerList":
-                    case "longList":
-                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseInt( d ); }.bind(this)).clean();
-                        break;
-                    case "doubleList":
-                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseFloat( d ); }.bind(this)).clean();
-                        break;
-                    case "date":
-                        data = Date.parse(value).format( "%Y-%m-%d" );
-                        break;
-                    case "dateTime":
-                        data = Date.parse(value).format( "db" );
-                        break;
-                    case "dateList":
-                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "%Y-%m-%d" ); }.bind(this)).clean();
-                        break;
-                    case "dateTimeList":
-                        data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "db" ); }.bind(this)).clean();
-                        break;
-                    default:
-                        data = value;
-                        break;
-                }
-
-                if( json.type === "dynamicTable" ){
-                    this.data[ columnJson.path ] = data;
-                }else{
-                    var names = columnJson.path.split(".");
-                    var d = this.data;
-                    Array.each(names, function (n, idx) {
-                        // if( idx === names.length -1 )return;
-                        if ( !d[n] ){
-                            if( this.isNumberString(n) ){
-                                d[n.toInt()] = [];
-                            }else{
-                                d[n] = {};
-                            }
-                        }
-                        d = d[n];
-                    }.bind(this));
-                    // d[names[names.length -1]] = data;
-                }
-
-                if( data  ){
-                    if( json.type === "cms" ){
-                        // this.parseCMSDocument_FromExcel( columnJson, i, data )
-                        if( columnJson.isName ) {
-                            if (columnJson.isAuthor) {
-                                var array = this.parseCMSReadAndAuthor(data);
-                                this.document.authorList = this.document.authorList.concat(array)
-                            }
-                            if (columnJson.isReader) {
-                                var array = this.parseCMSReadAndAuthor(data);
-                                this.document.readerList = this.document.readerList.concat(array)
-                            }
-                        }
-
-                    }else if( json.type === "process" ){
-                        this.parseProcessWork_FromExcel( columnJson, i, data )
+            if( json.type === "cms" ){
+                if( columnJson.isName ) {
+                    if (columnJson.isAuthor) {
+                        var array = this.parseCMSReadAndAuthor(data);
+                        this.document.authorList = this.document.authorList.concat(array)
+                    }
+                    if (columnJson.isReader) {
+                        var array = this.parseCMSReadAndAuthor(data);
+                        this.document.readerList = this.document.readerList.concat(array)
                     }
                 }
 
@@ -891,24 +859,10 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 if( json.type === "dynamicTable" ){
                     this.data[ fieldJson.path ] = data;
                 }else{
-                    var names = fieldJson.path.split(".");
-                    var d = this.data;
-                    Array.each(names, function (n, idx) {
-                        // if( idx === names.length -1 )return;
-                        if ( !d[n] ){
-                            if( this.isNumberString(n) ){
-                                d[n.toInt()] = [];
-                            }else{
-                                d[n] = {};
-                            }
-                        }
-                        d = d[n];
-                    });
-                    // d[names[names.length -1]] = data;
+                    this.setDataWithPath(this.data, fieldJson.path, data);
                 }
 
                 if( json.type === "cms" ){
-                    // this.parseCMSDocument_CalculateField( fieldJson, data )
                     if( fieldJson.isAuthor ){
                         var array = this.parseCMSReadAndAuthor( data );
                         this.document.authorList = this.document.authorList.concat( array )
@@ -918,8 +872,6 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                         this.document.readerList = this.document.readerList.concat( array )
                     }
 
-                }else if( json.type === "process" ){
-                    // this.parseProcessWork_CalculateField( fieldJson, data )
                 }
             }
         }.bind(this));
@@ -974,12 +926,85 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         this.importer.fireEvent("afterCreateRowData", [null, this]);
     },
+    parseData: function(value, dataType, isName){
+        var data;
+        switch ( dataType ) {
+            case "string":
+            case "stringList":
+                if( isName ){
+                    var  arr = value.split(/\s*,\s*/g ); //空格,空格
+                    if( json.type === "dynamicTable" ){
+                        data = arr
+                    }else{
+                        data = arr.map( function(d, idx){
+                            return this.importer.getOrgData( d, true, true ) || d;
+                        }.bind(this)).clean();
+                    }
+                }else{
+                    data = dataType === "string" ? value : value.split(/\s*,\s*/g );
+                }
+                break;
+            case "number":
+            case "integer":
+            case "long":
+                data = parseInt( value );
+                break;
+            case "double":
+                data = parseFloat(value);
+                break;
+            case "numberList":
+            case "integerList":
+            case "longList":
+                data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseInt( d ); }.bind(this)).clean();
+                break;
+            case "doubleList":
+                data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseFloat( d ); }.bind(this)).clean();
+                break;
+            case "date":
+                data = Date.parse(value).format( "%Y-%m-%d" );
+                break;
+            case "dateTime":
+                data = Date.parse(value).format( "db" );
+                break;
+            case "dateList":
+                data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "%Y-%m-%d" ); }.bind(this)).clean();
+                break;
+            case "dateTimeList":
+                data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "db" ); }.bind(this)).clean();
+                break;
+            default:
+                data = value;
+                break;
+        }
+        return data;
+    },
+    setDataWithPath: function(obj, path, data){
+        var names = path.split(".");
+        var d = obj;
+        Array.each(names, function (n, idx) {
+            if( idx === names.length -1 )return;
+            if ( !d[n] ){
+                if( this.isNumberString(n) ){
+                    d[n.toInt()] = [];
+                }else{
+                    d[n] = {};
+                }
+            }
+            d = d[n];
+        }.bind(this));
+        d[names[names.length -1]] = data;
+    },
     setDataWithField: function(obj, fieldName, path, isName){
         var json = this.importer.json;
-        var data;
         if( json.data[fieldName] ){
+            var f = json.data[fieldName];
+
+            json.data.cloumnList.each(function(json, i){
+                if(json.path === f)this.pathIndexMap[path] = i;
+            }.bind(this));
+
             var d = this.data;
-            Array.each(json.data[fieldName].split("."), function (n) {
+            Array.each( f.split("."), function (n) {
                 if(this.isNumberString(n))n = n.toInt();
                 if (d) d = d[n];
             });
@@ -998,82 +1023,6 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
     isNumberString: function(string){
        return string.toInt().toString() === string;
     },
-
-    parseCMSDocument_FromExcel : function( columnJson, i, data, excelValue ){
-        var lp = this.importer.lp;
-        var columnText =  lp.importValidationColumnText;
-        var columnTextExcel = lp.importValidationColumnTextExcel;
-
-        var colInfor = columnText.replace( "{n}", i+1 );
-        var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
-
-        if( columnJson.isTitle ){
-            this.document.title = data;
-        }
-        if( columnJson.isSummary ){
-            this.document.summary = data;
-        }
-        if( columnJson.isName ){
-            if( columnJson.isPublisher && data.length){
-               this.document.identity = data[0].distinguishedName
-            }
-            // if( columnJson.isAuthor ){
-            //     var array = this.parseCMSReadAndAuthor( data );
-            //     this.document.authorList = this.document.authorList.concat( array )
-            // }
-            // if( columnJson.isReader ){
-            //     var array = this.parseCMSReadAndAuthor( data );
-            //     this.document.readerList = this.document.readerList.concat( array )
-            // }
-        }
-        // if( columnJson.isTop ){
-        //     if( [lp.yes,"yes","true"].contains(data) ){
-        //         this.document.isTop = true;
-        //     }
-        // }
-    },
-    parseCMSDocument_CalculateField : function( fieldJson, data ){
-        var lp = this.importer.lp;
-
-        var fieldInfor = lp.caculateFieldValidationText + ( fieldJson.displayName || fieldJson.path );
-
-        if( fieldJson.isTitle ){
-            if( data.length > 70 ){
-                this.errorTextList.push(  fieldInfor +'"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
-                this.errorTextListExcel.push(  fieldInfor +'"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
-            }else{
-                this.document.title = data;
-            }
-        }
-        if( fieldJson.isSummary ){
-            if( data.length > 70 ){
-                this.errorTextList.push( fieldInfor +'"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
-                this.errorTextListExcel.push( fieldInfor +'"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
-            }else{
-                this.document.summary = data;
-            }
-        }
-        if( fieldJson.isPublisher ){
-            var d = (typeOf(data) === "array" && data.length) ? data[0] : data;
-            if( d ){
-                d = typeOf(d) === "object" ? d.distinguishedName : d;
-                this.document.identity = data[0].distinguishedName
-            }
-        }
-        // if( fieldJson.isAuthor ){
-        //     var array = this.parseCMSReadAndAuthor( data );
-        //     this.document.authorList = this.document.authorList.concat( array )
-        // }
-        // if( fieldJson.isReader ){
-        //     var array = this.parseCMSReadAndAuthor( data );
-        //     this.document.readerList = this.document.readerList.concat( array )
-        // }
-        // if( fieldJson.isTop ){
-        //     if( [lp.yes,"yes","true"].contains(data) ){
-        //         this.document.isTop = true;
-        //     }
-        // }
-    },
     parseCMSReadAndAuthor : function( data ){
         var cnArray = ["组织","群组","人员","人员","角色"];
         var keyArray = ["U","G","I","P","R"];
@@ -1091,44 +1040,6 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         }).clean()
     },
 
-    parseProcessWork_FromExcel : function( columnJson, i, data, excelValue ){
-        var lp = this.importer.lp;
-        var columnText =  lp.importValidationColumnText;
-        var columnTextExcel = lp.importValidationColumnTextExcel;
-
-        var colInfor = columnText.replace( "{n}", i+1 );
-        var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
-
-        if( columnJson.isProcessTitle ){
-            this.work.title = data;
-        }
-        if( columnJson.isName ){
-            if( columnJson.isProcessDrafter && data.length){
-                this.work.identity = data[0].distinguishedName
-            }
-        }
-    },
-    parseProcessWork_CalculateField : function( fieldJson, data ){
-        var lp = this.importer.lp;
-
-        var fieldInfor = lp.caculateFieldValidationText + ( fieldJson.displayName || fieldJson.path );
-
-        if( columnJson.isProcessTitle ){
-            // if( data.length > 70 ){
-            //     this.errorTextList.push(  fieldInfor +'"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
-            //     this.errorTextListExcel.push(  fieldInfor +'"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
-            // }else{
-                this.work.title = data;
-            // }
-        }
-        if( columnJson.isProcessDrafter ){
-            var d = (typeOf(data) === "array" && data.length) ? data[0] : data;
-            if( d ){
-                d = typeOf(d) === "object" ? d.distinguishedName : d;
-                this.work.identity = data[0].distinguishedName
-            }
-        }
-    },
     getResult: function(){
         if( this.importer.json.type === "cms" ){
             return this.document;
@@ -1138,15 +1049,6 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             return this.data;
         }
     }
-    // save : function () {
-    //     if( this.json.type === "dynamicTable" ){
-    //
-    //     }else if( this.json.type === "cms" ){
-    //
-    //     }else if( this.json.type === "process" ){
-    //
-    //     }
-    // }
 });
 
 MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
