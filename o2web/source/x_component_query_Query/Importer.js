@@ -654,9 +654,13 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             this.checkProcess( true );
         }
 
+        if(this.errorTextList.length>0){
+            return false;
+        }
+
         return true;
     },
-    getColInfor: function(key, isExcel){
+    getCol: function(key, isExcel){
         var lp = this.lp;
         if( this.pathIndexMap && typeOf(this.pathIndexMap[key]) === "number"){
             var i = this.pathIndexMap[key];
@@ -671,73 +675,44 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         return ""
     },
     checkCMS : function( notCheckName ){
+        var lp = this.lp;
+
+        var errorTextList = [];
+        var errorTextListExcel = [];
 
         var data = this.document.identity;
         if(!data){
-            this.errorTextList.push( this.getColInfor("identity") + "未设置拟稿人身份或者拟稿人在系统中不存在" + lp.fullstop );
-            this.errorTextListExcel.push(this.getColInfor("identity", true) + "未设置拟稿人身份或者拟稿人在系统中不存在" + lp.fullstop );
+
+            errorTextList.push( this.getCol("identity", false) + lp.noDrafter + lp.fullstop );
+            errorTextListExcel.push( this.getCol("identity", true) + lp.noDrafter + lp.fullstop );
+
         }else if(data.split("@").getLast().toLowerCase() !== "i"){
-            this.errorTextList.push( '"'+ data +'"'+ "拟稿人未设置成身份" + lp.fullstop );
-            this.errorTextListExcel.push(  '"'+ data +'"'+ "拟稿人未设置成身份" + lp.fullstop );
+
+            errorTextList.push( this.getCol("identity", false) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
+            errorTextListExcel.push(  this.getCol("identity", true) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
+
         }
 
         var data = this.document.publishTime;
         if(!data){
-            this.errorTextList.push( "未设置发布时间或者发布时间在系统中不存在" + lp.fullstop );
-            this.errorTextListExcel.push( "未设置发布时间或者发布时间在系统中不存在" + lp.fullstop );
+            errorTextList.push(this.getCol("publishTime", false) + lp.noPublishTime + lp.fullstop );
+            errorTextListExcel.push(this.getCol("publishTime", false) + lp.noPublishTime + lp.fullstop );
         }else if( ! new Date(data).isValid(data) ){
-            this.errorTextList.push( '"'+ data +'"'+ "发布时间格式不正确" + lp.fullstop );
-            this.errorTextListExcel.push( '"'+ data +'"'+ "发布时间格式不正确" + lp.fullstop );
+            errorTextList.push(this.getCol("publishTime", false) + '"'+ data +'"'+ lp.publishTimeFormatError + lp.fullstop );
+            errorTextListExcel.push(this.getCol("publishTime", false) + '"'+ data +'"'+ lp.publishTimeFormatError + lp.fullstop );
         }
 
         data = this.document.title;
         if( data && data > 70){
-            this.errorTextList.push( '"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
-            this.errorTextListExcel.push( '"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
+            errorTextList.push(this.getCol("title", false) + '"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
+            errorTextListExcel.push(this.getCol("title", false) + '"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
         }
 
         data = this.document.summary;
         if( data && data.length > 70 ){
-            this.errorTextList.push( '"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
-            this.errorTextListExcel.push( '"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
+            errorTextList.push(this.getCol("summary", false) + '"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
+            errorTextListExcel.push( this.getCol("summary", false) + '"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
         }
-
-        this.importer.json.data.columnList.each( function (columnJson, i) {
-
-            var colInfor = columnText.replace( "{n}", i+1 );
-            var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
-
-            var value = this.importedData[i] || "";
-
-            var dataType = columnJson.dataType_CMSProcess;
-            if( value && ["string","stringList"].contains(columnJson.dataType_CMSProcess) ){
-                if( columnJson.isTitle ){
-                    if( value.length > 70 ){
-                        errorTextList.push(colInfor + value + lp.cmsTitleLengthInfor + lp.fullstop );
-                        errorTextListExcel.push( colInforExcel + value + lp.cmsTitleLengthInfor + lp.fullstop );
-                    }
-                }
-                if( columnJson.isSummary ){
-                    if( value.length > 70 ){
-                        errorTextList.push(colInfor + value + lp.cmsSummaryLengthInfor + lp.fullstop );
-                        errorTextListExcel.push( colInforExcel + value + lp.cmsSummaryLengthInfor + lp.fullstop );
-                    }
-                }
-                if( columnJson.isName && !notCheckName){
-                    if( columnJson.isPublisher ){ //发布者必须要校验
-                        var  arr = value.split(/\s*,\s*/g ); //空格,空格
-                        arr.each( function(d, idx){
-                            var obj = this.importer.getOrgData( d );
-                            if( obj.errorText ){
-                                errorTextList.push( colInfor + obj.errorText + lp.fullstop );
-                                errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
-                            }
-                        }.bind(this));
-                    }
-                }
-             }
-
-        }.bind(this));
 
         this.errorTextList = this.errorTextList.concat( errorTextList );
         this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
@@ -757,37 +732,39 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         var errorTextList = [];
         var errorTextListExcel = [];
 
+        var data = this.work.identity;
+        if(!data){
+            errorTextList.push( this.getCol("identity", false) + lp.noDrafter + lp.fullstop );
+            errorTextListExcel.push( this.getCol("identity", true) + lp.noDrafter + lp.fullstop );
+        }else if(data.split("@").getLast().toLowerCase() !== "i"){
+            errorTextList.push( this.getCol("identity", false) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
+            errorTextListExcel.push(  this.getCol("identity", true) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
+        }
 
-        this.importer.json.data.columnList.each( function (columnJson, i) {
-
-            var colInfor = columnText.replace( "{n}", i+1 );
-            var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
-
-            var value = this.importedData[i] || "";
-
-            var dataType = columnJson.dataType_CMSProcess;
-            if( value && ["string","stringList"].contains(columnJson.dataType_CMSProcess) ){
-                // if( columnJson.isProcessTitle ){
-                //     if( value.length > 70 ){
-                //         errorTextList.push(colInfor + value + lp.cmsTitleLengthInfor + lp.fullstop );
-                //         errorTextListExcel.push( colInforExcel + value + lp.cmsTitleLengthInfor + lp.fullstop );
-                //     }
-                // }
-                if( columnJson.isName && !notCheckName ){
-                    if( columnJson.isProcessDrafter ){ //流程发起人必须要校验
-                        var  arr = value.split(/\s*,\s*/g ); //空格,空格
-                        arr.each( function(d, idx){
-                            var obj = this.importer.getOrgData( d );
-                            if( obj.errorText ){
-                                errorTextList.push( colInfor + obj.errorText + lp.fullstop );
-                                errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
-                            }
-                        }.bind(this));
-                    }
-                }
+        if( json.data.processStatus === "completed" ){
+            if(!this.work.form){
+                errorTextList.push( lp.noForm + lp.fullstop );
+                errorTextListExcel.push( lp.noForm + lp.fullstop );
             }
 
-        }.bind(this));
+            var data = this.work.startTime;
+            if(!data){
+                errorTextList.push(this.getCol("startTime", false) + lp.noStartTime + lp.fullstop );
+                errorTextListExcel.push(this.getCol("startTime", false) + lp.noStartTime + lp.fullstop );
+            }else if( ! new Date(data).isValid(data) ){
+                errorTextList.push(this.getCol("startTime", false) + '"'+ data +'"'+ lp.startTimeFormatError + lp.fullstop );
+                errorTextListExcel.push(this.getCol("startTime", false) + '"'+ data +'"'+ lp.startTimeFormatError + lp.fullstop );
+            }
+
+            var data = this.work.completeTime;
+            if(!data){
+                errorTextList.push(this.getCol("completeTime", false) + lp.noEndTime + lp.fullstop );
+                errorTextListExcel.push(this.getCol("completeTime", false) + lp.noEndTime + lp.fullstop );
+            }else if( ! new Date(data).isValid(data) ){
+                errorTextList.push(this.getCol("completeTime", false) + '"'+ data +'"'+ lp.endTimeFormatError + lp.fullstop );
+                errorTextListExcel.push(this.getCol("completeTime", false) + '"'+ data +'"'+ lp.endTimeFormatError + lp.fullstop );
+            }
+        }
 
         this.errorTextList = this.errorTextList.concat( errorTextList );
         this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
