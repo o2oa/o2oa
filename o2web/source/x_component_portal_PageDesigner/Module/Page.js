@@ -204,6 +204,13 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		this.node.store("module", this);
 
 		var id = this.json.id.replace(/\-/g, "");
+
+		( this.node.get("class") || "" ).split(" ").each(function(className){
+			if( className.indexOf("css") === 0 && className.length === 35 ){
+				this.node.removeClass(className);
+			}
+		}.bind(this));
+
         this.node.addClass("css"+id);
         this.reloadCss();
 
