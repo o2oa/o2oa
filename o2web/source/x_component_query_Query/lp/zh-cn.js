@@ -172,6 +172,17 @@ MWF.xApplication.query.Query.LP = {
     "canNotBeEmpty": "不能为空",
     "cmsTitleLengthInfor": "标题长度不能超过70个字",
     "cmsSummaryLengthInfor": "摘要长度不能超过70个字",
-    "caculateFieldValidationText": "计算字段错误:"
+    "caculateFieldValidationText": "计算字段错误:",
+
+    "noDrafter": "未设置拟稿人身份或者拟稿人在系统中不存在",
+    "drafterIsNotIdentity": "拟稿人不是身份",
+    "noPublishTime": "未设置发布时间",
+    "publishTimeFormatError": "发布时间格式不正确",
+    "noStartTime": "未设置开始时间",
+    "startTimeFormatError": "开始时间格式不正确",
+    "noEndTime": "未设置结束时间",
+    "endTimeFormatError": "结束时间格式不正确",
+    "noForm": "未设置表单"
+
 
 };
