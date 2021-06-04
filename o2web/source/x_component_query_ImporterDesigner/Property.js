@@ -109,7 +109,7 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
             this.getFormList(function(){
                 formNodes.each(function(node){
                     node.empty();
-                    var select = new Element("select").inject(node);
+                    var select = new Element("select", {"style": "width:200px;"}).inject(node);
                     select.addEvent("change", function(e){
                         this.setValue(e.target.getParent("div").get("name"), e.target.options[e.target.selectedIndex].value);
                     }.bind(this));
@@ -145,7 +145,7 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
             }.bind(this));
         }else{
             new Element("option", {
-                "text": "请先选择流程",
+                "text": this.view.designer.lp.selectProcess1,
                 "value": ""
             }).inject(select);
         }
