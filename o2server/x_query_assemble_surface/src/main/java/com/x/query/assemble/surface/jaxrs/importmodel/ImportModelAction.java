@@ -19,12 +19,30 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.UUID;
 
 @Path("importmodel")
 @JaxrsDescribe("数据导入")
 public class ImportModelAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ImportModelAction.class);
+
+	@JaxrsMethodDescribe(value = "生成唯一编码.", action = BaseAction.class)
+	@GET
+	@Path("uuid")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getUUID(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<String> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
+		try {
+			String uuid = UUID.randomUUID().toString();
+			result.setData(uuid);
+		} catch (Exception e) {
+			logger.warn("user[" + currentPerson.getDistinguishedName() + "] get a new UUID error！", e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 	@JaxrsMethodDescribe(value = "根据查询获取统计对象.", action = ActionGetWithQuery.class)
 	@GET
@@ -83,7 +101,7 @@ public class ImportModelAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "获取导入记录.", action = ActionGetRecord.class)
 	@GET
-	@Path("/record/{recordId}")
+	@Path("record/{recordId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getRecord(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -99,9 +117,27 @@ public class ImportModelAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "重新导入失败的记录(执行导入是异步过程，请关注记录的状态).", action = ActionReExecute.class)
+	@GET
+	@Path("execute/record/{recordId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getReExecuteRecord(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						  @JaxrsParameterDescribe("导入记录标识") @PathParam("recordId") String recordId) {
+		ActionResult<ActionReExecute.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionReExecute().execute(effectivePerson, recordId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取导入记录的执行状态.", action = ActionGetRecordStatus.class)
 	@GET
-	@Path("/record/{recordId}/status")
+	@Path("record/{recordId}/status")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getRecordStatus(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -117,7 +153,7 @@ public class ImportModelAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "执行数据导入", action = ActionExecute.class)
+	@JaxrsMethodDescribe(value = "执行数据导入(执行导入是异步过程，请关注记录的状态)", action = ActionExecute.class)
 	@POST
 	@Path("{id}/execute")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
