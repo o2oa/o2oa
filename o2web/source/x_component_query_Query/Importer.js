@@ -60,43 +60,22 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         loadingTextNode.set("text", "loading...");
     },
     getImporterJSON: function(callback){
-        // var path = "/x_component_query_Query/$Main/importer_test.json"; //_querytable
-        // var r = new Request.JSON({
-        //     url: o2.filterUrl(path),
-        //     secure: false,
-        //     async: false,
-        //     method: "get",
-        //     noCache: false,
-        //     onSuccess: function(responseJSON, responseText){
-        //         this.json = responseJSON;
-        //         debugger;
-        //         if(callback)callback();
-        //         this.fireEvent("postLoadJson");
-        //     }.bind(this),
-        //     onError: function(text, error){
-        //         alert(error + text);
-        //     }
-        // });
-        // r.send();
-        // return;
-
-        // if (this.json.application){
-        //     this.lookupAction.getView(this.json.viewName, this.json.application, function(json){
-        //         this.importerJson = JSON.decode(json.data.data);
-        //         json.data.data = this.importerJson;
-        //         this.json = Object.merge(this.json, json.data);
-        //         if (callback) callback();
-        //     }.bind(this));
-        // }else{
-        this.designerAction.getImportModel(this.json.id, function(json){
-            debugger;
+        if (this.json.name){
+            this.lookupAction.getImportModule(this.json.name, this.json.application, function(json){
+                this.importerJson = JSON.decode(json.data.data);
+                json.data.data = this.importerJson;
+                this.json = Object.merge(this.json, json.data);
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            this.lookupAction.getImportModuleById(this.json.id, function(json){
                 this.importerJson = JSON.decode(json.data.data);
                 json.data.data = this.importerJson;
                 this.json.application = json.data.query;
                 this.json = Object.merge(this.json, json.data);
                 if (callback) callback();
             }.bind(this));
-        // }
+        }
     },
     _loadModuleEvents : function(){
         Object.each(this.json.data.events, function(e, key){
@@ -686,7 +665,6 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         var errorTextList = [];
         var errorTextListExcel = [];
 
-
         this.importer.json.data.columnList.each( function (columnJson, i) {
 
             var colInfor = columnText.replace( "{n}", i+1 );
@@ -785,25 +763,27 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
     },
     createData : function(){
 
-        if( this.importer.json.type === "cms" ){
+        var json = this.importer.json;
+
+        if( json.type === "cms" ){
             this.document = {
-                categoryId : this.importer.json.data.category.id,
+                categoryId : json.data.category.id,
                 readerList : [],
                 authorList : [],
                 docData : this.data
             };
-        }else if( this.importer.json.type === "process" ){
+        }else if( json.type === "process" ){
             this.work = {
-                processFlag : this.importer.json.data.process.id,
+                processFlag : json.data.process.id,
                 data: this.data
             };
         }
 
         this.importer.fireEvent("beforeCreateRowData", [null, this]);
 
-        this.importer.json.data.columnList.each( function (columnJson, i) {
+        json.data.columnList.each( function (columnJson, i) {
 
-            var dataType = this.importer.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+            var dataType = json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
 
             var value = this.importedData[i] || "";
 
@@ -816,7 +796,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     case "stringList":
                         if( columnJson.isName ){
                             var  arr = value.split(/\s*,\s*/g ); //空格,空格
-                            if( this.importer.json.type === "dynamicTable" ){
+                            if( json.type === "dynamicTable" ){
                                 data = arr
                             }else{
                                 data = arr.map( function(d, idx){
@@ -860,23 +840,40 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                         break;
                 }
 
-                if( this.importer.json.type === "dynamicTable" ){
+                if( json.type === "dynamicTable" ){
                     this.data[ columnJson.path ] = data;
                 }else{
                     var names = columnJson.path.split(".");
                     var d = this.data;
                     Array.each(names, function (n, idx) {
-                        if( idx === names.length -1 )return;
-                        if ( !d[n] ) d[n] = {};
+                        // if( idx === names.length -1 )return;
+                        if ( !d[n] ){
+                            if( this.isNumberString(n) ){
+                                d[n.toInt()] = [];
+                            }else{
+                                d[n] = {};
+                            }
+                        }
                         d = d[n];
-                    });
-                    d[names[names.length -1]] = data;
+                    }.bind(this));
+                    // d[names[names.length -1]] = data;
                 }
 
                 if( data  ){
-                    if( this.importer.json.type === "cms" ){
-                        this.parseCMSDocument_FromExcel( columnJson, i, data )
-                    }else if( this.importer.json.type === "process" ){
+                    if( json.type === "cms" ){
+                        // this.parseCMSDocument_FromExcel( columnJson, i, data )
+                        if( columnJson.isName ) {
+                            if (columnJson.isAuthor) {
+                                var array = this.parseCMSReadAndAuthor(data);
+                                this.document.authorList = this.document.authorList.concat(array)
+                            }
+                            if (columnJson.isReader) {
+                                var array = this.parseCMSReadAndAuthor(data);
+                                this.document.readerList = this.document.readerList.concat(array)
+                            }
+                        }
+
+                    }else if( json.type === "process" ){
                         this.parseProcessWork_FromExcel( columnJson, i, data )
                     }
                 }
@@ -885,54 +882,123 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         }.bind(this));
 
-        this.importer.json.data.calculateFieldList.each( function (fieldJson, i) {
+        json.data.calculateFieldList.each( function (fieldJson, i) {
             if( fieldJson.valueScript ){
                 var data = this.importer.Macro.exec( fieldJson.valueScript, this );
 
                 if( o2.typeOf(data) === "null" )return;
 
-                if( this.importer.json.type === "dynamicTable" ){
+                if( json.type === "dynamicTable" ){
                     this.data[ fieldJson.path ] = data;
                 }else{
                     var names = fieldJson.path.split(".");
                     var d = this.data;
                     Array.each(names, function (n, idx) {
-                        if( idx === names.length -1 )return;
-                        if ( !d[n] ) d[n] = {};
+                        // if( idx === names.length -1 )return;
+                        if ( !d[n] ){
+                            if( this.isNumberString(n) ){
+                                d[n.toInt()] = [];
+                            }else{
+                                d[n] = {};
+                            }
+                        }
                         d = d[n];
                     });
-                    d[names[names.length -1]] = data;
+                    // d[names[names.length -1]] = data;
                 }
 
-                if( this.importer.json.type === "cms" ){
-                    this.parseCMSDocument_CalculateField( fieldJson, data )
-                }else if( this.importer.json.type === "process" ){
-                    this.parseProcessWork_CalculateField( fieldJson, data )
+                if( json.type === "cms" ){
+                    // this.parseCMSDocument_CalculateField( fieldJson, data )
+                    if( fieldJson.isAuthor ){
+                        var array = this.parseCMSReadAndAuthor( data );
+                        this.document.authorList = this.document.authorList.concat( array )
+                    }
+                    if( fieldJson.isReader ){
+                        var array = this.parseCMSReadAndAuthor( data );
+                        this.document.readerList = this.document.readerList.concat( array )
+                    }
+
+                }else if( json.type === "process" ){
+                    // this.parseProcessWork_CalculateField( fieldJson, data )
                 }
             }
         }.bind(this));
 
-        if( this.importer.json.type === "cms" ){
+        var array;
+        if( json.type === "cms" ){
             this.document.docData = this.data;
-            if( !this.document.identity ){ //没有发布身份，则设置
-                var identityList = layout.session.user.identityList;
-                if( identityList && identityList.length ){
-                    this.document.identity = identityList[0].distinguishedName
+
+            if( json.data.documentPublisher === "importer" ){
+                array = layout.session.user.identityList;
+                if( array && array.length ){
+                    this.document.identity = array[0].distinguishedName
                 }
+            }else{
+                this.setDataWithField(this.document, "documentPublisherField", "identity", true);
             }
-        }else if( this.importer.json.type === "process" ){
+
+            if( json.data.documentPublishTime === "importer" ){
+                this.document.publishTime = new Date().format(db);
+            }else{
+                this.setDataWithField(this.document, "documentPublisherTimeField", "publishTime", false);
+            }
+
+            this.setDataWithField(this.document, "documentTitleField", "title", false);
+            if( !this.document.title )this.document.title = "无标题";
+
+            this.setDataWithField(this.document, "documentSummaryField", "summary", false);
+
+        }else if( json.type === "process" ){
             this.work.data = this.data;
-            if( !this.work.identity ){ //没有发布身份，则设置
-                var identityList = layout.session.user.identityList;
-                if( identityList && identityList.length ){
-                    this.work.identity = identityList[0].distinguishedName
+
+            if( json.data.processDrafter === "importer" ){
+                array = layout.session.user.identityList;
+                if( array && array.length ){
+                    this.work.identity = array[0].distinguishedName
                 }
+            }else{
+                this.setDataWithField(this.work, "processDrafterField", "identity", true);
+            }
+
+            this.setDataWithField(this.work, "processTitleField", "title", false);
+            if( !this.work.title )this.work.title = "无标题";
+
+            if( json.data.processStatus === "completed" ){
+                this.work.form = json.data.processForm || "";
+                this.setDataWithField(this.work, "processSerialField", "serial", false);
+                this.setDataWithField(this.work, "processStartTimeField", "startTime", false);
+                this.setDataWithField(this.work, "processCompleteTimeField", "completeTime", false);
             }
         }
 
 
         this.importer.fireEvent("afterCreateRowData", [null, this]);
     },
+    setDataWithField: function(obj, fieldName, path, isName){
+        var json = this.importer.json;
+        var data;
+        if( json.data[fieldName] ){
+            var d = this.data;
+            Array.each(json.data[fieldName].split("."), function (n) {
+                if(this.isNumberString(n))n = n.toInt();
+                if (d) d = d[n];
+            });
+            if(!d)return;
+
+            var _d = (typeOf(d) === "array" && d.length) ? d[0] : d;
+            if( _d ){
+                if(isName){
+                    obj[path] = typeOf(_d) === "object" ? _d.distinguishedName : _d;
+                }else{
+                    obj[path] = d;
+                }
+            }
+        }
+    },
+    isNumberString: function(string){
+       return string.toInt().toString() === string;
+    },
+
     parseCMSDocument_FromExcel : function( columnJson, i, data, excelValue ){
         var lp = this.importer.lp;
         var columnText =  lp.importValidationColumnText;
@@ -951,14 +1017,14 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             if( columnJson.isPublisher && data.length){
                this.document.identity = data[0].distinguishedName
             }
-            if( columnJson.isAuthor ){
-                var array = this.parseCMSReadAndAuthor( data );
-                this.document.authorList = this.document.authorList.concat( array )
-            }
-            if( columnJson.isReader ){
-                var array = this.parseCMSReadAndAuthor( data );
-                this.document.readerList = this.document.readerList.concat( array )
-            }
+            // if( columnJson.isAuthor ){
+            //     var array = this.parseCMSReadAndAuthor( data );
+            //     this.document.authorList = this.document.authorList.concat( array )
+            // }
+            // if( columnJson.isReader ){
+            //     var array = this.parseCMSReadAndAuthor( data );
+            //     this.document.readerList = this.document.readerList.concat( array )
+            // }
         }
         // if( columnJson.isTop ){
         //     if( [lp.yes,"yes","true"].contains(data) ){
@@ -994,14 +1060,14 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 this.document.identity = data[0].distinguishedName
             }
         }
-        if( fieldJson.isAuthor ){
-            var array = this.parseCMSReadAndAuthor( data );
-            this.document.authorList = this.document.authorList.concat( array )
-        }
-        if( fieldJson.isReader ){
-            var array = this.parseCMSReadAndAuthor( data );
-            this.document.readerList = this.document.readerList.concat( array )
-        }
+        // if( fieldJson.isAuthor ){
+        //     var array = this.parseCMSReadAndAuthor( data );
+        //     this.document.authorList = this.document.authorList.concat( array )
+        // }
+        // if( fieldJson.isReader ){
+        //     var array = this.parseCMSReadAndAuthor( data );
+        //     this.document.readerList = this.document.readerList.concat( array )
+        // }
         // if( fieldJson.isTop ){
         //     if( [lp.yes,"yes","true"].contains(data) ){
         //         this.document.isTop = true;
