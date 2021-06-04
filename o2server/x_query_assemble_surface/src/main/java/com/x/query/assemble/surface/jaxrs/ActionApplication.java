@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
+import com.x.query.assemble.surface.jaxrs.importmodel.ImportModelAction;
 import com.x.query.assemble.surface.jaxrs.neural.NeuralAction;
 import com.x.query.assemble.surface.jaxrs.query.QueryAction;
 import com.x.query.assemble.surface.jaxrs.reveal.RevealAction;
@@ -28,6 +29,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(NeuralAction.class);
 		classes.add(TableAction.class);
 		classes.add(StatementAction.class);
+		classes.add(ImportModelAction.class);
 		return classes;
 	}
 
