@@ -83,7 +83,7 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
             if (d) d = d[n];
         });
 
-        this.view.json.data.columnList.each(function(column){
+        (this.view.json.data.columnList || []).each(function(column){
 
                 var option = new Element("option", {
                     "text": column.displayName + " - "+column.path,
@@ -92,7 +92,7 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
                 }).inject(select);
 
         }.bind(this));
-        this.view.json.data.calculateFieldList.each(function(column){
+        (this.view.json.data.calculateFieldList || []).each(function(column){
 
                 var option = new Element("option", {
                     "text": column.displayName + " - "+column.path,
@@ -145,7 +145,7 @@ MWF.xApplication.query.ImporterDesigner.Property = new Class({
             }.bind(this));
         }else{
             new Element("option", {
-                "text": this.view.designer.lp.selectProcess1,
+                "text": this.view.designer.lp.propertyTemplate.selectProcess1,
                 "value": ""
             }).inject(select);
         }
