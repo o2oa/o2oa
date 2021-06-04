@@ -136,6 +136,7 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "serialField": "Serial Number/Signature",
         "startTimeField": "Start Date",
         "completeTimeField": "End Date",
-        "selectProcess1": "Please select the process first"
+        "selectProcess1": "Please select the process first",
+        "lineBreak": "Line Break"
     }
 };
