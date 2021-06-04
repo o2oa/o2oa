@@ -697,7 +697,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         if(!data){
             errorTextList.push(this.getCol("publishTime", false) + lp.noPublishTime + lp.fullstop );
             errorTextListExcel.push(this.getCol("publishTime", false) + lp.noPublishTime + lp.fullstop );
-        }else if( ! new Date(data).isValid(data) ){
+        }else if( ! new Date(data).isValid() ){
             errorTextList.push(this.getCol("publishTime", false) + '"'+ data +'"'+ lp.publishTimeFormatError + lp.fullstop );
             errorTextListExcel.push(this.getCol("publishTime", false) + '"'+ data +'"'+ lp.publishTimeFormatError + lp.fullstop );
         }
@@ -751,7 +751,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             if(!data){
                 errorTextList.push(this.getCol("startTime", false) + lp.noStartTime + lp.fullstop );
                 errorTextListExcel.push(this.getCol("startTime", false) + lp.noStartTime + lp.fullstop );
-            }else if( ! new Date(data).isValid(data) ){
+            }else if( ! new Date(data).isValid() ){
                 errorTextList.push(this.getCol("startTime", false) + '"'+ data +'"'+ lp.startTimeFormatError + lp.fullstop );
                 errorTextListExcel.push(this.getCol("startTime", false) + '"'+ data +'"'+ lp.startTimeFormatError + lp.fullstop );
             }
@@ -760,7 +760,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             if(!data){
                 errorTextList.push(this.getCol("completeTime", false) + lp.noEndTime + lp.fullstop );
                 errorTextListExcel.push(this.getCol("completeTime", false) + lp.noEndTime + lp.fullstop );
-            }else if( ! new Date(data).isValid(data) ){
+            }else if( ! new Date(data).isValid() ){
                 errorTextList.push(this.getCol("completeTime", false) + '"'+ data +'"'+ lp.endTimeFormatError + lp.fullstop );
                 errorTextListExcel.push(this.getCol("completeTime", false) + '"'+ data +'"'+ lp.endTimeFormatError + lp.fullstop );
             }
@@ -814,11 +814,11 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             if( json.type === "cms" ){
                 if( columnJson.isName ) {
                     if (columnJson.isAuthor) {
-                        var array = this.parseCMSReadAndAuthor(data);
+                        var array = this.parseCMSReadAndAuthor(data, "作者");
                         this.document.authorList = this.document.authorList.concat(array)
                     }
                     if (columnJson.isReader) {
-                        var array = this.parseCMSReadAndAuthor(data);
+                        var array = this.parseCMSReadAndAuthor(data, "阅读");
                         this.document.readerList = this.document.readerList.concat(array)
                     }
                 }
@@ -841,11 +841,11 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
                 if( json.type === "cms" ){
                     if( fieldJson.isAuthor ){
-                        var array = this.parseCMSReadAndAuthor( data );
+                        var array = this.parseCMSReadAndAuthor( data, "作者" );
                         this.document.authorList = this.document.authorList.concat( array )
                     }
                     if( fieldJson.isReader ){
-                        var array = this.parseCMSReadAndAuthor( data );
+                        var array = this.parseCMSReadAndAuthor( data, "阅读" );
                         this.document.readerList = this.document.readerList.concat( array )
                     }
 
@@ -910,7 +910,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             case "stringList":
                 if( isName ){
                     var  arr = value.split(/\s*,\s*/g ); //空格,空格
-                    if( json.type === "dynamicTable" ){
+                    if( this.importer.json.type === "dynamicTable" ){
                         data = arr
                     }else{
                         data = arr.map( function(d, idx){
@@ -950,7 +950,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "db" ); }.bind(this)).clean();
                 break;
             default:
-                data = value;
+                data = value.replace(/&#10;/g,"");;
                 break;
         }
         return data;
@@ -972,11 +972,13 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         d[names[names.length -1]] = data;
     },
     setDataWithField: function(obj, fieldName, path, isName){
+        if(!this.pathIndexMap)this.pathIndexMap = {};
+
         var json = this.importer.json;
         if( json.data[fieldName] ){
             var f = json.data[fieldName];
 
-            json.data.cloumnList.each(function(json, i){
+            json.data.columnList.each(function(json, i){
                 if(json.path === f)this.pathIndexMap[path] = i;
             }.bind(this));
 
@@ -984,7 +986,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             Array.each( f.split("."), function (n) {
                 if(this.isNumberString(n))n = n.toInt();
                 if (d) d = d[n];
-            });
+            }.bind(this));
             if(!d)return;
 
             var _d = (typeOf(d) === "array" && d.length) ? d[0] : d;
@@ -1000,18 +1002,29 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
     isNumberString: function(string){
        return string.toInt().toString() === string;
     },
-    parseCMSReadAndAuthor : function( data ){
+    parseCMSReadAndAuthor : function( data, t ){
         var cnArray = ["组织","群组","人员","人员","角色"];
         var keyArray = ["U","G","I","P","R"];
         if( typeOf(data) !== "array" )data = [data];
         return data.map( function( d ){
             var dn = typeOf( d ) === "string" ? d : d.distinguishedName;
+
+            var name;
+            if( typeOf(d) === "object" && d.name ){
+                name = d.name;
+            }else if( MWF.name && MWF.name.cn ){
+                name = MWF.name.cn( dn );
+            }else{
+                name = dn.split("@")[0];
+            }
+
             var index = keyArray.indexOf(dn.substr(dn.length-1, 1));
             if( index > -1 ){
                 return {
-                    "permission" : "阅读",
-                    "permissionObjectType" : cnArray[ index ],
-                    "permissionObjectName" : dn
+                    "permission" : t,
+                    "permissionObjectType": cnArray[ index ],
+                    "permissionObjectName": name,
+                    "permissionObjectCode": dn
                 }
             }
         }).clean()
@@ -1019,10 +1032,13 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
     getResult: function(){
         if( this.importer.json.type === "cms" ){
+            this.document.srcData = this.importedData;
             return this.document;
         }else if( this.importer.json.type === "process" ){
+            this.work.srcData = this.importedData;
             return this.work;
         }else if( this.json.type === "dynamicTable" ){
+            this.data.srcData = this.importedData;
             return this.data;
         }
     }
