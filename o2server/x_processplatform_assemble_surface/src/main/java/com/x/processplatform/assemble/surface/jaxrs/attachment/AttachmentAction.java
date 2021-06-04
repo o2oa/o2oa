@@ -178,9 +178,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Path("list/job/{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithJob(@Suspended final AsyncResponse asyncResponse,
-											@Context HttpServletRequest request,
-											@JaxrsParameterDescribe("工作的job") @PathParam("job") String job) {
+	public void listWithJob(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作的job") @PathParam("job") String job) {
 		ActionResult<List<ActionListWithJob.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -273,8 +272,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Path("download/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void download(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								 @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-								 @JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
+			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionDownload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -291,8 +290,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Path("download/{id}/stream")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadStream(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						 @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-						 @JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
+			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionDownloadStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -772,7 +771,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void copyToWorkSoft(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						   @JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId, JsonElement jsonElement) {
+			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId, JsonElement jsonElement) {
 		ActionResult<List<ActionCopyToWorkSoft.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -789,9 +788,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Path("copy/workcompleted/{workCompletedId}/soft")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void copyToWorkCompletedSoft(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-									@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId,
-									JsonElement jsonElement) {
+	public void copyToWorkCompletedSoft(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId,
+			JsonElement jsonElement) {
 		ActionResult<List<ActionCopyToWorkCompletedSoft.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1256,11 +1256,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public void manageBatchUpdate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							 @JaxrsParameterDescribe("附件Id列表，多值逗号隔开") @FormDataParam("ids") String ids,
-							 @JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
-							 @JaxrsParameterDescribe("天印扩展字段") @FormDataParam("extraParam") String extraParam,
-							 @FormDataParam(FILE_FIELD) final byte[] bytes,
-							 @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+			@JaxrsParameterDescribe("附件Id列表，多值逗号隔开") @FormDataParam("ids") String ids,
+			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
+			@JaxrsParameterDescribe("天印扩展字段") @FormDataParam("extraParam") String extraParam,
+			@FormDataParam(FILE_FIELD) final byte[] bytes,
+			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionManageBatchUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1279,7 +1279,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void manageBatchDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								  JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<ActionManageBatchDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1297,7 +1297,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void uploadWithUrl(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						  JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<ActionUploadWithUrl.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1315,7 +1315,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void htmlToImage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						  JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<ActionHtmlToImage.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1327,4 +1327,27 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "V2_根据work或workCompleted上传附件,如果同名附件存在则替换.", action = V2UploadWorkOrWorkCompleted.class)
+	@POST
+	@Path("v2/upload/workorworkcompleted/{workOrWorkCompleted}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public void v2UploadWorkOrWorkCompleted(FormDataMultiPart form, @Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted,
+			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site,
+			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
+			@FormDataParam(FILE_FIELD) byte[] bytes,
+			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+		ActionResult<V2UploadWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2UploadWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted, site, fileName,
+					bytes, disposition);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
