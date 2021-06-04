@@ -172,5 +172,15 @@ MWF.xApplication.query.Query.LP = {
     "canNotBeEmpty": "Can not be empty",
     "cmsTitleLengthInfor": "Title length cannot exceed 70 characters",
     "cmsSummaryLengthInfor": "Summary length cannot exceed 70 characters",
-    "caculateFieldValidationText": "Calculated field error:"
+    "caculateFieldValidationText": "Calculated field error:",
+
+    "noDrafter": "The identity of the drafter is not set or the drafter does not exist in the system",
+    "drafterIsNotIdentity": "The drafter is not an identity",
+    "noPublishTime": "Publish time is not set",
+    "publishTimeFormatError": "Publish time format is incorrect",
+    "noStartTime": "The start time is not set",
+    "startTimeFormatError": "The start time format is incorrect",
+    "noEndTime": "The end time is not set",
+    "endTimeFormatError": "The end time format is incorrect",
+    "noForm": "The form is not set"
 };
