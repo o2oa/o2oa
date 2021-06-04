@@ -334,6 +334,11 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             return {"errorText":  str + this.lp.notExistInSystem };
         }
     },
+    stringToArray: function(string){
+        return string.replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){
+            return !!s;
+        });
+    },
     listAllOrgDataByImport : function ( callback ) {
 
         var orgColIndexArray = this.getOrgColIndexArray();
@@ -352,7 +357,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
                     if( !lineData[colIndex] )return;
 
-                    var arr = lineData[colIndex].split(/\s*,\s*/g );
+                    var arr = this.stringToArray(lineData[colIndex]);
                     arr.each( function( a ){
                         a = a.trim();
                         var flag = a.substr(a.length-2, 2);
@@ -373,8 +378,8 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                                 break;
                         }
                     })
-                })
-            });
+                }.bind(this))
+            }.bind(this));
             var identityLoaded, personLoaded, unitLoaded, groupLoaded;
             var check = function () {
                 if( identityLoaded && personLoaded && unitLoaded && groupLoaded ){
@@ -585,7 +590,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     case "string":
                     case "stringList":
                         if( columnJson.isName ){
-                            var  arr = value.split(/\s*,\s*/g ); //空格,空格
+                            var arr = this.stringToArray(value);
                             arr.each( function(d, idx){
                                 var obj = this.importer.getOrgData( d );
                                 if( obj.errorText ){
@@ -599,6 +604,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     case "integer":
                     case "long":
                     case "double":
+                        value = value.replace(/&#10;/g,"");
                         if (parseFloat(value).toString() === "NaN"){
                             errorTextList.push( colInfor + value + lp.notValidNumber + lp.fullstop );
                             errorTextListExcel.push( colInforExcel + value + lp.notValidNumber + lp.fullstop );
@@ -608,7 +614,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     case "integerList":
                     case "longList":
                     case "doubleList":
-                        var  arr = value.split(/\s*,\s*/g ); //空格,空格
+                        var arr = this.stringToArray(value);
                         arr.each( function(d, idx){
                             if (parseFloat(d).toString() === "NaN"){
                                 errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
@@ -618,6 +624,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                         break;
                     case "date":
                     case "dateTime":
+                        value = value.replace(/&#10;/g,"");
                         if( !( isNaN(value) && !isNaN(Date.parse(value) ))){
                             errorTextList.push(colInfor + value + lp.notValidDate + lp.fullstop );
                             errorTextListExcel.push( colInforExcel + value + lp.notValidDate + lp.fullstop );
@@ -625,7 +632,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                         break;
                     case "dateList":
                     case "dateTimeList":
-                        var  arr = value.split(/\s*,\s*/g ); //空格,空格
+                        var  arr = this.stringToArray(value);
                         arr.each( function(d, idx){
                             if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
                                 errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
@@ -802,7 +809,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             var value = this.importedData[i] || "";
             if( !value )return;
 
-            var data = this.parseData(value, (json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess), columnJson.isName);
+            var data = this.parseData(value, (json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess), columnJson);
             if( !data )return;
 
             if( json.type === "dynamicTable" ){
@@ -903,14 +910,15 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         this.importer.fireEvent("afterCreateRowData", [null, this]);
     },
-    parseData: function(value, dataType, isName){
+    parseData: function(value, dataType, json){
         var data;
+        var type = this.importer.json.type;
         switch ( dataType ) {
             case "string":
             case "stringList":
-                if( isName ){
-                    var  arr = value.split(/\s*,\s*/g ); //空格,空格
-                    if( this.importer.json.type === "dynamicTable" ){
+                if( json.isName ){
+                    var  arr = this.stringToArray(value);
+                    if( type === "dynamicTable" ){
                         data = arr
                     }else{
                         data = arr.map( function(d, idx){
@@ -918,42 +926,56 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                         }.bind(this)).clean();
                     }
                 }else{
-                    data = dataType === "string" ? value : value.split(/\s*,\s*/g );
+                    if( dataType === "string" ){
+                        var linebreak = type === "dynamicTable" ? json.lineBreak_Querytable : json.lineBreak_CMSProcess;
+                        data = value.replace(/&#10;/g, linebreak || "" )
+                    }else{
+                        data = this.stringToArray(value);
+                    }
                 }
                 break;
             case "number":
             case "integer":
             case "long":
+                value = value.replace(/&#10;/g,"");
                 data = parseInt( value );
                 break;
             case "double":
+                value = value.replace(/&#10;/g,"");
                 data = parseFloat(value);
                 break;
             case "numberList":
             case "integerList":
             case "longList":
-                data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseInt( d ); }.bind(this)).clean();
+                data = this.stringToArray(value).map( function(d, idx){ return parseInt( d ); }.bind(this)).clean();
                 break;
             case "doubleList":
-                data = value.split(/\s*,\s*/g ).map( function(d, idx){ return parseFloat( d ); }.bind(this)).clean();
+                data = this.stringToArray(value).map( function(d, idx){ return parseFloat( d ); }.bind(this)).clean();
                 break;
             case "date":
+                value = value.replace(/&#10;/g,"");
                 data = Date.parse(value).format( "%Y-%m-%d" );
                 break;
             case "dateTime":
+                value = value.replace(/&#10;/g,"");
                 data = Date.parse(value).format( "db" );
                 break;
             case "dateList":
-                data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "%Y-%m-%d" ); }.bind(this)).clean();
+                data = this.stringToArray(value).map( function(d, idx){ return Date.parse(d).format( "%Y-%m-%d" ); }.bind(this)).clean();
                 break;
             case "dateTimeList":
-                data = value.split(/\s*,\s*/g ).map( function(d, idx){ return Date.parse(d).format( "db" ); }.bind(this)).clean();
+                data = this.stringToArray(value).map( function(d, idx){ return Date.parse(d).format( "db" ); }.bind(this)).clean();
                 break;
             default:
-                data = value.replace(/&#10;/g,"");;
+                data = value.replace(/&#10;/g,"");
                 break;
         }
         return data;
+    },
+    stringToArray: function(string){
+        return string.replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){
+            return !!s;
+        });
     },
     setDataWithPath: function(obj, path, data){
         var names = path.split(".");
