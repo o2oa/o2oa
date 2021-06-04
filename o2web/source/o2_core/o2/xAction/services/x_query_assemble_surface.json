@@ -42,7 +42,7 @@
 
   "executImportModule": { "uri" : "/jaxrs/importmodel/{id}/execute", "method": "POST"},
   "listImportModule": { "uri" : "/jaxrs/importmodel/list/query/{queryFlag}"},
-  "getImportModuleById": { "uri" : "/jaxrs/importmodel/{id}/execute"},
+  "getImportModuleById": { "uri" : "/jaxrs/importmodel/{id}"},
   "getImportModule": { "uri" : "/jaxrs/importmodel/flag/{flag}/query/{queryFlag}"},
 
   "getUUID": { "uri" : "/jaxrs/importmodel/uuid"},
