@@ -771,6 +771,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "fullScreen": "Full Screen",
         "fullScreenInfo": "Whether to allow full screen display",
         "wordConversion": "Convert to word",
+        "wordConversionType": "Convert Type",
+        "wordConversionWithService": "By Service",
         "fileName": "Filename",
         "fileSite": "Attachment site",
         "addPageNumber": "Page Number",
