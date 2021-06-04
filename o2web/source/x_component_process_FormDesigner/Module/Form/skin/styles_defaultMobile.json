@@ -269,6 +269,94 @@
       "background-color": "#ffffff"
     }
   },
+  "datatable": {
+    "styles": {
+      "margin": "10px auto",
+      "width": "90%",
+      "background-color":"#ffffff"
+    },
+    "tableStyles": {},
+    "titleStyles": {
+      "height": "36px",
+      "cursor": "pointer",
+      "line-height": "36px",
+      "overflow": "hidden",
+      "border-bottom": "1px solid #cccccc",
+      "background-color": "#ffffff",
+      "font-weight": "400",
+      "text-align": "left",
+      "font-size": "16px"
+    },
+    "contentStyles": {
+      "text-align": "right",
+      "height": "36px",
+      "line-height": "26px",
+      "color": "#666",
+      "border-bottom": "1px solid #cccccc"
+    },
+    "actionStyles": {},
+    "editStyles": {
+      "background-color": "#ffffff",
+      "text-align": "right",
+      "height": "36px",
+      "border-bottom": "1px solid #cccccc"
+    },
+    "amountStyles": {
+      "border-top": "0px solid #cccccc",
+      "font-weight": "bold",
+      "height": "36px",
+      "line-height": "36px",
+      "text-align": "right",
+      "background-color": "#ffffff",
+      "border-bottom": "1px solid #cccccc"
+    },
+    "itemTitleStyles": {
+      "height": "40px",
+      "background-color": "#ffffff",
+      "line-height": "30px",
+      "padding": "0px",
+      "color": "#fb4747",
+      "font-size": "18px",
+      "font-weight": "bold",
+      "border-bottom": "0px solid #cccccc"
+    },
+    "importActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
+    "exportActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
+    "properties": {
+      "border": "0",
+      "cellpadding": "5",
+      "cellspacing": "0",
+      "align": "center",
+      "width": "100%"
+    }
+  },
+  "datatable$Title": {
+    "styles": {
+      "background-color": "#ffffff"
+    }
+  },
   "address": {
     "styles": {
       "border": "0px solid #ccc",

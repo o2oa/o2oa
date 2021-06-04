@@ -1689,72 +1689,83 @@
         "background-color": "#f0f0f0"
       },
       "defaultTools": [
-        {
-          "type": "MWFToolBarButton",
-          "img": "save.png",
-          "title": "保存工作",
-          "action": "saveWork",
-          "text": "保存",
-          "id": "action_saveData",
-          "control": "allowSave",
-          "condition": "",
-          "read": false
-        },
-        {
-          "type": "MWFToolBarButton",
-          "img": "submit.png",
-          "title": "继续流转文件",
-          "action": "processWork",
-          "text": "继续流转",
-          "id": "action_processWork",
-          "control": "allowProcessing",
-          "condition": "",
-          "read": false
-        },
-        {
-          "type": "MWFToolBarButton",
-          "img": "retract.png",
-          "title": "撤回",
-          "action": "retractWork",
-          "text": "撤回",
-          "id": "action_retract",
-          "control": "allowRetract",
-          "condition": "",
-          "read": true
-        },
+          {
+            "type": "MWFToolBarButton",
+            "img": "save.png",
+            "title": "{{$.lp.saveTitle}}",
+            "action": "saveWork",
+            "text": "{{$.lp.save}}",
+            "id": "action_saveData",
+            "control": "allowSave",
+            "condition": "",
+            "read": false
+          },
+          {
+            "type": "MWFToolBarButton",
+            "img": "submit.png",
+            "title": "{{$.lp.flowTitle}}",
+            "action": "processWork",
+            "text": "{{$.lp.flow}}",
+            "id": "action_processWork",
+            "control": "allowProcessing",
+            "condition": "",
+            "read": false
+          },
+          {
+            "type": "MWFToolBarButton",
+            "img": "retract.png",
+            "title": "{{$.lp.retractTitle}}",
+            "action": "retractWork",
+            "text": "{{$.lp.retract}}",
+            "id": "action_retract",
+            "control": "allowRetract",
+            "condition": "",
+            "read": true
+          },
         {
           "type": "MWFToolBarButton",
           "img": "read.png",
-          "title": "标记为已阅",
+          "title": "{{$.lp.setReaded}}",
           "action": "readedWork",
-          "text": "已阅",
+          "text": "{{$.lp.readed}}",
           "id": "action_readed",
           "control": "allowReadProcessing",
           "condition": "",
           "read": true
         },
-        {
-          "type": "MWFToolBarButton",
-          "img": "del.png",
-          "title": "删除文件",
-          "action": "deleteWork",
-          "text": "删除文件",
-          "id": "action_delete",
-          "control": "allowDelete",
-          "condition": "",
-          "read": false
-        },
-        {
-          "type": "MWFToolBarButton",
-          "img": "press.png",
-          "title": "催促办理",
-          "action": "pressWork",
-          "text": "催促办理",
-          "id": "action_press",
-          "control": "allowPress",
-          "condition": "",
-          "read": true
-        }
+          {
+            "type": "MWFToolBarButton",
+            "img": "rollback.png",
+            "title": "{{$.lp.rollbackTitle}}",
+            "action": "rollback",
+            "text": "{{$.lp.rollback}}",
+            "id": "action_rollback",
+            "control": "allowRollback",
+            "condition": "",
+            "read": true
+          },
+          {
+            "type": "MWFToolBarButton",
+            "img": "del.png",
+            "title": "{{$.lp.deleteTitle}}",
+            "action": "deleteWork",
+            "text": "{{$.lp.delete}}",
+            "id": "action_delete",
+            "control": "allowDelete",
+            "condition": "",
+            "read": false
+          },
+          {
+            "type": "MWFToolBarButton",
+            "img": "press.png",
+            "title": "{{$.lp.pressTitle}}",
+            "action": "pressWork",
+            "text": "{{$.lp.press}}",
+            "id": "action_press",
+            "control": "allowPress",
+            "condition": "",
+            "read": true
+           }
       ],
       "tools": [],
       "pid": "Mobile4d434939-c6f8-4bc0-9a0a-09049a6e78fd4d434939-c6f8-4bc0-9a0a-09049a6e78fd",

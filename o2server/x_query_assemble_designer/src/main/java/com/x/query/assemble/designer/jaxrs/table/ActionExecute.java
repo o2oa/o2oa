@@ -49,6 +49,10 @@ class ActionExecute extends BaseAction {
 					query.setFirstResult(wi.getFirstResult());
 				}
 				data = query.getResultList();
+				if(StringUtils.isNotBlank(wi.getCountData())){
+					query = em.createQuery(wi.getCountData());
+					result.setCount((Long)query.getSingleResult());
+				}
 			} else {
 				EntityManager em = emc.get(cls);
 				Query query = em.createQuery(wi.getData());
@@ -68,6 +72,9 @@ class ActionExecute extends BaseAction {
 
 		@FieldDescribe("jpql语句.")
 		private String data;
+
+		@FieldDescribe("同时返回数量的jpql语句.")
+		private String countData;
 
 		@FieldDescribe("返回最大结果集.")
 		private Integer maxResults;
@@ -107,6 +114,13 @@ class ActionExecute extends BaseAction {
 			this.maxResults = maxResults;
 		}
 
+		public String getCountData() {
+			return countData;
+		}
+
+		public void setCountData(String countData) {
+			this.countData = countData;
+		}
 	}
 
 }

@@ -240,7 +240,9 @@ MWF.APPPD.LP = {
         "attachment": "附件",
         "div": "容器",
         "table": "表格",
-        "datagrid": "数据网格",
+        "datagrid": "数据网格(过时)",
+        "datatable": "数据表格",
+        "datatemplate": "数据模板",
         "subform": "子表单",
         "ViewSelector": "选择视图",
         "view": "嵌入视图",
@@ -262,5 +264,14 @@ MWF.APPPD.LP = {
         "sourceText": "数据文本",
         "widget": "部件",
         "widgetmodules": "部件元素"
+    },
+    "filedConfigurator": {
+        "sequence": "序号",
+        "fieldTitle": "字段标题",
+        "fieldId": "字段标识",
+        "action": "操作",
+        "moveup": "移动到上一行",
+        "deleteRow": "删除行",
+        "insertRow": "插入行"
     }
 };

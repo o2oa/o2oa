@@ -23,7 +23,7 @@
         "background-image": "url("+o2.session.path+"/widget/$AttachmentController/default/buttonbg.png)"
 	},
 	"minContentNode": {
-        "margin-right":"150px",
+//        "margin-right":"150px",
         "min-height": "30px",
         "overflow": "hidden"
     },

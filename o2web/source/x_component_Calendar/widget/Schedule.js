@@ -622,12 +622,18 @@ o2.Schedule.Calendar = new Class({
 		form.view = _self;
 		form.create();
 	},
+	isEditable: function(){
+		if( MWF.AC.isAdministrator() )return true;
+		if( (this.data.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
+		if( this.data.createPerson === layout.desktop.session.user.distinguishedName )return true;
+		return false;
+	},
 	openEventForm : function(data){
 		var form = new MWF.xApplication.Calendar.EventForm(this, data, {
 			isFull : true
 		}, {app:this.app});
 		form.view = this.view;
-		form.edit();
+		this.isEditable(data) ? form.edit() : form.open();
 	},
 	toDay : function( date ){
 		var appId = "Calendar";

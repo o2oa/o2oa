@@ -133,5 +133,15 @@
     "icon": "datagrid.png",
     "text": MWF.APPPD.LP.modules.datagrid,
     "className": "Datagrid"
+  },
+  "datatable": {
+    "icon": "datagrid.png",
+    "text": MWF.APPPD.LP.modules.datatable,
+    "className": "Datatable"
+  },
+  "datatemplate": {
+    "icon": "datatemplate.png",
+    "text": MWF.APPPD.LP.modules.datatemplate,
+    "className": "Datatemplate"
   }
 }

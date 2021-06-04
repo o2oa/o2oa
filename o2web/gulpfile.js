@@ -159,6 +159,8 @@ function createXFormConcatTask(path, isMin, thisOptions) {
             'source/' + path + '/Combox.js',
             'source/' + path + '/DatagridMobile.js',
             'source/' + path + '/DatagridPC.js',
+            'source/' + path + '/DatatablePC.js',
+            'source/' + path + '/DatatableMobile.js',
             'source/' + path + '/Textfield.js',
             'source/' + path + '/Personfield.js',
             'source/' + path + '/Button.js',

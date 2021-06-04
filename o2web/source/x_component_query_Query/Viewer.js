@@ -3,7 +3,7 @@ MWF.xApplication.query.Query = MWF.xApplication.query.Query || {};
 MWF.require("MWF.widget.Common", null, false);
 MWF.require("o2.widget.Paging", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
-MWF.xDesktop.requireApp("query.Query", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("query.Query", "lp."+o2.language, null, false);
 MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
@@ -518,6 +518,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 d.count = this.json.count;
                 this.lookupAction.bundleView(this.json.id, d, function(json){
                     this.bundleItems = json.data.valueList;
+                    this.bundleKey = json.data.key;
 
                     this._initPage();
                     if (this.bundleItems.length){
@@ -564,6 +565,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         var d = {};
         var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
         d.bundleList = valueList;
+        d.key = this.bundleKey;
+
 
         while (this.viewTable.rows.length>1){
             this.viewTable.deleteRow(-1);
