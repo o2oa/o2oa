@@ -362,7 +362,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     load: function (callback) {
         this.loadMacro(function () {
-            debugger;
             this.loadLanguage(function(flag){
                 if (flag && this.formDataText){
                     var data = o2.bindJson(this.formDataText,  {"lp": MWF.xApplication.process.Xform.LP.form});
@@ -425,7 +424,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
     },
     loadLanguage: function(callback){
-        debugger;
         //formDataText
         if (this.json.languageType!=="script" && this.json.languageType!=="default"){
             if (callback) callback();
@@ -1302,9 +1300,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (module.json.section === "yes") {
                     //     var d = this.loadPathData(id);
                     //     if (d) data[id] = d;
-                    data[id] = this.getSectionData(module, data[id]);
+                    var v = this.getSectionData(module, data[id]);
+                    //if (o2.typeOf(v)==="string") v = o2.txt(v);
+                    data[id] = v
                 } else {
-                    data[id] = module.getData();
+                    var v = module.getData();
+                    //if (o2.typeOf(v)==="string") v = o2.txt(v);
+                    data[id] = v;
                 }
             }
         }.bind(this));
@@ -3903,7 +3905,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }.bind(this));
                 }
             });
-            debugger;
             dlg.show();
         }.bind(this));
     },
