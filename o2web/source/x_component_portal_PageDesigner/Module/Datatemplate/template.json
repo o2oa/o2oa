@@ -1,0 +1,127 @@
+{
+  "id": "",
+  "name": "",
+  "type": "Datatemplate",
+  "description": "",
+  "sequence": "yes",
+  "section": "no",
+  "sectionBy": "person",
+  "defaultCount": "1",
+  "outerSelectAllSelectedValue": "yes",
+  "selectorSelectedValue": "yes",
+  "sectionByScript": {
+    "code": "",
+    "html": ""
+  },
+  "defaultValue": {
+    "code": "",
+    "html": ""
+  },
+  "events": {
+    "queryLoad": {
+      "code": "",
+      "html": ""
+    },
+    "postLoad": {
+      "code": "",
+      "html": ""
+    },
+    "load": {
+      "code": "",
+      "html": ""
+    },
+    "afterLoad": {
+      "code": "",
+      "html": ""
+    },
+    "beforeLoadLine": {
+      "code": "",
+      "html": ""
+    },
+    "afterLoadLine": {
+      "code": "",
+      "html": ""
+    },
+    "addLine": {
+      "code": "",
+      "html": ""
+    },
+    "deleteLine": {
+      "code": "",
+      "html": ""
+    },
+    "afterDeleteLine": {
+      "code": "",
+      "html": ""
+    },
+    "export": {
+      "code": "",
+      "html": ""
+    },
+    "import": {
+      "code": "",
+      "html": ""
+    },
+    "click": {
+      "code": "",
+      "html": ""
+    },
+    "dblclick": {
+      "code": "",
+      "html": ""
+    },
+    "keydown": {
+      "code": "",
+      "html": ""
+    },
+    "keypress": {
+      "code": "",
+      "html": ""
+    },
+    "keyup": {
+      "code": "",
+      "html": ""
+    },
+    "mousedown": {
+      "code": "",
+      "html": ""
+    },
+    "mousemove": {
+      "code": "",
+      "html": ""
+    },
+    "mouseout": {
+      "code": "",
+      "html": ""
+    },
+    "mouseover": {
+      "code": "",
+      "html": ""
+    },
+    "mouseup": {
+      "code": "",
+      "html": ""
+    },
+    "focus": {
+      "code": "",
+      "html": ""
+    },
+    "blur": {
+      "code": "",
+      "html": ""
+    }
+  },
+  "properties": {},
+  "class": "",
+  "styles": {},
+  "tableStyles": {},
+  "editableScript": {
+    "code": "",
+    "html": ""
+  },
+  "defaultData": {
+    "code": "",
+    "html": ""
+  },
+  "container": ""
+}

@@ -1,0 +1,192 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="{{$.lp.base}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
+                <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.datatableEditMode}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="editMode" value="single" text{($.editMode!=='multi')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}defaultCountEditTr').setStyle('display', 'none')}" />{{$.lp.datatableEditModeValue[0]}}
+                    <input type="radio" name="editMode" value="multi" text{($.editMode==='multi')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}defaultCountEditTr').setStyle('display', '')}" />{{$.lp.datatableEditModeValue[1]}}
+                </td>
+            </tr>
+        </table>
+        <div class="MWFFormulaArea" name="defaultData" title="{{$.lp.defaultData}} (S)"></div>
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.count}}</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr id="text{$.pid}defaultCountEditTr" style="display: text{($.editMode!=='multi')?'none':''};">
+                <td class="editTableTitle" width="80px">{{$.lp.defaultShow}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="defaultCount" value="text{$.defaultCount}" class="editTableInputNoWidth" style="width: 100px;"/>{{$.lp.item}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.maxItemCount}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="maxCount" value="text{$.maxCount}" class="editTableInputNoWidth" style="width: 100px;"/>{{$.lp.item}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.minItemCount}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="minCount" value="text{$.minCount}" class="editTableInputNoWidth" style="width: 100px;"/>{{$.lp.item}}
+                </td>
+            </tr>
+        </table>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.permission}}</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowDelete}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="deleteable" value="yes" text{($.deleteable!=='no')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="deleteable" value="no" text{($.deleteable==='no')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowAdd}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="addable" value="yes" text{($.addable!=='no')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="addable" value="no" text{($.addable==='no')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+        </table>
+        <div class="MWFFormulaArea" name="editableScript" title="{{$.lp.allowEdit}} (S)"></div>
+
+
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.exportImport}}({{$.lp.onlyPc}})</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.enabled}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="impexpType" value="none" text{(!$.impexpType || $.impexpType==='none')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'none')}" />{{$.lp.disabled}}
+                    <input type="radio" name="impexpType" value="impexp" text{($.impexpType==='impexp')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'block')}" />{{$.lp.exportImport}}
+                    <input type="radio" name="impexpType" value="exp" text{($.impexpType==='exp')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'block')}" />{{$.lp.onlyExport}}
+                    <input type="radio" name="impexpType" value="imp" text{($.impexpType==='imp')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'block')}" />{{$.lp.onlyImport}}
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}impexpArea" style="display: text{($.impexpType && $.impexpType!=='none')?'block':'none'};">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle"></td>
+                    <td class="editTableValue">
+                        {{$.lp.exportInfo}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.buttonLocation}}:</td>
+                    <td class="editTableValue">
+                        <input type="radio" name="impexpPosition" value="leftTop" text{(!$.impexpPosition || $.impexpPosition==='leftTop')?'checked':''}/>{{$.lp.lefttop}}
+                        <input type="radio" name="impexpPosition" value="centerTop" text{($.impexpPosition==='centerTop')?'checked':''}/>{{$.lp.centertop}}
+                        <input type="radio" name="impexpPosition" value="rightTop" text{($.impexpPosition==='rightTop')?'checked':''}/>{{$.lp.righttop}}
+                        <input type="radio" name="impexpPosition" value="leftBottom" text{($.impexpPosition==='leftBottom')?'checked':''}/>{{$.lp.leftbottom}}
+                        <input type="radio" name="impexpPosition" value="centerBottom" text{($.impexpPosition==='centerBottom')?'checked':''}/>{{$.lp.centerbottom}}
+                        <input type="radio" name="impexpPosition" value="rightBottom" text{($.impexpPosition==='rightBottom')?'checked':''}/>{{$.lp.rightbottom}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.importText}}:</td>
+                    <td class="editTableValue"><input type="text" name="importActionText" value="text{$.importActionText || '{{$.lp.importExcel}}'}" class="editTableInput"/></td>
+                </tr>
+            </table>
+            <div class="MWFMaplist" name="importActionStyles" collapse="true" title="{{$.lp.importButtonStyle}}"></div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.exportText}}:</td>
+                    <td class="editTableValue"><input type="text" name="exportActionText" value="text{$.exportActionText || '{{$.lp.exportExcel}}'}" class="editTableInput"/></td>
+                </tr>
+            </table>
+            <div class="MWFMaplist" name="exportActionStyles" collapse="true" title="{{$.lp.exporButtonStyle}}"></div>
+            <div class="MWFFormulaArea" name="excelName" title="{{$.lp.exportFileName}}"></div>
+            <div class="MWFMaplist" name="impExpTableStyles" collapse="true" title="{{$.lp.validationTableStyle}}"></div>
+            <div class="MWFMaplist" name="impExpTableTitleStyles" collapse="true" title="{{$.lp.validationTitleTdStyle}}"></div>
+            <div class="MWFMaplist" name="impExpTableContentStyles" collapse="true" title="{{$.lp.validationContentTdStyle}}"></div>
+            <div class="MWFMaplist" name="impExpTableProperties" collapse="true" title="{{$.lp.validationTableAttribute}}"></div>
+        </div>
+
+        <div class="MWFValidation" name="validationConfig"></div>
+        <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
+    </div>
+    <div title="{{$.lp.style}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.border}}:</td>
+                <td class="editTableValue"><input type="text" name="border" value="text{$.border}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.backgroundColor}}:</td>
+                <td class="editTableValue"><input type="color" name="backgroundColor" value="text{$.backgroundColor}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.alternateRow}}:</td>
+                <td class="editTableValue"><input type="color" name="zebraColor" value="text{$.zebraColor}" class="editTableInput"/></td>
+            </tr>
+        </table>
+        <div class="MWFMaplist" name="styles" collapse="true" title="{{$.lp.containerStyles}}"></div>
+        <div class="MWFMaplist" name="tableStyles" collapse="true" title="{{$.lp.tableStyle}}"></div>
+        <div class="MWFMaplist" name="properties" collapse="true" title="{{$.lp.tableAttribute}}"></div>
+
+        <div class="MWFMaplist" name="titleStyles" collapse="true" title="{{$.lp.titleCellStyle}}"></div>
+        <div class="MWFMaplist" name="contentStyles" collapse="true" title="{{$.lp.contentCellStyle}}"></div>
+        <div class="MWFMaplist" name="actionStyles" collapse="true" title="{{$.lp.actionCellStyles}}"></div>
+        <div class="MWFMaplist" name="editStyles" collapse="true" title="{{$.lp.editCellStyles}}"></div>
+        <div class="MWFMaplist" name="amountStyles" collapse="true" title="{{$.lp.amountCellStyle}}"></div>
+        <div class="MWFMaplist" name="itemTitleStyles" collapse="true" title="{{$.lp.itemTitleStyle}}"></div>
+    </div>
+    <div title="{{$.lp.section}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.enableSection}}:</td>
+                <td class="editTableValue">
+                    <input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'block')}" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'none')}" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+        </table>
+
+        <div id="text{$.pid}sectionByEditArea" style="display: text{($.section=='yes')?'block':'none'};">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.sectionBy}}:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='unit' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>{{$.lp.handler}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='department')?'checked':''} type="radio" value="unit"/>{{$.lp.handlerUnit}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>{{$.lp.activityId}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='splitValue')?'checked':''} type="radio" value="splitValue"/>{{$.lp.splitValue}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}<br/>
+                    </td>
+                </tr>
+            </table>
+            <div id="text{$.pid}sectionByScriptEditArea" style="display: text{($.sectionBy=='script')?'block':'none'};">
+                <div class="MWFScriptArea" name="sectionByScript" title="{{$.lp.sectionBy}} (S)"></div>
+            </div>
+        </div>
+    </div>
+    <div title="{{$.lp.event}}"  class="MWFTab">
+        <div class="MWFEventsArea" name="events"></div>
+    </div>
+    <div title="HTML"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

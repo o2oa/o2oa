@@ -339,6 +339,119 @@
       "background-color": "#ffffff"
     }
   },
+  "datatable": {
+    "styles": {
+      "margin-bottom": "10px",
+      "margin-top": "10px",
+      "margin-left": "15px",
+      "margin-right": "15px",
+      "border" : "0px",
+      "position" : "static"
+    },
+    "tableStyles": {
+      "border-top": "1px solid #cfd9df",
+      "border-left": "0px",
+      "border-right" : "0px",
+      "border-bottom" : "0px",
+      "table-layout" : "fixed"
+    },
+    "titleStyles": {
+      "background-color": "#ffffff",
+      "color": "#333",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df",
+      "height": "23px",
+      "font-size": "16px",
+      "width": "65px",
+      "font-weight": "normal",
+      "line-height": "23px",
+      "text-align": "left"
+    },
+    "contentStyles": {
+      "background-color": "#FFFFFF",
+      "color": "#000",
+      "font-size": "16px",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df",
+      "text-align": "right"
+    },
+    "actionStyles": {
+      "background-color": "#F1F4F9"
+    },
+    "editStyles": {
+      "background-color": "#ffffff",
+      "text-align": "right",
+      "height": "auto",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df"
+    },
+    "amountStyles": {
+      "background-color": "#FFFFFF",
+      "color": "#000",
+      "font-size": "16px",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df",
+      "text-align": "right"
+    },
+    "itemTitleStyles": {
+      "height": "16px",
+      "overflow" : "hidden",
+      "background-color": "#ffffff",
+      "line-height": "16px",
+      "padding": "0px 0px 0px 5px",
+      "color": "#000",
+      "font-size": "16px",
+      "font-weight": "normal",
+      "border-bottom": "0px",
+      "border-left" : "4px solid #32AAFF",
+      "margin-bottom" : "10px",
+      "margin-top" : "10px"
+    },
+    "importActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
+    "exportActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
+    "properties": {
+      "width": "100%",
+      "border": "0",
+      "cellpadding": "8",
+      "cellspacing": "0",
+      "align": "center"
+    }
+  },
+  "datatable$Title": {
+    "styles": {
+      "background-color": "#ffffff"
+    }
+  },
   "address": {
     "styles": {
       "border": "0px solid #979797",

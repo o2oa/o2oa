@@ -766,6 +766,7 @@ MWF.xApplication.Common.Main = new Class({
 					break;
 				default:
 			}
+			dlg.content.setStyle("overflow","auto");
 			dlg.show();
 		}.bind(this));
 	}

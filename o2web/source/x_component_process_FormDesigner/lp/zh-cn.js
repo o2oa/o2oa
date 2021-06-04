@@ -299,7 +299,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "attachment": "附件",
         "div": "容器",
         "table": "表格",
-        "datagrid": "数据网格",
+        "datagrid": "数据网格(过时)",
+        "datatable": "数据表格",
+        "datatemplate": "数据模板",
         "subform": "子表单",
         "ViewSelector": "选择视图",
         "view": "嵌入视图",
@@ -550,6 +552,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowUpload": "允许上载",
         "allowPreview": "允许预览",
         "allowDownload": "允许下载",
+        "allowEdit": "允许编辑",
         "allowDelete": "允许删除",
         "allowDelMyAtt": "仅允许本人上传的文件",
         "allowDelCurActivityAtt": "仅允许本活动上传的文件",
@@ -561,7 +564,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideLayoutButton": "隐藏布局操作组",
         "hideSettingButton": "隐藏设置操作组",
         "hideModeButton": "隐藏模式操作",
-        "showInDatagrid": "数据网格中的展现",
+        "showInDatagrid": "数据网格或数据表格中的展现",
 
         "tableSize": "表格大小",
         "row": "行",
@@ -589,6 +592,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "layoutCell": "布局单元格",
         "other": "其他",
 
+        "permission": "权限",
+
+        "containerStyles": "容器样式",
+        "tableAttribute": "表格属性",
         "border": "边框",
         "backgroundColor": "背景颜色",
         "alternateRow": "交替行",
@@ -624,7 +631,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "totalValue": "合计数值",
         "totalCount": "合计数量",
         "showCol": "显示该列",
-        "hideCol": "显示该列",
+        "hideCol": "隐藏该列",
 
         "delayedLoading": "延时加载",
         "selectSubform": "选择子表单",
@@ -811,6 +818,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "meetingSit": "会议列席",
         "meetingRecord": "会议记录",
         "customElement": "自定义元素配置",
+        "subjectEditBindFormData": "同步数据路径",
 
         "autoCorrect": "自动纠错",
         "ckeditorInfo": "更多属性帮助请查看",
@@ -877,8 +885,37 @@ MWF.xApplication.process.FormDesigner.LP = {
         "parameterScript": "参数脚本 (返回对象)",
         "insertWidget": "插入部件元素",
         "selectWidget": "选择部件",
-        "inDiv": "是否包裹div"
+        "inDiv": "是否包裹div",
 
+        "outerSideModuleId": "外部相关组件标识",
+        "addButtonId": "添加按钮标识",
+        "deleteSelectedButtonId": "删除选中条目按钮标识",
+        "selectAllModuleId": "全选组件标识",
+        "selectedValue": "选中值",
+        "innerSideModuleId": "内部相关组件标识",
+        "deleteButtonId": "删除按钮标识",
+        "sequenctModuleId": "序号组件标识",
+        "selectModuleId": "选中组件标识",
+        "defaultShow": "默认显示",
+        "item": "项",
+        "maxItemCount": "最多添加",
+        "minItemCount": "最少保留",
+        "dtImportInfor": "注：图片、附件、数据网格、子数据模板不能导入导出。",
+        "importButtonId": "导入按钮标识",
+        "exportButtonId": "导出按钮标识",
+        "importExporConfig": "导入导出字段配置",
+        "validationPopFormConfig": "校验弹出框配置",
+        "validationPopFormHeight": "弹出框高度",
+        "validationPopFormWidth": "弹出框宽度",
+        "validationTableStyle": "校验表格样式",
+        "validationTitleTdStyle": "校验标题单元格样式",
+        "validationContentTdStyle": "校验内容单元格样式",
+        "validationTableAttribute": "校验表格属性",
+        "count": "数量",
+        "import" : "导入",
+        "datatableEditMode": "编辑方式",
+        "datatableEditModeValue": ["每次编辑单行","同时编辑多行"],
+        "onlyPc": "仅PC端可用"
     },
     "actionBar": {
         "close":"关闭",
@@ -908,6 +945,17 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resume": "挂起恢复",
         "resumeTitle": "从挂起状态恢复",
         "downloadAll": "一键下载",
-        "downloadAllTitle": "一键下载"
+        "downloadAllTitle": "一键下载",
+        "setReaded" : "标记为已阅",
+        "readed" : "已阅"
+    },
+    "filedConfigurator": {
+		 "sequence": "序号",
+        "fieldTitle": "字段标题",
+        "fieldId": "字段标识",
+        "action": "操作",
+        "moveup": "移动到上一行",
+        "deleteRow": "删除行",
+        "insertRow": "插入行"
     }
 };

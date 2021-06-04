@@ -494,10 +494,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (module) module._dragIn(this);
 		this._onEnterOther(dragging, inObj);
 	},
+	_getDroppableNodes: function(){
+		return [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
+	},
 	_setNodeMove: function(e){
 		this._setMoveNodePosition(e);
 		this.form.node.focus();
-		var droppables = [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
+		var droppables = this._getDroppableNodes();
 		var nodeDrag = new Drag.Move(this.moveNode, {
 			"droppables": droppables,
 			"onEnter": function(dragging, inObj){
@@ -739,8 +742,10 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (this.parentContainer){
 			var available = true;
 			if( !this.options.injectActions )available = false;
-			if( module && module.moduleName == "datagrid$Data" )available = false;
-			if( module.parentContainer && module.parentContainer.moduleName == "datagrid$Data")available = false;
+			// if( module && module.moduleName === "datagrid$Data" )available = false;
+			// if( module.parentContainer && module.parentContainer.moduleName == "datagrid$Data" )available = false;
+			if( module && ["datagrid$Data","datatable$Data"].contains(module.moduleName) )available = false;
+			if( module.parentContainer && ["datagrid$Data","datatable$Data"].contains(module.parentContainer.moduleName) )available = false;
 			var e = new Event(event);
 			if( available && e.control ){
 				if( this.copyNode )this.copyNode.setStyle("display","none");

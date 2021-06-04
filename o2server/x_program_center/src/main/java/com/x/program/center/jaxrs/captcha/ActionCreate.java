@@ -17,6 +17,7 @@ import com.x.program.center.core.entity.Captcha;
 
 import nl.captcha.text.producer.NumbersAnswerProducer;
 
+@Deprecated
 class ActionCreate extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
