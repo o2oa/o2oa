@@ -57,6 +57,9 @@ MWF.xApplication.query.ImporterDesigner.LP = {
 
         "processNoPublisherOrNoTitleTitle": "未设置标题或发起人",
         "processNoPublisherOrNoTitle": "未设置标题或发起人，确认保存？",
+
+        "saveNotice": "保存提示",
+        "someFieldIsEmpty": "{text}未选择，是否继续保存？"
     },
     "mastInputPath": "请输入数据路径",
     "mastInputTitle": "请输入标题",
@@ -120,6 +123,20 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "publisher": "文档创建者",
         "selectField": "选择列/字段",
         "importerAsDrafter": "导入时操作人的身份",
-        "setDrafterInField": "在列/字段中设置"
+        "setDrafterInField": "在列/字段中设置",
+
+        "note": "注：",
+        "selectOrg": "请选择组织对象",
+        "selectDate": "请选择日期类型",
+        "selectText": "请选择文本类型",
+        "publishTime": "发布时间",
+        "importeTimeAsPublishTime": "导入时间为发布时间",
+        "titleField": "标题",
+        "summaryField": "摘要",
+        "selectForm": "指定表单",
+        "serialField": "序号/文号",
+        "startTimeField": "开始日期",
+        "completeTimeField": "结束日期",
+        "selectProcess1": "请先选择流程"
     }
 };
