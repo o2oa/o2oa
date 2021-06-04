@@ -80,7 +80,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         }.bind(this));
     },
     processDocument: function(data){
-       return this.zip.file("word/document.xml").async("text").then(function(oo_string){
+        return this.zip.file("word/document.xml").async("text").then(function(oo_string){
             return this.processWordDocument(oo_string, data);
         }.bind(this)).then(function(oo_str){
             if (oo_str.substring(0, 5)!=="<?xml"){
@@ -126,11 +126,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_body = oo_doc.documentElement.querySelector("body");
         // var dom_div;
         // if (o2.typeOf(data) === "string"){
-            var dom_div = new Element("div", {"styles": {
-                    "display": "block",
-                    "width": "442.2pt",
-                    "padding": "104.9pt 73.7pt 99.25pt 79.4pt",
-                }}).set("html", data).inject(document.body);
+        var dom_div = new Element("div", {"styles": {
+                "display": "block",
+                "width": "442.2pt",
+                "padding": "104.9pt 73.7pt 99.25pt 79.4pt",
+            }}).set("html", data).inject(document.body);
         // }else{
         //     dom_div = data;
         // }
@@ -369,8 +369,25 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     },
     getTableTblW: function(table){
         var type = "dxa";
+        //var w = table.clientWidth;
+        // var w;
+        // var tag = table.tagName.toString().toLowerCase();
+        // if  (tag==="td" || tag==="th"){
+        //     w = table.clientWidth;
+        //     w = this.pxToPt(w);
+        // }else{
+        //     w = table.style.width;
+        //     if (!w) w = table.style.width;
+        //     if (!w) w = table.get("width");
+        // }
+
         var w = table.style.width;
-        if (!w) w = table.get("width");
+        //if (!w) w = table.style.width;
+        if (!w){
+            w = table.get("width");
+            if (w) w = this.pxToPt(w);
+        }
+
         //if (w) w = this.pxToPt(w);
         if (w && o2.typeOf(w)==="string"){
             var u = w.substring(w.length-1, w.length);
@@ -769,8 +786,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         for (var i=0; i<trs.length; i++){
             var tr = trs[i];
 
-        // }
-        // trs.each(function(tr){
+            // }
+            // trs.each(function(tr){
             var oo_tr = this.createEl(oo_doc, "tr");
             if (floatTable){
                 var oo_trPr = this.createEl(oo_doc, "trPr");
@@ -826,30 +843,30 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
             for (var j=0; j<tds.length; j++){
                 var td = tds[j];
-            //}
-            // tds.each(function(td, idx){
-                 var oo_tc = this.createEl(oo_doc, "tc");
+                //}
+                // tds.each(function(td, idx){
+                var oo_tc = this.createEl(oo_doc, "tc");
 
-                 var oo_tcPr = this.createEl(oo_doc, "tcPr");
-                 //单元格宽度
-                 var oo_tcW = this.createEl(oo_doc, "tcW");
+                var oo_tcPr = this.createEl(oo_doc, "tcPr");
+                //单元格宽度
+                var oo_tcW = this.createEl(oo_doc, "tcW");
                 var tcW = this.getTableTblW(td);
                 this.setAttrs(oo_tcW, tcW);
-                 //this.setAttrs(oo_tcW, {"w": this.pxToPt(td.clientWidth)*20, "type": "dxa"});
-                 oo_tcPr.appendChild(oo_tcW);
+                //this.setAttrs(oo_tcW, {"w": this.pxToPt(td.clientWidth)*20, "type": "dxa"});
+                oo_tcPr.appendChild(oo_tcW);
 
-                 //单元格边框
-                 var oo_tcBorders = this.createEl(oo_doc, "tcBorders");
-                 var oo_top = this.createEl(oo_doc, "top");
-                 this.setAttrs(oo_top, this.getTableBorder(td, "top"));
-                 var oo_start = this.createEl(oo_doc, "start");
-                 this.setAttrs(oo_start, this.getTableBorder(td, "left"));
-                 var oo_bottom = this.createEl(oo_doc, "bottom");
-                 this.setAttrs(oo_bottom, this.getTableBorder(td, "bottom"));
-                 var oo_end = this.createEl(oo_doc, "end");
-                 this.setAttrs(oo_end, this.getTableBorder(td, "right"));
-                 this.insertSiblings(oo_tcBorders, [oo_top, oo_start, oo_bottom, oo_end], "beforeend");
-                 oo_tcPr.appendChild(oo_tcBorders);
+                //单元格边框
+                var oo_tcBorders = this.createEl(oo_doc, "tcBorders");
+                var oo_top = this.createEl(oo_doc, "top");
+                this.setAttrs(oo_top, this.getTableBorder(td, "top"));
+                var oo_start = this.createEl(oo_doc, "start");
+                this.setAttrs(oo_start, this.getTableBorder(td, "left"));
+                var oo_bottom = this.createEl(oo_doc, "bottom");
+                this.setAttrs(oo_bottom, this.getTableBorder(td, "bottom"));
+                var oo_end = this.createEl(oo_doc, "end");
+                this.setAttrs(oo_end, this.getTableBorder(td, "right"));
+                this.insertSiblings(oo_tcBorders, [oo_top, oo_start, oo_bottom, oo_end], "beforeend");
+                oo_tcPr.appendChild(oo_tcBorders);
 
                 //单元格背景
                 var bg = td.getStyle("background-color");
@@ -860,7 +877,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     oo_tcPr.appendChild(oo_shd);
                 }
 
-                 //单元格边距
+                //单元格边距
                 var left = td.getStyle("padding-left");
                 var right = td.getStyle("padding-right");
                 var top = td.getStyle("padding-top");
@@ -884,15 +901,15 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 oo_tcMar.appendChild(oo_mar);
                 oo_tcPr.appendChild(oo_tcMar);
 
-                 var v = this.getTdValign(td);
-                 if (v){
-                     var oo_vAlign = this.createEl(oo_doc, "vAlign");
-                     this.setAttrs(oo_vAlign, {"val": v});
-                     oo_tcPr.appendChild(oo_vAlign);
-                 }
+                var v = this.getTdValign(td);
+                if (v){
+                    var oo_vAlign = this.createEl(oo_doc, "vAlign");
+                    this.setAttrs(oo_vAlign, {"val": v});
+                    oo_tcPr.appendChild(oo_vAlign);
+                }
 
-                 var oo_hideMark = this.createEl(oo_doc, "hideMark");
-                 oo_tcPr.appendChild(oo_hideMark);
+                var oo_hideMark = this.createEl(oo_doc, "hideMark");
+                oo_tcPr.appendChild(oo_hideMark);
 
                 //垂直合并单元格
                 var rowspan = td.get("rowspan");
@@ -915,60 +932,60 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     // this.insertChildren(oo_tcPr, [oo_gridSpan], "afterbegin");
                 }
 
-                 oo_tc.appendChild(oo_tcPr);
-                 //表格内容；
-                 this.processTableDom(td, oo_tc, td, true, oo_tc);
+                oo_tc.appendChild(oo_tcPr);
+                //表格内容；
+                this.processTableDom(td, oo_tc, td, true, oo_tc);
 
-                 var pflag = false;
-                 var node = oo_tc.firstChild;
-                 while (node){
-                     if (node.tagName==="w:p"){
-                         pflag = true;
-                         break;
-                     }
-                     node = node.nextSibling;
-                 }
+                var pflag = false;
+                var node = oo_tc.firstChild;
+                while (node){
+                    if (node.tagName==="w:p"){
+                        pflag = true;
+                        break;
+                    }
+                    node = node.nextSibling;
+                }
 
-                 if (!pflag){
-                     var oo_p = this.createEl(oo_doc, "p");
-                     oo_tc.appendChild(oo_p);
-                 }
+                if (!pflag){
+                    var oo_p = this.createEl(oo_doc, "p");
+                    oo_tc.appendChild(oo_p);
+                }
 
-                 oo_tr.appendChild(oo_tc);
+                oo_tr.appendChild(oo_tc);
 
-                 //垂直合并单元格
-                 var nextIdx = tdIdx+1;
-                 var mge = vmge["td"+nextIdx];
-                 while (mge){
-                     vmge["td"+nextIdx].idx--;
-                     var tcPr = vmge["td"+nextIdx].tcPr;
+                //垂直合并单元格
+                var nextIdx = tdIdx+1;
+                var mge = vmge["td"+nextIdx];
+                while (mge){
+                    vmge["td"+nextIdx].idx--;
+                    var tcPr = vmge["td"+nextIdx].tcPr;
 
-                     var oo_mtc = this.createEl(oo_doc, "tc");
+                    var oo_mtc = this.createEl(oo_doc, "tc");
 
-                     if (tcPr) {
-                         var oo_mtcPr = tcPr.cloneNode(true);
-                         var oo_mvMerge = oo_mtcPr.querySelector("vMerge");
-                         if (oo_mvMerge) oo_mvMerge.destroy();
-                         oo_mvMerge = this.createEl(oo_doc, "vMerge");
-                         oo_mtcPr.appendChild(oo_mvMerge);
-                         oo_mtc.appendChild(oo_mtcPr);
-                     }else{
-                         var oo_mtcPr = this.createEl(oo_doc, "tcPr");
-                         var oo_mvMerge = this.createEl(oo_doc, "vMerge");
-                         oo_mtcPr.appendChild(oo_mvMerge);
-                         oo_mtc.appendChild(oo_mtcPr);
-                     }
+                    if (tcPr) {
+                        var oo_mtcPr = tcPr.cloneNode(true);
+                        var oo_mvMerge = oo_mtcPr.querySelector("vMerge");
+                        if (oo_mvMerge) oo_mvMerge.destroy();
+                        oo_mvMerge = this.createEl(oo_doc, "vMerge");
+                        oo_mtcPr.appendChild(oo_mvMerge);
+                        oo_mtc.appendChild(oo_mtcPr);
+                    }else{
+                        var oo_mtcPr = this.createEl(oo_doc, "tcPr");
+                        var oo_mvMerge = this.createEl(oo_doc, "vMerge");
+                        oo_mtcPr.appendChild(oo_mvMerge);
+                        oo_mtc.appendChild(oo_mtcPr);
+                    }
 
-                     var oo_mp = this.createEl(oo_doc, "p");
-                     oo_mtc.appendChild(oo_mp);
-                     oo_tr.appendChild(oo_mtc);
+                    var oo_mp = this.createEl(oo_doc, "p");
+                    oo_mtc.appendChild(oo_mp);
+                    oo_tr.appendChild(oo_mtc);
 
-                     if (vmge["td"+nextIdx].idx<1) delete vmge["td"+nextIdx];
-                     //tdIdx++;
+                    if (vmge["td"+nextIdx].idx<1) delete vmge["td"+nextIdx];
+                    //tdIdx++;
 
-                     nextIdx++;
-                     mge = vmge["td"+nextIdx];
-                 }
+                    nextIdx++;
+                    mge = vmge["td"+nextIdx];
+                }
 
                 if (colspan && colspan.toInt()>1){
                     if (vmge["td"+tdIdx]){
@@ -982,7 +999,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
                 tdIdx = nextIdx-1;
                 tdIdx++;
-             }
+            }
 
             oo_tbl.appendChild(oo_tr);
         }
@@ -1247,7 +1264,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     break;
                 case "letter-spacing":
                     //实际测试发现letter-spacing * 0.55 转换word比较合适
-                    rPrs.spacing = {"val": (styles["letter-spacing"].toFloat()*20*0.55 || 0)};
+                    rPrs.spacing = {"val": (styles["letter-spacing"].toFloat()*20 || 0)};
                     break;
                 case "font-weight":
                     var b = styles["font-weight"];
