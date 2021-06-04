@@ -333,7 +333,7 @@ MWF.xApplication.Homepage.InforContent.AllInfor = new Class({
         var cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_number");
         var numberNode = new Element("div.o2_homepage_task_item_number", {"text": idxShow, "title":idx}).inject(cell);
 
-        var subject = (d.title || this.app.lp.noSubject);
+        var subject = o2.txt(d.title || this.app.lp.noSubject);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
         new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
 
@@ -584,7 +584,7 @@ MWF.xApplication.Homepage.InforContent.Infor  = new Class({
         var numberNode = new Element("div.o2_homepage_task_item_number", {"text": idxShow, "title":idx}).inject(cell);
 
         //var subject = "<span>["+d.processName+"]</span> "+(d.title || this.app.lp.noSubject);
-        var subject = (d.title || this.app.lp.noSubject);
+        var subject = o2.txt(d.title || this.app.lp.noSubject);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
         new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
 
