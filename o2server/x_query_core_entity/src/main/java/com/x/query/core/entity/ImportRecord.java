@@ -89,11 +89,19 @@ public class ImportRecord extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Integer count;
 
+	public static final String distribution_FIELDNAME = "distribution";
+	@FieldDescribe("导入结果描述.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_4K, name = ColumnNamePrefix + distribution_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String distribution;
+
 	public static final String data_FIELDNAME = "data";
 	@FieldDescribe("导入数据.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_20M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
@@ -143,5 +151,13 @@ public class ImportRecord extends SliceJpaObject {
 
 	public void setCount(Integer count) {
 		this.count = count;
+	}
+
+	public String getDistribution() {
+		return distribution;
+	}
+
+	public void setDistribution(String distribution) {
+		this.distribution = distribution;
 	}
 }
