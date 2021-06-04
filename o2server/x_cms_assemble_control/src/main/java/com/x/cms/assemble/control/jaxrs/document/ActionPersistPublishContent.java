@@ -12,6 +12,7 @@ import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.processplatform.core.entity.content.Attachment;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -438,7 +439,7 @@ public class ActionPersistPublishContent extends BaseAction {
 						notify = true;
 					}
 				}
-				if( notify ){
+				if( notify && !BooleanUtils.isFalse(wi.getNotice())){
 					logger.debug("try to add notify object to queue for document:" + document.getTitle() );
 					ThisApplication.queueSendDocumentNotify.send( document.getId() );
 				}
@@ -583,6 +584,8 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		@FieldDescribe("是否置顶")
 		private Boolean isTop = false;
+
+		private Boolean isNotice = true;
 
 		private Boolean hasIndexPic = false;
 
@@ -1066,6 +1069,14 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		public void setCms_attachmentIds(String[] cms_attachmentIds) {
 			this.cms_attachmentIds = cms_attachmentIds;
+		}
+
+		public Boolean getNotice() {
+			return isNotice;
+		}
+
+		public void setNotice(Boolean notice) {
+			isNotice = notice;
 		}
 	}
 
