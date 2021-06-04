@@ -415,52 +415,67 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         }.bind(this));
     },
     save: function(callback){
+        debugger;
         if (!this.data.name){
             this.designer.notice(this.designer.lp.notice.inputName, "error");
             return false;
         }
 
-        var titleFlag, creatorFlag;
+        var fieldArr=[], textArr=[], data = this.json.data;
+        var fieldArr2 = [], textArr2 = [];
         if (this.json.type==="cms"){
-            (this.json.data.columnList||[]).each(function (json, i) {
-                if( json.isName && json.isPublisher )creatorFlag = true;
-                if( json.isTitle )titleFlag = true;
-            }.bind(this));
-            (this.json.data.calculateFieldList||[]).each(function (json, i) {
-                if( json.isName && json.isPublisher )creatorFlag = true;
-                if( json.isTitle )titleFlag = true;
-            }.bind(this));
-            if( !titleFlag || !creatorFlag){
-                var _self = this;
-                this.designer.confirm("warn", this.node, MWF.APPDIPD.LP.notice.cmsNoPublisherOrNoTitleTitle, MWF.APPDIPD.LP.notice.cmsNoPublisherOrNoTitle, 300, 120, function(){
-                    _self._save();
-                    this.close();
-                }, function(){
-                    this.close();
-                }, null);
-            }else{
-                this._save(callback)
+            if( data.documentPublisher !== "importer" ){
+                fieldArr.push("documentPublisherField");
+                textArr.push("publisher");
+            }
+            if( data.documentPublishTime !== "importer" ){
+                fieldArr.push("documentPublisherTimeField");
+                textArr.push("publishTime");
             }
         }else if(this.json.type==="process"){
-            (this.json.data.columnList||[]).each(function (json, i) {
-                if( json.isName && json.isProcessDrafter )creatorFlag = true;
-                if( json.isProcessTitle )titleFlag = true;
-            }.bind(this));
-            (this.json.data.calculateFieldList||[]).each(function (json, i) {
-                if( json.isName && json.isProcessDrafter )creatorFlag = true;
-                if( json.isProcessTitle )titleFlag = true;
-            }.bind(this));
-            if( !titleFlag || !creatorFlag){
-                var _self = this;
-                this.designer.confirm("warn", this.node, MWF.APPDIPD.LP.notice.processNoPublisherOrNoTitleTitle, MWF.APPDIPD.LP.notice.processNoPublisherOrNoTitle, 300, 120, function(){
-                    _self._save();
-                    this.close();
-                }, function(){
-                    this.close();
-                }, null);
-            }else{
-                this._save(callback)
+            if( data.processDrafter !== "importer" ){
+                fieldArr.push("processDrafterField");
+                textArr.push("processDrafter");
             }
+            if( data.processStatus === "completed" ){
+                fieldArr = fieldArr.concat(["processStartTimeField", "processCompleteTimeField"]);
+                textArr = textArr.concat([ "startTimeField", "completeTimeField"]);
+
+                fieldArr2.push("processForm");
+                textArr2.push("selectForm");
+            }
+        }
+
+        var noteTextArr = [];
+        var lp = this.view.designer.lp.propertyTemplate;
+        if( fieldArr.length || fieldArr2.length){
+
+            fieldArr2.each( function(field, i) {
+                if (!data[field])noteTextArr.push(lp[textArr2[i]]);
+            });
+
+            var columnList = [].concat(data.columnList, data.calculateFieldList);
+            fieldArr.each( function(field, i){
+                if( !data[field] ){
+                    noteTextArr.push( lp[textArr[i]] );
+                }else {
+                    var path = data[field];
+                    var flag = columnList.some(function (c) { return c.path === path;});
+                    if(!flag)noteTextArr.push( lp[textArr[i]] );
+                }
+            }.bind(this));
+        }
+
+
+        if( noteTextArr.length ){
+            var _self = this;
+            var text = MWF.APPDIPD.LP.notice.someFieldIsEmpty.replace("{text}", noteTextArr.join("、"));
+            this.designer.confirm("warn", this.node, MWF.APPDIPD.LP.notice.saveNotice, text, 300, 120, function(){
+                _self._save();
+                this.close();
+            }, function(){
+                this.close();
+            }, null);
         }else{
             this._save(callback)
         }

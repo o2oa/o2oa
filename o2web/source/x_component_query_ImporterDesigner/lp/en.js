@@ -56,7 +56,10 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "cmsNoPublisherOrNoTitle": "The title or drafter is not set for content management. Are you sure to save it?",
 
         "processNoPublisherOrNoTitleTitle": "No title or drafter is set",
-        "processNoPublisherOrNoTitle": "The process has no title or drafter. Are you sure to save it?"
+        "processNoPublisherOrNoTitle": "The process has no title or drafter. Are you sure to save it?",
+
+        "saveNotice": "Save Notice",
+        "someFieldIsEmpty": "{text} is not selected, do you want to continue to save?"
     },
     "mastInputPath": "Please enter the data path",
     "mastInputTitle": "Please enter a title",
@@ -119,6 +122,20 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "processDrafter": "Process Drafter",
         "publisher": "Document Creator",
         "importerAsDrafter": "Identity of importer",
-        "setDrafterInField": "Set in the field (column)"
+        "setDrafterInField": "Set in the field (column)",
+
+        "note": "Note:",
+        "selectOrg": "Please select an organization object",
+        "selectDate": "Please select the date type",
+        "selectText": "Please select the text type",
+        "publishTime": "Publish Time",
+        "importeTimeAsPublishTime": "Import time is publishing time",
+        "titleField": "Title",
+        "summaryField": "Summary",
+        "selectForm": "Specify Form",
+        "serialField": "Serial Number/Signature",
+        "startTimeField": "Start Date",
+        "completeTimeField": "End Date",
+        "selectProcess1": "Please select the process first"
     }
 };
