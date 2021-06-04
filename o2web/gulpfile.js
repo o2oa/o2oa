@@ -342,6 +342,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
     gulp.task(path+" : concat", function(){
         var option = thisOptions || options;
         var src = [
+            'source/' + path + '/polyfill.js',
             'source/o2_lib/mootools/mootools-1.6.0_all.js',
             'source/o2_lib/mootools/plugin/mBox.js',
             'source/' + path + '/o2.js'
@@ -452,6 +453,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
     gulp.task(path+" : bundle", function(){
         var option = thisOptions || options;
         var src = [
+            'source/' + path + '/polyfill.js',
             'source/o2_lib/mootools/mootools-1.6.0_all.js',
             'source/o2_lib/mootools/plugin/mBox.js',
             'source/' + path + '/o2.js',

@@ -873,15 +873,22 @@ bind.headers = {
 };
 
 bind.parameters = {
+    "add": function(value){
+        try{
+            if (parameters) parameters.add(value);
+        }catch(e){}
+    },
     "put": function(name, value){
-        if ((typeof name)==="object"){
-            var _keys = Object.keys(name);
-            for (var i=0; i<_keys.length; i++){
-                if (parameters) parameters.put(_keys[i], name[_keys[i]]);
+        try{
+            if ((typeof name)==="object"){
+                var _keys = Object.keys(name);
+                for (var i=0; i<_keys.length; i++){
+                    if (parameters) parameters.put(_keys[i], name[_keys[i]]);
+                }
+            }else{
+                if (parameters) parameters.put(name, value);
             }
-        }else{
-            if (parameters) parameters.put(name, value);
-        }
+        }catch(e){}
     },
     "remove": function(name){
         try{
@@ -891,41 +898,49 @@ bind.parameters = {
 };
 //bind.parameters = this.parameters || null;
 bind.response = (function(){
+    var _self = this;
     if (this.jaxrsResponse){
         if (this.jaxrsResponse.get()){
-            if (JSON.validate(this.jaxrsResponse.get())){
+            var value = this.jaxrsResponse.get();
+            if (JSON.validate(value)){
                 return {
                     "status": this.jaxrsResponse.status,
-                    "value": JSON.decode(this.jaxrsResponse.get())
+                    "value": JSON.decode(value),
+                    "get": function(){ JSON.decode(value) }
                 };
             }else{
                 return {
                     "status": this.jaxrsResponse.status,
-                    "value": this.jaxrsResponse.value
+                    "value": value,
+                    "get": function(){ return value; }
                 };
             }
         }else{
-            return {"status": this.jaxrsResponse.status};
+            return {
+                "status": this.jaxrsResponse.status,
+                "value": this.jaxrsResponse.value,
+                "get": function(){ return _self.jaxrsResponse.value; }
+            };
         }
     }else{
-        var _self = this;
         return {
             "get": function(){
-                if (_self.jaxrsResponse.get()){
-                    if (JSON.validate(_self.jaxrsResponse.get())){
-                        return {
-                            "status": _self.jaxrsResponse.status,
-                            "value": JSON.decode(_self.jaxrsResponse.get())
-                        };
-                    }else{
-                        return {
-                            "status": _self.jaxrsResponse.status,
-                            "value": _self.jaxrsResponse.value
-                        };
-                    }
-                }else{
-                    return {"status": _self.jaxrsResponse.status};
-                }
+                return _self.jaxwsResponse || null;
+                // if (_self.jaxwsResponse && _self.jaxwsResponse.get()){
+                //     if (JSON.validate(_self.jaxwsResponse.get())){
+                //         return {
+                //             "status": _self.jaxwsResponse.status,
+                //             "value": JSON.decode(_self.jaxwsResponse.get())
+                //         };
+                //     }else{
+                //         return {
+                //             "status": _self.jaxwsResponse.status,
+                //             "value": _self.jaxwsResponse.value
+                //         };
+                //     }
+                // }else{
+                //     return {"status": _self.jaxwsResponse.status};
+                // }
             }
         }
     }
