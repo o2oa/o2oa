@@ -122,7 +122,7 @@ public class ImportModelAction extends StandardJaxrsAction {
 	@Path("execute/record/{recordId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getReExecuteRecord(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void reExecuteRecord(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 						  @JaxrsParameterDescribe("导入记录标识") @PathParam("recordId") String recordId) {
 		ActionResult<ActionReExecute.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
