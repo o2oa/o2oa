@@ -23,17 +23,18 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         this.json = json;
 
-        this.contains = container;
+        this.container = container;
 
         this.parentMacro = parentMacro;
 
         this.lookupAction = MWF.Actions.get("x_query_assemble_surface");
-        this.designerAction = MWF.Actions.get("x_query_assemble_designer");
 
     },
     load: function(){
 
         this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+
+        this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this );
 
         this.getImporterJSON( function () {
             this.loadMacro( function () {
@@ -116,6 +117,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         this.excelUtils.upload( this.getDateColIndexArray(), function (importedData) {
 
+
+            this.progressBar.showCheckData();
+
             this.importedData = importedData;
 
             if( this.importedData.length > 0 )this.importedData.shift();
@@ -171,23 +175,29 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             return;
         }
 
-        console.log(this.getData());
+        var data = this.getData();
+        console.log();
 
-        if( this.json.type === "dynamicTable" ){
-            o2.Actions.load("x_query_assemble_designer").TableAction.rowSave(
-                this.json.data.dynamicTable.id || this.json.data.dynamicTable.name,
-                this.getData(),
-                function(json){
-                    this.fireEvent("afterImport", json );
-                    this.app.notice( this.lp.importSuccess );
-                }.bind(this)
-            );
-        }else if( this.json.type === "cms" ){
+        this.lookupAction.getUUID(function(json){
+            this.recordId = json.data;
+            this.lookupAction.executImportModule(this.json.id, {
+                "recordId": this.recordId,
+                "data" : data
+            }, function () {
+                this.showImportingStatus()
+            }.bind(this), function (xhr) {
+                debugger;
+                var requestJson = JSON.parse(xhr.responseText);
+                this.app.notice(requestJson.message, "error");
+                // this.progressBar.close();
+            }.bind(this))
+        }.bind(this))
 
-        }
 
     },
     openImportedErrorDlg : function(){
+        if(this.progressBar)this.progressBar.close();
+
         var _self = this;
 
         var objectToString = function (obj, type) {
@@ -435,6 +445,10 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                 check();
             }
         }
+    },
+
+    showImportingStatus: function(){
+        this.progressBar.showImporting( this.recordId );
     },
 
     downloadTemplate: function(fileName, callback){
@@ -1310,4 +1324,228 @@ MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
             reader.readAsBinaryString(file);
         })
     }
+});
+
+MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
+    initialize : function( importer ){
+        this.importer = importer;
+        this.actions = this.importer.lookupAction;
+        this.lp = MWF.xApplication.query.Query.LP;
+        this.css = importer.css;
+        this.currentDate = new Date();
+        this.createNode();
+        this.status = "ready";
+    },
+    showCheckData : function(){
+        this.node.show();
+        this.setContentHtml(true);
+        this.setMessageTitle( this.lp.checkDataTitle );
+        this.setMessageText( this.lp.checkDataContent );
+        this.status = "check";
+        this.setSize();
+    },
+    showImporting: function( recordId, callback ){
+        this.node.show();
+        this.setContentHtml();
+        this.recordId = recordId;
+        this.intervalId = window.setInterval( function(){
+            this.actions.getImportModuleRecordStatus( this.recordId, function( json ){
+                var data = json.data;
+                if( data.status != "COMPLETE"){
+                    this.setMessageTitle( this.lp.importDataTitle );
+                    this.setMessageText( this.lp.importDataContent.replace( "{count}", data.executeCount));
+                    this.status = data.status;
+                    this.updateProgress( data.status, data.executeCount, data.count, 0 );
+                }else{
+                    this.status = data.status;
+                    window.clearInterval( this.intervalId );
+                    this.transferComplete( data );
+                    if( callback )callback();
+                }
+            }.bind(this), null)
+        }.bind(this), 500 );
+        this.setSize();
+    },
+    close: function(){
+        this.maskNode.destroy();
+        this.node.destroy();
+    },
+    hide: function(){
+        this.maskNode.hide();
+        this.node.hide();
+    },
+    setSize: function(){
+        var containerSize = this.importer.container.getSize();
+        var nodeSize = this.node.getSize();
+        var top = (containerSize.y - nodeSize.y) / 2;
+        var left = (containerSize.x - nodeSize.x) / 2;
+        this.node.setStyles({
+            "top": (top-40)+"px",
+            "left": left+"px"
+        })
+    },
+    setContentHtml: function(noProgress){
+        var lp = this.lp;
+        var contentHTML = "";
+        if (noProgress){
+            // contentHTML = "<div style=\"height: 20px; line-height: 20px\">"+lp.readyToImportData1+"</div></div>" ;
+            contentHTML =
+                "<div style=\"overflow: hidden\">" +
+                "   <div class='mwf_progressInforNode'>"+lp.readyToImportData1+"</div>"+
+                "</div>" ;
+            this.contentNode.set("html", contentHTML );
+            this.progressNode = null;
+            this.progressPercentNode = null;
+            this.progressInforNode = this.contentNode.getElement(".mwf_progressInforNode");
+            this.progressInforNode.setStyles(this.css.progressInforNode)
+        }else{
+            contentHTML =
+                "<div style=\"overflow: hidden\">"+
+                "   <div class='mwf_progressNode'>" +
+                "       <div class='mwf_progressPercentNode'></div>"+
+                "   </div>" +
+                "   <div class='mwf_progressInforNode'>"+lp.readyToImportData1+"</div>"+
+                "</div>" ;
+            this.contentNode.set("html", contentHTML );
+            this.progressNode = this.contentNode.getElement(".mwf_progressNode");
+            this.progressNode.setStyles(this.css.progressNode);
+
+            this.progressPercentNode = this.contentNode.getElement(".mwf_progressPercentNode");
+            this.progressPercentNode.setStyles(this.css.progressPercentNode);
+
+            this.progressInforNode = this.contentNode.getElement(".mwf_progressInforNode");
+            this.progressInforNode.setStyles(this.css.progressInforNode)
+        }
+    },
+    createNode: function( noProgress ){
+        var lp = this.lp;
+
+        // var msg = {
+        //     "subject": lp.readyToImportData,
+        //     "content": contentHTML
+        // };
+
+        this.maskNode = new Element("div",{
+            "styles": this.css.maskNode
+        }).inject(this.importer.container);
+
+        this.node = new Element("div", {
+            "styles": this.css.progressBarNode
+        }).inject(this.importer.container);
+
+        this.subjectNode =  new Element("div",{
+            "styles": this.css.progressSubjectNode
+        }).inject(this.node);
+
+        this.contentNode = new Element("div",{
+            "styles": this.css.processContentNode
+        }).inject(this.node);
+
+        // this.messageItem = layout.desktop.message.addMessage(msg);
+        // this.messageItem.status = "ready";
+        //
+        // window.setTimeout(function(){
+        //     if (!layout.desktop.message.isShow) layout.desktop.message.show();
+        // }.bind(this), 100);
+    },
+    updateProgress: function(type, loaded, total, errorCount){
+        var lp = this.lp;
+        var processed = errorCount ? ( loaded + errorCount ) : loaded;
+        var percent = 100*(processed/total);
+
+        var sendDate = new Date();
+        var lastDate = this.lastTime || this.currentDate;
+        var ms = sendDate.getTime() - lastDate.getTime();
+        var speed = ( (processed - ( this.lastProcessed || 0 )) * 1000)/ms ;
+        var u = lp.importSpeed;
+        speed = speed.round(2);
+
+        if (this.contentNode){
+            var progressNode = this.progressNode; //this.contentNode.getFirst("div").getFirst("div");
+            var progressPercentNode = this.progressPercentNode; //progressNode.getFirst("div");
+            var progressInforNode = this.progressInforNode; //this.contentNode.getFirst("div").getLast("div");
+            progressPercentNode.setStyle("width", ""+percent+"%");
+            if( type == "VALIDATE" ){
+                var text = lp.checkingDataContent.replace("{speed}",speed).replace("{total}",total).replace("{remaining}",( total - loaded ));
+                text += errorCount ? lp.checkingDataErrorContent.replace("{errorCount}",errorCount) : "";
+                // var text = "正检查数据"+": "+speed+u + ",共"+total+"条,剩余"+( total - loaded )+"条";
+                // text += errorCount ? ",出错"+errorCount+"条" : ""
+            }else{
+                var text = lp.importingDataContent.replace("{speed}",speed).replace("{total}",total).replace("{remaining}",( total - loaded ));
+                text += errorCount ? lp.importingDataErrorContent.replace("{errorCount}",errorCount) : "";
+                // var text = "正导入数据"+": "+speed+u + ",共"+total+"条,剩余"+( total - loaded )+"条";
+                // text += errorCount ? ",出错"+errorCount+"条" : ""
+            }
+            progressInforNode.set("text", text);
+        }
+        this.lastProcessed = processed;
+        this.lastTime = new Date();
+    },
+    transferComplete: function( data ){
+        var lp = this.lp;
+        var errorCount = data.errorCount || 0;
+        // var messageItem = this.node; //this.messageItem;
+
+        var sendDate = new Date();
+        var ms = sendDate.getTime()-this.currentDate.getTime();
+
+        var timeStr = "";
+        if (ms>3600000){
+            var h = ms/3600000;
+            var m_s = ms % 3600000;
+            var m = m_s / 60000;
+            var s_s = m_s % 60000;
+            var s = s_s/1000;
+            timeStr = ""+h.toInt()+lp.hour+m.toInt()+lp.mintue+s.toInt()+lp.second;
+        }else if (ms>60000){
+            var m = ms / 60000;
+            var s_s = ms % 60000;
+            var s = s_s/1000;
+            timeStr = ""+m.toInt()+lp.mintue+s.toInt()+lp.second;
+        }else{
+            var s = ms/1000;
+            timeStr = ""+s.toInt()+lp.second;
+        }
+
+        if( errorCount == 0 ){
+            var size = data.count;
+            var speed = (size * 1000)/ms ;
+            var u = lp.importSpeed;
+            speed = speed.round(2);
+
+            this.setMessageTitle( lp.importSuccessTitle );
+            var text = lp.importSuccessContent.replace("{total}",size).replace("{speed}",speed).replace("{timeStr}",timeStr);
+            this.setMessageText( text );
+            // this.setMessageText( "共导入数据"+size+"条  速度"+": "+speed+u+"  "+"耗时"+": "+timeStr);
+        }else{
+            var size = data.count;
+            this.setMessageTitle( lp.importFailTitle );
+
+            var text = lp.importFailContent.replace("{total}",size).replace("{errorCount}",errorCount).replace("{timeStr}",timeStr);
+            this.setMessageText( text );
+            // this.setMessageText( "共有数据"+size+"条  出错"+ errorCount +"条  耗时"+": "+timeStr +"  请修改后重新导入");
+        }
+        this.clearMessageProgress();
+    },
+    setMessageText: function( text){
+        // var progressPercentNode = this.getProgessNode().getFirst("div");
+        // this.getProgressInforNode().set("text", text);
+        // this.messageItem.dateNode.set("text", (new Date()).format("db"));
+        this.progressInforNode.set("text", text);
+    },
+    setMessageTitle: function( text){
+        this.subjectNode.set("text", text);
+    },
+    clearMessageProgress: function(){
+        // var progressNode = this.getProgessNode();
+        this.progressNode.destroy();
+    },
+    // getProgessNode : function(){
+    //     if(!this.progressNode)this.progressNode = this.contentNode.getFirst("div").getFirst("div");
+    //     return this.progressNode;
+    // },
+    // getProgressInforNode : function(){
+    //     if(!this.progressInforNode)this.progressInforNode = this.contentNode.getFirst("div").getLast("div");
+    //     return this.progressInforNode;
+    // }
 });
