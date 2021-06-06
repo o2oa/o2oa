@@ -53,6 +53,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
             currentPage : 1,
             currentItem : null,
             hasPagingBar : true,
+            pagingBarUseWidget: false,
             hasTruningBar : true,
             hasNextPage : true,
             hasPrevPage : false,
@@ -600,9 +601,46 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         });
         if( pageNum )par.currentPage = pageNum;
         if( this.options.pagingPar.hasPagingBar ){
-            this.paging = new MWF.xApplication.Template.Explorer.Paging(this.pagingContainerTop, this.pagingContainerBottom, par, this.css);
-            this.paging.load();
+            if( this.options.pagingPar.pagingBarUseWidget ){
+                if(this.pagingContainerTop){
+                    this.loadWidgetPaging(this.pagingContainerTop, itemSize, par)
+                }
+                if(this.pagingContainerBottom){
+                    this.loadWidgetPaging(this.pagingContainerBottom, itemSize, par)
+                }
+            }else{
+                this.paging = new MWF.xApplication.Template.Explorer.Paging(
+                    this.pagingContainerTop, this.pagingContainerBottom, par, this.css);
+                this.paging.load();
+            }
         }
+    },
+    loadWidgetPaging: function(node, itemSize, par){
+        if(!o2.widget.Paging)MWF.require("o2.widget.Paging", null, false);
+        var pageSize = Math.ceil(itemSize/this.options.pagingPar.countPerPage);
+        this.paging = new o2.widget.Paging(node, Object.merge({
+            countPerPage: 20,
+            visiblePages: 9,
+            currentPage: 1,
+            itemSize: 0,
+            pageSize: pageSize,
+            hasNextPage: true,
+            hasPrevPage: true,
+            hasTruningBar: true,
+            hasBatchTuring: true,
+            hasFirstPage: true,
+            hasLastPage: true,
+            hasJumper: true,
+            hiddenWithDisable: false,
+            hiddenWithNoItem: true,
+            text: {
+                prePage: "",
+                nextPage: "",
+                firstPage: "",
+                lastPage: ""
+            }
+        }, par), this.options.pagingPar.pagingStyles || {});
+        this.paging.load();
     },
     _getCurrentPageData: function (callback, count, page) {
         if( this.options.pagingEnable ){
@@ -1211,7 +1249,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         if( this.options.currentPage != pageSize && pageSize != 1 && pageSize != 0 ){
             this.nextPageNode = new Element("div.nextPageNode", {
                 "styles" : this.css.nextPageNode,
-                "text" : MWF.xApplication.Template.LP.explorer.prePage
+                "text" : MWF.xApplication.Template.LP.explorer.nextPage
             }).inject(container);
             this.nextPageNode.addEvents( {
                 "mouseover" : function( ev ){ ev.target.setStyles( this.css.nextPageNode_over ) }.bind(this),
@@ -1229,7 +1267,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         if( this.options.currentPage != 1 && pageSize != 1 && pageSize != 0 ){
             this.prevPageNode = new Element("div.prevPageNode", {
                 "styles" : this.css.prevPageNode,
-                "text" : MWF.xApplication.Template.LP.explorer.nextPage
+                "text" : MWF.xApplication.Template.LP.explorer.prePage
             }).inject(container);
             this.prevPageNode.addEvents( {
                 "mouseover" : function( ev ){ ev.target.setStyles( this.css.prevPageNode_over ) }.bind(this),

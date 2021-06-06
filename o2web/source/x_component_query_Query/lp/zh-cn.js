@@ -11,6 +11,7 @@ MWF.xApplication.query.Query.LP = {
     "view": "视图",
     "stat": "统计",
     "statement" : "查询",
+    "importer": "导入",
     "customSearch": "高级搜索",
     "searchKeywork": "输入关键字搜索视图",
     "yes": "是",
@@ -208,7 +209,10 @@ MWF.xApplication.query.Query.LP = {
     "importSuccessTitle": "导入成功",
     "importSuccessContent": "共导入数据{total}条  速度: {speed}条/秒  耗时: {timeStr}",
     "importFailTitle": "导入失败",
-    "importFailContent": "共有数据{total}条  出错: {errorCount}条  耗时: {timeStr} 请修改后重新导入"
+    "importFailContent": "共有数据{total}条  出错: {errorCount}条  耗时: {timeStr} 请修改后重新导入",
 
+    "importerName": "导入模型名称",
+    "importTime": "导入时间",
+    "importCount": "数据条数"
 
 };
