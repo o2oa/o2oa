@@ -11,6 +11,7 @@ MWF.xApplication.query.Query.LP = {
     "view": "View",
     "stat": "Statistics",
     "statement": "Query",
+    "importer": "Importing",
     "customSearch": "Advanced Search",
     "searchKeywork": "Enter keyword search view",
     "yes": "Yes",

@@ -1539,7 +1539,7 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
     clearMessageProgress: function(){
         // var progressNode = this.getProgessNode();
         this.progressNode.destroy();
-    },
+    }
     // getProgessNode : function(){
     //     if(!this.progressNode)this.progressNode = this.contentNode.getFirst("div").getFirst("div");
     //     return this.progressNode;
