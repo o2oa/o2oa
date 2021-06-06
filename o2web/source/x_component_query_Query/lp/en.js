@@ -182,5 +182,30 @@ MWF.xApplication.query.Query.LP = {
     "startTimeFormatError": "The start time format is incorrect",
     "noEndTime": "The end time is not set",
     "endTimeFormatError": "The end time format is incorrect",
-    "noForm": "The form is not set"
+    "noForm": "The form is not set",
+
+    "importDataResult":"Attendance data import result",
+    "importDataResultSuccess": "Data has been successfully imported. {count} of them are shown below:",
+    "importDataResultFail": "The data did not pass the verification, there are {errorCount} pieces of wrong data. Please modify and re-import. The following shows {count} of them:",
+    // "importDataResultThList": [
+    // "line number", "employee number", "employee name", "date", "morning clocking time", "morning clocking time", "afternoon clocking time", "afternoon clocking time"," Check result","description"
+    // ],
+    "true": "Correct",
+    "false": "Error",
+    "checkDataTitle": "Data Import",
+    "checkDataContent": "Checking data...",
+    "importDataTitle": "Importing data",
+    "importDataContent": "Start to import data, {count} items in total",
+    "readyToImportData": "Preparing to import data",
+    "readyToImportData1": "Preparing to import data...",
+    "importSpeed": "items/sec",
+    "importingDataContent": "Importing data: {speed}/sec, {total} total, remaining {remaining}",
+    "importingDataErrorContent": ",{errorCount} errors",
+    "hour":"hour",
+    "mintue": "mintue",
+    "second": "second",
+    "importSuccessTitle": "Import successful",
+    "importSuccessContent": "Import a total of {total} pieces of data Speed: {speed} pieces/sec Time-consuming: {timeStr}",
+    "importFailTitle": "Import Failed",
+    "importFailContent": "Total data {total} items Error: {errorCount} items Time-consuming: {timeStr} Please modify and import again"
 };
