@@ -182,7 +182,33 @@ MWF.xApplication.query.Query.LP = {
     "startTimeFormatError": "开始时间格式不正确",
     "noEndTime": "未设置结束时间",
     "endTimeFormatError": "结束时间格式不正确",
-    "noForm": "未设置表单"
+    "noForm": "未设置表单",
+
+
+    "importDataResult":"考勤数据导入结果",
+    "importDataResultSuccess": "数据已经成功导入。下面显示其中的{count}条：",
+    "importDataResultFail": "数据未通过校验，有{errorCount}条错误数据。请修改后重新导入。下面显示其中的{count}条：",
+    // "importDataResultThList" : [
+    //     "行号", "员工号", "员工名字", "日期","上午上班打卡时间","上午下班打卡时间","下午上班打卡时间","下午下班打卡时间","检查结果","描述"
+    // ],
+    "true": "正确",
+    "false": "错误",
+    "checkDataTitle": "数据导入",
+	"checkDataContent": "正在检查数据...",
+    "importDataTitle": "正在导入数据",
+    "importDataContent": "开始导入数据，共{count}条",
+    "readyToImportData": "正在准备导入数据",
+	"readyToImportData1": "正在准备导入数据...",
+    "importSpeed": "条/秒",
+    "importingDataContent": "正导入数据: {speed}条/秒,共{total}条,剩余{remaining}条",
+    "importingDataErrorContent": ",出错{errorCount}条",
+    "hour":"小时",
+    "mintue": "分",
+    "second": "秒",
+    "importSuccessTitle": "导入成功",
+    "importSuccessContent": "共导入数据{total}条  速度: {speed}条/秒  耗时: {timeStr}",
+    "importFailTitle": "导入失败",
+    "importFailContent": "共有数据{total}条  出错: {errorCount}条  耗时: {timeStr} 请修改后重新导入"
 
 
 };
