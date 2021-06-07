@@ -47,6 +47,7 @@ public class Person extends ConfigObject {
 	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";
 	public static final String DEFAULT_LANGUAGE = "zh-CN";
 	public static final String DEFAULT_CAPTCHAFONT = "";
+	public static final String DEFAULT_TOKENNAME = "x-token";
 
 	public Person() {
 		this.captchaLogin = DEFAULT_CAPTCHALOGIN;
@@ -63,6 +64,7 @@ public class Person extends ConfigObject {
 		this.tokenCookieHttpOnly = DEFAULT_TOKENCOOKIEHTTPONLY;
 		this.language = DEFAULT_LANGUAGE;
 		this.captchaFont = DEFAULT_CAPTCHAFONT;
+		this.tokenName = DEFAULT_TOKENNAME;
 	}
 
 	public static Person defaultInstance() {
@@ -118,6 +120,9 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("保存token的cookie是否启用httpOnly")
 	private Boolean tokenCookieHttpOnly;
+
+	@FieldDescribe("使用识别用户的token名称,可自定义,默认为:" + DEFAULT_TOKENNAME + ".")
+	private String tokenName;
 
 	@FieldDescribe("人员组织排序是否为升序，true为升序(默认)，false为降序")
 	private Boolean personUnitOrderByAsc;
@@ -190,6 +195,10 @@ public class Person extends ConfigObject {
 			this.page = page;
 		}
 
+	}
+
+	public String getTokenName() {
+		return StringUtils.isBlank(this.tokenName) ? DEFAULT_TOKENNAME : this.tokenName;
 	}
 
 	public Integer getFailureInterval() {
@@ -341,4 +350,5 @@ public class Person extends ConfigObject {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
+
 }

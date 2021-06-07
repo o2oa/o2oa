@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -59,7 +60,7 @@ public class InvokeExecutor {
 						.toString();
 			} else {
 				List<NameValuePair> heads = new ArrayList<>();
-				heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+				heads.add(new NameValuePair(ConnectionAction.CONTENT_TYPE, jaxrsObject.getContentType()));
 				if (null != jaxrsObject.getHead()) {
 					for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
 						heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
@@ -80,7 +81,7 @@ public class InvokeExecutor {
 						.toString();
 			} else {
 				List<NameValuePair> heads = new ArrayList<>();
-				heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+				heads.add(new NameValuePair(ConnectionAction.CONTENT_TYPE, jaxrsObject.getContentType()));
 				if (null != jaxrsObject.getHead()) {
 					for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
 						heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
@@ -100,7 +101,7 @@ public class InvokeExecutor {
 				return CipherConnectionAction.get(true, jaxrsObject.getAddress()).getData().toString();
 			} else {
 				List<NameValuePair> heads = new ArrayList<>();
-				heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+				heads.add(new NameValuePair(ConnectionAction.CONTENT_TYPE, jaxrsObject.getContentType()));
 				if (null != jaxrsObject.getHead()) {
 					for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
 						heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
@@ -120,7 +121,7 @@ public class InvokeExecutor {
 				return CipherConnectionAction.delete(true, jaxrsObject.getAddress()).getData().toString();
 			} else {
 				List<NameValuePair> heads = new ArrayList<>();
-				heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+				heads.add(new NameValuePair(ConnectionAction.CONTENT_TYPE, jaxrsObject.getContentType()));
 				if (null != jaxrsObject.getHead()) {
 					for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
 						heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
