@@ -11,7 +11,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.ImportRecord;
 
 class ActionGetRecord extends BaseAction {
@@ -21,8 +20,7 @@ class ActionGetRecord extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String recordId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			ImportRecord record = business.pick(recordId, ImportRecord.class);
+			ImportRecord record = emc.find(recordId, ImportRecord.class);
 			if(record == null){
 				throw new ExceptionEntityNotExist(recordId, ImportRecord.class);
 			}
