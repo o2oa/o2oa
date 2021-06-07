@@ -195,6 +195,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.log,
     "className": "Log"
   },
+  "documenteditor": {
+    "icon": "documenteditor.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.documenteditor,
+    "className": "Documenteditor"
+  },
   "office": {
     "icon": "office.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.office,
