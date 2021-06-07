@@ -18,7 +18,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
-import com.x.base.core.project.connection.HttpConnection;
+import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.exception.RunningException;
 import com.x.base.core.project.http.ActionResult.Type;
 import com.x.base.core.project.logger.Logger;
@@ -142,16 +142,16 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		Class<?> clz = Class.forName("com.x.base.core.project." + invoke.getInternalProject());
 		String uri = this.jaxrsUrl(aeiObjects, invoke);
 		switch (StringUtils.upperCase(invoke.getJaxrsMethod())) {
-		case HttpConnection.METHOD_POST:
+		case ConnectionAction.METHOD_POST:
 			resp = jaxrsInternalPost(aeiObjects, invoke, clz, uri);
 			break;
-		case HttpConnection.METHOD_PUT:
+		case ConnectionAction.METHOD_PUT:
 			resp = jaxrsInternalPut(aeiObjects, invoke, clz, uri);
 			break;
-		case HttpConnection.METHOD_GET:
+		case ConnectionAction.METHOD_GET:
 			resp = jaxrsInternalGet(aeiObjects, invoke, clz, uri);
 			break;
-		case HttpConnection.METHOD_DELETE:
+		case ConnectionAction.METHOD_DELETE:
 			resp = jaxrsInternalDelete(aeiObjects, invoke, clz, uri);
 			break;
 		case "head":
@@ -196,7 +196,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			jaxrsObject
 					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 			jaxrsObject.setInternal(invoke.getInternal());
-			jaxrsObject.setMethod(HttpConnection.METHOD_DELETE);
+			jaxrsObject.setMethod(ConnectionAction.METHOD_DELETE);
 			jaxrsObject.setContentType(invoke.getJaxrsContentType());
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
 		} else {
@@ -213,7 +213,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			jaxrsObject
 					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 			jaxrsObject.setInternal(invoke.getInternal());
-			jaxrsObject.setMethod(HttpConnection.METHOD_GET);
+			jaxrsObject.setMethod(ConnectionAction.METHOD_GET);
 			jaxrsObject.setContentType(invoke.getJaxrsContentType());
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
 		} else {
@@ -232,7 +232,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 			jaxrsObject.setBody(body);
 			jaxrsObject.setInternal(invoke.getInternal());
-			jaxrsObject.setMethod(HttpConnection.METHOD_PUT);
+			jaxrsObject.setMethod(ConnectionAction.METHOD_PUT);
 			jaxrsObject.setContentType(invoke.getJaxrsContentType());
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
 		} else {
@@ -251,7 +251,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 			jaxrsObject.setBody(body);
 			jaxrsObject.setInternal(invoke.getInternal());
-			jaxrsObject.setMethod(HttpConnection.METHOD_POST);
+			jaxrsObject.setMethod(ConnectionAction.METHOD_POST);
 			jaxrsObject.setContentType(invoke.getJaxrsContentType());
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
 		} else {
@@ -266,16 +266,16 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		JaxrsObject jaxrsObject = new JaxrsObject();
 		jaxrsObject.setHead(this.jaxrsEvalHead(aeiObjects, invoke));
 		switch (StringUtils.upperCase(invoke.getJaxrsMethod())) {
-		case HttpConnection.METHOD_POST:
+		case ConnectionAction.METHOD_POST:
 			result = jaxrsExternalPost(aeiObjects, invoke, uri, jaxrsObject);
 			break;
-		case HttpConnection.METHOD_PUT:
+		case ConnectionAction.METHOD_PUT:
 			result = jaxrsExternalPut(aeiObjects, invoke, uri, jaxrsObject);
 			break;
-		case HttpConnection.METHOD_GET:
+		case ConnectionAction.METHOD_GET:
 			result = jaxrsExternalGet(aeiObjects, invoke, uri, jaxrsObject);
 			break;
-		case HttpConnection.METHOD_DELETE:
+		case ConnectionAction.METHOD_DELETE:
 			result = jaxrsExternalDelete(aeiObjects, invoke, uri, jaxrsObject);
 			break;
 		case "head":
@@ -311,7 +311,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 
 	private String jaxrsExternalDelete(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
 			throws Exception {
-		jaxrsObject.setMethod(HttpConnection.METHOD_DELETE);
+		jaxrsObject.setMethod(ConnectionAction.METHOD_DELETE);
 		jaxrsObject.setInternal(false);
 		jaxrsObject.setAddress(address);
 		jaxrsObject.setContentType(invoke.getJaxrsContentType());
@@ -326,7 +326,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 
 	private String jaxrsExternalGet(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
 			throws Exception {
-		jaxrsObject.setMethod(HttpConnection.METHOD_GET);
+		jaxrsObject.setMethod(ConnectionAction.METHOD_GET);
 		jaxrsObject.setInternal(false);
 		jaxrsObject.setAddress(address);
 		jaxrsObject.setContentType(invoke.getJaxrsContentType());
@@ -342,7 +342,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 	private String jaxrsExternalPut(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
 			throws Exception {
 		String body = this.jaxrsEvalBody(aeiObjects, invoke);
-		jaxrsObject.setMethod(HttpConnection.METHOD_PUT);
+		jaxrsObject.setMethod(ConnectionAction.METHOD_PUT);
 		jaxrsObject.setInternal(false);
 		jaxrsObject.setAddress(address);
 		jaxrsObject.setBody(body);
@@ -359,7 +359,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 	private String jaxrsExternalPost(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
 			throws Exception {
 		String body = this.jaxrsEvalBody(aeiObjects, invoke);
-		jaxrsObject.setMethod(HttpConnection.METHOD_POST);
+		jaxrsObject.setMethod(ConnectionAction.METHOD_POST);
 		jaxrsObject.setInternal(false);
 		jaxrsObject.setAddress(address);
 		jaxrsObject.setBody(body);
