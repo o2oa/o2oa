@@ -1641,8 +1641,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
-                            var xtoken = Cookie.read("x-token");
-                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
+                            var xtoken = Cookie.read(o2.tokenName);
+                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
                         this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
@@ -1665,8 +1665,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, this.form.businessData.workCompleted.id, function (url) {
-                            var xtoken = Cookie.read("x-token");
-                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
+                            var xtoken = Cookie.read(o2.tokenName);
+                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
                         this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
@@ -1692,8 +1692,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
-                            var xtoken = Cookie.read("x-token");
-                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
+                            var xtoken = Cookie.read(o2.tokenName);
+                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
                         this.form.workAction.getAttachmentData(att.data.id, this.form.businessData.work.id);
@@ -1718,8 +1718,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id), function (url) {
-                            var xtoken = Cookie.read("x-token");
-                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
+                            var xtoken = Cookie.read(o2.tokenName);
+                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
                         this.form.workAction.getWorkcompletedAttachmentData(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));

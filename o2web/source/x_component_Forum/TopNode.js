@@ -367,7 +367,7 @@ MWF.xApplication.Forum.TopNode = new Class({
                 this.socket.close();
                 this.socket = null;
             }
-            Cookie.dispose("x-token");
+            Cookie.dispose(o2.tokenName);
             if (layout.session && layout.session.user) layout.session.user.token = "";
 
             layout.desktop.session.user.distinguishedName = "anonymous";
